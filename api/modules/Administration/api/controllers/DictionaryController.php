@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarCache\SugarCache;
@@ -215,6 +216,28 @@ class DictionaryController
                 $field['id'] = "field:{$field['name']}";
                 return $field;
             }, $bean->{$args['link']}->relationship->def['fields'])
+        );
+
+        return $res->withJson(array_values($fields));
+    }
+
+    /**
+     * get module relationship definitions
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return mixed
+     * @throws Exception
+     */
+    public function getAuditFields(Request $req, Response $res, array $args): Response
+    {
+        $fields = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+
+        $fields = array_values(
+            array_map(function ($field) {
+                $field['id'] = "field:{$field['name']}";
+                return $field;
+            }, $fields)
         );
 
         return $res->withJson(array_values($fields));

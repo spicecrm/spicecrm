@@ -89,6 +89,14 @@ $routes = [
     ],
     [
         'method' => 'get',
+        'route' => '/dictionary/browser/auditFields',
+        'class' => DictionaryController::class,
+        'function' => 'getAuditFields',
+        'description' => 'get module relationship fields',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+    ],
+    [
+        'method' => 'get',
         'route' => '/dictionary/browser/{module}/dbcolumns',
         'class' => AdminController::class,
         'function' => 'getDBColumns',

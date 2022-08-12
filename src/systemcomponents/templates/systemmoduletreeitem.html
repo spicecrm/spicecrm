@@ -8,6 +8,6 @@
         </span>
     </div>
     <ul role="group">
-        <system-module-tree-item *ngFor="let nodeitem of nodeitems; trackBy: trackByFn" [module]="nodeitem.module" [name]="nodeitem.displayname" [nodedata]="nodeitem" [level]="level + 1" [path]="nodeitem.path" [selectedNodeId]="selectedNodeId" (itemSelected)="emitSelected($event)" [displayRelationshipFields]="displayRelationshipFields"></system-module-tree-item>
+        <system-module-tree-item *ngFor="let nodeitem of nodeitems; trackBy: trackByFn" [module]="nodeitem.module" [name]="nodeitem.displayname" [nodedata]="nodeitem" [level]="level + 1" [path]="nodeitem.path" [selectedNodeId]="selectedNodeId" (itemSelected)="emitSelected($event)" [displayAuditFields]="displayAuditFields" [displayRelationshipFields]="displayRelationshipFields"></system-module-tree-item>
     </ul>
 </li>

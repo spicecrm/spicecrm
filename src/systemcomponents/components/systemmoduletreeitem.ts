@@ -1,10 +1,12 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, Output, SimpleChanges} from "@angular/core";
+import {Component, EventEmitter, Host, Inject, Input, Output, SimpleChanges} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
 import {modelutilities} from "../../services/modelutilities.service";
+import {metadata} from "../../services/metadata.service";
+import {SystemModuleTree} from "./systemmoduletree";
 
 /**
  * @ignore
@@ -23,6 +25,11 @@ export class SystemModuleTreeItem {
      * enable displaying the relationship fields
      */
     @Input() public displayRelationshipFields: boolean = false;
+
+    /**
+     * enable displaying the audit fields
+     */
+    @Input() public displayAuditFields: boolean = false;
 
     /**
      * @input selectedItemPath: string
@@ -84,7 +91,11 @@ export class SystemModuleTreeItem {
      */
     @Output() public itemSelected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public backend: backend, public language: language, public modelUtilities: modelutilities) {
+    constructor(public backend: backend,
+                public language: language,
+                public metadata: metadata,
+                @Inject(SystemModuleTree) private moduleTree: SystemModuleTree,
+                public modelUtilities: modelutilities) {
 
     }
 
@@ -101,6 +112,7 @@ export class SystemModuleTreeItem {
      */
     public loadItems() {
         this.isLoading = true;
+        this.moduleTree.isLoading = true;
         this.backend.getRequest('dictionary/browser/' + this.module + '/nodes').subscribe(items => {
             if (items) {
                 this.nodeitems = items
@@ -123,9 +135,23 @@ export class SystemModuleTreeItem {
                         path: `relationship:${this.nodedata.parentModule}:${this.nodedata.link}`
                     }, ...this.nodeitems];
                 }
+
+                // root:Contacts::link:Contacts:opportunities::audit:Opportunities:audit::field:field_name
+                if (this.displayAuditFields && this.metadata.getModuleDefs(this.module).audited == 1) {
+                    this.nodeitems = [{
+                        displayname: this.language.getLabel('LBL_AUDIT_FIELDS'),
+                        leaf: true,
+                        auditNode: true,
+                        module: this.module,
+                        link: this.nodedata.link,
+                        nodeId: !this.nodedata ? 'root' : this.nodedata.nodeId,
+                        path: `audit:${this.module}:audit`
+                    }, ...this.nodeitems];
+                }
             }
 
             this.isLoading = false;
+            this.moduleTree.isLoading = false;
             this.isLoaded = true;
             if (this.nodeitems.length > 0) {
                 this.expanded = true;
@@ -160,7 +186,8 @@ export class SystemModuleTreeItem {
             parentModule: this.nodedata.parentModule,
             link: this.nodedata.link,
             nodeId: !this.nodedata ? 'root' : this.nodedata.nodeId,
-            relationshipNode: this.nodedata.relationshipNode
+            relationshipNode: this.nodedata.relationshipNode,
+            auditNode: this.nodedata.auditNode,
         });
     }
 
