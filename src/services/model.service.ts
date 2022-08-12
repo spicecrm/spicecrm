@@ -1324,7 +1324,6 @@ export class model implements OnDestroy {
     public setData(data: any, transform = true, silent?: boolean) {
         if (data.acl) {
             this.acl = data.acl;
-            delete data.acl;
         }
         if (data.acl_fieldcontrol) {
             this.acl_fieldcontrol = data.acl_fieldcontrol;
