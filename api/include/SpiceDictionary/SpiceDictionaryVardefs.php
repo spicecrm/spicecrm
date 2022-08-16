@@ -309,9 +309,11 @@ class SpiceDictionaryVardefs  {
 
         while($row = $db->fetchByAssoc($query)) {
 
-            if (!empty($row['relatefrom']) || empty($module['bean'])) continue;
+            if (!empty($row['relatefrom']) || empty($row['module'])) continue;
 
-            VardefManager::addTemplate($row['module'], $row['bean'], 'spiceaclterritories');
+            $bean = SpiceModules::getInstance()->getBeanName($row['module']);
+
+            VardefManager::addTemplate($row['module'], $bean, 'spiceaclterritories');
         }
     }
 
