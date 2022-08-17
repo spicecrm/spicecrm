@@ -7,7 +7,7 @@
             <div class="slds-form-element slds-m-vertical--medium">
                 <div class="slds-form-element__control slds-grid">
                     <div class="slds-grow" style="min-width: 0">
-                        <system-input-file [ngModel]="spiceImport.fileData" (ngModelChange)="loadFilePreview($event)" (onRemove)="clearFile()" accept=".csv" class="slds-size--1-of-1"></system-input-file>
+                        <system-input-file [ngModel]="file" (ngModelChange)="loadFilePreview($event)" (onRemove)="clearFile()" accept=".csv" class="slds-size--1-of-1"></system-input-file>
                     </div>
                     <div *ngIf="!spiceImport.fileData" class="slds-grid slds-m-around--x-small">
                         <fieldset class="slds-form-element">
