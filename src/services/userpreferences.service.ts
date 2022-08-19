@@ -81,7 +81,7 @@ export class userpreferences {
     }
 
     public retrievePrefsFromConfigService() {
-        let prefs = this.configuration.getData('globaluserpreferences');
+        let prefs = this.configuration.getData('globaluserpreferences').global;
         this.preferences.global = _.extendOwn(this.preferences.global, prefs);
         this.unchangedPreferences.global = _.clone(prefs);
         this.defaults = _.extendOwn(this.defaults, this.configuration.getData('defaultuserpreferences'));
@@ -102,7 +102,7 @@ export class userpreferences {
     }
 
     public loadPreferences(category = 'global'): Observable<any> {
-        return of(this.configuration.getData('globaluserpreferences'));
+        return of(this.configuration.getData('globaluserpreferences')[category]);
 
         /*
         let retSubject: Subject<any> = new Subject<any>();
