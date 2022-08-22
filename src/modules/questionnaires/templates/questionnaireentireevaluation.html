@@ -74,62 +74,43 @@
                                 <table class="slds-table slds-table_col-bordered slds-table_bordered slds-table_header-hidden slds-m-top_x-small" style="x-border-bottom:0">
                                     <tbody>
 
-                                    <ng-container *ngIf="question.questiontype === 'single' || question.questiontype === 'multi' || question.questiontype === 'binary'">
-                                        <tr *ngFor="let option of options[question.id];let j=index">
-                                            <td style="width:100%">{{option.name}}</td>
-                                            <td style="min-width:120px">
-                                                <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
+                                        <ng-container *ngIf="question.questiontype === 'single' || question.questiontype === 'multi' || question.questiontype === 'binary'">
+                                            <tr *ngFor="let option of options[question.id];let j=index">
+                                                <td style="width:100%">{{option.name}}</td>
+                                                <td style="min-width:120px">
+                                                    <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
                                                         <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
                                                             <span class="slds-assistive-text">{{getEvaluationValue( question.id, option.id )}} • {{getEvaluationValueInPercent( question.id, option.id )}} %</span>
                                                         </span>
-                                                </div>
-                                            </td>
-                                            <td class="slds-text-align--right slds-text-heading_small" style="width:0">
-                                                {{getEvaluationValue( question.id, option.id )}}
-                                            </td>
-                                            <td class="slds-text-align--right slds-text-heading_small" style="width:0">
-                                                {{getEvaluationValueInPercent( question.id, option.id )}} %
-                                            </td>
-                                        </tr>
-                                    </ng-container>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-text-align--right slds-text-heading_small" style="width:0">
+                                                    {{getEvaluationValue( question.id, option.id )}}
+                                                </td>
+                                                <td class="slds-text-align--right slds-text-heading_small" style="width:0">
+                                                    {{getEvaluationValueInPercent( question.id, option.id )}} %
+                                                </td>
+                                            </tr>
+                                        </ng-container>
 
-                                    <ng-container *ngIf="questionset.questiontype === 'ratinggroup' || question.questiontype === 'rating'">
-                                        <tr *ngFor="let option of options[question.id];let j=index">
-                                            <td style="width:100%">{{option.name}}</td>
-                                            <td style="min-width:120px">
-                                                <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
+                                        <ng-container *ngIf="questionset.questiontype === 'ratinggroup' || question.questiontype === 'rating'">
+                                            <tr *ngFor="let option of options[question.id];let j=index">
+                                                <td style="width:100%">{{option.name}}</td>
+                                                <td style="min-width:120px">
+                                                    <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
                                                         <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
                                                             <span class="slds-assistive-text">{{getEvaluationValue( question.id, option.id )}} • {{getEvaluationValueInPercent( question.id, option.id )}} %</span>
                                                         </span>
-                                                </div>
-                                            </td>
-                                            <td class="slds-text-align--right slds-text-heading_small" style="width:0">
-                                                {{getEvaluationValue( question.id, option.id )}}
-                                            </td>
-                                            <td class="slds-text-align--right slds-text-heading_small" style="width:0">
-                                                {{getEvaluationValueInPercent( question.id, option.id )}} %
-                                            </td>
-                                        </tr>
-                                    </ng-container>
-
-                                    <ng-container *ngIf="question.questiontype === 'nps'">
-                                        <tr *ngFor="let option of options[question.id];let j=index">
-                                            <td style="width:100%">{{option.name}}</td>
-                                            <td style="min-width:120px">
-                                                <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
-                                                        <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
-                                                            <span class="slds-assistive-text">{{getEvaluationValue( question.id, option.id )}} • {{getEvaluationValueInPercent( question.id, option.id )}} %</span>
-                                                        </span>
-                                                </div>
-                                            </td>
-                                            <td class="slds-text-align--right slds-text-heading_small" style="width:0">
-                                                {{getEvaluationValue( question.id, option.id )}}
-                                            </td>
-                                            <td class="slds-text-align--right slds-text-heading_small" style="width:0">
-                                                {{getEvaluationValueInPercent( question.id, option.id )}} %
-                                            </td>
-                                        </tr>
-                                    </ng-container>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-text-align--right slds-text-heading_small" style="width:0">
+                                                    {{getEvaluationValue( question.id, option.id )}}
+                                                </td>
+                                                <td class="slds-text-align--right slds-text-heading_small" style="width:0">
+                                                    {{getEvaluationValueInPercent( question.id, option.id )}} %
+                                                </td>
+                                            </tr>
+                                        </ng-container>
 
                                     </tbody>
                                 </table>
