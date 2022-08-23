@@ -305,15 +305,17 @@ class SpiceDictionaryVardefs  {
     public static function addACLTerritoryFields()
     {
         $db = DBManagerFactory::getInstance();
-        $query = $db->query("SELECT * FROM spiceaclterritories_modules");
+        if($db->tableExists('spiceaclterritories_modules')) {
+            $query = $db->query("SELECT * FROM spiceaclterritories_modules");
 
-        while($row = $db->fetchByAssoc($query)) {
+            while ($row = $db->fetchByAssoc($query)) {
 
-            if (!empty($row['relatefrom']) || empty($row['module'])) continue;
+                if (!empty($row['relatefrom']) || empty($row['module'])) continue;
 
-            $bean = SpiceModules::getInstance()->getBeanName($row['module']);
+                $bean = SpiceModules::getInstance()->getBeanName($row['module']);
 
-            VardefManager::addTemplate($row['module'], $bean, 'spiceaclterritories');
+                VardefManager::addTemplate($row['module'], $bean, 'spiceaclterritories');
+            }
         }
     }
 
