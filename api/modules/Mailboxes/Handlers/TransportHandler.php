@@ -72,12 +72,12 @@ abstract class TransportHandler
             $email->addStylesheet($this->mailbox->stylesheet);
         }
 
-        $message = $this->composeEmail($email);
+        $messageId = $this->composeEmail($email);
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
 
-        return $this->dispatch($message);
+        return $this->dispatch($messageId);
     }
 
     /**
