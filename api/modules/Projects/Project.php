@@ -34,8 +34,10 @@ class Project extends SpiceBean {
             $wbsElements = $this->get_linked_beans('projectwbss');
             foreach($wbsElements as $wbs){
                 // handle planned efforts
+                if(is_string($wbs->planned_effort)) $wbs->planned_effort = intval($wbs->planned_effort);
                 $this->total_estimated_effort += $wbs->planned_effort;
                 // handle actual efforts
+                if(is_string($wbs->consumed_effort)) $wbs->consumed_effort = intval($wbs->consumed_effort);
                 $this->total_actual_effort += $wbs->consumed_effort;
             }
 
