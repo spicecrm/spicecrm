@@ -260,6 +260,7 @@ class SpiceDictionaryVardefs  {
                 }
                 $vardefs[$dbDict['name']]['dictionaryname'] = $dbDict['name'];
                 $vardefs[$dbDict['name']]['type'] = $dbDict['type'];
+                $vardefs[$dbDict['name']]['required'] = $dbDict['required'];
 
                 // load indices
                 if(!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
