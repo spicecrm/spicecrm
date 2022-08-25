@@ -11,8 +11,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {Five9ToolbarIndicator} from "./components/five9toolbarindicator";
-import /*embed*/ {Five9Preferences} from "./components/five9preferences";
+import {Five9ToolbarIndicator} from "./components/five9toolbarindicator";
+import {Five9Preferences} from "./components/five9preferences";
 
 /**
  * a module that handles integration to the five9 Dialer and VOIP System

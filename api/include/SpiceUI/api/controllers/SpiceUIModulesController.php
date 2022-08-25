@@ -137,6 +137,7 @@ class SpiceUIModulesController
                         'ftsactivities' => SpiceFTSActivityHandler::checkActivities($module['module']),
                         'ftsgeo' => SpiceFTSHandler::checkGeo($module['module']),
                         'ftsaggregates' => $ftsBeanHandler->getAggregates(),
+                        'ftssortable' => $ftsBeanHandler->getSortable(),
                         'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
                         'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module'])
                     ];
@@ -181,10 +182,11 @@ class SpiceUIModulesController
         $modules = self::getModules();
         foreach ($modules as $module => $moduleDetails) {
             $seed = BeanFactory::getBean($module);
-            foreach($seed->field_name_map as $fieldname => $fielddata){
+            foreach($seed->field_defs as $fieldname => $fielddata){
                 $retArray[$module][$fieldname] = $fielddata;
                 switch($fielddata['type']){
                     case 'parent':
+                    case 'linkedparent':
                         $parentmodules = [];
                         $relationships = $seed->db->query("SELECT lhs_module FROM relationships WHERE rhs_module='{$module}' AND rhs_key='{$fielddata['id_name']}' AND deleted=0");
                         while($relationship = $seed->db->fetchByAssoc($relationships)){
@@ -257,6 +259,28 @@ class SpiceUIModulesController
         return $retArray;
     }
 
+
+    /**
+     * loads all the sysui roles
+     *
+     * @return array
+     */
+    static function getSysRolesAll()
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $retArray = [];
+
+        # load all the global roles:
+        $roles = $db->query( "SELECT sysuiroles.*, 0 defaultrole, 'global' scope  FROM sysuiroles ORDER BY NAME" );
+        while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+
+        // load all the custom roles:
+        $roles = $db->query( "SELECT sysuicustomroles.*, 0 defaultrole, 'custom' scope FROM sysuicustomroles ORDER BY NAME" );
+        while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+
+        return array_values( $retArray );
+    }
 
     /**
      * loadsand combines the sysui roles

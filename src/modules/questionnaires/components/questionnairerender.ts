@@ -33,8 +33,9 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     @Input() public showProgress = false;
     @Input() public hideFinishedQuestions = false;
     @Input() public inModal = true;
-    @Input() public imageWidthQuestion = 200;
-    @Input() public imageWidthOption = 200;
+    @Input() public imageWidthQuestion: number;
+    @Input() public imageWidthOption: number;
+    @Input() public size: string;
 
     @Output() public isDirty$ = new BehaviorSubject( false );
     @Output() public isSaving$ = new BehaviorSubject( false );
@@ -55,6 +56,12 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     public ngOnInit() {
         this.qp.editMode = this.editMode;
         this.qp.inModal = this.inModal;
+
+        if ( this.imageWidthQuestion ) this.qp.imageWidthQuestion = this.imageWidthQuestion;
+        if ( this.imageWidthOption ) this.qp.imageWidthOption = this.imageWidthOption;
+
+        if ( this.size === 'small' ) this.qp.sizeSmall = true;
+
         if ( this.participationId ) this.qp.init_byParticipation( this.participationId );
         else if ( this.parentId && this.parentType ) this.qp.init_byParent( this.parentId, this.parentType, this.questionnaireId );
         else if ( this.questionnaireId ) this.qp.init_byQuestionnaire( this.questionnaireId );

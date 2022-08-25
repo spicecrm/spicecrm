@@ -12,7 +12,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {PiplContainer} from "./components/piplcontainer";
+import {PiplContainer} from "./components/piplcontainer";
 
 @NgModule({
     imports: [

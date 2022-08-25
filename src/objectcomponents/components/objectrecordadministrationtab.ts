@@ -18,7 +18,8 @@ export class ObjectRecordAdministrationTab implements OnInit {
     public componentconfig: any = {};
     public expanded: boolean = true;
     public hasFieldAssignedUser = false;
-    // public territorymanaged: boolean = false;
+    public hasFieldAssignedOrgunit = false;
+    public linkOrgunitToAssignedUser = true;
 
     public fields: any = {
         spiceacl_primary_territory: {
@@ -33,21 +34,26 @@ export class ObjectRecordAdministrationTab implements OnInit {
             field: 'spiceacl_users_hash',
             fieldconfig: {}
         },
-        assigned_user_name: {
-            field: 'assigned_user_name',
+        assigned_user: {
+            field: 'assigned_user',
+            fieldconfig: {fieldtype:'linked'}
+        },
+        assigned_orgunit: {
+            field: 'assigned_orgunit',
             fieldconfig: {}
         },
-        created_by_name: {
-            field: 'created_by_name',
+        created_by_user: {
+            field: 'created_by_user',
             fieldconfig: {fieldtype: 'modifiedby', field_date: 'date_entered'}
         },
-        modified_by_name: {
-            field: 'modified_by_name',
+        modified_by_user: {
+            field: 'modified_by_user',
             fieldconfig: {fieldtype: 'modifiedby', field_date: 'date_modified'}
         }
     };
 
-    constructor(public activatedRoute: ActivatedRoute, public metadata: metadata, public model: model, public language: language, public territories: territories) {
+    constructor(public metadata: metadata, public model: model, public territories: territories) {
+
     }
 
     public ngOnInit() {
@@ -55,16 +61,33 @@ export class ObjectRecordAdministrationTab implements OnInit {
             this.expanded = false;
         }
 
-        /*
-        let fields = this.metadata.getModuleFields(this.model.module)
-        {
-            if (fields.spiceacl_primary_territory) {
-                this.territorymanaged = true;
-            }
+        if (this.componentconfig.unlinkorgunit) {
+            this.linkOrgunitToAssignedUser = !this.componentconfig.unlinkorgunit;
         }
-        */
 
-        this.hasFieldAssignedUser = this.metadata.hasField(this.model.module, 'assigned_user_name');
+        // get what we have in terms of assignment
+        this.hasFieldAssignedUser = this.metadata.hasField(this.model.module, 'assigned_user_id');
+        this.hasFieldAssignedOrgunit = this.metadata.hasField(this.model.module, 'assigned_orgunit_id');
+
+        // if we have an orgunit subscribe to the changes of the assigned user
+        if(this.hasFieldAssignedOrgunit && this.linkOrgunitToAssignedUser) {
+            this.model.data$.subscribe({
+                next: (modeldata) => {
+                    if (!!this.model.getField('assigned_user_id')) {
+                        this.model._fields_stati.assigned_orgunit.readonly = true;
+                        // check if we have another orgunit and if there is a change update it
+                        if(this.model.getField('assigned_orgunit_id') != this.model.getField('assigned_user').orgunit_id){
+                            this.model.setFields({
+                                'assigned_orgunit_id': this.model.getField('assigned_user').orgunit_id,
+                                'assigned_orgunit': this.model.getField('assigned_user').orgunit
+                            }, true)
+                        }
+                    } else {
+                        this.model._fields_stati.assigned_orgunit.readonly = false;
+                    }
+                }
+            })
+        }
     }
 
     /**

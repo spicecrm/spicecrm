@@ -45,7 +45,7 @@ export class fieldLookupRecent implements OnChanges {
     public setCurrentUser(e: MouseEvent){
         // stop the event
         e.preventDefault();
-        this.selectedObject.emit({id: this.session.authData.userId, text: this.session.authData.display_name});
+        this.selectedObject.emit({id: this.session.authData.userId, text: this.session.authData.user.full_name, data: this.session.authData.user});
     }
 
     /**

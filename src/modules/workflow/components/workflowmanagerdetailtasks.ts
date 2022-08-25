@@ -1,14 +1,15 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    Component,
-    Input,
-    OnChanges
-} from '@angular/core';
+import {Component, Injector, Input} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
-import {language} from '../../../services/language.service';
+import {modal} from '../../../services/modal.service';
+import {WorkflowManagerService} from '../services/workflowmanager.service';
+import {WorkflowTaskDefI, WorkflowTaskTypeI} from '../interfaces/workflow.interfaces';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {libloader} from '../../../services/libloader.service';
+import {WorkflowDiagramService} from "../services/workflowdiagram.service";
 
 /**
  * renders the task details view in the workflow manager
@@ -17,79 +18,76 @@ import {language} from '../../../services/language.service';
     selector: 'workflow-manager-detail-tasks',
     templateUrl: '../templates/workflowmanagerdetailtasks.html',
 })
-export class WorkflowManagerDetailTasks implements OnChanges {
+export class WorkflowManagerDetailTasks {
 
     /**
-     * the tasks for the selected workflow
+     * holds the selected task
      */
-    @Input() public tasks: any[] = [];
+    public selectedTask: any;
 
-    /**
-     * the curently selectd task
-     */
-    public selectedTask: string = '';
-
-    constructor(public model: model, public view: view, public language: language) {
+    constructor(public modal: modal,
+                public model: model,
+                public view: view,
+                public injector: Injector,
+                public libLoader: libloader,
+                public workflowDiagramService: WorkflowDiagramService,
+                public workflowManagerService: WorkflowManagerService) {
     }
 
     /**
-     * in case of input changes (other workflow selected) this selects the first task if the workflow has any tasks
+     * @return the workflow tasks from model data
      */
-    public ngOnChanges() {
-        this.sortTasksBySequence();
-
-        // select the first task
-        if (this.tasks.length > 0) {
-            this.selectedTask = this.tasks[0].id;
-        } else {
-            this.selectedTask = '';
-        }
-
+    get tasks() {
+        return this.model.data.tasks ?? [];
     }
 
     /**
-     * sorts the tasks by the sequence
+     * set the workflow data tasks
+     * update the workflow manager service tasks
+     * sort the tasks and set the selected task
+     * @param data
      */
-    public sortTasksBySequence() {
-        if (this.tasks) {
-            this.tasks.sort((a, b) => {
-                return a.sequence > b.sequence ? 1 : -1;
-            });
-        }
+    @Input()
+    set tasks(data: WorkflowTaskDefI[]) {
+        this.model.data.tasks = data;
+        this.workflowManagerService.sortTasksBySequence(data);
     }
 
     /**
      * adds a task
+     * @param sourceTask
      */
-    public addTask() {
-        let newGuid = this.model.utils.generateGuid();
-        this.tasks.push({
-            id: newGuid,
-            workflowdefinition_id: this.model.id,
-            deleted: 0,
-            sequence: this.getNextSequence(),
-            name: 'new Task',
-            tasktype: 'task',
-            decisions: [],
-            systemactions: [],
-            primarytask: this.tasks.length == 0 ? true : false
+    public addTask(sourceTask: WorkflowTaskDefI) {
+
+        const filterTypes = this.workflowManagerService.getTaskAvailableTypes(sourceTask);
+
+        this.workflowManagerService.promptTaskType(filterTypes).subscribe((type: WorkflowTaskTypeI) => {
+            if (!type) return;
+
+            const newTask = this.workflowManagerService.generateNewTask(type.id);
+            this.tasks = [...this.tasks, newTask];
+            this.workflowManagerService.appendTaskNextTask(sourceTask, newTask);
+            this.selectedTask = newTask;
         });
-        this.selectedTask = newGuid;
     }
 
     /**
-     * helper function that loops over the tasks and gets the next available sequence number in an incremtne of 10
+     * set the selected task
+     * @param task
      */
-    public getNextSequence() {
-        let highestSequence = 0;
-
-        for (let task of this.tasks) {
-            if (task.deleted != 1 && parseInt(task.sequence, 10) > highestSequence) {
-                highestSequence = parseInt(task.sequence, 10);
-            }
-        }
-
-        return highestSequence + (10 - highestSequence % 10);
+    public setSelectedTask(task) {
+        this.selectedTask = task;
     }
 
+    /**
+     * rearrange the tasks by sequence
+     * @param event
+     */
+    public onDrop(event: CdkDragDrop<any>) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        this.tasks = event.container.data.map((task, index) => {
+            task.sequence = (index + 1) * 10;
+            return task;
+        });
+    }
 }

@@ -36,6 +36,9 @@ export class questionnaireParticipationService {
     public participationId: string;
 
     public imageWidthQuestion = 200;
+    public imageWidthOption = 200;
+
+    public sizeSmall = false;
 
     public inModal = true;
 
@@ -124,6 +127,11 @@ export class questionnaireParticipationService {
 
     public answersChanged$ = new EventEmitter();
 
+    /**
+     * Flag to tell all the question render components to show an error in case of field invalidities (missing anwers).
+     */
+    public showInvalidities = false;
+
     constructor( public backend: backend, public toast: toast, public language: language, public helper: helper, public broadcast: broadcast ) { }
 
     public init_byParent( parentId: string, parentType: string, questionnaireId: string = null ): Observable<any> {
@@ -169,6 +177,8 @@ export class questionnaireParticipationService {
         this.answers[questionId].answer_value = value;
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( questionId, backupForNetworkError );
         else this.isDirty = true;
+
+        this.questionsMeta[questionId].finished = this.isQuestionFinished( this.questions[questionId] );
 
         this.answersChanged$.emit();
 
@@ -238,9 +248,8 @@ export class questionnaireParticipationService {
      */
     public clickAnswerOption( optionId: string, event?: any ): boolean {
 
-        if(event) {
-            event.stopPropagation();
-        }
+        event?.stopPropagation();
+
         let question = this.questionoptions[optionId].parentQuestion;
 
         // If the edit mode is 'off' or 'postview', a input/change is not allowed. --> Do nothing and return false.
@@ -279,13 +288,26 @@ export class questionnaireParticipationService {
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( question.id, backupForNetworkError );
         else this.isDirty = true;
 
+        this.questionsMeta[question.id].finished = this.isQuestionFinished(question);
+
         this.answersChanged$.emit();
 
         return true;
 
     }
 
-    // toDo, to implement, instead of code in supportalquestionnaire.ts
+    /**
+     * Unset all options of a question.
+     */
+    public unsetAnswerOptions( questionId: string ): void {
+        Object.entries( this.answers[questionId].options ).forEach( ( [key, value] ) => {
+            this.answers[questionId].options[key] = false;
+        });
+        this.questionsMeta[questionId].finished = false;
+        this.answersChanged$.emit();
+    }
+
+        // toDo, to implement, instead of code in supportalquestionnaire.ts
     // public setTimer( text: string, warning: boolean ) { }
 
     /**
@@ -552,69 +574,81 @@ export class questionnaireParticipationService {
     }
 
     /**
+     * Determines the number of finished questions of the whole questionnaire.
+     */
+    public determineNumOfFinishedQuestions(): number {
+        let counter = 0;
+        for ( let questionset of this.questionsetsArray ) {
+            counter += this.determineNumOfFinishedQuestionsInQuestionset( questionset.id );
+        }
+        return counter;
+    }
+
+    /**
      * Determines the number of finished questions of a specific question set.
      * @param questionsetId ID of the question Set.
      */
     public determineNumOfFinishedQuestionsInQuestionset( questionsetId: string ): number {
         let numberFinishedQuestions = 0;
-        let finished;
         for ( let question of this.questionsArray[questionsetId] ) {
-            switch( question.questiontype ) {
-                case 'text':
-                case 'nps':
-                    if ( this.answers[question.id].answer_value && this.answers[question.id].answer_value != '' ) {
-                        this.questionsMeta[question.id].finished = true;
-                        numberFinishedQuestions++;
-                    } else this.questionsMeta[question.id].finished = false;
-                    break;
-                case 'binary':
-                case 'single':
-                case 'multi':
-                    let numberSelectedOptions = 0;
-                    finished = false;
-                    for ( let optionId in this.answers[question.id].options ) {
-                        if ( this.answers[question.id].options[optionId] === true ) {
-                            numberSelectedOptions++;
-                            if ( question.questiontype !== 'multi'
-                                || ( !this.questionsMeta[question.id].parameter.minAnswers )
-                                || ( numberSelectedOptions >= this.questionsMeta[question.id].parameter.minAnswers )) {
-                                finished = true;
-                                break;
-                            }
-                        }
-                    }
-                    if ( finished ) numberFinishedQuestions++;
-                    this.questionsMeta[question.id].finished = finished;
-                    break;
-                case 'ist':
-                    finished = true;
-                    for ( let optionId in this.answers[question.id].options ) {
-                        if ( this.answers[question.id].options[optionId] === false ) {
-                            finished = false;
-                            break;
-                        }
-                    }
-                    this.questionsMeta[question.id].finished = finished;
-                    if ( finished ) numberFinishedQuestions++;
-                    break;
-                case 'rating':
-                case 'ratinggroup':
-                    finished = false;
-                    for ( let optionId in this.answers[question.id].options ) {
-                        if ( this.answers[question.id].options[optionId] === true ) {
-                            finished = true;
-                            break;
-                        }
-                    }
-                    this.questionsMeta[question.id].finished = finished;
-                    if ( finished ) numberFinishedQuestions++;
-                    break;
-            }
+            this.questionsMeta[question.id].finished = this.isQuestionFinished( question );
+            numberFinishedQuestions += ( this.questionsMeta[question.id].finished ? 1:0 );
         }
         this.numOfFinishedQuestionsInQuestionset[questionsetId] = numberFinishedQuestions;
         this.percentOfFinishedQuestionsInQuestionset[questionsetId] = numberFinishedQuestions/this.questionsArray[questionsetId].length*100;
         this.allQuestionsOfQuestionsetFinished[questionsetId] = ( numberFinishedQuestions === this.questionsArray[questionsetId].length );
         return numberFinishedQuestions;
+    }
+
+    /**
+     * Is a specific question answered fully?
+     * ToDo: Mind property answer_required.
+     * @param question
+     */
+    public isQuestionFinished( question: any ): boolean {
+        let finished;
+        switch( question.questiontype ) {
+            case 'text':
+            case 'nps':
+                return this.answers[question.id].answer_value && this.answers[question.id].answer_value != '';
+            case 'binary':
+            case 'single':
+            case 'multi':
+                let numberSelectedOptions = 0;
+                let minAnswers = 0;
+                if ( this.questionsMeta[question.id].parameter.minAnswers ) minAnswers = Number( this.questionsMeta[question.id].parameter.minAnswers );
+                if ( minAnswers === 0 ) minAnswers = 1;
+                finished = false;
+                for ( let optionId in this.answers[question.id].options ) {
+                    if ( this.answers[question.id].options[optionId] === true ) {
+                        numberSelectedOptions++;
+                        if ( question.questiontype !== 'multi' || numberSelectedOptions >= minAnswers ) {
+                            finished = true;
+                            break;
+                        }
+                    }
+                }
+                return finished;
+            case 'ist':
+                finished = true;
+                for ( let optionId in this.answers[question.id].options ) {
+                    if ( this.answers[question.id].options[optionId] === false ) {
+                        finished = false;
+                        break;
+                    }
+                }
+                return finished;
+            case 'rating':
+            case 'ratinggroup':
+                finished = false;
+                for ( let optionId in this.answers[question.id].options ) {
+                    if ( this.answers[question.id].options[optionId] === true ) {
+                        finished = true;
+                        break;
+                    }
+                }
+                return finished;
+        }
     }
 
     /**
@@ -661,6 +695,23 @@ export class questionnaireParticipationService {
         this.answers = {};
         this.initAnswers();
         this.insertLoadedAnswers( this.answersBackup );
+    }
+
+    /**
+     * Should the header of a question be shown or not? (by QuestionRenderHeader)
+     * @param question
+     */
+    public showQuestionHeader( question: any ): boolean {
+        return !!( question.questiontext || question.image_id );
+    }
+
+    /**
+     * Are there any unanswered questions that have to be answered?
+     */
+    public hasUnunsweredQuestions(): boolean {
+        return Object.keys( this.questionsMeta ).some(
+            questionId => this.questions[questionId].answer_required && this.questionsMeta[questionId].finished === false
+        );
     }
 
 }

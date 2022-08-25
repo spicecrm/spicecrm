@@ -12,7 +12,7 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
 
-import /*embed*/ {fieldSAPAddress} from "./fields/fieldsapaddress";
+import {fieldSAPAddress} from "./fields/fieldsapaddress";
 
 
 @NgModule({

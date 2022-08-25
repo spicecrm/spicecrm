@@ -1,23 +1,36 @@
-<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<div style="position:relative">
-    <div style="position:absolute;right:0px;top:-21px;">
-        <!--button class="slds-button slds-button--icon" (click)="print()">
-            <system-custom-icon size="x-small" icon="print"></system-custom-icon>
-        </button-->
-        <iframe #printframe [src]="sanitizedValue" style="width:0;height:0;border:0"></iframe>
-        <button *ngIf="isEditable() && !isEditMode()" class="slds-button slds-button--icon" (click)="setEditMode()">
-            <system-button-icon [icon]="'edit'"></system-button-icon>
-        </button>
-        <button *ngIf="isEditMode()" class="slds-button slds-button--icon" (click)="expand()" style="z-index: 1">
-            <system-button-icon [icon]="'expand'"></system-button-icon>
-        </button>
+<div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+    <div>
+        <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
     </div>
+    <button *ngIf="!isEditMode() && isEditable()" class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button" (click)="setEditMode()">
+        <system-button-icon [icon]="'edit'"></system-button-icon>
+    </button>
 </div>
-<div *ngIf="!isEditMode()" class="slds-scrollable--y" style="max-height: 300px;" [ngClass]="fielddisplayclass">
-    <div *ngIf="!asiframe" class="slds-size--1-of-1 html-text" [innerHTML]="sanitized.bypassSecurityTrustHtml(value)"></div>
-    <iframe *ngIf="asiframe" [src]="sanitizedValue" style="resize: vertical;" width="100%" frameborder="0" height="100%" seamless="true" sandbox></iframe>
-</div>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
+    <div *ngIf="!fieldconfig.asiframe" class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="parsedHtml" style="white-space: normal; resize: vertical; overflow-y: auto;" (click)="$event.preventDefault()"></div>
+    <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
+</field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <field-html-editor [fieldid]="fieldid" [fieldvalue]="value" [fieldconfig]="fieldconfig" [useStylesheets]="useStylesheets" [useStylesheetSwitcher]="useStylesheetSwitcher" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></field-html-editor>
+    <system-html-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
+        <li *ngIf="fieldconfig?.useSignature">
+            <div class="slds-form-element slds-grid">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_SIGNATURE"></system-label>:
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select [(ngModel)]="selectedSignatureId" (ngModelChange)="renderSelectedSignature()" [disabled]="signatures?.length == 0" class="slds-select">
+                            <option value="">
+                                <system-label label="LBL_NONE"></system-label>
+                            </option>
+                            <option *ngFor="let signature of signatures" [value]="signature.id">
+                                <system-label [label]="signature.label"></system-label>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </system-html-editor>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

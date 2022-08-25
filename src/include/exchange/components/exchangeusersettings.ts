@@ -7,6 +7,7 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {configurationService} from '../../../services/configuration.service';
+import {toast} from "../../../services/toast.service";
 
 /**
  * @ignore
@@ -45,8 +46,21 @@ export class ExchangeUserSettings implements OnInit {
      * the config for the user
      */
     public userconfig: any[] = [];
+    /**
+     * used to call the proper service route
+     * @private
+     */
+    private serviceName: 'msgraph' | 'spicecrmexchange' = 'spicecrmexchange';
 
-    constructor(public metadata: metadata, public model: model, public backend: backend, public configuration: configurationService) {
+    constructor(public metadata: metadata,
+                public model: model,
+                public toast: toast,
+                public backend: backend,
+                public configuration: configurationService) {
+        if (this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
+            this.serviceName = 'msgraph';
+        }
+
         let ewsconfig = this.configuration.getCapabilityConfig('ewsconfig');
         if (ewsconfig && ewsconfig.subscriptiontimeout) {
             this.subscriptiontimeout = parseInt(ewsconfig.subscriptiontimeout, 10);
@@ -64,7 +78,7 @@ export class ExchangeUserSettings implements OnInit {
      * loads the config from the backend
      */
     public getConfig() {
-        this.backend.getRequest(`spicecrmexchange/config/${this.model.id}`).subscribe(response => {
+        this.backend.getRequest(`${this.serviceName}/config/${this.model.id}`).subscribe(response => {
             this.modules = response.modules;
             this.userconfig = response.userconfig;
             this.subscriptions = response.subscriptions;
@@ -114,24 +128,41 @@ export class ExchangeUserSettings implements OnInit {
      * toggles the sync for the user
      *
      * @param sysmoduleid
-     * @param e
+     * @param value
+     * @param checkbox
      */
-    public toggleActive(sysmoduleid: string, e: MouseEvent) {
-        if (e) {
-            this.backend.postRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
-                this.userconfig = res.userconfig;
-                this.subscriptions = res.subscriptions;
+    public toggleActive(sysmoduleid: string, value, checkbox: any) {
 
-                // set the user config
-                this.configuration.setData('exchangeuserconfig', this.userconfig);
+        if (value) {
+            this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`).subscribe({
+                next: res => {
+                    this.userconfig = res.userconfig;
+                    this.subscriptions = res.subscriptions;
+
+                    // set the user config
+                    this.configuration.setData('exchangeuserconfig', this.userconfig);
+                    this.toast.sendToast('LBL_ACTIVATED', 'success');
+
+                },
+                error: err => {
+                    this.toast.sendToast(err.error.error.message, 'error');
+                    checkbox.writeValue(false);
+                }
             });
         } else {
-            this.backend.deleteRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
-                this.userconfig = res.userconfig;
-                this.subscriptions = res.subscriptions;
+            this.backend.deleteRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`).subscribe({
+                next: res => {
+                    this.userconfig = res.userconfig;
+                    this.subscriptions = res.subscriptions;
 
-                // set the user config
-                this.configuration.setData('exchangeuserconfig', this.userconfig);
+                    // set the user config
+                    this.configuration.setData('exchangeuserconfig', this.userconfig);
+                    this.toast.sendToast('LBL_DEACTIVATED', 'success');
+                },
+                error: err => {
+                    this.toast.sendToast(err.error.error.message, 'error');
+                    checkbox.writeValue(true);
+                }
             });
         }
     }

@@ -21,6 +21,7 @@ export class SystemCurrency implements OnInit {
     public iso: string = '';
     public name: string = '';
     public symbol: string = '';
+    public conversion_rate: string = '';
 
     constructor(
         public metadata: metadata,
@@ -38,13 +39,14 @@ export class SystemCurrency implements OnInit {
      */
     public ngOnInit() {
         for (let currency of this.currencies) {
-            if(currency.id == -99) {
+            if (currency.id == -99) {
                 this.defaultCurrency = currency;
             }
         }
         this.iso = this.defaultCurrency.iso;
         this.name = this.defaultCurrency.name;
         this.symbol = this.defaultCurrency.symbol;
+        this.conversion_rate = this.defaultCurrency.conversion_rate;
     }
 
     /**
@@ -75,15 +77,17 @@ export class SystemCurrency implements OnInit {
             {name: 'default_currency_iso4217', value: this.iso},
             {name: 'default_currency_name', value: this.name},
             {name: 'default_currency_symbol', value: this.symbol},
+            {name: 'default_currency_conversion_rate', value: this.conversion_rate},
         ];
-        this.backend.postRequest('admin/writesettings', {}, body).subscribe( response => {
-            if(!response.status) {
+        this.backend.postRequest('admin/writesettings', {}, body).subscribe(response => {
+            if (!response.status) {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
             } else {
                 this.defaultCurrency = {
                     iso: this.iso,
                     name: this.name,
-                    symbol: this.symbol
+                    symbol: this.symbol,
+                    conversion_rate: this.conversion_rate
                 };
 
             }

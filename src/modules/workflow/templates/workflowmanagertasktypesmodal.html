@@ -1,0 +1,19 @@
+<system-modal>
+    <system-modal-header (close)="cancel()"><system-label label="LBL_TASK_TYPE"></system-label></system-modal-header>
+    <system-modal-content>
+        <fieldset class="slds-form-element">
+            <legend class="slds-form-element__legend slds-form-element__label">
+                <system-label label="MSG_SELECT_TASK_TYPE"></system-label>
+            </legend>
+            <div class="slds-form-element__control">
+                <system-input-radio *ngFor="let type of types; trackBy: trackByFn" [name]="radioName" [value]="type" (dblclick)="confirm()" [(ngModel)]="selectedItem">
+                    {{type.name}}
+                </system-input-radio>
+            </div>
+        </fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="confirm()" [disabled]="!selectedItem"><system-label label="LBL_CONFIRM"></system-label></button>
+    </system-modal-footer>
+</system-modal>

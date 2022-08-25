@@ -1,0 +1,46 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-not-authorized *ngIf="!isAuthorized; else fieldContainer"></field-not-authorized>
+<ng-template #fieldContainer>
+    <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+        <div class="slds-grid slds-grid--vertical-align-center" >
+            <system-icon *ngIf="displayicon" [module]="relateType" size="x-small" divClass="slds-align--absolute-center slds-p-right--xx-small"></system-icon>
+            <span *ngIf="!fieldconfig.fieldset" system-model-popover [module]="relateType" [id]="id">{{value}}</span>
+            <span *ngIf="fieldconfig.fieldset && relData">
+                <field-linked-details [fieldset]="fieldconfig.fieldset" [module]="fielddefs.module" [data]="relData"></field-linked-details>
+            </span>
+        </div>
+    </field-generic-display>
+    <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
+        <div class="slds-combobox_container">
+            <div class="slds-form-element slds-lookup">
+                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click " [ngClass]="{'slds-is-open': relateSearchOpen}" role="combobox">
+                    <div *ngIf="id" class="slds-form-element__control">
+                        <div class="slds-pill_container">
+                          <span class="slds-pill slds-size--1-of-1">
+                            <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                              <system-icon [module]="relateType" [size]="'small'"></system-icon>
+                            </span>
+                            <span *ngIf="!fieldconfig.fieldset" class="slds-pill__label">{{value}}</span>
+                            <span *ngIf="fieldconfig.fieldset && relData" class="slds-pill__label" >
+                                <field-linked-details [fieldset]="fieldconfig.fieldset" [module]="fielddefs.module" [data]="relData"></field-linked-details>
+                            </span>
+                            <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearField()">
+                              <system-button-icon [icon]="'close'"></system-button-icon>
+                            </button>
+                          </span>
+                        </div>
+                    </div>
+                    <div *ngIf="!model.data[relateIdField]" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" [ngClass]="getFieldClass()">
+                        <input #focus [disabled]="disabled" type="text" class="slds-input slds-combobox__input" [(ngModel)]="relateSearchTerm" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="placeholder" [autocomplete]="fieldid" role="combobox"/>
+                        <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon icon="search"></system-button-icon></button>
+                    </div>
+                    <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                        <field-lookup-recent *ngIf="relateSearchTerm === '' && !fieldconfig.modulefilter && !relatedfilterrequired" [module]="relateType" (selectedObject)="setRelated($event)"></field-lookup-recent>
+                        <field-lookup-search *ngIf="relateSearchTerm !== '' || fieldconfig.modulefilter || relatedfilterrequired" [module]="relateType" [modulefilter]="fieldconfig.modulefilter" [relatefilter]="relateFilter" [relateId]="relateFilter?.id" [disableadd]="disableadd" (selectedObject)="setRelated($event)" (searchWithModal)="searchWithModal()" [searchterm]="relateSearchTerm"></field-lookup-search>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <field-messages [fieldname]="fieldname"></field-messages>
+    </div>
+</ng-template>

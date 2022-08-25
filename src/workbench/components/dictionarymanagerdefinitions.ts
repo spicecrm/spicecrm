@@ -48,12 +48,14 @@ export class DictionaryManagerDefinitions {
     get dictionarydefinitions(): DictionaryDefinition[] {
 
         return this.dictionarymanager.dictionarydefinitions.filter(d => {
+            // no empty name (workaround for now)
+            if(!d.name) return false;
             // no deleted records
             if(d.deleted != 0) return false;
             // if we have a type filter apply it
             if(this.definitionfiltertype && d.sysdictionary_type != this.definitionfiltertype) return false;
-            // if we have aterm filter apply it
-            if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0 || d.tablename.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0)) return false;
+            // if we have a term filter apply it
+            if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0 || (d.tablename && d.tablename.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0))) return false;
             // otherwise list it
             return true;
         }).sort((a, b) => a.name.localeCompare(b.name));
@@ -69,9 +71,10 @@ export class DictionaryManagerDefinitions {
      *
      * @param definitionId
      */
-    public setCurrentDictionaryDefintion(definitionId: string) {
+    public setCurrentDictionaryDefinition(definitionId: string, scope: 'c' | 'g') {
         if(definitionId != this.dictionarymanager.currentDictionaryDefinition) {
             this.dictionarymanager.currentDictionaryDefinition = definitionId;
+            this.dictionarymanager.currentDictionaryScope = scope;
             this.dictionarymanager.currentDictionaryItem = null;
             this.dictionarymanager.currentDictionaryIndex = null;
             this.dictionarymanager.currentDictionaryRelationship = null;

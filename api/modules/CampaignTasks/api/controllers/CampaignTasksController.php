@@ -9,7 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\CampaignTasks\CampaignTask;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -36,7 +36,7 @@ class CampaignTasksController
             $getParams['limit'] ?: -1);
 
         // get a KREST Handler
-        $KRESTModuleHandler = new ModuleHandler();
+        $KRESTModuleHandler = new SpiceBeanHandler();
 
         // empty items structure for the return
         $items = [];
@@ -196,7 +196,11 @@ class CampaignTasksController
             throw new NotFoundException('CampaignTask not found');
         }
 
-        $mailMergeResult = $campaignTask->mailMerge($getParam['start'], $getParam['limit']);
+        $mailMergeSubject = $campaignTask->email_subject;
+        $mailMergeBody = $campaignTask->email_body;
+
+
+        $mailMergeResult = $campaignTask->mailMerge($getParam['start'], $getParam['limit'], $mailMergeSubject, $mailMergeBody);
         // generate the PDF
         return $res->withJson(['content' => base64_encode($mailMergeResult['pdfcontent']), 'inactiveCount' => $mailMergeResult['inactiveCount']]);
     }

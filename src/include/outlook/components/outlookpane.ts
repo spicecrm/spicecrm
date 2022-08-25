@@ -4,11 +4,15 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
-import {GroupwareService} from "../../../include/groupware/services/groupware.service";
+import {GroupwareService} from "../../groupware/services/groupware.service";
 import {session} from "../../../services/session.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
+import {OutlookGroupware} from "../services/outlookgroupware.service";
+import {OutlookLoginPane} from "./outlookloginpane";
+import {SystemDynamicRouteInterceptor} from "../../../systemcomponents/components/systemdynamicrouteinterceptor";
+import {loginCheck} from "../../../services/login.service";
 
 declare var Office: any;
 
@@ -19,7 +23,11 @@ declare var Office: any;
  */
 @Component({
     selector: 'outlook-pane',
-    templateUrl: '../templates/outlookpane.html'
+    templateUrl: '../templates/outlookpane.html',
+    providers: [
+        {provide: GroupwareService, useClass: OutlookGroupware},
+        OutlookConfiguration,
+        model]
 })
 export class OutlookPane implements OnInit {
 
@@ -32,11 +40,31 @@ export class OutlookPane implements OnInit {
         public metadata: metadata,
         public broadcast: broadcast
     ) {
+        this.adjustRoutes();
         // ToDo: implement pinned pane that relaod when item is changed
         Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, () => {
             this.itemChanged();
         });
 
+    }
+
+    /**
+     * adjust the login and empty route to match gsuite module
+     * @private
+     */
+    private adjustRoutes() {
+
+        this.router.config.some(route => {
+
+            if (route.path == 'login') {
+                route.component = OutlookLoginPane;
+            }
+            if (!route.path) {
+                route.redirectTo = undefined;
+                route.component = SystemDynamicRouteInterceptor;
+                route.canActivate = [loginCheck];
+            }
+        });
     }
 
     /**

@@ -9,7 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -35,7 +35,7 @@ class UsersController
         if (!empty($email1)) {
             $q = "select id from users where id in ( SELECT  er.bean_id AS id FROM email_addr_bean_rel er,
                 email_addresses ea WHERE ea.id = er.email_address_id
-                AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote($email1)}') )";
+                AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = 'Users' AND email_address_caps IN ('{$db->quote(strtoupper($email1))}') )";
 
             $row = $db->fetchByAssoc($db->query($q));
 
@@ -47,7 +47,7 @@ class UsersController
                 throw (new BadRequestException("Invalid email format."))->setErrorCode('invalidEmailFormat');
         }
 
-        $KRESTModuleHandler = new ModuleHandler();
+        $KRESTModuleHandler = new SpiceBeanHandler();
         $beanResponse = $KRESTModuleHandler->add_bean("Users", $args['id'], $params);
 
         return $res->withJson($beanResponse);
@@ -154,7 +154,7 @@ class UsersController
             $addWhere = "";
             // check if assigned_user_id is defined
             if (isset($tmpBean->field_defs['assigned_user_id'])) {
-                $q = "SELECT count(0) totalcount from {$tmpBean->table_name} WHERE assigned_user_id = '{$userid}' AND deleted=0";
+                $q = "SELECT count(0) totalcount from {$tmpBean->_tablename} WHERE assigned_user_id = '{$userid}' AND deleted=0";
                 if (!empty($filterid)) {
                     $filter = new SysModuleFilters();
                     $addWhere .= " " . $filter->generateWhereClauseForFilterId($filterid);
@@ -188,7 +188,7 @@ class UsersController
         $records = [];
         if ($tmpBean = BeanFactory::getBean($module)) {
             $addWhere = "";
-            $q = "SELECT id from {$tmpBean->table_name} WHERE assigned_user_id = '{$userid}' AND deleted=0";
+            $q = "SELECT id from {$tmpBean->_tablename} WHERE assigned_user_id = '{$userid}' AND deleted=0";
             if (!empty($filterid)) {
                 $filter = new SysModuleFilters();
                 $addWhere .= " " . $filter->generateWhereClauseForFilterId($filterid);
@@ -250,7 +250,7 @@ class UsersController
             foreach ($reassigndata as $moduleid => $data) {
                 $tmpBean = BeanFactory::getBean($data['module']);
                 // update query
-                $q = "UPDATE {$tmpBean->table_name} SET assigned_user_id = '{$params['newuserid']}', modified_user_id='{\SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id}', date_modified='" . gmdate(TimeDate::getInstance()->nowDb()) . "'
+                $q = "UPDATE {$tmpBean->_tablename} SET assigned_user_id = '{$params['newuserid']}', modified_user_id='{\SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id}', date_modified='" . gmdate(TimeDate::getInstance()->nowDb()) . "'
                 WHERE assigned_user_id='{$params['userid']}' AND  deleted=0";
                 if (!empty($data['filterid'])) {
                     $filter = new SysModuleFilters();

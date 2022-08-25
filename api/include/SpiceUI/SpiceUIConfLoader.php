@@ -45,6 +45,7 @@ use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -103,6 +104,10 @@ class SpiceUIConfLoader
 
     }
 
+    /**
+     * @deprecated
+     * @return void
+     */
     public static function getDefaultRoutes(){
         return ;
     }
@@ -225,6 +230,10 @@ class SpiceUIConfLoader
 
         $this->sysuitables = array_keys($response);
 
+        // make sure we have the dictionary definitions for system metadata tables
+//        SpiceDictionaryHandler::loadMetaDataFiles(['metadata']);
+//        SpiceDictionaryHandler::loadCachedVardefs(true);
+
         // workaround for packages in which a config entries refer to table that hasn't been created yet
         // e.g. uomunits in productmanagement package
         // check if you already have the tables in the database
@@ -336,7 +345,7 @@ class SpiceUIConfLoader
             $success = false;
         }
 
-        return ["success" => $success, "queries" => count($inserts), "errors" => $errors, "tables" => $tables];
+        return ["success" => $success, "queries" => count($inserts), "errors" => array_unique($errors), "tables" => $tables];
     }
 
 

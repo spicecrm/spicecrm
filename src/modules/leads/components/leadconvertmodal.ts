@@ -81,7 +81,6 @@ export class LeadConvertModal implements OnInit {
      */
     public processConvertAction(item) {
         item.model.save().subscribe(data => {
-            item.model.setData(data);
             this.completeConvertAction(item.action);
         });
     }

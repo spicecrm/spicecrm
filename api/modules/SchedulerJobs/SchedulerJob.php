@@ -5,10 +5,11 @@ namespace SpiceCRM\modules\SchedulerJobs;
 
 use Cron\CronExpression;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
@@ -19,11 +20,9 @@ use SpiceCRM\modules\Mailboxes\Mailbox;
  * Class Job
  * @package SpiceCRM\modules\Jobs
  */
-class SchedulerJob extends SugarBean
+class SchedulerJob extends SpiceBean
 {
-    var $table_name = "schedulerjobs";
-    var $object_name = "SchedulerJob";
-    var $module_dir = "SchedulerJobs";
+
     /**
      * holds the name of the job
      */
@@ -188,6 +187,18 @@ class SchedulerJob extends SugarBean
     {
         $this->beforeRun();
 
+        # Feature: In case the assigned user of the cron job is different to the current user (basically "1"), use it instead.
+        $currentUserChanged = false;
+        $initialUser = AuthenticationController::getInstance()->getCurrentUser();
+        if ( isset( $this->assigned_user_id[0] ) and $this->assigned_user_id !== $initialUser->id ) {
+            $currentUserChanged = true;
+            $cronjobUser = BeanFactory::getBean('Users', $this->assigned_user_id );
+            if (!$cronjobUser) {
+                throw (new Exception('Cannot run Cronjob, not existing Cronjob User (ID: ' . $this->assigned_user_id . ')'));
+            }
+            AuthenticationController::getInstance()->setCurrentUser($cronjobUser);
+        }
+
         $onHold = SchedulerJobTask::JOB_TASK_STATUS_ON_HOLD;
 
         $tasks = $this->get_linked_beans('schedulerjobtasks', null, [], 0, -1, 0, "schedulerjobtasks.jobtask_status != '$onHold'");
@@ -212,6 +223,9 @@ class SchedulerJob extends SugarBean
         }
 
         $this->afterRun($lastTask);
+
+        # restore current user
+        if ( $currentUserChanged ) AuthenticationController::getInstance()->setCurrentUser( $initialUser );
 
         return ['success' => $executed, 'message' => $this->last_run_message];
     }
@@ -242,14 +256,17 @@ class SchedulerJob extends SugarBean
     {
         if ($this->notify_user != 1) return;
 
-        $user = BeanFactory::getBean('Users', $this->created_by);
+        $user = BeanFactory::getBean('Users', $this->assigned_user_id);
         $mailbox = Mailbox::getDefaultMailbox();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $currentUserName = empty($currentUser) ? 'Unknown' : "{$currentUser->user_name} ({$currentUser->first_name} {$currentUser->last_name})";
         if (empty($user->email1) || empty($mailbox)) return;
 
         $email = BeanFactory::newBean('Emails');
-        $email->name = 'Notification: Job Execution Failure';
+        $client = SpiceConfig::getInstance()->config['client'];
+        $client = $client ? "($client)" : "";
+
+        $email->name = "Notification: Job Execution Failure $client";
         $email->body = "Failed to execute Job Task <strong>{$this->name}</strong> executed by <strong>$currentUserName</strong> with the following error messages: <br>" . nl2br($this->last_run_message);
         $email->mailbox_id = $mailbox->id;
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);

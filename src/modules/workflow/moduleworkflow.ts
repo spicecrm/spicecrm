@@ -3,50 +3,58 @@
  */
 import {CommonModule,} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 
-import { SystemComponents}      from '../../systemcomponents/systemcomponents';
-import { ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import { ObjectFields}      from '../../objectfields/objectfields';
-import { DirectivesModule}      from '../../directives/directives';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {DirectivesModule} from '../../directives/directives';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
-import /*embed*/ {workflow} from "./services/workflow.service";
+import * as interfaces from "./interfaces/workflow.interfaces";
+import {workflow} from "./services/workflow.service";
+import {WorkflowManagerService} from "./services/workflowmanager.service";
 
-import /*embed*/ {WorkflowMyOpenTasksPipe} from "./pipes/workflowmyopentaskspipe";
-import /*embed*/ {WorkflowOpenWorkflowsPipe} from "./pipes/workflowopenworkflowspipe";
-import /*embed*/ {WorkflowCompletedWorkflowsPipe} from "./pipes/workflowcompletedworkflowspipe";
-import /*embed*/ {WorkflowManagerNotDeletedPipe} from "./pipes/workflowmanagernotdeletedpipe";
+import {WorkflowMyOpenTasksPipe} from "./pipes/workflowmyopentaskspipe";
+import {WorkflowOpenWorkflowsPipe} from "./pipes/workflowopenworkflowspipe";
+import {WorkflowCompletedWorkflowsPipe} from "./pipes/workflowcompletedworkflowspipe";
 
-import /*embed*/ {WorkflowManager} from "./components/workflowmanager";
-import /*embed*/ {WorkflowManagerDetail} from "./components/workflowmanagerdetail";
-import /*embed*/ {WorkflowManagerDetailTasks} from "./components/workflowmanagerdetailtasks";
-import /*embed*/ {WorkflowManagerDetailTasksLine} from "./components/workflowmanagerdetailtasksline";
-import /*embed*/ {WorkflowManagerDetailTask} from "./components/workflowmanagerdetailtask";
-import /*embed*/ {WorkflowManagerDetailTaskTaskpanel} from "./components/workflowmanagerdetailtasktaskpanel";
-import /*embed*/ {WorkflowManagerDetailTaskDescriptionpanel} from "./components/workflowmanagerdetailtaskdescriptionpanel";
-import /*embed*/ {WorkflowManagerTaskdropdown,filteractualpipe} from "./components/workflowmanagertaskdropdown";
-import /*embed*/ {WorkflowManagerDetailTaskDecisions} from "./components/workflowmanagerdetailtaskdecisions";
-import /*embed*/ {WorkflowManagerDetailTaskDecisionsLine} from "./components/workflowmanagerdetailtaskdecisionsline";
-import /*embed*/ {WorkflowManagerDetailTaskAssignmentpanel} from "./components/workflowmanagerdetailtaskassignmentpanel";
-import /*embed*/ {WorkflowManagerDetailTaskEmailpanel} from "./components/workflowmanagerdetailtaskemailpanel";
-import /*embed*/ {WorkflowManagerDetailTaskSystemactionspanel} from "./components/workflowmanagerdetailtasksystemactionspanel";
-import /*embed*/ {WorkflowManagerDetailTaskSystemactions} from "./components/workflowmanagerdetailtasksystemactions";
-import /*embed*/ {WorkflowManagerDetailTaskSystemactionsLine} from "./components/workflowmanagerdetailtasksystemactionsline";
-import /*embed*/ {WorkflowManagerDetailConditions} from "./components/workflowmanagerdetailconditions";
-import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workflowmanagerdetailconditionsline";
-import /*embed*/ {WorkflowManagerFieldsdropdown} from "./components/workflowmanagerfieldsdropdown";
-import /*embed*/ {WorkflowPanel} from "./components/workflowpanel";
+import {WorkflowManagerTaskTypesStandard} from "./components/workflowmanagertasktypesstandard";
+import {WorkflowManagerTaskTypesEmail} from "./components/workflowmanagertasktypesemail";
+import {WorkflowManagerTaskTypesSystem} from "./components/workflowmanagertasktypessystem";
+import {WorkflowManagerTaskTypesDecision} from "./components/workflowmanagertasktypesdecision";
+import {WorkflowManagerTaskTypesSms} from "./components/workflowmanagertasktypessms";
+import {WorkflowManagerTaskNextTasks} from "./components/workflowmanagertasknexttasks";
+import {WorkflowManager} from "./components/workflowmanager";
+import {WorkflowManagerTaskTypesModal} from "./components/workflowmanagertasktypesmodal";
+import {WorkflowManagerDetailTasks} from "./components/workflowmanagerdetailtasks";
+import {WorkflowManagerDetailTasksLine} from "./components/workflowmanagerdetailtasksline";
+import {WorkflowManagerDetailTask} from "./components/workflowmanagerdetailtask";
+import {WorkflowManagerDetailTaskTaskpanel} from "./components/workflowmanagerdetailtasktaskpanel";
+import {WorkflowManagerDetailTaskAssignmentpanel} from "./components/workflowmanagerdetailtaskassignmentpanel";
+import {WorkflowManagerDetailTaskSystemactionsLine} from "./components/workflowmanagerdetailtasksystemactionsline";
+import {WorkflowPanel} from "./components/workflowpanel";
 
-import /*embed*/ {WorkflowPanelHeader} from "./components/workflowpanelheader";
-import /*embed*/ {WorkflowPanelItem} from "./components/workflowpanelitem";
-import /*embed*/ {WorkflowPanelTasks} from "./components/workflowpaneltasks";
-import /*embed*/ {WorkflowPanelTasksItem} from "./components/workflowpaneltasksitem";
-import /*embed*/ {WorkflowPanelTask} from "./components/workflowpaneltask";
-import /*embed*/ {WorkflowPanelTasksComments} from "./components/workflowpaneltaskscomments";
-import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet";
-import /*embed*/ {fieldWorkflowTaskName} from "./fields/fieldworkflowtaskname";
+import {WorkflowPanelHeader} from "./components/workflowpanelheader";
+import {WorkflowPanelItem} from "./components/workflowpanelitem";
+import {WorkflowPanelTasks} from "./components/workflowpaneltasks";
+import {WorkflowPanelTasksItem} from "./components/workflowpaneltasksitem";
+import {WorkflowPanelTask} from "./components/workflowpaneltask";
+import {WorkflowPanelTasksComments} from "./components/workflowpaneltaskscomments";
+import {WorkflowTasksDashlet} from "./components/workflowtasksdashlet";
+import {fieldWorkflowTaskName} from "./fields/fieldworkflowtaskname";
+import {WorkflowPanelTaskStandard} from "./components/workflowpaneltaskstandard";
+import {WorkflowPanelTaskDecision} from "./components/workflowpaneltaskdecision";
 
-import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowcloseworkflowbutton";
+import {WorkflowCloseWorkflowButton} from "./components/workflowcloseworkflowbutton";
+import {WorkflowManagerFieldsdropdown} from "./components/workflowmanagerfieldsdropdown";
+import {WorkflowManagerTaskEditModal} from "./components/workflowmanagertaskteditmodal";
+import {WorkflowManagerEditModal} from "./components/workflowmanagereditmodal";
+import {WorkflowManagerTaskTypesStart} from "./components/workflowmanagertasktypesstart";
+import {WorkflowManagerTaskTypesEnd} from "./components/workflowmanagertasktypesend";
+import {WorkflowTimelineItem} from "./components/workflowtimelineitem";
+import {WorkflowTaskStatusIcon} from "./components/workflowtaskstatusicon";
+import {WorkflowManagerTaskTypesEmailHandle} from "./components/workflowmanagertasktypesemailhandle";
 
 @NgModule({
     imports: [
@@ -55,32 +63,22 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         SystemComponents,
         ObjectComponents,
         ObjectFields,
-        DirectivesModule
+        DirectivesModule,
+        DragDropModule
     ],
     declarations: [
+        WorkflowManagerFieldsdropdown,
         WorkflowManager,
-        WorkflowManagerDetail,
+        WorkflowManagerTaskTypesModal,
         WorkflowManagerDetailTasks,
         WorkflowManagerDetailTasksLine,
         WorkflowManagerDetailTask,
         WorkflowManagerDetailTaskTaskpanel,
-        WorkflowManagerDetailTaskDescriptionpanel,
-        WorkflowManagerTaskdropdown,
-        filteractualpipe,
-        WorkflowManagerDetailTaskDecisions,
-        WorkflowManagerDetailTaskDecisionsLine,
         WorkflowManagerDetailTaskAssignmentpanel,
-        WorkflowManagerDetailTaskEmailpanel,
-        WorkflowManagerDetailTaskSystemactionspanel,
-        WorkflowManagerDetailTaskSystemactions,
         WorkflowManagerDetailTaskSystemactionsLine,
-        WorkflowManagerDetailConditions,
-        WorkflowManagerDetailConditionsLine,
-        WorkflowManagerFieldsdropdown,
         WorkflowPanel,
         WorkflowOpenWorkflowsPipe,
         WorkflowCompletedWorkflowsPipe,
-        WorkflowManagerNotDeletedPipe,
         WorkflowMyOpenTasksPipe,
         WorkflowPanelHeader,
         WorkflowPanelItem,
@@ -90,7 +88,23 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowPanelTask,
         WorkflowTasksDashlet,
         WorkflowCloseWorkflowButton,
-        fieldWorkflowTaskName
+        fieldWorkflowTaskName,
+        WorkflowManagerTaskTypesEmail,
+        WorkflowManagerTaskTypesSystem,
+        WorkflowManagerTaskTypesDecision,
+        WorkflowManagerTaskTypesSms,
+        WorkflowManagerTaskTypesStandard,
+        WorkflowManagerTaskNextTasks,
+        WorkflowPanelTaskStandard,
+        WorkflowPanelTaskDecision,
+        WorkflowManagerTaskEditModal,
+        WorkflowManagerEditModal,
+        WorkflowManagerTaskTypesStart,
+        WorkflowManagerTaskTypesEnd,
+        WorkflowTimelineItem,
+        WorkflowTaskStatusIcon,
+        WorkflowManagerTaskTypesEmailHandle
     ]
 })
-export class ModuleWorkflow {}
+export class ModuleWorkflow {
+}

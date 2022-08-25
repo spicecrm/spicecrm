@@ -14,52 +14,52 @@ import {DirectivesModule} from "../../directives/directives";
 /**
  * services
  */
-import /*embed*/ {salesdocrecord} from './services/salesdocrecord';
+import {salesdocrecord} from './services/salesdocrecord';
 
 /**
  * pipes
  */
-import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';
+import {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';
 
 /**
  * fields
  */
-import /*embed*/ {fieldSalesdocTypes} from './fields/fieldsalesdoctypes';
-import /*embed*/ {fieldSalesdocItemTypes} from './fields/fieldsalesdocitemtypes';
-import /*embed*/ {fieldSalesdocTaxCategories} from './fields/fieldsalesdoctaxcategories';
-import /*embed*/ {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
-import /*embed*/ {SalesDocsItemHeader} from "./components/salesdocsitemheader";
-import /*embed*/ {SalesDocsItemFooter} from "./components/salesdocsitemfooter";
-import /*embed*/ {SalesDocsItemContainer} from "./components/salesdocsitemcontainer";
-import /*embed*/ {SalesDocsItemDetailsContainer} from "./components/salesdocsitemdetailscontainer";
-import /*embed*/ {SalesDocsItemsAddProduct} from './components/salesdocsitemsaddproduct';
-import /*embed*/ {SalesDocsItemsAddProductGroup} from './components/salesdocsitemsaddproductgroup';
-import /*embed*/ {SalesDocsItemsAddProductVariant} from "./components/salesdocsitemsaddproductvariant";
-import /*embed*/ {SalesDocsItemsAddText} from "./components/salesdocsitemsaddtext";
-import /*embed*/ {SalesDocsItemsDeletedPipe} from './pipes/salesdocsitemsdeletedpipe';
-import /*embed*/ {SalesDocsItemsParentSelector} from './components/salesdocsitemsparentselector';
-import /*embed*/ {SalesdocsNewButton} from "./components/salesdocsnewbutton";
-import /*embed*/ {SalesDocsAddBasics} from "./components/salesdocsaddbasics";
-import /*embed*/ {SalesDocsAddMain} from "./components/salesdocsaddmain";
-import /*embed*/ {SalesDocsRecordView} from "./components/salesdocsrecordview";
-import /*embed*/ {SalesDocsItemsAddTypeSelector} from "./components/salesdocsitemsaddtypeselector";
-import /*embed*/ {SalesDocsGlobalNavigationMenuItemActionNew} from "./components/salesdocsglobalnavigationmenuitemactionnew";
-import /*embed*/ {SalesdocsRejectButton} from "./components/salesdocsrejectbutton";
-import /*embed*/ {SalesdocsRejectModal} from "./components/salesdocsrejectmodal";
-import /*embed*/ {SalesDocsRejectItemsContainer} from "./components/salesdocsrejectitemscontainer";
-import /*embed*/ {SalesDocsItemRejectContainer} from "./components/salesdocsitemrejectcontainer";
-import /*embed*/ {SalesDocsEquipmentPanel} from './components/salesdocsequipmentpanel';
-import /*embed*/ {SalesDocsEquipmentItem} from './components/salesdocsequipmentitem';
-import /*embed*/ {SalesVoucherRedeemButton} from './components/salesvoucherredeembutton';
-import /*embed*/ {SalesVoucherRedeemModal} from './components/salesvoucherredeemmodal';
-import /*embed*/ {SalesDocsConvertButton} from './components/salesdocsconvertbutton';
-import /*embed*/ {SalesDocsConvertSelectType} from './components/salesdocsconvertselecttype';
-import /*embed*/ {SalesDocsConvertModalItemHeader} from './components/salesdocsconvertmodalitemheader';
-import /*embed*/ {SalesDocsConvertModalItem} from './components/salesdocsconvertmodalitem';
-import /*embed*/ {SalesDocsConvertModal} from './components/salesdocsconvertmodal';
-import /*embed*/ {SalesDocsFlowButton} from './components/salesdocsflowbutton';
-import /*embed*/ {SalesDocsFlowTableRow} from './components/salesdocsflowtablerow';
-import /*embed*/ {SalesDocsFlowModal} from './components/salesdocsflowmodal';
+import {fieldSalesdocTypes} from './fields/fieldsalesdoctypes';
+import {fieldSalesdocItemTypes} from './fields/fieldsalesdocitemtypes';
+import {fieldSalesdocTaxCategories} from './fields/fieldsalesdoctaxcategories';
+import {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
+import {SalesDocsItemHeader} from "./components/salesdocsitemheader";
+import {SalesDocsItemFooter} from "./components/salesdocsitemfooter";
+import {SalesDocsItemContainer} from "./components/salesdocsitemcontainer";
+import {SalesDocsItemDetailsContainer} from "./components/salesdocsitemdetailscontainer";
+import {SalesDocsItemsAddProduct} from './components/salesdocsitemsaddproduct';
+import {SalesDocsItemsAddProductGroup} from './components/salesdocsitemsaddproductgroup';
+import {SalesDocsItemsAddProductVariant} from "./components/salesdocsitemsaddproductvariant";
+import {SalesDocsItemsAddText} from "./components/salesdocsitemsaddtext";
+import {SalesDocsItemsDeletedPipe} from './pipes/salesdocsitemsdeletedpipe';
+import {SalesDocsItemsParentSelector} from './components/salesdocsitemsparentselector';
+import {SalesdocsNewButton} from "./components/salesdocsnewbutton";
+import {SalesDocsAddBasics} from "./components/salesdocsaddbasics";
+import {SalesDocsAddMain} from "./components/salesdocsaddmain";
+import {SalesDocsRecordView} from "./components/salesdocsrecordview";
+import {SalesDocsItemsAddTypeSelector} from "./components/salesdocsitemsaddtypeselector";
+import {SalesDocsGlobalNavigationMenuItemActionNew} from "./components/salesdocsglobalnavigationmenuitemactionnew";
+import {SalesdocsRejectButton} from "./components/salesdocsrejectbutton";
+import {SalesdocsRejectModal} from "./components/salesdocsrejectmodal";
+import {SalesDocsRejectItemsContainer} from "./components/salesdocsrejectitemscontainer";
+import {SalesDocsItemRejectContainer} from "./components/salesdocsitemrejectcontainer";
+import {SalesDocsEquipmentPanel} from './components/salesdocsequipmentpanel';
+import {SalesDocsEquipmentItem} from './components/salesdocsequipmentitem';
+import {SalesVoucherRedeemButton} from './components/salesvoucherredeembutton';
+import {SalesVoucherRedeemModal} from './components/salesvoucherredeemmodal';
+import {SalesDocsConvertButton} from './components/salesdocsconvertbutton';
+import {SalesDocsConvertSelectType} from './components/salesdocsconvertselecttype';
+import {SalesDocsConvertModalItemHeader} from './components/salesdocsconvertmodalitemheader';
+import {SalesDocsConvertModalItem} from './components/salesdocsconvertmodalitem';
+import {SalesDocsConvertModal} from './components/salesdocsconvertmodal';
+import {SalesDocsFlowButton} from './components/salesdocsflowbutton';
+import {SalesDocsFlowTableRow} from './components/salesdocsflowtablerow';
+import {SalesDocsFlowModal} from './components/salesdocsflowmodal';
 
 @NgModule({
     imports: [

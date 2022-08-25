@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\modules\SpiceImports;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -11,15 +11,8 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-class SpiceImport extends SugarBean
+class SpiceImport extends SpiceBean
 {
-    //Sugar vars
-    var $table_name = "spiceimports";
-    var $object_name = "SpiceImport";
-    var $new_schema = true;
-    var $module_dir = "SpiceImports";
-
-
     var $objectimport;
 
     public static function getFilePreview($params)
@@ -181,7 +174,7 @@ class SpiceImport extends SugarBean
                     $retrieve = [];
 
                     foreach ($this->objectimport->checkFields as $check_field)
-                        $retrieve[$check_field->moduleField] = $row[array_search($check_field->mappedField, $fileHeader)];
+                        $retrieve[$check_field['moduleField']] = $row[array_search($check_field['mappedField'], $fileHeader)];
 
                     $newBean = BeanFactory::getBean($this->objectimport->module);
 
@@ -230,11 +223,11 @@ class SpiceImport extends SugarBean
 
             foreach ($row as $idx => $col) {
 
-                if (isset($this->objectimport->fileMapping->{$fileHeader[$idx]})) {
-                    $newBean->{$this->objectimport->fileMapping->{$fileHeader[$idx]}} = $col;
+                if (isset($this->objectimport->fileMapping[$fileHeader[$idx]])) {
+                    $newBean->{$this->objectimport->fileMapping[$fileHeader[$idx]]} = $col;
 
                     if ($this->objectimport->idFieldAction == 'have' &&
-                        $this->objectimport->idField == $this->objectimport->fileMapping->{$fileHeader[$idx]}) {
+                        $this->objectimport->idField == $this->objectimport->fileMapping[$fileHeader[$idx]]) {
 
                         $newBean->new_with_id = true;
                         $newBean->id = $col;
@@ -243,7 +236,7 @@ class SpiceImport extends SugarBean
             }
 
             foreach ($this->objectimport->fixedFields as $field)
-                $newBean->{$field->field} = $this->objectimport->fixedFieldsValues->{$field->field};
+                $newBean->{$field['field']} = $this->objectimport->fixedFieldsValues[$field['field']];
 
             $newBeanId = $newBean->save();
             $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);
@@ -277,12 +270,12 @@ class SpiceImport extends SugarBean
 
         if (!empty($newBean->id)) {
             foreach ($row as $idx => $col) {
-                if (!empty($this->objectimport->fileMapping->{$fileHeader[$idx]}))
-                    $newBean->{$this->objectimport->fileMapping->{$fileHeader[$idx]}} = $col;
+                if (!empty($this->objectimport->fileMapping[$fileHeader[$idx]]))
+                    $newBean->{$this->objectimport->fileMapping[$fileHeader[$idx]]} = $col;
             }
 
             foreach ($this->objectimport->fixedFields as $field)
-                $newBean->{$field->field} = $this->objectimport->fixedFieldsValues->{$field->field};
+                $newBean->{$field['field']} = $this->objectimport->fixedFieldsValues[$field['field']];
 
             $newBeanId = $newBean->save();
             $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);

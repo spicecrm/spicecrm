@@ -1,33 +1,27 @@
-<ng-container *ngIf="qp.isLoaded">
+<ng-container *ngIf="showQuestion">
 
-    <ng-container *ngIf="!hideFinishedQuestions || !questionMeta.finished">
-
-        <div class="slds-box slds-m-bottom_medium question-render-question" style="padding:0.5rem" [ngStyle]="styleQuestionMerging()">
+    <div class="slds-box slds-m-bottom_medium question-render-question" style="padding:0.5rem" [ngStyle]="styleQuestionMerging()" [ngClass]="{'slds-has-error':showError}">
+        <div class="slds-grid slds-grid_vertical-align-center">
             <div class="slds-grid slds-grid_vertical-align-center">
-                <div class="slds-grid slds-grid_vertical-align-center">
-                    <ng-container *ngFor="let textitem of question.questiontext|questiontypeisttextspipe">
-                        <h3 class="slds-text-heading_medium slds-p-horizontal_x-small"
-                            *ngIf="textitem.type == 'text'">
-                            {{textitem.text}}
-                        </h3>
-                        <div class="slds-form-element slds-p-horizontal_x-small" *ngIf="textitem.type == 'option'">
-                            <div class="slds-form-element__control">
-                                <div *ngIf="qp.questionoptionsArray[question.id][textitem.index*1].description && qp.questionoptionsArray[question.id][textitem.index].description != ''" class="slds-select_container">
-                                    <select  class="slds-select" [disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview'" [value]="getAnswerValue(textitem.index)" (change)="onChange(textitem.index, $event)">
-                                        <option value=""></option>
-                                        <option *ngFor="let seloption of qp.questionoptionsArray[question.id][textitem.index].description|questiontypeistoptionspipe"
-                                                [ngValue]="seloption">{{seloption}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <input *ngIf="!qp.questionoptionsArray[question.id][textitem.index].description || qp.questionoptionsArray[question.id][textitem.index].description == ''" style="width: 50px" type="text" class="slds-input" [value]="getAnswerValue(textitem.index)" (blur)="onChange(textitem.index, $event)"/>
+                <ng-container *ngFor="let textitem of question.questiontext|questiontypeisttextspipe">
+                    <h3 class="slds-text-heading_medium slds-p-horizontal_x-small"
+                        *ngIf="textitem.type == 'text'">
+                        {{textitem.text}}
+                    </h3>
+                    <div class="slds-form-element slds-p-horizontal_x-small" *ngIf="textitem.type == 'option'">
+                        <div class="slds-form-element__control">
+                            <div *ngIf="qp.questionoptionsArray[question.id][textitem.index*1].description && qp.questionoptionsArray[question.id][textitem.index].description != ''" class="slds-select_container">
+                                <select  class="slds-select" [disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview'" [ngModel]="getAnswerValue(textitem.index)" (change)="onChange(textitem.index, $event)">
+                                    <option value=""></option>
+                                    <option *ngFor="let seloption of qp.questionoptionsArray[question.id][textitem.index].description|questiontypeistoptionspipe" [value]="seloption">{{seloption}}</option>
+                                </select>
                             </div>
+                            <input *ngIf="!qp.questionoptionsArray[question.id][textitem.index].description || qp.questionoptionsArray[question.id][textitem.index].description == ''" style="width: 50px" type="text" class="slds-input" [value]="getAnswerValue(textitem.index)" (blur)="onChange(textitem.index, $event)"/>
                         </div>
-                    </ng-container>
-                </div>
+                    </div>
+                </ng-container>
             </div>
         </div>
-
-    </ng-container>
+    </div>
 
 </ng-container>

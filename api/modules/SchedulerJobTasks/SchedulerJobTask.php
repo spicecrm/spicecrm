@@ -18,10 +18,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
  */
 class SchedulerJobTask extends Basic
 {
-    var $table_name = "schedulerjobtasks";
-    var $object_name = "SchedulerJobTask";
-    var $module_dir = "SchedulerJobTasks";
-
     /**
      * holds the job status queued constant
      */

@@ -5,11 +5,14 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {session} from "../../../services/session.service";
 import {Router} from "@angular/router";
 import {broadcast} from "../../../services/broadcast.service";
-import {GroupwareService} from '../../../include/groupware/services/groupware.service';
+import {GroupwareService} from '../../groupware/services/groupware.service';
 import {GSuiteBrokerService} from "../services/gsuitebroker.service";
 import {GSuiteGroupware} from "../services/gsuitegroupware.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
+import {GSuiteLoginPane} from "./gsuiteloginpane";
+import {SystemDynamicRouteInterceptor} from "../../../systemcomponents/components/systemdynamicrouteinterceptor";
+import {loginCheck} from "../../../services/login.service";
 
 /**
  * Main container for the SpiceCRM GSuite add-in. This gets rendered by the loader.
@@ -18,7 +21,12 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'gsuite-pane',
-    templateUrl: '../templates/gsuitepane.html'
+    templateUrl: '../templates/gsuitepane.html',
+    providers: [
+        {provide: GroupwareService, useClass: GSuiteGroupware},
+        GSuiteBrokerService,
+        model
+    ]
 })
 export class GSuitePane implements OnInit {
 
@@ -28,12 +36,31 @@ export class GSuitePane implements OnInit {
     public displayBottomBar: boolean = true;
 
     constructor(@Inject(GroupwareService) public groupware: GSuiteGroupware,
-                public gSuiteBrokerService: GSuiteBrokerService,
                 public router: Router,
                 public broadcast: broadcast,
                 public model: model,
                 public metadata: metadata,
                 public session: session) {
+        this.adjustRoutes();
+    }
+
+    /**
+     * adjust the login and empty route to match gsuite module
+     * @private
+     */
+    private adjustRoutes() {
+
+        this.router.config.some(route => {
+
+            if (route.path == 'login') {
+                route.component = GSuiteLoginPane;
+            }
+            if (!route.path) {
+                route.redirectTo = undefined;
+                route.component = SystemDynamicRouteInterceptor;
+                route.canActivate = [loginCheck];
+            }
+        });
     }
 
     /**

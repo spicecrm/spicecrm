@@ -39,6 +39,7 @@ export class ServiceCalendars implements OnInit {
     public ngOnInit() {
         this.modellist.initialize('ServiceCalendars');
         this.modellist.getListData();
+        this.model.module = "ServiceCalendars";
     }
 
     /**

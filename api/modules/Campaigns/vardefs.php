@@ -48,7 +48,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
 //            'vname' => 'LBL_TRACKER_KEY',
 //            'type' => 'int',
 //            'required' => true,
-//            'studio' => array('editview' => false),
 //            'len' => '11',
 //            'auto_increment' => true,
 //            'comment' => 'The internal ID of the tracker used in a campaign; no longer used as of 4.2 (see campaign_trkrs)'
@@ -135,7 +134,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
                 'name' => 'currency_id',
                 'vname' => 'LBL_CURRENCY',
                 'type' => 'id',
-                'group' => 'currency_id',
                 'required' => false,
                 'do_report' => false,
                 'reportable' => false,
@@ -363,8 +361,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'dbType' => 'varchar',
             'len' => '255',
             'source' => 'non-db',
-            'unified_search' => true,
-            'massupdate' => false,
         ],
 
         'mailbox' => [
@@ -375,7 +371,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'event_id' => [
             'name' => 'event_id',
@@ -398,7 +393,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'len' => '255',
             'source' => 'non-db',
             'unified_search' => true,
-            'massupdate' => false,
         ],
 
         'event' => [
@@ -409,7 +403,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'campaigntasks' => [
             'name' => 'campaigntasks',

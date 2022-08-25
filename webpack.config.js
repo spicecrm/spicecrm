@@ -37,20 +37,28 @@ const generateOptions = (file) => ({
 
 module.exports = {
     mode: "production",
+
     output: {
         // needed to adjust the dynamic import path
         publicPath: "app/",
         // modify the modules file name
         chunkFilename: (pathData) => {
+
+            if (pathData.chunk.id.startsWith('common')) return pathData.chunk.id + '.js';
+
             const path = pathData.chunk.id.split('_');
             if (path[0] === 'default-src') {
                 return pathData.chunk.id.replace(/_ts$/, '') + '.js';
             }
             return path[['include', 'modules', 'custom'].indexOf(path[1]) > -1 ? 3 : 2] + '.js';
-        }
+        },
+        filename: "[name].js"
     },
     optimization: {
         chunkIds: 'named',
+        splitChunks: {
+            chunks: 'all'
+        },
         minimize: true,
         minimizer: [
             // custom minimize to keep class names for lazy loading
@@ -85,6 +93,9 @@ module.exports = {
        ),
         new HtmlWebpackPlugin(
             generateOptions({name: "../outlookcrm.html", template: "assets/outlook/outlookcrm.html"})
+        ),
+        new HtmlWebpackPlugin(
+            generateOptions({name: "../gsuite.html", template: "assets/gsuite/gsuite.html"})
         )
     ],
 };

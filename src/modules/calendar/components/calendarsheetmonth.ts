@@ -51,7 +51,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * holds a boolean of google events visibility
      */
-    @Input() public googleIsVisible: boolean = true;
+    @Input() public groupwareVisible: boolean = true;
     /**
      * holds the month grid weeks and days
      */
@@ -81,7 +81,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * holds the google events
      */
-    public googleEvents: any[] = [];
+    public groupwareEvents: any[] = [];
     /**
      * holds the resize listener
      */
@@ -104,10 +104,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     /**
-     * @return allEvents: [ownerEvents, userEvents, googleEvents]
+     * @return allEvents: [ownerEvents, userEvents, groupwareEvents]
      */
-    get allEvents(): Array<{ style, data, start, illusionStart, illusionEnd, end, isMulti: boolean, color: string, id: string, weeksI: number[], sequence: number, illusionSequence: number, illusions: any[], visible: boolean }> {
-        return this.ownerEvents.concat(this.userEvents, this.googleEvents);
+    get allEvents(): { style, data, start, illusionStart, illusionEnd, end, isMulti: boolean, color: string, id: string, weeksI: number[], sequence: number, illusionSequence: number, illusions: any[], visible: boolean }[] {
+        return this.ownerEvents.concat(this.userEvents, this.groupwareEvents);
     }
 
     /**
@@ -158,8 +158,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             this.getOwnerEvents();
             this.getUsersEvents();
         }
-        if (changes.googleIsVisible || changes.setdate) {
-            this.getGoogleEvents();
+        if (changes.groupwareVisible || changes.setdate) {
+            this.getGroupwareEvents();
         }
     }
 
@@ -286,17 +286,17 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * load google events from service and rearrange the multi events
      */
-    public getGoogleEvents() {
-        this.googleEvents = [];
+    public getGroupwareEvents() {
+        this.groupwareEvents = [];
         this.cleanGrid();
-        if (!this.googleIsVisible || this.calendar.isMobileView) {
+        if (!this.groupwareVisible || this.calendar.isMobileView) {
             return;
         }
 
-        this.calendar.loadGoogleEvents(this.startDate, this.endDate)
+        this.calendar.loadGroupwareEvents(this.startDate, this.endDate)
             .subscribe(events => {
                 if (events.length > 0) {
-                    this.googleEvents = events;
+                    this.groupwareEvents = events;
                     this.spreadEvents();
                     this.setEventsStyle();
                 }

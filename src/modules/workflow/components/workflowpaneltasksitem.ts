@@ -31,19 +31,4 @@ export class WorkflowPanelTasksItem implements OnInit{
         this.model.setField('_displayComments', !this.model.getField('_displayComments'), true);
     }
 
-    /**
-     * returns a specific icon based ont he statuis of the workflow task
-     */
-    get statusIcon() {
-        switch (this.model.getField('status')) {
-            case '5':
-                return 'clock';
-            case '10':
-                return 'hierarchy';
-            case '20':
-                return 'play';
-            case '30':
-                return 'check';
-        }
-    }
 }

@@ -14,28 +14,30 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ { calendar } from "./services/calendar.service";
+import { calendar } from "./services/calendar.service";
 
-import /*embed*/ {CalendarHeader} from "./components/calendarheader";
-import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
-import /*embed*/ {Calendar} from "./components/calendar";
-import /*embed*/ {CalendarSheetEvent} from "./components/calendarsheetevent";
-import /*embed*/ {CalendarSheetGoogleEvent} from "./components/calendarsheetgoogleevent";
-import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
-import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
-import /*embed*/ {CalendarSheetThreeDays} from "./components/calendarsheetthreedays";
-import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
-import /*embed*/ {CalendarSheetSchedule} from "./components/calendarsheetschedule";
-import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
-import /*embed*/ {CalendarGoogleEventPopover} from "./components/calendargoogleeventpopover";
-import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
-import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
-import /*embed*/ {CalendarAddModulesModal} from "./components/calendaraddmodulesmodal";
-import /*embed*/ {CalendarOtherCalendarsMonitor} from "./components/calendarothercalendarsmonitor";
-import /*embed*/ {CalendarColorPicker} from "./components/calendarcolorpicker";
-import /*embed*/ {CalendarScheduleDashlet} from "./components/calendarscheduledashlet";
-import /*embed*/ {CalendarDayDashlet} from "./components/calendardaydashlet";
-import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedaysdashlet";
+import {CalendarHeader} from "./components/calendarheader";
+import {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
+import {Calendar} from "./components/calendar";
+import {CalendarSheetEvent} from "./components/calendarsheetevent";
+import {CalendarSheetGoogleEvent} from "./components/calendarsheetgoogleevent";
+import {CalendarSheetDay} from "./components/calendarsheetday";
+import {CalendarSheetWeek} from "./components/calendarsheetweek";
+import {CalendarSheetThreeDays} from "./components/calendarsheetthreedays";
+import {CalendarSheetMonth} from "./components/calendarsheetmonth";
+import {CalendarSheetSchedule} from "./components/calendarsheetschedule";
+import {CalendarMorePopover} from "./components/calendarmorepopover";
+import {CalendarGoogleEventPopover} from "./components/calendargoogleeventpopover";
+import {CalendarMoreButton} from "./components/calendarmorebutton";
+import {CalendarAddCalendar} from "./components/calendaraddcalendar";
+import {CalendarAddModulesModal} from "./components/calendaraddmodulesmodal";
+import {CalendarOtherCalendarsMonitor} from "./components/calendarothercalendarsmonitor";
+import {CalendarColorPicker} from "./components/calendarcolorpicker";
+import {CalendarScheduleDashlet} from "./components/calendarscheduledashlet";
+import {CalendarDayDashlet} from "./components/calendardaydashlet";
+import {CalendarThreeDaysDashlet} from "./components/calendarthreedaysdashlet";
+import {CalendarSheetMicrosoftEvent} from "./components/calendarsheetmicrosoftevent";
+import {CalendarMicrosoftEventPopover} from "./components/calendarmicrosofteventpopover";
 
 
 @NgModule({
@@ -70,7 +72,9 @@ import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedays
         CalendarColorPicker,
         CalendarScheduleDashlet,
         CalendarDayDashlet,
-        CalendarThreeDaysDashlet
+        CalendarThreeDaysDashlet,
+        CalendarSheetMicrosoftEvent,
+        CalendarMicrosoftEventPopover
     ],
     providers: [userpreferences]
 })

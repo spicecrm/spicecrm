@@ -17,8 +17,6 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 export class QuestionRenderSingle extends QuestionRenderBasic implements OnInit {
 
     @Input() public hideFinishedQuestions = false;
-    @Input() public imageWidthQuestion = 200;
-    @Input() public imageWidthOption = 200;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
@@ -26,13 +24,6 @@ export class QuestionRenderSingle extends QuestionRenderBasic implements OnInit 
 
     public ngOnInit(): void {
         super.ngOnInit();
-    }
-
-    /**
-     * Is the radio button of the quesion option selected?
-     */
-    public isChecked( optionId: string ): boolean {
-        return this.qp.answers && this.qp.answers[this.questionId] && this.qp.answers[this.questionId].options && this.qp.answers[this.questionId].options[optionId];
     }
 
     get value(){
@@ -46,8 +37,9 @@ export class QuestionRenderSingle extends QuestionRenderBasic implements OnInit 
         }
     }
 
-    set value(value){
-        this.qp.clickAnswerOption(value);
+    set value( value) {
+        if ( value === null ) this.qp.unsetAnswerOptions( this.questionId );
+        else this.qp.clickAnswerOption(value);
     }
 
 }

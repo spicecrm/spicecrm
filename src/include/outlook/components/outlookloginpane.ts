@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 import {loginService} from '../../../services/login.service';
 import {configurationService} from '../../../services/configuration.service';
 import {session} from '../../../services/session.service';
+import {modelutilities} from '../../../services/modelutilities.service';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
@@ -48,7 +49,7 @@ export class OutlookLoginPane {
     constructor(
         public router: Router,
         public outlookConfiguration: OutlookConfiguration,
-
+        public modelutilities: modelutilities,
         public loginService: loginService,
         public http: HttpClient,
         public configuration: configurationService,
@@ -58,26 +59,18 @@ export class OutlookLoginPane {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
 
-            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
-                this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
-            }
-
             this.http.get(this.configuration.getBackendUrl() + '/authentication/login', {
                 headers
-            }).subscribe(
-                (res: any) => {
-                    let repsonse = res;
-                    this.session.authData.sessionId = repsonse.id;
-                    this.session.authData.userId = repsonse.userid;
-                    this.session.authData.userName = repsonse.user_name;
-                    this.session.authData.userimage = repsonse.user_image;
-                    this.session.authData.first_name = repsonse.first_name;
-                    this.session.authData.last_name = repsonse.last_name;
-                    this.session.authData.address_country = repsonse.address_country;
-                    this.session.authData.display_name = repsonse.display_name;
-                    this.session.authData.email = repsonse.email;
-                    this.session.authData.admin = repsonse.admin == 1 ? true : false;
-                    this.session.authData.dev = repsonse.dev == 1 ? true : false;
+            }).subscribe({
+                next: (res: any) => {
+                    let response = res;
+                    this.session.authData.sessionId = response.id;
+                    this.session.authData.userId = response.userid;
+                    this.session.authData.userName = response.user_name;
+                    this.session.authData.email = response.email;
+                    this.session.authData.admin = response.admin == 1 ? true : false;
+                    this.session.authData.dev = response.dev == 1 ? true : false;
+                    this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
                     // this.session.authData.renewPass = repsonse.renewPass === '1' ? true : false;
 
                     // set the backendurl
@@ -85,13 +78,14 @@ export class OutlookLoginPane {
 
                     this.loginService.load();
                 },
-                (err: any) => {
+                error: (err: any) => {
                     switch (err.status) {
                         case 401:
                             this.promptUser = true;
                             break;
                     }
-                });
+                }
+            });
         } else if (this.outlookConfiguration.hasSettings()) {
             this.username = this.outlookConfiguration.username;
             this.password = this.outlookConfiguration.password;
@@ -111,16 +105,16 @@ export class OutlookLoginPane {
         if (this.username && this.username.length > 0 && this.password && this.password.length > 0) {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
-            this.loginService.login().subscribe(
-                (res) => {
+            this.loginService.login(true).subscribe({
+                next: (res) => {
                     this.outlookConfiguration.username = this.loginService.authData.userName;
                     this.outlookConfiguration.password = this.loginService.authData.password;
                     this.outlookConfiguration.saveSettings();
                 },
-                (err) => {
+                error: (err) => {
                     this.goToSettings();
                 }
-            );
+            });
         }
     }
 
@@ -131,10 +125,5 @@ export class OutlookLoginPane {
         this.outlookConfiguration.password = '';
         this.outlookConfiguration.saveSettings();
 
-        let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
-        let selectedsite = sessionStorage.getItem(siteHash);
-        if (this.selectedsite) {
-            this.configuration.setSiteID(this.selectedsite);
-        }
     }
 }

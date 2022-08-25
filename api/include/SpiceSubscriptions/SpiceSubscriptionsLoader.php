@@ -2,11 +2,11 @@
 namespace SpiceCRM\includes\SpiceSubscriptions;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class SpiceSubscriptionsLoader
 {
@@ -19,7 +19,7 @@ class SpiceSubscriptionsLoader
     public function loadSubscriptions(): array {
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $subscriptions = [];
 
@@ -48,14 +48,14 @@ class SpiceSubscriptionsLoader
     /**
      * Adds a subscription on a given bean for the current user.
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @throws \Exception
      */
-    public function addSubscription(SugarBean $bean): void {
+    public function addSubscription(SpiceBean $bean): void {
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
-        $sql = "INSERT INTO spicesubscriptions (user_id, bean_id, bean_module) VALUES ('{$currentUser->id}', '{$bean->id}', '{$bean->module_dir}')";
+        $sql = "INSERT INTO spicesubscriptions (user_id, bean_id, bean_module) VALUES ('{$currentUser->id}', '{$bean->id}', '{$bean->_module}')";
         $db->query($sql, true);
     }
 

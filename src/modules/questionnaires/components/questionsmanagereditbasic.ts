@@ -94,6 +94,20 @@ export class QuestionsManagerEditBasic implements OnInit {
     }
 
     /**
+     * Setter for the answer required option.
+     */
+    public set answerRequired( val: boolean ) {
+        this.model.setField('answer_required', val );
+    }
+
+    /**
+     * Getter for the answer required option.
+     */
+    public get answerRequired(): boolean {
+        return this.model.getField('answer_required');
+    }
+
+    /**
      * Handler when the question text field lost focus and might got changed.
      */
     public questiontextBlurred(): void {

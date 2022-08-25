@@ -16,6 +16,7 @@ import {toast} from './toast.service';
 import {modelutilities} from './modelutilities.service';
 import {modal} from './modal.service';
 import {language} from './language.service';
+import {broadcast} from "./broadcast.service";
 
 
 /**
@@ -83,6 +84,7 @@ export class backend {
     constructor(
         public toast: toast,
         public http: HttpClient,
+        public broadcast: broadcast,
         public sanitizer: DomSanitizer,
         public configurationService: configurationService,
         public session: session,
@@ -617,6 +619,12 @@ export class backend {
                     });
                 }
                 // this.reportError(err, route, method, data);
+                return true;
+            case 403:
+                if (err.error?.error?.errorCode !== 'noLegalNoticeAccepted') return false;
+
+                this.broadcast.broadcastMessage('backend.response.error', 'noLegalNoticeAccepted');
+
                 return true;
         }
         return false;

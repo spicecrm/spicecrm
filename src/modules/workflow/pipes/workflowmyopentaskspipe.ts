@@ -22,7 +22,7 @@ export class WorkflowMyOpenTasksPipe {
 
         if (values) {
             for (let value of values) {
-                if (parseInt(value.status, 10) >= 10 && parseInt(value.status, 10) < 30 && (value.assigned_user_id == this.session.authData.userId || this.session.authData.admin)) {
+                if (parseInt(value.workflowtask_status, 10) >= 10 && parseInt(value.workflowtask_status, 10) < 30 && (value.assigned_user_id == this.session.authData.userId || this.session.authData.admin)) {
                     retvalues.push(value);
                 }
             }

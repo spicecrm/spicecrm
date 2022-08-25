@@ -11,18 +11,18 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 import {ModuleReportsDesigner} from "../../modules/reportsdesigner/modulereportsdesigner";
 
-import /*embed*/ {ReportsDesignerMorePresentItemStandardWithSummary} from "./components/reportsdesignermorepresentitemstandardwithsummary";
-import /*embed*/ {ReportsDesignerMorePresentItemStandardWithPreview} from "./components/reportsdesignermorepresentitemstandardwithpreview";
-import /*embed*/ {ReportsDesignerMorePresentItemTreeView} from "./components/reportsdesignermorepresentitemtreeview";
-import /*embed*/ {ReportsDesignerMorePresentItemGrouped} from "./components/reportsdesignermorepresentitemgrouped";
-import /*embed*/ {ReportsDesignerMorePresentItemPivot} from "./components/reportsdesignermorepresentitempivot";
-import /*embed*/ {ReportsDesignerMoreVisualizeItemGoogleMaps} from "./components/reportsdesignermorevisualizeitemgooglemaps";
-import /*embed*/ {ReportsDesignerMoreVisualizeItemHighCharts} from "./components/reportsdesignermorevisualizeitemhighcharts";
-import /*embed*/ {ReportsDesignerMoreIntegrateItemPublish} from "./components/reportsdesignermoreintegrateitempublish";
-import /*embed*/ {ReportsDesignerMoreIntegrateItemSchedule} from "./components/reportsdesignermoreintegrateitemschedule";
-import /*embed*/ {ReportsDesignerMoreIntegrateItemDrilldown} from "./components/reportsdesignermoreintegrateitemdrilldown";
-import /*embed*/ {ReportsDesignerMoreIntegrateItemFilters} from "./components/reportsdesignermoreintegrateitemfilters";
-import /*embed*/ {ReportsDesignerMoreIntegrateItemSnapshots} from "./components/reportsdesignermoreintegrateitemsnapshots";
+import {ReportsDesignerMorePresentItemStandardWithSummary} from "./components/reportsdesignermorepresentitemstandardwithsummary";
+import {ReportsDesignerMorePresentItemStandardWithPreview} from "./components/reportsdesignermorepresentitemstandardwithpreview";
+import {ReportsDesignerMorePresentItemTreeView} from "./components/reportsdesignermorepresentitemtreeview";
+import {ReportsDesignerMorePresentItemGrouped} from "./components/reportsdesignermorepresentitemgrouped";
+import {ReportsDesignerMorePresentItemPivot} from "./components/reportsdesignermorepresentitempivot";
+import {ReportsDesignerMoreVisualizeItemGoogleMaps} from "./components/reportsdesignermorevisualizeitemgooglemaps";
+import {ReportsDesignerMoreVisualizeItemHighCharts} from "./components/reportsdesignermorevisualizeitemhighcharts";
+import {ReportsDesignerMoreIntegrateItemPublish} from "./components/reportsdesignermoreintegrateitempublish";
+import {ReportsDesignerMoreIntegrateItemSchedule} from "./components/reportsdesignermoreintegrateitemschedule";
+import {ReportsDesignerMoreIntegrateItemDrilldown} from "./components/reportsdesignermoreintegrateitemdrilldown";
+import {ReportsDesignerMoreIntegrateItemFilters} from "./components/reportsdesignermoreintegrateitemfilters";
+import {ReportsDesignerMoreIntegrateItemSnapshots} from "./components/reportsdesignermoreintegrateitemsnapshots";
 
 @NgModule({
     imports: [

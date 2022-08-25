@@ -9,8 +9,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {ObjectFields} from "../../objectfields/objectfields";
 
 // COMPONENTs:
-import /*embed*/ {fieldCatalogs} from "./components/fieldcatalogs";
-import /*embed*/ {CatalogOrdersBulkShippingButton} from "./components/catalogordersbulkshippingbutton";
+import {fieldCatalogs} from "./components/fieldcatalogs";
+import {CatalogOrdersBulkShippingButton} from "./components/catalogordersbulkshippingbutton";
 
 @NgModule({
     imports: [

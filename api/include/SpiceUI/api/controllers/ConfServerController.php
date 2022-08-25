@@ -101,34 +101,54 @@ class ConfServerController
         $db = DBManagerFactory::getInstance();
 
         $tables = [
-            'sysmodules',
+            'spiceaclstandardactions',
+            'sysdictionarydefinitions',
+            'sysdictionaryindexes',
+            'sysdictionaryindexitems',
+            'sysdictionaryitems',
+            'sysdictionaryrelationshipfields',
+            'sysdictionaryrelationshiprelatefields',
+            'sysdictionaryrelationships',
+            'sysdomaindefinitions',
+            'sysdomainfields',
+            'sysdomainfieldvalidations',
+            'sysdomainfieldvalidationvalues',
+            'sysexchangemappingsegments',
+            'sysexchangemappingsegmentitems',
+            'sysexchangemappingmodules',
+            'syshooks',
+            'sysmailboxtransports',
             'sysmodulefilters',
+            'sysmodulelists',
+            'sysmodulemenus',
+            'sysmodules',
             'systemplatefunctions',
-            'sysuimodulerepository',
-            'sysuiobjectrepository',
-            'sysuiroutes',
-            'sysuicomponentsets',
-            'sysuicomponentsetscomponents',
-            'sysuifieldsets',
-            'sysuifieldsetsitems',
             'sysuiactionsets',
             'sysuiactionsetitems',
             'sysuiadmingroups',
             'sysuiadmincomponents',
             'sysuicomponentdefaultconf',
             'sysuicomponentmoduleconf',
+            'sysuimodulerepository',
+            'sysuiobjectrepository',
+            'sysuicomponentsets',
+            'sysuicomponentsetscomponents',
             'sysuicopyrules',
+            'sysuidashboarddashlets',
+            'sysuifieldsets',
+            'sysuifieldsetsitems',
             'sysuifieldtypemapping',
+            'sysuihtmlformats',
+            'sysuihtmlstylesheets',
             'sysuilibs',
+            'sysuiloadtaskitems',
+            'sysuiloadtasks',
+            'sysuimodulerepository',
+            'sysuiobjectrepository',
             'sysuirolemodules',
             'sysuiroles',
-            'sysuidashboarddashlets',
-            'syshooks',
-            'sysuiloadtasks',
-            'sysuiloadtaskitems',
-            'sysmailboxtransports',
-            'spiceaclstandardactions',
-            'systemplatefunctions'
+            'sysuiroutes',
+            'workflowtasktypes',
         ];
 
         $tableArray = [];
@@ -196,7 +216,7 @@ class ConfServerController
         $langs = explode(',', $args['language']);
 
         //$records = $db->query("SELECT * FROM $table WHERE version='$version'");
-        $records = $db->query("SELECT ll.id, ll.name, lt.syslanguage, lt.translation_default, lt.translation_short, lt.translation_long FROM syslanguagelabels ll, syslanguagetranslations lt WHERE ll.id = lt.syslanguagelabel_id AND lt.syslanguage in ('".implode("','", $langs)."')");
+        $records = $db->query("SELECT ll.id, ll.name, lt.syslanguage, lt.translation_default, lt.translation_short, lt.translation_long, lt.id translation_id FROM syslanguagelabels ll, syslanguagetranslations lt WHERE ll.id = lt.syslanguagelabel_id AND lt.syslanguage in ('".implode("','", $langs)."')");
         if (!$records) {
             return $langArray;
         }

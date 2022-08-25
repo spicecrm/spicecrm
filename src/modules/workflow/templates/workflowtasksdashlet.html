@@ -2,18 +2,34 @@
     <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
         <system-icon [module]="'Workflows'" [size]="'small'"></system-icon>
         <h2 class="slds-text-heading--medium slds-p-bottom--xx-small"><system-label-modulename module="WorkflowTasks"></system-label-modulename></h2>
+        <button class="slds-col--bump-left slds-button slds-button--icon-border" [disabled]="loading" (click)="loadWorkflows()">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
     </div>
     <div #itemcontainer class="slds-scrollable--y" [ngStyle]="containerStyle">
-        <div *ngFor="let workflowtask of workflowtasks" class="slds-p-around--x-small">
-            <div class="slds-media">
-                <div class="slds-media__figure ">
-                    <system-icon [module]="workflowtask.parent_type" [size]="'small'"></system-icon>
-                </div>
-                <div class="slds-media__body">
-                    <div class="slds-text-title_caps slds-text-link_reset" system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name}}</div>
-                    <div class="slds-text-body_small slds-line-height_reset">{{workflowtask.wfname}}&nbsp;/&nbsp;{{workflowtask.name}}</div>
+        <div class="slds-align--absolute-center slds-size--1-of-1 slds-height_full" *ngIf="loading; else loaded">
+            <system-spinner message="LBL_LOADING"></system-spinner>
+        </div>
+        <ng-template #loaded>
+            <div *ngFor="let workflowtask of workflowtasks; let i = index" class="slds-p-around--x-small">
+                <div class="slds-media" [ngClass]="{'slds-border--top slds-p-top--x-small': i > 0}">
+                    <system-icon [module]="workflowtask.parent_type"></system-icon>
+                    <div class="slds-media__body slds-grid slds-grid--align-spread slds-grid--vertical-align-start">
+                        <div>
+                            <div class="slds-text-title_caps slds-text-link_reset"><span system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name}}</span><workflow-task-status-icon [status]="workflowtask.workflowtask_status"></workflow-task-status-icon></div>
+                            <div class="slds-p-top--xxx-small slds-text-body_small slds-line-height_reset">{{workflowtask.workflow_name}}&nbsp;/&nbsp;{{workflowtask.name}}</div>
+                        </div>
+                        <div style="border-radius: 10px; height: 18px;" class="slds-timeline__date slds-p-horizontal--x-small slds-theme--shade"  [ngClass]="{'slds-theme--error' : isPast(workflowtask.date_due), 'slds-theme--warning' : isToday(workflowtask.date_due)}">
+                            <div class="slds-align--absolute-center"><system-display-datetime [date]="workflowtask.date_due"></system-display-datetime></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div *ngIf="workflowtasks.length == 0" class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                <system-illustration-no-task>
+                    <system-label label="LBL_NO_WORKFLOWTASKS"></system-label>
+                </system-illustration-no-task>
+            </div>
+        </ng-template>
     </div>
 </div>

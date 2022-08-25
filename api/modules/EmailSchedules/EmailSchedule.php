@@ -2,17 +2,13 @@
 namespace SpiceCRM\modules\EmailSchedules;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class EmailSchedule extends SugarBean
+class EmailSchedule extends SpiceBean
 {
-    public $module_dir = 'EmailSchedules';
-    public $object_name = 'EmailSchedule';
-    public $table_name = 'emailschedules';
-
     public function get_summary_text()
     {
         return $this->name;
@@ -32,7 +28,7 @@ class EmailSchedule extends SugarBean
      * @param $seed
      * @param $id
      * @param bool $saveEmail
-     * @return bool|SugarBean
+     * @return bool|SpiceBean
      */
     public function sendEmail($seed, $id, $saveEmail = false)
     {
@@ -77,7 +73,7 @@ class EmailSchedule extends SugarBean
         $email->new_with_id = true;
         // save or only send the email
         if($saveEmail){
-            $email->parent_type = $seed->module_dir;
+            $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
             $email->to_be_sent = true;
             $email->save();
@@ -95,7 +91,7 @@ class EmailSchedule extends SugarBean
      */
     public function sendQueuedEmails()
     {
-        $openEmailSchedules = $this->db->query("SELECT id from emailschedules WHERE email_schedule_status = 'open' AND deleted = 0 ORDER by date_modified DESC");
+        $openEmailSchedules = $this->db->limitQuery("SELECT id from emailschedules WHERE email_schedule_status = 'open' AND deleted = 0 ORDER by date_modified DESC", 0, 25);
         while ($openEmailSchedule = $this->db->fetchByAssoc($openEmailSchedules)) {
             $this->updateEmailScheduleStatus($openEmailSchedule['id'], 'processing');
             $status = $this->sendEmailScheduleEmails($openEmailSchedule['id']);

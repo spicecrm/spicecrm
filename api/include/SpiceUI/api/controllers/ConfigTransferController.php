@@ -7,12 +7,10 @@ use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\utils\DBUtils;
 
 class ConfigTransferController
 {
@@ -37,7 +35,7 @@ class ConfigTransferController
 
     static private $allTablenamesOfDB = null;
     static private $blacklistedTables = [];
-    static private $selectableTables = [];
+    static public $selectableTables = [];
 
     static private $backupFolder = 'backups/configtransfer/';
     static private $backupPrefix = 'configtransfer-backup-';
@@ -49,15 +47,9 @@ class ConfigTransferController
      */
     static function fetchAllTablenamesOfDB()
     {
-        $db = DBManagerFactory::getInstance();
         if (self::$allTablenamesOfDB !== null) return;
-        if ($db->dbType == 'oci8') {
-            $result = $db->query('SELECT table_name FROM user_tables ORDER BY TABLE_NAME');
-            while ($row = $db->fetchByAssoc($result)) self::$allTablenamesOfDB[] = strtolower($row['table_name']);
-        } else {
-            $result = $db->query(sprintf('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = "%s" ORDER BY TABLE_NAME', SpiceConfig::getInstance()->config['dbconfig']['db_name']));
-            while ($row = $db->fetchByAssoc($result)) self::$allTablenamesOfDB[] = $row['TABLE_NAME'];
-        }
+        self::$allTablenamesOfDB = DBManagerFactory::getInstance()->getTablesArray();
+        sort( self::$allTablenamesOfDB );
         foreach (self::$blacklistedTablesRegex as $k => $v) self::$blacklistedTablesRegex[$k] = '/^' . $v . '$/';
         foreach (self::$allTablenamesOfDB as $v) if (strpos($v, 'sys') === 0) {
             if (preg_filter(self::$blacklistedTablesRegex, '$0', $v)) self::$blacklistedTables[] = $v;
@@ -225,15 +217,15 @@ class ConfigTransferController
                     foreach ( $rows as $k2 => $v2 ) {
                         $vals = (array)$v2;
                         unset( $vals['date_indexed'] ); // The new records are not yet fts indexed, so no time stamp should be entered.
-                        if ( empty( $params['keepAssignedUser'] )) $vals['assigned_user_id'] = $currentUser->id;
+                        if ( empty( $params['keepAssignedUser'] ) and array_key_exists('assigned_user_id', $vals )) $vals['assigned_user_id'] = $currentUser->id;
                         # If keepEnteredModifiedInfo is not explicitly set,
                         # set the timestamps date_entered and date_modified to now
                         # and set the user that entered and modified to the current user:
                         if ( empty( $params['keepEnteredModifiedInfo'] )) {
-                            $vals['date_entered'] = $nowDb;
-                            $vals['date_modified'] = $nowDb;
-                            $vals['modified_user_id'] = $currentUser->id;
-                            $vals['created_by'] = $currentUser->id;
+                            if ( array_key_exists('date_entered', $vals )) $vals['date_entered'] = $nowDb;
+                            if ( array_key_exists('date_modified', $vals )) $vals['date_modified'] = $nowDb;
+                            if ( array_key_exists('modified_user_id', $vals )) $vals['modified_user_id'] = $currentUser->id;
+                            if ( array_key_exists('created_by', $vals )) $vals['created_by'] = $currentUser->id;
                         }
                         $db->upsertQuery($tablename, ["id" => $vals["id"]], $vals);
                         $numberLinesInserted++;

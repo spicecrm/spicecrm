@@ -10,12 +10,17 @@ import {
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
-import {popup} from '../../services/popup.service';
+import {modal} from '../../services/modal.service';
 
+/**
+ * @deprecated
+ *
+ * this shoudl no longer be used anywhere
+ */
 @Component({
     selector: 'object-select-button',
     templateUrl: '../templates/objectselectbutton.html',
-    providers: [model, popup]
+    providers: [model]
 })
 export class ObjectSelectButton implements OnInit {
 
@@ -25,25 +30,20 @@ export class ObjectSelectButton implements OnInit {
     displayModal: boolean = false;
     popupSubscribe: any = undefined;
 
-    constructor(public metadata: metadata, public popup: popup, public model: model) {}
+    constructor(public metadata: metadata, public model: model) {}
 
     ngOnInit() {
         this.model.module = this.module;
     }
 
-    getModuleSingular() {
-        if (this.displaymodulename)
-            return this.metadata.getModuleSingular(this.module);
-        else
-            return '';
-    }
-
     openModal() {
+        /*
         this.displayModal = true;
         this.popupSubscribe = this.popup.closePopup$.subscribe(() => {
             this.displayModal = false;
             this.popupSubscribe.unsubscribe();
         })
+        */
     }
 
     emitSelectedItems(event) {

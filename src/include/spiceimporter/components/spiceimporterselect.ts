@@ -29,6 +29,12 @@ export class SpiceImporterSelect {
      * @private
      */
     public isLoading: boolean = false;
+
+    /**
+     * holds file data
+     */
+    public file = null;
+
     /**
      * holds enclosure options
      * @private
@@ -82,7 +88,6 @@ export class SpiceImporterSelect {
         this.resetOptions();
         this.spiceImport.resetSettings();
     }
-
     /**
      * @return import template action
      */
@@ -118,7 +123,7 @@ export class SpiceImporterSelect {
      * @private
      */
     public setSavedImport(event) {
-        this.spiceImport.setSavedImport(event.srcElement.value);
+        this.spiceImport.setSavedImport(event.target.value);
     }
 
     /**
@@ -144,7 +149,12 @@ export class SpiceImporterSelect {
      */
     public loadFilePreview(file: { file_name: string, file_mime_type: string, file_md5?: string, file_size?: string, remove: () => void }) {
 
-        if (!file.file_mime_type.toLowerCase().includes('excel')) {
+        let fileType = file.file_name.toLowerCase();
+
+        this.file = file;
+
+        // if (!file.file_mime_type.toLowerCase().includes('excel')) { // commented out since issues with file_mime_type in multiple browsers
+        if (!fileType.endsWith('.csv')) {
             this.toast.sendToast(this.language.getLabel('MSG_ONLY_CSV_ALLOWED'), 'error');
             return file.remove();
         }

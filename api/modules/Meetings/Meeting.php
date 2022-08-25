@@ -2,17 +2,12 @@
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\Meetings;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use DateTime;
 use SpiceCRM\includes\TimeDate;
 
-class Meeting extends SugarBean
+class Meeting extends SpiceBean
 {
-
-    var $table_name = "meetings";
-    var $module_dir = "Meetings";
-    var $object_name = "Meeting";
-
     var $date_changed = false;
 
     // save date_end by calculating user input
@@ -46,6 +41,10 @@ class Meeting extends SugarBean
             }
         }
 
+        # reset the email_reminder_sent flag, in case the start date has been changed
+        if ( !empty( $this->fetched_row['date_start'] ) and $this->email_reminder_sent and $this->date_start !== $this->fetched_row['date_start'] ) {
+            $this->email_reminder_sent = false;
+        }
 
         $return_id = parent::save($check_notify, $fts_index_bean);
 
