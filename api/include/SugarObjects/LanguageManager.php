@@ -156,4 +156,14 @@ class LanguageManager
     }
 
 
+    /**
+     * checks if a label is already defined
+     * @param $label
+     * @return false
+     * @throws \Exception
+     */
+    public static function checkLabelExists(string $label) {
+        $db = DBManagerFactory::getInstance();
+        return $db->getOne("SELECT id FROM (select id, name from syslanguagelabels UNION select id, name from syslanguagecustomlabels) tblabels WHERE name='$label'");
+    }
 }
