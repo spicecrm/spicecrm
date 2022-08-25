@@ -140,7 +140,7 @@ class SpiceConfig
             if ($db) {
                 $result = $db->query("SELECT * FROM config");
                 while ($configEntry = $db->fetchByAssoc($result)) {
-                    $dbconfig[$configEntry['category']][$configEntry['name']] = $configEntry['value'];
+                    $dbconfig[$configEntry['category']][$configEntry['name']] = $this->convertValue($configEntry['value']);
                 }
             }
 
@@ -153,6 +153,29 @@ class SpiceConfig
         return true;
     }
 
+    /**
+     * db values will all be strings....
+     * make sure a "true" will be set as a boolean
+     * make sure a "1" will be set as an integer
+     * @return void
+     */
+    public function convertValue($value){
+        switch($value){
+            case 'true':
+                $value = true;
+                break;
+            case 'false':
+                $value = false;
+                break;
+            case '1':
+                $value = 1;
+                break;
+            case '0':
+                $value = 0;
+                break;
+        }
+        return $value;
+    }
 
 
     /**
