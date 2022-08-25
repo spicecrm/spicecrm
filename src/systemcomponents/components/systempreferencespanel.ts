@@ -34,7 +34,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * holds a list of time formats
      * @protected
      */
-    public timeFormatList: Array<{ name: string, value: string }> = [
+    public timeFormatList: { name: string, value: string }[] = [
         {name: moment().format('HH:mm'), value: 'H:i'},
         {name: moment().format('hh:mma'), value: 'h:ia'},
         {name: moment().format('hh:mmA'), value: 'h:iA'},
@@ -46,7 +46,7 @@ export class SystemPreferencesPanel implements OnChanges {
         {name: moment().format('hh.mm a'), value: 'h.i a'},
         {name: moment().format('hh.mm A'), value: 'h.i A'}
     ];
-    public dateFormatList: Array<{ name: string, value: string }> = [
+    public dateFormatList: { name: string, value: string }[] = [
         {name: moment().format('YYYY-MM-DD'), value: 'Y-m-d'},
         {name: moment().format('MM-DD-YYYY'), value: 'm-d-Y'},
         {name: moment().format('DD-MM-YYYY'), value: 'd-m-Y'},
@@ -118,7 +118,7 @@ export class SystemPreferencesPanel implements OnChanges {
      * holds the name formats
      * @private
      */
-    public nameFormats: Array<{ name: string, example: string }> = [];
+    public nameFormats: { name: string, example: string }[] = [];
 
     /**
      * holds the example text for the name
