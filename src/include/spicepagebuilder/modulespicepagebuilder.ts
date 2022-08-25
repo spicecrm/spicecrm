@@ -7,29 +7,29 @@ import {NgModule} from '@angular/core';
 import {ObjectFields} from '../../objectfields/objectfields';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 
-import /*embed*/ * as interfaces from './interfaces/spicepagebuilder.interfaces';
+import * as interfaces from './interfaces/spicepagebuilder.interfaces';
 
-import /*embed*/ {SpicePageBuilderService} from './services/spicepagebuilder.service';
+import {SpicePageBuilderService} from './services/spicepagebuilder.service';
 
-import /*embed*/ {SpicePageBuilderInputText} from './components/spicepagebuilderinputtext';
-import /*embed*/ {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
-import /*embed*/ {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
-import /*embed*/ {SpicePageBuilderElement} from './components/spicepagebuilderelement';
-import /*embed*/ {SpicePageBuilderElementImage} from './components/spicepagebuilderelementimage';
-import /*embed*/ {SpicePageBuilderElementText} from './components/spicepagebuilderelementtext';
-import /*embed*/ {SpicePageBuilderElementDivider} from './components/spicepagebuilderelementdivider';
-import /*embed*/ {SpicePageBuilderElementSpacer} from './components/spicepagebuilderelementspacer';
-import /*embed*/ {SpicePageBuilderElementButton} from './components/spicepagebuilderelementbutton';
-import /*embed*/ {SpicePageBuilderElementCode} from './components/spicepagebuilderelementcode';
-import /*embed*/ {SpicePageBuilderElementColumn} from './components/spicepagebuilderelementcolumn';
-import /*embed*/ {SpicePageBuilderElementSection} from './components/spicepagebuilderelementsection';
-import /*embed*/ {SpicePageBuilderElementBody} from './components/spicepagebuilderelementbody';
-import /*embed*/ {SpicePageBuilderRenderer} from './components/spicepagebuilderrenderer';
-import /*embed*/ {SpicePageBuilderPanel} from './components/spicepagebuilderpanel';
-import /*embed*/ {SpicePageBuilderEditor} from './components/spicepagebuildereditor';
-import /*embed*/ {SpicePageBuilder} from './components/spicepagebuilder';
+import {SpicePageBuilderInputText} from './components/spicepagebuilderinputtext';
+import {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
+import {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
+import {SpicePageBuilderElement} from './components/spicepagebuilderelement';
+import {SpicePageBuilderElementImage} from './components/spicepagebuilderelementimage';
+import {SpicePageBuilderElementText} from './components/spicepagebuilderelementtext';
+import {SpicePageBuilderElementDivider} from './components/spicepagebuilderelementdivider';
+import {SpicePageBuilderElementSpacer} from './components/spicepagebuilderelementspacer';
+import {SpicePageBuilderElementButton} from './components/spicepagebuilderelementbutton';
+import {SpicePageBuilderElementCode} from './components/spicepagebuilderelementcode';
+import {SpicePageBuilderElementColumn} from './components/spicepagebuilderelementcolumn';
+import {SpicePageBuilderElementSection} from './components/spicepagebuilderelementsection';
+import {SpicePageBuilderElementBody} from './components/spicepagebuilderelementbody';
+import {SpicePageBuilderRenderer} from './components/spicepagebuilderrenderer';
+import {SpicePageBuilderPanel} from './components/spicepagebuilderpanel';
+import {SpicePageBuilderEditor} from './components/spicepagebuildereditor';
+import {SpicePageBuilder} from './components/spicepagebuilder';
 
-import /*embed*/ {fieldPageBuilder} from './fields/fieldpagebuilder';
+import {fieldPageBuilder} from './fields/fieldpagebuilder';
 
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";

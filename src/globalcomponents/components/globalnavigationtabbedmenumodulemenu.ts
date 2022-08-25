@@ -7,7 +7,7 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges,
+    OnChanges, OnInit,
     Output,
     QueryList,
     ViewChildren
@@ -16,6 +16,7 @@ import {Router} from "@angular/router";
 import {metadata} from '../../services/metadata.service';
 import {recent} from '../../services/recent.service';
 import {model} from '../../services/model.service';
+import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {favorite} from '../../services/favorite.service';
 import {broadcast} from '../../services/broadcast.service';
@@ -26,7 +27,7 @@ import {GlobalNavigationMenuItemActionContainer} from "./globalnavigationmenuite
 @Component({
     selector: 'global-navigation-tabbed-module-menu',
     templateUrl: '../templates/globalnavigationtabbedmenumodulemenu.html',
-    providers: [model],
+    providers: [model, view],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
@@ -34,50 +35,56 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
     /**
      * reference to the container item where the indivvidual components can be rendered into dynamically
      */
-    @ViewChildren(GlobalNavigationMenuItemActionContainer)public menuItemlist: QueryList<GlobalNavigationMenuItemActionContainer>;
+    @ViewChildren(GlobalNavigationMenuItemActionContainer) public menuItemlist: QueryList<GlobalNavigationMenuItemActionContainer>;
 
     /**
      * the module to display the menu for
      */
-    @Input()public module: string;
+    @Input() public module: string;
 
     /**
      * emits if the users select an action or navigates away
      */
-    @Output()public actionTriggered: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public actionTriggered: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * the menuitems loaded from the compnentconfig
      */
-   public itemMenu: any[] = [];
+    public itemMenu: any[] = [];
 
     /**
      * indicator if the recent items are loaded
      */
-   public loadingRecent: boolean = false;
+    public loadingRecent: boolean = false;
 
     /**
      * the list of recent items for the module
      */
-   public recentitems: any[] = [];
+    public recentitems: any[] = [];
 
     /**
      * the list of favorites for the module
      */
-   public favorites: any[] = [];
+    public favorites: any[] = [];
+
+    /**
+     * the fieldset to be used
+     */
+    public displayfieldset: string;
 
     constructor(
-       public metadata: metadata,
-       public model: model,
-       public broadcast: broadcast,
-       public navigation: navigation,
-       public router: Router,
-       public language: language,
-       public recent: recent,
-       public favorite: favorite,
-       public cdRef: ChangeDetectorRef
+        public metadata: metadata,
+        public model: model,
+        public view: view,
+        public broadcast: broadcast,
+        public navigation: navigation,
+        public router: Router,
+        public language: language,
+        public recent: recent,
+        public favorite: favorite,
+        public cdRef: ChangeDetectorRef
     ) {
-
+        this.view.displayLabels = false;
     }
 
     /**
@@ -90,6 +97,8 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
 
         return false;
     }
+
+
 
     /**
      * when the module changes reload the menu, recent items and favorites
@@ -106,6 +115,14 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
             this.itemMenu = this.metadata.getActionSetItems(componentconfig.actionset);
         } else {
             this.itemMenu = this.metadata.getModuleMenu(this.module);
+        }
+
+        if(componentconfig.displayfieldset){
+            this.displayfieldset = componentconfig.displayfieldset;
+        } else {
+            // get the fieldconfig
+            let dconfig = this.metadata.getComponentConfig('GlobalHeaderSearchResultsItem', this.module);
+            this.displayfieldset = dconfig.mainfieldset;
         }
 
         // load the recent items
@@ -138,7 +155,7 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
      * propagets the click to the respective item
      * @param actionid
      */
-   public propagateclick(actionid) {
+    public propagateclick(actionid) {
         // trigger the click
         this.menuItemlist.find(actionitem => actionitem.id == actionid)?.execute();
 
@@ -169,12 +186,13 @@ export class GlobalNavigationTabbedMenuModuleMenu implements OnChanges {
         }
         return false;
     }
+
     /**
      * open a record with the given id from either tha favorites or the recent items
      *
      * @param recentid
      */
-   public openRecord(recentid) {
+    public openRecord(recentid) {
         // route to the record
         this.router.navigate(['/module/' + this.module + '/' + recentid]);
 

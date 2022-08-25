@@ -4,24 +4,15 @@
 namespace SpiceCRM\modules\Products;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 
-class Product extends SugarBean {
+class Product extends SpiceBean {
 
-    public $table_name = "products";
-    public $object_name = "Product";
-    public $module_dir = 'Products';
-    public $unformated_numbers = true;
+//    public $unformated_numbers = true;
 
     public $left_node_id;
     public $right_node_id;
-
-
-    public function __construct() {
-        parent::__construct();
-    }
-
 
     public function bean_implements($interface) {
         switch($interface) {

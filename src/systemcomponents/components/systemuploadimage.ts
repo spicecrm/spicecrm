@@ -140,14 +140,14 @@ export class SystemUploadImage implements OnDestroy {
                 enableExif: true,
                 enableOrientation: true,
                 enableZoom: true,
-                enforceBoundary: true,
+                enforceBoundary: false,
                 mouseWheelZoom: true,
                 showZoomer: true,
                 enableResize: this.cropresize,
                 viewport: {
                     width: this.cropwidth,
                     height: this.cropheight,
-                    type: 'circle'
+                    type: this.croptype
                 },
                 boundary: {
                     height: this.cropheight * 2

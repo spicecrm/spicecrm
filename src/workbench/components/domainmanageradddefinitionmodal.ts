@@ -27,7 +27,7 @@ export class DomainManagerAddDefinitionModal {
     public domaindefinition: any = {
         name: '',
         fieldtype: '',
-        scope: 'g',
+        scope: 'c',
         deleted: 0,
         status: 'd'
     };

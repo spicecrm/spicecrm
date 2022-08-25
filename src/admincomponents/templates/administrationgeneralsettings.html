@@ -54,10 +54,18 @@
         </h3>
         <div class="slds-section__content">
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
-                <div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">
-                    <system-label label="LBL_DEVELOPER_MODE"></system-label>
-                    <div class="slds-p-vertical--xx-small">
-                        <system-checkbox [(ngModel)]="settings.advanced.developerMode"></system-checkbox>
+                <div class="slds-p-around--x-small">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_DEVELOPER_MODE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="settings.advanced.developerMode">
+                                    <option value="0">off</option>
+                                    <option value="1">on</option>
+                                    <option value="2">on Request</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">
@@ -113,7 +121,7 @@
                         <div class="slds-form-element__control slds-size--1-of-2 slds-p-around--x-small">
                             <system-label label="LBL_LOGFILE_MAX_SIZE"></system-label>
                             <div class="slds-grid slds-grid--vertical-align-center">
-                                <system-input-integer class="slds-grow" autocomplete="off" [(ngModel)]="maxSize"></system-input-integer>
+                                <system-input-integer class="slds-grow" autocomplete="off" [(ngModel)]="loggerMaxSize"></system-input-integer>
                                 <div class="slds-p-left--x-small">MB</div>
                             </div>
                         </div>

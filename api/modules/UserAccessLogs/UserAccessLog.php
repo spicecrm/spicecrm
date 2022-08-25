@@ -3,19 +3,16 @@
 
 namespace SpiceCRM\modules\UserAccessLogs;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class UserAccessLog extends SugarBean
+class UserAccessLog extends SpiceBean
 {
-    public $object_name = 'UserAccessLog';
-    public $table_name = 'useraccesslogs';
     public $disable_row_level_security = true;
-    public $module_dir = 'UserAccessLogs';
 
     public function __construct()
     {
@@ -73,7 +70,7 @@ class UserAccessLog extends SugarBean
 //            $now = Timedate::getInstance()->asDb($dtObj);
 
             $dtObj = TimeDate::getInstance()->getNow();
-            $dtObj->sub(new DateInterval('PT'.$interval.'M'));
+            $dtObj->sub(new \DateInterval('PT'.$interval.'M'));
             $calculatedDate = TimeDate::getInstance()->asDb($dtObj);
 
 //            return (int)$db->getOne('SELECT COUNT(0) FROM useraccesslogs WHERE date_entered > DATE_SUB( "'.$now.'", INTERVAL '.$interval.' MINUTE ) AND action="loginfail" AND ipaddress = "'.$db->quote($ipAddress).'"');

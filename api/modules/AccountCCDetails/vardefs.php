@@ -12,7 +12,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
             'vname' => 'LBL_ACCOUNT_ID',
             'type' => 'id',
             'reportable' => false,
-            'massupdate' => false,
             'duplicate_merge' => 'disabled',
         ],
         'account_name' => [
@@ -29,8 +28,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
             'dbType' => 'varchar',
             'len' => '255',
             'source' => 'non-db',
-            'unified_search' => true,
-            'massupdate' => false,
         ],
         'accounts' => [
             'name' => 'accounts',
@@ -40,7 +37,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'account_classification' => [
             'name' => 'account_classification',
@@ -67,8 +63,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
             'dbType' => 'varchar',
             'len' => '12',
             'source' => 'non-db',
-            'unified_search' => true,
-            'massupdate' => false,
         ],
         'companycodes' => [
             'name' => 'companycodes',
@@ -78,7 +72,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'abccategory' => [
             'name' => 'abccategory',

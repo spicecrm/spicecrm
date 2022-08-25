@@ -77,11 +77,12 @@ export class GlobalLogin {
    public messageId: string;
 
     /**
-     * indicator to show the new password dialog
+     * indicators to show the dialog for the new password or the TOTP generation
      *
      * @private
      */
-   public renewpassword: boolean = false;
+   public renewPassword = false;
+   public generateTOTP = false;
 
     /**
      * inidcates that we are in the login process
@@ -89,6 +90,11 @@ export class GlobalLogin {
      * @private
      */
    public loggingIn: boolean = false;
+
+    /**
+     * Specific labels got from the backend.
+     */
+   public labels: any;
 
     constructor(public loginService: loginService,
                public http: HttpClient,
@@ -101,32 +107,26 @@ export class GlobalLogin {
                public changeDetectorRef: ChangeDetectorRef
     ) {
         if (sessionStorage['OAuth-Token']) {
-            if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
-                this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
-            }
 
             // try to login with the found token
             this.loginService.oauthToken = sessionStorage['OAuth-Token'];
             this.loginService.oauthIssuer = 'SpiceCRM';
-            this.loginService.login().subscribe(
-                res => {
+            this.loginService.login(false).subscribe({
+                next: (res) => {
                     this.broadcast.broadcastMessage('login');
-                    this.loginService.load();
+                    // this.loginService.load();
                 },
-                err => {
+                error: (err) => {
                     this.loginService.oauthToken = null;
                     this.loginService.oauthIssuer = null;
+
+                    // set that we propmt the user
                     this.promptUser = true;
                 }
-            );
+            });
         } else {
+            // set that we propmt the user
             this.promptUser = true;
-
-            let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
-            let selectedsite = sessionStorage.getItem(siteHash);
-            if (this.selectedsite) {
-                this.configuration.setSiteID(this.selectedsite);
-            }
         }
 
         // check the last selected language from the Cookie
@@ -167,15 +167,15 @@ export class GlobalLogin {
                 this.loginService.oauthToken = null;
                 this.loginService.oauthIssuer = null;
             }
-            this.loginService.login().subscribe(
-                success => {
+            this.loginService.login().subscribe({
+                next: (success) => {
                     // clear all toasts
                     this.toast.clearAll();
 
                     // reset the logging in state
                     this.loggingIn = false;
                 },
-                error => {
+                error: (error) => {
                     switch (error.errorCode) {
                         // invalid password/user
                         case 1:
@@ -183,75 +183,27 @@ export class GlobalLogin {
                             break;
                         // password expired
                         case 2:
-                            this.renewpassword = true;
+                            this.labels = error.details?.labels;
+                            this.renewPassword = true;
+                            this.generateTOTP = false;
+                            break;
+                        // TOTP authentication required
+                        case 12:
+                            this.labels = error.details?.labels;
+                            this.renewPassword = false;
+                            this.generateTOTP = true;
                             break;
                         default:
                             this.messageId = this.toast.sendToast('error logging on', 'error', error.message);
                             break;
                     }
-
                     // reset the logging in state
                     this.loggingIn = false;
                 }
-            );
+            });
         }
     }
 
-    /**
-     * setter for the selected language
-     *
-     * @param value the language code
-     */
-    set selectedlanguage(value) {
-        this._selectedlanguage = value;
-        this.language.currentlanguage = value;
-    }
-
-    /**
-     * getter for the selected language
-     */
-    get selectedlanguage() {
-        if (!this._selectedlanguage) {
-            if (this.lastSelectedLanguage) {
-                this.selectedlanguage = this.lastSelectedLanguage;
-            } else if (this.configuration.data.languages) {
-                this.selectedlanguage = this.configuration.data.languages.default;
-            }
-        }
-        return this._selectedlanguage;
-    }
-
-    /**
-     * returns the available languages for the chosen backend system
-     */
-   public getLanguages() {
-        let langArray = [];
-
-        if (this.configuration.data.languages) {
-            // this.selectedlanguage = this.configuration.data.languages.default;
-            for (let language of this.configuration.data.languages.available) {
-                langArray.push({
-                    language: language.language_code,
-                    text: language.language_name
-                });
-            }
-        }
-        return langArray;
-    }
-
-    /**
-     * returns thecurrent site id from the configuration service
-     */
-    get currentSiteId() {
-        return this.configuration.data.id;
-    }
-
-    /**
-     * helpe to retrieve all available sites from teh configuration service
-     */
-    get sites() {
-        return this.configuration.sites;
-    }
 
    public getBackendUrls() {
         if (this.configuration.data.backendUrls) {
@@ -261,14 +213,6 @@ export class GlobalLogin {
         }
     }
 
-    /**
-     * setter for the new site id. This sets the site id in the configuration service and triggers detection of the baakcned extensions, languages and capabilities
-     *
-     * @param event
-     */
-   public setSite(event) {
-        this.configuration.setSiteID(event.srcElement.value);
-    }
 
     /**
      * toggles the forgotten password screen elements
@@ -321,7 +265,7 @@ export class GlobalLogin {
     }
 
     public handleRenewDialogClose(password?: string) {
-        this.renewpassword = false;
+        this.renewPassword = this.generateTOTP = false;
         if (!!password) {
             this.password = password;
             this.login();

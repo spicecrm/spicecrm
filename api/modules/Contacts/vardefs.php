@@ -110,7 +110,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'dbType' => 'id',
                 'reportable' => false,
                 'source' => 'non-db',
-                'massupdate' => false,
                 'duplicate_merge' => 'disabled',
                 'hideacl' => true,
             ],
@@ -126,14 +125,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'importable' => 'false',
                 'duplicate_merge' => 'disabled',
-                'studio' => false,
             ],
             'opportunity_role_id' => [
                 'name' => 'opportunity_role_id',
                 'type' => 'varchar',
                 'source' => 'non-db',
                 'vname' => 'LBL_OPPORTUNITY_ROLE_ID',
-                'studio' => ['listview' => false],
             ],
             // Opportunities link olus related non db bfelder
             'opportunities' => [
@@ -221,7 +218,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
             'birthdate' => [
                 'name' => 'birthdate',
                 'vname' => 'LBL_BIRTHDATE',
-                'massupdate' => false,
                 'type' => 'date',
                 'comment' => 'The birthdate of the contact'
             ],
@@ -430,7 +426,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'table' => 'campaigns',
                 'isnull' => 'true',
                 'module' => 'Campaigns',
-                'massupdate' => false,
                 'duplicate_merge' => 'disabled',
             ],
             'campaign_name' => [
@@ -475,7 +470,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'importable' => 'false',
                 'duplicate_merge' => 'disabled',
-                'studio' => false,
             ],
             'm_accept_status_fields' => [
                 'name' => 'm_accept_status_fields',
@@ -489,20 +483,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'importable' => 'false',
                 'hideacl' => true,
                 'duplicate_merge' => 'disabled',
-                'studio' => false,
             ],
             'accept_status_id' => [
                 'name' => 'accept_status_id',
                 'type' => 'varchar',
                 'source' => 'non-db',
                 'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'studio' => ['listview' => false],
             ],
             'accept_status_name' => [
-                'massupdate' => false,
                 'name' => 'accept_status_name',
                 'type' => 'enum',
-                'studio' => 'false',
                 'source' => 'non-db',
                 'vname' => 'LBL_LIST_ACCEPT_STATUS',
                 'options' => 'dom_meeting_accept_status',
@@ -522,19 +512,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 ]
             ],
             'sync_contact' => [
-                'massupdate' => false,
                 'name' => 'sync_contact',
                 'vname' => 'LBL_SYNC_CONTACT',
                 'type' => 'bool',
                 'source' => 'non-db',
                 'comment' => 'Synch to outlook?  (Meta-Data only)',
-                'studio' => 'true',
             ],
             'eventregistrations' => [
                 'name' => 'eventregistrations',
-                'vname' => 'LBL_EVENTREGISTRATOINS_LINK',
+                'vname' => 'LBL_EVENTREGISTRATIONS',
                 'type' => 'link',
-                'relationship' => 'eventregistration_contact_rel',
+                'relationship' => 'contact_eventregistrations',
                 'source' => 'non-db',
             ],
             'ext_id' => [
@@ -640,7 +628,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'dbType' => 'id',
                 'reportable' => false,
                 'source' => 'non-db',
-                'massupdate' => false
             ),
             */
             /*
@@ -900,7 +887,6 @@ if (file_exists("extensions/modules/ContactCCDetails")) {
         'link_type' => 'one',
         'source' => 'non-db',
         'duplicate_merge' => 'disabled',
-        'massupdate' => false,
         'default' => true, //UI: load related beans on contact load. module property required!
         'module' => 'ContactCCDetails'
     ];

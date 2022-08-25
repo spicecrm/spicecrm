@@ -37,19 +37,16 @@
 namespace SpiceCRM\modules\Users;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\ACLActions\ACLAction;
-use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\UserPreferences\UserPreference;
+use DateInterval;
 
 // workaround for spiceinstaller
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -59,10 +56,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 // User is used to store customer information.
 class User extends Person
 {
-
-    var $table_name = "users";
-    var $module_dir = 'Users';
-    var $object_name = "User";
     var $user_preferences;
     var $impersonating_user_id;
 
@@ -77,7 +70,7 @@ class User extends Person
 
     protected function _loadUserPreferencesFocus()
     {
-        $this->_userPreferenceFocus = new UserPreference($this);
+        $this->_userPreferenceFocus = BeanFactory::getBean('UserPreferences')->setUser($this);
     }
 
     /**
@@ -239,17 +232,19 @@ class User extends Person
      *
      */
     public function getPreference(
-        $name, $category = 'global'
-    )
-    {
+        $name,
+        $category = 'global',
+        $fallBackToSystem = false,
+        $default = null
+    ) {
         // for BC
-        if (func_num_args() > 2) {
+        if (func_num_args() > 2 and !is_bool( $fallBackToSystem )) {
             $user = func_get_arg(2);
             LoggerManager::getLogger()->deprecated('User::getPreference() should not be used statically.');
         } else
             $user = $this;
 
-        return $user->_userPreferenceFocus->getPreference($name, $category);
+        return $user->_userPreferenceFocus->getPreference($name, $category, $fallBackToSystem, $default );
     }
 
 
@@ -257,7 +252,7 @@ class User extends Person
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        if (!isset($GLOBALS['installing']) && $current_user !== null) {
+        if (!SpiceConfig::getInstance()->installing && $current_user !== null) {
             if ($current_user->isAdmin()) {
                 if (isset($this->UserType[0])) {
                     switch ($this->UserType) {
@@ -416,7 +411,7 @@ class User extends Person
     {
         if (empty($user_hash))
             return false;
-        if ($user_hash[0] != '$' && strlen($user_hash) == 32) {
+        if (substr($user_hash, 0, 1) != '$' && strlen($user_hash) == 32) {
             // Old way - just md5 password
             return strtolower($password_md5) == $user_hash;
         }
@@ -466,7 +461,7 @@ class User extends Person
         $this->savePreferencesToDB();
         //set new password
         $now = TimeDate::getInstance()->nowDb();
-        $query = "UPDATE $this->table_name SET user_hash='$user_hash', system_generated_password='$system_generated', pwd_last_changed='$now' where id='$this->id'";
+        $query = "UPDATE $this->_tablename SET user_hash='$user_hash', system_generated_password='$system_generated', pwd_last_changed='$now' where id='$this->id'";
         $this->db->query($query, true, "Error setting new password for $this->user_name: ");
         $_SESSION['hasExpiredPassword'] = '0';
 
@@ -527,52 +522,6 @@ class User extends Person
 
 
     /**
-     * Helper function that enumerates the list of modules and checks if they are an admin/dev.
-     * The code was just too similar to copy and paste.
-     *
-     * @return array
-     */
-    protected function _getModulesForACL($type = 'dev')
-    {
-        $isDev = $type == 'dev';
-        $isAdmin = $type == 'admin';
-
-        $myModules = [];
-
-        // These modules don't take kindly to the studio trying to play about with them.
-        static $ignoredModuleList = ['iFrames', 'Feeds', 'Home', 'Dashboard', 'Calendar', 'Activities', 'Reports'];
-
-        $actions = ACLAction::getUserActions($this->id);
-
-        foreach (SpiceModules::getInstance()->getBeanList() as $module => $val) {
-            // Remap the module name
-            $module = $this->_fixupModuleForACL($module);
-            if (in_array($module, $myModules)) {
-                // Already have the module in the list
-                continue;
-            }
-            if (in_array($module, $ignoredModuleList)) {
-                // You can't develop on these modules.
-                continue;
-            }
-
-            $focus = BeanFactory::getBean($module);
-            if ($focus instanceof SugarBean) {
-                $key = $focus->acltype;
-            } else {
-                $key = 'module';
-            }
-
-            if (($this->isAdmin() && isset($actions[$module][$key]))
-            ) {
-                $myModules[] = $module;
-            }
-        }
-
-        return $myModules;
-    }
-
-    /**
      * Is this user a system wide admin
      *
      * @return bool
@@ -585,47 +534,6 @@ class User extends Person
         return false;
     }
 
-    /**
-     * List the modules a user has admin access to
-     *
-     * @return array
-     */
-    public function getAdminModules()
-    {
-        if (!isset($_SESSION[$this->user_name . '_get_admin_modules_for_user'])) {
-            $_SESSION[$this->user_name . '_get_admin_modules_for_user'] = $this->_getModulesForACL('admin');
-        }
-
-        return $_SESSION[$this->user_name . '_get_admin_modules_for_user'];
-    }
-
-    /**
-     * Is this user an admin for the specified module
-     *
-     * @return bool
-     */
-    public function isAdminForModule($module)
-    {
-        if (empty($this->id)) {
-            // empty user is no admin
-            return false;
-        }
-        if ($this->isAdmin()) {
-            return true;
-        }
-
-        $adminModules = $this->getAdminModules();
-
-        if (in_array($module, $adminModules)) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-//   function create_new_list_query($order_by, $where,$filter=[],$params=[], $show_deleted = 0,$join_type='', $return_array = false,$parentbean=null, $singleSelect = false)
-//   {	//call parent method, specifying for array to be returned
     function create_new_list_query($order_by, $where, $filter = [], $params = [], $show_deleted = 0, $join_type = '', $return_array = false, $parentbean = null, $singleSelect = false, $ifListForExport = false)
     {
 
@@ -845,10 +753,10 @@ class User extends Person
     public static function usernameAlreadyExists($username, $userIdToIgnore)
     {
         $db = DBManagerFactory::getInstance();
-        $sql = 'SELECT id,user_name FROM users WHERE status = \'Active\' AND deleted = 0';
+        $sql = "SELECT id,user_name FROM users WHERE status = 'Active' AND deleted = 0";
         if (!empty($userIdToIgnore))
-            $sql .= ' AND id <> "' . $db->quote($userIdToIgnore) . '"';
-        $sql .= ' AND LOWER(user_name) = "' . $db->quote(mb_strtolower($username)) . '"';
+            $sql .= " AND id <> '".$db->quote($userIdToIgnore) . "'";
+        $sql .= "AND LOWER(user_name) = '" . $db->quote(mb_strtolower($username)) . "'";
         $user = $db->fetchOne($sql);
         return $user !== false;
     }
@@ -866,7 +774,7 @@ class User extends Person
     {
         $db = DBManagerFactory::getInstance();
 
-        $sql = "SELECT * FROM users WHERE LOWER(CONCAT(first_name, ' ' , last_name)) LIKE LOWER('" . $name . "')";
+        $sql = "SELECT * FROM users WHERE LOWER(CONCAT(first_name, ' ' , last_name)) LIKE LOWER('{$name}')";
         $result = $db->query($sql);
 
         if ($result->num_rows > 0) {
@@ -905,12 +813,14 @@ class User extends Person
      */
     public static function blockUserByName( $username, $blockingDuration = null ) {
         $user = BeanFactory::getBean('Users');
-        $user->findByUserName( $username );
+        // if we do not find the user return .. causes empty users to be created
+        if(!$user->findByUserName( $username )){
+            return;
+        }
 
+        // set a block end date
         if ( $blockingDuration ) {
-            $dtObj=new \DateTime();
-            $dtObj->setTimestamp(time()+$blockingDuration*60);
-            $user->login_blocked_until = Timedate::getInstance()->asDb($dtObj);
+            $user->login_blocked_until = date_create()->add(new DateInterval("PT{$blockingDuration}S"))->format(TimeDate::DB_DATETIME_FORMAT);
         } else {
             $user->login_blocked = true;
         }

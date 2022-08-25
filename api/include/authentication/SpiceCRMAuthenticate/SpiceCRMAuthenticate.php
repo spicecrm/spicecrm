@@ -26,7 +26,7 @@ class SpiceCRMAuthenticate
         session_start();
         if (isset($_SESSION['authenticated_user_id'])) {
             /** @var User $userObj */
-            $userObj = BeanFactory::getBean("Users", $_SESSION['user_id'], ['relationships' => false]);
+            $userObj = BeanFactory::getBean("Users", $_SESSION['user_id'], ['relationships' => true]);
         } else {
             throw new SessionExpiredException("Session Expired",0);
         }
@@ -48,8 +48,6 @@ class SpiceCRMAuthenticate
         $_SESSION['user_id'] = $userObj->id;
         $_SESSION['type'] = 'user';
         $_SESSION['KREST'] = true;
-
-        SpiceACL::getInstance()->filterModuleList($_SESSION['avail_modules'], false);
 
         $_SESSION['authenticated_user_id'] = $userObj->id;
         $_SESSION['unique_key'] = SpiceConfig::getInstance()->config['unique_key'];

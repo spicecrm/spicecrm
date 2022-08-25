@@ -56,7 +56,7 @@ class UsersPreferencesController
             }
         }
 
-        $userPreference = new UserPreference( $user );
+        $userPreference = BeanFactory::getBean('UserPreferences')->setUser( $user );
 
         $prefArray = [];
 
@@ -80,7 +80,7 @@ class UsersPreferencesController
             }
         }
 
-        $userPreference = new UserPreference( $user );
+        $userPreference = BeanFactory::getBean('UserPreferences')->setUser( $user );
 
         $prefArray = [];
 
@@ -127,7 +127,7 @@ class UsersPreferencesController
             }
         }
 
-        $userPreference = new UserPreference( $user );
+        $userPreference = BeanFactory::getBean('UserPreferences')->setUser( $user );
         $retData = [];
         // do the magic
         foreach ($preferences as $name => $value) {

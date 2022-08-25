@@ -3,6 +3,7 @@
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\CampaignTasks\api\controllers\CampaignTasksController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 /**
  * get a Rest Manager Instance
@@ -12,7 +13,7 @@ $RESTManager = RESTManager::getInstance();
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('campaigntasks', '1.0');
+$RESTManager->registerExtension('campaigntasks', '1.0', ['pdflimit' => SpiceConfig::getInstance()->config['mailmerge']['pdflimit']]);
 
 $routes = [
     [

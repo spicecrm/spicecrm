@@ -1,5 +1,6 @@
 <?php
 
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCronJobs\SpiceCronJobs;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -29,16 +30,21 @@ if (!SpiceConfig::getInstance()->configExists()) {
     sugar_die("No system config found.");
 }
 
+DBManagerFactory::setDBConfig();
+
+SpiceConfig::getInstance()->reloadConfig();
+
 date_default_timezone_set('UTC');
 
 /**
  * ------- load initial classes -------
  */
-SpiceConfig::getInstance()->loadConfigFromDB();
+SpiceConfig::getInstance();
 SpiceDictionaryHandler::loadMetaDataFiles();
 UploadStream::register();
 SpiceModules::getInstance()->loadModules();
-SpiceDictionaryHandler::loadMetaDataDefinitions();
+//SpiceDictionaryHandler::loadMetaDataDefinitions();
+SpiceDictionaryHandler::loadCachedVardefs();
 //$system_config = (new Administration())->retrieveSettings();
 
 /**

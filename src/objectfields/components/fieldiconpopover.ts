@@ -5,8 +5,6 @@ import {Component, ElementRef, ViewChild, ViewContainerRef, OnInit} from '@angul
 import {Router}   from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {footer} from '../../services/footer.service';
-import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
@@ -16,7 +14,6 @@ import {fieldGeneric} from './fieldgeneric';
 @Component({
     selector: 'field-icon-popover',
     templateUrl: '../templates/fieldiconpopover.html',
-    providers: [popup],
     host: {
         // '(document:click)': 'this.onClick($event)'
     }
@@ -33,7 +30,6 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
     constructor(
         public model: model,
         public view: view,
-        public popup: popup,
         public broadcast: broadcast,
         public language: language,
         public metadata: metadata,
@@ -41,9 +37,6 @@ export class fieldIconPopover extends fieldGeneric implements OnInit {
         public elementRef: ElementRef
     ) {
         super(model, view, language, metadata, router);
-
-        // subscribe to the popup handler
-        this.popup.closePopup$.subscribe(() => this.closePopups());
 
         // subscriber to the broadcast when new model is added from the model
         this.broadcast.message$.subscribe(message => this.handleMessage(message));

@@ -74,6 +74,16 @@ export class APIlogViewer {
     public isLoading = false;
 
     /**
+     * the available logtables
+     */
+    public logtables: string[] = [];
+
+    /**
+     * the currently selected logtable
+     */
+    private _logtable: string = 'sysapilog';
+
+    /**
      * sets the filter for a specific user
      *
      * @param idAndName
@@ -100,8 +110,40 @@ export class APIlogViewer {
         return this.filter.userId + '::' + this.filterUserName;
     }
 
-    constructor(public backend: backend, public modal: modal, public toast: toast) {
+    /**
+     * getter for the logtable
+     */
+    get logtable(){
+        return this._logtable;
+    }
 
+    /**
+     * setter for the logtable that also resets the entries
+     *
+     * @param value
+     */
+    set logtable(value){
+        if(value != this._logtable){
+            this._logtable = value;
+            this.entries = [];
+        }
+    }
+
+    constructor(public backend: backend, public modal: modal, public toast: toast) {
+        this.getAPILogTables();
+    }
+
+    /**
+     * loads api log tables from the backend
+     *
+     * @private
+     */
+    private getAPILogTables() {
+        this.backend.getRequest('admin/apilog/logtables').subscribe({
+            next: (res) => {
+                this.logtables = res;
+            }
+        })
     }
 
     /**
@@ -126,7 +168,8 @@ export class APIlogViewer {
 
             // Build the query parameters for the request:
             let queryParams: any = {
-                limit: this.limit
+                limit: this.limit,
+                logtable: this.logtable
             };
 
             // check what other filters to add
@@ -141,16 +184,16 @@ export class APIlogViewer {
             if (this.dateEnd) queryParams.end = this.dateEnd?.utc().format('YYYY-MM-DD HH:mm:ss');
 
             // request to the backend
-            this.backend.getRequest('admin/apilog', queryParams).subscribe(
-                response => {
+            this.backend.getRequest('admin/apilog', queryParams).subscribe({
+                next: (response) => {
                     this.entries = response.entries;
                     this.isLoading = false;
                 },
-                error => {
+                error: (error) => {
                     this.toast.sendToast('Error loading log data!', 'error');
                     this.isLoading = false;
                 }
-            );
+            });
         }
     }
 
@@ -196,6 +239,7 @@ export class APIlogViewer {
     public showEntryInModal(entry) {
         this.modal.openModal('APIlogViewerModal').subscribe(modal => {
             modal.instance.entry = entry;
+            modal.instance.logtable = this.logtable;
         });
     }
 

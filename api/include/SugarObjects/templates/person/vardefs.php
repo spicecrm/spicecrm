@@ -116,7 +116,6 @@ $vardefs = [
                 'group' => 'last_name',
                 'len' => '510',
                 'db_concat_fields' => [0 => 'first_name', 1 => 'last_name'],
-                'studio' => ['listview' => false],
             ],
         'communication_language' => [
             'name' => 'communication_language',
@@ -183,8 +182,7 @@ $vardefs = [
                 'id',
             ],
             'vname' => 'LBL_ANY_EMAIL',
-            'studio' => ['visible' => false, 'searchview' => true],
-            'importable' => false,
+            'importable' => 'false',
         ],
         'phone_mobile' => [
             'name' => 'phone_mobile',
@@ -248,7 +246,6 @@ $vardefs = [
             'source' => 'non-db',
             'group' => 'email1',
             'merge_filter' => 'enabled',
-            'studio' => ['editview' => true, 'editField' => true, 'searchview' => false, 'popupsearch' => false], // bug 46859
             'full_text_search' => ['boost' => 3, 'analyzer' => 'whitespace'], //bug 54567
         ],
         'email2' => [
@@ -258,7 +255,6 @@ $vardefs = [
             'source' => 'non-db',
             'group' => 'email2',
             'merge_filter' => 'enabled',
-            'studio' => 'false',
         ],
         'invalid_email' => [
             'name' => 'invalid_email',
@@ -266,7 +262,6 @@ $vardefs = [
             'source' => 'non-db',
             'type' => 'bool',
             'massupdate' => false,
-            'studio' => 'false',
         ],
         'email_opt_out' => [
             'name' => 'email_opt_out',
@@ -274,7 +269,6 @@ $vardefs = [
             'source' => 'non-db',
             'type' => 'bool',
             'massupdate' => false,
-            'studio' => 'false',
         ],
         'gdpr_data_agreement' => [
             'name' => 'gdpr_data_agreement',
@@ -291,9 +285,9 @@ $vardefs = [
         ],
         'gdpr_marketing_agreement' => [
             'name' => 'gdpr_marketing_agreement',
-            'vname' => 'LBL_GDPR_MARKETING_AGREEMENT',
-            'type' => 'bool',
-            'default' => false,
+            'type' => 'enum',
+            'options' => 'gdpr_marketing_agreement_dom',
+            'len' => 1,
             'audited' => true
         ],
         'gdpr_marketing_source' => [
@@ -592,9 +586,22 @@ $vardefs = [
             'type' => 'email',
             'source' => 'non-db',
             'vname' => 'LBL_EMAIL_NON_PRIMARY',
-            'studio' => false,
             'reportable' => false,
             'massupdate' => false,
+        ],
+        'mailmerge_subject' => [
+            'name' => 'mailmerge_subject',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'vname' => 'LBL_MAILMERGE_SUBJECT',
+            'comnment' => 'set the mailmerge subject for rendering pdf template'
+        ],
+        'mailmerge_body' => [
+            'name' => 'mailmerge_body',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'vname' => 'LBL_MAILMERGE_BODY',
+            'comnment' => 'set the mailmerge subject for rendering pdf template'
         ],
     ],
     'relationships' => [

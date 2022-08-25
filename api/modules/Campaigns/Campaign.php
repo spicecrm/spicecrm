@@ -2,7 +2,7 @@
 namespace SpiceCRM\modules\Campaigns;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 /*********************************************************************************
@@ -45,20 +45,10 @@ use SpiceCRM\includes\database\DBManagerFactory;
  * Description:
  ********************************************************************************/
 
-class Campaign extends SugarBean {
+class Campaign extends SpiceBean {
 
-	// module name definitions and table relations
-	var $table_name = "campaigns";
-	var $rel_prospect_list_table = "prospect_list_campaigns";
-	var $object_name = "Campaign";
-	var $module_dir = 'Campaigns';
+    var $rel_prospect_list_table = "prospect_list_campaigns";
 	var $importable = true;
-
-  	// This is used to retrieve related fields from form posts.
-	var $additional_column_fields = [
-				'assigned_user_name', 'assigned_user_id',
-    ];
-
 	var $relationship_fields = ['prospect_list_id'=>'prospect_lists'];
 
 	function clear_campaign_prospect_list_relationship($campaign_id, $prospect_list_id='')
@@ -82,13 +72,13 @@ class Campaign extends SugarBean {
 	function save($check_notify = FALSE, $fts_index_bean = TRUE) {
 
         //US DOLLAR
-        if(isset($this->amount) && !empty($this->amount)){
-
-            $currency = BeanFactory::getBean('Currencies');
-            $currency->retrieve($this->currency_id);
-            $this->amount_usdollar = $currency->convertToDollar($this->amount);
-
-        }
+//        if(isset($this->amount) && !empty($this->amount)){
+//
+//            $currency = BeanFactory::getBean('Currencies');
+//            $currency->retrieve($this->currency_id);
+//            $this->amount_usdollar = $currency->convertToDollar($this->amount);
+//
+//        }
 
 		// Bug53301
 		if($this->campaign_type != 'NewsLetter') {

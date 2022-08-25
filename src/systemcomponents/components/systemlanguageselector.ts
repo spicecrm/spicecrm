@@ -1,8 +1,10 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {language} from "../../services/language.service";
+import {modal} from "../../services/modal.service";
+import {userpreferences} from "../../services/userpreferences.service";
 
 declare var _: any;
 
@@ -23,16 +25,16 @@ export class SystemLanguageSelector implements OnInit{
     public availableLanguages: any[] = [];
 
     /**
-     * emitter for changes on teh language
+     * emitter for changes on the language
      */
-    public selected: EventEmitter<boolean> = new EventEmitter();
+    @Output() public selected: EventEmitter<boolean> = new EventEmitter();
 
     /**
      * set to false if no label shoudl be displayed
      */
     @Input() public displaylabel: boolean = true;
 
-    constructor(public language: language) {
+    constructor(public language: language, public modal: modal, public userpreferences: userpreferences) {
         this.compId = _.uniqueId();
     }
 
@@ -59,9 +61,26 @@ export class SystemLanguageSelector implements OnInit{
      * @param value
      */
     set currentlanguage(value) {
-        this.language.currentlanguage = value;
-        this.language.loadLanguage();
+        let loadModal = this.modal.await('LBL_LOADING');
+        this.language.switchLanguage(value).subscribe({
+            next: () => {
+                loadModal.emit(true);
+                // set in the preferences
+                this.userpreferences.setPreference('language', value);
+            }
+        });
         this.selected.emit(true);
     }
 
+    /**
+     * reloads the current language
+     */
+    public reloadCurrentLanguage(){
+        let loadModal = this.modal.await('LBL_LOADING');
+        this.language.loadLanguage().subscribe({
+            next: () => {
+                loadModal.emit(true);
+            }
+        });
+    }
 }

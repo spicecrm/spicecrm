@@ -54,7 +54,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     /**
      * holds the active editor
      */
-    public activeEditor: 'richText' | 'pageBuilder';
+    public activeEditor: 'richText' | 'pageBuilder' | 'html';
     /**
      * holds the iframe height from parent
      * @private
@@ -83,7 +83,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * set active editor and subscribe to model data changes
      */
     public ngAfterViewInit() {
-        this.setActiveEditor(this.model.getField(this.fieldsNames.bodyHtmlField), this.model.getField(this.fieldsNames.bodySPBField));
+        this.setActiveEditor(this.model.getField('editor_type'));
         this.subscribeToModelChanges();
     }
 
@@ -139,9 +139,9 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     public subscribeToModelChanges() {
         this.subscription.add(
-            this.model.data$.subscribe(data =>
-                this.setActiveEditor(data[this.fieldsNames.bodyHtmlField], data[this.fieldsNames.bodySPBField])
-            )
+            this.model.observeFieldChanges('editor_type').subscribe(value => {
+                this.setActiveEditor(value)
+            })
         );
         this.subscription.add(
             this.view.mode$.subscribe(() => this.cdRef.detectChanges()));
@@ -149,13 +149,11 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * set the active editor
-     * @param body
-     * @param bodySPB
      * @private
+     * @param editorType
      */
-    public setActiveEditor(body: string, bodySPB: string) {
-        this.activeEditor = !body ? undefined : (!bodySPB || _.isEmpty(bodySPB)) ? 'richText' : 'pageBuilder';
-        this.model.data.via_spb =  this.activeEditor == 'pageBuilder';
+    public setActiveEditor(editorType: 'richText' | 'pageBuilder' | 'html') {
+        this.activeEditor = editorType;
         this.cdRef.detectChanges();
     }
 
@@ -172,7 +170,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     /**
      * open lookup modal to select an email template to be copied to the body
      */
-    public copyFromTemplate() {
+    public copyFromTemplate() {``
         this.modal.openModal('ObjectModalModuleLookup', true, this.injector)
             .subscribe(selectModal => {
                 selectModal.instance.module = 'EmailTemplates';
@@ -185,5 +183,10 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
                     });
                 });
             });
+    }
+
+    public updateModelEditor(type) {
+        this.setActiveEditor(type);
+        this.model.setField('editor_type', type);
     }
 }

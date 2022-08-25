@@ -27,7 +27,8 @@
                             <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
                         </td>
                         <td data-label="Field">
-                            <div class="slds-truncate">{{translateDomainField(getDomainFields(dictionaryitem.sysdomaindefinition_id)[0].name, dictionaryitem)}}</div>
+                            <div class="slds-truncate" *ngIf="getDomainFields(dictionaryitem.sysdomaindefinition_id)[0]">{{translateDomainField(getDomainFields(dictionaryitem.sysdomaindefinition_id)[0].name, dictionaryitem)}}</div>
+                            <div class="slds-truncate" *ngIf="!getDomainFields(dictionaryitem.sysdomaindefinition_id)[0]"></div>
                         </td>
                         <td data-label="Template">
                             <div class="slds-truncate">{{getRefDefinitionName(dictionaryitem.sysdictionarydefinition_id)}}</div>
