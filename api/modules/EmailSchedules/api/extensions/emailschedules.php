@@ -209,6 +209,41 @@ $routes = [
                 'example' => '["Contacts", "Accounts"]',
             ]
         ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/module/EmailSchedules/{id}/sendtest',
+        'class' => EmailSchedulesController::class,
+        'function' => 'sendTestEmail',
+        'description' => '',
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the new email schedule',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'parentid' => [
+                'in' => 'body',
+                'description' => 'the id of the parent',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696',
+            ],
+            'email_subject' => [
+                'in' => 'body',
+                'description' => 'the subject of the email',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'email_body' => [
+                'in' => 'body',
+                'description' => 'the body of the email',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'mailbox_id' => [
+                'in' => 'body',
+                'description' => 'the id of the mailbox',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ]
 ];
 

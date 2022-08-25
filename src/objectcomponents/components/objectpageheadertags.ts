@@ -24,11 +24,18 @@ export class ObjectPageHeaderTags {
      */
     public isEditing: boolean = false;
 
+    /**
+     * if tagging is enabled
+     */
+    public taggingEnabled: boolean = false;
+
     constructor(public model: model, public metadata: metadata, public language: language, public toast: toast) {
+        // check if tagging is enabled
+        this.taggingEnabled = this.checkTaggingEnabled();
     }
 
     /**
-     * parses the tags from teh model and returns an array to be handled in the display for loop
+     * parses the tags from the model and returns an array to be handled in the display for loop
      */
     get objecttags() {
         let tags = this.model.getField('tags');
@@ -45,7 +52,7 @@ export class ObjectPageHeaderTags {
     /**
      * checks if the module is set for tagging in the metadata service
      */
-    get taggingEnabled() {
+    private checkTaggingEnabled() {
         return this.metadata.checkTagging(this.model.module);
     }
 

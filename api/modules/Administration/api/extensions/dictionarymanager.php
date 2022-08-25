@@ -85,7 +85,7 @@ $routes = [
         'oldroute' => '/repair/sql',
         'class' => AdminController::class,
         'function' => 'buildSQLArray',
-        'description' => 'buildind the query for a relationship repair',
+        'description' => 'building the query for a relationship repair',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
@@ -116,16 +116,6 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairLanguage',
         'description' => 'clears language cache and repairs the language extensions',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
-        'parameters' => []
-    ],
-    [
-        'method' => 'get',
-        'route' => '/admin/repair/aclroles',
-        'oldroute' => '/repair/aclroles',
-        'class' => AdminController::class,
-        'function' => 'repairACLRoles',
-        'description' => 'repairs ACL Roles',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],

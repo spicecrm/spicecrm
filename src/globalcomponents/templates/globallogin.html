@@ -1,7 +1,7 @@
 <global-login-loading class="slds-size--1-of-1" *ngIf="!configuration.initialized"></global-login-loading>
 <div *ngIf="configuration.initialized"  class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1 slds-theme--default" style="height:100vh; top: 0px;">
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
-        <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium">
+        <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium" style="max-width: 500px">
             <!--div class="spiceLoginLogo"-->
             <div class="slds-align--absolute-center slds-p-vertical--medium">
                 <global-login-image></global-login-image>
@@ -10,42 +10,19 @@
                 <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading">
                     <form *ngIf="!showForgotPass" (submit)="login()">
                         <div class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1" placeholder="Username" />
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                                <system-utility-icon icon="user" addclasses="slds-input__icon slds-icon-text-default"></system-utility-icon>
+                                <input [disabled]="loggingIn" type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-vertical--xx-small" tabindex="1" placeholder="Username" />
                             </div>
                         </div>
                         <div class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2" placeholder="Password" />
-                            </div>
-                        </div>
-                        <div *ngIf="sites.length > 1" class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container slds-m-vertical--xx-small">
-                                    <select [disabled]="loggingIn" name="currentsite" class="slds-select slds-p-horizontal--large" [ngModel]="currentSiteId" (change)="setSite($event)">
-                                        <option *ngFor="let site of sites" [value]="site.id">
-                                            {{site.display}}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngIf="getLanguages().length > 1" class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container slds-m-vertical--xx-small">
-                                    <select [disabled]="loggingIn" class="slds-select slds-p-horizontal--large" name="selectLang" [(ngModel)]="selectedlanguage">
-                                        <option *ngFor="let lang of getLanguages()" [ngValue]="lang.language">
-                                            {{lang.text}}
-                                        </option>
-                                    </select>
-                                </div>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                                <system-utility-icon icon="lock" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
+                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small" tabindex="2" placeholder="Password" />
                             </div>
                         </div>
                         <button [disabled]="loggingIn" type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
                         <div class="slds-p-top--small">
-                            <global-login-google class="slds-size--1-of-1" (token)="login($event)"></global-login-google>
                             <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event)"></global-login-oauth2>
                         </div>
                     </form>
@@ -60,8 +37,9 @@
                     <global-login-forgot-password class="slds-col" *ngIf="showForgotPass" (close)="showForgotPass = !$event"></global-login-forgot-password>
                 </div>
             </div>
-            <!-- the renew dialog ... needs to be added here in this way as we do not have the modal service and repository yet -->
-            <global-login-change-password class="slds-is-absolute" *ngIf="renewpassword" (closeRenewDialog)="handleRenewDialogClose($event)" [username]="username" [password]="password"></global-login-change-password>
+            <!-- the dialog to renew the password or to generate totp authentication ...
+                 needs to be added here in this way as we do not have the modal service and repository yet -->
+            <global-login-change-password class="slds-is-absolute" *ngIf="renewPassword || generateTOTP" [case]="generateTOTP ? 'totp':'pwd'" (closeDialog)="handleRenewDialogClose($event)" [username]="username" [password]="password" [labels]="labels"></global-login-change-password>
             <ng-container *ngIf="loginService.session.authData.sessionId">
                 <system-loader-progress></system-loader-progress>
             </ng-container>

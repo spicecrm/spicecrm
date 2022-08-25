@@ -9,8 +9,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {SendinBlueButton} from "./components/sendinbluebutton";
-import /*embed*/ {SendinBlueModal} from "./components/sendinbluemodal";
+import {SendinBlueButton} from "./components/sendinbluebutton";
+import {SendinBlueModal} from "./components/sendinbluemodal";
 
 
 @NgModule({

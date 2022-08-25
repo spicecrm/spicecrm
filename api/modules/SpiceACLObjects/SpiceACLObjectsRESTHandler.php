@@ -6,7 +6,7 @@ namespace SpiceCRM\modules\SpiceACLObjects;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\modules\SpiceACLObjects\SpiceACLObject;
 use stdClass;
 
@@ -155,7 +155,7 @@ class SpiceACLObjectsRESTHandler
         $list = $seed->get_full_list('name', $addFilter);
 
         $retArray = [];
-        $resthandler = new ModuleHandler();
+        $resthandler = new SpiceBeanHandler();
         foreach($list as $aclObject){
             $retArray[] = $resthandler->mapBeanToArray('SpiceACLObjects', $aclObject);
         }
@@ -319,7 +319,7 @@ class SpiceACLObjectsRESTHandler
             }
 
             $object->objectactions = json_encode($object->objectactions);
-            $KRESTModuleHandler = new ModuleHandler($app);
+            $KRESTModuleHandler = new SpiceBeanHandler($app);
             // save the object
             array_push($returnArray, $KRESTModuleHandler->add_bean('SpiceACLObjects', $object->id, (array)$object));
         }
@@ -464,7 +464,7 @@ class SpiceACLObjectsRESTHandler
 //
 //        $module = array_search($object['bean'], $beanList);
 //        $seed = BeanFactory::getBean($module);
-//        foreach ($seed->field_name_map as $fieldname => $fielddata) {
+//        foreach ($seed->field_defs as $fieldname => $fielddata) {
 //            if (array_search($fieldname, $fArray) === false)
 //                $retArray[] = ['name' => $fieldname];
 //        }

@@ -63,7 +63,8 @@ export class GlobalHeader {
      * returns true if the navigation paradigm is tabbed or subtabbed
      */
     get tabbed() {
-        return this.navigation.navigationparadigm == 'tabbed' || this.navigation.navigationparadigm == 'subtabbed';
+        // return this.navigation.navigationparadigm == 'tabbed' || this.navigation.navigationparadigm == 'subtabbed';
+        return this.navigation.navigationparadigm == 'subtabbed';
     }
 
     /**

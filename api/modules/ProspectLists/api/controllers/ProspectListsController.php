@@ -3,9 +3,10 @@ namespace SpiceCRM\modules\ProspectLists\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -22,7 +23,7 @@ class ProspectListsController
 
         $requestParams = $req->getQueryParams();
 
-        $KRESTModuleHandler = new ModuleHandler();
+        $KRESTModuleHandler = new SpiceBeanHandler();
 
         $pl = BeanFactory::getBean('ProspectLists');
         $pl->name = $requestParams['targetlistname'];
@@ -43,11 +44,11 @@ class ProspectListsController
             if ($listWhereClause != '') {
                 $listWhereClause .= ' AND ';
             }
-            $listWhereClause .= $seed->table_name . ".assigned_user_id='" . $current_user->id . "'";
+            $listWhereClause .= $seed->_tablename . ".assigned_user_id='" . $current_user->id . "'";
         }
 
         $queryArray = $seed->create_new_list_query('', $listWhereClause, [], [], false, '', true, $seed, true);
-        $query = "INSERT INTO prospect_lists_prospects (SELECT DISTINCT uuid(), '$pl->id' prospectlistid, {$seed->table_name}.id, '{$listDef['module']}' module, '".TimeDate::getInstance()->nowDb()."', 0 {$queryArray['from']} {$queryArray['where']})";
+        $query = "INSERT INTO prospect_lists_prospects (SELECT DISTINCT uuid(), '$pl->id' prospectlistid, {$seed->_tablename}.id, '{$listDef['module']}' module, '".TimeDate::getInstance()->nowDb()."', 0 {$queryArray['from']} {$queryArray['where']})";
         $db->query($query);
 
         return $res->withJson([
@@ -76,7 +77,7 @@ class ProspectListsController
 
         $seed = BeanFactory::getBean($postBody['module']);
 
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
         if (!empty($postBody['listid']) && $postBody['listid'] != 'owner' && $postBody['listid'] != 'all') {
             // get the list defs
             $listDef = $db->fetchByAssoc($db->query("SELECT * FROM sysmodulelists WHERE id = '{$postBody['listid']}'"));
@@ -116,7 +117,7 @@ class ProspectListsController
 
         // check if we have a list of ids to add
         if(count($idList) > 0){
-            $query = "INSERT INTO prospect_lists_prospects (id, prospect_list_id, related_id, related_type, date_modified, deleted) (SELECT DISTINCT uuid(), '$pl->id' prospectlistid, {$seed->table_name}.id, '{$postBody['module']}' module, '".TimeDate::getInstance()->nowDb()."', 0 FROM {$seed->table_name} WHERE id IN ('" . join("','", $idList) . "'))";
+            $query = "INSERT INTO prospect_lists_prospects (id, prospect_list_id, related_id, related_type, date_modified, deleted) (SELECT DISTINCT uuid(), '$pl->id' prospectlistid, {$seed->_tablename}.id, '{$postBody['module']}' module, '".TimeDate::getInstance()->nowDb()."', 0 FROM {$seed->_tablename} WHERE id IN ('" . join("','", $idList) . "'))";
             $db->query($query);
         }
 
@@ -125,5 +126,104 @@ class ProspectListsController
             'id' => $pl->id
         ]);
     }
+
+    /**
+     * searching for related beans that are relevant
+     *
+     */
+    public static function getRelatedModules(Request $req, Response $res, array $args): Response {
+        if(!$args){
+            throw new NotFoundException('record not found');
+        }
+
+        // retrieve the module names from the ui configuration
+        $r = $req->getQueryParams();
+        $moduleNames = explode(",", $r['modules']);
+
+        // get the module and the bean id
+        $bean = BeanFactory::getBean($args['beanName'], $args['beanId']);
+
+        // get field definitions of this bean
+        $fields = $bean->getFieldDefinitions();
+
+        // if the type is link retrieve the related bean
+        foreach($fields as $field) {
+            if(in_array($field['module'], $moduleNames)) {
+                $link = $field['name'];
+                $relatedBeanList = $bean->get_linked_beans($link);
+
+                $modulesList[$field['module']]['module'] = $field['module'];
+                $modulesList[$field['module']]['bean_count'] += count($relatedBeanList);
+                $modulesList[$field['module']]['link_names'][] = $link;
+            }
+        }
+        return $res->withJson( [
+            'modules' => $modulesList
+        ]);
+    }
+
+    public static function saveTargetList(Request $req, Response $res, array $args): Response {
+        $items = $req->getParsedBody();
+
+        if (!is_array($items) || empty($items)) {
+            throw new NotFoundException('No array found');
+        }
+
+        // create new target group
+        $newTargetGroup = BeanFactory::newBean('ProspectLists');
+        $newTargetGroup->name = $items['prospectListName'];
+        $newTargetGroup->list_type = 'default';
+        $newTargetGroup->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
+        $newTargetGroup->save();
+
+        foreach ($items['data'] as $item) {
+            // get bean the target group was created from
+            $parentBean = BeanFactory::getBean($items['parentModule'], $items['parentBeanId']);
+
+            $links = $item['link_names'];
+            foreach ($links as $link) {
+                if($newTargetGroup->load_relationship($link)){
+
+                    // retrieve all beans related to the parentBean
+                    $relatedBeans = $parentBean->get_linked_beans($link);
+                    foreach ($relatedBeans as $bean) {
+                        $gdpr = $bean->gdpr_marketing_agreement;
+                        $beanInactive = $bean->is_inactive;
+                        $relatedBeanId = $bean->id;
+                        $relatedBeanModule = $bean->module_dir;
+
+                        // get active beans with granted or empty gdpr
+                        if(!$item['inclRejGDPR'] && !$item['inclInactive']) {
+                            if($gdpr == 'g' && $beanInactive == 0) {
+                                $newTargetGroup->{$link}->add($relatedBeanId, ['related_type' => $relatedBeanModule]);
+                            } else if(empty($gdpr) && $beanInactive == 0) {
+                                $newTargetGroup->{$link}->add($relatedBeanId, ['related_type' => $relatedBeanModule]);
+                            } else if($gdpr == 'g' && empty($beanInactive)) {
+                                $newTargetGroup->{$link}->add($relatedBeanId, ['related_type' => $relatedBeanModule]);
+                            }
+                        }
+                        // add active beans with rejected or granted gdpr
+                        else if($item['inclRejGDPR'] && !$item['inclInactive']) {
+                            if($beanInactive == 0 || empty($beanInactive)) {
+                                $newTargetGroup->{$link}->add($relatedBeanId, ['related_type' => $relatedBeanModule]);
+                            }
+                        }
+                        // add inactive beans with granted gdpr
+                        else if(!$item['inclRejGDPR'] && $item['inclInactive']) {
+                            if($gdpr == 'g' || empty($gdpr)) {
+                                $newTargetGroup->{$link}->add($relatedBeanId, ['related_type' => $relatedBeanModule]);
+                            }
+                        }
+                        // get all beans
+                        else if($item['inclRejGDPR'] && $item['inclInactive']) {
+                            $newTargetGroup->{$link}->add($relatedBeanId, ['related_type' => $relatedBeanModule]);
+                        }
+                    }
+                }
+            }
+        }
+        return $res->withJson(['success' => true, 'prospectlistid' => $newTargetGroup->id]);
+    }
+
 }
 

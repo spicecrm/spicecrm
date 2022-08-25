@@ -62,8 +62,9 @@ export class fieldText extends fieldGeneric implements OnInit {
     public getFieldLength() {
         let field = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         if (field.len) {
-            this.fieldlength = field.len;
+            this.fieldlength = parseInt( field.len, 10 );
         }
+        if ( this.fieldconfig.maxlength && ( !this.fieldlength || parseInt( this.fieldconfig.maxlength, 10 ) < this.fieldlength )) this.fieldlength = this.fieldconfig.maxlength;
     }
 
     /**
@@ -102,6 +103,27 @@ export class fieldText extends fieldGeneric implements OnInit {
         }
 
         return styleObj;
+    }
+
+    /**
+     * use the speech API and read the text
+     */
+    public toSpeech(){
+        let speech = new SpeechSynthesisUtterance();
+        speech.text = this.value;
+        speech.lang = this.getSpeechLanguage();
+        speechSynthesis.speak(speech);
+    }
+
+    /**
+     * get the speec api language from teh logged on language
+     *
+     * @private
+     */
+    private getSpeechLanguage(){
+        let langArray = this.language.currentlanguage.split('_');
+        if(langArray.length != 2) return 'en-US';
+        return langArray[0] + '-' + langArray[1].toUpperCase();
     }
 
     /**

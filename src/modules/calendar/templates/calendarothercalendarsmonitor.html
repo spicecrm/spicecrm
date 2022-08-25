@@ -12,12 +12,20 @@
                 </a>
             </div>
         </div>
-        <div *ngIf="calendar.loggedByGoogle" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+        <div *ngIf="calendar.activeGroupware == 'google'" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
              (mouseenter)="hovered = 'google'" (mouseleave)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
             <div class="slds-grid" (click)="toggleVisible(null, 'Google')" style="cursor: pointer">
                 <img src="https://developers.google.com/identity/images/g-logo.png" style="height: 13px;width:13px;margin-right: 2px; margin-top: 2px" alt="G"
-                     [ngStyle]="!googleIsVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
-                <a class="slds-text-body--regular slds-truncate" [style.color]="!googleIsVisible ? '#dddbda' : calendar.googleColor"><system-label label="MY_GOOGLE_CALENDAR"></system-label></a>
+                     [ngStyle]="!groupwareVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
+                <a class="slds-text-body--regular slds-truncate" [style.color]="!groupwareVisible ? '#dddbda' : calendar.groupwareColor"><system-label label="MY_GOOGLE_CALENDAR"></system-label></a>
+            </div>
+        </div>
+        <div *ngIf="calendar.activeGroupware == 'microsoft'" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+             (mouseenter)="hovered = 'microsoft'" (mouseleave)="hovered = ''" [ngClass]="hovered == 'microsoft' ? 'slds-theme--shade' : ''">
+            <div class="slds-grid" (click)="toggleVisible(null, 'Google')" style="cursor: pointer">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAACXBIWXMAAAsSAAALEgHS3X78AAAAVElEQVQ4jWP8//8/A7UBC8i8z4HKBE3mXX+XsWE3I0F1Da7/GZmo7kwGBoZRQ0cNpTKgXY5iXPqBoMn/owUYGXYRzlEMbqM5atTQoWEo9XMUAwMDAGSOGCOVddy/AAAAAElFTkSuQmCC" style="height: 13px;width:13px;margin-right: 2px; margin-top: 2px" alt="G"
+                     [ngStyle]="!groupwareVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
+                <a class="slds-text-body--regular slds-truncate" [style.color]="!groupwareVisible ? '#dddbda' : calendar.groupwareColor"><system-label label="LBL_MY_MICROSOFT_CALENDAR"></system-label></a>
             </div>
         </div>
         <div *ngFor="let usersCalendar of usersCalendars; trackBy: trackByFn"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"

@@ -37,7 +37,7 @@ export class DomainManagerFieldValidation implements OnChanges {
     }
 
     get validationvalues() {
-        return this.domainmanager.getValdiationValuesdById(this.field.sysdomainfieldvalidation_id).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+        return this.domainmanager.getValidationValuesdById(this.field.sysdomainfieldvalidation_id).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
 
     /**
@@ -50,6 +50,7 @@ export class DomainManagerFieldValidation implements OnChanges {
         this.modal.openModal('DomainManagerAddValidationValueModal', true, this.injector).subscribe(modalRef => {
             modalRef.instance.fieldvalidationvalue.sysdomainfieldvalidation_id = this.field.sysdomainfieldvalidation_id;
             modalRef.instance.fieldvalidationvalue.sequence = this.validationvalues.length;
+            modalRef.instance.fieldvalidationvalue.scope = this.domainmanager.currentDomainScope;
         });
     }
 
@@ -83,6 +84,7 @@ export class DomainManagerFieldValidation implements OnChanges {
                     newValue.id = this.modelutilities.generateGuid();
                     newValue.scope = 'c';
                     this.domainmanager.domainfieldvalidationvalues.push(newValue);
+                    this.domainmanager.currentDomainScope = newValue.scope;
                 }
             });
         }

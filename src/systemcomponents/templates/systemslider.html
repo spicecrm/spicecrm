@@ -2,7 +2,7 @@
     <div class="slds-form-element__control">
         <div class="slds-slider">
             <input type="range" [min]="min" [step]="step" [max]="max" class="slds-slider__range" [(ngModel)]="value" [disabled]="disabled">
-            <span class="slds-slider__value" aria-hidden="true">{{value}}</span>
+            <span *ngIf="displayValue" class="slds-slider__value" aria-hidden="true">{{value}}</span>
         </div>
     </div>
 </div>

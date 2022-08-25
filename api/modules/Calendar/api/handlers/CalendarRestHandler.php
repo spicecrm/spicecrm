@@ -8,7 +8,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class CalendarRestHandler
 {
@@ -68,7 +68,7 @@ class CalendarRestHandler
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
         $calendarId = $db->quote($calendarId);
-        $krestModuleHandler = new ModuleHandler();
+        $krestModuleHandler = new SpiceBeanHandler();
         $calendars = "SELECT citems.* FROM sysuicalendaritems as citems ";
         $calendars .= "LEFT JOIN sysuicalendars ON citems.calendar_id = sysuicalendars.id ";
         $calendars .= "WHERE sysuicalendars.is_default = 1 AND citems.calendar_id = '$calendarId'";
@@ -105,9 +105,9 @@ class CalendarRestHandler
                 }
             } else {
                 $bean = BeanFactory::getBean($module);
-                $beanFieldEvent = $bean->table_name . '.' . $fieldEvent;
-                $beanFieldStart = $bean->table_name . '.' . $fieldStart;
-                $beanFieldEnd = $bean->table_name . '.' . $fieldEnd;
+                $beanFieldEvent = $bean->_tablename . '.' . $fieldEvent;
+                $beanFieldStart = $bean->_tablename . '.' . $fieldStart;
+                $beanFieldEnd = $bean->_tablename . '.' . $fieldEnd;
 
                 switch ($module) {
                     case 'Contacts':
@@ -120,7 +120,7 @@ class CalendarRestHandler
                         $where = "IFNULL($beanFieldStart, $beanFieldEnd) <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE)";
                         break;
                     case 'UserAbsences':
-                        $absenceType = $bean->table_name . '.type';
+                        $absenceType = $bean->_tablename . '.type';
                         $where = "$beanFieldStart <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE) AND user_id <> '$current_user->id' AND ($absenceType = 'Vacation' OR $absenceType = 'Urlaub')";
                         break;
                     default:

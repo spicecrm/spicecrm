@@ -4,15 +4,10 @@
 namespace SpiceCRM\modules\SpiceACLProfiles;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 
-class SpiceACLProfile extends SugarBean {
-
-    public $table_name = 'spiceaclprofiles';
-    public $object_name = 'SpiceACLProfile';
-    public $module_dir = 'SpiceACLProfiles';
-
+class SpiceACLProfile extends SpiceBean {
 
     /**
      * returns the raw database rows of  spiceaclprofiles for a specified userId

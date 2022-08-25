@@ -3,11 +3,11 @@
 namespace SpiceCRM\includes\SpiceGDPRManager\schedulerjobtasks;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class SpiceGDPRManagerSchedulerJobTasks
 {
@@ -20,9 +20,9 @@ class SpiceGDPRManagerSchedulerJobTasks
 
             $seed = BeanFactory::getBean($moduleFilter->filtermodule);
 
-            $query = "SELECT id, deleted FROM {$seed->table_name} WHERE {$filterWhere}";
+            $query = "SELECT id, deleted FROM {$seed->_tablename} WHERE {$filterWhere}";
             if($retention['retention_type'] != 'P'){
-                $query.= " AND {$seed->table_name}.deleted = 0";
+                $query.= " AND {$seed->_tablename}.deleted = 0";
             }
 
             $relatedModules = explode(',', $retention['delete_related']);
@@ -57,7 +57,7 @@ class SpiceGDPRManagerSchedulerJobTasks
                         }
 
                         // physically delete the record
-                        $db->query("DELETE FROM {$seed->table_name} WHERE id = '{$id['id']}'");
+                        $db->query("DELETE FROM {$seed->_tablename} WHERE id = '{$id['id']}'");
 
                         break;
                 }
@@ -69,9 +69,9 @@ class SpiceGDPRManagerSchedulerJobTasks
     /**
      * deletes all related beans that are relevant
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      */
-    private function deleteRelated(SugarBean $bean, $relatedModules, $purge = false){
+    public function deleteRelated(SpiceBean $bean, $relatedModules, $purge = false){
         if(count($relatedModules) > 0) {
 
             foreach ($bean->field_defs as $fieldname => $fielddata) {
@@ -85,7 +85,7 @@ class SpiceGDPRManagerSchedulerJobTasks
 
                                 // physically delete the record
                                 if($purge){
-                                    $relatedBean->db->query("DELETE FROM {$relatedBean->table_name} WHERE id = '{$relatedBean->id}'");
+                                    $relatedBean->db->query("DELETE FROM {$relatedBean->_tablename} WHERE id = '{$relatedBean->id}'");
                                 }
                             }
                         }

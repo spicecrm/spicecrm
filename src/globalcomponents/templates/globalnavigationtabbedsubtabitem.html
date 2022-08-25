@@ -1,4 +1,4 @@
-<li class="slds-tabs_default__item slds-sub-tabs__item slds-grid slds-grid_vertical-align-center" [ngClass]="{'slds-is-active': isActive, 'slds-border--left': !ismain}" role="presentation">
+<li class="slds-tabs_default__item slds-sub-tabs__item slds-grid slds-grid_vertical-align-center" [ngClass]="{'slds-active': isActive, 'slds-border--left': !ismain}" role="presentation">
     <a class="slds-tabs_default__link slds-p-horizontal_xx-small" href="javascript:void(0);" role="tab" (click)="setActive()" >
         <div class="slds-truncate slds-grid slds-grid--vertical-align-center">
             <ng-container *ngIf="tabname; else tabloading">

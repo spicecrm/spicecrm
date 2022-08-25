@@ -28,6 +28,11 @@ export class SystemSpinner implements OnInit {
     @Input() public inverse: string = 'false';
 
     /**
+     * a message to be displayed underneath the spinner
+     */
+    @Input() public message: string;
+
+    /**
      * @ignore
      */
     public spinnerStyle: any = {};

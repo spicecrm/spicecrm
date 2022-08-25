@@ -7,28 +7,25 @@
             <div class="slds-p-vertical--small slds-align--absolute-center">
                 <system-label label="MSG_SESSIONEXPIRED" length="long"></system-label>
             </div>
-            <div class="slds-form-element slds-p-vertical--xx-small">
-                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                    <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                    <input disabled type="text" [ngModel]="session.authData.userName" class="slds-input slds-p-horizontal--large slds-p-vertical--xx-small" tabindex="1" placeholder="Username" />
+            <div class="slds-form-element slds-m-vertical--small">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                    <system-utility-icon icon="user" addclasses="slds-input__icon slds-icon-text-default"></system-utility-icon>
+                    <input disabled type="text" name="username"  [(ngModel)]="session.authData.userName" class="slds-input slds-p-vertical--xx-small"/>
                 </div>
             </div>
             <ng-container *ngIf="!login.oauthIssuer || login.oauthIssuer == 'SpiceCRM'">
-                <div class="slds-form-element slds-p-vertical--xx-small">
-                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                        <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                        <input type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--xx-small" tabindex="2" placeholder="Password" />
+                <div class="slds-form-element slds-m-vertical--small">
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                        <system-utility-icon icon="lock" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
+                        <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small" tabindex="2" placeholder="Password" />
                     </div>
                 </div>
                 <div class="slds-p-vertical--xx-small">
                     <button class="slds-button slds-button--brand slds-button_stretch" [disabled]="!password" (click)="relogin()"><system-label label="LBL_LOGIN"></system-label></button>
                 </div>
             </ng-container>
-            <div *ngIf="login.oauthIssuer == 'Google'" class="slds-p-top--small">
-                <global-login-google [authenticatedUser]="session.authData.userName" (token)="tokenLogin($event)"></global-login-google>
-            </div>
-            <div *ngIf="login.oauthIssuer == 'OAuth2'" class="slds-p-top--small">
-                <global-login-oauth2 [authenticatedUser]="session.authData.userName" (token)="tokenLogin($event)"></global-login-oauth2>
+            <div *ngIf="login.oauthIssuer != 'SpiceCRM'" class="slds-p-top--small">
+                <global-login-oauth2 [authenticatedUser]="session.authData.userName" [issuer]="login.oauthIssuer" (token)="tokenLogin($event)"></global-login-oauth2>
             </div>
             <div class="slds-p-top--small slds-m-top--small slds-border--top">
                 <button class="slds-button slds-button--neutral slds-button_stretch" (click)="logout()"><system-label label="LBL_LOGOUT"></system-label></button>

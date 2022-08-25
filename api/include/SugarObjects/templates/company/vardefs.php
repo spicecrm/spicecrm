@@ -372,7 +372,6 @@ $vardefs = [
             'group' => 'email1',
             'type' => 'varchar',
             'source' => 'non-db',
-            'studio' => ['editField' => true, 'searchview' => false],
             'full_text_search' => ['boost' => 3, 'analyzer' => 'whitespace'], //bug 54567
         ],
         'primary_address' => [
@@ -426,7 +425,6 @@ $vardefs = [
                 'type' => 'email',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAIL_NON_PRIMARY',
-                'studio' => false,
                 'reportable' => false,
                 'massupdate' => false,
             ],
@@ -437,7 +435,21 @@ $vardefs = [
             'dbType' => 'longtext',
             'maxWidth' => 300,
             'maxHeight' => 300
-        ]
+        ],
+        'mailmerge_subject' => [
+            'name' => 'mailmerge_subject',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'vname' => 'LBL_MAILMERGE_SUBJECT',
+            'comnment' => 'set the mailmerge subject for rendering pdf template'
+        ],
+        'mailmerge_body' => [
+            'name' => 'mailmerge_body',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'vname' => 'LBL_MAILMERGE_BODY',
+            'comnment' => 'set the mailmerge subject for rendering pdf template'
+        ],
     ],
     'relationships' => [
         strtolower($object_name) . '_email_addresses' =>
