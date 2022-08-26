@@ -57,6 +57,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  */
 class DBManagerFactory
 {
+    static $config = ['dbconfig' => [], 'dbconfigoption' => []];
+
     /**
      * hold the instances
      * @var array
