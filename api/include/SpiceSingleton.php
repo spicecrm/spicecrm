@@ -2,7 +2,7 @@
 
 namespace SpiceCRM\includes;
 
-class SpiceSingleton
+abstract class SpiceSingleton
 {
     /**
      * the instance for the singleton pattern
@@ -18,11 +18,12 @@ class SpiceSingleton
     /**
      * @return static
      */
-    public static function getInstance(): self {
-        if (self::$instance === null) {
-            //set instance
-            self::$instance = new self;
+    final public static function getInstance(): self {
+        static $instances = [];
+        $calledClass = get_called_class();
+        if(!isset($instances[$calledClass])){
+            $instances[$calledClass] = new $calledClass();
         }
-        return self::$instance;
+        return $instances[$calledClass];
     }
 }

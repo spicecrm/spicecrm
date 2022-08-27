@@ -1,42 +1,9 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\database;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -206,7 +173,7 @@ class MysqliManager extends DBManager
     /**
      * @see MysqlManager::query()
      */
-    
+
     public function query($sql, $dieOnError = false, $msg = '', $suppress = false, $keepResult = false)
     {
 
@@ -217,7 +184,7 @@ class MysqliManager extends DBManager
 
             static $queryMD5 = [];
 
-            parent::countQuery($sql);
+            parent::countQuery();
             LoggerManager::getLogger()->info('Query:' . $sql);
             $this->checkConnection();
             $this->query_time = microtime(true);
@@ -380,7 +347,7 @@ class MysqliManager extends DBManager
 
 
         if (is_null($configOptions))
-            $configOptions = SpiceConfig::getInstance()->config['dbconfig'];
+            $configOptions = $this->dbConfig['dbconfig'];
 
         if (!isset($this->database)) {
 
@@ -625,7 +592,7 @@ class MysqliManager extends DBManager
         }
 
         // run the query
-        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES (" . implode(",", $vals) . ")");
+        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES (" . implode(",", $vals) . ")", true );
     }
 
     /**
@@ -933,7 +900,7 @@ class MysqliManager extends DBManager
     /**
      * Returns the name of the engine to use or null if we are to use the default
      *
-     * @param  object $bean SugarBean instance
+     * @param  object $bean SpiceBean instance
      * @return string
      */
 
@@ -1046,8 +1013,13 @@ class MysqliManager extends DBManager
                         $fieldDef['dbType'] = 'mediumtext';
                     elseif ($fieldDef['len'] > 16777215 && $fieldDef['len'] <= 4294967295)
                         $fieldDef['dbType'] = 'longtext';
-                    break;
                 }
+                break;
+            case 'id':
+                $fieldDef['dbType'] = 'char';
+                $fieldDef['len'] = 36;
+                break;
+
         }
 
     }
@@ -1566,12 +1538,18 @@ class MysqliManager extends DBManager
     public function checkOnVarDefinition($fielddef1, $fielddef2)
     {
         $dbtype = $fielddef1['type'];
+        $fieldtype = $this->getFieldType($fielddef2);
         switch($dbtype){
+            case 'varchar':
+                if($fielddef2['name'] == 'id' && $fielddef2['len'] == 36){
+                    $fieldtype = 'char';
+                }
+                break;
             case 'longtext':
             case 'mediumtext':
             case 'text':
             case 'tinytext':
-                $fieldtype = $this->getFieldType($fielddef2);
+                #$fieldtype = $this->getFieldType($fielddef2);
                 if(isset($fielddef2['len'])) {
                     switch ($fieldtype) {
                         case 'text':
@@ -1593,7 +1571,7 @@ class MysqliManager extends DBManager
             case 'mediumint':
             case 'smallint':
             case 'tinyint':
-                $fieldtype = $this->getFieldType($fielddef2);
+                #$fieldtype = $this->getFieldType($fielddef2);
                 switch ($fieldtype) {
                     case 'int':
                         if($fielddef2['len'] > 0 && $fielddef2['len'] <= 4)
@@ -1607,12 +1585,14 @@ class MysqliManager extends DBManager
                         elseif($fielddef2['len'] >  19){
                             $fieldtype =  'bigint';
                         }
-
                         break;
                 }
                 break;
         }
-
+//file_put_contents('vardefs.log', strtolower($dbtype) .'=='. strtolower($fieldtype)."\n", FILE_APPEND);
+//if(!(strtolower($dbtype) == strtolower($fieldtype))){
+//    file_put_contents('vardefs.log', print_r([$fielddef1, $fielddef2], true)."\n", FILE_APPEND);
+//}
         return (strtolower($dbtype) == strtolower($fieldtype));
 
     }
@@ -1621,7 +1601,7 @@ class MysqliManager extends DBManager
      * @inheritDoc
      */
     public function convertDBCharset($charset, $collation): bool {
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "ALTER DATABASE {$dbName} CHARACTER SET {$charset} COLLATE {$collation}";
         $this->query($sql);
 
@@ -1656,7 +1636,7 @@ class MysqliManager extends DBManager
      */
     public function getTablesCharsetInfo(): array {
         $result = [];
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "SELECT table_name,CCSA.character_set_name, CCSA.collation_name FROM information_schema.TABLES T,
                 information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA
                 WHERE CCSA.collation_name = T.table_collation
@@ -1677,7 +1657,7 @@ class MysqliManager extends DBManager
      * @throws Exception
      */
     public function getDatabaseCharset(): array {
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "SELECT SCHEMA_NAME 'database', default_character_set_name 'charset', DEFAULT_COLLATION_NAME 'collation'
                 FROM information_schema.SCHEMATA WHERE schema_name='{$dbName}';";
         $query = $this->query($sql);

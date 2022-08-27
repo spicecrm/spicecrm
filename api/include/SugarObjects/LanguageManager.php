@@ -155,5 +155,59 @@ class LanguageManager
         return $retArray;
     }
 
+    /**
+     * getSpecificLabels
+     * @param $syslang
+     * @param $labels
+     * @return array Labels
+     */
+    static function getSpecificLabels( $syslang, $labels ) {
+        $retArray = [];
+        $db = DBManagerFactory::getInstance();
 
+        // get default Labels
+        $q = 'SELECT syslanguagetranslations.*, syslanguagelabels.name label
+            FROM syslanguagetranslations, syslanguagelabels
+            WHERE syslanguagetranslations.syslanguagelabel_id = syslanguagelabels.id
+            AND syslanguagetranslations.syslanguage = \''. $db->quote( $syslang ) . '\'
+            AND syslanguagelabels.name IN (\'' . implode( "','", $labels ).'\')';
+        if ( $res = $db->query( $q )) {
+            while ( $row = $db->fetchByAssoc( $res )) {
+                $retArray[$row['label']] = [
+                    'default' => $row['translation_default'],
+                    'short' => $row['translation_short'],
+                    'long' => $row['translation_long'],
+                ];
+            }
+        }
+
+        // custom translations to default labels
+        $q = 'SELECT syslanguagecustomtranslations.*, syslanguagelabels.name label
+            FROM syslanguagecustomtranslations, syslanguagelabels
+            WHERE (syslanguagecustomtranslations.syslanguagelabel_id = syslanguagelabels.id )
+            AND syslanguagecustomtranslations.syslanguage = \''. $db->quote( $syslang ).'\' 
+            AND syslanguagelabels.name IN (\'' . implode( '\',\'', $labels ).'\')';
+        if ( $res = $db->query( $q )) {
+            while ( $row = $db->fetchByAssoc( $res )) {
+                $retArray[$row['label']] = [
+                    'default' => $row['translation_default'],
+                    'short' => $row['translation_short'],
+                    'long' => $row['translation_long'],
+                ];
+            }
+        }
+
+        return $retArray;
+    }
+
+    /**
+     * checks if a label is already defined
+     * @param $label
+     * @return false
+     * @throws \Exception
+     */
+    public static function checkLabelExists(string $label) {
+        $db = DBManagerFactory::getInstance();
+        return $db->getOne("SELECT id FROM (select id, name from syslanguagelabels UNION select id, name from syslanguagecustomlabels) tblabels WHERE name='$label'");
+    }
 }

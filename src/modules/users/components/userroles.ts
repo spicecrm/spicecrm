@@ -79,7 +79,7 @@ export class UserRoles {
     public sortRoles( roles ): any[] {
         if(roles) {
             return roles.sort((a, b) => {
-                return this.language.getLabel(a.label).localeCompare(this.language.getLabel(b.label));
+                return this.language.getLabel(a.label ?? a.name).localeCompare(this.language.getLabel(b.label ?? b.name));
             });
         }
         return [];

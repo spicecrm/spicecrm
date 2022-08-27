@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {configurationService} from '../../services/configuration.service';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {Subscription} from 'rxjs';
@@ -9,7 +9,7 @@ import {Subscription} from 'rxjs';
 @Component({
     selector: 'global-header-image',
     templateUrl: '../templates/globalheaderimage.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalHeaderImage {
 
@@ -29,7 +29,7 @@ export class GlobalHeaderImage {
      */
    public subscription: Subscription;
 
-    constructor(public sanitizer: DomSanitizer,public configuration: configurationService) {
+    constructor(public sanitizer: DomSanitizer, public cdref: ChangeDetectorRef, public configuration: configurationService) {
 
         // Set the image url in case there is a CRM config for that:
         if (this.configuration.hasCapabilityConfig('theme')) this.setImageUrl();
@@ -47,11 +47,16 @@ export class GlobalHeaderImage {
      */
    public setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific header image defined.
-        if (this.configuration.getCapabilityConfig('theme').header_image) {
+        if(this.configuration.getAsset('headerimage')){
+            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( this.configuration.getAsset('headerimage') );
+        } else if (this.configuration.getCapabilityConfig('theme').header_image) {
             this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl('data:' + this.configuration.getCapabilityConfig('theme').header_image);
         } else {
             this.imageUrl = this.defaultImageUrl;
         }
+
+        // detect changes
+        // this.cdref.detectChanges();
     }
 
     /**

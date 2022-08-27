@@ -6,14 +6,16 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class EmailSchedulesController
 {
@@ -68,6 +70,11 @@ class EmailSchedulesController
         $postBody = $req->getParsedBody();
 
         $emailscheduleId = $this->saveBean($postBody, $args['id']);
+
+        // limit to a maximum of 50
+        if(count($postBody['ids']) > 50){
+            throw new ForbiddenException('Maximum Number for email schedules is 50');
+        }
 
         if (!empty($emailscheduleId) && count($postBody['ids']) > 0) {
 
@@ -142,7 +149,7 @@ class EmailSchedulesController
         }
 
         // cancel all scheudled lines
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         $resArray = [];
         $beans= $seed->db->query("select *FROM emailschedules_beans WHERE emailschedule_id='$seed->id'");
@@ -186,9 +193,9 @@ class EmailSchedulesController
 
                     $seed = BeanFactory::getBean($related);
                     if($seed->field_defs['is_inactive']){
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)")];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related, 0, "({$seed->_tablename}.is_inactive = 0 OR {$seed->_tablename}.is_inactive IS NULL)")];
                     } else {
-                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => $bean->get_linked_beans_count(strtolower($related), $related)];
+                        $linkedBeans[] = ['module' => $related, 'link' => strtolower($related), 'count' => (int) $bean->get_linked_beans_count(strtolower($related), $related)];
                     }
                 }
             }
@@ -223,12 +230,18 @@ class EmailSchedulesController
             foreach ($links as $module) {
                 $seed = BeanFactory::getBean($module);
                 if($seed->field_defs['is_inactive']){
-                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "({$seed->table_name}.is_inactive = 0 OR {$seed->table_name}.is_inactive IS NULL)");
+                    $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0, "({$seed->_tablename}.is_inactive = 0 OR {$seed->_tablename}.is_inactive IS NULL)");
                 } else {
                     $relatedbeans[] = $bean->get_linked_beans(strtolower($module), $module, [], 0, -99, 0);
                 }
 
             }
+        }
+
+
+        // limit to a maximum of 50
+        if(count($relatedbeans) + count($postBody['linkedbeans']) > 50){
+            throw new ForbiddenException('Maximum Number for email schedules is 50');
         }
 
         // create the scheduleid
@@ -243,7 +256,7 @@ class EmailSchedulesController
                 foreach ($relatedbeans as $relatedbean) {
                     foreach ($relatedbean as $relatedbeanentry) {
                         $guid = SpiceUtils::createGuid();
-                        $query .= "('$guid', 'queued', '$emailscheduleId', '$relatedbeanentry->module_dir', '$relatedbeanentry->id', '".TimeDate::getInstance()->nowDb()."', 0),";
+                        $query .= "('$guid', 'queued', '$emailscheduleId', '$relatedbeanentry->_module', '$relatedbeanentry->id', '".TimeDate::getInstance()->nowDb()."', 0),";
                     }
                 }
                 if (!empty($query)) {
@@ -304,5 +317,46 @@ class EmailSchedulesController
             'status' => boolval($query),
             'openschedules' => $openSchedules
         ]);
+    }
+
+    /**
+     * send the scheduled email as a test to the current user
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function sendTestEmail(Request $req, Response $res, array $args): Response{
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $emailSchedule = BeanFactory::getBean('EmailSchedules');
+
+        $body = $req->getParsedBody();
+
+        // create a seed template, fill with the values from the schedule and parse it
+        $template = BeanFactory::getBean('EmailTemplates');
+        $template->subject = $body['email_subject'];
+        $template->body_html = $body['email_body'];
+
+        // parse the template
+        $parsedTemplate = $template->parse($current_user);
+
+        // create a new seed email bean
+        $email = BeanFactory::getBean('Emails');
+        $email->mailbox_id = $body['mailbox_id'];
+        $email->name = $parsedTemplate['subject'];
+        $email->body = $parsedTemplate['body_html'];
+        $email->addEmailAddress('to', $current_user->email1);
+
+        // clone the attachments
+        $email->id = SpiceUtils::createGuid();
+        $email->setAttachments(
+            SpiceAttachments::cloneAttachmentsForBean('Emails', $email->id, 'EmailSchedules', $args['id'], false)
+        );
+
+        $email->sendEmail();
+
+        return $res->withJson(['success' => true]);
     }
 }

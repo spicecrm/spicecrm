@@ -39,7 +39,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * holds a boolean of google events visibility
      */
-    @Input() public googleIsVisible: boolean = true;
+    @Input() public groupwareVisible: boolean = true;
     /**
      * holds the owner events
      */
@@ -51,7 +51,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * holds the google events
      */
-    public googleEvents: any[] = [];
+    public groupwareEvents: any[] = [];
     /**
      * holds the until date
      */
@@ -105,8 +105,8 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
             this.getOwnerEvents();
             this.getUsersEvents();
         }
-        if (changes.googleIsVisible || changes.setdate) {
-            this.getGoogleEvents();
+        if (changes.groupwareVisible || changes.setdate) {
+            this.getGroupwareEvents();
         }
     }
 
@@ -121,7 +121,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      * assign an array of days that holds the events
      */
     public setEventDays() {
-        let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
+        let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.groupwareEvents));
         events.forEach(event => event.events.sort((a, b) => a.start - b.start));
         this.eventDays = events.sort((a, b) => a.date - b.date);
         this.cdRef.detectChanges();
@@ -223,17 +223,17 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**
      * load google events from service and rearrange the multi events
      */
-    public getGoogleEvents() {
-        this.googleEvents = [];
+    public getGroupwareEvents() {
+        this.groupwareEvents = [];
 
-        if (!this.googleIsVisible || this.calendar.isMobileView) {
+        if (!this.groupwareVisible || this.calendar.isMobileView) {
             this.setEventDays();
             return;
         }
 
-        this.calendar.loadGoogleEvents(this.startDate, this.untilDate)
+        this.calendar.loadGroupwareEvents(this.startDate, this.untilDate)
             .subscribe(events => {
-                this.googleEvents = events;
+                this.groupwareEvents = events;
                 this.setEventDays();
             });
     }
@@ -294,7 +294,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         this.untilDate = moment(this.untilDate).add(1, "M");
         this.untildate$.emit(this.untilDate);
         this.getOwnerEvents();
-        this.getGoogleEvents();
+        this.getGroupwareEvents();
         this.getUsersEvents();
     }
 }

@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Calendar\api\handlers;
 
@@ -34,7 +8,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class CalendarRestHandler
 {
@@ -94,7 +68,7 @@ class CalendarRestHandler
         $start = $db->quote($params['start']);
         $end = $db->quote($params['end']);
         $calendarId = $db->quote($calendarId);
-        $krestModuleHandler = new ModuleHandler();
+        $krestModuleHandler = new SpiceBeanHandler();
         $calendars = "SELECT citems.* FROM sysuicalendaritems as citems ";
         $calendars .= "LEFT JOIN sysuicalendars ON citems.calendar_id = sysuicalendars.id ";
         $calendars .= "WHERE sysuicalendars.is_default = 1 AND citems.calendar_id = '$calendarId'";
@@ -131,9 +105,9 @@ class CalendarRestHandler
                 }
             } else {
                 $bean = BeanFactory::getBean($module);
-                $beanFieldEvent = $bean->table_name . '.' . $fieldEvent;
-                $beanFieldStart = $bean->table_name . '.' . $fieldStart;
-                $beanFieldEnd = $bean->table_name . '.' . $fieldEnd;
+                $beanFieldEvent = $bean->_tablename . '.' . $fieldEvent;
+                $beanFieldStart = $bean->_tablename . '.' . $fieldStart;
+                $beanFieldEnd = $bean->_tablename . '.' . $fieldEnd;
 
                 switch ($module) {
                     case 'Contacts':
@@ -146,7 +120,7 @@ class CalendarRestHandler
                         $where = "IFNULL($beanFieldStart, $beanFieldEnd) <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE)";
                         break;
                     case 'UserAbsences':
-                        $absenceType = $bean->table_name . '.type';
+                        $absenceType = $bean->_tablename . '.type';
                         $where = "$beanFieldStart <=  CAST('$end' as DATE) AND $beanFieldEnd >= CAST('$start' as DATE) AND user_id <> '$current_user->id' AND ($absenceType = 'Vacation' OR $absenceType = 'Urlaub')";
                         break;
                     default:

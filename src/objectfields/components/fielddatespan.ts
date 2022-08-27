@@ -11,11 +11,11 @@ import {language} from "../../services/language.service";
 import {Router} from "@angular/router";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -44,6 +44,16 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
      * @private
      */
     public duration: any;
+
+    /**
+     * indicate if the start date is valid
+     */
+    public startDateValid: boolean = true;
+
+    /**
+     * indicate if the end date is valid
+     */
+    public endDateValid: boolean = true;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
@@ -115,4 +125,26 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
         }
     }
 
+    /**
+     * sets wither start or end date valid or invalid
+     *
+     * @param date
+     * @param valid
+     */
+    public setDateValid(date: 'start' | 'end', valid) {
+        switch (date) {
+            case 'start':
+                this.startDateValid = valid;
+                break;
+            case 'end':
+                this.endDateValid = valid;
+                break;
+        }
+
+        if(!this.endDateValid || !this.startDateValid){
+            this.model.setFieldMessage('error', this.language.getLabel('LBL_INPUT_INVALID'), this.fieldname, 'validitycheck');
+        } else {
+            this.model.resetFieldMessages(this.fieldname, 'error', 'validitycheck');
+        }
+    }
 }

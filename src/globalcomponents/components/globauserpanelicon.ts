@@ -38,14 +38,14 @@ export class GlobaUserPanelIcon {
             componentref.instance.imagedata.subscribe(image => {
                 if (image !== false) {
                     // make a backup of the image, set it to emtpy and if case call fails set back the saved image
-                    let imagebackup = this.session.authData.userimage;
-                    this.session.authData.userimage = '';
+                    let imagebackup = this.session.authData.user.user_image;
+                    this.session.authData.user.user_image = '';
                     this.backend.postRequest('module/Users/' + this.session.authData.userId + '/image', {}, {imagedata: image}).subscribe(
                         response => {
-                            this.session.authData.userimage = image;
+                            this.session.authData.user.user_image = image;
                         },
                         error => {
-                            this.session.authData.userimage = imagebackup;
+                            this.session.authData.user.user_image = imagebackup;
                         });
                 }
             });
@@ -65,7 +65,7 @@ export class GlobaUserPanelIcon {
      * returns the userimage from the session if the user has one maintained
      */
     get userimage() {
-        return this.session.authData.userimage;
+        return this.session.authData.user.user_image;
     }
 
     /**

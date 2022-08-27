@@ -320,7 +320,7 @@ class Localization
 	/**
 	 * prepares a bean for export by translating any text fields into the export
 	 * character set
-	 * @param bean object A SugarBean
+	 * @param bean object A SpiceBean
 	 * @return bean object The bean with translated strings
 	 */
     function prepBeanForExport($bean)

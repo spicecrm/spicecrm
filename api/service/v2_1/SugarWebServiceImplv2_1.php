@@ -44,7 +44,7 @@ require_once('service/core/SugarWebServiceImpl.php');
 class SugarWebServiceImplv2_1 extends SugarWebServiceImpl
 {
 	/**
-	 * Retrieve a list of beans.  This is the primary method for getting list of SugarBeans from Sugar using the SOAP API.
+	 * Retrieve a list of beans.  This is the primary method for getting list of SpiceBeans from Sugar using the SOAP API.
 	 *
 	 * @param String $session -- Session ID returned by a previous call to login.
 	 * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..

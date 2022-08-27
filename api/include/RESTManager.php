@@ -3,22 +3,22 @@
 * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
 * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
 * You can contact us at info@spicecrm.io
-* 
+*
 * SpiceCRM is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
-* 
+*
 * SpiceCRM is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -49,6 +49,7 @@ use SpiceCRM\includes\Middleware\ExceptionMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
 use SpiceCRM\includes\Middleware\ModuleRouteMiddleware;
 use SpiceCRM\includes\Middleware\RequireAuthenticationMiddleware;
+use SpiceCRM\includes\Middleware\TenantMiddleware;
 use SpiceCRM\includes\Middleware\TransactionMiddleware;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
@@ -315,8 +316,7 @@ class RESTManager
      * @return string
      */
     public function outputError($exception): string {
-        $inDevMode = (isset(SpiceConfig::getInstance()->config['developerMode'])
-                    and SpiceConfig::getInstance()->config['developerMode']);
+        $inDevMode = SpiceUtils::inDeveloperMode();
 
         if (is_object($exception)) {
             if (is_a( $exception, Exception::class)) {
@@ -444,16 +444,14 @@ class RESTManager
         }
 
         $this->initExtensionsInFolder('.');
+        $this->initExtensionsInFolder('./data');
         $this->initExtensionsInFolder('./custom');
     }
 
     private function initExtensionsInFolder(string $folderPath) {
         $apiExtensionPath = $folderPath . '/api/extensions';
-        $krestExtensionPath = $folderPath . '/KREST/extensions';
         if (file_exists($apiExtensionPath)) {
             $extensionPath = $apiExtensionPath;
-        } elseif (file_exists($krestExtensionPath)) {
-            $extensionPath = $krestExtensionPath;
         } else {
             return;
         }
@@ -473,12 +471,15 @@ class RESTManager
      * Initializes the routes, by iterating over the $routes array and registering them with the slim app.
      */
     public function initRoutes(): void {
+
+        $authController = AuthenticationController::getInstance();
+
         foreach ($this->routes as $route) {
             if (isset($route['method']) && isset($route['route']) && isset($route['class'])
                 && isset($route['function'])) {
 
                 if (isset($route['options']['noAuth']) && $route['options']['noAuth'] == false
-                    && AuthenticationController::getInstance()->isAuthenticated()===false) {
+                    && $authController->isAuthenticated()===false) {
                     continue;
                 }
 
@@ -494,6 +495,10 @@ class RESTManager
 
                 if (isset($route['options']['validate']) && $route['options']['validate'] == true) {
                     $routeObject->add(ValidationMiddleware::class);
+                }
+
+                if (!$authController->isAdmin() && !empty($authController->systemtenantid) && in_array($route['method'], ['put', 'post', 'delete']) && $route['function'] !== 'acceptLegalNotice') {
+                    $routeObject->add(TenantMiddleware::class);
                 }
 
                 if (isset($route['options']['middleware']) && is_array($route['options']['middleware'])) {

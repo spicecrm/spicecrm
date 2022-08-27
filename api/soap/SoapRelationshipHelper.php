@@ -1,38 +1,5 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -57,7 +24,7 @@ function check_for_relationship($relationships, $module){
 function retrieve_relationships_properties($module_1, $module_2, $relationship_name = ""){
 
 	$rs = new Relationship();
-	$query =  "SELECT * FROM $rs->table_name WHERE ((lhs_module = '".$rs->db->quote($module_1)."' AND rhs_module='".$rs->db->quote($module_2)."') OR (lhs_module = '".$rs->db->quote($module_2)."' AND rhs_module='".$rs->db->quote($module_1)."'))";
+	$query =  "SELECT * FROM $rs->_tablename WHERE ((lhs_module = '".$rs->db->quote($module_1)."' AND rhs_module='".$rs->db->quote($module_2)."') OR (lhs_module = '".$rs->db->quote($module_2)."' AND rhs_module='".$rs->db->quote($module_1)."'))";
 	if(!empty($relationship_name) && isset($relationship_name)){
 		$query .= " AND relationship_name = '".$rs->db->quote($relationship_name)."'";
 	}
@@ -212,20 +179,20 @@ function retrieve_modified_relationships($module_name, $related_module, $relatio
 			    }
 			    if($alias == "email1") {
                     // special case for primary emails
-                    $field_select .= "(SELECT email_addresses.email_address FROM {$mod->table_name}
-                    	LEFT JOIN  email_addr_bean_rel ON {$mod->table_name}.id = email_addr_bean_rel.bean_id
-                    		AND email_addr_bean_rel.bean_module='{$mod->module_dir}'
+                    $field_select .= "(SELECT email_addresses.email_address FROM {$mod->_tablename}
+                    	LEFT JOIN  email_addr_bean_rel ON {$mod->_tablename}.id = email_addr_bean_rel.bean_id
+                    		AND email_addr_bean_rel.bean_module='{$mod->_module}'
                     		AND email_addr_bean_rel.deleted=0 AND email_addr_bean_rel.primary_address=1
-                    	LEFT JOIN email_addresses ON email_addresses.id = email_addr_bean_rel.email_address_id Where {$mod->table_name}.id = m1.ID) email1";
+                    	LEFT JOIN email_addresses ON email_addresses.id = email_addr_bean_rel.email_address_id Where {$mod->_tablename}.id = m1.ID) email1";
 			    } elseif($alias == "email2") {
                     // special case for non-primary emails
                     // FIXME: This is not a DB-safe code. Does not work on SQL Server & Oracle.
                     // Using dirty hack here.
-                    $field_select .= "(SELECT email_addresses.email_address FROM {$mod->table_name}
-                    	LEFT JOIN  email_addr_bean_rel on {$mod->table_name}.id = email_addr_bean_rel.bean_id
-                    		AND email_addr_bean_rel.bean_module='{$mod->module_dir}' AND email_addr_bean_rel.deleted=0
+                    $field_select .= "(SELECT email_addresses.email_address FROM {$mod->_tablename}
+                    	LEFT JOIN  email_addr_bean_rel on {$mod->_tablename}.id = email_addr_bean_rel.bean_id
+                    		AND email_addr_bean_rel.bean_module='{$mod->_module}' AND email_addr_bean_rel.deleted=0
                     		AND email_addr_bean_rel.primary_address!=1
-                    	LEFT JOIN email_addresses ON email_addresses.id = email_addr_bean_rel.email_address_id Where {$mod->table_name}.id = m1.ID limit 1) email2";
+                    	LEFT JOIN email_addresses ON email_addresses.id = email_addr_bean_rel.email_address_id Where {$mod->_tablename}.id = m1.ID limit 1) email2";
 			    } else {
                     if(strpos($field, ".") == false) {
                         // no dot - field for m1
@@ -254,11 +221,11 @@ function retrieve_modified_relationships($module_name, $related_module, $relatio
 	}
 
 	if($has_join == false){
-		$query .= " inner join $mod->table_name m2 on $table_alias.$mod2_key = m2.id AND m2.id = '$current_user->id'";
+		$query .= " inner join $mod->_tablename m2 on $table_alias.$mod2_key = m2.id AND m2.id = '$current_user->id'";
 	}
 	else{
-		$query .= " inner join $mod->table_name m1 on rt.$mod_key = m1.id ";
-		$query .= " inner join $mod2->table_name m2 on rt.$mod2_key = m2.id AND m2.id = '$current_user->id'";
+		$query .= " inner join $mod->_tablename m1 on rt.$mod_key = m1.id ";
+		$query .= " inner join $mod2->_tablename m2 on rt.$mod2_key = m2.id AND m2.id = '$current_user->id'";
 	}
 
 	if(!empty($relationship_query)){
@@ -435,8 +402,8 @@ function retrieve_relationship_query($module_name,  $related_module, $relationsh
 	require_once($beanFiles[$mod2_name]);
 	$mod2 = new $mod2_name();
 	$query = "SELECT rt.* FROM  $table rt ";
-	$query .= " inner join $mod->table_name m1 on rt.$mod_key = m1.id ";
-	$query .= " inner join $mod2->table_name m2 on rt.$mod2_key = m2.id  ";
+	$query .= " inner join $mod->_tablename m1 on rt.$mod_key = m1.id ";
+	$query .= " inner join $mod2->_tablename m2 on rt.$mod2_key = m2.id  ";
 
 
 	if(!empty($relationship_query)){

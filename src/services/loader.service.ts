@@ -3,7 +3,7 @@
  */
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Subject, Observable} from 'rxjs';
+import {Subject, Observable, of, throwError} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
@@ -22,6 +22,8 @@ export class loader {
     public progress = 0;
     public activeLoader: string = '';
     public loadPhase: string = 'system';
+
+    private db: any;
 
     public loadElements: any = {
         system: [
@@ -47,6 +49,14 @@ export class loader {
         public language: language
     ) {
         this.loaderHandler.subscribe(val => this.handleLoaderHandler());
+        this.openDB('loaddata').then(
+            db => {
+                this.db = db;
+            }
+        );
+
+        // subscribe to the broadcast to catch the logout
+        this.broadcast.message$.subscribe(message => this.handleLogout(message));
     }
 
     /**
@@ -54,40 +64,202 @@ export class loader {
      */
     public getLoadTasks(): Observable<boolean> {
         let retSubject = new Subject<boolean>();
+        this.readStoreAll('loadtasks').subscribe({
+            next: (records) => {
+                this.processLoadTasks(records, false);
+                // resolve the subject to start the loader
+                retSubject.next(true);
+                retSubject.complete();
+            },
+            error: () => {
+                this.getLoadTasksFromBackend(retSubject);
+            }
+        })
+
+        return retSubject.asObservable();
+    }
+
+    private getLoadTasksFromBackend(retSubject){
         this.http.get(
             this.configuration.getBackendUrl() + "/system/spiceui/core/loadtasks", {headers: this.session.getSessionHeader()}).subscribe(
             (loadtasks: any) => {
 
-                // reset the primary tasks
-                this.loadElements.primary = [];
-                this.loadElements.secondary = [];
-
-                // add the loadtasks to the elements defined as fixed
-                for (let loadtask of loadtasks) {
-                    loadtask.status = 'initial';
-                    this.loadElements[loadtask.phase].push(loadtask);
-                }
-
-                // sort the loader arrays
-                this.loadElements.primary.sort((a, b) => {
-                    return parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1;
-                });
-
-                // sort the loader arrays
-                this.loadElements.secondary.sort((a, b) => {
-                    return parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1;
-                });
+                this.processLoadTasks(loadtasks);
 
                 // resolve the subject to start the loader
                 retSubject.next(true);
                 retSubject.complete();
             }
         );
+    }
+
+    private processLoadTasks(loadtasks: any, store: boolean = true){
+        // reset the primary tasks
+        this.loadElements.primary = [];
+        this.loadElements.secondary = [];
+
+        // add the loadtasks to the elements defined as fixed
+        for (let loadtask of loadtasks) {
+            loadtask.status = 'initial';
+            this.loadElements[loadtask.phase].push(loadtask);
+
+            // write to the store
+            if(store) this.writeStore('loadtasks', loadtask.id, loadtask);
+        }
+
+        // sort the loader arrays
+        this.loadElements.primary.sort((a, b) => {
+            return parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1;
+        });
+
+        // sort the loader arrays
+        this.loadElements.secondary.sort((a, b) => {
+            return parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1;
+        });
+    }
+
+    /**
+     * opens an indexed DB in the browser to store the config data
+     *
+     * @param dbname
+     * @private
+     */
+    private openDB(dbname): Promise<IDBDatabase> {
+        return new Promise<IDBDatabase>((resolve, reject) => {
+            if (!indexedDB) {
+                reject('IndexedDB not available');
+            }
+            const request = indexedDB.open(dbname, 2);
+            let db: IDBDatabase;
+            request.onsuccess = (event: Event) => {
+                db = request.result;
+                resolve(db);
+            };
+            request.onerror = (event: Event) => {
+                reject(`IndexedDB error: ${request.error}`);
+            };
+            request.onupgradeneeded = (event: Event) => {
+                db = request.result;
+                db.createObjectStore("loadtaskdata", {keyPath: "id"});
+                db.createObjectStore("loadtasks", {keyPath: "id"});
+                resolve(db);
+            };
+        });
+    }
+
+    /**
+     * writes a data set record to the db
+     * @param id
+     * @param data
+     */
+    public writeStore(store, id, data) {
+        // just return if we do not have a db
+        if(!this.db) return;
+
+        // process the write
+        this.db.transaction([store], "readwrite").objectStore(store).add({data, id});
+    }
+
+    /**
+     * reads a data set record from the DB
+     * @param id
+     */
+    public readStore(store, id?): Observable<any> {
+        // if we do not have a db return an empty array
+        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
+
+        let retSubject = new Subject<any>();
+        let transaction = this.db.transaction([store], "readwrite");
+        let objectStore = transaction.objectStore(store);
+        let request = objectStore.get(id);
+        request.onerror = (event) => {
+            retSubject.error(false);
+        };
+        request.onsuccess = (event) => {
+            if(event.target.result?.data) {
+                retSubject.next(event.target.result.data);
+                retSubject.complete();
+            } else {
+                retSubject.error(false);
+            }
+        };
         return retSubject.asObservable();
     }
 
+    /**
+     * reads all records from the DB in form of an array with the data attribute
+     *
+     * @param id
+     */
+    public readStoreAll(store): Observable<any> {
+        // if we do not have a db return an empty array
+        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
 
-    public load(): Observable<boolean> {
+        // process the request
+        let retSubject = new Subject<any>();
+        let transaction = this.db.transaction([store], "readwrite");
+        let objectStore = transaction.objectStore(store);
+        let request = objectStore.getAll()
+        request.onerror = (event) => {
+            retSubject.error(false);
+        };
+        request.onsuccess = (event) => {
+            if(event.target.result && event.target.result.length > 0) {
+                let records = [];
+                for(let r of event.target.result){
+                    records.push(r.data);
+                }
+                retSubject.next(records);
+                retSubject.complete();
+            } else {
+                retSubject.error(false);
+            }
+        };
+        return retSubject.asObservable();
+    }
+
+    /**
+     * clears the db
+     *
+     * @private
+     */
+    public clearDB(){
+        // only if we have a database
+        if(!this.db) return;
+
+        // clear the database
+        let transaction = this.db.transaction(["loadtaskdata", "loadtasks"], "readwrite");
+        transaction.objectStore('loadtasks').clear();
+        transaction.objectStore('loadtaskdata').clear();
+    }
+
+
+    /**
+     * handle the message broadcast and if messagetype is logout reset the data
+     *
+     * @param message the message received
+     */
+    public handleLogout(message) {
+        if (message.messagetype == 'logout') {
+            this.clearDB();
+        }
+    }
+
+
+    /**
+     * loads the condfiguration
+     *
+     * @param refresh - forces a refresh of the config resetting locally stored data
+     */
+    public load(refresh: boolean = true): Observable<boolean> {
+
+        // clean the DBs for the config and also for the languages and config
+        if(refresh){
+            this.clearDB();
+            this.language.clearDB();
+            this.configuration.clearDB();
+        }
+
         this.loadComplete = new Subject<boolean>();
         this.getLoadTasks().subscribe(loaded => {
             this.resetLoader();
@@ -179,10 +351,11 @@ export class loader {
         for (let loadElement of this.loadElements[this.loadPhase]) {
             if (loadElement.status === 'active') {
                 loadElement.status = 'completed';
-                this.progress = ++this.counterCompleted / (this.loadElements.primary.length + this.loadElements.system.length) * 100;
-                if (this.progress > 100) {
-                    this.progress == 100;
+                let p = ++this.counterCompleted / (this.loadElements.primary.length + this.loadElements.system.length) * 100
+                if (p > 100) {
+                    p == 100;
                 }
+                this.progress = p;
             } else if (loadElement.status === 'initial') {
                 loadElement.status = 'active';
                 if (loadElement.action) {
@@ -215,20 +388,54 @@ export class loader {
     }
 
     public handleRouteElement(loadElement) {
-        let loadroute = loadElement.route ? loadElement.route : '/system/spiceui/core/loadtasks/'+loadElement.id;
+        this.readStore('loadtaskdata', loadElement.id).subscribe({
+            next: (data) => {
+                this.processLoadElementData(data);
+                this.broadcast.broadcastMessage('loader.completed', loadElement.name);
+                this.loaderHandler.next(loadElement.name);
+            },
+            error: () => {
+                this.loadRouteElementFromBackend(loadElement);
+            }
+        });
+    }
+
+    /**
+     * loads the element from the backend
+     *
+     * @param loadElement
+     * @private
+     */
+    private loadRouteElementFromBackend(loadElement) {
+        let loadroute = loadElement.route ? loadElement.route : '/system/spiceui/core/loadtasks/' + loadElement.id;
         this.http.get(
             this.configuration.getBackendUrl() + loadroute,
             {headers: this.session.getSessionHeader()}
-        ).subscribe((loadElementResults: any) => {
-                for (let loadElementResultKey in loadElementResults) {
-                    this.configuration.setData(loadElementResultKey, loadElementResults[loadElementResultKey]);
-                }
+        ).subscribe({
+            next: (loadElementResults: any) => {
+                // write to the database
+                this.writeStore('loadtaskdata', loadElement.id, loadElementResults);
+
+                // process the load Element Results
+                this.processLoadElementData(loadElementResults);
 
                 this.broadcast.broadcastMessage('loader.completed', loadElement.name);
 
                 this.loaderHandler.next(loadElement.name);
             }
-        );
+        });
+    }
+
+    /**
+     * processes the loaded Data
+     *
+     * @param loadElementResults
+     * @private
+     */
+    private processLoadElementData(loadElementResults) {
+        for (let loadElementResultKey in loadElementResults) {
+            this.configuration.setData(loadElementResultKey, loadElementResults[loadElementResultKey]);
+        }
     }
 
 }

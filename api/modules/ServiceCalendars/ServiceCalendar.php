@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\ServiceCalendars;
 
@@ -33,28 +7,16 @@ use DateTime;
 use DateTimeZone;
 use DateInterval;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\TimeDate;
 
-class ServiceCalendar extends SugarBean
+class ServiceCalendar extends SpiceBean
 {
-    public $module_dir = 'ServiceCalendars';
-    public $object_name = 'ServiceCalendar';
-    public $table_name = 'servicecalendars';
 
-    var $workingdays;
-    var $workingtimes;
-    var $holidays;
-
-    public function bean_implements($interface)
-    {
-        switch ($interface) {
-            case 'ACL':
-                return true;
-        }
-        return false;
-    }
+    public $workingdays;
+    public $workingtimes;
+    public $holidays;
 
     /**
      * overwrites teh retrieve and also loads the holidays as well as working times slots
@@ -63,7 +25,7 @@ class ServiceCalendar extends SugarBean
      * @param bool $encode
      * @param bool $deleted
      * @param bool $relationships
-     * @return SugarBean|null
+     * @return SpiceBean|null
      */
     public function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
     {
@@ -76,7 +38,7 @@ class ServiceCalendar extends SugarBean
     }
 
     /**
-     * reteives the array of working days and the holidays for the calendar
+     * retrieves the array of working days and the holidays for the calendar
      *
      * @return array
      */
@@ -87,7 +49,7 @@ class ServiceCalendar extends SugarBean
         $this->holidays = [];
         if ($this->systemholidaycalendar_id) {
             $holidayCalendar = BeanFactory::getBean('SystemHolidayCalendars', $this->systemholidaycalendar_id);
-            $this->holidays = $holidayCalendar->getHolidays();
+            $this->holidays = $holidayCalendar ? $holidayCalendar->getHolidays() : [];
         }
 
         $this->workingtimes = [];
@@ -100,6 +62,30 @@ class ServiceCalendar extends SugarBean
     }
 
     /**
+     * takes a startdate and adds a given number of calendardays considering all workingdays per calendar as well as the holidays
+     *
+     * @param $startdate
+     * @param $days
+     * @return mixed
+     * @throws Exception
+     */
+    public function addNCalerndarDays($startdate, $days) {
+
+        // convert the timestamp to calendar Time
+        $endDate = new DateTime($startdate->format('c'), new DateTimeZone('UTC'));
+        $endDate->setTimezone(new DateTimeZone($this->timezone));
+
+        // add the number of days
+        $endDate->add(new DateInterval("P{$days}D"));
+
+        if(!$this->isWorkingTime($endDate)){
+            $endDate = $this->getNextWorkingStartTime($endDate);
+        }
+
+        // format back to UTC
+        return $endDate->setTimezone(new DateTimeZone('UTC'));
+    }
+    /**
      * takes a startdate and adds a given number of workingdays considering all workingdays per calendar as well as the holidays
      *
      * @param $startdate
@@ -108,27 +94,62 @@ class ServiceCalendar extends SugarBean
      * @throws Exception
      */
     public function addNWorkingDays($startdate, $days) {
-        $timedate = TimeDate::getInstance();
+
+        // convert the timestamp to calendar Time
+        $endDate = new DateTime($startdate->format('c'), new DateTimeZone('UTC'));
+        $endDate->setTimezone(new DateTimeZone($this->timezone));
+
         // if we have no working days and no holidays .. just add the days
         if (count($this->workingdays) == 0 && count($this->holidays) == 0) {
-            $startdate->add(new DateInterval("P{$days}D"));
+            $endDate->add(new DateInterval("P{$days}D"));
         } else {
             $i = 0;
             while ($i < $days) {
                 // add a day
-                $startdate->add(new DateInterval("P1D"));
+                $endDate->add(new DateInterval("P1D"));
 
                 // check if the day is a working day according to the calendar
                 // if not add another day
-                while (!$this->isWorkingDay($startdate) || $this->isHoliday($startdate)) {
-                    $startdate->add(new DateInterval("P1D"));
+                while (!$this->isWorkingDay($endDate) || $this->isHoliday($endDate)) {
+                    $endDate->add(new DateInterval("P1D"));
                 }
 
                 $i++;
             }
         }
 
-        return $startdate;
+        // check that we have a working time on that day .. if not shift to the next workingtime
+        if(!$this->isWorkingTime($endDate)){
+            $endDate = $this->getNextWorkingStartTime($endDate);
+        }
+
+        // format back to UTC
+        return $endDate->setTimezone(new DateTimeZone('UTC'));
+    }
+
+    /**
+     * adds a number of calendar hours to a date according to the calendar definition and considers also holidays if a holiday calendar is attached to the calendar
+     *
+     * @param $startdate
+     * @param $hours
+     * @return mixed
+     * @throws Exception
+     */
+    public function addNCalendarHours($startdate, $hours)
+    {
+        // convert the timestamp to calendar Time
+        $endDate = new DateTime($startdate->format('c'), new DateTimeZone('UTC'));
+        $endDate->setTimezone(new DateTimeZone($this->timezone));
+
+        // add the hours
+        $endDate->add(new DateInterval("PT{$hours}H"));
+
+        if(!$this->isWorkingTime($endDate)){
+            $endDate = $this->getNextWorkingStartTime($endDate);
+        }
+
+        // format back to UTC
+        return $endDate->setTimezone(new DateTimeZone('UTC'));
     }
 
     /**
@@ -196,8 +217,6 @@ class ServiceCalendar extends SugarBean
 
     /**
      * returns the next working timestart date
-     *
-     * @ToDo: Test ... this function (is not yet tested) has been tested for PCS/Friesach
      *
      * @param $date
      */

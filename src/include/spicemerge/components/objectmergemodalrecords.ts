@@ -27,7 +27,7 @@ export class ObjectMergeModalRecords {
         let componentconfig = this.metadata.getComponentConfig('ObjectMergeModalRecords', this.model.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
-            if (listField.fieldconfig.default !== false) {
+            if (!listField.fieldconfig.hidden) {
                 this.listFields.push(listField);
             }
         }

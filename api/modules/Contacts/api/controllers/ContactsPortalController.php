@@ -266,7 +266,7 @@ class ContactsPortalController {
         }
 
         if ( @$this->bodyParams['setDateTimePrefsWithSystemDefaults'] ) {
-            $userPreference = new UserPreference( $user );
+            $userPreference = BeanFactory::getBean('UserPreferences')->setUser( $user );
             $userPreference->setPreferenceForUser('datef', UserPreference::getDefaultPreference('date_format'));
             $userPreference->setPreferenceForUser('timef', UserPreference::getDefaultPreference('time_format'));
             $userPreference->setPreferenceForUser('timezone', UserPreference::getDefaultPreference('timezone'));

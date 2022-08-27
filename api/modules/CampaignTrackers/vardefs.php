@@ -69,7 +69,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTracker'] = [
         'len' => '11',
         'auto_increment' => true,
         'required'=>true,
-        'studio' => ['editview' => false],
         'comment' => 'Internal key to uniquely identifier the tracker URL'
     ],
   'campaign_id'=> [

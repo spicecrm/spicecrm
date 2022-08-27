@@ -15,8 +15,9 @@
                 <ng-container *ngFor="let event of userMultiEvents; trackBy: trackByItemFn">
                     <calendar-sheet-event [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-event>
                 </ng-container>
-                <ng-container *ngFor="let event of googleMultiEvents; trackBy: trackByItemFn">
-                    <calendar-sheet-google-event [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-google-event>
+                <ng-container *ngFor="let event of groupwareMultiEvents; trackBy: trackByItemFn">
+                    <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-google-event>
+                    <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-microsoft-event>
                 </ng-container>
             </div>
         </div>
@@ -43,8 +44,9 @@
         <ng-container *ngFor="let event of userEvents; trackBy: trackByItemFn">
             <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" (eventDrop)="onEventDrop($event)" class="spice-calendar-event"></calendar-sheet-event>
         </ng-container>
-        <ng-container *ngFor="let event of googleEvents; trackBy: trackByItemFn">
-            <calendar-sheet-google-event [event]="event" [ngStyle]="event.style" class="spice-calendar-event"></calendar-sheet-google-event>
+        <ng-container *ngFor="let event of groupwareEvents; trackBy: trackByItemFn">
+            <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [ngStyle]="event.style" class="spice-calendar-event"></calendar-sheet-google-event>
+            <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [ngStyle]="event.style" class="spice-calendar-event"></calendar-sheet-microsoft-event>
         </ng-container>
     </div>
 </div>

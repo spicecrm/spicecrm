@@ -1,10 +1,9 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <div [ngClass]="getFieldClass()">
-    <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="model.data.openness == 'open'" (click)="setOpenness('user_closed')" [title]="language.getLabel('LBL_MARK_USER_CLOSED')">
+    <button class="slds-button slds-button--icon" [disabled]="!model.checkAccess('edit')" *ngIf="model.data.openness == 'open'" (click)="setOpenness('user_closed')" [title]="language.getLabel('LBL_MARK_USER_CLOSED')">
         <system-button-icon icon="unlock"></system-button-icon>
     </button>
-    <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="model.data.openness == 'user_closed' || model.data.openness == 'system_closed'" (click)="setOpenness('open')" [title]="language.getLabel('LBL_REOPEN')">
+    <button class="slds-button slds-button--icon" [disabled]="!model.checkAccess('edit')" *ngIf="model.data.openness == 'user_closed' || model.data.openness == 'system_closed'" (click)="setOpenness('open')" [title]="language.getLabel('LBL_REOPEN')">
         <system-button-icon icon="lock"></system-button-icon>
     </button>
-    <field-messages [fieldname]="fieldname"></field-messages>
 </div>

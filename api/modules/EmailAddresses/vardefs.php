@@ -52,6 +52,7 @@ use SpiceCRM\includes\SugarObjects\VardefManager;
  */
 SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
     'table' => 'email_addresses',
+    'audited' =>  true,
     'fields' => [
         'id' => [
             'name' => 'id',
@@ -96,6 +97,62 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'type' => 'datetime',
             'vname' => 'LBL_DATE_MODIFIED',
         ],
+        'modified_user_id' =>
+            [
+                'name' => 'modified_user_id',
+                'rname' => 'user_name',
+                'id_name' => 'modified_user_id',
+                'vname' => 'LBL_MODIFIED_BY_ID',
+                'type' => 'assigned_user_name',
+                'table' => 'users',
+                'isnull' => 'false',
+                'dbType' => 'id',
+                'reportable' => true,
+                'comment' => 'User who last modified record',
+                'duplicate_merge' => 'disabled',
+                'audited' => false
+            ],
+        'modified_by_name' =>  [
+            'name' => 'modified_by_name',
+            'vname' => 'LBL_MODIFIED_BY',
+            'type' => 'relate',
+            'reportable' => false,
+            'source' => 'non-db',
+            'rname' => 'user_name',
+            'table' => 'users',
+            'id_name' => 'modified_user_id',
+            'module' => 'Users',
+            'link' => 'modified_user_link',
+            'duplicate_merge' => 'disabled',
+            'audited' => false
+        ],
+        'created_by' =>            [
+            'name' => 'created_by',
+            'rname' => 'user_name',
+            'id_name' => 'modified_user_id',
+            'vname' => 'LBL_CREATED_BY',
+            'type' => 'assigned_user_name',
+            'table' => 'users',
+            'isnull' => 'false',
+            'dbType' => 'id',
+            'comment' => 'User who created record',
+            'duplicate_merge' => 'disabled',
+            'audited' => false
+        ],
+        'created_by_name' =>            [
+            'name' => 'created_by_name',
+            'vname' => 'LBL_CREATED_BY',
+            'type' => 'relate',
+            'reportable' => false,
+            'link' => 'created_by_link',
+            'rname' => 'user_name',
+            'source' => 'non-db',
+            'table' => 'users',
+            'id_name' => 'created_by',
+            'module' => 'Users',
+            'importable' => 'false',
+            'duplicate_merge' => 'disabled'
+        ],
         'deleted' => [
             'name' => 'deleted',
             'type' => 'bool',
@@ -114,6 +171,34 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'source' => 'non-db',
             'comment' => 'possible values opted_in, opted_out, pending'
         ],
+
+        'created_by_link' =>
+            [
+                'name' => 'created_by_link',
+                'type' => 'link',
+                'relationship' => 'email_addresses_created_by',
+                'vname' => 'LBL_CREATED_BY',
+                'link_type' => 'one',
+                'module' => 'Users',
+                'bean_name' => 'User',
+                'source' => 'non-db',
+                'recover' => false,
+                'duplicate_merge' => 'disabled'
+            ],
+        'modified_user_link' =>
+            [
+                'name' => 'modified_user_link',
+                'type' => 'link',
+                'relationship' => 'email_addresses_modified_user',
+                'vname' => 'LBL_MODIFIED_BY',
+                'link_type' => 'one',
+                'module' => 'Users',
+                'bean_name' => 'User',
+                'source' => 'non-db',
+                'recover' => false,
+                'duplicate_merge' => 'disabled'
+            ],
+
     ],
     'indices' => [
         [
@@ -131,6 +216,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'type' => 'index',
             'fields' => ['email_address', 'opt_out', 'invalid_email']
         ],
+    ],
+    'relationships' => [
+        'email_addresses_modified_user' =>
+            ['lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+                'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'modified_user_id',
+                'relationship_type' => 'one-to-many']
+        , 'email_addresses_created_by' =>
+            ['lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+                'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'created_by',
+                'relationship_type' => 'one-to-many']
     ],
 ];
 

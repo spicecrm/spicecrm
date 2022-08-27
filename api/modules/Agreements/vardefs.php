@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -70,6 +44,32 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'relationship' => 'account_agreements',
             'source' => 'non-db'
         ],
+        'consumer_id' => [
+            'name' => 'consumer_id',
+            'vname' => 'LBL_ID',
+            'type' => 'id',
+            'comment' => 'ID of related consumer'
+        ],
+        'consumer_name' => [
+            'name' => 'consumer_name',
+            'vname' => 'LBL_CONSUMER',
+            'type' => 'relate',
+            'id_name' => 'consumer_id',
+            'rname' => 'name',
+            'link' => 'consumer',
+            'module' => 'Consumers',
+            'comment' => 'The name of the related consumer',
+            'source' => 'non-db'
+        ],
+        'consumer' => [
+            'name' => 'consumer',
+            'vname' => 'LBL_CONSUMER',
+            'type' => 'link',
+            'comment' => 'Links to Consumers Module',
+            'module' => 'Consumers',
+            'relationship' => 'consumer_agreements',
+            'source' => 'non-db'
+        ],
         'category_1' => [
             'name' => 'category_1',
             'vname' => 'LBL_CATEGORY1',
@@ -104,6 +104,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'type' => 'bool',
             'source' => 'non-db',
             'comment' => 'Comparing the validation date of the agreement (valid from with today\'s date)'
+        ],
+        'agreement_status' => [
+            'name' => 'agreement_status',
+            'vname' => 'LBL_STATUS',
+            'type' => 'enum',
+            'options' => 'agreement_status_dom',
+            'comment' => 'Status of the agreement'
         ]
     ],
     'relationships' => [
@@ -115,9 +122,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'rhs_table' => 'agreements',
             'rhs_key' => 'account_id',
             'relationship_type' => 'one-to-many'
-        ]
+        ],
+        'consumer_agreements' => [
+            'lhs_module' => 'Consumers',
+            'lhs_table' => 'consumers',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Agreements',
+            'rhs_table' => 'agreements',
+            'rhs_key' => 'consumer_id',
+            'relationship_type' => 'one-to-many'
+        ],
     ],
-    'indices' => []
+    'indices' => [
+        ['name' => 'idx_agreements_status', 'type' => 'index', 'fields' => ['agreement_status', 'deleted']]
+    ]
 ];
 
 VardefManager::createVardef('Agreements', 'Agreement', ['default', 'assignable']);

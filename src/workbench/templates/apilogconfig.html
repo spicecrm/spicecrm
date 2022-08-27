@@ -1,0 +1,95 @@
+<workbench-header titlelabel="LBL_API_LOG_CONFIGURATION" icon="custom:custom62">
+    <workbench-header-controls>
+        <button class="slds-button slds-button--brand" (click)="addEntry()" [disabled]="isLoading"><system-label label="LBL_ADD"></system-label></button>
+    </workbench-header-controls>
+</workbench-header>
+<div system-to-bottom-noscroll [system-overlay-loading-spinner]="isLoading">
+    <div system-to-bottom class="slds-border--top">
+        <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-no-row-hover slds-table_header-fixed">
+            <thead>
+                <tr>
+                    <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_ROUTE"></system-label></th>
+                    <th style="width: 4rem"><system-label class="slds-th__action" label="LBL_METHOD"></system-label></th>
+                    <th style="width: 8rem"><system-label class="slds-th__action" label="LBL_USER"></system-label></th>
+                    <th style="width: 8rem"><system-label class="slds-th__action" label="LBL_IP"></system-label></th>
+                    <th style="width: 2rem"><system-label class="slds-th__action" label="LBL_DIRECTION"></system-label></th>
+                    <th style="width: 6rem"><system-label class="slds-th__action" label="LBL_LOGTABLE"></system-label></th>
+                    <th style="width: 4rem"><system-label class="slds-th__action" label="LBL_ACTION"></system-label></th>
+                </tr>
+            </thead>
+            <tbody #tbody>
+                <tr *ngFor="let entry of entries">
+                    <ng-container *ngIf="!entry.editing">
+                        <td>{{entry.route}}</td>
+                        <td>{{entry.method}}</td>
+                        <td>{{entry.user_id}}</td>
+                        <td>{{entry.ip}}</td>
+                        <td>{{entry.direction}}</td>
+                        <td>{{entry.logtable}}</td>
+                    </ng-container>
+                    <ng-container *ngIf="entry.editing">
+                        <td><input class="slds-input" [(ngModel)]="entry.route"/></td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="entry.method">
+                                            <option>*</option>
+                                            <option *ngFor="let method of methods">{{method}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><input class="slds-input" [(ngModel)]="entry.user_id"/></td>
+                        <td><input class="slds-input" [(ngModel)]="entry.ip"/></td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="entry.direction">
+                                            <option>*</option>
+                                            <option>O</option>
+                                            <option>I</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="entry.logtable">
+                                            <option></option>
+                                            <option *ngFor="let logtable of logtables">{{logtable}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <td>
+                        <div class="slds-button-group slds-float--right" role="group">
+                            <button *ngIf="!entry.editing" class="slds-button slds-button--icon-border" (click)="toggleActive(entry.id)">
+                                <system-utility-icon icon="light_bulb" [colorclass]="entry.is_active ? 'slds-icon-text-warning' : 'slds-icon-text-light'" size="x-small"></system-utility-icon>
+                            </button>
+                            <button *ngIf="!entry.editing" class="slds-button slds-button--icon-border" (click)="entry.editing = true">
+                                <system-button-icon [icon]="'edit'" [size]="'small'"></system-button-icon>
+                            </button>
+                            <button *ngIf="!entry.editing" class="slds-button slds-button--icon-border" (click)="delete(entry.id)">
+                                <system-button-icon [icon]="'delete'" [size]="'small'"></system-button-icon>
+                            </button>
+                            <button *ngIf="entry.editing" class="slds-button slds-button--icon-border" (click)="save(entry)">
+                                <system-button-icon [icon]="'check'" [size]="'small'"></system-button-icon>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="!isLoading && entries.length == 0" class="slds-height_full slds-align--absolute-center">
+            <system-illustration-no-records><system-label label="LBL_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+        </div>
+    </div>
+</div>

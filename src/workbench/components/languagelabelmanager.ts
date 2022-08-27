@@ -136,7 +136,7 @@ export class LanguageLabelManagerComponent {
             {
                 id: this.utils.generateGuid(),
                 syslanguagelabel_id: label.id,
-                syslanguage: this.language.languagedata.languages.default,
+                syslanguage: this.language.currentlanguage
             }
         );
 

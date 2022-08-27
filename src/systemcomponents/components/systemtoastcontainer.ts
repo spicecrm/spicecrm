@@ -20,6 +20,10 @@ export class SystemToastContainer {
         return this.layout.screenwidth == 'small';
     }
 
+    get toastContainerStyle() {
+        return !this.isnarrow ? {'width': '30rem', 'margin-left': 'calc(50% - 15rem)'} : {};
+    }
+
     get toastStyle() {
         return this.isnarrow ? {'min-width': 'unset', 'border-radius': 0, 'border-bottom': '1px solid #fff'} : {};
     }

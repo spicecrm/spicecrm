@@ -88,7 +88,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'module' => 'Users',
             'link' => 'modified_user_link',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'modified_user_link' => [
             'name' => 'modified_user_link',
@@ -124,7 +123,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'module' => 'Users',
             'duplicate_merge' => 'disabled',
             'importable' => 'false',
-            'massupdate' => false,
         ],
         'created_by_link' => [
             'name' => 'created_by_link',
@@ -173,11 +171,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'dbType' => 'longtext',
             'comment' => 'save the json structure of the page builder'
         ],
-        'via_spb' => [
-            'name' => 'via_spb',
+        'editor_type' => [
+            'name' => 'editor_type',
             'vname' => 'LBL_VIA_SPICE_PAGE_BUILDER',
-            'type' => 'bool',
-            'comment' => 'True when the body is designed via the spice page builder'
+            'type' => 'enum',
+            'comment' => 'options: richText, pageBuilder, html'
         ],
         'body' => [
             'name' => 'body',
@@ -212,7 +210,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'rname' => 'user_name',
             'id_name' => 'assigned_user_id',
             'vname' => 'LBL_ASSIGNED_TO_ID',
-            'group' => 'assigned_user_name',
             'type' => 'relate',
             'table' => 'users',
             'module' => 'Users',

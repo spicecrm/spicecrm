@@ -13,7 +13,7 @@ import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
-import {take} from 'rxjs/operators';
+import {modelutilities} from "./modelutilities.service";
 
 interface loginAuthDataIf {
     userName: string;
@@ -23,8 +23,15 @@ interface loginAuthDataIf {
 @Injectable()
 export class loginService {
 
+    /**
+     * keeps the url we originally come from so in case the user is not authenticate
+     * we can then redirect the user to that URL
+     */
     public redirectUrl: string = '';
 
+    /**
+     * the auth data
+     */
     public authData: loginAuthDataIf = {
         userName: '',
         password: ''
@@ -50,7 +57,9 @@ export class loginService {
         public helper: helper,
         public session: session,
         public broadcast: broadcast,
-        public modal: modal, public metadata: metadata
+        public modelutilities: modelutilities,
+        public modal: modal,
+        public metadata: metadata
     ) {
         this.broadcast.message$.subscribe((message: any) => {
             if (message.messagetype === 'loader.completed' && message.messagedata === 'loadUserData') {
@@ -64,7 +73,7 @@ export class loginService {
     /**
      * logs into the backend
      */
-    public login(): Observable<boolean> {
+    public login(refresh: boolean = true): Observable<boolean> {
 
         // the impersonateion name
         let impersonationUser: string;
@@ -105,8 +114,8 @@ export class loginService {
         let params: any = {};
         if ( impersonationUser ) params.impersonationuser = encodeURIComponent( impersonationUser );
         this.http.get(loginUrl, { headers, params })
-            .subscribe(
-                (res: any) => {
+            .subscribe({
+                next: (res: any) => {
                     if (res.result == false) {
                         this.toast.sendToast('error authenticating', 'error', res.error);
                     }
@@ -117,12 +126,9 @@ export class loginService {
                     this.session.authData.companycode_id = response.companycode_id;
                     this.session.authData.tenant_id = response.tenant_id;
                     this.session.authData.tenant_name = response.tenant_name;
+                    this.session.authData.tenant_accepted_legal_notice = response.tenant_accepted_legal_notice;
+                    this.session.authData.tenant_wizard_completed = response.tenant_wizard_completed;
                     this.session.authData.userName = response.user_name;
-                    this.session.authData.userimage = response.user_image;
-                    this.session.authData.first_name = response.first_name;
-                    this.session.authData.last_name = response.last_name;
-                    this.session.authData.address_country = response.address_country;
-                    this.session.authData.display_name = response.display_name;
                     this.session.authData.email = response.email;
                     this.session.authData.admin = response.admin;
                     this.session.authData.dev = response.dev;
@@ -130,24 +136,23 @@ export class loginService {
                     this.session.authData.googleToken = response.access_token;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
                     this.session.authData.canchangepassword = response.canchangepassword;
+                    this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
 
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
 
                     sessionStorage[btoa(this.session.authData.sessionId + ':backendurl')] =
                         btoa(this.configurationService.getBackendUrl());
-                    sessionStorage[btoa(this.session.authData.sessionId + ':siteid')] =
-                        btoa(this.configurationService.getSiteId());
 
                     // broadcast that we have a login
                     this.broadcast.broadcastMessage('login');
 
                     // load the UI
-                    this.load();
+                    this.load(refresh);
 
                     loginSuccess.next(true);
                     loginSuccess.complete();
                 },
-                (err: any) => {
+                error: (err: any) => {
                     switch (err.status) {
                         case 401:
                             loginSuccess.error(err.error.error);
@@ -158,7 +163,8 @@ export class loginService {
                             break;
                     }
                     loginSuccess.complete();
-                });
+                }
+            });
 
         return loginSuccess.asObservable();
     }
@@ -193,8 +199,8 @@ export class loginService {
         }
 
         this.http.get(loginUrl, {headers})
-            .subscribe(
-                (res: any) => {
+            .subscribe({
+                next: (res: any) => {
                     let response = res;
                     this.session.authData.sessionId = response.id;
 
@@ -207,7 +213,7 @@ export class loginService {
                     // broadcast that we have a relogin
                     this.broadcast.broadcastMessage('relogin');
                 },
-                (err: any) => {
+                error: (err: any) => {
                     switch (err.status) {
                         case 401:
                             loginSuccess.error(err.error.error);
@@ -218,8 +224,8 @@ export class loginService {
                             break;
                     }
                     loginSuccess.complete();
-                });
-
+                }
+            });
         return loginSuccess.asObservable();
     }
 
@@ -240,8 +246,10 @@ export class loginService {
                 'Authorization',
                 'Basic ' + this.helper.encodeBase64(this.authData.userName + ':' + this.authData.password)
             );
-            this.http.post(renewUrl, {newpwd: newPassword}, {headers}).subscribe(res => {
-                // do nmothing
+            this.http.post(renewUrl, {newpwd: newPassword}, {headers}).subscribe({
+                next: res => {
+                    // do nmothing
+                }
             });
         }
     }
@@ -249,8 +257,8 @@ export class loginService {
     /**
      * starts the loaded upon successful login
      */
-    public load() {
-        this.loader.load().subscribe((val) => {
+    public load(refresh: boolean = true) {
+        this.loader.load(refresh).subscribe((val) => {
             this.redirect(val);
         });
     }

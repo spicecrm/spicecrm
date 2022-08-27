@@ -70,7 +70,7 @@ class SoapHelperWebServices
                     $required = 1;
                 }
                 if (isset($var['options'])) {
-                    $options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
+                    $options_dom = SpiceUtils::translate($var['options'], $value->_module);
 					if(!is_array($options_dom)) $options_dom = [];
                     foreach ($options_dom as $key => $oneOption)
                         $options_ret[$key] = $this->get_name_value($key, $oneOption);
@@ -90,7 +90,7 @@ class SoapHelperWebServices
                     $link_fields[$var['name']] = $entry;
                 } else {
                     if ($translate) {
-                        $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
+                        $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->_module) : $var['name'];
                     } else {
                         $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
                     }
@@ -104,29 +104,7 @@ class SoapHelperWebServices
             } //foreach
         } //if
 
-        if ($value->module_dir == 'Bugs') {
-            require_once('modules/Releases/Release.php');
-            $seedRelease = new Release();
-            $options = $seedRelease->get_releases(TRUE, "Active");
-			$options_ret = [];
-            foreach ($options as $name => $value) {
-				$options_ret[] =  ['name'=> $name , 'value'=>$value];
-            }
-            if (isset($module_fields['fixed_in_release'])) {
-                $module_fields['fixed_in_release']['type'] = 'enum';
-                $module_fields['fixed_in_release']['options'] = $options_ret;
-            }
-            if (isset($module_fields['release'])) {
-                $module_fields['release']['type'] = 'enum';
-                $module_fields['release']['options'] = $options_ret;
-            }
-            if (isset($module_fields['release_name'])) {
-                $module_fields['release_name']['type'] = 'enum';
-                $module_fields['release_name']['options'] = $options_ret;
-            }
-        }
-
-        if (isset($value->assigned_user_name) && isset($module_fields['assigned_user_id'])) {
+                if (isset($value->assigned_user_name) && isset($module_fields['assigned_user_id'])) {
             $module_fields['assigned_user_name'] = $module_fields['assigned_user_id'];
             $module_fields['assigned_user_name']['name'] = 'assigned_user_name';
         }
@@ -366,7 +344,7 @@ class SoapHelperWebServices
                 $var = $value->field_defs[$field];
                 if (isset($var['source']) && ($var['source'] != 'db' && $var['source'] != 'custom_fields') && $var['name'] != 'email1' && $var['name'] != 'email2' && (!isset($var['type']) || $var['type'] != 'relate')) {
 
-                    if ($value->module_dir == 'Emails' && (($var['name'] == 'description') || ($var['name'] == 'description_html') || ($var['name'] == 'from_addr_name') || ($var['name'] == 'reply_to_addr') || ($var['name'] == 'to_addrs_names') || ($var['name'] == 'cc_addrs_names') || ($var['name'] == 'bcc_addrs_names') || ($var['name'] == 'raw_source'))) {
+                    if ($value->_module == 'Emails' && (($var['name'] == 'description') || ($var['name'] == 'description_html') || ($var['name'] == 'from_addr_name') || ($var['name'] == 'reply_to_addr') || ($var['name'] == 'to_addrs_names') || ($var['name'] == 'cc_addrs_names') || ($var['name'] == 'bcc_addrs_names') || ($var['name'] == 'raw_source'))) {
 
                     } else {
                         continue;
@@ -507,7 +485,7 @@ class SoapHelperWebServices
      *
      * @param String $bean -- Primary record
      * @param String $link_field_name -- The name of the relationship
-     * @param Array $link_module_fields -- The keys of the array are the SugarBean attributes, the values of the array are the values the attributes should have.
+     * @param Array $link_module_fields -- The keys of the array are the SpiceBean attributes, the values of the array are the values the attributes should have.
      * @param String $optional_where -- IGNORED
      * @return Array 'rows/fields_set_on_rows' -- The list of records and what fields were actually set for thos erecords
      */
@@ -697,8 +675,8 @@ class SoapHelperWebServices
 
             foreach ($name_value_list as $value) {
                 $val = $value['value'];
-                if ($seed->field_name_map[$value['name']]['type'] == 'enum') {
-                    $vardef = $seed->field_name_map[$value['name']];
+                if ($seed->field_defs[$value['name']]['type'] == 'enum') {
+                    $vardef = $seed->field_defs[$value['name']];
                     if (isset($app_list_strings[$vardef['options']]) && !isset($app_list_strings[$vardef['options']][$value])) {
                         if (in_array($val, $app_list_strings[$vardef['options']])) {
                             $val = array_search($val, $app_list_strings[$vardef['options']]);
@@ -708,7 +686,7 @@ class SoapHelperWebServices
                 if ($module_name == 'Users' && !empty($seed->id) && ($seed->id != $current_user->id) && $value['name'] == 'user_hash') {
                     continue;
                 }
-                if (!empty($seed->field_name_map[$value['name']]['sensitive'])) {
+                if (!empty($seed->field_defs[$value['name']]['sensitive'])) {
                     continue;
                 }
                 // begin PHP7 COMPAT
@@ -758,7 +736,7 @@ class SoapHelperWebServices
                             //have an object with this outlook_id, if we do
                             //then we can set the id, otherwise this is a new object
                             $order_by = "";
-                            $query = $seed->table_name . ".outlook_id = '" . DBManagerFactory::getInstance()->quote($seed->outlook_id) . "'";
+                            $query = $seed->_tablename . ".outlook_id = '" . DBManagerFactory::getInstance()->quote($seed->outlook_id) . "'";
                             $response = $seed->get_list($order_by, $query, 0, -1, -1, 0);
                             $list = $response['list'];
                             if (count($list) > 0) {
@@ -923,9 +901,9 @@ class SoapHelperWebServices
 
             if (!empty($account_id))  // bug # 44280
             {
-                $query = "select id, deleted from {$focus->table_name} WHERE id='" . $seed->db->quote($account_id) . "'";
+                $query = "select id, deleted from {$focus->_tablename} WHERE id='" . $seed->db->quote($account_id) . "'";
             } else {
-                $query = "select id, deleted from {$focus->table_name} WHERE name='" . $seed->db->quote($account_name) . "'";
+                $query = "select id, deleted from {$focus->_tablename} WHERE name='" . $seed->db->quote($account_name) . "'";
             }
             $result = $seed->db->query($query, true);
 
@@ -935,7 +913,7 @@ class SoapHelperWebServices
             if (isset($row['id']) && $row['id'] != -1) {
                 // if it exists but was deleted, just remove it entirely
                 if (isset($row['deleted']) && $row['deleted'] == 1) {
-                    $query2 = "delete from {$focus->table_name} WHERE id='" . $seed->db->quote($row['id']) . "'";
+                    $query2 = "delete from {$focus->_tablename} WHERE id='" . $seed->db->quote($row['id']) . "'";
                     $result2 = $seed->db->query($query2, true);
                 } // else just use this id to link the contact to the account
                 else {

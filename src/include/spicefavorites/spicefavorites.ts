@@ -11,8 +11,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {SpiceFavoritesEditModal} from './components/spicefavoriteseditmodal';
-import /*embed*/ {SpiceFavoritesItem} from './components/spicefavoritesitem';
+import {SpiceFavoritesEditModal} from './components/spicefavoriteseditmodal';
+import {SpiceFavoritesItem} from './components/spicefavoritesitem';
 
 
 @NgModule({

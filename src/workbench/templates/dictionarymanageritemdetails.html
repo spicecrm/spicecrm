@@ -5,7 +5,7 @@
             <div class="slds-size--1-of-2 slds-form-element slds-m-around--xxx-small">
                 <div class="slds-form-element__control">
                     <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
-                    <input type="text" disabled class="slds-input" [(ngModel)]="dictionaryitem.name"/>
+                    <system-input-text [maxlength]="128" disabled [(ngModel)]="dictionaryitem.name"></system-input-text>
                 </div>
             </div>
             <div class="slds-size--1-of-4 slds-form-element slds-m-around--xxx-small">
@@ -36,19 +36,24 @@
                 <system-input-label [(ngModel)]="dictionaryitem.label"></system-input-label>
             </div>
             <div class="slds-grid slds-p-vertical--xx-small">
-                <div class="slds-size--1-of-2 slds-form-element__control">
+                <div class="slds-size--1-of-3 slds-form-element__control">
                     <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true"><system-label label="LBL_REQUIRED"></system-label></system-checkbox>
                 </div>
-                <div class="slds-size--1-of-2 slds-form-element__control">
+                <div class="slds-size--1-of-3 slds-form-element__control">
                     <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true"><system-label label="LBL_NON_DB"></system-label></system-checkbox>
                 </div>
+                <div class="slds-size--1-of-3 slds-form-element__control">
+                    <label class="slds-form-element__label"><system-label label="LBL_DEFAULT_VALUE"></system-label></label>
+                    <system-input-text [(ngModel)]="dictionaryitem.default_value"></system-input-text>
+                </div>
+
             </div>
             <div class="slds-form-element slds-m-vertical--xxx-small">
                 <label class="slds-form-element__label">
                     <system-label label="LBL_COMMENT"></system-label>
                 </label>
                 <div class="slds-form-element__control">
-                    <textarea class="slds-textarea" [(ngModel)]="dictionaryitem.description"></textarea>
+                    <system-input-text maxlength="150" [(ngModel)]="dictionaryitem.description"></system-input-text>
                 </div>
             </div>
         </ng-container>
@@ -74,6 +79,6 @@
 </div>
 <ng-template #SelectItem>
     <div class="slds-align--absolute-center" system-to-bottom-noscroll>
-        select an item
+        <system-label label="LBL_SELECT_ITEM"></system-label>
     </div>
 </ng-template>

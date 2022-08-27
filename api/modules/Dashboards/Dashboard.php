@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\Dashboards;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
@@ -37,14 +37,8 @@ use SpiceCRM\data\SugarBean;
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-class Dashboard extends SugarBean
+class Dashboard extends SpiceBean
 {
-
-    var $object_name = "Dashboard";
-    var $module_dir = 'Dashboards';
-    var $table_name = "dashboards";
-
-
     function bean_implements($interface)
     {
         switch ($interface) {

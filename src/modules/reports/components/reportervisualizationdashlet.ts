@@ -19,13 +19,35 @@ import {reporterconfig} from '../services/reporterconfig';
 })
 export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {
 
+    /**
+     * the id of the repor
+     */
     @Input() public id: string = '';
+
+    /**
+     * the confg
+     */
     @Input() public config: any = undefined;
+
+    /**
+     * the parent module if displayed in a context
+     */
     @Input() public parentModule: string = '';
+
+    /**
+     * the id of the parent model
+     */
     @Input() public parentId: string = '';
+
+    /**
+     * the componentconfig
+     */
     public componentconfig: any = {};
+
+    /**
+     * internal marker to keep if the report has visualization at all
+     */
     public hasVisualization: boolean = false;
-    public vizData: any = {};
 
     /**
      * emit if a no access or not found error has been raised by the backend

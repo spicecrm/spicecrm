@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
@@ -36,11 +10,10 @@ use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use stdClass;
-use UnifiedSearchAdvanced;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 use SpiceCRM\includes\TimeDate;
 
@@ -184,7 +157,7 @@ class SpiceFTSHandler
 
             // loop modules
             foreach ($modArray as $module) {
-                $krestHandler = new ModuleHandler();
+                $krestHandler = new SpiceBeanHandler();
                 $listData = $krestHandler->get_bean_list($module, ['searchterm' => $postBody['searchterm']]);
                 $result[$module]['aggregations'] = [];
                 $result[$module]['total'] = intval($listData['totalcount']);
@@ -226,7 +199,7 @@ class SpiceFTSHandler
         // determine the modules
         // ToDo: move to fts utils and utilize cache
         $searchresults = [];
-        $krestHandler = new ModuleHandler();
+        $krestHandler = new SpiceBeanHandler();
         $modulesObject = $db->query("SELECT * FROM sysfts");
         while ($ftsmodule = $db->fetchByAssoc($modulesObject)) {
             $ftsParams = json_decode(html_entity_decode($ftsmodule['settings']));
@@ -322,7 +295,8 @@ class SpiceFTSHandler
         $indexedFields = $beanHandler->mapModule();
 
         foreach ($fields as $field) {
-            if (!isset($indexedFields[$field])) return false;
+            // check that we have the field and also a raw value - otherwise the search will not return proper results
+            if (!(isset($indexedFields[$field]) && isset($indexedFields[$field]['fields']['raw']))) return false;
         }
 
         return true;
@@ -339,7 +313,7 @@ class SpiceFTSHandler
 
         $seed = BeanFactory::getBean($module);
         if ($seed)
-            $db->query('UPDATE ' . $seed->table_name . ' SET date_indexed = NULL');
+            $db->query('UPDATE ' . $seed->_tablename . ' SET date_indexed = NULL');
 
     }
 
@@ -354,10 +328,10 @@ class SpiceFTSHandler
 
         $seed = BeanFactory::getBean($module);
 
-        $db->query('UPDATE ' . $seed->table_name . ' SET date_indexed = NULL');
+        $db->query('UPDATE ' . $seed->_tablename . ' SET date_indexed = NULL');
 
-        // $ids = $db->limitQuery('SELECT id FROM ' . $seed->table_name . ' WHERE deleted = 0', 0, 5);
-        $ids = $db->query('SELECT id FROM ' . $seed->table_name . ' WHERE deleted = 0');
+        // $ids = $db->limitQuery('SELECT id FROM ' . $seed->_tablename . ' WHERE deleted = 0', 0, 5);
+        $ids = $db->query('SELECT id FROM ' . $seed->_tablename . ' WHERE deleted = 0');
         while ($id = $db->fetchByAssoc($ids)) {
             $seed->retrieve($id['id'], false); //set encode to false to avoid things like ' being translated to &#039;
             $this->indexBean($seed);
@@ -408,16 +382,6 @@ class SpiceFTSHandler
         $modListFts = $db->query("SELECT * FROM sysfts");
         while ($row = $db->fetchByAssoc($modListFts)) {
             $modules[] = $row;
-        }
-        // BWC when no FTS is set. Fall back on unified search definition
-        if (empty($modules)) {
-            // try unified search
-            require_once 'include/utils/UnifiedSearchAdvanced.php';
-            $usa = new UnifiedSearchAdvanced();
-            $modListUS = $usa->getUnifiedSearchModules();
-            foreach ($modListUS as $modName => $modData) {
-                $modules[] = ['module' => $modName, 'settings' => '{"globalsearch":true}'];
-            }
         }
 
         foreach ($modules as $module) {
@@ -571,7 +535,7 @@ class SpiceFTSHandler
                     array_splice($this->transactionEntries['elastic'], $found, 2);
                 } else {
                     // if none is found add the db update entry
-                    $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
+                    $this->transactionEntries['database'][] = "UPDATE {$bean->_tablename} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'";
                 }
 
                 // add the index entries to the array
@@ -587,7 +551,7 @@ class SpiceFTSHandler
                 // if (!$indexResponse->error) {
                 if ($indexResponse && !in_array('error', $indexResponse)) {
                     // update the date
-                    $bean->db->query("UPDATE {$bean->table_name} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'");
+                    $bean->db->query("UPDATE {$bean->_tablename} SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id = '{$bean->id}'");
                 }
             }
         }
@@ -638,10 +602,10 @@ class SpiceFTSHandler
                         '_id' => $bean->id
                     ]
                 ]);
-                $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = NULL WHERE id = '{$bean->id}'";
+                $this->transactionEntries['database'][] = "UPDATE {$bean->_tablename} SET date_indexed = NULL WHERE id = '{$bean->id}'";
             } else {
                 $this->elasticHandler->document_delete($beanModule, $bean->id);
-                $bean->db->query("UPDATE {$bean->table_name} SET date_indexed = NULL WHERE id = '{$bean->id}'");
+                $bean->db->query("UPDATE {$bean->_tablename} SET date_indexed = NULL WHERE id = '{$bean->id}'");
             }
         }
 
@@ -690,8 +654,8 @@ class SpiceFTSHandler
     private function getSortArrayEntry($seed, $indexProperties, $sortfield, $sortdirection)
     {
         // replace by metadata sortfield definition
-        if ($seed->field_name_map[$sortfield]['sort_on']) {
-            $sortfield = $seed->field_name_map[$sortfield]['sort_on'];
+        if ($seed->field_defs[$sortfield]['sort_on']) {
+            $sortfield = $seed->field_defs[$sortfield]['sort_on'];
         }
 
         // check that the field is here, is sortable and if aanother sort field is set
@@ -1030,7 +994,7 @@ class SpiceFTSHandler
      *
      * checks for duplicate records
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      *
      * @return array
      */
@@ -1131,7 +1095,7 @@ class SpiceFTSHandler
             if (!empty($filterForId)) {
                 // $addFilters[] = $filterForId;
                 if (is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
-                        $queryParam['query']['bool']['filter']['bool']['must'][] = $filterForId;
+                    $queryParam['query']['bool']['filter']['bool']['must'][] = $filterForId;
                 } else {
                     $queryParam['query']['bool']['filter']['bool']['must'] = [$filterForId];
                 }
@@ -1293,7 +1257,7 @@ class SpiceFTSHandler
                         // if we do not find the record .. do not return it
                         if (!$seed) continue;
 
-                        foreach ($seed->field_name_map as $field => $fieldData) {
+                        foreach ($seed->field_defs as $field => $fieldData) {
                             //if (!isset($hit['_source']{$field}))
                             if (is_string($seed->$field)) {
                                 $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
@@ -1301,7 +1265,7 @@ class SpiceFTSHandler
                         }
 
                         // get the email addresses
-                        $krestHandler = new ModuleHandler();
+                        $krestHandler = new SpiceBeanHandler();
                         $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($module, $hit['_id']);
 
                         $hit['acl'] = $seed->getACLActions();
@@ -1348,7 +1312,7 @@ class SpiceFTSHandler
                         continue;
                     };
 
-                    foreach ($seed->field_name_map as $field => $fieldData) {
+                    foreach ($seed->field_defs as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
                         if(is_string($seed->$field)) { // might be Link2 Object! so check on it
                             $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
@@ -1356,7 +1320,7 @@ class SpiceFTSHandler
                     }
 
                     // get the email addresses
-                    $krestHandler = new ModuleHandler();
+                    $krestHandler = new SpiceBeanHandler();
                     // $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($module, $hit['_id']);
 
                     $hit['acl'] = $seed->getACLActions();
@@ -1424,7 +1388,7 @@ class SpiceFTSHandler
             $relateFilter = json_decode($params['relatefilter']);
             $relateSeed = BeanFactory::getBean($relateFilter->module, $relateFilter->id);
             $relateSeed->load_relationship($relateFilter->relationship);
-            $relatedBeans = $relateSeed->get_linked_beans($relateFilter->relationship, $relateSeed->field_name_map[$relateFilter->relationship]['module'], [], 0, -99);
+            $relatedBeans = $relateSeed->get_linked_beans($relateFilter->relationship, $relateSeed->field_defs[$relateFilter->relationship]['module'], [], 0, -99);
             $relatedids = [];
             foreach ($relatedBeans as $relatedBean) {
                 $relatedids[] = $relatedBean->id;
@@ -1496,8 +1460,11 @@ class SpiceFTSHandler
 
                 // add the aggregates
                 $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs);
-                foreach ($searchresultsraw['hits']['hits'] as &$hit) {
-                    $searchresults['hits'][] = $hit;
+                // only add when not hidden
+                if($bucketitem['hidden'] === false) {
+                    foreach ($searchresultsraw['hits']['hits'] as &$hit) {
+                        $searchresults['hits'][] = $hit;
+                    }
                 }
 
                 // loop over the aggregate keys to get the searched values
@@ -1561,7 +1528,7 @@ class SpiceFTSHandler
         }
 
         // get the email addresses
-        $krestHandler = new ModuleHandler();
+        $krestHandler = new SpiceBeanHandler();
         foreach ($searchresultsraw['hits']['hits'] as &$hit) {
             $seed = BeanFactory::getBean($module, $hit['_id']);
             $exportresults[] = $krestHandler->mapBeanToArray($module, $seed);
@@ -1646,7 +1613,7 @@ class SpiceFTSHandler
                 continue;
             }
 
-            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL  OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL))", 0, $packagesize - $beanCounter);
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->_tablename . " WHERE (deleted = 0 AND (date_indexed IS NULL  OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL))", 0, $packagesize - $beanCounter);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;
             if ($toConsole) {
@@ -1738,7 +1705,7 @@ class SpiceFTSHandler
                 continue;
             }
 
-            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->table_name . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL )) ORDER BY date_modified DESC", 0, $packagesize);
+            $indexBeans = $db->limitQuery("SELECT id, deleted FROM " . $seed->_tablename . " WHERE (deleted = 0 AND (date_indexed IS NULL OR date_indexed < date_modified)) OR (deleted = 1 AND (date_indexed IS NOT NULL )) ORDER BY date_modified DESC", 0, $packagesize);
             $numRows = $indexBeans->num_rows;
             $counterIndexed = $counterDeleted = 0;
             if ($toConsole) {
@@ -1755,7 +1722,30 @@ class SpiceFTSHandler
                     echo sprintf("%${numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
                 }
                 if ($indexBean['deleted'] == 0) {
-                    $seed->retrieve($indexBean['id'], false, false, false );
+
+                    // get idnex properties and field defs to determine if relationships can be loaded
+                    $indexProperties = SpiceFTSUtils::getBeanIndexProperties($seed->_module);
+                    $fieldDefs = $seed->field_defs;
+
+                    // set loading relationships to false as default
+                    $loadRelated = false;
+
+                    foreach ($indexProperties as $indexProperty) {
+                        $path = explode('::', $indexProperty['path']);
+                        $field = explode(':', $path[1])[0];
+                        // make sure to retrieve only fields from index properties
+                        if ($field == 'field') {
+                            foreach ($fieldDefs as $fieldDef) {
+                                $fieldType = $fieldDef['type'];
+                                // if the type is parent or relate set the loading of relationships to true
+                                if ($fieldType == 'parent' || $fieldType == 'relate') {
+                                    $loadRelated = true;
+                                    break 2;
+                                }
+                            }
+                        }
+                    }
+                    $seed->retrieve($indexBean['id'], false, false, $loadRelated );
 
                     if ($this->elasticHandler->getMajorVersion() == '6') {
                         $bulkItems[] = json_encode([
@@ -1799,10 +1789,10 @@ class SpiceFTSHandler
                     $indexResponse = $this->elasticHandler->bulk($bulkItems);
                     if (!$indexResponse->errors) {
                         if (count($bulkUpdates['indexed']) > 0)
-                            $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                            $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                         if (count($bulkUpdates['deleted']) > 0)
-                            $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
+                            $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
                     }
 
                     // reset the list
@@ -1819,10 +1809,10 @@ class SpiceFTSHandler
                 $indexResponse = $this->elasticHandler->bulk($bulkItems);
                 if (!$indexResponse->errors) {
                     if (count($bulkUpdates['indexed']) > 0)
-                        $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                        $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                     if (count($bulkUpdates['deleted']) > 0)
-                        $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
+                        $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
 
                 }
 
@@ -1848,10 +1838,10 @@ class SpiceFTSHandler
             $indexResponse = $this->elasticHandler->bulk($bulkItems);
             if (!$indexResponse->errors) {
                 if (count($bulkUpdates['indexed']) > 0)
-                    $db->query("UPDATE " . $seed->table_name . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
+                    $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = '" . TimeDate::getInstance()->nowDb() . "' WHERE id IN ('" . implode("','", $bulkUpdates['indexed']) . "')");
 
                 if (count($bulkUpdates['deleted']) > 0)
-                    $db->query("UPDATE " . $seed->table_name . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
+                    $db->query("UPDATE " . $seed->_tablename . " SET date_indexed = NULL WHERE id IN ('" . implode("','", $bulkUpdates['deleted']) . "')");
 
             }
 
@@ -2009,7 +1999,7 @@ class SpiceFTSHandler
         $returnArray = [];
         if ($module != '' && $module != 'undefined') {
             $nodeModule = BeanFactory::getBean($module);
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 if ($field_defs['type'] != 'link') {
                     $returnArray[] = [
                         'id' => 'field:' . $field_defs['name'],

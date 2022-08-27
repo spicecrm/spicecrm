@@ -1,38 +1,5 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\includes\SugarObjects\templates\person;
 
 use SpiceCRM\data\BeanFactory;
@@ -74,7 +41,7 @@ class Person extends Basic
     {
         $retVal = parent::retrieve($id, $encode, $deleted, $relationships);
         $this->_create_proper_name_field();
-        // call fill_in_relationship_fields again .... workaround till we get the SugarBean::fill_in_relationship_fields clean
+        // call fill_in_relationship_fields again .... workaround till we get the SpiceBean::fill_in_relationship_fields clean
         if ($relationships) {
             $this->fill_in_relationship_fields();
         }
@@ -96,7 +63,7 @@ class Person extends Basic
         $result = $email_addr->retrieve_by_string_fields(['email_address' => $email]);
         if($result)
         {
-            $sql = "SELECT bean_id FROM email_addr_bean_rel WHERE email_address_id = '{$email_addr->id}' AND bean_module = '$this->module_dir' AND deleted = 0";
+            $sql = "SELECT bean_id FROM email_addr_bean_rel WHERE email_address_id = '{$email_addr->id}' AND bean_module = '$this->_module' AND deleted = 0";
             $row = $this->db->fetchByAssoc($this->db->query($sql));
             if(!$row) return false;
             return $this->retrieve($row['bean_id'], $encode, $deleted, $relationships);
@@ -213,7 +180,7 @@ class Person extends Basic
 
         foreach ($linkedEmailAddresses as $linkedEmailAddress) {
 
-            if ($primaryEmailAddressId == $linkedEmailAddress->email_address_id) {
+            if ($primaryEmailAddressId == $linkedEmailAddress->id) {
 
                 $relationExists = true;
                 $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 1]);
@@ -257,7 +224,7 @@ class Person extends Basic
             if ($field['type'] == 'link' && !empty($field['module'])) {
                 $seed = BeanFactory::getBean($field['module']);
                 if ($seed && (isset($seed->field_defs['gdpr_marketing_agreement']) || isset($seed->field_defs['gdpr_data_agreement']))) {
-                    $linkedBeans = $this->get_linked_beans($field['name'], $seed->object_name);
+                    $linkedBeans = $this->get_linked_beans($field['name'], $seed->_objectname);
                     foreach($linkedBeans as $linkedBean){
                         if($linkedBean->gdpr_data_agreement || $linkedBean->gdpr_marketing_agreement){
                             $gdprReleases['related'][] = [

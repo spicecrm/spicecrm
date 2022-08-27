@@ -12,7 +12,7 @@ declare var moment: any;
 @Component({
     selector: 'holiday-calendar-list-days',
     templateUrl: '../templates/holidaycalendarlistdays.html',
-    providers: [relatedmodels, model]
+    providers: [relatedmodels]
 })
 export class HolidayCalendarListDays implements OnChanges {
 

@@ -153,6 +153,7 @@ export class ComponentsetManager {
     }
 
     public componentDeprecated(component) {
+        if(!component || (component && !component.component)) return false;
         let object = this.metadata.getSystemComponents(component.module).find(x => x.component === component.component);
         if (object.deprecated == '1') {
             return true;

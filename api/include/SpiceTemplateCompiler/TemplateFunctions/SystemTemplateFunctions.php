@@ -3,8 +3,10 @@
 namespace SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions;
 
 use Com\Tecnick\Barcode\Barcode;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use DateTime, DateTimeZone;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use IntlDateFormatter;
@@ -153,5 +155,25 @@ class SystemTemplateFunctions {
         return SpiceUtils::createShortUrl( $longUrl );
     }
     */
+
+    /**
+     * returns the default country name from the language table
+     *
+     * @param $inputstring
+     * @param $language
+     * @return mixed
+     */
+    static function getCountryName( $inputstring, $language = 'en_us') {
+        $db = DBManagerFactory::getInstance();
+        $c = $db->fetchOne("SELECT * FROM syscountries WHERE cc = '{$inputstring}'");
+
+        // if no country is found return it
+        if(!$c) return $inputstring;
+
+        // get the label
+        $label = $db->fetchOne("SELECT st.* FROM syslanguagetranslations st, syslanguagelabels sl WHERE st.syslanguagelabel_id = sl.id AND sl.name = 'LBL_COUNTRY_AT' AND st.syslanguage = '{$language}'");
+
+        return $label['translation_default'] ?: $inputstring;
+    }
 
 }

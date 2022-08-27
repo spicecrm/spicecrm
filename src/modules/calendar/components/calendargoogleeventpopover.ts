@@ -10,6 +10,7 @@ import {language} from "../../../services/language.service";
  * Display a popover to list the google event details
  */
 @Component({
+    selector: 'calendar-google-event-popover',
     templateUrl: '../templates/calendargoogleeventpopover.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

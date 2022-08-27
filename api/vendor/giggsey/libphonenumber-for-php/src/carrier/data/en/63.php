@@ -12,6 +12,7 @@
 
 return array (
   63813 => 'Smart',
+  6389 => 'Dito',
   63905 => 'Globe',
   63906 => 'Globe',
   63907 => 'Smart',
@@ -54,6 +55,10 @@ return array (
   63977 => 'Globe',
   63978 => 'Globe',
   63981 => 'Smart',
+  63983 => 'Globe',
+  63985 => 'Smart',
+  63986 => 'Globe',
+  63987 => 'Globe',
   63988 => 'Smart',
   63991 => 'Dito',
   63992 => 'Dito',

@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -88,6 +62,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'type' => 'int',
             'comment' => 'the maximum elastic indices size limit in MB',
         ],
+        'accept_data' => [
+            'name' => 'accept_data',
+            'type' => 'json',
+            'vname' => 'LBL_ACCEPT_DATA'
+        ],
+        'wizard_completed' => [
+            'name' => 'wizard_completed',
+            'type' => 'bool',
+            'vname' => 'LBL_WIZARD_COMPLETED',
+            'default' => 0
+        ],
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -104,6 +89,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'source'       => 'non-db',
             'relationship' => 'tenants_deploymentpackages',
         ],
+        'companycode_id' => [
+            'name'  => 'companycode_id',
+            'vname' => 'LBL_COMPANYCODE_ID',
+            'type'  => 'id',
+        ],
+        'companycode' => [
+            'name'         => 'companycode',
+            'vname'        => 'LBL_COMPANYCODE',
+            'relationship' => 'tenant_companycode',
+            'type'         => 'link',
+            'source'       => 'non-db',
+        ],
     ],
     'indices' => [],
     'relationships' => [
@@ -115,7 +112,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'rhs_table' => 'users',
             'rhs_key' => 'systemtenant_id',
             'relationship_type' => 'one-to-many'
-        ]
+        ],
+        'tenant_companycode' => [
+            'lhs_module'        => 'SystemTenant',
+            'lhs_table'         => 'systemtenants',
+            'lhs_key'           => 'id',
+            'rhs_module'        => 'CompanyCode',
+            'rhs_table'         => 'companycodes',
+            'rhs_key'           => 'companycode_id',
+            'relationship_type' => 'one-to-many',
+        ],
     ]
 ];
 

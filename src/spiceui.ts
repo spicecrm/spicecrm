@@ -9,7 +9,7 @@ import {
     NgModule,
     Component,
     Renderer2,
-    enableProdMode, ViewChild
+    enableProdMode, ViewChild, ApplicationRef, ComponentFactoryResolver, ViewContainerRef, ComponentRef
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
@@ -39,7 +39,7 @@ import {loader} from "./services/loader.service";
 import {broadcast} from "./services/broadcast.service";
 import {dockedComposer} from "./services/dockedcomposer.service";
 import {backend} from "./services/backend.service";
-import {navigation,canNavigateAway} from "./services/navigation.service";
+import {navigation, canNavigateAway} from "./services/navigation.service";
 import {modelutilities} from "./services/modelutilities.service";
 import {toast} from "./services/toast.service";
 import {favorite} from "./services/favorite.service";
@@ -53,22 +53,19 @@ import {layout} from "./services/layout.service";
 import {libloader} from "./services/libloader.service";
 import {telephony} from "./services/telephony.service";
 import {socket} from "./services/socket.service";
-import {SystemInstallerComponent} from "./systemcomponents/components/systeminstallercomponent";
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
-import {activitiytimeline} from "./services/activitiytimeline.service";
-import {googleapiloader} from "./services/apiloader";
-import {mediafiles} from "./services/mediafiles.service";
+import {SpiceInstallerModule} from "./include/spiceinstaller/spiceinstallermodule";
+import {ModuleGSuite} from "./include/gsuite/gsuite";
+import {Outlook} from "./include/outlook/outlook";
+import {GSuitePane} from "./include/gsuite/components/gsuitepane";
+import {OutlookPane} from "./include/outlook/components/outlookpane";
 
 // declarations for TS
 /**
  * @ignore
  */
-declare var System: any;
-/**
-* @ignore
-*/
 declare var moment: any;
 declare global {
     interface Date {
@@ -77,6 +74,8 @@ declare global {
 }
 
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
+
+const bootstrap = (document.querySelector('meta[name="bootstrap"]') as HTMLMetaElement)?.content;
 
 /**
  * the main component that gets bootstrapped withthe main module
@@ -125,18 +124,18 @@ export class SpiceUI {
         SystemComponents,
         GlobalComponents,
         ObjectComponents,
+        ModuleGSuite,
+        Outlook,
+        SpiceInstallerModule,
         RouterModule.forRoot(
             [
-                {path: "install", component: SystemInstallerComponent},
                 {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]},
-                // {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
+                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
             ]
         )
     ],
     declarations: [SpiceUI],
-    bootstrap: [SpiceUI],
     providers: [
         aclCheck,
         assistant,
@@ -187,12 +186,30 @@ export class SpiceUIModule {
     ) {
 
     }
+
+    public ngDoBootstrap(appRef: ApplicationRef) {
+
+        let bootstrapComponent: unknown = SpiceUI;
+
+        switch (bootstrap) {
+            case 'gsuite':
+                bootstrapComponent = GSuitePane;
+                break;
+            case 'outlook':
+                bootstrapComponent = OutlookPane;
+        }
+
+        appRef.bootstrap(bootstrapComponent as any);
+    }
 }
 
 /**
- * sets the prod mode. THis is enabled in the build workflow for production build
+ * sets the prod mode. this reduces angular unnecessary checks in prod mode
  */
-// enableProdMode();
+if (environment.production) {
+    enableProdMode();
+    console.log('production mode enabled');
+}
 
 /**
  * browser detection .. IE is not supported
@@ -210,7 +227,14 @@ if (/*@cc_on!@*/false || !!document.documentMode) {
     document.getElementById('loadstatus').innerHTML = '...preparing..';
     // ToDo: Prep for Angular 9 - ZoneEventCoalsecing - to be tried for reduced change detection cycles
     // platformBrowserDynamic().bootstrapModule(SpiceUIModule, { ngZoneEventCoalescing: true });
-    platformBrowserDynamic().bootstrapModule(SpiceUIModule);
+
+    if (bootstrap == 'outlook') {
+        window['Office'].onReady().then(() => {
+            platformBrowserDynamic().bootstrapModule(SpiceUIModule).catch(error => console.error(error));
+        });
+    } else {
+        platformBrowserDynamic().bootstrapModule(SpiceUIModule).catch(error => console.error(error));
+    }
 }
 
 /**

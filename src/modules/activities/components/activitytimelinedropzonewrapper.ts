@@ -58,6 +58,7 @@ export class ActivityTimelineDropZoneWrapper {
     */
     public handleDroppedFiles(files: FileList) {
         let msgFiles = [];
+        let emlFiles = [];
         let noteFiles = [];
         for (let file in files) {
             if (files.hasOwnProperty(file)) {
@@ -72,6 +73,8 @@ export class ActivityTimelineDropZoneWrapper {
                     // push the files to the appropriate arrays
                     if (files[file].name.substring(files[file].name.length - 4).toLowerCase() == '.msg') {
                         msgFiles.push(files[file]);
+                    } else if (files[file].name.substring(files[file].name.length - 4).toLowerCase() == '.eml') {
+                        emlFiles.push(files[file]);
                     } else {
                         noteFiles.push(files[file]);
                     }
@@ -80,7 +83,25 @@ export class ActivityTimelineDropZoneWrapper {
         }
         if (msgFiles.length > 0) {
             this.uploadData.uploading = true;
-            this.uploadFiles(msgFiles, this.model.module, this.model.id).subscribe(
+            this.uploadFiles(msgFiles, this.model.module, this.model.id, 'msg').subscribe(
+                next => {
+                    this.uploadData.fileName = next.fileName;
+                    this.uploadData.progress = next.progress;
+                    this.setFileIcon(next.fileName, next.fileType);
+                },
+                () => {
+                    this.toast.sendToast(this.language.getLabel('ERR_UPLOAD_FAILED'), 'error');
+                },
+                () => {
+                    this.activitiytimeline.getTimeLineData('History');
+                    this.uploadData.uploading = false;
+                }
+            );
+        }
+
+        if (emlFiles.length > 0) {
+            this.uploadData.uploading = true;
+            this.uploadFiles(emlFiles, this.model.module, this.model.id, 'eml').subscribe(
                 next => {
                     this.uploadData.fileName = next.fileName;
                     this.uploadData.progress = next.progress;
@@ -104,7 +125,7 @@ export class ActivityTimelineDropZoneWrapper {
     * @param files
     * @return Observable
     */
-    public uploadFiles(files, moduleName, moduleId): Observable<any> {
+    public uploadFiles(files, moduleName, moduleId, type?): Observable<any> {
         if (files.length === 0) {
             return;
         }
@@ -153,7 +174,7 @@ export class ActivityTimelineDropZoneWrapper {
                 let url = this.configurationService.getBackendUrl() + '/common/spiceattachments';
 
                 // change the url to the "add email" url if the file type is msg
-                if (moduleName != 'Notes') url = this.configurationService.getBackendUrl() + "/module/Emails/msg";
+                if (moduleName != 'Notes') url = this.configurationService.getBackendUrl() + "/module/Emails/" + type;
 
                 request.open("POST", url, true);
                 request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);

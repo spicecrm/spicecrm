@@ -6,9 +6,9 @@
                 <system-label class="slds-p-horizontal--x-small" label="LBL_START"></system-label>
                 <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" [(ngModel)]="start"></system-input-number>
                 <system-label class="slds-p-horizontal--x-small" label="LBL_COUNT"></system-label>
-                <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" [(ngModel)]="limit - inactiveCount"></system-input-number>
+                <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" [(ngModel)]="limit"></system-input-number>
                 <system-label class="slds-p-horizontal--x-small" label="LBL_TOTAL"></system-label>
-                <system-input-number class="slds-p-horizontal--x-small" [disabled]="true" [precision]="0" [(ngModel)]="totalCount - inactiveCount"></system-input-number>
+                <system-input-number class="slds-p-horizontal--x-small" [disabled]="true" [precision]="0" [ngModel]="totalCount"></system-input-number>
                 <button [disabled]="!canGenerate" class="slds-col--bump-left slds-button slds-button_neutral" (click)="rendertemplate()" system-title="LBL_MAILMERGE"><system-button-icon addclasses="slds-button__icon slds-button__icon_left" icon="print"></system-button-icon><system-label label="LBL_GENERATE"></system-label></button>
             </div>
         </div>

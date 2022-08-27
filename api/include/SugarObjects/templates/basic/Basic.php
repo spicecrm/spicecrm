@@ -35,9 +35,9 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SugarObjects\templates\basic;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class Basic extends SugarBean
+class Basic extends SpiceBean
 {
     /** 
      * Constructor
@@ -48,7 +48,7 @@ class Basic extends SugarBean
 	}
 
 	/**
-	 * @see SugarBean::get_summary_text()
+	 * @see SpiceBean::get_summary_text()
 	 */
 	public function get_summary_text()
 	{

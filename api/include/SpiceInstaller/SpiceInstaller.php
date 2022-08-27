@@ -1,34 +1,9 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -45,46 +20,14 @@ use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
 use SpiceCRM\modules\Administration\api\controllers\AdminController;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageLoader;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 
 require_once('modules/TableDictionary.php');
 
 
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 class SpiceInstaller
 {
 
@@ -96,7 +39,7 @@ class SpiceInstaller
         $this->dbManagerFactory = new DBManagerFactory();
 
         // set installing global to avoid crashing sugarbean hook logic on install, see include/utils/LogicHook.php
-        $GLOBALS['installing'] = true;
+        SpiceConfig::getInstance()->installing = true;
     }
 
 
@@ -134,7 +77,7 @@ class SpiceInstaller
     {
         $requirements = [];
         // check php version
-        if (version_compare(phpversion(), '7.2', '<')) {
+        if (version_compare(phpversion(), '7.4', '<')) {
             $requirements['php'] = false;
         } else {
             $requirements['php'] = true;
@@ -179,8 +122,16 @@ class SpiceInstaller
             $requirements['zip'] = true;
         }
 
+        //check mailparse
+        if (!function_exists('mailparse_msg_parse_file')) {
+            $requirements['mailparse'] = false;
+        } else {
+            $requirements['mailparse'] = true;
+        }
+
         // db check
-        $drivers = $this->dbManagerFactory->getDbDrivers();
+        $drivers = $this->dbManagerFactory::getDbDrivers();
+
         if (empty($drivers)) {
             $requirements['db'] = false;
         } else {
@@ -255,7 +206,7 @@ class SpiceInstaller
         $errors = [];
         $postData = $body->getParsedBody();
 
-        $db = $this->dbManagerFactory->getTypeInstance($postData['db_type'], ['db_manager' => $postData['db_manager']]);
+        $db = $this->dbManagerFactory::getTypeInstance($postData['db_type'], ['dbconfig' => ['db_manager' => $postData['db_manager']]]);
         // credentials to connect to the database
         $dbconfig = ['db_host_name' => $postData['db_host_name'],
             'db_host_instance' => $postData['db_host_instance'],
@@ -462,7 +413,7 @@ class SpiceInstaller
             'db_manager' => $postData['database']['db_manager'],
             'db_type' => $postData['database']['db_type'],];
 
-        $db = $this->dbManagerFactory->getTypeInstance($postData['database']['db_type'], ['db_manager' => $postData['database']['db_manager']]);
+        $db = $this->dbManagerFactory::getTypeInstance($postData['database']['db_type'], ['dbconfig' => ['db_manager' => $postData['database']['db_manager']]]);
         $db->setOptions($postData['dboptions']);
         if ($dbconfig['db_type'] == 'oci8') {
             $dbconfig['db_schema'] = $postData['database']['db_schema'];
@@ -481,6 +432,8 @@ class SpiceInstaller
             }
 
         }
+
+        $this->dbManagerFactory::$config = ['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']];
 
         $db = $this->dbManagerFactory->getInstance();
 
@@ -501,6 +454,7 @@ class SpiceInstaller
         // load them now!
         SpiceDictionaryHandler::loadMetaDataFiles();
         $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+
 // will break installation under php8.1 and is unnecessary
 //        $vardef = new VardefManager();
 //        $vardef->clearVardef();
@@ -549,17 +503,13 @@ class SpiceInstaller
         ksort($globalBeanList);
 
         foreach ($globalBeanList as $dir => $bean) {
-//            if ($bean == 'Administration') { // for core edition
-//                require_once('metadata/system_config.php');
-//            } else {
-                // in core edition some modules might be missing
-                // ignore them when it encountered
-                if (file_exists('modules/' . $dir . '/vardefs.php')) {
-                    require_once('modules/' . $dir . '/vardefs.php');
-                } else {
-                    continue;
-                }
-//            }
+            // in core edition some modules might be missing
+            // ignore them when it encountered
+            if (file_exists('modules/' . $dir . '/vardefs.php')) {
+                require_once('modules/' . $dir . '/vardefs.php');
+            } else {
+                continue;
+            }
 
             if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] == 'does_not_exist') {
                 continue;
@@ -592,7 +542,7 @@ class SpiceInstaller
                 }
 
             }
-            SugarBean::createRelationshipMeta(
+            SpiceBean::createRelationshipMeta(
                 $bean,
                 $db,
                 SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'],
@@ -611,13 +561,12 @@ class SpiceInstaller
                 $db->query($query);
             }
 
-            SugarBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
+            SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
         }
 
 
-        $rel = new Relationship();
-//        Relationship::delete_cache();
-        $rel->build_relationship_cache();
+        // repair relationships
+        Relationship::build_relationship_cache();
 
     }
 
@@ -627,15 +576,10 @@ class SpiceInstaller
      */
     public function insertDefaults($db)
     {
-        global $sugar_version;
-
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromaddress', 'do_not_reply@example.com')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromname', 'SpiceCRM')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'send_by_default', '1')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'send_from_assigning_user', '0')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ('info', 'sugar_version', '" . $sugar_version . "')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ('MySettings', 'tab', '')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ('portal', 'on', '0')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('tracker', 'Tracker', '1')");
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', 'SpiceCRM')");
@@ -644,7 +588,6 @@ class SpiceInstaller
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'default_date_format', '')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'default_time_format', '')");
-
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_iso4217', 'EUR')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_name', 'Euro')");
@@ -660,11 +603,11 @@ class SpiceInstaller
     public function createCurrentUser($db, $postData)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $user_instance = new User();
+        $user_instance = BeanFactory::getBean('Users');
         $username = $postData['credentials']['username'];
         $surname = $postData['credentials']['surname'];
         $password = $postData['credentials']['password'];
-        $user_instance->user_hash = $user_instance->getPasswordHash($password);
+        $user_instance->user_hash = User::getPasswordHash($password);
         $date = date("Y-m-d h:i:s");
         $user = "INSERT INTO users (id, user_name, user_hash, last_name, is_admin, date_entered, date_modified, modified_user_id, created_by, title, status, deleted) 
             VALUES ('1', '$username', '$user_instance->user_hash', '$surname', 1, '$date','$date', '1', '1', 'Administrator', 'Active', 0)";
@@ -723,24 +666,20 @@ class SpiceInstaller
         $postData = $body->getParsedBody();
 
         //generate a new sugar_config
-        $newSugarConfig = $this->generateSugarConfig($postData);
+        $spice_config = $this->generateSugarConfig($postData);
 
         //assign to global instance
-        SpiceConfig::getInstance()->config = $this->generateSugarConfig($postData);
+        SpiceConfig::getInstance()->config = $spice_config;
 
-        //write to file
-        $this->writeConfig($newSugarConfig);
-
+        // set to installing
+        SpiceConfig::getInstance()->installing = true;
 
         $db = $this->createDatabase($postData);
-        file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__.print_r($db, true), true)."\n", FILE_APPEND);
 
         $repair = new AdminController();
 
         if (!empty($db)) {
-            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->createTables($db);
-            file_put_contents('install.log', print_r(__FUNCTION__.' '.__LINE__, true)."\n", FILE_APPEND);
             $this->insertDefaults($db);
             $this->createCurrentUser($db, $postData);
             $this->retrieveCoreandLanguages($db, $postData);
@@ -753,7 +692,21 @@ class SpiceInstaller
             $outcome = false;
         } else {
             $outcome = true;
+        }
 
+        // now we switch to database cache
+        $spice_config['systemvardefs'] = ['dictionary' => true, 'domains' => true];
+
+        //write the config.php ... all should be good here
+        $this->writeConfig($spice_config);
+        SpiceConfig::getInstance();
+
+        // now move cache to database
+        SpiceDictionaryVardefs::getInstance()->repairDictionaries();
+
+        // remove legacy cache/modules folder
+        if(file_exists('api/cache/modules')){
+            rmdir('api/cache/modules');
         }
 
         return [

@@ -10,6 +10,7 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Psr7\Request as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SpiceLanguageController
 {
@@ -42,7 +43,6 @@ class SpiceLanguageController
      * @throws BadRequestException
      * @throws ForbiddenException
      */
-
     public function LanguageDeleteLabel(Request $req, Response $res, array $args): Response
     {
         $handler = new SpiceLanguagesRESTHandler();
@@ -60,11 +60,42 @@ class SpiceLanguageController
      * @throws BadRequestException
      * @throws ForbiddenException
      */
-
     public function LanguageSearchLabel(Request $req, Response $res, array $args): Response
     {
         $handler = new SpiceLanguagesRESTHandler();
         $result = $handler->searchLabels($args['search_term']);
+        return $res->withJson($result);
+    }
+
+    /**
+     * checks if a translate api key is set
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     */
+    public function LanguageTranslateAPIKEYGet(Request $req, Response $res, array $args): Response
+    {
+        $spice_config = SpiceConfig::getInstance()->config;
+        return $res->withJson(['cantranslate' => !empty($spice_config['googleapi']['languagekey'])]);
+    }
+    /**
+     * translates label strings using the goolge API
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     */
+    public function LanguageTranslateLabel(Request $req, Response $res, array $args): Response
+    {
+        $handler = new SpiceLanguagesRESTHandler();
+        $labels = $req->getParsedBody();
+        $result = $handler->translateLabels($labels['labels'], $args['fromlanguage'], $args['tolanguage']);
         return $res->withJson($result);
     }
 

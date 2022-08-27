@@ -41,11 +41,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 
 class Contact extends Person
 {
-
-    var $table_name = "contacts";
-    var $object_name = "Contact";
-    var $module_dir = 'Contacts';
-
     var $relationship_fields = ['account_id' => 'accounts', 'contacts_users_id' => 'user_sync'];
 
     /**

@@ -1,38 +1,5 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data\Relationships;
 
@@ -76,8 +43,8 @@ abstract class SugarRelationship
 
     /**
      * @abstract
-     * @param  $lhs SugarBean
-     * @param  $rhs SugarBean
+     * @param  $lhs SpiceBean
+     * @param  $rhs SpiceBean
      * @return boolean
      */
     public abstract function remove($lhs, $rhs);
@@ -120,8 +87,8 @@ abstract class SugarRelationship
 
     /**
      * @abstract
-     * @param SugarBean $lhs
-     * @param SugarBean $rhs
+     * @param SpiceBean $lhs
+     * @param SpiceBean $rhs
      * @return bool
      */
     public abstract function relationship_exists($lhs, $rhs);
@@ -155,7 +122,7 @@ abstract class SugarRelationship
 
             // write trash record
             if ($link->def['recover'] !== false)
-                SysTrashCan::addRecord('related', $focus->module_name, $focus->id, $relBean->get_summary_text(), $link->name, $relBean->module_name, $relBean->id);
+                SysTrashCan::addRecord('related', $focus->_module, $focus->id, $relBean->get_summary_text(), $link->name, $relBean->_module, $relBean->id);
 
             $result = $result && $sub_result;
         }
@@ -164,7 +131,7 @@ abstract class SugarRelationship
     }
 
     /**
-     * @param $rowID id of SugarBean to remove from the relationship
+     * @param $rowID id of SpiceBean to remove from the relationship
      * @return void
      */
     public function removeById($rowID)
@@ -347,8 +314,8 @@ abstract class SugarRelationship
     }
 
     /**
-     * @param SugarBean $focus base bean the hooks is triggered from
-     * @param SugarBean $related bean being added/removed/updated from relationship
+     * @param SpiceBean $focus base bean the hooks is triggered from
+     * @param SpiceBean $related bean being added/removed/updated from relationship
      * @param string $link_name name of link being triggerd
      * @return array base arguments to pass to relationship logic hooks
      */
@@ -357,8 +324,8 @@ abstract class SugarRelationship
         $custom_logic_arguments = [];
         $custom_logic_arguments['id'] = $focus->id;
         $custom_logic_arguments['related_id'] = $related->id;
-        $custom_logic_arguments['module'] = $focus->module_dir;
-        $custom_logic_arguments['related_module'] = $related->module_dir;
+        $custom_logic_arguments['module'] = $focus->_module;
+        $custom_logic_arguments['related_module'] = $related->_module;
         $custom_logic_arguments['related_bean'] = $related;
         $custom_logic_arguments['link'] = $link_name;
         $custom_logic_arguments['relationship'] = $this->name;
@@ -368,8 +335,8 @@ abstract class SugarRelationship
 
     /**
      * Call the before add logic hook for a given link
-     * @param  SugarBean $focus base bean the hooks is triggered from
-     * @param  SugarBean $related bean being added/removed/updated from relationship
+     * @param  SpiceBean $focus base bean the hooks is triggered from
+     * @param  SpiceBean $related bean being added/removed/updated from relationship
      * @param string $link_name name of link being triggerd
      * @return void
      */
@@ -381,8 +348,8 @@ abstract class SugarRelationship
 
     /**
      * Call the after add logic hook for a given link
-     * @param  SugarBean $focus base bean the hooks is triggered from
-     * @param  SugarBean $related bean being added/removed/updated from relationship
+     * @param  SpiceBean $focus base bean the hooks is triggered from
+     * @param  SpiceBean $related bean being added/removed/updated from relationship
      * @param string $link_name name of link being triggerd
      * @return void
      */
@@ -393,8 +360,8 @@ abstract class SugarRelationship
     }
 
     /**
-     * @param  SugarBean $focus
-     * @param  SugarBean $related
+     * @param  SpiceBean $focus
+     * @param  SpiceBean $related
      * @param string $link_name
      * @return void
      */
@@ -405,8 +372,8 @@ abstract class SugarRelationship
     }
 
     /**
-     * @param  SugarBean $focus
-     * @param  SugarBean $related
+     * @param  SpiceBean $focus
+     * @param  SpiceBean $related
      * @param string $link_name
      * @return void
      */
@@ -436,15 +403,15 @@ abstract class SugarRelationship
     /**
      * Adds a realted Bean to the list to be resaved along with the current bean.
      * @static
-     * @param  SugarBean $bean
+     * @param  SpiceBean $bean
      * @return void
      */
     public static function addToResaveList($bean)
     {
-        if (!isset(self::$beansToResave[$bean->module_dir])) {
-            self::$beansToResave[$bean->module_dir] = [];
+        if (!isset(self::$beansToResave[$bean->_module])) {
+            self::$beansToResave[$bean->_module] = [];
         }
-        self::$beansToResave[$bean->module_dir][$bean->id] = $bean;
+        self::$beansToResave[$bean->_module][$bean->id] = $bean;
     }
 
     /**

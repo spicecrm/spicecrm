@@ -15,7 +15,7 @@ class SpicePhoneNumberHooks{
         $phoneFields = [];
 
         // determine phone fields and country
-        foreach($bean->field_name_map as $fieldname => $fielddata){
+        foreach($bean->field_defs as $fieldname => $fielddata){
             if($fielddata['type'] == 'phone' && !empty($bean->$fieldname)){
                 $phoneFields[] = $fieldname;
             }

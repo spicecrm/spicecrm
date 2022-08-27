@@ -37,6 +37,11 @@ export class SystemInputRadio implements ControlValueAccessor {
     @Input() public disabled: boolean = false;
 
     /**
+     * A click on a set radio button unsets it.
+     */
+    @Input() public canUnset = false;
+
+    /**
      * for the control accessor
      */
     public onChange: (value: string) => void;
@@ -83,4 +88,20 @@ export class SystemInputRadio implements ControlValueAccessor {
             this.checked = false;
         }
     }
+
+    /**
+     * In case it is allowed (canUnset),
+     * a click on a set radio button (actually on the related label) unsets the radio button (value to null).
+     * @param event
+     */
+    public clickLabel(event) {
+        if ( !this.canUnset ) return;
+        let inputElement = event.target.parentElement.parentElement.firstChild;
+        if ( inputElement.checked ) {
+            inputElement.checked = false;
+            this.onChange(null);
+            event.preventDefault();
+        }
+    }
+
 }

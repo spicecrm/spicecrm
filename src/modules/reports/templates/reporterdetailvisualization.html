@@ -1,3 +1,9 @@
-<div class="slds-is-relative" style="height: 100%; width: 100%;" [system-overlay-loading-spinner]="loading">
+<div *ngIf="displayEmbedded" class="slds-grid slds-grid--align-spread slds-p-horizontal--xx-small slds-p-vertical--x-small">
+    <div class="slds-text-heading_small">{{model.data.name}}</div>
+    <button class="slds-button slds-button--icon" (click)="reload()">
+        <system-button-icon icon="refresh"></system-button-icon>
+    </button>
+</div>
+<div class="slds-is-relative slds-size--1-of-1" [ngStyle]="visualizationStyle" [system-overlay-loading-spinner]="loading">
     <div #vizcontainer></div>
 </div>

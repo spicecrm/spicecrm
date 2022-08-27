@@ -68,7 +68,7 @@ export class ObjectRelatedList implements OnInit {
      */
     get aclAccess() {
         let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule?.toLowerCase();
-        return (this.metadata.checkModuleAcl(this.relatedmodels.relatedModule, "listrelated") || this.metadata.checkModuleAcl(this.relatedmodels.relatedModule, "list")) && this.model.checkFieldAccess(linkField);
+        return (this.metadata.checkModuleAcl(this.relatedmodels.relatedModule, "listrelated") || this.metadata.checkModuleAcl(this.relatedmodels.relatedModule, "list")) && this.model.checkAccess('detail') && this.model.checkFieldAccess(linkField);
     }
 
     /**

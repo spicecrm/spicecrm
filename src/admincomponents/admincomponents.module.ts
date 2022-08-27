@@ -3,94 +3,93 @@
  */
 import {CommonModule} from '@angular/common';
 import {FormsModule}   from '@angular/forms';
-import {NgModule, Component} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
-import { RouterModule, Routes, Router } from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 import {ObjectComponents} from "../objectcomponents/objectcomponents";
 import {ObjectFields} from "../objectfields/objectfields";
 
-import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service';
-import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service';
-import /*embed*/ {dictionary} from './services/dictionary.service';
-import /*embed*/ {administration} from './services/administration.service';
-import /*embed*/ {administrationapiinspectorService} from "./services/administrationapiinspector.service";
 
-import /*embed*/ { AdministrationMain } from './components/administrationmain';
-import /*embed*/ { AdministrationMenu } from './components/administrationmenu';
-import /*embed*/ { AdministrationMenuRouteItem } from './components/administrationmenurouteitem';
-import /*embed*/ { AdministrationConfigurator } from './components/administrationconfigurator';
-import /*embed*/ { AdministrationConfiguratorItem } from './components/administrationconfiguratoritem';
-import /*embed*/ { AdministrationConfiguratorItemRole } from './components/administrationconfiguratoritemrole';
-import /*embed*/ { AdministrationQuotaManager } from './components/administrationquotamanager';
-import /*embed*/ { AdministrationQuotaManagerField } from './components/administrationquotamanagerfield';
+import { AdministrationMain } from './components/administrationmain';
+import { AdministrationMenu } from './components/administrationmenu';
+import { AdministrationMenuRouteItem } from './components/administrationmenurouteitem';
+import { AdministrationConfigurator } from './components/administrationconfigurator';
+import { AdministrationConfiguratorItem } from './components/administrationconfiguratoritem';
+import { AdministrationConfiguratorItemRole } from './components/administrationconfiguratoritemrole';
+import { AdministrationQuotaManager } from './components/administrationquotamanager';
+import { AdministrationQuotaManagerField } from './components/administrationquotamanagerfield';
 
 
-import /*embed*/ { AdministrationFTSStatus } from './components/administrationftsstatus';
-import /*embed*/ { AdministrationFTSManager } from './components/administrationftsmanager';
-import /*embed*/ { AdministrationFTSManagerFields } from './components/administrationftsmanagerfields';
-import /*embed*/ { AdministrationFTSManagerFieldsList } from './components/administrationftsmanagerfieldslist';
-import /*embed*/ { AdministrationFTSManagerDetails } from './components/administrationftsmanagerdetails';
-import /*embed*/ { AdministrationFTSManagerModuleAdd } from './components/administrationftsmanagermoduleadd';
-import /*embed*/ { AdministrationFTSManagerFieldsAdd } from './components/administrationftsmanagerfieldsadd';
-import /*embed*/ { AdministrationFTSStats } from './components/administrationftsstats';
-import /*embed*/ { AdministrationFtsManagerIndexModal } from './components/administrationftsmanagerindexmodal';
-import /*embed*/ {AdministrationHomeScreen} from "./components/administrationhomescreen";
-import /*embed*/ {AdministrationHomeScreenCard} from "./components/administrationhomescreencard";
-import /*embed*/ {AdministrationHomeScreenCardItem} from "./components/administrationhomescreencarditem";
+import { AdministrationFTSStatus } from './components/administrationftsstatus';
+import { AdministrationFTSManager } from './components/administrationftsmanager';
+import { AdministrationFTSManagerFields } from './components/administrationftsmanagerfields';
+import { AdministrationFTSManagerFieldsList } from './components/administrationftsmanagerfieldslist';
+import { AdministrationFTSManagerDetails } from './components/administrationftsmanagerdetails';
+import { AdministrationFTSManagerModuleAdd } from './components/administrationftsmanagermoduleadd';
+import { AdministrationFTSManagerFieldsAdd } from './components/administrationftsmanagerfieldsadd';
+import { AdministrationFTSStats } from './components/administrationftsstats';
+import { AdministrationFtsManagerIndexModal } from './components/administrationftsmanagerindexmodal';
+import {AdministrationHomeScreen} from "./components/administrationhomescreen";
+import {AdministrationHomeScreenCard} from "./components/administrationhomescreencard";
+import {AdministrationHomeScreenCardItem} from "./components/administrationhomescreencarditem";
 
-import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
-import /*embed*/ { AdministrationSystemVersions } from './components/administrationsystemversions';
+import { AdministrationSystemStats } from './components/administrationsystemstats';
+import { AdministrationSystemVersions } from './components/administrationsystemversions';
 
-import /*embed*/ { AdministrationAPIInspector } from './components/administrationapiinspector';
-import /*embed*/ { AdministrationAPIInspectorDetails } from './components/administrationapiinspectordetails';
-import /*embed*/ { AdministrationApiInspectorMethodParameters } from "./components/administrationapiinspectormethodparameters";
-import /*embed*/ { AdministrationApiInspectorMethods } from "./components/administrationapiinspectormethods";
-import /*embed*/ { AdministrationapiinspectorMethodResponses } from "./components/administrationapiinspectormethodresponses";
-import /*embed*/ { AdministrationApiInspectorMethodTest } from "./components/administrationapiinspectormethodtest";
+import { AdministrationAPIInspector } from './components/administrationapiinspector';
+import { AdministrationAPIInspectorDetails } from './components/administrationapiinspectordetails';
+import { AdministrationApiInspectorMethodParameters } from "./components/administrationapiinspectormethodparameters";
+import { AdministrationApiInspectorMethods } from "./components/administrationapiinspectormethods";
+import { AdministrationapiinspectorMethodResponses } from "./components/administrationapiinspectormethodresponses";
+import { AdministrationApiInspectorMethodTest } from "./components/administrationapiinspectormethodtest";
 
 
-import /*embed*/ { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
-import /*embed*/ { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
+import { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
+import { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
 
-import /*embed*/ { AdministrationDictRepair } from './components/administrationdictrepair';
-import /*embed*/ {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
-import /*embed*/ {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
-import /*embed*/ {AdministrationDictRepairLanguage} from "./components/administrationdictrepairlanguage";
-import /*embed*/ {AdministrationDictRepairACLRoles} from "./components/administrationdictrepairaclroles";
-import /*embed*/ {AdministrationDictRepairCache} from "./components/administrationdictrepaircache";
-import /*embed*/ {AdministrationDictRepairDbColumns} from "./components/administrationdictrepairdbcolumns";
-import /*embed*/ {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
-import /*embed*/ {AdministrationDictRepairConvertDBCharset} from "./components/administrationdictrepairconvertdbcharset";
-import /*embed*/ {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
-import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
+import { AdministrationDictRepair } from './components/administrationdictrepair';
+import {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
+import {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
+import {AdministrationDictRepairLanguage} from "./components/administrationdictrepairlanguage";
+import {AdministrationDictRepairACLRoles} from "./components/administrationdictrepairaclroles";
+import {AdministrationDictRepairCache} from "./components/administrationdictrepaircache";
+import {AdministrationDictRepairDbColumns} from "./components/administrationdictrepairdbcolumns";
+import {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
+import {AdministrationDictRepairConvertDBCharset} from "./components/administrationdictrepairconvertdbcharset";
+import {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
+import { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
-import /*embed*/ { AdministrationJobMethods } from './components/administrationjobmethods';
-import /*embed*/ { AdministrationJobLog } from './components/administrationjoblog';
-import /*embed*/ { AdministrationJobRunButton } from './components/administrationjobrunbutton';
-import /*embed*/ { AdministrationJobScheduleButton } from './components/administrationjobschedulebutton';
-import /*embed*/ { AdministrationJobKillButton } from './components/administrationjobkillbutton';
-import /*embed*/ { AdministrationJobTaskRunButton } from './components/administrationjobtaskrunbutton';
-import /*embed*/ { AdministrationJobRunningList } from './components/administrationjobrunninglist';
-import /*embed*/ { AdministrationJobFailedList } from './components/administrationjobfailedlist';
-import /*embed*/ { AdministrationJobCockpit } from './components/administrationjobcockpit';
+import { AdministrationJobMethods } from './components/administrationjobmethods';
+import { AdministrationJobLog } from './components/administrationjoblog';
+import { AdministrationJobRunButton } from './components/administrationjobrunbutton';
+import { AdministrationJobScheduleButton } from './components/administrationjobschedulebutton';
+import { AdministrationJobKillButton } from './components/administrationjobkillbutton';
+import { AdministrationJobTaskRunButton } from './components/administrationjobtaskrunbutton';
+import { AdministrationJobRunningList } from './components/administrationjobrunninglist';
+import { AdministrationJobFailedList } from './components/administrationjobfailedlist';
+import { AdministrationJobCockpit } from './components/administrationjobcockpit';
 
-import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
-import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
-import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
-import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
-import /*embed*/ {AdministrationUserAccessLogViewer} from './components/administrationuseraccesslogviewer';
+import { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
+import {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
+import {AdministrationLanguages} from "./components/administrationlanguages";
+import {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
+import {AdministrationUserAccessLogViewer} from './components/administrationuseraccesslogviewer';
 
-import /*embed*/ {AdministrationLoginRestriction} from './components/administrationloginrestriction';
-import /*embed*/ {AdministrationLoginRestrictionIpAddresses} from './components/administrationloginrestrictionipaddresses';
-import /*embed*/ {AdministrationLoginRestrictionIpAddressesRow} from './components/administrationloginrestrictionipaddressesrow';
-import /*embed*/ {AdministrationPasswordConfig} from './components/administrationpasswordconfig';
-import /*embed*/ {AdministrationBlockedUsers} from './components/administrationblockedusers';
-import /*embed*/ {AdministrationLoginManagement} from './components/administrationloginmanagement';
+import {AdministrationLoginRestriction} from './components/administrationloginrestriction';
+import {AdministrationLoginRestrictionIpAddresses} from './components/administrationloginrestrictionipaddresses';
+import {AdministrationLoginRestrictionIpAddressesRow} from './components/administrationloginrestrictionipaddressesrow';
+import {AdministrationPasswordConfig} from './components/administrationpasswordconfig';
+import {AdministrationBlockedUsers} from './components/administrationblockedusers';
+import {AdministrationLoginManagement} from './components/administrationloginmanagement';
+import {AdministrationLoginMethods} from './components/administrationloginmethods';
 
-import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
+import {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
+import {AdministrationAssetManager} from "./components/administrationassetmanager";
+import {AdministrationDictRepairResetCache} from "./components/administrationdictrepairresetcache";
+import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
+import {AdministrationDictRepairCustomEnum} from "./components/administrationdictrepaircustomenum";
 
 @NgModule({
     imports: [
@@ -137,6 +136,7 @@ import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/adminis
         AdministrationDictRepairModal,
         AdministrationDictRepairACLRoles,
         AdministrationDictRepairCache,
+        AdministrationDictRepairResetCache,
         AdministrationDictRepairDbColumns,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
@@ -157,6 +157,7 @@ import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/adminis
         AdministrationHomeScreenCardItem,
         AdministrationGeneralSettings,
         AdministrationLanguages,
+        AdministrationMigrateLegacyDoms,
         AdministrationDefaultPreferences,
         AdministrationUserAccessLogViewer,
         AdministrationDictRepairConvertDBCharset,
@@ -166,27 +167,10 @@ import /*embed*/ {AdministrationGDPRRetentionManager} from "./components/adminis
         AdministrationLoginRestrictionIpAddressesRow,
         AdministrationPasswordConfig,
         AdministrationBlockedUsers,
-        AdministrationLoginManagement
-    ],
-    entryComponents: [
-        AdministrationMain,
-        AdministrationMenu,
-        AdministrationConfigurator,
-        AdministrationQuotaManager,
-        AdministrationQuotaManagerField,
-        AdministrationFTSManager,
-        AdministrationDictionaryManager,
-        AdministrationDictionaryManagerItem,
-        AdministrationDictionaryManagerItemField,
-        AdministrationDefaultPreferences,
-        AdministrationJobRunningList,
-        AdministrationJobFailedList,
-        AdministrationLoginRestriction,
-        AdministrationLoginRestrictionIpAddresses,
-        AdministrationLoginRestrictionIpAddressesRow,
-        AdministrationPasswordConfig,
-        AdministrationBlockedUsers,
-        AdministrationLoginManagement
+        AdministrationLoginManagement,
+        AdministrationAssetManager,
+        AdministrationLoginMethods,
+        AdministrationDictRepairCustomEnum
     ]
 
 })

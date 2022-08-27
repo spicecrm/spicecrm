@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef,} from '@angular/core';
+import {Component, ElementRef, SkipSelf,} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -12,15 +12,34 @@ import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
 import {backend} from "../../services/backend.service";
 import {userpreferences} from '../../services/userpreferences.service';
+import {fieldLinked} from "./fieldlinked";
 
 @Component({
     selector: 'field-generic',
-    templateUrl: '../templates/fieldmodifiedby.html'
+    templateUrl: '../templates/fieldmodifiedby.html',
 })
-export class fieldModifiedBy extends fieldRelate {
+export class fieldModifiedBy extends fieldLinked {
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public elementRef: ElementRef, public modal: modal, public backend: backend, public toast: toast, public userpreferences: userpreferences) {
+    constructor(
+        public model: model,
+        public view: view,
+        public language: language,
+        public metadata: metadata,
+        public router: Router,
+        public elementRef: ElementRef,
+        public modal: modal,
+        public backend: backend,
+        public toast: toast,
+        public userpreferences: userpreferences
+    ) {
         super(model, view, language, metadata, router, elementRef, modal, backend, toast);
+    }
+
+    /**
+     * returns the currently set id;
+     */
+    get userid() {
+        return this.relData?.id
     }
 
     get datefield() {

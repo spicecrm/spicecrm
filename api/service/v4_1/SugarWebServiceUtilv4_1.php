@@ -107,7 +107,7 @@ class SugarWebServiceUtilv4_1 extends SugarWebServiceUtilv4
      * getRelationshipResults
      * Returns the
      *
-     * @param Mixed $bean The SugarBean instance to retrieve relationships from
+     * @param Mixed $bean The SpiceBean instance to retrieve relationships from
      * @param String $link_field_name The name of the relationship entry to fetch relationships for
      * @param Array $link_module_fields Array of fields of relationship entries to return
      * @param string $optional_where String containing an optional WHERE select clause

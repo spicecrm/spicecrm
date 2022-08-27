@@ -21,6 +21,11 @@ export class EmailSchedulesButton implements OnInit {
      */
     public hidden: boolean = true;
 
+    /**
+     * the max number of count to be allowed to send emails to
+     */
+    public maxCount: number = 50;
+
     constructor(
         public language: language,
         public metadata: metadata,
@@ -40,10 +45,9 @@ export class EmailSchedulesButton implements OnInit {
      * checks the acl rights for the user to export and that we have some items selected
      */
     get disabled() {
-        return  this.modellist.getSelectedCount() == 0;
+        return  this.modellist.getSelectedCount() == 0 || this.modellist.getSelectedCount() > this.maxCount;
     }
-
-
+    
     /**
      * get the count of the selected objects
      */

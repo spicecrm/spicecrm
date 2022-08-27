@@ -1,7 +1,9 @@
 <div class="slds-grid slds-grid--align-spread slds-p-around--medium">
-    <h2 class="slds-text-heading--medium ">editor</h2>
-    <button class="slds-button slds-button--icon-border slds-button--neutral slds-col_bump-left" [disabled]="this.loading" (click)="copyData()"><system-button-icon icon="copy" size="medium"></system-button-icon></button>
-    <button class="slds-button slds-button--icon-border slds-button--neutral slds-m-right--medium" [disabled]="this.loading" (click)="pasteData()"><system-button-icon icon="paste" size="medium"></system-button-icon></button>
+    <h2 class="slds-text-heading--medium "><system-label [label]="label"></system-label></h2>
+    <ng-container *ngIf="canCopyPaste">
+        <button class="slds-button slds-button--icon-border slds-button--neutral slds-col_bump-left" [disabled]="this.loading" (click)="copyData()"><system-button-icon icon="copy" size="medium"></system-button-icon></button>
+        <button class="slds-button slds-button--icon-border slds-button--neutral slds-m-right--medium" [disabled]="this.loading" (click)="pasteData()"><system-button-icon icon="paste" size="medium"></system-button-icon></button>
+    </ng-container>
     <button class="slds-button slds-button--neutral" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
 </div>
 <table class="slds-table slds-table--bordered slds-table--cell-buffer">

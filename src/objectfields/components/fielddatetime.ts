@@ -99,6 +99,19 @@ export class fieldDateTime extends fieldGeneric {
         }
     }
 
+    /**
+     * set the field to invalid, tied to the emitter on the system-date
+     *
+     * @param valid
+     */
+    public setValid(valid){
+        if(!valid){
+            this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
+        } else {
+            this.clearFieldError();
+        }
+    }
+
     get highlightdate() {
         return (this.fieldconfig.highlightpast == 1 || this.fieldconfig.highlightpast === true) && new moment() > new moment(this.model.getField(this.fieldname)) ? true : false;
     }

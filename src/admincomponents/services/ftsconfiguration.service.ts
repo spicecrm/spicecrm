@@ -145,7 +145,7 @@ export class ftsconfiguration {
                     this.backend.postRequest(url, params).subscribe(
                         result => {
                             if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
-                                let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFO');
+                                let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFORMATION');
                                 this.modal.info(result.message, headerText, result.status);
                             } else if (result.status != 'error') {
                                 this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
@@ -159,7 +159,7 @@ export class ftsconfiguration {
                 this.backend.postRequest(url, params).subscribe(
                     result => {
                         if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
-                            let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFO');
+                            let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFORMATION');
                             this.modal.info(result.message, headerText, result.status);
                         } else if (result.status != 'error') {
                             this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');

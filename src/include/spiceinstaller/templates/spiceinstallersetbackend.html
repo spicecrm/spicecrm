@@ -1,6 +1,6 @@
 <div class="slds-p-around--small">
     <h2 class="slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
-        Define Backend Connection
+        Welcome to SpiceCRM
     </h2>
     <!--div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>id</label>
@@ -12,34 +12,6 @@
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Name</label>
         <div class="slds-form-element__control">
             <input type="text" class="slds-input" [disabled]="checking" [(ngModel)]="spiceinstaller.systemname"/>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
-        <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Backend URL</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [disabled]="checking" [(ngModel)]="spiceinstaller.systemurl"/>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
-        <label class="slds-form-element__label">use proxy</label>
-        <div class="slds-form-element__control">
-            <div class="slds-select_container">
-                <select class="slds-select" [disabled]="checking" [(ngModel)]="spiceinstaller.systemproxy">
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
-        <label class="slds-form-element__label">developermode</label>
-        <div class="slds-form-element__control">
-            <div class="slds-select_container">
-                <select class="slds-select" [disabled]="checking" [(ngModel)]="spiceinstaller.systemdevmode">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
-            </div>
         </div>
     </div>
     <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
@@ -65,6 +37,6 @@
         </div>
     </div>
     <div class="slds-p-vertical--small slds-text-align--right">
-        <button class="slds-button slds-button--brand" (click)="testConnection()">next</button>
+        <button class="slds-button slds-button--brand" (click)="next()">next</button>
     </div>
 </div>

@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 SpiceDictionaryHandler::getInstance()->dictionary ['SpiceACLProfiles_SpiceACLObjects'] = [
@@ -138,8 +112,66 @@ SpiceDictionaryHandler::getInstance()->dictionary['spiceaclprofiles_users'] = [
             'rhs_table' => 'spiceaclprofiles',
             'rhs_key' => 'id',
             'relationship_type' => 'many-to-many',
-            'join_table' => 'projects_contacts',
+            'join_table' => 'spiceaclprofiles_users',
             'join_key_lhs' => 'user_id',
+            'join_key_rhs' => 'spiceaclprofile_id',
+        ]
+    ]
+];
+
+SpiceDictionaryHandler::getInstance()->dictionary['spiceaclprofiles_orgunits'] = [
+    'table' => 'spiceaclprofiles_orgunits',
+    'fields' => [
+        'id' => [
+            'name' => 'id',
+            'type' => 'id'
+        ],
+        'orgunit_id' => [
+            'name' => 'orgunit_id',
+            'type' => 'id'
+        ],
+        'spiceaclprofile_id' => [
+            'name' => 'spiceaclprofile_id',
+            'type' => 'id'
+        ],
+        'date_modified' => [
+            'name' => 'date_modified',
+            'type' => 'datetime'
+        ],
+        'deleted' => [
+            'name' => 'deleted',
+            'type' => 'bool',
+            'default' => '0'
+        ]
+    ],
+    'indices' => [
+        'spiceaclprofiles_orgunits_pk' => [
+            'name' => 'spiceaclprofiles_orgunits_pk',
+            'type' => 'primary',
+            'fields' => ['id']
+        ],
+        'spiceaclprofiles_orgunits_orgunitid' => [
+            'name' => 'spiceaclprofiles_orgunits_orgunitid',
+            'type' => 'index',
+            'fields' => ['orgunit_id']
+        ],
+        'spiceaclprofiles_orgunits_profileid' => [
+            'name' => 'spiceaclprofiles_orgunits_profileid',
+            'type' => 'index',
+            'fields' => ['orgunit_id', 'spiceaclprofile_id']
+        ]
+    ],
+    'relationships' => [
+        'spiceaclprofiles_orgunits' => [
+            'lhs_module' => 'OrgUnits',
+            'lhs_table' => 'orgunits',
+            'lhs_key' => 'id',
+            'rhs_module' => 'SpiceACLProfiles',
+            'rhs_table' => 'spiceaclprofiles',
+            'rhs_key' => 'id',
+            'relationship_type' => 'many-to-many',
+            'join_table' => 'spiceaclprofiles_orgunits',
+            'join_key_lhs' => 'orgunit_id',
             'join_key_rhs' => 'spiceaclprofile_id',
         ]
     ]

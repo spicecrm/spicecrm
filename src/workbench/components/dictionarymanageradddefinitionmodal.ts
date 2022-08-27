@@ -87,7 +87,7 @@ export class DictionaryManagerAddDefinitionModal {
             this.messages.push({field: 'tablename', message: 'table exists already'});
         }
 
-        if (this.dictionarydefinition.tablename && this.dictionarymanager.reservedWords.indexOf(this.dictionarydefinition.tablename.toUpperCase()) >= 0) {
+        if (this.dictionarydefinition.tablename && this.dictionarymanager.reservedwords && this.dictionarymanager.reservedwords.indexOf(this.dictionarydefinition.tablename.toUpperCase()) >= 0) {
             this.messages.push({field: 'tablename', message: 'tablename cannot be used (reserved word)'});
         }
 

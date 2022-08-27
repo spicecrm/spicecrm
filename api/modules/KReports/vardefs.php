@@ -10,7 +10,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['KReport'] = ['table' => 'krep
             'type' => 'varchar',
             'len' => '45',
             'vname' => 'LBL_MODULE',
-            'massupdate' => false,
         ],
         'report_status' => [
             'name' => 'report_status',
@@ -42,7 +41,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['KReport'] = ['table' => 'krep
             'type' => 'varchar',
             'len' => '10',
             'vname' => 'LBL_LISTTYPE',
-            'massupdate' => false,
         ],
         'listtypeproperties' => [
             'name' => 'listtypeproperties',
@@ -53,7 +51,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['KReport'] = ['table' => 'krep
             'type' => 'varchar',
             'len' => '25',
             'vname' => 'LBL_SELECTIONLIMIT',
-            'massupdate' => false,
         ],
         'presentation_params' => [
             'name' => 'presentation_params',

@@ -1,0 +1,13 @@
+<div class="slds-is-absolute__top" *ngIf="oview.connectors.length > 0">
+    <svg xmlns="http://www.w3.org/2000/svg" [attr.height]="oview.viewport.scrollHeight" [attr.width]="oview.viewport.scrollWidth">
+        <defs>
+            <filter x="0" y="0" width="1" height="1">
+                <feFlood flood-color="white"></feFlood>
+                <feComposite in="SourceGraphic"></feComposite>
+            </filter>
+        </defs>
+        <g *ngFor="let c of oview.connectors">
+            <path [attr.d]="c" fill="none" stroke-dasharray="" stroke-linejoin="round" stroke-width="1" stroke="#555"></path>
+        </g>
+    </svg>
+</div>

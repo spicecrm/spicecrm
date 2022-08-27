@@ -50,10 +50,10 @@
                     </td>
                     <td style="width: 3rem;">
                         <div class="slds-grid">
-                            <system-custom-icon *ngIf="aclobject.status == 'r'" icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deactivateObject(aclobject.id)"></system-custom-icon>
-                            <system-custom-icon *ngIf="aclobject.status != 'r'" icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light" (click)="activateObject(aclobject.id)"></system-custom-icon>
-                            <system-custom-icon [ngClass]="{'slds-hidden': !aclobject.description}" icon="info" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
-                            <system-custom-icon *ngIf="aclobject.customSQL" icon="sql" size="x-small" addclasses="slds-p-left--xx-small slds-icon slds-icon-text-default"></system-custom-icon>
+                            <system-utility-icon *ngIf="aclobject.status == 'r'" icon="light_bulb" size="x-small" colorclass="slds-icon-text-success" (click)="deactivateObject(aclobject.id)"></system-utility-icon>
+                            <system-utility-icon *ngIf="aclobject.status != 'r'" icon="light_bulb" size="x-small" colorclass="slds-icon-text-light" (click)="activateObject(aclobject.id)"></system-utility-icon>
+                            <system-utility-icon [ngClass]="{'slds-hidden': !aclobject.description}" icon="info_alt" size="x-small"></system-utility-icon>
+                            <system-utility-icon *ngIf="aclobject.customSQL" icon="database" size="x-small"></system-utility-icon>
                         </div>
                     </td>
                 </tr>

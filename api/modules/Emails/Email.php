@@ -1,38 +1,5 @@
 <?php
-/*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-*
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-*
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-*
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-*
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-*
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Emails;
 
@@ -40,32 +7,28 @@ use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
+use DateTime;
 use Hfig\MAPI;
 use Hfig\MAPI\Mime\Swiftmailer;
 use Hfig\MAPI\OLE\Pear;
-use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\DocumentRevisions\DocumentRevision;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Mailboxes\Mailbox;
+use SpiceCRM\modules\TrackingLinks\TrackingLink;
+use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
 
-class Email extends SugarBean
+class Email extends SpiceBean
 {
-
-
-    var $table_name = 'emails';
-    var $module_dir = 'Emails';
-    var $object_name = 'Email';
-
     public $attachment_image;
 
     public $recipient_addresses = [];
@@ -123,10 +86,8 @@ class Email extends SugarBean
     }
 
     /**
-     * Overrides
+     * Overrides save handler
      */
-    ///////////////////////////////////////////////////////////////////////////
-    ////	SAVERS
     public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -180,11 +141,8 @@ class Email extends SugarBean
             // disable cache! timedate->now() return null at this time
             $timedate->allow_cache = false;
 
-
-            LoggerManager::getLogger()->debug('-------------------------------> Email called save()');
-
             // handle legacy concatenation of date and time fields
-            //Bug 39503 - SugarBean is not setting date_sent when seconds missing
+            //Bug 39503 - SpiceBean is not setting date_sent when seconds missing
             if (empty($this->date_sent)) {
                 $this->date_sent = $timedate->now();
             }
@@ -201,11 +159,10 @@ class Email extends SugarBean
             $this->saveRecipientAddresses($ignoreInvalidEmailAddresses);
 
             // process the indexing after the addresseshave been saved so relationships are updated
-            if($fts_index_bean){
+            if ($fts_index_bean) {
                 SpiceFTSHandler::getInstance()->indexBean($this);
             }
         }
-        LoggerManager::getLogger()->debug('-------------------------------> Email save() done');
 
         // send the email only if the send flag is set
         if ($this->to_be_sent) {
@@ -236,9 +193,8 @@ class Email extends SugarBean
 
             return $result;
         }
+
         $this->updateParentNotificationStatus();
-
-
     }
 
     /**
@@ -251,7 +207,9 @@ class Email extends SugarBean
         $referenceEmail = BeanFactory::getBean('Emails', $this->reference_id);
         $linked_fields = array_filter(
             $this->get_linked_fields(),
-            function ($key) {return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link', 'mailboxes']);},
+            function ($key) {
+                return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link', 'mailboxes']);
+            },
             ARRAY_FILTER_USE_KEY
         );
         foreach ($linked_fields as $name => $properties) {
@@ -328,8 +286,14 @@ class Email extends SugarBean
 
             if (empty($this->$field)) continue;
 
-            $addressesString = str_replace([",", ";"], "::", DBUtils::fromHtml($this->$field));
-            $addresses = explode("::", $addressesString);
+            $addresses = [];
+
+            if (is_array($this->$field)) {
+                foreach ($this->$field as $address) $addresses[] = DBUtils::fromHtml($address);
+            } else {
+                $addressesString = str_replace([",", ";"], "::", DBUtils::fromHtml($this->$field));
+                $addresses = explode("::", $addressesString);
+            }
 
             if (empty($addresses)) continue;
 
@@ -481,9 +445,9 @@ class Email extends SugarBean
             }
 
             // save the relationship to the parent
-            if($recipient_address['parent_type'] && $recipient_address['parent_id']){
+            if ($recipient_address['parent_type'] && $recipient_address['parent_id']) {
                 $recExists = $this->db->fetchByAssoc($this->db->query("SELECT id FROM emails_beans WHERE email_id='{$this->id}' AND bean_module = '{$recipient_address['parent_type']}' AND bean_id = '{$recipient_address['parent_id']}' AND deleted = 0"));
-                if(!$recExists){
+                if (!$recExists) {
                     $this->db->insertQuery('emails_beans', [
                         'id' => SpiceUtils::createGuid(),
                         'email_id' => $this->id,
@@ -582,11 +546,11 @@ class Email extends SugarBean
 ////	RETRIEVERS
     function retrieve($id = -1, $encoded = true, $deleted = true, $relationships = true)
     {
-        // cn: bug 11915, return SugarBean's retrieve() call bean instead of $this
+        // cn: bug 11915, return SpiceBean's retrieve() call bean instead of $this
         $ret = parent::retrieve($id, $encoded, $deleted, $relationships);
 
         // if bean was not found --- return false
-        if(!$ret) return false;
+        if (!$ret) return false;
 
         //$ret->raw_source = SugarCleaner::cleanHtml($ret->raw_source);
         $ret->description = DBUtils::toHtml($ret->description);
@@ -604,8 +568,8 @@ class Email extends SugarBean
         // END
 
         // check if the string we have is HTML (shoudl start with an <html> tag). if not we add a default style so the UI can display it properly
-        if(!str_starts_with($this->body, '<html')) {
-            $this->body = '<html><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style><body>'.$this->body.'</body></html>';
+        if (!str_starts_with($this->body, '<html')) {
+            $this->body = '<html><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style><body>' . $this->body . '</body></html>';
         }
 
         $ret->retrieveEmailAddresses();
@@ -640,7 +604,7 @@ class Email extends SugarBean
                         try {
                             $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
                             $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
-                        } catch(Exception $e) {
+                        } catch (Exception $e) {
                             // do nothing
                         }
                     }
@@ -727,15 +691,58 @@ class Email extends SugarBean
     }
 
     /**
+     * @param $trackingurl of the mailbox
      * generate a tracking pixel with blowfish hash and adds it to the email body
      */
-    private function generateTrackingPixel() {
+    private function generateTrackingPixel($trackingurl)
+    {
         $key = '2fs5uhnjcnpxcpg9';
         $method = 'blowfish';
-        $data = $this->_module .':'.$this->id;
+        $data = $this->_module . ':' . $this->id;
         $encrypted = openssl_encrypt($data, $method, $key);
 
-        $this->body .= '<img src="'.$this->tracking_url.base64_encode($encrypted) .'" height="1" width="1">';
+        $this->body .= '<img src="' . $trackingurl . 'count/' . base64_encode($encrypted) . '" height="1" width="1">';
+
+    }
+
+    /**
+     * searches for links with the data-trackingid attribute, replaces it with the encoded and encrypted data
+     * @param $mailboxTrackingUrl
+     */
+    private function findTrackingLinks($mailboxTrackingUrl)
+    {
+        $dom = new DOMDocument();
+        $dom->loadHTML($this->body);
+        foreach ($dom->getElementsByTagName('a') as $node) {
+            $trackingId = $node->getAttribute('data-trackingid');
+            if (!empty($trackingId)) {
+                $this->assignBeanToEmail($trackingId, 'TrackingLinks');
+                $trackingLink = TrackingLink::transformTrackingLinks($this->id, $trackingId, $mailboxTrackingUrl);
+                $node->setAttribute('href', $trackingLink);
+            }
+        }
+        $this->body = $dom->saveHTML();
+    }
+
+    /**
+     * searches for links with the data-marketingaction attribute, replaces it with the encoded and encrypted data
+     * @param $mailboxTrackingUrl
+     */
+    private function findMarketingActions($mailboxTrackingUrl) {
+        $dom = new DOMDocument();
+        $dom->loadHTML($this->body);
+        foreach ($dom->getElementsByTagName('a') as $node) {
+            $marketingaction = $node->getAttribute('data-marketingaction');
+            if (!empty($marketingaction)) {
+                $key = '2fs5uhnjcnpxcpg9';
+                $method = 'blowfish';
+                $data = 'Emails:'.$this->id.':MarketingActions:'.$marketingaction;
+                $link = openssl_encrypt($data, $method, $key);
+                $href = $mailboxTrackingUrl. 'action/' . base64_encode($link);
+                $node->setAttribute('href', $href);
+            }
+        }
+        $this->body = $dom->saveHTML();
     }
 
     /**
@@ -770,8 +777,10 @@ class Email extends SugarBean
             }
         }
 
-        if($mailbox->track_mailbox) {
-            $this->generateTrackingPixel();
+        if ($mailbox->track_mailbox && !empty($mailbox->tracking_url)) {
+            $this->generateTrackingPixel($mailbox->tracking_url);
+            $this->findTrackingLinks($mailbox->tracking_url);
+            $this->findMarketingActions($mailbox->tracking_url);
         }
 
         $mailbox->initTransportHandler();
@@ -801,8 +810,7 @@ class Email extends SugarBean
     }
 
 
-    private
-    function extractAddresses($items)
+    private function extractAddresses($items)
     {
         if (is_array($items)) {
             $addresses = [];
@@ -833,8 +841,7 @@ class Email extends SugarBean
      *
      * @return Email
      */
-    public
-    static function getTestEmail(Mailbox $mailbox, $testEmailAddress)
+    public static function getTestEmail(Mailbox $mailbox, $testEmailAddress)
     {
         $testEmail = new Email();
 
@@ -859,8 +866,7 @@ class Email extends SugarBean
      *
      * @return array
      */
-    public
-    function to()
+    public function to()
     {
         if (!empty($this->recipient_addresses)) {
             $emailAddresses = [];
@@ -887,8 +893,7 @@ class Email extends SugarBean
      *
      * @return array
      */
-    public
-    function from()
+    public function from()
     {
         $emailAddresses = [];
 
@@ -915,8 +920,7 @@ class Email extends SugarBean
      *
      * @return array
      */
-    public
-    function cc()
+    public function cc()
     {
         if (!empty($this->recipient_addresses)) {
             $emailAddresses = [];
@@ -972,8 +976,7 @@ class Email extends SugarBean
      * @param $items
      * @return array
      */
-    private
-    function extractEmailAddress($items)
+    private function extractEmailAddress($items)
     {
         $email_array = [];
 
@@ -1007,8 +1010,7 @@ class Email extends SugarBean
      *
      * @return void
      */
-    public
-    function addressesToArray()
+    public function addressesToArray()
     {
         if ($this->recipient_addresses == '') {
             $this->recipient_addresses = [];
@@ -1055,8 +1057,7 @@ class Email extends SugarBean
      *
      * Initializes the mailbox processors
      */
-    public
-    function initProcessors()
+    public function initProcessors()
     {
         $db = DBManagerFactory::getInstance();
 
@@ -1073,8 +1074,7 @@ class Email extends SugarBean
      *
      * Goes thru the list of email processors assigned to this email's mailbox and runs the processing.
      */
-    public
-    function processEmail()
+    public function processEmail()
     {
         if (empty($this->processors)) {
             $this->initProcessors();
@@ -1109,11 +1109,10 @@ class Email extends SugarBean
 
     /**
      * links this email to another bean by using the assignBeanToEmail() method.
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @return bool
      */
-    public
-    function assignToBean(SugarBean $bean)
+    public function assignToBean(SpiceBean $bean)
     {
         return $this->assignBeanToEmail($bean->id, $bean->module_name);
     }
@@ -1127,8 +1126,7 @@ class Email extends SugarBean
      * @param $bean_module
      * @return bool
      */
-    public
-    function assignBeanToEmail($bean, $bean_module)
+    public function assignBeanToEmail($bean, $bean_module)
     {
         // if no bean is passed in we assume it is an id and load the bean
         if (is_string($bean)) {
@@ -1146,7 +1144,7 @@ class Email extends SugarBean
         // try to find a relationship between Emails and the module
         $rels = $db->query("SELECT relationship_name FROM relationships WHERE lhs_module = 'Emails' AND rhs_module = '$bean_module'");
         while ($rel = $db->fetchByAssoc($rels)) {
-            foreach ($this->field_name_map as $field => $fieldDetails) {
+            foreach ($this->field_defs as $field => $fieldDetails) {
                 if ($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']) {
                     $this->load_relationship($field);
                     $this->{$field}->add($bean->id);
@@ -1185,8 +1183,7 @@ class Email extends SugarBean
      *
      * @param $stylesheet_id
      */
-    public
-    function addStylesheet($stylesheet_id)
+    public function addStylesheet($stylesheet_id)
     {
         $db = DBManagerFactory::getInstance();
 
@@ -1198,8 +1195,7 @@ class Email extends SugarBean
         }
     }
 
-    public
-    static function findByMessageId($message_id)
+    public static function findByMessageId($message_id)
     {
         $db = DBManagerFactory::getInstance();
 
@@ -1221,16 +1217,14 @@ class Email extends SugarBean
         }
     }
 
-    public
-    function getMailbox()
+    public function getMailbox()
     {
         $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
 
         return $mailbox;
     }
 
-    public
-    function setParent(SugarBean $bean)
+    public function setParent(SpiceBean $bean)
     {
         $this->parent_type = $bean->module_name;
         $this->parent_id = $bean->id;
@@ -1246,8 +1240,7 @@ class Email extends SugarBean
      * @param $sentiment
      * @param $magnitude
      */
-    public
-    function saveSentiment($sentiment, $magnitude)
+    public function saveSentiment($sentiment, $magnitude)
     {
         $this->sentiment = $sentiment;
         $this->magnitude = $magnitude;
@@ -1257,11 +1250,10 @@ class Email extends SugarBean
     /**
      * retrieves all related emails to a given bean
      * should be static I know...
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @return array of Emails or empty
      */
-    public
-    function retrieve_for_bean(SugarBean $bean)
+    public function retrieve_for_bean(SpiceBean $bean)
     {
         $emails = [];
         $sql = "SELECT email_id FROM emails_beans WHERE bean_id = '{$bean->id}' AND deleted = 0";
@@ -1283,8 +1275,7 @@ class Email extends SugarBean
      *
      * @throws Exception
      */
-    public
-    function convertMsgToEmail($fileId, $beanModule = null, $beanId = null)
+    public function convertMsgToEmail($fileId, $beanModule = null, $beanId = null)
     {
         $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
         $documentFactory = new Pear\DocumentFactory();
@@ -1296,16 +1287,135 @@ class Email extends SugarBean
     }
 
     /**
+     * convertEMLToEmail
+     *
+     * Converts a file in Outlook .eml format into an Email Bean.
+     * this is still experimental
+     *
+     * @param $fileId
+     * @param null $beanModule
+     * @param null $beanId
+     *
+     * @throws Exception
+     */
+    public function convertEMLToEmail($fileId, $filecontent, $beanModule = null, $beanId = null)
+    {
+        // container for the parsed parts
+        $bodyParts = [];
+        $contents = [];
+
+        // parse the ressource
+        $res = mailparse_msg_parse_file('upload://' . $fileId);
+        $struct = mailparse_msg_get_structure($res);
+
+        // get all parts
+        foreach ($struct as $s) {
+            $mime_part = mailparse_msg_get_part($res, $s); //1.2 is the binary base64 encoded part of the attachement
+            $partData = mailparse_msg_get_part_data($mime_part);
+            $bodyParts[] = $partData;
+            $content = substr($filecontent, $partData['starting-pos-body'], $partData['ending-pos-body']);
+            switch ($partData['transfer-encoding']) {
+                case 'base64':
+                    $contents[] = base64_decode($content);
+                    break;
+                default:
+                    $contents[] = $content;
+            }
+        }
+
+        // get the email addresses
+        foreach (mailparse_rfc822_parse_addresses($bodyParts[0]['headers']['from']) as $sender) {
+            $this->recipient_addresses[] = [
+                'email_address' => $sender['address'],
+                'address_type' => 'from',
+            ];
+        }
+
+        foreach (mailparse_rfc822_parse_addresses($bodyParts[0]['headers']['to']) as $recipient) {
+            $this->recipient_addresses[] = [
+                'email_address' => $recipient['address'],
+                'address_type' => 'to',
+            ];
+        }
+
+        // get the main parts for the email
+        $this->name = $bodyParts[0]['headers']['subject'];
+
+        // get the proper date sent
+        $date = new DateTime($bodyParts[0]['headers']['date']);
+        $this->date_sent = $date->format(TimeDate::DB_DATETIME_FORMAT);
+
+        // set some constants
+        $this->type = self::TYPE_INBOUND;
+        $this->status = self::STATUS_UNREAD;
+        $this->openness = self::OPENNESS_OPEN;
+
+        // parse the parts
+        foreach ($bodyParts as $index => $bodyPart) {
+            switch ($bodyPart['content-type']) {
+                case 'text/plain':
+                    $body = $contents[$index];
+                    if (!$this->body) {
+                        switch ($bodyPart['transfer-encoding']) {
+                            case 'quoted-printable':
+                                $this->body = imap_qprint($body);
+                                break;
+                            default:
+                                $this->body = $body;
+                                break;
+                        }
+                    }
+                    break;
+                case 'text/html':
+                    $body_html = $this->getHTMLOnly($contents[$index]);
+                    switch ($bodyPart['transfer-encoding']) {
+                        case 'quoted-printable':
+                            $this->body = imap_qprint($body_html);
+                            if ($bodyPart['charset'] != 'UTF-8') {
+                                $this->body = mb_convert_encoding($this->body, 'UTF-8', $bodyPart['charset']);
+                            }
+                            break;
+                        default:
+                            $this->body = $body_html;
+                            break;
+                    }
+                    break;
+                default:
+                    // check if this is a file
+                    if (strpos($bodyPart['headers']['content-disposition'], 'filename') !== false) {
+                        $fileArray = [
+                            'filename' => $bodyPart['content-name'],
+                            'file' => base64_encode($contents[$index]),
+                            'filemimetype' => $bodyPart['content-type']
+                        ];
+                        SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
+                    }
+                    break;
+            }
+        }
+
+        // set the parent
+        $this->parent_id = $beanId;
+        $this->parent_type = $beanModule;
+    }
+
+    private function getHTMLOnly($string)
+    {
+        $pattern = "#<\s*?html\b[^>]*>(.*?)</html\b[^>]*>#s";
+        preg_match($pattern, $string, $matches);
+        return $matches[0];
+    }
+
+    /**
      * convertMessageToBean
      *
      * Converts a Swiftmailer Message into an Email Bean.
      *
      * @param Swiftmailer\Message $message
-     * @return SugarBean
+     * @return SpiceBean
      * @throws Exception
      */
-    private
-    function convertMessageToBean(Swiftmailer\Message $message)
+    private function convertMessageToBean(Swiftmailer\Message $message)
     {
 
         // process the message
@@ -1353,8 +1463,7 @@ class Email extends SugarBean
     /**
      * Searches for inline base64 images in the email body.
      */
-    public
-    function findInlineImages(): DOMNodeList
+    public function findInlineImages(): DOMNodeList
     {
         $doc = new DOMDocument();
         // load html and use utf-8 encoding
@@ -1365,7 +1474,27 @@ class Email extends SugarBean
         return $selector->query("//img[contains(@src, 'data:image/png;base64,') or contains(@src, 'data:image/png;charset=utf-8;base64,')]");
     }
 
-    public function addDocumentAttachment($doc): void {
+    public function addDocumentAttachment($doc): void
+    {
         SpiceAttachments::saveDocumentAttachment('Emails', $this->id, $doc);
+    }
+
+    /**
+     * handle fired event by workflow
+     * @param string $event
+     * @return void
+     */
+    public function handleEvent(string $event)
+    {
+        $db = DBManagerFactory::getInstance();
+        $taskId = $db->getOne("SELECT id FROM workflowtasks WHERE email_id ='{$this->id}' AND workflowtask_status = 20 AND deleted != 1");
+
+        if (empty($taskId)) return;
+
+        /* @var WorkflowTask $workflowTask */
+        $workflowTask = BeanFactory::getBean('WorkflowTasks', $taskId);
+        if ($workflowTask->workflow->workflow_status < 30) {
+            $workflowTask->callHandlerMethod('handleEvent', [$event]);
+        }
     }
 }

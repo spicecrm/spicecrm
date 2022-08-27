@@ -11,17 +11,17 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
-import /*embed*/ {SpiceAttachmentsPanel} from "./components/spiceattachmentspanel";
-import /*embed*/ {SpiceAttachmentsPanelHeader} from "./components/spiceattachmentspanelheader";
-import /*embed*/ {SpiceAttachmentsList} from "./components/spiceattachmentslist";
-import /*embed*/ {SpiceAttachmentsPopupList} from "./components/spiceattachmentspopuplist";
-import /*embed*/ {SpiceAttachmentFile} from "./components/spiceattachmentfile";
-import /*embed*/ {SpiceAttachmentAddImageModal} from "./components/spiceattachmentaddimagemodal";
-import /*embed*/ {SpiceAttachmentsCount} from "./components/spiceattachmentscount";
-import /*embed*/ {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmentscount";
-import /*embed*/ {SpiceAttachmentsEditModal} from "./components/spiceattachmentseditmodal";
-import /*embed*/ {SpiceAttachmentStats} from "./components/spiceattachmentstats";
-import /*embed*/ {fieldModelAttachment} from "./fields/fieldmodelattachment";
+import {SpiceAttachmentsPanel} from "./components/spiceattachmentspanel";
+import {SpiceAttachmentsPanelHeader} from "./components/spiceattachmentspanelheader";
+import {SpiceAttachmentsList} from "./components/spiceattachmentslist";
+import {SpiceAttachmentsPopupList} from "./components/spiceattachmentspopuplist";
+import {SpiceAttachmentFile} from "./components/spiceattachmentfile";
+import {SpiceAttachmentAddImageModal} from "./components/spiceattachmentaddimagemodal";
+import {SpiceAttachmentsCount} from "./components/spiceattachmentscount";
+import {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmentscount";
+import {SpiceAttachmentsEditModal} from "./components/spiceattachmentseditmodal";
+import {SpiceAttachmentStats} from "./components/spiceattachmentstats";
+import {fieldModelAttachment} from "./fields/fieldmodelattachment";
 
 @NgModule({
     imports: [

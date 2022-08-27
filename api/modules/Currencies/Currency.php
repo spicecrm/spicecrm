@@ -36,7 +36,7 @@
 
 namespace SpiceCRM\modules\Currencies;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -48,12 +48,8 @@ use SpiceCRM\includes\authentication\AuthenticationController;
  * formatting in the SugarCRM application.
  *
  */
-class Currency extends SugarBean
+class Currency extends SpiceBean
 {
-
-	var $table_name = "currencies";
-	var $object_name = "Currency";
-	var $module_dir = "Currencies";
 	var $disable_num_format = true;
 
     public function __construct()
@@ -65,6 +61,7 @@ class Currency extends SugarBean
 	}
 
     /**
+     * @deprecated
      * convertToDollar
      * This method accepts a currency amount and converts it to the US Dollar amount
      *
@@ -72,11 +69,16 @@ class Currency extends SugarBean
      * @param $precision The rounding precision scale
      * @return currency value in US Dollars from conversion
      */
-	function convertToDollar($amount, $precision = 6) {
-		return round(($amount / $this->conversion_rate), $precision);
+	function convertToDollar( $amount, $precision = 6) {
+		return $this->convertToBase($amount, $precision);
 	}
 
+    public function convertToBase( $amount, $precision = 6) {
+        return round(($amount / $this->conversion_rate), $precision);
+    }
+
     /**
+     * @deprecated
      * convertFromCollar
      * This method accepts a US Dollar amount and returns a currency amount
      * with the conversion rate applied to it.
@@ -86,8 +88,12 @@ class Currency extends SugarBean
      * @return currency value from US Dollar conversion
      */
 	function convertFromDollar($amount, $precision = 6){
-		return round(($amount * $this->conversion_rate), $precision);
+		return $this->convertFromBase($amount, $precision);
 	}
+
+    public function convertFromBase($amount, $precision = 6){
+        return round(($amount * $this->conversion_rate), $precision);
+    }
 
     /**
      * getDefaultCurrencyName

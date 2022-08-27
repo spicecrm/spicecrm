@@ -155,7 +155,6 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
             .subscribe(
                 (response: any) => {
                     this.jobLogs = this.mapList(response.list);
-                    this.sortList();
                     this.totalLines = response.count;
                     this.isLoading = false;
                 }, err => this.isLoading = false);
@@ -181,7 +180,6 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
             .subscribe(
                 (response: any) => {
                     this.jobLogs = [...this.jobLogs, ...this.mapList(response.list)];
-                    this.sortList();
                     this.totalLines = response.count;
                     this.isLoading = false;
                 }, err => this.isLoading = false);
@@ -205,7 +203,6 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
             .subscribe(
                 (response: any) => {
                     this.jobLogs = this.mapList(response.list);
-                    this.sortList();
                     this.totalLines = response.count;
                     this.isLoading = this.isReloading = false;
                 }, err => this.isLoading = this.isReloading = false);
@@ -223,14 +220,6 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
             i.resolutionClass = `slds-text-color_${(i.resolution == 'failed' ? 'error' : 'success')}`;
             return i;
         });
-    }
-
-    /**
-     * sort the list by the execution date
-     * @private
-     */
-    public sortList() {
-        this.jobLogs.sort((a, b) => a.executed_on < b.executed_on ? 1 : a.executed_on > b.executed_on ? -1 : 0);
     }
 
     /**

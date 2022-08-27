@@ -39,6 +39,7 @@ export class HolidayCalendarList implements OnInit {
     public ngOnInit() {
         this.modellist.initialize('SystemHolidayCalendars');
         this.modellist.getListData();
+        this.model.module = "SystemHolidayCalendars";
     }
 
     /**
@@ -70,7 +71,7 @@ export class HolidayCalendarList implements OnInit {
      * @private
      */
     public addCalendar() {
-        this.model.module = 'ServiceCalendars';
+        this.model.module = 'SystemHolidayCalendars';
         this.model.id = '';
         this.model.initialize();
         this.model.addModel();
@@ -81,10 +82,10 @@ export class HolidayCalendarList implements OnInit {
      * @private
      */
     public addDay() {
-        this.model.module = 'ServiceCalendarTimes';
+        this.model.module = 'SystemHolidayCalendarDays';
         this.model.id = '';
         this.model.initialize();
-        this.model.addModel(null, null, {servicecalendar_id: this.activeCalendar});
+        this.model.addModel(null, null, {systemholidaycalendar_id: this.activeCalendar});
     }
 
 }

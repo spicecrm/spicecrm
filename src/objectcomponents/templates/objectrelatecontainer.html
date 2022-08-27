@@ -1,1 +1,8 @@
-<system-componentset [componentset]="componentset"></system-componentset>
+<div *ngIf="!hasAccess || model.isLoading; else content" class="slds-grid slds-grid--vertical">
+    <system-card-stencil></system-card-stencil>
+    <system-card-stencil></system-card-stencil>
+    <system-card-stencil></system-card-stencil>
+</div>
+<ng-template #content>
+    <system-componentset [componentset]="componentset"></system-componentset>
+</ng-template>

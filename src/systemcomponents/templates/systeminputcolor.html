@@ -1,0 +1,28 @@
+<div class="slds-form-element slds-is-relative">
+    <div class="slds-color-picker">
+        <div class="slds-form-element__control slds-grid slds-grid--vertical-align-center">
+            <button class="slds-button slds-color-picker__summary-button slds-button_icon slds-button_icon-more" (click)="isOpen = !isOpen">
+                <span class="slds-swatch" [ngStyle]="colorStyle('brandprimary')"></span>
+                <system-button-icon class="slds-button__icon slds-button__icon_small slds-m-left_xx-small" icon="down"></system-button-icon>
+            </button>
+            <input type="text" class="slds-grow slds-input" [ngClass]="{'slds-is-edited': isedited}" [(ngModel)]="value" />
+        </div>
+        <section *ngIf="isOpen" class="slds-popover slds-color-picker__selector slds-is-absolute" role="dialog">
+            <div class="slds-popover__body" id="dialog-body-id-37">
+                <div class="slds-color-picker slds-color-picker_swatches-only slds-grid slds-grid--vertical-align-center slds-grow">
+                    <div class="slds-color-picker__selector">
+                        <ul class="slds-color-picker__swatches" role="menu">
+                            <li *ngFor="let color of colorPalette; trackBy: trackByFnIndex" class="slds-color-picker__swatch" (click)="setColor(color)" role="presentation">
+                                <span class="slds-color-picker__swatch-trigger slds-is-selected" role="menuitem">
+                                    <span class="slds-swatch" [style.background-color]="color">
+                                        <span class="slds-assistive-text">{{color}}</span>
+                                    </span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

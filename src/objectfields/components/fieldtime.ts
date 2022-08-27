@@ -4,7 +4,6 @@
 import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {Router}   from '@angular/router';
 import {model} from '../../services/model.service';
-import {popup} from '../../services/popup.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
@@ -24,7 +23,6 @@ declare var moment: any;
 @Component({
     selector: 'field-time',
     templateUrl: '../templates/fieldtime.html',
-    providers: [popup]
 })
 export class fieldTime extends fieldGeneric {
 

@@ -8,6 +8,7 @@ import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
 import {language} from '../../services/language.service';
 import {view} from "../../services/view.service";
+import {navigationtab} from "../../services/navigationtab.service";
 
 /**
  * a standard actionset item to open a model
@@ -24,7 +25,15 @@ export class ObjectActionOpenButton {
      */
     public displayasicon: boolean = false;
 
-    constructor(public language: language, public metadata: metadata, public model: model, public router: Router, public helper: helper, public view: view) {
+    constructor(
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public router: Router,
+        public helper: helper,
+        public view: view,
+        public navigationtab: navigationtab,
+    ) {
     }
 
     /**
@@ -38,7 +47,7 @@ export class ObjectActionOpenButton {
      * opens the modal with the record
      */
     public execute() {
-        this.model.goDetail();
+        this.model.goDetail(this.navigationtab.tabid);
     }
 
 }

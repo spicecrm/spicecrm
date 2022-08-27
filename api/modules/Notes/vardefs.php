@@ -68,10 +68,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Note'] = [
             'vname' => 'LBL_PARENT_TYPE',
             'type' => 'parent_type',
             'dbType' => 'varchar',
-            'group' => 'parent_name',
-            'options' => 'parent_type_display',
-            'len' => '255',
-            'comment' => 'Sugar module the Note is associated with'
+            'len' => 255,
+            'comment' => 'Parent module the Note is associated with'
         ],
         'parent_id' => [
             'name' => 'parent_id',
@@ -137,7 +135,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Note'] = [
             'type' => 'varchar',
             'vname' => 'LBL_EMAIL_ADDRESS',
             'source' => 'non-db',
-            'studio' => false
         ],
         'account_id' => [
             'name' => 'account_id',

@@ -42,6 +42,10 @@ export class SpiceImporter implements OnInit {
 
         // get the bean details
         this.model.module = this.navigationtab.activeRoute.params.module;
+
+        // initialize model to get acls and field settings
+        this.model.initialize();
+
         if (!this.metadata.checkModuleAcl(this.model.module, 'import')) {
             this.toast.sendToast(this.language.getLabel('MSG_NOT_AUTHORIZED_TO_IMPORT') + ' ' + this.language.getModuleName(this.model.module), 'error');
             this.router.navigate(['/module/' + this.model.module]);

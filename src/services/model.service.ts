@@ -101,7 +101,7 @@ export class model implements OnDestroy {
     /**
      * holds observable of a field and its value
      */
-    public field$: BehaviorSubject<{field: string, value: any}> = new BehaviorSubject({field: null, value: null});
+    public field$: BehaviorSubject<{ field: string, value: any }> = new BehaviorSubject({field: null, value: null});
 
     /**
      * indicates wheter the model is currently saving
@@ -131,7 +131,7 @@ export class model implements OnDestroy {
      *}
      *```
      */
-    public mode$: EventEmitter<'edit'|'display'> = new EventEmitter();
+    public mode$: EventEmitter<'edit' | 'display'> = new EventEmitter();
 
     /**
      * fires when the editing of the model is cancelled
@@ -249,6 +249,11 @@ export class model implements OnDestroy {
      */
     public loadingError: boolean = false;
 
+    /**
+     * A simple event emitter that emits whenever the model has been validated.
+     */
+    public validated$: EventEmitter<void> = new EventEmitter<void>();
+
     constructor(
         public backend: backend,
         public broadcast: broadcast,
@@ -333,7 +338,7 @@ export class model implements OnDestroy {
     /**
      * helper to get the proper backend formatted model data
      */
-    get backendData(){
+    get backendData() {
         return this.utils.spiceModel2backend(this.module, this.data);
     }
 
@@ -441,12 +446,21 @@ export class model implements OnDestroy {
     }
 
     /**
-     * returns the field access status if one is set
+     * returns if access to a field is granted
      *
      * @param field the field to be checked
      */
     public checkFieldAccess(field): boolean {
-        return !(this.data && this.data.acl_fieldcontrol && this.data.acl_fieldcontrol[field] && this.data.acl_fieldcontrol[field] == '1');
+        return !(this.acl_fieldcontrol && this.acl_fieldcontrol[field] && this.acl_fieldcontrol[field] == '1');
+    }
+
+    /**
+     * returns the field access control data
+     *
+     * @param field the field to be checked
+     */
+    public getFieldAccess(field): number {
+        return this.acl_fieldcontrol && this.acl_fieldcontrol[field] ? parseInt(this.acl_fieldcontrol[field], 10) : undefined;
     }
 
     /**
@@ -490,8 +504,8 @@ export class model implements OnDestroy {
         // set laoding
         this.isLoading = setLoading;
 
-        this.backend.get(this.module, this.id, trackAction).subscribe(
-            res => {
+        this.backend.get(this.module, this.id, trackAction).subscribe({
+            next: (res) => {
 
                 // set data and acl
                 this.data = res;
@@ -510,7 +524,7 @@ export class model implements OnDestroy {
                 responseSubject.next(res);
                 responseSubject.complete();
             },
-            err => {
+            error: (err) => {
                 if (redirectNotFound && err.status != 401) {
                     this.toast.sendToast(this.language.getLabel("LBL_ERROR_LOADING_RECORD"), "error");
                     this.router.navigate(["/module/" + this.module]);
@@ -521,7 +535,7 @@ export class model implements OnDestroy {
                 }
                 responseSubject.error(err);
             }
-        );
+        });
         return responseSubject.asObservable();
     }
 
@@ -555,6 +569,7 @@ export class model implements OnDestroy {
         if (!this.isValid) {
             console.warn("validation failed:", this.messages);
         }
+        this.validated$.next();
         return this.isValid;
     }
 
@@ -656,6 +671,7 @@ export class model implements OnDestroy {
 
 
     public getFieldStati(field: string) {
+
         let stati = this._fields_stati_tmp[field];
         if (!stati) {
             stati = this._fields_stati[field];
@@ -664,6 +680,12 @@ export class model implements OnDestroy {
                 this._fields_stati[field] = stati;
             }
         }
+        /*
+        if ( field == 'questionnaire ') {
+            this._fields_stati[field].invalid = true;
+        }
+
+         */
         // copy stati to manipulate them without changing the stored ones...
         stati = {...stati};
         if (!stati.invalid && this.getFieldMessages(field, "error")) {
@@ -769,6 +791,9 @@ export class model implements OnDestroy {
         switch (action.action) {
             case "set_value":
                 this.data[action.fieldname] = params;
+                return true;
+            case "set_value_from_field":
+                this.data[action.fieldname] = this.data[params];
                 return true;
             case "set_message":
                 if (params instanceof Object) {
@@ -931,15 +956,16 @@ export class model implements OnDestroy {
      *
      * @param field
      * @param value
+     * @param silent
      */
     public setField(field, value, silent: boolean = false) {
         if (!field) return false;
-        if(this.data[field] !== value) {
+        if (this.data[field] !== value) {
             this.field$.next({field, value});
         }
         this.data[field] = value;
 
-        if(silent !== true) {
+        if (silent !== true) {
             this.data$.next(this.data);
         }
 
@@ -954,13 +980,15 @@ export class model implements OnDestroy {
      * @param field
      */
     public observeFieldChanges(field: string): Observable<any> {
-        if(!this.fields[field]) return of(null);
+        if (!this.fields[field]) return of(null);
         return this.field$.pipe(filter(fieldObj => fieldObj.field == field), map(v => v.value));
     }
+
     /**
      * sets an object of fields on a model
      *
      * @param fieldData a simple object with the fieldname and the value to be set
+     * @param silent
      */
     public setFields(fieldData, silent: boolean = false) {
         let changedFields = [];
@@ -975,7 +1003,7 @@ export class model implements OnDestroy {
             changedFields.push(fieldName);
         }
 
-        if(silent !== true) {
+        if (silent !== true) {
             this.data$.next(this.data);
         }
         this.evaluateValidationRules(null, "change");
@@ -986,7 +1014,7 @@ export class model implements OnDestroy {
 
     /**
      * emit fields changes from the data object
-      * @param data
+     * @param data
      * @private
      */
     public emitFieldsChanges(data) {
@@ -1069,8 +1097,8 @@ export class model implements OnDestroy {
         }
 
         this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId)
-            .subscribe(
-                res => {
+            .subscribe({
+                next: (res) => {
                     this.data = res;
                     this.isNew = false;
                     this.data$.next(res);
@@ -1108,7 +1136,7 @@ export class model implements OnDestroy {
                     responseSubject.complete();
 
                 },
-                error => {
+                error: (error) => {
                     // console.log(error);
                     switch (error.status) {
                         case 409:
@@ -1121,21 +1149,22 @@ export class model implements OnDestroy {
                             if (notify) {
                                 this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
                             }
-                            responseSubject.error(true);
+                            responseSubject.error(error);
                             responseSubject.complete();
                     }
 
                     // indicvate end of save process
                     this.isSaving = false;
-                });
+                }
+            });
         return responseSubject.asObservable();
     }
 
     public delete(): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(
-            () => {
+        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe({
+            next: () => {
                 this.broadcast.broadcastMessage("model.delete", {
                     id: this.id,
                     module: this.module,
@@ -1144,10 +1173,10 @@ export class model implements OnDestroy {
                 responseSubject.next(true);
                 responseSubject.complete();
             },
-            e => {
+            error: () => {
                 responseSubject.error('unable to delete record');
             }
-        );
+        });
         return responseSubject.asObservable();
     }
 
@@ -1156,6 +1185,7 @@ export class model implements OnDestroy {
      * saves the changes on the model and sends it
      * Be aware that send functionality is triggered in backend within save logic itself
      * @param notify if set to true a toast is sent once the send is completed (defaults to false)
+     * @param toastLabel
      */
     public saveAndSend(notify: boolean = false, toastLabel: string = 'LBL_DATA_SENT'): Observable<boolean> {
         let _notify = notify;
@@ -1196,16 +1226,16 @@ export class model implements OnDestroy {
     public getAuditLog(filters: any = {}): Observable<any> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.getRequest(`module/${this.module}/${this.id}/auditlog`, filters).subscribe(
-            res => {
+        this.backend.getRequest(`module/${this.module}/${this.id}/auditlog`, filters).subscribe({
+            next: (res) => {
                 responseSubject.next(res);
                 responseSubject.complete();
             },
-            error => {
+            error: (error) => {
                 responseSubject.next(error);
                 responseSubject.complete();
             }
-        );
+        });
         return responseSubject.asObservable();
     }
 
@@ -1235,12 +1265,29 @@ export class model implements OnDestroy {
         // reset the data object
         this.data = {};
         // this.data.id = this.id;
-        this.data.assigned_user_id = this.session.authData.userId;
-        this.data.assigned_user_name = this.session.authData.userName;
+
+        // get the fields and check assigned fields
+        let moduleFields = this.metadata.getModuleFields(this.module);
+        if (moduleFields.assigned_user_id) {
+            this.data.assigned_user_id = this.session.authData.userId;
+            this.data.assigned_user_name = this.session.authData.userName;
+            this.data.assigned_user = this.session.authData.user;
+        }
+
+        if (moduleFields.assigned_orgunit_id && this.session.authData.user.orgunit) {
+            this.data.assigned_orgunit_id = this.session.authData.user.orgunit.id;
+            this.data.assigned_orgunit_name = this.session.authData.user.orgunit.name;
+            this.data.assigned_orgunit = this.session.authData.user.orgunit;
+        }
+
         this.data.modified_by_id = this.session.authData.userId;
         this.data.modified_by_name = this.session.authData.userName;
+        this.data.modified_by_user = this.session.authData.user;
+
         this.data.created_by_id = this.session.authData.userId;
         this.data.created_by_name = this.session.authData.userName;
+        this.data.created_by_user = this.session.authData.user;
+
         this.data.date_entered = new moment();
         this.data.date_modified = new moment();
 
@@ -1274,13 +1321,18 @@ export class model implements OnDestroy {
      * @param transform .. set to false to not transform the data
      * @param silent .. st to true to not emit data after setting the data on teh model
      */
-    public setData(data: any, transform = true, silent?: boolean){
-        if(data.acl) this.acl = data.acl;
-        if(data.acl_fieldcontrol) this.acl_fieldcontrol = data.acl_fieldcontrol;
-        this.data = transform ?  this.utils.backendModel2spice(this.module, data) : data;
+    public setData(data: any, transform = true, silent?: boolean) {
+        if (data.acl) {
+            this.acl = data.acl;
+        }
+        if (data.acl_fieldcontrol) {
+            this.acl_fieldcontrol = data.acl_fieldcontrol;
+            delete data.acl_fieldcontrol;
+        }
+        this.data = transform ? this.utils.backendModel2spice(this.module, data) : data;
 
         // emit the data changes
-        if(silent !== true){
+        if (silent !== true) {
             this.data$.next(this.data);
         }
 
@@ -1293,7 +1345,7 @@ export class model implements OnDestroy {
      *
      * @param addReference, a reference that is returned .. can be sooner than later be discontinued
      * @param parent the parent model used for copyrules applications
-     * @param presetsany kind of preset fields
+     * @param presets kind of preset fields
      * @param preventGoingToRecord
      * @param componentconfig
      */
@@ -1481,7 +1533,7 @@ export class model implements OnDestroy {
      * @param copyRule
      * @param fromField
      */
-    public getCalculatedValue(copyRule: {fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any}, fromField?: string) {
+    public getCalculatedValue(copyRule: { fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any }, fromField?: string) {
 
         let timeZone = this.session.getSessionData('timezone', false) || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
@@ -1581,18 +1633,19 @@ export class model implements OnDestroy {
             if (cancheck && shouldcheck) {
                 let retSubject = new Subject<any>();
                 // do the check
-                this.duplicateCheck(true).subscribe(
-                    duplciates => {
+                this.duplicateCheck(true).subscribe({
+                    next: (duplciates) => {
                         this.duplicates = duplciates.records;
                         this.duplicatecount = duplciates.count;
 
                         retSubject.next(true);
                         retSubject.complete();
                     },
-                    () => {
+                    error: () => {
                         retSubject.next(false);
                         retSubject.complete();
-                    });
+                    }
+                });
                 return retSubject.asObservable();
             } else if (shouldcheck && !cancheck) {
                 this.duplicates = [];
@@ -1615,34 +1668,36 @@ export class model implements OnDestroy {
             if (fromModelData) {
                 let _modeldata = this.data;
                 _modeldata.id = this.id;
-                this.backend.checkDuplicates(this.module, _modeldata)
-                    .subscribe(res => {
-                            responseSubject.next(res);
-                            responseSubject.complete();
-                            this.duplicateChecking = false;
-                        },
-                        () => {
-                            responseSubject.next([]);
-                            responseSubject.complete();
-                            this.duplicateChecking = false;
-                        });
+                this.backend.checkDuplicates(this.module, _modeldata).subscribe({
+                    next: (res) => {
+                        responseSubject.next(res);
+                        responseSubject.complete();
+                        this.duplicateChecking = false;
+                    },
+                    error: () => {
+                        responseSubject.next([]);
+                        responseSubject.complete();
+                        this.duplicateChecking = false;
+                    }
+                });
             } else {
-                this.backend.getDuplicates(this.module, this.id)
-                    .subscribe(res => {
-                            responseSubject.next(res);
-                            responseSubject.complete();
-                            this.duplicateChecking = false;
-                        },
-                        () => {
-                            responseSubject.next([]);
-                            responseSubject.complete();
-                            this.duplicateChecking = false;
-                        }
-                    )
-                ;
+                this.backend.getDuplicates(this.module, this.id).subscribe({
+                    next: (res) => {
+                        responseSubject.next(res);
+                        responseSubject.complete();
+                        this.duplicateChecking = false;
+
+                    },
+                    error: () => {
+                        responseSubject.next([]);
+                        responseSubject.complete();
+                        this.duplicateChecking = false;
+                    }
+                });
             }
             return responseSubject.asObservable();
         }
+
         return of([]);
     }
 
@@ -1691,7 +1746,7 @@ export class model implements OnDestroy {
      * @param {string} type     can be of value error | warning | notice
      * @returns {any[]}
      */
-    public getFieldMessages(ref: string, type?: "error" | "warning" | "notice") {
+    public getFieldMessages(ref: string, type ?: "error" | "warning" | "notice") {
         let messages = this._messages.filter((e) => {
             return e.reference == ref && (!type || e.type == type);
         });
@@ -1702,7 +1757,7 @@ export class model implements OnDestroy {
         }
     }
 
-    public resetFieldMessages(ref: string, type?: "error" | "warning" | "notice", source?: string): boolean {
+    public resetFieldMessages(ref: string, type ?: "error" | "warning" | "notice", source ?: string): boolean {
         if (this._messages.length == 0) {
             return true;
         }
@@ -1720,7 +1775,9 @@ export class model implements OnDestroy {
         return true;
     }
 
-    public resetMessages(type?: string, source: string = "validation"): boolean {
+    public
+
+    resetMessages(type ?: string, source: string = "validation"): boolean {
         if (this._messages.length == 0) {
             return true;
         }
@@ -1798,7 +1855,7 @@ export class model implements OnDestroy {
      * @param {boolean} overwrite default true, if false, it will ignore records which are already set
      * @returns {boolean}
      */
-    public addRelatedRecords(relation_link_name: string, records: any[], overwrite = true): boolean {
+    public addRelatedRecords(relation_link_name:string, records: any[], overwrite = true): boolean {
         if (!this.isFieldARelationLink(relation_link_name)) {
             return false;
         }
@@ -1854,11 +1911,12 @@ export class model implements OnDestroy {
 
 
     public ngOnDestroy(): void {
-        if (this.modelRegisterId) {
+        if (this.modelRegisterId
+        ) {
             this.navigation.unregisterModel(this.modelRegisterId);
         }
 
-        // unsubscribe from any subscriptions we might have
+// unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();
     }
 

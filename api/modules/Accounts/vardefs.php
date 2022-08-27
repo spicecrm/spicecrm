@@ -76,7 +76,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'isnull' => 'true',
                 'module' => 'Accounts',
                 'table' => 'accounts',
-                'massupdate' => false,
                 'source' => 'non-db',
                 'len' => 36,
                 'link' => 'member_of',
@@ -113,8 +112,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'vname' => 'LBL_EMAIL_OPT_OUT',
                 'source' => 'non-db',
                 'type' => 'bool',
-                'massupdate' => false,
-                'studio' => 'false',
             ],
         'invalid_email' =>
             [
@@ -122,8 +119,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'vname' => 'LBL_INVALID_EMAIL',
                 'source' => 'non-db',
                 'type' => 'bool',
-                'massupdate' => false,
-                'studio' => 'false',
             ],
 // CR1000426 cleanup backend, module Cases removed
 //        'cases' =>
@@ -148,8 +143,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'id',
             ],
             'vname' => 'LBL_ANY_EMAIL',
-            'studio' => ['visible' => false, 'searchview' => true],
-            'importable' => false,
+            'importable' => 'false',
         ],
         'tasks' =>
             [
@@ -201,7 +195,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'bean_name' => 'Email',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAILS',
-                'studio' => ["formula" => false],
             ],
         'documents' =>
             [
@@ -285,7 +278,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'bean_name' => 'CampaignLog',
                 'source' => 'non-db',
                 'vname' => 'LBL_CAMPAIGNLOG',
-                'studio' => ["formula" => false],
             ],
         'campaign_accounts' =>
             [
@@ -347,7 +339,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'isnull' => 'true',
                 'module' => 'Campaigns',
                 'reportable' => false,
-                'massupdate' => false,
                 'duplicate_merge' => 'disabled',
             ],
 
@@ -432,7 +423,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
             'default' => true, //UI: load related beans on account load. module property required!
             'module' => 'AccountCCDetails'
         ],

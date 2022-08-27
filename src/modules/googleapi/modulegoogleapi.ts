@@ -12,7 +12,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {GoogleAPISettings} from "./components/googleapisettings";
+import {GoogleAPISettings} from "./components/googleapisettings";
 
 
 @NgModule({

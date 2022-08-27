@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {AfterViewInit, Component, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {model} from "../../services/model.service";
 import {language} from "../../services/language.service";
@@ -123,6 +123,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
                 public metadata: metadata,
                 public backend: backend,
                 public broadcast: broadcast,
+                public elementRef: ElementRef,
                 public configurationService: configurationService,
                 public modalservice: modal) {
     }
@@ -193,6 +194,10 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     public toggleOpen(e: MouseEvent) {
         e.stopPropagation();
         this.isopen = !this.isopen;
+    }
+
+    get width(){
+        return this.elementRef.nativeElement.getBoundingClientRect().width;
     }
 
     /**

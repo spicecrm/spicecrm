@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceACL;
 
@@ -137,7 +111,7 @@ class SpiceACL
 
     /*
      * adds the object specific Where Clause to the where array
-     * called in data/SugarBean.php in function create_new_list_query
+     * called in data/SpiceBean.php in function create_new_list_query
      */
     public function addACLAccessToListArray(&$selectArray, $bean, $tableName = '', $retArray = false)
     {
@@ -150,10 +124,10 @@ class SpiceACL
         if (!$this->aclObject)
             $this->aclObject = BeanFactory::getBean('SpiceACLObjects');
 
-        $userObjects = $this->aclObject->getUserACLObjects($bean->_module ?: $bean->module_dir);
+        $userObjects = $this->aclObject->getUserACLObjects($bean->_module ?: $bean->_module);
         foreach ($userObjects as $userObjectId => $userObjectData) {
             $aclObject = BeanFactory::getBean('SpiceACLObjects', $userObjectId);
-            $filters = $aclObject->getListObjectQuery($tableName ?: $bean->table_name, $bean);
+            $filters = $aclObject->getListObjectQuery($tableName ?: $bean->_tablename, $bean);
             if ($filters != '') {
                 switch ($aclObject->spiceaclobjecttype) {
                     case '0':
@@ -244,7 +218,7 @@ class SpiceACL
     }
 
     /**
-     * @param $bean SugarBean or String module name
+     * @param $bean SpiceBean or String module name
      * @param $action
      * @param bool $is_owner
      * @param string $type
@@ -365,7 +339,7 @@ class SpiceACL
 
     /*
      * function to check the ACL Access
-     * called in data/SugarBean.php in function ACLAccess
+     * called in data/SpiceBean.php in function ACLAccess
      */
     public function checkACLAccess($bean, $view)
     {
@@ -405,12 +379,16 @@ class SpiceACL
                 return $this->checkedBeans[$bean->id][$thisActivity];
 
             // get a territory Object
-            if (!$this->territory)
+            if (!$this->territory) {
                 $this->territory = BeanFactory::getBean('SpiceACLTerritories');
+            }
 
-            foreach ($this->aclObject->getUserACLObjects($bean->_module ?: $bean->module_dir) as $aclObjectId => $aclObjectData) {
+            $aclObjects = $this->aclObject->getUserACLObjects($bean->_module ?: $bean->_module);
+
+            // check basic access or extended access
+            foreach ($aclObjects as $aclObjectId => $aclObjectData) {
                 // only check type 0
-                if ($aclObjectData['spiceaclobjecttype'] != 0)
+                if ($aclObjectData['spiceaclobjecttype'] != 0 && $aclObjectData['spiceaclobjecttype'] != 6)
                     continue;
 
                 if (!$this->aclObject->matchBean2Object($bean, $thisActivity, $aclObjectData))
@@ -420,9 +398,9 @@ class SpiceACL
                 break;
             }
 
-            // check if we shodul limit
+            // check if we should limit
             if ($allowAccess) {
-                foreach ($this->aclObject->getUserACLObjects($bean->_module ?: $bean->module_dir) as $aclObjectId => $aclObjectData) {
+                foreach ($aclObjects as $aclObjectId => $aclObjectData) {
                     // only check type 0
                     if ($aclObjectData['spiceaclobjecttype'] != 3)
                         continue;
@@ -448,6 +426,10 @@ class SpiceACL
                 return true;
 
             foreach ($this->aclObject->getUserACLObjects($bean) as $aclObjectId => $aclObjectData) {
+                // only check type 0
+                if ($aclObjectData['spiceaclobjecttype'] != 0)
+                    continue;
+
                 // check the activity .. if it is noit found .. cointinue
                 if (array_search($thisActivity, $aclObjectData['objectactions']) === false)
                     continue;
@@ -500,7 +482,7 @@ class SpiceACL
             $this->aclObject = BeanFactory::getBean('SpiceACLObjects');
 
         // get the actions
-        $actions = $this->getModuleActions($bean->_module ?: $bean->module_dir);
+        $actions = $this->getModuleActions($bean->_module ?: $bean->_module);
 
         // array for actions with status true or false
         $aArray = [];
@@ -519,7 +501,7 @@ class SpiceACL
             if (!$this->territory)
                 $this->territory = BeanFactory::getBean('SpiceACLTerritories');
 
-            $userObjects = $this->aclObject->getUserACLObjects($bean->_module ?: $bean->module_dir);
+            $userObjects = $this->aclObject->getUserACLObjects($bean->_module ?: $bean->_module);
             foreach ($userObjects as $aclObjectId => $aclObjectData) {
                 // only check type 0
                 if ($aclObjectData['spiceaclobjecttype'] != 0)
@@ -602,7 +584,7 @@ class SpiceACL
             $this->territory = BeanFactory::getBean('SpiceACLTerritories');
 
         if (is_object($bean)) {
-            foreach ($aclObject->getUserACLObjects($bean->_module ?: $bean->module_dir) as $aclObjectId => $aclObjectData) {
+            foreach ($aclObject->getUserACLObjects($bean->_module ?: $bean->_module) as $aclObjectId => $aclObjectData) {
 
                 if ($aclObjectData['spiceaclobjecttype'] != '0' && $aclObjectData['spiceaclobjecttype'] != '3')
                     continue;
@@ -616,7 +598,7 @@ class SpiceACL
                 }
             }
         } else {
-            foreach ($aclObject->getUserACLObjects($bean->_module ?: $bean->module_dir) as $aclObjectId => $aclObjectData) {
+            foreach ($aclObject->getUserACLObjects($bean->_module ?: $bean->_module) as $aclObjectId => $aclObjectData) {
                 if (array_search($thisActivity, $aclObjectData['objectactions']) === false)
                     continue;
 

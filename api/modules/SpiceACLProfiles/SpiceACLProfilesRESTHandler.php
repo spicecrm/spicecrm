@@ -1,31 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceACLProfiles;
 
@@ -162,6 +136,26 @@ class SpiceACLProfilesRESTHandler
     }
 
     /**
+     * get the users having specified profile
+     * @param guid $id
+     * @return array
+     * @throws \Exception
+     */
+    public function getProfileOrgUnits($id)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $retArray = [];
+
+        $records = $db->query("SELECT spiceaclprofiles_orgunits.orgunit_id id, orgunits.name FROM spiceaclprofiles_orgunits LEFT JOIN orgunits ON spiceaclprofiles_orgunits.orgunit_id = orgunits.id WHERE spiceaclprofiles_orgunits.spiceaclprofile_id = '$id' AND spiceaclprofiles_orgunits.deleted = 0 AND orgunits.deleted = 0 ORDER BY orgunits.name");
+        while ($record = $db->fetchByAssoc($records)) {
+            $retArray[] = $record;
+        }
+
+        return $retArray;
+    }
+
+    /**
      * allocate a profile to a list of users
      *
      * @param guid $id
@@ -174,6 +168,23 @@ class SpiceACLProfilesRESTHandler
         $db = DBManagerFactory::getInstance();
         foreach($userids as $userid) {
             $db->query("INSERT INTO spiceaclprofiles_users (id, user_id, spiceaclprofile_id, deleted, date_modified) VALUES(".$db->getGuidSQL().", '$userid', '$id', 0, '" . $timedate->nowDb() . "')");
+        }
+        return true;
+    }
+
+    /**
+     * allocate a profile to a list of users
+     *
+     * @param guid $id
+     * @param array $userids
+     * @return bool
+     * @throws \Exception
+     */
+    public function addProfileOrgunits($id, $orgunitids){
+        $timedate = TimeDate::getInstance();
+        $db = DBManagerFactory::getInstance();
+        foreach($orgunitids as $orgunitid) {
+            $db->query("INSERT INTO spiceaclprofiles_orgunits (id, orgunit_id, spiceaclprofile_id, deleted, date_modified) VALUES(".$db->getGuidSQL().", '$orgunitid', '$id', 0, '" . $timedate->nowDb() . "')");
         }
         return true;
     }
@@ -193,6 +204,21 @@ class SpiceACLProfilesRESTHandler
         return true;
     }
 
+    /**
+     * remove a profile for specified orgunit
+     *
+     * @param guid $id
+     * @param guid $userid
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteProfileOrgUnit($id, $orgunitid){
+        $timedate = TimeDate::getInstance();
+        $db = DBManagerFactory::getInstance();
+        $db->query("UPDATE spiceaclprofiles_orgunits SET deleted = 1, date_modified='" . $timedate->nowDb() . "' WHERE spiceaclprofile_id = '$id' AND orgunit_id = '$orgunitid' AND deleted = 0");
+        return true;
+    }
+
 
     /**
      * get profiles allocated to specified user
@@ -206,7 +232,13 @@ class SpiceACLProfilesRESTHandler
 
         $retArray = [];
 
-        $records = $db->query("SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, spiceaclprofiles_users.user_id  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id IN ('$userid', '*') AND spiceaclprofiles_users.deleted = 0 ORDER BY spiceaclprofiles.name");
+        $user = BeanFactory::getBean('Users', $userid);
+
+        $globalUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'global' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id = '*' AND spiceaclprofiles_users.deleted = 0";
+        $directUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'user' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id = '$userid' AND spiceaclprofiles_users.deleted = 0";
+        $orgUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'orgunit' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_orgunits ON spiceaclprofiles_orgunits.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_orgunits.orgunit_id = '{$user->orgunit_id}' AND spiceaclprofiles_orgunits.deleted = 0";
+
+        $records = $db->query("$globalUserQuery UNION $directUserQuery UNION $orgUserQuery");
         while ($record = $db->fetchByAssoc($records)) {
             $retArray[] = $record;
         }

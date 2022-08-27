@@ -68,7 +68,7 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     }
 
     /**
-     * initializes the account from the lead using th ecopy rules
+     * initializes the account from the lead using the copy rules
      * Also subscribes to the model data$ and updates the leads account_id and anccunt_linked_name if the model data changes
      */
     public initializeFromLead() {
@@ -79,11 +79,11 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
         this.view.isEditable = true;
         this.view.setEditMode();
 
-        if (this.lead.getField('account_name')) {
+        // if (this.lead.getField('account_name')) {
             this.model.id = null;
             this.model.initialize(this.lead);
             this._linktoaccount = true;
-        }
+        // }
 
         if (this._linktoaccount) {
             this.account.emit(this.model);

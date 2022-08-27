@@ -38,6 +38,7 @@ export class SpiceImporterFixed {
         // set the vie to editable and edit mode
         this.view.isEditable = true;
         this.view.setEditMode();
+        this.view.displayLabels = false;
     }
 
     @Input('currentimportstep')

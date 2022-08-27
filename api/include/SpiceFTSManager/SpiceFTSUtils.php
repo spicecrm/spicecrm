@@ -63,6 +63,13 @@ class SpiceFTSUtils
             'type' => 'keyword',
             'index' => true
         ],
+        'assigned_orgunit_name' => [
+            'type' => 'text'
+        ],
+        'assigned_orgunit_id' => [
+            'type' => 'keyword',
+            'index' => true
+        ],
         'modified_by_name' => [
             'type' => 'text'
         ],
@@ -117,8 +124,7 @@ class SpiceFTSUtils
     {
         $db = DBManagerFactory::getInstance();
         //catch installation process and abort. table sysfts will not exist at the point during installation
-        if (!empty($GLOBALS['installing']))
-            return false;
+        if (SpiceConfig::getInstance()->installing) return false;
 
 
         if (!$overrideCache && isset($_SESSION['SpiceFTS']['indexes'][$module]['properties'])) {
@@ -193,9 +199,8 @@ class SpiceFTSUtils
     static function getBeanIndexSettings($module)
     {
         //BEGIN CR1000190
-        if( @$GLOBALS['installing'] ) {
-            return false;
-        }
+        if( SpiceConfig::getInstance()->installing) return false;
+
         //END
         $db = DBManagerFactory::getInstance();
 
@@ -265,7 +270,7 @@ class SpiceFTSUtils
                     }
                     break;
                 case 'field':
-                    $fieldData = $valueBean->field_name_map[$pathRecordDetails[1]];
+                    $fieldData = $valueBean->field_defs[$pathRecordDetails[1]];
                     break;
             }
         }

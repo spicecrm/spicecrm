@@ -525,7 +525,7 @@ export class modellist implements OnDestroy {
                     sort: fielddef.sort,
                     width: fielddef.width
                 });
-            } else if (!fielddefs && listField.fieldconfig.default !== false) {
+            } else if (!fielddefs && !listField.fieldconfig.hidden) {
                 this._listfields.push({
                     id: listField.id,
                     field: listField.field,
@@ -633,14 +633,14 @@ export class modellist implements OnDestroy {
 
         if (!this.useCache) return;
 
-        this.configuration.setData('lastlist_' + this.module, {
+        this.configuration.setData('lastlist' + this.module, JSON.stringify({
             listdata: this.listData,
             sortarray: this.sortArray,
             searchterm: this.searchTerm,
             searchaggregates: this.searchAggregates,
             selectedaggregates: this.selectedAggregates,
             buckets: this.buckets
-        });
+        }));
     }
 
     /**
@@ -649,7 +649,7 @@ export class modellist implements OnDestroy {
      */
     public loadFromSession(): boolean {
         this.useCache = true;
-        let sessionData = this.configuration.getData('lastlist_' + this.module);
+        let sessionData = JSON.parse(this.configuration.getData('lastlist' + this.module));
         if (!!sessionData && sessionData.buckets?.bucketfield == this.buckets?.bucketfield) {
             this.listData = sessionData.listdata;
             this.searchTerm = sessionData.searchterm;
@@ -1086,9 +1086,9 @@ export class modellist implements OnDestroy {
         if (this.getGlobal()) {
             switch (action) {
                 case 'delete':
-                    return this.canDelete() && this.session.authData.admin;
+                    return this.canDelete() && (this.session.authData.admin || this.metadata.checkModuleAcl(this.module, 'moduleadmin'));
                 case 'edit':
-                    return this.session.authData.admin;
+                    return this.session.authData.admin || this.metadata.checkModuleAcl(this.module, 'moduleadmin');
                 default:
                     return false;
             }

@@ -39,11 +39,17 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
             case 'applauncher.setrole':
                 this.loadDashboardConfig();
                 break;
+                case 'wizard.complete':
+                this.loadDashboardConfig();
+                break;
 
         }
     }
 
     public loadDashboardConfig() {
+        if(this.dashboardcontainercomponent){
+            this.dashboardcontainercomponent.instance.destroy()
+        }
         let homeDashboard = this.userpreferences.toUse.home_dashboard || undefined;
         let activeRole = this.metadata.getActiveRole();
         this.dashboardid = homeDashboard || activeRole.default_dashboard || '';

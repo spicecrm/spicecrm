@@ -38,7 +38,6 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>false,
 	'comment' => 'Tracks items of interest that occurred after you send an email campaign',
 	'table' => 'campaign_log',
-
 	'fields' => [
 		'id' => [
 			'name' => 'id',

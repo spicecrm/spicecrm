@@ -18,6 +18,7 @@
                 </div>
                 <div class="slds-grow" [ngSwitch]="event.type">
                     <calendar-sheet-google-event *ngSwitchCase="'google'" [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-google-event>
+                    <calendar-sheet-microsoft-event *ngSwitchCase="'microsoft'" [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-microsoft-event>
                     <calendar-sheet-event *ngSwitchDefault [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-event>
                 </div>
             </div>

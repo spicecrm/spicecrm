@@ -4,9 +4,9 @@
 
 // from https://github.com/kolkov/angular-editor
 import {
-    Component, ElementRef,
-    forwardRef,
-    OnDestroy,
+    Component, ElementRef, EventEmitter,
+    forwardRef, Input,
+    OnDestroy, Output,
     Renderer2
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
@@ -42,10 +42,34 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
     };
     public dropdownValues: any[] = [];
 
+    /**
+     * emits if the date is valid or not
+     */
+    @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     // for the dropdown
     public isOpen: boolean = false;
+
     // public clickListener: any;
     public readonly minutes_interval = 30;
+
+    /**
+     * option to hide the error message
+     */
+    public hideErrorMessage: boolean = false;
+
+    /**
+     * an attribute that can be set and does not require the value true passed in
+     *
+     * @param value
+     */
+    @Input('system-input-time-hide-error') set hideError(value) {
+        if (value === false) {
+            this.hideErrorMessage = false;
+        } else {
+            this.hideErrorMessage = true;
+        }
+    }
 
     constructor(
         public elementref: ElementRef,
@@ -139,6 +163,9 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         } else {
             this.clear();
         }
+
+        // emit the validity
+        this.valid.emit(this._time.valid);
     }
 
     get canclear() {

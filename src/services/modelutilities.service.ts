@@ -127,6 +127,12 @@ export class modelutilities {
         }
 
         switch (fieldDefs.type) {
+            case "relate":
+            case "parent":
+            case "linked":
+            case "linkedparent":
+                // no need to sent that to the backend
+                return null;
             case "date":
                 if (typeof value === 'string') { // A date field should not be a string, it should be a moment object. Anyway, if it happens, it is handled here.
                     let pDate = moment(value); // We create a moment object from the string (without a specific time zone, because it´s only a date) ...

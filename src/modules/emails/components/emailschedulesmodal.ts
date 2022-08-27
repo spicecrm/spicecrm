@@ -97,5 +97,28 @@ export class EmailSchedulesModal {
             });
         });
     }
+
+    /**
+     * sends a test email to current user
+     */
+    public sendTestEmail() {
+        this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
+            loadingRef.instance.messagelabel = 'LBL_LOADING';
+            let body = {
+                parent_id: this.model.data.parent_id,
+                email_subject: this.model.data.email_subject,
+                email_body: this.model.data.email_body,
+                mailbox_id: this.model.data.mailbox_id,
+            };
+            this.backend.postRequest(`module/EmailSchedules/${this.model.id}/sendtest`, {}, body).subscribe(result => {
+                loadingRef.instance.self.destroy();
+                if (result.success) {
+                    this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                }
+            });
+        });
+    }
 }
 

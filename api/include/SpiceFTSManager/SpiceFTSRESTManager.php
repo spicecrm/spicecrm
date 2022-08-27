@@ -34,6 +34,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceFTSRESTManager
@@ -95,10 +96,9 @@ class SpiceFTSRESTManager
         }
         else{
             // CR100349 remove methods from install_utils.php that are required from classes in use
-            if(!function_exists('create_date')) require_once 'include/utils.php';
             $job = BeanFactory::newBean('SchedulerJobs');
-            $job->name = (!empty($mod_strings['LBL_OOTB_FTS_INDEX']) ? $mod_strings['LBL_OOTB_FTS_INDEX'] : "SpiceCRM Full Text Indexing");
-            $job->date_time_start = SpiceUtils::createDate(date('Y'),date('n'),date('d')) . ' ' . create_time(0,0,1);
+            $job->name = "SpiceCRM Full Text Indexing";
+            $job->date_time_start = TimeDate::getInstance()->nowDb();
             $job->job = "function::fullTextIndex";
             $job->job_interval = '*/1::*::*::*::*';
             $job->status = "Active";
@@ -386,7 +386,7 @@ class SpiceFTSRESTManager
             $nodeModule->load_relationships();
             // print_r(SpiceDictionaryHandler::getInstance()->dictionary);//
             // 2011-07-21 add audit table
-            if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->object_name]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->object_name]['audited'])
+            if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$nodeModule->_objectname]['audited']) && SpiceDictionaryHandler::getInstance()->dictionary [$nodeModule->_objectname]['audited'])
                 $functionsArray[] = [
                     'path' => /* ($requester != '' ? $requester. '#': '') . */
                         'audit:' . $module . ':audit',
@@ -401,7 +401,7 @@ class SpiceFTSRESTManager
                 if ($thisLink != '' && $thisLink->_relationship->relationship_type == 'many-to-many')
                     $functionsArray[] = [
                         'path' => /*  ($requester != '' ? $requester. '#': '') . */
-                            'relationship:' . $thisLink->focus->module_dir /* $module */ . ':' . $thisLink->name,
+                            'relationship:' . $thisLink->focus->_module /* $module */ . ':' . $thisLink->name,
                         'module' => 'relationship Fields',
                         'leaf' => true
                     ];
@@ -409,12 +409,12 @@ class SpiceFTSRESTManager
                 if ($thisLink != '' && $thisLink->_relationship->relationship_type == 'many-to-many')
                     $functionsArray[] = [
                         'path' => /*  ($requester != '' ? $requester. '#': '') . */
-                            'relationship:' . $thisLink->_bean->module_dir /* $module */ . ':' . $thisLink->name, 'name' => 'relationship Fields',
+                            'relationship:' . $thisLink->_bean->_module /* $module */ . ':' . $thisLink->name, 'name' => 'relationship Fields',
                         'leaf' => true
                     ];
             }
 
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 // 2011-03-23 also exculde the excluded modules from the config in the Module Tree
                 //if ($field_defs['type'] == 'link' && (!isset($field_defs['module']) || (isset($field_defs['module']) && array_search($field_defs['module'], $excludedModules) == false))) {
                 if ($field_defs['type'] == 'link' && !isset($field_defs['module'])) {
@@ -426,7 +426,7 @@ class SpiceFTSRESTManager
                                 'link:' . $module . ':' . $field_name,
                             'module' => ((SpiceUtils::translate($field_defs['vname'], $module)) == "" ? ('[' . $field_defs['name'] . ']') : (SpiceUtils::translate($field_defs
                             ['vname'], $module))),
-                            'bean' => $nodeModule->$field_name->focus->object_name,
+                            'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false
                         ];
                     elseif (isset($field_defs['module']))
@@ -434,7 +434,7 @@ class SpiceFTSRESTManager
                             'path' => /*  ($requester != '' ? $requester. '#': '') . */
                                 'link:' . $module . ':' . $field_name,
                             'module' => SpiceUtils::translate($field_defs['module'], $module),
-                            'bean' => $nodeModule->$field_name->focus->object_name,
+                            'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false
                         ];
                     else {
@@ -443,7 +443,7 @@ class SpiceFTSRESTManager
                             'path' => /* ($requester != '' ? $requester. '#': '') . */
                                 'link:' . $module . ':' . $field_name,
                             'module' => get_class($nodeModule->$field_defs_rel->_bean),  //PHP7 - 5.6 COMPAT $nodeModule->$field_defs['relationship']->_bean
-                            'bean' => $nodeModule->$field_name->focus->object_name,
+                            'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false
                         ];
                     }
@@ -499,7 +499,7 @@ class SpiceFTSRESTManager
         if ($module != '' && $module != 'undefined') {
             $nodeModule =  BeanFactory::getBean($module);
 
-            foreach ($nodeModule->field_name_map as $field_name => $field_defs) {
+            foreach ($nodeModule->field_defs as $field_name => $field_defs) {
                 if ($field_defs['type'] != 'link' && (!array_key_exists('source', $field_defs) || (array_key_exists('source', $field_defs)))) {
                     $returnArray[] = [
                         'id' => 'field:' . $field_defs['name'],

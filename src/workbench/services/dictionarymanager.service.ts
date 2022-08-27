@@ -1,19 +1,22 @@
 /**
  * @module WorkbenchModule
  */
-import {EventEmitter, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
 import {
     DictionaryDefinition,
-    DictionaryIndex, DictionaryIndexItem,
+    DictionaryIndex,
+    DictionaryIndexItem,
     DictionaryItem,
     Relationship,
     RelationshipRelateField
 } from "../interfaces/dictionarymanager.interfaces";
 import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfaces";
+import {configurationService} from "../../services/configuration.service";
+import {toast} from "../../services/toast.service";
 
 @Injectable()
 export class dictionarymanager {
@@ -27,12 +30,20 @@ export class dictionarymanager {
      * todo: determine what we do with these fields
      *
      */
-    public reservedWords = ['ALL', 'ALTER', 'AND', 'ANY', 'ARRAY', 'AS', 'ASC', 'AT', 'AUTHID', 'AVG', 'BEGIN', 'BETWEEN', 'BINARY_INTEGER', 'BODY', 'BOOLEAN', 'BULK', 'BY', 'CHAR', 'CHAR_BASE', 'CHECK', 'CLOSE', 'CLUSTER', 'COALESCE', 'COLLECT', 'COMMENT', 'COMMIT', 'COMPRESS', 'CONNECT', 'CONSTANT', 'CREATE', 'CURRENT', 'CURRVAL', 'CURSOR', 'DAY', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELETE', 'DESC', 'DISTINCT', 'DO', 'DROP', 'ELSE', 'ELSIF', 'END', 'EXCEPTION', 'EXCLUSIVE', 'EXECUTE', 'EXISTS', 'EXIT', 'EXTENDS', 'EXTRACT', 'FALSE', 'FETCH', 'FLOAT', 'FOR', 'FORALL', 'FROM', 'FUNCTION', 'GOTO', 'GROUP', 'HAVING', 'HEAP', 'HOUR', 'IF', 'IMMEDIATE', 'IN', 'INDEX', 'INDICATOR', 'INSERT', 'INTEGER', 'INTERFACE', 'INTERSECT', 'INTERVAL', 'INTO', 'IS', 'ISOLATION', 'JAVA', 'LEVEL', 'LIKE', 'LIMITED', 'LOCK', 'LONG', 'LOOP', 'MAX', 'MIN', 'MINUS', 'MINUTE', 'MLSLABEL', 'MOD', 'MODE', 'MONTH', 'NATURAL', 'NATURALN', 'NEW', 'NEXTVAL', 'NOCOPY', 'NOT', 'NOWAIT', 'NULL', 'NULLIF', 'NUMBER', 'NUMBER_BASE', 'OCIROWID', 'OF', 'ON', 'OPAQUE', 'OPEN', 'OPERATOR', 'OPTION', 'OR', 'ORDER', 'ORGANIZATION', 'OTHERS', 'OUT', 'PARTITION', 'PCTFREE', 'PLS_INTEGER', 'POSITIVE', 'POSITIVEN', 'PRAGMA', 'PRIOR', 'PRIVATE', 'PROCEDURE', 'PUBLIC', 'RAISE', 'RANGE', 'RAW', 'REAL', 'RECORD', 'REF', 'RELEASE', 'RETURN', 'REVERSE', 'ROLLBACK', 'ROW', 'ROWID', 'ROWNUM', 'ROWTYPE', 'SAVEPOINT', 'SECOND', 'SELECT', 'SEPERATE', 'SET', 'SHARE', 'SMALLINT', 'SPACE', 'SQL', 'SQLCODE', 'SQLERRM', 'START', 'STDDEV', 'SUBTYPE', 'SUCCESSFUL', 'SUM', 'SYNONYM', 'SYSDATE', 'TABLE', 'THEN', 'TIME', 'TIMESTAMP', 'TIMEZONE_ABBR', 'TIMEZONE_HOUR', 'TIMEZONE_MINUTE', 'TIMEZONE_REGION', 'TO', 'TRIGGER', 'TRUE', 'TYPE', 'UI', 'UNION', 'UNIQUE', 'UPDATE', 'USE', 'USER', 'VALIDATE', 'VALUES', 'VARCHAR', 'VARCHAR2', 'VARIANCE', 'VIEW', 'WHEN', 'WHENEVER', 'WHERE', 'WHILE', 'WITH', 'WORK', 'WRITE', 'YEAR', 'ZONE'];
+    // public reservedwords = ['ALL', 'ALTER', 'AND', 'ANY', 'ARRAY', 'AS', 'ASC', 'AT', 'AUTHID', 'AVG', 'BEGIN', 'BETWEEN', 'BINARY_INTEGER', 'BODY', 'BOOLEAN', 'BULK', 'BY', 'CHAR', 'CHAR_BASE', 'CHECK', 'CLOSE', 'CLUSTER', 'COALESCE', 'COLLECT', 'COMMENT', 'COMMIT', 'COMPRESS', 'CONNECT', 'CONSTANT', 'CREATE', 'CURRENT', 'CURRVAL', 'CURSOR', 'DAY', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELETE', 'DESC', 'DISTINCT', 'DO', 'DROP', 'ELSE', 'ELSIF', 'END', 'EXCEPTION', 'EXCLUSIVE', 'EXECUTE', 'EXISTS', 'EXIT', 'EXTENDS', 'EXTRACT', 'FALSE', 'FETCH', 'FLOAT', 'FOR', 'FORALL', 'FROM', 'FUNCTION', 'GOTO', 'GROUP', 'HAVING', 'HEAP', 'HOUR', 'IF', 'IMMEDIATE', 'IN', 'INDEX', 'INDICATOR', 'INSERT', 'INTEGER', 'INTERFACE', 'INTERSECT', 'INTERVAL', 'INTO', 'IS', 'ISOLATION', 'JAVA', 'LEVEL', 'LIKE', 'LIMITED', 'LOCK', 'LONG', 'LOOP', 'MAX', 'MIN', 'MINUS', 'MINUTE', 'MLSLABEL', 'MOD', 'MODE', 'MONTH', 'NATURAL', 'NATURALN', 'NEW', 'NEXTVAL', 'NOCOPY', 'NOT', 'NOWAIT', 'NULL', 'NULLIF', 'NUMBER', 'NUMBER_BASE', 'OCIROWID', 'OF', 'ON', 'OPAQUE', 'OPEN', 'OPERATOR', 'OPTION', 'OR', 'ORDER', 'ORGANIZATION', 'OTHERS', 'OUT', 'PARTITION', 'PCTFREE', 'PLS_INTEGER', 'POSITIVE', 'POSITIVEN', 'PRAGMA', 'PRIOR', 'PRIVATE', 'PROCEDURE', 'PUBLIC', 'RAISE', 'RANGE', 'RAW', 'REAL', 'RECORD', 'REF', 'RELEASE', 'RETURN', 'REVERSE', 'ROLLBACK', 'ROW', 'ROWID', 'ROWNUM', 'ROWTYPE', 'SAVEPOINT', 'SECOND', 'SELECT', 'SEPERATE', 'SET', 'SHARE', 'SMALLINT', 'SPACE', 'SQL', 'SQLCODE', 'SQLERRM', 'START', 'STDDEV', 'SUBTYPE', 'SUCCESSFUL', 'SUM', 'SYNONYM', 'SYSDATE', 'TABLE', 'THEN', 'TIME', 'TIMESTAMP', 'TIMEZONE_ABBR', 'TIMEZONE_HOUR', 'TIMEZONE_MINUTE', 'TIMEZONE_REGION', 'TO', 'TRIGGER', 'TRUE', 'TYPE', 'UI', 'UNION', 'UNIQUE', 'UPDATE', 'USE', 'USER', 'VALIDATE', 'VALUES', 'VARCHAR', 'VARCHAR2', 'VARIANCE', 'VIEW', 'WHEN', 'WHENEVER', 'WHERE', 'WHILE', 'WITH', 'WORK', 'WRITE', 'YEAR', 'ZONE'];
+    public reservedwords = [];
+
+    /**
+     * keyword words in PL(SQL
+     * todo: determine what we do with these fields
+     */
+    public keywords = [];
+
 
     /**
      * sets the allowed change scope
      */
-    public changescope: 'global' | 'custom' | 'none' = 'global';
+    public changescope: 'global' | 'custom' | 'none' = this.configurationService.getCapabilityConfig('core').edit_mode;
 
     /**
      * the loaded list of domains
@@ -80,17 +91,22 @@ export class dictionarymanager {
     public dictionaryindexitems: DictionaryIndexItem[] = [];
 
     /**
-     * the currently seleted domain element
+     * the currently selected dictionary element
      */
     public currentDictionaryDefinition: string;
 
     /**
-     * the currently selected item
+     * the currently selected dictionary scope  element
+     */
+    public currentDictionaryScope: 'c' | 'g';
+
+    /**
+     * the currently selected dictionary item
      */
     public currentDictionaryItem: string;
 
     /**
-     * the currently selected item
+     * the currently selected dictionary index
      */
     public currentDictionaryIndex: string;
 
@@ -104,8 +120,14 @@ export class dictionarymanager {
      */
     public loaded: string;
 
-    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
+    constructor(public backend: backend,
+                public metadata: metadata,
+                public language: language,
+                public modelutilities: modelutilities,
+                public toast: toast,
+                public configurationService: configurationService) {
         this.loadDictionaryDefinitions();
+        this.loadWords();
     }
 
     /**
@@ -128,15 +150,36 @@ export class dictionarymanager {
     }
 
     /**
+     * returns the reserved words for all database types
+     */
+    public loadWords(){
+        if(!this.configurationService.getData('spicewords')) {
+            this.backend.getRequest('dictionary/spicewords').subscribe(res => {
+                this.reservedwords = res.reservedwords;
+                this.keywords = res.keywords;
+                this.configurationService.setData('spicewords', res);
+            });
+        } else{
+            this.reservedwords = this.configurationService.getData('spicewords').reservedwords;
+            this.keywords = this.configurationService.getData('spicewords').keywords;
+        }
+    }
+
+
+    /**
      * returns based on the scope if an item can be changed
      * @param scope
      */
     public canChange(scope: string) {
+
         // if we have all ... we can change
         if (this.changescope == 'global') return true;
 
         // if we have custom we can only change custom
-        if (this.changescope == 'custom' && scope == 'c') return true;
+        if (this.changescope == 'custom' && scope == 'c') {
+            this.currentDictionaryScope = 'c';
+            return true;
+        }
 
         // otherwise no change
         return false;
@@ -207,10 +250,10 @@ export class dictionarymanager {
     public getDictionaryDefinitionItems(refid) {
         let itemsArray: any[] = [];
 
-        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
-            if (item.sysdictionary_ref_id) {
+        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0 ).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+            if (item.sysdictionary_ref_id && item.sysdictionary_ref_id != refid) {
                 itemsArray = itemsArray.concat(this.getDictionaryDefinitionItems(item.sysdictionary_ref_id));
-            } else {
+            } else if(!item.sysdictionary_ref_id) {
                 itemsArray.push(item);
             }
         }
@@ -223,7 +266,14 @@ export class dictionarymanager {
      */
     public save() {
         let changes = this.determineChangedRecords();
-        this.backend.postRequest('dictionary/definitions', {}, changes);
+        this.backend.postRequest('dictionary/definitions', {}, changes).subscribe({
+            next: () => {
+                this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+            }
+        });
     }
 
     /**

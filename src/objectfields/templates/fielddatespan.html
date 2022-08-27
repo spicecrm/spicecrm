@@ -12,7 +12,7 @@
                 <label class="slds-form-element__label">
                     <system-label label="LBL_DATE_START"></system-label>
                 </label>
-                <system-input-date [(ngModel)]="startDate"></system-input-date>
+                <system-input-date system-input-date-hide-error [(ngModel)]="startDate" (valid)="setDateValid('start', $event)"></system-input-date>
             </div>
         </div>
         <div class="slds-size--1-of-2 slds-col">
@@ -20,7 +20,7 @@
                 <label class="slds-form-element__label">
                     <system-label label="LBL_DATE_END"></system-label>
                 </label>
-                <system-input-date [(ngModel)]="endDate"></system-input-date>
+                <system-input-date system-input-date-hide-error [(ngModel)]="endDate"  (valid)="setDateValid('end', $event)"></system-input-date>
             </div>
         </div>
     </div>

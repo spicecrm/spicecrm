@@ -3,43 +3,11 @@
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 if (!defined('sugarEntry')) define('sugarEntry', true);
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 require('service/core/SugarSoapService.php');
 require('vendor/nusoap/nusoap.php');
@@ -53,7 +21,13 @@ abstract class NusoapSoap extends SugarSoapService
 {
     private $startingTime;
     private $logEntry;
-    private $logging = false;
+
+    /**
+     * holds the determined logtables
+     *
+     * @var array
+     */
+    private $logtables = [];
 
     /**
      * This is the constructor. It creates an instance of NUSOAP server.
@@ -72,7 +46,7 @@ abstract class NusoapSoap extends SugarSoapService
         LoggerManager::getLogger()->info('End: NusoapSoap->__construct');
         // set a global transaction id
         $GLOBALS['transactionID'] = SpiceUtils::createGuid();
-    } // ctor
+    }
 
     /**
      * Fallback function to catch unexpected failure in SOAP
@@ -86,8 +60,8 @@ abstract class NusoapSoap extends SugarSoapService
             $this->server->fault(-1, "Unknown error in SOAP call: service died unexpectedly", '', $out);
             $this->server->send_response();
             $this->generateLogEntry();
-            $this->writeLog();
             $this->updateLogEntry();
+            $this->writeLog();
         }
     }
 
@@ -97,7 +71,7 @@ abstract class NusoapSoap extends SugarSoapService
      */
     public function serve()
     {
-        $this->startingTime = microtime(true);
+        $this->startingTime = $GLOBALS['soapstart'] ?: microtime(true);
         LoggerManager::getLogger()->info('Begin: NusoapSoap->serve');
         ob_clean();
         $this->in_service = true;
@@ -111,7 +85,7 @@ abstract class NusoapSoap extends SugarSoapService
         ob_end_flush();
         flush();
         LoggerManager::getLogger()->info('End: NusoapSoap->serve');
-    } // fn
+    }
 
     /**
      * This method registers all the complex type with NUSOAP server so that proper WSDL can be generated
@@ -129,7 +103,7 @@ abstract class NusoapSoap extends SugarSoapService
     public function registerType($name, $typeClass, $phpType, $compositor, $restrictionBase, $elements, $attrs = [], $arrayType = '')
     {
         $this->server->wsdl->addComplexType($name, $typeClass, $phpType, $compositor, $restrictionBase, $elements, $attrs, $arrayType);
-    } // fn
+    }
 
     /**
      * This method registers all the functions you want to expose as services with NUSOAP
@@ -151,7 +125,7 @@ abstract class NusoapSoap extends SugarSoapService
             $style = "document";
         } // if
         $this->server->register($function, $input, $output, $this->getNameSpace(), '', $style, $use);
-    } // fn
+    }
 
     /**
      * This function registers implementation class name with NUSOAP so when NUSOAP makes a call to a funciton,
@@ -168,7 +142,7 @@ abstract class NusoapSoap extends SugarSoapService
         } // if
         $this->server->register_class($implementationClass);
         LoggerManager::getLogger()->info('End: NusoapSoap->registerImplClass');
-    } // fn
+    }
 
     /**
      * Sets the name of the registry class
@@ -181,7 +155,7 @@ abstract class NusoapSoap extends SugarSoapService
         LoggerManager::getLogger()->info('Begin: NusoapSoap->registerClass');
         $this->registryClass = $registryClass;
         LoggerManager::getLogger()->info('End: NusoapSoap->registerClass');
-    } // fn
+    }
 
     /**
      * This function sets the fault object on the NUSOAP
@@ -194,7 +168,7 @@ abstract class NusoapSoap extends SugarSoapService
         LoggerManager::getLogger()->info('Begin: NusoapSoap->error');
         $this->server->fault($errorObject->getFaultCode(), $errorObject->getName(), '', $errorObject->getDescription());
         LoggerManager::getLogger()->info('Begin: NusoapSoap->error');
-    } // fn
+    }
 
     private function generateLogEntry()
     {
@@ -218,45 +192,61 @@ abstract class NusoapSoap extends SugarSoapService
         $this->logEntry->transaction_id = $GLOBALS['transactionID'];
         $this->logEntry->direction = \SpiceCRM\includes\Middleware\LoggerMiddleware::DIRECTION_INBOUND;
 
-        $this->logging = true;
+        $this->buildLogTables();
     }
 
+    /**
+     * writes the log
+     *
+     * @return void
+     */
     private function writeLog()
     {
-        $db = DBManagerFactory::getInstance();
-        $this->logging = false;
-        $spice_config = \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config;
-        if ($spice_config['system']['no_table_exists_check'] === true || $db->tableExists('sysapilogconfig')) {
-            // check if this request has to be logged by some rules...
-            $sql = "SELECT COUNT(id) cnt FROM sysapilogconfig WHERE 
-              (route = '{$this->logEntry->route}' OR route = '*' OR route LIKE '%{$this->logEntry->route}%') AND
-              (method = '{$this->logEntry->method}' OR method = '*') AND
-              (user_id = '{$this->logEntry->user_id}' OR user_id = '*') AND
-              (ip = '{$this->logEntry->ip}' OR ip = '*') AND
-              is_active = 1";
-            $res = $db->query($sql);
-            $row = $db->fetchByAssoc($res);
-            if ($row['cnt'] > 0) {
-                $this->logging = true;
-                // write the log...
-                $this->logEntry->id = SpiceUtils::createGuid();
-                $db->insertQuery('sysapilog', (array)$this->logEntry);
-            } else {
-                $this->logging = false;
+        if (count($this->logtables) > 0) {
+            $db = DBManagerFactory::getInstance('spicelogger');
+            $this->logEntry->id = SpiceUtils::createGuid();
+            foreach ($this->logtables as $lt) {
+                $db->insertQuery($lt, (array)$this->logEntry);
             }
         }
     }
 
+    /**
+     * builds the log entries reading the config
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function buildLogTables(){
+        $spice_config = SpiceConfig::getInstance()->config;
+        if($spice_config['system']['no_table_exists_check'] === true || DBManagerFactory::getInstance()->tableExists('sysapilogconfig')){
+            // check if this request has to be logged by some rules...
+            $sql = "SELECT count(id) cnt, logtable FROM sysapilogconfig WHERE
+              (route = '{$this->logEntry->route}' OR route = '*' OR '{$this->logEntry->route}' LIKE route) AND
+              (method = '{$this->logEntry->method}' OR method = '*') AND
+              (user_id = '{$this->logEntry->user_id}' OR user_id = '*') AND
+              (ip = '{$this->logEntry->ip}' OR ip = '*') AND
+              is_active = 1 GROUP BY logtable";
+            $res = DBManagerFactory::getInstance()->query($sql);
+            while($row = DBManagerFactory::getInstance()->fetchByAssoc($res)){
+                if(array_search($row['logtable'] ?: 'sysapilog', $this->logtables) === false) $this->logtables[] = $row['logtable'] ?: 'sysapilog';
+            }
+        }
+    }
+
+    /**
+     * updates the log entry
+     *
+     * @param $save set to true to also write the record to the db
+     * @return void
+     */
     private function updateLogEntry()
     {
-        if ($this->logging) {
+        if (count($this->logtables) > 0) {
             $this->logEntry->http_status_code = $this->extractHttpCode($this->server->outgoing_headers[0]);
             $this->logEntry->response_headers = $this->buildResponseHeader();
             $this->logEntry->runtime = (microtime(true) - $this->startingTime) * 1000;
             $this->logEntry->response_body = $this->server->responseSOAP ?: $this->server->response;
-
-            // update the log...
-            $result = DBManagerFactory::getInstance()->updateQuery('sysapilog', ['id' => $this->logEntry->id], (array)$this->logEntry);
         }
     }
 
@@ -279,4 +269,4 @@ abstract class NusoapSoap extends SugarSoapService
         $headerParts = explode(' ', $header);
         return (int)$headerParts[1] ?: '200';
     }
-} // clazz
+}

@@ -11,7 +11,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\includes\UploadFile;
@@ -50,7 +50,7 @@ class EmailsController
      */
     public function getEmail(Request $req, Response $res, array $args): Response {
         $queryParams = $req->getQueryParams();
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
         $result = [];
 
         $db = DBManagerFactory::getInstance();
@@ -211,7 +211,7 @@ class EmailsController
     public function search(Request $req, Response $res, array $args): Response {
         $postBody = $req->getParsedBody();
         $db = DBManagerFactory::getInstance();
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         // get the modules that are fts enabled and have a link to emails
         $modulesObject = $db->query("SELECT sysfts.module FROM relationships, sysfts
@@ -318,7 +318,7 @@ class EmailsController
         $email = BeanFactory::getBean('Emails');
         $email->convertMsgToEmail($attachment->filemd5);
 
-        $ModuleHandler = new ModuleHandler();
+        $ModuleHandler = new SpiceBeanHandler();
 
         $emailResponse = $ModuleHandler->mapBeanToArray('EMails', $email);
 
@@ -362,7 +362,43 @@ class EmailsController
         $email->convertMsgToEmail($email->file_md5, $postBody['beanModule'], $postBody['beanId']);
         $email->save();
 
-        $KRESTModuleHandler = new ModuleHandler();
+        $KRESTModuleHandler = new SpiceBeanHandler();
+
+        return $res->withJson($KRESTModuleHandler->get_bean_detail('Emails', $email->id, null));
+    }
+
+    /**
+     * Saves the posted .eml file (base64 encoded), converts it into an Email Bean and adds the relationships.
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function createEmailFromEMLFile(Request $req, Response $res, array $args): Response {
+        $postBody = $req->getParsedBody();
+
+        $email = BeanFactory::getBean('Emails');
+        $email->id = SpiceUtils::createGuid();
+        $email->new_with_id = true;
+        $email->file_name = $postBody['filename'];
+        $email->file_mime_type = $postBody['filemimetype'];
+
+        // create a guid for the email and save the message as file with the bean id
+        $upload_file = new UploadFile('file');
+        $decodedFile = base64_decode($postBody['file']);
+
+        $email->file_md5 = md5($decodedFile);
+
+        $upload_file->set_for_soap($email->id, $decodedFile);
+        $upload_file->final_move($email->file_md5, true);
+
+        // convert the message
+        $email->convertEMLToEmail($email->file_md5, $decodedFile, $postBody['beanModule'], $postBody['beanId']);
+        $email->save();
+
+        $KRESTModuleHandler = new SpiceBeanHandler();
 
         return $res->withJson($KRESTModuleHandler->get_bean_detail('Emails', $email->id, null));
     }
@@ -437,7 +473,7 @@ class EmailsController
                     'assigned_user_id',
                     'modified_user_id'
                 ];
-                foreach ($email->field_name_map as $fieldName => $fieldData) {
+                foreach ($email->field_defs as $fieldName => $fieldData) {
                     if (!in_array($fieldName, $excludedFields) && isset($emailbean[$fieldName])) {
                         $email->{$fieldName} = $emailbean[$fieldName];
                     }

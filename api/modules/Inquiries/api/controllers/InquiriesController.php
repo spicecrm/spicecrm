@@ -97,6 +97,7 @@ class InquiriesController
             }
         }
 
+        if(!$seed->email && $queryArray['email_address']) $seed->email = $queryArray['email_address'];
         $seed->requested_date = TimeDate::getInstance()->nowDb();
         $seed->inquiry_source = 'web';
         $seed->inquiry_type = 'normal';

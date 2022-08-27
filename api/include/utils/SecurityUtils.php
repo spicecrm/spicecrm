@@ -1,22 +1,22 @@
 <?php
 namespace SpiceCRM\includes\utils;
 
-use SpiceCRM\modules\Roles\Role;
+//use SpiceCRM\modules\Roles\Role;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SecurityUtils
 {
-    public static function queryUserHasRoles($userId) {
-        $role = new Role();
+//    public static function queryUserHasRoles($userId) {
+//        $role = new Role();
+//
+//        return $role->check_user_role_count($userId);
+//    }
 
-        return $role->check_user_role_count($userId);
-    }
-
-    public static function getUserAllowedModules($userId): array {
-        $role = new Role();
-
-        return $role->query_user_allowed_modules($userId);
-    }
+//    public static function getUserAllowedModules($userId): array {
+//        $role = new Role();
+//
+//        return $role->query_user_allowed_modules($userId);
+//    }
 
     /**
      * grabs client ip address and returns its value

@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\Relationships;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -52,12 +52,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  ********************************************************************************/
 
 
-class Relationship extends SugarBean {
-
-	public $object_name='Relationship';
-    public $module_dir = 'Relationships';
-    public $new_schema = true;
-    public $table_name = 'relationships';
+class Relationship extends SpiceBean {
 
     public $id;
     public $relationship_name;
@@ -191,10 +186,10 @@ class Relationship extends SugarBean {
 	}
 
 	/**
-	 * rebuild relationship table
+	 * rebuild content for relationships table
      * @return void
 	 */
-	public function build_relationship_cache() {
+	public static function build_relationship_cache() {
         SpiceDictionaryVardefs::deleteAllRelationshipsCacheFromDb();
         $relationships = SpiceDictionaryVardefs::loadRelationshipsFromDictionary();
         SpiceDictionaryVardefs::saveRelationshipsCacheToDb($relationships);

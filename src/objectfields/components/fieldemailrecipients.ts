@@ -1,13 +1,14 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Injector, NgZone, OnInit, Renderer2} from '@angular/core';
+import {Component, ElementRef, Injector, NgZone, OnInit, Optional, Renderer2, SkipSelf} from '@angular/core';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
+import {navigation} from '../../services/navigation.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
@@ -46,6 +47,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     public clickListener: any;
 
     constructor(public model: model,
+                public navigation: navigation,
                 public view: view,
                 public language: language,
                 public metadata: metadata,
@@ -102,19 +104,35 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
         // check if any condition si met so no determination shoudl happen on the addresses
         if (this.model.getField('recipient_addresses').length > 0 || this.fieldconfig.nodetermination === true || this.fieldconfig.addresstype != 'to' || !this.model.getField('parent_type') || !this.model.getField('parent_id')) return;
 
-        // try to determine addresses from Parent
-        this.backend.getRequest(`module/${(this.model.getField('parent_type'))}/${(this.model.getField('parent_id'))}`).subscribe(parent => {
-
-            if (!!parent.email1) {
-                this.value = [{
-                    parent_type: this.model.getField('parent_type'),
-                    parent_id: this.model.getField('parent_id'),
-                    email_address: parent.email1,
+        let cachedParent = this.navigation.getRegisteredModel(this.model.getField('parent_id'), this.model.getField('parent_type'));
+        if(cachedParent){
+            let parentemail = cachedParent.getField('email1');
+            if(parentemail) {
+                this.value.push({
+                    parent_type: cachedParent.module,
+                    parent_id: cachedParent.id,
+                    email_address: parentemail,
                     id: this.model.generateGuid(),
                     address_type: 'to'
-                }];
+                });
+                this.setDisplayValue();
             }
-        });
+        } else {
+            // try to determine addresses from Parent
+            this.backend.getRequest(`module/${(this.model.getField('parent_type'))}/${(this.model.getField('parent_id'))}`).subscribe(parent => {
+                if (!!parent.email1) {
+                    this.value.push({
+                        parent_type: this.model.getField('parent_type'),
+                        parent_id: this.model.getField('parent_id'),
+                        email_address: parent.email1,
+                        id: this.model.generateGuid(),
+                        address_type: 'to'
+                    });
+                    this.setDisplayValue();
+                }
+            });
+        }
+
     }
 
     /**

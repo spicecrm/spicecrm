@@ -4,12 +4,12 @@
  */
 
 // ----------- Access spicecrmreference.spicecrm.io ------------- //
-global.reference = 'https://spicecrmreference.spicecrm.io/proxy/000';
+global.reference = 'https://spicecrmreference.spicecrm.io/api';
 //global.reference = 'http://localhost/_projects/spicecrm_be_factory';
 
 // ----------- build information ------------- //
 global.build = {
-    releasenumber: '2021.03.001',
+    releasenumber: '2022.02.001',
     buildnumber: ''
 };
 // ----------- spiceconfigurations for spiceinstaller ------------- //

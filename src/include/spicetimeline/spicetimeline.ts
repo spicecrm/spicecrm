@@ -13,10 +13,10 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 // import interfaces
-import /*embed*/ {EventI, RecordI} from './interfaces/spicetimeline.interfaces';
+import {EventI, RecordI} from './interfaces/spicetimeline.interfaces';
 
-import /*embed*/ {SpiceTimeline} from './components/spicetimeline';
-import /*embed*/ {SpiceTimelineEvent} from './components/spicetimelineevent';
+import {SpiceTimeline} from './components/spicetimeline';
+import {SpiceTimelineEvent} from './components/spicetimelineevent';
 
 @NgModule({
     imports: [

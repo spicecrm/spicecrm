@@ -84,6 +84,13 @@ export class AdministrationConfigEditor implements OnInit {
     }
 
     /**
+     * Has the browser the ability to paste clipboard data?
+     */
+    public get canCopyPaste(): boolean {
+        return !!navigator.clipboard.readText;
+    }
+
+    /**
      * Copy configuration values to clipboard.
      */
     public copyData(): void {
@@ -131,6 +138,13 @@ export class AdministrationConfigEditor implements OnInit {
             comment += ( numberEmptied ? numberEmptied+' fields emptied, because no data definied. ':'' );
             this.toast.sendToast('Data pasted from clipboard successfully. ' + comment + 'Don´t forget to save data.', 'success', null, 25 );
         });
+    }
+
+    /**
+     * The label for the header.
+     */
+    public get label() {
+        return this.componentconfig.label ? this.componentconfig.label : 'LBL_EDITOR';
     }
 
 }

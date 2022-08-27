@@ -47,18 +47,6 @@ use SpiceCRM\includes\SugarObjects\templates\person\Person;
 
 class Prospect extends Person {
 
-	var $module_dir = 'Prospects';
-	var $table_name = "prospects";
-	var $object_name = "Prospect";
-
-    // This is used to retrieve related fields from form posts.
-	var $additional_column_fields = ['assigned_user_name'];
-
-
-	function __construct() {
-		parent::__construct();
-	}
-
 	function fill_in_additional_list_fields()
 	{
 		parent::fill_in_additional_list_fields();

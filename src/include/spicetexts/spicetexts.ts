@@ -26,9 +26,9 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import {DirectivesModule} from "../../directives/directives";
 
 
-import /*embed*/ {SpiceTexts} from "./components/spicetexts";
-import /*embed*/ {SpiceTextsAddButton} from "./components/spicetextsaddbutton";
-import /*embed*/ {SpiceTextsAddModal} from "./components/spicetextsaddmodal";
+import {SpiceTexts} from "./components/spicetexts";
+import {SpiceTextsAddButton} from "./components/spicetextsaddbutton";
+import {SpiceTextsAddModal} from "./components/spicetextsaddmodal";
 
 @NgModule({
     imports: [
@@ -45,9 +45,6 @@ import /*embed*/ {SpiceTextsAddModal} from "./components/spicetextsaddmodal";
         SpiceTexts,
         SpiceTextsAddButton,
         SpiceTextsAddModal,
-    ],
-    entryComponents: [
-        SpiceTexts
     ]
 })
 export class SpiceTextsModule {

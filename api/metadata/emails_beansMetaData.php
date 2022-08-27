@@ -1,41 +1,8 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 /**
- * Relationship table linking emails with 1 or more SugarBeans
+ * Relationship table linking emails with 1 or more SpiceBeans
  */
 SpiceDictionaryHandler::getInstance()->dictionary['emails_beans'] = [
     'table' => 'emails_beans',
@@ -270,6 +237,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['emails_beans'] = [
             'relationship_role_column' => 'bean_module',
             'relationship_role_column_value' => 'Quotes',
         ],
+        'emails_trackinglinks' => [
+            'lhs_module' => 'Emails',
+            'lhs_table' => 'emails',
+            'lhs_key' => 'id',
+            'rhs_module' => 'TrackingLinks',
+            'rhs_table' => 'trackinglinks',
+            'rhs_key' => 'id',
+            'relationship_type' => 'many-to-many',
+            'join_table' => 'emails_beans',
+            'join_key_lhs' => 'email_id',
+            'join_key_rhs' => 'bean_id',
+            'relationship_role_column' => 'bean_module',
+            'relationship_role_column_value' => 'TrackingLinks',
+        ]
     ]
 ];
 
@@ -307,94 +288,3 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     ];
 }
 
-/**
- * Large text field table, shares a 1:1 with the emails table.  Moving all longtext fields to this table allows more
- * effiencient email management and full-text search capabilities.
- */
-SpiceDictionaryHandler::getInstance()->dictionary['emails_text'] = [
-    'table' => 'emails_text',
-    'comment' => 'Large email text fields',
-    'fields' => [
-        'email_id' => [
-            'name' => 'email_id',
-            'vname' => 'LBL_ID',
-            'type' => 'id',
-            'dbType' => 'id',
-            'len' => 36,
-            'required' => true,
-            'isnull' => false,
-            'reportable' => true,
-            'comment' => 'Foreign key to emails table',
-        ],
-        'from_addr' => [
-            'name' => 'from_addr',
-            'vname' => 'LBL_FROM',
-            'type' => 'varchar',
-            'len' => 255,
-            'comment' => 'Email address of person who send the email',
-        ],
-        'reply_to_addr' => [
-            'name' => 'reply_to_addr',
-            'vname' => 'LBL_REPLY_TO',
-            'type' => 'varchar',
-            'len' => 255,
-            'comment' => 'reply to email address',
-        ],
-        'to_addrs' => [
-            'name' => 'to_addrs',
-            'vname' => 'LBL_TO',
-            'type' => 'text',
-            'comment' => 'Email address(es) of person(s) to receive the email',
-        ],
-        'cc_addrs' => [
-            'name' => 'cc_addrs',
-            'vname' => 'LBL_CC',
-            'type' => 'text',
-            'comment' => 'Email address(es) of person(s) to receive a carbon copy of the email',
-        ],
-        'bcc_addrs' => [
-            'name' => 'bcc_addrs',
-            'vname' => 'LBL_BCC',
-            'type' => 'text',
-            'comment' => 'Email address(es) of person(s) to receive a blind carbon copy of the email',
-        ],
-        'description' => [
-            'name' => 'description',
-            'vname' => 'LBL_TEXT_BODY',
-            'type' => 'longtext',
-            'reportable' => false,
-            'comment' => 'Email body in plain text',
-        ],
-        'description_html' => [
-            'name' => 'description_html',
-            'vname' => 'LBL_HTML_BODY',
-            'type' => 'longhtml',
-            'reportable' => false,
-            'comment' => 'Email body in HTML format',
-        ],
-        'raw_source' => [
-            'name' => 'raw_source',
-            'vname' => 'LBL_RAW',
-            'type' => 'longtext',
-            'reportable' => false,
-            'comment' => 'Full raw source of email',
-        ],
-        'deleted' => [
-            'name' => 'deleted',
-            'type' => 'bool',
-            'default' => 0,
-        ],
-    ],
-    'indices' => [
-        [
-            'name' => 'emails_textpk',
-            'type' => 'primary',
-            'fields' => ['email_id']
-        ],
-        [
-            'name' => 'emails_textfromaddr',
-            'type' => 'index',
-            'fields' => ['from_addr']
-        ],
-    ],
-];

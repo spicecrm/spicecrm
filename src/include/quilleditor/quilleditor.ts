@@ -8,13 +8,13 @@ import {ModuleWithProviders, NgModule} from '@angular/core';
 import {ObjectFields} from '../../objectfields/objectfields';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 
-import /*embed*/ {QuillViewContainer} from './components/quillviewcontainer';
-import /*embed*/ {QuillEditorContainer} from './components/quilleditorcontainer';
-import /*embed*/ {QuillSourceEditorModal} from "./components/quillsourceeditormodal";
+import {QuillViewContainer} from './components/quillviewcontainer';
+import {QuillEditorContainer} from './components/quilleditorcontainer';
+import {QuillSourceEditorModal} from "./components/quillsourceeditormodal";
 
-import /*embed*/ {fieldQuillRichText} from "./fields/fieldquillrichtext";
+import {fieldQuillRichText} from "./fields/fieldquillrichtext";
 
-import /*embed*/ {QuillModulesI, QuillToolbarConfigT} from './interfaces/quilleditor.interfaces';
+import {QuillModulesI, QuillToolbarConfigT} from './interfaces/quilleditor.interfaces';
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 

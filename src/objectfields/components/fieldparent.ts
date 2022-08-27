@@ -5,7 +5,6 @@ import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef, OnInit} f
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {popup} from '../../services/popup.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';

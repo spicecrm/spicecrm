@@ -8,7 +8,7 @@
                 {{aggregate.count}}
             </div>
             <div>
-                <system-label-modulename [module]="aggregate.module"></system-label-modulename>
+                <system-label-modulename [module]="aggregate.module" [singular]="aggregate.count == 1" ></system-label-modulename>
             </div>
         </div>
     </div>

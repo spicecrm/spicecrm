@@ -326,7 +326,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                         // 2011-07-21 add check for audit records
                         if ($rightArray[2] == 'audit') {
                             //handle audit link
-                            $this->fromString .= $thisPathJoinType . $this->joinSegments[$leftPath]['object']->table_name . '_audit ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.parent_id = ' . $this->joinSegments[$leftPath]['alias'] . '.id';
+                            $this->fromString .= $thisPathJoinType . $this->joinSegments[$leftPath]['object']->_tablename . '_audit ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.parent_id = ' . $this->joinSegments[$leftPath]['alias'] . '.id';
                         } //2011-08-17 reacht to a relationship record and replace the alias in the path
                         elseif ($rightArray[0] == 'relationship') {
                             // set alias for the path to the linkalias of the connected bean
@@ -341,7 +341,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             $this->joinSegments[$thisPath]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['module']);
 
                             // join on the id = relate id .. on _cstm if custom field .. on main if regular
-                            $this->fromString .= ' ' . $thisPathDetails['jointype'] . ' ' . $this->joinSegments[$thisPath]['object']->table_name . ' AS ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id=' . ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name']]['source'] == 'custom_fields' ? $this->joinSegments[$leftPath]['customjoin'] : $this->joinSegments[$leftPath]['alias']) . '.' . $this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name'] . ' ';
+                            $this->fromString .= ' ' . $thisPathDetails['jointype'] . ' ' . $this->joinSegments[$thisPath]['object']->_tablename . ' AS ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id=' . ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name']]['source'] == 'custom_fields' ? $this->joinSegments[$leftPath]['customjoin'] : $this->joinSegments[$leftPath]['alias']) . '.' . $this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name'] . ' ';
 
                         } else {
                             if ($this->joinSegments[$leftPath]['object']->_module != $rightArray[1]) {
@@ -358,7 +358,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             //2011-12-29 check if we have a jointpye
                             if ($thisPathDetails['jointype'] != '') {
                                 //2011-12-29 see if the relationship vuilds on a custom field
-                                if (isset($this->joinSegments[$leftPath]['object']->field_name_map[$this->joinSegments[$leftPath]['object']->$rightArrayEl->_relationship->rhs_key]['source']) && ($this->joinSegments[$leftPath]['object']->field_name_map[$this->joinSegments[$leftPath]['object']->$rightArrayEl->_relationship->rhs_key]['source'] == 'custom_fields' || $this->joinSegments[$leftPath]['object']->field_name_map[$this->joinSegments[$leftPath]['object']->$rightArrayEl->_relationship->lhs_key]['source'] == 'custom_fields')) { ////$rightArray[2]
+                                if (isset($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->$rightArrayEl->_relationship->rhs_key]['source']) && ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->$rightArrayEl->_relationship->rhs_key]['source'] == 'custom_fields' || $this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->$rightArrayEl->_relationship->lhs_key]['source'] == 'custom_fields')) { ////$rightArray[2]
                                     $join_params = array(
                                         'join_type' => $thisPathDetails['jointype'],
                                         'right_join_table_alias' => $this->joinSegments[$leftPath]['customjoin'],
@@ -388,7 +388,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             $this->joinSegments[$thisPath]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->joinSegments[$leftPath]['object']->$rightArrayEl->getRelatedModuleName()); //$rightArray[2]
 
                             //bugfix 2010-08-19, respect ACL role access for owner reuqired in select
-                            if ($this->joinSegments[$leftPath]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments[$leftPath]['object']->module_dir, 'list')) {
+                            if ($this->joinSegments[$leftPath]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments[$leftPath]['object']->_module, 'list')) {
                                 //2013-02-22 missing check if we have a wherestring at all
                                 if ($this->whereString != '')
                                     $this->whereString .= ' AND ';
@@ -543,7 +543,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
 
                     // required handling foir sql function also needed for
-                    if ($thisListEntry['sqlfunction'] != '-' && $this->evalSQLFunctions && ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] != 'kreporter' || ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'kreporter' && $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['evalSQLFunction'] == 'X'))) {
+                    if ($thisListEntry['sqlfunction'] != '-' && $this->evalSQLFunctions && ($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['type'] != 'kreporter' || ($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['type'] == 'kreporter' && $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['evalSQLFunction'] == 'X'))) {
                         if ($thisListEntry['sqlfunction'] == 'GROUP_CONCAT') {
                             $this->unionSelectString .= ', ' . $thisListEntry['sqlfunction'] . '(DISTINCT ' . $thisListEntry['fieldid'] . ' SEPARATOR \', \')';
                         } //2013-03-01 Sort function for Group Concat
@@ -575,14 +575,14 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                         'tablealias' => $this->rootGuid,
                         'fields_name_map_entry' => '',
                         'type' => /* 'fixedvalue' */
-                            (isset($this->joinSegments[$pathName]) ?  $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] ?: $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] : 'fixedvalue'),
+                            (isset($this->joinSegments[$pathName]) ?  $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['kreporttype'] ?: $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['type'] : 'fixedvalue'),
                         //BEGIN ticket 0000926 maretval: pass overridetype needed later on for proper sorting
                         'overridetype' => $thisListEntry['overridetype'],
                         //END
                         'module' => $this->root_module,
-                        'fields_name_map_entry' => (isset($this->joinSegments[$pathName]) ? $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]] : array()));
+                        'fields_name_map_entry' => (isset($this->joinSegments[$pathName]) ? $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]] : array()));
                 } else {
-                    if ($thisListEntry['sqlfunction'] != '-' && $this->evalSQLFunctions && ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] != 'kreporter' || ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'kreporter' && (array_key_exists('evalSQLFunction', $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]) && $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['evalSQLFunction'] == 'X')))) {
+                    if ($thisListEntry['sqlfunction'] != '-' && $this->evalSQLFunctions && ($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['type'] != 'kreporter' || ($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['type'] == 'kreporter' && (array_key_exists('evalSQLFunction', $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]) && $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['evalSQLFunction'] == 'X')))) {
                         if ($thisListEntry['sqlfunction'] == 'GROUP_CONCAT') {
                             $this->selectString .= ', ' . $thisListEntry['sqlfunction'] . '(DISTINCT ' . $this->get_field_name($pathName, $fieldArray[1], $thisListEntry['fieldid'], ($thisListEntry['link'] == 'yes') ? true : false, $thisListEntry['sqlfunction']) . ' SEPARATOR \', \')';
                             $this->unionSelectString .= ', ' . $thisListEntry['sqlfunction'] . '(DISTINCT ' . $thisListEntry['fieldid'] . ' SEPARATOR \', \')';
@@ -639,20 +639,20 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 // 2011-03-28 handle curencies in any case
                 // 2012-11-04 also check the rootfieldNameMap
                 // 2017-06-20 handle currencies in union if value is set in vardefs: see $atLeast1CurrencyInSelect
-                if (isset($this->joinSegments[$pathName]) && ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'currency' || (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype']) && $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreporttype'] == 'currency')) || $this->rootfieldNameMap[$thisListEntry['fieldid']]['type'] == 'currency' || $atLeast1CurrencyInSelect) {
+                if (isset($this->joinSegments[$pathName]) && ($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['type'] == 'currency' || (isset($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['kreporttype']) && $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['kreporttype'] == 'currency')) || $this->rootfieldNameMap[$thisListEntry['fieldid']]['type'] == 'currency' || $atLeast1CurrencyInSelect) {
                     // if we have a currency id and no SQL function select the currency .. if we have an SQL fnction select -99 for the system currency
-                    if (isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id']) && ($thisListEntry['sqlfunction'] == '-' || strtoupper($thisListEntry['sqlfunction']) == 'SUM')){
-                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . "." . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['currency_id'] . " as \"" . $thisListEntry['fieldid'] . "_curid\"";
+                    if (isset($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['currency_id']) && ($thisListEntry['sqlfunction'] == '-' || strtoupper($thisListEntry['sqlfunction']) == 'SUM')){
+                        $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . "." . $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['currency_id'] . " as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }
                     // BEGIN currency id value for kreporter field: field contains a currency conversion.
                     // Currency symbol will not be from record but from conversion
                     // Use new property kreportcurrency_id and enter currency id in kreporter field vardefs
-                    elseif ($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['type'] == 'kreporter' && isset($this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreportcurrency_id'])) {
-                        $this->selectString .= ", '" . $this->joinSegments[$pathName]['object']->field_name_map[$fieldArray[1]]['kreportcurrency_id'] . "' as \"" . $thisListEntry['fieldid'] . "_curid\"";
+                    elseif ($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['type'] == 'kreporter' && isset($this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['kreportcurrency_id'])) {
+                        $this->selectString .= ", '" . $this->joinSegments[$pathName]['object']->field_defs[$fieldArray[1]]['kreportcurrency_id'] . "' as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }
                     // END
                     // BEGIN CR1000035 currency field might not be linked to amount field.
-                    elseif (isset($this->joinSegments[$pathName]['object']->field_name_map['currency_id']) ) {
+                    elseif (isset($this->joinSegments[$pathName]['object']->field_defs['currency_id']) ) {
                         $this->selectString .= ", " . $this->joinSegments[$pathName]['alias'] . ".currency_id as \"" . $thisListEntry['fieldid'] . "_curid\"";
                     }// END
                     else {
@@ -834,7 +834,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         // check for Role based access on root module
         // 2013-02-22 ... added anyway for each segment ... no need to add here again ...
         /*
-          if (!$current_user->is_admin && $this->joinSegments['root:' . $this->root_module]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments['root:' . $this->root_module]['object']->module_dir, 'list')) {
+          if (!$current_user->is_admin && $this->joinSegments['root:' . $this->root_module]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments['root:' . $this->root_module]['object']->_module, 'list')) {
           $this->whereString .= ' AND ' . $this->rootGuid . '.assigned_user_id=\'' . $current_user->id . '\'';
           }
          */
@@ -996,9 +996,9 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
 
         // 2012-11-24 special handling for kreporttype fields that have a select eval set
-        if (($this->joinSegments[$path]['object']->field_name_map[$fieldname]['type'] == 'kreporter') && is_array($this->joinSegments[$path]['object']->field_name_map[$fieldname]['eval'])) {
+        if (($this->joinSegments[$path]['object']->field_defs[$fieldname]['type'] == 'kreporter') && is_array($this->joinSegments[$path]['object']->field_defs[$fieldname]['eval'])) {
             //2013-01-22 added {tc}replacement with custom join
-            $selString = preg_replace(array('/{t}/', '/{tc}/', '/{p1}/', '/{p2}/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $value, $valueto), $this->joinSegments[$path]['object']->field_name_map[$fieldname]['eval']['selection'][$operator]);
+            $selString = preg_replace(array('/{t}/', '/{tc}/', '/{p1}/', '/{p2}/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $value, $valueto), $this->joinSegments[$path]['object']->field_defs[$fieldname]['eval']['selection'][$operator]);
             return $selString;
         }
 
@@ -1822,7 +1822,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
     function get_table_for_module($module)
     {
         $thisModule = \SpiceCRM\data\BeanFactory::getBean($module);
-        return $thisModule->table_name;
+        return $thisModule->_tablename;
     }
 
 
@@ -1884,7 +1884,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         // if we do not have a path we have a fixed value field so do not return a name
         if ($path != '') {
             // normal processing
-            $thisAlias = (isset($this->joinSegments[$path]['object']->field_name_map[$field]['source']) && $this->joinSegments[$path]['object']->field_name_map[$field]['source'] == 'custom_fields') ? $this->joinSegments[$path]['customjoin'] : $this->joinSegments[$path]['alias'];
+            $thisAlias = (isset($this->joinSegments[$path]['object']->field_defs[$field]['source']) && $this->joinSegments[$path]['object']->field_defs[$field]['source'] == 'custom_fields') ? $this->joinSegments[$path]['customjoin'] : $this->joinSegments[$path]['alias'];
 
 
             // 2010-25-10 replace the -> object name with get_class function to handle also the funny aCase obejcts
@@ -1906,8 +1906,8 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     'sqlFunction' => $sqlFunction,
                     'customFunction' => (is_array($thisFieldIdEntry) && array_key_exists('customsqlfunction', $thisFieldIdEntry) ? $thisFieldIdEntry['customsqlfunction'] : ''),
                     'tablealias' => $thisAlias,
-                    'fields_name_map_entry' => $this->joinSegments[$path]['object']->field_name_map[$field],
-                    'type' => $this->joinSegments[$path]['object']->field_name_map[$field]['kreporttype'] ?: $this->joinSegments[$path]['object']->field_name_map[$field]['type'],
+                    'fields_name_map_entry' => $this->joinSegments[$path]['object']->field_defs[$field],
+                    'type' => $this->joinSegments[$path]['object']->field_defs[$field]['kreporttype'] ?: $this->joinSegments[$path]['object']->field_defs[$field]['type'],
                     'module' => $thisModule);
 
             if (!empty($customSql)) {
@@ -1916,13 +1916,13 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             }
 
             // check for custom function
-            if ($this->joinSegments[$path]['object']->field_name_map[$field]['type'] == 'kreporter') {
+            if ($this->joinSegments[$path]['object']->field_defs[$field]['type'] == 'kreporter') {
                 //2012-12-24 checkif eval is an array ... then we have to do more
                 $thisEval = '';
-                if (is_array($this->joinSegments[$path]['object']->field_name_map[$field]['eval']))
-                    $thisEval = $this->joinSegments[$path]['object']->field_name_map[$field]['eval']['presentation']['eval'];
+                if (is_array($this->joinSegments[$path]['object']->field_defs[$field]['eval']))
+                    $thisEval = $this->joinSegments[$path]['object']->field_defs[$field]['eval']['presentation']['eval'];
                 else
-                    $thisEval = $this->joinSegments[$path]['object']->field_name_map[$field]['eval'];
+                    $thisEval = $this->joinSegments[$path]['object']->field_defs[$field]['eval'];
 
                 // 2010-12-06 add § for custom Fields to be evaluated
                 // 2012-11-24 changed to pregreplace and also included {t}

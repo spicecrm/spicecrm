@@ -6,7 +6,7 @@ import {
     ViewChild,
     ViewContainerRef,
     Input,
-    OnChanges
+    OnChanges, ChangeDetectorRef
 } from '@angular/core';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
@@ -23,13 +23,29 @@ export class ACLProfilesManagerProfile implements OnChanges {
     public loaded: boolean = false;
     public loadingobjects: boolean = false;
     public loadingusers: boolean = false;
-    public activetab: string = 'profiles';
+    public loadingorgunits: boolean = false;
+    public _activetab: 'profiles'|'users'|'orgunits'|'details' = 'profiles';
 
     public aclobjects: any[] = [];
     public aclusers: any[] = [];
+    public aclorgunits: any[] = [];
 
-    constructor(public modal: modal, public language: language, public backend: backend) {
+    constructor(
+        public modal: modal,
+        public language: language,
+        public backend: backend,
+        private cdref: ChangeDetectorRef
+    ) {
 
+    }
+
+    get activetab(){
+        return this._activetab;
+    }
+
+    set activetab(tab: "profiles" | "users" | "orgunits" | "details"){
+        this._activetab = tab;
+        this.cdref.detectChanges();
     }
 
     get aclallusers() {
@@ -64,6 +80,7 @@ export class ACLProfilesManagerProfile implements OnChanges {
             this.loadingobjects = true;
             this.aclobjects = [];
             this.loadingusers = true;
+            this.loadingorgunits = true;
             this.aclusers = [];
             this.backend.getRequest('module/SpiceACLProfiles/' + this.profileid + '/related/spiceaclobjects').subscribe(aclobjects => {
                 this.aclobjects = aclobjects;
@@ -75,6 +92,12 @@ export class ACLProfilesManagerProfile implements OnChanges {
                 this.aclusers = aclusers;
                 this.loadingusers = false;
                 this.sortusers();
+            });
+
+            this.backend.getRequest('module/SpiceACLProfiles/' + this.profileid + '/related/orgunits').subscribe(aclorgunits => {
+                this.aclorgunits = aclorgunits;
+                this.loadingorgunits = false;
+                this.sortorgunits();
             });
         }
     }
@@ -111,16 +134,19 @@ export class ACLProfilesManagerProfile implements OnChanges {
         });
     }
 
-    public removeUser(userId) {
+    public removeUser(userId, e: MouseEvent) {
+        e.stopPropagation(); e.preventDefault()
         this.backend.deleteRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users/' + userId).subscribe(status => {
-            let i = 0;
-            for (let aclusers of this.aclusers) {
-                if (aclusers.id == userId) {
-                    this.aclusers.splice(i, 1);
-                    return;
-                }
-                i++;
-            }
+            let i = this.aclusers.findIndex(u => u.id == userId);
+            this.aclusers.splice(i, 1);
+        });
+    }
+
+    public removeOrgUnit(orgunitid, e: MouseEvent) {
+        e.stopPropagation(); e.preventDefault()
+        this.backend.deleteRequest('module/SpiceACLProfiles/' + this.profileid + '/related/orgunit/' + orgunitid).subscribe(status => {
+            let i = this.aclorgunits.findIndex(o => o.id == orgunitid);
+            this.aclorgunits.splice(i, 1);
         });
     }
 
@@ -132,17 +158,64 @@ export class ACLProfilesManagerProfile implements OnChanges {
                 if (items.length) {
                     let newusers = [];
                     items.forEach(user => {
-                        newusers.push(user.id);
+                        // check that the user is not already allocated
+                        if(this.aclusers.findIndex(u => u.id == user.id) == -1) {
+                            newusers.push(user.id);
+                        }
                     });
-                    this.backend.postRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users', {}, {userids: newusers}).subscribe(status => {
-                        items.forEach(user => {
-                            this.aclusers.push({
-                                id: user.id,
-                                user_name: user.user_name
+
+                    // check that we have users to add
+                    if(newusers.length > 0) {
+                        this.backend.postRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users', {}, {userids: newusers}).subscribe(status => {
+                            items.forEach(user => {
+                                if(this.aclusers.findIndex(u => u.id == user.id) == -1) {
+                                    this.aclusers.push({
+                                        id: user.id,
+                                        user_name: user.user_name
+                                    });
+                                }
                             });
+                            this.sortusers();
                         });
-                        this.sortusers();
+                    }
+
+                }
+            });
+        });
+    }
+
+    /**
+     * renders a select modal for the orgunits
+     */
+    public selectOrgUnit() {
+        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+            selectModal.instance.module = 'OrgUnits';
+            selectModal.instance.multiselect = true;
+            selectModal.instance.selectedItems.subscribe(items => {
+                if (items.length) {
+                    let neworgunits = [];
+                    items.forEach(o => {
+                        // check that we do not yet already have it allocated
+                        if(this.aclorgunits.findIndex(to => to.id == o.id) < 0) {
+                            neworgunits.push(o.id);
+                        }
                     });
+
+                    // if we have new ones add them
+                    if(neworgunits.length > 0) {
+                        this.backend.postRequest('module/SpiceACLProfiles/' + this.profileid + '/related/orgunits', {}, {orgunitids: neworgunits}).subscribe(status => {
+                            items.forEach(o => {
+                                if(this.aclorgunits.findIndex(to => to.id == o.id) < 0) {
+                                    this.aclorgunits.push({
+                                        id: o.id,
+                                        name: o.name
+                                    });
+                                }
+                            });
+                            this.sortusers();
+                            this.sortorgunits();
+                        });
+                    }
 
                 }
             });
@@ -159,12 +232,22 @@ export class ACLProfilesManagerProfile implements OnChanges {
         });
     }
 
+    /**
+     * sorts the usernames
+     */
     public sortusers() {
         this.aclusers.sort((a, b) => {
             if (a.id == '*') return -1;
             if (b.id == '*') return 1;
 
-            return a.user_name > b.user_name ? 1 : -1;
+            return a.user_name.localeCompare(b.user_name);
         });
+    }
+
+    /**
+     * sorts the orgunits
+     */
+    public sortorgunits() {
+        this.aclorgunits.sort((a, b) =>  a.name.localeCompare(b.name));
     }
 }

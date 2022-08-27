@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\Resources;
 //todo which package is it anyway
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
 
 /**
@@ -10,16 +10,8 @@ use SpiceCRM\data\SugarBean;
  * Class Resource
  *
  */
-class Resource extends SugarBean
+class Resource extends SpiceBean
 {
-    var $module_dir = 'Resources';
-    var $object_name = 'Resource';
-    var $table_name = 'resources';
-
-    function __construct()
-    {
-        parent::__construct();
-    }
 
     function get_summary_text()
     {

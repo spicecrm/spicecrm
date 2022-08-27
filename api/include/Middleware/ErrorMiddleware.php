@@ -7,6 +7,7 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class ErrorMiddleware extends FailureMiddleware
 {
@@ -30,7 +31,7 @@ class ErrorMiddleware extends FailureMiddleware
      */
     private function handleErrorResponse($errno, $errstr, $errfile, $errline): ?ResponseInterface {
         if ($errno == E_USER_ERROR) {
-            $inDevMode = SpiceConfig::getInstance()->config['developerMode'];
+            $inDevMode = SpiceUtils::inDeveloperMode();
             $errorMessage = "Error number[{$errno}] {$errstr} on line {$errline} in file {$errfile}";
 
             LoggerManager::getLogger()->fatal($errorMessage);

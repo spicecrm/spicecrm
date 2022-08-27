@@ -364,14 +364,15 @@ class SugarWebServiceImplv3 extends SugarWebServiceImpl
             SpiceConfig::getInstance()->config['list_max_entries_per_page'] = $max_results;
         }
 
-        require_once('include/utils/UnifiedSearchAdvanced.php');
+// with release 2022.02.001 UnifiedSearchAdvanced has been removed
+//        require_once('include/utils/UnifiedSearchAdvanced.php');
         require_once 'include/utils.php';
-        $usa = new UnifiedSearchAdvanced();
-        if (!file_exists($cachedfile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php'))) {
-            $usa->buildCache();
-        }
-
-        include($cachedfile);
+//        $usa = new UnifiedSearchAdvanced();
+//        if (!file_exists($cachedfile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php'))) {
+//            $usa->buildCache();
+//        }
+//
+//        include($cachedfile);
     	$modules_to_search = [];
     	$unified_search_modules['Users'] =   ['fields' => []];
 
@@ -397,7 +398,7 @@ class SugarWebServiceImplv3 extends SugarWebServiceImpl
                 $seed = new $beanName();
                 require_once 'include/SearchForm/SearchForm2.php';
                 if ($beanName == "User") {
-                    if (!self::$helperObject->check_modules_access($current_user, $seed->module_dir, 'read')) {
+                    if (!self::$helperObject->check_modules_access($current_user, $seed->_module, 'read')) {
                         continue;
                     } // if
                     if (!$seed->ACLAccess('ListView')) {
@@ -422,18 +423,18 @@ class SugarWebServiceImplv3 extends SugarWebServiceImpl
                         $where = '(' . implode(' ) OR ( ', $where_clauses) . ')';
                     }
 
-                    $mod_strings = return_module_language($current_language, $seed->module_dir);
+                    $mod_strings = return_module_language($current_language, $seed->_module);
 
                     if (count($select_fields) > 0)
                         $filterFields = $select_fields;
                     else {
-                        if (file_exists('custom/modules/' . $seed->module_dir . '/metadata/listviewdefs.php'))
-                            require_once('custom/modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
+                        if (file_exists('custom/modules/' . $seed->_module . '/metadata/listviewdefs.php'))
+                            require_once('custom/modules/' . $seed->_module . '/metadata/listviewdefs.php');
                         else
-                            require_once('modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
+                            require_once('modules/' . $seed->_module . '/metadata/listviewdefs.php');
 
         				$filterFields = [];
-                        foreach ($listViewDefs[$seed->module_dir] as $colName => $param) {
+                        foreach ($listViewDefs[$seed->_module] as $colName => $param) {
                             if (!empty($param['default']) && $param['default'] == true)
                                 $filterFields[] = strtolower($colName);
                         }
@@ -467,7 +468,7 @@ class SugarWebServiceImplv3 extends SugarWebServiceImpl
                     if ($beanName == "User") {
     					$filterFields = ['id', 'user_name', 'first_name', 'last_name', 'email_address'];
                         $main_query = "select users.id, ea.email_address, users.user_name, first_name, last_name from users ";
-                        $main_query = $main_query . " LEFT JOIN email_addr_bean_rel eabl ON eabl.bean_module = '{$seed->module_dir}'
+                        $main_query = $main_query . " LEFT JOIN email_addr_bean_rel eabl ON eabl.bean_module = '{$seed->_module}'
     LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
                         $main_query = $main_query . "where ((users.first_name like '{$search_string}') or (users.last_name like '{$search_string}') or (users.user_name like '{$search_string}') or (ea.email_address like '{$search_string}')) and users.deleted = 0 and users.is_group = 0 and users.employee_status = 'Active'";
                     } // if

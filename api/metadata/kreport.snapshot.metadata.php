@@ -68,6 +68,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['KReportSnapshotsData'] = [
         ],
     ],
     'indices' => [
-        ['name' => 'kreportsnapshotsdatapk', 'type' => 'primary', 'fields' => ['snapshot_id', 'record_id']]
+        ['name' => 'kreportsnapshotsdatapk', 'type' => 'unique', 'fields' => ['snapshot_id', 'record_id']]
     ],
 ];

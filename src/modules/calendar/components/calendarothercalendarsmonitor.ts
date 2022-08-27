@@ -28,7 +28,7 @@ export class CalendarOtherCalendarsMonitor {
     /**
      * emit a boolean to show/hide google events
      */
-    @Output() public googleIsVisible$: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public groupwareVisible$: EventEmitter<any> = new EventEmitter<any>();
     /**
      * holds the search term of user search
      */
@@ -64,7 +64,7 @@ export class CalendarOtherCalendarsMonitor {
     /**
      * holds the google is visible boolean
      */
-    public googleIsVisible: boolean = true;
+    public groupwareVisible: boolean = true;
 
     constructor(public language: language,
                 public recent: recent,
@@ -196,8 +196,8 @@ export class CalendarOtherCalendarsMonitor {
                 this.calendar.toggleUserCalendarVisibility(id);
                 break;
             case 'Google':
-                this.googleIsVisible = !this.googleIsVisible;
-                this.googleIsVisible$.emit(this.googleIsVisible);
+                this.groupwareVisible = !this.groupwareVisible;
+                this.groupwareVisible$.emit(this.groupwareVisible);
         }
     }
 

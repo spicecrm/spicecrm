@@ -28,7 +28,7 @@ r42807 - 2008-12-29 11:16:59 -0800 (Mon, 29 Dec 2008) - dwong - Branch from trun
 
 r39619 - 2008-09-09 13:41:34 -0700 (Tue, 09 Sep 2008) - jmertic - Bug 24827 - Remove all instances where we return a new object and assign it by reference, since this is deprecated in PHP 5 and emits E_DEPRECATED errors in PHP 5.3.
 Touched:
-- data/SugarBean.php
+- data/SpiceBean.php
 - include/domit/php_http_client_generic.php
 - include/domit/php_http_connector.php
 - include/domit/testing_domit.php

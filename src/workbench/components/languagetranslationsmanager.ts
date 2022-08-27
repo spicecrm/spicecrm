@@ -19,6 +19,11 @@ export class LanguageTranslationsManager {
     public selectedLanguage = '';
     public isLoading = false;
 
+    /**
+     * boolean value that indicates if we have a gioogle API key for the language service set
+     */
+    public cantranslate: boolean = false;
+
     constructor(
         public backend: backend,
         public metadata: metadata,
@@ -26,6 +31,11 @@ export class LanguageTranslationsManager {
         public utils: modelutilities,
         public toast: toast,
     ) {
+        this.backend.getRequest('syslanguage/labels/translate/cantranslate').subscribe({
+            next: (res) => {
+                this.cantranslate = res.cantranslate;
+            }
+        })
     }
 
     get scope() {
@@ -43,6 +53,43 @@ export class LanguageTranslationsManager {
 
     get selectedLanguageText() {
         return this.language.getLangText(this.language.currentlanguage);
+    }
+
+    /**
+     * treanslates with a backend call to the Google API
+     *
+     * @param label
+     */
+    public translate(label){
+
+        // build the array with the labels
+        let elements = ['default']
+        let labels = [this.language.getLabel(label.name)];
+        let short = this.getLabelSpecificLength(label.name, 'short');
+        if(short) {
+            labels.push(short);
+            elements.push('short');
+        }
+        let long = this.getLabelSpecificLength(label.name, 'long');
+        if(long) {
+            labels.push(long);
+            elements.push('long');
+        }
+
+        // build from and to
+        let from = this.language.currentlanguage.substr(0, 2);
+        let to = this.selectedLanguage.substr(0, 2);
+
+        // translate
+        this.backend.postRequest(`syslanguage/labels/translate/${from}/${to}`, {}, {labels: labels}).subscribe({
+            next: (res) => {
+                if(res.data.translations){
+                    res.data.translations.forEach((value, index) => {
+                        label['translation_'+elements[index]] = value.translatedText;
+                    });
+                }
+            }
+        })
     }
 
     public save(label) {

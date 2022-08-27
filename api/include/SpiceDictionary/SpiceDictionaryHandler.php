@@ -5,30 +5,28 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class SpiceDictionaryHandler extends SpiceSingleton
 {
     public $dictionary = [];
 
     /**
-     * loads the metadata files
+     * legacy
+     * load the files containing metadata related vardefs
+     * this is the old way od defining vardefs for metadata tables
      */
-    public static function loadMetaDataFiles() {
-        $metaDataDirectories = ['metadata', 'extensions/metadata', 'custom/metadata'];
-
-        foreach ($metaDataDirectories as $metaDataDirectory) {
-            self::loadMetaDataFilesFromDir($metaDataDirectory);
-        }
-
-        if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')){
-            include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');
+    public static function loadMetaDataFiles($directories = ['metadata', 'extensions/metadata', 'custom/metadata', 'custom/extensions/metadata', 'custom/Extension/modules']) {
+        foreach ($directories as $directory) {
+            self::loadMetaDataFilesFromDir($directory);
         }
     }
 
     /**
-     * Loads the metadata files from a particular directory.
+     * Loads the metadata files from a specified directory.
      *
      * @param string $directory
      */
@@ -43,33 +41,104 @@ class SpiceDictionaryHandler extends SpiceSingleton
     }
 
     /**
+     *
      * loads the dictionary Definitions of type metadata from the database
      */
     public static function loadMetaDataDefinitions() {
-        if(isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']){
-            SpiceDictionaryVardefs::loadDictionaries(SpiceDictionaryHandler::getInstance()->dictionary, 'metadata');
+        SpiceDictionaryHandler::loadMetaDataFiles();
+
+        if(SpiceDictionaryVardefs::isDbManaged()){
+            SpiceDictionaryVardefs::loadDictionaries();
         }
     }
 
     /**
-     * retrieves the dictionary definitions
-     *
-     * @return array
+     * load vardefs cached in sysdictionaryfields & relationships
+     * @return void
      */
-    public function getDictionaryDefinitions(){
-        $db = DBManagerFactory::getInstance();
-        $defArray = [];
-        $dictionarydefinitions = $db->query("SELECT * FROM sysdictionarydefinitions WHERE deleted = 0");
-        while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
-            $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
-            $defArray[] = array_merge($dictionarydefinition, ['scope' => 'g']);
+    public static function loadCachedVardefs($forceReload = false){
+        SpiceDictionaryVardefs::loadDictionariesCacheFromDb($forceReload);
+        // SpiceDictionaryVardefs::loadRelationshipsCacheFromDb($forceReload);
+    }
+
+
+
+    /**
+     * load the files containing module related vardefs
+     * this is the old way od defining vardefs for module tables
+     * load only if corresponding module is present in sysmodules
+     * @param string $directory
+     * @return void
+     */
+    private static function loadModuleFilesFromDir(string $directory): void {
+        if ($metaDataHandle = @opendir('./' . $directory)) {
+            while (false !== ($metaDataFile = readdir($metaDataHandle))) {
+                if(is_dir($directory.'/'.$metaDataFile.'/Ext/Vardefs')) {
+                    $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile.'/Ext/Vardefs');
+                    foreach ($fileSystemIterator as $fileInfo){
+                        if (preg_match('/\.php$/', $fileInfo->getFilename())) {
+                            include($directory . '/' . $metaDataFile . '/Ext/Vardefs/' . $fileInfo->getFilename());
+                        }
+                    }
+                }
+                elseif(is_dir($directory.'/'.$metaDataFile)){
+                    $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile);
+                    foreach ($fileSystemIterator as $fileInfo){
+                        if (preg_match('/vardefs.php$/', $fileInfo->getFilename())) {
+                            include($directory . '/' . $metaDataFile . '/' . $fileInfo->getFilename());
+                        }
+                    }
+                }
+            }
         }
-        $dictionarydefinitions = $db->query("SELECT * FROM syscustomdictionarydefinitions WHERE deleted = 0");
-        while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
-            $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
-            $defArray[] = array_merge($dictionarydefinition, ['scope' => 'c']);;
+    }
+
+    /**
+     * load the module vardefs defined in files
+     * specific folder order to overwrite with file custom definition
+     */
+    public static function loadModuleFiles($module = null) {
+        if(!empty($module)){
+            $directories = ['modules/'.$module, 'extensions/modules/'.$module, 'custom/modules/'.$module, 'custom/Extension/modules/'.$module];
+        } else{
+            $directories = ['modules', 'extensions/modules', 'custom/modules', 'custom/Extension/modules'];
         }
 
+        foreach ($directories as $directory) {
+            self::loadModuleFilesFromDir($directory);
+        }
+    }
+
+
+    /**
+     * retrieves the dictionary definitions from tables sysdictionarydefinitions, syscustomdictionarydefinitions
+     * for the dictionary manager in frontend
+     * @param null $status the status of the definitions
+     * @return array
+     * @throws Exception
+     */
+    public static function getDictionaryDefinitions(string $status = null){
+        $defArray = [];
+        $defTables = [
+            ['name' => 'sysdictionarydefinitions', 'scope' => 'g'],
+            ['name' => 'syscustomdictionarydefinitions', 'scope' => 'c']
+        ];
+        $db = DBManagerFactory::getInstance();
+        $whereClause = '';
+
+        //check on where clause
+        if(!empty($status)){
+            $whereClause =" AND status='{$status}'";
+        }
+
+        foreach($defTables as $defTable){
+            $dictionarydefinitions = $db->query("SELECT * FROM {$defTable['name']} WHERE deleted = 0".$whereClause);
+            while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
+                $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
+                $dictionarydefinition['scope'] = $defTable['scope'];
+                $defArray[] = $dictionarydefinition;
+            }
+        }
         return $defArray;
     }
 
@@ -158,22 +227,80 @@ class SpiceDictionaryHandler extends SpiceSingleton
 
 
     /**
-     * retrieves the dictionary relationships
+     * retrieves the dictionary relationships located in sysdictionaryrelationships, syscustomdictionaryrelationships
      *
      * @return array
      */
     public function getDictionaryRelationships(){
         $db = DBManagerFactory::getInstance();
+        $relOriginTables = ['sysdictionaryrelationships' => 'g', 'syscustomdictionaryrelationships' => 'c'];
         $relArray = [];
-        $dictionaryrelationships = $db->query("SELECT * FROM sysdictionaryrelationships WHERE deleted = 0");
-        while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
-            $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
-            $relArray[] = array_merge($dictionaryrelationship, ['scope' => 'g']);
-        }
-        $dictionaryrelationships = $db->query("SELECT * FROM syscustomdictionaryrelationships WHERE deleted = 0");
-        while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
-            $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
-            $relArray[] = array_merge($dictionaryrelationship, ['scope' => 'c']);;
+
+        foreach($relOriginTables as $relOriginTable => $scope){
+            $q = "SELECT rels.*, 
+itemsleft.sysdictionaryitem_name lhs_key, itemsright.sysdictionaryitem_name rhs_key, 
+lhsdictionaries.sysdictionary_tablename lhs_table,rhsdictionaries.sysdictionary_tablename rhs_table,
+lhssysmods.module_name lhs_module, rhssysmods.module_name rhs_module,
+joindictionaries.tablename join_table, joinitemsleft.sysdictionaryitem_name join_key_lhs,joinitemsright.sysdictionaryitem_name join_key_rhs
+
+FROM ".$relOriginTable." rels 
+LEFT JOIN
+ (
+	SELECT id sysdictionary_id, tablename sysdictionary_tablename FROM sysdictionarydefinitions UNION 
+ SELECT id sysdictionary_id, tablename sysdictionary_tablename FROM syscustomdictionarydefinitions 
+ ) lhsdictionaries ON lhsdictionaries.sysdictionary_id = rels.lhs_sysdictionarydefinition_id 
+
+LEFT JOIN
+ (
+	SELECT id sysmodule_id, module module_name, sysdictionarydefinition_id  FROM sysmodules UNION 
+ SELECT id sysmodule_id, module module_name, sysdictionarydefinition_id FROM syscustommodules
+ ) lhssysmods ON lhsdictionaries.sysdictionary_id = lhssysmods.sysdictionarydefinition_id 
+  
+LEFT JOIN
+        (SELECT id sysdictionary_id, tablename sysdictionary_tablename FROM sysdictionarydefinitions UNION 
+ SELECT id sysdictionary_id, tablename sysdictionary_tablename FROM syscustomdictionarydefinitions) rhsdictionaries ON rhsdictionaries.sysdictionary_id = rels.rhs_sysdictionarydefinition_id 
+    
+LEFT JOIN
+ (
+	SELECT id sysmodule_id, module module_name, sysdictionarydefinition_id  FROM sysmodules UNION 
+ SELECT id sysmodule_id, module module_name, sysdictionarydefinition_id FROM syscustommodules
+ ) rhssysmods ON rhsdictionaries.sysdictionary_id = rhssysmods.sysdictionarydefinition_id 
+    
+LEFT JOIN
+        (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
+ SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) itemsleft ON itemsleft.sysdictionaryitem_id = rels.lhs_sysdictionaryitem_id 
+
+LEFT JOIN
+        (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
+ SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) itemsright ON itemsright.sysdictionaryitem_id = rels.rhs_sysdictionaryitem_id
+  
+LEFT JOIN
+ (
+	SELECT id sysdictionary_id, tablename FROM sysdictionarydefinitions UNION 
+ SELECT id sysdictionary_id, tablename FROM syscustomdictionarydefinitions 
+ ) joindictionaries ON joindictionaries.sysdictionary_id = rels.join_sysdictionarydefinition_id   
+  
+LEFT JOIN
+        (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
+ SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) joinitemsleft ON joinitemsleft.sysdictionaryitem_id = rels.join_lhs_sysdictionaryitem_id 
+
+LEFT JOIN
+        (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
+ SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) joinitemsright ON joinitemsright.sysdictionaryitem_id = rels.join_rhs_sysdictionaryitem_id
+  
+ WHERE rels.deleted = 0
+        AND rels.`status` ='a'";
+
+            $dictionaryrelationships = $db->query($q);
+            // store Ids to get unique entries
+            $storeRelIds = [];
+            while($dictionaryrelationship = $db->fetchByAssoc($dictionaryrelationships)){
+                if(!in_array($dictionaryrelationship['id'], $storeRelIds)){
+                    $storeRelIds[] = $dictionaryrelationship['id'];
+                    $dictionaryrelationship['deleted'] = intval($dictionaryrelationship['deleted']);
+                    $relArray[] = array_merge($dictionaryrelationship, ['scope' => $scope]);
+                }
+            }
         }
 
         return $relArray;
@@ -191,7 +318,19 @@ class SpiceDictionaryHandler extends SpiceSingleton
         if ($_SESSION['SystemDeploymentCRsActiveCR'])
             $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
+        // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
+        // todo: see if we can get rid of them
+        $unsetKeys = ['lhs_key', 'rhs_key', 'lhs_table', 'rhs_table', 'lhs_module', 'rhs_module', 'join_table', 'join_key_lhs', 'join_key_rhs'];
+
         foreach($relationships as $relationship){
+            // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
+            foreach($unsetKeys as $unsetKey){
+                if(array_key_exists($unsetKey, $relationship)) {
+                    unset($relationship[$unsetKey]);
+                }
+            }
+
+            // save to proper dictionaryrelationships table
             switch($relationship['scope']){
                 case 'c':
                     unset($relationship['scope']);
@@ -518,10 +657,18 @@ class SpiceDictionaryHandler extends SpiceSingleton
         $validationsArray = [];
         $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations WHERE deleted = 0");
         while($domainfield = $db->fetchByAssoc($domainfields)){
+            // temporary workaround to harmonize validation_type
+            if($domainfield['validation_type'] == 'options') {
+                $domainfield['validation_type'] = 'enum';
+            }
             $validationsArray[] = array_merge($domainfield, ['scope' => 'g']);
         }
         $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations WHERE deleted = 0");
         while($domainfield = $db->fetchByAssoc($domainfields)){
+            // temporary workaround to harmonize validation_type
+            if($domainfield['validation_type'] == 'options') {
+                $domainfield['validation_type'] = 'enum';
+            }
             $validationsArray[] = array_merge($domainfield, ['scope' => 'c']);
         }
 
@@ -580,12 +727,12 @@ class SpiceDictionaryHandler extends SpiceSingleton
                 case 'c':
                     unset($domainfieldvalidationvalue['scope']);
                     $db->upsertQuery('syscustomdomainfieldvalidationvalues', ['id' => $domainfieldvalidationvalue['id']], $domainfieldvalidationvalue);
-                    if ($cr) $cr->addDBEntry("syscustomdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['minvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
+                    if ($cr) $cr->addDBEntry("syscustomdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['enumvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
                     break;
                 default:
                     unset($domainfieldvalidationvalue['scope']);
                     $db->upsertQuery('sysdomainfieldvalidationvalues', ['id' => $domainfieldvalidationvalue['id']], $domainfieldvalidationvalue);
-                    if ($cr) $cr->addDBEntry("sysdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['minvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
+                    if ($cr) $cr->addDBEntry("sysdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['enumvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
                     break;
             }
         }
@@ -607,5 +754,13 @@ class SpiceDictionaryHandler extends SpiceSingleton
         }
 
         return $tables;
+    }
+
+    /**
+     * @param string $objectName
+     * @return array|mixed
+     */
+    public function loadDictionaryIndicesFromSession(string $objectName){
+        return $_SESSION['dictionaries'][$objectName]['indices'] ?: [];
     }
 }

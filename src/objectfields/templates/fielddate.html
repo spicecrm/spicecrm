@@ -8,6 +8,6 @@
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
-    <system-input-date [(ngModel)]="value"></system-input-date>
+    <system-input-date system-input-date-hide-error [(ngModel)]="value" (valid)="setValid($event)" ></system-input-date>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
