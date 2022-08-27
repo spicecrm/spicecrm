@@ -22,7 +22,7 @@
         </div>
     </div>
     <div [@tabAnimation]="panelExpanded" [style.display]="!panelExpanded ? 'none': 'block'">
-        <div [system-overlay-loading-spinner]="model.isLoading || isSaving" class="slds-form-element__control objectchecklistdragboundary">
+        <div *ngIf="checklists.length > 0" [system-overlay-loading-spinner]="model.isLoading || isSaving" class="slds-form-element__control objectchecklistdragboundary">
             <div cdkDropList [cdkDropListData]="checklists" (cdkDropListDropped)="onDrop($event)" cdkDropListLockAxis="y" cdkDropListGroup>
                 <div *ngFor="let checklist of checklists" (click)="setActiveChecklist(checklist)" cdkDrag [cdkDragData]="checklist" cdkDragBoundary=".objectchecklistdragboundary" class="slds-box slds-p-around--none slds-m-bottom--small slds-drag--preview">
                     <div class="slds-grid slds-grid--vertical-align-center slds-m-bottom--large slds-border--bottom slds-p-around--small slds-theme--shade spice-hover-display-children" style="min-height: 58px">
@@ -89,6 +89,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div *ngIf="checklists.length == 0" [system-overlay-loading-spinner]="model.isLoading" class="slds-box slds-align--absolute-center" style="min-height: 250px">
+            <system-illustration-no-data>
+                <system-label label="LBL_NO_CHECKLISTS"></system-label>
+            </system-illustration-no-data>
         </div>
     </div>
 </div>

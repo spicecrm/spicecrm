@@ -28,6 +28,7 @@
 ********************************************************************************/
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\utils\api\controllers\UtilsController;
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
 /**
  * get a Rest Manager Instance
@@ -66,6 +67,34 @@ $routes = [
         'function'    => 'PutToUpPath',
         'description' => 'puts the content to an upload path',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/system/guid',
+        'class'       => UtilsController::class,
+        'function'    => 'generateGuid',
+        'description' => 'helper to generate a GUID',
+        'options'     => ['noAuth' => true],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/system/shorturl/{key}',
+        'class'       => UtilsController::class,
+        'function'    => 'getRedirection',
+        'description' => 'get redirection data for a short url',
+        'options'     => ['noAuth' => true, 'validate' => true],
+        'parameters'  => [
+            'key' => [
+                'in'          => 'path',
+                'description' => 'Short URL key',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+                'example'     => 'gX2qwKsKc',
+                'validationOptions' => [
+                    ValidationMiddleware::VOPT_REGEX => '#^[a-km-zA-HJ-NP-Z2-9]+$#'
+                ]
+            ],
+        ],
     ],
 ];
 

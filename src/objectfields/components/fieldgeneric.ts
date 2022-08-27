@@ -42,6 +42,11 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     public fieldid: string = '';
 
     /**
+     * the fielddefs
+     */
+    public fielddefs: any = {};
+
+    /**
      * the max length of the field
      */
     public fieldlength: number = 999;
@@ -146,9 +151,9 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public ngOnInit() {
-        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        if (fieldDefs && fieldDefs.len) {
-            this.fieldlength = fieldDefs.len;
+        this.fielddefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        if (this.fielddefs && this.fielddefs.len) {
+            this.fieldlength = this.fielddefs.len;
         }
     }
 
@@ -166,7 +171,6 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     public setFocus() {
         setTimeout(() => {
             if (this.focuselement) {
-                if (!this.focuselement.element.nativeElement.tabIndex) this.focuselement.element.nativeElement.tabIndex = '-1';
                 this.focuselement.element.nativeElement.focus();
             }
         });
@@ -179,7 +183,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      */
     public getStati(field: string = this.fieldname) {
         let stati = this.model.getFieldStati(field);
-        if (stati.editable && (!this.view.isEditable || this.fieldconfig.readonly)) {
+        if (stati.editable && (!this.view.isEditable || stati.readonly || this.fieldconfig.readonly)) {
             stati.editable = false;
         }
         return stati;

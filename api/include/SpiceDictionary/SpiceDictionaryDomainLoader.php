@@ -40,16 +40,34 @@ class SpiceDictionaryDomainLoader
             while($domainvalue = $db->fetchByAssoc($domainvalues)){
                 $validationsArray[$valname]['validationvalues'][] = [
                     'enumvalue' => $domainvalue['enumvalue'],
-                    'minvalue' => $domainvalue['minvalue'],
-                    'maxval' => $domainvalue['maxval'],
+//                    'minvalue' => $domainvalue['minvalue'],
+//                    'maxval' => $domainvalue['maxval'],
                     'label' => $domainvalue['label'],
                     'sequence' => $domainvalue['sequence']
                 ];
             }
         }
 
-        return $validationsArray;
+        // Loaded doms from custom will fully replace the existing dom in core
+        $replaceCoreDoms = [];
+        $domainvalues = $db->query("SELECT * FROM syscustomdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$valdata['id']}' AND deleted = 0 AND status = 'a'");
+        while($domainvalue = $db->fetchByAssoc($domainvalues)){
+            // replace the full dom set in core by the one set in custom
+            if(!in_array($valname, $replaceCoreDoms) && isset($validationsArray[$valname]['validationvalues'])){
+                $validationsArray[$valname]['validationvalues'] = [];
+                $replaceCore[] = $valname;
+            }
+            // fill the dom
+            $validationsArray[$valname]['validationvalues'][] = [
+                'enumvalue' => $domainvalue['enumvalue'],
+//                'minvalue' => $domainvalue['minvalue'],
+//                'maxvalue' => $domainvalue['maxvalue'],
+                'label' => $domainvalue['label'],
+                'sequence' => $domainvalue['sequence']
+            ];
+        }
 
+        return $validationsArray;
     }
 
     /**

@@ -11,18 +11,18 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {outputModalService} from "./services/outputmodal.service";
+import {outputModalService} from "./services/outputmodal.service";
 
-import /*embed*/ {OutputTemplatesEditor} from "./components/outputtemplateseditor";
-import /*embed*/ {OutputTemplatesPreview} from "./components/outputtemplatespreview";
-import /*embed*/ {OutputTemplatesPreviewSelector} from "./components/outputtemplatespreviewselector";
-import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
-import /*embed*/ {ObjectActionLiveCompileBeanButton} from "./components/objectactionlivecompilebeanbutton";
-import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/objectactionoutputbeanmodalemailcontent";
-import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
-import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
-import /*embed*/ {OutputTemplatesVariableHelper} from './components/outputtemplatesvariablehelper';
-import /*embed*/ {ObjectActionMarkSentBeanButton} from "./components/objectactionmarksentbeanbutton";
+import {OutputTemplatesEditor} from "./components/outputtemplateseditor";
+import {OutputTemplatesPreview} from "./components/outputtemplatespreview";
+import {OutputTemplatesPreviewSelector} from "./components/outputtemplatespreviewselector";
+import {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
+import {ObjectActionLiveCompileBeanButton} from "./components/objectactionlivecompilebeanbutton";
+import {ObjectActionOutputBeanModalEmailContent} from "./components/objectactionoutputbeanmodalemailcontent";
+import {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
+import {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
+import {OutputTemplatesVariableHelper} from './components/outputtemplatesvariablehelper';
+import {ObjectActionMarkSentBeanButton} from "./components/objectactionmarksentbeanbutton";
 
 @NgModule({
     imports: [

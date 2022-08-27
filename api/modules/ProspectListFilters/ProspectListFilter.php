@@ -27,14 +27,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\ProspectListFilters;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class ProspectListFilter extends SugarBean {
-    public $module_dir = 'ProspectListFilters';
-    public $object_name = 'ProspectListFilter';
-    public $table_name = 'prospect_list_filters';
+class ProspectListFilter extends SpiceBean {
 
     function fill_in_additional_detail_fields()
     {

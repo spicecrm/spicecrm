@@ -16,7 +16,7 @@
     <div #ngContent class="slds-m-left--x-small">
         <ng-content></ng-content>
     </div>
-    <object-action-container *ngIf="actionset" [actionset]="actionset" class="slds-m-left--x-small"></object-action-container>
+    <object-action-container *ngIf="actionset && isEditable" [actionset]="actionset" class="slds-m-left--x-small"></object-action-container>
     <div *ngIf="!relatedmodels.isloading && relatedmodels.count === 0" class="slds-m-left--x-small">
         <button class="slds-button slds-button_icon x-slds-m-right--medium" (click)="reload()">
             <system-button-icon icon="refresh"></system-button-icon>

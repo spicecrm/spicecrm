@@ -3,7 +3,17 @@
  */
 
 // from https://github.com/kolkov/angular-editor
-import {ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, OnDestroy, Renderer2, ChangeDetectorRef} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    forwardRef,
+    Input,
+    OnDestroy,
+    Renderer2,
+    ChangeDetectorRef,
+    Output, EventEmitter
+} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 import {language} from "../../services/language.service";
@@ -49,6 +59,12 @@ export class SystemInputDate implements ControlValueAccessor {
     public isDisabled: boolean = false;
 
     /**
+     * emits if the date is valid or not
+     */
+    @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+
+    /**
      * an attribute that can be set and does not require the value true passed in
      *
      * @param value
@@ -58,6 +74,24 @@ export class SystemInputDate implements ControlValueAccessor {
             this.isDisabled = false;
         } else {
             this.isDisabled = true;
+        }
+    }
+
+    /**
+     * option to hide the error message
+     */
+    public hideErrorMessage: boolean = false;
+
+    /**
+     * an attribute that can be set and does not require the value true passed in
+     *
+     * @param value
+     */
+    @Input('system-input-date-hide-error') set hideError(value) {
+        if (value === false) {
+            this.hideErrorMessage = false;
+        } else {
+            this.hideErrorMessage = true;
         }
     }
 
@@ -100,6 +134,9 @@ export class SystemInputDate implements ControlValueAccessor {
         } else {
             this.clear();
         }
+
+        // emit if the date is valid
+        this.valid.emit(this._date.valid);
     }
 
     get canclear() {

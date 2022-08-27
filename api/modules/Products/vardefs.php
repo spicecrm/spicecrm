@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -53,7 +55,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'isnull' => 'true',
             'module' => 'ProductGroups',
             'table' => 'productgroups',
-            'massupdate' => false,
             'source' => 'non-db',
             'len' => 36,
             'link' => 'productgroup',
@@ -122,7 +123,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
         ],
         'product_status' => [
             'name' => 'product_status',
-            'vname' => 'LBL_PRODUCT_STATUS',
+            'vname' => 'LBL_STATUS',
             'type' => 'enum',
             'options' => 'product_status_dom'
         ],

@@ -27,6 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\SpiceACL;
 
 use SpiceCRM\data\BeanFactory;
@@ -88,6 +90,13 @@ class SpiceACLUsers{
         return $ftArray;
     }
 
+    /**
+     * generates a where clause for the assignment of the current user
+     *
+     * @param $table_name
+     * @param $bean
+     * @return string
+     */
     static function generateCurrentUserWhereClause($table_name = '', $bean){
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -96,17 +105,24 @@ class SpiceACLUsers{
         $userIDs = array_merge([$current_user->id], $substituteIds);
         $userIDs = "'". join("','", $userIDs) . "'";
 
-        if(empty($table_name)) $table_name = $bean->table_name;
+        if(empty($table_name)) $table_name = $bean->_tablename;
 
         $whereClauses[] = "$table_name.assigned_user_id IN ($userIDs)";
 
-        if ( isset($bean->field_name_map['spiceacl_users_hash'])) {
+        if ( isset($bean->field_defs['spiceacl_users_hash'])) {
             $whereClauses[] = "$table_name.spiceacl_users_hash IN (SELECT hash_id FROM spiceaclusers_hash WHERE user_id in ($userIDs))";
         }
 
         return implode(' OR ', $whereClauses);
     }
 
+    /**
+     * generates a where clause that matches the creator
+     *
+     * @param $table_name
+     * @param $bean
+     * @return string
+     */
     static function generateCreatedByWhereClause($table_name = '', $bean){
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -115,9 +131,31 @@ class SpiceACLUsers{
         $userIDs = array_merge([$current_user->id], $substituteIds);
         $userIDs = "'". join("','", $userIDs) . "'";
 
-        if(empty($table_name)) $table_name = $bean->table_name;
+        if(empty($table_name)) $table_name = $bean->_tablename;
 
         return "$table_name.created_by IN ($userIDs)";
+    }
+
+    /**
+     * generates a where clause that matches the creator
+     *
+     * @param $table_name
+     * @param $bean
+     * @return string
+     */
+    static function generateOrgUnitWhereClause($table_name = '', $bean){
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        $absences = BeanFactory::getBean('UserAbsences');
+        $substituteOrgunits = $absences->getSubstituteOrgUnitIDs();
+        $orgunitIDs = $current_user->orgunit_id ?  array_merge([$current_user->orgunit_id], $substituteOrgunits) : $substituteOrgunits;
+        if(count($orgunitIDs) == 0) return false;
+
+        $orgunitIDs = "'". join("','", $orgunitIDs) . "'";
+
+        if(empty($table_name)) $table_name = $bean->_tablename;
+
+        return "$table_name.assigned_orgunit_id IN ($orgunitIDs)";
     }
 
 
@@ -129,7 +167,7 @@ class SpiceACLUsers{
      */
     static function checkCurrentUserIsOwner($bean){
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         // check the assigned user first
         if($bean->assigned_user_id == $current_user->id) return true;
@@ -154,7 +192,6 @@ $db = DBManagerFactory::getInstance();
      */
     static function checkCurrentUserIsCreator($bean){
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
 
         // check the assigned user first
         if($bean->created_by == $current_user->id) return true;
@@ -163,6 +200,26 @@ $db = DBManagerFactory::getInstance();
         $absences = BeanFactory::getBean('UserAbsences');
         $substituteIds = $absences->getSubstituteIDs();
         if(array_search($bean->created_by, $substituteIds) !== false) return true;
+
+        return false;
+    }
+
+    /**
+     * cheks if the passed in bean is in the users orgunit
+     *
+     * @param $bean the bean to be checked
+     * @return bool true if access is granted and the current user is consideren an owner
+     */
+    static function checkCurrentUserIsInOrgUnit($bean){
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // check the assigned user first
+        if($bean->assigned_orgunit_id == $current_user->orgunit_id) return true;
+
+        // check absence substitutes
+        $absences = BeanFactory::getBean('UserAbsences');
+        $substituteOrgUnits = $absences->getSubstituteOrgUnitIDs();
+        if(array_search($bean->assigned_orgunit_id, $substituteOrgUnits) !== false) return true;
 
         return false;
     }

@@ -27,12 +27,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\CompanyCodes;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 class CompanyCodesLoader{
+
     public function loadCompanyCodes(){
         $db = DBManagerFactory::getInstance();
 

@@ -27,15 +27,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\OpportunityStages;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class OpportunityStage extends SugarBean {
+class OpportunityStage extends SpiceBean {
 
-	var $table_name = "opportunitystages";
-	var $module_dir = "OpportunityStages";
-	var $object_name = "OpportunityStage";
+    /**
+     * @deprecated
+     */
+    public $amount_usdollar;
 
     function ACLAccess($view, $is_owner = 'not_set'){
 

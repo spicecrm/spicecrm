@@ -7,10 +7,10 @@ environments/*.js.map
 environments/*.js
 config.json
 package-lock.json
-/config/sites
 /dist
 documentation
 docs
 .angular
 dev_server.url
 /**/.DS_store
+vendor/bpmn-js/spice/node_modules

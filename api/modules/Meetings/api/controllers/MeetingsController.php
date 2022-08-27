@@ -4,16 +4,25 @@ namespace SpiceCRM\modules\Meetings\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\includes\MicrosoftGraph\ModuleHandlers\MSGraphMeetingHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\modules\Users\User;
 
 class MeetingsController
 {
 
+    /**
+     * set meeting participant status
+     * @throws Exception
+     * @throws ForbiddenException
+     */
     static function setStatus(Request $req, Response $res, array $args): Response
     {
         $timedate = TimeDate::getInstance();
@@ -30,6 +39,15 @@ class MeetingsController
         // CR1000356 re-index meeting
         if($bean = BeanFactory::getBean('Meetings', $args['id'], ['encode' => false])){
             SpiceFTSHandler::getInstance()->indexBean($bean);
+
+        if (SpiceConfig::getInstance()->config['MicrosoftService']['client_id']) {
+            /** @var User $user */
+            $user = BeanFactory::getBean('Users', $bean->assigned_user_id);
+            $participant = BeanFactory::getBean('Users', $args['userid']);
+
+            $graphHandler = new MSGraphMeetingHandler($user, $bean);
+            $graphHandler->updateGraphAttendeeStatus($participant, $args['value']);
+        }
 
 // for exchange: send status to exchange => setInvitationStatusOnExchange() doesn't work... access denied...
 // No documentation found to make it work.... Removed for now

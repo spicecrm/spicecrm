@@ -6,7 +6,7 @@ import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
-import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {DomSanitizer} from "@angular/platform-browser";
 import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {Subscription} from "rxjs";
@@ -70,5 +70,4 @@ export class CampaignTaskMailMergePanel implements OnInit, OnDestroy {
     public setActiveTab(tab) {
         this.activeTab = tab;
     }
-
 }

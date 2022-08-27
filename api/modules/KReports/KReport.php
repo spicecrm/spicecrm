@@ -1,10 +1,21 @@
 <?php
-/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of KReporter. KReporter is an enhancement developed
+ * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ *
+ * This Version of the KReporter is licensed software and may only be used in
+ * alignment with the License Agreement received with this Software.
+ * This Software is copyrighted and may not be further distributed without
+ * witten consent of aac services k.s.
+ *
+ * You can contact us at info@kreporter.org
+ ********************************************************************************/
+
 
 namespace SpiceCRM\modules\KReports;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -26,33 +37,18 @@ if (file_exists('./custom/modules/KReports/includes')) {
 }
 
 
-class KReport extends SugarBean
+class KReport extends SpiceBean
 {
 
-    public $field_name_map;
     // Stored fields
-    public $id;
-    public $date_entered;
-    public $date_modified;
-    public $assigned_user_id;
-    public $modified_user_id;
-    public $created_by;
-    public $created_by_name;
-    public $modified_by_name;
+
     public $report_module = '';
     public $reportoptions = '';
     public $team_id;
-    public $description;
-    public $name;
     public $status;
-    public $assigned_user_name;
-    public $team_name;
     public $category_id;
     public $category_name;
     public $category_priority;
-    public $table_name = "kreports";
-    public $object_name = "KReport";
-    public $module_dir = 'KReports';
     public $importable = true;
     public $dynamicoptions = false; //fix 2018-02-22 for KReportQuery referencefields looping
     // This is used to retrieve related fields from form posts.
@@ -1272,7 +1268,7 @@ $db = DBManagerFactory::getInstance();
             foreach ($arrayList as $thisList) {
                 //$pathName = $this->getPathNameFromPath($thisList['path']);
                 //$fieldName = explode(':', $this->getFieldNameFromPath($thisList['path']));
-                //if($this->joinSegments[$pathName]['object']->field_name_map[$fieldname[1]]->type == 'currency')
+                //if($this->joinSegments[$pathName]['object']->field_defs[$fieldname[1]]->type == 'currency')
                 $retArray [] = ['fieldid' => $thisList ['fieldid'], 'fieldname' => $thisList ['name']];
             }
         } else {
@@ -1605,11 +1601,11 @@ $db = DBManagerFactory::getInstance();
             $thisModule = BeanFactory::getBean($parentModule->$moduleArrayEl->getRelatedModuleName());
 
             // pars the otpions into the return array
-            switch ($thisModule->field_name_map [$fieldArray[1]] ['type']) {
+            switch ($thisModule->field_defs [$fieldArray[1]] ['type']) {
                 case 'enum' :
                 case 'radioenum' :
                 case 'multienum' :
-                    foreach ($app_list_strings [$thisModule->field_name_map [$fieldArray [1]] ['options']] as $value => $text) {
+                    foreach ($app_list_strings [$thisModule->field_defs [$fieldArray [1]] ['options']] as $value => $text) {
                         $returnArray [] = ['value' => $value, 'text' => $text];
                     }
                     break;
@@ -1625,11 +1621,11 @@ $db = DBManagerFactory::getInstance();
             }
         } else {
             // we have the root module
-            switch ($parentModule->field_name_map [$fieldArray [1]] ['type']) {
+            switch ($parentModule->field_defs [$fieldArray [1]] ['type']) {
                 case 'enum' :
                 case 'radioenum' :
                 case 'multienum' :
-                    foreach ($app_list_strings [$parentModule->field_name_map [$fieldArray [1]] ['options']] as $value => $text) {
+                    foreach ($app_list_strings [$parentModule->field_defs[$fieldArray[1]]['options']] as $value => $text) {
                         $returnArray [] = ['value' => $value, 'text' => $text];
                     }
                     break;

@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -77,6 +79,16 @@ $routes = [
                 'example' => '894562d5-d74b-4587-a10a-fabe7ec2f696'
             ]
         ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/module/SystemTenants/acceptlegalnotice',
+        'oldroute' => '',
+        'class' => SystemTenantsController::class,
+        'function' => 'acceptLegalNotice',
+        'description' => 'loads demo data for a tenant',
+        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => []
     ],
 ];
 

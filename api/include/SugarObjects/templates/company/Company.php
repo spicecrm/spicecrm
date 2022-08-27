@@ -34,6 +34,7 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\includes\SugarObjects\templates\company;
 
 use SpiceCRM\data\BeanFactory;
@@ -136,7 +137,7 @@ class Company extends Basic
         $email_addr = BeanFactory::getBean('EmailAddresses');
         $result = $email_addr->retrieve_by_string_fields(['email_address' => $email]);
         if ($result) {
-            $sql = "SELECT bean_id FROM email_addr_bean_rel WHERE email_address_id = '{$email_addr->id}' AND bean_module = '$this->module_dir' AND deleted = 0";
+            $sql = "SELECT bean_id FROM email_addr_bean_rel WHERE email_address_id = '{$email_addr->id}' AND bean_module = '$this->_module' AND deleted = 0";
             $row = $this->db->fetchByAssoc($this->db->query($sql));
             if (!$row) return false;
             return $this->retrieve($row['bean_id'], $encode, $deleted, $relationships);

@@ -13,16 +13,16 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {SpiceKanbanStagePipe} from "./pipes/spicekanbanstagepipe";
+import {SpiceKanbanStagePipe} from "./pipes/spicekanbanstagepipe";
 
-import /*embed*/ {SpicePathTrack} from './components/spicepathtrack';
-import /*embed*/ {SpicePathModel} from './components/spicepathmodel';
-import /*embed*/ {SpicePathWithCoaching} from './components/spicepathwithcoaching';
-import /*embed*/ {SpicePathRelatedListTiles} from './components/spicepathrelatedlisttiles';
-import /*embed*/ {SpicePathRelatedListTile} from './components/spicepathrelatedlisttile';
-import /*embed*/ {SpiceKanbanSumField} from "./components/spicekanbansumfield";
-import /*embed*/ {SpiceKanban} from "./components/spicekanban";
-import /*embed*/ {SpiceKanbanTile} from "./components/spicekanbantile";
+import {SpicePathTrack} from './components/spicepathtrack';
+import {SpicePathModel} from './components/spicepathmodel';
+import {SpicePathWithCoaching} from './components/spicepathwithcoaching';
+import {SpicePathRelatedListTiles} from './components/spicepathrelatedlisttiles';
+import {SpicePathRelatedListTile} from './components/spicepathrelatedlisttile';
+import {SpiceKanbanSumField} from "./components/spicekanbansumfield";
+import {SpiceKanban} from "./components/spicekanban";
+import {SpiceKanbanTile} from "./components/spicekanbantile";
 
 @NgModule({
     imports: [

@@ -27,6 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Currencies\api\controllers\CurrenciesController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -87,6 +89,12 @@ $routes = [
                 'in'          => 'body',
                 'description' => 'Symbol',
                 'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true
+            ],
+            'conversion_rate'           => [
+                'in'          => 'body',
+                'description' => 'Conversion Rate',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
                 'required'    => true
             ]
         ]

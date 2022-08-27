@@ -1,13 +1,14 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {configurationService} from "../../../services/configuration.service";
 
 declare var moment: any;
 
@@ -15,7 +16,7 @@ declare var moment: any;
     selector: 'campaigntask-mailerge-modal',
     templateUrl: '../templates/campaigntaskmailmergemodal.html'
 })
-export class CampaignTaskMailMergeModal {
+export class CampaignTaskMailMergeModal implements OnInit {
 
     /**
      * reference to the modal itself
@@ -38,11 +39,11 @@ export class CampaignTaskMailMergeModal {
 
     /**
      * the number of pages to be generated
-     * todo: set a limit in teh backend config and respect that
+     * the limit is set in the backend config
      *
      * @private
      */
-    public limit: number = 100;
+    public limit: number;
 
     /**
      * the count of inactive items from the target group
@@ -72,8 +73,14 @@ export class CampaignTaskMailMergeModal {
         public backend: backend,
         public modal: modal,
         public sanitizer: DomSanitizer,
+        public configuration: configurationService,
     ) {
         this.getCount();
+    }
+
+    public ngOnInit() {
+        const config = this.configuration.getCapabilityConfig('campaigntasks').pdflimit;
+        this.limit =  config ? parseInt(config, 10) : 100;
     }
 
     /**
@@ -105,7 +112,7 @@ export class CampaignTaskMailMergeModal {
         this.loading = true;
         this.backend.getRequest(`module/CampaignTasks/${this.model.id}/mailmerge`, {
             start: this.start - 1,
-            limit: this.limit
+            limit: this.limit,
         }).subscribe(
             results => {
                 this.pdf = results.content;

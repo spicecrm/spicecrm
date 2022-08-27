@@ -17,6 +17,7 @@ import {Router} from '@angular/router';
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
 import {model} from "../../services/model.service";
+import {modal} from "../../services/modal.service";
 import {view} from "../../services/view.service";
 import {navigationtab} from "../../services/navigationtab.service";
 
@@ -76,6 +77,7 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
     constructor(
         public metadata: metadata,
         public footer: footer,
+        public modal: modal,
         @Optional() @SkipSelf() public model: model,
         @Optional() public navigationtab: navigationtab,
         public popovermodel: model,
@@ -124,13 +126,20 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
 
         // check if the link is the model that is in the focus
         // go to the record
-        if (!this.model || !this.id || (this.model.id == this.id && this.model.module == this.module)) {
+        if (this.model && (!this.id || (this.id && this.module && this.model.id == this.id && this.model.module == this.module))) {
             this.model.goDetail(this.navigationtab?.tabid);
         } else if (this.popoverModelInitialized) {
             this.popovermodel.goDetail(this.navigationtab?.tabid);
-        } else {
-            this.popovermodel.getData(true).subscribe(loaded => {
-                this.popovermodel.goDetail(this.navigationtab?.tabid);
+        } else if(!this.popovermodel.isLoading) {
+            let loadingmodal = this.modal.await('LBL_LOADING');
+            this.popovermodel.getData(true).subscribe({
+                next: (loaded) => {
+                    this.popovermodel.goDetail(this.navigationtab?.tabid);
+                    loadingmodal.emit(true);
+                },
+                error: () => {
+                    loadingmodal.emit(true);
+                }
             });
         }
 

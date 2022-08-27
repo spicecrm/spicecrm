@@ -81,8 +81,8 @@ import {FieldMessagesComponent} from "./components/fieldmessages";
 import {FieldModuleLookupComponent} from "./components/fieldmodulelookup";
 import {FieldSignatureComponent} from "./components/fieldsignature";
 import {fieldCategories} from "./components/fieldcategories";
-import /*embed*/ {fieldCategoriesTree} from "./components/fieldcategoriestree";
-import /*embed*/ {fieldServiceCategories,} from "./components/fieldservicecategories";
+import {fieldCategoriesTree} from "./components/fieldcategoriestree";
+import {fieldServiceCategories,} from "./components/fieldservicecategories";
 import {fieldServiceCategoryTree} from "./components/fieldservicecategorytree";
 import {fieldServiceCategorySearch} from "./components/fieldservicecategorysearch";
 import {fieldWorklog} from "./components/fieldworklog";
@@ -122,6 +122,9 @@ import {fieldIconCondition} from './components/fieldiconcondition';
 import {fieldIndicator} from './components/fieldindicator';
 import {fieldEmailRecipientsInput} from './components/fieldemailrecipientsinput';
 import {fieldJson} from "./components/fieldjson";
+import {fieldLinked} from "./components/fieldlinked";
+import {fieldLinkedDetails} from "./components/fieldlinkeddetails";
+import {fieldLinkedParent} from "./components/fieldlinkedparent";
 
 /**
  * @ignore
@@ -137,7 +140,7 @@ declare var _: any;
         FormsModule,
         SystemComponents,
         DirectivesModule,
-        DragDropModule
+        DragDropModule,
     ],
     declarations: [
         fieldSet,
@@ -185,6 +188,9 @@ declare var _: any;
         fieldRelate,
         fieldRelateList,
         fieldModifiedBy,
+        fieldLinked,
+        fieldLinkedDetails,
+        fieldLinkedParent,
         fieldLookup,
         fieldLookupRecent,
         fieldLookupRecentItem,

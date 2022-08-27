@@ -3,10 +3,11 @@
  */
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Subject} from 'rxjs';
+import {Subject, throwError} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
+import {broadcast} from './broadcast.service';
 import {metadata} from './metadata.service';
 import {Observable} from 'rxjs';
 
@@ -40,12 +41,29 @@ export class language {
      */
     public inlineEditEnabled: boolean = false;
 
+    /**
+     * the indexed db to proxy the language
+     *
+     * @private
+     */
+    private db: any;
+
     constructor(
         public http: HttpClient,
         public configurationService: configurationService,
         public session: session,
+        public broadcast: broadcast,
         public metadata: metadata
     ) {
+        // open the database
+        this.openDB('language').then(
+            db => {
+                this.db = db;
+            }
+        );
+
+        // subscribe to the broadcast to catch the logout
+        this.broadcast.message$.subscribe(message => this.handleLogout(message));
     }
 
     /**
@@ -54,12 +72,21 @@ export class language {
      * @param language the language to set the srvice to
      */
     set currentlanguage(language) {
-        if(typeof language !== 'string' || language === null) {
-            language = this.getDefaultLanguage();
-        }
+
+        if (!language) language = this.getDefaultLanguage();
+
         this._currentlanguage = language;
 
-        localStorage.setItem('spiceuilanguage', language);
+        this.readStoreAll('languages').subscribe({
+            next: languages => {
+
+                languages.forEach(l => {
+                    l.isCurrent = language == l.language_code;
+                    this.updateStore('languages', l);
+                });
+            },
+            error: () => false
+        });
     }
 
     /**
@@ -70,60 +97,266 @@ export class language {
     }
 
     /**
+     * handle the message broadcast and if messagetype is logout reset the data
+     *
+     * @param message the message received
+     */
+    public handleLogout(message) {
+        if (message.messagetype == 'logout') {
+            this.clearDB();
+        }
+    }
+
+    /**
+     * opens an indexed DB in the browser to store the config data
+     *
+     * @param dbname
+     * @private
+     */
+    private openDB(dbname): Promise<IDBDatabase> {
+        return new Promise<IDBDatabase>((resolve, reject) => {
+            if (!indexedDB) {
+                reject('IndexedDB not available');
+            }
+            const request = indexedDB.open(dbname, 1);
+            let db: IDBDatabase;
+            request.onsuccess = (event: Event) => {
+                db = request.result;
+                resolve(db);
+            };
+            request.onerror = (event: Event) => {
+                reject(`IndexedDB error: ${request.error}`);
+            };
+            request.onupgradeneeded = (event: Event) => {
+                db = request.result;
+                db.createObjectStore("languages", {keyPath: "language_code"});
+                db.createObjectStore("applang", {keyPath: "language_code"});
+                db.createObjectStore("applist", {keyPath: "language_code"});
+                resolve(db);
+            };
+        });
+    }
+
+    /**
+     * writes a data set record to the db
+     * @param store
+     * @param data
+     */
+    public writeStore(store, data) {
+        // check that we have a db
+        if (!this.db) return;
+
+        this.db.transaction([store], "readwrite").objectStore(store).add(data);
+    }
+
+    /**
+     * update a data set record in the db
+     * @param store
+     * @param data
+     */
+    public updateStore(store: string, data) {
+        // check that we have a db
+        if (!this.db) return;
+
+        this.db.transaction([store], "readwrite").objectStore(store).put(data);
+    }
+
+    /**
+     * reads a data set record from the DB
+     * @param store
+     * @param id
+     */
+    public readStore(store, id?): Observable<any> {
+        // if we do not have a db return an empty array
+        if (!this.db) return throwError(() => new Error('no indexedDB Support'));
+
+        // process normally
+        let retSubject = new Subject<any>();
+        try {
+            let transaction = this.db.transaction([store], "readwrite");
+            let objectStore = transaction.objectStore(store);
+            let request = objectStore.get(id);
+            request.onerror = (event) => {
+                retSubject.error(false);
+            };
+            request.onsuccess = (event) => {
+                if (event.target.result?.data) {
+                    retSubject.next(event.target.result.data);
+                    retSubject.complete();
+                } else {
+                    retSubject.error(`Table ${store} with id ${id} has no data`);
+                }
+            };
+        } catch(e){
+            retSubject.error(false);
+        }
+        return retSubject.asObservable();
+    }
+
+
+    /**
+     * reads all records from the DB in form of an array with the data attribute
+     *
+     * @param store
+     */
+    public readStoreAll(store): Observable<any> {
+        // if we do not have a db return an empty array
+        if (!this.db) return throwError(() => new Error('no indexedDB Support'));
+
+        // process normally
+        let retSubject = new Subject<any>();
+        let transaction = this.db.transaction([store], "readwrite");
+        let objectStore = transaction.objectStore(store);
+        let request = objectStore.getAll()
+        request.onerror = (event) => {
+            retSubject.error(false);
+        };
+        request.onsuccess = (event) => {
+            if (event.target.result && event.target.result.length > 0) {
+                retSubject.next(event.target.result);
+                retSubject.complete();
+            } else {
+                retSubject.error(false);
+            }
+        };
+        return retSubject.asObservable();
+    }
+
+
+    /**
+     * clears the db
+     *
+     * @private
+     */
+    public clearDB() {
+        // only if we do have a db
+        if (!this.db) return;
+
+        // process the cleanup
+        let transaction = this.db.transaction(["languages", "applang", "applist"], "readwrite");
+        transaction.objectStore('languages').clear();
+        transaction.objectStore('applang').clear();
+        transaction.objectStore('applist').clear();
+    }
+
+    /**
      * a loader function that is called from the loader service initially to load the language
      *
      * @param loadhandler the loadhandler from the loader service
      */
     public getLanguage(loadhandler: Subject<string>) {
-        if (sessionStorage[window.btoa('languageData' + this.session.authData.sessionId)] && sessionStorage[window.btoa('languageData' + this.session.authData.sessionId)].length > 0 && !this.configurationService.data.developerMode) {
-            let response = this.session.getSessionData('languageData');
-            this.languagedata = response;
-            if (this.currentlanguage == '') {
-                this.currentlanguage = response.languages.default;
-            }
-            loadhandler.next('getLanguage');
-        } else {
-            this.loadLanguage().subscribe(() => {
+
+        this.readStoreAll('languages').subscribe({
+            next: (languages) => {
+
+                this.languagedata.languages = {available: languages};
+
+                this._currentlanguage = languages.find(l => l.isCurrent)?.language_code;
+
+                this.readStore('applang', this.currentlanguage).subscribe({
+                    next: applang => this.languagedata.applang = applang,
+                    error: () => false
+                });
+                this.readStore('applist', this.currentlanguage).subscribe({
+                    next: applist => this.languagedata.applist = applist,
+                    error: () => false
+                });
+
                 loadhandler.next('getLanguage');
-            });
-        }
+            },
+            error: () => {
+                this.loadLanguage().subscribe(() => {
+
+                    // write to the database
+                    this.languagedata.languages.available.forEach(language => {
+                        language.isCurrent = language.language_code == this.currentlanguage;
+                        this.writeStore('languages', language);
+                    });
+
+                    loadhandler.next('getLanguage');
+                });
+            }
+        });
+    }
+
+    /**
+     * switches the language
+     * @param language
+     */
+    public switchLanguage(language): Observable<any> {
+        let retSubject = new Subject();
+        this.currentlanguage = language;
+
+        // attempts to read from the store. if fails load from backend
+        this.readStore('applang', language).subscribe({
+            next: (applang) => {
+                this.languagedata.applang = applang;
+                this.readStore('applist', language).subscribe({
+                    next: (applist) => {
+                        this.languagedata.applist = applist;
+
+                        // emit that the language has changed
+                        this.currentlanguage$.emit(this.currentlanguage);
+
+                        retSubject.next(true);
+                        retSubject.complete();
+                    },
+                    error: () => {
+                        this.currentlanguage$.emit(this.currentlanguage);
+                        retSubject.next(true);
+                        retSubject.complete();
+                    }
+                });
+            },
+            error: () => {
+                this.loadLanguage().subscribe({
+                    next: () => {
+                        retSubject.next(true);
+                        retSubject.complete();
+                    }
+                });
+            }
+        })
+        return retSubject.asObservable();
     }
 
     /**
      * loads the language as set in the current language
      */
-    public loadLanguage( setOnBackend = true ): Observable<any> {
+    public loadLanguage(): Observable<any> {
         let retSubject = new Subject();
-
-        if (this.currentlanguage == '') {
-            if (localStorage.getItem('spiceuilanguage')) {
-                this.currentlanguage = localStorage.getItem('spiceuilanguage');
-            }
-        }
 
         // consturct the URL
         let url = this.configurationService.getBackendUrl() + '/system/language';
-        if(this.currentlanguage) url += '/' + this.currentlanguage;
+        if (this.currentlanguage) url += '/' + this.currentlanguage;
 
         // get the language
         this.http.get(
             url,
-            {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: setOnBackend ? 1:0 }}
-        ).subscribe(
-            (res: any) => {
-                let response = res.body;
-                this.session.setSessionData('languageData', response);
-                this.languagedata = response;
+            {headers: this.session.getSessionHeader(), observe: "response"}
+        ).subscribe({
+                next: (res: any) => {
+                    let response = res.body;
+                    // this.session.setSessionData('languageData', response);
 
-                if (this.currentlanguage == '') {
-                    this.currentlanguage = response.languages.default;
+                    // set the response
+                    this.languagedata = response;
+
+                    // in case we have no language set .. set it
+                    if (!this.currentlanguage) {
+                        this.currentlanguage = response.language;
+                    }
+
+                    // write to the store
+                    this.writeStore('applang', {language_code: this.currentlanguage, data: this.languagedata.applang});
+                    this.writeStore('applist', {language_code: this.currentlanguage, data: this.languagedata.applist});
+
+                    // emit that the language has changed
+                    this.currentlanguage$.emit(this.currentlanguage);
+
+                    retSubject.next(true);
+                    retSubject.complete();
                 }
-
-                // emit that the language has changed
-                this.currentlanguage$.emit(this.currentlanguage);
-
-                retSubject.next(true);
-                retSubject.complete();
             }
         );
 
@@ -254,8 +487,11 @@ export class language {
      */
     public getLabelFormatted(label: string, replacements: any, length: 'default' | 'long' | 'short' = 'default') {
         let replArray: string[];
-        if (Array.isArray(replacements)) replArray = replacements;
-        else replArray = new Array(replacements);
+        if (Array.isArray(replacements)) {
+            replArray = replacements;
+        } else {
+            replArray = new Array(replacements);
+        }
         let x = 0;
         return this.getLabel(label, '', length)
             .replace(/%(s|%)/g, (...args) => {
@@ -297,7 +533,7 @@ export class language {
      * @param module
      */
     public getModuleCombinedLabel(label, module) {
-        if(!module) return 'no module defined';
+        if (!module) return 'no module defined';
         if (this.languagedata.applang[label + '_' + module.toUpperCase()]) {
             return this.getLabel(label + '_' + module.toUpperCase());
         } else {
@@ -489,7 +725,10 @@ export class language {
             }
         });
 
-        if (!langfound) this.languagedata.languages.available.push(languagedata);
+        if (!langfound) {
+            this.languagedata.languages.available.push(languagedata);
+            this.writeStore('languages', languagedata);
+        }
     }
 
     /**
@@ -605,8 +844,8 @@ export class language {
      * @param a The first string.
      * @param b The second string.
      */
-    public compareStrings( a: string, b: string ): number {
-        return a.localeCompare( b, this._currentlanguage.slice( 0, 2 ));
+    public compareStrings(a: string, b: string): number {
+        return a.localeCompare(b, this._currentlanguage.slice(0, 2));
     }
 
     /**
@@ -615,8 +854,8 @@ export class language {
      *
      * @param array The array of strings to sort.
      */
-    public sortArray( array: string[], reverse = false ): void {
-        array.sort( ( a, b ) => this.compareStrings( a, b ) * ( reverse?-1:1 ));
+    public sortArray(array: string[], reverse = false): void {
+        array.sort((a, b) => this.compareStrings(a, b) * (reverse ? -1 : 1));
     }
 
     /**
@@ -626,8 +865,8 @@ export class language {
      * @param array The array of objects to sort.
      * @param property The property to be used for sorting.
      */
-    public sortObjects( array: object[], property: string, reverse = false ): void {
-        array.sort( ( a, b ) => this.compareStrings( a[property], b[property] ) * ( reverse?-1:1 ));
+    public sortObjects(array: object[], property: string, reverse = false): void {
+        array.sort((a, b) => this.compareStrings(a[property], b[property]) * (reverse ? -1 : 1));
     }
 
     /**
@@ -635,8 +874,8 @@ export class language {
      *
      * @param string The string.
      */
-    public ucFirst( string ): string {
-        return string.charAt(0).toLocaleUpperCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    public ucFirst(string): string {
+        return string.charAt(0).toLocaleUpperCase(this._currentlanguage.slice(0, 2)) + string.slice(1);
     }
 
     /**
@@ -644,8 +883,8 @@ export class language {
      *
      * @param string The string.
      */
-    public lcFirst( string ): string {
-        return string.charAt(0).toLocaleLowerCase( this._currentlanguage.slice( 0, 2 )) + string.slice(1);
+    public lcFirst(string): string {
+        return string.charAt(0).toLocaleLowerCase(this._currentlanguage.slice(0, 2)) + string.slice(1);
     }
 
 }

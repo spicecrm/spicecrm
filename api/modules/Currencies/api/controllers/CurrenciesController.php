@@ -39,7 +39,6 @@ class CurrenciesController{
         return $res->withJson($retArray);
     }
 
-
     /**
      * @return array[]
      * @throws \Exception
@@ -99,6 +98,7 @@ class CurrenciesController{
         $currency->status = 'Active';
         $currency->symbol = $postBody['symbol'];
         $currency->iso4217 = $postBody['iso'];
+        $currency->conversion_rate = $postBody['conversion_rate'];
         $currency->created_by = $current_user->id;
 
         if(!$currency->save()) {

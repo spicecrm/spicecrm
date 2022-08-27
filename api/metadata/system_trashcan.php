@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 SpiceDictionaryHandler::getInstance()->dictionary['systrashcan'] = [
@@ -96,6 +98,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['systrashcan'] = [
         [
             'name' => 'idx_systrashcan',
             'type' => 'index',
-            'fields' => ['id']]
+            'fields' => ['id']
+        ],
+        [
+            'name' => 'trashcan_search',
+            'type' => 'index',
+            'fields' => ['recordname', 'recordmodule', 'user_deleted']
+        ]
     ]
 ];

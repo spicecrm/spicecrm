@@ -28,6 +28,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 // go to the webroot and also correct the self path
 chdir('../..');
 $_SERVER['PHP_SELF'] = str_replace('/include/SpiceInstaller', '', $_SERVER['PHP_SELF']);

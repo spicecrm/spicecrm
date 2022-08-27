@@ -3,22 +3,22 @@
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
  * You can contact us at info@spicecrm.io
- * 
+ *
  * SpiceCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
- * 
+ *
  * SpiceCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 
 namespace SpiceCRM\includes\authentication\api\controllers;
 
@@ -159,6 +161,13 @@ class AuthenticateController
         $db = DBManagerFactory::getInstance();
         $timeDate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        if ( !$current_user ) {
+            $body = $req->getParsedBody();
+            if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
+                $userAuthenticateObj = new UserAuthenticate();
+                $current_user = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+            }
+        }
         $auth = new TOTPAuthentication();
         $secret = $auth->generateSecret();
 
@@ -188,7 +197,16 @@ class AuthenticateController
         $db = DBManagerFactory::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $record = $db->fetchOne("SELECT * FROM users_totp WHERE user_id = '{$current_user->id}' AND auth_status = 'C' AND deleted = 0");
+        if ( !$current_user ) {
+            $body = $req->getParsedBody();
+            if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
+                $userAuthenticateObj = new UserAuthenticate();
+                $current_user = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+            }
+        }
+
+        $record = $db->fetchOne($x="SELECT * FROM users_totp WHERE user_id = '{$current_user->id}' AND auth_status = 'C' AND deleted = 0");
+
         if(!$record){
             throw new NotFoundException('no record to validate');
         }

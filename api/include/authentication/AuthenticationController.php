@@ -34,6 +34,7 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\includes\authentication;
 
 use http\Exception\UnexpectedValueException;
@@ -47,8 +48,10 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\modules\Administration\Administration;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
@@ -92,6 +95,13 @@ class AuthenticationController
      * @var null
      */
     public $systemtenantname = null;
+    /**
+     * holds a boolean of the legal notice acceptance
+     *
+     * @var bool
+     */
+    public $systemTenantLegalNoticeAccepted = false;
+
     public $errorReason;
     public $errorCode;
 
@@ -255,10 +265,13 @@ class AuthenticationController
 
             # In case the max. failed login attempts are reached, black list the IP address.
             # ( But only if IP restriction is enabled and the IP address is not white listed and the IP address has not been black listed just before (isIPblocked). )
-            if ( $config['login_attempt_restriction']['ip_enabled']
+            if (
+                $config['login_attempt_restriction']['ip_enabled']
                 and UserAccessLog::getNumberLoginAttemptsByIp() >= (int)$config['login_attempt_restriction']['ip_number_attempts']
                 and !IpAddresses::ipAddressIsWhite()
-                and !$e->isIPblocked() ) {
+                and !$e->isIPblocked()
+                and !User::isAdmin_byName( $username ) # don´t block the admin
+            ) {
                 IpAddresses::addIpAddress('b');
                 $e->setIPblocked( true );
             };
@@ -266,7 +279,7 @@ class AuthenticationController
             $this->errorReason = $e->getMessage();
             $this->errorCode = $e->getErrorCode();
 
-            throw new UnauthorizedException($e->getMessage(), $e->getErrorCode());
+            throw ( new UnauthorizedException($e->getMessage(), $e->getErrorCode()))->setDetails( $e->getDetails() );
         }
 
         return [ //todo find a solution to specify return format
@@ -340,6 +353,7 @@ class AuthenticationController
     /**
      * Handles the authentication with username/password credentials.
      * @return User | false
+     * @throws UnauthorizedException
      */
     private function handleUserPassAuth($authUser, $authPass, $impersonationUser = null )
     {
@@ -374,11 +388,25 @@ class AuthenticationController
 
             // check if password is expired
             if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() ) and !$userObj->is_api_user ) {
-                throw new UnauthorizedException('Password expired.', 2 );
+                $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+                    'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
+                    'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
+                    'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY'
+                ]);
+                throw ( new UnauthorizedException('Password expired.', 2 ))->setDetails(['labels' => $necessaryLabels]);
+            }
+
+            if ( SpiceConfig::getInstance()->config['login_methods']['totp_authentication_required'] and !TOTPAuthentication::checkTOTPActive( $userObj->id )) {
+                $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+                    'LBL_SAVE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'LBL_CODE', 'LBL_CANCEL', 'LBL_CODE'
+                ]);
+                throw ( new UnauthorizedException('TOTP.', 12 ))->setDetails(['labels' => $necessaryLabels]);
             }
 
         } catch (UnauthorizedException $e) {
-            throw ( new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode()))->setUserBlocked( $e->isUserBlocked() );
+            throw ( new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode()))
+                ->setUserBlocked( $e->isUserBlocked() )
+                ->setDetails( $e->getDetails() );
         }
         return $userObj;
     }
@@ -388,14 +416,14 @@ class AuthenticationController
     {
         /* switch to a different tenant if the tenant id is set for the user */
         if (!empty($this->getCurrentUser()->systemtenant_id)) {
-            $tenant = new SystemTenant();
-            $tenant->retrieve($this->getCurrentUser()->systemtenant_id);
+            $tenant = BeanFactory::getBean('SystemTenants', $this->getCurrentUser()->systemtenant_id);
             if ($tenant->valid_until < TimeDate::getInstance()->nowDbDate()) {
                 throw new UnauthorizedException('Tenant expired', 401);
             }
             $tenant->switchToTenant();
             $this->systemtenantid = $tenant->id;
             $this->systemtenantname = $tenant->name;
+            $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
         }
     }
 
@@ -410,7 +438,12 @@ class AuthenticationController
         if ($authenticationController->getCurrentUser() === null) {
             throw new UnauthorizedException($authenticationController->errorReason, $authenticationController->errorCode);
         }
+
+        // get the current user
         $currentUser = $this->getCurrentUser();
+
+        // get a module handler to map the current user
+        $moduleHandler = new SpiceBeanHandler();
 
         $loginData = [
             'admin' => $currentUser->is_admin == '1' ? true : false,
@@ -428,9 +461,11 @@ class AuthenticationController
             'companycode_id' => $currentUser->companycode_id,
             'tenant_id' => $currentUser->systemtenant_id,
             'tenant_name' => $this->systemtenantname,
+            'tenant_accepted_legal_notice' => $this->systemTenantLegalNoticeAccepted,
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
-            'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays
+            'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays,
+            'user' => $moduleHandler->mapBean($currentUser)
         ];
 
         // Is it a portal user? And the GDPR consent for portal users is configured?

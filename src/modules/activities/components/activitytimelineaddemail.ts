@@ -61,7 +61,6 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
      */
     public ngOnInit() {
         this.model.module = 'Emails';
-        this.initializeEmail();
         this.setEditMode();
         this.subscribeParent();
         this.getFieldsetFields();

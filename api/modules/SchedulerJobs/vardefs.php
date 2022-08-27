@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -166,4 +168,4 @@ SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
     ]
 ];
 
-VardefManager::createVardef('SchedulerJobs','SchedulerJob', ['default']);
+VardefManager::createVardef('SchedulerJobs','SchedulerJob', ['default', 'assignable']);

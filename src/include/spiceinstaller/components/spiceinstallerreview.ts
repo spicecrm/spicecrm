@@ -40,7 +40,7 @@ export class SpiceInstallerReview implements AfterViewInit {
      */
     public install() {
         this.installing = true;
-        this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/process`, this.spiceinstaller.configObject).subscribe(
+        this.http.post(`${this.spiceinstaller.systemurl}/install/process`, this.spiceinstaller.configObject).subscribe(
             (response: any) => {
                 let res = response;
                 this.installing = false;
@@ -49,21 +49,8 @@ export class SpiceInstallerReview implements AfterViewInit {
                         this.toast.sendAlert('Error with: ' + e, 'error');
                     }
                 } else {
-                    this.http.post('config/set', this.spiceinstaller.configObject.backendconfig, {}).subscribe(
-                        (res: any) => {
-                            let response = res;
-                            if (response.success == true) {
-                                this.configurationService.setSiteData(response.site);
-                                this.router.navigate(['/login']);
-                            }
-                        },
-                        (err: any) => {
-                            switch (err.status) {
-                                case 401:
-
-                                    break;
-                            }
-                        });
+                    // move away fromt eh installer
+                    window.location.href = window.location.href.replace("#/install", "");
                 }
             },
             (error: any) => {

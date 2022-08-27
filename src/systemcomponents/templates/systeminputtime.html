@@ -30,5 +30,5 @@
             </div>
         </div>
     </div>
-    <div *ngIf="!isValid" class="slds-form-element__help"><system-label label="LBL_INPUT_INVALID"></system-label></div>
+    <div *ngIf="!isValid && !hideErrorMessage" class="slds-form-element__help"><system-label label="LBL_INPUT_INVALID"></system-label></div>
 </div>

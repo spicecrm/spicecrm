@@ -33,19 +33,14 @@
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
  ********************************************************************************/
+
 namespace SpiceCRM\modules\Projects;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class Project extends SugarBean {
-    // basic definition
-    public $object_name = 'Project';
-    public $module_dir = 'Projects';
-    public $table_name = 'projects';
-    public $new_schema = true;
-
+class Project extends SpiceBean {
     // calculated information
     public $total_estimated_effort;
     public $total_actual_effort;
@@ -73,8 +68,10 @@ class Project extends SugarBean {
             $wbsElements = $this->get_linked_beans('projectwbss');
             foreach($wbsElements as $wbs){
                 // handle planned efforts
+                if(is_string($wbs->planned_effort)) $wbs->planned_effort = intval($wbs->planned_effort);
                 $this->total_estimated_effort += $wbs->planned_effort;
                 // handle actual efforts
+                if(is_string($wbs->consumed_effort)) $wbs->consumed_effort = intval($wbs->consumed_effort);
                 $this->total_actual_effort += $wbs->consumed_effort;
             }
 

@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -39,7 +41,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'type' => 'varchar',
             'len' => '32',
             'required' => true,
-            'massupdate' => false,
             'comment' => 'proposal number'
         ],
         'proposalstatus' => [
@@ -48,7 +49,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'options' => 'proposalstatus_dom',
             'len' => '16',
             'vname' => 'LBL_STATUS',
-            'massupdate' => false,
             'comment' => 'Status: draft|submitted|accepted|rejected'
         ],
         'amount' => [
@@ -66,7 +66,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
         'currency_id' => [
             'name' => 'currency_id',
             'type' => 'id',
-            'group' => 'currency_id',
             'vname' => 'LBL_CURRENCY',
             'reportable' => false,
             'comment' => 'Currency used for display purposes'
@@ -82,7 +81,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'module' => 'Currencies',
             'source' => 'non-db',
             'function' => ['name' => 'getCurrencyNameDropDown', 'returns' => 'html'],
-            'studio' => 'false',
             'duplicate_merge' => 'disabled',
         ],
         'currency_symbol' => [
@@ -96,22 +94,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'module' => 'Currencies',
             'source' => 'non-db',
             'function' => ['name' => 'getCurrencySymbolDropDown', 'returns' => 'html'],
-            'studio' => 'false',
             'duplicate_merge' => 'disabled',
         ],
         'parent_id' => [
             'name' => 'parent_id',
             'vname' => 'LBL_PARENT_ID',
             'type' => 'id',
-            'group' => 'parent_fields'
         ],
         'parent_type' => [
             'name' => 'parent_type',
             'vname' => 'LBL_PARENT_TYPE',
             'type' => 'parent_type',
             'dbType' => 'varchar',
-            'group' => 'parent_fields',
-            'options' => 'parent_type_display',
         ],
         'parent_name' => [
             'name' => 'parent_name',
@@ -120,9 +114,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'type_name' => 'parent_type',
             'id_name' => 'parent_id',
             'type' => 'parent',
-            'group' => 'parent_fields',
             'source' => 'non-db',
-            'options' => 'parent_type_display',
         ],
         'accounts' => [
             'name' => 'accounts',
@@ -132,14 +124,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'opportunity_id' => [
             'name' => 'opportunity_id',
             'vname' => 'LBL_OPPORTUNITY_ID',
             'type' => 'id',
             'reportable' => false,
-            'massupdate' => false,
             'duplicate_merge' => 'disabled',
         ],
         'opportunity_name' => [
@@ -157,7 +147,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'len' => '255',
             'source' => 'non-db',
             'unified_search' => true,
-            'massupdate' => false,
         ],
         'opportunities' => [
             'name' => 'opportunities',
@@ -167,7 +156,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         // Files
         'file1name' => [
@@ -176,7 +164,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'type' => 'varchar',
             'len' => '255',
             'reportable' => true,
-            'massupdate' => false,
             'comment' => 'File name associated with the note (attachment)'
         ],
         'file1id' => [
@@ -188,21 +175,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'vname' => 'LBL_FILE1EXISTS',
             'type' => 'bool',
             'source' => 'non-db',
-            'massupdate' => false,
         ],
         'file1link' => [
             'name' => 'file1link',
             'vname' => 'LBL_FILE1EXISTS',
             'type' => 'varchar',
             'source' => 'non-db',
-            'massupdate' => false,
         ],
         'file1_mime_type' => [
             'name' => 'file1_mime_type',
             'vname' => 'LBL_FILE1_MIME_TYPE',
             'type' => 'varchar',
             'len' => '100',
-            'massupdate' => false,
             'comment' => 'Attachment MIME type'
         ],
         'file2name' => [
@@ -211,7 +195,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'type' => 'varchar',
             'len' => '255',
             'reportable' => true,
-            'massupdate' => false,
             'comment' => 'File name associated with the note (attachment)'
         ],
         'file2exists' => [
@@ -219,14 +202,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'vname' => 'LBL_FILE2EXISTS',
             'type' => 'bool',
             'source' => 'non-db',
-            'massupdate' => false,
         ],
         'file2link' => [
             'name' => 'file2link',
             'vname' => 'LBL_FILE2EXISTS',
             'type' => 'varchar',
             'source' => 'non-db',
-            'massupdate' => false,
         ],
         'file2id' => [
             'name' => 'file2id',
@@ -237,7 +218,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'vname' => 'LBL_FILE2_MIME_TYPE',
             'type' => 'varchar',
             'len' => '100',
-            'massupdate' => false,
             'comment' => 'Attachment MIME type'
         ],
         'file3name' => [
@@ -246,7 +226,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'type' => 'varchar',
             'len' => '255',
             'reportable' => true,
-            'massupdate' => false,
             'comment' => 'File name associated with the note (attachment)'
         ],
         'file3exists' => [
@@ -254,14 +233,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'vname' => 'LBL_FILE3EXISTS',
             'type' => 'bool',
             'source' => 'non-db',
-            'massupdate' => false,
         ],
         'file3link' => [
             'name' => 'file3link',
             'vname' => 'LBL_FILE3EXISTS',
             'type' => 'varchar',
             'source' => 'non-db',
-            'massupdate' => false,
         ],
         'file3id' => [
             'name' => 'file3id',
@@ -272,7 +249,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Proposal'] = [
             'vname' => 'LBL_FILE3_MIME_TYPE',
             'type' => 'varchar',
             'len' => '100',
-            'massupdate' => false,
             'comment' => 'Attachment MIME type'
         ],
         'proposal_notes_link' => [

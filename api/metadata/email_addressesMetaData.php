@@ -33,6 +33,7 @@
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
  ********************************************************************************/
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 /**
  * Relationship table linking email addresses to an instance of a Sugar Email object
@@ -120,7 +121,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['emails_email_addr_rel'] = [
 ];
 
 /**
- * Relationship table linking email addresses to various SugarBeans or type Person
+ * Relationship table linking email addresses to various SpiceBeans or type Person
  */
 SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel'] = [
     'table' => 'email_addr_bean_rel',

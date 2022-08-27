@@ -162,15 +162,15 @@ class UnifiedSearchAdvanced {
                 $mod_strings = []; // return_module_language always returns an empty array anyway
 
                 //retrieve the original list view defs and store for processing in case of custom layout changes
-                require('modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
+                require('modules/' . $seed->_module . '/metadata/listviewdefs.php');
 				$orig_listViewDefs = $listViewDefs;
 
-                if(file_exists('custom/modules/'.$seed->module_dir.'/metadata/listviewdefs.php'))
+                if(file_exists('custom/modules/'.$seed->_module.'/metadata/listviewdefs.php'))
                 {
-                    require('custom/modules/'.$seed->module_dir.'/metadata/listviewdefs.php');
+                    require('custom/modules/'.$seed->_module.'/metadata/listviewdefs.php');
                 }
 
-                if ( !isset($listViewDefs) || !isset($listViewDefs[$seed->module_dir]) )
+                if ( !isset($listViewDefs) || !isset($listViewDefs[$seed->_module]) )
                 {
                     continue;
                 }
@@ -181,11 +181,11 @@ class UnifiedSearchAdvanced {
                 {
                 	$listViewCheckField = strtoupper($field);
                 	//check to see if the field is in listview defs
-					if ( empty($listViewDefs[$seed->module_dir][$listViewCheckField]['default']) ) {
+					if ( empty($listViewDefs[$seed->_module][$listViewCheckField]['default']) ) {
 						//check to see if field is in original list view defs (in case we are using custom layout defs)
-						if (!empty($orig_listViewDefs[$seed->module_dir][$listViewCheckField]['default']) ) {
+						if (!empty($orig_listViewDefs[$seed->_module][$listViewCheckField]['default']) ) {
 							//if we are here then the layout has been customized, but the field is still needed for query creation
-							$listViewDefs[$seed->module_dir][$listViewCheckField] = $orig_listViewDefs[$seed->module_dir][$listViewCheckField];
+							$listViewDefs[$seed->_module][$listViewCheckField] = $orig_listViewDefs[$seed->_module][$listViewCheckField];
 						}
 
 					}
@@ -249,7 +249,7 @@ class UnifiedSearchAdvanced {
                     $where = '';
                 }
                 $displayColumns = [];
-                foreach($listViewDefs[$seed->module_dir] as $colName => $param)
+                foreach($listViewDefs[$seed->_module] as $colName => $param)
                 {
                     if(!empty($param['default']) && $param['default'] == true)
                     {
@@ -262,7 +262,7 @@ class UnifiedSearchAdvanced {
                 {
                 	$lv->displayColumns = $displayColumns;
                 } else {
-                	$lv->displayColumns = $listViewDefs[$seed->module_dir];
+                	$lv->displayColumns = $listViewDefs[$seed->_module];
                 }
 
                 $lv->export = false;
@@ -275,7 +275,7 @@ class UnifiedSearchAdvanced {
 
                 $lv->setup($seed, 'include/ListView/ListViewNoMassUpdate.tpl', $where, $params, 0, 10);
 
-                $module_results[$moduleName] = '<br /><br />' . get_form_header($GLOBALS['app_list_strings']['moduleList'][$seed->module_dir] . ' (' . $lv->data['pageData']['offsets']['total'] . ')', '', false);
+                $module_results[$moduleName] = '<br /><br />' . get_form_header($GLOBALS['app_list_strings']['moduleList'][$seed->_module] . ' (' . $lv->data['pageData']['offsets']['total'] . ')', '', false);
                 $module_counts[$moduleName] = $lv->data['pageData']['offsets']['total'];
 
                 if($lv->data['pageData']['offsets']['total'] == 0) {

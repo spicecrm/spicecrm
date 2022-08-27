@@ -267,7 +267,7 @@ class SpiceLogger implements LoggerTemplate
     )
     {
         //do not log on install!
-        if (!empty($GLOBALS['installing'])) return true;
+        if (!SpiceConfig::getInstance()->configExists() || SpiceConfig::getInstance()->installing) return true;
 
         $td = new TimeDate();
         $log = ["id" => SpiceUtils::createGuid(),

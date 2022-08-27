@@ -71,7 +71,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'name' => 'lead_source_description',
                 'vname' => 'LBL_SOURCE_DESCRIPTION',
                 'type' => 'text',
-                'group' => 'lead_source',
                 'comment' => 'Description of the lead source'
             ],
         'classification' =>
@@ -113,7 +112,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'name' => 'status_description',
                 'vname' => 'LBL_STATUS_DESCRIPTION',
                 'type' => 'text',
-                'group' => 'status',
                 'comment' => 'Description of the status of the lead'
             ],
         'department' =>
@@ -148,7 +146,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'len' => 'id',
                 'source' => 'non-db',
                 'reportable' => false,
-                'massupdate' => false,
             ],
         'reports_to_link' => [
             'name' => 'reports_to_link',
@@ -195,8 +192,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
           'len' => '255',
           'source' => 'non-db',
           'unified_search' => false,
-          'massupdate' => false,
-          'studio' => 'false',
         ),
         */
         'account_name' =>
@@ -224,7 +219,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'name' => 'account_description',
                 'vname' => 'LBL_ACCOUNT_DESCRIPTION',
                 'type' => 'text',
-                'group' => 'account_name',
                 'unified_search' => true,
                 'full_text_search' => 1,
                 'comment' => 'Description of lead account'
@@ -345,7 +339,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'name' => 'opportunity_amount',
                 'vname' => 'LBL_OPPORTUNITY_AMOUNT',
                 'type' => 'double',
-                'group' => 'opportunity_name',
                 'comment' => 'Amount of the opportunity'
             ],
         'campaign_id' =>
@@ -391,7 +384,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'importable' => 'false',
                 'duplicate_merge' => 'disabled',
-                'studio' => false,
             ],
         'm_accept_status_fields' =>
             [
@@ -406,7 +398,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'importable' => 'false',
                 'hideacl' => true,
                 'duplicate_merge' => 'disabled',
-                'studio' => false,
             ],
         'accept_status_id' =>
             [
@@ -414,11 +405,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'type' => 'varchar',
                 'source' => 'non-db',
                 'vname' => 'LBL_LIST_ACCEPT_STATUS',
-                'studio' => ['listview' => false],
             ],
         'accept_status_name' =>
             [
-                'massupdate' => false,
                 'name' => 'accept_status_name',
                 'type' => 'enum',
                 'source' => 'non-db',
@@ -435,7 +424,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'comment' => 'Main email address of lead',
                 'importable' => 'false',
-                'studio' => 'false',
             ],
         'webtolead_email2' =>
             [
@@ -446,7 +434,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'comment' => 'Secondary email address of lead',
                 'importable' => 'false',
-                'studio' => 'false',
             ],
         'webtolead_email_opt_out' =>
             [
@@ -456,8 +443,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'comment' => 'Indicator signaling if lead elects to opt out of email campaigns',
                 'importable' => 'false',
-                'massupdate' => false,
-                'studio' => 'false',
             ],
         'webtolead_invalid_email' =>
             [
@@ -467,14 +452,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'comment' => 'Indicator that email address for lead is invalid',
                 'importable' => 'false',
-                'massupdate' => false,
-                'studio' => 'false',
             ],
         'birthdate' =>
             [
                 'name' => 'birthdate',
                 'vname' => 'LBL_BIRTHDATE',
-                'massupdate' => false,
                 'type' => 'date',
                 'comment' => 'The birthdate of the contact'
             ],
@@ -485,22 +467,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'vname' => 'LBL_PORTAL_NAME',
                 'type' => 'varchar',
                 'len' => '255',
-                'group' => 'portal',
                 'comment' => 'Portal user name when lead created via lead portal',
-                //BEGIN SUGARCRM flav!=ent
-                'studio' => 'false',
-                //END SUGARCRM
             ],
         'portal_app' =>
             [
                 'name' => 'portal_app',
                 'vname' => 'LBL_PORTAL_APP',
                 'type' => 'varchar',
-                'group' => 'portal',
                 'len' => '255',
                 'comment' => 'Portal application that resulted in created of lead',
-                //BEGIN SUGARCRM flav!=ent
-                'studio' => 'false',
             ],
         'website' =>
             [

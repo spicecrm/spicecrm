@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -290,6 +292,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'type' => 'link',
             'module' => 'EmailTrackingActions',
             'relationship' => 'campaigntask_emailtrackingactions',
+            'source' => 'non-db'
+        ],
+        'trackinglinks' => [
+            'name' => 'trackinglinks',
+            'type' => 'link',
+            'module' => 'TrackingLinks',
+            'relationship' => 'campaigntask_trackinglinks',
             'source' => 'non-db'
         ]
     ],

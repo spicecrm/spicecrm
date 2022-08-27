@@ -1,0 +1,67 @@
+@media only screen and (min-width: 2542px) {
+    #signatureIcon {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 2542px) {
+    #signatureSelector {
+        display: none;
+    }
+}
+
+.spice-richtext-editor h1 { font-size: 2em; margin: .67em 0 }
+.spice-richtext-editor h2 { font-size: 1.5em; margin: .75em 0 }
+.spice-richtext-editor h3 { font-size: 1.17em; margin: .83em 0 }
+
+.spice-richtext-editor h4 { font-size: 1em; margin: 1.33em 0 }
+.spice-richtext-editor h5 { font-size: .83em; margin: 1.5em 0 }
+.spice-richtext-editor h6 { font-size: .75em; margin: 1.67em 0 }
+
+.spice-richtext-editor h1,
+.spice-richtext-editor h2,
+.spice-richtext-editor h3,
+.spice-richtext-editor h4,
+.spice-richtext-editor h5,
+.spice-richtext-editor h6,
+.spice-richtext-editor b,
+.spice-richtext-editor div,
+.spice-richtext-editor p
+
+{
+   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* container for the rich text editor */
+.slds-rich-text-editor {
+    max-height: none;
+    resize: vertical;
+    overflow: auto;
+}
+
+.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused){
+    border: none !important;
+    height: 100vh !important;
+}
+.ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused{
+    border: none !important;
+    height: 100vh !important;
+}
+
+.selected {
+    background: grey;
+}
+
+.slds-button[aria-pressed=true] {
+    color:#706E6BFF;
+}
+
+.slds-media__body {
+    min-width: unset !important;
+}
+.slds-color-picker__selector.slds-popover{
+    width: 12rem;
+}
+.slds-color-picker__selector .slds-popover__footer{
+    background-color: unset ;
+}

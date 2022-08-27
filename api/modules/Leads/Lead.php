@@ -48,15 +48,6 @@ use SpiceCRM\includes\SugarObjects\templates\person\Person;
 // Lead is used to store profile information for people who may become customers.
 class Lead extends Person {
 
-	var $table_name = "leads";
-	var $object_name = "Lead";
-	var $object_names = "Leads";
-	var $module_dir = "Leads";
-
-	function __construct() {
-		parent::__construct();
-	}
-
 	function fill_in_additional_list_fields()
 	{
 		parent::fill_in_additional_list_fields();

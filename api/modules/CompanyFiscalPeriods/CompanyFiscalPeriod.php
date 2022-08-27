@@ -27,25 +27,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\CompanyFiscalPeriods;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class CompanyFiscalPeriod extends SugarBean {
-    public $module_dir = 'CompanyFiscalPeriods';
-    public $object_name = 'CompanyFiscalPeriod';
-    public $table_name = 'companyfiscalperiods';
-    public $new_schema = true;
-    
-    public $additional_column_fields = [];
-
-    public $relationship_fields = [
-    ];
-
-
-    public function __construct(){
-        parent::__construct();
-    }
+class CompanyFiscalPeriod extends SpiceBean {
 
     public function get_summary_text(){
         return $this->name;

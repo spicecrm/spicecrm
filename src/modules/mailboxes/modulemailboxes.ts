@@ -13,18 +13,19 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {ObjectFields} from "../../objectfields/objectfields";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {mailboxesEmails} from "./services/mailboxesemail.service";
+import {mailboxesEmails} from "./services/mailboxesemail.service";
 
-import /*embed*/ {MailboxManager} from "./components/mailboxmanager";
-import /*embed*/ {MailboxManagerHeader} from "./components/mailboxmanagerheader";
-import /*embed*/ {MailboxManagerEmails} from "./components/mailboxmanageremails";
-import /*embed*/ {MailboxManagerEmail} from "./components/mailboxmanageremail";
-import /*embed*/ {MailboxmanagerEmailDetails} from "./components/mailboxmanageremaildetails";
-import /*embed*/ {MailboxEmailToLeadButton} from "./components/mailboxemailtoleadbutton";
-import /*embed*/ {MailboxEmailToLeadModal} from "./components/mailboxemailtoleadmodal";
-import /*embed*/ {MailboxEmailToLeadEmailText} from "./components/mailboxemailtoleademailtext";
-import /*embed*/ { MailboxesDashlet } from "./components/mailboxesdashlet";
-import /*embed*/ {MailboxManagerTextMessages} from "./components/mailboxmanagertextmessages";
+import {MailboxManager} from "./components/mailboxmanager";
+import {MailboxManagerHeader} from "./components/mailboxmanagerheader";
+import {MailboxManagerEmails} from "./components/mailboxmanageremails";
+import {MailboxManagerEmail} from "./components/mailboxmanageremail";
+import {MailboxmanagerEmailDetails} from "./components/mailboxmanageremaildetails";
+import {MailboxEmailToLeadButton} from "./components/mailboxemailtoleadbutton";
+import {MailboxEmailToLeadModal} from "./components/mailboxemailtoleadmodal";
+import {MailboxEmailToLeadEmailText} from "./components/mailboxemailtoleademailtext";
+import { MailboxesDashlet } from "./components/mailboxesdashlet";
+import {MailboxManagerTextMessages} from "./components/mailboxmanagertextmessages";
+import {MailboxSetDefaultButton} from "./components/mailboxsetdefaultbutton";
 import /*embed*/  {MailboxManagerTextMessage} from "./components/mailboxmanagertextmessage";
 import /*embed*/  {fieldMailboxes} from "./fields/fieldmailboxes";
 
@@ -41,6 +42,7 @@ import /*embed*/  {fieldMailboxes} from "./fields/fieldmailboxes";
         MailboxEmailToLeadModal,
         MailboxEmailToLeadEmailText,
         MailboxesDashlet,
+        MailboxSetDefaultButton,
         fieldMailboxes
     ],
     imports: [

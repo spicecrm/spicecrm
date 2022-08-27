@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -54,11 +56,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['OpportunityStage'] = [
             'options' => 'numeric_range_search_dom',
             'enable_range_search' => true,
         ],
-        'amount_usdollar' => [
+        'amount_usdollar' => [ /**@deprecated**/
             'name' => 'amount_usdollar',
             'vname' => 'LBL_AMOUNT_USDOLLAR',
             'type' => 'currency',
-            'group' => 'amount',
+            'dbType' => 'double',
+            'disable_num_format' => true,
+            'audited' => true
+        ],
+        'amount_systemcurrency' => [
+            'name' => 'amount_systemcurrency',
+            'vname' => 'LBL_AMOUNT_SYSTEMCURRENCY',
+            'type' => 'currency',
             'dbType' => 'double',
             'disable_num_format' => true,
             'audited' => true
@@ -89,7 +98,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['OpportunityStage'] = [
         'currency_id' => [
             'name' => 'currency_id',
             'type' => 'id',
-            'group' => 'currency_id',
             'vname' => 'LBL_CURRENCY',
         ],
         'date_closed' => [

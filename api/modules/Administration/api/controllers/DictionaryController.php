@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarCache\SugarCache;
@@ -181,18 +180,13 @@ class DictionaryController
                 if ($field_defs['type'] == 'link') {
                     if($nodeModule->load_relationship($field_name)) {
                         //BUGFIX 2010/07/13 to display alternative module name if vname is not maintained
-                        $entry = [
-                            'path' => "link:$module:$field_name",
+                        $returnArray[] = [
+                            'path' => 'link:' . $module . ':' . $field_name,
                             'module' => $nodeModule->$field_name->getRelatedModuleName(),
-                            'parentModule' => $module,
                             'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false,
-                            'label' => $field_defs['vname'],
-                            'link' => $field_name,
-                            'hasRelationshipFields' => $nodeModule->$field_name->relationship->type == 'many-to-many'
+                            'label' => $field_defs['vname']
                         ];
-
-                        $returnArray[] = $entry;
                     }
                 }
             }
@@ -252,45 +246,9 @@ class DictionaryController
      * @return mixed
      * @throws Exception
      */
-    public function getModuleRelationshipFields(Request $req, Response $res, array $args): Response
-    {
-        // root:Contacts::link:Contacts:opportunities::relationship:Contacts:opportunities::field:contact_role
-        $bean = BeanFactory::newBean($args['module']);
-
-        if (!$bean->load_relationship($args['link'])) {
-            return $res->withJson([]);
-        }
-
-        $fields = array_values(
-            array_map(function ($field) {
-                $field['id'] = "field:{$field['name']}";
-                return $field;
-            }, $bean->{$args['link']}->relationship->def['fields'])
-        );
-
-        return $res->withJson(array_values($fields));
-    }
-
-    /**
-     * get module relationship definitions
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return mixed
-     * @throws Exception
-     */
-    public function getAuditFields(Request $req, Response $res, array $args): Response
-    {
-        $fields = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
-
-        $fields = array_values(
-            array_map(function ($field) {
-                $field['id'] = "field:{$field['name']}";
-                return $field;
-            }, $fields)
-        );
-
-        return $res->withJson(array_values($fields));
+    public function getModuleRelationships(Request $req, Response $res, array $args): Response {
+        $relationships = SpiceDictionaryVardefs::loadRelationships($args['module']);
+        return $res->withJson($this->buildFieldArray($args['module']));
     }
 
     private function buildFieldArray($module)

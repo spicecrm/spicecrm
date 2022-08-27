@@ -36,6 +36,7 @@
 
 
 
+
 class SoapError{
 	var $name;
 	var $number;

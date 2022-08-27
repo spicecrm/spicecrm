@@ -10,108 +10,101 @@ import {ObjectFields}      from "../objectfields/objectfields";
 import {ObjectComponents}      from "../objectcomponents/objectcomponents";
 import {SystemComponents}      from "../systemcomponents/systemcomponents";
 
-/**
- * @ignore
- */
-declare var _: any;
+import {GlobalCopyright} from "./components/globalcopyright";
+import {GlobalHeader} from "./components/globalheader";
+import {GlobalHeaderTrialBar} from "./components/globalheadertrialbar";
+import {GlobalHeaderTop} from "./components/globalheadertop";
+import {GlobalHeaderSearch} from "./components/globalheadersearch";
+import {GlobalHeaderSearchResultsItems} from "./components/globalheadersearchresultsitems";
+import {GlobalHeaderSearchResultsItem} from "./components/globalheadersearchresultsitem";
+import {GlobalHeaderSearchRecentItems} from "./components/globalheadersearchrecentitems";
+import {GlobalHeaderSearchRecentItem} from "./components/globalheadersearchrecentitem";
+import {GlobalHeaderTools} from "./components/globalheadertools";
+import {GlobalHeaderActions} from "./components/globalheaderactions";
+import {GlobalHeaderActionItem} from "./components/globalheaderactionitem";
+import {GlobalHeaderFavorite} from "./components/globalheaderfavorite";
+import {GlobalHeaderLabelInlineEdit} from "./components/globalheaderlabelinlineedit";
+import {GlobalHeaderWorkbench} from "./components/globalheaderworkbench";
+import {GlobalHeaderReload} from "./components/globalheaderreload";
+import {GlobalFooter} from "./components/globalfooter";
 
-import {loginService, loginCheck} from "../services/login.service";
-import {metadata} from "../services/metadata.service";
+import {GlobalSetup} from "./components/globalsetup";
+import {GlobalLogin} from "./components/globallogin";
+import {GlobalLoginLoading} from "./components/globalloginloading";
+import {GlobalLoginChangePassword} from "./components/globalloginchangepassword";
+import {GlobalLoginForgotPassword} from "./components/globalloginforgotpassword";
+import {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
+import {GlobalLoginGoogle} from "./components/globallogingoogle";
+import {GlobalLoginImage} from './components/globalloginimage';
+import {GlobalReLogin} from './components/globalrelogin';
+import {GlobalReConnect} from './components/globalreconnect';
 
-import /*embed*/ {GlobalCopyright} from "./components/globalcopyright";
-import /*embed*/ {GlobalHeader} from "./components/globalheader";
-import /*embed*/ {GlobalHeaderTrialBar} from "./components/globalheadertrialbar";
-import /*embed*/ {GlobalHeaderTop} from "./components/globalheadertop";
-import /*embed*/ {GlobalHeaderSearch} from "./components/globalheadersearch";
-import /*embed*/ {GlobalHeaderSearchResultsItems} from "./components/globalheadersearchresultsitems";
-import /*embed*/ {GlobalHeaderSearchResultsItem} from "./components/globalheadersearchresultsitem";
-import /*embed*/ {GlobalHeaderSearchRecentItems} from "./components/globalheadersearchrecentitems";
-import /*embed*/ {GlobalHeaderSearchRecentItem} from "./components/globalheadersearchrecentitem";
-import /*embed*/ {GlobalHeaderTools} from "./components/globalheadertools";
-import /*embed*/ {GlobalHeaderActions} from "./components/globalheaderactions";
-import /*embed*/ {GlobalHeaderActionItem} from "./components/globalheaderactionitem";
-import /*embed*/ {GlobalHeaderFavorite} from "./components/globalheaderfavorite";
-import /*embed*/ {GlobalHeaderLabelInlineEdit} from "./components/globalheaderlabelinlineedit";
-import /*embed*/ {GlobalHeaderWorkbench} from "./components/globalheaderworkbench";
-import /*embed*/ {GlobalHeaderReload} from "./components/globalheaderreload";
-import /*embed*/ {GlobalFooter} from "./components/globalfooter";
+import {GlobalNavigation} from "./components/globalnavigation";
+import {GlobalNavigationMenu} from "./components/globalnavigationmenu";
+import {GlobalNavigationMenuItemActionContainer} from "./components/globalnavigationmenuitemactioncontainer";
+import {GlobalNavigationMenuItem} from "./components/globalnavigationmenuitem";
+import {GlobalNavigationMenuItemNew} from "./components/globalnavigationmenuitemnew";
+import {GlobalNavigationMenuItemActionNew} from "./components/globalnavigationmenuitemactionnew";
+import {GlobalNavigationMenuItemRoute} from "./components/globalnavigationmenuitemroute";
+import {GlobalNavigationMenuItemActionRoute} from "./components/globalnavigationmenuitemactionroute";
+import {GlobalNavigationMenuItemIcon} from "./components/globalnavigationmenuitemicon";
+import {GlobalNavigationMenuMore} from "./components/globalnavigationmenumore";
+import {GlobalNavigationCompact} from "./components/globalnavigationcompact";
+import {GlobalDockedComposerContainer} from "./components/globaldockedcomposercontainer";
+import {GlobalDockedComposer} from "./components/globaldockedcomposer";
+import {GlobalDockedComposerCall} from "./components/globaldockedcomposercall";
+import {GlobalDockedComposerModal} from "./components/globaldockedcomposermodal";
+import {GlobalDockedComposerOverflow} from "./components/globaldockedcomposeroverflow";
+import {GlobalDockedComposerMessagesBadge} from "./components/globaldockedcomposermessagesbadge";
+import {GlobalComposeButton} from "./components/globalcomposebutton";
+import {GlobalAppLauncher} from "./components/globalapplauncher";
+import {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
+import {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
-import /*embed*/ {GlobalSetup} from "./components/globalsetup";
-import /*embed*/ {GlobalLogin} from "./components/globallogin";
-import /*embed*/ {GlobalLoginLoading} from "./components/globalloginloading";
-import /*embed*/ {GlobalLoginChangePassword} from "./components/globalloginchangepassword";
-import /*embed*/ {GlobalLoginForgotPassword} from "./components/globalloginforgotpassword";
-import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
-import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
-import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
-import /*embed*/ {GlobalReLogin} from './components/globalrelogin';
-import /*embed*/ {GlobalReConnect} from './components/globalreconnect';
+import {GlobalNavigationTabbed} from "./components/globalnavigationtabbed";
+import {GlobalNavigationTabbedBrowser} from "./components/globalnavigationtabbedbrowser";
+import {GlobalNavigationTabbedBrowserModal} from "./components/globalnavigationtabbedbrowsermodal";
+import {GlobalNavigationTabbedBrowserModalTab} from "./components/globalnavigationtabbedbrowsermodaltab";
+import {GlobalNavigationTabbedBrowserModalTabActions} from "./components/globalnavigationtabbedbrowsermodaltabactions";
+import {GlobalNavigationTabbedMenuModules} from "./components/globalnavigationtabbedmenumodules";
+import {GlobalNavigationTabbedMenuModuleMenu} from "./components/globalnavigationtabbedmenumodulemenu";
+import {GlobalNavigationTabbedMenuTab} from "./components/globalnavigationtabbedmenutab";
+import {GlobalNavigationTabbedMoreTab} from "./components/globalnavigationtabbedmoretab";
+import {GlobalNavigationTabbedMenu} from "./components/globalnavigationtabbedmenu";
+import {GlobalNavigationTabbedSubtabItem} from "./components/globalnavigationtabbedsubtabitem";
+import {GlobalNavigationTabbedSubTabMoreTab} from "./components/globalnavigationtabbedsubtabmoretab";
+import {GlobalNavigationTabbedSubtabs} from "./components/globalnavigationtabbedsubtabs";
 
-import /*embed*/ {GlobalNavigation} from "./components/globalnavigation";
-import /*embed*/ {GlobalNavigationMenu} from "./components/globalnavigationmenu";
-import /*embed*/ {GlobalNavigationMenuItemActionContainer} from "./components/globalnavigationmenuitemactioncontainer";
-import /*embed*/ {GlobalNavigationMenuItem} from "./components/globalnavigationmenuitem";
-import /*embed*/ {GlobalNavigationMenuItemNew} from "./components/globalnavigationmenuitemnew";
-import /*embed*/ {GlobalNavigationMenuItemActionNew} from "./components/globalnavigationmenuitemactionnew";
-import /*embed*/ {GlobalNavigationMenuItemRoute} from "./components/globalnavigationmenuitemroute";
-import /*embed*/ {GlobalNavigationMenuItemActionRoute} from "./components/globalnavigationmenuitemactionroute";
-import /*embed*/ {GlobalNavigationMenuItemIcon} from "./components/globalnavigationmenuitemicon";
-import /*embed*/ {GlobalNavigationMenuMore} from "./components/globalnavigationmenumore";
-import /*embed*/ {GlobalNavigationCompact} from "./components/globalnavigationcompact";
-import /*embed*/ {GlobalDockedComposerContainer} from "./components/globaldockedcomposercontainer";
-import /*embed*/ {GlobalDockedComposer} from "./components/globaldockedcomposer";
-import /*embed*/ {GlobalDockedComposerCall} from "./components/globaldockedcomposercall";
-import /*embed*/ {GlobalDockedComposerModal} from "./components/globaldockedcomposermodal";
-import /*embed*/ {GlobalDockedComposerOverflow} from "./components/globaldockedcomposeroverflow";
-import /*embed*/ {GlobalDockedComposerMessagesBadge} from "./components/globaldockedcomposermessagesbadge";
-import /*embed*/ {GlobalComposeButton} from "./components/globalcomposebutton";
-import /*embed*/ {GlobalAppLauncher} from "./components/globalapplauncher";
-import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
-import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
+import {GlobalUser} from "./components/globaluser";
+import {GlobaUserPanel} from "./components/globaluserpanel";
+import {GlobaUserPanelIcon} from "./components/globauserpanelicon";
 
-import /*embed*/ {GlobalNavigationTabbed} from "./components/globalnavigationtabbed";
-import /*embed*/ {GlobalNavigationTabbedBrowser} from "./components/globalnavigationtabbedbrowser";
-import /*embed*/ {GlobalNavigationTabbedBrowserModal} from "./components/globalnavigationtabbedbrowsermodal";
-import /*embed*/ {GlobalNavigationTabbedBrowserModalTab} from "./components/globalnavigationtabbedbrowsermodaltab";
-import /*embed*/ {GlobalNavigationTabbedBrowserModalTabActions} from "./components/globalnavigationtabbedbrowsermodaltabactions";
-import /*embed*/ {GlobalNavigationTabbedMenuModules} from "./components/globalnavigationtabbedmenumodules";
-import /*embed*/ {GlobalNavigationTabbedMenuModuleMenu} from "./components/globalnavigationtabbedmenumodulemenu";
-import /*embed*/ {GlobalNavigationTabbedMenuTab} from "./components/globalnavigationtabbedmenutab";
-import /*embed*/ {GlobalNavigationTabbedMoreTab} from "./components/globalnavigationtabbedmoretab";
-import /*embed*/ {GlobalNavigationTabbedMenu} from "./components/globalnavigationtabbedmenu";
-import /*embed*/ {GlobalNavigationTabbedSubtabItem} from "./components/globalnavigationtabbedsubtabitem";
-import /*embed*/ {GlobalNavigationTabbedSubTabMoreTab} from "./components/globalnavigationtabbedsubtabmoretab";
-import /*embed*/ {GlobalNavigationTabbedSubtabs} from "./components/globalnavigationtabbedsubtabs";
+import {GlobalRecentItems} from "./components/globalrecentitems";
+import {GlobalSearch} from "./components/globalsearch";
+import {GlobalSearchModule} from "./components/globalsearchmodule";
+import {GlobalSearchModuleOnly} from "./components/globalsearchmoduleonly";
+import {GlobalSearchModuleItem} from "./components/globalsearchmoduleitem";
 
-import /*embed*/ {GlobalUser} from "./components/globaluser";
-import /*embed*/ {GlobaUserPanel} from "./components/globaluserpanel";
-import /*embed*/ {GlobaUserPanelIcon} from "./components/globauserpanelicon";
+import {GlobalNewsFeed} from "./components/globalnewsfeed";
+import {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
 
-import /*embed*/ {GlobalRecentItems} from "./components/globalrecentitems";
-import /*embed*/ {GlobalSearch} from "./components/globalsearch";
-import /*embed*/ {GlobalSearchModule} from "./components/globalsearchmodule";
-import /*embed*/ {GlobalSearchModuleOnly} from "./components/globalsearchmoduleonly";
-import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmoduleitem";
-
-import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
-import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
-
-import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
-import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
-import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
-import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
-import /*embed*/ {GlobalHeaderNotificationsItemGeneric} from './components/globalheadernotificationsitemgeneric';
-import /*embed*/ {GlobalHeaderNotificationsItemChange} from './components/globalheadernotificationsitemchange';
-import /*embed*/ {GlobalHeaderNotificationsItemAssign} from './components/globalheadernotificationsitemassign';
-import /*embed*/ {GlobalHeaderNotificationsItemDelete} from './components/globalheadernotificationsitemdelete';
-import /*embed*/ {GlobalHeaderNotificationsItemReminder} from './components/globalheadernotificationsitemreminder';
-import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
-import /*embed*/ {GlobalNotificationsListView} from './components/globalnotificationslistview';
+import {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
+import {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
+import {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
+import {GlobalHeaderImage} from './components/globalheaderimage';
+import {GlobalHeaderNotificationsItemGeneric} from './components/globalheadernotificationsitemgeneric';
+import {GlobalHeaderNotificationsItemChange} from './components/globalheadernotificationsitemchange';
+import {GlobalHeaderNotificationsItemAssign} from './components/globalheadernotificationsitemassign';
+import {GlobalHeaderNotificationsItemDelete} from './components/globalheadernotificationsitemdelete';
+import {GlobalHeaderNotificationsItemReminder} from './components/globalheadernotificationsitemreminder';
+import {GlobalHeaderNotifications} from './components/globalheadernotifications';
+import {GlobalNotificationsListView} from './components/globalnotificationslistview';
 import {GlobalCountdown} from "./components/globalcountdown";
 import {GlobalHeaderReminders} from "./components/globalheaderreminders";
 import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanager";
 import {GlobalLoginOAuth2} from "./components/globalloginoauth2";
 import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
+import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -144,6 +137,7 @@ import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
         GlobalHeaderLabelInlineEdit,
         GlobalHeaderWorkbench,
         GlobalHeaderReload,
+        GlobalHeaderReloadModal,
         GlobalHeaderReminders,
         GlobalFooter,
         GlobalNavigation,
@@ -214,21 +208,6 @@ import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
         GlobalLoginOAuth2,
         GlobalLoginOAuth2Button
     ],
-    entryComponents: [
-        GlobalCopyright,
-        GlobalHeader,
-        GlobalNavigationMenuItem,
-        GlobalNavigationMenuItemNew,
-        GlobalNavigationMenuMore,
-        GlobalHeaderTop,
-        GlobalHeaderSearch,
-        GlobalHeaderSearchResultsItems,
-        GlobalHeaderSearchResultsItem,
-        GlobalHeaderSearchRecentItems,
-        GlobalHeaderSearchRecentItem,
-        GlobalDockedComposerContainer,
-        GlobalDockedComposer,
-        GlobalDockedComposerContainer],
     exports: [
         GlobalCopyright,
         GlobalNewsFeed,
@@ -242,7 +221,4 @@ import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
     ]
 })
 export class GlobalComponents {
-
-    constructor() {
-    }
 }

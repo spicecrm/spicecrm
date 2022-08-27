@@ -231,7 +231,12 @@ export class UserAddModal implements OnInit {
                 resErr => {
                     if (resErr.error.error.message) {
                         this.addcontainer.element.nativeElement.scrollTop = 0;
-                        this.model.setFieldMessage("error", resErr.error.error.message, "email1", "validation");
+                        if(resErr.error.error.errorCode == 'duplicateUsername') {
+                            this.model.setFieldMessage("error", resErr.error.error.message, "user_name", "validation");
+                        }
+                        if(resErr.error.error.errorCode == 'duplicateEmail1') {
+                            this.model.setFieldMessage("error", resErr.error.error.message, "email1", "validation");
+                        }
                     }
                 });
     }

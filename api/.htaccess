@@ -12,8 +12,6 @@ RewriteEngine On
 # RewriteCond %{REQUEST_FILENAME} !-f
 # RewriteRule "^(.*)KREST(.*)" "$1/$2" [R=302,L]
 
-RewriteCond %{REQUEST_URI} ^(.*)KREST(.*)$
-RewriteRule ^ KREST/krestlegacy.php [QSA,L]
 
 RewriteCond %{REQUEST_URI} ^(.*)soap(.*)$
 RewriteRule ^ service/v4_1/soap.php [QSA,L]
@@ -23,8 +21,13 @@ RewriteCond %{REQUEST_URI} ^(.*)install(.*)$ [OR]
 RewriteCond %{REQUEST_URI} ^(.*)install(\.php)$
 RewriteRule ^ include/SpiceInstaller/install.php [QSA,L]
 
-RewriteCond %{REQUEST_URI} !^(.*)KREST(.*)$
+# use the rewrite rule below if loaded as CLI in Apache
+<IfModule !mod_php.so>
+    RewriteRule ^ index.php?PHP_AUTH_DIGEST_RAW=%{HTTP:Authorization} [QSA,L]
+</IfModule>
+
+# the default rewrite
 RewriteRule ^ index.php [QSA,L]
 
-# use the rewrite rule below if loaded as CLI in Apache
-# RewriteRule ^ index.php?PHP_AUTH_DIGEST_RAW=%{HTTP:Authorization} [QSA,L]
+
+

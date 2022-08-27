@@ -47,7 +47,7 @@ export class fieldSelectTreeSearch
 
     get results()
     {
-        return this.sel_fields.filter((e) => {return e.display_name.includes(this.search)});
+        return this.sel_fields.filter((e) => {return e.display_name.toLowerCase().includes(this.search.toLowerCase())});
     }
 
     flatteningOutCategoryTree(tree)

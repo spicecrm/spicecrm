@@ -34,12 +34,13 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\data\Link2;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 
 
@@ -58,8 +59,8 @@ class One2MBeanRelationship extends One2MRelationship
     }
 
     /**
-     * @param  $lhs SugarBean left side bean to add to the relationship.
-     * @param  $rhs SugarBean right side bean to add to the relationship.
+     * @param  $lhs SpiceBean left side bean to add to the relationship.
+     * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
@@ -316,8 +317,8 @@ class One2MBeanRelationship extends One2MRelationship
      *
      * If it does return true otherwise return false
      *
-     * @param SugarBean $lhs        Left hand side of the relationship
-     * @param SugarBean $rhs        Right hand side of the relationship
+     * @param SpiceBean $lhs        Left hand side of the relationship
+     * @param SpiceBean $rhs        Right hand side of the relationship
      * @return boolean
      */
     public function relationship_exists($lhs, $rhs)

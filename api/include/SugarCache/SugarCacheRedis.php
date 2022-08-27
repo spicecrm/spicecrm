@@ -96,8 +96,8 @@ class SugarCacheRedis extends SugarCacheAbstract
         try {
             if ( !($this->_redis instanceOf Redis) ) {
                 $this->_redis = new Redis();
-                $this->_host = SpiceConfig::getInstance()->get('external_cache.redis.host', $this->_host);
-                $this->_port = SpiceConfig::getInstance()->get('external_cache.redis.port', $this->_port);
+                $this->_host = SpiceConfig::getInstance()->config['cache']['redis_host'] ?:  $this->_host;
+                $this->_port = SpiceConfig::getInstance()->config['cache']['redis_port'] ?:  $this->_port;
                 if ( !$this->_redis->connect($this->_host,$this->_port) ) {
                     return false;
                 }

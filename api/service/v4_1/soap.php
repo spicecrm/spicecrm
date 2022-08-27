@@ -38,6 +38,8 @@
 // require the autoloader
 require_once dirname(__FILE__) . '/../../vendor/autoload.php';
 
+$GLOBALS['soapstart'] = microtime(true);
+
 /**
  * This is a soap entry point for soap version 4
  */

@@ -1,6 +1,6 @@
-<div *ngIf="isAdmin() && !loadTasks" class="slds-p-around--xx-small" [title]="language.getLabel('LBL_RELOAD_CONFIGURATION')" (click)="reloadConf()">
+<div *ngIf="isAdmin() && !loadTasks" class="slds-p-around--xx-small" system-title="LBL_RELOAD_CONFIGURATION" (click)="reloadConf()">
     <system-utility-icon [icon]="'sync'" [size]="'x-small'"></system-utility-icon>
 </div>
-<div *ngIf="isAdmin() && loadTasks" class="slds-p-around--xx-small" [title]="language.getLabel('LBL_RELOAD_CONFIGURATION')">
+<div *ngIf="isAdmin() && loadTasks" class="slds-p-around--xx-small" system-title="LBL_RELOAD_CONFIGURATION">
     <system-spinner size="12"></system-spinner>
 </div>

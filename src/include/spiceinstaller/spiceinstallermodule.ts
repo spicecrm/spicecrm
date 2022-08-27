@@ -6,24 +6,24 @@ import {FormsModule}   from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 import {NgModule} from "@angular/core";
 import {RouterModule} from "@angular/router";
-import /*embed*/ {spiceinstaller} from "./services/spiceinstaller.service";
+import {spiceinstaller} from "./services/spiceinstaller.service";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 
-import /*embed*/ {SpiceInstaller} from "./components/spiceinstaller";
-import /*embed*/ {SpiceInstallerProgressIndicator} from "./components/spiceinstallerprogressindicator";
-import /*embed*/ {SpiceInstallerDetailContainer} from "./components/spiceinstallerdetailcontainer";
-import /*embed*/ {SpiceInstallerSetBackEnd} from "./components/spiceinstallersetbackend";
-import /*embed*/ {SpiceInstallerDatabase} from "./components/spiceinstallerdatatabase";
-import /*embed*/ {SpiceInstallerFTS} from "./components/spiceinstallerfts";
-import /*embed*/ {SpiceInstallerSystemCheck} from "./components/spiceinstallersystemcheck";
-import /*embed*/ {SpiceInstallerLicence} from "./components/spiceinstallerlicence";
-import /*embed*/ {SpiceInstallerCredentials} from "./components/spiceinstallercredentials";
-import /*embed*/ {SpiceInstallerSetLanguage} from "./components/spiceinstallersetlanguage";
-import /*embed*/ {SpiceInstallerReview} from "./components/spiceinstallerreview";
-import /*embed*/ {SpiceinstallerMySQLi} from "./components/spiceinstallermysqli";
-import /*embed*/ {SpiceinstallerPostgreSQL} from "./components/spiceinstallerpgsql";
-import /*embed*/ {SpiceinstallerOCI8} from "./components/spiceinstalleroci8";
+import {SpiceInstaller} from "./components/spiceinstaller";
+import {SpiceInstallerProgressIndicator} from "./components/spiceinstallerprogressindicator";
+import {SpiceInstallerDetailContainer} from "./components/spiceinstallerdetailcontainer";
+import {SpiceInstallerSetBackEnd} from "./components/spiceinstallersetbackend";
+import {SpiceInstallerDatabase} from "./components/spiceinstallerdatatabase";
+import {SpiceInstallerFTS} from "./components/spiceinstallerfts";
+import {SpiceInstallerSystemCheck} from "./components/spiceinstallersystemcheck";
+import {SpiceInstallerLicence} from "./components/spiceinstallerlicence";
+import {SpiceInstallerCredentials} from "./components/spiceinstallercredentials";
+import {SpiceInstallerSetLanguage} from "./components/spiceinstallersetlanguage";
+import {SpiceInstallerReview} from "./components/spiceinstallerreview";
+import {SpiceinstallerMySQLi} from "./components/spiceinstallermysqli";
+import {SpiceinstallerPostgreSQL} from "./components/spiceinstallerpgsql";
+import {SpiceinstallerOCI8} from "./components/spiceinstalleroci8";
 
 
 @NgModule({
@@ -31,10 +31,8 @@ import /*embed*/ {SpiceinstallerOCI8} from "./components/spiceinstalleroci8";
         CommonModule,
         FormsModule,
         DirectivesModule,
-        SystemComponents,
-        RouterModule.forRoot([
-            {path: "install", component: SpiceInstaller}
-        ])],
+        SystemComponents
+    ],
     declarations: [
         SpiceInstaller,
         SpiceInstallerProgressIndicator,
@@ -50,6 +48,9 @@ import /*embed*/ {SpiceinstallerOCI8} from "./components/spiceinstalleroci8";
         SpiceInstallerCredentials,
         SpiceInstallerSetLanguage,
         SpiceInstallerReview
+    ],
+    exports:[
+        SpiceInstaller
     ],
     providers: [spiceinstaller]
 })

@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {backend} from "../../services/backend.service";
@@ -24,7 +24,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
         ])
     ]
 })
-export class fieldCategoriesTree {
+export class fieldCategoriesTree{
 
     /**
      * the selected levels
@@ -68,6 +68,7 @@ export class fieldCategoriesTree {
         public model: model,
         public backend: backend,
         public config: configurationService,
+        public elementref: ElementRef,
         public language: language,
     ) {
 
@@ -94,6 +95,17 @@ export class fieldCategoriesTree {
             };
         }
         return false;
+    }
+
+    /**
+     * gets the style for the box
+     */
+    get boxStyle(){
+        let box = this.elementref.nativeElement.getBoundingClientRect();
+        let maxHeight = window.innerHeight - box.top - 30;
+        return {
+            height : maxHeight + 'px'
+        }
     }
 
     public nodeStyle(n){

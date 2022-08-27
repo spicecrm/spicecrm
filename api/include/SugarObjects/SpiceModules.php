@@ -58,7 +58,8 @@ class SpiceModules
     public function loadModules($forceReload = false): void {
         if (!isset($_SESSION['modules']) || $forceReload) {
             $this->modules = [];
-            $modules = DBManagerFactory::getInstance()->query("SELECT id, module, bean, beanfile, visible, tagging FROM sysmodules UNION SELECT id, module, bean, beanfile, visible, tagging FROM syscustommodules");
+            $columns = ['id', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id'];
+            $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns)." FROM sysmodules UNION SELECT ".implode(', ', $columns)." FROM syscustommodules");
             while ($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)) {
                 $this->moduleList[$module['module']] = $module['module'];
 
@@ -79,7 +80,7 @@ class SpiceModules
                         $this->beanFiles[$module['bean']] = "modules/{$module['module']}/{$module['bean']}.php";
                         $this->beanClasses[$module['module']] = '\\SpiceCRM\\modules\\' . $module['module'] . '\\' . $module['bean'];
                     } else {
-                        $this->beanFiles[$module['bean']] = 'data/SugarBean.php';
+                        $this->beanFiles[$module['bean']] = 'data/SpiceBean.php';
                     }
                 }
             }
@@ -131,6 +132,17 @@ class SpiceModules
         $moduleNamesArray = array_flip($this->beanList);
 
         return $moduleNamesArray[$beanName] ?? null;
+    }
+
+    /**
+     * Returns the module details
+     *
+     * @param string $modulename
+     * @return array
+     */
+    public function getModuleDetails(string $modulename): ?array {
+
+        return $this->modules[$modulename] ?: [];
     }
 
     /**

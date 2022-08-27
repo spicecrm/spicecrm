@@ -35,6 +35,7 @@
  ********************************************************************************/
 
 
+
 $server->wsdl->addComplexType(
     'note_attachment',
     'complexType',

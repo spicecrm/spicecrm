@@ -13,13 +13,13 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 // import interfaces
-import /*embed*/ {SpiceTimestreamItem} from './components/spicetimestreamitem';
-import /*embed*/ {SpiceTimestreamHeader} from './components/spicetimestreamheader';
-import /*embed*/ {SpiceTimestreamLabel} from './components/spicetimestreamlabel';
-import /*embed*/ {SpiceTimestreamSelector} from './components/spicetimestreamselector';
-import /*embed*/ {SpiceTimestream} from './components/spicetimestream';
-import /*embed*/ {SpiceTimestreamEmbedded} from './components/spicetimestreamembedded';
-import /*embed*/ {SpiceTimestreamRelated} from './components/spicetimestreamrelated';
+import {SpiceTimestreamItem} from './components/spicetimestreamitem';
+import {SpiceTimestreamHeader} from './components/spicetimestreamheader';
+import {SpiceTimestreamLabel} from './components/spicetimestreamlabel';
+import {SpiceTimestreamSelector} from './components/spicetimestreamselector';
+import {SpiceTimestream} from './components/spicetimestream';
+import {SpiceTimestreamEmbedded} from './components/spicetimestreamembedded';
+import {SpiceTimestreamRelated} from './components/spicetimestreamrelated';
 
 @NgModule({
     imports: [

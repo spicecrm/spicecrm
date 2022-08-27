@@ -141,19 +141,5 @@ export class MailboxesManager {
         this.model.module = "Mailboxes";
     }
 
-    /**
-     *
-     */
-    public setAsDefault() {
-        this.backend.postRequest("module/Mailboxes/default", null, {mailbox_id: this.model.data.id})
-            .subscribe(
-                (res) => {
-                    this.toast.sendToast(res);
-                    this.model.setField("is_default", true);
-                },
-                (err) => {
-                    console.log(err);
-                },
-            );
-    }
+
 }

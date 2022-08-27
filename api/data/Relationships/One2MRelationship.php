@@ -34,12 +34,13 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
 
 /**
@@ -115,8 +116,8 @@ class One2MRelationship extends M2MRelationship
     }
 
     /**
-     * @param  $lhs SugarBean left side bean to add to the relationship.
-     * @param  $rhs SugarBean right side bean to add to the relationship.
+     * @param  $lhs SpiceBean left side bean to add to the relationship.
+     * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */

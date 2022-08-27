@@ -25,7 +25,7 @@ export class AdministrationGeneralSettings implements OnInit {
             unique_key: ''
         },
         advanced: {
-            developerMode: false,
+            developerMode: 0,
             stack_trace_errors: false,
             dump_slow_queries: false,
             slow_query_time_msec: 0,
@@ -37,7 +37,7 @@ export class AdministrationGeneralSettings implements OnInit {
                 name: 'spicecrm',
                 ext: '',
                 maxLogs: 10,
-                maxSize: 10,
+                maxSize: '10MB',
                 suffix: ''
             }
         }
@@ -75,7 +75,22 @@ export class AdministrationGeneralSettings implements OnInit {
     public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             this.backend.getRequest('configuration/settings').subscribe(data => {
+                if (!data.logger.file) {
+                    data.logger.file = {};
+                }
+
                 this.settings = data;
+
+                // switch developer mode
+                switch (this.settings.advanced.developerMode){
+                    case true:
+                        this.settings.advanced.developerMode = '1';
+                        break;
+                    case false:
+                        this.settings.advanced.developerMode = '0';
+                        break;
+                }
+
                 this._loglevels = this.settings.logger.level.split(',');
                 this.loading = false;
                 modalRef.instance.self.destroy();
@@ -113,8 +128,8 @@ export class AdministrationGeneralSettings implements OnInit {
     /**
      * getter to strip the MB from the max size
      */
-    get maxSize(){
-        return this.settings.logger.file.maxSize?.replace('MB', '');
+    get loggerMaxSize(){
+        return (this.settings.logger.file.maxSize ?? '').replace('MB', '');
     }
 
     /**
@@ -122,7 +137,7 @@ export class AdministrationGeneralSettings implements OnInit {
      *
      * @param maxSize
      */
-    set maxSize(maxSize){
+    set loggerMaxSize(maxSize){
         this.settings.logger.file.maxSize = maxSize + 'MB';
     }
 }

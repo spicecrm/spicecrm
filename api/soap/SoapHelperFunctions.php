@@ -34,6 +34,7 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -43,14 +44,13 @@ use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\ACLActions\ACLAction;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 
 /**
- * Retrieve field data for a provided SugarBean.
+ * Retrieve field data for a provided SpiceBean.
  *
- * @param SugarBean $value -- The bean to retrieve the field information for.
+ * @param SpiceBean $value -- The bean to retrieve the field information for.
  * @return Array -- 'field'=>   'name' -- the name of the field
  *                              'type' -- the data type of the field
  *                              'label' -- the translation key for the label of the field
@@ -73,7 +73,7 @@ function get_field_list($value, $translate=true){
 				$required = 1;
 			}
 			if (isset($var['options'])) {
-				$options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
+				$options_dom = SpiceUtils::translate($var['options'], $value->_module);
 				if(!is_array($options_dom)) $options_dom = [];
 				foreach($options_dom as $key=>$oneOption)
 					$options_ret[] = get_name_value($key,$oneOption);
@@ -87,7 +87,7 @@ function get_field_list($value, $translate=true){
             $entry['name'] = $var['name'];
             $entry['type'] = $var['type'];
             if($translate) {
-            $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
+            $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->_module) : $var['name'];
             } else {
             $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
             }
@@ -101,28 +101,8 @@ function get_field_list($value, $translate=true){
 		} //foreach
 	} //if
 
-    if (isset($value->module_dir) && $value->module_dir == 'Bugs') {
 
-		$seedRelease = new Release();
-		$options = $seedRelease->get_releases(TRUE, "Active");
-		$options_ret = [];
-		foreach($options as $name=>$value){
-			$options_ret[] =  ['name'=> $name , 'value'=>$value];
-		}
-		if(isset($list['fixed_in_release'])){
-			$list['fixed_in_release']['type'] = 'enum';
-			$list['fixed_in_release']['options'] = $options_ret;
-		}
-		if(isset($list['release'])){
-			$list['release']['type'] = 'enum';
-			$list['release']['options'] = $options_ret;
-		}
-		if(isset($list['release_name'])){
-			$list['release_name']['type'] = 'enum';
-			$list['release_name']['options'] = $options_ret;
-		}
-	}
-    if (isset($value->module_dir) && $value->module_dir == 'Emails') {
+    if (isset($value->_module) && $value->_module == 'Emails') {
         $fields = ['from_addr_name', 'reply_to_addr', 'to_addrs_names', 'cc_addrs_names', 'bcc_addrs_names'];
         foreach($fields as $field){
             $var = $value->field_defs[$field];
@@ -132,7 +112,7 @@ function get_field_list($value, $translate=true){
             $entry['name'] = $var['name'];
             $entry['type'] = $var['type'];
             if($translate) {
-            $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
+            $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->_module) : $var['name'];
             } else {
             $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
             }
@@ -181,7 +161,7 @@ function new_get_field_list($value, $translate=true) {
 				$required = 1;
 			}
 			if(isset($var['options'])){
-				$options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
+				$options_dom = SpiceUtils::translate($var['options'], $value->_module);
 				if(!is_array($options_dom)) $options_dom = [];
 				foreach($options_dom as $key=>$oneOption)
 					$options_ret[] = get_name_value($key,$oneOption);
@@ -201,7 +181,7 @@ function new_get_field_list($value, $translate=true) {
 				$link_fields[$var['name']] = $entry;
             } else {
 	            if($translate) {
-	            	$entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
+	            	$entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->_module) : $var['name'];
 	            } else {
 	            	$entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
 	            }
@@ -215,27 +195,6 @@ function new_get_field_list($value, $translate=true) {
 		} //foreach
 	} //if
 
-	if($value->module_dir == 'Bugs'){
-
-		$seedRelease = new Release();
-		$options = $seedRelease->get_releases(TRUE, "Active");
-		$options_ret = [];
-		foreach($options as $name=>$value){
-			$options_ret[] =  ['name'=> $name , 'value'=>$value];
-		}
-		if(isset($module_fields['fixed_in_release'])){
-			$module_fields['fixed_in_release']['type'] = 'enum';
-			$module_fields['fixed_in_release']['options'] = $options_ret;
-		}
-		if(isset($module_fields['release'])){
-			$module_fields['release']['type'] = 'enum';
-			$module_fields['release']['options'] = $options_ret;
-		}
-		if(isset($module_fields['release_name'])){
-			$module_fields['release_name']['type'] = 'enum';
-			$module_fields['release_name']['options'] = $options_ret;
-		}
-	}
 
 	if(isset($value->assigned_user_name) && isset($module_fields['assigned_user_id'])) {
 		$module_fields['assigned_user_name'] = $module_fields['assigned_user_id'];
@@ -371,7 +330,7 @@ function get_name_value_list($value, $returnDomValue = false){
 		foreach($value->field_defs as $var){
 			if(isset($var['source']) && ($var['source'] != 'db' && $var['source'] != 'custom_fields') && $var['name'] != 'email1' && $var['name'] != 'email2' && (!isset($var['type'])|| $var['type'] != 'relate')){
 
-					if($value->module_dir == 'Emails' && (($var['name'] == 'description') || ($var['name'] == 'description_html') || ($var['name'] == 'from_addr_name') || ($var['name'] == 'reply_to_addr') || ($var['name'] == 'to_addrs_names') || ($var['name'] == 'cc_addrs_names') || ($var['name'] == 'bcc_addrs_names') || ($var['name'] == 'raw_source'))) {
+					if($value->_module == 'Emails' && (($var['name'] == 'description') || ($var['name'] == 'description_html') || ($var['name'] == 'from_addr_name') || ($var['name'] == 'reply_to_addr') || ($var['name'] == 'to_addrs_names') || ($var['name'] == 'cc_addrs_names') || ($var['name'] == 'bcc_addrs_names') || ($var['name'] == 'raw_source'))) {
 
 					} else {
 						continue;
@@ -679,8 +638,8 @@ function new_handle_set_entries($module_name, $name_value_lists, $select_fields 
 
 		foreach($name_value_list as $value) {
 			$val = $value['value'];
-			if($seed->field_name_map[$value['name']]['type'] == 'enum'){
-				$vardef = $seed->field_name_map[$value['name']];
+			if($seed->field_defs[$value['name']]['type'] == 'enum'){
+				$vardef = $seed->field_defs[$value['name']];
 				if(isset($app_list_strings[$vardef['options']]) && !isset($app_list_strings[$vardef['options']][$value]) ) {
 		            if ( in_array($val,$app_list_strings[$vardef['options']]) ){
 		                $val = array_search($val,$app_list_strings[$vardef['options']]);
@@ -737,7 +696,7 @@ function new_handle_set_entries($module_name, $name_value_lists, $select_fields 
 						//have an object with this outlook_id, if we do
 						//then we can set the id, otherwise this is a new object
 						$order_by = "";
-						$query = $seed->table_name.".outlook_id = '". DBManagerFactory::getInstance()->quote($seed->outlook_id)."'";
+						$query = $seed->_tablename.".outlook_id = '". DBManagerFactory::getInstance()->quote($seed->outlook_id)."'";
 						$response = $seed->get_list($order_by, $query, 0,-1,-1,0);
 						$list = $response['list'];
 						if(count($list) > 0){
@@ -935,7 +894,7 @@ function add_create_account($seed)
         // if it doesn't exist by id, attempt to find by name (non-deleted)
         if (empty($ret))
         {
-            $query = "select {$focus->table_name}.id, {$focus->table_name}.deleted from {$focus->table_name} ";
+            $query = "select {$focus->_tablename}.id, {$focus->_tablename}.deleted from {$focus->_tablename} ";
             $query .= " WHERE name='".$seed->db->quote($account_name)."'";
             $query .=" ORDER BY deleted ASC";
             $result = $seed->db->query($query, true);
@@ -950,7 +909,7 @@ function add_create_account($seed)
         // if it exists by id but was deleted, just remove it entirely
         else if ($focus->deleted)
         {
-            $query2 = "delete from {$focus->table_name} WHERE id='". $seed->db->quote($focus->id) ."'";
+            $query2 = "delete from {$focus->_tablename} WHERE id='". $seed->db->quote($focus->id) ."'";
             $seed->db->query($query2, true);
             // it was deleted, create new
             $focus = BeanFactory::newBean('Accounts');
@@ -1125,13 +1084,13 @@ function canViewPath( $path, $base ){
  * This function applies the given values to the bean object.  If it is a first time sync
  * then empty values will not be copied over.
  *
- * @param Mixed $seed Object representing SugarBean instance
- * @param Array $dataValues Array of fields/values to set on the SugarBean instance
+ * @param Mixed $seed Object representing SpiceBean instance
+ * @param Array $dataValues Array of fields/values to set on the SpiceBean instance
  * @param boolean $firstSync Boolean indicating whether or not this is a first time sync
  */
 function apply_values($seed, $dataValues, $firstSync)
 {
-    if(!$seed instanceof SugarBean || !is_array($dataValues))
+    if(!$seed instanceof SpiceBean || !is_array($dataValues))
     {
         return;
     }

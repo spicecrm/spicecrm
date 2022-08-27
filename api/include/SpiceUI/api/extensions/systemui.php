@@ -27,6 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIActionsetsController;
@@ -44,7 +46,7 @@ $routes = [
         'class' => SystemUIController::class,
         'function' => 'SystemGetAdminNav',
         'description' => 'get the admin navigation',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['adminOnly' => false],
         'parameters' => []
     ],
     [
@@ -54,7 +56,25 @@ $routes = [
         'class' => SystemUIController::class,
         'function' => 'SystemGetAllModules',
         'description' => 'gets all modules from the database',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['adminOnly' => false],
+        'parameters' => []
+    ],
+    [
+        'method' => 'get',
+        'route' => '/system/spiceui/admin/assets',
+        'class' => SystemUIController::class,
+        'function' => 'SystemGetAssets',
+        'description' => 'gets all assets nd css settoings',
+        'options' => ['adminOnly' => true],
+        'parameters' => []
+    ],
+    [
+        'method' => 'post',
+        'route' => '/system/spiceui/admin/assets',
+        'class' => SystemUIController::class,
+        'function' => 'SystemSetAssets',
+        'description' => 'sets all assets nd css settoings',
+        'options' => ['adminOnly' => true],
         'parameters' => []
     ],
     [

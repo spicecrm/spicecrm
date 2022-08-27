@@ -54,8 +54,19 @@ export class APIlogViewerModal {
      */
     public isLoading = true;
 
+    /**
+     * the currently selected logtable
+     */
+    public logtable: string = 'sysapilog';
+
+    /**
+     * set to true if we foudn the proper beautify lib and loaded it
+     */
     public beautifyenabled: boolean = false;
 
+    /**
+     * the active tab in the tabbed view
+     */
     public activeTab: 'record' | 'headers' | 'post' | 'response' = 'record';
 
     constructor(public language: language, public backend: backend, public toast: toast, public libloader: libloader) {
@@ -75,8 +86,8 @@ export class APIlogViewerModal {
      */
     public loadFullData() {
         this.isLoading = true;
-        this.backend.getRequest(`admin/apilog/${this.entry.id}`).subscribe(
-            response => {
+        this.backend.getRequest(`admin/apilog/${this.entry.id}`, {logtable: this.logtable}).subscribe({
+            next: (response) => {
                 this.isLoading = false;
                 this.record = response;
 
@@ -84,11 +95,12 @@ export class APIlogViewerModal {
                 this.setRequestHeaders();
                 this.setResponseHeaders();
             },
-            error => {
+            error: (error) => {
                 this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry ' + this.entry.id + ' of REST log couldn´t be fetched.', false);
                 this.isLoading = false;
                 this.close();
-            });
+            }
+        });
     }
 
     /**
@@ -280,6 +292,7 @@ export class APIlogViewerModal {
                 }
                 return cArray;
             case 'text/xml':
+            case 'application/xml':
                 return html_beautify(content, {
                     indent_size: 4,
                     indent_char: " ",

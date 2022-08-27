@@ -3,22 +3,22 @@
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
  * You can contact us at info@spicecrm.io
- * 
+ *
  * SpiceCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
- * 
+ *
  * SpiceCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,7 +26,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+
+
+SpiceDictionaryHandler::getInstance()->dictionary['sysuiassets'] = [
+    'table' => 'sysuiassets',
+    'audited' => true,
+    'fields' => [
+        'id' => [
+            'name' => 'id',
+            'type' => 'id'
+        ],
+        'assetkey' => [
+            'name' => 'assetkey',
+            'type' => 'id'
+        ],
+        'assetvalue' => [
+            'name' => 'assetvalue',
+            'type' => 'longtext'
+        ],
+    ],
+    'indices' => [
+        [
+            'name' => 'idx_sysuiassets',
+            'type' => 'primary',
+            'fields' => ['id']
+        ]
+    ]
+];
+
 
 SpiceDictionaryHandler::getInstance()->dictionary['systextids_modules'] = [
     'table' => 'systextids_modules',
@@ -1894,6 +1924,42 @@ SpiceDictionaryHandler::getInstance()->dictionary['sysuiuserroles'] = [
             'name' => 'idx_sysuiuserroles_userid',
             'type' => 'index',
             'fields' => ['user_id']
+        ]
+    ]
+];
+
+SpiceDictionaryHandler::getInstance()->dictionary['sysuiorgunitroles'] = [
+    'table' => 'sysuiorgunitroles',
+    'fields' => [
+        'id' => [
+            'name' => 'id',
+            'type' => 'id'
+        ],
+        'orgunit_id' => [
+            'name' => 'orgunit_id',
+            'type' => 'id'
+        ],
+        'sysuirole_id' => [
+            'name' => 'sysuirole_id',
+            'type' => 'id'
+        ],
+        'defaultrole' => [
+            'name' => 'defaultrole',
+            'type' => 'int',
+            'len' => 1,
+            'default' => 0
+        ]
+    ],
+    'indices' => [
+        [
+            'name' => 'idx_sysuiorgunitroles',
+            'type' => 'primary',
+            'fields' => ['id']
+        ],
+        [
+            'name' => 'idx_sysuiorgunitroles_orgunitid',
+            'type' => 'index',
+            'fields' => ['orgunit_id']
         ]
     ]
 ];

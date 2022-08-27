@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -35,7 +35,7 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\database;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -259,15 +259,21 @@ abstract class DBManager
      * @var
      */
     public $log;
+    /**
+     * holds the current db config
+     * @var array
+     */
+    public $dbConfig = [];
 
     /**
      * Create DB Driver
      */
-	public function __construct()
+	public function __construct(array $config)
 	{
 
 		$this->helper = $this; // compatibility
         $this->log = LoggerManager::getLogger();
+        $this->dbConfig = $config;
 	}
 
     /**
@@ -500,11 +506,11 @@ protected function checkQuery($sql, $object_name = false)
     /**
      * Implements a generic insert for any bean.
      *
-     * @param SugarBean $bean SugarBean instance
+     * @param SpiceBean $bean SpiceBean instance
      * @return bool query result
      *
      */
-	public function insert(SugarBean $bean)
+	public function insert(SpiceBean $bean)
 	{
 		$sql = $this->insertSQL($bean);
 		$tablename =  $bean->getTableName();
@@ -519,7 +525,7 @@ protected function checkQuery($sql, $object_name = false)
      * @param string $table the table name
      * @param array $data key/value pairs
      * @param bool $execute boolean execute the query on true, return the query on false
-     * @return mixed string | query result
+     * @return mixed query result | false
      */
 	public function insertQuery($table, array $data, $execute = true)
     {
@@ -529,7 +535,9 @@ protected function checkQuery($sql, $object_name = false)
                 return $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
             }
         }
-        return $data['id'];
+
+        $this->last_error = "Dictionary was not found for table $table";
+        return false;
     }
 
     /**
@@ -570,7 +578,7 @@ protected function checkQuery($sql, $object_name = false)
     public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
 
-        $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'");
+        $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'", true );
         while ($row = $this->fetchByAssoc($query)) {
             $id = $row['id'];
         }
@@ -579,7 +587,7 @@ protected function checkQuery($sql, $object_name = false)
             foreach ($data as $col => $val) {
                 $sets[] = "$col = '{$this->quote($val)}'";
             }
-            $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'");
+            $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'", true );
         } else {
             $this->insertQuery($table, $data, $execute);
         }
@@ -619,7 +627,7 @@ protected function checkQuery($sql, $object_name = false)
      * @param string $table Table name
      * @param array $field_defs Definitions in vardef-like format
      * @param array $data Key/value to insert
-     * @param array $field_map Fields map from SugarBean
+     * @param array $field_map Fields map from SpiceBean
      * @param bool $execute Execute or return query?
      * @return bool query result
      */
@@ -695,14 +703,14 @@ protected function checkQuery($sql, $object_name = false)
     /**
      * Implements a generic update for any bean
      *
-     * @param SugarBean $bean Sugarbean instance
+     * @param SpiceBean $bean Sugarbean instance
      * @param array $where values with the keys as names of fields.
      * If we want to pass multiple values for a name, pass it as an array
      * If where is not passed, it defaults to id of table
      * @return bool query result
      *
      */
-	public function update(SugarBean $bean, array $where = [])
+	public function update(SpiceBean $bean, array $where = [])
 	{
 		$sql = $this->updateSQL($bean, $where);
 		$tablename = $bean->getTableName();
@@ -713,13 +721,13 @@ protected function checkQuery($sql, $object_name = false)
     /**
      * Implements a generic delete for any bean identified by id
      *
-     * @param SugarBean $bean Sugarbean instance
+     * @param SpiceBean $bean Sugarbean instance
      * @param array  $where values with the keys as names of fields.
      * If we want to pass multiple values for a name, pass it as an array
      * If where is not passed, it defaults to id of table
      * @return bool query result
      */
-	public function delete(SugarBean $bean, array $where = [])
+	public function delete(SpiceBean $bean, array $where = [])
 	{
 		$sql = $this->deleteSQL($bean, $where);
 		$tableName = $bean->getTableName();
@@ -733,11 +741,11 @@ protected function checkQuery($sql, $object_name = false)
 	 * If we want to pass multiple values for a name, pass it as an array
 	 * If where is not passed, it defaults to id of table
 	 *
-	 * @param  SugarBean   $bean  Sugarbean instance
+	 * @param  SpiceBean   $bean  Sugarbean instance
 	 * @param  array    $where values with the keys as names of fields.
 	 * @return resource result from the query
 	 */
-	public function retrieve(SugarBean $bean, array $where = [])
+	public function retrieve(SpiceBean $bean, array $where = [])
 	{
 		$sql = $this->retrieveSQL($bean, $where);
 		$tableName = $bean->getTableName();
@@ -773,9 +781,9 @@ protected function checkQuery($sql, $object_name = false)
 	 * Implements creation of a db table for a bean.
 	 *
 	 * NOTE: does not handle out-of-table constraints, use createConstraintSQL for that
-	 * @param SugarBean $bean  Sugarbean instance
+	 * @param SpiceBean $bean  Sugarbean instance
 	 */
-	public function createTable(SugarBean $bean)
+	public function createTable(SpiceBean $bean)
 	{
 		$sql = $this->createTableSQL($bean);
 		$tablename = $bean->getTableName();
@@ -793,10 +801,10 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * returns SQL to create constraints or indices
 	 *
-	 * @param  SugarBean $bean SugarBean instance
+	 * @param  SpiceBean $bean SpiceBean instance
 	 * @return array list of SQL statements
 	 */
-	protected function createConstraintSql(SugarBean $bean)
+	protected function createConstraintSql(SpiceBean $bean)
 	{
 		return $this->getConstraintSql($bean->getIndices(), $bean->getTableName());
 	}
@@ -835,11 +843,11 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * Implements repair of a db table for a bean.
 	 *
-	 * @param  SugarBean $bean    SugarBean instance
+	 * @param  SpiceBean $bean    SpiceBean instance
 	 * @param  bool   $execute true if we want the action to take place, false if we just want the sql returned
 	 * @return string SQL statement or empty string, depending upon $execute
 	 */
-	public function repairTable(SugarBean $bean, $execute = true)
+	public function repairTable(SpiceBean $bean, $execute = true)
 	{
 		$indices   = $bean->getIndices();
 		$fielddefs = $bean->getFieldDefinitions();
@@ -865,7 +873,7 @@ protected function checkQuery($sql, $object_name = false)
     /**
      * Implements repair of a db audit table for a bean.
      * CR1000085 Repair Audit Fields.Introduced in SpiceCRM 2018.11.001
-     * @param  SugarBean $bean    SugarBean instance
+     * @param  SpiceBean $bean    SpiceBean instance
      * @param  bool   $execute true if we want the action to take place, false if we just want the sql returned
      * @return string SQL statement or empty string, depending upon $execute
      */
@@ -1269,13 +1277,13 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * Creates an index identified by name on the given fields.
 	 *
-	 * @param SugarBean $bean      SugarBean instance
+	 * @param SpiceBean $bean      SpiceBean instance
 	 * @param array  $fieldDefs Field definitions, in vardef format
 	 * @param string $name      index name
 	 * @param bool   $unique    optional, true if we want to create an unique index
      * @return bool query result
      */
-	public function createIndex(SugarBean $bean, $fieldDefs, $name, $unique = true)
+	public function createIndex(SpiceBean $bean, $fieldDefs, $name, $unique = true)
 	{
 		$sql = $this->createIndexSQL($bean, $fieldDefs, $name, $unique);
 		$tablename = $bean->getTableName();
@@ -1434,10 +1442,10 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * Drops the table associated with a bean
 	 *
-	 * @param SugarBean $bean SugarBean instance
+	 * @param SpiceBean $bean SpiceBean instance
      * @return bool query result
 	 */
-	public function dropTable(SugarBean $bean)
+	public function dropTable(SpiceBean $bean)
 	{
 		return $this->dropTableName($bean->getTableName());
 	}
@@ -1457,11 +1465,11 @@ protected function checkQuery($sql, $object_name = false)
     /**
      * Deletes a column identified by fieldDef.
      *
-     * @param SugarBean $bean   SugarBean containing the field
+     * @param SpiceBean $bean   SpiceBean containing the field
      * @param array  $fieldDefs Vardef definition of the field
      * @return bool query result
      */
-	public function deleteColumn(SugarBean $bean, $fieldDefs)
+	public function deleteColumn(SpiceBean $bean, $fieldDefs)
 	{
 		$tablename = $bean->getTableName();
 		$sql = $this->dropColumnSQL($tablename, $fieldDefs);
@@ -1474,7 +1482,7 @@ protected function checkQuery($sql, $object_name = false)
      *
      * @deprecated
      *
-     * @param  SugarBean $bean         the bean from which table we will generate insert stmts
+     * @param  SpiceBean $bean         the bean from which table we will generate insert stmts
      * @param  string $select_query the query which will give us the set of objects we want to place into our insert statement
      * @param  int    $start        the first row to query
      * @param  int    $count        the number of rows to query
@@ -1482,7 +1490,7 @@ protected function checkQuery($sql, $object_name = false)
      * @param bool $is_related_query
      * @return string SQL insert statement
      */
-	public function generateInsertSQL(SugarBean $bean, $select_query, $start, $count = -1, $table, $is_related_query = false)
+	public function generateInsertSQL(SpiceBean $bean, $select_query, $start, $count = -1, $table, $is_related_query = false)
 	{
 		LoggerManager::getLogger()->info('call to DBManager::generateInsertSQL() is deprecated');
 
@@ -1492,7 +1500,7 @@ protected function checkQuery($sql, $object_name = false)
 		if(!empty($count_query))
 		{
 			// We have a count query.  Run it and get the results.
-			$result = $this->query($count_query, true, "Error running count query for $this->object_name List: ");
+			$result = $this->query($count_query, true, "Error running count query for $this->_objectname List: ");
 			$assoc = $this->fetchByAssoc($result);
 			if(!empty($assoc['c']))
 			{
@@ -2065,10 +2073,10 @@ protected function checkQuery($sql, $object_name = false)
      * Generates sql for create table statement for a bean.
      *
      * NOTE: does not handle out-of-table constraints, use createConstraintSQL for that
-     * @param SugarBean $bean SugarBean instance
+     * @param SpiceBean $bean SpiceBean instance
      * @return string SQL Create Table statement
      */
-	public function createTableSQL(SugarBean $bean)
+	public function createTableSQL(SpiceBean $bean)
 	{
 		$tablename = $bean->getTableName();
 		$fieldDefs = $bean->getFieldDefinitions();
@@ -2079,25 +2087,25 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * Generates SQL for insert statement.
 	 *
-	 * @param  SugarBean $bean SugarBean instance
+	 * @param  SpiceBean $bean SpiceBean instance
 	 * @return string SQL Create Table statement
 	 */
-	public function insertSQL(SugarBean $bean)
+	public function insertSQL(SpiceBean $bean)
 	{
 		// get column names and values
 		$sql = $this->insertParams($bean->getTableName(), $bean->getFieldDefinitions(), get_object_vars($bean),
-		        isset($bean->field_name_map)?$bean->field_name_map:null, false);
+		        isset($bean->field_defs)?$bean->field_defs:null, false);
 		return $sql;
 	}
 
 	/**
 	 * Generates SQL for update statement.
 	 *
-	 * @param  SugarBean $bean SugarBean instance
+	 * @param  SpiceBean $bean SpiceBean instance
 	 * @param  array  $where Optional, where conditions in an array
 	 * @return string SQL Create Table statement
 	 */
-	public function updateSQL(SugarBean $bean, array $where = [])
+	public function updateSQL(SpiceBean $bean, array $where = [])
 	{
 		$primaryField = $bean->getPrimaryFieldDefinition();
 		$columns = [];
@@ -2111,10 +2119,10 @@ protected function checkQuery($sql, $object_name = false)
 
     		// If the field is an auto_increment field, then we shouldn't be setting it.  This was added
     		// specially for Bugs and Cases which have a number associated with them.
-    		if (!empty($bean->field_name_map[$field]['auto_increment'])) continue;
+    		if (!empty($bean->field_defs[$field]['auto_increment'])) continue;
 
     		//custom fields handle their save separately
-    		if(isset($bean->field_name_map) && !empty($bean->field_name_map[$field]['custom_type']))  continue;
+    		if(isset($bean->field_defs) && !empty($bean->field_defs[$field]['custom_type']))  continue;
 
     		// no need to clear deleted since we only update not deleted records anyway
     		if($fieldDef['name'] == 'deleted' && empty($bean->deleted)) continue;
@@ -2168,11 +2176,11 @@ protected function checkQuery($sql, $object_name = false)
 	 * This method returns a where array so that it has id entry if
 	 * where is not an array or is empty
 	 *
-	 * @param  SugarBean $bean SugarBean instance
+	 * @param  SpiceBean $bean SpiceBean instance
 	 * @param  array  $where Optional, where conditions in an array
 	 * @return array
 	 */
-	protected function updateWhereArray(SugarBean $bean, array $where = [])
+	protected function updateWhereArray(SpiceBean $bean, array $where = [])
 	{
 		if (count($where) == 0) {
 			$fieldDef = $bean->getPrimaryFieldDefinition();
@@ -2227,11 +2235,11 @@ protected function checkQuery($sql, $object_name = false)
 	 * This method returns a complete where clause built from the
 	 * where values specified.
 	 *
-	 * @param  SugarBean $bean SugarBean that describes the table
+	 * @param  SpiceBean $bean SpiceBean that describes the table
 	 * @param  array  $whereArray Optional, where conditions in an array
 	 * @return string
 	 */
-	protected function getWhereClause(SugarBean $bean, array $whereArray=[])
+	protected function getWhereClause(SpiceBean $bean, array $whereArray=[])
 	{
 	    return " WHERE " . $this->getColumnWhereClause($bean->getTableName(), $whereArray);
 	}
@@ -2327,7 +2335,7 @@ protected function checkQuery($sql, $object_name = false)
 			else
 				$fieldDef['dbType'] = $fieldDef['type'];
 		}
-		$type = $this->getColumnType($fieldDef['dbType'],$fieldDef['name'],$tablename);
+		$type = $this->getColumnType($fieldDef['dbType']);
 		$matches = [];
         // len can be a number or a string like 'max', for example, nvarchar(max)
         preg_match_all('/(\w+)(?:\(([0-9]+,?[0-9]*|\w+)\)|)/i', $type, $matches);
@@ -2413,11 +2421,11 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * Generates SQL for delete statement identified by id.
 	 *
-	 * @param  SugarBean $bean SugarBean instance
+	 * @param  SpiceBean $bean SpiceBean instance
 	 * @param  array  $where where conditions in an array
 	 * @return string SQL Update Statement
 	 */
-	public function deleteSQL(SugarBean $bean, array $where)
+	public function deleteSQL(SpiceBean $bean, array $where)
 	{
 		$where = $this->getWhereClause($bean, $this->updateWhereArray($bean, $where));
 		return "UPDATE ".$bean->getTableName()." SET deleted=1 $where";
@@ -2426,11 +2434,11 @@ protected function checkQuery($sql, $object_name = false)
     /**
      * Generates SQL for select statement for any bean identified by id.
      *
-     * @param  SugarBean $bean SugarBean instance
+     * @param  SpiceBean $bean SpiceBean instance
      * @param  array  $where where conditions in an array
      * @return string SQL Select Statement
      */
-	public function retrieveSQL(SugarBean $bean, array $where)
+	public function retrieveSQL(SpiceBean $bean, array $where)
 	{
 		$where = $this->getWhereClause($bean, $this->updateWhereArray($bean, $where));
 		return "SELECT * FROM ".$bean->getTableName()." $where AND deleted=0";
@@ -2529,13 +2537,13 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * Generates SQL for create index statement for a bean.
 	 *
-	 * @param  SugarBean $bean SugarBean instance
+	 * @param  SpiceBean $bean SpiceBean instance
 	 * @param  array  $fields fields used in the index
 	 * @param  string $name index name
 	 * @param  bool   $unique Optional, set to true if this is an unique index
 	 * @return string SQL Select Statement
 	 */
-	public function createIndexSQL(SugarBean $bean, array $fields, $name, $unique = true)
+	public function createIndexSQL(SpiceBean $bean, array $fields, $name, $unique = true)
 	{
 		$unique = ($unique) ? "unique" : "";
 		$tablename = $bean->getTableName();
@@ -2816,10 +2824,10 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * Generates SQL for dropping a table.
 	 *
-	 * @param  SugarBean $bean Sugarbean instance
+	 * @param  SpiceBean $bean Sugarbean instance
 	 * @return string SQL statement
 	 */
-	public function dropTableSQL(SugarBean $bean)
+	public function dropTableSQL(SpiceBean $bean)
 	{
 		return $this->dropTableNameSQL($bean->getTableName());
 	}
@@ -2859,11 +2867,11 @@ protected function checkQuery($sql, $object_name = false)
 	/**
 	 * This method generates sql that deletes a column identified by fieldDef.
 	 *
-	 * @param  SugarBean $bean      Sugarbean instance
+	 * @param  SpiceBean $bean      Sugarbean instance
 	 * @param  array  $fieldDefs
 	 * @return string SQL statement
 	 */
-	public function deleteColumnSQL(SugarBean $bean, $fieldDefs)
+	public function deleteColumnSQL(SpiceBean $bean, $fieldDefs)
 	{
 		return $this->dropColumnSQL($bean->getTableName(), $fieldDefs);
 	}
@@ -2977,11 +2985,11 @@ protected function checkQuery($sql, $object_name = false)
 
 	/**
 	 * Generate query for audit table
-	 * @param SugarBean $bean SugarBean that was changed
+	 * @param SpiceBean $bean SpiceBean that was changed
 	 * @param array $changes List of changes, contains 'before' and 'after'
      * @return string  Audit table INSERT query
      */
-	protected function auditSQL(SugarBean $bean, $changes)
+	protected function auditSQL(SpiceBean $bean, $changes)
 	{
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $sql = "INSERT INTO " . $bean->get_audit_table_name();
@@ -2996,7 +3004,7 @@ protected function checkQuery($sql, $object_name = false)
         $values['transaction_id'] = $this->massageValue(LoggerManager::getLogger()->getTransactionId(), $fieldDefs['transaction_id']);
 		$values['field_name']= $this->massageValue($changes['field_name'], $fieldDefs['field_name']);
 		$values['data_type'] = $this->massageValue($changes['data_type'], $fieldDefs['data_type']);
-		if (in_array($changes['data_type'], ['text', 'longtext'])) {
+		if (in_array($changes['data_type'], ['text', 'longtext', 'json'])) {
 			$values['before_value_text'] = $this->massageValue($changes['before'], $fieldDefs['before_value_text']);
 			$values['after_value_text'] = $this->massageValue($changes['after'], $fieldDefs['after_value_text']);
 		} else {
@@ -3014,12 +3022,12 @@ protected function checkQuery($sql, $object_name = false)
     /**
      * Saves changes to module's audit table
      *
-     * @param SugarBean $bean Sugarbean instance that was changed
+     * @param SpiceBean $bean Sugarbean instance that was changed
      * @param array $changes List of changes, contains 'before' and 'after'
      * @return bool query result
      *
      */
-	public function save_audit_records(SugarBean $bean, $changes)
+	public function save_audit_records(SpiceBean $bean, $changes)
 	{
 		return $this->query($this->auditSQL($bean, $changes));
 	}
@@ -3029,11 +3037,11 @@ protected function checkQuery($sql, $object_name = false)
      * The before and after values are stored in the bean.
      * Uses $bean->fetched_row && $bean->fetched_rel_row to compare
      *
-     * @param SugarBean $bean Sugarbean instance that was changed
+     * @param SpiceBean $bean Sugarbean instance that was changed
      * @param array|null $field_filter Array of filter names to be inspected (NULL means all fields)
      * @return array
      */
-    public function getDataChanges(SugarBean &$bean, array $field_filter = null)
+    public function getDataChanges(SpiceBean &$bean, array $field_filter = null)
 	{
         $changed_values=[];
 
@@ -3118,11 +3126,11 @@ protected function checkQuery($sql, $object_name = false)
      * get data first value set on create to log to audit table
      * same logic as for getDataChanges but checking firstlog property on bean
      * and using fieldDefs since no fetched_row available on create
-     * This function is called in SugarBean::save()
-     * @param SugarBean $bean
+     * This function is called in SpiceBean::save()
+     * @param SpiceBean $bean
      * @return array
      */
-    public function getDataAuditedFirstLog(SugarBean &$bean)
+    public function getDataAuditedFirstLog(SpiceBean &$bean)
     {
         $changed_values=[];
         $audit_fields=$bean->getAuditedFirstLogEnabledFieldDefinitions();
@@ -3181,10 +3189,10 @@ protected function checkQuery($sql, $object_name = false)
      * The before and after values are stored in the bean.
      * Uses $bean->fetched_row && $bean->fetched_rel_row to compare
      *
-     * @param SugarBean $bean Sugarbean instance that was changed
+     * @param SpiceBean $bean Sugarbean instance that was changed
      * @return array
      */
-    public function getAuditDataChanges(SugarBean $bean)
+    public function getAuditDataChanges(SpiceBean $bean)
     {
         $audit_fields = $bean->getAuditEnabledFieldDefinitions();
         return $this->getDataChanges($bean, array_keys($audit_fields));

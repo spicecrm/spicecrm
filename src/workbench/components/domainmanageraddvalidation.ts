@@ -24,7 +24,7 @@ export class DomainManagerAddValidation {
      *  an empty validation record
      */
     public fieldvalidation: any = {
-        scope: 'g'
+        scope: 'c'
     };
 
     constructor(public domainmanager: domainmanager, public modelutilities: modelutilities) {
@@ -46,6 +46,7 @@ export class DomainManagerAddValidation {
      */
     public add() {
         this.fieldvalidation.id = this.modelutilities.generateGuid();
+        this.fieldvalidation.status = 'a';
         this.domainmanager.domainfieldvalidations.push(this.fieldvalidation);
         this.selectValidation(this.fieldvalidation.id);
     }

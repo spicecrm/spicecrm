@@ -40,18 +40,12 @@ if(empty(SpiceDictionaryHandler::getInstance()->dictionary['User'])){
 }
 SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = SpiceDictionaryHandler::getInstance()->dictionary['User'];
 //users of employees modules are not allowed to change the employee/user status.
-SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['status']['massupdate']=false;
-SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['is_admin']['massupdate']=false;
 //begin bug 48033
-SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['UserType']['massupdate']=false;
-SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['messenger_type']['massupdate']=false;
-SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['email_link_type']['massupdate']=false;
 //end bug 48033
 SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['email1']['required']=false;
 SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['email_addresses']['required']=false;
 SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['email_addresses_primary']['required']=false;
 // bugs 47553 & 49716
-SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['status']['studio']=false;
 SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['status']['required']=false;
 SpiceDictionaryHandler::getInstance()->dictionary['Employee']['fields']['bonuscards'] = [
 	'name' => 'bonuscards',

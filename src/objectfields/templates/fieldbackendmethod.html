@@ -1,15 +1,7 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
     {{className}}->{{methodName}}
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="css_classes">
-    <!--div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
-        <input #focus type="text" class="slds-col slds-size--2-of-3 slds-input" [(ngModel)]="className" [ngModelOptions]="modelOptions" />
-        <div class="slds-col slds-size--1-of-3 slds-select_container">
-            <select class="slds-select" [disabled]="!classexists || publicMethods.length == 0" [(ngModel)]="methodName">
-                <option *ngFor="let o of publicMethods" [value]="o">{{o}}</option>
-            </select>
-        </div>
-    </div-->
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
     <system-input-backend-method [(ngModel)]="value"></system-input-backend-method>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

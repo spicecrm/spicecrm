@@ -5,8 +5,9 @@
     <div class="slds-tabs_scoped">
         <ul class="slds-tabs_scoped__nav" role="tablist">
             <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='profiles'}" title="Profiles" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='profiles'"><system-label label="LBL_SPICEACLOBJECTS"></system-label></a></li>
-            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='users'}" title="Users" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='users'"><system-label label="LBL_USERS"></system-label></a></li>
-            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='details'}" title="DETAILS" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='details'"><system-label label="LBL_DETAILS"></system-label></a></li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='users'}" system-title="LBL_USERS" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='users'"><system-label label="LBL_USERS"></system-label></a></li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='orgunits'}" system-title="LBL_ORGUNITS" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='orgunits'"><system-label label="LBL_ORGUNITS"></system-label></a></li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='details'}" system-title="LBL_DETAILS" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='details'"><system-label label="LBL_DETAILS"></system-label></a></li>
         </ul>
         <div system-to-bottom *ngIf="activetab=='profiles'">
             <div *ngIf="loadingobjects; else objectsdisplay" class="slds-p-around--medium slds-align--absolute-center">
@@ -52,7 +53,7 @@
         </div>
         <div system-to-bottom *ngIf="activetab=='users'">
             <div *ngIf="loadingusers; else usersdisplay" class="slds-p-around--medium slds-align--absolute-center">
-                <system-spinner></system-spinner>
+                <system-spinner message="LBL_LOADING"></system-spinner>
             </div>
             <ng-template #usersdisplay>
                 <div class="slds-p-around--x-small">
@@ -75,7 +76,7 @@
                             </td>
                             <td style="width: 3rem;">
                                 <div *ngIf="acluser.id != '*'" class="slds-grid">
-                                    <system-utility-icon icon="delete" size="x-small" (click)="removeUser(acluser.id)"></system-utility-icon>
+                                    <system-utility-icon icon="delete" size="x-small" (click)="removeUser(acluser.id, $event)"></system-utility-icon>
                                 </div>
                             </td>
                         </tr>
@@ -86,6 +87,40 @@
                             <system-button-icon icon="new"></system-button-icon>
                         </button>
                     </div>
+                </div>
+            </ng-template>
+        </div>
+        <div system-to-bottom *ngIf="activetab=='orgunits'">
+            <div *ngIf="loadingorgunits; else orgunitdisplay" class="slds-p-around--medium slds-align--absolute-center">
+                <system-spinner message="LBL_LOADING"></system-spinner>
+            </div>
+            <ng-template #orgunitdisplay>
+                <table  class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_ORGUNIT"></system-label></div>
+                        </th>
+                        <th scope="col" style="width: 3rem;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let aclorgunit of aclorgunits">
+                        <td>
+                            <div class="slds-truncate">{{aclorgunit.name}}</div>
+                        </td>
+                        <td style="width: 3rem;">
+                            <div class="slds-grid">
+                                <system-utility-icon icon="delete" size="x-small" (click)="removeOrgUnit(aclorgunit.id, $event)"></system-utility-icon>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="slds-p-around--medium slds-align_absolute-center">
+                    <button class="slds-button" (click)="selectOrgUnit()">
+                        <system-button-icon icon="new"></system-button-icon>
+                    </button>
                 </div>
             </ng-template>
         </div>

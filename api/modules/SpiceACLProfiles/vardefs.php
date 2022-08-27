@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -45,6 +47,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceACLProfile'] = [
             'source' => 'non-db',
             'module' => 'Users',
             'vname' => 'LBL_USERS',
+        ],
+        'orgunits' =>    [
+            'name' => 'orgunits',
+            'type' => 'link',
+            'relationship' => 'spiceaclprofiles_orgunits',
+            'source' => 'non-db',
+            'module' => 'OrgUnits',
+            'vname' => 'LBL_ORGUNITS',
         ],
         'for_portal_users' => [
             'name' => 'for_portal_users',

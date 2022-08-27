@@ -1,0 +1,29 @@
+<div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
+    <h2 class="slds-text-heading_medium"><system-label-modulename module="SystemHolidayCalendars"></system-label-modulename></h2>
+    <div class="slds-grid">
+        <button class="slds-button slds-button--neutral" (click)="addCalendar()">
+            <system-button-icon icon="add"></system-button-icon>
+            <system-label label="LBL_CALENDAR"></system-label>
+        </button>
+        <button [disabled]="!activeCalendar" class="slds-button slds-button--neutral" (click)="addDay()">
+            <system-button-icon icon="add"></system-button-icon>
+            <system-label label="LBL_DAY"></system-label>
+        </button>
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="refresh()">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
+</div>
+<div class="slds-grid">
+    <div class="slds-size--1-of-4 slds-theme--default" system-to-bottom-noscroll system-view-provider>
+        <div class="slds-box--border slds-m-around--xx-small" *ngFor="let listItem of modellist.listData.list"  [ngClass]="{'slds-theme--inverse': listItem.id == activeCalendar}" (click)="activeCalendar = listItem.id">
+            <div class="slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread" [system-model-provider]="{module: 'SystemHolidayCalendars', data: listItem}">
+                <span>{{listItem.name}}</span>
+                <object-action-menu [buttonsize]="'x-small'" [actionset]="actionset" ></object-action-menu>
+            </div>
+        </div>
+    </div>
+    <div class="slds-size--3-of-4 slds-border--left slds-theme--shade">
+        <system-calendar-list-days *ngIf="activeCalendar" [calendarid]="activeCalendar"></system-calendar-list-days>
+    </div>
+</div>

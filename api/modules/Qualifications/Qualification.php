@@ -27,13 +27,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\Qualifications;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class Qualification extends SugarBean
+class Qualification extends SpiceBean
 {
-    public $table_name = "qualifications";
-    public $object_name = "Qualification";
-    public $module_dir = 'Qualifications';
+
 }

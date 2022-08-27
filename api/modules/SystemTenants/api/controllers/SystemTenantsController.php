@@ -1,4 +1,5 @@
 <?php
+
 /*********************************************************************************
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
@@ -27,16 +28,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\SystemTenants\api\controllers;
 
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceDemoData\SpiceDemoDataGenerator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SystemTenantsController
 {
@@ -92,6 +99,40 @@ class SystemTenantsController
         }
 
         return $res->withJson(["populatedTables" => $populatedTables]);
+
+    }
+
+    /**
+     * loads demo data in a client
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     */
+    public function acceptLegalNotice(Request $req, Response $res, array $args): Response
+    {
+        $authController = AuthenticationController::getInstance();
+
+        if (empty($authController->systemtenantid)) {
+            throw new BadRequestException('Only allowed when logged in to a tenant.');
+        }
+
+        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        DBManagerFactory::switchToMasterDatabase();
+
+        /* @var SystemTenant */
+        $tenant = BeanFactory::getBean('SystemTenants', $authController->systemtenantid);
+
+        $tenant->accept_data = json_encode([
+            'ip' => SpiceUtils::getClientIP(),
+            'timestamp' => TimeDate::getInstance()->nowDb()
+        ]);
+
+        $tenant->save();
+
+        return $res->withJson(['success' => true]);
 
     }
 }

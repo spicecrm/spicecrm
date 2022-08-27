@@ -27,6 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\includes\authentication\TOTPAuthentication;
 
 use Com\Tecnick\Barcode\Barcode;

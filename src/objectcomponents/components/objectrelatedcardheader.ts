@@ -101,4 +101,10 @@ export class ObjectRelatedCardHeader implements OnInit {
         this.relatedmodels.getData();
     }
 
+    get isEditable(){
+        let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule?.toLowerCase();
+        let fieldStatus = this.model.getFieldAccess(linkField);
+        return !fieldStatus || fieldStatus > 2 ? true : false;
+    }
+
 }

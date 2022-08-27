@@ -195,9 +195,12 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.event.data[dateEndName] = moment(this.event.end.format());
 
         this.model.startEdit(true, true);
-        this.model.setData({...this.event.data}, false);
-
-        this.model.save(false);
+        this.event.saving = true;
+        this.model.setData({...this.event.data}, false, true);
+        this.model.save(false).subscribe(() => {
+            this.event.saving = false;
+            this.cdRef.detectChanges();
+        });
 
         this.eventChange.emit();
     }
@@ -277,7 +280,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 switch (message.messagetype) {
                     case "model.save":
                         if (id == this.model.id) {
-                            this.model.setData(data);
+                            this.model.setData(data, false);
                             this.setEventColor();
                             this.eventChange.emit();
                         }
@@ -293,7 +296,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     public setModelDataFromEvent() {
         this.model.module = this.event.module;
         this.model.id = this.event.data.id;
-        this.model.setData(this.event.data);
+        this.model.setData({...this.event.data}, false);
     }
 
     /**

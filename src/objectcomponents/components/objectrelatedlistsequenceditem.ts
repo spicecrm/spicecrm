@@ -6,6 +6,7 @@ import {Router}   from '@angular/router';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
+import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: '[object-related-list-sequenced-item]',
@@ -23,7 +24,7 @@ export class ObjectRelatedListSequencedItem implements OnInit {
 
     public componentconfig: any = {};
 
-    constructor( public model: model, public view: view, public router: Router, public language: language ) {
+    constructor( public model: model, public view: view, public router: Router, public language: language, public metadata: metadata ) {
         this.view.isEditable = false;
     }
 
@@ -40,6 +41,9 @@ export class ObjectRelatedListSequencedItem implements OnInit {
         this.model.module = this.module;
         this.model.id = this.listitem.id;
         this.model.setData(this.listitem);
+
+        // load the componentconfig from ObjectRelatedListItem ... if input itemactionset is not defined
+        this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedListSequencedItem', this.model.module);
     }
 
     public navigateDetail() {

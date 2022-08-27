@@ -27,25 +27,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\ProductGroups;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\SpiceBean;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
-class ProductGroup extends SugarBean
+class ProductGroup extends SpiceBean
 {
-
-    public $table_name = "productgroups";
-    public $object_name = "ProductGroup";
-    public $module_dir = 'ProductGroups';
-    public $unformated_numbers = true;
-
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
+//    public $unformated_numbers = true;
 
     function getSubProductGroups($groupid = '')
     {
@@ -136,7 +128,7 @@ class ProductGroup extends SugarBean
 
     function getRelatedAttributesRecursively($searchEnabled = false, $attributes = [], &$attributeIds = [])
     {
-        $moduleHandler = new ModuleHandler();
+        $moduleHandler = new SpiceBeanHandler();
 
         if ($this->parent_productgroup_id) {
             $parent_group = new ProductGroup();

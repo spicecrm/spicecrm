@@ -3,22 +3,22 @@
 * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
 * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
 * You can contact us at info@spicecrm.io
-* 
+*
 * SpiceCRM is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
-* 
+*
 * SpiceCRM is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -28,7 +28,7 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\database;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -511,10 +511,10 @@ class PostgreSQLManager extends DBManager
      */
     public function connect(array $configOptions = null, $dieOnError = false)
     {
-        
+
 
         if(is_null($configOptions))
-            $configOptions = SpiceConfig::getInstance()->config['dbconfig'];
+            $configOptions = $this->dbConfig['dbconfig'];
 
         if ($this->getOption('persistent')) {
             $this->database = @pg_pconnect(
@@ -547,7 +547,7 @@ class PostgreSQLManager extends DBManager
             // Do not pass connection information because we have not connected yet
             if($this->database  && $this->getOption('persistent')){
                 $_SESSION['administrator_error'] = "<b>Severe Performance Degradation: Persistent Database Connections "
-                    . "not working.  Please set ". SpiceConfig::getInstance()->config['dbconfigoption']['persistent']." to false in your config.php file</b>";
+                    . "not working.  Please set ". $this->dbConfig['dbconfigoption']['persistent']." to false in your config.php file</b>";
             }
         }
 
@@ -667,7 +667,7 @@ class PostgreSQLManager extends DBManager
      * (non-PHPdoc)
      * @see DBManager::createTableSQL()
      */
-    public function createTableSQL(SugarBean $bean)
+    public function createTableSQL(SpiceBean $bean)
     {
         $tablename = $bean->getTableName();
         $fieldDefs = $bean->getFieldDefinitions();

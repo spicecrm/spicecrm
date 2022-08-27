@@ -27,20 +27,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\Inquiries;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use SpiceCRM\extensions\modules\CatalogOrders\CatalogOrder;
 
-class Inquiry extends SugarBean
+class Inquiry extends SpiceBean
 {
-    // tabellennamen bestimmen, usw.
-    var $table_name = 'inquiries';
-    var $object_name = 'Inquiry';
-    var $module_dir = 'Inquiries';
-
     public function get_summary_text()
     {
         //todo: a ticket number or something???
@@ -64,7 +61,7 @@ class Inquiry extends SugarBean
      * @param bool $encode
      * @param bool $deleted
      * @param bool $relationships
-     * @return SugarBean
+     * @return SpiceBean
      */
     public function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
     {

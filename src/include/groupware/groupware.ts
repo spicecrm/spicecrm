@@ -14,25 +14,25 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
 import {ObjectFields} from "../../objectfields/objectfields";
 
-import /*embed*/ {GroupwareEmail} from "./interfaces/groupwareemail.interface";
+import {GroupwareEmail} from "./interfaces/groupwareemail.interface";
 
-import /*embed*/ {GroupwareService} from './services/groupware.service';
+import {GroupwareService} from './services/groupware.service';
 
-import /*embed*/ {GroupwarePaneBean} from './components/groupwarepanebean';
-import /*embed*/ {GroupwarePaneNoBeansFound} from './components/groupwarepanenobeansfound';
-import /*embed*/ {GroupwareDetailPaneView} from './components/groupwaredetailpaneview';
-import /*embed*/ {GroupwareEmailArchivePaneAttachment} from './components/groupwareemailarchivepaneattachment';
-import /*embed*/ {GroupwareEmailArchivePane} from './components/groupwareemailarchivepane';
-import /*embed*/ {GroupwareEmailArchivePaneHeader} from './components/groupwareemailarchivepaneheader';
-import /*embed*/ {GroupwareEmailArchivePaneAttachments} from './components/groupwareemailarchivepaneattachments';
-import /*embed*/ {GroupwareEmailArchivePaneBeans} from './components/groupwareemailarchivepanebeans';
-import /*embed*/ {GroupwareEmailArchivePaneLinked} from './components/groupwareemailarchivepanelinked';
-import /*embed*/ {GroupwareEmailArchivePaneSearch} from './components/groupwareemailarchivepanesearch';
-import /*embed*/ {GroupwareEmailArchivePaneItem} from './components/groupwareemailarchivepaneitem';
-import /*embed*/ {GroupwareDetailPanefooter} from './components/groupwaredetailpanefooter';
-import /*embed*/ {GroupwareDetailPaneHeader} from './components/groupwaredetailpaneheader';
-import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
-import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
+import {GroupwarePaneBean} from './components/groupwarepanebean';
+import {GroupwarePaneNoBeansFound} from './components/groupwarepanenobeansfound';
+import {GroupwareDetailPaneView} from './components/groupwaredetailpaneview';
+import {GroupwareEmailArchivePaneAttachment} from './components/groupwareemailarchivepaneattachment';
+import {GroupwareEmailArchivePane} from './components/groupwareemailarchivepane';
+import {GroupwareEmailArchivePaneHeader} from './components/groupwareemailarchivepaneheader';
+import {GroupwareEmailArchivePaneAttachments} from './components/groupwareemailarchivepaneattachments';
+import {GroupwareEmailArchivePaneBeans} from './components/groupwareemailarchivepanebeans';
+import {GroupwareEmailArchivePaneLinked} from './components/groupwareemailarchivepanelinked';
+import {GroupwareEmailArchivePaneSearch} from './components/groupwareemailarchivepanesearch';
+import {GroupwareEmailArchivePaneItem} from './components/groupwareemailarchivepaneitem';
+import {GroupwareDetailPanefooter} from './components/groupwaredetailpanefooter';
+import {GroupwareDetailPaneHeader} from './components/groupwaredetailpaneheader';
+import {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
+import {GroupwareDetailPane} from './components/groupwaredetailpane';
 
 @NgModule({
     imports: [

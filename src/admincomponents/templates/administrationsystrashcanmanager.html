@@ -1,31 +1,69 @@
-<div class="slds-page-header">
-    <div class="slds-media">
+<div class="slds-grid slds-grid--vertical-align-end slds-page-header">
+    <div class="slds-media slds-m-right--medium">
         <div class="slds-p-horizontal--x-small">
             <system-action-icon icon="recall"></system-action-icon>
         </div>
         <div class="slds-media__body">
-            <h1 class="slds-page-header__title slds-truncate slds-align-middle">Record Recovery</h1>
-            <div class="slds-text-body_small slds-line-height_reset slds-p-vertical--xx-small" (click)="reload()">
-                {{loadDate}}
+            <h1 class="slds-page-header__title slds-truncate slds-align-middle">
+                <system-label label="LBL_TRASHCAN_MANAGER"></system-label>
+            </h1>
+            <div class="slds-text-body_small slds-line-height_reset slds-p-vertical--xx-small">
+                <span class="slds-m-right--xx-small">{{records.length}} <system-label label="LBL_FROM"></system-label> {{totalCount}}</span> {{loadDate}}
             </div>
         </div>
     </div>
+    <div class="slds-form-element slds-p-right--x-small slds-grow">
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left-right">
+            <system-utility-icon icon="search" size="x-small" addclasses="slds-icon slds-input__icon slds-input__icon_left"></system-utility-icon>
+            <input [(ngModel)]="searchTerm" (keyup.enter)="reload()" system-autofocus class="slds-input slds-lookup__search-input slds-size--1-of-1" type="search" system-placeholder="LBL_SEARCH"/>
+            <button [disabled]="!searchTerm" (click)="clearSearchTerm()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+                <system-button-icon icon="clear"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <div class="slds-form-element slds-m-right--x-small">
+        <label for="moduleselect" class="slds-form-element__label">
+            <system-label label="LBL_MODULE"></system-label>
+        </label>
+        <div class="slds-form-element__control slds-col">
+            <div class="slds-select_container">
+                <select id="moduleselect" class="slds-select" [(ngModel)]="searchModule">
+                    <option value="" selected>
+                        <system-label label="LBL_SELECT"></system-label>
+                    </option>
+                    <option *ngFor="let module of modules" [value]="module">
+                        <system-label-modulename [module]="module"></system-label-modulename>
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-m-right--small slds-size--1-of-8">
+        <label class="slds-form-element__label"><system-label label="LBL_USER"></system-label></label>
+        <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
+    </div>
+    <div>
+        <button (click)="reload()" class="slds-button slds-button--neutral">
+            <system-label label="LBL_REFRESH"></system-label>
+        </button>
+    </div>
 </div>
-<div system-to-bottom>
-    <table class="slds-table slds-table_bordered slds-table--header-fixed slds-table_cell-buffer">
+<div (system-to-bottom)="loadMore()">
+    <table class="slds-table slds-table_bordered slds-table--header-fixed slds-table--fixed-layout">
         <thead>
             <tr class="slds-text-title_caps">
-                <th scope="col" colspan="2">
-                    <div class="slds-truncate"><system-label label="LBL_OBJECT"></system-label></div>
+                <th class="slds-cell-shrink"></th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-vertical--x-small"><system-label label="LBL_OBJECT"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                    <div class="slds-truncate slds-p-vertical--x-small"><system-label label="LBL_NAME"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><system-label label="LBL_DATE_DELETED"></system-label></div>
+                    <div class="slds-truncate slds-p-vertical--x-small"><system-label label="LBL_DATE_DELETED"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><system-label label="LBL_DELETED_BY"></system-label></div>
+                    <div class="slds-truncate slds-p-vertical--x-small"><system-label label="LBL_DELETED_BY"></system-label></div>
                 </th>
                 <th scope="col" class="slds-cell-shrink"></th>
             </tr>
@@ -33,7 +71,7 @@
         <tbody>
             <tr *ngFor="let record of records">
                 <td role="gridcell" class="slds-cell-shrink">
-                    <system-icon [module]="getModule(record.recordmodule)" size="small"></system-icon>
+                    <system-icon [module]="record.recordmodule" size="small"></system-icon>
                 </td>
                 <td scope="row">
                     <div class="slds-truncate">{{record.recordmodule}}</div>
@@ -42,20 +80,22 @@
                     <div class="slds-truncate">{{record.recordname}}</div>
                 </td>
                 <td>
-                    <div class="slds-truncate">{{getUserDate(record.date_deleted)}}</div>
+                    <div class="slds-truncate">{{record.date_deleted}}</div>
                 </td>
                 <td>
                     <div class="slds-truncate">{{record.user_name}}</div>
                 </td>
                 <td role="gridcell">
-                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small"  (click)="recoverRecord(record)">
+                    <button (click)="recoverRecord(record)" system-title="LBL_RESTORE" class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small">
                         <system-button-icon [icon]="'undelete'"></system-button-icon>
                     </button>
                 </td>
             </tr>
         </tbody>
-        <tbody system-table-stencils [columns]="5" [select]="false" [tools]="true" [rows]="5" *ngIf="loading"></tbody>
     </table>
+    <div *ngIf="loading" class="slds-p-around--medium slds-align--absolute-center">
+        <system-spinner></system-spinner>
+    </div>
     <div *ngIf="!loading && records.length == 0" class="slds-p-around--medium slds-align--absolute-center">
         <h2 class="slds-text-heading--small"><system-label label="LBL_NO_RECORDS_FOUND"></system-label></h2>
     </div>

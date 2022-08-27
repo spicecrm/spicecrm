@@ -34,6 +34,7 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\data\BeanFactory;
@@ -116,7 +117,7 @@ class SugarRelationshipFactory {
     /**
      * @param false $forceLoadFromDb
      */
-    protected function loadRelationships($forceLoadFromDb = false)
+    public function loadRelationships($forceLoadFromDb = false)
     {
         if(empty($_SESSION['relationships']) || $forceLoadFromDb) {
             $this->loadRelationshipsFromDb();
@@ -128,11 +129,11 @@ class SugarRelationshipFactory {
     /**
      * fill relationships from database and set to session
      */
-    private function loadRelationshipsFromDb(){
+    public function loadRelationshipsFromDb(){
         $this->relationships = SpiceDictionaryVardefs::loadRelationships();
         // reset session
         $_SESSION['relationships'] = [];
-        $_SESSION['relationships'] = array_merge($_SESSION['relationships'], $this->relationships);
+        $_SESSION['relationships'] = $this->relationships;
     }
 
     /**

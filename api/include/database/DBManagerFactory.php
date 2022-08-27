@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -36,8 +36,11 @@
 
 namespace SpiceCRM\includes\database;
 
+use Exception;
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+
 /*********************************************************************************
  * Description: This file generates the appropriate manager for the database
  *
@@ -54,6 +57,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  */
 class DBManagerFactory
 {
+    static $config = ['dbconfig' => [], 'dbconfigoption' => []];
+
     /**
      * hold the instances
      * @var array
@@ -64,7 +69,7 @@ class DBManagerFactory
      * name of the instance
      * @var string
      */
-    static $instanceName = '';
+    static $instanceName = 'initial';
 
     /**
      * Returns a reference to the DB object of specific type
@@ -72,10 +77,11 @@ class DBManagerFactory
      * @param string $type DB type
      * @param array $config DB configuration
      * @return object DBManager instance
+     * @throws Exception
      */
     public static function getTypeInstance($type, $config = [])
     {
-        if (empty($config['db_manager'])===false) {
+        if (empty($config['dbconfig']['db_manager'])===false) {
             // standard types
             switch ($type) {
                 case "mysql":
@@ -93,12 +99,12 @@ class DBManagerFactory
                     }
             }
         } else {
-            $my_db_manager = '\\SpiceCRM\\includes\\database\\' . $config['db_manager'];
+            $my_db_manager = '\\SpiceCRM\\includes\\database\\' . $config['dbconfig']['db_manager'];
         }
 
 
         if (class_exists($my_db_manager)) {
-            return new $my_db_manager();
+            return new $my_db_manager($config);
         } else {
             return null;
         }
@@ -110,21 +116,30 @@ class DBManagerFactory
      *
      * @param string $instanceName optional, name of the instance
      * @return object DBManager instance
+     * @throws Exception
      */
-    public static function getInstance($instanceName = '')
+    public static function getInstance(string $instanceName = 'initial')
     {
         self::$instanceName = $instanceName;
         static $count = 0, $old_count = 0;
 
         //fall back to the default instance name
         if (!isset(self::$instances[self::$instanceName])) {
-            $config = SpiceConfig::getInstance()->config['dbconfig'];
+
+            $dbConfig = [
+                'dbconfig' => SpiceConfig::getInstance()->config['dbconfig'],
+                'dbconfigoption' => SpiceConfig::getInstance()->config['dbconfigoption']
+            ];
+
             $count++;
-            self::$instances[self::$instanceName] = self::getTypeInstance($config['db_type'], $config);
-            if (!empty(SpiceConfig::getInstance()->config['dbconfigoption'])) {
-                self::$instances[self::$instanceName]->setOptions(SpiceConfig::getInstance()->config['dbconfigoption']);
+            self::$instances[self::$instanceName] = self::getTypeInstance($dbConfig['dbconfig']['db_type'], $dbConfig);
+            if (!empty($dbConfig['dbconfigoption'])) {
+                self::$instances[self::$instanceName]->setOptions($dbConfig['dbconfigoption']);
             }
-            self::$instances[self::$instanceName]->connect($config, true);
+
+            // set the current db name to determine if we are connected to the tenant db or to the
+
+            self::$instances[self::$instanceName]->connect($dbConfig['dbconfig'], true);
             self::$instances[self::$instanceName]->count_id = $count;
             self::$instances[self::$instanceName]->references = 0;
             self::$instances[self::$instanceName]->resetQueryCount();
@@ -153,26 +168,42 @@ class DBManagerFactory
 
     /**
      * switch an instance to a new db name
-     *
      * @param $dbName
      * @param string $instanceName
+     * @return MysqliManager|object|SqlsrvManager|null
+     * @throws Exception
      */
-    public static function switchInstance($dbName, $config, $instanceName = '')
+    public static function switchDatabase($dbName, string $instanceName = 'initial')
     {
-        if (isset(self::$instances[$instanceName])) {
-            self::$instances[$instanceName]->disconnect();
-            //    $config = SpiceConfig::getInstance()->config['dbconfig'];
-            $config['dbconfig']['db_name'] = $dbName;
-            self::$instances[$instanceName] = self::getTypeInstance($config['dbconfig']['db_type'], $config['dbconfig']);
-            if (!empty($config['dbconfigoption'])) {
-                self::$instances[$instanceName]->setOptions($config['dbconfigoption']);
-            }
-            self::$instances[$instanceName]->connect($config['dbconfig'], true);
-            self::$instances[$instanceName]->references = 0;
-            self::$instances[$instanceName]->resetQueryCount();
+        if (!isset(self::$instances[$instanceName])) return null;
 
-            return self::$instances[$instanceName];
+        self::$instances[$instanceName]->disconnect();
+        BeanFactory::clearLoadedBeans();
+
+        $dbConfig = self::$instances[$instanceName]->dbConfig;
+
+        $dbConfig['dbconfig']['db_name'] = $dbName;
+
+        self::$instances[$instanceName] = self::getTypeInstance($dbConfig['dbconfig']['db_type'], $dbConfig);
+        if (!empty($dbConfig['dbconfigoption'])) {
+            self::$instances[$instanceName]->setOptions($dbConfig['dbconfigoption']);
         }
+        self::$instances[$instanceName]->connect($dbConfig['dbconfig'], true);
+        self::$instances[$instanceName]->references = 0;
+        self::$instances[$instanceName]->resetQueryCount();
+
+        return self::$instances[$instanceName];
+    }
+
+    /**
+     * switch back to the master db connection
+     * @param string $instanceName
+     * @return MysqliManager|object|SqlsrvManager|null
+     * @throws Exception
+     */
+    public static function switchToMasterDatabase(string $instanceName = 'initial')
+    {
+        return self::switchDatabase(SpiceConfig::getInstance()->config['dbconfig']['db_name'], $instanceName);
     }
 
     /**
@@ -222,7 +253,7 @@ class DBManagerFactory
             // require_once("$dir/$name");
             $classname = '\\SpiceCRM\\includes\\database\\' . substr($name, 0, -4);
             if (!class_exists($classname)) continue;
-            $driver = new $classname;
+            $driver = new $classname([]);
             if (!$validate || $driver->valid()) {
                 if (empty($drivers[$driver->dbType])) {
                     $drivers[$driver->dbType] = [];

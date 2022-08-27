@@ -14,8 +14,18 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class LoggerMiddleware
 {
+    /**
+     * @var the log entry
+     */
     private $logEntry;
-    private $logging = false;
+
+    /**
+     * holds the determines logtables
+     *
+     * @var array
+     */
+    private $logtables = [];
+
     private $startingTime;
 
     const DIRECTION_INBOUND  = 'I';
@@ -28,14 +38,22 @@ class LoggerMiddleware
     public function __invoke(Request $request, RequestHandler $handler): Response {
         $this->startingTime = microtime(true);
 
+        // generates the basic request
         $this->generateLogEntry($request);
 
+        // builds the log tables
+        $this->buildLogTables();
+
+        // writes the log entr
         $this->writeLogEntry();
 
+        // invoke the request
         $response = $handler->handle($request);
 
+        // updates the log entry with the results
         $this->updateLogEntry($response);
 
+        // returns the response
         return $response;
     }
 
@@ -85,28 +103,38 @@ class LoggerMiddleware
      * @throws \Exception
      */
     private function writeLogEntry() {
+        if (count($this->logtables) > 0) {
+            $this->logEntry->id = SpiceUtils::createGuid();
+            foreach ($this->logtables as $lt) {
+                DBManagerFactory::getInstance('spicelogger')->insertQuery($lt, (array)$this->logEntry);
+            }
+        }
+    }
+
+    /**
+     * builds teh log entries reading the config
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function buildLogTables(){
+        $db = DBManagerFactory::getInstance();
         $spice_config = SpiceConfig::getInstance()->config;
-        $this->logging = false;
         if($spice_config['system']['no_table_exists_check'] === true || DBManagerFactory::getInstance()->tableExists('sysapilogconfig')){
             // check if this request has to be logged by some rules...
-            $sql = "SELECT COUNT(id) cnt FROM sysapilogconfig WHERE
+            $sql = "SELECT count(id) cnt, logtable FROM sysapilogconfig WHERE
               (route = '{$this->logEntry->route}' OR route = '*' OR '{$this->logEntry->route}' LIKE route) AND
               (method = '{$this->logEntry->method}' OR method = '*') AND
               (user_id = '{$this->logEntry->user_id}' OR user_id = '*') AND
               (ip = '{$this->logEntry->ip}' OR ip = '*') AND
-              is_active = 1";
-            $res = DBManagerFactory::getInstance()->query($sql);
-            $row = DBManagerFactory::getInstance()->fetchByAssoc($res);
-            if ($row['cnt'] > 0) {
-                $this->logging = true;
-                // write the log...
-                $this->logEntry->id = SpiceUtils::createGuid();
-                DBManagerFactory::getInstance('spicelogger')->insertQuery('sysapilog', (array) $this->logEntry);
-            } else {
-                $this->logging = false;
+              is_active = 1 GROUP BY logtable";
+            $res = $db->query($sql);
+            while($row = $db->fetchByAssoc($res)){
+                if(array_search($row['logtable'] ?: 'sysapilog', $this->logtables) === false) $this->logtables[] = $row['logtable'] ?: 'sysapilog';
             }
         }
     }
+
 
     /**
      * Updates the log entry with data from the response and saves the update into the DB.
@@ -114,14 +142,16 @@ class LoggerMiddleware
      * @param Response $response
      */
     private function updateLogEntry(Response $response) {
-        if ($this->logging) {
+        if (count($this->logtables) > 0) {
             $this->logEntry->http_status_code = $response->getStatusCode();
             $this->logEntry->runtime = (microtime(true) - $this->startingTime)*1000;
             $this->logEntry->response_headers = $this->buildResponseHeaders($response->getHeaders());
             $this->logEntry->response_body = $response->getBody()->__toString();
 
             // update the log...
-            DBManagerFactory::getInstance('spicelogger')->updateQuery('sysapilog', ['id' => $this->logEntry->id], (array) $this->logEntry);
+            foreach ($this->logtables as $lt) {
+                DBManagerFactory::getInstance('spicelogger')->updateQuery($lt, ['id' => $this->logEntry->id], (array)$this->logEntry);
+            }
         }
     }
 

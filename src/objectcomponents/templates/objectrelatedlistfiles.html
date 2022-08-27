@@ -1,6 +1,6 @@
 <div class="slds-card slds-card_boundary slds-m-bottom--medium" (system-drop-file)="fileDrop($event)">
     <div class="slds-card__header slds-grid">
-        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+        <header class="slds-size--1-of-1 slds-grid slds-grid--vertical-align-center">
             <system-icon [icon]="'file'" [size]="'small'"></system-icon>
             <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
                 <h2>
@@ -11,20 +11,20 @@
                 </h2>
                 <system-utility-icon *ngIf="modelattachments.files.length > 0 && !componentconfig.alwaysExpanded" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>
-            <button class="slds-button slds-button--icon-border slds-m-right--xx-small" (click)="toggleBigThumbnail()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
+            <button class="slds-col--bump-left slds-button slds-button--icon-border slds-m-right--xxx-small" (click)="toggleBigThumbnail()" system-title="LBL_TOGGLE_BIG_THUMBNAIL">
                 <system-utility-icon size="x-small" [icon]="componentconfig?.bigThumbnail ? 'file' : 'ad_set'"></system-utility-icon>
             </button>
-            <div *ngIf="!componentconfig.disableFilter" class="slds-form-element slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="!componentconfig.disableFilter && width > 500" class="slds-form-element slds-m-horizontal--xxx-small">
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
                     <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
                     <input type="text" class="slds-input" [ngModel]="filterTerm" (ngModelChange)="setFilteredFiles('input', $event)">
                 </div>
             </div>
-            <div *ngIf="!componentconfig.disableCategories" class="slds-form-element slds-p-horizontal--x-small slds-grid slds-grid--vertical-align-center">
-                <div system-title="LBL_CATEGORIES" class="slds-m-horizontal--xx-small">
+            <div *ngIf="!componentconfig.disableCategories" class="slds-form-element slds-m-horizontal--xxx-small slds-grid slds-grid--vertical-align-center">
+                <div *ngIf="width > 600" system-title="LBL_CATEGORIES" class="slds-m-horizontal--xxx-small">
                     <system-utility-icon icon="tile_card_list" size="x-small"></system-utility-icon>
                 </div>
-                <div class="slds-select_container slds-m-vertical--xx-small">
+                <div class="slds-select_container slds-m-horizontal--xxx-small">
                     <select class="slds-select" [ngModel]="selectedCategoryId" (ngModelChange)="setFilteredFiles('category', $event)" style="min-width: 70px;">
                         <option value="*">
                             <system-label label="LBL_ALL"></system-label>
@@ -35,13 +35,11 @@
                     </select>
                 </div>
             </div>
+            <button *ngIf="!componentconfig.disableupload" class="slds-m-left--xxx-small slds-button slds-button--icon-border" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
         </header>
-        <div class="slds-no-flex slds-button-group" role="group">
-            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--icon-border x-slds-m-vertical--xx-small" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
-        </div>
         <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
     </div>
-    <div class="slds-card__body" @displaycard *ngIf="isopen">
+    <div class="slds-card__body slds-card__body_inner" @displaycard *ngIf="isopen">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
             <div object-related-card-file *ngFor="let file of filteredFiles" [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent"></div>
         </div>

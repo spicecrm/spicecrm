@@ -34,6 +34,7 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -190,7 +191,7 @@ function get_modified_entries($session, $module_name, $ids, $select_fields ){
 	$in = '';
 	$field_select ='';
 
-	$table_name = $seed->table_name;
+	$table_name = $seed->_tablename;
 	if(isset($ids)){
 		foreach($ids as $value){
 			if(empty($in))
@@ -242,7 +243,7 @@ function get_modified_entries($session, $module_name, $ids, $select_fields ){
         	$temp = @clone($seed);
         }
 // CR1000452
-//        $temp->setupCustomFields($temp->module_dir);
+//        $temp->setupCustomFields($temp->_module);
 		$temp->loadFromRow($row);
 		$temp->fill_in_additional_detail_fields();
 		if(isset($temp->emailAddress)){
@@ -315,7 +316,7 @@ function get_attendee_list($session, $module_name, $id){
 				}
 				//now get contacts
 				$table_name = $l_module_name."_contacts";
-				$result = $seed->db->query("SELECT contacts.id, $table_name.date_modified, first_name, last_name FROM contacts INNER JOIN $table_name ON $table_name.contact_id = contacts.id INNER JOIN $seed->table_name ON ".$seed->table_name.".id = ".$table_name.".".$join_field."_id WHERE ".$table_name.".".$join_field."_id = '". DBManagerFactory::getInstance()->quote($id)."' AND ".$table_name.".deleted = 0 AND (contacts.id != ".$seed->table_name.".parent_id OR ".$seed->table_name.".parent_id IS NULL)");
+				$result = $seed->db->query("SELECT contacts.id, $table_name.date_modified, first_name, last_name FROM contacts INNER JOIN $table_name ON $table_name.contact_id = contacts.id INNER JOIN $seed->_tablename ON ".$seed->_tablename.".id = ".$table_name.".".$join_field."_id WHERE ".$table_name.".".$join_field."_id = '". DBManagerFactory::getInstance()->quote($id)."' AND ".$table_name.".deleted = 0 AND (contacts.id != ".$seed->_tablename.".parent_id OR ".$seed->_tablename.".parent_id IS NULL)");
 				$contact = BeanFactory::getBean('Contacts');
 				while($row = $seed->db->fetchByAssoc($result))
 				{

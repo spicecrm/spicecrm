@@ -26,9 +26,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\CampaignTasks\api\controllers\CampaignTasksController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 /**
  * get a Rest Manager Instance
@@ -38,7 +41,7 @@ $RESTManager = RESTManager::getInstance();
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('campaigntasks', '1.0');
+$RESTManager->registerExtension('campaigntasks', '1.0', ['pdflimit' => SpiceConfig::getInstance()->config['mailmerge']['pdflimit']]);
 
 $routes = [
     [

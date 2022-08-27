@@ -27,6 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\SpiceACLProfiles\api\controllers;
 
 use Psr\Http\Message\RequestInterface;
@@ -136,6 +138,20 @@ class SpiceACLProfilesController
         return $res->withJson($spiceACLProfilesRESTHandler->getProfileUsers($args['id']));
     }
 
+    /**
+     * get orgunits for a profile
+     *
+     * @param $req RequestInterface
+     * @param $res SpiceResponse
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getOrgUnitsHavingProfile(Request $req, Response $res, array $args): Response {
+        $spiceACLProfilesRESTHandler = new SpiceACLProfilesRESTHandler();
+        return $res->withJson($spiceACLProfilesRESTHandler->getProfileOrgUnits($args['id']));
+    }
+
 
     /**
      * Spice ACL Add Profile Users
@@ -150,6 +166,21 @@ class SpiceACLProfilesController
         $spiceACLProfilesRESTHandler = new SpiceACLProfilesRESTHandler();
         $postBody = $req->getParsedBody();
         return $res->withJson($spiceACLProfilesRESTHandler->addProfileUsers($args['id'], $postBody['userids']));
+    }
+
+    /**
+     * add orgunits to a profile
+     *
+     * @param $req RequestInterface
+     * @param $res SpiceResponse
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function addProfileOrgUnits(Request $req, Response $res, array $args): Response {
+        $spiceACLProfilesRESTHandler = new SpiceACLProfilesRESTHandler();
+        $postBody = $req->getParsedBody();
+        return $res->withJson($spiceACLProfilesRESTHandler->addProfileOrgUnits($args['id'], $postBody['orgunitids']));
     }
 
 
@@ -168,6 +199,20 @@ class SpiceACLProfilesController
     }
 
     /**
+     * allocate one orgunit to a profile
+     *
+     * @param $req RequestInterface
+     * @param $res SpiceResponse
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function addProfileOrgUnit(Request $req, Response $res, array $args): Response {
+        $spiceACLProfilesRESTHandler = new SpiceACLProfilesRESTHandler();
+        return $res->withJson($spiceACLProfilesRESTHandler->addProfileOrgUnits($args['id'], [$args['orgunitid']]));
+    }
+
+    /**
      * remove a profile to specified user
      *
      * @param $req RequestInterface
@@ -177,6 +222,18 @@ class SpiceACLProfilesController
     public function deleteProfileUser(Request $req, Response $res, array $args): Response {
         $spiceACLProfilesRESTHandler = new SpiceACLProfilesRESTHandler();
         return $res->withJson($spiceACLProfilesRESTHandler->deleteProfileUser($args['id'], $args['userid']));
+    }
+
+    /**
+     * remove a profile to specified orgunits
+     *
+     * @param $req RequestInterface
+     * @param $res SpiceResponse
+     * @param $args
+     */
+    public function deleteProfileOrgUnit(Request $req, Response $res, array $args): Response {
+        $spiceACLProfilesRESTHandler = new SpiceACLProfilesRESTHandler();
+        return $res->withJson($spiceACLProfilesRESTHandler->deleteProfileOrgUnit($args['id'], $args['orgunitid']));
     }
 
 

@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -75,7 +77,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Inquiry'] = [
             'name' => 'salutation',
             'type' => 'enum',
             'options' => 'salutation_dom',
-            'massupdate' => false,
             'len' => 255,
             'vname' => 'LBL_SALUTATION',
         ],
@@ -212,7 +213,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Inquiry'] = [
             'vname' => 'LBL_STREET',
             'type' => 'varchar',
             'len' => '150',
-            'group' => 'inquiry_address',
             'comment' => 'Street address for profile address',
             'merge_filter' => 'enabled',
         ],
@@ -241,7 +241,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Inquiry'] = [
             'vname' => 'LBL_CITY',
             'type' => 'varchar',
             'len' => '100',
-            'group' => 'inquiry_address',
             'comment' => 'City for profile address',
             'merge_filter' => 'enabled',
         ],
@@ -250,7 +249,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Inquiry'] = [
             'vname' => 'LBL_STATE',
             'type' => 'varchar',
             'len' => '100',
-            'group' => 'inquiry_address',
             'comment' => 'State for profile address',
             'merge_filter' => 'enabled',
         ],
@@ -259,7 +257,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Inquiry'] = [
             'vname' => 'LBL_POSTALCODE',
             'type' => 'varchar',
             'len' => '20',
-            'group' => 'inquiry_address',
             'comment' => 'Postal code for profile address',
             'merge_filter' => 'enabled',
         ],
@@ -268,7 +265,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Inquiry'] = [
             'vname' => 'LBL_POBOX',
             'type' => 'varchar',
             'len' => '20',
-            'group' => 'inquiry_address',
             'comment' => 'Ppobox for profile address',
             'merge_filter' => 'enabled',
         ],
@@ -276,7 +272,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Inquiry'] = [
             'name' => 'inquiry_address_country',
             'vname' => 'LBL_COUNTRY',
             'type' => 'varchar',
-            'group' => 'inquiry_address',
             'comment' => 'Country for profile address',
             'merge_filter' => 'enabled',
         ],
@@ -284,13 +279,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Inquiry'] = [
             'name' => 'inquiry_address_latitude',
             'vname' => 'LBL_LATITUDE',
             'type' => 'double',
-            'group' => 'inquiry_address'
         ],
         'inquiry_address_longitude' => [
             'name' => 'inquiry_address_longitude',
             'vname' => 'LBL_LONGITUDE',
             'type' => 'double',
-            'group' => 'inquiry_address'
         ],
         'emails' => [
             'name' => 'emails',

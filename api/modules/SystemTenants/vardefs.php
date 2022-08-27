@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -88,6 +90,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'type' => 'int',
             'comment' => 'the maximum elastic indices size limit in MB',
         ],
+        'accept_data' => [
+            'name' => 'accept_data',
+            'type' => 'json',
+            'vname' => 'LBL_ACCEPT_DATA'
+        ],
+        'wizard_completed' => [
+            'name' => 'wizard_completed',
+            'type' => 'bool',
+            'vname' => 'LBL_WIZARD_COMPLETED',
+            'default' => 0
+        ],
         'users' => [
             'name' => 'users',
             'type' => 'link',
@@ -104,6 +117,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'source'       => 'non-db',
             'relationship' => 'tenants_deploymentpackages',
         ],
+        'companycode_id' => [
+            'name'  => 'companycode_id',
+            'vname' => 'LBL_COMPANYCODE_ID',
+            'type'  => 'id',
+        ],
+        'companycode' => [
+            'name'         => 'companycode',
+            'vname'        => 'LBL_COMPANYCODE',
+            'relationship' => 'tenant_companycode',
+            'type'         => 'link',
+            'source'       => 'non-db',
+        ],
     ],
     'indices' => [],
     'relationships' => [
@@ -115,7 +140,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['SystemTenant'] = [
             'rhs_table' => 'users',
             'rhs_key' => 'systemtenant_id',
             'relationship_type' => 'one-to-many'
-        ]
+        ],
+        'tenant_companycode' => [
+            'lhs_module'        => 'SystemTenant',
+            'lhs_table'         => 'systemtenants',
+            'lhs_key'           => 'id',
+            'rhs_module'        => 'CompanyCode',
+            'rhs_table'         => 'companycodes',
+            'rhs_key'           => 'companycode_id',
+            'relationship_type' => 'one-to-many',
+        ],
     ]
 ];
 

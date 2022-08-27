@@ -13,137 +13,130 @@ import {ObjectComponents} from "../objectcomponents/objectcomponents";
 import {GlobalComponents} from "../globalcomponents/globalcomponents";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
-// Interfaces
-import /*embed*/ {DictionaryManagerMessage, DictionaryDefinition, DictionaryItem, Relationship, RelationshipRelateField, DictionaryIndex, DictionaryIndexItem} from "./interfaces/dictionarymanager.interfaces";
-import /*embed*/ {DomainDefinition, DomainField} from "./interfaces/domainmanager.interfaces";
-
-// Services
-import /*embed*/ {domainmanager} from "./services/domainmanager.service";
-import /*embed*/ {dictionarymanager} from "./services/dictionarymanager.service";
-
 // COMPONENTs
-import /*embed*/ {DictionaryManagerItemStatus} from "./components/dictionarymanageritemstatus";
+import {DictionaryManagerItemStatus} from "./components/dictionarymanageritemstatus";
 
-import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
-import /*embed*/ {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefinitions";
-import /*embed*/ {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdefinitiontabs";
-import /*embed*/ {DictionaryManagerItems} from "./components/dictionarymanageritems";
-import /*embed*/ {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
-import /*embed*/ {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
-import /*embed*/ {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
-import /*embed*/ {DictionaryManagerRelationships} from "./components/dictionarymanagerrelationships";
-import /*embed*/ {DictionaryManagerRelationshipsDetails} from "./components/dictionarymanagerrelationshipsdetails";
-import /*embed*/ {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerrelationshipadd";
-import /*embed*/ {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
-import /*embed*/ {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
-import /*embed*/ {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
-import /*embed*/ {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
-import /*embed*/ {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
-import /*embed*/ {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
-import /*embed*/ {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
-import /*embed*/ {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
-import /*embed*/ {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
-import /*embed*/ {DictionaryManagerFields} from "./components/dictionarymanagerfields";
+import {DictionaryManager} from "./components/dictionarymanager";
+import {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefinitions";
+import {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdefinitiontabs";
+import {DictionaryManagerItems} from "./components/dictionarymanageritems";
+import {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
+import {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
+import {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
+import {DictionaryManagerRelationships} from "./components/dictionarymanagerrelationships";
+import {DictionaryManagerRelationshipsDetails} from "./components/dictionarymanagerrelationshipsdetails";
+import {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerrelationshipadd";
+import {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
+import {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
+import {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
+import {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
+import {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
+import {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
+import {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
+import {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
+import {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
+import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
 
 
-import /*embed*/ {DomainManager} from "./components/domainmanager";
-import /*embed*/ {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
-import /*embed*/ {DomainManagerFields} from "./components/domainmanagerfields";
-import /*embed*/ {DomainManagerFieldTabs} from "./components/domainmanagerfieldtabs";
-import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
-import /*embed*/ {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
-import /*embed*/ {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
-import /*embed*/ {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
-import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
-import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
-import /*embed*/ {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
+import {DomainManager} from "./components/domainmanager";
+import {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
+import {DomainManagerFields} from "./components/domainmanagerfields";
+import {DomainManagerFieldTabs} from "./components/domainmanagerfieldtabs";
+import {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
+import {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
+import {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
+import {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
+import {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
+import {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
+import {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
 
-import /*embed*/ {FieldsetManager} from "./components/fieldsetmanager";
-import /*embed*/ {FieldsetManagerFieldsetDetails} from "./components/fieldsetmanagerfieldsetdetails";
-import /*embed*/ {FieldsetManagerFieldDetails} from "./components/fieldsetmanagerfielddetails";
-import /*embed*/ {FieldsetManagerAddDialog} from "./components/fieldsetmanageradddialog";
-import /*embed*/ {FieldsetManagerEditDialog} from "./components/fieldsetmanagereditdialog";
+import {FieldsetManager} from "./components/fieldsetmanager";
+import {FieldsetManagerFieldsetDetails} from "./components/fieldsetmanagerfieldsetdetails";
+import {FieldsetManagerFieldDetails} from "./components/fieldsetmanagerfielddetails";
+import {FieldsetManagerAddDialog} from "./components/fieldsetmanageradddialog";
+import {FieldsetManagerEditDialog} from "./components/fieldsetmanagereditdialog";
 
-import /*embed*/ {ActionsetManager} from "./components/actionsetmanager";
-import /*embed*/ {ActionsetManagerActionDetails} from "./components/actionsetmanageractiondetails";
-import /*embed*/ {ActionsetManagerAddDialog} from "./components/actionsetmanageradddialog";
+import {ActionsetManager} from "./components/actionsetmanager";
+import {ActionsetManagerActionDetails} from "./components/actionsetmanageractiondetails";
+import {ActionsetManagerAddDialog} from "./components/actionsetmanageradddialog";
 
-import /*embed*/ {CategoryTreeManager} from "./components/categorytreemanager";
-import /*embed*/ {CategoryTreeManagerNode} from "./components/categorytreemanagernode";
+import {CategoryTreeManager} from "./components/categorytreemanager";
+import {CategoryTreeManagerNode} from "./components/categorytreemanagernode";
 
-import /*embed*/ {ComponentsetManager} from "./components/componentsetmanager";
-import /*embed*/ {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
+import {ComponentsetManager} from "./components/componentsetmanager";
+import {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
 
-import /*embed*/ {ComponentsetManagerAddDialog} from "./components/componentsetmanageradddialog";
-import /*embed*/ {ComponentsetManagerEditDialog} from "./components/componentsetmanagereditdialog";
-import /*embed*/ {ValidationRulesManager, MaybeJsonPipe} from "./components/validationrulesmanager";
-import /*embed*/ {ValidationRulesConditions} from "./components/validationrulesconditions";
-import /*embed*/ {ValidationRulesActions} from "./components/validationrulesactions";
-import /*embed*/ {LanguageTranslationsManager} from "./components/languagetranslationsmanager";
-import /*embed*/ {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
-import /*embed*/ {LanguageLabelModal} from "./components/languagelabelmodal";
-import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
-import /*embed*/ {MailboxesTransportsEnum} from "./components/mailboxestransportsenum";
-import /*embed*/ {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
-import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
-import /*embed*/ {MailboxesGmailTrafficManager} from "./components/mailboxesgmailtrafficmanager";
-import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
-import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
-import /*embed*/ {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
-import /*embed*/ {MailboxesA1SmsTrafficManager} from "./components/mailboxesa1smstrafficmanager";
-import /*embed*/ {MailboxesA1TrafficManager} from "./components/mailboxesa1trafficmanager";
-import /*embed*/ {MailboxesEWSTrafficManager} from "./components/mailboxesewstrafficmanager";
-import /*embed*/ {MailboxesEWSSelectFoldersModal} from "./components/mailboxesewsselectfoldersmodal";
-import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
-import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
-import /*embed*/ {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
-import /*embed*/ {MailboxesTransportManager} from "./components/mailboxestransportmanager";
-import /*embed*/ {MailboxesProcessors} from "./components/mailboxesprocessors";
-import /*embed*/ {SelectTreeComponent} from "./components/selecttree";
-import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
-import /*embed*/ {ConfigCleaner} from "./components/configcleaner";
-import /*embed*/ {StyleCacheCleaner} from "./components/stylecachecleaner";
-import /*embed*/ {GoogleCalendarManager} from "./components/googlecalendarmanager";
-import /*embed*/ {ConfigTransfer} from './components/configtransfer';
+import {ComponentsetManagerAddDialog} from "./components/componentsetmanageradddialog";
+import {ComponentsetManagerEditDialog} from "./components/componentsetmanagereditdialog";
+import {ValidationRulesManager, MaybeJsonPipe} from "./components/validationrulesmanager";
+import {ValidationRulesConditions} from "./components/validationrulesconditions";
+import {ValidationRulesActions} from "./components/validationrulesactions";
+import {LanguageTranslationsManager} from "./components/languagetranslationsmanager";
+import {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
+import {LanguageLabelModal} from "./components/languagelabelmodal";
+import {MailboxesManager} from "./components/mailboxesmanager";
+import {MailboxesTransportsEnum} from "./components/mailboxestransportsenum";
+import {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
+import {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
+import {MailboxesGmailTrafficManager} from "./components/mailboxesgmailtrafficmanager";
+import {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
+import {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
+import {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
+import {MailboxesA1SmsTrafficManager} from "./components/mailboxesa1smstrafficmanager";
+import {MailboxesA1TrafficManager} from "./components/mailboxesa1trafficmanager";
+import {MailboxesEWSTrafficManager} from "./components/mailboxesewstrafficmanager";
+import {MailboxesEWSSelectFoldersModal} from "./components/mailboxesewsselectfoldersmodal";
+import {MailboxesImpersonatedEWSTrafficManager} from "./components/mailboxesimpersonatedewstrafficmanager";
+import {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
+import {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
+import {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
+import {MailboxesTransportManager} from "./components/mailboxestransportmanager";
+import {MailboxesProcessors} from "./components/mailboxesprocessors";
+import {SelectTreeComponent} from "./components/selecttree";
+import {SelectTreeAddDialog} from "./components/selecttreeadddialog";
+import {ConfigCleaner} from "./components/configcleaner";
+import {StyleCacheCleaner} from "./components/stylecachecleaner";
+import {GoogleCalendarManager} from "./components/googlecalendarmanager";
+import {ConfigTransfer} from './components/configtransfer';
 
-import /*embed*/ {ModuleConfigManager} from "./components/moduleconfigmanager";
+import {ModuleConfigManager} from "./components/moduleconfigmanager";
 
-import /*embed*/ {WorkbenchHeader} from "./components/workbenchheader";
-import /*embed*/ {WorkbenchHeaderControls} from "./components/workbenchheadercontrols";
-import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
-import /*embed*/ {WorkbenchConfigLabel} from "./components/workbenchconfiglabel";
-import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
-import /*embed*/ {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
-import /*embed*/ {WorkbenchConfigOptionFieldset} from "./components/workbenchconfigoptionfieldset";
-import /*embed*/ {WorkbenchConfigOptionModulefilter} from "./components/workbenchconfigoptionmodulefilter";
-import /*embed*/ {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
-import /*embed*/ {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
-import /*embed*/ {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
-import /*embed*/ {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
-import /*embed*/ {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
-import /*embed*/ {WorkbenchConfigOptionLabel} from "./components/workbenchconfigoptionlabel";
-import /*embed*/ {WorkbenchConfigOptionMethod} from "./components/workbenchconfigoptionmethod";
-import /*embed*/ {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
-import /*embed*/ {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
-import /*embed*/ {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
-import /*embed*/ {ObjectRepositoryExport} from "./components/objectrepositoryexport";
+import {WorkbenchHeader} from "./components/workbenchheader";
+import {WorkbenchHeaderControls} from "./components/workbenchheadercontrols";
+import {WorkbenchConfig} from "./components/workbenchconfig";
+import {WorkbenchConfigLabel} from "./components/workbenchconfiglabel";
+import {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
+import {FieldsetManagerCopyDialog} from "./components/fieldsetmanagercopydialog";
+import {WorkbenchConfigOptionFieldset} from "./components/workbenchconfigoptionfieldset";
+import {WorkbenchConfigOptionModulefilter} from "./components/workbenchconfigoptionmodulefilter";
+import {WorkbenchConfigOptionActionset} from "./components/workbenchconfigoptionactionset";
+import {WorkbenchConfigOptionBoolean} from "./components/workbenchconfigoptionboolean";
+import {WorkbenchConfigOptionComponentset} from "./components/workbenchconfigoptioncomponentset";
+import {WorkbenchConfigOptionModule} from "./components/workbenchconfigoptionmodule";
+import {WorkbenchConfigOptionDefault} from "./components/workbenchconfigoptiondefault";
+import {WorkbenchConfigOptionLabel} from "./components/workbenchconfigoptionlabel";
+import {WorkbenchConfigOptionMethod} from "./components/workbenchconfigoptionmethod";
+import {ObjectRepositoryManager, ObjectRepositoryManagerFilter} from "./components/objectrepositorymanager";
+import {ObjectRepositoryManagerAddRepo} from "./components/objectrepositorymanageraddrepo";
+import {ObjectRepositoryManagerAddModule} from "./components/objectrepositorymanageraddmodule";
+import {ObjectRepositoryExport} from "./components/objectrepositoryexport";
 
-import /*embed*/ {CRMLogViewer} from './components/crmlogviewer';
-import /*embed*/ {CRMLogViewerList} from './components/crmlogviewerlist';
-import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
-import /*embed*/ {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
+import {CRMLogViewer} from './components/crmlogviewer';
+import {CRMLogViewerList} from './components/crmlogviewerlist';
+import {CRMLogViewerModal} from './components/crmlogviewermodal';
+import {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
 
-import /*embed*/ {APIlogViewer} from './components/apilogviewer';
-import /*embed*/ {APIlogViewerModal} from './components/apilogviewermodal';
+import {APIlogViewer} from './components/apilogviewer';
+import {APIlogViewerModal} from './components/apilogviewermodal';
 
-import /*embed*/ {ModuleFilterBuilder} from "./components/modulefilterbuilder";
-import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
-import /*embed*/ {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilderfilterdetails";
+import {ModuleFilterBuilder} from "./components/modulefilterbuilder";
+import {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
+import {ModuleFilterBuilderFilterDetails} from "./components/modulefilterbuilderfilterdetails";
 
-import /*embed*/ {DashletGenerator} from "./components/dashletgenerator";
-import /*embed*/ {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
-import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
-import /*embed*/ {MailboxesImpersonatedEWSTrafficManager} from "./components/mailboxesimpersonatedewstrafficmanager";
+import {DashletGenerator} from "./components/dashletgenerator";
+import {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
+import {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
+import {APIlogConfig} from "./components/apilogconfig";
 
 @NgModule({
     imports: [
@@ -260,37 +253,16 @@ import /*embed*/ {MailboxesImpersonatedEWSTrafficManager} from "./components/mai
         CRMLogViewerList,
         CRMLogViewerModal,
         CRMLogViewerListModal,
+        APIlogConfig,
         APIlogViewer,
         APIlogViewerModal,
+        APIlogConfig,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
         ModuleFilterBuilderFilterDetails,
         DashletGenerator,
         DashletGeneratorDashlets,
         DashletGeneratorDashletDetails,
-        ConfigTransfer
-    ],
-    /* no further modules needed */
-    entryComponents: [
-        DomainManager,
-        DictionaryManager,
-        FieldsetManager,
-        ComponentsetManager,
-        WorkbenchConfigLabel,
-        WorkbenchConfigOptionDefault,
-        WorkbenchConfigOptionFieldset,
-        WorkbenchConfigOptionModulefilter,
-        WorkbenchConfigOptionComponentset,
-        WorkbenchConfigOptionActionset,
-        ModuleConfigManager,
-        WorkbenchConfig,
-        ObjectRepositoryManager,
-        CRMLogViewer,
-        CRMLogViewerList,
-        CRMLogViewerModal,
-        CRMLogViewerListModal,
-        APIlogViewer,
-        APIlogViewerModal,
         ConfigTransfer
     ],
     exports: [

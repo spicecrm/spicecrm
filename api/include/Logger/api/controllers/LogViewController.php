@@ -7,6 +7,7 @@ use SpiceCRM\includes\Logger\APIlogViewer;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 
 class LogViewController{
@@ -53,6 +54,89 @@ class LogViewController{
     }
 
     /**
+     * Get the entries of the API Log config
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function APIlogGetConfig( Request $req, Response $res, $args ): Response {
+        $db = DBManagerFactory::getInstance();
+        $entriesObj = $db->query("SELECT * FROM sysapilogconfig");
+
+        $entries = [];
+        while($entry = $db->fetchByAssoc($entriesObj)) {
+            $entry['is_active'] = boolval($entry['is_active']);
+            $entries[] = $entry;
+        };
+        return $res->withJson($entries);
+    }
+
+    /**
+     * loads the dictionary entreis that match the api log and thus can be used for the logging
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function APIlogGetLogTables( Request $req, Response $res, $args ): Response {
+        $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+
+        $tables = [];
+        foreach($dictionary as $name => $data){
+            if($name != 'sysapilog' && $data['fields'] == $dictionary['sysapilog']['fields']){
+                $tables[] = $name;
+            }
+        }
+
+        return $res->withJson($tables);
+    }
+
+    /**
+     * activates or deactivates a config entry for the API Log
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function APIlogConfigSet( Request $req, Response $res, $args ): Response {
+        $db = DBManagerFactory::getInstance();
+        $body = $req->getParsedBody();
+        $body['id'] = $args['id'];
+        $db->upsertQuery('sysapilogconfig', ['id' => $args['id']], $body);
+        return $res->withJson(['success' => true]);
+    }
+    /**
+     * activates or deactivates a config entry for the API Log
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function APIlogSetActive( Request $req, Response $res, $args ): Response {
+        $db = DBManagerFactory::getInstance();
+        $db->query("UPDATE sysapilogconfig SET is_active = {$args['status']} WHERE id='{$args['id']}'");
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * deletes an entry for the api log config
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function APIlogConfigDelete( Request $req, Response $res, $args ): Response {
+        $db = DBManagerFactory::getInstance();
+        $db->query("DELETE FROM sysapilogconfig WHERE id='{$args['id']}'");
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
      * Get the entries of the REST log.
      * @param $req
      * @param $res
@@ -77,7 +161,8 @@ class LogViewController{
      */
     public function APIlogGetRecord( Request $req, Response $res, $args ): Response {
         $viewer = new APIlogViewer();
-        $entry = $viewer->getFullEntry( $args['id'] );
+        $params = $req->getQueryParams();
+        $entry = $viewer->getFullEntry( $args['id'], $params['logtable'] );
         return $res->withJson($entry);
     }
 

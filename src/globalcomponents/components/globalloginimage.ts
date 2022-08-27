@@ -49,7 +49,9 @@ export class GlobalLoginImage implements OnDestroy, AfterViewInit {
 
    public setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific login image defined.
-        if ( this.configuration.getCapabilityConfig('theme').login_image ) {
+        if(this.configuration.getAsset('loginimage')){
+            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( this.configuration.getAsset('loginimage') );
+        } else if ( this.configuration.getCapabilityConfig('theme').login_image ) {
             this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('theme').login_image );
         } else {
             this.imageUrl = this.defaultImageUrl;

@@ -61,11 +61,11 @@ class SugarWebServiceImpl
     public static $helperObject = null;
 
     /**
-     * Retrieve a single SugarBean based on ID.
+     * Retrieve a single SpiceBean based on ID.
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
-     * @param String $id -- The SugarBean's ID value.
+     * @param String $id -- The SpiceBean's ID value.
      * @param Array $select_fields -- A list of the fields to be included in the results. This optional parameter allows for only needed fields to be retrieved.
      * @param Array $link_name_to_fields_array -- A list of link_names and for each link_name, what fields value to be returned. For ex.'link_name_to_fields_array' => array(array('name' =>  'email_addresses', 'value' => array('id', 'email_address', 'opt_out', 'primary_address')))
      * @return Array
@@ -81,11 +81,11 @@ class SugarWebServiceImpl
     }
 
     /**
-     * Retrieve a list of SugarBean's based on provided IDs. This API will not wotk with report module
+     * Retrieve a list of SpiceBean's based on provided IDs. This API will not wotk with report module
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
-     * @param Array $ids -- An array of SugarBean IDs.
+     * @param Array $ids -- An array of SpiceBean IDs.
      * @param Array $select_fields -- A list of the fields to be included in the results. This optional parameter allows for only needed fields to be retrieved.
      * @param Array $link_name_to_fields_array -- A list of link_names and for each link_name, what fields value to be returned. For ex.'link_name_to_fields_array' => array(array('name' =>  'email_addresses', 'value' => array('id', 'email_address', 'opt_out', 'primary_address')))
      * @return Array
@@ -153,7 +153,7 @@ class SugarWebServiceImpl
 
 
     /**
-     * Retrieve a list of beans.  This is the primary method for getting list of SugarBeans from Sugar using the SOAP API.
+     * Retrieve a list of beans.  This is the primary method for getting list of SpiceBeans from Sugar using the SOAP API.
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
@@ -217,7 +217,7 @@ class SugarWebServiceImpl
         if ($using_cp) {
             $response = $seed->retrieveTargetList($query, $select_fields, $offset, -1, -1, $deleted);
         } else {
-            /* @var $seed SugarBean */
+            /* @var $seed SpiceBean */
             $response = $seed->get_list($order_by, $query, $offset, -1, -1, $deleted, false, $select_fields);
         } // else
         $list = $response['list'];
@@ -253,7 +253,7 @@ class SugarWebServiceImpl
      * @param String $module_id - The ID of the bean in the specified module_name
      * @param String link_field_name -- name of the link field which relates to the other module for which the relationship needs to be generated.
      * @param array related_ids -- array of related record ids for which relationships needs to be generated
-     * @param array $name_value_list -- The keys of the array are the SugarBean attributes, the values of the array are the values the attributes should have.
+     * @param array $name_value_list -- The keys of the array are the SpiceBean attributes, the values of the array are the values the attributes should have.
      * @param integer $delete -- Optional, if the value 0 or nothing is passed then it will add the relationship for related_ids and if 1 is passed, it will delete this relationship for related_ids
      * @return Array - created - integer - How many relationships has been created
      *               - failed - integer - How many relationsip creation failed
@@ -302,7 +302,7 @@ class SugarWebServiceImpl
      * @param array $module_ids - The array of ID of the bean in the specified module_name
      * @param array $link_field_names -- Array of the name of the link field which relates to the other module for which the relationships needs to be generated.
      * @param array $related_ids -- array of an array of related record ids for which relationships needs to be generated
-     * @param array $name_value_lists -- Array of Array. The keys of the inner array are the SugarBean attributes, the values of the inner array are the values the attributes should have.
+     * @param array $name_value_lists -- Array of Array. The keys of the inner array are the SpiceBean attributes, the values of the inner array are the values the attributes should have.
      * @param array int $delete_array -- Optional, array of 0 or 1. If the value 0 or nothing is passed then it will add the relationship for related_ids and if 1 is passed, it will delete this relationship for related_ids
      * @return Array - created - integer - How many relationships has been created
      *               - failed - integer - How many relationsip creation failed
@@ -440,11 +440,11 @@ class SugarWebServiceImpl
     } // fn
 
     /**
-     * Update or create a single SugarBean.
+     * Update or create a single SpiceBean.
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
-     * @param Array $name_value_list -- The keys of the array are the SugarBean attributes, the values of the array are the values the attributes should have.
+     * @param Array $name_value_list -- The keys of the array are the SpiceBean attributes, the values of the array are the values the attributes should have.
      * @return Array    'id' -- the ID of the bean that was written to (-1 on error)
      * @exception 'SoapFault' -- The SOAP error, if any
      */
@@ -478,7 +478,7 @@ class SugarWebServiceImpl
             if ($module_name == 'Users' && !empty($seed->id) && ($seed->id != $current_user->id) && $name == 'user_hash') {
                 continue;
             }
-            if (!empty($seed->field_name_map[$name]['sensitive'])) {
+            if (!empty($seed->field_defs[$name]['sensitive'])) {
                 continue;
             }
             if (!is_array($value)) {
@@ -503,11 +503,11 @@ class SugarWebServiceImpl
     } // fn
 
     /**
-     * Update or create a list of SugarBeans
+     * Update or create a list of SpiceBeans
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
-     * @param Array $name_value_lists -- Array of Bean specific Arrays where the keys of the array are the SugarBean attributes, the values of the array are the values the attributes should have.
+     * @param Array $name_value_lists -- Array of Bean specific Arrays where the keys of the array are the SpiceBean attributes, the values of the array are the values the attributes should have.
      * @return Array    'ids' -- Array of the IDs of the beans that was written to (-1 on error)
      * @exception 'SoapFault' -- The SOAP error, if any
      */
@@ -800,14 +800,15 @@ class SugarWebServiceImpl
             SpiceConfig::getInstance()->config['list_max_entries_per_page'] = $max_results;
         }
 
-        require_once('include/utils/UnifiedSearchAdvanced.php');
+// with release 2022.02.001 UnifiedSearchAdvanced has been removed
+//        require_once('include/utils/UnifiedSearchAdvanced.php');
         require_once 'include/utils.php';
-        $usa = new UnifiedSearchAdvanced();
-        if (!file_exists($cachedfile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php'))) {
-            $usa->buildCache();
-        }
+//        $usa = new UnifiedSearchAdvanced();
+//        if (!file_exists($cachedfile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php'))) {
+//            $usa->buildCache();
+//        }
 
-        include($cachedfile);
+//        include($cachedfile);
 	$modules_to_search = [];
 	$unified_search_modules['Users'] =   ['fields' => []];
 
@@ -833,7 +834,7 @@ class SugarWebServiceImpl
                 $seed = new $beanName();
                 require_once 'include/SearchForm/SearchForm2.php';
                 if ($beanName == "User") {
-                    if (!self::$helperObject->check_modules_access($current_user, $seed->module_dir, 'read')) {
+                    if (!self::$helperObject->check_modules_access($current_user, $seed->_module, 'read')) {
                         continue;
                     } // if
                     if (!$seed->ACLAccess('ListView')) {
@@ -858,14 +859,14 @@ class SugarWebServiceImpl
                         $where = '(' . implode(' ) OR ( ', $where_clauses) . ')';
                     }
 
-                    $mod_strings = return_module_language($current_language, $seed->module_dir);
-                    if (file_exists('custom/modules/' . $seed->module_dir . '/metadata/listviewdefs.php')) {
-                        require_once('custom/modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
+                    $mod_strings = return_module_language($current_language, $seed->_module);
+                    if (file_exists('custom/modules/' . $seed->_module . '/metadata/listviewdefs.php')) {
+                        require_once('custom/modules/' . $seed->_module . '/metadata/listviewdefs.php');
                     } else {
-                        require_once('modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
+                        require_once('modules/' . $seed->_module . '/metadata/listviewdefs.php');
                     }
 	            $filterFields = [];
-                    foreach ($listViewDefs[$seed->module_dir] as $colName => $param) {
+                    foreach ($listViewDefs[$seed->_module] as $colName => $param) {
                         if (!empty($param['default']) && $param['default'] == true) {
                             $filterFields[] = strtolower($colName);
                         } // if
@@ -886,7 +887,7 @@ class SugarWebServiceImpl
                         // $search_string gets cleaned above, so we can use it here
 					$filterFields = ['id', 'user_name', 'first_name', 'last_name', 'email_address'];
                         $main_query = "select users.id, ea.email_address, users.user_name, first_name, last_name from users ";
-                        $main_query = $main_query . " LEFT JOIN email_addr_bean_rel eabl ON eabl.bean_module = '{$seed->module_dir}'
+                        $main_query = $main_query . " LEFT JOIN email_addr_bean_rel eabl ON eabl.bean_module = '{$seed->_module}'
 LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
                         $main_query = $main_query . "where ((users.first_name like '{$search_string}') or (users.last_name like '{$search_string}') or (users.user_name like '{$search_string}') or (ea.email_address like '{$search_string}')) and users.deleted = 0 and users.is_group = 0 and users.employee_status = 'Active'";
                     } // if
@@ -1020,7 +1021,7 @@ LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
             return;
         }
 
-        $sql = 'SELECT COUNT(*) result_count FROM ' . $seed->table_name . ' ';
+        $sql = 'SELECT COUNT(*) result_count FROM ' . $seed->_tablename . ' ';
 
 
         // build WHERE clauses, if any
@@ -1029,7 +1030,7 @@ LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
             $where_clauses[] = $query;
         }
         if ($deleted == 0) {
-            $where_clauses[] = $seed->table_name . '.deleted = 0';
+            $where_clauses[] = $seed->_tablename . '.deleted = 0';
         }
 
         // if WHERE clauses exist, add them to query

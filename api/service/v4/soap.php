@@ -35,6 +35,7 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
+$GLOBALS['soapstart'] = microtime(true);
 
 /**
  * This is a soap entry point for soap version 4

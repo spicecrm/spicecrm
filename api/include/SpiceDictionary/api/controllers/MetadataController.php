@@ -27,9 +27,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\RESTManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -48,7 +50,7 @@ class MetadataController {
     public function __construct()
     {
         $RESTManager = RESTManager::getInstance();
-        $this->moduleHandler = new ModuleHandler($RESTManager);
+        $this->moduleHandler = new SpiceBeanHandler($RESTManager);
     }
 
     /**
@@ -73,7 +75,7 @@ class MetadataController {
      */
     public function getVarDefsForModule(Request $req, Response $res, array $args): Response {
         $bean = BeanFactory::getBean($args['module']);
-        return $res->withJson($bean->field_name_map);
+        return $res->withJson($bean->field_defs);
     }
 
 }

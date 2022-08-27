@@ -34,6 +34,7 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -41,7 +42,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Link2;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -59,11 +60,11 @@ class M2MRelationship extends SugarRelationship
         $this->name = (!empty($def['name']) ? $def['name'] : $def['relationship_name']); // BWC
 
         $lhsModule = $def['lhs_module'];
-        $this->lhsLinkDef = $this->getLinkedDefForModuleByRelationship($lhsModule);
+        $this->lhsLinkDef = $this->getLinkedDefForModuleByRelationship($lhsModule, 'left');
         $this->lhsLink = $this->lhsLinkDef['name'];
 
         $rhsModule = $def['rhs_module'];
-        $this->rhsLinkDef = $this->getLinkedDefForModuleByRelationship($rhsModule);
+        $this->rhsLinkDef = $this->getLinkedDefForModuleByRelationship($rhsModule, 'right');
         $this->rhsLink = $this->rhsLinkDef['name'];
 
         $this->self_referencing = $lhsModule == $rhsModule && $this->def['reverse'] != false;
@@ -75,7 +76,7 @@ class M2MRelationship extends SugarRelationship
      * @param $module
      * @return array|bool
      */
-    public function getLinkedDefForModuleByRelationship($module)
+    public function getLinkedDefForModuleByRelationship($module, $side)
     {
         $results = VardefManager::getLinkFieldForRelationship( $module, BeanFactory::getObjectName($module), $this->name);
         //Only a single link was found
@@ -87,7 +88,7 @@ class M2MRelationship extends SugarRelationship
         else if( is_array($results) )
         {
             LoggerManager::getLogger()->error("Warning: Multiple links found for relationship {$this->name} within module {$module}");
-            return $this->getMostAppropriateLinkedDefinition($results);
+            return $this->getMostAppropriateLinkedDefinition($results, $side);
         }
         else
         {
@@ -102,7 +103,7 @@ class M2MRelationship extends SugarRelationship
      * @param $links
      * @return bool
      */
-    protected function getMostAppropriateLinkedDefinition($links)
+    protected function getMostAppropriateLinkedDefinition($links, $side)
     {
         //First priority is to find a link name that matches the relationship name
         foreach($links as $link)
@@ -120,13 +121,22 @@ class M2MRelationship extends SugarRelationship
                 return $link;
             }
         }
+
+        // make sure to process the correct link side for m-2-m relationship in self referenced module
+        foreach($links as $link)
+        {
+            if( isset($link['side']) && $side == $link['side'])
+            {
+                return $link;
+            }
+        }
         //Unable to find an appropriate link, guess and use the first one
         LoggerManager::getLogger()->error("Unable to determine best appropriate link for relationship {$this->name}");
         return $links[0];
     }
     /**
-     * @param  $lhs SugarBean left side bean to add to the relationship.
-     * @param  $rhs SugarBean right side bean to add to the relationship.
+     * @param  $lhs SpiceBean left side bean to add to the relationship.
+     * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
@@ -225,19 +235,19 @@ class M2MRelationship extends SugarRelationship
 
     public function remove($lhs, $rhs)
     {
-        if(!($lhs instanceof SugarBean) || !($rhs instanceof SugarBean)) {
+        if(!($lhs instanceof SpiceBean) || !($rhs instanceof SpiceBean)) {
             LoggerManager::getLogger()->fatal("LHS and RHS must be beans");
             return false;
         }
         $lhsLinkName = $this->lhsLink;
         $rhsLinkName = $this->rhsLink;
 
-        if (!($lhs instanceof SugarBean)) {
-            LoggerManager::getLogger()->fatal("LHS is not a SugarBean object");
+        if (!($lhs instanceof SpiceBean)) {
+            LoggerManager::getLogger()->fatal("LHS is not a SpiceBean object");
             return false;
         }
-        if (!($rhs instanceof SugarBean)) {
-            LoggerManager::getLogger()->fatal("RHS is not a SugarBean object");
+        if (!($rhs instanceof SpiceBean)) {
+            LoggerManager::getLogger()->fatal("RHS is not a SpiceBean object");
             return false;
         }
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
@@ -347,7 +357,7 @@ class M2MRelationship extends SugarRelationship
             $relatedSeedKey = $this->def['rhs_key'];
             $seedFocusKey = $this->def['lhs_key'];
             if (!empty($params['where']))
-                $whereTable = (empty($params['right_join_table_alias']) ? $relatedSeed->table_name : $params['right_join_table_alias']);
+                $whereTable = (empty($params['right_join_table_alias']) ? $relatedSeed->_tablename : $params['right_join_table_alias']);
         }
         else
         {
@@ -357,7 +367,7 @@ class M2MRelationship extends SugarRelationship
             $relatedSeedKey = $this->def['lhs_key'];
             $seedFocusKey = $this->def['rhs_key'];
             if (!empty($params['where']))
-                $whereTable = (empty($params['left_join_table_alias']) ? $relatedSeed->table_name : $params['left_join_table_alias']);
+                $whereTable = (empty($params['left_join_table_alias']) ? $relatedSeed->_tablename : $params['left_join_table_alias']);
         }
         $rel_table = $this->getRelationshipTable();
 
@@ -462,9 +472,9 @@ class M2MRelationship extends SugarRelationship
     {
         $linkIsLHS = $link->getSide() == REL_LHS;
         if ($linkIsLHS) {
-            $startingTable = (empty($params['left_join_table_alias']) ? $link->getFocus()->table_name : $params['left_join_table_alias']);
+            $startingTable = (empty($params['left_join_table_alias']) ? $link->getFocus()->_tablename : $params['left_join_table_alias']);
         } else {
-            $startingTable = (empty($params['right_join_table_alias']) ? $link->getFocus()->table_name : $params['right_join_table_alias']);
+            $startingTable = (empty($params['right_join_table_alias']) ? $link->getFocus()->_tablename : $params['right_join_table_alias']);
         }
 
         $startingKey = $linkIsLHS ? $this->def['lhs_key'] : $this->def['rhs_key'];

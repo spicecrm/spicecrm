@@ -35,33 +35,15 @@
 ********************************************************************************/
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
-/*********************************************************************************
-
- * Description: The primary Function of this file is to manage all the data
- * used by other files in this nodule. It should extend the SugarBean which implements
- * all the basic database operations. Any custom behaviors can be implemented here by
- * implementing functions available in the SugarBean.
- ********************************************************************************/
-
-
-
-
-
-
-class CampaignTracker extends SugarBean {
+class CampaignTracker extends SpiceBean {
     /* Foreach instance of the bean you will need to access the fields in the table.
     * So define a variable for each one of them, the variable name should be same as the field name
     * Use this module's vardef file as a reference to create these variables.
     */
-    var $id;
-    var $date_entered;
-    var $created_by;
-    var $date_modified;
-    var $modified_by;
-    var $deleted;
+
     var $tracker_key;
     var $tracker_url;
     var $tracker_name;
@@ -72,40 +54,21 @@ class CampaignTracker extends SugarBean {
 
     /* End field definitions*/
 
-    /* variable $table_name is used by SugarBean and methods in this file to constructs queries
-    * set this variables value to the table associated with this bean.
-    */
-    var $table_name = 'campaign_trkrs';
-
-    /*This  variable overrides the object_name variable in SugarBean, wher it has a value of null.*/
-    var $object_name = 'CampaignTracker';
-
-    /**/
-    var $module_dir = 'CampaignTrackers';
-
-    /* This is a legacy variable, set its value to true for new modules*/
-    var $new_schema = true;
-
     /* $column_fields holds a list of columns that exist in this bean's table. This list is referenced
     * when fetching or saving data for the bean. As you modify a table you need to keep this up to date.
     */
-    var $column_fields = [
-        'id',
-        'tracker_key',
-        'tracker_url',
-        'tracker_name',
-        'campaign_id'
-    ];
+//    var $column_fields = [
+//        'id',
+//        'tracker_key',
+//        'tracker_url',
+//        'tracker_name',
+//        'campaign_id'
+//    ];
 
-    // This is used to retrieve related fields from form posts.
-    var $additional_column_fields = ['campaign_id'];
     var $relationship_fields = ['campaing_id'=>'campaign'];
 
-    var $required_fields =  ['tracker_name'=>1,'tracker_url'=>1];
-    /*This bean's constructor*/
-    public function __construct() {
-        parent::__construct();
-    }
+//    var $required_fields =  ['tracker_name'=>1,'tracker_url'=>1];
+
 
     public function save($check_notify = false, $fts_index_bean = true) {
         //make sure that the url has a scheme, if not then add http:// scheme

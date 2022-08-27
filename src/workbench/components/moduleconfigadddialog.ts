@@ -138,11 +138,11 @@ export class ModuleConfigAddDialog implements OnInit {
         });
         */
 
-        this.roleSelectList = [{id: "*", name: "*"}];
-        this.roleSelectedItem = {id: "*", name: "*"};
-        let roles = this.metadata.getRoles();
+        this.roleSelectList = [{id: "*", name: "*", group: "global"}];
+        this.roleSelectedItem = {id: "*", name: "*", group: "global"};
+        let roles = this.metadata.getSysRoles();
         for(let role of roles){
-            this.roleSelectList.push({id: role.id, name: role.name});
+            this.roleSelectList.push({id: role.id, name: role.name, group: role.scope});
 
             if (this.mode == "copy" && role.id == this.currentRole) {
                 this.roleSelectedItem = {id: role.id, name: role.name, group: "global"};

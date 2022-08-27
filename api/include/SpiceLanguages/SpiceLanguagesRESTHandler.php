@@ -5,6 +5,8 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SpiceLanguagesRESTHandler
 {
@@ -243,6 +245,52 @@ class SpiceLanguagesRESTHandler
     public function transferFromFilesToDB()
     {
         return (new SpiceLanguageFilesToDB())->transferFromFilesToDB();
+    }
+
+    /**
+     * translates a set of labels using the goolge translate API
+     *
+     * @param $labels
+     * @param $from
+     * @param $to
+     * @return bool|string
+     */
+    public function translateLabels($labels, $from = 'en', $to = 'de'){
+        $spice_config = SpiceConfig::getInstance()->config;
+
+        // ensure we have a google API key
+        if(empty($spice_config['googleapi']['languagekey'])){
+            throw new NotFoundException('No Google API Key stored');
+        }
+
+        // build the language URL
+        $url = "https://translation.googleapis.com/language/translate/v2?key=" . $spice_config['googleapi']['languagekey'];
+
+        // build the body
+        $requestBody = json_encode([
+            "source" => $from,
+            "target" => $to,
+            "q" => $labels
+        ]);
+
+        // make the request
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $requestBody);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type:application/json',
+                'Content-Length: ' . strlen($requestBody)
+            )
+        );
+
+        // return the response
+        return json_decode(curl_exec($ch));
     }
 
     /**

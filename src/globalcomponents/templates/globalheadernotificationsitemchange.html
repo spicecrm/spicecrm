@@ -1,29 +1,27 @@
 <div *ngIf="!asBox; else boxContainer" class="slds-media slds-has-flexi-truncate slds-p-around_x-small">
-    <div system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" class="slds-media__figure">
-        <span *ngIf="notification.bean_module" class="slds-icon_container" style="width:40px;height:40px;">
+    <div class="slds-media__figure">
+        <div *ngIf="notification.bean_module" class="slds-icon_container" style="width:40px;height:40px;">
             <system-icon icon="custom18" sprite="custom"></system-icon>
-        </span>
+        </div>
     </div>
     <div class="slds-media__body">
         <div class="slds-grid slds-grid_align-spread" [class.slds-text-title_bold]="notification.notification_read != 1">
-            <a href="javascript:void(0);" class="slds-text-link_reset slds-has-flexi-truncate">
-                <h3 class="slds-truncate">
-                    <span system-title="LBL_CHANGED" class="slds-m-right--xx-small">
-                        <system-label label="LBL_CHANGED"></system-label>
-                    </span>
-                    <span system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
-                        {{notification.bean_name}}
-                    </span>
-                    <system-label label="LBL_BY" class="slds-m-right--xxx-small slds-m-left--xxx-small"></system-label>
-                    <span system-model-popover [id]="notification.created_by" module="Users" [system-title]="notification.created_by_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
-                        {{notification.created_by_name}}
-                    </span>
-                </h3>
-                <p class="slds-text-color_weak">
-                    {{notification.notification_date}}
-                    <abbr *ngIf="notification.notification_read != 1" system-title="LBL_UNREAD" class="slds-text-link slds-m-horizontal_xxx-small slds-text-color_success">●</abbr>
-                </p>
-            </a>
+            <h3 class="slds-truncate">
+                <span system-title="LBL_CHANGED" class="slds-m-right--xx-small">
+                    <system-label label="LBL_CHANGED"></system-label>
+                </span>
+                <span system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name" class="slds-m-right--xxx-small">
+                    {{notification.bean_name}}
+                </span>
+                <system-label label="LBL_BY" class="slds-m-right--xxx-small slds-m-left--xxx-small"></system-label>
+                <span system-model-popover [id]="notification.created_by" module="Users" [system-title]="notification.created_by_name" class="slds-m-right--xxx-small">
+                    {{notification.created_by_name}}
+                </span>
+            </h3>
+            <p class="slds-text-color_weak">
+                {{notification.notification_date}}
+                <abbr *ngIf="notification.notification_read != 1" system-title="LBL_UNREAD" class="slds-text-link slds-m-horizontal_xxx-small slds-text-color_success">●</abbr>
+            </p>
         </div>
     </div>
 </div>

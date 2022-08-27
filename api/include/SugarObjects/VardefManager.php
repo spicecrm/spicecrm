@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -51,7 +51,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * @api
  */
 class VardefManager{
-    static $custom_disabled_modules = [];
+//    static $custom_disabled_modules = [];
     static $linkFields;
 
     /**
@@ -60,39 +60,32 @@ class VardefManager{
      */
     static function createVardef($module, $object, $templates = ['default'], $object_name = false)
     {
-        // BEGIN CR1000108: check system usage and overwrite vardefs
-        if(isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
-            //if(!is_array($GLOBALS['relationships'])) $GLOBALS['relationships'] = SpiceDictionaryVardefs::loadRelationships();
-            SpiceDictionaryHandler::getInstance()->dictionary[$object] = SpiceDictionaryVardefs::loadDictionaryModule($module);
-        }
-        // END
-        else{
+            //CR10001008: Do not reverse. Templates should overwrite definitions in given order
+            // example Contacts: default will create name as required. Person will change the name definition to non-db
             //reverse the sort order so priority goes highest to lowest;
-            $templates = array_reverse($templates);
+            //$templates = array_reverse($templates);
+
             foreach ($templates as $template)
             {
                 self::addTemplate($module, $object, $template, $object_name);
             }
 
-            // @deprecated - no language files crated any longer
-            // LanguageManager::createLanguageFile($module, $templates);
+//            if (isset(self::$custom_disabled_modules[$module]))
+//            {
+//                $vardef_paths = [
+//                    'custom/modules/' . $module . '/Ext/Vardefs/vardefs.ext.php',
+//                    'custom/Extension/modules/' . $module . '/Ext/Vardefs/vardefs.php'
+//                ];
+//
+//                //search a predefined set of locations for the vardef files
+//                foreach ($vardef_paths as $path)
+//                {
+//                    if (file_exists($path)) {
+//                        require($path);
+//                    }
+//                }
+//            }
 
-            if (isset(self::$custom_disabled_modules[$module]))
-            {
-                $vardef_paths = [
-                    'custom/modules/' . $module . '/Ext/Vardefs/vardefs.ext.php',
-                    'custom/Extension/modules/' . $module . '/Ext/Vardefs/vardefs.php'
-                ];
-
-                //search a predefined set of locations for the vardef files
-                foreach ($vardef_paths as $path)
-                {
-                    if (file_exists($path)) {
-                        require($path);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -101,13 +94,13 @@ class VardefManager{
      * @param Boolean $enable true to enable, false to disable
      * @return  null
      */
-    public static function setCustomAllowedForModule($module, $enable) {
-        if ($enable && isset($custom_disabled_modules[$module])) {
-              unset($custom_disabled_modules[$module]);
-        } else if (!$enable) {
-              $custom_disabled_modules[$module] = true;
-        }
-    }
+//    public static function setCustomAllowedForModule($module, $enable) {
+//        if ($enable && isset($custom_disabled_modules[$module])) {
+//              unset($custom_disabled_modules[$module]);
+//        } else if (!$enable) {
+//              $custom_disabled_modules[$module] = true;
+//        }
+//    }
 
     static function addTemplate($module, $object, $template, $object_name=false){
         global $vardefs;
@@ -135,14 +128,14 @@ class VardefManager{
                 }
             }
         }
-       
+
         if(!empty($templates[$template])){
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = [];
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships'] = [];
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = [];
-            SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = array_merge($templates[$template]['fields'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields']);
+            SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'], $templates[$template]['fields']);
             if(!empty($templates[$template]['relationships']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships'] = array_merge($templates[$template]['relationships'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships']);
-            if(!empty($templates[$template]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = array_merge($templates[$template]['indices'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']);
+            if(!empty($templates[$template]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = SpiceDictionaryVardefs::mergeIndices($templates[$template]['indices'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']);
             // maintain a record of this objects inheritance from the SugarObject templates...
             SpiceDictionaryHandler::getInstance()->dictionary[$object]['templates'][ $template ] = $template ;
         }
@@ -169,11 +162,12 @@ class VardefManager{
     }
 
     /**
+     * @deprecated
      * Save the dictionary object to the cache
      * @param string $module the name of the module
      * @param string $object the name of the object
      */
-    static function saveCache($module,$object, $additonal_objects= []){
+    static function saveCache($module, $object, $additonal_objects= []){
 
         if (empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]))
             $object = BeanFactory::getObjectName($module);
@@ -196,6 +190,7 @@ class VardefManager{
     }
 
     /**
+     * @deprecated
      * clear out the vardef cache. If we receive a module name then just clear the vardef cache for that module
      * otherwise clear out the cache for every module
      * @param string module_dir the module_dir to clear, if not specified then clear
@@ -215,6 +210,7 @@ class VardefManager{
     }
 
     /**
+     * @deprecated
      * PRIVATE function used within clearVardefCache so we do not repeat logic
      * @param string module_dir the module_dir to clear
      * @param string object_name the name of the object we are clearing this is for sugar_cache
@@ -247,6 +243,14 @@ class VardefManager{
      * @param array $additional_search_paths an array which allows a consumer to pass in additional vardef locations to search
      */
     static function refreshVardefs($module, $object, $additional_search_paths = null, $cacheCustom = false, $params = []){
+
+        if(SpiceDictionaryVardefs::isDbManaged()){
+            $dict = SpiceDictionaryVardefs::loadVardefsForModule($module, $object);
+            SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
+            return;
+        }
+
+        // LEGACY
         $vardef_paths = [
                     'modules/'.$module.'/vardefs.php',
                     'extensions/modules/'.$module.'/vardefs.php',
@@ -282,10 +286,10 @@ class VardefManager{
             $temp = \SpiceCRM\data\BeanFactory::newBean($module);
             if ($temp)
             {
-                $object_name = \SpiceCRM\data\BeanFactory::getObjectName($temp->module_dir);
-                if ($temp && $temp->module_dir != $temp->module_name && !empty($object_name))
+                $object_name = \SpiceCRM\data\BeanFactory::getObjectName($temp->_module);
+                if ($temp && $temp->_module != $temp->module_name && !empty($object_name))
                 {
-                    self::refreshVardefs($temp->module_dir, $object_name, $additional_search_paths, $cacheCustom);
+                    self::refreshVardefs($temp->_module, $object_name, $additional_search_paths, $cacheCustom);
                 }
             }
         }
@@ -362,13 +366,13 @@ class VardefManager{
     public static function getLinkFieldForRelationship($module, $object, $relName)
     {
         // load relationship from database cache table when turned on
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+        if (SpiceDictionaryVardefs::isDbManaged()) {
             $cachedRel = SpiceDictionaryVardefs::loadRelationshipsForModuleFromCache($module);
             if(!empty($cachedRel)) {
                 LoggerManager::getLogger()->debug('Loading {$object} from DB cache table');
-                return $cachedRel;
+                //return $cachedRel;
             }
-            return false;
+            //return false;
         }
 
 
@@ -441,12 +445,15 @@ class VardefManager{
         if(empty($module) || empty($object)) return;
 
         // load dictionary from database cache table when turned on
-        if (isset(SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) && SpiceConfig::getInstance()->config['systemvardefs']['dictionary']) {
+        if (SpiceDictionaryVardefs::isDbManaged()) {
             // LoggerManager::getLogger()->debug("Try Loading $object $module from DB cache table");
-            $cachedDict = SpiceDictionaryVardefs::loadDictionaryModuleCacheFromDb($module);
+            $cachedDict = SpiceDictionaryVardefs::getInstance()->getDictionaryCacheFromDbByObject($object, $refresh);
             if(!empty($cachedDict)) {
                 SpiceDictionaryHandler::getInstance()->dictionary[$object] = $cachedDict;
                 // LoggerManager::getLogger()->debug("Loaded $object from DB cache table ");
+            } else{
+                // try a refresh
+                self::refreshVardefs($module, $object, null, false, $params);
             }
             return;
         }

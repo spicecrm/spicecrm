@@ -37,6 +37,7 @@ namespace SpiceCRM\includes\authentication\UserAuthenticate;
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 use DateTime;
 use DateInterval;
 use SpiceCRM\data\BeanFactory;
@@ -286,7 +287,7 @@ class UserAuthenticate
     /**
      * @param $user User | string
      * @param $type string
-     * @return false|\SpiceCRM\data\SugarBean
+     * @return false|\SpiceCRM\data\SpiceBean
      * @throws Exception
      */
     public function getProperEmailTemplate( $userIdOrBean, $type )
@@ -297,7 +298,7 @@ class UserAuthenticate
             if ( empty( $user->id )) throw ( new Exception('Could not compose Email. Contact the administrator.'))->setLogMessage('Could not retrieve user with ID "' . $userIdOrBean . '"');
         } else $user = $userIdOrBean;
 
-        $destUserPrefs = new UserPreference($user);
+        $destUserPrefs = BeanFactory::getBean('UserPreferences')->setUser($user);
         $destUserPrefs->reloadPreferences();
         $destLang = $destUserPrefs->getPreference('language');
         if (!isset($destLang[0])) $destLang = SpiceConfig::getInstance()->config['default_language'];

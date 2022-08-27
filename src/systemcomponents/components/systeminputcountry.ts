@@ -43,9 +43,13 @@ export class SystemInputCountry implements OnInit, ControlValueAccessor {
      */
     public strict: boolean = false;
 
-    constructor(public metadata: metadata, public language: language, public configuration: configurationService) {
-        let addressmode = this.configuration.getCapabilityConfig('spiceui').addressmode;
-        if(addressmode == 'strict') this.strict = true;
+    constructor(
+        public metadata: metadata,
+        public language: language,
+        public configuration: configurationService
+    ) {
+        let addressmode = this.configuration.data.backendextensions.spiceui.config.format;
+        if (addressmode == 'strict') this.strict = true;
     }
 
     get value() {

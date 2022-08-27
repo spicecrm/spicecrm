@@ -244,7 +244,8 @@ export class OpportunityRevenueLines implements OnInit {
         let newRecord = {
             id: this.model.utils.generateGuid(),
             amount: 0,
-            amount_usdollar: 0,
+            amount_usdollar: 0, // @deprecated
+            amount_base: 0,
             revenue_date: this.closeDate,
             deleted: false
         };

@@ -27,16 +27,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\MailboxProcessors;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
 /**
  * this class is necessary to ensure the use of mailbox_processors defined in vardefs as a table name
- * Letting automatic SugarBean logic take over would result in this bean using table mailboxprocessors which is not defined
+ * Letting automatic SpiceBean logic take over would result in this bean using table mailboxprocessors which is not defined
  */
-class MailboxProcessor extends SugarBean {
-    public $module_dir  = 'MailboxProcessors';
-    public $table_name  = 'mailbox_processors';
-    public $object_name = 'MailboxProcessor';
+class MailboxProcessor extends SpiceBean {
+
+
 }

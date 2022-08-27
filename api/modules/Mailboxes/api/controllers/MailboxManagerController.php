@@ -27,6 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\Mailboxes\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -57,7 +59,7 @@ class MailboxManagerController
 
         $mailbox = BeanFactory::getBean('Mailboxes');
         foreach ($params['data'] as $name => $value) {
-            if (isset($mailbox->field_name_map[$name])) {
+            if (isset($mailbox->field_defs[$name])) {
                 $mailbox->$name = $value;
             }
         }

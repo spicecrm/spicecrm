@@ -34,10 +34,11 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\data\Link2;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
 /**
  * 1-1 Bean relationship
@@ -51,8 +52,8 @@ class One2OneBeanRelationship extends One2MBeanRelationship
         parent::__construct($def);
     }
     /**
-     * @param  $lhs SugarBean left side bean to add to the relationship.
-     * @param  $rhs SugarBean right side bean to add to the relationship.
+     * @param  $lhs SpiceBean left side bean to add to the relationship.
+     * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */

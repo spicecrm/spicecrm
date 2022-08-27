@@ -12,11 +12,11 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {ContactNewslettersButton} from "./components/contactnewslettersbutton";
-import /*embed*/ {ContactNewsletters} from "./components/contactnewsletters";
-import /*embed*/ {ContactPortalButton} from "./components/contactportalbutton";
-import /*embed*/ {ContactPortalDetails} from "./components/contactportaldetails";
-import /*embed*/ {ContactExchangeSyncButton} from "./components/contactexchangesyncbutton";
+import {ContactNewslettersButton} from "./components/contactnewslettersbutton";
+import {ContactNewsletters} from "./components/contactnewsletters";
+import {ContactPortalButton} from "./components/contactportalbutton";
+import {ContactPortalDetails} from "./components/contactportaldetails";
+import {ContactExchangeSyncButton} from "./components/contactexchangesyncbutton";
 
 @NgModule({
     imports: [

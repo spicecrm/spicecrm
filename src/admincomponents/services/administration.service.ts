@@ -152,6 +152,7 @@ export class administration implements OnDestroy {
 
         if (adminaction.component) {
             this.admincomponent = adminaction;
+            if ( !this.admincomponent.componentconfig.label ) this.admincomponent.componentconfig.label = this.admincomponent.admin_label;
             this.admincomponent$.next(this.admincomponent);
             this.opened_itemid = itemid;
         }

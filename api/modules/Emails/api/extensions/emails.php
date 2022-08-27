@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
@@ -458,6 +460,46 @@ $routes = [
         'oldroute'    => '/module/Emails/msg',
         'class'       => EmailsController::class,
         'function'    => 'createEmailFromMSGFile',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'filename'     => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'The file name',
+            ],
+            'filemimetype' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'The mime type of the file',
+            ],
+            'file'         => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_BASE64,
+                'required'    => true,
+                'description' => 'The base64 contents of the file',
+            ],
+            'beanModule'   => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The bean module name',
+            ],
+            'beanId'       => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'The bean ID',
+            ],
+        ],
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/Emails/eml',
+        'class'       => EmailsController::class,
+        'function'    => 'createEmailFromEMLFile',
         'description' => '',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters'  => [

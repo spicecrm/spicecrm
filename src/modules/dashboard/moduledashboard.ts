@@ -16,21 +16,21 @@ import {metadata} from "../../services/metadata.service";
 import {ObjectFields} from "../../objectfields/objectfields";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {dashboardlayout} from "./services/dashboardlayout.service";
-import /*embed*/ {DashboardView} from "./components/dashboardview";
-import /*embed*/ {DashboardSelectPanel} from "./components/dashboardselectpanel";
-import /*embed*/ {DashboardContainer} from "./components/dashboardcontainer";
-import /*embed*/ {DashboardContainerHeader} from "./components/dashboardcontainerheader";
-import /*embed*/ {DashboardContainerHomeHeader} from "./components/dashboardcontainerhomeheader";
-import /*embed*/ {DashboardContainerBody} from "./components/dashboardcontainerbody";
-import /*embed*/ {DashboardContainerElement} from "./components/dashboardcontainerelement";
-import /*embed*/ {DashboardAddElement} from "./components/dashboardaddelement";
-import /*embed*/ {DashboardWeatherDashlet} from "./components/dashboardweatherdashlet";
-import /*embed*/ {DashboardGenericDashlet} from "./components/dashboardgenericdashlet";
-import /*embed*/ {DashboardGenericDashletRow} from "./components/dashboardgenericdashletrow";
-import /*embed*/ {DashboardRemindersDashlet} from "./components/dashboardremindersdashlet";
-import /*embed*/ {DashboardComponentset} from "./components/dashboardcomponentset";
-import /*embed*/ {DashboardSelectPanelAddButton} from "./components/dashboardselectpaneladdbutton";
+import {dashboardlayout} from "./services/dashboardlayout.service";
+import {DashboardView} from "./components/dashboardview";
+import {DashboardSelectPanel} from "./components/dashboardselectpanel";
+import {DashboardContainer} from "./components/dashboardcontainer";
+import {DashboardContainerHeader} from "./components/dashboardcontainerheader";
+import {DashboardContainerHomeHeader} from "./components/dashboardcontainerhomeheader";
+import {DashboardContainerBody} from "./components/dashboardcontainerbody";
+import {DashboardContainerElement} from "./components/dashboardcontainerelement";
+import {DashboardAddElement} from "./components/dashboardaddelement";
+import {DashboardWeatherDashlet} from "./components/dashboardweatherdashlet";
+import {DashboardGenericDashlet} from "./components/dashboardgenericdashlet";
+import {DashboardGenericDashletRow} from "./components/dashboardgenericdashletrow";
+import {DashboardRemindersDashlet} from "./components/dashboardremindersdashlet";
+import {DashboardComponentset} from "./components/dashboardcomponentset";
+import {DashboardSelectPanelAddButton} from "./components/dashboardselectpaneladdbutton";
 
 @NgModule({
     imports: [

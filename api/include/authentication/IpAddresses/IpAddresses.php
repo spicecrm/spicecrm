@@ -27,6 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\includes\authentication\IpAddresses;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -61,7 +63,7 @@ class IpAddresses
         $db = DBManagerFactory::getInstance();
         $now = TimeDate::getInstance()->nowDb();
 
-        if ( $db->getOne("SELECT COUNT(*) FROM ipaddresses WHERE address = '".$db->quote( $ipAddress ).'" AND date_deleted IS NULL')) {
+        if ( $db->getOne("SELECT COUNT(*) FROM ipaddresses WHERE address = '".$db->quote( $ipAddress )."' AND date_deleted IS NULL")) {
             throw ( new BadRequestException('IP Address already exists.'));
         }
 

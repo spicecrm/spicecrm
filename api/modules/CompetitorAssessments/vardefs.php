@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -53,7 +55,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompetitorAssessment'] = [
             'vname' => 'LBL_PRODUCTS',
             'type' => 'text',
             'required' => false,
-            'massupdate' => false,
             'audited' => false,
         ],
         'differentitation' => [
@@ -61,7 +62,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompetitorAssessment'] = [
             'vname' => 'LBL_DIFFERENTIATION',
             'type' => 'text',
             'required' => false,
-            'massupdate' => false,
             'audited' => false,
         ],
         'weaknesses' => [
@@ -69,7 +69,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompetitorAssessment'] = [
             'vname' => 'LBL_WEAKNESSES',
             'type' => 'text',
             'required' => false,
-            'massupdate' => false,
             'audited' => false,
         ],
         'strengths' => [
@@ -77,7 +76,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompetitorAssessment'] = [
             'vname' => 'LBL_STRENGTHS',
             'type' => 'text',
             'required' => false,
-            'massupdate' => false,
             'audited' => false,
         ],
         'competitive_threat' => [
@@ -87,7 +85,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompetitorAssessment'] = [
             'options' => 'competitive_threat_dom',
             'len' => 10,
             'required' => false,
-            'massupdate' => false,
             'audited' => false,
         ],
         'competitive_status' => [
@@ -97,7 +94,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompetitorAssessment'] = [
             'options' => 'competitive_status_dom',
             'len' => 10,
             'required' => false,
-            'massupdate' => false,
             'audited' => false,
         ],
         'opportunity_id' => [

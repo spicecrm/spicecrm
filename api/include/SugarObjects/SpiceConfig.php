@@ -38,8 +38,8 @@ namespace SpiceCRM\includes\SugarObjects;
 
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarCache\SugarCache;
 use SpiceCRM\includes\utils\SugarArray;
-use SpiceCRM\includes\database;
 
 /**
  * Config manager
@@ -51,7 +51,19 @@ class SpiceConfig
 
     private static $instance = null;
 
+    /**
+     * holds the config
+     *
+     * @var array
+     */
     public $config = [];
+
+    /**
+     * set to true in the installation process
+     *
+     * @var bool
+     */
+    public $installing = false;
 
 
     private function __construct() {}
@@ -90,29 +102,54 @@ class SpiceConfig
         $sugar_config = [];
         if (is_file('config.php')) {
             include('config.php'); // provides \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config
+        } else {
+            return;
         }
 
         // load up the config_override.php file.  This is used to provide default user settings
         if (is_file('config_override.php')) {
             include('config_override.php');
         }
+
+        // set the config
         $this->config = $sugar_config;
 
+        // set the session Dir
+        if (!empty($this->config['session_dir'])) {
+            session_save_path($this->config['session_dir']);
+        }
+
+        // load the config from teh database
+        $this->loadConfigFromDB();
     }
 
     /**
      * @return bool
      * @throws Exception
      */
-    public function loadConfigFromDB()
+    private function loadConfigFromDB()
     {
-        $db = DBManagerFactory::getInstance();
-        if ($db) {
-            $result = $db->query("SELECT * FROM config");
-            while ($configEntry = $db->fetchByAssoc($result)) {
-                $this->config[$configEntry['category']][$configEntry['name']] = $configEntry['value'];
+        // check that a config exists
+        if (!$this->configExists()) return false;
+
+        $dbconfig = SugarCache::sugar_cache_retrieve('dbconfig');
+        if(!$dbconfig) {
+            $dbconfig = [];
+            // load the config
+            $db = DBManagerFactory::getInstance();
+            if ($db) {
+                $result = $db->query("SELECT * FROM config");
+                while ($configEntry = $db->fetchByAssoc($result)) {
+                    $dbconfig[$configEntry['category']][$configEntry['name']] = $configEntry['value'];
+                }
             }
+
+            SugarCache::sugar_cache_put('dbconfig', $dbconfig);
         }
+
+        // merge the configs
+        $this->config = array_merge($this->config, $dbconfig);
+
         return true;
     }
 

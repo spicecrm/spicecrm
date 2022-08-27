@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -137,7 +139,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
             'module' => 'Emails',
             'bean_name' => 'Email',
         ],
@@ -169,7 +170,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         //link to the users
         'users' => [

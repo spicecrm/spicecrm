@@ -51,18 +51,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['sysapilogconfig'] = [
             'len'     => 1,
             'options' => 'apilog_direction_dom',
         ],
+        'logtable' => [
+            'name'    => 'logtable',
+            'type'    => 'varchar',
+            'len'     => 50
+        ],
     ],
     'indices' => [
         [
             'name' => 'idx_sysapilogconfig',
             'type' => 'primary',
             'fields' => ['id'],
-        ],
-        [
-            'name' => 'unq_idx_sysapilogconfig_v2',
-            'type' => 'unique',
-            'fields' => ['route', 'method', 'user_id', 'ip'],
-        ],
+        ]
     ],
 ];
 

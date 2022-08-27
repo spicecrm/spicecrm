@@ -2,43 +2,45 @@
 /*********************************************************************************
  * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
  * Free Software Foundation with the addition of the following permission added
  * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
  * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
  * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU Affero General Public License along with
  * this program; if not, see http://www.gnu.org/licenses or write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA.
- *
+ * 
  * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
  * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
+ * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- *
+ * 
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
  ********************************************************************************/
+
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\modules\Currencies\Currency;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
@@ -50,13 +52,13 @@ use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\Users\User;
 
 /**
- * Factory to create SugarBeans
+ * Factory to create SpiceBeans
  * @api
  */
 class BeanFactory
 {
     protected static $loadedBeans = [];
-    protected static $maxLoaded = 25;
+    protected static $maxLoaded = 100;
     protected static $total = 0;
     protected static $loadOrder = [];
     protected static $touched = [];
@@ -74,8 +76,11 @@ class BeanFactory
         'SpiceACLTerritories' => ['beanname' => 'SpiceACLTerritory'],
         'Trackers' => ['beanname' => 'Tracker'],
         'Users' => ['beanname' => 'User'],
+        'UserPreferences' => ['beanname' => 'UserPreference'],
         'UserAbsences' => ['beanname' => 'UserAbsence'],
         'UserAccessLogs' => ['beanname' => 'UserAccessLog'],
+        'CompanyCodes' => ['beanname' => 'CompanyCode'],
+        'OrgUnits' => ['beanname' => 'OrgUnit'],
         'SystemTenants' => ['beanname' => 'SystemTenant'],
         'Currencies' => ['beanname' => 'Currency'],
     ];
@@ -112,7 +117,7 @@ class BeanFactory
     }
 
     /**
-     * Returns a SugarBean object by id. The Last 10 loaded beans are cached in memory to prevent multiple retrieves per request.
+     * Returns a SpiceBean object by id. The Last 10 loaded beans are cached in memory to prevent multiple retrieves per request.
      * If no id is passed, a new bean is created.
      * @static
      * @param string $module
@@ -120,8 +125,8 @@ class BeanFactory
      * @param array $params A name/value array of parameters. Names: encode, deleted,
      *        If $params is boolean we revert to the old arguments (encode, deleted), and use $params as $encode.
      *        This will be changed to using only $params in later versions.
-     * @param boolean $deleted @see SugarBean::retrieve
-     * @return SugarBean
+     * @param boolean $deleted @see SpiceBean::retrieve
+     * @return SpiceBean
      */
     public static function getBean($module, $id = null, $params = [], $deleted = true)
     {
@@ -164,15 +169,21 @@ class BeanFactory
             return false;
         }
 
-        if ($beanClass && class_exists($beanClass)) {
-            $bean = new $beanClass();
-        } else {
-            $bean = new SugarBean();
-            $bean->module_dir = $module;
-            $bean->object_name = $beanName;
-            $bean->table_name = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
-            $bean->initialize_bean();
-        }
+        // get the bean
+        $bean = $beanClass && class_exists($beanClass) ? new $beanClass() : new SpiceBean();
+
+        // set the base params if not et in the implementation of the Bean
+        if(!$bean->module_dir) $bean->module_dir = $module;
+        if(!$bean->object_name) $bean->object_name = $beanName;
+        if(!$bean->table_name) $bean->table_name = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
+
+        // set the bean module
+        $bean->_module = $module;
+        $bean->_objectname = $beanName;
+        // initialize the bean. Will load the vardefs
+        $bean->initialize_bean();
+        // set the table name (vardefs need to be loaded first as done in initialize_bean())
+        $bean->_tablename = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
 
         if (!empty($id)) {
             if ($forceRetrieve || empty(self::$loadedBeans[$module][$id])) {
@@ -188,9 +199,6 @@ class BeanFactory
                 $bean = self::$loadedBeans[$module][$id];
             }
         }
-
-        // add the bean module
-        $bean->_module = $module;
 
         return $bean;
     }
@@ -235,14 +243,14 @@ class BeanFactory
      * This function registers a bean with the bean factory so that it can be access from accross the code without doing
      * multiple retrieves. Beans should be registered as soon as they have an id.
      * @param string $module
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @param bool|string $id
      * @return bool true if the bean registered successfully.
      */
     public static function registerBean($module, $bean, $id = false)
     {
         $config = SpiceConfig::getInstance()->config;
-        $cacheEnabled = ($config['system']['module_cache_enabled'] ?? false) == 1;
+        $cacheEnabled = true; // ($config['system']['module_cache_enabled'] ?? false) == 1;
 
         if (!$cacheEnabled || empty(SpiceModules::getInstance()->getBeanName($module))) {
             return false;
@@ -295,5 +303,12 @@ class BeanFactory
             return false;
         }
         return true;
+    }
+
+    /**
+     * clear loaded beans
+     */
+    public static function clearLoadedBeans() {
+        self::$loadedBeans = [];
     }
 }

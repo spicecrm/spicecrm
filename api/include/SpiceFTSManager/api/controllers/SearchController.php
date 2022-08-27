@@ -27,6 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\includes\SpiceFTSManager\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;

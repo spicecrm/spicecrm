@@ -47,11 +47,9 @@ export class ObjectActionsetMenu implements  OnDestroy {
         // toggle the listener
         if (this.isOpen) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-
-
-
-        } else if (this.clickListener)
+        } else if (this.clickListener) {
             this.clickListener();
+        }
 
     }
 
@@ -62,13 +60,11 @@ export class ObjectActionsetMenu implements  OnDestroy {
     }
 
     getButtonSizeClass() {
-        if (this.buttonsize !== '')
-            return 'slds-button--icon-' + this.buttonsize;
+        if (this.buttonsize !== '') return 'slds-button--icon-' + this.buttonsize;
     }
 
     getDropdownLocationClass() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        if (window.innerHeight - rect.bottom < 100)
-            return 'slds-dropdown--bottom';
+        if (window.innerHeight - rect.bottom < 100) return 'slds-dropdown--bottom';
     }
 }

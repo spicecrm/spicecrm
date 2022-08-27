@@ -136,7 +136,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'type'    => 'varchar',
             'len'     => '50',
             'comment' => 'Meeting password',
-            'studio'  => 'false',
         ],
         'join_url' => [
             'name'       => 'join_url',
@@ -144,7 +143,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'type'       => 'varchar',
             'len'        => '200',
             'comment'    => 'Join URL',
-            'studio'     => 'false',
             'reportable' => false,
         ],
         'host_url' => [
@@ -153,7 +151,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'type'       => 'varchar',
             'len'        => '400',
             'comment'    => 'Host URL',
-            'studio'     => 'false',
             'reportable' => false,
         ],
         'displayed_url' => [
@@ -162,7 +159,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'type'    => 'url',
             'len'     => '400',
             'comment' => 'Meeting URL',
-            'studio'  => 'false',
         ],
         'creator' => [
             'name'    => 'creator',
@@ -170,7 +166,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'type'    => 'varchar',
             'len'     => '50',
             'comment' => 'Meeting creator',
-            'studio'  => 'false',
         ],
         'external_id' => [
             'name'    => 'external_id',
@@ -178,7 +173,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'type'    => 'varchar',
             'len'     => 200,
             'comment' => 'Meeting ID for external app API',
-            'studio'  => 'false',
         ],
         'external_data' => [
             'name'    => 'external_data',
@@ -194,20 +188,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'name'    => 'duration_hours',
             'vname'   => 'LBL_DURATION_HOURS',
             'type'    => 'int',
-            'group'   => 'duration',
-            'len'     => '3',
+            'len'     => 3,
             'comment' => 'Duration (hours)',
-            'studio'  => 'false',
             'source' => 'non-db' // CR1000436
         ],
         'duration_minutes' => [
             'name'    => 'duration_minutes',
             'vname'   => 'LBL_DURATION_MINUTES',
             'type'    => 'int',
-            'group'   => 'duration',
-            'len'     => '2',
+            'len'     => 2,
             'comment' => 'Duration (minutes)',
-            'studio'  => 'false',
             'source' => 'non-db' // CR1000436
         ],
         'date_start' => [
@@ -223,7 +213,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'vname'               => 'LBL_DATE_END',
             'type'                => 'datetimecombo',
             'dbType'              => 'datetime',
-            'massupdate'          => false,
             'required'            => true,
             'comment'             => 'Date meeting ends',
         ],
@@ -232,11 +221,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'vname'   => 'LBL_PARENT_TYPE',
             'type'    => 'parent_type',
             'dbType'  => 'varchar',
-            'group'   => 'parent_name',
-            'options' => 'parent_type_display',
             'len'     => 100,
             'comment' => 'Module meeting is associated with',
-            'studio'  => ['searchview' => false],
         ],
         'status' => [
             'name'    => 'status',
@@ -255,8 +241,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'comment'    => 'Meeting type (ex: WebEx, Other)',
             'options'    => 'eapm_list',
             'default'    => 'Sugar',
-            'massupdate' => false,
-            'studio'     => 'false',
         ],
         'results' => [
             'name'  => 'results',
@@ -278,18 +262,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'comment'    => 'Indicates whether call is inbound or outbound',
             'source'     => 'non-db',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'parent_id' => [
             'name'       => 'parent_id',
             'vname'      => 'LBL_PARENT_ID',
             'type'       => 'id',
-            'group'      => 'parent_name',
             'reportable' => false,
             'comment'    => 'ID of item indicated by parent_type',
-            'studio'     => ['searchview' => false],
         ],
         'reminder_time' => [
             'name'       => 'reminder_time',
@@ -313,7 +293,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'default'    => 0,
             'type'       => 'bool',
             'comment'    => 'Whether email reminder is already sent',
-            'massupdate' => false,
         ],
         'outlook_id' => [
             'name'       => 'outlook_id',
@@ -340,7 +319,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                 1 => 'last_name',
             ],
             'id_name'    => 'contact_id',
-            'massupdate' => false,
             'vname'      => 'LBL_CONTACT',
             'type'       => 'relate',
             'link'       => 'contacts',
@@ -351,7 +329,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'dbType'     => 'varchar',
             'source'     => 'non-db',
             'len'        => 36,
-            'studio'     => 'false',
         ],
         'contacts' => [
             'name'         => 'contacts',
@@ -375,14 +352,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
         ],
         'parent_name' => [
             'name'        => 'parent_name',
-            'parent_type' => 'record_type_display',
             'type_name'   => 'parent_type',
             'id_name'     => 'parent_id',
             'vname'       => 'LBL_RELATED_TO',
             'type'        => 'parent',
-            'group'       => 'parent_name',
             'source'      => 'non-db',
-            'options'     => 'parent_type_display',
         ],
         'users' => [
             'name'         => 'users',
@@ -480,9 +454,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'options'    => 'repeat_type_dom',
             'comment'    => 'Type of recurrence',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_interval' => [
             'name'       => 'repeat_interval',
@@ -492,9 +464,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'default'    => 1,
             'comment'    => 'Interval of recurrence',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_dow' => [
             'name'       => 'repeat_dow',
@@ -503,9 +473,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'len'        => 7,
             'comment'    => 'Days of week in recurrence',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_until' => [
             'name'       => 'repeat_until',
@@ -513,9 +481,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'type'       => 'date',
             'comment'    => 'Repeat until specified date',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_count' => [
             'name'       => 'repeat_count',
@@ -524,9 +490,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'len'        => 7,
             'comment'    => 'Number of recurrence',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'repeat_parent_id' => [
             'name'       => 'repeat_parent_id',
@@ -535,9 +499,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'len'        => 36,
             'comment'    => 'Id of the first element of recurring records',
             'importable' => 'false',
-            'massupdate' => false,
             'reportable' => false,
-            'studio'     => 'false',
         ],
         'recurring_source' => [
             'name'       => 'recurring_source',
@@ -545,10 +507,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'type'       => 'varchar',
             'len'        => 36,
             'comment'    => 'Source of recurring meeting',
-            'importable' => false,
-            'massupdate' => false,
+            'importable' => 'false',
             'reportable' => false,
-            'studio'     => false,
         ],
         'duration' => [
             'name'       => 'duration',
@@ -557,9 +517,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
             'options'    => 'duration_dom',
             'source'     => 'non-db',
             'comment'    => 'Duration handler dropdown',
-            'massupdate' => false,
             'reportable' => false,
-            'importable' => false,
+            'importable' => 'false',
         ],
     ],
     'relationships' => [

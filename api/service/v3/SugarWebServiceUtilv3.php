@@ -71,7 +71,7 @@ class SugarWebServiceUtilv3 extends SoapHelperWebServices
                     && $var['name'] != 'email1' && $var['name'] != 'email2'
                     && (!isset($var['type']) || $var['type'] != 'relate')) {
 
-                    if ($value->module_dir == 'Emails'
+                    if ($value->_module == 'Emails'
                         && (($var['name'] == 'description') || ($var['name'] == 'description_html') || ($var['name'] == 'from_addr_name')
                             || ($var['name'] == 'reply_to_addr') || ($var['name'] == 'to_addrs_names') || ($var['name'] == 'cc_addrs_names')
                             || ($var['name'] == 'bcc_addrs_names') || ($var['name'] == 'raw_source'))) {
@@ -159,7 +159,7 @@ class SugarWebServiceUtilv3 extends SoapHelperWebServices
                 }
 
                 if (isset($var['options'])) {
-                    $options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
+                    $options_dom = SpiceUtils::translate($var['options'], $value->_module);
                     if (!is_array($options_dom)) $options_dom = [];
                     foreach ($options_dom as $key => $oneOption)
                         $options_ret[$key] = $this->get_name_value($key, $oneOption);
@@ -182,7 +182,7 @@ class SugarWebServiceUtilv3 extends SoapHelperWebServices
                     $link_fields[$var['name']] = $entry;
                 } else {
                     if ($translate) {
-                        $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
+                        $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->_module) : $var['name'];
                     } else {
                         $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
                     }
@@ -197,27 +197,6 @@ class SugarWebServiceUtilv3 extends SoapHelperWebServices
             } //foreach
         } //if
 
-        if ($value->module_dir == 'Bugs') {
-            require_once('modules/Releases/Release.php');
-            $seedRelease = new Release();
-            $options = $seedRelease->get_releases(TRUE, "Active");
-            $options_ret = [];
-            foreach ($options as $name => $value) {
-                $options_ret[] = ['name' => $name, 'value' => $value];
-            }
-            if (isset($module_fields['fixed_in_release'])) {
-                $module_fields['fixed_in_release']['type'] = 'enum';
-                $module_fields['fixed_in_release']['options'] = $options_ret;
-            }
-            if (isset($module_fields['release'])) {
-                $module_fields['release']['type'] = 'enum';
-                $module_fields['release']['options'] = $options_ret;
-            }
-            if (isset($module_fields['release_name'])) {
-                $module_fields['release_name']['type'] = 'enum';
-                $module_fields['release_name']['options'] = $options_ret;
-            }
-        }
 
         if (isset($value->assigned_user_name) && isset($module_fields['assigned_user_id'])) {
             $module_fields['assigned_user_name'] = $module_fields['assigned_user_id'];
@@ -345,13 +324,13 @@ class SugarWebServiceUtilv3 extends SoapHelperWebServices
     {
         $query = [];
         $query_date = TimeDate::getInstance()->nowDb();
-        $query[] = " {$seed->table_name}.{$meta['date_field']} > '$query_date'"; //Add date filter
-        $query[] = "{$seed->table_name}.assigned_user_id = '{\SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id}' "; //Add assigned user filter
+        $query[] = " {$seed->_tablename}.{$meta['date_field']} > '$query_date'"; //Add date filter
+        $query[] = "{$seed->_tablename}.assigned_user_id = '{\SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id}' "; //Add assigned user filter
         if (is_array($meta['status_field'])) {
             foreach ($meta['status'] as $field)
-                $query[] = "{$seed->table_name}.{$meta['status_field']} {$meta['status_opp']} '" . DBManagerFactory::getInstance()->quote($field) . "' ";
+                $query[] = "{$seed->_tablename}.{$meta['status_field']} {$meta['status_opp']} '" . DBManagerFactory::getInstance()->quote($field) . "' ";
         } else
-            $query[] = "{$seed->table_name}.{$meta['status_field']} {$meta['status_opp']} '" . DBManagerFactory::getInstance()->quote($meta['status']) . "' ";
+            $query[] = "{$seed->_tablename}.{$meta['status_field']} {$meta['status_opp']} '" . DBManagerFactory::getInstance()->quote($meta['status']) . "' ";
 
         return implode(" AND ", $query);
     }
@@ -367,7 +346,7 @@ class SugarWebServiceUtilv3 extends SoapHelperWebServices
     {
         $results = [];
         foreach ($list as $bean) {
-            $results[] = ['id' => $bean->id, 'module' => $bean->module_dir, 'date_due' => $bean->$date_field,
+            $results[] = ['id' => $bean->id, 'module' => $bean->_module, 'date_due' => $bean->$date_field,
                 'summary' => $bean->get_summary_text()];
         }
 

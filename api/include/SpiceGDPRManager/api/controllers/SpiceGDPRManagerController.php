@@ -5,7 +5,7 @@ namespace SpiceCRM\includes\SpiceGDPRManager\api\controllers;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 
 class SpiceGDPRManagerController
 {
@@ -105,13 +105,13 @@ class SpiceGDPRManagerController
         $filterWhere = $moduleFilter->generateWhereClauseForFilterId($retention['sysmodulefilter_id']);
 
         $seed = BeanFactory::getBean($moduleFilter->filtermodule);
-        $query = "SELECT count(id) totalcount FROM {$seed->table_name} WHERE {$filterWhere} AND {$seed->table_name}.deleted = 0";
+        $query = "SELECT count(id) totalcount FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = 0";
         $countRes = $db->fetchByAssoc($db->query($query));
 
         $list = [];
         if($countRes['totalcount'] > 0) {
-            $modHandler = new ModuleHandler();
-            $query = "SELECT id FROM {$seed->table_name} WHERE {$filterWhere} AND {$seed->table_name}.deleted = 0";
+            $modHandler = new SpiceBeanHandler();
+            $query = "SELECT id FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = 0";
             $ids = $db->limitQuery($query, $getParams['start'] ?: 0, 50);
             while($id = $db->fetchByAssoc($ids)){
                 $seed = BeanFactory::getBean($moduleFilter->filtermodule, $id['id']);

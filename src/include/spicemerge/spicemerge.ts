@@ -11,13 +11,13 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {objectmerge} from './services/objectmerge.service';
+import {objectmerge} from './services/objectmerge.service';
 
-import /*embed*/ {ObjectMergeModal} from './components/objectmergemodal';
-import /*embed*/ {ObjectMergeModalRecords} from './components/objectmergemodalrecords';
-import /*embed*/ {ObjectMergeModalData} from './components/objectmergemodaldata';
-import /*embed*/ {ObjectMergeModalDataField} from './components/objectmergemodaldatafield';
-import /*embed*/ {ObjectMergeModalExecute} from './components/objectmergemodalexecute';
+import {ObjectMergeModal} from './components/objectmergemodal';
+import {ObjectMergeModalRecords} from './components/objectmergemodalrecords';
+import {ObjectMergeModalData} from './components/objectmergemodaldata';
+import {ObjectMergeModalDataField} from './components/objectmergemodaldatafield';
+import {ObjectMergeModalExecute} from './components/objectmergemodalexecute';
 
 @NgModule({
     imports: [

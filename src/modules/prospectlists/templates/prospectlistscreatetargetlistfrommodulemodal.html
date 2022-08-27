@@ -1,0 +1,71 @@
+<system-modal size="medium">
+    <system-modal-header (close)="closeModal()">
+        <system-label label="LBL_SELECT_MODULE"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-form-element">
+            <div class="slds-form-element slds-p-bottom--small-small slds-p-vertical">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr>
+                    <system-label label="LBL_TARGETGROUP_NAME"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <input class="slds-input" type="text" required="required" [(ngModel)]="prospectListName">
+                </div>
+            </div>
+            <div class="slds-grid slds-p-top--small slds-form-element">
+                <div class="slds-form-element slds-p-horizontal--small slds-size_4-of-6">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_MODULE_NAME"></system-label>
+                    </label>
+                </div>
+                <div class="slds-form-element slds-p-horizontal--small slds-size_1-of-6">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_SELECT_GDPR_REJECTED"></system-label>
+                    </label>
+                </div>
+                <div class="slds-form-element slds-p-horizontal--small slds-size_1-of-6">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_SELECT_INACTIVE"></system-label>
+                    </label>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-horizontal">
+                <div *ngFor="let bean of beans" class="slds-grid slds-p-vertical--small" [ngClass]="bean.bean_count == 0 ? 'slds-text-color--inverse-weak' : 'slds-text-color_default'">
+                    <div class="slds-grid slds-form-element slds-p-horizontal--small slds-size_4-of-6">
+                        <div>
+                            <system-checkbox [(ngModel)]="bean.selected" [disabled]="bean.bean_count == 0"></system-checkbox>
+                        </div>
+                        <div>
+                            <system-icon [module]="bean.module" size="x-small"></system-icon>
+                        </div>
+                        <div class="slds-p-right--small"><system-label-modulename [module]="bean.module"></system-label-modulename></div>
+                        <div class="slds-p-right--small">({{bean.bean_count}})</div>
+                    </div>
+                    <div class="slds-form-element slds-p-horizontal--small slds-size_1-of-6">
+                        <div class="slds-size--1-of-2 slds-form-element__control">
+                            <system-checkbox [(ngModel)]="bean.inclRejGDPR" [disabled]="bean.bean_count == 0 || !bean.selected" ></system-checkbox>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-p-horizontal--small slds-size_1-of-6">
+                        <div class="slds-size--1-of-2 slds-form-element__control">
+                            <system-checkbox [(ngModel)]="bean.inclInactive" [disabled]="bean.bean_count == 0 || !bean.selected"></system-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="closeModal()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!canAdd" (click)="add()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!canAdd" (click)="add(true)">
+                <system-label label="LBL_SAVE_AND_GO_TO_RECORD"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

@@ -33,6 +33,7 @@
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
  ********************************************************************************/
+
 namespace SpiceCRM\includes\SugarObjects\templates\person;
 
 use SpiceCRM\data\BeanFactory;
@@ -74,7 +75,7 @@ class Person extends Basic
     {
         $retVal = parent::retrieve($id, $encode, $deleted, $relationships);
         $this->_create_proper_name_field();
-        // call fill_in_relationship_fields again .... workaround till we get the SugarBean::fill_in_relationship_fields clean
+        // call fill_in_relationship_fields again .... workaround till we get the SpiceBean::fill_in_relationship_fields clean
         if ($relationships) {
             $this->fill_in_relationship_fields();
         }
@@ -96,7 +97,7 @@ class Person extends Basic
         $result = $email_addr->retrieve_by_string_fields(['email_address' => $email]);
         if($result)
         {
-            $sql = "SELECT bean_id FROM email_addr_bean_rel WHERE email_address_id = '{$email_addr->id}' AND bean_module = '$this->module_dir' AND deleted = 0";
+            $sql = "SELECT bean_id FROM email_addr_bean_rel WHERE email_address_id = '{$email_addr->id}' AND bean_module = '$this->_module' AND deleted = 0";
             $row = $this->db->fetchByAssoc($this->db->query($sql));
             if(!$row) return false;
             return $this->retrieve($row['bean_id'], $encode, $deleted, $relationships);
@@ -213,7 +214,7 @@ class Person extends Basic
 
         foreach ($linkedEmailAddresses as $linkedEmailAddress) {
 
-            if ($primaryEmailAddressId == $linkedEmailAddress->email_address_id) {
+            if ($primaryEmailAddressId == $linkedEmailAddress->id) {
 
                 $relationExists = true;
                 $this->email_addresses->add($linkedEmailAddress->id, ['primary_address' => 1]);
@@ -257,7 +258,7 @@ class Person extends Basic
             if ($field['type'] == 'link' && !empty($field['module'])) {
                 $seed = BeanFactory::getBean($field['module']);
                 if ($seed && (isset($seed->field_defs['gdpr_marketing_agreement']) || isset($seed->field_defs['gdpr_data_agreement']))) {
-                    $linkedBeans = $this->get_linked_beans($field['name'], $seed->object_name);
+                    $linkedBeans = $this->get_linked_beans($field['name'], $seed->_objectname);
                     foreach($linkedBeans as $linkedBean){
                         if($linkedBean->gdpr_data_agreement || $linkedBean->gdpr_marketing_agreement){
                             $gdprReleases['related'][] = [

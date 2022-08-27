@@ -34,9 +34,10 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\includes\database;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -206,7 +207,7 @@ class MysqliManager extends DBManager
     /**
      * @see MysqlManager::query()
      */
-    
+
     public function query($sql, $dieOnError = false, $msg = '', $suppress = false, $keepResult = false)
     {
 
@@ -217,7 +218,7 @@ class MysqliManager extends DBManager
 
             static $queryMD5 = [];
 
-            parent::countQuery($sql);
+            parent::countQuery();
             LoggerManager::getLogger()->info('Query:' . $sql);
             $this->checkConnection();
             $this->query_time = microtime(true);
@@ -380,7 +381,7 @@ class MysqliManager extends DBManager
 
 
         if (is_null($configOptions))
-            $configOptions = SpiceConfig::getInstance()->config['dbconfig'];
+            $configOptions = $this->dbConfig['dbconfig'];
 
         if (!isset($this->database)) {
 
@@ -625,7 +626,7 @@ class MysqliManager extends DBManager
         }
 
         // run the query
-        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES (" . implode(",", $vals) . ")");
+        $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES (" . implode(",", $vals) . ")", true );
     }
 
     /**
@@ -933,7 +934,7 @@ class MysqliManager extends DBManager
     /**
      * Returns the name of the engine to use or null if we are to use the default
      *
-     * @param  object $bean SugarBean instance
+     * @param  object $bean SpiceBean instance
      * @return string
      */
 
@@ -1046,8 +1047,13 @@ class MysqliManager extends DBManager
                         $fieldDef['dbType'] = 'mediumtext';
                     elseif ($fieldDef['len'] > 16777215 && $fieldDef['len'] <= 4294967295)
                         $fieldDef['dbType'] = 'longtext';
-                    break;
                 }
+                break;
+            case 'id':
+                $fieldDef['dbType'] = 'char';
+                $fieldDef['len'] = 36;
+                break;
+
         }
 
     }
@@ -1566,12 +1572,18 @@ class MysqliManager extends DBManager
     public function checkOnVarDefinition($fielddef1, $fielddef2)
     {
         $dbtype = $fielddef1['type'];
+        $fieldtype = $this->getFieldType($fielddef2);
         switch($dbtype){
+            case 'varchar':
+                if($fielddef2['name'] == 'id' && $fielddef2['len'] == 36){
+                    $fieldtype = 'char';
+                }
+                break;
             case 'longtext':
             case 'mediumtext':
             case 'text':
             case 'tinytext':
-                $fieldtype = $this->getFieldType($fielddef2);
+                #$fieldtype = $this->getFieldType($fielddef2);
                 if(isset($fielddef2['len'])) {
                     switch ($fieldtype) {
                         case 'text':
@@ -1593,7 +1605,7 @@ class MysqliManager extends DBManager
             case 'mediumint':
             case 'smallint':
             case 'tinyint':
-                $fieldtype = $this->getFieldType($fielddef2);
+                #$fieldtype = $this->getFieldType($fielddef2);
                 switch ($fieldtype) {
                     case 'int':
                         if($fielddef2['len'] > 0 && $fielddef2['len'] <= 4)
@@ -1607,12 +1619,14 @@ class MysqliManager extends DBManager
                         elseif($fielddef2['len'] >  19){
                             $fieldtype =  'bigint';
                         }
-
                         break;
                 }
                 break;
         }
-
+//file_put_contents('vardefs.log', strtolower($dbtype) .'=='. strtolower($fieldtype)."\n", FILE_APPEND);
+//if(!(strtolower($dbtype) == strtolower($fieldtype))){
+//    file_put_contents('vardefs.log', print_r([$fielddef1, $fielddef2], true)."\n", FILE_APPEND);
+//}
         return (strtolower($dbtype) == strtolower($fieldtype));
 
     }
@@ -1621,7 +1635,7 @@ class MysqliManager extends DBManager
      * @inheritDoc
      */
     public function convertDBCharset($charset, $collation): bool {
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "ALTER DATABASE {$dbName} CHARACTER SET {$charset} COLLATE {$collation}";
         $this->query($sql);
 
@@ -1656,7 +1670,7 @@ class MysqliManager extends DBManager
      */
     public function getTablesCharsetInfo(): array {
         $result = [];
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "SELECT table_name,CCSA.character_set_name, CCSA.collation_name FROM information_schema.TABLES T,
                 information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA
                 WHERE CCSA.collation_name = T.table_collation
@@ -1677,7 +1691,7 @@ class MysqliManager extends DBManager
      * @throws Exception
      */
     public function getDatabaseCharset(): array {
-        $dbName = SpiceConfig::getInstance()->config['dbconfig']['db_name'];
+        $dbName = $this->dbConfig['dbconfig']['db_name'];
         $sql = "SELECT SCHEMA_NAME 'database', default_character_set_name 'charset', DEFAULT_COLLATION_NAME 'collation'
                 FROM information_schema.SCHEMATA WHERE schema_name='{$dbName}';";
         $query = $this->query($sql);

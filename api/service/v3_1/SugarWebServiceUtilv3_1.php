@@ -68,7 +68,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
     /**
 	 * Track a view for a particular bean.
 	 *
-	 * @param SugarBean $seed
+	 * @param SpiceBean $seed
 	 * @param string $current_view
 	 */
     function trackView($seed, $current_view)
@@ -78,7 +78,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 		{
 	        $monitor->setValue('date_modified', TimeDate::getInstance()->nowDb());
 	        $monitor->setValue('user_id', AuthenticationController::getInstance()->getCurrentUser()->id);
-	        $monitor->setValue('module_name', $seed->module_dir);
+	        $monitor->setValue('module_name', $seed->_module);
 	        $monitor->setValue('action', $current_view);
 	        $monitor->setValue('item_id', $seed->id);
 	        $monitor->setValue('item_summary', $seed->get_summary_text());
@@ -223,7 +223,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 				    $var['options'] = 'checkbox_dom';
 
 				if(isset($var['options'])){
-					$options_dom = SpiceUtils::translate($var['options'], $value->module_dir);
+					$options_dom = SpiceUtils::translate($var['options'], $value->_module);
 					if(!is_array($options_dom)) $options_dom = [];
 					foreach($options_dom as $key=>$oneOption)
 						$options_ret[$key] = $this->get_name_value($key,$oneOption);
@@ -246,7 +246,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 					$link_fields[$var['name']] = $entry;
 	            } else {
 		            if($translate) {
-		            	$entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->module_dir) : $var['name'];
+		            	$entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->_module) : $var['name'];
 		            } else {
 		            	$entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
 		            }
@@ -265,7 +265,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 			} //foreach
 		} //if
 
-		if($value->module_dir == 'Meetings' || $value->module_dir == 'Calls')
+		if($value->_module == 'Meetings' || $value->_module == 'Calls')
 		{
 		    if( isset($module_fields['duration_minutes']) && isset($GLOBALS['app_list_strings']['duration_intervals']))
 		    {
@@ -276,32 +276,6 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 
 		        $module_fields['duration_minutes']['options'] = $options_ret;
 		    }
-		}
-
-		if($value->module_dir == 'Bugs'){
-			require_once('modules/Releases/Release.php');
-			$seedRelease = new Release();
-			$options = $seedRelease->get_releases(TRUE, "Active");
-			$options_ret = [];
-			foreach($options as $name=>$value){
-				$options_ret[] =  ['name'=> $name , 'value'=>$value];
-			}
-			if(isset($module_fields['fixed_in_release'])){
-				$module_fields['fixed_in_release']['type'] = 'enum';
-				$module_fields['fixed_in_release']['options'] = $options_ret;
-			}
-            if(isset($module_fields['found_in_release'])){
-                $module_fields['found_in_release']['type'] = 'enum';
-                $module_fields['found_in_release']['options'] = $options_ret;
-            }
-			if(isset($module_fields['release'])){
-				$module_fields['release']['type'] = 'enum';
-				$module_fields['release']['options'] = $options_ret;
-			}
-			if(isset($module_fields['release_name'])){
-				$module_fields['release_name']['type'] = 'enum';
-				$module_fields['release_name']['options'] = $options_ret;
-			}
 		}
 
 		if(isset($value->assigned_user_name) && isset($module_fields['assigned_user_id'])) {
@@ -375,8 +349,8 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
     }
 
     /**
-     * Equivalent of get_list function within SugarBean but allows the possibility to pass in an indicator
-     * if the list should filter for favorites.  Should eventually update the SugarBean function as well.
+     * Equivalent of get_list function within SpiceBean but allows the possibility to pass in an indicator
+     * if the list should filter for favorites.  Should eventually update the SpiceBean function as well.
      *
      */
     function get_data_list($seed, $order_by = "", $where = "", $row_offset = 0, $limit=-1, $max=-1, $show_deleted = 0, $favorites = false, $singleSelect=false)
@@ -388,7 +362,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 		}
 		$order_by=$seed->process_order_by($order_by, null);
 
-		if($seed->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($seed->module_dir, 'list') )
+		if($seed->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($seed->_module, 'list') )
 		{
 			$current_user = AuthenticationController::getInstance()->getCurrentUser();
 			$owner_where = $seed->getOwnerWhere($current_user->id);

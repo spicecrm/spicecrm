@@ -35,7 +35,8 @@
  ********************************************************************************/
 namespace SpiceCRM\modules\UserPreferences;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -52,27 +53,17 @@ use SpiceCRM\modules\Users\User;
  * Contributor(s): ______________________________________..
  ********************************************************************************/
 
-class UserPreference extends SugarBean
+class UserPreference extends SpiceBean
 {
 
-
-    public $object_name = 'UserPreference';
-    public $table_name = 'user_preferences';
     public $disable_row_level_security = true;
-    public $module_dir = 'UserPreferences';
-    public $new_schema = true;
 
     protected $_userFocus;
 
-    // Do not actually declare, use the functions statically
-    public function __construct(
-        User $user = null
-    )
-    {
-        parent::__construct();
-
+    public function setUser(User $user = null){
         $this->_userFocus = $user;
         $this->tracker_visibility = false;
+        return $this;
     }
 
     /**
@@ -84,10 +75,11 @@ class UserPreference extends SugarBean
      */
     public function getPreference(
         $name,
-        $category = 'global'
+        $category = 'global',
+        $fallBackToSystem = false,
+        $default = null
     )
     {
-
 
         $user = $this->_userFocus;
 
@@ -98,6 +90,16 @@ class UserPreference extends SugarBean
         if(isset($_SESSION[$user->user_name.'_PREFERENCES'][$category][$name])) {
             return $_SESSION[$user->user_name.'_PREFERENCES'][$category][$name];
         }
+
+        // no user preference ist set ...
+        // so, if desired ($fallBackToSystem==true), return the default configuration value of the system config
+        if ( $fallBackToSystem and $category == 'global' and isset( SpiceConfig::getInstance()->config['default_preferences'][$name] )) {
+            return SpiceConfig::getInstance()->config['default_preferences'][$name];
+        }
+
+        // no default configuration value is set in the system config ...
+        // so return the default value, if provided
+        if ( !empty( $default )) return $default;
 
         return null;
     }
@@ -122,7 +124,7 @@ class UserPreference extends SugarBean
         if ( empty($user->user_name) )
             return;
 
-        $focus = new UserPreference($this->_userFocus);
+        $focus = BeanFactory::getBean('UserPreferences')->setUser($this->_userFocus);
         if($result = $focus->retrieve_by_string_fields([
             'assigned_user_id' => $user->id,
             'category' => $category,
@@ -221,7 +223,7 @@ class UserPreference extends SugarBean
         if ( empty($user->user_name) )
             return;
 
-        $focus = new UserPreference($this->_userFocus);
+        $focus = BeanFactory::getBean('UserPreferences')->setUser($this->_userFocus);
         $result = $focus->retrieve_by_string_fields([
             'assigned_user_id' => $user->id,
             'category' => $category,
@@ -279,7 +281,7 @@ class UserPreference extends SugarBean
 
         $user = $this->_userFocus;
 
-        if($user->object_name != 'User')
+        if($user->_objectname != 'User')
             return;
         if(!empty($user->id) && (!isset($_SESSION[$user->user_name . '_PREFERENCES'][$category]) || (!empty($_SESSION['unique_key']) && $_SESSION['unique_key'] != SpiceConfig::getInstance()->config['unique_key']))) {
             // cn: moving this to only log when valid - throwing errors on install
@@ -328,7 +330,7 @@ class UserPreference extends SugarBean
     {
         $user = $this->_userFocus;
 
-        if($user->object_name != 'User' || empty($user->id) || empty($user->user_name)) {
+        if($user->_objectname != 'User' || empty($user->id) || empty($user->user_name)) {
             return false;
         }
         LoggerManager::getLogger()->debug('Loading Preferences DB ' . $user->user_name);
@@ -383,7 +385,7 @@ class UserPreference extends SugarBean
             $prefDate['date'] = $timedate->get_date_format();
             $prefDate['time'] = $timedate->get_time_format();
 
-            if(!empty($user) && $user->object_name == 'User') {
+            if(!empty($user) && $user->_objectname == 'User') {
                 $timeZone = TimeDate::userTimezone($user);
                 // cn: bug 9171 - if user has no time zone, cron.php fails for InboundEmail
                 if(!empty($timeZone)) {
@@ -421,7 +423,7 @@ class UserPreference extends SugarBean
         $user = $this->_userFocus;
 
         // these are not the preferences you are looking for [ hand waving ]
-        if(empty($GLOBALS['installing']) && !empty($_SESSION['unique_key']) && $_SESSION['unique_key'] != SpiceConfig::getInstance()->config['unique_key']) return;
+        if(SpiceConfig::getInstance()->installing && !empty($_SESSION['unique_key']) && $_SESSION['unique_key'] != SpiceConfig::getInstance()->config['unique_key']) return;
 
         LoggerManager::getLogger()->debug('Saving Preferences to DB ' . $user->user_name);
         if(isset($_SESSION[$user->user_name. '_PREFERENCES']) && is_array($_SESSION[$user->user_name. '_PREFERENCES'])) {
@@ -439,7 +441,7 @@ class UserPreference extends SugarBean
             }
 
             foreach ($catsToSave as $category => $contents) { #print_r($contents);
-                $focus = new UserPreference($this->_userFocus);
+                $focus = BeanFactory::getBean('UserPreferences')->setUser($this->_userFocus);
                 $result = $focus->retrieve_by_string_fields([
                     'assigned_user_id' => $user->id,
                     'category' => $category,

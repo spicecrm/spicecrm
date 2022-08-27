@@ -26,6 +26,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -202,7 +205,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
         'currency_id' => [
             'name' => 'currency_id',
             'type' => 'id',
-            'group' => 'currency_id',
             'vname' => 'LBL_CURRENCY',
             'reportable' => false,
             'comment' => 'ID of currency used'
@@ -260,5 +262,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
     ],
     'optimistic_lock' => true,
 ];
+
+if (file_exists('extensions/modules/OrgCharts/vardefs.php')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode']['fields']['orgcharts'] = [
+        'name' => 'orgcharts',
+        'type' => 'link',
+        'vname' => 'LBL_ORGCHARTS',
+        'relationship' => 'companycodes_orgcharts',
+        'module' => 'OrgCharts',
+        'source' => 'non-db'
+    ];
+}
 
 VardefManager::createVardef('CompanyCodes', 'CompanyCode', ['default', 'assignable']);

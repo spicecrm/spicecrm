@@ -64,11 +64,11 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
     }
 
     /**
-     * Retrieve a single SugarBean based on ID.
+     * Retrieve a single SpiceBean based on ID.
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
-     * @param String $id -- The SugarBean's ID value.
+     * @param String $id -- The SpiceBean's ID value.
      * @param Array $select_fields -- A list of the fields to be included in the results. This optional parameter allows for only needed fields to be retrieved.
      * @param Array $link_name_to_fields_array -- A list of link_names and for each link_name, what fields value to be returned. For ex.'link_name_to_fields_array' => array(array('name' =>  'email_addresses', 'value' => array('id', 'email_address', 'opt_out', 'primary_address')))
      * @param bool $trackView -- Should we track the record accessed.
@@ -80,7 +80,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
     function get_entry($session, $module_name, $id, $select_fields = [], $link_name_to_fields_array  = [],$track_view = FALSE)
     {
         LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_entry');
-        return $this->get_entries($session, $module_name, [$id], $select_fields, $link_name_to_fields_array, $track_view);
+        return self::get_entries($session, $module_name, [$id], $select_fields, $link_name_to_fields_array, $track_view);
         LoggerManager::getLogger()->info('end: SugarWebServiceImpl->get_entry');
     }
 
@@ -111,11 +111,11 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
 
 
     /**
-     * Retrieve a list of SugarBean's based on provided IDs. This API will not wotk with report module
+     * Retrieve a list of SpiceBean's based on provided IDs. This API will not wotk with report module
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
-     * @param Array $ids -- An array of SugarBean IDs.
+     * @param Array $ids -- An array of SpiceBean IDs.
      * @param Array $select_fields -- A list of the fields to be included in the results. This optional parameter allows for only needed fields to be retrieved.
      * @param Array $link_name_to_fields_array -- A list of link_names and for each link_name, what fields value to be returned. For ex.'link_name_to_fields_array' => array(array('name' =>  'email_addresses', 'value' => array('id', 'email_address', 'opt_out', 'primary_address')))
      * @param bool $trackView -- Should we track the record accessed.
@@ -180,11 +180,11 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
     }
 
     /**
-     * Update or create a single SugarBean.
+     * Update or create a single SpiceBean.
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
-     * @param Array $name_value_list -- The keys of the array are the SugarBean attributes, the values of the array are the values the attributes should have.
+     * @param Array $name_value_list -- The keys of the array are the SpiceBean attributes, the values of the array are the values the attributes should have.
      * @param Bool $track_view -- Should the tracker be notified that the action was performed on the bean.
      * @return Array    'id' -- the ID of the bean that was written to (-1 on error)
      * @exception 'SoapFault' -- The SOAP error, if any
@@ -220,7 +220,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
             if ($module_name == 'Users' && !empty($seed->id) && ($seed->id != $current_user->id) && $name == 'user_hash') {
                 continue;
             }
-            if (!empty($seed->field_name_map[$name]['sensitive'])) {
+            if (!empty($seed->field_defs[$name]['sensitive'])) {
                 continue;
             }
 
@@ -400,7 +400,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
 
 
     /**
-     * Retrieve a list of beans.  This is the primary method for getting list of SugarBeans from Sugar using the SOAP API.
+     * Retrieve a list of beans.  This is the primary method for getting list of SpiceBeans from Sugar using the SOAP API.
      *
      * @param String $session -- Session ID returned by a previous call to login.
      * @param String $module_name -- The name of the module to return records from.  This name should be the name the module was developed under (changing a tab name is studio does not affect the name that should be passed into this method)..
@@ -542,15 +542,15 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
         if ($max_results > 0) {
             SpiceConfig::getInstance()->config['list_max_entries_per_page'] = $max_results;
         }
-
-        require_once('include/utils/UnifiedSearchAdvanced.php');
+// with release 2022.02.001 UnifiedSearchAdvanced has been removed
+//        require_once('include/utils/UnifiedSearchAdvanced.php');
         require_once 'include/utils.php';
-        $usa = new UnifiedSearchAdvanced();
-        if (!file_exists($cachedfile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php'))) {
-            $usa->buildCache();
-        }
+//        $usa = new UnifiedSearchAdvanced();
+//        if (!file_exists($cachedfile = SpiceFileUtils::spiceCached('modules/unified_search_modules.php'))) {
+//            $usa->buildCache();
+//        }
 
-        include($cachedfile);
+//        include($cachedfile);
     	$modules_to_search = [];
     	$unified_search_modules['Users'] =   ['fields' => []];
 
@@ -588,7 +588,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
                 $seed = new $beanName();
                 require_once 'include/SearchForm/SearchForm2.php';
                 if ($beanName == "User") {
-                    if (!self::$helperObject->check_modules_access($current_user, $seed->module_dir, 'read')) {
+                    if (!self::$helperObject->check_modules_access($current_user, $seed->_module, 'read')) {
                         continue;
                     } // if
                     if (!$seed->ACLAccess('ListView')) {
@@ -614,18 +614,18 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
                         $where = '(' . implode(' ) OR ( ', $where_clauses) . ')';
                     }
 
-                    $mod_strings = return_module_language($current_language, $seed->module_dir);
+                    $mod_strings = return_module_language($current_language, $seed->_module);
 
                     if (count($select_fields) > 0)
                         $filterFields = $select_fields;
                     else {
-                        if (file_exists('custom/modules/' . $seed->module_dir . '/metadata/listviewdefs.php'))
-                            require_once('custom/modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
+                        if (file_exists('custom/modules/' . $seed->_module . '/metadata/listviewdefs.php'))
+                            require_once('custom/modules/' . $seed->_module . '/metadata/listviewdefs.php');
                         else
-                            require_once('modules/' . $seed->module_dir . '/metadata/listviewdefs.php');
+                            require_once('modules/' . $seed->_module . '/metadata/listviewdefs.php');
 
         				$filterFields = [];
-                        foreach ($listViewDefs[$seed->module_dir] as $colName => $param) {
+                        foreach ($listViewDefs[$seed->_module] as $colName => $param) {
                             if (!empty($param['default']) && $param['default'] == true)
                                 $filterFields[] = strtolower($colName);
                         }
@@ -662,7 +662,7 @@ class SugarWebServiceImplv3_1 extends SugarWebServiceImplv3
                     if ($beanName == "User") {
     					$filterFields = ['id', 'user_name', 'first_name', 'last_name', 'email_address'];
                         $main_query = "select users.id, ea.email_address, users.user_name, first_name, last_name from users ";
-                        $main_query = $main_query . " LEFT JOIN email_addr_bean_rel eabl ON (users.id = eabl.bean_id and eabl.bean_module = '{$seed->module_dir}')
+                        $main_query = $main_query . " LEFT JOIN email_addr_bean_rel eabl ON (users.id = eabl.bean_id and eabl.bean_module = '{$seed->_module}')
     LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
                         $main_query = $main_query . "where ((users.first_name like '{$search_string}') or (users.last_name like '{$search_string}') or (users.user_name like '{$search_string}') or (ea.email_address like '{$search_string}')) and users.deleted = 0 and users.is_group = 0 and users.employee_status = 'Active'";
                     } // if

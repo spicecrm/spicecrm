@@ -34,9 +34,10 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\TimeDate;
@@ -50,8 +51,8 @@ class EmailAddressRelationship extends M2MRelationship
 {
     /**
      * For Email Addresses, there is only a link from the left side, so we need a new add function that ignores rhs
-     * @param  $lhs SugarBean left side bean to add to the relationship.
-     * @param  $rhs SugarBean right side bean to add to the relationship.
+     * @param  $lhs SpiceBean left side bean to add to the relationship.
+     * @param  $rhs SpiceBean right side bean to add to the relationship.
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
@@ -115,12 +116,12 @@ class EmailAddressRelationship extends M2MRelationship
     {
         $lhsLinkName = $this->lhsLink;
 
-        if (!($lhs instanceof SugarBean)) {
-            LoggerManager::getLogger()->fatal("LHS is not a SugarBean object");
+        if (!($lhs instanceof SpiceBean)) {
+            LoggerManager::getLogger()->fatal("LHS is not a SpiceBean object");
             return false;
         }
-        if (!($rhs instanceof SugarBean)) {
-            LoggerManager::getLogger()->fatal("RHS is not a SugarBean object");
+        if (!($rhs instanceof SpiceBean)) {
+            LoggerManager::getLogger()->fatal("RHS is not a SpiceBean object");
             return false;
         }
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))

@@ -23,6 +23,35 @@ class SystemUIController{
     #$uiRestHandler = new SpiceUIRESTHandler();
 
     /***
+     * gets the UI Assets
+     *
+     * @param $req Request
+     * @param $res Response
+     * @param $args
+     */
+
+    public function SystemGetAssets(Request $req, Response $res, $args): Response
+    {
+        $uiRestHandler = new SpiceUIRESTHandler();
+        return $res->withJson($uiRestHandler->getAssets());
+    }
+
+    /***
+     * sets the UI assets
+     *
+     * @param $req Request
+     * @param $res Response
+     * @param $args
+     */
+
+    public function SystemSetAssets(Request $req, Response $res, $args): Response
+    {
+        $uiRestHandler = new SpiceUIRESTHandler();
+        $postbody = $req->getParsedBody();
+        return $res->withJson($uiRestHandler->setAssets($postbody));
+    }
+
+    /***
      * add a list type
      * @param $req Request
      * @param $res Response

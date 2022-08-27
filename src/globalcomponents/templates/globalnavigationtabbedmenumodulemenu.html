@@ -11,9 +11,10 @@
         <li class="slds-dropdown__header" role="separator">
             <span class="slds-text-title--caps"><system-label label="LBL_FAVORITES"></system-label></span>
         </li>
-        <li *ngFor="let favorite of favorites" class="slds-dropdown__item" role="presentation" (click)="openRecord(favorite.item_id)">
+        <li *ngFor="let favorite of favorites" class="slds-dropdown__item" role="presentation" (click)="openRecord(favorite.item_id)" [system-model-provider]="{module: module, id: favorite.id, data: favorite.data}">
             <a href="javascript:void(0);" role="menuitem">
-                <span class="slds-truncate">{{favorite.item_summary}}</span>
+                <span *ngIf="!displayfieldset" class="slds-truncate">{{favorite.item_summary}}</span>
+                <object-record-fieldset-horizontal-list *ngIf="displayfieldset" [fieldset]="displayfieldset"></object-record-fieldset-horizontal-list>
             </a>
         </li>
     </ng-container>
@@ -21,9 +22,10 @@
         <li class="slds-dropdown__header" role="separator">
             <span class="slds-text-title--caps"><system-label label="LBL_RECENTLYVIEWED"></system-label></span>
         </li>
-        <li *ngFor="let recentItem of recentitems" class="slds-dropdown__item" role="presentation" (click)="openRecord(recentItem.item_id)">
+        <li *ngFor="let recentItem of recentitems" class="slds-dropdown__item" role="presentation" (click)="openRecord(recentItem.item_id)" [system-model-provider]="{module: module, id: recentItem.id, data: recentItem.data}">
             <a href="javascript:void(0);" role="menuitem">
-                <span class="slds-truncate">{{recentItem.item_summary}}</span>
+                <span *ngIf="!displayfieldset" class="slds-truncate">{{recentItem.data.summary_text}}</span>
+                <object-record-fieldset-horizontal-list *ngIf="displayfieldset" [fieldset]="displayfieldset"></object-record-fieldset-horizontal-list>
             </a>
         </li>
         <li class="slds-dropdown__item slds-align--absolute-center slds-text-color_inverse-weak slds-p-around--xx-small" *ngIf="!loadingRecent && recentitems.length == 0"><system-label label="LBL_NO_ENTRIES"></system-label></li>

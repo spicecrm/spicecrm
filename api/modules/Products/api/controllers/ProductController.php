@@ -27,11 +27,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\Products\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\KREST\handlers\ModuleHandler;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -46,7 +48,7 @@ class ProductController
      * @return Response
      */
     public function productMapValidation(Request $req, Response $res, array $args): Response {
-        $resthandler = new ModuleHandler();
+        $resthandler = new SpiceBeanHandler();
 
         $product = BeanFactory::getBean('Products', $args['id']);
         $group = BeanFactory::getBean('ProductGroups', $product->productgroup_id);

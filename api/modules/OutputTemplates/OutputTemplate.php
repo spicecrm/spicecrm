@@ -27,21 +27,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\OutputTemplates;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
-class OutputTemplate extends SugarBean
+class OutputTemplate extends SpiceBean
 {
-    var $table_name = "outputtemplates";
-    var $object_name = "OutputTemplate";
-    var $module_dir = "OutputTemplates";
-    var $new_schema = true;
+
     // fields which holds options to create pdfs
     public static $PDF_OPTION_FIELDS = [
         'page_size',

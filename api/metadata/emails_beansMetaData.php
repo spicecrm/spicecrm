@@ -33,9 +33,10 @@
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
  ********************************************************************************/
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 /**
- * Relationship table linking emails with 1 or more SugarBeans
+ * Relationship table linking emails with 1 or more SpiceBeans
  */
 SpiceDictionaryHandler::getInstance()->dictionary['emails_beans'] = [
     'table' => 'emails_beans',
@@ -270,6 +271,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['emails_beans'] = [
             'relationship_role_column' => 'bean_module',
             'relationship_role_column_value' => 'Quotes',
         ],
+        'emails_trackinglinks' => [
+            'lhs_module' => 'Emails',
+            'lhs_table' => 'emails',
+            'lhs_key' => 'id',
+            'rhs_module' => 'TrackingLinks',
+            'rhs_table' => 'trackinglinks',
+            'rhs_key' => 'id',
+            'relationship_type' => 'many-to-many',
+            'join_table' => 'emails_beans',
+            'join_key_lhs' => 'email_id',
+            'join_key_rhs' => 'bean_id',
+            'relationship_role_column' => 'bean_module',
+            'relationship_role_column_value' => 'TrackingLinks',
+        ]
     ]
 ];
 
@@ -307,94 +322,3 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     ];
 }
 
-/**
- * Large text field table, shares a 1:1 with the emails table.  Moving all longtext fields to this table allows more
- * effiencient email management and full-text search capabilities.
- */
-SpiceDictionaryHandler::getInstance()->dictionary['emails_text'] = [
-    'table' => 'emails_text',
-    'comment' => 'Large email text fields',
-    'fields' => [
-        'email_id' => [
-            'name' => 'email_id',
-            'vname' => 'LBL_ID',
-            'type' => 'id',
-            'dbType' => 'id',
-            'len' => 36,
-            'required' => true,
-            'isnull' => false,
-            'reportable' => true,
-            'comment' => 'Foreign key to emails table',
-        ],
-        'from_addr' => [
-            'name' => 'from_addr',
-            'vname' => 'LBL_FROM',
-            'type' => 'varchar',
-            'len' => 255,
-            'comment' => 'Email address of person who send the email',
-        ],
-        'reply_to_addr' => [
-            'name' => 'reply_to_addr',
-            'vname' => 'LBL_REPLY_TO',
-            'type' => 'varchar',
-            'len' => 255,
-            'comment' => 'reply to email address',
-        ],
-        'to_addrs' => [
-            'name' => 'to_addrs',
-            'vname' => 'LBL_TO',
-            'type' => 'text',
-            'comment' => 'Email address(es) of person(s) to receive the email',
-        ],
-        'cc_addrs' => [
-            'name' => 'cc_addrs',
-            'vname' => 'LBL_CC',
-            'type' => 'text',
-            'comment' => 'Email address(es) of person(s) to receive a carbon copy of the email',
-        ],
-        'bcc_addrs' => [
-            'name' => 'bcc_addrs',
-            'vname' => 'LBL_BCC',
-            'type' => 'text',
-            'comment' => 'Email address(es) of person(s) to receive a blind carbon copy of the email',
-        ],
-        'description' => [
-            'name' => 'description',
-            'vname' => 'LBL_TEXT_BODY',
-            'type' => 'longtext',
-            'reportable' => false,
-            'comment' => 'Email body in plain text',
-        ],
-        'description_html' => [
-            'name' => 'description_html',
-            'vname' => 'LBL_HTML_BODY',
-            'type' => 'longhtml',
-            'reportable' => false,
-            'comment' => 'Email body in HTML format',
-        ],
-        'raw_source' => [
-            'name' => 'raw_source',
-            'vname' => 'LBL_RAW',
-            'type' => 'longtext',
-            'reportable' => false,
-            'comment' => 'Full raw source of email',
-        ],
-        'deleted' => [
-            'name' => 'deleted',
-            'type' => 'bool',
-            'default' => 0,
-        ],
-    ],
-    'indices' => [
-        [
-            'name' => 'emails_textpk',
-            'type' => 'primary',
-            'fields' => ['email_id']
-        ],
-        [
-            'name' => 'emails_textfromaddr',
-            'type' => 'index',
-            'fields' => ['from_addr']
-        ],
-    ],
-];

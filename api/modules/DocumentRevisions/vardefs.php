@@ -56,8 +56,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
         'document_id' => [
             'name' => 'document_id',
             'vname' => 'LBL_DOCUMENT',
-            'type' => 'varchar',
-            'len' => '36',
+            'type' => 'id',
             'required' => false,
             'reportable' => false,
         ],
@@ -130,7 +129,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
             'len' => '255',
             'source' => 'non-db',
             'unified_search' => true,
-            'massupdate' => false,
         ],
         'documents' => [
             'name' => 'documents',
@@ -140,7 +138,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
             'link_type' => 'one',
             'source' => 'non-db',
             'duplicate_merge' => 'disabled',
-            'massupdate' => false,
         ],
         'latest_revision' => [
             'name' => 'latest_revision',

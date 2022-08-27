@@ -79,8 +79,7 @@ export class SystemUtilityIcon implements OnChanges{
      * retuns the icon class for the ngClass in the template
      */
     public getIconClass() {
-        return 'slds-icon  slds-icon--' + this._size + ' ' + this.colorclass + ' ' + this.addclasses;
-
+        return 'slds-icon slds-icon_container  slds-icon--' + this._size + ' ' + this.colorclass + ' ' + this.addclasses;
     }
 
     /**

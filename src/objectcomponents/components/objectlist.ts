@@ -180,7 +180,16 @@ export class ObjectList implements OnDestroy, OnInit {
         // set the buckets to null
         this.modellist.buckets = {};
 
+        // if we are not loading from session then start the load here
         if (!this.modellist.loadFromSession()) {
+            // set the sort creiteria if we have one in the module conf
+            if(this.componentconfig.sortfield){
+                this.modellist.sortArray= [{
+                    sortfield: this.componentconfig.sortfield,
+                    sortdirection: this.componentconfig.sortdirection ?? 'ASC'
+                }]
+            }
+            // go get the list data
             this.getListData();
         }
 
@@ -217,6 +226,7 @@ export class ObjectList implements OnDestroy, OnInit {
         this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
         if ('disableAutoloadListAll' in this.componentconfig) return;
         this.componentconfig.disableAutoloadListAll = this.modellist.disableAutoloadListAll;
+
     }
 
     /**

@@ -37,11 +37,13 @@
                         </ng-container>
                     </ng-container>
                 </ng-container>
-                <ng-container *ngFor="let event of googleEvents; trackBy: trackByFn">
-                    <calendar-sheet-google-event [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
+                <ng-container *ngFor="let event of groupwareEvents; trackBy: trackByFn">
+                    <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
+                    <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-microsoft-event>
                     <ng-container *ngIf="event.illusions">
                         <ng-container *ngFor="let event of event.illusions; trackBy: trackByFn">
-                            <calendar-sheet-google-event [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
+                            <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
+                            <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-microsoft-event>
                         </ng-container>
                     </ng-container>
                 </ng-container>

@@ -2,37 +2,38 @@
 /*********************************************************************************
  * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
  * Free Software Foundation with the addition of the following permission added
  * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
  * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
  * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU Affero General Public License along with
  * this program; if not, see http://www.gnu.org/licenses or write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA.
- *
+ * 
  * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
  * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
+ * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- *
+ * 
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
  ********************************************************************************/
+
 
 namespace SpiceCRM\data;
 
@@ -61,7 +62,7 @@ class Link2
 {
 
     protected $relationship; //relationship object this link is tied to.
-    protected $focus;  //SugarBean this link uses as the context for its calls.
+    protected $focus;  //SpiceBean this link uses as the context for its calls.
     protected $def;  //Field def for this link
     protected $name;  //Field name for this link
     protected $beans;  //beans on the other side of the link
@@ -73,7 +74,7 @@ class Link2
 
     /**
      * @param  $linkName String name of a link field in the module's vardefs
-     * @param  $bean SugarBean focus bean for this link (one half of a relationship)
+     * @param  $bean SpiceBean focus bean for this link (one half of a relationship)
      * @param  $linkDef Array Optional vardef for the link in case it can't be found in the passed in bean for the global dictionary
      * @return void
      *
@@ -85,7 +86,7 @@ class Link2
         if (empty($bean->field_defs) || empty($bean->field_defs[$linkName]) || empty($bean->field_defs[$linkName]['relationship'])) {
             if (empty($linkDef)) {
                 //Assume $linkName is really relationship_name, and find the link name with the vardef manager
-                $this->def = VardefManager::getLinkFieldForRelationship($bean->module_dir, $bean->object_name, $linkName);
+                $this->def = VardefManager::getLinkFieldForRelationship($bean->_module, $bean->_objectname, $linkName);
             } else {
                 $this->def = $linkDef;
             }
@@ -248,7 +249,7 @@ class Link2
     }
 
     /**
-     * @return SugarBean The parent Bean this link references
+     * @return SpiceBean The parent Bean this link references
      */
     public function getFocus()
     {
@@ -302,13 +303,13 @@ class Link2
 
         //Next try the relationship
         if ($this->relationship->getLHSLink() == $this->name &&
-            ($this->relationship->getLHSModule() == $this->focus->module_name)
+            ($this->relationship->getLHSModule() == $this->focus->_module)
         ) {
             return REL_LHS;
         }
 
         if ($this->relationship->getRHSLink() == $this->name &&
-            ($this->relationship->getRHSModule() == $this->focus->module_name)
+            ($this->relationship->getRHSModule() == $this->focus->_module)
         ) {
             return REL_RHS;
         }
@@ -321,7 +322,7 @@ class Link2
                 return REL_LHS;
         }
 
-        LoggerManager::getLogger()->error("Unable to get proper side for link {$this->name} in {$this->focus->module_name}");
+        LoggerManager::getLogger()->error("Unable to get proper side for link {$this->name} in {$this->focus->_module}");
     }
 
     /**
@@ -381,7 +382,7 @@ class Link2
      *  </li>
      * <li><b>limit:</b> The maximum number of beans to load.</li>
      * <li><b>deleted:</b> If deleted is set to 1, only deleted records related to the current record will be returned.</li></ul>
-     * @return array of SugarBeans related through this link.
+     * @return array of SpiceBeans related through this link.
      */
     function getBeans($params = [])
     {
@@ -446,7 +447,7 @@ class Link2
                     $result[$id] = $this->beans[$id];
                 }
                 //20reasons .. add the relid
-                if ($result[$id] instanceof SugarBean && @$vals['relid'])
+                if ($result[$id] instanceof SpiceBean && @$vals['relid'])
                     $result[$id]->relid = $vals['relid'];
 
                 foreach ($this->relationship_fields as $field => $data) {
@@ -523,7 +524,7 @@ class Link2
      * the function also allows for setting of values for additional field in the table being
      * updated to save the relationship, in case of many-to-many relationships this would be the join table.
      *
-     * @param array $rel_keys array of ids or SugarBean objects. If you have the bean in memory, pass it in.
+     * @param array $rel_keys array of ids or SpiceBean objects. If you have the bean in memory, pass it in.
      * @param array $additional_values the values should be passed as key value pairs with column name as the key name and column value as key value.
      *
      * @return boolean|array          Return true if all relationships were added.  Return an array with the failed keys if any of them failed.
@@ -537,9 +538,9 @@ class Link2
 
         foreach ($rel_keys as $key) {
             //We must use beans for LogicHooks and other business logic to fire correctly
-            if (!($key instanceof SugarBean)) {
+            if (!($key instanceof SpiceBean)) {
                 $key = $this->getRelatedBean($key);
-                if (!($key instanceof SugarBean)) {
+                if (!($key instanceof SpiceBean)) {
                     LoggerManager::getLogger()->error("Unable to load related bean by id");
                     return false;
                 }
@@ -569,16 +570,16 @@ class Link2
 
     /**
      * Marks the relationship delted for this given record pair.
-     * @param $id id of the Parent/Focus SugarBean
-     * @param string $related_id id or SugarBean to unrelate. Pass a SugarBean if you have it.
+     * @param $id id of the Parent/Focus SpiceBean
+     * @param string $related_id id or SpiceBean to unrelate. Pass a SpiceBean if you have it.
      * @return boolean          true if delete was successful or false if it was not
      */
     function delete($id, $related_id = '')
     {
         if (empty($this->focus->id))
-            $this->focus = BeanFactory::getBean($this->focus->module_name, $id);
+            $this->focus = BeanFactory::getBean($this->focus->_module, $id);
         if (!empty($related_id)) {
-            if (!($related_id instanceof SugarBean)) {
+            if (!($related_id instanceof SpiceBean)) {
                 $related_id = $this->getRelatedBean($related_id);
             }
             if ($this->getSide() == REL_LHS) {
@@ -592,9 +593,9 @@ class Link2
     }
 
     /**
-     * Returns a SugarBean with the given ID from the related module.
+     * Returns a SpiceBean with the given ID from the related module.
      * @param bool $id id of related record to retrieve
-     * @return SugarBean
+     * @return SpiceBean
      */
     protected function getRelatedBean($id = false)
     {
@@ -631,7 +632,7 @@ class Link2
     /**
      * Add a bean object to the list of beans currently loaded to this relationship.
      * This for the most part should not need to be called except by the relatipnship implementation classes.
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @return void
      */
     public function addBean($bean)
@@ -658,7 +659,7 @@ class Link2
      * Remove a bean object from the list of beans currently loaded to this relationship.
      * This for the most part should not need to be called except by the relatipnship implementation classes.
      *
-     * @param SugarBean $bean
+     * @param SpiceBean $bean
      * @return void
      */
     public function removeBean($bean)

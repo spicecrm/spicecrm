@@ -1,4 +1,4 @@
-<div [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'section'" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1" class="spice-drop-zone">
+<div [class.slds-is-hovered]="['section','content'].indexOf(spicePageBuilderService.isMouseIn) > -1" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1" class="spice-drop-zone">
     <div class="spice-drop-zone-label">
         <div class="slds-media slds-media_center">
             <div class="slds-media__figure">

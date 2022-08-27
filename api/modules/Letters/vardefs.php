@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -98,7 +100,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Letter'] = [
             'name'       => 'parent_id',
             'vname'      => 'LBL_LIST_RELATED_TO_ID',
             'type'       => 'id',
-            'group'      => 'parent_name',
             'reportable' => false,
             'comment'    => 'The ID of the parent Sugar object identified by parent_type'
         ],
@@ -108,21 +109,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Letter'] = [
             'type'     => 'parent_type',
             'dbType'   => 'varchar',
             'required' => false,
-            'group'    => 'parent_name',
-            'options'  => 'parent_type_display',
             'len'      => 255,
-            'comment'  => 'The Sugar object to which the call is related',
+            'comment'  => 'The parent module to which the bean is related',
         ],
         'parent_name' => [
             'name'        => 'parent_name',
-            'parent_type' => 'record_type_display',
             'type_name'   => 'parent_type',
             'id_name'     => 'parent_id',
             'vname'       => 'LBL_RELATED_TO',
             'type'        => 'parent',
-            'group'       => 'parent_name',
             'source'      => 'non-db',
-            'options'     => 'parent_type_display',
         ],
 
         // links to other modules

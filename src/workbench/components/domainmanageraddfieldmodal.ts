@@ -27,7 +27,7 @@ export class DomainManagerAddFieldModal {
     public domainfield: any = {
         name: '{sysdictionaryitems.name}',
         fieldtype: '',
-        scope: 'g',
+        scope: 'c',
         required: 0,
         deleted: 0,
         status: 'd'

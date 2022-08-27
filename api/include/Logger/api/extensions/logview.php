@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Logger\api\controllers\LogViewController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -109,6 +111,72 @@ $routes = [
     ],
     [
         'method'      => 'get',
+        'route'       => '/admin/apilog/config',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogGetConfig',
+        'description' => 'Get the config for the api log',
+        'options'     => ['adminOnly' => true]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/admin/apilog/logtables',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogGetLogTables',
+        'description' => 'returns the available apilog tables',
+        'options'     => ['adminOnly' => true]
+    ],
+    [
+        'method'      => 'put',
+        'route'       => '/admin/apilog/config/{id}/activate/{status}',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogSetActive',
+        'description' => 'Get the config for the api log',
+        'options'     => ['adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'query',
+                'description' => 'the id of the entry',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'status' => [
+                'in' => 'query',
+                'description' => 'ttruw or false to activate or deactivate ',
+                'type' => ValidationMiddleware::TYPE_BOOL
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/admin/apilog/config/{id}',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogConfigSet',
+        'description' => 'Get the config for the api log',
+        'options'     => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'query',
+                'description' => 'the id of the entry',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
+        'method'      => 'delete',
+        'route'       => '/admin/apilog/config/{id}',
+        'class'       => LogViewController::class,
+        'function'    => 'APIlogConfigDelete',
+        'description' => 'Deletes a config entry for the api log',
+        'options'     => ['adminOnly' => true, 'validate' => true],
+        'parameters'  => [
+            'id' => [
+                'in' => 'query',
+                'description' => 'the id of the entry',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
+        'method'      => 'get',
         'route'       => '/admin/apilog',
         'oldroute'    => '/restlog/entries',
         'class'       => LogViewController::class,
@@ -116,6 +184,11 @@ $routes = [
         'description' => 'Get the entries of the REST log.',
         'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters'  => [
+            'logtable' => [
+                'in' => 'query',
+                'description' => 'the name of the logtable',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
             'limit' => [
                 'in' => 'query',
                 'description' => 'Maximal numbers of requested REST log entries.',
@@ -191,6 +264,11 @@ $routes = [
         'description' => 'Get a specific full (not truncated) entry of the REST log.',
         'options'     => [ 'noAuth' => false, 'adminOnly' => true, 'validate' => true ],
         'parameters'  => [
+            'logtable' => [
+                'in' => 'query',
+                'description' => 'the name of the logtable',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
             'id' => [
                 'in' => 'path',
                 'description' => 'GUID of the requested REST log entry.',

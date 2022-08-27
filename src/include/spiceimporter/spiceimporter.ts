@@ -12,16 +12,16 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {ObjectFields} from "../../objectfields/objectfields";
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {SpiceImporterService} from './services/spiceimporter.service';
+import {SpiceImporterService} from './services/spiceimporter.service';
 
-import /*embed*/ {SpiceImporterImportButton} from './components/spiceimporterimportbutton';
-import /*embed*/ {SpiceImporterSelect} from './components/spiceimporterselect';
-import /*embed*/ {SpiceImporterMap} from './components/spiceimportermap';
-import /*embed*/ {SpiceImporterFixed} from './components/spiceimporterfixed';
-import /*embed*/ {SpiceImporterCheck} from './components/spiceimportercheck';
-import /*embed*/ {SpiceImporterUpdate} from "./components/spiceimporterupdate";
-import /*embed*/ {SpiceImporterResult} from './components/spiceimporterresult';
-import /*embed*/ {SpiceImporter} from './components/spiceimporter';
+import {SpiceImporterImportButton} from './components/spiceimporterimportbutton';
+import {SpiceImporterSelect} from './components/spiceimporterselect';
+import {SpiceImporterMap} from './components/spiceimportermap';
+import {SpiceImporterFixed} from './components/spiceimporterfixed';
+import {SpiceImporterCheck} from './components/spiceimportercheck';
+import {SpiceImporterUpdate} from "./components/spiceimporterupdate";
+import {SpiceImporterResult} from './components/spiceimporterresult';
+import {SpiceImporter} from './components/spiceimporter';
 
 @NgModule({
     imports: [
@@ -44,10 +44,6 @@ import /*embed*/ {SpiceImporter} from './components/spiceimporter';
         SpiceImporterImportButton
     ],
     exports: [
-        SpiceImporter,
-        SpiceImporterImportButton
-    ],
-    entryComponents: [
         SpiceImporter,
         SpiceImporterImportButton
     ],

@@ -16,7 +16,7 @@ class SpiceFTSManagerSchedulerJobTasks
         // calculate date time in php to have a cross database conform SQL quer
         $defaultInterval = "P14D"; // 14 days
         $timeDate = TimeDate::getInstance()->getNow();
-        $timeDate->sub(new DateInterval((isset(SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval']) && !empty(SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval']) ? SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval'] : $defaultInterval)));
+        $timeDate->sub(new \DateInterval((isset(SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval']) && !empty(SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval']) ? SpiceConfig::getInstance()->config['logger']['fts']['log_clean_interval'] : $defaultInterval)));
         $calculatedDate = TimeDate::getInstance()->asDb($timeDate);
 
         $q = "DELETE FROM sysftslog WHERE date_created < '{$calculatedDate}'";

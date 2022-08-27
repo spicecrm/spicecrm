@@ -26,15 +26,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+
 namespace SpiceCRM\modules\ScrumUserStories;
 
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 
-class ScrumUserStory extends SugarBean {
-    public $module_dir = 'ScrumUserStories';
-    public $object_name = 'ScrumUserStory';
-    public $table_name = 'scrumuserstories';
-
+class ScrumUserStory extends SpiceBean {
 
     public function save($check_notify = false, $fts_index_bean = true)
     {

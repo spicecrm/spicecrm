@@ -11,20 +11,20 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from '../../directives/directives';
 
-import /*embed*/ {LeadConvertButton} from './components/leadconvertbutton';
-import /*embed*/ {LeadConvertModal} from './components/leadconvertmodal';
-import /*embed*/ {LeadConvert} from './components/leadconvert';
-import /*embed*/ {LeadConvertContact} from './components/leadconvertcontact';
-import /*embed*/ {LeadConvertItemDuplicate} from './components/leadconvertitemduplicate';
-import /*embed*/ {LeadConvertAccount} from './components/leadconvertaccount';
-import /*embed*/ {LeadConvertOpportunity} from './components/leadconvertopportunity';
-import /*embed*/ {LeadOpenLeadsDashlet} from './components/leadopenleadsdashlet';
-import /*embed*/ {LeadConvertOpportunityModal} from './components/leadconvertopportunitymodal';
-import /*embed*/ {LeadNewButton} from './components/leadnewbutton';
-import /*embed*/ {LeadSelectTypeModal} from './components/leadselecttypemodal';
-import /*embed*/ {LeadConvertConsumerModal} from './components/leadconvertconsumermodal';
+import {LeadConvertButton} from './components/leadconvertbutton';
+import {LeadConvertModal} from './components/leadconvertmodal';
+import {LeadConvert} from './components/leadconvert';
+import {LeadConvertContact} from './components/leadconvertcontact';
+import {LeadConvertItemDuplicate} from './components/leadconvertitemduplicate';
+import {LeadConvertAccount} from './components/leadconvertaccount';
+import {LeadConvertOpportunity} from './components/leadconvertopportunity';
+import {LeadOpenLeadsDashlet} from './components/leadopenleadsdashlet';
+import {LeadConvertOpportunityModal} from './components/leadconvertopportunitymodal';
+import {LeadNewButton} from './components/leadnewbutton';
+import {LeadSelectTypeModal} from './components/leadselecttypemodal';
+import {LeadConvertConsumerModal} from './components/leadconvertconsumermodal';
 
-import /*embed*/ {fieldLeadClassification} from './fields/fieldleadclassification';
+import {fieldLeadClassification} from './fields/fieldleadclassification';
 
 @NgModule({
     imports: [

@@ -183,6 +183,8 @@ export class fieldModelAttachment extends fieldGeneric {
                     this.downloadFile();
                     break;
             }
+        } else {
+            this.downloadFile();
         }
     }
 

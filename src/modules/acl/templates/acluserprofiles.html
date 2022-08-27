@@ -13,10 +13,12 @@
                     {{userProfile.name}}
                 </td>
                 <td class="slds-text-align--center">
-                    <system-custom-icon [icon]="userProfile.user_id == '*' ? 'global' : 'custom'" size="x-small"></system-custom-icon>
+                    <system-utility-icon *ngIf="userProfile.profilesource == 'global'" icon="world" size="x-small"></system-utility-icon>
+                    <system-utility-icon *ngIf="userProfile.profilesource == 'user'" icon="user" size="x-small"></system-utility-icon>
+                    <system-utility-icon *ngIf="userProfile.profilesource == 'orgunit'" icon="org_chart" size="x-small"></system-utility-icon>
                 </td>
                 <td class="slds-text-align--center">
-                    <system-custom-icon [icon]="userProfile.statue == 'r' ? 'light-bulb-off' : 'light-bulb-on'" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
+                    <system-utility-icon icon="light_bulb" [colorclass]="userProfile.status == 'r' ? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small"></system-utility-icon>
                 </td>
             </ng-container>
         </tr>
@@ -41,7 +43,7 @@
                     {{profileObject.name}}
                 </td>
                 <td class="slds-text-align--center">
-                    <system-custom-icon [icon]="profileObject.statue == 'r' ? 'light-bulb-off' : 'light-bulb-on'" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
+                    <system-utility-icon icon="light_bulb" size="x-small" [colorclass]="profileObject.status == 'r' ? 'slds-icon-text-success' : 'slds-icon-text-light'" addclasses="slds-icon slds-icon-text-default"></system-utility-icon>
                 </td>
             </ng-container>
         </tr>

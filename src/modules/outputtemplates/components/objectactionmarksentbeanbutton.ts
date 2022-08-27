@@ -42,12 +42,15 @@ export class ObjectActionMarkSentBeanButton extends ObjectActionOutputBeanButton
 
         const templateId = this.outputModalService.selectedTemplate.id;
 
-        this.backend.postRequest(`module/Letters/${this.model.id}/marksent/${templateId}`, null, this.model.data).subscribe(res => {
+        let modelData = this.model.utils.spiceModel2backend('Letters', this.model.data);
+
+        this.backend.postRequest(`module/Letters/${this.model.id}/marksent/${templateId}`, null, modelData).subscribe(res => {
 
             this.actionemitter.emit({close: true, name: 'marksent'});
 
             if (res?.success) {
                 this.toast.sendToast(this.language.getLabel('LETTER_MARKED_AS_SENT'), 'success');
+                this.model.setField('letter_status', 'sent');
             } else {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
             }

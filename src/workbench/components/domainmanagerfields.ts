@@ -99,6 +99,7 @@ export class DomainManagerFields {
                     newValue.scope = 'c';
                     this.domainmanager.domainfields.push(newValue);
                     this.domainmanager.currentDomainField = newValue.id;
+                    this.domainmanager.currentDomainScope = newValue.scope;
                 }
             });
         }

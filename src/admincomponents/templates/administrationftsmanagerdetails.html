@@ -149,6 +149,15 @@
                     <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.calendarfilter"></system-input-module-filter>
                 </div>
             </div>
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
+                <div class="slds-form-element__control slds-col slds-size--1-of-3">
+                    <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.timelinesearch"><system-label label="LBL_FTS_IN_TIMELINE"></system-label></system-checkbox>
+                </div>
+<!--                <div class="slds-col slds-size&#45;&#45;2-of-3 slds-grid slds-grid&#45;&#45;vertical-align-center">-->
+<!--                    <label class="slds-form-element__label"><system-label label="LBL_FILTER"></system-label></label>-->
+<!--                    <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.timelinefilter"></system-input-module-filter>-->
+<!--                </div>-->
+            </div>
         </div>
     </fieldset>
 </div>

@@ -51,7 +51,7 @@ export class GlobalReLogin {
 
    public tokenLogin(token) {
         this.loggingIn = true;
-        this.login.relogin(null, token).subscribe(
+        this.login.relogin(null, token.accessToken).subscribe(
             res => {
                 this.loggedin.emit(true);
                 this.close();

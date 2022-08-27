@@ -110,25 +110,25 @@
             </system-preferences-panel-item>
         </div>
     </system-collapsable-tab>
-    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_NAVIGATION_PREFERENCES">
-        <div class="slds-grid slds-grid--align-spread">
-            <system-preferences-panel-item class="slds-size--1-of-1" itemlabel="LBL_NAVIGATION_PARADIGM">
-                <system-preferences-panel-item-display>
-                    {{ preferences.navigation_paradigm}}
-                </system-preferences-panel-item-display>
-                <system-preferences-panel-item-edit>
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.navigation_paradigm">
-                            <option></option>
-                            <option value="simple">simple</option>
-                            <option value="tabbed">tabbed</option>
-                            <option value="subtabbed">tabbed w subtabs</option>
-                        </select>
-                    </div>
-                </system-preferences-panel-item-edit>
-            </system-preferences-panel-item>
-        </div>
-    </system-collapsable-tab>
+<!--    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_NAVIGATION_PREFERENCES">-->
+<!--        <div class="slds-grid slds-grid&#45;&#45;align-spread">-->
+<!--            <system-preferences-panel-item class="slds-size&#45;&#45;1-of-1" itemlabel="LBL_NAVIGATION_PARADIGM">-->
+<!--                <system-preferences-panel-item-display>-->
+<!--                    {{ preferences.navigation_paradigm}}-->
+<!--                </system-preferences-panel-item-display>-->
+<!--                <system-preferences-panel-item-edit>-->
+<!--                    <div class="slds-select_container">-->
+<!--                        <select class="slds-select" [(ngModel)]="preferences.navigation_paradigm">-->
+<!--                            <option></option>-->
+<!--                            <option value="simple" disabled>simple</option>-->
+<!--                            <option value="tabbed" disabled>tabbed</option>-->
+<!--                            <option value="subtabbed">tabbed w subtabs</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </system-preferences-panel-item-edit>-->
+<!--            </system-preferences-panel-item>-->
+<!--        </div>-->
+<!--    </system-collapsable-tab>-->
     <system-collapsable-tab [collapsible]="false" tabtitle="LBL_EXPORT_PREFERENCES">
         <div class="slds-grid slds-grid--align-spread">
             <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_EXPORT_DELIMITER">

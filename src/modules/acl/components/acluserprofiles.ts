@@ -18,6 +18,7 @@ declare var _: any;
  * rendered as part of the user profile to display the profiles assigned to the user
  */
 @Component({
+    selector: 'acl-user-profiles',
     templateUrl: "../templates/acluserprofiles.html"
 })
 export class ACLUserProfiles {

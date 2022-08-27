@@ -12,20 +12,20 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {UserChangePasswordButton} from "./components/userchangepasswordbutton";
-import /*embed*/ {UserChangePasswordModal} from "./components/userchangepasswordmodal";
-import /*embed*/ {UserResetPasswordModal} from "./components/userresetpasswordmodal";
-import /*embed*/ {UserResetPasswordButton} from "./components/userresetpasswordbutton";
-import /*embed*/ {UserPreferences} from "./components/userpreferences";
-import /*embed*/ {UserRoles} from "./components/userroles";
-import /*embed*/ {UserRolesAddModal} from "./components/userrolesaddmodal";
-import /*embed*/ {UserAddButton} from "./components/useraddbutton";
-import /*embed*/ {UserAddModal} from "./components/useraddmodal";
-import /*embed*/ {UserPopoverHeader} from "./components/userpopoverheader";
-import /*embed*/ {UserDeactivateButton} from "./components/userdeactivatebutton";
-import /*embed*/ {UserDeactivateModal} from "./components/userdeactivatemodal";
-import /*embed*/ {UserDeactivateSelectUser} from "./components/userdeactivateselectuser";
-import /*embed*/ {UserSignature} from "./components/usersignature";
+import {UserChangePasswordButton} from "./components/userchangepasswordbutton";
+import {UserChangePasswordModal} from "./components/userchangepasswordmodal";
+import {UserResetPasswordModal} from "./components/userresetpasswordmodal";
+import {UserResetPasswordButton} from "./components/userresetpasswordbutton";
+import {UserPreferences} from "./components/userpreferences";
+import {UserRoles} from "./components/userroles";
+import {UserRolesAddModal} from "./components/userrolesaddmodal";
+import {UserAddButton} from "./components/useraddbutton";
+import {UserAddModal} from "./components/useraddmodal";
+import {UserPopoverHeader} from "./components/userpopoverheader";
+import {UserDeactivateButton} from "./components/userdeactivatebutton";
+import {UserDeactivateModal} from "./components/userdeactivatemodal";
+import {UserDeactivateSelectUser} from "./components/userdeactivateselectuser";
+import {UserSignature} from "./components/usersignature";
 
 @NgModule({
     imports: [

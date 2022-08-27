@@ -117,7 +117,7 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
         if(this.actioncomponent && this.actioncomponent.execute) {
             this.actioncomponent.execute();
         } else {
-            this.model.startEdit(true, true);
+            this.model.startEdit(true, false);
             this.model.setField(statusfield, this.item.status_to);
             if (this.model.validate()) {
                 this.model.save();

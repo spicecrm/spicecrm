@@ -36,9 +36,14 @@ export class domainmanager {
     public currentDomainDefinition: string;
 
     /**
-     * the urrently selected domain field
+     * the currently selected domain field
      */
     public currentDomainField: string;
+
+    /**
+     * the currently selected scope field
+     */
+    public currentDomainScope: string;
 
     public languagelabels: any[] = [];
     public languagetranslations: any[] = [];
@@ -95,7 +100,7 @@ export class domainmanager {
      *
      * @param validationid
      */
-    public getValdiationValuesdById(validationid) {
+    public getValidationValuesdById(validationid) {
         let validationValues = this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid && v.scope == 'c');
         let globalValidationValues = this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid && v.scope != 'c');
         for (let globalValidationValue of globalValidationValues) {
@@ -215,8 +220,8 @@ export class domainmanager {
                             this.domainfieldvalidationvalues.push({
                                 id: this.modelutilities.generateGuid(),
                                 sysdomainfieldvalidation_id: validationid,
-                                label: option ? ('VAL_' + table[field].options + '_' + option).toUpperCase() : '',
-                                minvalue: option,
+                                label: option ? ('LBL_' + table[field].options + '_' + option).toUpperCase() : '',
+                                enumvalue: option,
                                 sequence: i,
                                 comment: '',
                                 scope: scope,
@@ -224,17 +229,17 @@ export class domainmanager {
                                 deleted: 0
                             });
 
-                            if (option && !this.language.languagedata.applang[('VAL_' + table[field].options + '_' + option).toUpperCase()]) {
+                            if (option && !this.language.languagedata.applang[('LBL_' + table[field].options + '_' + option).toUpperCase()]) {
                                 let labelid = this.modelutilities.generateGuid();
                                 if (scope == 'g') {
                                     this.languagelabels.push({
                                         id: labelid,
-                                        name: ('VAL_' + table[field].options + '_' + option).toUpperCase()
+                                        name: ('LBL_' + table[field].options + '_' + option).toUpperCase()
                                     });
                                 } else {
                                     this.languagecustomlabels.push({
                                         id: labelid,
-                                        name: ('VAL_' + table[field].options + '_' + option).toUpperCase()
+                                        name: ('LBL_' + table[field].options + '_' + option).toUpperCase()
                                     });
                                 }
 
@@ -248,7 +253,7 @@ export class domainmanager {
                                         });
 
                                         if (language == this.language.currentlanguage) {
-                                            this.language.addLabel(('VAL_' + table[field].options + '_' + option).toUpperCase(), apl[language].global[table[field].options][option]);
+                                            this.language.addLabel(('LBL_' + table[field].options + '_' + option).toUpperCase(), apl[language].global[table[field].options][option]);
                                         }
                                     }
                                     if (apl[language].custom[table[field].options] && apl[language].custom[table[field].options][option]) {
@@ -260,7 +265,7 @@ export class domainmanager {
                                         });
 
                                         if (language == this.language.currentlanguage) {
-                                            this.language.addLabel(('VAL_' + table[field].options + '_' + option).toUpperCase(), apl[language].custom[table[field].options][option]);
+                                            this.language.addLabel(('LBL_' + table[field].options + '_' + option).toUpperCase(), apl[language].custom[table[field].options][option]);
                                         }
                                     }
                                 }

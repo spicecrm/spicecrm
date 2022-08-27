@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap');
 
 @import "./imports/spiceloader.css";
-@import "./imports/spicequill.css";
+@import "./imports/spiceeditor.css";
 @import "./imports/spicecalendar.css";
 @import "./imports/spicemaps.css";
 @import "./imports/spicehtmltext.css";
@@ -10,6 +10,7 @@
 @import "./imports/spicescrollbar.css";
 @import "./imports/spicetimeline.css";
 @import "./imports/spicepagebuilder.css";
+@import "./imports/bpmn.css";
 
 :root {
     --color-white: white;
@@ -47,6 +48,7 @@
     --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
     --sds-c-button-text-color-hover: #ffffff;
     --sds-c-toast-text-color: #ffffff;
+    --sds-c-icon-color-foreground: #ffffff;
 }
 
 html {
@@ -157,14 +159,6 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 }
 .slds-button span::first-letter {
     text-transform: capitalize;
-}
-
-/* container for the rich text editor */
-.slds-rich-text-area__content {
-    max-height: none;
-    resize: vertical;
-    overflow: auto;
-    height: 300px;
 }
 
 /* align text justified */
@@ -442,6 +436,12 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     visibility: hidden !important;
 }
 
+.spice-counter{
+    height: 28px;
+    width: 28px;
+    border-radius: 14px;
+}
+
 /* general fix for ios devices */
 textarea,
 input[type="text"],
@@ -464,4 +464,9 @@ input[type="submit"] {
 .slds-dropdown_actions a,
 .slds-dropdown--actions a {
     color: var(--brand-text-link);
+}
+
+.slds-icon-text-error {
+    /*! @css-var-fallback fill */
+    --slds-c-icon-color-foreground: #ffffff
 }

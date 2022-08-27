@@ -27,22 +27,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\UserAbsences;
 
 use DateTime;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
-class UserAbsence extends SugarBean
+class UserAbsence extends SpiceBean
 {
-    public $module_dir = 'UserAbsences';
-    public $object_name = 'UserAbsence';
-    public $table_name = 'userabsences';
-    public $new_schema = true;
 
     public function get_summary_text()
     {
@@ -78,6 +76,21 @@ class UserAbsence extends SugarBean
         $substituteids = $db->query("SELECT distinct assigned_user_id FROM userabsences WHERE representative_id='{$current_user->id}' AND date_start <= '$today' AND date_end >= '$today' AND deleted = 0");
         while ($substitute = $db->fetchByAssoc($substituteids)) {
             $userIDs[] = $substitute['assigned_user_id'];
+        }
+        return $userIDs;
+    }
+
+    public function getSubstituteOrgUnitIDs()
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
+        $timeDate = TimeDate::getInstance();
+        $userIDs = [];
+        $today = new DateTime();
+        $today = $today->format($timeDate->get_date_format());
+        $substituteids = $db->query("SELECT distinct orgunit_id FROM users, userabsences WHERE users.id = userabsences.assigned_user_id AND representative_id='{$current_user->id}' AND date_start <= '$today' AND date_end >= '$today' AND deleted = 0");
+        while ($substitute = $db->fetchByAssoc($substituteids)) {
+            $userIDs[] = $substitute['orgunit_id'];
         }
         return $userIDs;
     }

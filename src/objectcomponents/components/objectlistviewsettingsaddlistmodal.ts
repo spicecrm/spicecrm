@@ -5,8 +5,10 @@ import {Component, Input, OnInit} from '@angular/core';
 import {language} from '../../services/language.service';
 import {session} from "../../services/session.service";
 import {modellist} from "../../services/modellist.service";
+import {metadata} from "../../services/metadata.service";
 
 @Component({
+    selector: 'object-listview-settings-addlistmodal',
     templateUrl: '../templates/objectlistviewsettingsaddlistmodal.html'
 })
 export class ObjectListViewSettingsAddlistModal implements OnInit {
@@ -36,11 +38,12 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
      */
     public self: any = {};
 
-    public componentListOptions: Array<{label: string, component: string}> = [];
+    public componentListOptions: {label: string, component: string}[] = [];
 
     constructor(
         public language: language,
         public session: session,
+        public metadata: metadata,
         public modellist: modellist
     ) {
     }
@@ -86,7 +89,7 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
      * returns if the user is an admin and thus can set the global flag
      */
     get isadmin() {
-        return this.session.isAdmin;
+        return this.session.isAdmin || this.metadata.checkModuleAcl(this.modellist.module, 'moduleadmin');
     }
 
     /**

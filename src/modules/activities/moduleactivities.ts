@@ -11,51 +11,51 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {TasksManagerView} from './components/tasksmanagerview';
-import /*embed*/ {TasksManagerTasks} from './components/tasksmanagertasks';
-import /*embed*/ {TasksManagerTask} from './components/tasksmanagertask';
-import /*embed*/ {TasksManagerTaskDetails} from './components/tasksmanagertaskdetails';
-import /*embed*/ {TasksAssitantTileClose} from './components/tasksassitanttileclose';
+import {TasksManagerView} from './components/tasksmanagerview';
+import {TasksManagerTasks} from './components/tasksmanagertasks';
+import {TasksManagerTask} from './components/tasksmanagertask';
+import {TasksManagerTaskDetails} from './components/tasksmanagertaskdetails';
+import {TasksAssitantTileClose} from './components/tasksassitanttileclose';
 
-import /*embed*/ {ActivityTimelineSaveButton} from "./components/activitytimelinesavebutton";
-import /*embed*/ {ActionActivityCloseButton} from "./components/actionactivityclosebutton";
-import /*embed*/ {ActionActivityCloseCreateButton} from "./components/actionactivityclosecreatebutton";
-import /*embed*/ {ActivityCloseModal} from "./components/activityclosemodal";
-import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecreatemodal";
+import {ActivityTimelineSaveButton} from "./components/activitytimelinesavebutton";
+import {ActionActivityCloseButton} from "./components/actionactivityclosebutton";
+import {ActionActivityCloseCreateButton} from "./components/actionactivityclosecreatebutton";
+import {ActivityCloseModal} from "./components/activityclosemodal";
+import {ActivityCloseCreateModal} from "./components/activityclosecreatemodal";
 
-import /*embed*/ {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
-import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
-import /*embed*/ {fieldActivitiesAddActions} from "./fields/fieldactivitiesaddactions";
-import /*embed*/ {fieldActivitiesAddActionsButton} from "./fields/fieldactivitiesaddactionsbutton";
-import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./fields/fieldactivitiestaskwithclosecheckbox";
-import /*embed*/ {fieldActivityReminder} from "./fields/fieldactivityreminder";
+import {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
+import {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
+import {fieldActivitiesAddActions} from "./fields/fieldactivitiesaddactions";
+import {fieldActivitiesAddActionsButton} from "./fields/fieldactivitiesaddactionsbutton";
+import {fieldActivitiesTaskWithCloseCheckbox} from "./fields/fieldactivitiestaskwithclosecheckbox";
+import {fieldActivityReminder} from "./fields/fieldactivityreminder";
 
-import /*embed*/ {ActivityParticipationPanel} from "./components/activityparticipationpanel";
-import /*embed*/ {fieldActivityParticipationPanel} from "./fields/fieldactivityparticipationpanel";
-import /*embed*/ {ActivityParticipationPanelHeader} from "./components/activityparticipationpanelheader";
-import /*embed*/ {ActivityParticipationPanelParticipant} from "./components/activityparticipationpanelparticipant";
-import /*embed*/ {ActivityParticipationStatus} from "./components/activityparticipationstatus";
-import /*embed*/ {fieldActivityParticipationStatus} from "./fields/fieldactivityparticipationstatus";
-import /*embed*/ {fieldActivityCurrentUserParticipationStatus} from "./fields/fieldactivitycurrentuserparticipationstatus";
+import {ActivityParticipationPanel} from "./components/activityparticipationpanel";
+import {fieldActivityParticipationPanel} from "./fields/fieldactivityparticipationpanel";
+import {ActivityParticipationPanelHeader} from "./components/activityparticipationpanelheader";
+import {ActivityParticipationPanelParticipant} from "./components/activityparticipationpanelparticipant";
+import {ActivityParticipationStatus} from "./components/activityparticipationstatus";
+import {fieldActivityParticipationStatus} from "./fields/fieldactivityparticipationstatus";
+import {fieldActivityCurrentUserParticipationStatus} from "./fields/fieldactivitycurrentuserparticipationstatus";
 
-import /*embed*/ {ActivityTimeline} from './components/activitytimeline';
-import /*embed*/ {ActivityTimelineTabbed} from './components/activitytimelinetabbed';
-import /*embed*/ {ActivityTimelineDropZoneWrapper} from './components/activitytimelinedropzonewrapper';
-import /*embed*/ {ActivityTimelineFilter} from "./components/activitytimelinefilter";
-import /*embed*/ {ActivityTimelineContainer} from './components/activitytimelinecontainer';
-import /*embed*/ {ActivityTimelineItemContainer} from './components/activitytimelineitemcontainer';
-import /*embed*/ {ActivityTimelineItem} from './components/activitytimelineitem';
-import /*embed*/ {ActivityTimelineStencil} from './components/activitytimelinestencil';
-import /*embed*/ {ActivityTimelineAddContainer} from './components/activitytimelineaddcontainer';
-import /*embed*/ {ActivityTimelineAddItem} from './components/activitytimelineadditem';
-import /*embed*/ {ActivityTimelineAddEmail} from './components/activitytimelineaddemail';
-import /*embed*/ {ActivityTimelineSummary} from './components/activitytimelinesummary';
-import /*embed*/ {ActivityTimelineAggregates} from './components/activitytimelineaggregates';
-import /*embed*/ {ActivityTimelineSummaryItemView} from './components/activitytimelinesummaryitemview';
-import /*embed*/ {ActivityTimelineSummaryButton} from './components/activitytimelinesummarybutton';
-import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activitytimelinesummaryaggregates';
+import {ActivityTimeline} from './components/activitytimeline';
+import {ActivityTimelineTabbed} from './components/activitytimelinetabbed';
+import {ActivityTimelineDropZoneWrapper} from './components/activitytimelinedropzonewrapper';
+import {ActivityTimelineFilter} from "./components/activitytimelinefilter";
+import {ActivityTimelineContainer} from './components/activitytimelinecontainer';
+import {ActivityTimelineItemContainer} from './components/activitytimelineitemcontainer';
+import {ActivityTimelineItem} from './components/activitytimelineitem';
+import {ActivityTimelineStencil} from './components/activitytimelinestencil';
+import {ActivityTimelineAddContainer} from './components/activitytimelineaddcontainer';
+import {ActivityTimelineAddItem} from './components/activitytimelineadditem';
+import {ActivityTimelineAddEmail} from './components/activitytimelineaddemail';
+import {ActivityTimelineSummary} from './components/activitytimelinesummary';
+import {ActivityTimelineAggregates} from './components/activitytimelineaggregates';
+import {ActivityTimelineSummaryItemView} from './components/activitytimelinesummaryitemview';
+import {ActivityTimelineSummaryButton} from './components/activitytimelinesummarybutton';
+import {ActivityTimelineSummaryAggregates} from './components/activitytimelinesummaryaggregates';
 
-import /*embed*/ {fieldActivityDate} from './fields/fieldactivitydate';
+import {fieldActivityDate} from './fields/fieldactivitydate';
 
 @NgModule({
     imports: [

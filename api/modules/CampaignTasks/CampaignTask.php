@@ -3,22 +3,22 @@
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
  * You can contact us at info@spicecrm.io
- *
+ * 
  * SpiceCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version
- *
+ * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- *
+ * 
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
- *
+ * 
  * SpiceCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,11 +27,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
+
+
 namespace SpiceCRM\modules\CampaignTasks;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\SugarBean;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
@@ -41,17 +43,8 @@ use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
-class CampaignTask extends SugarBean
+class CampaignTask extends SpiceBean
 {
-    public $module_dir = 'CampaignTasks';
-    public $object_name = 'CampaignTask';
-    public $table_name = 'campaigntasks';
-    public $new_schema = true;
-
-    public $additional_column_fields = [];
-
-    public $relationship_fields = [];
-
 
     public function get_summary_text()
     {
@@ -117,8 +110,8 @@ class CampaignTask extends SugarBean
             $seed = BeanFactory::getBean($row['module']);
             $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified)";
             $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0, $current_date";
-            $insert_query .= " FROM {$seed->table_name}";
-            $insert_query .= " WHERE deleted=0 AND NOT EXISTS (SELECT target_id FROM campaign_log WHERE campaign_log.target_id = {$seed->table_name}.id) AND $where";
+            $insert_query .= " FROM {$seed->_tablename}";
+            $insert_query .= " WHERE deleted=0 AND NOT EXISTS (SELECT target_id FROM campaign_log WHERE campaign_log.target_id = {$seed->_tablename}.id) AND $where";
             $this->db->query($insert_query);
         }
 
@@ -158,7 +151,7 @@ class CampaignTask extends SugarBean
         while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
             $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
             $seed = BeanFactory::getBean($row['module']);
-            $filter_query = " SELECT id recordid, '{$row['module']}' recordmodule FROM {$seed->table_name} WHERE deleted=0 AND $where";
+            $filter_query = " SELECT id recordid, '{$row['module']}' recordmodule FROM {$seed->_tablename} WHERE deleted=0 AND $where";
             $targets_query .= " UNION $filter_query";
         }
 
@@ -212,11 +205,24 @@ class CampaignTask extends SugarBean
      * @return bool
      */
     function sendQueuedEmails(){
+        // set the admin user
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // get the queued emails
         $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Email' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
         while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
             if($queuedEmail['campaigntask_id'] != $this->id){
                 $this->retrieve($queuedEmail['campaigntask_id']);
+
+                // set the current user to the one assigned to the task .. if none assigned go back to the admin
+                if($current_user->id != $this->assigned_user_id){
+                    $user = BeanFactory::getBean('Users', $this->assigned_user_id ?: '1');
+                    AuthenticationController::getInstance()->setCurrentUser($user);
+                    $current_user = AuthenticationController::getInstance()->getCurrentUser();
+                }
             };
 
             // load the bean and send the email
@@ -244,6 +250,10 @@ class CampaignTask extends SugarBean
                 $campaignLog->save();
             }
         }
+
+        // set the assigned user back to the admin
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+
         return true;
     }
 
@@ -253,7 +263,7 @@ class CampaignTask extends SugarBean
      * @param $seed
      * @param false $saveEmail
      * @param false $test
-     * @return false|SugarBean
+     * @return false|SpiceBean
      */
     function sendEmail($seed, $saveEmail = false, $test = false)
     {
@@ -290,7 +300,7 @@ class CampaignTask extends SugarBean
         );
 
         if($saveEmail){
-            $email->parent_type = $seed->module_dir;
+            $email->parent_type = $seed->_module;
             $email->parent_ide = $seed->id;
             $email->to_be_sent = true;
             $email->save();
@@ -395,7 +405,7 @@ class CampaignTask extends SugarBean
      * @return array
      * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function mailMerge($start = 0, $limit = 100){
+    public function mailMerge($start = 0, $limit = 100, $mailMergeSubject = null, $mailMergeBody = null){
 
         $html = '';
         $inactiveCount = 0;
@@ -413,6 +423,10 @@ class CampaignTask extends SugarBean
                 $style = $outputTemplate->getStyle();
                 $header = html_entity_decode( $outputTemplate->header);
                 $footer = html_entity_decode( $outputTemplate->footer);
+
+                // set the mailmerge subject and body for rendering pdf template
+                $prospectBean->mailmerge_subject = $mailMergeSubject;
+                $prospectBean->mailmerge_body = $mailMergeBody;
 
                 $html .= $outputTemplate->translateBody($prospectBean, true);
                 $html .= '<div style="page-break-after: always;"></div>';

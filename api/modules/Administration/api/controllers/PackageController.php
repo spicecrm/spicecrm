@@ -27,6 +27,7 @@ class PackageController {
         if ($repositoryId) {
             $repository = $db->fetchByAssoc($db->query("SELECT * FROM sysuipackagerepositories WHERE id = '{$repositoryId}'"));
             $repositoryUrl = $repository['url'];
+            if ( substr( $repositoryUrl, -1 ) != '/') $repositoryUrl .= '/';
         }
         if(empty($repositoryUrl)) $repositoryUrl = SystemDeploymentPackageSource::getPublicSource();
         return $repositoryUrl;
@@ -62,7 +63,7 @@ class PackageController {
         // $getJSONcontent = file_get_contents("{$repositoryUrl}/config");
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($curl, CURLOPT_URL, $repositoryUrl .'/config');
+        curl_setopt($curl, CURLOPT_URL, $repositoryUrl .'config');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);

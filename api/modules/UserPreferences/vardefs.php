@@ -87,7 +87,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserPreference'] = [
                 'vname' => 'LBL_ASSIGNED_TO',
                 'type' => 'varchar',
                 'reportable' => false,
-                'massupdate' => false,
                 'source' => 'non-db',
                 'table' => 'users',
             ],

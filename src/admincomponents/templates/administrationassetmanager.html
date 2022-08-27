@@ -1,0 +1,62 @@
+<div class="slds-grid slds-grid_vertical-align-center slds-p-around--small slds-border--bottom">
+    <system-icon icon="apex_plugin"></system-icon>
+    <h2 class="slds-text-heading_medium"><system-label label="LBL_CI_MANAGEMENT"></system-label></h2>
+    <button class="slds-button slds-button--neutral slds-col--bump-left" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+</div>
+<div class="slds-theme--default slds-p-around--small" system-to-bottom>
+    <h2 class="slds-text-heading--medium slds-p-vertical--x-small slds-border--bottom"><system-label label="LBL_IMAGES"></system-label></h2>
+    <div class="slds-grid slds-grid--vertical">
+        <div class="slds-grid slds-p-vertical--small slds-grid--vertical-align-center">
+            <div class="slds-size--1-of-3">
+                <system-label label="LBL_LOGIN_IMAGE"></system-label>
+            </div>
+            <div class="slds-grow">
+                <div class="slds-box--border" [ngStyle]="assetBoxStyle('loginimage')">
+                    <div *ngIf="!assets.loginimage" class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                        <button class="slds-button slds-button--icon"  (click)="addAsset('loginimage')"><system-button-icon icon="new"></system-button-icon></button>
+                    </div>
+                    <div class="slds-is-relative" *ngIf="assets.loginimage">
+                        <img  [src]="assets.loginimage"/>
+                        <div class="slds-is-absolute" style="height: 40px; width: 40px; top: calc(50% - 20px); left: calc(50% - 20px)" (click)="assets.loginimage = undefined">
+                            <div class="slds-align--absolute-center" style="background: white;height: 40px; width: 40px; border-radius: 20px;">
+                                <system-utility-icon icon="delete" size="x-small" style="z-index: 1;"></system-utility-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--small slds-grid--vertical-align-center">
+            <div class="slds-size--1-of-3">
+                <system-label label="LBL_HEADER_IMAGE"></system-label>
+            </div>
+            <div class="slds-grow">
+                <div class="slds-box--border" [ngStyle]="assetBoxStyle('headerimage')">
+                    <div *ngIf="!assets.headerimage" class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                        <button class="slds-button slds-button--icon"  (click)="addAsset('headerimage')"><system-button-icon icon="new"></system-button-icon></button>
+                    </div>
+                    <div class="slds-is-relative" *ngIf="assets.headerimage">
+                        <img  [src]="assets.headerimage"/>
+                        <div class="slds-is-absolute" style="height: 40px; width: 40px; top: calc(50% - 20px); left: calc(50% - 20px)" (click)="assets.headerimage = undefined">
+                            <div class="slds-align--absolute-center" style="background: white;height: 40px; width: 40px; border-radius: 20px;">
+                                <system-utility-icon icon="delete" size="x-small" style="z-index: 1;"></system-utility-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2 class="slds-text-heading--medium slds-p-vertical--x-small slds-border--top slds-border--bottom"><system-label label="LBL_COLORS"></system-label></h2>
+    <div class="slds-grid slds-grid--vertical">
+        <div *ngFor="let cssvar of cssvars" class="slds-grid slds-p-vertical--small slds-grid--vertical-align-center">
+            <div class="slds-size--1-of-3">
+                {{cssvar.name}}
+            </div>
+            <div class="slds-grow">
+                <system-input-color *ngIf="cssvar.csstype == 'color'" [isedited]="cssvar.value != cssvar.originalvalue" [(ngModel)]="cssvar.value"></system-input-color>
+                <input class="slds-input" [ngClass]="{'slds-is-edited': cssvar.value != cssvar.originalvalue}" *ngIf="cssvar.csstype == 'string'" [(ngModel)]="cssvar.value"/>
+            </div>
+        </div>
+    </div>
+</div>

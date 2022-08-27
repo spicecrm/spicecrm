@@ -64,6 +64,11 @@ class DBUtils
             if(is_null($string)){
                 return '';
             }
+
+            if(is_object($string)){
+                $string = json_encode($string);
+            }
+
             return $string;
         }
 

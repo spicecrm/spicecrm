@@ -61,8 +61,9 @@ export class DictionaryManagerAddItemModal {
             name: '',
             non_db: 0,
             exclude_from_audited: 0,
+            default_value: '',
             required: 0,
-            scope: this.dictionarymanager.defaultScope,
+            scope: this.dictionarymanager.currentDictionaryScope,
             deleted: 0,
             status: 'd',
             sequence: this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length
@@ -132,7 +133,7 @@ export class DictionaryManagerAddItemModal {
             this.messages.push({field: 'name', message: 'name already used'});
         }
 
-        if (this.dictionaryitem.name && this.dictionarymanager.reservedWords.indexOf(this.dictionaryitem.name.toUpperCase()) >= 0) {
+        if (this.dictionaryitem.name && this.dictionarymanager.reservedwords && this.dictionarymanager.reservedwords.indexOf(this.dictionaryitem.name.toUpperCase()) >= 0) {
             this.messages.push({field: 'name', message: 'name cannot be used (reserved word)'});
         }
 

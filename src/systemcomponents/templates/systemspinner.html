@@ -1,3 +1,8 @@
-<div class="cssload-container">
-    <div class="cssload-double-torus" [ngStyle]="spinnerStyle"></div>
+<div class="slds-grid slds-grid--vertical">
+    <div class="cssload-container">
+        <div class="cssload-double-torus" [ngStyle]="spinnerStyle"></div>
+    </div>
+    <div *ngIf="message" class="slds-m-top--x-small">
+        <system-label [label]="message"></system-label>
+    </div>
 </div>
