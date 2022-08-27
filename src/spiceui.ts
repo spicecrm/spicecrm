@@ -57,10 +57,6 @@ import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
 import {SpiceInstallerModule} from "./include/spiceinstaller/spiceinstallermodule";
-import {ModuleGSuite} from "./include/gsuite/gsuite";
-import {Outlook} from "./include/outlook/outlook";
-import {GSuitePane} from "./include/gsuite/components/gsuitepane";
-import {OutlookPane} from "./include/outlook/components/outlookpane";
 
 // declarations for TS
 /**
@@ -124,8 +120,6 @@ export class SpiceUI {
         SystemComponents,
         GlobalComponents,
         ObjectComponents,
-        ModuleGSuite,
-        Outlook,
         SpiceInstallerModule,
         RouterModule.forRoot(
             [
@@ -190,15 +184,7 @@ export class SpiceUIModule {
     public ngDoBootstrap(appRef: ApplicationRef) {
 
         let bootstrapComponent: unknown = SpiceUI;
-
-        switch (bootstrap) {
-            case 'gsuite':
-                bootstrapComponent = GSuitePane;
-                break;
-            case 'outlook':
-                bootstrapComponent = OutlookPane;
-        }
-
+        
         appRef.bootstrap(bootstrapComponent as any);
     }
 }
