@@ -1711,7 +1711,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             }
             $sqls[] = "INSERT INTO sysdictionaryindices (" . implode(', ', $insertColumns) . ") VALUES ".implode(', ', $sqlInserts).";";
         }
-        file_put_contents('vardefs.log', print_r($sqls, true)."\n", FILE_APPEND);
+//        file_put_contents('vardefs.log', print_r($sqls, true)."\n", FILE_APPEND);
 
         // process slqs
         foreach($sqls as $sql){
@@ -1723,7 +1723,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
 
         // update the session record
         $_SESSION['dictionaries'][$dict['name']] = $dict;
-        file_put_contents('vardefs.log', __LINE__.' END saveDictionaryCacheToDb => '.$dictName."\n", FILE_APPEND);
+        // file_put_contents('vardefs.log', __LINE__.' END saveDictionaryCacheToDb => '.$dictName."\n", FILE_APPEND);
     }
 
     /**
