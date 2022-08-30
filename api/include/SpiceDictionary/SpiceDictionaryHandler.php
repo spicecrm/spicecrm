@@ -3,12 +3,9 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\SpiceSingleton;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class SpiceDictionaryHandler extends SpiceSingleton
 {
@@ -149,23 +146,16 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @throws Exception
      */
     public function setDictionaryDefinitions($definitions){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($definitions as $definition){
             switch($definition['scope']){
                 case 'c':
                     unset($definition['scope']);
-                    $db->upsertQuery('syscustomdictionarydefinitions', ['id' => $definition['id']], $definition);
-                    if ($cr) $cr->addDBEntry("syscustomdictionarydefinitions", $definition['id'], 'I', $definition['name']);
+                    SystemDeploymentCR::writeDBEntry('syscustomdictionarydefinitions', $definition['id'], $definition, $definition['name']);
                     break;
                 default:
                     unset($definition['scope']);
-                    $db->upsertQuery('sysdictionarydefinitions', ['id' => $definition['id']], $definition);
-                    if ($cr) $cr->addDBEntry("sysdictionarydefinitions", $definition['id'], 'I', $definition['name']);
+                    SystemDeploymentCR::writeDBEntry('sysdictionarydefinitions', $definition['id'], $definition, $definition['name']);
                     break;
             }
         }
@@ -203,23 +193,16 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @throws Exception
      */
     public function setDictionaryItems($items){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($items as $item){
             switch($item['scope']){
                 case 'c':
                     unset($item['scope']);
-                    $db->upsertQuery('syscustomdictionaryitems', ['id' => $item['id']], $item);
-                    if ($cr) $cr->addDBEntry("syscustomdictionaryitems", $item['id'], 'I', $item['name']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryitems", $item['id'], $item, $item['name']);
                     break;
                 default:
                     unset($item['scope']);
-                    $db->upsertQuery('sysdictionaryitems', ['id' => $item['id']], $item);
-                    if ($cr) $cr->addDBEntry("sysdictionaryitems", $item['id'], 'I', $item['name']);
+                    SystemDeploymentCR::writeDBEntry("sysdictionaryitems", $item['id'], $item, $item['name']);
                     break;
             }
         }
@@ -310,13 +293,9 @@ LEFT JOIN
      * writes the relationship changes to the database
      *
      * @param $relationships
+     * @throws Exception
      */
     public function setDictionaryRelationships($relationships){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
         // todo: see if we can get rid of them
@@ -334,13 +313,11 @@ LEFT JOIN
             switch($relationship['scope']){
                 case 'c':
                     unset($relationship['scope']);
-                    $db->upsertQuery('syscustomdictionaryrelationships', ['id' => $relationship['id']], $relationship);
-                    if ($cr) $cr->addDBEntry("syscustomdictionaryrelationships", $relationship['id'], 'I', $relationship['name']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryrelationships", $relationship['id'], $relationship, $relationship['name']);
                     break;
                 default:
                     unset($relationship['scope']);
-                    $db->upsertQuery('sysdictionaryrelationships', ['id' => $relationship['id']], $relationship);
-                    if ($cr) $cr->addDBEntry("sysdictionaryrelationships", $relationship['id'], 'I', $relationship['name']);
+                    SystemDeploymentCR::writeDBEntry("sysdictionaryrelationships", $relationship['id'], $relationship, $relationship['name']);
                     break;
             }
         }
@@ -371,26 +348,20 @@ LEFT JOIN
     /**
      * writes the relationship changes to the database
      *
-     * @param $relationships
+     * @param $relationshiprelationshipfields
+     * @throws Exception
      */
     public function setDictionaryRelationshipFields($relationshiprelationshipfields){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($relationshiprelationshipfields as $relationshiprelationshipfield){
             switch($relationshiprelationshipfield['scope']){
                 case 'c':
                     unset($relationshiprelationshipfield['scope']);
-                    $db->upsertQuery('syscustomdictionaryrelationshipfields', ['id' => $relationshiprelationshipfield['id']], $relationshiprelationshipfield);
-                    if ($cr) $cr->addDBEntry("syscustomdictionaryrelationshipfields", $relationshiprelationshipfield['id'], 'I', $relationshiprelationshipfield['sysdictionaryitem_id']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryrelationshipfields", $relationshiprelationshipfield['id'], $relationshiprelationshipfield, $relationshiprelationshipfield['sysdictionaryitem_id']);
                     break;
                 default:
                     unset($relationshiprelationshipfield['scope']);
-                    $db->upsertQuery('sysdictionaryrelationshipfields', ['id' => $relationshiprelationshipfield['id']], $relationshiprelationshipfield);
-                    if ($cr) $cr->addDBEntry("sysdictionaryrelationshipfields", $relationshiprelationshipfield['id'], 'I', $relationshiprelationshipfield['sysdictionaryitem_id']);
+                    SystemDeploymentCR::writeDBEntry("sysdictionaryrelationshipfields", $relationshiprelationshipfield['id'], $relationshiprelationshipfield, $relationshiprelationshipfield['sysdictionaryitem_id']);
                     break;
             }
         }
@@ -422,26 +393,20 @@ LEFT JOIN
     /**
      * writes the relationship changes to the database
      *
-     * @param $relationships
+     * @param $relationshiprelatefields
+     * @throws Exception
      */
     public function setDictionaryRelateFields($relationshiprelatefields){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($relationshiprelatefields as $relationshiprelatefield){
             switch($relationshiprelatefield['scope']){
                 case 'c':
                     unset($relationshiprelatefield['scope']);
-                    $db->upsertQuery('syscustomdictionaryrelationshiprelatefields', ['id' => $relationshiprelatefield['id']], $relationshiprelatefield);
-                    if ($cr) $cr->addDBEntry("syscustomdictionaryrelationshiprelatefields", $relationshiprelatefield['id'], 'I', $relationshiprelatefield['sysdictionaryitem_id']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryrelationshiprelatefields", $relationshiprelatefield['id'], $relationshiprelatefield, $relationshiprelatefield['sysdictionaryitem_id']);
                     break;
                 default:
                     unset($relationshiprelatefield['scope']);
-                    $db->upsertQuery('sysdictionaryrelationshiprelatefields', ['id' => $relationshiprelatefield['id']], $relationshiprelatefield);
-                    if ($cr) $cr->addDBEntry("sysdictionaryrelationshiprelatefields", $relationshiprelatefield['id'], 'I', $relationshiprelatefield['sysdictionaryitem_id']);
+                    SystemDeploymentCR::writeDBEntry("sysdictionaryrelationshiprelatefields", $relationshiprelatefield['id'], $relationshiprelatefield, $relationshiprelatefield['sysdictionaryitem_id']);
                     break;
             }
         }
@@ -476,23 +441,16 @@ LEFT JOIN
      * @param $relationships
      */
     public function setDictionaryIndexes($indexes){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($indexes as $index){
             switch($index['scope']){
                 case 'c':
                     unset($index['scope']);
-                    $db->upsertQuery('syscustomdictionaryindexes', ['id' => $index['id']], $index);
-                    if ($cr) $cr->addDBEntry("syscustomdictionaryindexes", $index['id'], 'I', $index['name']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryindexes", $index['id'], $index, $index['name']);
                     break;
                 default:
                     unset($index['scope']);
-                    $db->upsertQuery('sysdictionaryindexes', ['id' => $index['id']], $index);
-                    if ($cr) $cr->addDBEntry("sysdictionaryindexes", $index['id'], 'I', $index['name']);
+                    SystemDeploymentCR::writeDBEntry("sysdictionaryindexes", $index['id'], $index, $index['name']);
                     break;
             }
         }
@@ -528,23 +486,16 @@ LEFT JOIN
      * @param $relationships
      */
     public function setDictionaryIndexItems($indexitems){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($indexitems as $indexitem){
             switch($indexitem['scope']){
                 case 'c':
                     unset($indexitem['scope']);
-                    $db->upsertQuery('syscustomdictionaryindexitems', ['id' => $indexitem['id']], $indexitem);
-                    if ($cr) $cr->addDBEntry("syscustomdictionaryindexitems", $indexitem['id'], 'I', $indexitem['id']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryindexitems", $indexitem['id'], $indexitem, $indexitem['id']);
                     break;
                 default:
                     unset($indexitem['scope']);
-                    $db->upsertQuery('sysdictionaryindexitems', ['id' => $indexitem['id']], $indexitem);
-                    if ($cr) $cr->addDBEntry("sysdictionaryindexitems", $indexitem['id'], 'I', $indexitem['id']);
+                    SystemDeploymentCR::writeDBEntry("sysdictionaryindexitems", $indexitem['id'], $indexitem, $indexitem['id']);
                     break;
             }
         }
@@ -586,24 +537,20 @@ LEFT JOIN
         return $defArray;
     }
 
+    /**
+     * @throws Exception
+     */
     public function setDomainDefinitions($definitions){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($definitions as $definition){
             switch($definition['scope']){
                 case 'c':
                     unset($definition['scope']);
-                    $db->upsertQuery('syscustomdomaindefinitions', ['id' => $definition['id']], $definition);
-                    if ($cr) $cr->addDBEntry("syscustomdomaindefinitions", $definition['id'], 'I', $definition['name']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdomaindefinitions", $definition['id'], $definition, $definition['name']);
                     break;
                 default:
                     unset($definition['scope']);
-                    $db->upsertQuery('sysdomaindefinitions', ['id' => $definition['id']], $definition);
-                    if ($cr) $cr->addDBEntry("sysdomaindefinitions", $definition['id'], 'I', $definition['name']);
+                    SystemDeploymentCR::writeDBEntry("sysdomaindefinitions", $definition['id'], $definition, $definition['name']);
                     break;
             }
         }
@@ -630,23 +577,16 @@ LEFT JOIN
 
 
     public function setDomainFields($domainfields){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($domainfields as $domainfield){
             switch($domainfield['scope']){
                 case 'c':
                     unset($domainfield['scope']);
-                    $db->upsertQuery('syscustomdomainfields', ['id' => $domainfield['id']], $domainfield);
-                    if ($cr) $cr->addDBEntry("syscustomdomainfields", $domainfield['id'], 'I', $domainfield['name']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdomainfields", $domainfield['id'], $domainfield, $domainfield['name']);
                     break;
                 default:
                     unset($domainfield['scope']);
-                    $db->upsertQuery('sysdomainfields', ['id' => $domainfield['id']], $domainfield);
-                    if ($cr) $cr->addDBEntry("sysdomainfields", $domainfield['id'], 'I', $domainfield['name']);
+                    SystemDeploymentCR::writeDBEntry("sysdomainfields", $domainfield['id'], $domainfield, $domainfield['name']);
                     break;
             }
         }
@@ -669,23 +609,16 @@ LEFT JOIN
 
 
     public function setDomainFieldValidations($domainfieldvalidations){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach($domainfieldvalidations as $domainfieldvalidation){
             switch($domainfieldvalidation['scope']){
                 case 'c':
                     unset($domainfieldvalidation['scope']);
-                    $db->upsertQuery('syscustomdomainfieldvalidations', ['id' => $domainfieldvalidation['id']], $domainfieldvalidation);
-                    if ($cr) $cr->addDBEntry("syscustomdomainfieldvalidations", $domainfieldvalidation['id'], 'I', $domainfieldvalidation['name']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdomainfieldvalidations", $domainfieldvalidation['id'], $domainfieldvalidation, $domainfieldvalidation['name']);
                     break;
                 default:
                     unset($domainfieldvalidation['scope']);
-                    $db->upsertQuery('sysdomainfieldvalidations', ['id' => $domainfieldvalidation['id']], $domainfieldvalidation);
-                    if ($cr) $cr->addDBEntry("sysdomainfieldvalidations", $domainfieldvalidation['id'], 'I', $domainfieldvalidation['name']);
+                    SystemDeploymentCR::writeDBEntry("sysdomainfieldvalidations", $domainfieldvalidation['id'], $domainfieldvalidation, $domainfieldvalidation['name']);
                     break;
             }
         }
@@ -707,24 +640,17 @@ LEFT JOIN
     }
 
     public function setDomainFieldValidationValues($domainfieldvalidationvalues){
-        $db = DBManagerFactory::getInstance();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR']) {
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
-        }
 
         foreach($domainfieldvalidationvalues as $domainfieldvalidationvalue){
+            $name = $domainfieldvalidationvalue['enumvalue'] . '/' . $domainfieldvalidationvalue['maxval'];
             switch($domainfieldvalidationvalue['scope']){
                 case 'c':
                     unset($domainfieldvalidationvalue['scope']);
-                    $db->upsertQuery('syscustomdomainfieldvalidationvalues', ['id' => $domainfieldvalidationvalue['id']], $domainfieldvalidationvalue);
-                    if ($cr) $cr->addDBEntry("syscustomdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['enumvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
+                    SystemDeploymentCR::writeDBEntry("syscustomdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], $domainfieldvalidationvalue, $name);
                     break;
                 default:
                     unset($domainfieldvalidationvalue['scope']);
-                    $db->upsertQuery('sysdomainfieldvalidationvalues', ['id' => $domainfieldvalidationvalue['id']], $domainfieldvalidationvalue);
-                    if ($cr) $cr->addDBEntry("sysdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], 'I', $domainfieldvalidationvalue['enumvalue'] . '/' . $domainfieldvalidationvalue['maxval']);
+                    SystemDeploymentCR::writeDBEntry("sysdomainfieldvalidationvalues", $domainfieldvalidationvalue['id'], $domainfieldvalidationvalue, $name);
                     break;
             }
         }
