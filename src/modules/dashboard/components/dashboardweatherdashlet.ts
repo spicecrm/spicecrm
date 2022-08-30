@@ -83,7 +83,7 @@ export class DashboardWeatherDashlet implements OnInit {
     public getForecastData(reqParams) {
 
         this.isLoading = true;
-        this.http.get('proxy/?useurl=' + btoa(`http://api.openweathermap.org/data/2.5/forecast?${reqParams}&APPID=${this.apiId}`))
+        this.http.get(`https://api.openweathermap.org/data/2.5/forecast?${reqParams}&APPID=${this.apiId}`)
             .subscribe(
                 (res: any) => {
                     if (res.city) {
@@ -150,8 +150,7 @@ export class DashboardWeatherDashlet implements OnInit {
     }
 
     public getWeatherIconUrl(icon) {
-        // public return `http://openweathermap.org/img/w/${icon}.png`;
-        return 'proxy/?useurl=' + btoa(`http://openweathermap.org/img/w/${icon}.png`);
+        return `https://openweathermap.org/img/w/${icon}.png`;
     }
 
     public trackByFn(index, item) {

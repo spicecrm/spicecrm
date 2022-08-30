@@ -597,10 +597,18 @@ LEFT JOIN
         $validationsArray = [];
         $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations WHERE deleted = 0");
         while($domainfield = $db->fetchByAssoc($domainfields)){
+            // temporary workaround to harmonize validation_type
+            if($domainfield['validation_type'] == 'options') {
+                $domainfield['validation_type'] = 'enum';
+            }
             $validationsArray[] = array_merge($domainfield, ['scope' => 'g']);
         }
         $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations WHERE deleted = 0");
         while($domainfield = $db->fetchByAssoc($domainfields)){
+            // temporary workaround to harmonize validation_type
+            if($domainfield['validation_type'] == 'options') {
+                $domainfield['validation_type'] = 'enum';
+            }
             $validationsArray[] = array_merge($domainfield, ['scope' => 'c']);
         }
 
