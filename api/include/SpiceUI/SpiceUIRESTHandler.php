@@ -223,14 +223,14 @@ class SpiceUIRESTHandler
             $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets (id, module, name, package) VALUES('$componentsetid', '" . $componentsetdata['module'] . "', '" . $componentsetdata['name'] . "', '" . $componentsetdata['package'] . "')");
 
             // add to the CR
-            if($cr) $cr->addDBEntry("sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets", $componentsetid, 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name']);
+            if($cr) $cr->writeDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsets", $componentsetid, $componentsetdata['module'] . "/" . $componentsetdata['name']);
 
 
             foreach ($componentsetdata['items'] as $componentsetitem) {
                 $db->query("INSERT INTO sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents (id, componentset_id, component, sequence, componentconfig, package, version) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentconfig']) . "','" . $componentsetitem['pakage'] . "', '{$_SESSION['confversion']}')");
 
                 // add to the CR
-                if($cr) $cr->addDBEntry(" sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
+                if($cr) $cr->writeDBEntry(" sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
 
             }
         }
@@ -243,7 +243,7 @@ class SpiceUIRESTHandler
                 $db->query("UPDATE sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsets SET name='" . $componentsetdata['name'] . "',  package='" . $componentsetdata['package'] . "', version = '{$_SESSION['confversion']}' WHERE id='$componentsetid'");
 
                 // add to the CR
-                if ($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsets", $componentsetid, 'U', $componentsetdata['module'] . "/" . $componentsetdata['name']);
+                if ($cr) $cr->writeDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsets", $componentsetid, $componentsetdata['module'] . "/" . $componentsetdata['name']);
             }
 
             // delete all current items
@@ -269,14 +269,14 @@ class SpiceUIRESTHandler
                         $db->query("UPDATE sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents  SET package = '" . $componentsetitem['package'] . "', sequence = '" . $componentsetitem['sequence'] . "', componentconfig = '" . json_encode($componentsetitem['componentconfig']) . "', version = '{$_SESSION['confversion']}' WHERE id='{$item['id']}'");
 
                         // add to the CR
-                        if($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'U',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
+                        if($cr) $cr->writeDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
                     }
 
                 } else {
                     // remove it
                     $db->query("DELETE FROM sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents WHERE id='{$item['id']}'");
                     // add to the CR
-                    if($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'D',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
+                    if($cr) $cr->writeDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
 
                 }
             }
@@ -286,7 +286,7 @@ class SpiceUIRESTHandler
                 $db->query("INSERT INTO sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents (id, componentset_id, component, sequence, componentconfig, package, version) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentconfig']) . "','" . $componentsetitem['package'] . "', '{$_SESSION['confversion']}')");
 
                 // add to the CR
-                if($cr) $cr->addDBEntry(" sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
+                if($cr) $cr->writeDBEntry(" sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
             }
         }
 

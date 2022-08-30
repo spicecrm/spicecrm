@@ -110,4 +110,13 @@ export class DictionaryManagerDefinitions {
         });
     }
 
+    /**
+     * open edit dictionary definition
+     */
+    public editDictionaryDefinition(definition: DictionaryDefinition) {
+
+        this.modal.openModal('DictionaryManagerEditDefinitionModal', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.dictionarydefinition = definition;
+        });
+    }
 }
