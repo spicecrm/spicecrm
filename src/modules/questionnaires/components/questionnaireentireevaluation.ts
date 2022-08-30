@@ -121,7 +121,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         this.loadAnwers();
     }
 
-    public loadQuestionnaire()
+    public loadQuestionnaire(): void
     {
         if ( this.isLoadingQuestionnaire ) return;
         this.isLoadingQuestionnaire = true;
@@ -248,6 +248,18 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
+    public getEvaluationValueInPercent( questionId: string, optionId: string ): string {
+        let absValue = this.getEvaluationValue( questionId, optionId );
+        let countParticipations;
+        if ( this.relativeTo === 'questionnaires' ) {
+            countParticipations = this.countQuestionnaireParticipations;
+        } else {
+            countParticipations = this.answers[questionId]?.countParticipations !== undefined ? this.answers[questionId].countParticipations : 0;
+        }
+        let relValue = ( countParticipations === 0 ? 0 : absValue / countParticipations * 100 );
+        return this.userPreferences.formatMoney( relValue, 2 );
+    }
+
     public countQuestionParticipations( questionId: string ): number {
         try {
             return this.answers[questionId].countParticipations;
@@ -264,32 +276,34 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
-    public getQuestionParticipationBarWidth( questionId ) {
+    public getQuestionParticipationBarWidth( questionId: string ): object {
+        let value: number;
         try {
-            return {
-                width: this.countQuestionParticipations( questionId ) / this.countQuestionnaireParticipations * 100 + '%'
-            };
+            value = this.countQuestionParticipations( questionId ) / this.countQuestionnaireParticipations * 100;
         } catch (e) {
-            return 0;
+            value = 0;
         }
+        return { width: value+'%' };
     }
 
-    public getAnswerBarWidth( questionId, optionId ) {
+    public getAnswerBarWidth( questionId: string, optionId: string ): object {
+        let value: number;
         try {
-            return {
-                width: ( !this.answers[questionId] || this.answers[questionId].optionCounts[optionId] === undefined ? 0 : this.answers[questionId].optionCounts[optionId] ) / ( this.relativeTo === 'questionnaires' ? this.countQuestionnaireParticipations : this.answers[questionId].countParticipations ) * 100 + '%'
-            };
+            value = ( !this.answers[questionId] || this.answers[questionId].optionCounts[optionId] === undefined ? 0 : this.answers[questionId].optionCounts[optionId] ) / ( this.relativeTo === 'questionnaires' ? this.countQuestionnaireParticipations : this.answers[questionId].countParticipations ) * 100;
         } catch (e) {
-            return 0;
+            value = 0;
         }
+        return { width: value+'%' };
     }
 
     public getQuestionParticipationsInPercent( questionId: string ): string {
+        let value: number;
         try {
-            return ( this.userPreferences.formatMoney( this.answers[questionId].countParticipations / this.countQuestionnaireParticipations * 100, 2 ));
+            value = this.answers[questionId].countParticipations / this.countQuestionnaireParticipations * 100;
         } catch (e) {
-            return '0,00';
+            value = 0;
         }
+        return this.userPreferences.formatMoney( value, 2 );
     }
 
     public allOptionsNumeric( questionId: string ): boolean {
@@ -300,11 +314,13 @@ export class QuestionnaireEntireEvaluation implements OnInit {
     }
 
     public averageOfAnswers( questionId: string ): string {
+        let value: number;
         try {
-            return (this.userPreferences.formatMoney( this.answers[questionId].answer_value / this.answers[questionId].countParticipations, 2 ));
+            value = this.answers[questionId].answer_value / this.answers[questionId].countParticipations;
         } catch (e) {
-            return '0,00';
+            value = 0;
         }
+        return this.userPreferences.formatMoney( value, 2 );
     }
 
     public questionIsToShow( question: any ): boolean {
@@ -321,7 +337,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
     /**
      * Export evaluation by submitting the html code (of the ui-rendered evaluation) to the backend, which will return it as pdf file.
      */
-    public export() {
+    public export(): void {
         if ( this.isLoading || !this.isExportPossible ) return;
         let html = this.htmlForExport.nativeElement.innerHTML;
         this.isExporting = true;
@@ -347,7 +363,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
     /**
      * Set time of the start date to start of the day
      */
-    public startdateChanged() {
+    public startdateChanged(): void {
         if ( this.startdate && this.startdate instanceof moment ) {
             this.startdate.set( {
                 hour: 0,
@@ -362,7 +378,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
     /**
      * Set time of end date to end of the day
      */
-    public enddateChanged() {
+    public enddateChanged(): void {
         if ( this.enddate && this.startdate instanceof moment ) {
             this.enddate.set( {
                 hour: 23,
