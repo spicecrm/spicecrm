@@ -43,7 +43,24 @@ export class DeploymentCRDBEntries implements OnInit {
         this.dbEntries = [];
         this.loading = true;
         this.backend.getRequest('module/SystemDeploymentCRs/' + this.model.id + '/detaildbentries').subscribe(entries => {
-            this.dbEntries = entries;
+            this.dbEntries = entries
+            entries.forEach(e => {
+
+                let label = e.tableaction;
+
+                switch (e.tableaction) {
+                    case 'I':
+                        label = 'LBL_CREATE';
+                        break;
+                    case 'U':
+                        label = 'LBL_UPDATE';
+                        break;
+                    case 'D':
+                        label = 'LBL_DELETE';
+                        break;
+                }
+                e.tableaction = this.language.getLabel(label);
+            });
             this.loading = false;
         });
     }

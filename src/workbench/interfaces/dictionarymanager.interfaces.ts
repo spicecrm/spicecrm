@@ -17,6 +17,7 @@ export interface DictionaryDefinition {
     status: 'd'|'a'|'i';
     tablename: string;
     sysdictionary_type: string;
+    sysdictionary_contenttype?: string;
     description?: string;
     deleted: number;
     version?: string;
