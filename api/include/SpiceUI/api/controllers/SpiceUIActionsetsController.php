@@ -170,6 +170,7 @@ class SpiceUIActionsetsController
 
             // check if the existing item exists in the update array
             $existingItemInPostData = false;
+
             foreach ($actionsetData['actions'] as $index => $actionsetItem) {
 
                 if ($actionsetItem['id'] == $existingItem['id']) {
@@ -219,7 +220,7 @@ class SpiceUIActionsetsController
     }
 
     /**
-     * insert actionset items
+     * insert actionset item
      * @param array $actionsetItem
      * @param string $actionsetId
      * @param array $actionsetData
