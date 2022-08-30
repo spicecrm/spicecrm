@@ -910,7 +910,7 @@ export class model implements OnDestroy {
         }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
-        this.navigation.addModelEditing(this, this.getFieldValue('summary_text'));
+        this.navigation.addModelEditing(this.id, this.module, this, this.getFieldValue('summary_text'));
     }
 
 
@@ -1909,12 +1909,16 @@ export class model implements OnDestroy {
 
 
     public ngOnDestroy(): void {
-        if (this.modelRegisterId
-        ) {
+
+        if (this.isEditing) {
+            this.navigation.removeModelEditing(this.module, this.id);
+        }
+
+        if (this.modelRegisterId) {
             this.navigation.unregisterModel(this.modelRegisterId);
         }
 
-// unsubscribe from any subscriptions we might have
+        // unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();
     }
 
