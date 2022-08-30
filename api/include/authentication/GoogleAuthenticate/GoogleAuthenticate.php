@@ -168,7 +168,7 @@ class GoogleAuthenticate implements AuthenticatorI
     private function createJWTAssertion($username, $scope = ['https://www.googleapis.com/auth/calendar'])
     {
         $serviceuserkey = SpiceConfig::getInstance()->config['googleapi']['serviceuserkey'];
-        $serviceuserdetails = json_decode(preg_replace('/\n|\r\n/', '', $serviceuserkey));
+        $serviceuserdetails = json_decode(preg_replace('/\n|\r\n|\\\n/', '', $serviceuserkey));
         $privateKeyFormatReplace = [
             '-----BEGIN PRIVATE KEY-----' => "-----BEGIN PRIVATE KEY-----\n",
             '-----END PRIVATE KEY-----' => "\n-----END PRIVATE KEY-----\n"
