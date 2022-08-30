@@ -47,6 +47,9 @@
                 </td>
                 <td>
                     <div class="slds-truncate slds-badge" [ngClass]="{'slds-theme--error': timedout(subscription.last_active)}">{{subscription.last_active}}</div>
+                    <button [disabled]="isLoading == subscription.subscriptionid" (click)="refreshSubscription(subscription)" class="slds-button slds-button_icon slds-button--icon-border slds-m-left--xx-small">
+                        <system-button-icon icon="refresh"></system-button-icon>
+                    </button>
                 </td>
                 <td>
                     <div class="slds-truncate">{{subscription.subscriptionid}}</div>

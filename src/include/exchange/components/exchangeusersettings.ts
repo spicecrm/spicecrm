@@ -8,6 +8,7 @@ import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {configurationService} from '../../../services/configuration.service';
 import {toast} from "../../../services/toast.service";
+import {session} from "../../../services/session.service";
 
 /**
  * @ignore
@@ -51,17 +52,22 @@ export class ExchangeUserSettings implements OnInit {
      * @private
      */
     private serviceName: 'msgraph' | 'spicecrmexchange' = 'spicecrmexchange';
+    /**
+     * loading backend data
+     */
+    public isLoading: string;
 
     constructor(public metadata: metadata,
                 public model: model,
                 public toast: toast,
+                public session: session,
                 public backend: backend,
                 public configuration: configurationService) {
         if (this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
             this.serviceName = 'msgraph';
         }
-
-        let ewsconfig = this.configuration.getCapabilityConfig('ewsconfig');
+        const configName = this.serviceName == 'msgraph' ? 'msgraphconfig' : 'ewsconfig';
+        let ewsconfig = this.configuration.getCapabilityConfig(configName);
         if (ewsconfig && ewsconfig.subscriptiontimeout) {
             this.subscriptiontimeout = parseInt(ewsconfig.subscriptiontimeout, 10);
         }
@@ -167,4 +173,23 @@ export class ExchangeUserSettings implements OnInit {
         }
     }
 
+    /**
+     * refresh user subscription
+     * @param subscription
+     */
+    public refreshSubscription(subscription: any) {
+        this.isLoading = subscription.subscriptionid;
+        this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${subscription.folder_id}/refreshSubscription/${subscription.subscriptionid}`).subscribe({
+            next: res => {
+                this.subscriptions = res.subscriptions;
+                this.isLoading = undefined;
+                // set the user config
+                this.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
+
+            },
+            error: err => {
+                this.toast.sendToast(err.error.error.message, 'error');
+            }
+        });
+    }
 }
