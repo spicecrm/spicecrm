@@ -267,7 +267,8 @@ export class dictionarymanager {
     public save() {
         let changes = this.determineChangedRecords();
         this.backend.postRequest('dictionary/definitions', {}, changes).subscribe({
-            next: () => {
+            next: res => {
+                this.loaded = JSON.stringify(res);
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             },
             error: () => {
