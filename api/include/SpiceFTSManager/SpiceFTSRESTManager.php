@@ -28,6 +28,7 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SpiceFTSManager;
 
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -246,44 +247,41 @@ class SpiceFTSRESTManager
         return json_decode(SpiceFTSHandler::getInstance()->elasticHandler->putMapping($module, $beanHandler->mapModule()));
     }
 
+    /**
+     * @throws ForbiddenException
+     * @throws \Exception
+     */
     function setFTSFields($module, $items)
     {
         $db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
 
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
-
-
         $record = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
 
         if ($record) {
 
-            $setFields = [];
+            $data = [];
             if ($items["fields"] != '') {
-                $setFields[] = "ftsfields = '" . addslashes(json_encode($items["fields"])) . "'"; // CR1000343 added addslahes
+                $data[] = ['ftsfields' => addslashes(json_encode($items["fields"]))];
             }
             if ($items["settings"] != '') {
-                $setFields[] = "index_priority=" . intval($items["settings"]["index_priority"]);
-                $setFields[] = "settings = '" . json_encode($items["settings"]) . "'";
+                $data[] = ['index_priority' => intval($items["settings"]["index_priority"])];
+                $data[] = ['settings' => json_encode($items["settings"])];
             }
-            if (count($setFields) > 0) {
-                $db->query("UPDATE sysfts SET " . implode(', ', $setFields) . " WHERE id = '{$record['id']}'");
-
-                // add to the CR
-                if($cr) $cr->writeDBEntry("sysfts", $record['id'], $module);
+            if (count($data) > 0) {
+                SystemDeploymentCR::writeDBEntry("sysfts", $record['id'], $data, $module, SystemDeploymentCR::ACTION_UPDATE);
             }
         } else {
-            $newid = SpiceUtils::createGuid();
 
-            $db->query("INSERT INTO sysfts (id, module, ftsfields, settings) VALUES('$newid', '$module', '" . json_encode($items['fields']) . "', '" . json_encode($items['settings']) . "')");
+            $data = [
+                'id' => SpiceUtils::createGuid(),
+                'module' => $module,
+                'ftsfields' => json_encode($items['fields']),
+                'settings' => json_encode($items['settings'])
+            ];
 
-            // add to the CR
-            if($cr) $cr->writeDBEntry("sysfts", $newid, $module);
-
-
+            SystemDeploymentCR::writeDBEntry("sysfts", $data['id'], $data, $module, SystemDeploymentCR::ACTION_INSERT);
         }
         return true;
     }
