@@ -1,5 +1,8 @@
 <div (dblclick)="view.setEditMode()" class="slds-form-element__control slds-has-divider--bottom slds-grid slds-p-vertical--x-small">
-    <span class="slds-form-element__static"><ng-content></ng-content></span>
+    <span class="slds-form-element__static slds-grid">
+        <system-custom-icon *ngIf="global" icon="global" size="x-small" class="slds-p-right--xx-small"></system-custom-icon>
+        <ng-content></ng-content>
+    </span>
     <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small"
             (click)="view.setEditMode()">
         <system-button-icon [icon]="'edit'"></system-button-icon>

@@ -41,17 +41,24 @@ export class userpreferences {
     public preferencesComplete = true; // When false, indicates the need to ask the user for the preferences.
 
     public defaults = {
+        calendar_day_start_hour: '7',
+        calendar_day_end_hour: '22',
         currency: -99,
-        datef: 'd.m.Y',
-        dec_sep: ',',
-        num_grp_sep: '.',
+        datef: 'm/d/Y',
+        default_currency_significant_digits: 2,
+        default_export_charset: 'UTF-8',
+        default_locale_name_format: 's f l',
+        dec_sep: '.',
+        distance_unit_system: 'METRIC',
+        export_delimiter: ',',
+        help_icon: 'visible',
+        home_assistant: 'visible',
+        num_grp_sep: ',',
+        reminder_time: -1,
         timef: 'H:i',
         timezone: 'Europe/Vienna',
-        default_currency_significant_digits: 2,
-        default_locale_name_format: 'l, f',
         week_day_start: 0,
-        navigation_paradigm: 'subtabbed',
-        distance_unit_system: 'METRIC'
+        week_days_count: 5,
     };
 
     public formats = {nameFormats: [], loaded: false};
