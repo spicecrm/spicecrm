@@ -56,8 +56,9 @@
                 <system-spinner message="LBL_LOADING"></system-spinner>
             </div>
             <ng-template #usersdisplay>
-                <div class="slds-p-around--x-small">
+                <div class="slds-p-around--x-small slds-grid slds-grid--align-spread">
                     <system-checkbox [(ngModel)]="aclallusers">all users</system-checkbox>
+                    <pagination-controls [(page)]="page" [limit]="20" [total_records]="aclusers.length"></pagination-controls>
                 </div>
                 <div *ngIf="!aclallusers">
                     <table  class="slds-table slds-table_bordered slds-table_cell-buffer">
@@ -70,7 +71,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let acluser of aclusers">
+                        <tr *ngFor="let acluser of aclusers | paginate: {page: page, limit: 20}">
                             <td>
                                 <div class="slds-truncate">{{acluser.user_name ? acluser.user_name : acluser.id}}</div>
                             </td>

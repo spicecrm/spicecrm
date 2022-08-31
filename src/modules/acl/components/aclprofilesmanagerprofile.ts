@@ -30,6 +30,8 @@ export class ACLProfilesManagerProfile implements OnChanges {
     public aclusers: any[] = [];
     public aclorgunits: any[] = [];
 
+    public page = 1;
+
     constructor(
         public modal: modal,
         public language: language,
@@ -87,7 +89,6 @@ export class ACLProfilesManagerProfile implements OnChanges {
                 this.loadingobjects = false;
                 this.sortobjects();
             });
-
             this.backend.getRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users').subscribe(aclusers => {
                 this.aclusers = aclusers;
                 this.loadingusers = false;
