@@ -13,6 +13,7 @@ import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {Md5} from "ts-md5";
+import {TokenObjectI} from "../interfaces/globalcomponents.interfaces";
 
 
 /**
@@ -109,7 +110,7 @@ export class GlobalLogin {
         if (sessionStorage['OAuth-Token']) {
 
             // try to login with the found token
-            this.loginService.oauthToken = sessionStorage['OAuth-Token'];
+            this.loginService.tokenObject = {access_token: sessionStorage['OAuth-Token']};
             this.loginService.oauthIssuer = 'SpiceCRM';
             this.loginService.login(false).subscribe({
                 next: (res) => {
@@ -117,7 +118,7 @@ export class GlobalLogin {
                     // this.loginService.load();
                 },
                 error: (err) => {
-                    this.loginService.oauthToken = null;
+                    this.loginService.tokenObject = null;
                     this.loginService.oauthIssuer = null;
 
                     // set that we propmt the user
@@ -144,7 +145,7 @@ export class GlobalLogin {
     /**
      * triggers the actual login itself
      */
-   public login(token?: {issuer: string, accessToken: string}) {
+   public login(token?: {issuer: string, tokenObject: TokenObjectI}) {
 
         if (token || (this.username && this.password)) {
             // clear the current messageid if one is set
@@ -159,12 +160,12 @@ export class GlobalLogin {
             if(token) {
                 this.loginService.authData.userName = null;
                 this.loginService.authData.password = null;
-                this.loginService.oauthToken = token.accessToken;
+                this.loginService.tokenObject = token.tokenObject;
                 this.loginService.oauthIssuer = token.issuer;
             } else {
                 this.loginService.authData.userName = this.username;
                 this.loginService.authData.password = this.password;
-                this.loginService.oauthToken = null;
+                this.loginService.tokenObject = null;
                 this.loginService.oauthIssuer = null;
             }
             this.loginService.login().subscribe({

@@ -167,6 +167,10 @@ class AuthenticationController
             $authResponse = $authenticator->authenticate($authParams->authData, $authParams->authType);
             $this->handleSuccessfulAuthentication($authParams->authData, $authResponse, $authParams->authType);
 
+            if (method_exists($authenticator, 'afterSuccessfulAuthentication')) {
+                $authenticator->afterSuccessfulAuthentication($authParams->authData);
+            }
+
         } catch (UnauthorizedException $e) {
             $this->handleFailedAuthentication($e, $authParams->authData);
         }

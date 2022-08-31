@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\OAuth2Authenticate\OAuth2Authenticate;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use function DI\string;
 
 class OAuth2Controller
 {
@@ -20,15 +21,15 @@ class OAuth2Controller
         $params = $req->getParsedBody();
 
         $authHandler = new OAuth2Authenticate($params['issuer']);
-        $accessToken = $authHandler->fetchAccessToken($params['code']);
+        $tokenResponse = $authHandler->fetchAccessToken($params['code']);
 
-        if (empty($accessToken)) {
+        if (empty($tokenResponse)) {
             throw new BadRequestException('Invalid authorization code', 'invalid_auth_code');
         }
 
-        $userProfile = $authHandler->fetchUserProfile($accessToken);
-
-        return $res->withJson(['accessToken' => $accessToken, 'profile' => $userProfile]);
+        $userProfile = $authHandler->fetchUserProfile($tokenResponse->access_token);
+        $tokenObject = ['access_token' => $tokenResponse->access_token, 'refresh_token' => $tokenResponse->refresh_token, 'valid_until' => (string) $tokenResponse->valid_until];
+        return $res->withJson(['tokenObject' => $tokenObject, 'profile' => $userProfile]);
     }
 
     /**
