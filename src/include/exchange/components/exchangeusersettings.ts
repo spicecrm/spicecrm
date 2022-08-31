@@ -8,6 +8,8 @@ import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {configurationService} from '../../../services/configuration.service';
 import {toast} from "../../../services/toast.service";
+import {modal} from "../../../services/modal.service";
+import {firstValueFrom} from "rxjs";
 import {session} from "../../../services/session.service";
 
 /**
@@ -30,6 +32,10 @@ export class ExchangeUserSettings implements OnInit {
      * a list of actrive subscriptions
      */
     public subscriptions: any[] = [];
+    /**
+     * if the user was logged in with microsoft oauth2
+     */
+    public microsoftLoggedIn: boolean = false;
 
     /**
      * the timeout for the subscritpion in munutes
@@ -47,6 +53,11 @@ export class ExchangeUserSettings implements OnInit {
      * the config for the user
      */
     public userconfig: any[] = [];
+
+    /**
+     * holds the todolist for task
+     */
+    public todoList: {value: string, display: string};
     /**
      * used to call the proper service route
      * @private
@@ -61,6 +72,7 @@ export class ExchangeUserSettings implements OnInit {
                 public model: model,
                 public toast: toast,
                 public session: session,
+                public modal: modal,
                 public backend: backend,
                 public configuration: configurationService) {
         if (this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
@@ -88,6 +100,8 @@ export class ExchangeUserSettings implements OnInit {
             this.modules = response.modules;
             this.userconfig = response.userconfig;
             this.subscriptions = response.subscriptions;
+            this.microsoftLoggedIn = response.microsoftLoggedIn;
+            this.todoList = response.todoList;
         });
     }
 
@@ -137,9 +151,29 @@ export class ExchangeUserSettings implements OnInit {
      * @param value
      * @param checkbox
      */
-    public toggleActive(sysmoduleid: string, value, checkbox: any) {
+    public async toggleActive(sysmoduleid: string, value, checkbox: any) {
 
         if (value) {
+
+            if (this.getModuleNameById(sysmoduleid) == 'Tasks') {
+                const lists: { value: string, display: string}[] = await firstValueFrom(this.backend.getRequest(`${this.serviceName}/config/${this.model.id}/todoLists`)).catch(() => undefined);
+                if (!lists) {
+                    this.toast.sendToast('todo lists could not be retrieved', 'error');
+                    checkbox.writeValue(false);
+                    return;
+                }
+
+                const listId: string = await firstValueFrom(this.modal.prompt('input', 'MSG_CHOOSE_LIST', 'LBL_GRAPH_LIST', 'shade', undefined, lists));
+                if (!listId) {
+                    checkbox.writeValue(false);
+                    return;
+                }
+                const body = {config: {
+                    default_todo_list: JSON.stringify(lists.find(l => l.value == listId))
+                }};
+                await this.backend.postRequest(`configuration/configurator/editor/MicrosoftService`, null, body);
+            }
+
             this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`).subscribe({
                 next: res => {
                     this.userconfig = res.userconfig;
