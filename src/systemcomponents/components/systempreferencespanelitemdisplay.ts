@@ -1,7 +1,7 @@
 /**
  * @module ModuleUsers
  */
-import {Component} from "@angular/core";
+import { Component, Input } from "@angular/core";
 import {view} from "../../services/view.service";
 
 /**
@@ -21,6 +21,10 @@ import {view} from "../../services/view.service";
     ]
 })
 export class SystemPreferencesPanelItemDisplay {
+
+    @Input() public global = false;
+
     constructor(public view: view) {
     }
+
 }
