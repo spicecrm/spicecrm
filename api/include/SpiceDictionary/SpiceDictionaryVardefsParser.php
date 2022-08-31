@@ -48,9 +48,9 @@ class SpiceDictionaryVardefsParser
         if ($field['type'] != $row['dbtype'] && !is_null($row['dbtype'])) {
             $field['dbtype'] = $row['dbtype'];
         }
-        if (!empty($row['fieldsource'])) {
-            $field['source'] = $row['fieldsource'];
-        }
+//        if (!empty($row['fieldsource'])) {
+//            $field['source'] = $row['fieldsource'];
+//        }
         if (!empty($row['non_db'])) { // from sysdictionaryitem
             $field['source'] = 'non-db';
         }
