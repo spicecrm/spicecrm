@@ -142,7 +142,7 @@ export class ExchangeUserSettings implements OnInit {
                     return;
                 }
 
-                const listId: string = await firstValueFrom(this.modal.prompt('input', 'MSG_CHOOSE_LIST', 'LBL_GRAPH_LIST', 'shade', undefined, lists));
+                const listId: string = await firstValueFrom(this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_GRAPH_LIST', 'shade', undefined, lists));
                 if (!listId) {
                     checkbox.writeValue(false);
                     return;
