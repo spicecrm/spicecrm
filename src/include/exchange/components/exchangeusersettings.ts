@@ -52,12 +52,7 @@ export class ExchangeUserSettings implements OnInit {
     /**
      * the config for the user
      */
-    public userconfig: any[] = [];
-
-    /**
-     * holds the todolist for task
-     */
-    public todoList: {value: string, display: string};
+    public userconfig: {[key: symbol]: any} = {};
     /**
      * used to call the proper service route
      * @private
@@ -98,10 +93,10 @@ export class ExchangeUserSettings implements OnInit {
     public getConfig() {
         this.backend.getRequest(`${this.serviceName}/config/${this.model.id}`).subscribe(response => {
             this.modules = response.modules;
+            this.modules.forEach(m => m.moduleName = this.metadata.getModuleById(m.sysmodule_id))
             this.userconfig = response.userconfig;
             this.subscriptions = response.subscriptions;
             this.microsoftLoggedIn = response.microsoftLoggedIn;
-            this.todoList = response.todoList;
         });
     }
 
@@ -127,35 +122,19 @@ export class ExchangeUserSettings implements OnInit {
     }
 
     /**
-     * returns the module for the id
-     *
-     * @param sysmoduleid
-     */
-    public getModuleNameById(sysmoduleid: string) {
-        return this.metadata.getModuleById(sysmoduleid);
-    }
-
-    /**
-     * returns if the user subscription is active
-     *
-     * @param sysmoduleid
-     */
-    public isActive(sysmoduleid: string) {
-        return this.userconfig && this.userconfig.findIndex(r => r.sysmodule_id == sysmoduleid) >= 0;
-    }
-
-    /**
      * toggles the sync for the user
      *
-     * @param sysmoduleid
+     * @param moduleConfig
      * @param value
      * @param checkbox
      */
-    public async toggleActive(sysmoduleid: string, value, checkbox: any) {
+    public async toggleActive(moduleConfig: any, value, checkbox: any) {
+
+        const sysmoduleid = moduleConfig.sysmodule_id;
 
         if (value) {
 
-            if (this.getModuleNameById(sysmoduleid) == 'Tasks') {
+            if (moduleConfig.moduleName == 'Tasks') {
                 const lists: { value: string, display: string}[] = await firstValueFrom(this.backend.getRequest(`${this.serviceName}/config/${this.model.id}/todoLists`)).catch(() => undefined);
                 if (!lists) {
                     this.toast.sendToast('todo lists could not be retrieved', 'error');
@@ -168,13 +147,10 @@ export class ExchangeUserSettings implements OnInit {
                     checkbox.writeValue(false);
                     return;
                 }
-                const body = {config: {
-                    default_todo_list: JSON.stringify(lists.find(l => l.value == listId))
-                }};
-                await this.backend.postRequest(`configuration/configurator/editor/MicrosoftService`, null, body);
+                moduleConfig.sync_config = {toDoList: lists.find(l => l.value == listId)};
             }
 
-            this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`).subscribe({
+            this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`, null, {sync_config: moduleConfig.sync_config}).subscribe({
                 next: res => {
                     this.userconfig = res.userconfig;
                     this.subscriptions = res.subscriptions;
