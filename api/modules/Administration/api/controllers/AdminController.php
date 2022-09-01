@@ -262,6 +262,11 @@ class AdminController
         $sql = '';
         $vardefs = SpiceDictionaryVardefs::loadVardefs();
 //        file_put_contents('vardefs.log', print_r($vardefs, true)."\n", FILE_APPEND);
+
+        $sysDicFieldsSql = SpiceDictionaryVardefs::repairTable($vardefs['sysdictionaryfields']);
+        $db = DBManagerFactory::getInstance();
+        $db->query($sysDicFieldsSql);
+
         foreach($vardefs as $dictName => $dict){
             // remove deprecated properties
 //            SpiceDictionaryVardefs::unsetDeprecatedDictionaryProperties($dict);

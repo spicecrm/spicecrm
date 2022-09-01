@@ -58,13 +58,14 @@ class SpiceDictionaryVardefs  {
     public final function __construct()
     {
         $db = DBManagerFactory::getInstance();
-        $q = "SELECT sysfields.sysdictionarydefinition_id sysdictionaryid, sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition FROM sysdictionaryfields sysfields";
+        $q = "SELECT sysfields.sysdictionarydefinition_id sysdictionaryid, sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, sysfields.sysdictionarytablecontenttype, sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition FROM sysdictionaryfields sysfields";
         $res = $db->query($q);
         while($row = $db->fetchByAssoc($res)){
             $this->dictionary[$row['sysdictionaryname']]['id'] = $row['sysdictionaryid'];
             $this->dictionary[$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
             $this->dictionary[$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
             $this->dictionary[$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
+            $this->dictionary[$row['sysdictionaryname']]['contenttype'] = $row['sysdictionarytablecontenttype'];
             $this->dictionary[$row['sysdictionaryname']]['module'] = SpiceModules::getInstance()->getModuleName($row['sysdictionaryname']);
             $this->dictionary[$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
         }
@@ -130,9 +131,9 @@ class SpiceDictionaryVardefs  {
 // )  defs WHERE defs.deleted = 0 AND status='a'".($dictionaryType != 'all' ? "  AND sysdictionary_type='".$dictionaryType."'" : "");
 
 
-        $q = "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, 'g' scope, deleted, status  FROM sysdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? "  AND sysd.sysdictionary_type='".$dictionaryType."'" : "");
+        $q = "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype, 'g' scope, deleted, status  FROM sysdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? "  AND sysd.sysdictionary_type='".$dictionaryType."'" : "");
         $q.= " UNION ";
-        $q.= "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, 'c' scope, deleted, status FROM syscustomdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? " AND sysd.sysdictionary_type='".$dictionaryType."'" : "");
+        $q.= "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype, 'c' scope, deleted, status FROM syscustomdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? " AND sysd.sysdictionary_type='".$dictionaryType."'" : "");
 
         return $q;
     }
@@ -176,6 +177,7 @@ class SpiceDictionaryVardefs  {
                     $vardefs[$dbDict['name']] = $dbDict;
                 }
                 $vardefs[$dbDict['name']]['dictionaryname'] = $dbDict['name'];
+                $vardefs[$dbDict['name']]['contenttype'] = $dbDict['name'];
 
                 // load indices
                 if (!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
@@ -261,6 +263,7 @@ class SpiceDictionaryVardefs  {
                 $vardefs[$dbDict['name']]['dictionaryname'] = $dbDict['name'];
                 $vardefs[$dbDict['name']]['type'] = $dbDict['type'];
                 $vardefs[$dbDict['name']]['required'] = $dbDict['required'];
+                $vardefs[$dbDict['name']]['contenttype'] = $dbDict['contenttype'];
 
                 // load indices
                 if(!is_array($vardefs[$dbDict['name']]['indices'])) $vardefs[$dbDict['name']]['indices'] = [];
@@ -580,7 +583,7 @@ class SpiceDictionaryVardefs  {
      */
     public static function getDictionaryQuery($dictionaryId)
     {
-        return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype,
+        return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname,
         sysdi.name itemname, sysdi.label itemlabel, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted,
@@ -713,6 +716,8 @@ class SpiceDictionaryVardefs  {
                 $dict['dictionaryname'] = $row['dictionaryname'];
                 $dict['type'] = $row['dictionarytype'];
                 $dict['table'] = $row['tablename'];
+                $dict['contenttype'] = $row['contenttype'];
+
                 if(!empty($row['sysmodule'])){
                     $dict['module'] = $row['sysmodule'];
                 }
@@ -1652,6 +1657,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                 'sysdictionaryname' => "'".$dictName."'",
                 'sysdictionarytablename' => "'".$dict['table']."'",
                 'sysdictionarytableaudited' => isset($dict['audited']) ? intval($dict['audited']) : 0,
+                'sysdictionarytablecontenttype' => !$dict['contenttype'] ? "''" : "'{$dict['contenttype']}'",
                 'sysdictionarydefinition_id' => "'".$dict['id']."'",
                 'sysdomainfield_id' => "'".$fieldDef['sysdomainfield_id']."'",
                 'fieldname' => "'".$fieldDef['name']."'",
@@ -1835,7 +1841,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         $db = DBManagerFactory::getInstance();
         $dict = [];
         $q = "SELECT sysfields.sysdictionarydefinition_id sysdictionaryid, sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, 
-       sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition
+       sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition, sysfields.sysdictionarytablecontenttype
             FROM sysdictionaryfields sysfields 
             WHERE sysfields.sysdictionaryname = '".$object."'";
 
@@ -1848,6 +1854,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                     $dict['dictionaryname'] = $row['sysdictionaryname'];
                     $dict['table'] = $row['sysdictionarytablename'];
                     $dict['audited'] = $row['sysdictionarytableaudited'];
+                    $dict['contenttype'] = $row['sysdictionarytablecontenttype'];
                     $dict['module'] = SpiceModules::getInstance()->getModuleName($object);
                     $setDictInfo = false;
                 }
@@ -1885,7 +1892,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         // else first load from sysdictionaryfields
         $db = DBManagerFactory::getInstance();
         $q = "SELECT sysfields.sysdictionarydefinition_id sysdictionaryid, sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, 
-        sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition
+        sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition, sysfields.sysdictionarytablecontenttype
             FROM sysdictionaryfields sysfields ORDER BY sysdictionarytablename ASC";
 
         if($result = $db->query($q)){
@@ -1903,6 +1910,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                 $_SESSION['dictionaries'][$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
                 $_SESSION['dictionaries'][$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
                 $_SESSION['dictionaries'][$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
+                $_SESSION['dictionaries'][$row['sysdictionaryname']]['contenttype'] = $row['sysdictionarytablecontenttype'];
                 $_SESSION['dictionaries'][$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
 
 // indices are not necessary. Forget them for performance gain.
