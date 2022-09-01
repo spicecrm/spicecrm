@@ -124,17 +124,18 @@ export class ExchangeUserSettings implements OnInit {
     /**
      * toggles the sync for the user
      *
-     * @param moduleConfig
+     * @param moduleData
      * @param value
      * @param checkbox
      */
-    public async toggleActive(moduleConfig: any, value, checkbox: any) {
+    public async toggleActive(moduleData: any, value, checkbox: any) {
 
-        const sysmoduleid = moduleConfig.sysmodule_id;
+        const sysmoduleid = moduleData.sysmodule_id;
+        let syncConfig = undefined;
 
         if (value) {
 
-            if (moduleConfig.moduleName == 'Tasks') {
+            if (moduleData.moduleName == 'Tasks') {
                 const lists: { value: string, display: string}[] = await firstValueFrom(this.backend.getRequest(`${this.serviceName}/config/${this.model.id}/todoLists`)).catch(() => undefined);
                 if (!lists) {
                     this.toast.sendToast('todo lists could not be retrieved', 'error');
@@ -147,11 +148,14 @@ export class ExchangeUserSettings implements OnInit {
                     checkbox.writeValue(false);
                     return;
                 }
-                moduleConfig.sync_config = {toDoList: lists.find(l => l.value == listId)};
+                syncConfig = {toDoList: lists.find(l => l.value == listId)};
             }
 
-            this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`, null, {sync_config: moduleConfig.sync_config}).subscribe({
+            this.isLoading = moduleData.moduleName;
+
+            this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`, null, {syncConfig}).subscribe({
                 next: res => {
+                    this.isLoading = undefined;
                     this.userconfig = res.userconfig;
                     this.subscriptions = res.subscriptions;
 
@@ -161,13 +165,17 @@ export class ExchangeUserSettings implements OnInit {
 
                 },
                 error: err => {
+                    this.isLoading = undefined;
                     this.toast.sendToast(err.error.error.message, 'error');
                     checkbox.writeValue(false);
                 }
             });
         } else {
+            this.isLoading = moduleData.moduleName;
+
             this.backend.deleteRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`).subscribe({
                 next: res => {
+                    this.isLoading = undefined;
                     this.userconfig = res.userconfig;
                     this.subscriptions = res.subscriptions;
 
@@ -176,6 +184,7 @@ export class ExchangeUserSettings implements OnInit {
                     this.toast.sendToast('LBL_DEACTIVATED', 'success');
                 },
                 error: err => {
+                    this.isLoading = undefined;
                     this.toast.sendToast(err.error.error.message, 'error');
                     checkbox.writeValue(true);
                 }
@@ -191,13 +200,14 @@ export class ExchangeUserSettings implements OnInit {
         this.isLoading = subscription.subscriptionid;
         this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${subscription.folder_id}/refreshSubscription/${subscription.subscriptionid}`).subscribe({
             next: res => {
-                this.subscriptions = res.subscriptions;
                 this.isLoading = undefined;
+                this.subscriptions = res.subscriptions;
                 // set the user config
                 this.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
 
             },
             error: err => {
+                this.isLoading = undefined;
                 this.toast.sendToast(err.error.error.message, 'error');
             }
         });

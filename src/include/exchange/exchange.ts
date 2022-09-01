@@ -12,6 +12,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 
 // import embedding components
 import {ExchangeUserSettings} from "./components/exchangeusersettings";
+import {DirectivesModule} from "../../directives/directives";
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import {ExchangeUserSettings} from "./components/exchangeusersettings";
         FormsModule,
         SystemComponents,
         GlobalComponents,
-        ObjectComponents
+        ObjectComponents,
+        DirectivesModule
     ],
     declarations: [
         ExchangeUserSettings

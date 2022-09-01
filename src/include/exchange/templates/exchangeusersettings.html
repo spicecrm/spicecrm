@@ -19,7 +19,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let module of modules" class="slds-hint-parent">
-                <td>
+                <td [system-overlay-loading-spinner]="isLoading == module.moduleName">
                     <div class="slds-truncate"><system-label-modulename [module]="module.moduleName"></system-label-modulename>
                         <span *ngIf="module.moduleName == 'Tasks' && userconfig[module.sysmodule_id]?.sync_config?.toDoList?.display" class="slds-m-left--xx-small">
                             ( {{userconfig[module.sysmodule_id].sync_config.toDoList.display}} )
@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     <div class="slds-grid">
-                        <system-checkbox-toggle #checkbox [ngModel]="!!userconfig[module.sysmodule_id]" [disabled]="!microsoftLoggedIn && module.moduleName == 'Tasks'" (ngModelChange)="toggleActive(module, $event, checkbox)"></system-checkbox-toggle>
+                        <system-checkbox-toggle #checkbox [ngModel]="!!userconfig[module.sysmodule_id]" [disabled]="!microsoftLoggedIn && module.moduleName == 'Tasks' || isLoading == module.moduleName" (ngModelChange)="toggleActive(module, $event, checkbox)"></system-checkbox-toggle>
                     </div>
                 </td>
             </tr>
@@ -55,7 +55,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let subscription of subscriptions" class="slds-hint-parent">
-                <td>
+                <td [system-overlay-loading-spinner]="isLoading == subscription.subscriptionid">
                     <div class="slds-truncate">{{subscription.folder_id}}</div>
                 </td>
                 <td>
