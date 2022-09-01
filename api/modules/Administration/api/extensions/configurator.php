@@ -69,8 +69,8 @@ $routes = [
         'route'       => '/configuration/configurator/{table}/{id}',
         'oldroute'    => '/configurator/{table}/{id}',
         'class'       => ConfiguratorController::class,
-        'function'    => 'checkMetaData',
-        'description' => 'checks the metadata and handles them',
+        'function'    => 'deleteConfig',
+        'description' => 'delete config entry',
         'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true ],
         'parameters'  => [
             'table' => [

@@ -11,6 +11,7 @@ import {
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
+import {ACLUsersFilterPipe } from '../pipes/aclusersfilter.pipe';
 
 @Component({
     selector: 'aclprofiles-manager-profile',
@@ -31,6 +32,7 @@ export class ACLProfilesManagerProfile implements OnChanges {
     public aclorgunits: any[] = [];
 
     public page = 1;
+    public userNameFilter: string = '';
 
     constructor(
         public modal: modal,
