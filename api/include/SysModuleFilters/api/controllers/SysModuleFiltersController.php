@@ -3,22 +3,22 @@
 * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
 * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
 * You can contact us at info@spicecrm.io
-* 
+*
 * SpiceCRM is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
-* 
+*
 * SpiceCRM is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,7 +29,9 @@
 
 namespace SpiceCRM\includes\SysModuleFilters\api\controllers;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -71,60 +73,50 @@ class SysModuleFiltersController
         return $res->withJson($filters);
     }
 
-    function saveFilter(Request $req, Response $res, array $args): Response {
+    /**
+     * @throws ForbiddenException
+     * @throws Exception
+     */
+    function saveFilter(Request $req, Response $res, array $args): Response
+    {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
         $this->checkAdmin();
         $filterdata = $req->getParsedBody();
-        // check if filter exists
+
         if (isset($filterdata['scope'])) {
             $table = $filterdata['scope'] == 'custom' ? 'syscustommodulefilters' : 'sysmodulefilters';
         } elseif ($filterdata['type']) {
             $table = $filterdata['type'] == 'custom' ? 'syscustommodulefilters' : 'sysmodulefilters';
         }
-        $filter = $db->fetchByAssoc($db->query("SELECT * FROM $table WHERE id='{$args['filter']}'"));
-        if ($filter) {
-            $filterdefs = json_encode($filterdata['filterdefs']);
-            $db->query("UPDATE $table SET name='{$filterdata['name']}', filterdefs='$filterdefs', filtermethod='".$db->quote($filterdata['filtermethod'])."', version='{$filterdata['version']}', package='{$filterdata['package']}' WHERE id = '{$args['filter']}'");
 
-            $this->setCR('I', $args['filter'], "{$args['module']}/{$filterdata['name']}");
-        } else {
-            $filterdefs = json_encode($filterdata['filterdefs']);
-            $db->query("INSERT INTO $table (id, created_by_id, module, name, filterdefs, filtermethod, version, package) VALUES('{$args['filter']}', '$current_user->id', '{$args['module']}', '{$filterdata['name']}', '$filterdefs', '".$db->quote($filterdata['filtermethod'])."', '{$filterdata['version']}', '{$filterdata['package']}')");
+        $data = [
+            'id' => $args['filter'],
+            'created_by_id' => $filterdata['created_by_id'] ?? $current_user->id,
+            'module' => $args['module'],
+            'name' => $filterdata['name'],
+            'filterdefs' => json_encode($filterdata['filterdefs']),
+            'filtermethod' => $filterdata['filtermethod'],
+            'version' => $filterdata['version'],
+            'package' => $filterdata['package'],
+        ];
 
-            $this->setCR('I', $args['filter'], "{$args['module']}/{$filterdata['name']}");
-        }
+        SystemDeploymentCR::writeDBEntry($table, $data['id'], $data, "{$args['module']}/{$filterdata['name']}");
 
         return $res->withJson(['success' => true]);
     }
 
+    /**
+     * @throws ForbiddenException
+     * @throws Exception
+     */
     function deleteFilter(Request $req, Response $res, array $args): Response {
         $db = DBManagerFactory::getInstance();
         $this->checkAdmin();
         $id = $db->quote($args['filter']);
-        $resultGlobal = $db->query("DELETE FROM sysmodulefilters WHERE id = '$id'");
-        $resultCustom = $db->query("DELETE FROM syscustommodulefilters WHERE id = '$id'");
-        $this->setCR('D', $id);
+        SystemDeploymentCR::deleteDBEntry('sysmodulefilters', $id, "sysmodulefilters/{$args['module']}");
+        SystemDeploymentCR::deleteDBEntry('syscustommodulefilters', $id, "syscustommodulefilters/{$args['module']}");
 
-        return $res->withJson($resultCustom && $resultGlobal);
-    }
-
-    /**
-     * adds the filter to the CR if a CR is active
-     *
-     * @param $action
-     * @param $id
-     * @param $name
-     */
-    private function setCR($action, $id, $name = '')
-    {
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
-
-        if ($cr) {
-            $cr->addDBEntry('sysmodulefilters', $id, $action, $name);
-        }
+        return $res->withJson(true);
     }
 }
 
