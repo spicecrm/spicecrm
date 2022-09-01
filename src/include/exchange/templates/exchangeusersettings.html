@@ -24,7 +24,7 @@
                         <span *ngIf="module.moduleName == 'Tasks' && userconfig[module.sysmodule_id]?.sync_config?.toDoList?.display" class="slds-m-left--xx-small">
                             ( {{userconfig[module.sysmodule_id].sync_config.toDoList.display}} )
                         </span>
-                        <span *ngIf="!microsoftLoggedIn && module.moduleName == 'Tasks'" class="slds-m-left--xx-small">
+                        <span *ngIf="!microsoftLoggedIn && module.moduleName == 'Tasks'" class="slds-m-left--xx-small slds-text-color--error">
                             <system-label label="MSG_MSGRAPH_TASK_SYNC_DISABLED"></system-label>
                         </span>
                     </div>
