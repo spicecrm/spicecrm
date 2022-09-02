@@ -19,7 +19,8 @@ use SpiceCRM\includes\TimeDate;
 
 class CampaignTasksController
 {
-    public function getCampaignTaskItems(Request $req, Response $res, array $args): Response {
+    public function getCampaignTaskItems(Request $req, Response $res, array $args): Response
+    {
         $timedate = TimeDate::getInstance();
 
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'detail', true))
@@ -69,7 +70,8 @@ class CampaignTasksController
      * @return Response
      * @throws ForbiddenException
      */
-    public function activateCampaignTask(Request $req, Response $res, array $args): Response {
+    public function activateCampaignTask(Request $req, Response $res, array $args): Response
+    {
         // ACL Check
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'edit', true))
             throw (new ForbiddenException("Forbidden to edit in module CampaignTasks."))->setErrorCode('noModuleEdit');
@@ -78,7 +80,7 @@ class CampaignTasksController
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
 
         $status = 'targeted';
-        switch($campaignTask->campaigntask_type){
+        switch ($campaignTask->campaigntask_type) {
             case 'Mail':
                 $status = 'sent';
                 break;
@@ -93,7 +95,8 @@ class CampaignTasksController
     }
 
 
-    public function exportCampaignTask(Request $req, Response $res, array $args): Response {
+    public function exportCampaignTask(Request $req, Response $res, array $args): Response
+    {
         // ACL Check
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'export', true))
             throw (new ForbiddenException("Forbidden to export for module CampaignTasks."));
@@ -114,7 +117,8 @@ class CampaignTasksController
      * @param array $args
      * @return Response
      */
-    public function sendCampaignTaskTestEmail(Request $req, Response $res, array $args): Response {
+    public function sendCampaignTaskTestEmail(Request $req, Response $res, array $args): Response
+    {
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
         return $res->withJson($campaignTask->sendTestEmail());
     }
@@ -127,7 +131,8 @@ class CampaignTasksController
      * @param array $args
      * @return Response
      */
-    public function queueCampaignTaskEmail(Request $req, Response $res, array $args): Response {
+    public function queueCampaignTaskEmail(Request $req, Response $res, array $args): Response
+    {
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
         $campaignTask->activate('queued');
         return $res->withJson(['success' => true]);
@@ -141,7 +146,8 @@ class CampaignTasksController
      * @param array $args
      * @return Response
      */
-    public function liveCompileEmailBody(Request $req, Response $res, array $args): Response {
+    public function liveCompileEmailBody(Request $req, Response $res, array $args): Response
+    {
         $params = $req->getParsedBody();
         $emailTemplate = BeanFactory::getBean('EmailTemplates');
         $emailTemplate->body_html = $params['html'];
@@ -159,12 +165,13 @@ class CampaignTasksController
      * @param array $args
      * @return Response
      */
-    public function getExportReports(Request $req, Response $res, array $args): Response {
+    public function getExportReports(Request $req, Response $res, array $args): Response
+    {
         $retArray = [];
 
         $report = BeanFactory::getBean('KReports');
         $reports = $report->get_full_list('name', "report_module = 'CampaignTasks' AND ( integration_params LIKE '%\"kexcelexport\":1%' OR integration_params LIKE '%\"kcsvexport\":1%')");
-        foreach($reports as $report){
+        foreach ($reports as $report) {
             $integrationPramns = json_decode(html_entity_decode($report->integration_params));
             $retArray[] = [
                 'id' => $report->id,
@@ -188,12 +195,13 @@ class CampaignTasksController
      * @throws Exception
      * @throws NotFoundException
      */
-    public function mailmergeCampaignTask(Request $req, Response $res, array $args): Response {
+    public function mailmergeCampaignTask(Request $req, Response $res, array $args): Response
+    {
         $getParam = $req->getQueryParams();
 
         /** @var CampaignTask $campaignTask */
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-        if(!$campaignTask){
+        if (!$campaignTask) {
             throw new NotFoundException('CampaignTask not found');
         }
 
@@ -216,12 +224,27 @@ class CampaignTasksController
      * @throws Exception
      * @throws NotFoundException
      */
-    public function getTargetCount(Request $req, Response $res, array $args): Response {
+    public function getTargetCount(Request $req, Response $res, array $args): Response
+    {
         /** @var CampaignTask $campaignTask */
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-        if(!$campaignTask){
+        if (!$campaignTask) {
             throw new NotFoundException('CampaignTask not found');
         }
         return $res->withJson(['count' => $campaignTask->getTargetCount()]);
+    }
+
+
+    /**
+     * returns registartions in the linked event
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getEvenRegistrations(Request $req, Response $res, array $args): Response
+    {
+        $linked = BeanFactory::getBean('Events')->get_linked_beans('eventregistrations');
+        $task = BeanFactory::getBean('Tasks')->eventregistrations->add($linked);
     }
 }
