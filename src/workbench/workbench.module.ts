@@ -137,6 +137,7 @@ import {DashletGenerator} from "./components/dashletgenerator";
 import {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
 import {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 import {APIlogConfig} from "./components/apilogconfig";
+import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanagereditdefinitionmodal";
 
 @NgModule({
     imports: [
@@ -170,6 +171,7 @@ import {APIlogConfig} from "./components/apilogconfig";
         DictionaryManagerItemDetails,
         DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
+        DictionaryManagerEditDefinitionModal,
         DictionaryManagerAddItemModal,
         DictionaryManagerRelationships,
         DictionaryManagerRelationshipsDetails,
