@@ -2,8 +2,11 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHelper;
 use stdClass;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -81,6 +84,10 @@ class SpiceUIActionsetsController
         return $retArray;
     }
 
+    /**
+     * set actionset data
+     * @throws ForbiddenException | Exception
+     */
     function setActionSets(Request $req, Response $res, $args): Response
     {
         $db = DBManagerFactory::getInstance();
@@ -90,111 +97,178 @@ class SpiceUIActionsetsController
         // check if we are an admin user
         SpiceUIRESTHelper::checkAdmin();
 
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
+        // insert actionsets
+        foreach ($data['add'] as $actionsetId => $actionsetData) {
 
+            self::insertActionset($actionsetId, $actionsetData);
 
-        // add items
-        foreach ($data['add'] as $actionsetid => $actionsetdata) {
+            $actionsetItemTable = "sysui" . ($actionsetData['type'] == 'custom' ? 'custom' : '') . "actionsetitems";
 
-            $tableName = 'sysui' . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . 'actionsets';
+            // insert the actionset items
+            foreach ($actionsetData['actions'] as $actionsetItem) {
 
-            $db->query("INSERT INTO $tableName (id, module, name, grouped, package, version) VALUES('$actionsetid', '{$actionsetdata['module']}', '{$actionsetdata['name']}', '{$actionsetdata['grouped']}', '{$actionsetdata['package']}','{$actionsetdata['version']}')");
-
-            // add to the CR
-            if ($cr) $cr->addDBEntry($tableName, $actionsetid, 'I', $actionsetdata['module'] . "/" . $actionsetdata['name']);
-
-            $controller = new SpiceUIActionsetsController;
-            $controller->setActionSetItems($actionsetdata);
+                self::insertActionsetItem($actionsetItem, $actionsetId, $actionsetData, $actionsetItemTable);
+            }
         }
 
         // handle the update
-        foreach ($data['update'] as $actionsetid => $actionsetdata) {
+        foreach ($data['update'] as $actionsetId => $actionsetData) {
 
-            $tableName = 'sysui' . ($actionsetdata['type'] == 'custom' ? 'custom' : '') . 'actionsets';
+            $tableName = 'sysui' . ($actionsetData['type'] == 'custom' ? 'custom' : '') . 'actionsets';
 
             // get the record and check for change
-            $record = $db->fetchByAssoc($db->query("SELECT * FROM $tableName WHERE id='$actionsetid'"));
-            if ($record['name'] != $actionsetdata['name'] || $record['grouped'] != $actionsetdata['grouped'] || $record['package'] != $actionsetdata['package'] || $record['version'] != $actionsetdata['version']) {
-                // update the record
-                $db->query("UPDATE $tableName SET name='{$actionsetdata['name']}', grouped='{$actionsetdata['grouped']}', package='{$actionsetdata['package']}', version='{$actionsetdata['version']}' WHERE id='$actionsetid'");
+            $existingActionset = $db->fetchByAssoc($db->query("SELECT * FROM $tableName WHERE id='$actionsetId'"));
 
-                // add to the CR
-                if ($cr) $cr->addDBEntry($tableName . "actionsets", $actionsetid, 'U', $actionsetdata['module'] . "/" . $actionsetdata['name']);
+            // handle actionset
+            if ($existingActionset && SystemDeploymentCR::hasChanged($existingActionset, $actionsetData, ['name', 'grouped', 'version', 'package'])) {
+
+                $dbData = [
+                    'name' => $actionsetData['name'],
+                    'package' => $actionsetData['package'],
+                    'version' => $_SESSION['confversion']
+                ];
+
+                $name = $actionsetData['module'] . "/" . $actionsetData['name'];
+
+                SystemDeploymentCR::writeDBEntry($tableName, $actionsetId, $dbData, $name, SystemDeploymentCR::ACTION_UPDATE);
+
+
+            } else if (!$existingActionset) {
+
+                self::insertActionset($actionsetId, $actionsetData);
+
             }
-            $controller = new SpiceUIActionsetsController;
-            $controller->setActionSetItems($actionsetdata);
+
+            self::setActionSetItems($actionsetData);
         }
 
         return $res->withJson(true);
-
     }
 
-
-
-    static function setActionSetItems($actionset){
+    /**
+     * set actionset items
+     * @param array $actionsetData
+     * @return void
+     * @throws Exception
+     */
+    private static function setActionSetItems(array $actionsetData)
+    {
         $db = DBManagerFactory::getInstance();
 
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
+        $actionsetId = $actionsetData['id'];
 
-        $actionsetid = $actionset['id'];
-        $actions = $actionset['actions'];
+        $name = $actionsetData['module'] . "/" . $actionsetData['name'] . '/';
+
+        $actionsetItemTable = "sysui" . ($actionsetData['type'] == 'custom' ? 'custom' : '') . "actionsetitems";
 
         // get all actionset items
-        $items = $db->query("SELECT * FROM sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems WHERE actionset_id = '$actionsetid'");
+        $query = $db->query("SELECT * FROM $actionsetItemTable WHERE actionset_id = '$actionsetId'");
 
-        while ($item = $db->fetchByAssoc($items)) {
+        while ($existingItem = $db->fetchByAssoc($query)) {
 
+            $actionsetItem = null;
 
-                $i = 0;
-                $itemIndex = false;
-                foreach ($actions as $index => $actionsetitem) {
-                    if ($actionsetitem['id'] == $item['id']) {
-                        unset($actions[$index]);
-                        $itemIndex = true;
-                        break;
-                    }
+            // check if the existing item exists in the update array
+            $existingItemInPostData = false;
+
+            foreach ($actionsetData['actions'] as $index => $actionsetItem) {
+
+                if ($actionsetItem['id'] == $existingItem['id']) {
+
+                    $actionsetItem = $actionsetData['actions'][$index];
+                    // remove the item from items array
+                    unset($actionsetData['actions'][$index]);
+                    $existingItemInPostData = true;
+                    break;
                 }
-                // if we have the entry
-                if ($itemIndex !== false) {
-                    if ($item['sequence'] != (string)$actionsetitem['sequence'] ||
-                        $item['package'] != $actionsetitem['package'] ||
-                        $item['version'] != $actionsetitem['version'] ||
-                        $item['action'] != $actionsetitem['action'] ||
-                        $item['component'] != $actionsetitem['component'] ||
-                        $item['singlebutton'] != $actionsetitem['singlebutton'] ||
-                        $item['actionset_id'] != $actionsetid ||
-                        md5($item['actionconfig']) != md5(json_encode($actionsetitem['actionconfig']))) {
-                        $db->query("UPDATE sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems  SET package = '" . $actionsetitem['package'] . "', action = '" . $actionsetitem['action'] . "', component = '" . $actionsetitem['component'] . "', singlebutton = " . ($actionsetitem['singlebutton'] ? '1' : '0') . ", actionset_id = '" . $actionsetid . "', sequence = '" . $actionsetitem['sequence'] . "', actionconfig = '" . json_encode($actionsetitem['actionconfig']) . "', version = '" . $actionsetitem['version'] . "' WHERE id='{$item['id']}'");
-
-                        // add to the CR
-                        if ($cr) $cr->addDBEntry("sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems", $actionsetitem['id'], 'U', $actionset['module'] . "/" . $actionset['name'] . '/' . $actionsetitem['action']);
-                    }
-
-                } else {
-                    // remove it
-                    $db->query("DELETE FROM sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems WHERE id='{$item['id']}'");
-                    // add to the CR
-                    if ($cr) $cr->addDBEntry("sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems", $actionsetitem['id'], 'D', $actionset['module'] . "/" . $actionset['name'] . '/' . $actionsetitem['action']);
-
-                }
-
             }
 
-        if(count($actions) > 0 ) {
-            // add new actions
-            foreach ($actions as $index => $actionsetitem) {
-                $db->query("INSERT INTO sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems (id, actionset_id, sequence, action, component, actionconfig, requiredmodelstate, singlebutton, package, version) VALUES('" . $actionsetitem['id'] . "', '$actionsetid', '" . $actionsetitem['sequence'] . "', '" . $actionsetitem['action'] . "', '" . $actionsetitem['component'] . "', '" .  json_encode($actionsetitem['actionconfig']) . "', '" . $actionsetitem['requiredmodelstate'] . "', " . ($actionsetitem['singlebutton'] ? '1' : '0') . ", '" . $actionsetitem['package'] . "', '{$_SESSION['confversion']}')");
+            // prepare for check
+            $existingItem['actionconfig'] = json_decode($existingItem['actionconfig']);
 
-                // add to the CR
-                if ($cr) $cr->addDBEntry("sysui" . ($actionset['type'] == 'custom' ? 'custom' : '') . "actionsetitems", $actionsetitem['id'], 'U', $actionset['module'] . "/" . $actionset['name'] . '/' . $actionsetitem['action']);
+            // if we have the item and it has changed
+            if ($existingItemInPostData && SystemDeploymentCR::hasChanged($existingItem, $actionsetItem, ['sequence', 'package', 'version', 'action', 'component', 'singlebutton', 'actionconfig'])) {
+
+                $dbData = [
+                    'action' => $actionsetItem['action'],
+                    'component' => $actionsetItem['component'],
+                    'singlebutton' => $actionsetItem['singlebutton'] ? '1' : '0',
+                    'sequence' => $actionsetItem['sequence'],
+                    'actionconfig' => json_encode($actionsetItem['actionconfig']),
+                    'requiredmodelstate' => $actionsetItem['requiredmodelstate'],
+                    'package' => $actionsetItem['package'],
+                    'version' => $_SESSION['confversion'],
+                ];
+
+                $name = $name . $actionsetItem['action'];
+
+                SystemDeploymentCR::writeDBEntry($actionsetItemTable, $actionsetItem['id'], $dbData, $name, SystemDeploymentCR::ACTION_UPDATE);
+
+            } else if (!$existingItemInPostData) {
+
+                $name = $name . $existingItem['action'];
+
+                SystemDeploymentCR::deleteDBEntry($actionsetItemTable, $existingItem['id'], $name);
             }
+        }
+
+        // add new actions
+        foreach ($actionsetData['actions'] as $actionsetItem) {
+
+            self::insertActionsetItem($actionsetItem, $actionsetId, $actionsetData, $actionsetItemTable);
         }
     }
 
+    /**
+     * insert actionset item
+     * @param array $actionsetItem
+     * @param string $actionsetId
+     * @param array $actionsetData
+     * @param string $actionsetItemTable
+     * @throws Exception
+     */
+    private static function insertActionsetItem(array $actionsetItem, string $actionsetId, array $actionsetData, string $actionsetItemTable)
+    {
+        $dbData = [
+            'id' => $actionsetItem['id'],
+            'actionset_id' => $actionsetId,
+            'sequence' => $actionsetItem['sequence'],
+            'action' => $actionsetItem['action'],
+            'component' => $actionsetItem['component'],
+            'actionconfig' => json_encode($actionsetItem['actionconfig']),
+            'requiredmodelstate' => $actionsetItem['requiredmodelstate'],
+            'singlebutton' => $actionsetItem['singlebutton'] ? '1' : '0',
+            'package' => $actionsetItem['package'],
+            'version' => $_SESSION['confversion']
+        ];
 
+        $name = $actionsetData['module'] . "/" . $actionsetData['name'] . '/' . $actionsetItem['action'];
 
+        SystemDeploymentCR::writeDBEntry($actionsetItemTable, $actionsetItem['id'], $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
+    }
+
+    /**
+     * insert actionset
+     * @param string $actionsetId
+     * @param array $actionsetData
+     * @return void
+     * @throws Exception
+     */
+    private static function insertActionset(string $actionsetId, array $actionsetData)
+    {
+        $tableName = 'sysui' . ($actionsetData['type'] == 'custom' ? 'custom' : '') . 'actionsets';
+
+        $dbData = [
+            'id' => $actionsetId,
+            'module' => $actionsetData['module'],
+            'name' => $actionsetData['name'],
+            'grouped' => $actionsetData['grouped'],
+            'package' => $actionsetData['package'],
+            'version' => $_SESSION['confversion'],
+        ];
+
+        $name = $actionsetData['module'] . "/" . $actionsetData['name'];
+
+        SystemDeploymentCR::writeDBEntry($tableName, $actionsetId, $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
+    }
 }
