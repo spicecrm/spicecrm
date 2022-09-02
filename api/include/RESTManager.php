@@ -271,19 +271,30 @@ class RESTManager
         $pass = null;
 
         if (!empty($headers['oauth-token'])) {
-            $token = $headers['oauth-token'];
+
+            $token = (object) [
+                'access_token' => $headers['oauth-token'],
+                'refresh_token' => $headers['oauth-refresh-token'],
+                'expires_in' => $headers['oauth-token-valid-until'],
+            ];
+
             $tokenIssuer = $headers['oauth-issuer'];
+
             if(empty($tokenIssuer)) {
                 $tokenIssuer="SpiceCRM";
             }
+
         } elseif (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+
             $user = $_SERVER['PHP_AUTH_USER'];
             $pass = $_SERVER['PHP_AUTH_PW'];
+
         } elseif (!empty($_GET['PHP_AUTH_DIGEST_RAW'])) {
-            $auth = explode(':', base64_decode(str_replace('Basic ', '', $_GET['PHP_AUTH_DIGEST_RAW'])));
-            $user = $auth[0];
-            $pass = $auth[1];
+
+            list($user, $pass) = explode(':', base64_decode(str_replace('Basic ', '', $_GET['PHP_AUTH_DIGEST_RAW'])));
+
         } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+
             list($user, $pass) = explode(':', base64_decode(substr($_SERVER['REDIRECT_HTTP_AUTHORIZATION'], 6)));
         }
 

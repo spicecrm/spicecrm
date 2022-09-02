@@ -29,7 +29,7 @@ class GoogleAuthenticate implements AuthenticatorI
      */
     public function authenticate(object $authData, string $authType): AuthResponse
     {
-        $payload = $this->verifyIdToken($authData->token);
+        $payload = $this->verifyIdToken($authData->token->access_token);
 
         if (session_id() == '') {
             @session_start();

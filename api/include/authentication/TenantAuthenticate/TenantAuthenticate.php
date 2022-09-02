@@ -26,7 +26,7 @@ class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
     {
         switch ($authType) {
             case 'token':
-                $userId = $this->handleToken($authData->token);
+                $userId = $this->handleToken($authData->token->access_token);
                 break;
             case 'credentials':
                 $userId = $this->handleCredentials($authData->username, $authData->password, $authData->impersonationUser);
