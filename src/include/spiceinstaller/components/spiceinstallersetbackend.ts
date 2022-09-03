@@ -39,6 +39,10 @@ export class SpiceInstallerSetBackEnd implements OnInit {
 
     public next(){
         this.spiceinstaller.systemurl = this.apiurl;
+        this.spiceinstaller.configObject.backendconfig = {
+            backendUrl: this.spiceinstaller.systemurl,
+            frontendUrl: this.spiceinstaller.frontendUrl,
+        };
         this.spiceinstaller.selectedStep.completed = true;
         this.spiceinstaller.steps[0] = this.spiceinstaller.selectedStep;
         this.spiceinstaller.next(this.spiceinstaller.steps[0]);
