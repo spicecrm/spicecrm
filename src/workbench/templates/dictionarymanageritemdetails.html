@@ -35,6 +35,12 @@
                 </label>
                 <system-input-label [(ngModel)]="dictionaryitem.label"></system-input-label>
             </div>
+            <div>
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_INPUT_HELPER"></system-label>
+                </label>
+                <system-input-label [(ngModel)]="dictionaryitem.labelinputhelper"></system-input-label>
+            </div>
             <div class="slds-grid slds-p-vertical--xx-small">
                 <div class="slds-size--1-of-3 slds-form-element__control">
                     <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true"><system-label label="LBL_REQUIRED"></system-label></system-checkbox>
