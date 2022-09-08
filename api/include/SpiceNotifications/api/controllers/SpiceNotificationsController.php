@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SpiceCRM\includes\SpiceNotifications\KREST\controllers;
+namespace SpiceCRM\includes\SpiceNotifications\api\controllers;
 
 
 use Slim\Psr7\Request;
@@ -10,7 +10,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 
-class SpiceNotificationsKRESTController
+class SpiceNotificationsController
 {
     /**
      * mark the notification as read in the database
