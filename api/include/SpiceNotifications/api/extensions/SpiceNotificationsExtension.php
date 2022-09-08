@@ -2,7 +2,7 @@
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\RESTManager;
-use SpiceCRM\includes\SpiceNotifications\KREST\controllers\SpiceNotificationsKRESTController;
+use SpiceCRM\includes\SpiceNotifications\api\controllers\SpiceNotificationsController;
 
 /**
  * get a Rest Manager Instance
@@ -13,7 +13,7 @@ $routes = [
     [
         'method' => 'post',
         'route' => '/common/SpiceNotifications/{id}',
-        'class' => SpiceNotificationsKRESTController::class,
+        'class' => SpiceNotificationsController::class,
         'function' => 'save',
         'description' => 'create a new notification',
         'options' => ['noAuth' => false, 'adminOnly' => false],
@@ -21,7 +21,7 @@ $routes = [
     [
         'method' => 'post',
         'route' => '/common/SpiceNotifications/{id}/markasread',
-        'class' => SpiceNotificationsKRESTController::class,
+        'class' => SpiceNotificationsController::class,
         'function' => 'markAsRead',
         'description' => 'mark a notification as read',
         'options' => ['noAuth' => false, 'adminOnly' => false],
@@ -29,7 +29,7 @@ $routes = [
     [
         'method' => 'post',
         'route' => '/common/SpiceNotifications/all/read',
-        'class' => SpiceNotificationsKRESTController::class,
+        'class' => SpiceNotificationsController::class,
         'function' => 'markAllAsRead',
         'description' => 'mark all notifications as read',
         'options' => ['noAuth' => false, 'adminOnly' => false],
@@ -37,7 +37,7 @@ $routes = [
     [
         'method'      => 'get',
         'route'       => '/common/SpiceNotifications',
-        'class'       => SpiceNotificationsKRESTController::class,
+        'class'       => SpiceNotificationsController::class,
         'function'    => 'loadNotifications',
         'description' => 'Loads user notifications.',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => false,],
