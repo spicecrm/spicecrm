@@ -14,6 +14,11 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "moment",
+              "less",
+              "ts-md5"
+            ],
             "outputPath": "dev",
             "index": "index-dev.html",
             "main": "src/spiceui.ts",
