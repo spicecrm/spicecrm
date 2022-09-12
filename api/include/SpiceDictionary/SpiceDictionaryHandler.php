@@ -79,11 +79,10 @@ class SpiceDictionaryHandler extends SpiceSingleton
                     }
                 }
                 elseif(is_dir($directory.'/'.$metaDataFile)){
-                    $fileSystemIterator = new \FilesystemIterator($directory.'/'.$metaDataFile);
-                    foreach ($fileSystemIterator as $fileInfo){
-                        if (preg_match('/vardefs.php$/', $fileInfo->getFilename())) {
-                            include($directory . '/' . $metaDataFile . '/' . $fileInfo->getFilename());
-                        }
+                    foreach ( new \DirectoryIterator( $directory.'/'.$metaDataFile ) as $defsfile ) {
+                        if ( $defsfile->isDot() ) continue;
+                        if ( preg_match( '/vardefs.php$/', $defsfile->getFilename(), $found ) )
+                            include($directory . '/' . $metaDataFile . '/' . $defsfile->getFilename());
                     }
                 }
             }
