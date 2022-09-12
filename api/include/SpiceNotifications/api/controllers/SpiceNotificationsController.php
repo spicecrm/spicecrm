@@ -1,7 +1,7 @@
 <?php
 
 
-namespace SpiceCRM\includes\SpiceNotifications\KREST\controllers;
+namespace SpiceCRM\includes\SpiceNotifications\api\controllers;
 
 
 use Slim\Psr7\Request;
@@ -10,10 +10,11 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 
-class SpiceNotificationsKRESTController
+class SpiceNotificationsController
 {
     /**
      * mark the notification as read in the database
+     * for the current user
      * @param Request $req
      * @param Response $res
      * @param array $args
@@ -22,8 +23,9 @@ class SpiceNotificationsKRESTController
      */
     public function markAllAsRead(Request $req, Response $res, array $args)
     {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        $query = $db->query("UPDATE spicenotifications SET notification_read = 1 WHERE notification_read <> 1");
+        $query = $db->query("UPDATE spicenotifications SET notification_read = 1 WHERE user_id = '{$current_user->id}' AND notification_read <> 1");
         return $res->withJson(['success' => !$query ? 0 : 1]);
     }
     /**

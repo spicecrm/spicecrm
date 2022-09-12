@@ -39,12 +39,9 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * All Rights Reserved.
  * ***************************************************************************** */
 
-// CR1000349 spiceinstaller
-//require_once('modules/DynamicFields/DynamicField.php');
-
 
 /**
- * SpiceBean is the base class for all business objects in Sugar.  It implements
+ * SpiceBean is the base class for all business objects in SpiceCRM.  It implements
  * the primary functionality needed for manipulating business objects: create,
  * retrieve, update, delete.  It allows for searching and retrieving list of records.
  * It allows for retrieving related objects (e.g. contacts related to a specific account).
