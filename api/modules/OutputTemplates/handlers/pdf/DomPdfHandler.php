@@ -64,7 +64,8 @@ class DomPdfHandler extends LibPdfHandler
     {
         parent::process($html, $options);
 
-        $this->createDomPdf('<style>'.$this->template->getStyle().'</style>'.$this->html_content, $this->options);
+        $this->createDomPdf($this->html_content, $this->options);
+        # $this->createDomPdf('<style>'.$this->template->getStyle().'</style>'.$this->html_content, $this->options);
         return true;
     }
 
