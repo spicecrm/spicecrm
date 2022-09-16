@@ -468,5 +468,5 @@ input[type="submit"] {
 
 .slds-icon-text-error {
     /*! @css-var-fallback fill */
-    --slds-c-icon-color-foreground: #ffffff
+    --slds-c-icon-color-foreground: #c23934
 }
