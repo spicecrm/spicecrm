@@ -1,0 +1,8 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="getFieldClass()">
+    <button class="slds-button slds-button--neutral" (click)="validate()"><system-label label="LBL_VALIDATE"></system-label></button>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
+

@@ -14,6 +14,11 @@ import {DeploymentCRDBEntries} from './components/deploymentcrdbentries';
 import {DeploymentCRSetActiveButton} from './components/deploymentcrsetactivebutton';
 import {DeploymentCRActive} from './components/deploymentcractive';
 import {DeploymentCRDBSQL} from './components/deploymentcrdbsql';
+import {DeploymentSystemValidationField} from "./components/deploymentsystemvalidationfield";
+import {DeploymentSystemAddRelatedButton} from "./components/deploymentsystemaddrelatedbutton";
+import {DeploymentSystemSelectRelatedButton} from "./components/deploymentsystemselectrelatedbutton";
+import {DeploymentFetchPackagesButton} from "./components/deploymentsystemfetchpackagesbutton";
+import {DeploymentSystemPackagesModal} from "./components/deploymentsystempackagesmodal";
 
 
 @NgModule({
@@ -26,6 +31,11 @@ import {DeploymentCRDBSQL} from './components/deploymentcrdbsql';
         SystemComponents,
     ],
     declarations: [
+        DeploymentSystemPackagesModal,
+        DeploymentFetchPackagesButton,
+        DeploymentSystemSelectRelatedButton,
+        DeploymentSystemAddRelatedButton,
+        DeploymentSystemValidationField,
         DeploymentCRDBEntries,
         DeploymentCRSetActiveButton,
         DeploymentCRActive,
