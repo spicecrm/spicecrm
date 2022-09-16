@@ -1,6 +1,6 @@
 <div (click)="onEditorClick($event)" class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap slds-grid slds-grid--vertical slds-theme--default" style="  top: 0; right: 0; left: 0; bottom: 0; z-index: 9999;" [ngStyle]="richTextStyle">
     <!--system-richtext-toolbar [isActive]="isActive" #editorToolbar (execute)="executeCommand($event)"></system-richtext-toolbar-->
-    <div *ngIf="!readOnly" role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none">
+    <div *ngIf="!readOnly" role="toolbar" style="top: 0; z-index: 1; position: sticky" class="slds-rich-text-editor__toolbar slds-shrink-none">
         <ul *ngIf="extendedmode" class="slds-button-group-list">
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" aria-pressed=true [title]="language.getLabel('LBL_UNDO')" (click)="executeCommand('undo')">
