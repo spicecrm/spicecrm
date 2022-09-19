@@ -86,7 +86,6 @@ class Compiler
         $this->currentTemplate = $template;
         $this->doc = new DOMDocument('1.0');
         $this->root = $this->doc->appendChild( $this->doc->createElement('html') );
-        # $this->root = $this->doc;
     }
 
     /**
@@ -107,7 +106,6 @@ class Compiler
         $dom->loadHTML('<?xml encoding="utf-8"?>' . html_entity_decode($txt, ENT_QUOTES));
 
         $dummy = $dom->getElementsByTagName('html');
-        # $dummy = $dom->getElementsByTagName('body');
         foreach( $this->parseDom( $dummy[0], ['bean' => $bean] ) as $newElement ){
             $this->root->appendChild($newElement);
         };
