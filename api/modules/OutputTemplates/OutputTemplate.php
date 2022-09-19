@@ -72,10 +72,25 @@ class OutputTemplate extends SpiceBean
         if ($bodyOnly) {
             $html = $templateCompiler->compile(html_entity_decode( $this->body), $bean, $this->language, $this->additonalValues);
         } else {
-            $html = '<style>' . $this->getStyle() . '</style>' . $templateCompiler->compile('<body><header id="page_header">'
-                    .html_entity_decode( $this->header ).'</header><footer id="page_footer">'.html_entity_decode( $this->footer ).'</footer><main>'.html_entity_decode( $this->body ).'</main></body>', $bean, $this->language, $this->additonalValues);
-            #$html =  $templateCompiler->compile('<body><header>'
-            #        .html_entity_decode( $this->header ).'</header><footer>'.html_entity_decode( $this->footer ).'</footer><main>'.html_entity_decode( $this->body ).'</main></body>', $bean, $this->language, $this->additonalValues);
+            $html = $templateCompiler->compile('
+                <body>
+                    <header id="page_header">
+                        '.html_entity_decode( $this->header ).'
+                    </header>
+                    <main>
+                            '.html_entity_decode( $this->body ).'
+                    </main>
+                    <footer id="page_footer">
+                            '.html_entity_decode( $this->footer ).'
+                    </footer>
+                    </body>', $bean, $this->language, $this->additonalValues);
+            $html = preg_replace('#^<html>#s', '<html>
+                <head>
+                    <style>
+                        '.$this->getStyle().'
+                    </style>
+                </head>
+            ', $html );
         }
 
         return $html;
