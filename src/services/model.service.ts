@@ -1612,7 +1612,7 @@ export class model implements OnDestroy {
      *
      *  @param changedFields an array with fieldnames that has been changed in order to allow the method to determine the scope fo the change and if a duplicate check shoudl be performed
      */
-    public duplicateCheckOnChange(changedFields: string[]): Observable<boolean> {
+    public duplicateCheckOnChange(changedFields: string[], forcecheck: boolean = false): Observable<boolean> {
         if (this.isNew && this.metadata.getModuleDuplicatecheckOnChange(this.module)) {
             let dupCheckFields = this.metadata.getModuleDuplicateCheckFields(this.module);
 
@@ -1630,7 +1630,7 @@ export class model implements OnDestroy {
             }
 
             // execute the check or empty the duplicates array on the bean
-            if (cancheck && shouldcheck) {
+            if ((cancheck && shouldcheck) || forcecheck) {
                 let retSubject = new Subject<any>();
                 // do the check
                 this.duplicateCheck(true).subscribe({
