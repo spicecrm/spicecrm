@@ -14,6 +14,7 @@ class SpiceNotificationsController
 {
     /**
      * mark the notification as read in the database
+     * for the current user
      * @param Request $req
      * @param Response $res
      * @param array $args
@@ -22,8 +23,9 @@ class SpiceNotificationsController
      */
     public function markAllAsRead(Request $req, Response $res, array $args)
     {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        $query = $db->query("UPDATE spicenotifications SET notification_read = 1 WHERE notification_read <> 1");
+        $query = $db->query("UPDATE spicenotifications SET notification_read = 1 WHERE user_id = '{$current_user->id}' AND notification_read <> 1");
         return $res->withJson(['success' => !$query ? 0 : 1]);
     }
     /**
