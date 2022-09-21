@@ -69,3 +69,7 @@
 .ck-balloon-panel {
     z-index: 11111 !important;
 }
+
+.ck-toolbar {
+    display: none;
+}
