@@ -45,7 +45,7 @@ class SpiceCronJobs
     {
         $db = DBManagerFactory::getInstance();
         $job = BeanFactory::newBean('SchedulerJobs');
-        return $job->get_full_list('schedulerjobs.priority', "schedulerjobs.next_run_date <= {$db->now()} AND schedulerjobs.job_status = 'Active'") ?? [];
+        return $job->get_full_list('last_run_resolution, priority', "schedulerjobs.next_run_date <= {$db->now()} AND schedulerjobs.job_status = 'Active'") ?? [];
     }
 
     /**

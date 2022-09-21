@@ -1,7 +1,7 @@
 /**
  * @module ModuleExchange
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, ComponentRef, OnInit} from '@angular/core';
 
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -11,6 +11,7 @@ import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
 import {firstValueFrom} from "rxjs";
 import {session} from "../../../services/session.service";
+import {MSGraphMappingModal} from "./msgraphmappingmodal";
 
 /**
  * @ignore
@@ -210,6 +211,12 @@ export class ExchangeUserSettings implements OnInit {
                 this.isLoading = undefined;
                 this.toast.sendToast(err.error.error.message, 'error');
             }
+        });
+    }
+
+    public displayMapping(module) {
+        this.modal.openModal('MSGraphMappingModal').subscribe((modalRef: ComponentRef<MSGraphMappingModal>) => {
+            modalRef.instance.mapping = module.mapping;
         });
     }
 }
