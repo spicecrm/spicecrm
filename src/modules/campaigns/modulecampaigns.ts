@@ -24,8 +24,6 @@ import {CampaignTaskMailMergePanel} from "./components/campaigntaskmailmergepane
 import {CampaignTaskMailergeButton} from "./components/campaigntaskmailmergebutton";
 import {CampaignTaskMailMergeModal} from "./components/campaigntaskmailmergemodal";
 import {DirectivesModule} from "../../directives/directives";
-import {CampaignTaskAddEventModal} from "./components/campaigntaskaddeventmodal";
-import {CampaignTaskAddEventButton} from "./components/campaigntaskaddevenbutton";
 import {EventRegistrationButton} from "./components/eventregistrationbutton";
 import {EventRegistrationModal} from "./components/eventregistrationmodal";
 
@@ -52,8 +50,6 @@ import {EventRegistrationModal} from "./components/eventregistrationmodal";
         CampaignTaskMailMergePanel,
         CampaignTaskMailergeButton,
         CampaignTaskMailMergeModal,
-        CampaignTaskAddEventModal,
-        CampaignTaskAddEventButton,
         EventRegistrationButton,
         EventRegistrationModal
     ]
