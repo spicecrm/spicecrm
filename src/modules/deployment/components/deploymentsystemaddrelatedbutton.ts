@@ -13,6 +13,7 @@ import {metadata} from "../../../services/metadata.service";
  * deployment add related action
  */
 @Component({
+    selector: 'deployment-system-add-related-button',
     templateUrl: '../templates/deploymentsystemaddrelatedbutton.html',
     providers: [model]
 })

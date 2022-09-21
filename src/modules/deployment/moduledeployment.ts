@@ -19,6 +19,9 @@ import {DeploymentSystemAddRelatedButton} from "./components/deploymentsystemadd
 import {DeploymentSystemSelectRelatedButton} from "./components/deploymentsystemselectrelatedbutton";
 import {DeploymentFetchPackagesButton} from "./components/deploymentsystemfetchpackagesbutton";
 import {DeploymentSystemPackagesModal} from "./components/deploymentsystempackagesmodal";
+import {DeploymentSystemLandscapeView} from "./components/deploymentsystemlandscapeview";
+import {DirectivesModule} from "../../directives/directives";
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 
 @NgModule({
@@ -29,8 +32,11 @@ import {DeploymentSystemPackagesModal} from "./components/deploymentsystempackag
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule,
+        DragDropModule
     ],
     declarations: [
+        DeploymentSystemLandscapeView,
         DeploymentSystemPackagesModal,
         DeploymentFetchPackagesButton,
         DeploymentSystemSelectRelatedButton,

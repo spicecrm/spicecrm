@@ -16,6 +16,7 @@ import {toast} from "../../../services/toast.service";
  * field to validate connection to a target system
  */
 @Component({
+    selector: 'deployment-system-validation-field',
     templateUrl: '../templates/deploymentsystemvalidationfield.html',
 })
 export class DeploymentSystemValidationField extends fieldGeneric {

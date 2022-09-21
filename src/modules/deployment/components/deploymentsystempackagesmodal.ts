@@ -11,6 +11,7 @@ import {toast} from "../../../services/toast.service";
  * modal to display target system packages
  */
 @Component({
+    selector: 'deployment-system-packages-modal',
     templateUrl: '../templates/deploymentsystempackagesmodal.html',
 })
 export class DeploymentSystemPackagesModal {

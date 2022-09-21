@@ -15,6 +15,7 @@ import {take} from "rxjs/operators";
  * deployment select related action
  */
 @Component({
+    selector: 'deployment-system-select-related-button',
     templateUrl: '../templates/deploymentsystemselectrelatedbutton.html',
     providers: [model]
 })
