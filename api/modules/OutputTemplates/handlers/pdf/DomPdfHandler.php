@@ -64,13 +64,15 @@ class DomPdfHandler extends LibPdfHandler
     {
         parent::process($html, $options);
 
-        $this->createDomPdf('<style>'.$this->template->getStyle().'<style>'.$this->html_content, $this->options);
+        $this->createDomPdf($this->html_content, $this->options);
         return true;
     }
 
     private function createDomPdf($html, $options = null)
     {
         $options = (object) $options;
+
+        # echo $html; exit; # for testing
 
         $this->class_instance->loadHtml($html);
 

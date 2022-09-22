@@ -1004,17 +1004,22 @@ class SpiceFTSHandler
 
         $indexSettings = SpiceFTSUtils::getBeanIndexSettings($bean->_module);
         $indexProperties = SpiceFTSUtils::getBeanIndexProperties($bean->_module);
+
+        $beanHandler = new SpiceFTSBeanHandler($bean);
+        $ftsBean = $beanHandler->normalizeBean();
+
         $searchParts = [];
         foreach ($indexProperties as $indexProperty) {
             if ($indexProperty['duplicatecheck']) {
                 $indexField = $indexProperty['indexfieldname'];
-                if (empty($bean->$indexField)) {
+                if (empty($ftsBean[$indexProperty['indexfieldname']])) {
                     //return [];
                     // don't stop, just continue, ignore it
                     continue;
                 } else {
 
-                    $queryField = $bean->$indexField;
+                    //$queryField = $bean->$indexField;
+                    $queryField = $ftsBean[$indexProperty['indexfieldname']];
 
                     switch ($indexProperty['duplicatequery']) {
                         case 'term':

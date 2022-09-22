@@ -1157,6 +1157,19 @@ class SpiceBeanHandler
         // load the bean and populate from row
         $seed = BeanFactory::getBean($beanModule);
         $seed->populateFromRow($beanData);
+
+        // specific handling for email addresses for duplicate check
+        if(isset($beanData['email_addresses']) && count($beanData['email_addresses']['beans']) > 0) {
+            $seed->load_relationship('email_addresses');
+            foreach ($beanData['email_addresses']['beans'] as $emailId => $emailData) {
+                $em = BeanFactory::getBean('EmailAddresses');
+                $em->email_address = $emailData['email_address'];
+                $em->id = $emailData['id'];
+                $seed->email_addresses->addBean($em);
+            }
+            $seed->email_addresses->setLoaded();
+        }
+
         $duplicates = $seed->checkForDuplicates();
 
         $retArray = [];
