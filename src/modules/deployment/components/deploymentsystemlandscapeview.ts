@@ -1,7 +1,7 @@
 /**
  * @module ModuleDeployment
  */
-import {ChangeDetectorRef, Component, ElementRef, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {DeploymentSystemLandscapeService} from "../services/deploymentsystemlandscape.service";
 import {navigationtab} from "../../../services/navigationtab.service";
@@ -18,14 +18,24 @@ import {model} from "../../../services/model.service";
     providers: [model, DeploymentSystemLandscapeService],
 })
 export class DeploymentSystemLandscapeView implements OnInit {
-
+    /**
+     * show hide the view
+     */
     public show: boolean = true;
-    public isLinking: boolean = false;
+    /**
+     * holds the id of the source item while linking
+     */
+    public isLinking: string;
+    /**
+     * holds the id of the dragging item
+     */
+    public isDragging: string;
 
     constructor(public backend: backend,
                 public navigationtab: navigationtab,
                 public eRef: ElementRef,
                 public cdRef: ChangeDetectorRef,
+                public renderer: Renderer2,
                 public model: model,
                 public dsl: DeploymentSystemLandscapeService) {
     }
@@ -56,6 +66,8 @@ export class DeploymentSystemLandscapeView implements OnInit {
      */
     public handleItemDragEnd(item: LandscapeItemI, dragEvent: CdkDragEnd) {
 
+        this.isDragging = undefined;
+
         // workaround to clear the drag translate style
         this.show = false;
         this.cdRef.detectChanges();
@@ -76,31 +88,49 @@ export class DeploymentSystemLandscapeView implements OnInit {
     }
 
     /**
-     * handle link drag end to connect two items
-     * @param item
-     * @param dragEvent
-     */
-    public handleLinkDragEnd(item: LandscapeItemI, dragEvent: CdkDragEnd) {
-
-        const targetId = (dragEvent.event.target as any).id;
-
-        if (!targetId) return;
-
-        const target = this.dsl.data.find(e => e.id == targetId);
-
-        if (!target) return;
-
-        this.isLinking = false;
-
-        this.dsl.connect(item, target);
-    }
-
-    /**
      * add new item
      * @param item
      * @param itemContainer
      */
     public add(item, itemContainer: HTMLElement) {
-        this.dsl.add(item, itemContainer);
+        this.dsl.addNewRelatedSystem(item, itemContainer);
+    }
+
+
+    /**
+     * search and link an existing item
+     * @param item
+     * @param itemContainer
+     */
+    public select(item, itemContainer: HTMLElement) {
+        this.dsl.selectRelatedSystem(item, itemContainer);
+    }
+
+    /**
+     * link two existing elements
+     * @param item
+     * @param itemContainer
+     */
+    public link(item, itemContainer: HTMLElement) {
+
+        this.isLinking = item.id;
+
+        const clickListener = this.renderer.listen(document, 'click', e => {
+
+            clickListener();
+            this.isLinking = undefined;
+
+            this.cdRef.detectChanges();
+
+            const targetId = (e.target as any).id;
+
+            if (!targetId) return;
+
+            const target = this.dsl.data.find(e => e.id == targetId);
+
+            if (!target) return;
+
+            this.dsl.selectRelatedSystem(item, itemContainer, target);
+        });
     }
 }

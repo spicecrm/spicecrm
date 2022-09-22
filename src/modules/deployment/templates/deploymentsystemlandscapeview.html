@@ -5,9 +5,9 @@
         </button>
     </div>
     <!-- class spice-deployment-system-landscape-view-svg is required -->
-    <svg *ngIf="show" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="slds-height_full slds-size--1-of-1 spice-deployment-system-landscape-view-svg">
+    <svg *ngIf="show" [style.cursor]="!isLinking ? 'unset' : 'crosshair'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="slds-height_full slds-size--1-of-1 spice-deployment-system-landscape-view-svg">
         <ng-container *ngFor="let item of dsl.data" [ngSwitch]="item.type">
-            <g *ngSwitchCase="'item'" #itemContainer cdkDrag (cdkDragEnded)="handleItemDragEnd(item, $event)" class="spice-hover-display-children">
+            <g *ngSwitchCase="'item'" #itemContainer cdkDrag (cdkDragStarted)="isDragging = item.id" (cdkDragEnded)="handleItemDragEnd(item, $event)" class="spice-hover-display-children">
                 <rect [attr.x]="item.position.x" [attr.y]="item.position.y" width="100" height="100" rx="5" fill="#001639"></rect>
                 <text  [attr.x]="item.name.position.x" [attr.y]="item.name.position.y" fill="#fff">
                     <tspan dy="1.2em">{{item.name.text}}</tspan>
@@ -16,13 +16,16 @@
                     <button (click)="add(item, itemContainer)" class="slds-button slds-button--icon">
                         <system-button-icon icon="add" [inverse]="true"></system-button-icon>
                     </button>
-                    <button cdkDrag (click)="add(item, itemContainer)" (cdkDragEnded)="handleLinkDragEnd(item, $event)" (cdkDragStarted)="isLinking = true" [style.z-index]="isLinking ? '100' : 'unset'" class="slds-button slds-button--icon">
+                    <button (click)="select(item, itemContainer)" class="slds-button slds-button--icon">
+                        <system-button-icon icon="search" [inverse]="true"></system-button-icon>
+                    </button>
+                    <button *ngIf="dsl.data.length > 1" (click)="link(item, itemContainer); $event.stopPropagation();" [style.cursor]="!isLinking ? 'pointer' : 'crosshair'" class="slds-button slds-button--icon">
                         <system-button-icon icon="link" [inverse]="true"></system-button-icon>
                     </button>
                 </foreignObject>
-                <rect *ngIf="isLinking" [attr.x]="item.position.x" [attr.y]="item.position.y" [id]="item.id" width="100" height="100" rx="5" fill="#001639" style="opacity: .5"></rect>
+                <rect *ngIf="!!isLinking && isLinking != item.id" [attr.x]="item.position.x" [attr.y]="item.position.y" [id]="item.id" width="100" height="100" rx="5" fill="#001639" style="opacity: .5"></rect>
             </g>
-            <g *ngSwitchCase="'connector'">
+            <g *ngSwitchCase="'connector'" [style.opacity]="!isDragging ? 1 : .4">
                 <polyline [attr.points]="item.path.line" stroke-linejoin="round" fill="none" stroke-width="1" stroke="#555"></polyline>
                 <path *ngIf="item.items.source.hasArrow" [attr.d]="item.path.sourceArrow" stroke-linejoin="round" stroke-width="0" stroke="#555"></path>
                 <path *ngIf="item.items.target.hasArrow" [attr.d]="item.path.targetArrow" stroke-linejoin="round" stroke-width="0" stroke="#555"></path>

@@ -6,6 +6,7 @@ import {backend} from "../../../services/backend.service";
 import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {take} from "rxjs/operators";
 import {language} from "../../../services/language.service";
+import {toast} from "../../../services/toast.service";
 
 /**
  * handle the landscape svg
@@ -39,6 +40,13 @@ export class DeploymentSystemLandscapeService {
                 text: 'Master',
                 position: {x: 810, y: 30}
             },
+            data: {
+                "id": "b75a29c9-9d64-3742-6fc7-dd1051c5df3b",
+                "name": "Master",
+                "url": "http://localhost/crm",
+                "sys_username": "mehyar@spicecrm.com",
+                "sys_password": "1111Aa"
+            },
             position: {x: 800, y: 20},
             style: {
                 'top': '20px',
@@ -48,35 +56,17 @@ export class DeploymentSystemLandscapeService {
             },
         }
     ];
+    /**
+     * holds a json string backup of the data array
+     * @private
+     */
+    private dataBackup: string;
 
     constructor(private modal: modal,
                 private model: model,
+                private toast: toast,
                 private language: language,
                 private backend: backend) {
-    }
-
-    /**
-     * add new item
-     * @param sourceItem
-     * @param element
-     */
-    public add(sourceItem: LandscapeItemI, element: HTMLElement) {
-
-        const options = [
-            {display: this.language.getLabel('LBL_NEW'), value: 'new'},
-            {display: this.language.getLabel('LBL_SELECT'), value: 'select'}
-        ];
-
-        this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_SYSTEMDEPLOYMENTSYSTEM', 'shade', 'new', options, true)
-            .subscribe(answer => {
-                if (!answer) return;
-
-                if (answer == 'new') {
-                    this.addNewRelatedSystem(sourceItem, element);
-                } else {
-                    this.selectRelatedSystem(sourceItem, element);
-                }
-            });
     }
 
     /**
@@ -125,13 +115,16 @@ export class DeploymentSystemLandscapeService {
      * add new related system
      * @param sourceItem
      * @param element
-     * @private
      */
-    private addNewRelatedSystem(sourceItem: LandscapeItemI, element: HTMLElement) {
+    public addNewRelatedSystem(sourceItem: LandscapeItemI, element: HTMLElement) {
 
         this.model.addModel().subscribe(data => {
 
             if (!data) return;
+
+            this.backup();
+
+            this.pushNewItem(sourceItem, element, data);
 
             this.saveRelationRequest(sourceItem, {data}, element);
         })
@@ -141,9 +134,23 @@ export class DeploymentSystemLandscapeService {
      * select existing related system
      * @param sourceItem
      * @param element
-     * @private
+     * @param targetItem
      */
-    private selectRelatedSystem(sourceItem: LandscapeItemI, element: HTMLElement) {
+    public selectRelatedSystem(sourceItem: LandscapeItemI, element: HTMLElement, targetItem?) {
+
+        this.backup();
+
+        if (!!targetItem) {
+
+            if (this.data.some(e => e.id == targetItem.id)) {
+                this.connect(sourceItem, targetItem);
+            } else {
+                this.pushNewItem(sourceItem, element, targetItem);
+            }
+
+            this.saveRelationRequest(sourceItem, targetItem.data, element);
+            return;
+        }
 
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal: ComponentRef<ObjectModalModuleLookup>) => {
 
@@ -151,27 +158,90 @@ export class DeploymentSystemLandscapeService {
 
             selectModal.instance.selectedItems.pipe(take(1)).subscribe(items => {
 
-                this.saveRelationRequest(sourceItem, {data: items[0]}, element);
+                const data = items[0];
+
+                if (this.data.some(e => e.id == data.id)) {
+                    this.connect(sourceItem, this.data.find(e => e.id == data.id));
+                } else {
+                    this.pushNewItem(sourceItem, element, data);
+                }
+
+                this.saveRelationRequest(sourceItem, items[0], element);
             });
         });
     }
 
-    private saveRelationRequest(sourceItem: LandscapeItemI, reqData: {data}, element: HTMLElement) {
+    /**
+     * create a connector for two items
+     * @param source
+     * @param target
+     * @private
+     */
+    public connect(source: LandscapeItemI, target: LandscapeItemI) {
 
-        const processing = this.modal.await('LBL_PROCESSING');
+        const existingConnector = this.data.find(e => e.type == 'connector' && (
+                (e.items.target.id == source.id && e.items.source.id == target.id) || (e.items.target.id == target.id && e.items.source.id == source.id)
+        ));
 
-        this.backend.postRequest(`configuration/deployment/systems/related/${sourceItem.id}`, null, reqData).subscribe({
-            next: () => {
-                processing.next(true);
-                processing.complete();
+        if (existingConnector) {
 
-                this.pushNewItem(sourceItem, element, reqData.data);
+            if (existingConnector.items.target.id == source.id) {
+                existingConnector.items.source.hasArrow = true;
+            }
+            return;
+        }
 
-            }, error: () => {
-                processing.next(false);
-                processing.complete();
+        this.data.push({
+            id: `${this.data.length + 1}`,
+            type: 'connector',
+            path: this.drawConnectionPath(source, target),
+            items: {
+                source: {id: source.id, hasArrow: false},
+                target: {id: target.id, hasArrow: true}
             }
         });
+    }
+
+    /**
+     * make an api request to add the relation between the two system on the db
+     * @param sourceItem
+     * @param data
+     * @param element
+     * @private
+     */
+    private saveRelationRequest(sourceItem: LandscapeItemI, data , element: HTMLElement) {
+
+        this.backend.postRequest(`configuration/deployment/systems/related/${sourceItem.id}`, null, {data}).subscribe({
+            next: res => {
+
+                if (!res.success) {
+                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                    this.revertChanges();
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                }
+
+            }, error: () => {
+                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                this.revertChanges();
+            }
+        });
+    }
+
+    /**
+     * backup the data array to a json string
+     * @private
+     */
+    private backup() {
+        this.dataBackup = JSON.stringify(this.data);
+    }
+
+    /**
+     * restore the data backup on failure
+     * @private
+     */
+    private revertChanges() {
+        this.data = JSON.parse(this.dataBackup);
     }
 
     /**
@@ -204,29 +274,6 @@ export class DeploymentSystemLandscapeService {
         this.data.push(newItem);
 
         this.connect(sourceItem, newItem);
-    }
-
-    /**
-     * create a connector for two items
-     * @param source
-     * @param target
-     * @private
-     */
-    public connect(source: LandscapeItemI, target: LandscapeItemI) {
-
-        const existingConnector = this.data.find(e => e.type == 'connector' && e.items.target.id == source.id);
-
-        if (existingConnector) {
-            existingConnector.items.source.hasArrow = true;
-            return;
-        }
-
-        this.data.push({
-            id: `${this.data.length + 1}`,
-            type: 'connector',
-            path: this.drawConnectionPath(source, target),
-            items: {source: {id: source.id, hasArrow: false}, target: {id: target.id, hasArrow: true}}
-        });
     }
 
     /**
