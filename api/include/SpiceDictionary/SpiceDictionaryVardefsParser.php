@@ -41,6 +41,9 @@ class SpiceDictionaryVardefsParser
         $field['duplicate_merge'] = true;
         $field['sysdomainfield_id'] = $row['sysdomainfield_id'];
         $field['vname'] = (!empty($row['label']) ? $row['label'] : $row['itemlabel']);
+        if(!empty($row['itemlabelinputhelper'])){
+            $field['popupHelp'] = $row['itemlabelinputhelper'];
+        }
         $field['type'] = (!empty($row['fieldtype']) ? $row['fieldtype'] : $row['dbtype']);
         if (!empty($row['len'])) {
             $field['len'] = $row['len'];

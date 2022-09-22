@@ -13,6 +13,7 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 // import embedding components
 import {ExchangeUserSettings} from "./components/exchangeusersettings";
 import {DirectivesModule} from "../../directives/directives";
+import {MSGraphMappingModal} from "./components/msgraphmappingmodal";
 
 @NgModule({
     imports: [
@@ -24,7 +25,8 @@ import {DirectivesModule} from "../../directives/directives";
         DirectivesModule
     ],
     declarations: [
-        ExchangeUserSettings
+        ExchangeUserSettings,
+        MSGraphMappingModal
     ]
 })
 export class ModuleExchange {

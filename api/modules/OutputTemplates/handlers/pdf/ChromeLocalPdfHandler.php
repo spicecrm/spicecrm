@@ -4,6 +4,7 @@
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class ChromeLocalPdfHandler extends PdfHandler
@@ -16,42 +17,148 @@ class ChromeLocalPdfHandler extends PdfHandler
         $this->createChromeLocalPdf();
     }
 
+    /**
+     * Creates the CSS code google chrome needs to know for rendering the pdf file, using the parameters of the output template.
+     *
+     * @return string The CSS Code
+     */
     public function getPageStyle() {
-        return
-            '@page { '.
-                'size: ' . ( $this->options['page_size'] ?: 'A4' ) . ( $this->options['page_orientation'] === 'L' ? ' landscape' : ' portrait' ).'; '.
-                'margin-top: '.( $this->options['margin_top'] ?: '0' ).'; '.
-                'margin-right: '.(  $this->options['margin_right'] ?: '0' ).'; '.
-                'margin-bottom: '.( $this->options['margin_bottom'] ?: '0' ).'; '.
-                'margin-left: '.( $this->options['margin_left'] ?: '0' ).'; '.
-            '}'.
-            '* { -webkit-print-color-adjust: exact; }';
+        return '@page { 
+                    size: ' . ( $this->options['page_size'] ?: 'A4' ) . ( $this->options['page_orientation'] === 'L' ? ' landscape' : ' portrait' ).';
+                    margin-top: '.( $this->options['margin_top'] ?: '0' ).'mm;
+                    margin-right: '.(  $this->options['margin_right'] ?: '0' ).'mm;
+                    margin-bottom: '.( $this->options['margin_bottom'] ?: '0' ).'mm;
+                    margin-left: '.( $this->options['margin_left'] ?: '0' ).'mm;
+                }
+            ';
     }
 
     public function createChromeLocalPdf()
     {
-        $stylesheet = $this->template->getStyle();
+        $htmlOutput = $this->html_content;
 
-        $stylesheet = preg_replace('/(background:(.+?))(;|})/s', '\1!important\3', $stylesheet );
-        $stylesheet = preg_replace('/(background-color:(.+?))(;|})/s', '\1!important\3', $stylesheet );
+        # Chrome needs for some css (background and background-color) a specific treatment:
+        $htmlOutput = preg_replace_callback('#<style>(.*?)</style>#s', function ( $match ) {
+            $styleElement = $match[0];
+            $styleElement = preg_replace('/(background:(.+?))(;|})/s', '\1!important\3', $styleElement );
+            $styleElement = preg_replace('/(background-color:(.+?))(;|})/s', '\1!important\3', $styleElement );
+            return $styleElement;
+        }, $htmlOutput );
 
-        $htmlOutput = '<!DOCTYPE html><html><head><meta charset="utf-8" /><style>'.$this->getPageStyle().'</style>';
-        $htmlOutput .= '<style>'.$stylesheet.'</style><style>html { font-size: '.$this->basicFontSize.'; }</style></head>'.$this->html_content.'</html>';
+        $htmlOutput = '<!DOCTYPE html>'.$htmlOutput;
 
+        if ( isset( $this->template->header[0] ) or isset( $this->template->footer[0] )) {
+            $stylesheetHeaderFooter = "
+                <style>
+                    #header_cell, #footer_cell, td.header_cell, td.footer_cell { 
+                        box-sizing: border-box;
+                    }
+                    table.header_footer_table {
+                        border-spacing: 0;
+                        /* for testing: */
+                        /* 
+                        background-color: #ccf; 
+                        */
+                    } 
+                    header, footer {
+                        display: block;
+                        position: fixed;
+                        width: auto;
+                        page-break-before: avoid; /* hack for chrome */
+                        /* for testing: */
+                        /*
+                        background-color: gray;
+                        opacity: 0.5; 
+                        */
+                    }
+                    header {
+                        top: 0; left: 0; right: 0;
+                        margin-top: 1px; /* optical hack */
+                    }
+                    footer { bottom: 0; left: 0; right: 0; }
+                    #header_cell, #footer_cell { height: 0; }
+                </style>
+            ";
+
+            # Insert layout table, necessary for header and/or footer:
+            $htmlOutput = preg_replace('#<main>(.*?)</main>#s', '
+                <table class="header_footer_table">
+                    <thead><tr>
+                        <td id="header_cell"></td>
+                    </tr></thead>
+                    <tbody><tr>
+                        <td><main>\1</main></td>
+                    </tr></tbody>
+                    <tfoot><tr>
+                        <td id="footer_cell"></td>
+                    </tr></tfoot>
+                </table>
+            ', $htmlOutput, 1 );
+        }
+
+        # Javascript, necessary for setting header/footer cell height, by measured header/footer height:
+        $handlerSpecificJavascript = '
+            <script>
+                window.onload = function () {
+                    document.getElementById("header_cell").style.height = document.getElementById("page_header").offsetHeight+"px";
+                    // document.getElementById("header_cell").style.backgroundColor = "red"; // for testing
+                    // document.getElementById("header_cell").style.opacity = "0.5"; // for testing
+                    document.getElementById("footer_cell").style.height = document.getElementById("page_footer").offsetHeight+"px";
+                    // document.getElementById("footer_cell").style.backgroundColor = "green"; // for testing
+                    // document.getElementById("footer_cell").style.opacity = "0.5"; // for testing
+                }
+            </script>
+        ';
+
+        $handlerSpecificHead = '
+            <meta charset="utf-8" />
+            <style>'.$this->getPageStyle().'</style>
+            <style>
+                * { -webkit-print-color-adjust: exact; }
+                html, body { padding: 0; margin: 0; }
+                html { font-size: '.$this->basicFontSize.'; }
+            </style>
+            '.$stylesheetHeaderFooter.'
+        ';
+
+        # Insert handler specific head elements (styles):
+        $htmlOutput = preg_replace('#<head>#s', '<head>'.$handlerSpecificHead, $htmlOutput );
+
+        # Insert handler specific javascript at the end of the document:
+        $htmlOutput = preg_replace('#</html>$#s', $handlerSpecificJavascript.'</html>', $htmlOutput );
+
+        # for testing:
+        # echo $htmlOutput; exit;
+
+        # Create temporary html file, get name for temporary pdf file:
         do {
             $tmpHtmlFilename = tempnam(sys_get_temp_dir(), '');
         } while( !rename( $tmpHtmlFilename, $tmpHtmlFilename .= '.html'));
-        file_put_contents($tmpHtmlFilename, $htmlOutput );
+        file_put_contents( $tmpHtmlFilename, $htmlOutput );
         $tmpPdfFilename = tempnam( sys_get_temp_dir(), '' );
 
         $chromePath = SpiceConfig::getInstance()->config['outputtemplates']['chrome_path'];
         # also available command line parameters of chrome, but not used:
         # --run-all-compositor-stages-before-draw
         # --enable-logging
-        exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --print-to-pdf-no-header --no-margins %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename) ),$output,$resultCode );
+        #
+        # Sometimes Chrome creates an empty pdf file. In this case try to create the file again, up to 10 times:
+        $counter = 0;
+        do {
+            if ( $counter !== 0 ) unlink( $tmpPdfFilename );
+            $counter++;
+            exec( sprintf('%s --virtual-time-budget=10000 --headless --disable-gpu --print-to-pdf=%s --print-to-pdf-no-header --no-margins %s', escapeshellarg($chromePath), escapeshellarg($tmpPdfFilename), escapeshellarg($tmpHtmlFilename)), $output, $resultCode );
+            $fs = filesize( $tmpPdfFilename );
+        } while ( $fs < 2000 and $counter < 10 );
+        if ( $counter > 1 ) {
+            if ( $counter === 10 and $fs < 2000 ) LoggerManager::getLogger()->fatal('ChromeLocalPdfHandler: Could not generate PDF successfully after 10 attempts (PDF size less than 2000 Bytes).');
+            else LoggerManager::getLogger()->warn('ChromeLocalPdfHandler: Problems to generate PDF successfully (PDF size less than 2000 Bytes). Tried '.$counter.' times to succeed.');
+        }
         unlink( $tmpHtmlFilename );
+
+        # in case there was an error generating the pdf file:
         if ( $resultCode !== 0 ) {
-            unlink($tmpPdfFilename);
+            unlink( $tmpPdfFilename );
             throw new Exception('Error generating PDF (with handler "chromelocal").');
         }
 

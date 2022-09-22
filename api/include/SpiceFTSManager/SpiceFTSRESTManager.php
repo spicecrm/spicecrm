@@ -263,11 +263,11 @@ class SpiceFTSRESTManager
 
             $data = [];
             if ($items["fields"] != '') {
-                $data[] = ['ftsfields' => addslashes(json_encode($items["fields"]))];
+                $data['ftsfields'] = json_encode($items["fields"]);
             }
             if ($items["settings"] != '') {
-                $data[] = ['index_priority' => intval($items["settings"]["index_priority"])];
-                $data[] = ['settings' => json_encode($items["settings"])];
+                $data['index_priority'] = intval($items["settings"]["index_priority"]);
+                $data['settings'] = json_encode($items["settings"]);
             }
             if (count($data) > 0) {
                 SystemDeploymentCR::writeDBEntry("sysfts", $record['id'], $data, $module, SystemDeploymentCR::ACTION_UPDATE);
