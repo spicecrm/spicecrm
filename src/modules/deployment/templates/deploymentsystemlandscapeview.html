@@ -1,23 +1,31 @@
 <div class="slds-grid slds-is-relative slds-size--1-of-1" system-to-bottom>
     <div class="slds-is-absolute__top slds-height_full slds-theme--default slds-p-around--x-small" style="box-shadow: 0px 0px 10px #666;">
-        <button (click)="dsl.svg()" class="slds-button slds-button--icon">
+        <button (click)="dsl.exportSVG()" class="slds-button slds-button--icon">
             <system-button-icon icon="download"></system-button-icon>
         </button>
     </div>
+    <!-- class spice-deployment-system-landscape-view-svg is required -->
     <svg *ngIf="show" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="slds-height_full slds-size--1-of-1 spice-deployment-system-landscape-view-svg">
         <ng-container *ngFor="let item of dsl.data" [ngSwitch]="item.type">
-            <g *ngSwitchCase="'item'" #itemContainer cdkDrag (cdkDragEnded)="handleDragEnd(item, $event)" class="spice-hover-display-children">
-                <rect [attr.x]="item.position.left" [attr.y]="item.position.top" width="100" height="100" rx="5" fill="#001639"></rect>
+            <g *ngSwitchCase="'item'" #itemContainer cdkDrag (cdkDragEnded)="handleItemDragEnd(item, $event)" class="spice-hover-display-children">
+                <rect [attr.x]="item.position.x" [attr.y]="item.position.y" width="100" height="100" rx="5" fill="#001639"></rect>
                 <text  [attr.x]="item.name.position.x" [attr.y]="item.name.position.y" fill="#fff">
                     <tspan dy="1.2em">{{item.name.text}}</tspan>
                 </text>
-                <foreignObject height="35" width="57" [attr.x]="item.position.left + 20" [attr.y]="item.position.top + 50" class="spice-hover-child">
-                    <button (click)="add(item, itemContainer)" class="slds-button slds-button--brand">add</button>
+                <foreignObject height="35" width="57" [attr.x]="item.position.x + 20" [attr.y]="item.position.y + 50" class="spice-hover-child">
+                    <button (click)="add(item, itemContainer)" class="slds-button slds-button--icon">
+                        <system-button-icon icon="add" [inverse]="true"></system-button-icon>
+                    </button>
+                    <button cdkDrag (click)="add(item, itemContainer)" (cdkDragEnded)="handleLinkDragEnd(item, $event)" (cdkDragStarted)="isLinking = true" [style.z-index]="isLinking ? '100' : 'unset'" class="slds-button slds-button--icon">
+                        <system-button-icon icon="link" [inverse]="true"></system-button-icon>
+                    </button>
                 </foreignObject>
+                <rect *ngIf="isLinking" [attr.x]="item.position.x" [attr.y]="item.position.y" [id]="item.id" width="100" height="100" rx="5" fill="#001639" style="opacity: .5"></rect>
             </g>
             <g *ngSwitchCase="'connector'">
-                <path [attr.d]="item.path.line" stroke-linejoin="round" stroke-width="1" stroke="#555"></path>
-                <path [attr.d]="item.path.arrow" stroke-linejoin="round" stroke-width="0" stroke="#555"></path>
+                <polyline [attr.points]="item.path.line" stroke-linejoin="round" fill="none" stroke-width="1" stroke="#555"></polyline>
+                <path *ngIf="item.items.source.hasArrow" [attr.d]="item.path.sourceArrow" stroke-linejoin="round" stroke-width="0" stroke="#555"></path>
+                <path *ngIf="item.items.target.hasArrow" [attr.d]="item.path.targetArrow" stroke-linejoin="round" stroke-width="0" stroke="#555"></path>
             </g>
         </ng-container>
     </svg>

@@ -2,16 +2,27 @@ export interface LandscapeItemI {
     id: string;
     name?: {
         text: string,
-        position: {x: number, y: number}
+        position: { x: number, y: number }
     };
     type: 'item' | 'connector';
+    data?: any;
     path?: {
         line: string,
-        arrow: string
+        sourceArrow: string,
+        targetArrow: string
     };
-    items?: {source: string, target: string};
+    items?: {
+        source: {
+            id: string,
+            hasArrow: boolean,
+        },
+        target: {
+            id: string,
+            hasArrow: boolean,
+        }
+    };
     position?: {
-        left: number, top: number
+        x: number, y: number
     }
     style?: {
         left?: string;
@@ -19,4 +30,18 @@ export interface LandscapeItemI {
         width?: string;
         height?: string;
     }
+}
+
+/**
+ * Item box points to be used for connection
+ */
+export interface LandscapeItemPoints {
+    topLeft: { x: number, y: number };
+    topCenter: { x: number, y: number };
+    topRight: { x: number, y: number };
+    rightMiddle: { x: number, y: number };
+    rightBottom: { x: number, y: number };
+    bottomCenter: { x: number, y: number };
+    bottomLeft: { x: number, y: number };
+    leftMiddle: { x: number, y: number };
 }
