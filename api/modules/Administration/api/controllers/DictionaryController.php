@@ -54,6 +54,7 @@ class DictionaryController
         $db->query("DELETE FROM syscustomdomainfieldvalidationvalues WHERE package = 'legacy'");
         $db->query("DELETE FROM syscustomdomainfields WHERE package = 'legacy'");
         $db->query("DELETE FROM syscustomdomaindefinitions WHERE package = 'legacy'");
+        $db->query("DELETE FROM syscustomdictionaryitems WHERE package = 'legacy'");
 
         // make sure default language is on top
         // default language shall contain all dom definitions
@@ -112,6 +113,20 @@ class DictionaryController
                     $domainFieldId = SpiceUtils::createGuid();
                     $query = "INSERT INTO syscustomdomainfields (id, name, dbtype, fieldtype, len, sysdomaindefinition_id, sysdomainfieldvalidation_id, sequence, defaultvalue, package, status, deleted) VALUES ('$domainFieldId', '{sysdictionaryitems.name}' ,'$dictFieldDbType', '$dictFieldType', $dictFieldLen , '$domainId', '$valId', 1, ".$dictFieldDefaultValue.", 'legacy', 'a', '0')";
                     $db->query($query);
+
+                    // create custom dictionary item
+                    if(is_array($dictField[0])){
+                        $required = 0;
+                        if(isset($dictField[0]['required'])){
+                            $required = $dictField[0]['required'];
+                            if($required) $required = 1;
+                            else $required = 0;
+                        }
+                        $dictItemId = SpiceUtils::createGuid();
+                        $query = "INSERT INTO syscustomdictionaryitems (id, name, sysdictionarydefinition_id, sysdomaindefinition_id, label, required, description, package, status, deleted) 
+VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionarydefinition_id']}' , '$domainId', '{$dictField[0]['vname']}', $required, '".$db->quote($dictField[0]['comment'])."', 'legacy', 'a', 0)";
+                        $db->query($query);
+                    }
                 }
 
                 // handle dom values
