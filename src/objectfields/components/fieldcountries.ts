@@ -37,6 +37,7 @@ export class fieldCountries extends fieldGeneric {
      * return the translated value for the selected country
      */
     public  getSelectedCountry(): string {
+        if(!this.value) return '';
         let selectedCountry = this.countries.filter(item => item.cc == this.value);
         return selectedCountry[0].name;
     }
