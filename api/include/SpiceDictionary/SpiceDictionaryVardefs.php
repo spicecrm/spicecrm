@@ -306,13 +306,17 @@ class SpiceDictionaryVardefs  {
     public static function addACLTerritoryFields()
     {
         $db = DBManagerFactory::getInstance();
-        $query = $db->query("SELECT * FROM spiceaclterritories_modules");
+        if($db->tableExists('spiceaclterritories_modules')) {
+            $query = $db->query("SELECT * FROM spiceaclterritories_modules");
 
-        while($row = $db->fetchByAssoc($query)) {
+            while ($row = $db->fetchByAssoc($query)) {
 
-            if (!empty($row['relatefrom']) || empty($module['bean'])) continue;
+                if (!empty($row['relatefrom']) || empty($row['module'])) continue;
 
-            VardefManager::addTemplate($row['module'], $row['bean'], 'spiceaclterritories');
+                $bean = SpiceModules::getInstance()->getBeanName($row['module']);
+
+                VardefManager::addTemplate($row['module'], $bean, 'spiceaclterritories');
+            }
         }
     }
 
@@ -1862,6 +1866,11 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
      * @throws \Exception
      */
     public static function getDictionariesCacheFromDb($forceReload = false){
+        // check on isDbManaged to ease migration of older SpiceCRM instances
+        if(!self::isDbManaged()){
+            return;
+        }
+
         // already loaded & in session
         if(!$forceReload && isset($_SESSION['dictionaries']) && !empty($_SESSION['dictionaries'])){
             //die('getDictionariesCacheFromDb'.print_r($_SESSION['dictionaries'], true));
