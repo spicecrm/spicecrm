@@ -23,6 +23,7 @@ export class QuestionnaireFillOutModal implements OnInit {
     @Input() public parentType: string;
     @Input() public participationId: string;
     @Input() public saved$: EventEmitter<boolean> = new EventEmitter();
+    @Input() public acquisitionType: string;
 
     public self: any;
 
@@ -85,6 +86,7 @@ export class QuestionnaireFillOutModal implements OnInit {
     public saveAndClose( setCompleted: boolean ) {
         if ( this.qpIsSaving ) return;
         this.awaitingEnd = true;
+        if ( this.acquisitionType ) this.qp.acquisitionType = this.acquisitionType;
         this.qp.save( setCompleted )
             .pipe(take(1))
             .subscribe( success => {
@@ -93,7 +95,7 @@ export class QuestionnaireFillOutModal implements OnInit {
                         this.model.id = this.qp.participationId;
                         this.model.save()
                             .pipe( take( 1 ) )
-                            .subscribe( saved => {
+                            .subscribe( () => {
                                 this.saved$.emit( setCompleted );
                                 this.self.destroy();
                             });
