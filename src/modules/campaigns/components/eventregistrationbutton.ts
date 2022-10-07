@@ -6,6 +6,7 @@ import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'event-registration-button',
@@ -17,8 +18,41 @@ export class EventRegistrationButton {
 
     }
 
+    public selectedItem: any;
+
+    public subscriptions: Subscription = new Subscription();
+
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
+    get module() {
+        return this.model.getField('module_name');
+    }
+
+    get placeholder() {
+        // return default placeholder
+        return this.module ? this.language.getModuleCombinedLabel('LBL_SEARCH', this.module) : this.language.getLabel('LBL_SEARCH');
+    }
+
     public execute() {
         this.modal.openModal('EventRegistrationModal', true, this.injector);
+        // this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+        //     selectModal.instance.module = 'ProspectLists';
+        //     selectModal.instance.multiselect = true;
+        //     this.subscriptions.add(
+        //         selectModal.instance.selectedItems.subscribe(items => {
+        //             if (items.length) {
+        //                 this.selectedItem = {
+        //                     id: items[0].id,
+        //                     summary_text: items[0].summary_text,
+        //                     module: this.module,
+        //                     data: items[0]
+        //                 };
+        //             }
+        //         })
+        //     );
+        // });
     }
 
 
