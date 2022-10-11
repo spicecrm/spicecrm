@@ -18,57 +18,29 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'type' => 'date',
             'comment' => 'Valid to'
         ],
-        'account_id' => [
-            'name' => 'account_id',
-            'vname' => 'LBL_ID',
+        //parent
+        'parent_id' => [
+            'name' => 'parent_id',
+            'vname' => 'LBL_LIST_RELATED_TO_ID',
             'type' => 'id',
-            'comment' => 'ID of related account'
+            'comment' => 'The ID of the parent Sugar object identified by parent_type'
         ],
-        'account_name' => [
-            'name' => 'account_name',
-            'vname' => 'LBL_ACCOUNT',
-            'type' => 'relate',
-            'id_name' => 'account_id',
-            'rname' => 'name',
-            'link' => 'account',
-            'module' => 'Accounts',
-            'comment' => 'The name of the related account',
-            'source' => 'non-db'
+        'parent_type' => [
+            'name' => 'parent_type',
+            'vname' => 'LBL_PARENT_TYPE',
+            'type' => 'parent_type',
+            'dbType' => 'varchar',
+            'required' => false,
+            'len' => 255,
+            'comment' => 'The Sugar object to which the Agreement is related',
         ],
-        'account' => [
-            'name' => 'account',
-            'vname' => 'LBL_ACCOUNT',
-            'type' => 'link',
-            'comment' => 'Links to Accounts Module',
-            'module' => 'Accounts',
-            'relationship' => 'account_agreements',
-            'source' => 'non-db'
-        ],
-        'consumer_id' => [
-            'name' => 'consumer_id',
-            'vname' => 'LBL_ID',
-            'type' => 'id',
-            'comment' => 'ID of related consumer'
-        ],
-        'consumer_name' => [
-            'name' => 'consumer_name',
-            'vname' => 'LBL_CONSUMER',
-            'type' => 'relate',
-            'id_name' => 'consumer_id',
-            'rname' => 'name',
-            'link' => 'consumer',
-            'module' => 'Consumers',
-            'comment' => 'The name of the related consumer',
-            'source' => 'non-db'
-        ],
-        'consumer' => [
-            'name' => 'consumer',
-            'vname' => 'LBL_CONSUMER',
-            'type' => 'link',
-            'comment' => 'Links to Consumers Module',
-            'module' => 'Consumers',
-            'relationship' => 'consumer_agreements',
-            'source' => 'non-db'
+        'parent_name' => [
+            'name' => 'parent_name',
+            'type_name' => 'parent_type',
+            'id_name' => 'parent_id',
+            'vname' => 'LBL_RELATED_TO',
+            'type' => 'parent',
+            'source' => 'non-db',
         ],
         'category_1' => [
             'name' => 'category_1',
@@ -120,8 +92,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'lhs_key' => 'id',
             'rhs_module' => 'Agreements',
             'rhs_table' => 'agreements',
-            'rhs_key' => 'account_id',
-            'relationship_type' => 'one-to-many'
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Accounts',
+            'comment' => 'One-2-many relationship'
         ],
         'consumer_agreements' => [
             'lhs_module' => 'Consumers',
@@ -129,8 +104,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'lhs_key' => 'id',
             'rhs_module' => 'Agreements',
             'rhs_table' => 'agreements',
-            'rhs_key' => 'consumer_id',
-            'relationship_type' => 'one-to-many'
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Consumers',
+            'comment' => 'One-2-many relationship'
         ],
     ],
     'indices' => [
