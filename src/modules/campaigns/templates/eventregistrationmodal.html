@@ -26,13 +26,13 @@
             </li>
         </ol>
     </div>
-    <button *ngIf="showNext()" class="slds-button slds-button--neutral"><system-label label="LBL_NEXT"></system-label></button>
-    <button *ngIf="showSave()" class="slds-button slds-button--brand"><system-label label="LBL_SAVE"></system-label></button>
+    <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>
+    <button *ngIf="showSave()" class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
 </div>
         <div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
             <ng-container *ngIf="!model.isLoading">
                 <event-registration-modal-list [hidden]="currentStep!==0" ></event-registration-modal-list>
-<!--                <lead-convert-contact [hidden]="currentStep!==1"></lead-convert-contact>-->
+                <event-registration-modal-type [hidden]="currentStep!==1"></event-registration-modal-type>
             </ng-container>
         </div>
     </system-modal-content>

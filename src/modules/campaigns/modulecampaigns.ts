@@ -27,6 +27,7 @@ import {DirectivesModule} from "../../directives/directives";
 import {EventRegistrationButton} from "./components/eventregistrationbutton";
 import {EventRegistrationModal} from "./components/eventregistrationmodal";
 import {EventRegistrationModalList} from "./components/eventregistrationmodallist";
+import {EventRegistrationModalType} from "./components/eventregistrationmodaltype";
 
 @NgModule({
     imports: [
@@ -54,6 +55,7 @@ import {EventRegistrationModalList} from "./components/eventregistrationmodallis
         EventRegistrationButton,
         EventRegistrationModal,
         EventRegistrationModalList,
+        EventRegistrationModalType,
     ]
 })
 export class ModuleCampaigns {}

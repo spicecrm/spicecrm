@@ -2,7 +2,6 @@
  * @module ModuleCampaigns
  */
 import {Component, EventEmitter, Injector, Output, ViewChild, ViewContainerRef} from '@angular/core';
-import {model} from "../../../services/model.service";
 import {language} from '../../../services/language.service';
 import {Subscription} from "rxjs";
 import {modal} from "../../../services/modal.service";
@@ -18,7 +17,7 @@ export class EventRegistrationModalList {
 
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) public tablecontent: ViewContainerRef;
 
-    constructor(public language: language, public model: model, public injector: Injector, public modal: modal, public modellist: modellist) {
+    constructor(public language: language, public injector: Injector, public modal: modal, public modellist: modellist) {
 
     }
 
@@ -30,14 +29,14 @@ export class EventRegistrationModalList {
         this.subscriptions.unsubscribe();
     }
 
-    get module() {
-        return this.model.getField('module_name');
-    }
+    // get module() {
+    //     return this.model.getField('module_name');
+    // }
 
-    get placeholder() {
-        // return default placeholder
-        return this.module ? this.language.getModuleCombinedLabel('LBL_SEARCH', this.module) : this.language.getLabel('LBL_SEARCH');
-    }
+    // get placeholder() {
+    //     // return default placeholder
+    //     return this.module ? this.language.getModuleCombinedLabel('LBL_SEARCH', this.module) : this.language.getLabel('LBL_SEARCH');
+    // }
 
     /**
      * loads the modellist and sets the various paramaters
@@ -47,9 +46,6 @@ export class EventRegistrationModalList {
         this.modellist.useCache = false;
         this.modellist.initialize('ProspectLists');
         this.modellist.getListData();
-
-        // set hte module on the model
-        this.model.module = this.module;
     }
 
     /**

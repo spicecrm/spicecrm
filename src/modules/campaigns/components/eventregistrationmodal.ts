@@ -84,6 +84,13 @@ export class EventRegistrationModal {
         return this.currentStep == this.totalSteps.length - 1;
     }
 
+    /**
+     * gets the next step
+     */
+    public nextStep() {
+        this.currentStep++;
+    }
+
     public save() {
         if (this.model.validate()) {
             this.model.save().subscribe(() => {
