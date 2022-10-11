@@ -83,6 +83,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'type' => 'enum',
             'options' => 'agreement_status_dom',
             'comment' => 'Status of the agreement'
+        ],
+        'accounts_rel' => [
+            'name' => 'accounts_rel',
+            'type' => 'link',
+            'relationship' => 'agreements_accounts',
+            'module' => 'Accounts',
+            'bean_name' => 'Account',
+            'source' => 'non-db',
+            'vname' => 'LBL_ACCOUNTS',
+            'comment' => 'many-2-many relationship link'
         ]
     ],
     'relationships' => [
