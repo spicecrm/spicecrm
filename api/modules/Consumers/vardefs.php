@@ -258,7 +258,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'module' => 'Agreements',
             'bean_name' => 'Agreement',
             'vname' => 'LBL_AGREEMENTS',
-            'default' => false
+            'default' => false,
+            'comment' => 'One-2-many relationship link'
         ],
         'letters' => [
             'name' => 'letters',
