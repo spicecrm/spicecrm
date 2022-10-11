@@ -611,7 +611,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                                 'map' => 'relationship_type'
                             ],
                     ],
-            ]
+            ],
+            'agreements_rel' => [
+                'name' => 'agreements_rel',
+                'type' => 'link',
+                'relationship' => 'agreements_contacts',
+                'module' => 'Agreements',
+                'bean_name' => 'Agreement',
+                'source' => 'non-db',
+                'vname' => 'LBL_AGREEMENT',
+                'comment' => 'many-2-many relationship link'
+            ],
             /*
             'portal_user_id' => array(
                 'name' => 'portal_user_id',
