@@ -93,6 +93,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'source' => 'non-db',
             'vname' => 'LBL_ACCOUNTS',
             'comment' => 'many-2-many relationship link'
+        ],
+        'contacts_rel' => [
+            'name' => 'contacts_rel',
+            'type' => 'link',
+            'relationship' => 'agreements_contacts',
+            'module' => 'Contacts',
+            'bean_name' => 'Contact',
+            'source' => 'non-db',
+            'vname' => 'LBL_CONTACTS',
+            'comment' => 'many-2-many relationship link'
         ]
     ],
     'relationships' => [
