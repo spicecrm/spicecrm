@@ -1,6 +1,12 @@
-<div class="slds-grid slds-is-relative slds-size--1-of-1" system-to-bottom>
-    <div class="slds-is-absolute__top slds-height_full slds-theme--default slds-p-around--x-small" style="box-shadow: 0px 0px 10px #666;">
-        <button (click)="dsl.exportSVG()" class="slds-button slds-button--icon">
+<div class="slds-grid slds-size--1-of-1 slds-theme--default" system-to-bottom [ngStyle]="!isFullscreen ? null : {top: 0, 'z-index': 100, height: '100vh', resize: 'none', position: 'fixed'}">
+    <div class="slds-grid slds-grid--vertical slds-grid--vertical-align-end slds-height_full slds-p-around--x-small" style="box-shadow: 0px 0px 10px #666;">
+        <button (click)="toggleFullscreen()" class="slds-button slds-button--icon slds-m-vertical--xxx-small">
+            <system-button-icon [icon]="!isFullscreen ? 'expand' : 'contract'"></system-button-icon>
+        </button>
+        <button (click)="dsl.saveView()" class="slds-button slds-button--icon slds-m-vertical--xxx-small">
+            <system-button-icon icon="save"></system-button-icon>
+        </button>
+        <button (click)="dsl.exportSVG()" class="slds-button slds-button--icon slds-m-vertical--xxx-small">
             <system-button-icon icon="download"></system-button-icon>
         </button>
     </div>

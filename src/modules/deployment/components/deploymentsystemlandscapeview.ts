@@ -1,13 +1,14 @@
 /**
  * @module ModuleDeployment
  */
-import {ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2} from '@angular/core';
+import {ChangeDetectorRef, Component, ComponentRef, ElementRef, OnInit, Renderer2, SkipSelf} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {DeploymentSystemLandscapeService} from "../services/deploymentsystemlandscape.service";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {LandscapeItemI} from "../interfaces/deployment.interfaces";
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
 import {model} from "../../../services/model.service";
+import {DeploymentSystemPackagesModal} from "./deploymentsystempackagesmodal";
 
 /**
  * landscape view to manage deployment system landscape
@@ -18,6 +19,10 @@ import {model} from "../../../services/model.service";
     providers: [model, DeploymentSystemLandscapeService],
 })
 export class DeploymentSystemLandscapeView implements OnInit {
+    /**
+     * toggle full screen value
+     */
+    public isFullscreen: boolean = false;
     /**
      * show hide the view
      */
@@ -132,5 +137,12 @@ export class DeploymentSystemLandscapeView implements OnInit {
 
             this.dsl.selectRelatedSystem(item, itemContainer, target);
         });
+    }
+
+    /**
+     * toggle fullscreen
+     */
+    public toggleFullscreen() {
+        this.isFullscreen = !this.isFullscreen;
     }
 }

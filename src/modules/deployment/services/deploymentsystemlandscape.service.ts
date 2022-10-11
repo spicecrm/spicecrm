@@ -1,4 +1,4 @@
-import {ComponentRef, Injectable} from "@angular/core";
+import {ComponentRef, Injectable, OnDestroy, SkipSelf} from "@angular/core";
 import {LandscapeItemI, LandscapeItemPoints} from "../interfaces/deployment.interfaces";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
@@ -7,12 +7,13 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
 import {take} from "rxjs/operators";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
+import {Subscription} from "rxjs";
 
 /**
  * handle the landscape svg
  */
 @Injectable()
-export class DeploymentSystemLandscapeService {
+export class DeploymentSystemLandscapeService implements OnDestroy {
 
     /**
      * holds the view container element
@@ -61,12 +62,41 @@ export class DeploymentSystemLandscapeService {
      * @private
      */
     private dataBackup: string;
+    /**
+     * holds the rxjs subscriptions
+     * @private
+     */
+    private subscription = new Subscription();
 
     constructor(private modal: modal,
                 private model: model,
                 private toast: toast,
+                @SkipSelf() public landscapeModel: model,
                 private language: language,
                 private backend: backend) {
+        this.subscribeToLoadData();
+    }
+
+    /**
+     * unsubscribe from subscription
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    /**
+     * subscribe to model data to load the diagram data array
+     * @private
+     */
+    private subscribeToLoadData() {
+
+        this.data = JSON.parse(this.landscapeModel.data.svg_content ?? '[]');
+
+        this.subscription.add(this.landscapeModel.data$.subscribe(data => {
+            if (!data?.svg_content) return;
+            this.data = JSON.parse(data.svg_content);
+            this.subscription.unsubscribe();
+        }));
     }
 
     /**
@@ -112,13 +142,22 @@ export class DeploymentSystemLandscapeService {
     }
 
     /**
+     * save view svg content
+     */
+    public saveView() {
+        this.landscapeModel.startEdit();
+        this.landscapeModel.setField('svg_content', JSON.stringify(this.data));
+        this.landscapeModel.save();
+    }
+
+    /**
      * add new related system
      * @param sourceItem
      * @param element
      */
     public addNewRelatedSystem(sourceItem: LandscapeItemI, element: HTMLElement) {
 
-        this.model.addModel().subscribe(data => {
+        this.model.addModel('', null, {systemdeploymentlandscape_id: this.landscapeModel.id}).subscribe(data => {
 
             if (!data) return;
 
@@ -126,7 +165,7 @@ export class DeploymentSystemLandscapeService {
 
             this.pushNewItem(sourceItem, element, data);
 
-            this.saveRelationRequest(sourceItem, {data}, element);
+            this.saveRelationRequest(sourceItem, data, element);
         })
     }
 

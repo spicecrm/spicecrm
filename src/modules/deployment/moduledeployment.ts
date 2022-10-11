@@ -22,6 +22,7 @@ import {DeploymentSystemPackagesModal} from "./components/deploymentsystempackag
 import {DeploymentSystemLandscapeView} from "./components/deploymentsystemlandscapeview";
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {DeploymentSystemPackagesCockpitView} from "./components/deploymentsystempackagescockpitview";
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
         DragDropModule
     ],
     declarations: [
+        DeploymentSystemPackagesCockpitView,
         DeploymentSystemLandscapeView,
         DeploymentSystemPackagesModal,
         DeploymentFetchPackagesButton,
