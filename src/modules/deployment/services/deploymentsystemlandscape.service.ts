@@ -170,6 +170,22 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
     }
 
     /**
+     * add new related system
+     * @param element
+     */
+    public addMasterSystem(element: HTMLElement) {
+
+        this.model.addModel('', null, {systemdeploymentlandscape_id: this.landscapeModel.id}).subscribe(data => {
+
+            if (!data) return;
+
+            this.backup();
+
+            this.pushNewItem(undefined, element, data);
+        })
+    }
+
+    /**
      * select existing related system
      * @param sourceItem
      * @param element
@@ -305,14 +321,16 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
             style: {
                 width: `${this.defaultBoxSize.width}px`,
                 height: `${this.defaultBoxSize.height}px`,
-                top: `${top}px`,
+                top: `${y}px`,
                 left: `${x}px`,
             }
         };
 
         this.data.push(newItem);
 
-        this.connect(sourceItem, newItem);
+        if (!!sourceItem) {
+            this.connect(sourceItem, newItem);
+        }
     }
 
     /**

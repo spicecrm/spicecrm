@@ -45,3 +45,25 @@ export interface LandscapeItemPoints {
     bottomLeft: { x: number, y: number };
     leftMiddle: { x: number, y: number };
 }
+
+export interface DeploymentPackageI {
+    id: string;
+    name: string;
+    description: string;
+    source_system_name: string;
+    source_system: string;
+    extensions: string;
+    packages: string;
+    package: string;
+    /**
+     * '0' => 'created',
+     * '1' => 'in progress',
+     * '2' => 'completed',
+     * '3' => 'in test',
+     * '4' => 'delivered',
+     * '5' => 'fetched',
+     * '6' => 'deployed',
+     * '7' => 'released'
+     */
+    rpstatus: '0' | '1'| '2'| '3'| '4'| '5'| '6'| '7';
+}

@@ -16,6 +16,18 @@ import {Subscription} from "rxjs";
     templateUrl: '../templates/deploymentcrsetactivebutton.html'
 })
 export class DeploymentCRSetActiveButton {
+    /**
+     * change request status dom
+     */
+    public statusConst = {
+        STATUS_BACKLOG: '-1',
+        STATUS_CREATED: '0',
+        STATUS_IN_PROGRESS: '1',
+        STATUS_UNIT_TESTED: '2',
+        STATUS_INTEGRATION_TEST: '3',
+        STATUS_COMPLETED: '4',
+        STATUS_CANCELED_DEFERRED: '5',
+    };
 
     /**
      * the active id
@@ -50,7 +62,7 @@ export class DeploymentCRSetActiveButton {
             this.backend.postRequest(`module/SystemDeploymentCRs/${this.model.id}/activation`).subscribe(status => {
                 if (status.status == 'success') {
                     this.activeID = this.model.id;
-
+                    this.model.setField('crstatus', this.statusConst.STATUS_IN_PROGRESS);
                     this.broadcast.broadcastMessage('cr.setactive', {
                         module: this.model.module,
                         id: this.model.id,
@@ -69,6 +81,9 @@ export class DeploymentCRSetActiveButton {
         if (this.model.isEditing) return true;
 
         // check if we are active or in process
-        return this.isActive || this.model.getFieldValue('crstatus') == '1' ? false : true;
+        return !(
+            this.model.id == this.activeID ||
+            [this.statusConst.STATUS_IN_PROGRESS, this.statusConst.STATUS_CREATED].some(s => s == this.model.data.crstatus)
+        );
     }
 }

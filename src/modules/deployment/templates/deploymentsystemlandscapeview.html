@@ -10,6 +10,11 @@
             <system-button-icon icon="download"></system-button-icon>
         </button>
     </div>
+    <div *ngIf="dsl.data.length == 0" class="slds-grid slds-height_full slds-grid--align-center slds-size--1-of-1">
+        <button #masterButton (click)="dsl.addMasterSystem(masterButton)" class="slds-m-top--xx-large slds-button slds-button--icon-border-filled">
+            <system-button-icon icon="add"></system-button-icon>
+        </button>
+    </div>
     <!-- class spice-deployment-system-landscape-view-svg is required -->
     <svg *ngIf="show" [style.cursor]="!isLinking ? 'unset' : 'crosshair'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="slds-height_full slds-size--1-of-1 spice-deployment-system-landscape-view-svg">
         <ng-container *ngFor="let item of dsl.data" [ngSwitch]="item.type">

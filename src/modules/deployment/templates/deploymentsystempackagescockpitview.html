@@ -1,0 +1,49 @@
+<div class="slds-p-around--medium slds-theme--shade slds-border--bottom">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon icon="custom19" sprite="custom"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_RELEASED_PACKAGES"></system-label></span>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-grow">
+            <div class="slds-form-element slds-grow">
+                <div class="slds-form-element__control">
+                    <input class="slds-input" type="text" [(ngModel)]="filterTerm" (ngModelChange)="updateFilteredPackagesTerm()" system-placeholder="LBL_SEARCH"/>
+                </div>
+            </div>
+            <div class="slds-grid slds-grid--vertical-align-center slds-page-header__col-actions slds-m-left--x-small">
+                <system-label label="LBL_SYSTEM" class="slds-m-right--xx-small"></system-label>
+                <system-select [(ngModel)]="selectedSystem" (ngModelChange)="updateFilteredPackagesSystem()" [selectList]="systems" [disabled]="systems.length == 0"></system-select>
+            </div>
+            <div class="slds-m-left--small slds-grid slds-grid--vertical-align-center">
+                <system-checkbox [(ngModel)]="filterStatus.released" (ngModelChange)="updateFilteredPackagesStatus('released', statusConst.STATUS_RELEASED)"><system-label label="LBL_RELEASED"></system-label></system-checkbox>
+                <system-checkbox [(ngModel)]="filterStatus.fetched" (ngModelChange)="updateFilteredPackagesStatus('fetched', statusConst.STATUS_FETCHED)"><system-label label="LBL_DOWNLOADED"></system-label></system-checkbox>
+                <system-checkbox [(ngModel)]="filterStatus.deployed" (ngModelChange)="updateFilteredPackagesStatus('deployed', statusConst.STATUS_DEPLOYED)"><system-label label="LBL_INSTALLED"></system-label></system-checkbox>
+            </div>
+            <div class="slds-m-left--xx-small">
+                <button (click)="loadPackages()" class="slds-button slds-button_icon slds-button_icon-border-filled">
+                    <system-button-icon icon="refresh"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-theme--default">
+    <div system-to-bottom role="tabpanel">
+        <div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-wrap slds-p-around--xx-small" style="min-height: 200px">
+            <div class="slds-size--1-of-2 slds-p-around--xx-small" *ngFor="let pkg of filteredPackages">
+                <deployment-system-packages-cockpit-view-package [package]="pkg"></deployment-system-packages-cockpit-view-package>
+            </div>
+        </div>
+    </div>
+
+</div>

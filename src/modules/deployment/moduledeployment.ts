@@ -23,6 +23,8 @@ import {DeploymentSystemLandscapeView} from "./components/deploymentsystemlandsc
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {DeploymentSystemPackagesCockpitView} from "./components/deploymentsystempackagescockpitview";
+import {DeploymentSystemPackagesCockpitViewPackage} from "./components/deploymentsystempackagescockpitviewpackage";
+import {DeploymentCRCompleteButton} from "./components/deploymentcrcompletebutton";
 
 
 @NgModule({
@@ -37,7 +39,9 @@ import {DeploymentSystemPackagesCockpitView} from "./components/deploymentsystem
         DragDropModule
     ],
     declarations: [
+        DeploymentCRCompleteButton,
         DeploymentSystemPackagesCockpitView,
+        DeploymentSystemPackagesCockpitViewPackage,
         DeploymentSystemLandscapeView,
         DeploymentSystemPackagesModal,
         DeploymentFetchPackagesButton,
