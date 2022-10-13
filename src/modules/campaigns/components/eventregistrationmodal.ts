@@ -31,7 +31,11 @@ export class EventRegistrationModal {
 
         // let componentConfig = this.metadata.getComponentConfig('ObjectModalModuleLookup', this.model.module);
         // this.componentconfig = componentConfig.componentconfig;
-
+        this.model._module = 'EventRegistrations';
+        this.model.initialize();
+        // this.model.initializeFieldsStati();
+        // this.model.registerModel();
+        this.model.startEdit();
     }
 
     /**
