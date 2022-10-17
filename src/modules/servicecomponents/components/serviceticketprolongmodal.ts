@@ -32,6 +32,11 @@ export class ServiceTicketProlongModal {
     public componentset: string = '';
 
     /**
+     * the name of the field containing SLA field
+     */
+    public sladatefield: string = 'resolve_until';
+
+    /**
      * the maximal number of days in the future the user can select a date with the date picker
      * default is 5 as it was hard coded before introducing this parameter in 2022.03.001
      */
@@ -59,6 +64,7 @@ export class ServiceTicketProlongModal {
         this.componentconfig = this.metadata.getComponentConfig('ServiceTicketProlongModal', this.model.module);
         this.componentset = (this.componentconfig.componentset ? this.componentconfig.componentset : this.componentset);
         this.prolongmaxdays = (this.componentconfig.prolongmaxdays ? this.componentconfig.prolongmaxdays : this.prolongmaxdays);
+        this.sladatefield = (this.componentconfig.sladatefield ? this.componentconfig.sladatefield : this.sladatefield);
 
         // set default parameters for date picker
         this.minDate = new moment();
@@ -72,6 +78,10 @@ export class ServiceTicketProlongModal {
         this.model.module = 'ServiceTicketProlongations';
         this.model.initialize();
         this.model.executeCopyRulesParent(this.serviceticket);
+        // on first prolongation, set the value to sladatefield
+        if(!this.model.getField('prolonged_until')){
+            this.model.setField('prolonged_until', this.serviceticket.getField(this.sladatefield));
+        }
         this.setEditMode();
     }
 
