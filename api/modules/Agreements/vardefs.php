@@ -103,7 +103,25 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'source' => 'non-db',
             'vname' => 'LBL_CONTACTS',
             'comment' => 'many-2-many relationship link'
-        ]
+        ],
+        'agreementrevisions' => [
+            'name' => 'agreementrevisions',
+            'type' => 'link',
+            'relationship' => 'agreements_agreementrevisions',
+            'vname' => 'LBL_AGREEMENT_REVISIONS',
+            'module' => 'AgreementRevisions',
+            'table' => 'agreementrevisions',
+            'source' => 'non-db'
+        ],
+        'agreementconditions' => [
+            'name' => 'agreementconditions',
+            'type' => 'link',
+            'relationship' => 'agreements_agreementconditions',
+            'vname' => 'LBL_AGREEMENT_CONDITIONS',
+            'module' => 'AgreementConditions',
+            'table' => 'agreementconditions',
+            'source' => 'non-db'
+        ],
     ],
     'relationships' => [
         'account_agreements' => [
