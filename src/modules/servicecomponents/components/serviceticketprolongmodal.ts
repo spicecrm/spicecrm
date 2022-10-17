@@ -119,6 +119,7 @@ export class ServiceTicketProlongModal {
                 this.view.setViewMode();
                 this.model.save().subscribe(success => {
                     // save ticket
+                    this.serviceticket.setField('sladeviation_reason', this.model.getField('description'));
                     this.serviceticket.setField('prolonged_until', this.prolongDate.format("YYYY-MM-DD"));
                     this.serviceticket.save(true).subscribe(success => {
                         this.self.destroy();
