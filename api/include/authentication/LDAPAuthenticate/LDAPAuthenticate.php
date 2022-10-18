@@ -144,6 +144,9 @@ class LDAPAuthenticate implements AuthenticatorI
                 $this->autoCreateUser = $authSys['auto_create_users'];
                 $this->ldapUsernameAttribute = $authSys['ldap_username_attribute'];
 
+                $this->setAdditionalUserFields($authSys['ldap_fields']);
+
+
                 if ($authSys['ldap_groups']) {
                     if (strpos($authSys['ldap_groups'], ",")) {
                         $this->requiredLdapGroups = explode(",", $authSys['ldap_groups']);
@@ -153,7 +156,7 @@ class LDAPAuthenticate implements AuthenticatorI
                 }
 
                 if ($userObj = $this->ldapAuthenticate($authData->username, $authData->password)) {
-                    return new AuthResponse($userObj->user_name, ['ldapAuthenticateObj' => $this]);
+                    return new AuthResponse($userObj->user_name, $this->getUserLdapValues($userObj));
                 }
 
             }
@@ -164,8 +167,38 @@ class LDAPAuthenticate implements AuthenticatorI
     }
 
     /**
+     * push additional fields set in ldap_settings and enrich / overwrite $this->>config['users']['fields']
+     * @param string|null $ldapFields A list of key=> value pairs for ldapFIeld=>CRM field mapping
+     * @return void
+     */
+    private function setAdditionalUserFields($ldapFields){
+
+        if($customFields = json_decode($ldapFields, true)){
+            foreach($customFields as $key => $val) {
+                $this->config['users']['fields'][$key] = $val;
+            }
+        }
+    }
+
+
+    /**
+     * pack alle values retrieved from user ldap field to pass to AuthResponse
+     * Might become handy when ldap values need to be used in an after_ldaplogin_hook
+     * @param $userObj
+     * @return array
+     */
+    private function getUserLdapValues($userObj){
+        $ldapPropertyFields = [];
+        foreach($this->config['users']['fields'] as $ldapField => $targetField){
+            $ldapPropertyFields['ldap_fields'][$targetField] = $userObj->$targetField;
+        }
+        return $ldapPropertyFields;
+    }
+
+    /**
      * @return boolean
      */
+
     private function ldapConn()
     {
         if (SpiceUtils::inDeveloperMode()) {
@@ -447,17 +480,6 @@ class LDAPAuthenticate implements AuthenticatorI
         }
     }
 
-    public function getFields(array $fields)
-    {
-        $ldapSearchResult = ldap_read($this->ldapConn, $this->getDn($this->baseDn), '(objectclass=*)', $fields);
-        if ($ldapSearchResult === false) {
-            return false;
-        }
-        $ldapGetEntriesResult = ldap_get_entries($this->ldapConn, $ldapSearchResult);
-        if (isset($ldapGetEntriesResult[0]) && is_array($ldapGetEntriesResult[0])) {
-            return $ldapGetEntriesResult[0];
-        }
-    }
 
     /**
      * map ldap information to User properties
