@@ -13,6 +13,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class OutputTemplatesController
 {
@@ -43,7 +44,10 @@ class OutputTemplatesController
         $bean->module_name = $body['parentype'];
         $bean->bean_id = $body['parentid'];
         $file = $bean->getPdfContent();
-        return $res->withJson(['content' => base64_encode($file)]);
+
+        $response = [ 'content' => base64_encode( $file ) ];
+        if ( SpiceConfig::getInstance()->config['outputtemplates']['debug_mode'] ) $response['htmlOfPdfCreation'] = $bean->getHtmlOfPdfCreation();
+        return $res->withJson( $response );
     }
 
     public function previewhtml(Request $req, Response $res, array $args): Response {
