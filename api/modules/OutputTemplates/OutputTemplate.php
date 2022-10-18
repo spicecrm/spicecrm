@@ -190,4 +190,13 @@ class OutputTemplate extends SpiceBean
         return $css;
     }
 
+    /**
+     * Gets the HTML code the PDF document is based on. For debugging the template.
+     *
+     * @return string the HTML code
+     */
+    public function getHtmlOfPdfCreation(): string
+    {
+        return $this->pdf_handler->htmlOfPdfCreation;
+    }
 }

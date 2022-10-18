@@ -74,6 +74,7 @@ class DomPdfHandler extends LibPdfHandler
 
         # echo $html; exit; # for testing
 
+        $this->htmlOfPdfCreation = $html; # Save the HTML code the PDF is based on.
         $this->class_instance->loadHtml($html);
 
         // set page format
