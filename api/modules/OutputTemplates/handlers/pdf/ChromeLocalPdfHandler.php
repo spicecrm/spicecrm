@@ -38,7 +38,8 @@ class ChromeLocalPdfHandler extends PdfHandler
      */
     public function createChromeLocalPdf()
     {
-        $this->content = self::createPdf( $this->createHtmlForPdf( $this->html_content ));
+        $this->htmlOfPdfCreation = $this->createHtmlForPdf( $this->html_content );
+        $this->content = self::createPdf( $this->htmlOfPdfCreation );
     }
 
     /**
