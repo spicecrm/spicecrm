@@ -14,7 +14,7 @@ class ChromeLocalPdfHandler extends PdfHandler
     public function process( $html = null, array $options = null )
     {
         parent::process( $html, $options );
-        if ( get_class( $this ) === 'ChromeLocalPdfHandler' ) $this->createChromeLocalPdf();
+        if ( get_class( $this ) === 'SpiceCRM\modules\OutputTemplates\handlers\pdf\ChromeLocalPdfHandler' ) $this->createChromeLocalPdf();
     }
 
     /**
@@ -38,7 +38,8 @@ class ChromeLocalPdfHandler extends PdfHandler
      */
     public function createChromeLocalPdf()
     {
-        $this->content = self::createPdf( $this->createHtmlForPdf( $this->html_content ));
+        $this->htmlOfPdfCreation = $this->createHtmlForPdf( $this->html_content );
+        $this->content = self::createPdf( $this->htmlOfPdfCreation );
     }
 
     /**
