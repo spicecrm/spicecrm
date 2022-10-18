@@ -17,6 +17,8 @@ class SystemTemplateFunctions {
 
     static function dateFormat($inputString, $format, $placeHolderForOldLanguageParameter = null){
 
+        if (empty($inputString)) return '';
+
         # For formatting look here:
         # https://www.php.net/manual/de/datetime.format.php
 
