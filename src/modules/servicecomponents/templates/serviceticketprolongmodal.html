@@ -9,9 +9,15 @@
             </div>
             <div class="slds-col slds-size--1-of-2">
                 <div class="slds-form-element slds-p-horizontal--x-small">
-                    <label class="slds-form-element__label"><system-label label="LBL_REASON"></system-label></label>
-                    <div class="slds-form-element__control">
-                        <textarea rows="15" style="resize: none" class="slds-textarea" [(ngModel)]="prolongReason"></textarea>
+                    <div *ngIf="componentset!=''">
+                        <system-componentset [componentset]="componentset"></system-componentset>
+                    </div>
+                    <!-- for backward compatiblity before fieldset rendering introduction in 2022.03.001 -->
+                    <div *ngIf="!componentset || componentset==''" class="slds-form-element slds-p-horizontal--x-small">
+                        <label class="slds-form-element__label"><system-label label="LBL_REASON"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <textarea rows="15" style="resize: none" class="slds-textarea" [(ngModel)]="prolongReason"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -247,7 +247,7 @@ class SpiceDictionaryVardefs  {
         $dictionaryDefinitions = SpiceDictionaryVardefs::getDictionaryDefinitions(['module','metadata']);
 
         // override in/add to $vardefs (only fields defined in sysdictionary tables)
-        if(count($dictionaryDefinitions) > 0){
+        if(count($dictionaryDefinitions) > 0 && SpiceDictionaryVardefs::isDbManaged()){
             foreach($dictionaryDefinitions as $row) {
                 $dbDict = SpiceDictionaryVardefs::loadRawDictionary($row['dictionaryid'], $templateDictionaries);
 
