@@ -14,7 +14,9 @@ class ExternalPdfServiceHandler extends ChromeLocalPdfHandler
     public function process( $html = null, array $options = null )
     {
         parent::process( $html, $options );
-        $this->getExternalPdf( $this->createHtmlForPdf( $this->html_content ) );
+
+        $this->htmlOfPdfCreation = $this->createHtmlForPdf( $this->html_content ); # Save the HTML code the PDF is based on.
+        $this->getExternalPdf( $this->htmlOfPdfCreation );
     }
 
     /**
@@ -57,7 +59,6 @@ class ExternalPdfServiceHandler extends ChromeLocalPdfHandler
         }
 
         $this->content = base64_decode( $result['document'] );
-        file_put_contents('pdftest2.pdf',$this->content);
         curl_close($ch);
     }
 
