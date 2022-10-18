@@ -153,7 +153,7 @@ class LDAPAuthenticate implements AuthenticatorI
                 }
 
                 if ($userObj = $this->ldapAuthenticate($authData->username, $authData->password)) {
-                    return new AuthResponse($userObj->user_name);
+                    return new AuthResponse($userObj->user_name, ['ldapAuthenticateObj' => $this]);
                 }
 
             }
@@ -411,6 +411,21 @@ class LDAPAuthenticate implements AuthenticatorI
     }
 
     /**
+     * check if group name is found in LDAP membership results
+     * @param $groupName
+     * @return bool
+     * @throws Exception
+     */
+    public function isInGroup($groupName)
+    {
+        if ($this->ldapGroupMemberships === null) {
+            $this->loadGroupMemberShips();
+        }
+        return in_array($groupName, $this->ldapGroupMemberships);
+    }
+
+
+    /**
      * check required group membership
      * @param $username
      * @throws Exception
@@ -429,6 +444,18 @@ class LDAPAuthenticate implements AuthenticatorI
                     throw new UnauthorizedException("Group Membership " . $requiredLdapGroup . " missing", 9);
                 }
             }
+        }
+    }
+
+    public function getFields(array $fields)
+    {
+        $ldapSearchResult = ldap_read($this->ldapConn, $this->getDn($this->baseDn), '(objectclass=*)', $fields);
+        if ($ldapSearchResult === false) {
+            return false;
+        }
+        $ldapGetEntriesResult = ldap_get_entries($this->ldapConn, $ldapSearchResult);
+        if (isset($ldapGetEntriesResult[0]) && is_array($ldapGetEntriesResult[0])) {
+            return $ldapGetEntriesResult[0];
         }
     }
 
@@ -502,7 +529,7 @@ class LDAPAuthenticate implements AuthenticatorI
      * entry specified by samaccountname and returns its DN or empty
      * string on failure.
      */
-    function getDN($basedn)
+    function getDn($basedn)
     {
         $attributes = ['dn'];
         $result = ldap_search($this->ldapConn, $basedn,
