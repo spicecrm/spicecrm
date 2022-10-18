@@ -183,8 +183,18 @@ class AdminController
             }
 
             // handle logger settings
-            SpiceConfig::getInstance()->config['logger'] = $postBody['logger'];
-            $diffArray['logger'] = $postBody['logger'];
+            if($postBody['logger']) {
+                SpiceConfig::getInstance()->config['logger'] = $postBody['logger'];
+                $diffArray['logger'] = $postBody['logger'];
+            }
+
+            // handle default currency settings settings
+            foreach ($postBody['currencies'] as $itemname => $itemvalue) {
+                SpiceConfig::getInstance()->config['currencies'][$itemname] = $itemvalue;
+                $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'currencies' AND name = '$itemname'";
+                $db->query($query);
+            }
+
         }
 
         $configurator = new Configurator();
@@ -264,8 +274,10 @@ class AdminController
 //        file_put_contents('vardefs.log', print_r($vardefs, true)."\n", FILE_APPEND);
 
         $sysDicFieldsSql = SpiceDictionaryVardefs::repairTable($vardefs['sysdictionaryfields']);
-        $db = DBManagerFactory::getInstance();
-        $db->query($sysDicFieldsSql);
+        if(!empty($sysDicFieldsSql)){
+            $db = DBManagerFactory::getInstance();
+            $db->query($sysDicFieldsSql);
+        }
 
         foreach($vardefs as $dictName => $dict){
             // remove deprecated properties

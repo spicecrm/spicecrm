@@ -125,6 +125,13 @@ export class metadata {
         return this.configuration.getData('htmlstyles');
     }
 
+    /**
+     * the countries from syscountries tabale
+     */
+    get countries() {
+        return this.configuration.getData('countries');
+    }
+
     /*
     * dynamically add routes from this.routes with a route container hat will handle the dynamic routes
      */
@@ -1526,6 +1533,14 @@ export class metadata {
             return "";
         }
     }
+
+    /**
+     * get available countries
+     */
+    public getCountries() {
+        return this.countries;
+    }
+
 
     /**
      * message handler for workbench updates
