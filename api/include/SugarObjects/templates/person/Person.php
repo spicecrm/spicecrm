@@ -147,8 +147,8 @@ class Person extends Basic
             $primaryEmailAddressId = $newEmailAddress->save();
         }
 
-        if (!empty($this->primary_email_opt_in_status)) {
-            $this->setPrimaryEmailAddress($primaryEmailAddressId, ['opt_in_status' => $this->primary_email_opt_in_status]);
+        if (!empty($this->opt_in_status)) {
+            $this->setPrimaryEmailAddress($primaryEmailAddressId, ['opt_in_status' => $this->opt_in_status]);
         } else {
             $this->setPrimaryEmailAddress($primaryEmailAddressId);
         }

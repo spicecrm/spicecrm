@@ -64,8 +64,9 @@ class ServiceTicket extends SpiceBean
         $bean = parent::retrieve($id, $encode, $deleted, $relationships);
 
         if (!empty($this->contact_id)) {
-            $contact = BeanFactory::getBean('Contacts', $this->contact_id);
-            $this->email1 = $contact->email1;
+            if($contact = BeanFactory::getBean('Contacts', $this->contact_id)){
+                $this->email1 = $contact->email1;
+            }
         }
 
         return $bean;
@@ -133,12 +134,9 @@ class ServiceTicket extends SpiceBean
 
         // determine SLAs
         if (empty($this->serviceticketsla_id)) {
-            $sla = BeanFactory::getBean('ServiceTicketSLAs');
-            if($sla) {
-                $sla->determineSLAforTicket($this);
-            }
-
+            $this->determineSLAs();
         }
+
         /**
          * if(!empty($this->serviceticket_type) && !empty($this->serviceticket_class) && empty($this->resolve_until)){
          * $sla = $this->db->fetchByAssoc($this->db->query("SELECT * FROM serviceticketslas WHERE serviceticket_type='$this->serviceticket_type' AND serviceticket_class='$this->serviceticket_class'"));
@@ -177,6 +175,22 @@ class ServiceTicket extends SpiceBean
 
         return $dummy;
 
+    }
+
+    /**
+     * Try to find a match on SLA time definitions
+     * If not match apply times from default SLA
+     * @return void
+     */
+    public function determineSLAs(){
+        $sla = BeanFactory::getBean('ServiceTicketSLAs');
+        if($sla) {
+            $slaTime = $sla->findSlaTimeMatch($this);
+            if(!$slaTime){ // use default SLA
+                $slaTime = $sla->getDefaultSlaTimes();
+            }
+            $sla->setSLADatesforTicket($this, $slaTime);
+        }
     }
 
     /**

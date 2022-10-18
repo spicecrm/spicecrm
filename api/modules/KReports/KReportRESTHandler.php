@@ -1166,14 +1166,7 @@ $db = DBManagerFactory::getInstance();
         $parameters = ['start' => $requestParams['start'], 'limit' => $requestParams['limit']];
         if ($parentbean)
             $parameters['parentbean'] = $parentbean;
-
-        // get the count if not disabled
-        if($retData['reportmetadata']['presentation_params']['pluginData'][$retData['reportmetadata']['presentation_params']['plugin'].'ViewProperties']['processCount'] == 'None'){
-            $retData['count'] =  count($retData['records']) < $requestParams['limit'] ? $requestParams['start'] + count($retData['records']) : $requestParams['start'] + $requestParams['limit'] . '+';
-        } else {
-            $retData['count'] =  $thisReport->getSelectionResults($parameters, isset($requestParams['snapshotid']) ? $requestParams['snapshotid'] : '0', true);
-        }
-
+        $retData['count'] = $thisReport->getSelectionResults($parameters, isset($requestParams['snapshotid']) ? $requestParams['snapshotid'] : '0', true);
         return $retData;
     }
 
