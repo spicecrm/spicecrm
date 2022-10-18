@@ -54,8 +54,10 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @return void
      */
     public static function loadCachedVardefs($forceReload = false){
-        SpiceDictionaryVardefs::loadDictionariesCacheFromDb($forceReload);
-        // SpiceDictionaryVardefs::loadRelationshipsCacheFromDb($forceReload);
+        if(SpiceDictionaryVardefs::isDbManaged()){
+            SpiceDictionaryVardefs::loadDictionariesCacheFromDb($forceReload);
+            // SpiceDictionaryVardefs::loadRelationshipsCacheFromDb($forceReload);
+        }
     }
 
 
