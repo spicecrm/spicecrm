@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="slds-grid">
-            <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+            <div class="slds-large-size--1-of-5 slds-p-right--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DBTYPE"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="domainfield.dbtype">
@@ -25,15 +25,19 @@
                     </select>
                 </div>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-horizontal--xxx-small">
+            <div class="slds-form-element__control slds-size--1-of-5 slds-p-horizontal--xxx-small">
                 <label class="slds-form-element__label"><system-label label="LBL_LENGTH"></system-label></label>
                 <system-input-text [(ngModel)]="domainfield.len"></system-input-text>
             </div>
-            <div class="slds-large-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
+            <div class="slds-large-size--1-of-5 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_REQUIRED"></system-label></label>
                 <system-checkbox [asinteger]="true" [(ngModel)]="domainfield.required"></system-checkbox>
             </div>
-            <div class="slds-large-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
+            <div class="slds-large-size--1-of-5 slds-p-horizontal--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_EXCLUDE_FROM_INDEX"></system-label></label>
+                <system-checkbox [asinteger]="true" [(ngModel)]="domainfield.exclude_from_index"></system-checkbox>
+            </div>
+            <div class="slds-large-size--1-of-5 slds-p-left--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_RENDERING_TYPE"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="domainfield.fieldtype">
