@@ -67,7 +67,7 @@ class SpiceCRMAuthenticate implements AuthenticatorI
      */
     public function handleCredentials(string $username, string $password, ?string $adminUsername): string
     {
-        $sqlWhere = "( is_group IS NULL OR is_group != 1 ) AND deleted = 0 and external_auth_only = 0";
+        $sqlWhere = "( is_group IS NULL OR is_group != 1 ) AND status = 'Active' AND deleted = 0 and external_auth_only = 0";
 
         # Usual case, no impersonation:
         if (empty($adminUsername)) {
