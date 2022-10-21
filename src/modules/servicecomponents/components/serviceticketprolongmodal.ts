@@ -148,7 +148,7 @@ export class ServiceTicketProlongModal {
      * It has to be changed else it doesn't make sense to prolong
      */
     public validate(){
-        if(this.serviceticket.getField('resolve_until') != null && this.model.getField('prolonged_until').format("YYYY-MM-DD") == this.serviceticket.getField('resolve_until').format("YYYY-MM-DD")){
+        if(this.serviceticket.getField('prolonged_until') != null && this.model.getField('prolonged_until').format("YYYY-MM-DD") == this.serviceticket.getField('prolonged_until').format("YYYY-MM-DD")){
             this.toast.sendToast('MSG_MODIFY_PROLONGATION_DATE', 'error');
             return false;
         }

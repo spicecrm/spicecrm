@@ -86,7 +86,7 @@ class ServiceTicket extends SpiceBean
 
         //set serviceticket_number
         if (empty($this->serviceticket_number)) {
-            $this->serviceticket_number = str_pad(SpiceNumberRanges::getNextNumberForField('ServiceTickets', 'serviceticket_number'), 10, '0', STR_PAD_LEFT);
+            $this->serviceticket_number = SpiceNumberRanges::getNextNumberForField('ServiceTickets', 'serviceticket_number');
         }
         //set date_closed
         if ($this->serviceticket_status == 'Closed' && empty($this->date_closed)) {

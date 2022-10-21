@@ -344,7 +344,7 @@ class AuthenticationController
         }
 
         if (LDAPAuthenticate::isLdapEnabled()) {
-            $userObj->call_custom_logic('after_ldap_login', $this);
+            $userObj->call_custom_logic('after_ldap_login', $authResponse);
         }
 
         // if there was no session started create a new one
