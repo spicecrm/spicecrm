@@ -15,6 +15,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManagerFactory;
 
 require_once('include/utils.php');
 require_once('sugar_version.php'); // provides $sugar_version, $sugar_db_version
@@ -40,6 +41,10 @@ try {
     if(!SpiceConfig::getInstance()->configExists()){
         throw new \SpiceCRM\includes\ErrorHandlers\SystemNotInstalledException();
     }
+
+    DBManagerFactory::setDBConfig();
+
+    SpiceConfig::getInstance()->reloadConfig();
 
     $slimContainer = new Container();
     AppFactory::setContainer($slimContainer);
