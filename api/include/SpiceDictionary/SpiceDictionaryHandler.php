@@ -564,12 +564,14 @@ LEFT JOIN
         while($domainfield = $db->fetchByAssoc($domainfields)){
             $domainfield['deleted'] = intval($domainfield['deleted']);
             $domainfield['sequence'] = intval($domainfield['sequence']);
+            $domainfield['exclude_from_index'] = intval($domainfield['exclude_from_index']);
             $fieldsArray[] = array_merge($domainfield, ['scope' => 'g']);
         }
         $domainfields = $db->query("SELECT * FROM syscustomdomainfields WHERE deleted = 0");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             $domainfield['deleted'] = intval($domainfield['deleted']);
             $domainfield['sequence'] = intval($domainfield['sequence']);
+            $domainfield['exclude_from_index'] = intval($domainfield['exclude_from_index']);
             $fieldsArray[] = array_merge($domainfield, ['scope' => 'c']);
         }
 
