@@ -72,6 +72,18 @@ class DBManagerFactory
     static $instanceName = 'initial';
 
     /**
+     * set the db config called in index.php
+     * @return void
+     */
+    public static function setDBConfig()
+    {
+        self::$config = [
+            'dbconfig' => SpiceConfig::getInstance()->config['dbconfig'],
+            'dbconfigoption' => SpiceConfig::getInstance()->config['dbconfigoption']
+        ];
+    }
+
+    /**
      * Returns a reference to the DB object of specific type
      *
      * @param string $type DB type
@@ -120,6 +132,8 @@ class DBManagerFactory
      */
     public static function getInstance(string $instanceName = 'initial')
     {
+        if (empty(self::$config['dbconfig'])) return null;
+
         self::$instanceName = $instanceName;
         static $count = 0, $old_count = 0;
 
