@@ -59,6 +59,8 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      */
     @Input() public autocomplete: string;
 
+    @Input() public id: string;
+
     /**
      * a string to break the autocomplete
      *
@@ -66,9 +68,7 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      */
     public autocompletebreaker: string = '';
 
-    constructor(public modelutilities: modelutilities,private elementRef: ElementRef) {
-
-    }
+    constructor( public modelutilities: modelutilities, private elementRef: ElementRef ) { }
 
     get value() {
         return this._value;
