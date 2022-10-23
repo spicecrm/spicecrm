@@ -123,7 +123,7 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         if(moment.isMoment(this.date)) {
             return this.date.format(formatArray.join(' '));
         } else {
-            let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
+            let timeZone = this.userpreferences.toUse.timezone || this.session.getSessionData('timezone') || moment.tz.guess(true);
             // set the Time Zone for the Field Value only if the Time Zone is set
             return moment.utc(this.date).tz(timeZone).format(formatArray.join(' '));
         }

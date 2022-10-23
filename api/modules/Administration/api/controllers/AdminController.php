@@ -274,8 +274,15 @@ class AdminController
 //        file_put_contents('vardefs.log', print_r($vardefs, true)."\n", FILE_APPEND);
 
         $sysDicFieldsSql = SpiceDictionaryVardefs::repairTable($vardefs['sysdictionaryfields']);
+        $sysDicIndicesSql = SpiceDictionaryVardefs::repairTable($vardefs['sysdictionaryindices']);
+
+        $db = DBManagerFactory::getInstance();
+
+        if (!empty($sysDicIndicesSql)) {
+            $db->query($sysDicIndicesSql);
+        }
+
         if(!empty($sysDicFieldsSql)){
-            $db = DBManagerFactory::getInstance();
             $db->query($sysDicFieldsSql);
         }
 
