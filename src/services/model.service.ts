@@ -603,10 +603,9 @@ export class model implements OnDestroy {
 
         // editable... acl check?!
         if (
-            this.data &&
-            this.data.acl_fieldcontrol &&
-            this.data.acl_fieldcontrol[field] &&
-            parseInt(this.data.acl_fieldcontrol[field], 10) < 3
+            this.acl_fieldcontrol &&
+            this.acl_fieldcontrol[field] &&
+            parseInt(this.acl_fieldcontrol[field], 10) < 3
         ) {
             stati.editable = false;
         }
