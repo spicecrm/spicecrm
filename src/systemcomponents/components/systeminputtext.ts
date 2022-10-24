@@ -59,6 +59,11 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      */
     @Input() public autocomplete: string;
 
+    @Input('trim') public set _trimInput( flag: boolean ) {
+        this.trimInput = flag ? 'blur' : false;
+    }
+    public trimInput: 'blur'|boolean = false;
+
     @Input() public id: string;
 
     /**
