@@ -133,7 +133,7 @@ class VardefManager{
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = [];
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships'] = [];
             if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = [];
-            SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'], $templates[$template]['fields']);
+            SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = array_merge($templates[$template]['fields'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields']);
             if(!empty($templates[$template]['relationships']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships'] = array_merge($templates[$template]['relationships'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships']);
             if(!empty($templates[$template]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = SpiceDictionaryVardefs::mergeIndices($templates[$template]['indices'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']);
             // maintain a record of this objects inheritance from the SugarObject templates...
