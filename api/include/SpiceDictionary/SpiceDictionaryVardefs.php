@@ -1863,7 +1863,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         }
 
         // load indices
-        $dict['indices'] = self::getDictionaryIndexCacheFromDb($dict['id']);
+        if (!empty($dict['fields'])) {
+            $dict['indices'] = self::getDictionaryIndexCacheFromDb($dict['id']);
+        }
         return $dict;
     }
 
