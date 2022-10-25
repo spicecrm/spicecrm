@@ -102,6 +102,15 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         return categories ? categories[this.fieldconfig.treeid] : [];
     }
 
+    /**
+     * the name of the property to sort on that is set in the fieldconfig
+     * 2 possible values for now node_key | node_name
+     * default is node_key
+     */
+    get sortby(){
+        return this.fieldconfig.sortby;
+    }
+
     get hasFavorites(){
         return this.categories.filter(c => c.favorite).length > 0;
     }
