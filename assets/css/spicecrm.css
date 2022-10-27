@@ -465,8 +465,3 @@ input[type="submit"] {
 .slds-dropdown--actions a {
     color: var(--brand-text-link);
 }
-
-.slds-icon-text-error {
-    /*! @css-var-fallback fill */
-    --slds-c-icon-color-foreground: #ffffff
-}
