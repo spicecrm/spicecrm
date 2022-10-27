@@ -36,6 +36,8 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
     @Input() public object_relation_link_name: string;
     @Input() public object_predefined_fields: any[];
 
+    public componentconfig: {emailFieldset: string};
+
     constructor(
         public language: language,
         public metadata: metadata,
@@ -47,8 +49,12 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
     }
 
     public ngOnInit() {
+
+
         this.model.module = this.object_module_name;
         this.model.initializeModel(this.email_model);
+
+        this.componentconfig = this.metadata.getComponentConfig("EmailToObjectModal", this.model.module);
 
         // if there are predefined fields
         if(this.object_predefined_fields)
