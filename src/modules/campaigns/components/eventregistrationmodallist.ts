@@ -6,7 +6,6 @@ import {language} from '../../../services/language.service';
 import {Subscription} from "rxjs";
 import {modal} from "../../../services/modal.service";
 import {modellist} from "../../../services/modellist.service";
-import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'event-registration-modal-list',
@@ -56,16 +55,15 @@ export class EventRegistrationModalList {
     /**
      * emits when an item is selected and which items are selected
      */
-    @Output() public selectedItems: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedItems = new EventEmitter<any>();
 
     public selectItems() {
         this.selectedItems.emit(this.modellist.getSelectedItems());
     }
 
     public clickRow(event, item) {
-        if (!this.multiselect) {
             this.selectedItems.emit([item]);
-        }
+            console.log(this.selectedItems[item]);
     }
 
     /**

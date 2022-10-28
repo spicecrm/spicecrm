@@ -31,7 +31,7 @@
 </div>
         <div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
             <ng-container *ngIf="!model.isLoading">
-                <event-registration-modal-list [hidden]="currentStep!==0" ></event-registration-modal-list>
+                <event-registration-modal-list (selectedItems)="fetchListData($event)" [hidden]="currentStep!==0" ></event-registration-modal-list>
                 <event-registration-modal-type [hidden]="currentStep!==1"></event-registration-modal-type>
             </ng-container>
         </div>

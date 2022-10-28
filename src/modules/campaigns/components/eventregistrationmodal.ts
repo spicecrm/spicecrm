@@ -1,17 +1,20 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component} from '@angular/core';
+import {Component, ComponentRef} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
+import {backend} from "../../../services/backend.service";
+import {any, forEach} from "underscore";
 
 @Component({
     selector: 'event-registration-modal',
-    templateUrl: '../templates/eventregistrationmodal.html'
+    templateUrl: '../templates/eventregistrationmodal.html',
+    providers: [model]
 })
 export class EventRegistrationModal {
 
-    public self: any;
+    public self: ComponentRef<EventRegistrationModal>;
 
     public componentconfig: any;
 
@@ -27,11 +30,11 @@ export class EventRegistrationModal {
      */
     public totalSteps: string[] = ['ProspectLists', 'EventRegistrations'];
 
-    constructor(public model: model, public metadata: metadata) {
+    constructor(public model: model, public metadata: metadata, public backend: backend) {
 
         // let componentConfig = this.metadata.getComponentConfig('ObjectModalModuleLookup', this.model.module);
         // this.componentconfig = componentConfig.componentconfig;
-        this.model._module = 'EventRegistrations';
+        this.model.module = 'EventRegistrations';
         this.model.initialize();
         // this.model.initializeFieldsStati();
         // this.model.registerModel();
@@ -52,6 +55,12 @@ export class EventRegistrationModal {
             return 'slds-is-completed';
         }
     }
+
+    public holdListData: any [] = [];
+
+    public fetchListData(event){
+        this.holdListData.push(event)
+    };
 
     /**
      * rerutns true if the step is completed for the display
@@ -96,11 +105,16 @@ export class EventRegistrationModal {
     }
 
     public save() {
-        if (this.model.validate()) {
-            this.model.save().subscribe(() => {
-                this.self.destroy();
-            });
+        console.log(this.holdListData)
+
+        let postData: any = {
+            listData: this.holdListData,
+            registrationData: this.model.data,
         }
+
+        this.backend.postRequest(`module/Events/${this.model.id}/registrations`, {}, postData).subscribe((results: any) => {
+            this.self.destroy();
+        });
     }
 
     public close() {
