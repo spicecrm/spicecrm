@@ -111,7 +111,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'vname' => 'LBL_AGREEMENT_REVISIONS',
             'module' => 'AgreementRevisions',
             'table' => 'agreementrevisions',
-            'source' => 'non-db'
+            'source' => 'non-db',
+            'default' => true
         ],
         'agreementconditions' => [
             'name' => 'agreementconditions',
