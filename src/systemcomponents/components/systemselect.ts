@@ -34,7 +34,7 @@ export class SystemSelect implements ControlValueAccessor {
     /**
      * the input list to be displayed
      */
-    @Input() public selectList: Array<{ id: string, name: string, group?: string }> = [];
+    @Input() public selectList: { id: string, name: string, group?: string }[] = [];
     /**
      * label of the form element
      */
@@ -58,7 +58,7 @@ export class SystemSelect implements ControlValueAccessor {
     /**
      * holds the search list results
      */
-    public searchList: Array<{ id: string, name: string, content: string, group?: string }> | any = {};
+    public searchList: { id: string, name: string, content: string, group?: string }[] | any = {};
     /**
      * holds a boolean to show/hide the results list
      */
@@ -282,7 +282,7 @@ export class SystemSelect implements ControlValueAccessor {
      * @return array of the search list
      * @private
      */
-    public generateSearchList(): Array<{ id: string, name: string, group?: string }> {
+    public generateSearchList(): { id: string, name: string, group?: string }[] {
 
         const searchList = [];
         const groups = _.uniq(this.selectList.map(e => e.group)).sort();

@@ -59,6 +59,16 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      */
     @Input() public autocomplete: string;
 
+    /**
+     * Enable the clear button.
+     */
+    @Input() public showClear = false;
+
+    @Input('trim') public set _trimInput( flag: boolean ) {
+        this.trimInput = flag ? 'blur' : false;
+    }
+    public trimInput: 'blur'|boolean = false;
+
     @Input() public id: string;
 
     /**
@@ -121,6 +131,13 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
 
     public emitBlur() {
         this.elementRef.nativeElement.dispatchEvent(new Event('blur',{bubbles: true}));
+    }
+
+    /**
+     * Show the clear button or not.
+     */
+    public showClearButton() {
+        return !this.disabled && this.showClear && this.value;
     }
 
 }
