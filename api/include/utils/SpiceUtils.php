@@ -1340,7 +1340,7 @@ echo print_r($return_value, true);
         if(strlen($string) <= $limit) {
             return $string;
         }
-        $newString = substr(html_entity_decode(strip_tags($string)), 0, $limit -3);
+        $newString = mb_substr(html_entity_decode(strip_tags($string)), 0, $limit -3);
 
 
         return self::removeInvalidCharacter($newString).'…';
