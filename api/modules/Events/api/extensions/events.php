@@ -3,7 +3,7 @@
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\modules\EventRegistrations\api\controllers\EventRegistrationsController;
+use SpiceCRM\modules\EventRegistrations\api\controllers\EventController;
 
 /**
  * get a Rest Manager Instance
@@ -13,7 +13,7 @@ $RESTManager = RESTManager::getInstance();
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('eventregistrations', '1.0');
+$RESTManager->registerExtension('events', '1.0');
 
 $routes = [
 [
