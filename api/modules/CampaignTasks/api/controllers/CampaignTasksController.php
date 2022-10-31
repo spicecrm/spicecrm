@@ -233,18 +233,4 @@ class CampaignTasksController
         }
         return $res->withJson(['count' => $campaignTask->getTargetCount()]);
     }
-
-
-    /**
-     * returns registartions in the linked event
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function getEvenRegistrations(Request $req, Response $res, array $args): Response
-    {
-        $linked = BeanFactory::getBean('Events')->get_linked_beans('eventregistrations');
-        $task = BeanFactory::getBean('Tasks')->eventregistrations->add($linked);
-    }
 }
