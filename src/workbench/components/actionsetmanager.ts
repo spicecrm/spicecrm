@@ -442,6 +442,7 @@ export class ActionsetManager {
                     this.currentActionSet.actions = actions;
                     // this.currentActionSet.package = this.currentActionSet.package;
                     this.currentActionSet.isnew = true;
+                    this.view.setEditMode();
                 }
             });
         });
