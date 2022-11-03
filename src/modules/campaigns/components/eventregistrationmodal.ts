@@ -105,13 +105,10 @@ export class EventRegistrationModal {
     }
 
     public save() {
-        console.log(this.holdListData)
-
         let postData: any = {
             listData: this.holdListData,
             registrationData: this.model.data,
         }
-
         this.backend.postRequest(`module/Events/${this.model.id}/registrations`, {}, postData).subscribe((results: any) => {
             this.self.destroy();
         });
