@@ -26,6 +26,10 @@ export class SystemInputState implements OnChanges, ControlValueAccessor {
      * the country for the state
      */
     @Input() public country: string;
+    /**
+     * holds the passed disabled boolean
+     */
+    @Input() public disabled: boolean = false;
 
     /**
      * the options from the enum
