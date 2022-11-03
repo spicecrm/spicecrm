@@ -1,7 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-namespace SpiceCRM\modules\EventRegistrations\api\controllers;
+namespace SpiceCRM\modules\Events\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
