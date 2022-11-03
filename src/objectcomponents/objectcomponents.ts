@@ -206,6 +206,7 @@ import {ObjectTimelineItemLine} from "./components/objecttimelineitemline";
 import {ObjectTimelineStencil} from "./components/objecttimelinestencil";
 import {ObjectPopoverBodyItem} from "./components/objectpopoverbodyitem";
 import {ObjectPopoverHeader} from "./components/objectpopoverheader";
+import {ObjectSelectBeanListModal} from "./components/objectselectbeanlistmodal";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -221,6 +222,7 @@ import {ObjectPopoverHeader} from "./components/objectpopoverheader";
         ScrollingModule,
         RouterModule],
     declarations: [
+        ObjectSelectBeanListModal,
         ObjectListViewContainer,
         ObjectListView,
         ObjectListTypes,
