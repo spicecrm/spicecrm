@@ -128,6 +128,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'campaign_consumers',
             'source' => 'non-db',
         ],
+        'bonuscards' => [
+            'name' => 'bonuscards',
+            'type' => 'link',
+            'relationship' => 'bonuscards_consumers',
+            'module' => 'BonusCards',
+            'bean_name' => 'BonusCard',
+            'source' => 'non-db',
+            'vname' => 'LBL_BONUSCARDS',
+        ],
         'c_accept_status_fields' => [
             'name' => 'c_accept_status_fields',
             'rname' => 'id',
