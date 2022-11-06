@@ -276,6 +276,22 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'consumer_eventregistrations',
             'source' => 'non-db',
         ],
+        'salesdocsop' => [
+            'name' => 'salesdocsop',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCS',
+            'relationship' => 'salesdocs_consumerop',
+            'module' => 'SalesDocs',
+            'source' => 'non-db',
+        ],
+        'salesdocsrp' => [
+            'name' => 'salesdocsrp',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCS',
+            'relationship' => 'salesdocs_consumerrp',
+            'module' => 'SalesDocs',
+            'source' => 'non-db',
+        ]
     ],
     'relationships' => [
         'consumers_email_addresses' => [
