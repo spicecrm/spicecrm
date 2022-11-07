@@ -291,6 +291,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'salesdocs_consumerrp',
             'module' => 'SalesDocs',
             'source' => 'non-db',
+        ],
+        'salesdocitems' => [
+            'name' => 'salesdocitems',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCITEMS',
+            'relationship' => 'salesdocitems_consumerop',
+            'module' => 'SalesDocItems',
+            'source' => 'non-db',
+            'comment' => 'allows to display items on salesdocs via a n:m relationship using the salesdocs table'
         ]
     ],
     'relationships' => [
