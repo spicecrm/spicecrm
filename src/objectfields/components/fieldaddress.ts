@@ -4,7 +4,7 @@
 import {Component, ComponentRef, Injector} from '@angular/core';
 import {Router} from "@angular/router";
 
-import {model} from "../../services/model.service";
+import {AddressRefMetadataI, model} from "../../services/model.service";
 import {view} from "../../services/view.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
@@ -29,15 +29,7 @@ export class fieldAddress extends fieldGeneric {
     /**
      * holds the reference metadata
      */
-    public referenceMetadata: {
-        id: string,
-        parent_module: string,
-        parent_address_key: string,
-        parent_link_name: string,
-        child_module: string,
-        child_address_key: string,
-        child_link_name: string,
-    };
+    public referenceMetadata: AddressRefMetadataI;
     /**
      * set to true if the address inpout shoudl be strict according to the dropdown values
      */
@@ -98,15 +90,19 @@ export class fieldAddress extends fieldGeneric {
 
         if (!Array.isArray(referenceMetadata)) return;
 
-        const metadata = referenceMetadata.find(m => m.child_module == this.model.module && m.child_address_key == this.fieldconfig.key);
+        const metadata = (referenceMetadata as AddressRefMetadataI[]).find(m =>
+            m.child_module == this.model.module && m.child_address_key == this.fieldconfig.key
+        );
 
         if (!metadata) return;
 
         this.referenceMetadata = metadata;
 
-        this.model.observeFieldChanges(this.addresskey + 'address_reference_id').subscribe(value => {
-            this._isReferenced = !!value;
-        });
+        this.subscriptions.add(
+            this.model.observeFieldChanges(metadata.child_address_key + '_address_reference_id').subscribe(value => {
+                this._isReferenced = !!value;
+            })
+        );
     }
 
     /**
@@ -177,45 +173,17 @@ export class fieldAddress extends fieldGeneric {
                         if (!ids) {
                             this._isReferenced = false;
                         } else {
-                            this.fillInFromReference(res.find(e => e.id == ids[0]));
+                            this.model.copyReferencedAddress(this.referenceMetadata, res.find(e => e.id == ids[0]));
                         }
                     }
                 });
             });
         } else if (res.length == 1) {
-            this.fillInFromReference(res[0]);
+            this.model.copyReferencedAddress(this.referenceMetadata, res[0]);
         } else {
             this._isReferenced = false;
             this.toast.sendToast('MSG_NO_RECORDS_FOUND', 'warning');
         }
-    }
-
-    /**
-     * fill in the address fields from the reference bean address
-     * @param data
-     */
-    public fillInFromReference(data) {
-
-        const fields = {};
-        [
-            'address_street',
-            'address_street_number',
-            'address_street_number_suffix',
-            'address_attn',
-            'address_city',
-            'address_district',
-            'address_postalcode',
-            'address_state',
-            'address_country',
-            'address_latitude',
-            'address_longitude'
-        ].forEach(f =>
-            fields[this.addresskey + f] = data[`${this.referenceMetadata.parent_address_key}_${f}`]
-        );
-
-        fields[this.addresskey + 'address_reference_id'] = data.id;
-
-        this.model.setFields(fields);
     }
 
     /*
