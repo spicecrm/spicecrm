@@ -9,7 +9,7 @@
         <div class="slds-form-element__group">
             <div class="slds-grid slds-grid--vertical-align-center">
                 <system-googleplaces-autocomplete (address)="addressSelected($event)" class="slds-grow"></system-googleplaces-autocomplete>
-                <system-checkbox *ngIf="!!referenceMetadata" [(ngModel)]="isReferenced" [disabled]="model.isNew" class="slds-m-left--xx-small">
+                <system-checkbox *ngIf="!!referenceMetadata" [(ngModel)]="isReferenced" [disabled]="model.isNew && !isReferenced" class="slds-m-left--xx-small">
                     <system-label label="LBL_REFERENCE"></system-label>
                 </system-checkbox>
             </div>
