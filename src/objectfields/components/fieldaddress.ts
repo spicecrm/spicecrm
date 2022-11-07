@@ -104,9 +104,11 @@ export class fieldAddress extends fieldGeneric {
 
         this.referenceMetadata = metadata;
 
-        this.model.observeFieldChanges(this.addresskey + 'address_reference_id').subscribe(value => {
-            this._isReferenced = !!value;
-        });
+        this.subscriptions.add(
+            this.model.observeFieldChanges(this.addresskey + 'address_reference_id').subscribe(value => {
+                this._isReferenced = !!value;
+            })
+        );
     }
 
     /**
