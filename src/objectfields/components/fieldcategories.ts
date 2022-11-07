@@ -188,7 +188,10 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             if(this.fieldconfig['category'+i] && categories[i-1]){
                 fields[this.fieldconfig['category'+i]] = this.categories.find(c => c.id == categories[i-1]).node_key;
             } else {
-                break;
+                // reset level value in case new selection does not cover this level
+                if(this.fieldconfig['category'+i]){
+                    fields[this.fieldconfig['category'+i]] = '';
+                }
             }
             i++;
         }

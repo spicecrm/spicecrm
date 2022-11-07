@@ -47,6 +47,16 @@ interface savedata {
     backupdata: any;
 }
 
+export interface AddressRefMetadataI {
+    id: string,
+    parent_module: string,
+    parent_address_key: string,
+    parent_link_name: string,
+    child_module: string,
+    child_address_key: string,
+    child_link_name: string,
+}
+
 /**
  * a generic service that handles the model instance. This is one of the most central items in SpiceUI as this is the instance of an object (record) in the backend. The service provides all relevant getters and setters for the data handling, it validates etc.
  */
@@ -1409,6 +1419,8 @@ export class model implements OnDestroy {
      */
     public executeCopyRules(parent?: any) {
 
+        this.copyParentReferenceAddresses(parent);
+
         this.executeCopyRulesGeneric();
 
         if (parent) {
@@ -1422,6 +1434,57 @@ export class model implements OnDestroy {
         }
 
     }
+
+    /**
+     * copy referenced addresses from parent
+     * @param parent
+     * @private
+     */
+    private copyParentReferenceAddresses(parent?: model) {
+
+        if (!parent) return;
+
+        const referenceMetadata = this.configuration.getData('spice_address_references');
+
+        if (!Array.isArray(referenceMetadata)) return;
+
+        (referenceMetadata as AddressRefMetadataI[]).forEach(m => {
+
+            if (m.child_module != this.module || parent.module != m.parent_module) return;
+
+            this.copyReferencedAddress(m, parent.data);
+        });
+    }
+
+    /**
+     * fill in the address fields from the parent reference bean address
+     * @param metadata
+     * @param data
+     */
+    public copyReferencedAddress(metadata: AddressRefMetadataI, data) {
+
+        const fields = {};
+        [
+            'address_street',
+            'address_street_number',
+            'address_street_number_suffix',
+            'address_attn',
+            'address_city',
+            'address_district',
+            'address_postalcode',
+            'address_state',
+            'address_country',
+            'address_latitude',
+            'address_longitude'
+        ].forEach(f =>
+            fields[`${metadata.child_address_key}_${f}`] = data[`${metadata.parent_address_key}_${f}`]
+        );
+
+        fields[metadata.child_address_key + '_address_reference_id'] = data.id;
+
+        this.setFields(fields);
+    }
+
 
     /**
      * set fields default values from the fields definitions

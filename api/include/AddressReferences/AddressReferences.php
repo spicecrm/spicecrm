@@ -70,12 +70,12 @@ class AddressReferences
     {
         $list = [];
         $db = DBManagerFactory::getInstance();
-        if($db->tableExists('spice_address_references')){
-            $query = $db->query("SELECT * FROM spice_address_references ORDER BY parent_module");
+        $query = $db->query("SELECT * FROM spice_address_references ORDER BY parent_module");
 
-            while ($row = $db->fetchByAssoc($query)) {
-                $list[] = $row;
-            }
+        if (!$query) return;
+
+        while ($row = $db->fetchByAssoc($query)) {
+            $list[] = $row;
         }
 
         $this->referenceMetadata = $list;
