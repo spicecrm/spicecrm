@@ -2,6 +2,9 @@
     <workbench-header-controls>
         <div class="slds-grid slds-grid--vertical-align-center">
             <label class="slds-form-element__label"><system-label label="LBL_TREE"></system-label></label>
+            <div class="slds-form-element__control slds-p-right--small" style="min-width:280px;">
+                <system-input-text disabled="true" [(ngModel)]="activeTree"></system-input-text>
+            </div>
             <div class="slds-form-element__control slds-p-right--small" style="min-width:250px;">
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="activeTree"  [disabled]="categoryTrees.length == 0 || this.isDirty">
@@ -20,7 +23,7 @@
         <div *ngFor="let selectedTreeNode of selectedTreeNodes; let i = index" style="min-height: 250px" class="slds-size--1-of-4 slds-is-relative slds-p-bottom--x-large" [ngClass]="{'slds-border--right': i < 3}">
             <div style="height: calc(100% - 10px)" class="slds-scrollable--y">
                 <div class="slds-m-around--xx-small slds-p-around--xx-small slds-grid" [ngClass]="{'slds-theme--shade': selectedTreeNode == node.id}" *ngFor="let node of getNodes(i)" (click)="setSelectedNodeID(i, node.id)">
-                    <div class="slds-truncate" [ngClass]="getNodeStyle(node)" >{{node.node_name}} ({{node.node_key}})</div>
+                    <div class="slds-truncate" [ngClass]="getNodeStyle(node)">{{node.node_name}} ({{node.node_key}})</div>
                     <ng-container *ngIf="selectedTreeNode == node.id">
                         <button class="slds-col--bump-left slds-button slds-button--icon" (click)="editNode(node)"><system-button-icon icon="edit"></system-button-icon></button>
                         <button class="slds-button slds-button--icon" (click)="deleteNode(node)"><system-button-icon icon="delete"></system-button-icon></button>

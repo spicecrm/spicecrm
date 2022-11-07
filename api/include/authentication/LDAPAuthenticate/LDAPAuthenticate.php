@@ -39,6 +39,7 @@ namespace SpiceCRM\includes\authentication\LDAPAuthenticate;
 
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -144,6 +145,9 @@ class LDAPAuthenticate implements AuthenticatorI
                 $this->autoCreateUser = $authSys['auto_create_users'];
                 $this->ldapUsernameAttribute = $authSys['ldap_username_attribute'];
 
+                $this->setAdditionalUserFields($authSys['ldap_fields']);
+
+
                 if ($authSys['ldap_groups']) {
                     if (strpos($authSys['ldap_groups'], ",")) {
                         $this->requiredLdapGroups = explode(",", $authSys['ldap_groups']);
@@ -153,9 +157,14 @@ class LDAPAuthenticate implements AuthenticatorI
                 }
 
                 if ($userObj = $this->ldapAuthenticate($authData->username, $authData->password)) {
-                    return new AuthResponse($userObj->user_name);
+                    return new AuthResponse($userObj->user_name, $this->getUserLdapValues($userObj));
+                } else {
+                    // try Spice Authentication
+                    $spiceAuth = new SpiceCRMAuthenticate();
+                    if ($authResponse = $spiceAuth->authenticate($authData, 'credentials')) {
+                        return $authResponse;
+                    }
                 }
-
             }
             throw new UnauthorizedException();
         } else {
@@ -164,8 +173,38 @@ class LDAPAuthenticate implements AuthenticatorI
     }
 
     /**
+     * push additional fields set in ldap_settings and enrich / overwrite $this->>config['users']['fields']
+     * @param string|null $ldapFields A list of key=> value pairs for ldapFIeld=>CRM field mapping
+     * @return void
+     */
+    private function setAdditionalUserFields($ldapFields){
+
+        if($customFields = json_decode($ldapFields, true)){
+            foreach($customFields as $key => $val) {
+                $this->config['users']['fields'][$key] = $val;
+            }
+        }
+    }
+
+
+    /**
+     * pack alle values retrieved from user ldap field to pass to AuthResponse
+     * Might become handy when ldap values need to be used in an after_ldaplogin_hook
+     * @param $userObj
+     * @return array
+     */
+    private function getUserLdapValues($userObj){
+        $ldapPropertyFields = [];
+        foreach($this->config['users']['fields'] as $ldapField => $targetField){
+            $ldapPropertyFields['ldap_fields'][$targetField] = $userObj->$targetField;
+        }
+        return $ldapPropertyFields;
+    }
+
+    /**
      * @return boolean
      */
+
     private function ldapConn()
     {
         if (SpiceUtils::inDeveloperMode()) {
@@ -213,20 +252,26 @@ class LDAPAuthenticate implements AuthenticatorI
         if ($bind !== true) {
             LoggerManager::getLogger()->error("unable to ldap bind in ldapLogin");
             $this->logLdapError();
-            throw new Exception("Unable to bind to ldap");
+            // throw new Exception("Unable to bind to ldap");
+            return false;
         }
 
-        $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
-        if ($result === false) {
+        // lunch the search in Active Directory
+        try {
+            $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
+        } catch (Exception $e) {
             $error = $this->logLdapError();
-            throw new Exception("unable to query ldap: " . $error);
+            // throw new Exception("unable to query ldap: " . $error);
+            return false;
         }
+
         $entries = ldap_get_entries($this->ldapConn, $result);
 
         if (is_array($entries) && $entries['count'] === 0) {
             //todo log username not found?
-            LoggerManager::getLogger()->warn("Username ".$name." not found in ldap");
-            throw new UnauthorizedException("Invalid username/password combination ", 10);
+            LoggerManager::getLogger()->warn("Username ".$name." not found in ldap. Fallback on default CRM authentication.");
+            // throw new UnauthorizedException("Invalid username/password combination ", 10);
+            return false;
         }
         if ($this->bindAttr && isset($entries[0]) && $entries[0][$this->bindAttr]) {
             $this->userDn = $entries[0][$this->bindAttr][0];
@@ -236,7 +281,8 @@ class LDAPAuthenticate implements AuthenticatorI
 
         if(empty($this->userDn)){
             LoggerManager::getLogger()->warn("User DN ".$name." not found in ldap");
-            throw new UnauthorizedException("Invalid username/password combination ", 10);
+            // throw new UnauthorizedException("Invalid username/password combination ", 10);
+            return false;
         }
 
         // bind with username & password in order to check password
@@ -248,7 +294,8 @@ class LDAPAuthenticate implements AuthenticatorI
             if ($bind === false) {
                 $msg.= " Unable to bind for username " . $name. " in ldap (as entered in CRM login form)";
                 LoggerManager::getLogger()->warn($msg);
-                throw new UnauthorizedException("Invalid username/password combination ", 10);
+                // throw new UnauthorizedException("Invalid username/password combination ", 10);
+                return false;
             }
         }
 
@@ -259,10 +306,11 @@ class LDAPAuthenticate implements AuthenticatorI
                 $message = "unable to bind back with admin credentials";
                 LoggerManager::getLogger()->error($message);
                 $this->logLdapError();
-                throw new Exception($message);
+                // throw new Exception($message);
+                return false;
             }
         }
-
+        return true;
     }
 
     /**
@@ -310,43 +358,44 @@ class LDAPAuthenticate implements AuthenticatorI
                 $alternateName = $userObj->{$this->ldapUsernameAttribute};
             }
         }
-        $this->ldapLogin($alternateName ?: $name, $password);
+
+        if( $this->ldapLogin($alternateName ?: $name, $password)) {
+
+            $this->checkRequiredLdapGroupMemberships($name);
 
 
-        $this->checkRequiredLdapGroupMemberships($name);
-
-
-        $userId = false;
-        /** @var User $userClass */
-        $userClass = BeanFactory::getBean("Users");
-        if ($this->ldapUsernameAttribute && $alternateName === false) {
-            $userObj = $userClass->retrieve_by_string_fields([$this->ldapUsernameAttribute => $name]);
-        } else {
-            $userObj = $userClass->findByUserName($name);
-        }
-
-        if (!$userObj instanceof User) {
-            if ($this->autoCreateUser) {
-                try {
-                    $userObj = $this->createUser($name);
-                } catch (Exception $e) {
-                    throw new Exception("Unable to create User for " . $name);
-                }
+            $userId = false;
+            /** @var User $userClass */
+            $userClass = BeanFactory::getBean("Users");
+            if ($this->ldapUsernameAttribute && $alternateName === false) {
+                $userObj = $userClass->retrieve_by_string_fields([$this->ldapUsernameAttribute => $name]);
             } else {
-                throw new UnauthorizedException("no local user", 8);
+                $userObj = $userClass->findByUserName($name);
             }
+
+            if (!$userObj instanceof User) {
+                if ($this->autoCreateUser) {
+                    try {
+                        $userObj = $this->createUser($name);
+                    } catch (Exception $e) {
+                        throw new Exception("Unable to create User for " . $name);
+                    }
+                } else {
+                    throw new UnauthorizedException("no local user", 8);
+                }
+            }
+
+            // todo maintain local spice table
+            $this->synchronizeLdapFields($userObj);
+
+            if ($this->ldapAcl) {
+                $this->maintainAclProfiles($userObj);
+                $this->maintainSysuiRoles($userObj);
+            }
+            ldap_close($this->ldapConn);
+            return $userObj;
         }
-
-        // todo maintain local spice table
-        $this->synchronizeLdapFields($userObj);
-
-
-        if ($this->ldapAcl) {
-            $this->maintainAclProfiles($userObj);
-            $this->maintainSysuiRoles($userObj);
-        }
-        ldap_close($this->ldapConn);
-        return $userObj;
+        return false;
     }
 
     /**
@@ -411,6 +460,21 @@ class LDAPAuthenticate implements AuthenticatorI
     }
 
     /**
+     * check if group name is found in LDAP membership results
+     * @param $groupName
+     * @return bool
+     * @throws Exception
+     */
+    public function isInGroup($groupName)
+    {
+        if ($this->ldapGroupMemberships === null) {
+            $this->loadGroupMemberShips();
+        }
+        return in_array($groupName, $this->ldapGroupMemberships);
+    }
+
+
+    /**
      * check required group membership
      * @param $username
      * @throws Exception
@@ -431,6 +495,7 @@ class LDAPAuthenticate implements AuthenticatorI
             }
         }
     }
+
 
     /**
      * map ldap information to User properties
@@ -502,7 +567,7 @@ class LDAPAuthenticate implements AuthenticatorI
      * entry specified by samaccountname and returns its DN or empty
      * string on failure.
      */
-    function getDN($basedn)
+    function getDn($basedn)
     {
         $attributes = ['dn'];
         $result = ldap_search($this->ldapConn, $basedn,
