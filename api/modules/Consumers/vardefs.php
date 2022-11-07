@@ -128,6 +128,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'campaign_consumers',
             'source' => 'non-db',
         ],
+        'bonuscards' => [
+            'name' => 'bonuscards',
+            'type' => 'link',
+            'relationship' => 'bonuscards_consumers',
+            'module' => 'BonusCards',
+            'bean_name' => 'BonusCard',
+            'source' => 'non-db',
+            'vname' => 'LBL_BONUSCARDS',
+        ],
         'c_accept_status_fields' => [
             'name' => 'c_accept_status_fields',
             'rname' => 'id',
@@ -267,6 +276,31 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'consumer_eventregistrations',
             'source' => 'non-db',
         ],
+        'salesdocsop' => [
+            'name' => 'salesdocsop',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCS',
+            'relationship' => 'salesdocs_consumerop',
+            'module' => 'SalesDocs',
+            'source' => 'non-db',
+        ],
+        'salesdocsrp' => [
+            'name' => 'salesdocsrp',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCS',
+            'relationship' => 'salesdocs_consumerrp',
+            'module' => 'SalesDocs',
+            'source' => 'non-db',
+        ],
+        'salesdocitems' => [
+            'name' => 'salesdocitems',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCITEMS',
+            'relationship' => 'salesdocitems_consumerop',
+            'module' => 'SalesDocItems',
+            'source' => 'non-db',
+            'comment' => 'allows to display items on salesdocs via a n:m relationship using the salesdocs table'
+        ]
     ],
     'relationships' => [
         'consumers_email_addresses' => [

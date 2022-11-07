@@ -2286,6 +2286,8 @@ protected function checkQuery($sql, $object_name = false)
 					return floatval($val);
 				case 'time':
 				case 'date':
+				case 'datetime':
+				case 'datetimecombo':
 					// empty date can't be '', so convert it to either NULL or empty date value
 					if($val == '') {
 						if (!empty($fieldDef['required'])) {
@@ -3376,7 +3378,9 @@ protected function checkQuery($sql, $object_name = false)
 		if(isset($this->type_class[$type]) && ($this->type_class[$type] == 'bool' || $this->type_class[$type] == 'int' || $this->type_class[$type] == 'float')) {
 			return 0;
 		}
-
+        if(isset($this->type_class[$type]) && ($this->type_class[$type] == 'date' || $this->type_class[$type] == 'datetime' || $this->type_class[$type] == 'datetimecombo')) {
+            return "NULL";
+        }
 		return "''";
 	}
 

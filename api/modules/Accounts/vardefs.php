@@ -697,6 +697,15 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'source' => 'non-db',
         'comment' => 'SalesDocs as invoice recipient'
     ];
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['salesdocitems'] = [
+        'name' => 'salesdocitems',
+        'type' => 'link',
+        'vname' => 'LBL_SALESDOCITEMS',
+        'relationship' => 'salesdocitems_accountsop',
+        'module' => 'SalesDocItems',
+        'source' => 'non-db',
+        'comment' => 'allows to display items on salesdocs via a n:m relationship using the salesdocs table'
+    ];
 }
 if (file_exists("modules/Addresses")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['addresses'] = [

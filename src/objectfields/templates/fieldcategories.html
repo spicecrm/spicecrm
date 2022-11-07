@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
-                    <field-categories-tree *ngIf="categories.length > 0" [categories]="categories" [searchTerm]="searchterm" [searchFavorites]="searchfavorites" (category)="chooseCategories($event)"></field-categories-tree>
+                    <field-categories-tree *ngIf="categories.length > 0" [categories]="categories" [sortby]="sortby" [searchTerm]="searchterm" [searchFavorites]="searchfavorites" (category)="chooseCategories($event)"></field-categories-tree>
                 </div>
             </div>
         </div>

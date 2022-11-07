@@ -12,16 +12,13 @@ import {configurationService} from "../../../services/configuration.service";
 
 import {fieldAddress} from "../../../objectfields/components/fieldaddress";
 import {backend} from "../../../services/backend.service";
+import {modal} from "../../../services/modal.service";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     templateUrl: '../templates/fieldsapaddress.html'
 })
 export class fieldSAPAddress extends fieldAddress {
-
-    /**
-     * holds the list of countries
-     */
-    public countries: any[] = [];
 
     constructor(
         public model: model,
@@ -30,12 +27,20 @@ export class fieldSAPAddress extends fieldAddress {
         public metadata: metadata,
         public router: Router,
         public configuration: configurationService,
-        public backend: backend
+        public toast: toast,
+        public modal: modal,
+        public backend: backend,
+        public injector: Injector,
     ) {
-        super(model, view, language, metadata, router, configuration, backend);
+        super(model, view, language, metadata, router, configuration, backend, toast, modal, injector);
 
 
     }
+
+    /**
+     * holds the list of countries
+     */
+    public countries: any[] = [];
 
     /**
      * a getter for the street
