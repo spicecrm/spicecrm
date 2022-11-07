@@ -108,6 +108,7 @@ class VardefManager{
 
         $fields = [];
 
+        $object_name = strtolower($object);
         $table_name = SpiceDictionaryHandler::getInstance()->dictionary[$object]['table'] ?? strtolower($module);
 
         $path = SpiceUtils::getCustomFileIfExists("include/SugarObjects/templates/$template/vardefs.php");
