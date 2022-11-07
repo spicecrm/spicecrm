@@ -146,7 +146,18 @@ class CampaignTasksController
         $emailTemplate = BeanFactory::getBean('EmailTemplates');
         $emailTemplate->body_html = $params['html'];
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
+
+        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+
+        # set the current user to the one assigned to the task. fallback set the admin user
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $user = BeanFactory::getBean('Users', $campaignTask->assigned_user_id ?: '1');
+        AuthenticationController::getInstance()->setCurrentUser($user);
+
         $parsedTpl = $emailTemplate->parse($bean);
+
+        # reset the current user for the system after parsing
+        AuthenticationController::getInstance()->setCurrentUser($current_user);
 
         return $res->withJson(['html' => DBUtils::fromHtml(wordwrap($parsedTpl['body_html'], true))]);
     }
