@@ -61,7 +61,11 @@ export class EmailSchedulesBeans implements OnDestroy {
      * @param enumvalue
      */
     public getValue(enumvalue): string {
-        return this.language.getFieldDisplayOptionValue('EmailSchedules', 'email_schedule_status', enumvalue);
+        try {
+            return this.language.languagedata.applist.emailschedule_status_dom[enumvalue] ? this.language.languagedata.applist.emailschedule_status_dom[enumvalue] : enumvalue;
+        } catch (e) {
+            return enumvalue;
+        }
     }
 
 
