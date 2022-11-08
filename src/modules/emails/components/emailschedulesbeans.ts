@@ -7,6 +7,7 @@ import {model} from '../../../services/model.service';
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {Subscription} from "rxjs";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: "email-schedules-beans",
@@ -40,6 +41,7 @@ export class EmailSchedulesBeans implements OnDestroy {
 
     constructor(public model: model,
                 public metadata: metadata,
+                public language: language,
                 public backend: backend
     ) {
         this.subscriptions.add(
@@ -52,6 +54,20 @@ export class EmailSchedulesBeans implements OnDestroy {
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
+
+    /**
+     * translates the value of the status properly
+     *
+     * @param enumvalue
+     */
+    public getValue(enumvalue): string {
+        try {
+            return this.language.languagedata.applist.emailschedule_status_dom[enumvalue] ? this.language.languagedata.applist.emailschedule_status_dom[enumvalue] : enumvalue;
+        } catch (e) {
+            return enumvalue;
+        }
+    }
+
 
     /**
      * get the data from the backend
