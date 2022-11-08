@@ -72,6 +72,7 @@ class CoreController
             ],
             'socket_frontend' => SpiceConfig::getInstance()->config['core']['socket_frontend'],
             'loginSidebarUrl' => isset (SpiceConfig::getInstance()->config['uiLoginSidebarUrl'][0]) ? SpiceConfig::getInstance()->config['uiLoginSidebarUrl'] : false,
+            'allowForgotPass' => isset (SpiceConfig::getInstance()->config['uiAllowForgotPass'][0]) ? SpiceConfig::getInstance()->config['uiAllowForgotPass'] : false,
             'ChangeRequestRequired' => isset(SpiceConfig::getInstance()->config['change_request_required']) ? (boolean)SpiceConfig::getInstance()->config['change_request_required'] : false,
             'sessionMaxLifetime' => (int)ini_get('session.gc_maxlifetime'),
             'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
