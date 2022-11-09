@@ -1011,6 +1011,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
                 'first_name',
                 'id'
             ]
+        ],
+        [
+            'name' => 'idx_users_reportto',
+            'type' => 'index',
+            'fields' => [
+                'reports_to_id',
+                'id',
+                'deleted'
+            ]
         ]
     ],
     'relationships' => [
