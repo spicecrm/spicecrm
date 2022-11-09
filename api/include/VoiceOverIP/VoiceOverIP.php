@@ -4,8 +4,6 @@ namespace SpiceCRM\includes\VoiceOverIP;
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 class VoiceOverIP
