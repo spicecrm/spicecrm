@@ -360,8 +360,6 @@ class SpiceUIConfLoader
 //            throw new Exception("No inserts or no inserts run successfully. Action aborted.");
 //        }
 
-        $errors = ['hahaha'];
-
         if(count($errors) > 0){
             $packages = implode(', ', $params['packages']);
             throw (new \SpiceCRM\includes\ErrorHandlers\Exception("Failed to load packages $packages", 'packageLoadFailed'))->
