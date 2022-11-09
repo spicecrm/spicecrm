@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\VoiceOverIP\api\controllers;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\VoiceOverIP\VoiceOverIP;
@@ -42,10 +43,11 @@ class VoiceOverIPController
     {
         $postBody = $req->getParsedBody();
 
-        $voiceOverIP = new VoiceOverIP();
-        $success = $voiceOverIP->setPreferences($postBody);
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user->setPreference($this->preferenceName, $postBody, 0, $this->preferenceCategory);
+        $current_user->savePreferencesToDB();
 
-        return $res->withJson(['status' => $success ? 'success' : 'error']);
+        return $res->withJson(['status' => 'success']);
     }
 
     /**
