@@ -135,6 +135,9 @@ export class AgreementsAddRevisionModal implements OnInit {
      * * @param goto
      */
     public addRevision(goto: boolean = false) {
+        // store model to avoid loosing data
+        let currModelData = this.model.data;
+
         if (!this.model.data.change_log) {
             this.toast.sendToast(this.language.getLabel('LBL_ENTER_CHANGELOG'), 'error');
         } else {
@@ -143,11 +146,8 @@ export class AgreementsAddRevisionModal implements OnInit {
             // wait until attachment has been saved to avoid overwriting modelattachments.module
             this.modelattachments.uploadAttachmentsBase64(this.files).subscribe({
                 next: (res) => {
-
-                    // add name and version_number to model data
-                    this.model.data.name = this.revName;
-                    this.model.data.version_number = this.revNumber;
-
+                    // re-initialize model data in case data was lost
+                    this.model.data = currModelData;
                     this.model.save();
 
                     // add related records so the parent model gets the newly added revision
