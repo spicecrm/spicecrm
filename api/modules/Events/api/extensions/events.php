@@ -29,7 +29,7 @@ $routes = [
             'description' => 'Event Registrations',
             'type'        => ValidationMiddleware::TYPE_GUID,
         ],
-        'listData'    => [
+        'targetListIds'    => [
             'in'          => 'body',
             'description' => 'Event Registrations',
             'type'        => ValidationMiddleware::TYPE_ARRAY,

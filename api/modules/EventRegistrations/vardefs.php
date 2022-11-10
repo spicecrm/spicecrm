@@ -93,6 +93,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
             'relationship' => 'eventregistration_campaign_rel',
             'source' => 'non-db',
         ],
+        'description' => [
+            'name' => 'description',
+            'vname' => 'LBL_DESCRIPTION',
+            'type' => 'text'
+        ],
         'event_id' => [
             'name' => 'event_id',
             'vname' => 'LBL_EVENT_ID',

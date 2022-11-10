@@ -27,8 +27,29 @@ class EventController
      */
     public function getEventRegistrations(Request $req, Response $res, array $args): Response
     {
-        $body=$req->getParsedBody();
-        $timedate = TimeDate::getInstance();
-        return $timedate;
+        $body = $req->getParsedBody();
+        $listDataIds = $body['targetListIds'];
+//        $listData [] = $body['listData'][is_integer()];
+        $registrationData = $body['registrationData'];
+        foreach ($listDataIds as $idx => $targetlistId) {
+            $allProspectList = BeanFactory::getBean('ProspectLists', $targetlistId);
+            $prospects = [];
+            $prospects = array_merge($prospects, $allProspectList->get_linked_beans('contacts'));
+            $prospects = array_merge($prospects, $allProspectList->get_linked_beans('consumers'));
+            $prospects = array_merge($prospects, $allProspectList->get_linked_beans('users'));
+
+            foreach ($prospects as $prospect) {
+                $eventRegistration = BeanFactory::getBean('EventRegistrations');
+                $eventRegistration -> salutation = $prospect -> salutation;
+                $eventRegistration -> first_name = $prospect -> first_name;
+                $eventRegistration -> last_name = $prospect -> last_name;
+                $eventRegistration -> parent_id = $prospect -> relid;
+                $eventRegistration -> parent_type = $prospect -> module_dir;
+                $eventRegistration -> registration_status = $registrationData['registration_status'];
+                $eventRegistration -> description = $registrationData['description'];
+                $eventRegistration -> save();
+            }
+        }
+        return $res->withJson('succes');
     }
 }
