@@ -32,12 +32,8 @@ export class EventRegistrationModal {
 
     constructor(public model: model, public metadata: metadata, public backend: backend) {
 
-        // let componentConfig = this.metadata.getComponentConfig('ObjectModalModuleLookup', this.model.module);
-        // this.componentconfig = componentConfig.componentconfig;
         this.model.module = 'EventRegistrations';
         this.model.initialize();
-        // this.model.initializeFieldsStati();
-        // this.model.registerModel();
         this.model.startEdit();
     }
 
@@ -58,8 +54,8 @@ export class EventRegistrationModal {
 
     public holdListData: any [] = [];
 
-    public fetchListData(event){
-        this.holdListData.push(event)
+    public fetchListData(targetlist){
+        this.holdListData.push(targetlist[0].id)
     };
 
     /**
@@ -106,7 +102,7 @@ export class EventRegistrationModal {
 
     public save() {
         let postData: any = {
-            listData: this.holdListData,
+            targetListIds: this.holdListData,
             registrationData: this.model.data,
         }
         this.backend.postRequest(`module/Events/${this.model.id}/registrations`, {}, postData).subscribe((results: any) => {
