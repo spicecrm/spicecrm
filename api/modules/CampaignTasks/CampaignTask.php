@@ -249,6 +249,11 @@ class CampaignTask extends SpiceBean
 
     function sendTestEmail($emailAddresses = [])
     {
+        # set the current user to the one assigned to the task. fallback set the admin user
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $user = BeanFactory::getBean('Users', $this->assigned_user_id ?: '1');
+        AuthenticationController::getInstance()->setCurrentUser($user);
+
         $testCount = 0;
         $res = $this->db->query("SELECT plp.related_id, plp.related_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.list_type = 'test' AND plc.campaigntask_id = '{$this->id}' AND plc.prospect_list_id = pl.id INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id WHERE plc.deleted = 0 AND pl.deleted = 0 AND plp.deleted = 0");
         while ($row = $this->db->fetchByAssoc($res)) {
@@ -259,7 +264,10 @@ class CampaignTask extends SpiceBean
             }
         }
 
-        return $testCount > 0 ? ['status' => 'success'] : ['status' => 'error'] ;
+        # reset the current user for the system after parsing
+        AuthenticationController::getInstance()->setCurrentUser($current_user);
+
+        return $testCount > 0 ? ['status' => 'success'] : ['status' => 'error', 'msg' => 'no targets found'] ;
     }
 
     /**
