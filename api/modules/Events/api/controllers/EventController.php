@@ -29,7 +29,6 @@ class EventController
     {
         $body = $req->getParsedBody();
         $listDataIds = $body['targetListIds'];
-//        $listData [] = $body['listData'][is_integer()];
         $registrationData = $body['registrationData'];
         foreach ($listDataIds as $idx => $targetlistId) {
             $allProspectList = BeanFactory::getBean('ProspectLists', $targetlistId);
@@ -40,14 +39,16 @@ class EventController
 
             foreach ($prospects as $prospect) {
                 $eventRegistration = BeanFactory::getBean('EventRegistrations');
-                $eventRegistration -> salutation = $prospect -> salutation;
-                $eventRegistration -> first_name = $prospect -> first_name;
-                $eventRegistration -> last_name = $prospect -> last_name;
-                $eventRegistration -> parent_id = $prospect -> relid;
-                $eventRegistration -> parent_type = $prospect -> module_dir;
-                $eventRegistration -> registration_status = $registrationData['registration_status'];
-                $eventRegistration -> description = $registrationData['description'];
-                $eventRegistration -> save();
+                $eventRegistration->salutation = $prospect->salutation;
+                $eventRegistration->first_name = $prospect->first_name;
+                $eventRegistration->last_name = $prospect->last_name;
+                $eventRegistration->parent_id = $prospect->relid;
+                $eventRegistration->parent_type = $prospect->_module;
+                $eventRegistration->event_id = $body['eventId'];
+                $eventRegistration->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
+                $eventRegistration->registration_status = $registrationData['registration_status'];
+                $eventRegistration->description = $registrationData['description'];
+                $eventRegistration->save();
             }
         }
         return $res->withJson('succes');

@@ -31,13 +31,18 @@ $routes = [
         ],
         'targetListIds'    => [
             'in'          => 'body',
-            'description' => 'Event Registrations',
+            'description' => 'A list of prospectList Ids',
             'type'        => ValidationMiddleware::TYPE_ARRAY,
         ],
         'registrationData'    => [
             'in'          => 'body',
             'description' => 'Event Registrations',
             'type'        => ValidationMiddleware::TYPE_ARRAY,
+        ],
+        'eventId'    => [
+            'in'          => 'body',
+            'description' => 'Event Id',
+            'type'        => ValidationMiddleware::TYPE_GUID,
         ],
     ],
 ],
