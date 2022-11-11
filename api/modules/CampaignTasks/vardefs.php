@@ -272,7 +272,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'module' => 'TrackingLinks',
             'relationship' => 'campaigntask_trackinglinks',
             'source' => 'non-db'
-        ]
+        ],
+        'sysmodulefilter_id' => [
+            'name' => 'sysmodulefilter_id',
+            'vname' => 'LBL_FILTER_ID',
+            'type' => 'id'
+        ],
+        'eventregistration_status' => [
+            'name' => 'eventregistration_status',
+            'vname' => 'LBL_EVENTREGISTRATION_STATUS',
+            'type' => 'enum',
+            'options' => 'eventregistration_status_dom',
+            'len' => 100,
+            'audited' => true,
+            'required' => true
+        ],
     ],
     'relationships' => [
         'campaign_campaigntasks' => [
