@@ -1,7 +1,7 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component, ComponentRef} from '@angular/core';
+import {Component, ComponentRef, SkipSelf} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
@@ -13,6 +13,7 @@ import {any, forEach} from "underscore";
     providers: [model]
 })
 export class EventRegistrationModal {
+
 
     public self: ComponentRef<EventRegistrationModal>;
 
@@ -30,7 +31,9 @@ export class EventRegistrationModal {
      */
     public totalSteps: string[] = ['ProspectLists', 'EventRegistrations'];
 
-    constructor(public model: model, public metadata: metadata, public backend: backend) {
+    constructor(public model: model, public metadata: metadata, public backend: backend, @SkipSelf() public eventModel: model,) {
+
+
 
         this.model.module = 'EventRegistrations';
         this.model.initialize();
@@ -104,8 +107,9 @@ export class EventRegistrationModal {
         let postData: any = {
             targetListIds: this.holdListData,
             registrationData: this.model.data,
+            eventId: this.eventModel.id,
         }
-        this.backend.postRequest(`module/Events/${this.model.id}/registrations`, {}, postData).subscribe((results: any) => {
+        this.backend.postRequest(`module/Events/${this.eventModel.id}/registrations`, {}, postData).subscribe((results: any) => {
             this.self.destroy();
         });
     }

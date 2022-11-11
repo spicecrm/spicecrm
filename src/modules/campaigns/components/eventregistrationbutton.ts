@@ -37,22 +37,6 @@ export class EventRegistrationButton {
 
     public execute() {
         this.modal.openModal('EventRegistrationModal', true, this.injector);
-        // this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-        //     selectModal.instance.module = 'ProspectLists';
-        //     selectModal.instance.multiselect = true;
-        //     this.subscriptions.add(
-        //         selectModal.instance.selectedItems.subscribe(items => {
-        //             if (items.length) {
-        //                 this.selectedItem = {
-        //                     id: items[0].id,
-        //                     summary_text: items[0].summary_text,
-        //                     module: this.module,
-        //                     data: items[0]
-        //                 };
-        //             }
-        //         })
-        //     );
-        // });
     }
 
 
