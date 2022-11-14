@@ -420,11 +420,19 @@ export class metadata {
         }
     }
 
-    public addComponentToComponentset(id, componentset, item) {
+    /**
+     * adds a component to a componentset
+     *
+     * @param id
+     * @param componentset
+     * @param item
+     * @param componentconfig
+     */
+    public addComponentToComponentset(id, componentset, item, componentconfig = {} ) {
         this.componentSets[componentset].items.push({
             id: id,
             component: item,
-            componentconfig: {},
+            componentconfig: componentconfig,
             sequence: 0
         });
 
