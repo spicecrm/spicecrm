@@ -87,7 +87,7 @@ export class fieldText extends fieldGeneric implements OnInit {
     public getTextAreaStyle() {
 
         // get min and max height and set default values
-        let minheight = this.fieldconfig.minheight ? this.fieldconfig.minheight.replace('px', '') : 38;
+        let minheight = this.fieldconfig.minheight ? this.fieldconfig.minheight.replace('px', '') : 80;
         let maxheight = this.fieldconfig.maxheight ? this.fieldconfig.maxheight.replace('px', '') : 300;
 
         // generate a style object
