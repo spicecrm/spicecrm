@@ -137,7 +137,10 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      */
     public numberDelimitationsList = [
         { show: '1.000.000,00', num_grp_sep: '.', dec_sep: ',' },
-        { show: '1,000,000.00', num_grp_sep: ',', dec_sep: '.' }];
+        { show: '1,000,000.00', num_grp_sep: ',', dec_sep: '.' },
+        { show: '1 000 000,00', num_grp_sep: ' ', dec_sep: ',' }
+    ];
+
 
     /**
      * holds the name formats
