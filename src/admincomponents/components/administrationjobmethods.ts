@@ -19,7 +19,7 @@ export class AdministrationJobMethods implements OnInit {
     /**
      * holds a list of the available classes
      */
-    public availableClasses: Array<{ id, name }> = [];
+    public availableClasses: { id, name }[] = [];
     /**
      * holds the concatenated value
      */
@@ -125,6 +125,7 @@ export class AdministrationJobMethods implements OnInit {
      * splits the value
      */
     public splitValue() {
+        if(!this._value) this._value = this.model.getField('method');
         if (this._value) {
             let elements = this._value.split('->');
             this._class = elements[0];
