@@ -43,7 +43,7 @@ export class TelephonyPreferences {
      * get the preferences and check if we have a username set
      */
     public getPreferences() {
-        this.backend.getRequest('channels/voice/StarFaceVOIP/preferences').subscribe(prefs => {
+        this.backend.getRequest('channels/voice/telephonyGeneric/preferences').subscribe(prefs => {
             this.preferences.username = prefs.username;
         });
     }
@@ -54,7 +54,7 @@ export class TelephonyPreferences {
     public setPreferences() {
         if (this.canSet) {
             this.verifying = true;
-            this.backend.postRequest('channels/voice/StarFaceVOIP/preferences', {}, this.preferences).subscribe(
+            this.backend.postRequest('channels/voice/telephonyGeneric/preferences', {}, this.preferences).subscribe(
                 res => {
                     this.verifying = false;
                     if (res.status == 'success') {

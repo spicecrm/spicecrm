@@ -54,6 +54,7 @@ export class TelephonyToolbarIndicator {
         public telephony: telephony
     ) {
         this.callid = this.modelutilities.generateGuid();
+        this.getPreferences();
     }
 
     /**
@@ -229,6 +230,10 @@ export class TelephonyToolbarIndicator {
 
         // join the room
         this.socket.joinRoom('telephonyGeneric', `telephonyGeneric::${this.username}`);
+
+        if (this.socket.connected) {
+            this.status = 'connected';
+        }
     }
 
     /**
