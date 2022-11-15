@@ -170,7 +170,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     /**
      * open lookup modal to select an email template to be copied to the body
      */
-    public copyFromTemplate() {``
+    public copyFromTemplate() {
         this.modal.openModal('ObjectModalModuleLookup', true, this.injector)
             .subscribe(selectModal => {
                 selectModal.instance.module = 'EmailTemplates';
