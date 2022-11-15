@@ -131,7 +131,7 @@ export class EmailReplyModal implements OnInit {
         historytext += "<br>";
         historytext += "<b>" + this.language.getLabel('LBL_TO') + ":</b> " + this.parent.getField('to_addrs');
         historytext += "<br>";
-        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.getField('data.name');
+        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.getField('name');
         historytext += "<br><br>";
         historytext += "</div>";
 
