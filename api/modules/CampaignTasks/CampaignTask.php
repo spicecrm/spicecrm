@@ -273,7 +273,7 @@ class CampaignTask extends SpiceBean
 
         if($saveEmail){
             $email->parent_type = $seed->_module;
-            $email->parent_ide = $seed->id;
+            $email->parent_id = $seed->id;
             $email->to_be_sent = true;
             $email->save();
         } else {
