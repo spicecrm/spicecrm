@@ -131,12 +131,25 @@ export class EmailReplyModal implements OnInit {
         historytext += "<br>";
         historytext += "<b>" + this.language.getLabel('LBL_TO') + ":</b> " + this.parent.getField('to_addrs');
         historytext += "<br>";
-        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.getField('data.name');
+        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.getField('name');
         historytext += "<br><br>";
         historytext += "</div>";
 
         historytext += '<blockquote class="crm_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">';
-        historytext += this.parent.getField('body').replace('data-signature=""', '').replace('spicecrm_temp_quote=""', '');
+
+        const body: string = this.parent.getField('body').replace('data-signature=""', '').replace('spicecrm_temp_quote=""', '');
+
+        if (body.startsWith('<html>')) {
+            const containerDiv = document.createElement('html');
+            containerDiv.innerHTML = body;
+            const bodyTag = containerDiv.getElementsByTagName('body')[0];
+            historytext += bodyTag ? bodyTag.innerHTML : body;
+            containerDiv.remove();
+
+        } else {
+            historytext += body;
+        }
+
         historytext += '</blockquote>';
 
         historytext += '</div>';
