@@ -258,69 +258,6 @@ export class SystemInputNumber implements ControlValueAccessor {
         }
     }
 
-    /**
-     * handle value on keyup
-     * format value
-     * position cursor
-     */
-    public changed() {
-        let curpos = this.numberinput.nativeElement.selectionEnd;
-        let curposStart = this.numberinput.nativeElement.selectionStart;
-        let curposStartDecimalKeyStroke = this.textValue.indexOf(this.userpreferences.toUse.dec_sep);
-        let setCursorPosition = false;
-        let textValueLength = this.textValue.length;
-
-        let val: any = this.textValue;
-        this.textValue = this.getValSanitized(val);
-        let textValueLengthNew = this.textValue.length;
-        let curposEndDecimalKeyStroke = this.textValue.indexOf(this.userpreferences.toUse.dec_sep);
-
-        // recalculate cursor position:
-        // we position after latest entered digit
-        // we reposition only when user is not moving cursor using arrows
-        // console.log(curposStart, curposStartDecimalKeyStroke, this.decimalKeyStroke, curposEndDecimalKeyStroke);
-        if(this.allowedKeys.indexOf(this.latestKeyStroke) < 0){
-            if(curposEndDecimalKeyStroke > 0){
-                curpos = curposEndDecimalKeyStroke;
-            } else{
-                curpos = curposStart;
-                setCursorPosition = true;
-            }
-
-            if (this.decimalKeyStroke == this.userpreferences.toUse.dec_sep) {
-                // first input
-                curpos = curpos + 1 + this.counterAfterdecimalKeyStroke;
-                setCursorPosition = true;
-            } else if (this.decimalKeyStroke == '' && curposEndDecimalKeyStroke > 0) {
-                // editing existing value
-                curpos = curposStart;
-                if (curposStartDecimalKeyStroke > 0) {
-                    curpos = curpos + (curposEndDecimalKeyStroke - curposStartDecimalKeyStroke);
-                }
-                setCursorPosition = true;
-            }
-
-        } else{
-            if(this.latestKeyStroke == 'Backspace' || this.latestKeyStroke == 'Delete'){
-                // reset
-                this.decimalKeyStroke = '';
-                this.counterAfterdecimalKeyStroke = 0;
-                // calculate position
-                curpos = curposStart;
-                if(curposStart - curposEndDecimalKeyStroke == 1){
-                    curpos = curpos-1;
-                }
-                setCursorPosition = true;
-            }
-        }
-
-        // set a brieftimeout and set the current pos back to the field tricking the Change Detection
-        if(setCursorPosition){
-            setTimeout(() => {
-                this.renderer.setProperty(this.numberinput.nativeElement, 'selectionEnd', curpos);
-            });
-        }
-    }
 
     /**
      * recalculate cursor position:
