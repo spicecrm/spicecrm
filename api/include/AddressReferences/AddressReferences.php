@@ -118,6 +118,7 @@ class AddressReferences
             $linkedBeans = $parentBean->get_linked_beans($metadata['parent_link_name']);
 
             foreach ($linkedBeans as $childBean) {
+                if ($childBean->$childFieldName != $parentBean->id) continue;
                 $this->updateChildAddress($parentBean, $childBean, $metadata);
                 $childBean->save();
             }
