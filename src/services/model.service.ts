@@ -970,16 +970,18 @@ export class model implements OnDestroy {
      */
     public setField(field, value, silent: boolean = false) {
         if (!field) return false;
+
+        this.data[field] = value;
+
+        this.evaluateValidationRules(field, "change");
+
         if (this.data[field] !== value) {
             this.field$.next({field, value});
         }
-        this.data[field] = value;
 
         if (silent !== true) {
             this.data$.next(this.data);
         }
-
-        this.evaluateValidationRules(field, "change");
 
         // run the duplicate check
         this.duplicateCheckOnChange([field]);
@@ -1303,7 +1305,7 @@ export class model implements OnDestroy {
 
         this.executeCopyRules(parent);
         this.setFieldsDefaultValues();
-        this.evaluateValidationRules();
+        this.evaluateValidationRules(null,'initialize');
 
         // set default acl to allow editing
         this.acl = {
@@ -1377,7 +1379,7 @@ export class model implements OnDestroy {
             }
 
             // run the evaluation rules
-            this.evaluateValidationRules();
+            this.evaluateValidationRules(null, 'initialize');
 
             this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
                 if (editModalRef) {

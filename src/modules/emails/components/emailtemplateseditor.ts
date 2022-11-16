@@ -144,7 +144,11 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
             })
         );
         this.subscription.add(
-            this.view.mode$.subscribe(() => this.cdRef.detectChanges()));
+            this.model.data$.subscribe(() => this.cdRef.detectChanges())
+        );
+        this.subscription.add(
+            this.view.mode$.subscribe(() => this.cdRef.detectChanges())
+        );
     }
 
     /**
