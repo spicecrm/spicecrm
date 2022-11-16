@@ -19,7 +19,7 @@
                                         <input [type]="PwdFieldType" [(ngModel)]="password" class="slds-input" [placeholder]="language.getLabel('MSG_ENTER_NEW_PASSWORD')"
                                                [disabled]="autoGenerate || externalAuthOnly" [ngModelOptions]="modelOptions">
                                     </div>
-                                    <field-messages [messages]="passwordMsg"></field-messages>
+                                    <field-messages *ngIf="!externalAuthOnly" [messages]="passwordMsg"></field-messages>
                                 </div>
                                 <div class="slds-form-element  slds-m-vertical--small" [ngClass]="rePwdFieldStyle">
                                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
@@ -27,7 +27,7 @@
                                         <input [type]="PwdFieldType" [(ngModel)]="repeatPassword" class="slds-input" [placeholder]="language.getLabel('LBL_REPEAT_PWD')"
                                                [disabled]="autoGenerate || externalAuthOnly" [ngModelOptions]="modelOptions">
                                     </div>
-                                    <field-messages [messages]="rePasswordMsg"></field-messages>
+                                    <field-messages *ngIf="!externalAuthOnly" [messages]="rePasswordMsg"></field-messages>
                                 </div>
 
                             </div>

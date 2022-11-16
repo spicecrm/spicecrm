@@ -106,19 +106,19 @@ export class UserAddModal implements OnInit {
     }
 
     get pwdFieldStyle() {
-        return (this.pwdFieldEmpty || this.pwdNotMatchGuide) ? 'slds-has-error' : '';
+        return (!this.externalAuthOnly && (this.pwdFieldEmpty || this.pwdNotMatchGuide)) ? 'slds-has-error' : '';
     }
 
     get rePwdFieldStyle() {
-        return (this.rePwdFieldEmpty || this.rePwdNotSame) ? 'slds-has-error' : '';
+        return (!this.externalAuthOnly && (this.rePwdFieldEmpty || this.rePwdNotSame)) ? 'slds-has-error' : '';
     }
 
     get hasError() {
         let isValid = true;
-        if (!this.autoGenerate && this.pwdGuideline && this.pwdNotMatchGuide) {
+        if (!this.externalAuthOnly && !this.autoGenerate && this.pwdGuideline && this.pwdNotMatchGuide) {
             isValid = false;
         }
-        if (!this.autoGenerate && (!this.password || this.rePwdNotSame)) {
+        if (!this.externalAuthOnly && !this.autoGenerate && (!this.password || this.rePwdNotSame)) {
             isValid = false;
         }
 
