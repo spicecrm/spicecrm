@@ -211,6 +211,7 @@ export class domainmanager {
                             sysdomainfieldvalidation_id: validationid,
                             scope: scope,
                             status: 'a',
+                            exclude_from_index: 0,
                             deleted: 0
                         });
 

@@ -447,6 +447,34 @@ $routes = [
     ],
     [
         'method'      => 'get',
+        'route'       => '/module/{beanName}/{externalId}/external',
+        'class'       => SpiceBeanController::class,
+        'function'    => 'getBeanByExternalId',
+        'description' => 'Get bean by external id',
+        'options'     => ['moduleRoute' => true, 'validate' => true],
+        'parameters'  => [
+            'beanName'        => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'externalId'          => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'an external id',
+            ],
+            'idonly'          => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => false,
+                'description' => 'set to true to only get the id in response',
+            ],
+        ],
+    ],
+    [
+        'method'      => 'get',
         'route'       => '/module/{beanName}/{beanId}/auditlog',
         'class'       => SpiceBeanController::class,
         'function'    => 'getBeanAuditlog',
