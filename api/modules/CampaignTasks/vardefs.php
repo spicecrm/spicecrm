@@ -292,6 +292,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'type' => 'varchar',
             'len' => '36'
         ],
+        ],
+        'editor_type' => [
+            'name' => 'editor_type',
+            'vname' => 'LBL_VIA_SPICE_PAGE_BUILDER',
+            'type' => 'enum',
+            'comment' => 'options: richText, pageBuilder, html'
+        ],
     ],
     'relationships' => [
         'campaign_campaigntasks' => [

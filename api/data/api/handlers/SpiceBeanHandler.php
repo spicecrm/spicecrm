@@ -6,6 +6,7 @@ namespace SpiceCRM\data\api\handlers;
 use LanguageManager;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
@@ -664,8 +665,52 @@ class SpiceBeanHandler
             $this->_trackAction($requestParams['trackaction'], $beanModule, $thisBean);
         }
 
-        $includeReminder = $requestParams['includeReminder'] ? true : false;
-        $includeNotes = $requestParams['includeNotes'] ? true : false;
+        return $this->mapBeanToArray($beanModule, $thisBean);
+    }
+
+    /**
+     * retrieves a bean based on an external id passed in
+     *
+     * @param $beanModule
+     * @param $externalId
+     * @param $requestParams
+     * @return array
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     */
+    public function get_bean_detail_by_external_id($beanModule, $externalId, $requestParams)
+    {
+        // acl check if user can get the detail
+        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
+            throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
+
+        $thisBean = BeanFactory::getBean($beanModule); //set encode to false to avoid things like ' being translated to &#039;
+
+        // check that we have an external id property on the module
+        if(!isset($thisBean->field_defs['ext_id'])) {
+            throw new BadRequestException('Module has no ext_id property');
+        }
+
+        if (!$thisBean->retrieve_by_string_fields(['ext_id' => $externalId])) {
+            throw (new NotFoundException('Record not found.'))->setLookedFor(['ext_id' => $externalId, 'module' => $beanModule]);
+        }
+
+        // if id only is requested return only the id
+        if($requestParams['idonly']){
+            return ['id' => $thisBean->id];
+        }
+
+        if (!$thisBean->ACLAccess('view')) {
+            throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
+        }
+
+        // load the view details
+        $thisBean->retrieveViewDetails();
+
+        if ($requestParams['trackaction']) {
+            $this->_trackAction($requestParams['trackaction'], $beanModule, $thisBean);
+        }
 
         return $this->mapBeanToArray($beanModule, $thisBean);
 

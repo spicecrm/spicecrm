@@ -20,6 +20,7 @@ class SpicePhoneNumberParser
      * convertToE164
      *
      * Converts the phone number string given by the user into the E164 standard.
+     * +43189083610
      * If it's not possible it just returns the user input.
      *
      * @param $phoneNumberString
@@ -57,7 +58,8 @@ class SpicePhoneNumberParser
     /**
      * convertToInternational
      *
-     * Converts the phone number string given by the user into the E164 standard.
+     * Converts the phone number string given by the user into the E164 standard including readbale format
+     * +43 1 89083610
      * If it's not possible it just returns the user input.
      *
      * @param $phoneNumberString

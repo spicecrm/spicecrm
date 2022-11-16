@@ -58,87 +58,95 @@ class VardefManager{
      * this method is called within a vardefs.php file which extends from a SugarObject.
      * It is meant to load the vardefs from the SugarObject.
      */
-    static function createVardef($module, $object, $templates = ['default'], $object_name = false)
+    static function createVardef($module, $object, $templates = ['default'])
     {
-            //CR10001008: Do not reverse. Templates should overwrite definitions in given order
-            // example Contacts: default will create name as required. Person will change the name definition to non-db
-            //reverse the sort order so priority goes highest to lowest;
-            //$templates = array_reverse($templates);
+        $handler = SpiceDictionaryHandler::getInstance();
+        $vardefs = ['fields' => [], 'relationships' => [], 'indices' => []];
 
-            foreach ($templates as $template)
-            {
-                self::addTemplate($module, $object, $template, $object_name);
-            }
+        foreach ($templates as $template) {
 
-//            if (isset(self::$custom_disabled_modules[$module]))
-//            {
-//                $vardef_paths = [
-//                    'custom/modules/' . $module . '/Ext/Vardefs/vardefs.ext.php',
-//                    'custom/Extension/modules/' . $module . '/Ext/Vardefs/vardefs.php'
-//                ];
-//
-//                //search a predefined set of locations for the vardef files
-//                foreach ($vardef_paths as $path)
-//                {
-//                    if (file_exists($path)) {
-//                        require($path);
-//                    }
-//                }
-//            }
+            $templateVardefs = self::getTemplateVardefs($module, $object, $template);
 
+            $vardefs['fields'] = array_merge($vardefs['fields'], $templateVardefs['fields']);
+            $vardefs['relationships'] = array_merge($vardefs['relationships'], $templateVardefs['relationships']);
+            $vardefs['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs['indices'], $templateVardefs['indices']);
+
+            # maintain a record of this objects inheritance from the SugarObject templates
+            $handler->dictionary[$object]['templates'][$template] = $template;
+        }
+
+        self::updateDictionaryVardefs($vardefs, $object);
     }
 
     /**
-     * Enables/Disables the loading of custom vardefs for a module.
-     * @param String $module Module to be enabled/disabled
-     * @param Boolean $enable true to enable, false to disable
-     * @return  null
+     * update dictionary vardefs from the passed vardefs e.g. template vardefs
+     * @param $vardefs
+     * @param $object
+     * @return void
      */
-//    public static function setCustomAllowedForModule($module, $enable) {
-//        if ($enable && isset($custom_disabled_modules[$module])) {
-//              unset($custom_disabled_modules[$module]);
-//        } else if (!$enable) {
-//              $custom_disabled_modules[$module] = true;
-//        }
-//    }
+    static public function updateDictionaryVardefs($vardefs, $object)
+    {
+        $handler = SpiceDictionaryHandler::getInstance();
 
-    static function addTemplate($module, $object, $template, $object_name=false){
+        $handler->dictionary[$object]['fields'] = array_merge($vardefs['fields'], $handler->dictionary[$object]['fields'] ?? []);
+        $handler->dictionary[$object]['relationships'] = array_merge($vardefs['relationships'], $handler->dictionary[$object]['relationships'] ?? []);
+        $handler->dictionary[$object]['indices'] = SpiceDictionaryVardefs::mergeIndices($vardefs['indices'], $handler->dictionary[$object]['indices'] ?? []);
+    }
+
+    /**
+     * get template vardefs
+     * @param $module
+     * @param $object
+     * @param $template
+     * @return array|array[]
+     */
+    static function getTemplateVardefs($module, $object, $template): array
+    {
         global $vardefs;
-        if($template == 'default')$template = 'basic';
-        $templates = [];
-        $fields = [];
-        if(empty($object_name))$object_name = $object;
-        $_object_name = strtolower($object_name);
-        if(!empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['table'])){
-            $table_name = SpiceDictionaryHandler::getInstance()->dictionary[$object]['table'];
-        }else{
-            $table_name = strtolower($module);
-        }
 
-        if(empty($templates[$template])){
-            $path = SpiceUtils::getCustomFileIfExists('include/SugarObjects/templates/' . $template . '/vardefs.php');
-            if(file_exists($path)){
+        if ($template == 'default') $template = 'basic';
+
+        $fields = [];
+
+        $object_name = strtolower($object);
+        $table_name = SpiceDictionaryHandler::getInstance()->dictionary[$object]['table'] ?? strtolower($module);
+
+        $path = SpiceUtils::getCustomFileIfExists("include/SugarObjects/templates/$template/vardefs.php");
+
+        if (file_exists($path)) {
+            require($path);
+            $templateVardefs = $vardefs;
+        } else {
+            $path = SpiceUtils::getCustomFileIfExists("include/SugarObjects/implements/$template/vardefs.php");
+
+            if (file_exists($path)) {
                 require($path);
-                $templates[$template] = $vardefs;
-            }else{
-                $path = SpiceUtils::getCustomFileIfExists('include/SugarObjects/implements/' . $template . '/vardefs.php');
-                if(file_exists($path)){
-                    require($path);
-                    $templates[$template] = $vardefs;
-                }
+                $templateVardefs = $vardefs;
             }
         }
 
-        if(!empty($templates[$template])){
-            if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = [];
-            if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships'] = [];
-            if(empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = [];
-            SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$object]['fields'], $templates[$template]['fields']);
-            if(!empty($templates[$template]['relationships']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships'] = array_merge($templates[$template]['relationships'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['relationships']);
-            if(!empty($templates[$template]['indices']))SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices'] = SpiceDictionaryVardefs::mergeIndices($templates[$template]['indices'], SpiceDictionaryHandler::getInstance()->dictionary[$object]['indices']);
-            // maintain a record of this objects inheritance from the SugarObject templates...
-            SpiceDictionaryHandler::getInstance()->dictionary[$object]['templates'][ $template ] = $template ;
+        if (empty($templateVardefs)) {
+            return ['fields' => [], 'relationships' => [], 'indices' => []];
         }
+
+        return [
+            'fields' => $templateVardefs['fields'] ?? [],
+            'relationships' => $templateVardefs['relationships'] ?? [],
+            'indices' => $templateVardefs['indices'] ?? [],
+        ];
+    }
+
+    /**
+     * add template directly to dictionary
+     * @param $module
+     * @param $object
+     * @param $template
+     * @return void
+     */
+    static public function addTemplate($module, $object, $template)
+    {
+        $vardefs = self::getTemplateVardefs($module, $object, $template);
+        self::updateDictionaryVardefs($vardefs, $object);
     }
 
 

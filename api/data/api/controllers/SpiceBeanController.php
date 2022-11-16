@@ -109,12 +109,31 @@ class SpiceBeanController
         return $res->withJson(['success' => true]);
     }
 
+    /**
+     * core function to retrieve a bean by a given id
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     */
     public function getBean(Request $req, Response $res, array $args): Response
     {
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $requestParams = $req->getQueryParams();
         return $res->withJson($moduleHandler->get_bean_detail($args['beanName'], $args['beanId'], $requestParams));
     }
+
+    public function getBeanByExternalId(Request $req, Response $res, array $args): Response
+    {
+        $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
+        $requestParams = $req->getQueryParams();
+        return $res->withJson($moduleHandler->get_bean_detail_by_external_id($args['beanName'], $args['externalId'], $requestParams));
+    }
+
+
 
     public function addBean(Request $req, Response $res, array $args): Response
     {

@@ -85,7 +85,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
         this.localValue = {
             valueText: value,
             valueArray: valueArray,
-            valueDisplay: valueArray.map(v => languageOptions[v]).join(', '),
+            valueDisplay: valueArray.map(v => languageOptions[v] ?? v).join(', '),
             valueGroups: {}
         };
 
