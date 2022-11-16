@@ -284,6 +284,9 @@ export class configurationService {
                     this.data.systemparameters = res.systemsettings;
                     this.data.socket_frontend = res.socket_frontend;
                     this.data.unique_key = res.unique_key;
+                    this.data.displayloginsidebar = res.displayloginsidebar;
+                    this.data.loginSidebarUrl = res.loginSidebarUrl;
+                    this.data.allowForgotPass = res.allowForgotPass;
                     this.data.name = res.name ? res.name : 'SpiceCRM',
                         this.loaded$.next(true);
                 }

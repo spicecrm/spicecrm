@@ -14,12 +14,11 @@ class ChromeLocalPdfHandler extends PdfHandler
     public function process( $html = null, array $options = null )
     {
         parent::process( $html, $options );
-        $this->createChromeLocalPdf();
+        if ( get_class( $this ) === 'SpiceCRM\modules\OutputTemplates\handlers\pdf\ChromeLocalPdfHandler' ) $this->createChromeLocalPdf();
     }
 
     /**
      * Creates the CSS code google chrome needs to know for rendering the pdf file, using the parameters of the output template.
-     *
      * @return string The CSS Code
      */
     public function getPageStyle() {
@@ -33,9 +32,24 @@ class ChromeLocalPdfHandler extends PdfHandler
             ';
     }
 
+    /**
+     * Take the content (HTML) and create a PDF.
+     * @return void
+     */
     public function createChromeLocalPdf()
     {
-        $htmlOutput = $this->html_content;
+        $this->htmlOfPdfCreation = $this->createHtmlForPdf( $this->html_content );
+        $this->content = self::createPdf( $this->htmlOfPdfCreation );
+    }
+
+    /**
+     * Create the HTML code needed by Google Chrome to generate the PDF document.
+     * @param $htmlInput The HTML code of the content.
+     * @return string The HTML code for Google Chrome.
+     */
+    public function createHtmlForPdf( $htmlInput )
+    {
+        $htmlOutput = $htmlInput;
 
         # Chrome needs for some css (background and background-color) a specific treatment:
         $htmlOutput = preg_replace_callback('#<style>(.*?)</style>#s', function ( $match ) {
@@ -100,10 +114,10 @@ class ChromeLocalPdfHandler extends PdfHandler
         $handlerSpecificJavascript = '
             <script>
                 window.onload = function () {
-                    document.getElementById("header_cell").style.height = document.getElementById("page_header").offsetHeight+"px";
+                    document.getElementById("header_cell").style.height = document.getElementById("spice_page_header").offsetHeight+"px";
                     // document.getElementById("header_cell").style.backgroundColor = "red"; // for testing
                     // document.getElementById("header_cell").style.opacity = "0.5"; // for testing
-                    document.getElementById("footer_cell").style.height = document.getElementById("page_footer").offsetHeight+"px";
+                    document.getElementById("footer_cell").style.height = document.getElementById("spice_page_footer").offsetHeight+"px";
                     // document.getElementById("footer_cell").style.backgroundColor = "green"; // for testing
                     // document.getElementById("footer_cell").style.opacity = "0.5"; // for testing
                 }
@@ -129,6 +143,16 @@ class ChromeLocalPdfHandler extends PdfHandler
 
         # for testing:
         # echo $htmlOutput; exit;
+
+        return $htmlOutput;
+    }
+
+    /**
+     * Take the HTML Code and let Google Chrome generate the PDF file.
+     * @param $htmlOutput
+     * @return string The content of the generated PDF file.
+     */
+    public static function createPdf( $htmlOutput ) {
 
         # Create temporary html file, get name for temporary pdf file:
         do {
@@ -162,8 +186,10 @@ class ChromeLocalPdfHandler extends PdfHandler
             throw new Exception('Error generating PDF (with handler "chromelocal").');
         }
 
-        $this->content = file_get_contents( $tmpPdfFilename );
+        $pdfContent = file_get_contents( $tmpPdfFilename );
         unlink( $tmpPdfFilename );
+
+        return $pdfContent;
     }
 
     public function toDownload($file_name = null)

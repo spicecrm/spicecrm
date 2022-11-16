@@ -247,7 +247,7 @@ class SpiceDictionaryVardefs  {
         $dictionaryDefinitions = SpiceDictionaryVardefs::getDictionaryDefinitions(['module','metadata']);
 
         // override in/add to $vardefs (only fields defined in sysdictionary tables)
-        if(count($dictionaryDefinitions) > 0){
+        if(count($dictionaryDefinitions) > 0 && SpiceDictionaryVardefs::isDbManaged()){
             foreach($dictionaryDefinitions as $row) {
                 $dbDict = SpiceDictionaryVardefs::loadRawDictionary($row['dictionaryid'], $templateDictionaries);
 
@@ -1863,7 +1863,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         }
 
         // load indices
-        $dict['indices'] = self::getDictionaryIndexCacheFromDb($dict['id']);
+        if (!empty($dict['fields'])) {
+            $dict['indices'] = self::getDictionaryIndexCacheFromDb($dict['id']);
+        }
         return $dict;
     }
 

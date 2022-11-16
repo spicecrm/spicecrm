@@ -509,8 +509,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'type' => 'link',
             'relationship' => 'account_agreements',
             'source' => 'non-db',
+            'vname' => 'LBL_AGREEMENTS',
             'module' => 'Agreements',
-            'default' => false
+            'default' => false,
+            'comment' => 'One-2-many relationship link'
+        ],
+        'agreements_rel' => [
+            'name' => 'agreements_rel',
+            'type' => 'link',
+            'relationship' => 'agreements_accounts',
+            'module' => 'Agreements',
+            'bean_name' => 'Agreement',
+            'source' => 'non-db',
+            'vname' => 'LBL_AGREEMENT',
+            'comment' => 'many-2-many relationship link'
         ],
         'letters' => [
             'name' => 'letters',
@@ -696,6 +708,15 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'module' => 'SalesDocs',
         'source' => 'non-db',
         'comment' => 'SalesDocs as invoice recipient'
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['salesdocitems'] = [
+        'name' => 'salesdocitems',
+        'type' => 'link',
+        'vname' => 'LBL_SALESDOCITEMS',
+        'relationship' => 'salesdocitems_accountsop',
+        'module' => 'SalesDocItems',
+        'source' => 'non-db',
+        'comment' => 'allows to display items on salesdocs via a n:m relationship using the salesdocs table'
     ];
 }
 if (file_exists("modules/Addresses")) {

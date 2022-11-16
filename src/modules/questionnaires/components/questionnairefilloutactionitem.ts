@@ -29,7 +29,7 @@ export class QuestionnaireFillOutActionItem extends GlobalHeaderActionItem imple
     }
 
     public click() {
-        this.modal.openModal('QuestionnaireFillOutModal');
+        this.modal.openModal('QuestionnaireFillOutModal').subscribe( compRef => compRef.instance.acquisitionType = 'paper' );
         this.closemenu.emit(true);
     }
 

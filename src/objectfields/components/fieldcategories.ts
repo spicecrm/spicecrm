@@ -102,6 +102,15 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         return categories ? categories[this.fieldconfig.treeid] : [];
     }
 
+    /**
+     * the name of the property to sort on that is set in the fieldconfig
+     * 2 possible values for now node_key | node_name
+     * default is node_key
+     */
+    get sortby(){
+        return this.fieldconfig.sortby;
+    }
+
     get hasFavorites(){
         return this.categories.filter(c => c.favorite).length > 0;
     }
@@ -146,7 +155,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
                 return !lastId || c.parent_id == lastId;
             });
             if(cat) {
-                values.push((cat.node_name));
+                values.push((this.language.getLabel(cat.node_name)));
                 lastId = cat.id;
                 i++;
             } else {
@@ -179,7 +188,10 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             if(this.fieldconfig['category'+i] && categories[i-1]){
                 fields[this.fieldconfig['category'+i]] = this.categories.find(c => c.id == categories[i-1]).node_key;
             } else {
-                break;
+                // reset level value in case new selection does not cover this level
+                if(this.fieldconfig['category'+i]){
+                    fields[this.fieldconfig['category'+i]] = '';
+                }
             }
             i++;
         }

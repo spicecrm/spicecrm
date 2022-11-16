@@ -60,6 +60,12 @@ $routes = [
                 'description' => 'the logger settings',
                 'type' => ValidationMiddleware::TYPE_ARRAY,
                 'example' => '{"level":"error"}'
+            ],
+            'currencies' => [
+                'in' => 'body',
+                'description' => 'the default currency settings',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'example' => '{"default_currency_iso4217":"EUR","default_currency_name":"Euro","default_currency_symbol":"€","default_currency_conversion_rate":1}'
             ]
         ]
     ],

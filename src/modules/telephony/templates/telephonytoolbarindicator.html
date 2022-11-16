@@ -1,9 +1,12 @@
 <div class="slds-show--medium slds-dropdown-trigger slds-dropdown-trigger_click slds-p-horizontal--xxx-small" system-dropdown-trigger-simple>
   <div class="slds-p-around--xx-small slds-grid">
-    <system-utility-icon icon="call" size="x-small" ></system-utility-icon>
+    <system-utility-icon icon="call" size="x-small" [addclasses]="iconClass" (dblclick)="toggleConnection()"></system-utility-icon>
   </div>
   <div class="slds-is-absolute slds-dropdown slds-dropdown_right slds-dropdown--small slds-nubbin_top-right" style="right:-10px;top:25px;">
     <ul class="slds-dropdown__list" role="menu">
+      <li class="slds-dropdown__item" role="separator">
+        <a href="javascript:void(0);"><system-label label="LBL_SOCKET"></system-label><system-checkbox [ngModel]="socket.connected" [disabled]="true"></system-checkbox></a>
+      </li>
       <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="doAddCall()">
         <a href="javascript:void(0);"><system-label label="LBL_ADD_CALL"></system-label></a>
       </li>
@@ -12,6 +15,9 @@
       </li>
       <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="doDisconnectCall()">
         <a href="javascript:void(0);"><system-label label="LBL_DISCONNECT_CALL"></system-label></a>
+      </li>
+      <li class="slds-dropdown__item slds-has-divider--top" role="separator" (click)="setPreferences()">
+        <a href="javascript:void(0);"><system-label label="LBL_PREFERENCES"></system-label></a>
       </li>
     </ul>
   </div>

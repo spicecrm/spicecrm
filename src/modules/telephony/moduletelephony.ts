@@ -25,6 +25,7 @@ import {TelephonyCallCreateRelatedButton} from "./components/telephonycallcreate
 import {TelephonyCallPanel} from "./components/telephonycallpanel";
 import {TelephonyCallModelUpdate} from "./components/telephonycallmodelupdate";
 import {TelephonyToolbarIndicator} from "./components/telephonytoolbarindicator";
+import {TelephonyPreferences} from "./components/telephonypreferences";
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import {TelephonyToolbarIndicator} from "./components/telephonytoolbarindicator"
         TelephonyCallCreateRelatedButton,
         TelephonyCallCreateRelatedModal,
         TelephonyCallModelUpdate,
-        TelephonyToolbarIndicator
+        TelephonyToolbarIndicator,
+        TelephonyPreferences
     ]
 })
 export class ModuleTelephony {
