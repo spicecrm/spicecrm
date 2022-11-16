@@ -42,7 +42,7 @@ class EventController
                 $eventRegistration->salutation = $prospect->salutation;
                 $eventRegistration->first_name = $prospect->first_name;
                 $eventRegistration->last_name = $prospect->last_name;
-                $eventRegistration->parent_id = $prospect->relid;
+                $eventRegistration->parent_id = $prospect->id;
                 $eventRegistration->parent_type = $prospect->_module;
                 $eventRegistration->event_id = $body['eventId'];
                 $eventRegistration->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
