@@ -509,8 +509,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'type' => 'link',
             'relationship' => 'account_agreements',
             'source' => 'non-db',
+            'vname' => 'LBL_AGREEMENTS',
             'module' => 'Agreements',
-            'default' => false
+            'default' => false,
+            'comment' => 'One-2-many relationship link'
+        ],
+        'agreements_rel' => [
+            'name' => 'agreements_rel',
+            'type' => 'link',
+            'relationship' => 'agreements_accounts',
+            'module' => 'Agreements',
+            'bean_name' => 'Agreement',
+            'source' => 'non-db',
+            'vname' => 'LBL_AGREEMENT',
+            'comment' => 'many-2-many relationship link'
         ],
         'letters' => [
             'name' => 'letters',
