@@ -93,6 +93,44 @@ class CampaignTasksController
         $campaignTask->activate($status);
         return $res->withJson(['success' => true, 'id' => $args['id']]);
     }
+    /**
+     * activates the campaign tasks and writes the campaign log entries
+     * prospect lists of type test will be ignored
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function activateEventTask(Request $req, Response $res, array $args): Response
+    {
+//        $id = $args;
+//        $originatingEvent = BeanFactory::getBean('CampaignTasks', $args['id']);
+//        $eventRegistrationBean = BeanFactory::getBean('EventRegistrations');
+//        $relevantRegistrations = $eventRegistrationBean->get_full_list('', "eventregistrations.event_id = '$eventRegistrationBean->id'");
+
+        // ACL Check
+        if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'edit', true))
+            throw (new ForbiddenException("Forbidden to edit in module CampaignTasks."))->setErrorCode('noModuleEdit');
+
+        // load the campaign task
+        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+
+        $status = 'targeted';
+        switch ($campaignTask->campaigntask_type) {
+            case 'Mail':
+                $status = 'sent';
+                break;
+            case 'Feedback':
+                $status = 'queued';
+                break;
+        }
+
+        // activate the campaigntask
+        $campaignTask->activateFromEvent($status);
+        return $res->withJson(['success' => true, 'id' => $args['id']]);
+    }
 
 
     public function exportCampaignTask(Request $req, Response $res, array $args): Response
