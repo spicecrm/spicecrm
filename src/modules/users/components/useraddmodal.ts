@@ -25,8 +25,8 @@ declare var moment: any;
 export class UserAddModal implements OnInit {
     @ViewChild("addcontainer", {read: ViewContainerRef, static: true}) public addcontainer: ViewContainerRef;
     public self: any;
-    public informationFieldset: any[] = [];
-    public profileFieldset: any[] = [];
+    public informationFieldset: string;
+    public profileFieldset: string;
     public response: Observable<object> = null;
     public responseSubject: Subject<any> = null;
 
@@ -38,6 +38,7 @@ export class UserAddModal implements OnInit {
     public autogenerate: boolean = false;
     public sendByEmail: boolean = false;
     public forceReset: boolean = true;
+    public externalAuthOnly: boolean = false;
     public showPassword: boolean = false;
     public saveTriggered: boolean = false;
     public canSendByEmail: boolean = true;
@@ -105,19 +106,19 @@ export class UserAddModal implements OnInit {
     }
 
     get pwdFieldStyle() {
-        return (this.pwdFieldEmpty || this.pwdNotMatchGuide) ? 'slds-has-error' : '';
+        return (!this.externalAuthOnly && (this.pwdFieldEmpty || this.pwdNotMatchGuide)) ? 'slds-has-error' : '';
     }
 
     get rePwdFieldStyle() {
-        return (this.rePwdFieldEmpty || this.rePwdNotSame) ? 'slds-has-error' : '';
+        return (!this.externalAuthOnly && (this.rePwdFieldEmpty || this.rePwdNotSame)) ? 'slds-has-error' : '';
     }
 
     get hasError() {
         let isValid = true;
-        if (!this.autoGenerate && this.pwdGuideline && this.pwdNotMatchGuide) {
+        if (!this.externalAuthOnly && !this.autoGenerate && this.pwdGuideline && this.pwdNotMatchGuide) {
             isValid = false;
         }
-        if (!this.autoGenerate && (!this.password || this.rePwdNotSame)) {
+        if (!this.externalAuthOnly && !this.autoGenerate && (!this.password || this.rePwdNotSame)) {
             isValid = false;
         }
 
@@ -211,14 +212,15 @@ export class UserAddModal implements OnInit {
         }
 
         this.model.setFields({
-            system_generated_password: this.autoGenerate,
-            pwd_last_changed: new moment()
+            system_generated_password: this.externalAuthOnly ? false : this.autoGenerate,
+            pwd_last_changed: new moment(),
+            external_auth_only: this.externalAuthOnly
         });
         let saveData = this.modelutilities.spiceModel2backend("Users", this.model.data);
 
         this.backend.postRequest("module/Users/" + this.model.id, {}, JSON.stringify(saveData))
-            .subscribe(
-                response => {
+            .subscribe({
+                next: (response) => {
                     for (let fieldName in response) {
                         if (response.hasOwnProperty(fieldName)) {
                             response[fieldName] = this.modelutilities.backend2spice("Users", fieldName, response[fieldName]);
@@ -226,18 +228,26 @@ export class UserAddModal implements OnInit {
                     }
                     this.model.setData(response);
                     this.model.endEdit();
-                    this.savePassword(goDetail);
+
+                    // in case of external auth close direct - otherwise save password
+                    if(!this.externalAuthOnly) {
+                        this.savePassword(goDetail);
+                    } else {
+                        if(goDetail) this.model.goDetail();
+                        this.self.destroy();
+                    }
                 },
-                resErr => {
+                error: (resErr) => {
                     if (resErr.error.error.message) {
                         this.addcontainer.element.nativeElement.scrollTop = 0;
-                        if(resErr.error.error.errorCode == 'duplicateUsername') {
+                        if (resErr.error.error.errorCode == 'duplicateUsername') {
                             this.model.setFieldMessage("error", resErr.error.error.message, "user_name", "validation");
                         }
-                        if(resErr.error.error.errorCode == 'duplicateEmail1') {
+                        if (resErr.error.error.errorCode == 'duplicateEmail1') {
                             this.model.setFieldMessage("error", resErr.error.error.message, "email1", "validation");
                         }
                     }
+                }
                 });
     }
 
