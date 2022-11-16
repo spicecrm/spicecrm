@@ -28,6 +28,7 @@ import {EventRegistrationButton} from "./components/eventregistrationbutton";
 import {EventRegistrationModal} from "./components/eventregistrationmodal";
 import {EventRegistrationModalList} from "./components/eventregistrationmodallist";
 import {EventRegistrationModalType} from "./components/eventregistrationmodaltype";
+import {EventWithCampaignActivateButton} from "./components/eventwithcampaignactivatebutton";
 
 @NgModule({
     imports: [
@@ -56,6 +57,7 @@ import {EventRegistrationModalType} from "./components/eventregistrationmodaltyp
         EventRegistrationModal,
         EventRegistrationModalList,
         EventRegistrationModalType,
+        EventWithCampaignActivateButton,
     ]
 })
 export class ModuleCampaigns {}

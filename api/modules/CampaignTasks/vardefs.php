@@ -287,6 +287,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'audited' => true,
             'required' => true
         ],
+        'event_id' => [
+            'name' => 'event_id',
+            'type' => 'varchar',
+            'len' => '36'
+        ],
     ],
     'relationships' => [
         'campaign_campaigntasks' => [
