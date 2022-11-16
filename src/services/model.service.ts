@@ -517,18 +517,19 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe({
             next: (res) => {
 
+                this.isLoading = false;
+
                 // set data and acl
                 this.data = res;
                 this.acl = res.acl;
                 this.acl_fieldcontrol = res.acl_fieldcontrol;
 
-                this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
                 this.evaluateValidationRules(null, 'initialize');
-                this.isLoading = false;
+                this.emitFieldsChanges(res);
                 this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
                 responseSubject.next(res);
