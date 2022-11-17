@@ -1,0 +1,14 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_FOUND"></system-label>
+    </system-modal-header>
+    <system-modal-content system-modal-content-grow>
+
+        <ul role="listbox">
+            <li global-header-search-results-item global-header-search-results-item-nonavigation class="slds-box--border slds-m-vertical--xx-small" *ngFor="let item of foundBeans" [hit]="item" (selected)="select(item, $event)"></li>
+        </ul>
+    </system-modal-content>
+    <system-modal-footer>
+        <button (click)="close()" class="slds-button slds-button--neutral"><system-label label="LBL_CLOSE"></system-label></button>
+    </system-modal-footer>
+</system-modal>
