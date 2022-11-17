@@ -517,18 +517,19 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe({
             next: (res) => {
 
+                this.isLoading = false;
+
                 // set data and acl
                 this.data = res;
                 this.acl = res.acl;
                 this.acl_fieldcontrol = res.acl_fieldcontrol;
 
-                this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
                 this.evaluateValidationRules(null, 'initialize');
-                this.isLoading = false;
+                this.emitFieldsChanges(res);
                 this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
                 responseSubject.next(res);
@@ -969,16 +970,18 @@ export class model implements OnDestroy {
      */
     public setField(field, value, silent: boolean = false) {
         if (!field) return false;
+
+        this.data[field] = value;
+
+        this.evaluateValidationRules(field, "change");
+
         if (this.data[field] !== value) {
             this.field$.next({field, value});
         }
-        this.data[field] = value;
 
         if (silent !== true) {
             this.data$.next(this.data);
         }
-
-        this.evaluateValidationRules(field, "change");
 
         // run the duplicate check
         this.duplicateCheckOnChange([field]);
@@ -1302,7 +1305,7 @@ export class model implements OnDestroy {
 
         this.executeCopyRules(parent);
         this.setFieldsDefaultValues();
-        this.evaluateValidationRules();
+        this.evaluateValidationRules(null,'initialize');
 
         // set default acl to allow editing
         this.acl = {
@@ -1376,7 +1379,7 @@ export class model implements OnDestroy {
             }
 
             // run the evaluation rules
-            this.evaluateValidationRules();
+            this.evaluateValidationRules(null, 'initialize');
 
             this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
                 if (editModalRef) {
