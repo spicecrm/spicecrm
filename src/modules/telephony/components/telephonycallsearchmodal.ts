@@ -82,7 +82,8 @@ export class TelephonyCallSearchModal implements OnInit {
     }
 
     public select(selected, model) {
-        this.selected.emit(model)
+        this.selected.next(model);
+        this.selected.complete();
         this.close();
     }
 
