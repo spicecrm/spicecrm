@@ -73,6 +73,9 @@ class DictionaryController
         ksort($rLanguages, SORT_NUMERIC );
         $languages = $rLanguages;
 
+        // initialize label array needed for creating translations
+        $labelArr = [];
+
         // loop through languages
         foreach ($languages as $language) {
 
@@ -133,7 +136,12 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                 $counter = 0;
                 foreach ($values as $valKey => $valDisplay) {
 
-                    $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+                    if($language['is_default']) {
+                        $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+
+                        // create label for a specific dom $name and value key
+                        $labelArr[$name][$valKey] = $label;
+                    }
 
                     $valItemId = SpiceUtils::createGuid();
                     $valueType = (gettype($valKey) == 'integer' ? 'integer' : 'string');
@@ -143,6 +151,14 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
 //                    if (isset($sysLanguageLabels[$label]) || empty($valDisplay)) continue;
 
                     // a custom label might have been created during this process. Check if exists.
+                    $label = $labelArr[$name][$valKey];
+
+                    // if dom key label does not exist create a label for it -- avoid parse error for creating translation
+                    if(empty($label)) {
+                        $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+                        $labelArr[$name][$valKey] = $label;
+                    }
+
                     $existingLabel = LanguageManager::checkLabelExists($label);
                     if(!$existingLabel) {
                         $labelId = SpiceUtils::createGuid();
