@@ -30,25 +30,35 @@ class EventController
         $body = $req->getParsedBody();
         $listDataIds = $body['targetListIds'];
         $registrationData = $body['registrationData'];
+        $event =  BeanFactory::getBean('Events', $body['eventId']);
+        $existingEventRegistrations = $event->get_linked_beans('eventregistrations');
+        $participants = [];
+        foreach ($existingEventRegistrations as $existingEventRegistration){
+            $participants[] = $existingEventRegistration->parent_id;
+        }
         foreach ($listDataIds as $idx => $targetlistId) {
             $allProspectList = BeanFactory::getBean('ProspectLists', $targetlistId);
             $prospects = [];
             $prospects = array_merge($prospects, $allProspectList->get_linked_beans('contacts'));
             $prospects = array_merge($prospects, $allProspectList->get_linked_beans('consumers'));
             $prospects = array_merge($prospects, $allProspectList->get_linked_beans('users'));
+            $prospects = array_merge($prospects, $allProspectList->get_linked_beans('accounts'));
+
 
             foreach ($prospects as $prospect) {
                 $eventRegistration = BeanFactory::getBean('EventRegistrations');
-                $eventRegistration->salutation = $prospect->salutation;
-                $eventRegistration->first_name = $prospect->first_name;
-                $eventRegistration->last_name = $prospect->last_name;
-                $eventRegistration->parent_id = $prospect->id;
-                $eventRegistration->parent_type = $prospect->_module;
-                $eventRegistration->event_id = $body['eventId'];
-                $eventRegistration->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
-                $eventRegistration->registration_status = $registrationData['registration_status'];
-                $eventRegistration->description = $registrationData['description'];
-                $eventRegistration->save();
+                    if (!in_array($prospect->id, $participants)) {
+                        $eventRegistration->salutation = $prospect->salutation;
+                        $eventRegistration->first_name = $prospect->first_name;
+                        $eventRegistration->last_name = $prospect->last_name;
+                        $eventRegistration->parent_id = $prospect->id;
+                        $eventRegistration->parent_type = $prospect->_module;
+                        $eventRegistration->event_id = $body['eventId'];
+                        $eventRegistration->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
+                        $eventRegistration->registration_status = $registrationData['registration_status'];
+                        $eventRegistration->description = $registrationData['description'];
+                        $eventRegistration->save();
+                    }
             }
         }
         return $res->withJson('succes');
