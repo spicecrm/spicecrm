@@ -285,12 +285,38 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'options' => 'eventregistration_status_dom',
             'len' => 100,
             'audited' => true,
-            'required' => true
         ],
         'event_id' => [
             'name' => 'event_id',
-            'type' => 'varchar',
-            'len' => '36'
+            'vname' => 'LBL_EVENT_ID',
+            'type' => 'id',
+        ],
+
+        'event_name' => [
+            'name' => 'event_name',
+            'rname' => 'name',
+            'id_name' => 'event_id',
+            'vname' => 'LBL_EVENT',
+            'join_name' => 'events_join',
+            'type' => 'relate',
+            'link' => 'event',
+            'table' => 'events',
+            'isnull' => 'true',
+            'module' => 'Events',
+            'dbType' => 'varchar',
+            'len' => '255',
+            'source' => 'non-db',
+            'unified_search' => true,
+        ],
+
+        'event' => [
+            'name' => 'event',
+            'vname' => 'LBL_EVENT',
+            'type' => 'link',
+            'relationship' => 'events_campaigns',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'duplicate_merge' => 'disabled',
         ],
         'editor_type' => [
             'name' => 'editor_type',
