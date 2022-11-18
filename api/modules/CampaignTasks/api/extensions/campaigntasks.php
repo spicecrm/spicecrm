@@ -56,6 +56,20 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_GUID,
             ],
         ],
+    ],[
+        'method'      => 'post',
+        'route'       => '/module/CampaignTasks/{id}/activateEventTask',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'activateEventTask',
+        'description' => 'delete old campaign logs and activate campaign task by inserting new ones (prospect lists of type test will be ignored)',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+            ],
+        ],
     ],
     [
         'method'      => 'get',
