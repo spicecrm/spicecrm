@@ -8,6 +8,7 @@ import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {session} from "../../../services/session.service";
+import {Subject} from "rxjs";
 
 declare var libphonenumber: any;
 
@@ -39,7 +40,7 @@ export class TelephonyCallModelUpdate implements OnInit {
      *
      * @private
      */
-    @Output() public updated: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public updated: Subject<boolean> = new Subject<boolean>();
 
     /**
      * an array with the fields for the phone
@@ -62,28 +63,7 @@ export class TelephonyCallModelUpdate implements OnInit {
 
     public ngOnInit() {
         // get allfields of type phone
-        this.getPhoneFields();
-
-        // initialize the model if we have any phone fields
-        if (this.phoneFields.length > 0) {
-            this.model.startEdit();
-        } else {
-            this.close();
-        }
-    }
-
-    /**
-     * gets all fields from the module and filters out the phone fields as we can edit those
-     *
-     * @private
-     */
-    public getPhoneFields() {
-        let fields = this.metadata.getModuleFields(this.calldata.relatedmodule);
-        for (let field in fields) {
-            if (fields[field].type == 'phone' && fields[field].phonesearch) {
-                this.phoneFields.push(fields[field]);
-            }
-        }
+        this.model.startEdit();
     }
 
     /**
@@ -128,8 +108,9 @@ export class TelephonyCallModelUpdate implements OnInit {
      * @private
      */
     public updateModel() {
-        this.model.save();
-        this.updated.emit(true);
+        this.model.save(true);
+        this.updated.next(true);
+        this.updated.complete();
         this.self.destroy();
     }
 
@@ -139,7 +120,8 @@ export class TelephonyCallModelUpdate implements OnInit {
      * @private
      */
     public close() {
-        this.updated.emit(false);
+        this.updated.next(false);
+        this.updated.complete();
 
         this.self.destroy();
     }

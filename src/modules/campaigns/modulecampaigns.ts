@@ -24,6 +24,11 @@ import {CampaignTaskMailMergePanel} from "./components/campaigntaskmailmergepane
 import {CampaignTaskMailergeButton} from "./components/campaigntaskmailmergebutton";
 import {CampaignTaskMailMergeModal} from "./components/campaigntaskmailmergemodal";
 import {DirectivesModule} from "../../directives/directives";
+import {EventRegistrationButton} from "./components/eventregistrationbutton";
+import {EventRegistrationModal} from "./components/eventregistrationmodal";
+import {EventRegistrationModalList} from "./components/eventregistrationmodallist";
+import {EventRegistrationModalType} from "./components/eventregistrationmodaltype";
+import {EventWithCampaignActivateButton} from "./components/eventwithcampaignactivatebutton";
 
 @NgModule({
     imports: [
@@ -47,7 +52,12 @@ import {DirectivesModule} from "../../directives/directives";
         CampaignTaskAddModal,
         CampaignTaskMailMergePanel,
         CampaignTaskMailergeButton,
-        CampaignTaskMailMergeModal
+        CampaignTaskMailMergeModal,
+        EventRegistrationButton,
+        EventRegistrationModal,
+        EventRegistrationModalList,
+        EventRegistrationModalType,
+        EventWithCampaignActivateButton,
     ]
 })
 export class ModuleCampaigns {}
