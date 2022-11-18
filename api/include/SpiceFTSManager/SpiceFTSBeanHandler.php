@@ -157,7 +157,7 @@ class SpiceFTSBeanHandler
 
                 // handling for phon enumbers
                 if ($indexProperty['phonesearch']) {
-                    $indexArray['_phone'][] = SpicePhoneNumberParser::convertToE164($indexValue['fieldvalue']);
+                    $indexArray['_phone'][] = SpicePhoneNumberParser::convertToE164($indexValue['fieldvalue'], $this->seed);
                 }
             }
 

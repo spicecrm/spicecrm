@@ -20,12 +20,12 @@ class SpicePhoneNumberHooks{
                 $phoneFields[] = $fieldname;
             }
 
-            if(empty($country) && strpos($fieldname, '_country') > 0 && !empty($bean->$fieldname)){
+            if(empty($country) && strpos($fieldname, 'address_country') > 0 && !empty($bean->$fieldname)){
                 $country = $bean->$fieldname;
             }
         }
 
-        // parse phine fields
+        // parse phone fields
         foreach($phoneFields as $phoneField){
             $bean->$phoneField = SpicePhoneNumberParser::convertToInternational($bean->$phoneField, $country);
         }

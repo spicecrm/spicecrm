@@ -1386,4 +1386,20 @@ echo print_r($return_value, true);
 
         return $str;
     }
+
+    /**
+     * will return a list of field names that contain a value for an address country
+     * base the search technical address names
+     * @return void
+     */
+    public static function getListOfCountryFields(SpiceBean $bean) {
+        $countryFields = [];
+        foreach($bean->field_defs as $fieldName => $field){
+            if(!preg_match("/(.*)address_country/", $field['name'])){
+                continue;
+            }
+            $countryFields[] = $field['name'];
+        }
+        return $countryFields;
+    }
 }
