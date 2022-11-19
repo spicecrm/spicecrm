@@ -14,6 +14,14 @@ $routes = [
         'function' => 'repairCacheDb',
         'description' => 'save all vardefs to sysdictionaryfields table and relationships to relationships table',
         'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+    ],
+    [
+        'method' => 'post',
+        'route' => '/admin/repair/dictionary',
+        'class' => DictionaryController::class,
+        'function' => 'repairDictionary',
+        'description' => 'repaire database, cache and relationships for specific dictionaries',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
         'parameters' => [
             'dictionaries' => [
                 'in' => 'body',
