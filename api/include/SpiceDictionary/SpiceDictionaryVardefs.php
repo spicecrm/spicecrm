@@ -127,7 +127,7 @@ class SpiceDictionaryVardefs  {
     public static function getDictionaryDefinitionsQuery($dictionaryType = 'all', $dictionaryNames = []){
         $where = "";
         if(!empty($dictionaryNames)){
-            $where = " AND sysd.name IN('".implode($dictionaryNames)."')";
+            $where = " AND sysd.name IN('".implode("', '", $dictionaryNames)."')";
         }
 
         $q = "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype, 'g' scope, deleted, status  FROM sysdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? "  AND sysd.sysdictionary_type='".$dictionaryType."'" : ""). $where;
@@ -902,6 +902,9 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
         //Grab all the relationships from the dictionary.
         foreach (SpiceDictionaryHandler::getInstance()->dictionary as $key => $def)
         {
+            if(!empty($dictionaryNames) && !in_array($key, $dictionaryNames)){
+                continue;
+            }
             if (!empty($def['relationships']))
             {
                 foreach($def['relationships'] as $relKey => $relDef)
