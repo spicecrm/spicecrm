@@ -480,7 +480,14 @@ class AuthenticationController
         $db = DBManagerFactory::getInstance('master');
         $query = $db->query("SELECT s.*, c.config config FROM authentication_services s INNER JOIN sysauthconfig c ON s.issuer = c.issuer ORDER BY sequence");
 
-        while ($service = $db->fetchByAssoc($query)) $services[] = $service;
+        while ($service = $db->fetchByAssoc($query)) {
+            if (!empty($service['config'])) {
+                $service['config'] = json_decode($service['config']);
+                unset($service['config']->client_secret);
+                $service['config'] = json_encode($service['config']);
+            }
+            $services[] = $service;
+        }
 
         return $services;
     }

@@ -73,6 +73,9 @@ class DictionaryController
         ksort($rLanguages, SORT_NUMERIC );
         $languages = $rLanguages;
 
+        // initialize label array needed for creating translations
+        $labelArr = [];
+
         // loop through languages
         foreach ($languages as $language) {
 
@@ -133,7 +136,12 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                 $counter = 0;
                 foreach ($values as $valKey => $valDisplay) {
 
-                    $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+                    if($language['is_default']) {
+                        $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+
+                        // create label for a specific dom $name and value key
+                        $labelArr[$name][$valKey] = $label;
+                    }
 
                     $valItemId = SpiceUtils::createGuid();
                     $valueType = (gettype($valKey) == 'integer' ? 'integer' : 'string');
@@ -143,6 +151,14 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
 //                    if (isset($sysLanguageLabels[$label]) || empty($valDisplay)) continue;
 
                     // a custom label might have been created during this process. Check if exists.
+                    $label = $labelArr[$name][$valKey];
+
+                    // if dom key label does not exist create a label for it -- avoid parse error for creating translation
+                    if(empty($label)) {
+                        $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+                        $labelArr[$name][$valKey] = $label;
+                    }
+
                     $existingLabel = LanguageManager::checkLabelExists($label);
                     if(!$existingLabel) {
                         $labelId = SpiceUtils::createGuid();
@@ -344,9 +360,53 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
      * legacy & cache table
      */
     public function repairCacheDb(Request $req, Response $res, array $args): Response {
-
-        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries();
+        $body = $req->getParsedBody();
+        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries(isset($body['dictionaries']) ? $body['dictionaries'] : []);
 
         return $res->withJson($returnArray);
     }
+
+    /**
+     * run a silent repair/rebuild, reoair cache, repair relationships for a dictionary list
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function repairDictionary(Request $req, Response $res, array $args): Response {
+        $dictionaryNames = $req->getParsedBody()['dictionaries'];
+        $success = true;
+        $msg = '';
+        $sql = AdminController::buildSQLQueries($dictionaryNames);
+        if(!empty($sql) && !DBManagerFactory::getInstance()->query($sql)){
+            $success = false;
+            $msg = DBManagerFactory::getInstance()->lastDbError();
+        }
+        //@todo: update relationship cache
+        return $res->withJson(['success' => $success, 'msg' => $msg]);
+    }
+
+
+    /**
+     * returns a list of link names for which no module property is defined
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+//    public function checkLinks(Request $req, Response $res, array $args): Response {
+//        // load Vardefs
+//        $repair=[];
+//        $vardefs = SpiceDictionaryVardefs::loadVardefs();
+//        foreach($vardefs as $dictName => $dict){
+//            foreach($dict['fields'] as $field){
+//                if($field['type'] == 'link' && !key_exists('module', $field)){
+//                    $repair[$dictName][] = $field['name'];
+//                }
+//            }
+//        }
+//        return $res->withJson($repair);
+//    }
+
 }
