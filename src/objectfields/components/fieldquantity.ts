@@ -18,7 +18,7 @@ import {fieldFloat} from "./fieldfloat";
 export class fieldQuantity extends fieldFloat implements OnInit {
 
     /**
-     * the uniots of measure Array
+     * the units of measure Array
      */
     public uoms: any[] = [];
 

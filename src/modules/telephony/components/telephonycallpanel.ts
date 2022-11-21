@@ -16,6 +16,7 @@ declare var _: any;
 declare var libphonenumber: any;
 
 @Component({
+    selector: 'telephony-call-panel',
     templateUrl: '../templates/telephonycallpanel.html',
 })
 export class TelephonyCallPanel implements OnInit, OnDestroy {
@@ -25,7 +26,11 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      *
      * @private
      */
-    public compenentconfig: any = {};
+    public compenentconfig: {
+        connectedCallComponent?: string,
+        objectmodule?: string,
+        objectfieldset?: string,
+    } = {};
 
     /**
      * the calldata
@@ -62,6 +67,17 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
         public session: session,
         public model: model) {
 
+    }
+
+    /**
+     * gets a formatted MSISDN
+     */
+    get msisdnFormatted() {
+        if (libphonenumber && libphonenumber.parsePhoneNumberFromString && this.session.authData.user.address_country && this.calldata.msisdn.length > 5) {
+            return libphonenumber.parsePhoneNumberFromString(this.calldata.msisdn, this.session.authData.user.address_country).formatInternational();
+        } else {
+            return this.calldata.msisdn;
+        }
     }
 
     public ngOnInit(): void {
@@ -152,9 +168,9 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      *
      * @private
      */
-    public unsetRelatedData(){
+    public unsetRelatedData() {
         this.calldata.relatedid = null;
-        this.calldata.relatedmodule= null;
+        this.calldata.relatedmodule = null;
         this.calldata.relateddata = {};
 
         if (this.calldata.relatedmodule == 'Contacts' && this.metadata.getModuleFields(this.model.module).contact_id) {
@@ -171,17 +187,6 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
                 parent_id: undefined,
                 parent_name: undefined
             });
-        }
-    }
-
-    /**
-     * gets a formatted MSISDN
-     */
-    get msisdnFormatted() {
-        if (libphonenumber && libphonenumber.parsePhoneNumberFromString && this.session.authData.user.address_country && this.calldata.msisdn.length > 5) {
-            return libphonenumber.parsePhoneNumberFromString(this.calldata.msisdn, this.session.authData.user.address_country).formatInternational();
-        } else {
-            return this.calldata.msisdn;
         }
     }
 

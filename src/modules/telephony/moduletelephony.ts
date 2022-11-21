@@ -26,6 +26,9 @@ import {TelephonyCallPanel} from "./components/telephonycallpanel";
 import {TelephonyCallModelUpdate} from "./components/telephonycallmodelupdate";
 import {TelephonyToolbarIndicator} from "./components/telephonytoolbarindicator";
 import {TelephonyPreferences} from "./components/telephonypreferences";
+import {TelephonyCallPanelHerold} from "./components/telephonycallpanelherlod";
+import {TelephonyCallFoundBeansModal} from "./components/telephonycallfoundbeansmodal";
+import {TelephonyCallFoundBeansButton} from "./components/telephonycallfoundbeansbutton";
 
 
 @NgModule({
@@ -39,6 +42,9 @@ import {TelephonyPreferences} from "./components/telephonypreferences";
         DirectivesModule
     ],
     declarations: [
+        TelephonyCallFoundBeansButton,
+        TelephonyCallFoundBeansModal,
+        TelephonyCallPanelHerold,
         TelephonyDockedCall,
         TelephonyCallPanel,
         TelephonyCallSearching,
