@@ -148,6 +148,7 @@ export class ActionsetManager {
 
     public checkForChangesFunction() {
         if(this.currentActionSet.id != "") {
+            this.checkMode();
             return JSON.stringify(this.currentActionSet) == this.actionSetBackup ? false: true;
         } else {
             return false;
