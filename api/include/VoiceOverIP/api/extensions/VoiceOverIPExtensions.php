@@ -29,18 +29,21 @@ $routes = [
                 'description' => 'the channel of the call e.g. user extension',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => '100',
+                'required'    => true
             ],
             'state' => [
                 'in' => 'body',
-                'description' => 'the state of the call',
+                'description' => 'the state of the call (PROCEEDING, RINGBACK, INCOMING, RINGING, CONNECTED, HANGUP)',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => 'RINGING',
+                'required'    => true
             ],
             'callerNumber' => [
                 'in' => 'body',
                 'description' => 'the phone number of the call',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => 'RINGING',
+                'required'    => true
             ],
         ]
     ],

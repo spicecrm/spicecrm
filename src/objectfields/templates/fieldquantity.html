@@ -1,13 +1,13 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <div class="slds-text-align_right">
-        <span>{{getValAsText()}} {{uomLabel}}</span>
+        <system-display-number [number]="value" [precision]="precision"></system-display-number>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
         <div class="slds-form-element slds-size--2-of-3">
-            <input #floatinput class="slds-input slds-text-align--right" type="text" [(ngModel)]="textvalue" (change)="changed()"/>
+            <system-input-number [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
         </div>
         <system-select-uom class="slds-size--1-of-3 slds-p-left--x-small" [(ngModel)]="uomid"></system-select-uom>
     </div>

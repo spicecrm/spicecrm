@@ -94,7 +94,44 @@ class CampaignTask extends SpiceBean
 
     }
 
+    public function activateFromEvent($status = 'targeted')
+    {
+        $db = DBManagerFactory::getInstance();
+        $thisId = $db->quote($this->id);
+        $sysModuleFilters = new \SpiceCRM\includes\SysModuleFilters\SysModuleFilters();
 
+        // disable ONLY_FULL_GROUP_BY if this is set
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+
+        // set the group by mode off on MySQL
+        if($this->db->dbType == 'mysql') {
+            $this->db->query("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+        }
+
+        $delete_query = "DELETE FROM campaign_log WHERE campaign_id='" . $this->campaign_id . "' AND campaigntask_id='" . $this->id . "' AND activity_type='$status'";
+        $this->db->query($delete_query);
+
+        $current_date = $this->db->now();
+        $guidSQL = $this->db->getGuidSQL();
+
+        $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->sysmodulefilter_id);
+
+        $filter = !empty($filter) ? "AND ($filter)" : "";
+
+        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
+        $insert_query .= " SELECT $guidSQL, $current_date, '$this->campaign_id', '$this->id', $guidSQL, '$this->event_id', er.parent_id, er.parent_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
+        $insert_query .= "FROM events e INNER JOIN eventregistrations er ON er.event_id = e.id";
+        $insert_query .= " WHERE e.id = '$this->event_id' AND e.deleted != 1 AND er.deleted != 1 $filter GROUP BY er.parent_id";
+
+        $success = $this->db->query($insert_query);
+
+        // set to activated
+        $this->activated = true;
+        $this->status = 'Active';
+        $this->save();
+
+
+    }
 
     function export()
     {
