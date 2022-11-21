@@ -92,7 +92,14 @@ export class userpreferences {
         this.preferences.global = _.extendOwn(this.preferences.global, prefs);
         this.unchangedPreferences.global = _.clone(prefs);
         this.defaults = _.extendOwn(this.defaults, this.configuration.getData('defaultuserpreferences'));
-        this.askForMissingPreferences();
+        if ( !this.unchangedPreferences.global.timezone ) {
+            let guessedTimezone = moment.tz.guess();
+            this.setPreference('timezone', guessedTimezone, true).subscribe((data: any) => {
+                this.toast.sendToast( this.language.getLabel('LBL_TIMEZONE_WAS_SET_TO')+': '+data.timezone, 'success', null,10 );
+                this.session.setTimezone( guessedTimezone ); // Let the UI together with all the models and components know about the new configured timezone.
+            });
+        }
+
         this.completePreferencesWithDefaults();
         this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone.
 
@@ -324,39 +331,6 @@ export class userpreferences {
             return d.format(this.getDateFormat()) + ' ' + d.format(this.getTimeFormat());
         }
         return moment.utc(d).format(this.getDateFormat()) + ' ' + moment.utc(d).format(this.getTimeFormat());
-    }
-
-    public askForMissingPreferences() {
-
-        // Which important user preferences are not set?
-        let namesOfMissingPrefs = this.getNamesOfMissingImportantPrefs();
-
-        // Is there a timeshift between the configured user timezone and the timezone of the currently used client computer system?
-        let timeshift = 0;
-        if (this.unchangedPreferences.global && this.unchangedPreferences.global.timezone) {
-            let a = moment.tz(moment.tz.guess()).utcOffset();
-            let b = moment.tz(this.unchangedPreferences.global.timezone).utcOffset();
-            if (a !== b) {
-                timeshift = (a * b < 0 ? Math.abs(a) + Math.abs(b) : Math.abs(a - b)) / 60;
-            }
-        }
-
-        // No user preferences missing and no timeshift? Nothing to do!
-        if (namesOfMissingPrefs.length === 0 && timeshift === 0) return;
-
-        // Otherwise open the modal window to obtain preferences:
-        this.modalservice.openModal('GlobalObtainImportantPreferences').subscribe(modal => {
-            modal.instance.namesOfMissingPrefs = namesOfMissingPrefs;
-            modal.instance.timeshift = timeshift;
-        });
-    }
-
-    public getNamesOfMissingImportantPrefs(): string[] {
-        let missing = [];
-        for (let name of ['timezone', 'datef', 'timef']) {
-            if (!this.unchangedPreferences.global[name]) missing.push(name);
-        }
-        return missing;
     }
 
     public getPossibleDateFormats(): object[] {
