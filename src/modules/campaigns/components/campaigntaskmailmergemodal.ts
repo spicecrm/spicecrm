@@ -46,6 +46,14 @@ export class CampaignTaskMailMergeModal implements OnInit {
     public limit: number;
 
     /**
+     * the limit set in the backend config
+     * do not overwrite value
+     *
+     * @private
+     */
+    public pdfLimitConf: number;
+
+    /**
      * the count of inactive items from the target group
      *
      * @public
@@ -77,6 +85,9 @@ export class CampaignTaskMailMergeModal implements OnInit {
         public toast: toast
     ) {
         this.getCount();
+
+        // set pdflimit from config once to display in frontend
+        this.pdfLimitConf = this.configuration.getCapabilityConfig('campaigntasks').pdflimit;
     }
 
     public ngOnInit() {
@@ -102,7 +113,7 @@ export class CampaignTaskMailMergeModal implements OnInit {
      * getter if we can generate and all criteria are met
      */
     get canGenerate() {
-        return this.totalCount > 0 && this.start && this.start > 0 && this.start <= this.totalCount && this.limit && (this.start + this.limit - 1) <= this.totalCount && this.limit <= this.configuration.getCapabilityConfig('campaigntasks').pdflimit;
+        return this.totalCount > 0 && this.start && this.start > 0 && this.start <= this.totalCount && this.limit && this.limit > 0 && (this.start + this.limit - 1) <= this.totalCount && this.limit <= this.pdfLimitConf;
     }
 
     /**
@@ -110,7 +121,7 @@ export class CampaignTaskMailMergeModal implements OnInit {
      */
     public checkLimit() {
         if (this.limit > this.configuration.getCapabilityConfig('campaigntasks').pdflimit) {
-            this.toast.sendToast(this.language.getLabel('LBL_QUANTITY_HIGHER_THAN') + ' ' + this.configuration.getCapabilityConfig('campaigntasks').pdflimit, 'error');
+            this.toast.sendToast(this.language.getLabel('LBL_QUANTITY_HIGHER_THAN') + ' ' + this.pdfLimitConf, 'error');
         }
     }
 
