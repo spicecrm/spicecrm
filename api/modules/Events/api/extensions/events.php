@@ -20,8 +20,8 @@ $routes = [
     'method'      => 'post',
     'route'       => '/module/Events/{id}/registrations',
     'class'       => EventController::class,
-    'function'    => 'getEventRegistrations',
-    'description' => '',
+    'function'    => 'createEventRegistrations',
+    'description' => 'Will create event registration to corresponding event for each member in selected target lists',
     'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
     'parameters'  => [
         'id'    => [
@@ -36,7 +36,7 @@ $routes = [
         ],
         'registrationData'    => [
             'in'          => 'body',
-            'description' => 'Event Registrations',
+            'description' => 'Additional field values for the Event Registrations',
             'type'        => ValidationMiddleware::TYPE_ARRAY,
         ],
         'eventId'    => [
