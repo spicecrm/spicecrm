@@ -561,7 +561,7 @@ class SpiceACL
     /*
      * function to get the field config
      */
-    public function getFieldAccess($bean, $view)
+    public function getFieldAccess($beanOrModuleName, $view)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -583,13 +583,13 @@ class SpiceACL
         if (!$this->territory)
             $this->territory = BeanFactory::getBean('SpiceACLTerritories');
 
-        if (is_object($bean)) {
-            foreach ($aclObject->getUserACLObjects($bean->_module ?: $bean->_module) as $aclObjectId => $aclObjectData) {
+        if (is_object($beanOrModuleName)) {
+            foreach ($aclObject->getUserACLObjects($beanOrModuleName->_module) as $aclObjectData) {
 
                 if ($aclObjectData['spiceaclobjecttype'] != '0' && $aclObjectData['spiceaclobjecttype'] != '3')
                     continue;
 
-                if ($this->aclObject->matchBean2Object($bean, $thisActivity, $aclObjectData)) {
+                if ($this->aclObject->matchBean2Object($beanOrModuleName, $thisActivity, $aclObjectData)) {
                     foreach ($aclObjectData['objectfieldcontrols'] as $fieldName => $fieldControl) {
                         if ($fieldControl > $fieldControlArray[$fieldName]) {
                             $fieldControlArray[$fieldName] = $fieldControl;
@@ -598,7 +598,7 @@ class SpiceACL
                 }
             }
         } else {
-            foreach ($aclObject->getUserACLObjects($bean->_module ?: $bean->_module) as $aclObjectId => $aclObjectData) {
+            foreach ($aclObject->getUserACLObjects($beanOrModuleName) as $aclObjectData) {
                 if (array_search($thisActivity, $aclObjectData['objectactions']) === false)
                     continue;
 
