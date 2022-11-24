@@ -113,14 +113,6 @@ class CampaignTasksController
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
 
         $status = 'targeted';
-        switch ($campaignTask->campaigntask_type) {
-            case 'Mail':
-                $status = 'sent';
-                break;
-            case 'Feedback':
-                $status = 'queued';
-                break;
-        }
 
         // activate the campaigntask
         $campaignTask->activateFromEvent($status);
