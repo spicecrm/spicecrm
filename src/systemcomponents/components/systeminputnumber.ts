@@ -90,9 +90,9 @@ export class SystemInputNumber implements ControlValueAccessor {
 
     /**
      * a list of allowed Keys that the user might hit on the keyboard while typing
-     * and shall impact the content of the field
+     * and might impact the content of the field
      */
-    public allowedKeys: any[] = ['ArrowRight', 'ArrowLeft', 'Backspace', 'Delete', 'Control'];
+    public allowedKeys: any[] = ['ArrowRight', 'ArrowLeft', 'Backspace', 'Delete', 'Tab'];
 
     /**
      * to store when the decimal separator key was stroke
@@ -151,8 +151,13 @@ export class SystemInputNumber implements ControlValueAccessor {
         let curposStartDecimalKeyStroke = this.textValue.indexOf(this.userpreferences.toUse.dec_sep);
         let originalTextValueLength = this.textValue.length;
 
-        this.textValue = typeof (this.textValue) != 'number' ? this.getValSanitized(this.textValue) : this.textValue;
+        // in case the input content was selected, then a key stroke, there shall not be any value in the decimalKeyStroke.
+        // Therefore reset
+        if(curposStartDecimalKeyStroke < 0){
+            this.resetDecimalCounter();
+        }
 
+        this.textValue = typeof (this.textValue) != 'number' ? this.getValSanitized(this.textValue) : this.textValue;
 
         // Only submit the (new) value if the sanitized value has actually changed:
         if (this.textValue !== this.lastTextValue) {
@@ -164,9 +169,8 @@ export class SystemInputNumber implements ControlValueAccessor {
             this.lastTextValue = this.textValue;
 
             // re-position cursor
-            this.setCursorPosition(curpos, curposStart, curposStartDecimalKeyStroke, originalTextValueLength);
-
-        } else event.stopPropagation(); // The value of the HTML input field changed, but the real value (sanitized) stayed the same. So no propagation of the change event.
+            this.calculateCursorPosition(curpos, curposStart, curposStartDecimalKeyStroke, originalTextValueLength);
+        }
     }
 
     /**
@@ -183,8 +187,7 @@ export class SystemInputNumber implements ControlValueAccessor {
 
         if(isNaN(numberValue = parseFloat(numberValue))){
             numberValue = undefined;
-            this.decimalKeyStroke = '';
-            this.counterAfterdecimalKeyStroke = 0;
+            this.resetDecimalCounter();
         } else {
             numberValue = (Math.floor(numberValue * Math.pow(10, defSigDigits)) / Math.pow(10, defSigDigits));
         }
@@ -194,6 +197,10 @@ export class SystemInputNumber implements ControlValueAccessor {
         return this.getValAsText(numberValue);
     }
 
+    /**
+     * convert the number value into a text value
+     * @param textValue
+     */
     public getNumberFromText(textValue: string): number {
         let pref = this.userpreferences.toUse;
         let defSigDigits = this.precision === undefined ? pref.default_currency_significant_digits : this.precision;
@@ -226,34 +233,49 @@ export class SystemInputNumber implements ControlValueAccessor {
      * @param e
      */
     public checkInput(e) {
-        // Check on allowed chars: digits and separators
-        let regex = new RegExp(this.defineInputPattern(),"g");
-
-        // store key
+        // store stroke key
         this.latestKeyStroke = e.key;
 
-        // increment counter
+        // Check on allowed chars: digits and separators
+        let regex = new RegExp(this.defineInputPattern(),"g");
+        if (!regex.test(e.key) && this.allowedKeys.indexOf(e.key) < 0) {
+            this.resetDecimalCounter();
+            e.preventDefault(); // abort any further action
+            return false;
+        }
+
+        // check on backspace/delete of decimal separator and just reposition cursor
+        if(this.moveCursorOnDecimalSeparatorRemove()){
+            e.preventDefault();
+            return false;
+        };
+
+        // check on precision and just ignore any addiotnal decimal digit
+        if(this.removeDecimalDigits()){
+            e.preventDefault();
+            return false;
+        };
+
+        // increment counter for decimal digits
         if(this.decimalKeyStroke == this.userpreferences.toUse.dec_sep){
             this.counterAfterdecimalKeyStroke++;
-            if(this.counterAfterdecimalKeyStroke > this.userpreferences.toUse.default_currency_significant_digits){
+            if(this.counterAfterdecimalKeyStroke > this.precision){
                 this.counterAfterdecimalKeyStroke = 1;
             }
         }
 
-        // initialize counter
+        // initialize counter for digits after decimal separator
         if(e.key == this.userpreferences.toUse.dec_sep){
             this.decimalKeyStroke = e.key;
             this.counterAfterdecimalKeyStroke = 0;
-        }
-
-        if (!regex.test(e.key) && this.allowedKeys.indexOf(e.key) < 0) {
-            // leave the field on Tab (therefore do not preventDefault when it is Tab
-            if(e.key != 'Tab'){
-                // e.preventDefault();
-            } else{
-                // reset
-                this.decimalKeyStroke = '';
-                this.counterAfterdecimalKeyStroke = 0;
+            if(this.textValue.split(this.userpreferences.toUse.dec_sep).length > 0){
+                // set cursor after decimal separator
+                let curpos = this.textValue.indexOf(this.userpreferences.toUse.dec_sep) + 1;
+                this.setCursorPosition(curpos);
+                this.resetDecimalCounter();
+                // do not write the decimal separator since it is already present
+                e.preventDefault();
+                return false;
             }
         }
     }
@@ -265,19 +287,14 @@ export class SystemInputNumber implements ControlValueAccessor {
      * we reposition only when user is not moving cursor using arrows
      * we consider the position of the decimal separator when there is one
      */
-    public setCursorPosition(curpos, curposStart, curposStartDecimalKeyStroke, originalTextValueLength){
+    public calculateCursorPosition(curpos, curposStart, curposStartDecimalKeyStroke, originalTextValueLength){
         let curposEndDecimalKeyStroke = this.textValue.indexOf(this.userpreferences.toUse.dec_sep);
         let setCursorPosition = false;
 
+        // key stroke is known of the exception allowedKeys
         if(this.allowedKeys.indexOf(this.latestKeyStroke) < 0){
             if(!this.isInteger()) {
-                curpos = curposEndDecimalKeyStroke;
-
-                if (this.decimalKeyStroke == this.userpreferences.toUse.dec_sep) {
-                    // first input
-                    curpos = curpos + 1 + this.counterAfterdecimalKeyStroke;
-                    setCursorPosition = true;
-                } else if (this.decimalKeyStroke == '' && curposEndDecimalKeyStroke > 0) {
+                if (this.decimalKeyStroke == '' && curposEndDecimalKeyStroke > 0) {
                     // editing existing value
                     curpos = curposStart;
                     if (curposStartDecimalKeyStroke > 0) {
@@ -291,10 +308,10 @@ export class SystemInputNumber implements ControlValueAccessor {
             }
 
         } else{
+            // user is removing a char
             if(this.latestKeyStroke == 'Backspace' || this.latestKeyStroke == 'Delete'){
                 // reset
-                this.decimalKeyStroke = '';
-                this.counterAfterdecimalKeyStroke = 0;
+                this.resetDecimalCounter();
                 // calculate position
                 if(!this.isInteger()) {
                     curpos = curposStart;
@@ -308,12 +325,22 @@ export class SystemInputNumber implements ControlValueAccessor {
             }
         }
 
-        // set a brieftimeout and set the current pos back to the field tricking the Change Detection
+        // position the cursor
         if(setCursorPosition){
-            setTimeout(() => {
-                this.renderer.setProperty(this.numberinput.nativeElement, 'selectionEnd', curpos);
-            });
+            this.setCursorPosition(curpos);
         }
+    }
+
+    /**
+     * set a brieftimeout and set the current pos back to the field tricking the Change Detection
+     * set start and end to avoid text to be marked a selected after change event
+     * @param curpos
+     */
+    public setCursorPosition(curpos){
+        setTimeout(() => {
+            this.renderer.setProperty(this.numberinput.nativeElement, 'selectionStart', curpos);
+            this.renderer.setProperty(this.numberinput.nativeElement, 'selectionEnd', curpos);
+        });
     }
 
 
@@ -342,5 +369,60 @@ export class SystemInputNumber implements ControlValueAccessor {
         return pattern;
     }
 
+    /**
+     * reset the values for decimal key stroke monitoring
+     */
+    public resetDecimalCounter(){
+        this.decimalKeyStroke = '';
+        this.counterAfterdecimalKeyStroke = 0;
+    }
+
+    /**
+     * When the user hits backspace or delete
+     * We catch if the char to be removed is the decimal separator
+     * In that case we should only reposition the cursor and not remove the decimal separator
+     */
+    public moveCursorOnDecimalSeparatorRemove(){
+        if(!this.isInteger()){
+            let eventKey = this.latestKeyStroke;
+            if(eventKey !='Backspace' && eventKey !='Delete'){
+                return false;
+            }
+
+            let cursorStartPosition = this.numberinput.nativeElement.selectionStart;
+            let decSepPosition = this.textValue.indexOf(this.userpreferences.toUse.dec_sep);
+            let cursorPositionIncrementor = 0;
+
+            if(eventKey == 'Backspace' && cursorStartPosition == (decSepPosition+1)){
+                cursorPositionIncrementor = -1;
+            } else if(eventKey == 'Delete' && cursorStartPosition == (decSepPosition)){
+                cursorPositionIncrementor = 1;
+            }
+            if(cursorPositionIncrementor != 0){
+                this.setCursorPosition(cursorStartPosition+cursorPositionIncrementor);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * check on precision
+     * If the start position is the end the string, we will refuse any further digit
+     * but still accept arrows, backspace. tab...
+     */
+    public removeDecimalDigits(){
+        if(this.isInteger() || this.textValue.length <= 0) { // no decimal separator
+            return false;
+        }
+        let cursorStartPosition = this.numberinput.nativeElement.selectionStart;
+
+        if(cursorStartPosition == this.textValue.length &&
+            this.allowedKeys.indexOf(this.latestKeyStroke) < 0
+        ){
+            return true;
+        }
+        return false;
+    }
 
 }
