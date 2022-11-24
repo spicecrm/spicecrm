@@ -105,11 +105,6 @@ class CampaignTasksController
      */
     public function activateEventTask(Request $req, Response $res, array $args): Response
     {
-//        $id = $args;
-//        $originatingEvent = BeanFactory::getBean('CampaignTasks', $args['id']);
-//        $eventRegistrationBean = BeanFactory::getBean('EventRegistrations');
-//        $relevantRegistrations = $eventRegistrationBean->get_full_list('', "eventregistrations.event_id = '$eventRegistrationBean->id'");
-
         // ACL Check
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'edit', true))
             throw (new ForbiddenException("Forbidden to edit in module CampaignTasks."))->setErrorCode('noModuleEdit');
