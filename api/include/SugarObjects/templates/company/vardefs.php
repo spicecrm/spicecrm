@@ -68,10 +68,16 @@ $vardefs = [
             'vname' => 'LBL_IS_INACTIVE',
             'type' => 'bool'
         ],
+        'billing_address' => [
+            'name' => 'billing_address',
+            'vname' => 'LBL_BILLING_ADDRESS',
+            'type' => 'bool',
+            'source' => 'non-db'
+        ],
         'billing_address_street' => [
             'name' => 'billing_address_street',
             'vname' => 'LBL_BILLING_ADDRESS_STREET',
-            'type' => 'varchar',
+            'type' => 'bool',
             'len' => '150',
             'comment' => 'The street address used for billing address',
             'group' => 'billing_address',
@@ -248,6 +254,12 @@ $vardefs = [
             'len' => 10,
             'comment' => 'The stock trading (ticker) symbol for the company',
             'merge_filter' => 'enabled',
+        ],
+        'shipping_address' => [
+            'name' => 'shipping_address',
+            'vname' => 'LBL_SHIPPING_ADDRESS',
+            'type' => 'bool',
+            'source' => 'non-db'
         ],
         'shipping_address_street' => [
             'name' => 'shipping_address_street',
