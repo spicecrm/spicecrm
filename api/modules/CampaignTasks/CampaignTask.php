@@ -114,7 +114,7 @@ class CampaignTask extends SpiceBean
         $current_date = $this->db->now();
         $guidSQL = $this->db->getGuidSQL();
 
-        $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->sysmodulefilter_id);
+        $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->module_filter);
 
         $filter = !empty($filter) ? "AND $filter" : "";
 
