@@ -1,17 +1,19 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <div *ngIf="!isEditMode()">
     <field-generic-display  [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()" [fieldid]="fieldid">
-        {{value}}
+        <div class="slds-grid slds-grid--align-spread">
+            <span>{{value}}</span>
+            <system-checkbox *ngIf="!!referenceMetadata" [(ngModel)]="isReferenced" [disabled]="true" class="slds-m-left--xx-small">
+                <system-label label="LBL_REFERENCE"></system-label>
+            </system-checkbox>
+        </div>
     </field-generic-display>
 </div>
 <div *ngIf="isEditable() && isEditMode()" [system-overlay-loading-spinner]="isLoading" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <fieldset>
         <div class="slds-form-element__group">
             <div class="slds-grid slds-grid--vertical-align-center">
-                <system-googleplaces-autocomplete (address)="addressSelected($event)" class="slds-grow"></system-googleplaces-autocomplete>
-                <system-checkbox *ngIf="!!referenceMetadata" [(ngModel)]="isReferenced" [disabled]="model.isNew && !isReferenced" class="slds-m-left--xx-small">
-                    <system-label label="LBL_REFERENCE"></system-label>
-                </system-checkbox>
+                <system-googleplaces-autocomplete (address)="addressSelected($event)" [disabled]="isReferenced" class="slds-grow"></system-googleplaces-autocomplete>
             </div>
             <div class="slds-grid slds-gutters_direct-xx-small">
                 <div class="slds-form-element slds-col">
@@ -35,6 +37,14 @@
                     </div>
                     <field-messages [fieldname]="fieldName('street_number_suffix')"></field-messages>
                 </div>
+                <div *ngIf="!!referenceMetadata" class="slds-form-element slds-col slds-size--1-of-6 ">
+                    <label class="slds-truncate slds-form-element__label">
+                        <system-label label="LBL_REFERENCE"></system-label>
+                    </label>
+                    <system-checkbox [(ngModel)]="isReferenced" hidelabel [disabled]="model.isNew && !isReferenced" class="slds-m-left--xx-small spice-display-block">
+                    </system-checkbox>
+                </div>
+
             </div>
             <div  *ngIf="!hideattn" class="slds-form-element slds-col slds-size--1-of-1">
                 <field-label [fieldname]="fieldName('attn')" labellength="short"></field-label>
