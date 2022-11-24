@@ -320,9 +320,16 @@ export class SystemInputNumber implements ControlValueAccessor {
                 // calculate position
                 curpos = curposStart;
 
-                // on length change consider the count of decimal separator
+                // on length change consider the count of num group separator
                 if(lengthChange < 0) {
                     curpos = curposStart - diffNumGrpSepCount;
+                }
+
+                // Case when we selected part of the string with a number having a num group separator
+                // And the result after delete is a number still containing the same amount of num group separators
+                // Example: 126,459.78 - I select 6,4 and press delete key - result is 1,259.78 - I expect the cursor after the 2
+                if(lengthChange > 0 && diffNumGrpSepCount < 0) {
+                    curpos = curpos + Math.abs(diffNumGrpSepCount);
                 }
 
                 // if we are at the beginning of string, position remains 0
