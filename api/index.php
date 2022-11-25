@@ -90,6 +90,6 @@ try {
     // run the request
     $RESTManager->app->run();
 
-} catch (Exception $e) {
+} catch (SpiceCRM\includes\ErrorHandlers\Exception $e) {
     $RESTManager->outputError($e);
 }
