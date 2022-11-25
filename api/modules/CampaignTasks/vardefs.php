@@ -273,9 +273,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'relationship' => 'campaigntask_trackinglinks',
             'source' => 'non-db'
         ],
-        'sysmodulefilter_id' => [
-            'name' => 'sysmodulefilter_id',
-            'vname' => 'LBL_FILTER_ID',
+        'module_filter' => [
+            'name' => 'module_filter',
+            'vname' => 'LBL_MODULE_FILTER',
             'type' => 'id'
         ],
         'eventregistration_status' => [
