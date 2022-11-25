@@ -94,7 +94,7 @@ class CampaignTask extends SpiceBean
 
     }
 
-    public function activateFromEvent($status = 'targeted')
+    public function activateFromEvent($status)
     {
         $db = DBManagerFactory::getInstance();
         $thisId = $db->quote($this->id);
