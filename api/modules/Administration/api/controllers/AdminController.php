@@ -229,10 +229,12 @@ class AdminController
             VardefManager::clearVardef();
 
         $sql = '';
-        $vardefs = SpiceDictionaryVardefs::loadVardefs(array_merge($dictionaryNames, ['sysdictionaryfields', 'sysdictionaryindices']));
+        $vardefs = SpiceDictionaryVardefs::loadVardefs($dictionaryNames);
 
-        $sysDicFieldsSql = SpiceDictionaryVardefs::repairTable($vardefs['sysdictionaryfields']);
-        $sysDicIndicesSql = SpiceDictionaryVardefs::repairTable($vardefs['sysdictionaryindices']);
+        // check on specific tables
+        $sysvardefs = SpiceDictionaryVardefs::loadVardefs(['sysdictionaryfields', 'sysdictionaryindices']);
+        $sysDicFieldsSql = SpiceDictionaryVardefs::repairTable($sysvardefs['sysdictionaryfields']);
+        $sysDicIndicesSql = SpiceDictionaryVardefs::repairTable($sysvardefs['sysdictionaryindices']);
 
         $db = DBManagerFactory::getInstance();
 
