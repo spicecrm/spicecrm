@@ -52,7 +52,7 @@ export class SpiceInstallerCredentials {
                 email: this.spiceinstaller.email
             };
             this.spiceinstaller.selectedStep.completed = true;
-            this.spiceinstaller.steps[5] = this.spiceinstaller.selectedStep;
+            // this.spiceinstaller.steps[5] = this.spiceinstaller.selectedStep;
             this.spiceinstaller.next(this.spiceinstaller.steps[5]);
         }
     }
