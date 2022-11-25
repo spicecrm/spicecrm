@@ -6,6 +6,7 @@ import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {any, forEach} from "underscore";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: 'event-registration-modal',
@@ -13,7 +14,6 @@ import {any, forEach} from "underscore";
     providers: [model]
 })
 export class EventRegistrationModal {
-
 
     public self: ComponentRef<EventRegistrationModal>;
 
@@ -25,23 +25,20 @@ export class EventRegistrationModal {
     public currentStep: number = 0;
 
     /**
-     * the availabel convert steps
+     * the available convert steps
      *
-     * currently hardcoded .. might make sense to create a generic conmvert method that allows multi step conversion
+     * currently hardcoded ... might make sense to create a generic convert method that allows multi step conversion
      */
     public totalSteps: string[] = ['ProspectLists', 'EventRegistrations'];
 
-    constructor(public model: model, public metadata: metadata, public backend: backend, @SkipSelf() public eventModel: model,) {
-
-
-
+    constructor(public model: model, public metadata: metadata, public backend: backend, @SkipSelf() public eventModel: model, public modelutilities: modelutilities) {
         this.model.module = 'EventRegistrations';
         this.model.initialize();
         this.model.startEdit();
     }
 
     /**
-     * returns the class for the step int he guide
+     * returns the class for the step in the guide
      *
      * @param convertStep
      */
@@ -62,7 +59,7 @@ export class EventRegistrationModal {
     };
 
     /**
-     * rerutns true if the step is completed for the display
+     * returns true if the step is completed for the display
      * @param Step
      */
     public getStepComplete(Step: any) {
@@ -90,7 +87,7 @@ export class EventRegistrationModal {
     }
 
     /**
-     * detemrines if the save button is shown
+     * determines if the save button is shown
      */
     public showSave() {
         return this.currentStep == this.totalSteps.length - 1;
@@ -103,18 +100,28 @@ export class EventRegistrationModal {
         this.currentStep++;
     }
 
+    /**
+     * save registrations
+     */
     public save() {
         let postData: any = {
             targetListIds: this.holdListData,
-            registrationData: this.model.data,
+            registrationData: this.modelutilities.spiceModel2backend(this.model.module, this.model.data),
             eventId: this.eventModel.id,
         }
+
         this.backend.postRequest(`module/Events/${this.eventModel.id}/registrations`, {}, postData).subscribe((results: any) => {
-            this.self.destroy();
+            this.closeModal();
         });
     }
 
-    public close() {
+    // Close the modal.
+    public closeModal() {
         this.self.destroy();
+    }
+
+    // Escape pressed or [x] clicked.
+    public onModalEscX() {
+        this.closeModal();
     }
 }

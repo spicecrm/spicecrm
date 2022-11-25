@@ -63,7 +63,7 @@ export class EventRegistrationModalList {
 
     public clickRow(event, item) {
             this.selectedItems.emit([item]);
-            console.log(this.selectedItems[item]);
+            // console.log(this.selectedItems[item]);
     }
 
     /**
