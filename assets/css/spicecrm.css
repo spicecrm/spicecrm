@@ -465,3 +465,12 @@ input[type="submit"] {
 .slds-dropdown--actions a {
     color: var(--brand-text-link);
 }
+
+/* brand color for vertical progress bar */
+.slds-progress_vertical .slds-progress__item.slds-is-completed .slds-progress__marker_icon svg
+{
+    fill: var(--brand-primary,#CA1B21);
+}
+.slds-progress_vertical .slds-progress__item.slds-has-error:before, .slds-progress_vertical .slds-progress__item.slds-is-active:before, .slds-progress_vertical .slds-progress__item.slds-is-completed:after, .slds-progress_vertical .slds-progress__item.slds-is-completed:before {
+    background-color: var(--brand-primary,#CA1B21);
+}
