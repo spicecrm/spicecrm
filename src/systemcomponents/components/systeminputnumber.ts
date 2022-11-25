@@ -150,6 +150,7 @@ export class SystemInputNumber implements ControlValueAccessor {
         let curposStart = this.numberinput.nativeElement.selectionStart;
         let curposStartDecimalKeyStroke = this.textValue.indexOf(this.userpreferences.toUse.dec_sep);
         let originalTextValueLength = this.textValue.length;
+        let originalTextValue = this.textValue;
 
         // in case the input content was selected, then a key stroke, there shall not be any value in the decimalKeyStroke.
         // Therefore reset
@@ -169,7 +170,7 @@ export class SystemInputNumber implements ControlValueAccessor {
             this.lastTextValue = this.textValue;
 
             // re-position cursor
-            this.calculateCursorPosition(curpos, curposStart, curposStartDecimalKeyStroke, originalTextValueLength);
+            this.calculateCursorPosition(curpos, curposStart, curposStartDecimalKeyStroke, originalTextValue);
         }
     }
 
@@ -250,7 +251,7 @@ export class SystemInputNumber implements ControlValueAccessor {
             return false;
         };
 
-        // check on precision and just ignore any addiotnal decimal digit
+        // check on precision and just ignore any additional decimal digit
         if(this.removeDecimalDigits()){
             e.preventDefault();
             return false;
@@ -287,9 +288,13 @@ export class SystemInputNumber implements ControlValueAccessor {
      * we reposition only when user is not moving cursor using arrows
      * we consider the position of the decimal separator when there is one
      */
-    public calculateCursorPosition(curpos, curposStart, curposStartDecimalKeyStroke, originalTextValueLength){
+    public calculateCursorPosition(curpos, curposStart, curposStartDecimalKeyStroke, originalTextValue){
         let curposEndDecimalKeyStroke = this.textValue.indexOf(this.userpreferences.toUse.dec_sep);
         let setCursorPosition = false;
+        let lengthChange = this.textValue.length - originalTextValue.length;
+        let originalTextValueNumGrpSepCount = originalTextValue.split(this.userpreferences.toUse.num_grp_sep).length;
+        let textValueNumGrpSepCount = this.textValue.split(this.userpreferences.toUse.num_grp_sep).length;
+        let diffNumGrpSepCount = originalTextValueNumGrpSepCount - textValueNumGrpSepCount;
 
         // key stroke is known of the exception allowedKeys
         if(this.allowedKeys.indexOf(this.latestKeyStroke) < 0){
@@ -303,24 +308,35 @@ export class SystemInputNumber implements ControlValueAccessor {
                     setCursorPosition = true;
                 }
             } else{
-                curpos = curposStart + (this.textValue.length - originalTextValueLength);
+                curpos = curposStart + lengthChange;
                 setCursorPosition = true;
             }
 
         } else{
             // user is removing a char
-            if(this.latestKeyStroke == 'Backspace' || this.latestKeyStroke == 'Delete'){
+            if(this.onBackspace() || this.onDelete()){
                 // reset
                 this.resetDecimalCounter();
                 // calculate position
-                if(!this.isInteger()) {
-                    curpos = curposStart;
-                    if (curposStart - curposEndDecimalKeyStroke == 1) {
-                        curpos = curpos - 1;
-                    }
-                } else {
-                    curpos = curposStart + (this.textValue.length - originalTextValueLength);
+                curpos = curposStart;
+
+                // on length change consider the count of num group separator
+                if(lengthChange < 0) {
+                    curpos = curposStart - diffNumGrpSepCount;
                 }
+
+                // Case when we selected part of the string with a number having a num group separator
+                // And the result after delete is a number still containing the same amount of num group separators
+                // Example: 126,459.78 - I select 6,4 and press delete key - result is 1,259.78 - I expect the cursor after the 2
+                if(lengthChange > 0 && diffNumGrpSepCount < 0) {
+                    curpos = curpos + Math.abs(diffNumGrpSepCount);
+                }
+
+                // if we are at the beginning of string, position remains 0
+                if(curposStart == 0){
+                    curpos = 0;
+                }
+
                 setCursorPosition = true;
             }
         }
@@ -378,6 +394,26 @@ export class SystemInputNumber implements ControlValueAccessor {
     }
 
     /**
+     * checks if latest key stroke is Delete
+     */
+    public onDelete(){
+        if(this.latestKeyStroke == 'Delete'){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * checks if latest key stroke is Backspace
+     */
+    public onBackspace(){
+        if(this.latestKeyStroke == 'Backspace'){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * When the user hits backspace or delete
      * We catch if the char to be removed is the decimal separator
      * In that case we should only reposition the cursor and not remove the decimal separator
@@ -385,7 +421,7 @@ export class SystemInputNumber implements ControlValueAccessor {
     public moveCursorOnDecimalSeparatorRemove(){
         if(!this.isInteger()){
             let eventKey = this.latestKeyStroke;
-            if(eventKey !='Backspace' && eventKey !='Delete'){
+            if(!this.onBackspace() && !this.onDelete()){
                 return false;
             }
 
@@ -393,9 +429,9 @@ export class SystemInputNumber implements ControlValueAccessor {
             let decSepPosition = this.textValue.indexOf(this.userpreferences.toUse.dec_sep);
             let cursorPositionIncrementor = 0;
 
-            if(eventKey == 'Backspace' && cursorStartPosition == (decSepPosition+1)){
+            if(this.onBackspace() && cursorStartPosition == (decSepPosition+1)){
                 cursorPositionIncrementor = -1;
-            } else if(eventKey == 'Delete' && cursorStartPosition == (decSepPosition)){
+            } else if(this.onDelete() && cursorStartPosition == (decSepPosition)){
                 cursorPositionIncrementor = 1;
             }
             if(cursorPositionIncrementor != 0){
