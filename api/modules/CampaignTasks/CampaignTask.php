@@ -114,16 +114,22 @@ class CampaignTask extends SpiceBean
         $current_date = $this->db->now();
         $guidSQL = $this->db->getGuidSQL();
 
-        $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->sysmodulefilter_id);
+        $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->module_filter);
 
-        $filter = !empty($filter) ? "AND ($filter)" : "";
+        $filter = !empty($filter) ? "AND $filter" : "";
 
-        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
-        $insert_query .= " SELECT $guidSQL, $current_date, '$this->campaign_id', '$this->id', $guidSQL, '$this->event_id', er.parent_id, er.parent_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
-        $insert_query .= "FROM events e INNER JOIN eventregistrations er ON er.event_id = e.id";
-        $insert_query .= " WHERE e.id = '$this->event_id' AND e.deleted != 1 AND er.deleted != 1 $filter GROUP BY er.parent_id";
+        $campaigns = $this->get_linked_beans('campaigns');
+        foreach ($campaigns as $campaign){
+            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
+            $insert_query .= " SELECT $guidSQL, $current_date, '$campaign->id', '$this->id', $guidSQL, '$campaign->event_id', eventregistrations.parent_id, eventregistrations.parent_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
+            $insert_query .= "FROM events INNER JOIN eventregistrations ON eventregistrations.event_id = events.id";
+            $insert_query .= " WHERE events.id = '$campaign->event_id' AND events.deleted != 1 AND eventregistrations.deleted != 1 $filter GROUP BY eventregistrations.parent_id";
 
-        $success = $this->db->query($insert_query);
+            $success = $this->db->query($insert_query);
+
+        }
+
+
 
         // set to activated
         $this->activated = true;
