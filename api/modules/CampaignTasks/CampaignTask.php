@@ -94,7 +94,50 @@ class CampaignTask extends SpiceBean
 
     }
 
+    public function activateFromEvent($status)
+    {
+        $db = DBManagerFactory::getInstance();
+        $thisId = $db->quote($this->id);
+        $sysModuleFilters = new \SpiceCRM\includes\SysModuleFilters\SysModuleFilters();
 
+        // disable ONLY_FULL_GROUP_BY if this is set
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+
+        // set the group by mode off on MySQL
+        if($this->db->dbType == 'mysql') {
+            $this->db->query("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+        }
+
+        $delete_query = "DELETE FROM campaign_log WHERE campaign_id='" . $this->campaign_id . "' AND campaigntask_id='" . $this->id . "' AND activity_type='$status'";
+        $this->db->query($delete_query);
+
+        $current_date = $this->db->now();
+        $guidSQL = $this->db->getGuidSQL();
+
+        $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->module_filter);
+
+        $filter = !empty($filter) ? "AND $filter" : "";
+
+        $campaigns = $this->get_linked_beans('campaigns');
+        foreach ($campaigns as $campaign){
+            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
+            $insert_query .= " SELECT $guidSQL, $current_date, '$campaign->id', '$this->id', $guidSQL, '$campaign->event_id', eventregistrations.parent_id, eventregistrations.parent_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
+            $insert_query .= "FROM events INNER JOIN eventregistrations ON eventregistrations.event_id = events.id";
+            $insert_query .= " WHERE events.id = '$campaign->event_id' AND events.deleted != 1 AND eventregistrations.deleted != 1 $filter GROUP BY eventregistrations.parent_id";
+
+            $success = $this->db->query($insert_query);
+
+        }
+
+
+
+        // set to activated
+        $this->activated = true;
+        $this->status = 'Active';
+        $this->save();
+
+
+    }
 
     function export()
     {

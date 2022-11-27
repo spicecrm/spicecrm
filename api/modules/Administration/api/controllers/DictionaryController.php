@@ -360,9 +360,53 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
      * legacy & cache table
      */
     public function repairCacheDb(Request $req, Response $res, array $args): Response {
-
-        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries();
+        $body = $req->getParsedBody();
+        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries(isset($body['dictionaries']) ? $body['dictionaries'] : []);
 
         return $res->withJson($returnArray);
     }
+
+    /**
+     * run a silent repair/rebuild, reoair cache, repair relationships for a dictionary list
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function repairDictionary(Request $req, Response $res, array $args): Response {
+        $dictionaryNames = $req->getParsedBody()['dictionaries'];
+        $success = true;
+        $msg = '';
+        $sql = AdminController::buildSQLQueries($dictionaryNames);
+        if(!empty($sql) && !DBManagerFactory::getInstance()->query($sql)){
+            $success = false;
+            $msg = DBManagerFactory::getInstance()->lastDbError();
+        }
+        //@todo: update relationship cache
+        return $res->withJson(['success' => $success, 'msg' => $msg]);
+    }
+
+
+    /**
+     * returns a list of link names for which no module property is defined
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+//    public function checkLinks(Request $req, Response $res, array $args): Response {
+//        // load Vardefs
+//        $repair=[];
+//        $vardefs = SpiceDictionaryVardefs::loadVardefs();
+//        foreach($vardefs as $dictName => $dict){
+//            foreach($dict['fields'] as $field){
+//                if($field['type'] == 'link' && !key_exists('module', $field)){
+//                    $repair[$dictName][] = $field['name'];
+//                }
+//            }
+//        }
+//        return $res->withJson($repair);
+//    }
+
 }
