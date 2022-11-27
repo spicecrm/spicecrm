@@ -109,6 +109,8 @@ export class ValidationRulesManager {
                 });
                 this._backup_rules[idx] = {...data};
 
+                this.rules.sort((a, b) => a.name.localeCompare(b.name));
+
                 this.toast.sendToast('changes saved');
             },
             (error) => {
