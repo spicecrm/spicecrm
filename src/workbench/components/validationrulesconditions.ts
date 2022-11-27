@@ -34,9 +34,9 @@ export class ValidationRulesConditions implements OnInit {
 
         for (let opt in this.metadata.getModuleFields(this.data.module)) {
             this.fieldname_options.push(opt);
-            this.fieldname_options.sort();
-
         }
+        // sort by field name
+        this.fieldname_options.sort();
     }
 
     get conditions() {
