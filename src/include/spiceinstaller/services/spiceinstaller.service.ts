@@ -88,17 +88,12 @@ export class spiceinstaller {
         this.configObject = {
             backendconfig: {},
             database: {},
-            databaseuser: {},
             dboptions: {},
             fts: {},
             credentials: {},
-        },
-            this._selectedStep = {
-                id: 'setbackend',
-                name: 'Set Backend',
-                visible: true,
-                completed: false,
-            };
+            preferences: {},
+            language: ''
+        };
         this.steps = [
             {
                 id: 'setbackend',
@@ -137,18 +132,22 @@ export class spiceinstaller {
                 completed: false
             },
             {
-                id: 'setlanguage',
-                name: 'Language',
+                id: 'preferences',
+                name: 'Output & Export',
                 visible: false,
                 completed: false
             },
             {
                 id: 'review',
-                name: 'Review and Install',
+                name: 'Review & Install',
                 visible: false,
                 completed: false
             }
         ];
+        let prev;
+        this.steps.forEach( step => { step.prev = prev ? prev : undefined; prev = step; });
+        this._selectedStep = this.steps[0];
+        this._selectedStep.visible = true;
     }
 
     /**
@@ -172,7 +171,6 @@ export class spiceinstaller {
         this.selectedStep$.emit(this._selectedStep);
     }
 
-
     /**
      * takes the currentstep, finds its match in the array, finds the next step and sets it as the selected one
      * @param currentStep
@@ -184,7 +182,24 @@ export class spiceinstaller {
                 let nextStepPos = currentStepPos + 1;
                 let nextStep = this.steps[nextStepPos];
                 nextStep.visible = true;
+                currentStep.visible = false;
                 this.selectedStep = nextStep;
+            }
+        }
+    }
+
+    /**
+     * takes the currentstep, finds its match in the array, finds the next step and sets it as the selected one
+     * @param currentStep
+     */
+    public prev(currentStep) {
+        for (let i of this.steps) {
+            if (i.id == currentStep.id) {
+                let currentStepPos = this.steps.indexOf(i);
+                let prevStepPos = ( currentStepPos === 0 ? currentStepPos : currentStepPos - 1 );
+                let prevStep = this.steps[prevStepPos];
+                prevStep.visible = true;
+                this.selectedStep = prevStep;
             }
         }
     }
@@ -210,4 +225,5 @@ export class spiceinstaller {
         }
         return label;
     }
+
 }

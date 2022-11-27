@@ -333,7 +333,7 @@ class RESTManager
      * @param $exception
      * @return string
      */
-    public function outputError($exception): string {
+    public function outputError($exception) {
         $inDevMode = SpiceUtils::inDeveloperMode();
 
         if (is_object($exception)) {
