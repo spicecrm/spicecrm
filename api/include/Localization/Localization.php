@@ -451,17 +451,28 @@ class Localization
 
 	///////////////////////////////////////////////////////////////////////////
 	////	NUMBER DISPLAY FORMATTING CODE
+    /**
+     * @deprecated
+     * @param $user
+     * @return string|null
+     */
 	function getDecimalSeparator($user=null) {
         // Bug50887 this is purposefully misspelled as ..._seperator to match the way it's defined throughout the app.
 		$dec = $this->getPrecedentPreference('default_decimal_seperator', $user);
 		return $dec;
 	}
 
-	function getNumberGroupingSeparator($user=null) {
+    /**
+     * @deprecated
+     */
+     function getNumberGroupingSeparator($user=null) {
 		$sep = $this->getPrecedentPreference('default_number_grouping_seperator', $user);
 		return $sep;
 	}
 
+    /**
+     * @deprecated
+     */
 	function getPrecision($user=null) {
 		$precision = $this->getPrecedentPreference('default_currency_significant_digits', $user);
 		return $precision;
@@ -474,6 +485,7 @@ class Localization
 
 
 	/**
+     * @deprecated
 	 * returns a number formatted by user preference or system default
 	 * @param string number Number to be formatted and returned
 	 * @param string currencySymbol Currency symbol if override is necessary

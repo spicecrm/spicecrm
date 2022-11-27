@@ -15,9 +15,21 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
     selector: 'spice-installer-review',
     templateUrl: '../templates/spiceinstallerreview.html',
 })
-
 export class SpiceInstallerReview implements AfterViewInit {
+
     public installing: boolean = false;
+
+    public prefsToReview = {
+        'Language': 'language',
+        'Timezone': 'timezone',
+        'Date Format': 'datef',
+        'Time Format': 'timef',
+        'Distance Unit System': 'distance_unit_system',
+        'Week Start Day': 'week_day_start',
+        'Week Days Count': 'week_days_count',
+        'Export Delimiter': 'export_delimiter',
+        'Export Charset': 'export_charset'
+    };
 
     constructor(
         public toast: toast,
@@ -27,7 +39,7 @@ export class SpiceInstallerReview implements AfterViewInit {
         public configurationService: configurationService,
         public spiceinstaller: spiceinstaller
     ) {
-
+        // this.prefsToReview['Number Format'] = this.getNumberFormat;
     }
 
     public ngAfterViewInit() {
@@ -62,4 +74,19 @@ export class SpiceInstallerReview implements AfterViewInit {
                 this.installing = false;
             });
     }
+
+    public showPreference( name ): string {
+        return typeof this.prefsToReview[name] === 'function' ? this.prefsToReview[name]() : this.spiceinstaller.configObject.preferences[this.prefsToReview[name]];
+    }
+
+    public getNumberFormat(): string {
+        return '1'
+            + this.spiceinstaller.configObject.preferences.num_grp_sep
+            + '000'
+            + this.spiceinstaller.configObject.preferences.num_grp_sep
+            + '000'
+            + this.spiceinstaller.configObject.preferences.dec_sep
+            + ( '0'.repeat( this.spiceinstaller.configObject.preferences.currency_significant_digits ) );
+    }
+
 }
