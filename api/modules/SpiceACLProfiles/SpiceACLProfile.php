@@ -17,7 +17,7 @@ class SpiceACLProfile extends SpiceBean {
      */
     public static function getProfilesForUserRows($userId) {
         $db = DBManagerFactory::getInstance();
-        $q="SELECT p.* FROM spiceaclprofiles_users pu inner join spiceaclprofiles p on p.id=pu.spiceaclprofile_id where pu.user_id='".$db->quote($userId)."' or pu.user_id='*'";
+        $q="SELECT DISTINCT p.id FROM spiceaclprofiles_users pu inner join spiceaclprofiles p on p.id=pu.spiceaclprofile_id where (pu.user_id='".$db->quote($userId)."' or pu.user_id='*') AND pu.deleted = '0' AND p.deleted = '0'";
         if($res = $db->query($q)){
             while($row = $db->fetchByAssoc($res)){
                $spiceAclRoles[]=$row;

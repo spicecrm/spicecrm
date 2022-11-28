@@ -112,7 +112,7 @@ class CampaignTasksController
         // load the campaign task
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
 
-        $status = 'targeted';
+        $status = 'queued';
 
         // activate the campaigntask
         $campaignTask->activateFromEvent($status);
