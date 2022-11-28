@@ -231,16 +231,33 @@ class SpiceACLProfilesRESTHandler
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
+        $profileIDs = [];
 
         $user = BeanFactory::getBean('Users', $userid);
 
         $globalUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'global' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id = '*' AND spiceaclprofiles_users.deleted = 0";
-        $directUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'user' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id = '$userid' AND spiceaclprofiles_users.deleted = 0";
-        $orgUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'orgunit' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_orgunits ON spiceaclprofiles_orgunits.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_orgunits.orgunit_id = '{$user->orgunit_id}' AND spiceaclprofiles_orgunits.deleted = 0";
 
-        $records = $db->query("$globalUserQuery UNION $directUserQuery UNION $orgUserQuery");
+        $records = $db->query($globalUserQuery);
         while ($record = $db->fetchByAssoc($records)) {
+            if(in_array($record['id'], $profileIDs)) continue;
             $retArray[] = $record;
+            $profileIDs[] = $record['id'];
+        }
+
+        $directUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'user' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_users ON spiceaclprofiles_users.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_users.user_id = '$userid' AND spiceaclprofiles_users.deleted = 0";
+        $records = $db->query($directUserQuery);
+        while ($record = $db->fetchByAssoc($records)) {
+            if(in_array($record['id'], $profileIDs)) continue;
+            $retArray[] = $record;
+            $profileIDs[] = $record['id'];
+        }
+
+        $orgUserQuery = "SELECT spiceaclprofiles.id, spiceaclprofiles.name, spiceaclprofiles.status, 'orgunit' profilesource  FROM spiceaclprofiles INNER JOIN spiceaclprofiles_orgunits ON spiceaclprofiles_orgunits.spiceaclprofile_id = spiceaclprofiles.id WHERE spiceaclprofiles_orgunits.orgunit_id = '{$user->orgunit_id}' AND spiceaclprofiles_orgunits.deleted = 0";
+        $records = $db->query($orgUserQuery);
+        while ($record = $db->fetchByAssoc($records)) {
+            if(in_array($record['id'], $profileIDs)) continue;
+            $retArray[] = $record;
+            $profileIDs[] = $record['id'];
         }
 
         return $retArray;

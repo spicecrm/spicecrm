@@ -41,6 +41,7 @@ export class ValidationRulesManager {
     set current_module(val: string) {
         this._current_module = val;
         this.rules = this.metadata.getModuleValidations(val);
+        this.rules.sort((a, b) => a.name.localeCompare(b.name))
         this.copyRulesToBackup();
         this.current_rule = null;
     }
@@ -107,6 +108,8 @@ export class ValidationRulesManager {
                     return e.id == this._current_rule;
                 });
                 this._backup_rules[idx] = {...data};
+
+                this.rules.sort((a, b) => a.name.localeCompare(b.name));
 
                 this.toast.sendToast('changes saved');
             },
