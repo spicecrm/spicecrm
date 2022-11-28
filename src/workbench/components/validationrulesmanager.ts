@@ -68,7 +68,7 @@ export class ValidationRulesManager {
             const rule = this.rules.find((e) => {
                 return e.id == this._current_rule;
             });
-            if (!!rule?.onevents) {
+            if (!!rule?.onevents && typeof rule.onevents === "string") {
                 rule.onevents = rule.onevents.split(',');
             }
             return rule;
