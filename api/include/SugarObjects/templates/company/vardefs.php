@@ -28,11 +28,11 @@ $vardefs = [
             'len' => 50,
             'vname' => 'LBL_NAME_2',
         ],
-        strtolower($object_name) . '_type' => [
-            'name' => strtolower($object_name) . '_type',
+        'account_type' => [
+            'name' => 'account_type',
             'vname' => 'LBL_TYPE',
             'type' => 'enum',
-            'options' => strtolower($object_name) . '_type_dom',
+            'options' => 'account_type_dom',
             'len' => 50,
             'comment' => 'The Company is of this type',
         ],
@@ -77,7 +77,7 @@ $vardefs = [
         'billing_address_street' => [
             'name' => 'billing_address_street',
             'vname' => 'LBL_BILLING_ADDRESS_STREET',
-            'type' => 'bool',
+            'type' => 'varchar',
             'len' => '150',
             'comment' => 'The street address used for billing address',
             'group' => 'billing_address',
