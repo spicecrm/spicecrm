@@ -16,42 +16,31 @@ import {backend} from '../../../services/backend.service';
 export class EventWithCampaignActivateButton {
 
     public activating: boolean = false;
-    // public disabled: boolean = true;
+    public disabled: boolean = true;
 
     constructor(public language: language, public metadata: metadata, public model: model, public toast: toast, public backend: backend) {
-        // this.model.mode$.subscribe(mode => {
-        //     this.handleDisabled();
-        // });
-        //
-        // this.model.data$.subscribe(data => {
-        //     this.handleDisabled();
-        // });
+        this.model.mode$.subscribe(mode => {
+            this.handleDisabled();
+        });
+
+        this.model.data$.subscribe(data => {
+            this.handleDisabled();
+        });
     }
 
-    // /**
-    //  * only show for campaign tasks of type email
-    //  */
-    // get hidden() {
-    //     return this.model.getField('campaigntask_type') == 'Email';
-    // }
-    //
-    //
-    // public handleDisabled() {
-    //
-    //     // not for email
-    //     if (this.model.getFieldValue('campaigntask_type') == 'Email'){
-    //         this.disabled = true;
-    //         return;
-    //     }
-    //
-    //     // not if activated
-    //     if (this.model.getFieldValue('activated')){
-    //         this.disabled = true;
-    //         return;
-    //     }
-    //
-    //     this.disabled = this.model.isEditing || this.model.getField('activated') === true ? true : false;
-    // }
+    /**
+     * handle the disabled status
+     */
+    public handleDisabled() {
+        // only for EventWithCampaign
+        if (this.model.getField('campaigntask_type') !== 'EventWithCampaign') {
+            this.disabled = true;
+            return;
+        }
+
+        // not if editing
+        this.disabled = this.model.isEditing ? true : false;
+    }
 
     public execute() {
         // if we are activating .. do nothing
@@ -66,7 +55,7 @@ export class EventWithCampaignActivateButton {
 
             // send toast and set actrive
             if (status.success) {
-                this.toast.sendToast('Activated');
+                this.toast.sendToast('Created');
                 this.model.setField('activated', true);
 
             } else {

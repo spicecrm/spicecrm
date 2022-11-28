@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'filterACLUsers'
+    name: 'filterACLUsers',
+    pure: false
 })
 export class ACLUsersFilterPipe implements PipeTransform {
 
