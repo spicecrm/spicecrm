@@ -79,6 +79,8 @@ class SpiceConfig
             //set instance
             self::$instance = new self;
             self::$instance->loadConfigFiles();
+            self::$instance->loadConfigFromDB();
+            self::$instance->mappingBWC();
         }
         return self::$instance;
     }
@@ -119,8 +121,6 @@ class SpiceConfig
             session_save_path($this->config['session_dir']);
         }
 
-        // load the config from teh database
-        $this->loadConfigFromDB();
     }
 
     /**
@@ -184,6 +184,17 @@ class SpiceConfig
     function reloadConfig(){
         $this->loadConfigFiles();
         $this->loadConfigFromDB();
+        self::$instance->mappingBWC();
     }
+
+    function mappingBWC() {
+        if ( isset( $this->config['default_preferences']['datef'] )) $this->config['default_date_format'] = $this->config['default_preferences']['datef'];
+        if ( isset( $this->config['default_preferences']['timef'] )) $this->config['default_time_format'] = $this->config['default_preferences']['timef'];
+        if ( isset( $this->config['default_preferences']['export_charset'] )) $this->config['default_export_charset'] = $this->config['default_preferences']['export_charset'];
+        if ( isset( $this->config['default_preferences']['locale_name_format'] )) $this->config['default_locale_name_format'] = $this->config['default_preferences']['locale_name_format'];
+        if ( isset( $this->config['default_preferences']['dec_sep'] )) $this->config['default_decimal_seperator'] = $this->config['default_preferences']['dec_sep'];
+        if ( isset( $this->config['default_preferences']['num_grp_sep'] )) $this->config['default_number_grouping_seperator'] = $this->config['default_preferences']['num_grp_sep'];
+    }
+
 }
 

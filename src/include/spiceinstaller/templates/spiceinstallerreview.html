@@ -97,7 +97,7 @@
 
 <div class="slds-text-align_right slds-align-bottom slds-grid slds-grid--vertical-align-center slds-p-vertical--small slds-p-horizontal_medium">
     <div class="slds-size--1-of-1">
-        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.prev(spiceinstaller.steps[5])">back</button>
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
         <button class="slds-button slds-button--brand" (click)="install()">Begin Installation</button>
     </div>
 </div>

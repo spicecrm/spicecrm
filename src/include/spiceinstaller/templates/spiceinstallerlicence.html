@@ -636,8 +636,8 @@
 
     <div class="slds-grid slds-p-around--medium slds-border--top">
         <system-checkbox [(ngModel)]="spiceinstaller.selectedStep.completed">agree to Terms & Conditions</system-checkbox>
-        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.prev(spiceinstaller.steps[2])">back</button>
-        <button class="slds-button slds-button--brand" [disabled]="!spiceinstaller.selectedStep.completed" (click)="spiceinstaller.next(spiceinstaller.steps[2])">next</button>
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
+        <button class="slds-button slds-button--brand" [disabled]="!spiceinstaller.selectedStep.completed" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next })">next</button>
     </div>
 
 </div>

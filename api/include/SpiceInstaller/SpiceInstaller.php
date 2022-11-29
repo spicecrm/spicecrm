@@ -584,7 +584,6 @@ class SpiceInstaller
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', '".$db->quote( $postData['system_name'] ?: 'SpiceCRM' )."')");
 
-
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'timezone', '".$db->quote( $postData['preferences']['timezone'] ?: '' )."')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'datef', '".$db->quote( $postData['preferences']['datef'] ?: '' )."')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'timef', '".$db->quote( $postData['preferences']['timef'] ?: '' )."')");
@@ -596,8 +595,6 @@ class SpiceInstaller
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'export_delimiter', '".$db->quote( $postData['preferences']['export_delimiter'] ?: '' )."')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'week_day_start', '".$db->quote( $postData['preferences']['week_day_start'] ?: '' )."')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'week_days_count', '".$db->quote( $postData['preferences']['week_days_count'] ?: '' )."')");
-
-        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'currency', '-99' )");
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_iso4217', 'EUR')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_name', 'Euro')");

@@ -155,13 +155,16 @@ class UserPreference extends SpiceBean
         if ( $category != 'global' )
             return null;
 
+        if ( isset(SpiceConfig::getInstance()->config['default_preferences'][$name]) )
+            return SpiceConfig::getInstance()->config['default_preferences'][$name];
+
         // Next, check to see if it's one of the common problem ones
-        if ( isset(SpiceConfig::getInstance()->config['default_'.$name]) )
-            return SpiceConfig::getInstance()->config['default_'.$name];
-        if ( $name == 'datef' )
-            return SpiceConfig::getInstance()->config['default_date_format'];
-        if ( $name == 'timef' )
-            return SpiceConfig::getInstance()->config['default_time_format'];
+        # if ( isset(SpiceConfig::getInstance()->config['default_'.$name]) )
+        #    return SpiceConfig::getInstance()->config['default_'.$name];
+        # if ( $name == 'datef' )
+        #    return SpiceConfig::getInstance()->config['default_date_format'];
+        # if ( $name == 'timef' )
+        #    return SpiceConfig::getInstance()->config['default_time_format'];
         if ( $name == 'email_link_type' )
             return SpiceConfig::getInstance()->config['email_default_client'];
 
@@ -359,6 +362,7 @@ class UserPreference extends SpiceBean
         $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
+        /** @var User $user */
         $user = $this->_userFocus;
 
         $prefDate = [];
@@ -366,14 +370,14 @@ class UserPreference extends SpiceBean
         if(!empty($user) && $this->loadPreferences('global')) {
             // forced to set this to a variable to compare b/c empty() wasn't working
             $timeZone = TimeDate::userTimezone($user);
-            $timeFormat = $user->getPreference("timef");
-            $dateFormat = $user->getPreference("datef");
+            $timeFormat = $user->getPreference("timef", 'global', true );
+            $dateFormat = $user->getPreference("datef", 'global', true );
 
             // cn: bug xxxx cron.php fails because of missing preference when admin hasn't logged in yet
-            $timeZone = empty($timeZone) ? 'America/Los_Angeles' : $timeZone;
+            $timeZone = empty($timeZone) ? 'UTC' : $timeZone;
 
-            if(empty($timeFormat)) $timeFormat = SpiceConfig::getInstance()->config['default_time_format'];
-            if(empty($dateFormat)) $dateFormat = SpiceConfig::getInstance()->config['default_date_format'];
+            # if(empty($timeFormat)) $timeFormat = SpiceConfig::getInstance()->config['default_time_format'];
+            # if(empty($dateFormat)) $dateFormat = SpiceConfig::getInstance()->config['default_date_format'];
 
             $prefDate['date'] = $dateFormat;
             $prefDate['time'] = $timeFormat;
