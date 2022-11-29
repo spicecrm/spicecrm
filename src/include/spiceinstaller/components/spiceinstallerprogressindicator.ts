@@ -3,17 +3,12 @@
  */
 
 import {Component} from '@angular/core';
-import {spiceinstaller} from "../services/spiceinstaller.service";
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 
 @Component({
     selector: 'spice-installer-progress-indicator',
     templateUrl: '../templates/spiceinstallerprogressindicator.html',
-    /*
-    styles: [
-        ".slds-is-active .slds-progress__marker { box-shadow: 0 0 0 4px #d9d9d9; }"
-    ]
-    */
 })
 
 export class SpiceInstallerProgressIndicator {
@@ -28,12 +23,12 @@ export class SpiceInstallerProgressIndicator {
      * @param step
      */
     public jump( step) {
-        this.spiceinstaller.selectedStep.visible = false;
-        if ( step.completed || step.prev?.completed ) {
-            this.spiceinstaller.selectedStep = step;
-            step.visible = true;
-        }
-
+        if ( step === this.spiceinstaller.selectedStep ) return;
+        if ( !this.spiceinstaller.selectedStep.completed && step.pos > this.spiceinstaller.selectedStep.pos ) return;
+        this.spiceinstaller.jumpSubject.next({ from: this.spiceinstaller.selectedStep, to: step });
     }
 
+    public isCurrentStep( step: stepObject ): boolean {
+        return step === this.spiceinstaller.selectedStep;
+    }
 }
