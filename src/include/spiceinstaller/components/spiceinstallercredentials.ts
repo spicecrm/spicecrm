@@ -2,8 +2,8 @@
  * @module SpiceInstaller
  */
 
-import {Component} from '@angular/core';
-import {spiceinstaller} from "../services/spiceinstaller.service";
+import { Component, Input } from '@angular/core';
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 
 @Component({
@@ -13,6 +13,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 export class SpiceInstallerCredentials {
 
+    @Input() public selfStep: stepObject;
     /**
      * condition booleans
      */
@@ -30,6 +31,12 @@ export class SpiceInstallerCredentials {
     constructor(
         public spiceinstaller: spiceinstaller
     ) {
+        this.spiceinstaller.jumpSubject.subscribe( fromTo => {
+            if ( fromTo.from === this.selfStep ) {
+                if ( this.selfStep.completed || fromTo.to?.pos < this.selfStep.pos ) this.spiceinstaller.jump( fromTo.to );
+                else this.saveUser();
+            }
+        });
     }
 
     /**
@@ -51,9 +58,9 @@ export class SpiceInstallerCredentials {
                 surname: this.spiceinstaller.surname,
                 email: this.spiceinstaller.email
             };
+
             this.spiceinstaller.selectedStep.completed = true;
-            // this.spiceinstaller.steps[5] = this.spiceinstaller.selectedStep;
-            this.spiceinstaller.next(this.spiceinstaller.steps[5]);
+            this.spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next });
         }
     }
 

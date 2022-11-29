@@ -240,11 +240,13 @@ class SpiceFTSHandler
 
         // determine the charset
         $supportedCharsets = mb_list_encodings();
-        $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        # $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        $charsetTo = UserPreference::getDefaultPreference('export_charset');
         if (!empty($postBody['charset'])) {
             if (in_array($postBody['charset'], $supportedCharsets)) $charsetTo = $postBody['charset'];
         } else {
-            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            // if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset');
         }
 
         $fh = @fopen('php://output', 'w');
