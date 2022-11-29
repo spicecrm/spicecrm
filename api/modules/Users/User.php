@@ -58,6 +58,7 @@ class User extends Person
 {
     var $user_preferences;
     var $impersonating_user_id;
+    var UserPreference $_userPreferenceFocus;
 
     public function __construct()
     {

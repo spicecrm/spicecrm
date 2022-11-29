@@ -2,14 +2,13 @@
  * @module SpiceInstallerModule
  */
 
-import {AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from '@angular/router';
 import {configurationService} from '../../../services/configuration.service';
 import {toast} from '../../../services/toast.service';
 import {modal} from '../../../services/modal.service';
-import {spiceinstaller} from "../services/spiceinstaller.service";
-
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-review',
@@ -17,14 +16,16 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 export class SpiceInstallerReview implements AfterViewInit {
 
+    @Input() public selfStep: stepObject;
+
     public installing: boolean = false;
 
     public prefsToReview = {
-        'Language': 'language',
         'Timezone': 'timezone',
         'Date Format': 'datef',
         'Time Format': 'timef',
         'Distance Unit System': 'distance_unit_system',
+        'Name Format': 'locale_name_format',
         'Week Start Day': 'week_day_start',
         'Week Days Count': 'week_days_count',
         'Export Delimiter': 'export_delimiter',
@@ -40,6 +41,12 @@ export class SpiceInstallerReview implements AfterViewInit {
         public spiceinstaller: spiceinstaller
     ) {
         // this.prefsToReview['Number Format'] = this.getNumberFormat;
+
+        this.spiceinstaller.jumpSubject.subscribe( fromTo => {
+            if ( fromTo.from === this.selfStep ) {
+                if ( this.selfStep.completed || fromTo.to?.pos < this.selfStep.pos ) this.spiceinstaller.jump( fromTo.to );
+            }
+        });
     }
 
     public ngAfterViewInit() {
