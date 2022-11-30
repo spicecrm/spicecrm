@@ -904,12 +904,10 @@ $db = DBManagerFactory::getInstance();
 
             $parameters ['limit'] = $selectionLimit;
         } else {
-            if (isset($parameters ['limit']) && $parameters ['limit'] != '' && isset($parameters ['start'])) {
-                // $queryResults = $db->limitquery($query, $parameters ['start'], $parameters ['limit']);
-            } else {
+            // remove parameters when they shall not be in use to avoid a limit query like 0,0
+            if (isset($parameters ['limit']) && empty($parameters ['limit']) && isset($parameters ['start'])) {
                 unset($parameters ['start']);
                 unset($parameters ['limit']);
-                //$queryResults = $db->query($query);
             }
         }
 //        file_put_contents("sugarcrm.log", "#######". print_r($this->whereOverride, true)."\n", FILE_APPEND);
