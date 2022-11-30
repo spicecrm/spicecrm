@@ -723,11 +723,13 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
                             foreach ($arrayList as $fieldId => $fieldArray)
                                 if ($fieldArray['fieldid'] == $key){
                                     $translation = $spiceLanguageHandler->getTranslationLabelDataByName($fieldArray['name'], $current_language);
-                                    $header .= '"' .iconv("UTF-8", $current_user->getPreference('default_export_charset'), $translation) . '"' . $export_delimiter;
+                                    # $header .= '"' .iconv("UTF-8", $current_user->getPreference('default_export_charset'), $translation) . '"' . $export_delimiter;
+                                    $header .= '"' .iconv("UTF-8", $current_user->getPreference('export_charset'), $translation) . '"' . $export_delimiter;
                                 }
                         }
 
-                        $rows .= '"' . iconv("UTF-8", $current_user->getPreference('default_export_charset') . '//IGNORE', preg_replace(['/"/'], ['""'], strip_tags(html_entity_decode($value, ENT_QUOTES)))) . '"' . $export_delimiter;
+                        # $rows .= '"' . iconv("UTF-8", $current_user->getPreference('default_export_charset') . '//IGNORE', preg_replace(['/"/'], ['""'], strip_tags(html_entity_decode($value, ENT_QUOTES)))) . '"' . $export_delimiter;
+                        $rows .= '"' . iconv("UTF-8", $current_user->getPreference('export_charset') . '//IGNORE', preg_replace(['/"/'], ['""'], strip_tags(html_entity_decode($value, ENT_QUOTES)))) . '"' . $export_delimiter;
                     }
                 }
                 if ($getHeader)

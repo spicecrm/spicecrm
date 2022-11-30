@@ -23,7 +23,8 @@ class UserAbsence extends SpiceBean
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage( $language );
 
         $dateFormat = $currentUser->getPreference('datef');
-        if ( empty( $dateFormat )) $dateFormat = SpiceConfig::getInstance()->config['default_date_format'];
+        # if ( empty( $dateFormat )) $dateFormat = SpiceConfig::getInstance()->config['default_date_format'];
+        if ( empty( $dateFormat )) $dateFormat = SpiceConfig::getInstance()->config['default_preferences']['datef'];
         $start = ( new \DateTime( $this->starttime ))->format( $dateFormat );
 
         return $app_list_strings['userabsences_type_dom'][$this->type].', '.$start;

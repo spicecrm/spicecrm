@@ -89,6 +89,19 @@
         </div>
 
         <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Name Format</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.locale_name_format">
+                        <option *ngFor="let item of spiceinstaller.nameFormats | keyvalue" [value]="item.key">
+                            {{ item.value }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
             <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Week Start Day</label>
             <div class="slds-form-element">
                 <div class="slds-select_container">
@@ -143,6 +156,7 @@
     </div>
 
     <div class="slds-m-top--medium slds-text-align_right">
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
         <button class="slds-button slds-button--brand" (click)="setPreferences()">next</button>
     </div>
 
