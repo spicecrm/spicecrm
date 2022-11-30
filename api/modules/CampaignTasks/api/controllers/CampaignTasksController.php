@@ -76,7 +76,7 @@ class CampaignTasksController
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'edit', true))
             throw (new ForbiddenException("Forbidden to edit in module CampaignTasks."))->setErrorCode('noModuleEdit');
 
-        // load the campaign task
+        /** @var CampaignTask load the campaign task **/
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
 
         $status = 'targeted';
@@ -95,6 +95,7 @@ class CampaignTasksController
     }
     /**
      * activates the campaign tasks and writes the campaign log entries
+     * where the source for campaignlog is an event registration
      * prospect lists of type test will be ignored
      *
      * @param Request $req
@@ -109,7 +110,7 @@ class CampaignTasksController
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'edit', true))
             throw (new ForbiddenException("Forbidden to edit in module CampaignTasks."))->setErrorCode('noModuleEdit');
 
-        // load the campaign task
+        /** @var CampaignTask load the campaign task**/
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
 
         $status = 'queued';
@@ -126,7 +127,7 @@ class CampaignTasksController
         if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'export', true))
             throw (new ForbiddenException("Forbidden to export for module CampaignTasks."));
 
-        // load the campaign task
+        /** @var CampaignTask load the campaign task **/
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
 
         // activate the campaigntask
@@ -158,6 +159,7 @@ class CampaignTasksController
      */
     public function queueCampaignTaskEmail(Request $req, Response $res, array $args): Response
     {
+        /** @var CampaignTask load the campaign task **/
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
         $campaignTask->activate('queued');
         return $res->withJson(['success' => true]);
@@ -174,6 +176,7 @@ class CampaignTasksController
     public function liveCompileEmailBody(Request $req, Response $res, array $args): Response
     {
         $params = $req->getParsedBody();
+        /** @var EmailTemplate **/
         $emailTemplate = BeanFactory::getBean('EmailTemplates');
         $emailTemplate->body_html = $params['html'];
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
@@ -205,6 +208,7 @@ class CampaignTasksController
     {
         $retArray = [];
 
+        /** @var KReport **/
         $report = BeanFactory::getBean('KReports');
         $reports = $report->get_full_list('name', "report_module = 'CampaignTasks' AND ( integration_params LIKE '%\"kexcelexport\":1%' OR integration_params LIKE '%\"kcsvexport\":1%')");
         foreach ($reports as $report) {
@@ -235,7 +239,7 @@ class CampaignTasksController
     {
         $getParam = $req->getQueryParams();
 
-        /** @var CampaignTask $campaignTask */
+        /** @var CampaignTask $campaignTask load the campaign task */
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
         if (!$campaignTask) {
             throw new NotFoundException('CampaignTask not found');
