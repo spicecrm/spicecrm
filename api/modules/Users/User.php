@@ -58,7 +58,7 @@ class User extends Person
 {
     var $user_preferences;
     var $impersonating_user_id;
-    var UserPreference $_userPreferenceFocus;
+    public $_userPreferenceFocus;
 
     public function __construct()
     {
@@ -224,30 +224,16 @@ class User extends Person
     }
 
     /**
-     * Interface for the User object to calling the UserPreference::setPreference() method in modules/UserPreferences/UserPreference.php
-     *
-     * @param string $name name of the preference to retreive
-     * @param string $category name of the category to retreive, defaults to global scope
-     * @return mixed the value of the preference (string, array, int etc)
-     * @see UserPreference::getPreference()
-     *
+     * get user preference by name and category
+     * @param string $name
+     * @param string $category
+     * @param $default
+     * @return mixed
      */
-    public function getPreference(
-        $name,
-        $category = 'global',
-        $fallBackToSystem = false,
-        $default = null
-    ) {
-        // for BC
-        if (func_num_args() > 2 and !is_bool( $fallBackToSystem )) {
-            $user = func_get_arg(2);
-            LoggerManager::getLogger()->deprecated('User::getPreference() should not be used statically.');
-        } else
-            $user = $this;
-
-        return $user->_userPreferenceFocus->getPreference($name, $category, $fallBackToSystem, $default );
+    public function getPreference(string $name, string $category = 'global', $default = null)
+    {
+        return $this->_userPreferenceFocus->getPreference($name, $category, $default);
     }
-
 
     function save($check_notify = false, $fts_index_bean = true)
     {
