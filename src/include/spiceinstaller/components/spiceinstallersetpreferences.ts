@@ -114,7 +114,8 @@ export class SpiceInstallerSetPreferences {
 
     public updateNumberDelimitationsList() {
         for ( let item of this.numberDelimitationsList ) {
-            item.show = '1'+this.spiceinstaller.configObject.preferences.num_grp_sep+'000'+this.spiceinstaller.configObject.preferences.num_grp_sep+'000'+this.spiceinstaller.configObject.preferences.dec_sep+'0'.repeat(this.spiceinstaller.configObject.preferences.currency_significant_digits);
+            item.show = '1'+item.num_grp_sep+'000'+item.num_grp_sep+'000'+item.dec_sep+'0'
+                .repeat( typeof this.spiceinstaller.configObject.preferences.currency_significant_digits !== 'undefined' ? this.spiceinstaller.configObject.preferences.currency_significant_digits : 2 );
         }
     };
 
