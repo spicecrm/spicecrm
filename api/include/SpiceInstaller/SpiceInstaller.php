@@ -595,6 +595,14 @@ class SpiceInstaller
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'export_delimiter', '".$db->quote( $postData['preferences']['export_delimiter'] ?: '' )."')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'week_day_start', '".$db->quote( $postData['preferences']['week_day_start'] ?: '' )."')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'week_days_count', '".$db->quote( $postData['preferences']['week_days_count'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'locale_name_format', '".$db->quote( $postData['preferences']['locale_name_format'] ?: '' )."')");
+
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'currency', '-99')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'reminder_time', '-1')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'calendar_day_end_hour', '18')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'calendar_day_start_hour', '8')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'help_icon', 'visible')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'home_assistant', 'visible')");
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_iso4217', 'EUR')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_name', 'Euro')");
