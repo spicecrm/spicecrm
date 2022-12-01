@@ -86,10 +86,10 @@ class UserPreference extends SpiceBean
         $defaultPrefValue = SpiceConfig::getInstance()->config['default_preferences'][$name];
 
         if (isset($value) && $value !== '') {
-            return $_SESSION[$user->user_name . '_PREFERENCES'][$category][$name];
+            return $value;
 
         } else if ($category == 'global' && isset($defaultPrefValue) && $defaultPrefValue !== '') {
-            return SpiceConfig::getInstance()->config['default_preferences'][$name];
+            return $defaultPrefValue;
 
         } else if (isset($default) && $default !== '') {
             return $default;
