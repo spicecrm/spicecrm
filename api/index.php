@@ -7,7 +7,6 @@ require_once 'vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
 use DI\Container;
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
 use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
