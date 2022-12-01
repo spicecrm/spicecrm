@@ -4,7 +4,7 @@
 import {HttpClient} from "@angular/common/http";
 import {Component, Host, Input} from "@angular/core";
 import {toast} from "../../services/toast.service";
-import {Auth2ServiceConfigI, AuthServiceI} from "../interfaces/globalcomponents.interfaces";
+import {Auth2ServiceConfigI, AuthServiceI, TokenObjectI} from "../interfaces/globalcomponents.interfaces";
 import {GlobalLoginOAuth2} from "./globalloginoauth2";
 import {configurationService} from "../../services/configuration.service";
 import {OAuth2Service} from "../../services/oauth2.service";
@@ -98,14 +98,15 @@ export class GlobalLoginOAuth2Button {
 
         this.oauth2Service.codeFlowLogin().subscribe(code => {
 
-            this.http.post(url, {issuer: this.service.issuer, code: code}).subscribe((data: {accessToken, profile}) => {
+            this.http.post(url, {issuer: this.service.issuer, code: code}).subscribe(
+                (data: {tokenObject: TokenObjectI, profile}) => {
 
                 if (this.authenticatedUser) {
 
                     if (this.authenticatedUser == data.profile.email) {
 
                         this.parent.token.emit({
-                            issuer: this.service.issuer, accessToken: data.accessToken
+                            issuer: this.service.issuer, tokenObject: data.tokenObject
                         });
 
                     } else {
@@ -113,7 +114,7 @@ export class GlobalLoginOAuth2Button {
                     }
                 } else {
                     this.parent.token.emit({
-                        issuer: this.service.issuer, accessToken: data.accessToken
+                        issuer: this.service.issuer, tokenObject: data.tokenObject
                     });
                 }
             });

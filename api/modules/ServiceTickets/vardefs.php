@@ -171,7 +171,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'name' => 'sladeviation_reason',
             'vname' => 'LBL_SLADEVIATION_REASON',
             'type' => 'text',
-            'comment' => ' a textual descripotion why the SLA was not met'
+            'comment' => ' a textual description why the SLA was not met'
         ],
         'prolonged_until' => [
             'name' => 'prolonged_until',

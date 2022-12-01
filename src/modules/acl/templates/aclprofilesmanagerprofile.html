@@ -56,8 +56,19 @@
                 <system-spinner message="LBL_LOADING"></system-spinner>
             </div>
             <ng-template #usersdisplay>
-                <div class="slds-p-around--x-small">
-                    <system-checkbox [(ngModel)]="aclallusers">all users</system-checkbox>
+                <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center slds-p-around--x-small">
+                    <div class="slds-col--bump-right">
+                        <system-checkbox [(ngModel)]="aclallusers">all users</system-checkbox>
+                    </div>
+                    <div class="slds-p-right--x-small slds-size--1-of-4" [ngClass]="{'slds-hidden': aclallusers}">
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                            <input type="text" class="slds-input" [(ngModel)]="userNameFilter" system-placeholder="LBL_FILTER"/>
+                            <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" (click)="userNameFilter = ''"><!--tabindex="-1"-->
+                                <system-button-icon [icon]="'clear'"></system-button-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <pagination-controls [ngClass]="{'slds-hidden': aclallusers}" [(page)]="page" [limit]="20" [total_records]="aclusers.length" variation="short"></pagination-controls>
                 </div>
                 <div *ngIf="!aclallusers">
                     <table  class="slds-table slds-table_bordered slds-table_cell-buffer">
@@ -70,9 +81,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let acluser of aclusers">
+                        <tr *ngFor="let acluser of aclusers | filterACLUsers: userNameFilter | paginate: {page: page, limit: 20}">
                             <td>
-                                <div class="slds-truncate">{{acluser.user_name ? acluser.user_name : acluser.id}}</div>
+                                <div class="slds-truncate">
+                                    <span system-model-popover [id]="acluser.id" module="Users">{{acluser.user_name ? acluser.user_name : acluser.id}}</span>
+                                </div>
                             </td>
                             <td style="width: 3rem;">
                                 <div *ngIf="acluser.id != '*'" class="slds-grid">

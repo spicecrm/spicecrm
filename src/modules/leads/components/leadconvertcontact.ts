@@ -58,7 +58,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
     }
 
     /**
-     * initializes the load from the lead using the copy rules
+     * initializes the öoad from the lead using the copy rules
      *
      * also links to the lead in case the account is changed to link to the account
      */
@@ -89,6 +89,9 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
                     account_id: data.account_id,
                     account_name: data.account_linked_name
                 });
+                // we need to pass the account as linked bean!
+                // since property account_id is a related field, its value will be cleaned up
+                // by the modelutilities.service in spice2backend
                 this.model.initializeField(
                     'accounts',
                     {"beans": [{

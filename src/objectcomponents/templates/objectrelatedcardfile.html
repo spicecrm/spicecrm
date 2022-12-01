@@ -1,4 +1,4 @@
-<div *ngIf="bigThumbnail; else smallThumbnailContainer" class="slds-file slds-file_card slds-has-title" style="width: 300px">
+<div *ngIf="bigThumbnail; else smallThumbnailContainer" class="slds-file slds-file_card slds-has-title slds-m-left--small" style="width: 300px">
     <figure style="height: 300px">
         <a (click)="previewFile()" href="javascript:void(0)" class="slds-file__crop" style="padding-top: 245px">
             <img *ngIf="file.thumbnail" [src]="'data:image/jpg;base64,' + file.thumbnail">
@@ -15,7 +15,7 @@
                     <div *ngIf="!file.display_name" (click)="previewFile()" class="slds-file__text slds-truncate" [system-title]="file.filename">
                         {{file.filename}}
                     </div>
-                    <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small">
+                    <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small slds-truncate">
                         <ul class="slds-list--horizontal slds-has-dividers--left">
                             <li [system-title]="filedate" class="slds-item">{{filedate}}</li>
                             <li [system-title]="humanFileSize" class="slds-item">{{humanFileSize}}</li>
@@ -45,7 +45,7 @@
 </div>
 
 <ng-template #smallThumbnailContainer>
-    <div class="slds-media" style="width: 300px">
+    <div class="slds-media slds-truncate" style="width: 300px">
         <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
             <!--system-icon *ngIf="!file.thumbnail" [icon]="fileicon.icon" divClass="" [sprite]="fileicon.sprite"  size="'small'"></system-icon-->
             <system-file-icon *ngIf="!file.thumbnail" [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="'small'"></system-file-icon>
@@ -53,7 +53,7 @@
                 <img [src]="'data:image/jpg;base64,' + file.thumbnail"/>
             </div>
         </div>
-        <div class="slds-media__body">
+        <div class="slds-media__body" style="width: 260px">
             <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
                 <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small"[system-title]="file.text" (click)="previewFile()">
                     <a *ngIf="!!file.display_name; else fileNameContainer" href="javascript:void(0);">

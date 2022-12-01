@@ -122,7 +122,7 @@ export class navigation {
     public activeModule$: EventEmitter<string>;
 
 
-    public modelsEditing: any[] = [];
+    public modelsEditing: {id: string, module: string, model: any, summary_text: string ,tabid: string}[] = [];
 
     /**
      * The array where all existing models are registered.
@@ -478,11 +478,16 @@ export class navigation {
 
     /**
      * adds a model as editing in the currrent scope
+     * @param id
+     * @param module
      * @param model
      * @param summary_text
      */
-    public addModelEditing(model, summary_text) {
-        this.modelsEditing.push({model, summary_text: summary_text, tabid: this.activeTab});
+    public addModelEditing(id, module, model, summary_text) {
+
+        if (!id ||!module) return;
+
+        this.modelsEditing.push({id, module, model, summary_text: summary_text, tabid: this.activeTab});
     }
 
     /**
@@ -492,13 +497,14 @@ export class navigation {
      * @param id
      */
     public removeModelEditing(module, id) {
-        let i = 0;
-        this.modelsEditing.some(model => {
+
+        if (!id ||!module) return;
+
+        this.modelsEditing.some((model, idx) => {
             if (model.id == id && model.module == module) {
-                this.modelsEditing.splice(i, 1);
+                this.modelsEditing.splice(idx, 1);
                 return true;
             }
-            i++;
         });
     }
 

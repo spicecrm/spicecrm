@@ -217,13 +217,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'source' => 'non-db',
             'vname' => 'LBL_LOG_ENTRIES',
         ],
-        'tracked_urls' => [
-            'name' => 'tracked_urls',
-            'type' => 'link',
-            'relationship' => 'campaign_campaigntrakers',
-            'source' => 'non-db',
-            'vname' => 'LBL_TRACKED_URLS',
-        ],
         'frequency' => [
             'name' => 'frequency',
             'vname' => 'LBL_FREQUENCY',
@@ -232,7 +225,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'len' => 100,
             'comment' => 'Frequency of the campaign',
             'options' => 'newsletter_frequency_dom',
-            'len' => 100,
         ],
         'leads' => [
             'name' => 'leads',

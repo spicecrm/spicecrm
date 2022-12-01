@@ -11,6 +11,7 @@ import {
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
+import {ACLUsersFilterPipe } from '../pipes/aclusersfilter.pipe';
 
 @Component({
     selector: 'aclprofiles-manager-profile',
@@ -29,6 +30,9 @@ export class ACLProfilesManagerProfile implements OnChanges {
     public aclobjects: any[] = [];
     public aclusers: any[] = [];
     public aclorgunits: any[] = [];
+
+    public page = 1;
+    public userNameFilter: string = '';
 
     constructor(
         public modal: modal,
@@ -87,7 +91,6 @@ export class ACLProfilesManagerProfile implements OnChanges {
                 this.loadingobjects = false;
                 this.sortobjects();
             });
-
             this.backend.getRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users').subscribe(aclusers => {
                 this.aclusers = aclusers;
                 this.loadingusers = false;

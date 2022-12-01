@@ -65,3 +65,11 @@
 .slds-color-picker__selector .slds-popover__footer{
     background-color: unset ;
 }
+
+.ck-balloon-panel {
+    z-index: 11111 !important;
+}
+
+.ck-toolbar {
+    display: none;
+}

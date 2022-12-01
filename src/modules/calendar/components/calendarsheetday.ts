@@ -373,6 +373,8 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      */
     public displayDate(type) {
         switch (type) {
+            case 'weekday':
+                return this.setdate.format('d');
             case 'day':
                 return this.setdate.format('ddd');
             case 'date':

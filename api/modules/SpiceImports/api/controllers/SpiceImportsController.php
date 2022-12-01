@@ -82,14 +82,15 @@ class SpiceImportsController{
      */
 
     public function saveFromImport(Request $req, Response $res, array $args): Response {
-            if (!SpiceACL::getInstance()->checkAccess('SpiceImports', 'edit', true)) {
-                throw (new ForbiddenException("Forbidden for details in module SpiceImports."))
-                    ->setErrorCode('noModuleDetails');
-            }
+        if (!SpiceACL::getInstance()->checkAccess('SpiceImports', 'edit', true)) {
+            throw (new ForbiddenException("Forbidden for details in module SpiceImports."))
+                ->setErrorCode('noModuleDetails');
+        }
 
-            $postParams = $req->getQueryParams() ?: [];
-            $bean = BeanFactory::getBean('SpiceImports');
-            return $res->withJson($bean->saveFromImport($postParams));
+        $bean = BeanFactory::getBean('SpiceImports');
+        return $res->withJson( $bean->saveFromImport(
+            $args['objectimport'] ? json_decode( $args['objectimport'] ) : ( $req->getParsedBody()['objectimport'] ?: [] )
+        ));
     }
 
     /**

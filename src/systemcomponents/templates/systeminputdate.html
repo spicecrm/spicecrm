@@ -3,7 +3,7 @@
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-picklist slds-timepicker" system-dropdown-trigger role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input [disabled]="isDisabled" class="slds-input slds-combobox__input" aria-controls="listbox-unique-id" autocomplete="off" role="textbox" type="text" placeholder=" " [(ngModel)]="display" >
+                    <input [disabled]="isDisabled" class="slds-input slds-combobox__input" aria-controls="listbox-unique-id" autocomplete="off" role="textbox" type="text" placeholder=" " [(ngModel)]="display" [ngClass]="{'slds-is-edited':isDirty}" [id]="id" (blur)="emitBlur()">
                     <div *ngIf="!isDisabled" class="slds-input__icon-group slds-input__icon-group_right slds-height_full slds-grid" style="top: 0; margin: 0; height: 100%">
                         <button *ngIf="canclear" class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position: relative;" (click)="clear()">
                             <system-button-icon icon="clear"></system-button-icon>

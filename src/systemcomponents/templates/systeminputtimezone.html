@@ -1,6 +1,7 @@
 <div class="slds-form-element__control">
     <div class="slds-select_container">
         <select [disabled]="disabled"  class="slds-select" [(ngModel)]="timezone" id="{{id}}">
+            <option *ngIf="!denyEmpty" [value]="null"></option>
             <option *ngFor="let timezone of timezones; let i=index" [value]="timezone">{{timezone}} (GMT{{offsetTimezones[i]}})</option>
         </select>
     </div>

@@ -1,32 +1,39 @@
 <div *ngFor="let step of spiceinstaller.steps; let i = index">
+
     <div *ngIf="step.id == 'setbackend' && spiceinstaller.selectedStep.id == 'setbackend'"
          class="slds-grid slds-grid_vertical">
-        <spice-installer-set-backend></spice-installer-set-backend>
+        <spice-installer-set-backend [selfStep]="spiceinstaller.selectedStep"></spice-installer-set-backend>
     </div>
+
     <div *ngIf="step.id == 'systemcheck' && spiceinstaller.selectedStep.id == 'systemcheck'"
          class="slds-grid slds-grid_vertical">
-        <spice-installer-systemcheck></spice-installer-systemcheck>
+        <spice-installer-systemcheck [selfStep]="spiceinstaller.selectedStep"></spice-installer-systemcheck>
     </div>
+
     <div *ngIf="step.id == 'licence' && spiceinstaller.selectedStep.id == 'licence'"
          class="slds-grid slds-grid_vertical">
-        <spice-installer-licence></spice-installer-licence>
+        <spice-installer-licence [selfStep]="spiceinstaller.selectedStep"></spice-installer-licence>
     </div>
+
     <div *ngIf="step.id == 'database' && spiceinstaller.selectedStep.id == 'database'"
          class="slds-grid slds-grid_vertical">
-        <spice-installer-database></spice-installer-database>
+        <spice-installer-database [selfStep]="spiceinstaller.selectedStep"></spice-installer-database>
     </div>
+
     <div *ngIf="step.id == 'fts' && spiceinstaller.selectedStep.id == 'fts'" class="slds-grid slds-grid_vertical">
-        <spice-installer-fts></spice-installer-fts>
+        <spice-installer-fts [selfStep]="spiceinstaller.selectedStep"></spice-installer-fts>
     </div>
-    <div *ngIf="step.id == 'credentials' && spiceinstaller.selectedStep.id == 'credentials'"
-         class="slds-grid slds-grid_vertical">
-        <spice-installer-credentials></spice-installer-credentials>
+
+    <div *ngIf="step.id == 'credentials' && spiceinstaller.selectedStep.id == 'credentials'" class="slds-grid slds-grid_vertical">
+        <spice-installer-credentials [selfStep]="spiceinstaller.selectedStep"></spice-installer-credentials>
     </div>
-    <div *ngIf="step.id == 'setlanguage' && spiceinstaller.selectedStep.id == 'setlanguage'"
-         class="slds-grid slds-grid_vertical">
-        <spice-installer-set-language></spice-installer-set-language>
+
+    <div *ngIf="step.id == 'preferences' && spiceinstaller.selectedStep.id == 'preferences'" class="slds-grid slds-grid_vertical">
+        <spice-installer-set-preferences [selfStep]="spiceinstaller.selectedStep"></spice-installer-set-preferences>
     </div>
+
     <div *ngIf="step.id == 'review' && spiceinstaller.selectedStep.id == 'review'" class="slds-grid slds-grid_vertical">
-        <spice-installer-review></spice-installer-review>
+        <spice-installer-review [selfStep]="spiceinstaller.selectedStep"></spice-installer-review>
     </div>
+
 </div>

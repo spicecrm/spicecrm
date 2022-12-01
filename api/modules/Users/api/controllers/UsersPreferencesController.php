@@ -23,7 +23,10 @@ class UsersPreferencesController
     public function getGlobalPreferences()
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        return $this->get_all_user_preferences('global', $current_user->id );
+        return [
+            'Calendar' => $this->get_all_user_preferences('Calendar', $current_user->id ),
+            'global' => $this->get_all_user_preferences('global', $current_user->id )
+        ];
     }
 
     public function getPreferences(Request $req, Response $res, array $args): Response

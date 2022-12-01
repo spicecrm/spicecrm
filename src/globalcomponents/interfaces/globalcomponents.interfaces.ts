@@ -23,3 +23,12 @@ export interface AuthServiceI {
     sequence: number;
     config: Auth2ServiceConfigI
 }
+
+/**
+ * token response data
+ */
+export interface TokenObjectI {
+    access_token: string,
+    refresh_token?: string,
+    valid_until?: string
+}

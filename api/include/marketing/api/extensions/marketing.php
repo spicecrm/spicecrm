@@ -65,6 +65,26 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method'      => 'post',
+        'route'       => '/system/marketing/subscribe',
+        'class'       => MarketingAutomationController::class,
+        'function'    => 'handleSubscription',
+        'description' => '',
+        'options'     => ['noAuth' => true, 'adminOnly' => false],
+        'parameters' => [
+            'emailAddress' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_EMAIL,
+                'description' => '',
+                'example' => '',
+                'required' => true
+            ]
+        ]
+    ]
 ];
+
+
+
 
 $RESTManager->registerExtension('marketing', '1.0', [], $routes);

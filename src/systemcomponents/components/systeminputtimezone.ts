@@ -47,6 +47,8 @@ export class SystemInputTimezone implements ControlValueAccessor {
      */
     public offsetTimezones: number[] = [];
 
+    @Input() public denyEmpty = false;
+
     constructor() {
         // Get the timezones from moment.js:
         this.timezones = moment.tz.names();

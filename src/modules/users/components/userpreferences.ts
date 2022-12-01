@@ -1,7 +1,7 @@
 /**
  * @module ModuleUsers
  */
-import {Component, OnDestroy} from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
 import {backend} from '../../../services/backend.service';
@@ -14,6 +14,10 @@ import {session} from '../../../services/session.service';
 import {model} from '../../../services/model.service';
 import {configurationService} from '../../../services/configuration.service';
 import {metadata} from "../../../services/metadata.service";
+import {
+    AdministrationLoginRestrictionIpAddresses
+} from '../../../admincomponents/components/administrationloginrestrictionipaddresses';
+import { SystemPreferencesPanel } from '../../../systemcomponents/components/systempreferencespanel';
 
 /** @ignore */
 declare var _: any;
@@ -37,27 +41,26 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     public names = [
-        'export_delimiter',
-        'default_export_charset',
-        'currency',
-        'default_currency_significant_digits',
-        'datef',
-        'timef',
-        'timezone',
-        'num_grp_sep',
-        'dec_sep',
-        'default_locale_name_format',
-        'week_day_start',
-        'week_days_count',
         'calendar_day_start_hour',
         'calendar_day_end_hour',
-        'reminder_time',
+        'currency',
+        'datef',
+        'dec_sep',
+        'currency_significant_digits',
+        'export_charset',
+        'locale_name_format',
+        'distance_unit_system',
+        'export_delimiter',
+        'help_icon',
         'home_dashboard',
         'home_dashboardset',
         'home_assistant',
-        'help_icon',
-        'navigation_paradigm',
-        'distance_unit_system'
+        'num_grp_sep',
+        'reminder_time',
+        'timef',
+        'timezone',
+        'week_day_start',
+        'week_days_count',
     ];
 
     /**
@@ -111,6 +114,8 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     public subscriptions: Subscription;
+
+    @ViewChild('systemPreferencesPanel') public systemPreferencesPanel: SystemPreferencesPanel;
 
     constructor(
         public backend: backend,

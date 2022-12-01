@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\data;
 
+use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
@@ -39,12 +40,9 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * All Rights Reserved.
  * ***************************************************************************** */
 
-// CR1000349 spiceinstaller
-//require_once('modules/DynamicFields/DynamicField.php');
-
 
 /**
- * SpiceBean is the base class for all business objects in Sugar.  It implements
+ * SpiceBean is the base class for all business objects in SpiceCRM.  It implements
  * the primary functionality needed for manipulating business objects: create,
  * retrieve, update, delete.  It allows for searching and retrieving list of records.
  * It allows for retrieving related objects (e.g. contacts related to a specific account).
@@ -1328,6 +1326,7 @@ class SpiceBean
      * @param boolean $check_notify Optional, default false, if set to true assignee of the record is notified via email.
      * @param boolean $fts_index_bean Optional, default true, if set to true SpiceFTSHandler will index the bean.
      * @return int returns the id of the saved bean
+     * @throws \Exception
      * @todo Add support for field type validation and encoding of parameters.
      */
     public function save($check_notify = false, $fts_index_bean = true)
@@ -1466,6 +1465,8 @@ class SpiceBean
         $this->in_save = false;
         //unset current bean_action
         $this->set_bean_action(null);
+
+        AddressReferences::getInstance()->updateReferencedBeansAddress($this);
 
         $this->call_custom_logic('after_save', '');
 

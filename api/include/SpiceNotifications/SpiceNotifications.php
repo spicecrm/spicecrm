@@ -154,7 +154,7 @@ class SpiceNotifications
         $db = DBManagerFactory::getInstance();
         if (!isset($_SESSION['notification_templates']) || empty($_SESSION['notification_templates'])) {
             $_SESSION['notification_templates'] = [];
-            $restpl = $db->query('SELECT * FROM email_templates WHERE (type="notification" OR type="notification_custom") AND deleted=0 ORDER BY type ASC');
+            $restpl = $db->query("SELECT * FROM email_templates WHERE (type='notification' OR type='notification_custom') AND deleted=0 ORDER BY type ASC");
             while ($row = $db->fetchByAssoc($restpl)) {
                 $_SESSION['notification_templates'][$row['for_bean']][$row['language']] = $row;
             }

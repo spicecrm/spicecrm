@@ -55,7 +55,7 @@
                 <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
                 <button [disabled]="!selected_template || loading_output" class="slds-button slds-button--neutral" (click)="reload()"><system-label label="LBL_RELOAD"></system-label></button>
                 <button *ngIf="!expanded" [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="create()">{{buttonText}}</button>
-                <button *ngIf="expanded" [disabled]="!selected_template || loading_output" class="slds-button slds-button--brand" (click)="sendEmail()">{{language.getLabel('LBL_SENDEMAIL')}}</button>
+                <button *ngIf="expanded" [disabled]="!selected_template || loading_output || !canSend" class="slds-button slds-button--brand" (click)="sendEmail()">{{language.getLabel('LBL_SENDEMAIL')}}</button>
             </div>
             <object-action-container (actionemitter)="handleAction($event)" containerclass="slds-button-group" [actionset]="customActionsetId" class="slds-m-left--x-small" style="display: inline-flex;"></object-action-container>
         </div>

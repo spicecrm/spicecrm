@@ -31,3 +31,14 @@
     height: 100%;
     resize: none;
 }
+
+.spice-drop-zone-label.spice-drop-zone-label-bottom {
+    top: unset !important;
+    bottom: -20px;
+    border-radius: 0 0 0.25rem 0.25rem !important;
+    width: 140px;
+}
+
+.spice-drop-zone.slds-is-hovered {
+    z-index: 90000 !important;
+}

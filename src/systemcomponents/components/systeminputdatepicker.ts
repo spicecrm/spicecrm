@@ -136,6 +136,9 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         this.secondDate.add(1, 'month');
         this.buildYearsList();
         this.buildGrids();
+
+        // set the current year
+        this._currentYear = {id: this.curDate.year(), name: this.curDate.year()};
     }
 
     /*

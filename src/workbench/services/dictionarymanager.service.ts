@@ -1,7 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import {Injectable} from "@angular/core";
+import {Injectable, OnDestroy} from "@angular/core";
 import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
@@ -17,9 +17,10 @@ import {
 import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfaces";
 import {configurationService} from "../../services/configuration.service";
 import {toast} from "../../services/toast.service";
+import {navigation} from "../../services/navigation.service";
 
 @Injectable()
-export class dictionarymanager {
+export class dictionarymanager implements OnDestroy {
 
     /**
      * reserved words in PL(SQL
@@ -124,10 +125,50 @@ export class dictionarymanager {
                 public metadata: metadata,
                 public language: language,
                 public modelutilities: modelutilities,
+                public navigation: navigation,
                 public toast: toast,
                 public configurationService: configurationService) {
         this.loadDictionaryDefinitions();
         this.loadWords();
+
+        this.navigation.addModelEditing('dictmgr' , 'Administration', this, 'dictionary manager');
+    }
+
+    public ngOnDestroy() {
+        this.navigation.removeModelEditing('dictmgr', 'Administration');
+    }
+
+    /**
+     * called from the navigation service to prompt navigate away modal
+     */
+    public isDirty() {
+
+        let changed = false;
+
+        const loaded = JSON.parse(this.loaded);
+
+        const keys = [
+            'dictionarydefinitions',
+            'dictionaryitems',
+            'dictionaryrelationships',
+            'dictionaryrelationshiprelatefields',
+            'dictionaryindexes',
+            'dictionaryindexitem'
+        ];
+
+        keys.forEach(key => {
+
+            if (!Array.isArray(this[key])) return;
+
+            this[key].forEach(rec => {
+                const existing = loaded[key].find(d => d.id == rec.id);
+                if (!existing || (existing && JSON.stringify(existing) != JSON.stringify(rec))) {
+                    changed = true;
+                }
+            });
+        });
+
+        return changed;
     }
 
     /**
@@ -267,7 +308,8 @@ export class dictionarymanager {
     public save() {
         let changes = this.determineChangedRecords();
         this.backend.postRequest('dictionary/definitions', {}, changes).subscribe({
-            next: () => {
+            next: res => {
+                this.loaded = JSON.stringify(res);
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             },
             error: () => {
@@ -301,5 +343,21 @@ export class dictionarymanager {
 
         return changed;
 
+    }
+
+
+    /**
+     *
+     * @param definition
+     */
+    public repairDictionary(definition){
+        let body = {dictionaries: [definition.name]};
+        this.backend.postRequest('admin/repair/dictionary', {}, body).subscribe(result => {
+            if (result.success) {
+                this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success');
+            } else {
+                this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error');
+            }
+        });
     }
 }
