@@ -33,8 +33,8 @@ class CampaignTask extends SpiceBean
     }
 
     /**
-     * remove entries from campign log for passed status
-     * created entries in campign log with passed status
+     * remove entries from campaign log for passed status
+     * created entries in campaign log with passed status
      * set campaign task to activated
      * set camapign task status to Active
      * @todo find another way to bild query so that sql_mode workaround may be removed
@@ -60,9 +60,9 @@ class CampaignTask extends SpiceBean
         $current_date = $this->db->now();
         $guidSQL = $this->db->getGuidSQL();
 
-        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified";
+        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id";
         $insert_query .= ') ';
-        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL}, plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0, $current_date";
+        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL}, plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
         $insert_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id";
         $insert_query .= " INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id";
         $insert_query .= " WHERE plc.campaigntask_id='$thisId'";
@@ -80,8 +80,8 @@ class CampaignTask extends SpiceBean
         while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
             $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
             $seed = BeanFactory::getBean($row['module']);
-            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified)";
-            $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0, $current_date";
+            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
+            $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0, $current_date, {'$this->assigned_user_id'}";
             $insert_query .= " FROM {$seed->_tablename}";
             $insert_query .= " WHERE deleted=0 AND NOT EXISTS (SELECT target_id FROM campaign_log WHERE campaign_log.target_id = {$seed->_tablename}.id) AND $where";
             $this->db->query($insert_query);
@@ -94,7 +94,50 @@ class CampaignTask extends SpiceBean
 
     }
 
+    public function activateFromEvent($status)
+    {
+        $db = DBManagerFactory::getInstance();
+        $thisId = $db->quote($this->id);
+        $sysModuleFilters = new \SpiceCRM\includes\SysModuleFilters\SysModuleFilters();
 
+        // disable ONLY_FULL_GROUP_BY if this is set
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+
+        // set the group by mode off on MySQL
+        if($this->db->dbType == 'mysql') {
+            $this->db->query("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+        }
+
+        $delete_query = "DELETE FROM campaign_log WHERE campaign_id='" . $this->campaign_id . "' AND campaigntask_id='" . $this->id . "' AND activity_type='$status'";
+        $this->db->query($delete_query);
+
+        $current_date = $this->db->now();
+        $guidSQL = $this->db->getGuidSQL();
+
+        $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->module_filter);
+
+        $filter = !empty($filter) ? "AND $filter" : "";
+
+        $campaigns = $this->get_linked_beans('campaigns');
+        foreach ($campaigns as $campaign){
+            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
+            $insert_query .= " SELECT $guidSQL, $current_date, '$campaign->id', '$this->id', $guidSQL, '$campaign->event_id', eventregistrations.parent_id, eventregistrations.parent_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
+            $insert_query .= "FROM events INNER JOIN eventregistrations ON eventregistrations.event_id = events.id";
+            $insert_query .= " WHERE events.id = '$campaign->event_id' AND events.deleted != 1 AND eventregistrations.deleted != 1 $filter GROUP BY eventregistrations.parent_id";
+
+            $success = $this->db->query($insert_query);
+
+        }
+
+
+
+        // set to activated
+        $this->activated = true;
+        $this->status = 'Active';
+        $this->save();
+
+
+    }
 
     function export()
     {
@@ -135,11 +178,13 @@ class CampaignTask extends SpiceBean
 
         // determine the charset
         $supportedCharsets = mb_list_encodings();
-        $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        # $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        $charsetTo = UserPreference::getDefaultPreference('export_charset');
         if (!empty($postBody['charset'])) {
             if (in_array($postBody['charset'], $supportedCharsets)) $charsetTo = $postBody['charset'];
         } else {
-            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            # if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset');
         }
 
         $fh = @fopen('php://output', 'w');
@@ -273,7 +318,7 @@ class CampaignTask extends SpiceBean
 
         if($saveEmail){
             $email->parent_type = $seed->_module;
-            $email->parent_ide = $seed->id;
+            $email->parent_id = $seed->id;
             $email->to_be_sent = true;
             $email->save();
         } else {

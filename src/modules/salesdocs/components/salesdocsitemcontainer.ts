@@ -109,7 +109,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
 
         this.view.mode$.subscribe(mode => {
             // check if we are in the same mode already
-            if (this.parentview.getMode() == mode) return;
+            if (this.view.getMode() == mode) return;
 
             // process the mode change
             if (mode == 'edit') {
@@ -212,6 +212,10 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
      * triggered when a recalculate of the complete salesdoc is required
      */
     public recalculate() {
+        // do not recalculate in display mode
+        if(this.view.getMode() == 'view') return;
+
+        // check that we have values to recalculate otherwise set totals to 0
         if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
             if (this.item.gross_priced) {
                 this.item.amount_gross = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);

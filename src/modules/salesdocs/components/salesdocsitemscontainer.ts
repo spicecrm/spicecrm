@@ -130,7 +130,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
     }
 
     /**
-     * recacluates the total document
+     * recalculates the total document
      */
     public recalculate() {
         this.model.setField('amount_net', this.totalnet);

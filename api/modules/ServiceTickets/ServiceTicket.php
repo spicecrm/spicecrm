@@ -64,8 +64,9 @@ class ServiceTicket extends SpiceBean
         $bean = parent::retrieve($id, $encode, $deleted, $relationships);
 
         if (!empty($this->contact_id)) {
-            $contact = BeanFactory::getBean('Contacts', $this->contact_id);
-            $this->email1 = $contact->email1;
+            if($contact = BeanFactory::getBean('Contacts', $this->contact_id)){
+                $this->email1 = $contact->email1;
+            }
         }
 
         return $bean;
@@ -85,7 +86,7 @@ class ServiceTicket extends SpiceBean
 
         //set serviceticket_number
         if (empty($this->serviceticket_number)) {
-            $this->serviceticket_number = str_pad(SpiceNumberRanges::getNextNumberForField('ServiceTickets', 'serviceticket_number'), 10, '0', STR_PAD_LEFT);
+            $this->serviceticket_number = SpiceNumberRanges::getNextNumberForField('ServiceTickets', 'serviceticket_number');
         }
         //set date_closed
         if ($this->serviceticket_status == 'Closed' && empty($this->date_closed)) {
@@ -133,12 +134,9 @@ class ServiceTicket extends SpiceBean
 
         // determine SLAs
         if (empty($this->serviceticketsla_id)) {
-            $sla = BeanFactory::getBean('ServiceTicketSLAs');
-            if($sla) {
-                $sla->determineSLAforTicket($this);
-            }
-
+            $this->determineSLAs();
         }
+
         /**
          * if(!empty($this->serviceticket_type) && !empty($this->serviceticket_class) && empty($this->resolve_until)){
          * $sla = $this->db->fetchByAssoc($this->db->query("SELECT * FROM serviceticketslas WHERE serviceticket_type='$this->serviceticket_type' AND serviceticket_class='$this->serviceticket_class'"));
@@ -180,13 +178,29 @@ class ServiceTicket extends SpiceBean
     }
 
     /**
+     * Try to find a match on SLA time definitions
+     * If not match apply times from default SLA
+     * @return void
+     */
+    public function determineSLAs(){
+        $sla = BeanFactory::getBean('ServiceTicketSLAs');
+        if($sla) {
+            $slaTime = $sla->findSlaTimeMatch($this);
+            if(!$slaTime){ // use default SLA
+                $slaTime = $sla->getDefaultSlaTimes();
+            }
+            $sla->setSLADatesforTicket($this, $slaTime);
+        }
+    }
+
+    /**
      * check if there are unread emails resp also to be extended to serviceticketnotes
      */
     public function determineNotificationStatus()
     {
         return 0;
         $unreadEmailCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM emails WHERE parent_id = '{$this->id}' and status = 'unread' AND deleted = 0"));
-        $unreadNoteCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM servicetickets WHERE serviceticket_id = '{$this->id}' and servicenote_status = 'unread' AND deleted = 0"));
+        $unreadNoteCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM serviceticketnotes WHERE serviceticket_id = '{$this->id}' and servicenote_status = 'unread' AND deleted = 0"));
         return $unreadEmailCount['total'] > 0 || $unreadNoteCount['total'] > 0 ? 1 : 0;
     }
 

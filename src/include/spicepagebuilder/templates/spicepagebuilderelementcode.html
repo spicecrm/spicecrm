@@ -9,6 +9,9 @@
                     <system-label label="LBL_HTML_CODE"></system-label>
                 </h2>
             </div>
+            <button (click)="spicePageBuilderService.saveCustomElement(element, 'item')" class="slds-button slds-button--icon slds-m-right--xx-small">
+                <system-utility-icon icon="save" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+            </button>
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
@@ -33,19 +36,7 @@
     <div class="slds-height_full">
         <system-section titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
-                <div class="slds-form-element slds-grid slds-grid--vertical slds-size--1-of-1">
-                    <div class="slds-grid slds-grid--align-spread slds-m-bottom--xx-small">
-                    <span class="slds-form-element__label">
-                        <system-label label="LBL_HTML"></system-label>
-                    </span>
-                        <button [disabled]="!beautifyLoaded" class="slds-button slds-button--icon-border slds-button--neutral" (click)="beautify()" system-title="LBL_BEAUTIFY">
-                            <system-button-icon icon="right_align_text"></system-button-icon>
-                        </button>
-                    </div>
-                    <div class="slds-form-element__control slds-grid slds-grow">
-                        <textarea class="slds-textarea" [(ngModel)]="element.content" style="resize: none;"></textarea>
-                    </div>
-                </div>
+                <system-html-editor [(ngModel)]="element.content" class="slds-size--1-of-1 spice-page-builder-text-editor"></system-html-editor>
             </div>
         </system-section>
     </div>

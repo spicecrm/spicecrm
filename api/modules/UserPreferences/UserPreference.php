@@ -67,41 +67,35 @@ class UserPreference extends SpiceBean
     }
 
     /**
-     * Get preference by name and category. Lazy loads preferences from the database per category
-     *
-     * @param string $name name of the preference to retreive
-     * @param string $category name of the category to retreive, defaults to global scope
-     * @return mixed the value of the preference (string, array, int etc)
+     * get preference for user by name and category
+     * @param string $name
+     * @param string $category
+     * @param $default
+     * @return mixed|null
      */
-    public function getPreference(
-        $name,
-        $category = 'global',
-        $fallBackToSystem = false,
-        $default = null
-    )
+    public function getPreference(string $name, string $category = 'global', $default = null)
     {
-
         $user = $this->_userFocus;
 
-        // if the unique key in session doesn't match the app or prefereces are empty
-        if(!isset($_SESSION[$user->user_name.'_PREFERENCES'][$category]) || (!empty($_SESSION['unique_key']) && $_SESSION['unique_key'] != SpiceConfig::getInstance()->config['unique_key'])) {
+        # if the unique key in session doesn't match the app or preferences are empty
+        if (!isset($_SESSION[$user->user_name . '_PREFERENCES'][$category]) || (!empty($_SESSION['unique_key']) && $_SESSION['unique_key'] != SpiceConfig::getInstance()->config['unique_key'])) {
             $this->loadPreferences($category);
         }
-        if(isset($_SESSION[$user->user_name.'_PREFERENCES'][$category][$name])) {
-            return $_SESSION[$user->user_name.'_PREFERENCES'][$category][$name];
+
+        $value = $_SESSION[$user->user_name . '_PREFERENCES'][$category][$name];
+        $defaultPrefValue = SpiceConfig::getInstance()->config['default_preferences'][$name];
+
+        if (isset($value) && $value !== '') {
+            return $value;
+
+        } else if ($category == 'global' && isset($defaultPrefValue) && $defaultPrefValue !== '') {
+            return $defaultPrefValue;
+
+        } else if (isset($default) && $default !== '') {
+            return $default;
+        } else {
+            return null;
         }
-
-        // no user preference ist set ...
-        // so, if desired ($fallBackToSystem==true), return the default configuration value of the system config
-        if ( $fallBackToSystem and $category == 'global' and isset( SpiceConfig::getInstance()->config['default_preferences'][$name] )) {
-            return SpiceConfig::getInstance()->config['default_preferences'][$name];
-        }
-
-        // no default configuration value is set in the system config ...
-        // so return the default value, if provided
-        if ( !empty( $default )) return $default;
-
-        return null;
     }
 
     /**
@@ -155,13 +149,16 @@ class UserPreference extends SpiceBean
         if ( $category != 'global' )
             return null;
 
+        if ( isset(SpiceConfig::getInstance()->config['default_preferences'][$name]) )
+            return SpiceConfig::getInstance()->config['default_preferences'][$name];
+
         // Next, check to see if it's one of the common problem ones
-        if ( isset(SpiceConfig::getInstance()->config['default_'.$name]) )
-            return SpiceConfig::getInstance()->config['default_'.$name];
-        if ( $name == 'datef' )
-            return SpiceConfig::getInstance()->config['default_date_format'];
-        if ( $name == 'timef' )
-            return SpiceConfig::getInstance()->config['default_time_format'];
+        # if ( isset(SpiceConfig::getInstance()->config['default_'.$name]) )
+        #    return SpiceConfig::getInstance()->config['default_'.$name];
+        # if ( $name == 'datef' )
+        #    return SpiceConfig::getInstance()->config['default_date_format'];
+        # if ( $name == 'timef' )
+        #    return SpiceConfig::getInstance()->config['default_time_format'];
         if ( $name == 'email_link_type' )
             return SpiceConfig::getInstance()->config['email_default_client'];
 
@@ -359,6 +356,7 @@ class UserPreference extends SpiceBean
         $timedate = TimeDate::getInstance();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
+        /** @var User $user */
         $user = $this->_userFocus;
 
         $prefDate = [];
@@ -366,14 +364,14 @@ class UserPreference extends SpiceBean
         if(!empty($user) && $this->loadPreferences('global')) {
             // forced to set this to a variable to compare b/c empty() wasn't working
             $timeZone = TimeDate::userTimezone($user);
-            $timeFormat = $user->getPreference("timef");
-            $dateFormat = $user->getPreference("datef");
+            $timeFormat = $user->getPreference("timef", 'global', true );
+            $dateFormat = $user->getPreference("datef", 'global', true );
 
             // cn: bug xxxx cron.php fails because of missing preference when admin hasn't logged in yet
-            $timeZone = empty($timeZone) ? 'America/Los_Angeles' : $timeZone;
+            $timeZone = empty($timeZone) ? 'UTC' : $timeZone;
 
-            if(empty($timeFormat)) $timeFormat = SpiceConfig::getInstance()->config['default_time_format'];
-            if(empty($dateFormat)) $dateFormat = SpiceConfig::getInstance()->config['default_date_format'];
+            # if(empty($timeFormat)) $timeFormat = SpiceConfig::getInstance()->config['default_time_format'];
+            # if(empty($dateFormat)) $dateFormat = SpiceConfig::getInstance()->config['default_date_format'];
 
             $prefDate['date'] = $dateFormat;
             $prefDate['time'] = $timeFormat;

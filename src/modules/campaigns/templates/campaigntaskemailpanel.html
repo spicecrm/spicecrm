@@ -23,7 +23,7 @@
                     </button>
                 </div>
             </div>
-            <field-container field="email_body" [fieldconfig]="{fieldtype: 'html', asiframe:true, 'simplemode': true, height: '250px'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
+            <field-container field="email_body" [fieldconfig]="{fieldtype: 'html', asiframe:true, 'simplemode': false, height: '250px'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
         </div>
         <div [class.slds-hide]="activeTab != 'preview'" class="slds-height_full">
             <iframe *ngIf="sanitizedHTML" class="slds-size--1-of-1" style="height: 400px; border: 0; resize: vertical;" [srcdoc]="sanitizedHTML" sandbox></iframe>

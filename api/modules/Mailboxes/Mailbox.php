@@ -77,7 +77,7 @@ class Mailbox extends SpiceBean {
      */
     public function initTransportHandler(): bool {
 
-        $className = "\\SpiceCRM\\\custom\\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler";
+        $className = "\\SpiceCRM\\custom\\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler";
 
         if (!class_exists($className)) {
             $className = "\\SpiceCRM\\extensions\\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler";

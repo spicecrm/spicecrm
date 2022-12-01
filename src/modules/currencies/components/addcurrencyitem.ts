@@ -49,7 +49,7 @@ export class AddCurrencyItem {
             symbol: this.symbol,
             conversion_rate: this.conversion_rate,
         };
-        console.log(body)
+
         if (this.isMoreZero(this.conversion_rate)) {
             this.backend.postRequest('module/Currencies/add', {}, body).subscribe(res => {
                 if (!res.status) {

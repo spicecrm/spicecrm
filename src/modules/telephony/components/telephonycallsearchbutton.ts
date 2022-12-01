@@ -1,10 +1,15 @@
 /**
  * @module ModuleTelephony
  */
-import {Component, EventEmitter, Input, Output, Injector} from '@angular/core';
+import {Component, ComponentRef, EventEmitter, Injector, Input, Output} from '@angular/core';
 
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
+import {TelephonyCallFoundBeansModal} from "./telephonycallfoundbeansmodal";
+import {TelephonyCallModelUpdate} from "./telephonycallmodelupdate";
+import {metadata} from "../../../services/metadata.service";
+
+declare var _;
 
 /**
  * renders a button in the the call panel to search for a new contact
@@ -12,7 +17,7 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'telephony-call-panel-search-button',
     templateUrl: '../templates/telephonycallsearchbutton.html',
-    providers:[model]
+    providers: [model]
 })
 export class TelephonyCallSearchButton {
 
@@ -28,7 +33,7 @@ export class TelephonyCallSearchButton {
      */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public model: model, public modal: modal, public injector: Injector) {
+    constructor(public model: model, public modal: modal, public injector: Injector, private metadata: metadata) {
 
     }
 
@@ -37,14 +42,14 @@ export class TelephonyCallSearchButton {
      */
     public execute() {
         this.modal.openModal('TelephonyCallSearchModal').subscribe(
-            componentref => {
-                componentref.instance.selected.subscribe(selectedModel => {
-                    this.updateRelated(selectedModel);
+            (modalRef: ComponentRef<TelephonyCallFoundBeansModal>) => {
+                modalRef.instance.selected.subscribe({
+                    next: selectedModel => this.updateRelated(selectedModel)
                 });
             }
         );
-
     }
+
 
     public updateRelated(model) {
         this.calldata.relatedid = model.id;
@@ -55,11 +60,19 @@ export class TelephonyCallSearchButton {
         this.model.module = model.module;
         this.model.getData(true).subscribe(data => {
             this.calldata.relateddata = model.data;
-            if(this.model.checkAccess('edit')) {
-                this.modal.openModal('TelephonyCallModelUpdate', true, this.injector).subscribe(modalRef => {
+
+            const phoneFields = _.toArray(this.metadata.getModuleFields(this.calldata.relatedmodule))
+                .filter(f => f.type == 'phone' && f.phonesearch);
+
+            if (this.model.checkAccess('edit') && phoneFields.length > 0) {
+                this.modal.openModal('TelephonyCallModelUpdate', true, this.injector).subscribe((modalRef: ComponentRef<TelephonyCallModelUpdate>) => {
                     modalRef.instance.calldata = this.calldata;
-                    modalRef.instance.updated.subscribe(updated => {
-                        this.actionemitter.emit(true);
+                    modalRef.instance.phoneFields = phoneFields;
+                    modalRef.instance.updated.subscribe({
+                        next: () => {
+                            this.actionemitter.next(true);
+                            this.actionemitter.complete();
+                        }
                     });
                 });
             }

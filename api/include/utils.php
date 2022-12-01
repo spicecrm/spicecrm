@@ -1,6 +1,6 @@
 <?php
 
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;

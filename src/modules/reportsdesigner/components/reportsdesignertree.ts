@@ -19,6 +19,7 @@ export class ReportsDesignerTree {
     public filterKey: string = '';
     public isLoadingModuleFields: boolean = false;
     public reportModuleFields: any = {};
+    public auditFields: any[] = [];
 
     /**
     * @output onUnionDelete: EventEmitter<string> = unionId
@@ -37,6 +38,7 @@ export class ReportsDesignerTree {
                 public cdr: ChangeDetectorRef,
                 public injector: Injector,
                 public reportsDesignerService: ReportsDesignerService) {
+        this.getAuditFields();
     }
 
     /**
@@ -70,14 +72,54 @@ export class ReportsDesignerTree {
     }
 
     /**
-    * @param data: object
-    * @param rootModule: string
+     * @param data: object
+     * @param rootModule: string
      * @set currentPath
      * @getModuleFields
      */
     public onItemSelection(data, rootModule) {
+
         this.reportsDesignerService.setCurrentPath(rootModule, data.path);
-        this.getModuleFields(data.module, rootModule);
+
+        if (data.relationshipNode) {
+            this.getRelationshipFields(data.parentModule, data.link);
+
+        } else if (data.auditNode) {
+            this.reportModuleFields[rootModule] = this.auditFields;
+        } else {
+            this.getModuleFields(data.module, rootModule);
+        }
+    }
+
+    /**
+     * get audit fields
+     * @private
+     */
+    private getAuditFields() {
+        this.auditFields = [];
+        this.isLoadingModuleFields = true;
+
+        this.backend.getRequest(`dictionary/browser/auditFields`).subscribe(items => {
+            this.auditFields = items;
+            this.isLoadingModuleFields = false;
+        });
+    }
+
+    /**
+     * get relationship fields
+     * @param module
+     * @param link
+     * @private
+     */
+    private getRelationshipFields(module: string, link: string) {
+        this.reportModuleFields[module] = [];
+        this.isLoadingModuleFields = true;
+        this.cdr.detectChanges();
+
+        this.backend.getRequest(`dictionary/browser/relationshipFields/${module}/${link}`).subscribe(items => {
+            this.reportModuleFields[module] = items.filter(item => item.type != 'relate' && item.source != 'non-db');
+            this.isLoadingModuleFields = false;
+        });
     }
 
     /**

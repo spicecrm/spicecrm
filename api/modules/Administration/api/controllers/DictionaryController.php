@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarCache\SugarCache;
@@ -53,6 +54,7 @@ class DictionaryController
         $db->query("DELETE FROM syscustomdomainfieldvalidationvalues WHERE package = 'legacy'");
         $db->query("DELETE FROM syscustomdomainfields WHERE package = 'legacy'");
         $db->query("DELETE FROM syscustomdomaindefinitions WHERE package = 'legacy'");
+        $db->query("DELETE FROM syscustomdictionaryitems WHERE package = 'legacy'");
 
         // make sure default language is on top
         // default language shall contain all dom definitions
@@ -70,6 +72,9 @@ class DictionaryController
         }
         ksort($rLanguages, SORT_NUMERIC );
         $languages = $rLanguages;
+
+        // initialize label array needed for creating translations
+        $labelArr = [];
 
         // loop through languages
         foreach ($languages as $language) {
@@ -111,13 +116,32 @@ class DictionaryController
                     $domainFieldId = SpiceUtils::createGuid();
                     $query = "INSERT INTO syscustomdomainfields (id, name, dbtype, fieldtype, len, sysdomaindefinition_id, sysdomainfieldvalidation_id, sequence, defaultvalue, package, status, deleted) VALUES ('$domainFieldId', '{sysdictionaryitems.name}' ,'$dictFieldDbType', '$dictFieldType', $dictFieldLen , '$domainId', '$valId', 1, ".$dictFieldDefaultValue.", 'legacy', 'a', '0')";
                     $db->query($query);
+
+                    // create custom dictionary item
+                    if(is_array($dictField[0])){
+                        $required = 0;
+                        if(isset($dictField[0]['required'])){
+                            $required = $dictField[0]['required'];
+                            if($required) $required = 1;
+                            else $required = 0;
+                        }
+                        $dictItemId = SpiceUtils::createGuid();
+                        $query = "INSERT INTO syscustomdictionaryitems (id, name, sysdictionarydefinition_id, sysdomaindefinition_id, label, required, description, package, status, deleted) 
+VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionarydefinition_id']}' , '$domainId', '{$dictField[0]['vname']}', $required, '".$db->quote($dictField[0]['comment'])."', 'legacy', 'a', 0)";
+                        $db->query($query);
+                    }
                 }
 
                 // handle dom values
                 $counter = 0;
                 foreach ($values as $valKey => $valDisplay) {
 
-                    $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+                    if($language['is_default']) {
+                        $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+
+                        // create label for a specific dom $name and value key
+                        $labelArr[$name][$valKey] = $label;
+                    }
 
                     $valItemId = SpiceUtils::createGuid();
                     $valueType = (gettype($valKey) == 'integer' ? 'integer' : 'string');
@@ -127,6 +151,14 @@ class DictionaryController
 //                    if (isset($sysLanguageLabels[$label]) || empty($valDisplay)) continue;
 
                     // a custom label might have been created during this process. Check if exists.
+                    $label = $labelArr[$name][$valKey];
+
+                    // if dom key label does not exist create a label for it -- avoid parse error for creating translation
+                    if(empty($label)) {
+                        $label = ($valDisplay === '') ? 'LBL_BLANK' : strtoupper('DOMLBL_' . preg_replace("/[^A-Za-z0-9]/", '', trim($valDisplay)));
+                        $labelArr[$name][$valKey] = $label;
+                    }
+
                     $existingLabel = LanguageManager::checkLabelExists($label);
                     if(!$existingLabel) {
                         $labelId = SpiceUtils::createGuid();
@@ -180,13 +212,18 @@ class DictionaryController
                 if ($field_defs['type'] == 'link') {
                     if($nodeModule->load_relationship($field_name)) {
                         //BUGFIX 2010/07/13 to display alternative module name if vname is not maintained
-                        $returnArray[] = [
-                            'path' => 'link:' . $module . ':' . $field_name,
+                        $entry = [
+                            'path' => "link:$module:$field_name",
                             'module' => $nodeModule->$field_name->getRelatedModuleName(),
+                            'parentModule' => $module,
                             'bean' => $nodeModule->$field_name->focus->_objectname,
                             'leaf' => false,
-                            'label' => $field_defs['vname']
+                            'label' => $field_defs['vname'],
+                            'link' => $field_name,
+                            'hasRelationshipFields' => $nodeModule->$field_name->relationship->type == 'many-to-many'
                         ];
+
+                        $returnArray[] = $entry;
                     }
                 }
             }
@@ -246,9 +283,45 @@ class DictionaryController
      * @return mixed
      * @throws Exception
      */
-    public function getModuleRelationships(Request $req, Response $res, array $args): Response {
-        $relationships = SpiceDictionaryVardefs::loadRelationships($args['module']);
-        return $res->withJson($this->buildFieldArray($args['module']));
+    public function getModuleRelationshipFields(Request $req, Response $res, array $args): Response
+    {
+        // root:Contacts::link:Contacts:opportunities::relationship:Contacts:opportunities::field:contact_role
+        $bean = BeanFactory::newBean($args['module']);
+
+        if (!$bean->load_relationship($args['link'])) {
+            return $res->withJson([]);
+        }
+
+        $fields = array_values(
+            array_map(function ($field) {
+                $field['id'] = "field:{$field['name']}";
+                return $field;
+            }, $bean->{$args['link']}->relationship->def['fields'])
+        );
+
+        return $res->withJson(array_values($fields));
+    }
+
+    /**
+     * get module relationship definitions
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return mixed
+     * @throws Exception
+     */
+    public function getAuditFields(Request $req, Response $res, array $args): Response
+    {
+        $fields = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+
+        $fields = array_values(
+            array_map(function ($field) {
+                $field['id'] = "field:{$field['name']}";
+                return $field;
+            }, $fields)
+        );
+
+        return $res->withJson(array_values($fields));
     }
 
     private function buildFieldArray($module)
@@ -287,9 +360,53 @@ class DictionaryController
      * legacy & cache table
      */
     public function repairCacheDb(Request $req, Response $res, array $args): Response {
-
-        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries();
+        $body = $req->getParsedBody();
+        $returnArray = SpiceDictionaryVardefs::getInstance()->repairDictionaries(isset($body['dictionaries']) ? $body['dictionaries'] : []);
 
         return $res->withJson($returnArray);
     }
+
+    /**
+     * run a silent repair/rebuild, reoair cache, repair relationships for a dictionary list
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function repairDictionary(Request $req, Response $res, array $args): Response {
+        $dictionaryNames = $req->getParsedBody()['dictionaries'];
+        $success = true;
+        $msg = '';
+        $sql = AdminController::buildSQLQueries($dictionaryNames);
+        if(!empty($sql) && !DBManagerFactory::getInstance()->query($sql)){
+            $success = false;
+            $msg = DBManagerFactory::getInstance()->lastDbError();
+        }
+        //@todo: update relationship cache
+        return $res->withJson(['success' => $success, 'msg' => $msg]);
+    }
+
+
+    /**
+     * returns a list of link names for which no module property is defined
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+//    public function checkLinks(Request $req, Response $res, array $args): Response {
+//        // load Vardefs
+//        $repair=[];
+//        $vardefs = SpiceDictionaryVardefs::loadVardefs();
+//        foreach($vardefs as $dictName => $dict){
+//            foreach($dict['fields'] as $field){
+//                if($field['type'] == 'link' && !key_exists('module', $field)){
+//                    $repair[$dictName][] = $field['name'];
+//                }
+//            }
+//        }
+//        return $res->withJson($repair);
+//    }
+
 }

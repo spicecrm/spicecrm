@@ -28,11 +28,11 @@ $vardefs = [
             'len' => 50,
             'vname' => 'LBL_NAME_2',
         ],
-        strtolower($object_name) . '_type' => [
-            'name' => strtolower($object_name) . '_type',
+        'account_type' => [
+            'name' => 'account_type',
             'vname' => 'LBL_TYPE',
             'type' => 'enum',
-            'options' => strtolower($object_name) . '_type_dom',
+            'options' => 'account_type_dom',
             'len' => 50,
             'comment' => 'The Company is of this type',
         ],
@@ -67,6 +67,12 @@ $vardefs = [
             'name' => 'is_inactive',
             'vname' => 'LBL_IS_INACTIVE',
             'type' => 'bool'
+        ],
+        'billing_address' => [
+            'name' => 'billing_address',
+            'vname' => 'LBL_BILLING_ADDRESS',
+            'type' => 'bool',
+            'source' => 'non-db'
         ],
         'billing_address_street' => [
             'name' => 'billing_address_street',
@@ -248,6 +254,12 @@ $vardefs = [
             'len' => 10,
             'comment' => 'The stock trading (ticker) symbol for the company',
             'merge_filter' => 'enabled',
+        ],
+        'shipping_address' => [
+            'name' => 'shipping_address',
+            'vname' => 'LBL_SHIPPING_ADDRESS',
+            'type' => 'bool',
+            'source' => 'non-db'
         ],
         'shipping_address_street' => [
             'name' => 'shipping_address_street',

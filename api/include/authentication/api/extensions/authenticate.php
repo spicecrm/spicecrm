@@ -1,13 +1,11 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
 use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 
 $RESTManager = RESTManager::getInstance();
 
@@ -90,16 +88,6 @@ $routes = [
         ],
     ],
     [
-        'method' => 'get',
-        'oldroute' => '/acl',
-        'route' => '/authentication/acl',
-        'class' => AuthenticateController::class,
-        'function' => 'authGetModuleACL',
-        'description' => 'GET ACL for each Module',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
-        'params' => []
-    ],
-    [
         'method' => 'post',
         'route' => '/module/Users/{id}/password/reset',
         'class' => AuthenticateController::class,
@@ -155,7 +143,15 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'checkTOTPActive',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => false]
+        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'onBehalfUserId' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -163,7 +159,15 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'deleteTOTPActive',
         'description' => '',
-        'options' => ['noAuth' => false, 'adminOnly' => false]
+        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'parameters' => [
+            'onBehalfUserId' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -171,7 +175,15 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'generateTOTPSecret',
         'description' => '',
-        'options' => ['noAuth' => true, 'adminOnly' => false]
+        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'parameters' => [
+            'onBehalfUserId' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false
+            ]
+        ]
     ],
     [
         'method' => 'put',
@@ -187,6 +199,12 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => true,
                 'example' => 'iie94894hjf'
+            ],
+            'onBehalfUserId' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => false
             ]
         ]
     ]
@@ -198,7 +216,7 @@ $RESTManager->registerExtension('userpassword', '2.0', [
     'onenumber' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onenumber'],
     'onespecial' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onespecial'],
     'minpwdlength' => SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'],
-    'regex' => '^' . UserAuthenticate::getPwdCheckRegex() . '$'
+    'regex' => '^' . SpiceCRMPasswordUtils::getPwdCheckRegex() . '$'
 ],
     $routes
 );

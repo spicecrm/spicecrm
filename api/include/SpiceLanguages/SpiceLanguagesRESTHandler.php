@@ -2,6 +2,7 @@
 namespace SpiceCRM\includes\SpiceLanguages;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -18,13 +19,13 @@ class SpiceLanguagesRESTHandler
         $this->db = $db;
     }
 
+    /**
+     * @throws ForbiddenException
+     * @throws \Exception
+     */
     public function saveLabels(array $labels)
     {
         $this->checkAdmin();
-
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
         foreach ($labels as $label) {
             switch ($label['scope']) {
@@ -40,19 +41,8 @@ class SpiceLanguagesRESTHandler
 
             unset($data['scope'], $data['global_translations'], $data['custom_translations']);
 
-            //check insert/update
-            $row = $this->db->fetchByAssoc($this->db->query("SELECT * FROM $table WHERE id='{$label['id']}'"));
-            if ($row['id']) {
-                $id = $this->db->updateQuery($table, ['id' => $label['id']], $data);
-            } else {
-                $id = $this->db->insertQuery($table, $data);
-            }
-            // $id = $this->db->upsertQuery($table, ['id' => $label['id']], $data);
+            SystemDeploymentCR::writeDBEntry($table, $label['id'], $data, $data['name']);
 
-            // add to the CR
-            if ($cr) {
-                $cr->addDBEntry($table, $label['id'], 'U', $data['name']);
-            }
             // TRANSLATIONs
             foreach (['global', 'custom'] as $scope) {
                 if ($label[$scope . '_translations']) {
@@ -68,20 +58,7 @@ class SpiceLanguagesRESTHandler
                         }
                         $data = $trans;
 
-                        //check insert/update
-                        $row = $this->db->fetchByAssoc($this->db->query("SELECT * FROM $table WHERE id='{$trans['id']}'"));
-                        if (!empty($row['id'])) {
-                            $id = $this->db->updateQuery($table, ['id' => $trans['id']], $data);
-                        } else {
-                            $id = $this->db->insertQuery($table, $data);
-                        }
-
-                        // $id = $this->db->upsertQuery($table, ['id' => $trans['id']], $data);
-
-                        // add to the CR
-                        if ($cr) {
-                            $cr->addDBEntry($table, $trans['id'], 'U', $data['translation_default']);
-                        }
+                        SystemDeploymentCR::writeDBEntry($table, $trans['id'], $data, $data['translation_default']);
                     }
                 }
             }

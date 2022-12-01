@@ -11,6 +11,7 @@ abstract class PdfHandler
     protected $options = [];
     protected $content = '';
     protected $template;
+    public $htmlOfPdfCreation;
 
     public function __construct(OutputTemplate $template)
     {
@@ -46,7 +47,7 @@ abstract class PdfHandler
     public static function getTemplateOptions(OutputTemplate $template)
     {
         $arr = [];
-        foreach($template->PDF_FIELD_OPTIONS as $option)
+        foreach($template::$PDF_OPTION_FIELDS as $option)
         {
             $arr[$option] = $template->$option;
         }
