@@ -18,7 +18,8 @@ export interface stepObject {
 }
 
 @Injectable()
-export class spiceinstaller {
+export class spiceinstaller
+{
     /**
      * an array of all the installer steps as objects
      */
@@ -36,6 +37,11 @@ export class spiceinstaller {
     public systemloginsidebar: number = 0;
     public systemallowforgotpass: number = 0;
     public frontendUrl: string = window.location.href.split('#')[0];
+
+    /**
+     * repeated password variable holder
+     */
+    public rpPassword = '';
 
     /**
      * systemcheck
