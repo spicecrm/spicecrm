@@ -1,5 +1,8 @@
 <div class="slds-form-element">
-    <div class="slds-form-element__control">
-        <input type="text" [autocomplete]="autocompletebreaker" [maxlength]="maxlength" [system-placeholder]="placeholder" [disabled]="disabled" class="slds-input" [(ngModel)]="value" (blur)="emitBlur()"/>
+    <div class="slds-form-element__control" [ngClass]="{'slds-input-has-icon':showClearButton(),'slds-input-has-icon_right':showClearButton()}">
+        <input type="text" [system-trim-input]="trimInput" [autocomplete]="autocompletebreaker" [maxlength]="maxlength" [system-placeholder]="placeholder" [disabled]="disabled" class="slds-input" [(ngModel)]="value" (blur)="emitBlur()" [id]="id"/>
+        <button *ngIf="showClearButton()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="value=''">
+            <system-button-icon icon="clear"></system-button-icon>
+        </button>
     </div>
 </div>

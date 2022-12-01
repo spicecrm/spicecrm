@@ -195,7 +195,7 @@ class Compiler
                             // $response .= $this->processBlocks($this->getBlocks($contentString), array_merge($beans, [$forArray[1] => $linkedBean]), $lang);
                         }
                         break;
-                    # sub template
+                        # sub template
                     } else if( $node->getAttribute('data-spicetemplate')) {
                         $templateId = $node->getAttribute('data-spicetemplate');
                         if ( !in_array( $templateId, $this->idsOfParentTemplates )) { # prevents recursion (sub template is the same as template)
@@ -498,7 +498,7 @@ class Compiler
                 $obj = (object)$this->additionalValues;
                 break;
             case 'func':
-                $obj = new SystemTemplateFunctions();
+                $obj = new SystemTemplateFunctions( $beans[$object], $this->currentTemplate );
                 break;
             case 'template':
                 $obj = BeanFactory::getBean($this->currentTemplate->_module, $this->currentTemplate->id);
@@ -555,15 +555,15 @@ class Compiler
 
     function handleSubstitution( $string, $beans, $raw = false ) {
         $items = preg_split('#\|#', $string );
-        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw );
+        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw , $bean);
         for ( $i = 1; $i < count( $items ); $i++ ) {
-            if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans )) === false ) break;
+            if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans, $bean )) === false ) break;
             $currentValue = $temp;
         }
         return $currentValue;
     }
 
-    function getValueForCompileblock($m, $beans, $raw = false ) {
+    function getValueForCompileblock($m, $beans, $raw = false , &$bean = null) {
 
         preg_match('#^([^:]+)(:(.*))?$#s', $m, $matches );
 
@@ -586,101 +586,102 @@ class Compiler
          *          publisher = link -> load publisher ->
          *              name = attribute -> return value;
          */
-        $loopThroughParts = function ($obj, $level = 0, $raw = false) use (&$parts, &$loopThroughParts) {
+        $loopThroughParts = function ($obj, $level = 0, $raw = false, &$bean) use (&$parts, &$loopThroughParts) {
 //            global $app_list_strings;
             $part = $parts[$level];
             if (is_callable([$obj, $part])) {
                 $value = $obj->{$part}(30);
-        } else {
-            $field = $obj->field_defs[$part];
-            switch ($field['type']) {
-                case 'link':
-                    $next_bean = $obj->get_linked_beans($field['name'], $field['bean_name'])[0];
-                    if ($next_bean) {
-                        $level++;
-                        return $loopThroughParts($next_bean, $level);
-                    } else {
-                        $value = '';
-                    }
-                    break;
-                case 'enum':
-                    $value = $raw ? $obj->{$part} : $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
-                    break;
-                case 'multienum':
-                    $values = explode(',', $obj->{$part});
-                    foreach ($values as &$value) {
-                        $value = trim($value, '^');
-                        $value = $this->app_list_strings[$obj->field_defs[$part]['options']][$value];
-                    }
-                    $value = implode(', ', $values);
-                    // unencodeMultienum can't be used because of a different language...
-                    //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
-                    break;
-                case 'date':
-                    if(!empty($obj->{$part})){
-                        //set to user preferences format
-                        $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
-                        $gmtTimezone = new DateTimeZone('GMT');
-                        $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
-                        $offset = $userTimezone->getOffset($myDateTime);
-                        $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
-                        $myDateTime->add($myInterval);
-                        $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef"));
-                    } else {
-                        $value = '';
-                    }
-                    break;
-                case 'datetime':
-                case 'datetimecombo':
-                    if(!empty($obj->{$part})){
-                        //set to user preferences format
-                        $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
-                        $gmtTimezone = new DateTimeZone('GMT');
-                        $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
-                        $offset = $userTimezone->getOffset($myDateTime);
-                        $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
-                        $myDateTime->add($myInterval);
-                        $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
-                    } else {
-                        $value = '';
-                    }
-                    break;
-                case 'time':
-                    if(!empty($obj->{$part})){
-                        //set to user preferences format
-                        $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
-                        $gmtTimezone = new DateTimeZone('GMT');
-                        $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
-                        $offset = $userTimezone->getOffset($myDateTime);
-                        $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
-                        $myDateTime->add($myInterval);
-                        $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
-                    } else {
-                        $value = '';
-                    }
-                    break;
-                case 'currency':
-                    // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
-                    $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
-                    break;
-                case 'html':
-                    $value = html_entity_decode($obj->{$part});
-                    break;
-                case 'image':
-                    if ( !empty( $obj->{$part} )) {
-                        $value = '<img src="data:'.$obj->{$part}.'" style="max-width:100%;max-height:100%;margin:0">';
-                    }
-                    break;
-                default:
-                    // moved nl2br to only be added when non specific fields are parsed
-                    $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
-                    break;
+            } else {
+                $field = $obj->field_defs[$part];
+                switch ($field['type']) {
+                    case 'link':
+                        $next_bean = $obj->get_linked_beans($field['name'], $field['bean_name'])[0];
+                        if ($next_bean) {
+                            $level++;
+                            return $loopThroughParts($next_bean, $level, false, $bean);
+                        } else {
+                            $value = '';
+                        }
+                        break;
+                    case 'enum':
+                        $value = $raw ? $obj->{$part} : $this->app_list_strings[$obj->field_defs[$part]['options']][$obj->{$part}];
+                        break;
+                    case 'multienum':
+                        $values = explode(',', $obj->{$part});
+                        foreach ($values as &$value) {
+                            $value = trim($value, '^');
+                            $value = $this->app_list_strings[$obj->field_defs[$part]['options']][$value];
+                        }
+                        $value = implode(', ', $values);
+                        // unencodeMultienum can't be used because of a different language...
+                        //$value = implode(', ', SpiceUtils::unencodeMultienum($obj->{$parts[$level]}));
+                        break;
+                    case 'date':
+                        if(!empty($obj->{$part})){
+                            //set to user preferences format
+                            $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
+                            $gmtTimezone = new DateTimeZone('GMT');
+                            $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
+                            $offset = $userTimezone->getOffset($myDateTime);
+                            $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
+                            $myDateTime->add($myInterval);
+                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef"));
+                        } else {
+                            $value = '';
+                        }
+                        break;
+                    case 'datetime':
+                    case 'datetimecombo':
+                        if(!empty($obj->{$part})){
+                            //set to user preferences format
+                            $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
+                            $gmtTimezone = new DateTimeZone('GMT');
+                            $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
+                            $offset = $userTimezone->getOffset($myDateTime);
+                            $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
+                            $myDateTime->add($myInterval);
+                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
+                        } else {
+                            $value = '';
+                        }
+                        break;
+                    case 'time':
+                        if(!empty($obj->{$part})){
+                            //set to user preferences format
+                            $userTimezone = new DateTimeZone(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timezone"));
+                            $gmtTimezone = new DateTimeZone('GMT');
+                            $myDateTime = new DateTime($obj->{$part}, $gmtTimezone);
+                            $offset = $userTimezone->getOffset($myDateTime);
+                            $myInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
+                            $myDateTime->add($myInterval);
+                            $value = $myDateTime->format(AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"));
+                        } else {
+                            $value = '';
+                        }
+                        break;
+                    case 'currency':
+                        // $currency = \SpiceCRM\data\BeanFactory::getBean('Currencies');
+                        $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
+                        break;
+                    case 'html':
+                        $value = html_entity_decode($obj->{$part});
+                        break;
+                    case 'image':
+                        if ( !empty( $obj->{$part} )) {
+                            $value = '<img src="data:'.$obj->{$part}.'" style="max-width:100%;max-height:100%;margin:0">';
+                        }
+                        break;
+                    default:
+                        // moved nl2br to only be added when non specific fields are parsed
+                        $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
+                        break;
                 }
             }
+            $bean = $obj;
             return $value;
         };
 
-        $value = $loopThroughParts( $obj, 1, $raw);
+        $value = $loopThroughParts( $obj, 1, $raw, $bean);
 
         return $value;
     }
@@ -691,10 +692,10 @@ class Compiler
             if ( $v['type'] === 'term' ) $params[] = $this->getValue( $v['value'], $beans );
             else $params[] = $v['value'];
         }
-        return $this->executeFunction( true, $function, null, $params );
+        return $this->executeFunction( true, $function, null, $params, $beans );
     }
 
-    function doPipeItem( $value, $pipeText, $beans ) {
+    function doPipeItem( $value, $pipeText, $beans, $bean = null ) {
         $pipeParts = self::parseParams( $pipeText );
         $pipeFunction = $pipeParts[0]['value'];
         $pipeParts = array_slice( $pipeParts, 1 );
@@ -703,7 +704,7 @@ class Compiler
             if ( $v['type'] === 'term' ) $partValues[] = $this->getValue( $v['value'], $beans );
             else $partValues[] = $v['value'];
         }
-        return $this->executeFunction( false, $pipeFunction, $value, $partValues );
+        return $this->executeFunction( false, $pipeFunction, $value, $partValues, $beans, $bean );
     }
 
     /**
@@ -727,7 +728,17 @@ class Compiler
         return $result;
     }
 
-    private function executeFunction( $noPipe, $name, $value, $pipeParams = [] ) {
+    /**
+     * @param $noPipe
+     * @param $name
+     * @param $value
+     * @param array $pipeParams
+     * @param $beans holds all beans on the top level that are currently available
+     * @param $bean holds the current bean in focus where we are putting the pipe conversion on
+     * @return mixed
+     * @throws BadRequestException
+     */
+    private function executeFunction( $noPipe, $name, $value, $pipeParams = [], $beans, $bean = null ) {
 
         $this->loadTemplateFunctions();
 
@@ -738,13 +749,13 @@ class Compiler
         $functionDef = ( $noPipe ? $this->noPipeFunctions[$name] : $this->pipeFunctions[$name] );
 
         if ( strpos( $functionDef['method'], '::') !== false ) {
-            if ( $noPipe ) return $functionDef['method']( ...$pipeParams );
-            else return $functionDef['method']( $value, ...$pipeParams );
+            if ( $noPipe ) return $functionDef['method']($this, $bean, ...$pipeParams );
+            else return $functionDef['method']($this, $bean, $value, ...$pipeParams ) ;
         } else if ( strpos( $functionDef['method'], '->') !== false ) {
             $funcArray = explode('->', $functionDef['method'] );
             $obj = new $funcArray[0]();
-            if ( $noPipe ) return $obj->{$funcArray[1]}( ...$pipeParams );
-            else return $obj->{$funcArray[1]}( $value, ...$pipeParams );
+            if ( $noPipe ) return $obj->{$funcArray[1]}($this, $bean, ...$pipeParams );
+            else return $obj->{$funcArray[1]}($this, $bean, $value, ...$pipeParams );
         } else {
             return $value;
         }

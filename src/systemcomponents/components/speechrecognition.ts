@@ -47,18 +47,18 @@ export class SpeechRecognition implements OnInit {
     public ngOnInit() {
 
 
-        if (!window.webkitSpeechRecognition) {
-            this.toast.sendToast('Sorry, speech recognition is possible only with Google Chrome.', 'error');
+        if ( !window.SpeechRecognition && !window.webkitSpeechRecognition ) {
+            this.toast.sendToast('Sorry, speech recognition is not possible with your web browser.', 'error');
             this.self.destroy();
         }
 
         if (this.language.currentlanguage === 'de_DE') this.selectedLanguage = 0;
         else this.selectedLanguage = 1;
 
-        this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+        this.recognition = new ( window.SpeechRecognition || window.webkitSpeechRecognition )();
 
         this.recognition.continuous = true;
-        this.recognition.lang = this.languages[this.selectedLanguage].id;
+        this.recognition.lang = this.languages[this.selectedLanguage].id.replace('_', '-');
         this.recognition.interimResults = true;
         this.recognition.maxAlternatives = 1;
 
@@ -100,7 +100,7 @@ export class SpeechRecognition implements OnInit {
 
                 case 'network':
                     this.errorOccurred = true;
-                    this.sendErrorToast(this.language.getLabel('MSG_NO_NETWORK'));
+                    this.sendErrorToast(this.language.getLabel('MSG_NO_NETWORK'),'warning');
                     break;
 
                 case 'no-speech':
@@ -228,7 +228,7 @@ export class SpeechRecognition implements OnInit {
         return string.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
     }
 
-    public sendErrorToast(message: string) {
-        this.toast.sendToast(this.language.getLabel('ERR_SPEECH_RECOGNITION') + ': ' + message + '.', 'error', '', false);
+    public sendErrorToast(message: string, type: 'error'|'warning' = 'error') {
+        this.toast.sendToast(this.language.getLabel('ERR_SPEECH_RECOGNITION') + ': ' + message + '.', type, '', type !== 'error' );
     }
 }

@@ -1,12 +1,14 @@
 <div [system-overlay-loading-spinner]="loading">
-    <h2 class="slds-p-around--small slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
+
+    <h2 class="slds-text-heading--medium slds-m-bottom_medium slds-m-horizontal_medium">
         System Requirements
     </h2>
+
     <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
         <thead>
             <tr>
-                <th>status</th>
-                <th>extension</th>
+                <th>Status</th>
+                <th>Extension</th>
             </tr>
         </thead>
         <tbody>
@@ -14,10 +16,14 @@
                 <td><div class="slds-truncate"><system-utility-icon [size]="'x-small'" [icon]="requirement.value ? 'check' : 'error'"></system-utility-icon></div></td>
                 <td><div class="slds-truncate"> {{spiceinstaller.keyToLabel(requirement.key)}}</div></td>
             </tr>
-        </tbody></table>
-    <div class="slds-p-around--small slds-text-align--right">
+        </tbody>
+    </table>
+
+    <div class="slds-text-align--right slds-m-top--medium slds-m-horizontal--medium">
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
         <button class="slds-button slds-m-right--xx-small slds-button--neutral" (click)="checkSystem()">recheck</button>
-        <button [disabled]="checkFailed" class="slds-button slds-button--brand" (click)="spiceinstaller.next(spiceinstaller.steps[1])">next</button>
+        <button [disabled]="checkFailed" class="slds-button slds-button--brand" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next })">next</button>
     </div>
+
 </div>
 

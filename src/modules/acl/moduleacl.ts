@@ -34,6 +34,7 @@ import {ACLProfilesManagerAddProfileModal} from "./components/aclprofilesmanager
 import {ACLUserProfiles} from "./components/acluserprofiles";
 
 import {fieldACLAdditionalUsers} from "./components/fieldacladditionalusers";
+import { ACLUsersFilterPipe } from './pipes/aclusersfilter.pipe';
 
 @NgModule({
     imports: [
@@ -66,7 +67,8 @@ import {fieldACLAdditionalUsers} from "./components/fieldacladditionalusers";
         ACLProfilesManagerAddProfileModal,
         ACLProfilesManagerAddObjectModal,
         ACLUserProfiles,
-        fieldACLAdditionalUsers
+        fieldACLAdditionalUsers,
+        ACLUsersFilterPipe
     ]
 })
 export class ModuleACL {}

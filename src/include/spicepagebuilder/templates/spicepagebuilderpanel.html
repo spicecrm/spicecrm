@@ -1,5 +1,5 @@
-<div class="slds-grid slds-grid--vertical slds-height_full slds-p-around--x-small slds-scrollable--y">
-    <div style="height: 50%">
+<div [system-overlay-loading-spinner]="spicePageBuilderService.isLoading" class="slds-grid slds-grid--vertical slds-height_full slds-p-around--x-small slds-scrollable--y">
+    <div class="slds-scrollable--y" style="height: 50%">
         <system-section titlelabel="LBL_SECTIONS" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate"
                  [cdkDropListData]="sections"
@@ -9,14 +9,26 @@
                     <div>
                         {{section.children?.length}} <system-label label="LBL_COLUMNS"></system-label>
                     </div>
-                    <div class="slds-grid slds-grow slds-theme--default" style="border: 2px solid #ca1b21; cursor: move">
+                    <div class="slds-grid slds-grow slds-theme--default" style="border: 2px solid #ca1b21; cursor: move; min-height: 70px">
                         <div *ngFor="let item of section.children; trackBy: trackByFn; let last = last" [style.border-right]="!last ? '2px solid #ca1b21' : 0" class="slds-grow"></div>
+                    </div>
+                </div>
+                <div *ngFor="let section of customSections" cdkDrag [cdkDragData]="section.content"
+                     class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible spice-hover-display-children">
+                    <div>
+                        {{section.name}}
+                    </div>
+                    <div class="slds-grid slds-grow slds-theme--default slds-grid--align-center slds-grid--vertical-align-center slds-is-relative" style="border: 2px solid #ca1b21; cursor: move; min-height: 70px">
+                        <system-utility-icon icon="user" size="large"></system-utility-icon>
+                        <button (click)="spicePageBuilderService.deleteCustomElement(section.id, 'section')" class="slds-button slds-button--icon slds-is-absolute__top slds-p-around--xxx-small spice-hover-child" style="right: 0">
+                            <system-utility-icon icon="delete" size="xx-small"></system-utility-icon>
+                        </button>
                     </div>
                 </div>
             </div>
         </system-section>
     </div>
-    <div style="height: 50%">
+    <div class="slds-scrollable--y" style="height: 50%">
         <system-section titlelabel="LBL_CONTENT_ELEMENTS" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" [id]="spicePageBuilderService.contentListId" cdkDropListSortingDisabled
                  [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="spicePageBuilderService.panelElements"
@@ -27,6 +39,18 @@
                         <system-utility-icon [icon]="contentElement.icon" size="large"></system-utility-icon>
                         <div>
                             <system-label [label]="contentElement.label"></system-label>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let contentElement of customItems; trackBy: trackByFn" cdkDrag [cdkDragData]="contentElement.content" [title]="contentElement.name"
+                     class="slds-p-around--xxx-small slds-drag--preview spice-hover-display-children" style="cursor: move">
+                    <div class="slds-p-around--x-small slds-card slds-height_full slds-align--absolute-center slds-grid slds-grid--vertical">
+                        <system-utility-icon icon="user" size="large"></system-utility-icon>
+                        <button (click)="spicePageBuilderService.deleteCustomElement(contentElement.id, 'item')" class="slds-button slds-button--icon slds-is-absolute__top slds-p-around--xxx-small spice-hover-child" style="right: 0">
+                            <system-utility-icon icon="delete" size="xx-small"></system-utility-icon>
+                        </button>
+                        <div>
+                            <system-label [label]="contentElement.name"></system-label>
                         </div>
                     </div>
                 </div>

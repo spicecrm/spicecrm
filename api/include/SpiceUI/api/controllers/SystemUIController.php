@@ -1,20 +1,11 @@
 <?php
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
-use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIRepositoryController;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIComponentsetsController;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIActionsetsController;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIRoutesController;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIFieldsetsController;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use Slim\Routing\RouteCollectorProxy;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUILoadtasksController;
-use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModelValidationsController;
 
 
 class SystemUIController{
@@ -195,10 +186,11 @@ class SystemUIController{
 
     /**
      * sets the component sets
-     * @param $req
-     * @param $res
+     * @param Request $req
+     * @param Response $res
      * @param $args
      * @return mixed
+     * @throws ForbiddenException
      */
 
     public function SystemSetComponentSet(Request $req, Response $res, $args): Response

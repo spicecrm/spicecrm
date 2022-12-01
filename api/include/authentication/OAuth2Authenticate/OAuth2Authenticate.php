@@ -5,13 +5,16 @@ namespace SpiceCRM\includes\authentication\OAuth2Authenticate;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\modules\Users\User;
 
-class OAuth2Authenticate
+class OAuth2Authenticate implements AuthenticatorI
 {
     private $ssl_verifyhost = false;
     private $ssl_verifypeer = false;
@@ -54,10 +57,10 @@ class OAuth2Authenticate
      * Fetches the OAuth access token using the authorization code.
      *
      * @param string $authCode
-     * @return string|null
+     * @return object|null
      * @throws Exception
      */
-    public function fetchAccessToken(string $authCode): ?string
+    public function fetchAccessToken(string $authCode): ?object
     {
         $payload = http_build_query([
             'grant_type' => 'authorization_code',
@@ -67,7 +70,40 @@ class OAuth2Authenticate
             'redirect_uri' => $this->config->redirect_uri,
         ]);
 
+        return $this->tokenPostRequest($payload);
+    }
+
+    /**
+     * Fetches the OAuth access token using the authorization code.
+     *
+     * @param string $refreshToken
+     * @throws Exception
+     */
+    public function refreshToken(string $refreshToken)
+    {
+        $payload = http_build_query([
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $refreshToken,
+            'client_secret' => $this->config->client_secret,
+            'client_id' => $this->config->client_id,
+            'redirect_uri' => $this->config->redirect_uri,
+        ]);
+
+        $token = $this->tokenPostRequest($payload);
+
+        $_SESSION['OAuth2TokenObject'] = $token;
+    }
+
+    /**
+     * set a token post request
+     * @param string $params
+     * @return null
+     * @throws Exception
+     */
+    private function tokenPostRequest(string $params)
+    {
         $curl = curl_init();
+
         $curlOptions = [
             CURLOPT_URL => $this->config->token_endpoint,
             CURLOPT_POST => 1,
@@ -75,7 +111,7 @@ class OAuth2Authenticate
             CURLOPT_HEADER => 1,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_POSTFIELDS => $params,
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/x-www-form-urlencoded',
                 'Accept: application/json'
@@ -97,10 +133,9 @@ class OAuth2Authenticate
         }
 
         $body = substr($result, $info['header_size']);
-        $parsedBody = json_decode($body);
-
-        return $parsedBody->access_token;
-
+        $body = json_decode($body);
+        $body->valid_until = time() + (int) $body->expires_in;
+        return $body;
     }
 
     /**
@@ -159,27 +194,32 @@ class OAuth2Authenticate
 
     /**
      * Authenticates the OAuth user with SpiceCRM.
-     * The user name has to be equal to the email address used for the OAuth authentication.
-     *
-     * @param string $accessToken
-     * @return User
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     * @throws Exception
+     * The username has to be equal to the email address used for the OAuth authentication.
+     * @param object $authData
+     * @param string $authType
+     * @return AuthResponse
+     * @throws NotFoundException | UnauthorizedException | Exception
      */
-    public function authenticate(string $accessToken): User
+    public function authenticate(object $authData, string $authType): AuthResponse
     {
-        /**
-         * @var $user User
-         */
+        /** @var $user User */
         $user = BeanFactory::getBean('Users');
-        $userProfile = $this->fetchUserProfile($accessToken);
+        $userProfile = $this->fetchUserProfile($authData->token->access_token);
         $user->findByUserName($userProfile->email);
 
-        if (!$user || !$user->id) {
+        if (empty($user->id)) {
             throw new UnauthorizedException('User not found');
         }
 
-        return $user;
+        return new AuthResponse($user->user_name);
+    }
+
+    /**
+     * save the token to the session after successful authentication and the session was created
+     * @return void
+     */
+    public static function afterSuccessfulAuthentication(object $authData)
+    {
+        $_SESSION['OAuth2TokenObject'] = $authData->token;
     }
 }

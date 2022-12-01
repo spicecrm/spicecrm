@@ -64,6 +64,39 @@ $routes = [
     ],
     [
         'method' => 'get',
+        'route' => '/dictionary/browser/relationshipFields/{module}/{link}',
+        'class' => DictionaryController::class,
+        'function' => 'getModuleRelationshipFields',
+        'description' => 'get module relationship fields',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'module' => [
+                'in' => 'path',
+                'description' => 'the name of the module',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'link' => [
+                'in' => 'path',
+                'description' => 'the name of the link',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'accounts_contacts',
+                'required' => true
+            ]
+        ]
+
+    ],
+    [
+        'method' => 'get',
+        'route' => '/dictionary/browser/auditFields',
+        'class' => DictionaryController::class,
+        'function' => 'getAuditFields',
+        'description' => 'get module relationship fields',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+    ],
+    [
+        'method' => 'get',
         'route' => '/dictionary/browser/{module}/dbcolumns',
         'class' => AdminController::class,
         'function' => 'getDBColumns',

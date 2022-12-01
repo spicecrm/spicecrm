@@ -34,6 +34,7 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 
 SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>false,
 	'comment' => 'Tracks items of interest that occurred after you send an email campaign',
@@ -384,4 +385,5 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
         ],
     ]
 ];
-?>
+
+VardefManager::createVardef('CampaignLog', 'CampaignLog', ['assignable']);
