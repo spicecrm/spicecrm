@@ -20,12 +20,10 @@ export class DunsNumberModal {
     public fieldsetFields: any[] = [];
     public results: any[] = [];
     public selectedItem: string;
-    public response: Observable<string>;
-    public responseSubject: Subject<any>;
+    public responseSubject: Subject<any> = new Subject<any>();
 
     constructor(public language: language, public backend: backend, public metadata: metadata, public model: model) {
-        this.responseSubject = new Subject<any>();
-        this.response = this.responseSubject.asObservable();
+
     }
 
     public ngOnInit() {

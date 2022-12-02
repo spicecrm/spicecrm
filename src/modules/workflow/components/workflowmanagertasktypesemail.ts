@@ -93,7 +93,7 @@ export class WorkflowManagerTaskTypesEmail implements OnInit {
 
                     this.emailTemplates = data.list.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule.name));
                     // cache the options
-                    this.configuration.setData(`EmailTemplates`, this.emailTemplates);
+                    this.configuration.setData(`EmailTemplates`, data.list);
                 });
         } else {
             this.emailTemplates = options.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule.name));

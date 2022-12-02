@@ -197,7 +197,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     },
                     toolbar: [],
                     htmlSupport: {
-                        allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
+                        allow: this.generateHtmlTagsAllowAttributes(['div', 'img', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
                         // hr
                     },
                     autosave: {
@@ -278,7 +278,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'cols': true,
                     'rows': true,
                     'wrap': true,
-                    'label': true
+                    'label': true,
+                    'width': true,
+                    'height': true
                 }
             }
         });

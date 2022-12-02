@@ -339,6 +339,9 @@ class AuthenticationController
 
         $this->setCurrentUser($userObj);
 
+        global $current_language;
+        $current_language = $userObj->getPreference('language');
+
         if (!empty($authResponse->tenantId)) {
             $userObj->reloadPreferences();
         }

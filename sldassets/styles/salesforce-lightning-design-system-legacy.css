@@ -1379,14 +1379,14 @@ a.slds-button--inverse:focus{
           justify-content:center;
   -webkit-transition:border 0.15s linear;
   transition:border 0.15s linear;
-  background-color:#0176d3);
-  border-color:#0176d3);
-  color:white);
+  background-color:#0176d3;
+  border-color:#0176d3;
+  color:white;
 }
 .slds-button_dual-stateful.slds-is-pressed:focus, .slds-button_dual-stateful.slds-is-pressed:hover{
-  background-color:#014486);
-  border-color:#014486);
-  color:white);
+  background-color:#014486;
+  border-color:#014486;
+  color:white;
 }
 .slds-button_dual-stateful.slds-is-pressed .slds-text-not-pressed{
   display:none;
