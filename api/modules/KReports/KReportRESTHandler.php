@@ -164,7 +164,7 @@ class KReporterRESTHandler
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $timef = $current_user->getPreference('timef');
         if (empty($timef)) {
-            $timef = SpiceConfig::getInstance()->config['default_time_format'];
+            $timef = SpiceConfig::getInstance()->config['default_preferences']['timef'];
         }
         if (empty($timef)) {
             $timef = '';
@@ -172,7 +172,7 @@ class KReporterRESTHandler
 
         $datef = $current_user->getPreference('datef');
         if (empty($datef)) {
-            $datef = SpiceConfig::getInstance()->config['default_date_format'];
+            $datef = SpiceConfig::getInstance()->config['default_preferences']['datef'];
         }
         if (empty($datef)) {
             $datef = '';
@@ -186,7 +186,7 @@ class KReporterRESTHandler
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $timef = $current_user->getPreference('timef');
         if (empty($timef)) {
-            $timef = SpiceConfig::getInstance()->config['default_time_format'];
+             $timef = SpiceConfig::getInstance()->config['default_preferences']['timef'];
         }
         if (empty($timef)) {
             $timef = '';
@@ -194,15 +194,17 @@ class KReporterRESTHandler
 
         $datef = $current_user->getPreference('datef');
         if (empty($datef)) {
-            $datef = SpiceConfig::getInstance()->config['default_date_format'];
+             $datef = SpiceConfig::getInstance()->config['default_preferences']['datef'];
         }
         if (empty($datef)) {
             $datef = '';
         }
 
-        $precision = $current_user->getPreference('default_currency_significant_digits');
+        # $precision = $current_user->getPreference('default_currency_significant_digits');
+        $precision = $current_user->getPreference('currency_significant_digits');
         if (empty($precision)) {
-            $precision = SpiceConfig::getInstance()->config['default_currency_significant_digits'];
+            # $precision = SpiceConfig::getInstance()->config['default_currency_significant_digits'];
+            $precision = SpiceConfig::getInstance()->config['default_preferences']['currency_significant_digits'];
         }
         if (empty($precision)) {
             $precision = '';
