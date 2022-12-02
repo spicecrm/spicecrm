@@ -198,8 +198,14 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      * The names of the preferences.
      * @private
      */
+    /*
     private preferencesNames = [ 'calendar_day_start_hour', 'calendar_day_end_hour', 'currency', 'datef', 'default_export_charset', 'default_locale_name_format',
         'dec_sep', 'default_currency_significant_digits', 'distance_unit_system', 'export_delimiter', 'help_icon',
+        'home_assistant', 'num_grp_sep', 'reminder_time', 'timef', 'timezone', 'week_day_start', 'week_days_count',
+    ];
+     */
+    private preferencesNames = [ 'calendar_day_start_hour', 'calendar_day_end_hour', 'currency', 'datef', 'export_charset', 'locale_name_format',
+        'dec_sep', 'currency_significant_digits', 'distance_unit_system', 'export_delimiter', 'help_icon',
         'home_assistant', 'num_grp_sep', 'reminder_time', 'timef', 'timezone', 'week_day_start', 'week_days_count',
     ];
 
@@ -325,7 +331,8 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      */
     public setDisplay_name(): void {
         this.display_name = '';
-        const value = this.getPrefValue('default_locale_name_format');
+        // const value = this.getPrefValue('default_locale_name_format');
+        const value = this.getPrefValue('locale_name_format');
         if ( value && this.nameFormats ) {
             this.nameFormats.some( format => {
                 if ( value === format.name ) {

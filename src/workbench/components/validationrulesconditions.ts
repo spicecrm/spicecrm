@@ -34,9 +34,13 @@ export class ValidationRulesConditions implements OnInit {
 
         for (let opt in this.metadata.getModuleFields(this.data.module)) {
             this.fieldname_options.push(opt);
-            this.fieldname_options.sort();
-
         }
+        // sort field list by field name
+        this.fieldname_options.sort();
+
+        // sort the rows by fieldname on init only
+        this.data.conditions.sort((a, b) => (a.fieldname ? a.fieldname.localeCompare(b.fieldname) : false));
+
     }
 
     get conditions() {

@@ -77,6 +77,7 @@ export class fieldAddress extends fieldGeneric {
      */
     public ngAfterViewInit() {
         super.ngAfterViewInit();
+        if(!this.referenceMetadata) return;
         this._isReferenced = this.model.getField(this.addresskey + 'address_reference_id');
     }
 
