@@ -33,7 +33,7 @@ import {libloader} from "../../services/libloader.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as less from 'less'
 
-declare var CKSource;
+declare var ClassicEditor;
 
 @Component({
     selector: "system-richtext-editor",
@@ -157,7 +157,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.libLoader.loadLib('ckeditor').subscribe(res => {
             this.zone.runOutsideAngular(() => {
 
-                CKSource.Editor.create(this.ckEditor.element.nativeElement, {
+                ClassicEditor.create(this.ckEditor.element.nativeElement, {
                     removePlugins: ['Markdown','Title'],
                     style: {
                         definitions: this.customStyleDefinitions.map(s => ({
@@ -193,7 +193,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                             'imageTextAlternative', '|',
                             'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
                             'resizeImage'
-                        ],
+                        ]
                     },
                     toolbar: [],
                     htmlSupport: {
