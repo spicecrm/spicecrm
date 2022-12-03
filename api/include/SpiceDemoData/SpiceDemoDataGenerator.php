@@ -1,31 +1,31 @@
 <?php
 /*********************************************************************************
-* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
-* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-* You can contact us at info@spicecrm.io
-* 
-* SpiceCRM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-* 
-* SpiceCRM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************************/
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 namespace SpiceCRM\includes\SpiceDemoData;
 
 use SpiceCRM\data\BeanFactory;
@@ -205,6 +205,64 @@ class SpiceDemoDataGenerator
         }
         return $opportunities;
     }
+
+    /**
+     * generate some Opportunities
+     */
+    public function generateServiceTickets(){
+        $db = DBManagerFactory::getInstance();
+
+        $tickets = $this->makeServiceTickets();
+        foreach($tickets as $ticket){
+            $seed = BeanFactory::getBean('ServiceTickets');
+            foreach($seed->field_defs as $fieldName => $fieldData){
+                if(isset($ticket[$fieldName])){
+                    $seed->{$fieldName} = $ticket[$fieldName];
+                }
+            }
+            if(!empty($seed->id)){
+                $seed->new_with_id = true;
+            }
+
+            // populate some default values
+            $this->popuplateDefaults($seed);
+
+            // relate to random account
+            $seed->load_relationship('accounts');
+            $account = $db->fetchByAssoc($db->limitQuery("SELECT id, name FROM accounts WHERE deleted=0 ORDER BY RAND()", 0, 1));
+
+            // relate to random contact
+            $contact = $db->fetchByAssoc($db->limitQuery("SELECT contacts.id FROM contacts inner join accounts_contacts ac on ac.contact_id = contacts.id WHERE contacts.deleted=0 AND ac.deleted=0 AND ac.account_id='{$account['id']}' ORDER BY RAND()", 0, 1));
+            if(!empty($contact)){
+                $seed->parent_id = $contact['id'];
+                $seed->parent_type = 'Contacts';
+            }
+            // save the bean
+            $seed->description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+            $seed->account_id = $account['id'];
+            $seed->name = $account['name'];
+            $seed->save();
+
+        }
+    }
+
+    /**
+     * generate data for opportunities
+     * @return mixed
+     */
+    private function makeServiceTickets(){
+        $tickets = [];
+        $appListStrings = SpiceUtils::returnAppListStringsLanguage('en_us');
+        for($i=0; $i < 50; $i++){
+            $ticket = [
+                'serviceticket_type' => array_rand($appListStrings['serviceticket_type_dom']),
+                'serviceticket_status' => array_rand($appListStrings['serviceticket_status_dom']),
+            ];
+            $tickets[] = $ticket;
+        }
+        return $tickets;
+    }
+
 
     /**
      * populate default bean properties
