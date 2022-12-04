@@ -46,11 +46,13 @@ export class fieldLanguage extends fieldGeneric implements OnInit {
     public getOptions() {
         this.options = this.language.getAvialableLanguages().map(language => ({
             value: language.language,
-            display: language.text
+            display: this.language.getLabel('LANG_' + language.language.toUpperCase())
         }));
         if (!!this.fieldconfig.canBeEmpty) {
             this.options.unshift({value: '', display: ''});
         }
+        // sort by language name in alphabetical order
+        this.options.sort((a, b) => a.display.localeCompare(b.display));
     }
 
     /**
