@@ -22,7 +22,7 @@ declare var moment: any;
     selector: 'field-date-time-span',
     templateUrl: '../templates/fielddatetimespan.html'
 })
-export class fieldDateTimeSpan extends fieldGeneric implements OnInit, AfterViewInit {
+export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
     /**
      * inidcates that we have a valid field
@@ -79,11 +79,6 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit, AfterView
                 }
             })
         );
-    }
-
-    public ngAfterViewInit() {
-        super.ngAfterViewInit();
-        this.model.setField('description', this.endDate);
     }
 
     /**
