@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {userpreferences} from "../../services/userpreferences.service";
 import {fieldGeneric} from './fieldgeneric';
 import {view} from "../../services/view.service";
@@ -22,7 +22,7 @@ declare var moment: any;
     selector: 'field-date-time-span',
     templateUrl: '../templates/fielddatetimespan.html'
 })
-export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
+export class fieldDateTimeSpan extends fieldGeneric implements OnInit, AfterViewInit {
 
     /**
      * inidcates that we have a valid field
@@ -69,10 +69,21 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
         this.subscriptions.add(
             this.model.data$.subscribe((data) => {
                 if (this.startDate && this.endDate) {
-                    this.duration = moment.duration(this.endDate.diff(this.startDate));
+                    let duration = 0;
+                    if(typeof this.endDate === 'string') {
+                        duration = moment(this.endDate).diff(this.startDate);
+                    } else {
+                        duration = this.endDate.diff(this.startDate);
+                    }
+                    this.duration = moment.duration(duration);
                 }
             })
         );
+    }
+
+    public ngAfterViewInit() {
+        super.ngAfterViewInit();
+        this.model.setField('description', this.endDate);
     }
 
     /**
