@@ -65,6 +65,16 @@ class DocumentRevision extends SpiceBean {
             $document->file_name = $this->file_name;
             $document->file_md5 = $this->file_md5;
             $document->file_mime_type = $this->file_mime_type;
+            // create entries for user_documentrevisions to track who read/accepted them later on
+            if ($this->acceptance_required = "1"){
+                $orgBeans = $document->get_linked_beans('orgunits', 'OrgUnits');
+                foreach ($orgBeans as $orgBean){
+                    $users = $orgBean->get_linked_beans('users', 'User');
+                    foreach ($users as $user){
+                        $revisionAcceptance = [];
+                    }
+                }
+            }
             $document->save();
         }
 

@@ -145,7 +145,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
             'type' => 'varchar',
             'len' => '255',
             'source' => 'non-db',
-        ]
+        ],
+        'acceptance_required' => [
+            'name' => 'acceptance_required',
+            'vname' => 'LBL_ACCEPTANCE_REQUIRED',
+            'type' => 'bool',
+        ],
+        'users' => [
+            'name' => 'users',
+            'type' => 'link',
+            'relationship' => 'users_documentrevisions',
+            'source' => 'non-db',
+            'module' => 'Users',
+            'vname' => 'LBL_USERS',
+        ],
     ],
     'relationships' => [
         'revisions_created_by' => [

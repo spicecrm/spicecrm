@@ -139,6 +139,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
             'side' => 'left',
             'vname' => 'LBL_REVISIONS',
         ],
+        'orgunits' => [
+            'name' => 'orgunits',
+            'type' => 'link',
+            'relationship' => 'documents_orgunits',
+            'source' => 'non-db',
+            'module' => 'OrgUnits',
+            'vname' => 'LBL_ORGUNITS',
+        ],
         'contracts' => [
             'name' => 'contracts',
             'type' => 'link',
