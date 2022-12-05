@@ -608,6 +608,14 @@ class SpiceInstaller
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_name', 'Euro')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_significant_digits', 2)");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_symbol', '€')");
+
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'minpwdlength', '6')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'oneupper', '1')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'onelower', '1')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'onenumber', '1')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'onespecial', '0')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'pwdvaliditydays', '0')");
+
     }
 
     /**
