@@ -303,7 +303,7 @@ export class userpreferences {
      * formatting functions
      * http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
      */
-    // public formatMoney(i, n = this.toUse.default_currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep) {
+    // public formatMoney(i, n = this.toUse.currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep) {
     public formatMoney(i, n = this.toUse.currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep) {
         let re = '\\d(?=(\\d{' + x + '})+' + (n > 0 ? '\\D' : '$') + ')';
         /* tslint:disable:no-bitwise */
