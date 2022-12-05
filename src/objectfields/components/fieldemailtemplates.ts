@@ -110,9 +110,9 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                     let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
                     virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
 
-                    let selectedEleTemp = virtualDocument.querySelectorAll("div[spicecrm_temp_quote]");
+                    let selectedEleTemp = virtualDocument.querySelectorAll("div[data-spice-temp-quote]");
                     let selectedEleSign = virtualDocument.querySelectorAll("div[data-signature]");
-                    let selectedEleReply = virtualDocument.querySelectorAll("div[spicecrm_reply_quote]");
+                    let selectedEleReply = virtualDocument.querySelectorAll("div[data-spice-reply-quote]");
 
                     selectedEleTemp[0]?.parentNode.removeChild(selectedEleTemp[0]);
 
