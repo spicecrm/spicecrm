@@ -27,7 +27,7 @@ class KReporterRESTHandler
 
         $curArray = [];
         $curArray['-99'] = [
-            'symbol' => SpiceConfig::getInstance()->config['default_currency_symbol'],
+            'symbol' => SpiceConfig::getInstance()->config['currencies']['default_currency_symbol'],
             'conversion_rate' => 1
         ];
         while ($thisCurEntry = DBManagerFactory::getInstance()->fetchByAssoc($curResArray)) {
@@ -1945,7 +1945,7 @@ $db = DBManagerFactory::getInstance();
 
         $configurator = new Configurator();
         $configurator->loadConfig();
-        $default_currency_symbol = $configurator->config['default_currency_symbol'];
+        $default_currency_symbol = $configurator->config['currencies']['default_currency_symbol'];
         $kreporter_version = 'ce';
         if (file_exists('modules/KReports/plugins.dictionary.extended'))
             $kreporter_version = 'pro';
