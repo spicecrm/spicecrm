@@ -26,6 +26,12 @@
         <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_MAX_ANSWERS"></system-label></label><br>
         <input type="text" class="slds-col slds-input slds-text-align--right" [(ngModel)]="maxAnswers" size="3">
     </div>
+    <!--div *ngIf="showSpecificID" class="slds-m-left_small slds-col slds-grow-none slds-form-element">
+        <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_SPECIFIC_ID" length="short"></system-label></label><br>
+        < !-- system-input-number currently not working ... -- >
+        < !--system-input-number [(ngModel)]="specificID" asNumber="true" size="3" onlyField="true" min="0" precision="0"></system-input-number-- >
+        <input class="slds-input" type="text" [(ngModel)]="specificID" size="3" style="width: fit-content;text-align: right;" />
+    </div-->
 </div>
 
 <system-spinner *ngIf="model.isLoading"></system-spinner>

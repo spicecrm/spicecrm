@@ -8,6 +8,7 @@ import { backend } from '../../../services/backend.service';
 import { modal } from '../../../services/modal.service';
 import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
 import { metadata } from '../../../services/metadata.service';
+import { toast } from '../../../services/toast.service';
 
 @Component({
     selector: 'questions-manager',
@@ -19,6 +20,7 @@ export class QuestionsManager implements OnInit {
     @Input() public categorypool: any;
     @Output() public questionsetAction: EventEmitter<string> = new EventEmitter();
     @Input() public questionnaire: model;
+    @Input() public showSpecificIDs = false;
 
     public questions: any[] = [];
     public currentQuestionId = '';
@@ -26,7 +28,7 @@ export class QuestionsManager implements OnInit {
     public questiontypes = ['single','multi','binary','rating','nps','ist','text'];
     public questiontypes_dom: any;
 
-    constructor( public language: language, public model: model, public backend: backend, public modalservice: modal, public metadata: metadata ) { }
+    constructor( public language: language, public model: model, public backend: backend, public modalservice: modal, public metadata: metadata, public toast: toast ) { }
 
     public ngOnInit(): void {
         this.questiontypes_dom = this.language.getDisplayOptions('questionstypes_dom');
@@ -61,6 +63,7 @@ export class QuestionsManager implements OnInit {
             form.instance.questionset = this.model;
             form.instance.questionid = this.currentQuestionId;
             form.instance.categorypool = this.categorypool;
+            form.instance.questionnaire = this.questionnaire;
             form.instance.questiontype = questiontype;
             form.instance.response.subscribe( response => {
                 this.handleFormResponse( response );
