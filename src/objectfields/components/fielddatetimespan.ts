@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {userpreferences} from "../../services/userpreferences.service";
 import {fieldGeneric} from './fieldgeneric';
 import {view} from "../../services/view.service";
@@ -69,7 +69,13 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
         this.subscriptions.add(
             this.model.data$.subscribe((data) => {
                 if (this.startDate && this.endDate) {
-                    this.duration = moment.duration(this.endDate.diff(this.startDate));
+                    let duration = 0;
+                    if(typeof this.endDate === 'string') {
+                        duration = moment(this.endDate).diff(this.startDate);
+                    } else {
+                        duration = this.endDate.diff(this.startDate);
+                    }
+                    this.duration = moment.duration(duration);
                 }
             })
         );
