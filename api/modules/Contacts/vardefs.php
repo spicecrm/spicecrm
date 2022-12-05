@@ -616,6 +616,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                     ]
                 ]
             ],
+            'eventbookings' => [
+                'name'         => 'eventbookings',
+                'type'         => 'link',
+                'module'       => 'EventBookings',
+                'relationship' => 'contact_eventbookings',
+                'source'       => 'non-db',
+            ],
+            'eventbookingblockers' => [
+                'name'         => 'eventbookingblockers',
+                'type'         => 'link',
+                'module'       => 'EventBookingBlockers',
+                'relationship' => 'contact_eventbookingblockers',
+                'source'       => 'non-db',
+            ],
 //            'bonuscards' => [
 //                'name' => 'bonuscards',
 //                'type' => 'link',
@@ -626,6 +640,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
 //                'vname' => 'LBL_BONUSCARDS',
 //            ],
             /*
+            'bonuscards' => [
+                'name' => 'bonuscards',
+                'type' => 'link',
+                'relationship' => 'bonuscards_contacts',
+                'module' => 'BonusCards',
+                'bean_name' => 'BonusCard',
+                'source' => 'non-db',
+                'vname' => 'LBL_BONUSCARDS',
+            ],
             'prospectlists_contacts_quantity' => [
                 'name' => 'prospectlists_contacts_quantity',
                 'vname' => 'LBL_QUANTITY',
