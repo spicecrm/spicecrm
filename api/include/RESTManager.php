@@ -512,6 +512,11 @@ class RESTManager
                     $routeObject->add(AdminOnlyAccessMiddleware::class);
                 }
 
+                // add validation for API only
+                if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] == true) {
+                    $routeObject->add(APIOnlyAccessMiddleware::class);
+                }
+
                 if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] == true) {
                     $routeObject->add(ModuleRouteMiddleware::class);
                 }
