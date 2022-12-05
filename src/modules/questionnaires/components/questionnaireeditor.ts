@@ -16,6 +16,7 @@ export class QuestionnaireEditor implements OnInit {
 
     public questionsets: any[] = [];
     public isLoadingQuestionsets = true;
+    public showSpecificIDs = false;
 
     public categorypool = {
         loaded: false,
