@@ -34,6 +34,17 @@ export class TelephonyCallPanelHerold {
         street: string
     }[] = [];
     /**
+     * holds the presets for the add modal
+     */
+    public presets: {
+        first_name: string,
+        last_name: string,
+        primary_address_street: string
+        primary_address_street_number: string,
+        primary_address_postalcode: string,
+        primary_address_city: string,
+    };
+    /**
      * holds the crm persons found based on the herold response data like first last name
      */
     public heroldRelatedFound: any[] = [];
@@ -90,6 +101,7 @@ export class TelephonyCallPanelHerold {
         this.backend.getRequest(`common/herold`, params).subscribe(
             (res: { foundBeans: any, herold: any[] }) => {
                 this.heroldResponse = res.herold;
+                this.setPresets();
                 Object.keys(res.foundBeans).forEach(module => {
                     this.heroldRelatedFound = this.heroldRelatedFound.concat(res.foundBeans[module].hits);
                 });
@@ -97,5 +109,23 @@ export class TelephonyCallPanelHerold {
                     this.displayValue = `${res.herold[0].name} ${res.herold[0].firstname}`
                 }
             });
+    }
+
+    /**
+     * set prsets from herold response
+     * @private
+     */
+    private setPresets() {
+
+        if (!this.heroldResponse) return;
+
+        this.presets = {
+            first_name: this.heroldResponse[0].firstname,
+            last_name: this.heroldResponse[0].name,
+            primary_address_street: this.heroldResponse[0].street,
+            primary_address_street_number: this.heroldResponse[0].housenumber,
+            primary_address_postalcode: this.heroldResponse[0].postalcode,
+            primary_address_city: this.heroldResponse[0].city,
+        };
     }
 }

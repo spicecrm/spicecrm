@@ -23,6 +23,12 @@ export class TelephonyCallCreateRelatedButton {
      * @private
      */
     @Input() public calldata: any;
+    /**
+     * the calldata object passed in
+     *
+     * @private
+     */
+    @Input() public presets: any;
 
     /**
      * emits if the object has been selected
@@ -72,6 +78,10 @@ export class TelephonyCallCreateRelatedButton {
         this.getPhoneFields();
         for(let pf of this.phoneFields){
             presets[pf.name] = this.calldata.msisdn;
+        }
+
+        if (this.presets) {
+            presets = {...presets, ...this.presets};
         }
 
         this.model.addModel(null, null, presets).subscribe(

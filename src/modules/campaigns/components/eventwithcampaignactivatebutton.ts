@@ -38,6 +38,12 @@ export class EventWithCampaignActivateButton {
             return;
         }
 
+        // not if activated
+        if (this.model.getFieldValue('activated')){
+            this.disabled = true;
+            return;
+        }
+
         // not if editing
         this.disabled = this.model.isEditing ? true : false;
     }
