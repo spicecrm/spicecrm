@@ -194,6 +194,8 @@ class SpiceConfig
         if ( isset( $this->config['default_preferences']['locale_name_format'] )) $this->config['default_locale_name_format'] = $this->config['default_preferences']['locale_name_format'];
         if ( isset( $this->config['default_preferences']['dec_sep'] )) $this->config['default_decimal_seperator'] = $this->config['default_preferences']['dec_sep'];
         if ( isset( $this->config['default_preferences']['num_grp_sep'] )) $this->config['default_number_grouping_seperator'] = $this->config['default_preferences']['num_grp_sep'];
+        if ( isset( $this->config['default_preferences']['currency_significant_digits'] )) $this->config['default_currency_significant_digits'] = $this->config['default_preferences']['currency_significant_digits'];
+        if ( isset( $this->config['default_preferences']['currency'] )) $this->config['default_currency'] = $this->config['default_preferences']['currency'];
     }
 
 }
