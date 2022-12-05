@@ -215,10 +215,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     });
                     this.editor.setData(this._html);
 
-                    // add a change detection on the content and emit the change
-                    this.editor.model.document.on( 'change:data', () => {
-                        this.onChange( this.editor.getData() )
-                    } );
                 });
             });
 
@@ -258,7 +254,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'data-spicefor-last': true,
                     'data-spicetemplate': true,
                     'data-signature': true,
-                    'spicecrm_reply_quote': true,
+                    'data-spice-reply-quote': true,
+                    'data-spice-temp-quote': true,
                     'class': true,
                     'style': true,
                     'value': true,
