@@ -232,7 +232,7 @@ class SpiceUIFieldsetsController
 
         if (empty($fieldsetItem['field']) && !empty($fieldsetItem['fieldset'])) {
             $db = DBManagerFactory::getInstance();
-            $itemName = $db->getOne("SELECT name FROM sysuifieldsets UNION ");
+            $itemName = $db->getOne("SELECT name FROM sysuifieldsets WHERE id='{$fieldsetItem['fieldset']}' UNION SELECT name FROM sysuicustomfieldsets WHERE id='{$fieldsetItem['fieldset']}' ");
         }
 
         $name = $fieldsetData['module'] . "/" . $fieldsetData['name'] . '/' . $itemName;
