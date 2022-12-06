@@ -195,7 +195,7 @@ export class fieldHtml extends fieldGeneric implements OnInit {
      * push the signature option
      * @private
      */
-    public loadMailboxSignature(): Promise<any> | void {
+    public loadMailboxSignature() {
 
         if (!this.isEditMode()) return;
 
@@ -204,16 +204,15 @@ export class fieldHtml extends fieldGeneric implements OnInit {
 
         const signatureContent: string = this.configurationService.getData('mailbox_signature_' + mailboxId);
         if (!signatureContent) {
-            return this.backend.get('Mailboxes', mailboxId)
-                .toPromise()
-                .then((data: any) => {
+            return this.backend.get('Mailboxes', mailboxId).subscribe({
+                next: (data: any) => {
                     if (!data.email_signature) return;
                     this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
-
                     this.addSignature(mailboxId, data.email_signature, 'LBL_MAILBOX');
                     this.selectedSignatureId = mailboxId;
                     this.renderSelectedSignature();
-                });
+                }
+            });
         } else {
             this.addSignature(mailboxId, signatureContent, 'LBL_MAILBOX');
             this.selectedSignatureId = mailboxId;
@@ -345,15 +344,16 @@ export class fieldHtml extends fieldGeneric implements OnInit {
             [this.fieldname]: content
         };
         this.backend.save(this.model.module, this.model.id, toSave)
-            .subscribe(
-                (res: any) => {
+            .subscribe({
+                next: (res: any) => {
                     this.model.endEdit();
                     this.model.setField('date_modified', res.date_modified, true);
                     this.value = res[this.fieldname];
                     this.model.startEdit();
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
-                },
-                error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
-            );
+                }, error: (error) => {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
+                }
+            });
     }
 }
