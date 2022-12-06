@@ -76,7 +76,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
         // determine the valid types
         this.determineParentTypes();
         // initialize the parenttype
-        if (this.view.isEditMode() && !this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '') {
+        if (this.view.isEditMode() && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
             this.model.setField(this.parentTypeField, this.parentTypes[0]);
         }
 
@@ -91,7 +91,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
             this.setFocus();
         }
 
-        if (mode == 'edit' && !this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '') {
+        if (mode == 'edit' && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
             this.model.setField(this.parentTypeField, this.parentTypes[0]);
         }
     }
