@@ -26,6 +26,50 @@ $routes = [
         'function'    => 'getCurrencies',
         'description' => 'get available currencies',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'start' => [
+                'in'          => 'query',
+                'description' => 'start for limit query',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => false
+            ],
+            'limit' => [
+                'in'          => 'query',
+                'description' => 'start for limit query',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => false
+            ],
+            'listid' => [
+                'in'          => 'query',
+                'description' => 'a list id',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false
+            ],
+            'searchterm' => [
+                'in'          => 'query',
+                'description' => 'a searchterm',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false
+            ],
+            'aggregates' => [
+                'in'          => 'query',
+                'description' => 'aggragates for filter',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false
+            ],
+            'buckets' => [
+                'in'          => 'query',
+                'description' => 'aggregates for filter',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => false
+            ],
+            'offset' => [
+                'in'          => 'query',
+                'description' => 'an offset value',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+                'required'    => false
+            ]
+        ]
     ],
     [
         'method'      => 'get',
