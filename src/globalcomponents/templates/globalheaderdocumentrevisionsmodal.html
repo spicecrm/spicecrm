@@ -1,0 +1,31 @@
+<system-modal>
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_ADD_FROM_TARGETLISTS"></system-label></system-modal-header>
+    <system-modal-content [system-modal-content-grow]="false" class="slds-scrollable_none">
+        <div class="slds-page-header">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-no-space slds-grow">
+                        <system-icon [module]="'DocumentRevisions'"></system-icon>
+                        <div class="slds-media__body">
+                            <div>
+                                <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{eventModel.data.summary_text}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
+            <ng-container *ngIf="!model.isLoading">
+                <div class="slds-scrollable--y slds-height_full">
+                    <table class="slds-table slds-table--fixed-layout slds-table--bordered slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}" role="listbox">
+                        <tbody>
+                        <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listItem]="listItem" [showActionMenu]="false" [rowselect]="multiselect" [displaylinks]="false" class="slds-hint-parent slds-p-horizontal--x-small" (click)="clickRow($event, listItem)"></tr>
+                        </tbody>
+                        <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect" [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>
+                    </table>
+                </div>
+            </ng-container>
+        </div>
+    </system-modal-content>
+</system-modal>
