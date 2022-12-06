@@ -32,6 +32,6 @@ export class fieldFloat extends fieldGeneric implements OnInit {
      */
     public ngOnInit() {
         // set decimal precision
-        this.precision = (this.fieldconfig.precision === undefined || this.fieldconfig.precision === '' ? parseInt(this.userpreferences.toUse.default_currency_significant_digits, 10) : parseInt(this.fieldconfig.precision, 10));
+        this.precision = (this.fieldconfig.precision === undefined || this.fieldconfig.precision === '' ? parseInt(this.userpreferences.toUse.currency_significant_digits, 10) : parseInt(this.fieldconfig.precision, 10));
     }
 }
