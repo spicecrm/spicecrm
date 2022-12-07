@@ -44,6 +44,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\Middleware\AdminOnlyAccessMiddleware;
+use SpiceCRM\includes\Middleware\APIOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ErrorMiddleware;
 use SpiceCRM\includes\Middleware\ExceptionMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
