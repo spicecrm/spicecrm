@@ -146,7 +146,9 @@ export class fieldHtml extends fieldGeneric implements OnInit {
         this.setStylesheetsToUse();
         this.setHtmlValue();
         if (!!this.fieldconfig?.useSignature) {
-            await this.loadMailboxSignature();
+            if(this.model.getField('mailbox_id')) {
+                await this.loadMailboxSignature();
+            }
             this.loadUserSignature();
         }
         this.modelChangesSubscriber();
@@ -245,10 +247,12 @@ export class fieldHtml extends fieldGeneric implements OnInit {
         if (!userSignatures) return;
         const noMailboxSignature = this.signatures.length == 0;
         this.addSignature('user', userSignatures, 'LBL_MY_SIGNATURE');
-        if (noMailboxSignature) {
+
+        // CRMDB-970 - disable loading user's signature on first load
+        /* if (noMailboxSignature) {
             this.selectedSignatureId = 'user';
             this.renderSelectedSignature();
-        }
+        }*/
     }
 
     /**
