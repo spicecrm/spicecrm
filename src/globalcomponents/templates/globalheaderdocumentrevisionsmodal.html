@@ -18,12 +18,12 @@
         <div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
             <ng-container *ngIf="!model.isLoading">
                 <div class="slds-scrollable--y slds-height_full">
-                    <table class="slds-table slds-table--fixed-layout slds-table--bordered slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}" role="listbox">
-                        <tbody>
-                        <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listItem]="listItem" [showActionMenu]="false" [rowselect]="multiselect" [displaylinks]="false" class="slds-hint-parent slds-p-horizontal--x-small" (click)="clickRow($event, listItem)"></tr>
-                        </tbody>
-                        <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect" [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>
-                    </table>
+<!--                    <table class="slds-table slds-table&#45;&#45;fixed-layout slds-table&#45;&#45;bordered slds-max-medium-table&#45;&#45;stacked-horizontal" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}" role="listbox">-->
+<!--                        <tbody>-->
+<!--                        <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listItem]="listItem" [showActionMenu]="false" [rowselect]="multiselect" [displaylinks]="false" class="slds-hint-parent slds-p-horizontal&#45;&#45;x-small" (click)="clickRow($event, listItem)"></tr>-->
+<!--                        </tbody>-->
+<!--                        <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect" [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>-->
+<!--                    </table>-->
                 </div>
             </ng-container>
         </div>
