@@ -99,6 +99,13 @@ export class CategoryTreeManager {
     }
 
     /**
+     * opens a modal to allow linking the tree and storing the values in table syscategorytreelinks
+     */
+    public linkTree() {
+
+    }
+
+    /**
      * a getter for the active tree
      */
     get activeTree() {
