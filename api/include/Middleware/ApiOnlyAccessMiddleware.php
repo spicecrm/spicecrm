@@ -9,7 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 class APIOnlyAccessMiddleware
 {
     public function __invoke(Request $request, RequestHandler $handler) {
-        if (!AuthenticationController::getInstance()->is_api_user) {
+        if (!AuthenticationController::getInstance()->getCurrentUser()->is_api_user) {
             throw new ForbiddenException('API access only.');
         }
         return $handler->handle($request);
