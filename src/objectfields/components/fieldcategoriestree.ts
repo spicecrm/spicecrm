@@ -175,7 +175,7 @@ export class fieldCategoriesTree{
      * @param categories
      */
     public sortCategoriesByTranslation(categories = []){
-        return categories.sort((a, b) => this.language.getLabel(a.node_name).localeCompare(b.node_name))
+        return categories.sort((a, b) => this.language.getLabel(a.node_name).localeCompare(this.language.getLabel(b.node_name)))
     }
 
     /**
