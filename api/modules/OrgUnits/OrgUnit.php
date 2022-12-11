@@ -2,6 +2,10 @@
 
 namespace SpiceCRM\modules\OrgUnits;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\LoggerManager;
+
 class OrgUnit extends \SpiceCRM\data\SpiceBean
 {
     public function save($check_notify = false, $fts_index_bean = true)
@@ -26,4 +30,11 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
 
         return $response;
     }
+
+    public function orgUnitEntryToRevisionList ()
+    {
+        $db = DBManagerFactory::getInstance();
+        $transactionId = LoggerManager::getLogger()->getTransactionId();
+    }
+
 }
