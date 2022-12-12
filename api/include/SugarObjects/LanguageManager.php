@@ -93,7 +93,13 @@ class LanguageManager
      * @param $syslang
      * @return array
      */
-	public static function loadDatabaseLanguage($syslang){
+	public static function loadDatabaseLanguage($syslang, $forceReload = false){
+        // return session content if not loaded
+        if(!empty($_SESSION['languages'][$syslang]) && !$forceReload){
+            return $_SESSION['languages'][$syslang];
+        }
+
+        // get the content
         $retArray = [];
 
         // get default Labels
@@ -152,9 +158,31 @@ class LanguageManager
             throw new Exception(\SpiceCRM\includes\database\DBManagerFactory::getInstance()->last_error);
         }
         */
+
+        $_SESSION['languages'][$syslang] = $retArray;
         return $retArray;
     }
 
+    /**
+     * return the translation array for a given label in a specific language
+     *
+     * @param string $label
+     * @param string $syslang
+     * @return void
+     */
+    public static function getLabelTranslation(string $label, string $syslang) : array {
+        $labelArr = [];
+        if(empty($labelArr) && isset($_SESSION['languages'][$syslang][$label])){
+            $labelArr = $_SESSION['languages'][$syslang][$label];
+        }
+        if(empty($labelArr)){
+            $labelArr = self::getSpecificLabels($syslang, [$label]);
+        }
+        if(empty($labelArr)) {
+            $labelArr = [];
+        }
+        return $labelArr;
+    }
     /**
      * getSpecificLabels
      * @param $syslang
