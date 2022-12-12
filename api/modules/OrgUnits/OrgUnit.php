@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\modules\OrgUnits;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -31,10 +32,43 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         return $response;
     }
 
-    public function orgUnitEntryToRevisionList ()
+    public function orgUnitEntryToRevisionList ($bean, $data)
     {
-        $db = DBManagerFactory::getInstance();
-        $transactionId = LoggerManager::getLogger()->getTransactionId();
+
+        $current_date = $bean->db->now();
+        $guidSQL = $bean->db->getGuidSQL();
+        if ($data['related_module'] == 'Users') {
+            $linkedDocuments = $bean->get_linked_beans('documents', 'Documents');
+            foreach ($linkedDocuments as $linkedDocument) {
+                $documentRevisions = $linkedDocument->get_linked_beans('documentrevisions','DocumentRevisions');
+                foreach ($documentRevisions as $documentRevision) {
+                    if ($documentRevision->documentrevisionstatus == "r"){
+                        $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
+                        $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$data[related_id]', '$documentRevision->id', '0'";
+
+                        $bean->db->query($insert_query);
+                    }
+                }
+            }
+
+        }
+        if ($data['related_module'] == 'OrgUnits' && $data['module'] == 'Documents') {
+            $documentBean = BeanFactory::getBean('Documents', $data[id]);
+                $documentRevisions = $documentBean->get_linked_beans('documentrevisions','DocumentRevisions');
+            $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
+                $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
+                foreach ($documentRevisions as $documentRevision) {
+                    if ($documentRevision->documentrevisionstatus == "r"){
+                        foreach ($relatedUsers as $relatedUser){
+                            $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
+                            $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$relatedUser->id', '$documentRevision->id', '0'";
+
+                            $bean->db->query($insert_query);
+                        }
+                    }
+            }
+
+        }
     }
 
 }
