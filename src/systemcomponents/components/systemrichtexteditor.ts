@@ -214,6 +214,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
                     });
                     this.editor.setData(this._html);
+
                 });
             });
 
@@ -252,6 +253,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'data-spicefor-first': true,
                     'data-spicefor-last': true,
                     'data-spicetemplate': true,
+                    'data-signature': true,
+                    'data-spice-reply-quote': true,
+                    'data-spice-temp-quote': true,
                     'class': true,
                     'style': true,
                     'value': true,
