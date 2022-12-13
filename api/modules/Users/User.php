@@ -743,7 +743,7 @@ class User extends Person
         $sql = "SELECT id,user_name FROM users WHERE status = 'Active' AND deleted = 0";
         if (!empty($userIdToIgnore))
             $sql .= " AND id <> '".$db->quote($userIdToIgnore) . "'";
-        $sql .= "AND LOWER(user_name) = '" . $db->quote(mb_strtolower($username)) . "'";
+        $sql .= " AND LOWER(user_name) = '" . $db->quote(mb_strtolower($username)) . "'";
         $user = $db->fetchOne($sql);
         return $user !== false;
     }

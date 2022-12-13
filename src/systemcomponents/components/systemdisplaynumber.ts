@@ -86,7 +86,7 @@ export class SystemDisplayNumber implements OnChanges {
             // check if thsi is a string and tehn try to parse to float
             if(typeof(this.number) == "string") this.number = parseFloat(this.number);
             if(this.precision === undefined){
-                this.precision = this.userpreferences.toUse.default_currency_significant_digits;
+                this.precision = this.userpreferences.toUse.currency_significant_digits;
             }
             return this.noDigits ?  this.userpreferences.formatMoney(this.number, 0) : this.userpreferences.formatMoney(this.number, this.precision);
         }

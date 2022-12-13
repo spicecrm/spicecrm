@@ -168,6 +168,10 @@ class ConfiguratorController{
                     $postBody['config'][$key] = json_encode($val);
                 }
             }
+            // make sure id field is there
+            if(!isset($postBody['config']['id'])){
+                $postBody['config']['id'] = $args['id'];
+            }
 
             SystemDeploymentCR::writeDBEntry($args['table'], $args['id'], $postBody['config'], $args['table']);
         }

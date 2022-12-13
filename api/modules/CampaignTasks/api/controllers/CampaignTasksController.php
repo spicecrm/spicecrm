@@ -116,8 +116,8 @@ class CampaignTasksController
         $status = 'queued';
 
         // activate the campaigntask
-        $campaignTask->activateFromEvent($status);
-        return $res->withJson(['success' => true, 'id' => $args['id']]);
+        $success = $campaignTask->activateFromEvent($status);
+        return $res->withJson(['success' => $success, 'id' => $args['id']]);
     }
 
 
