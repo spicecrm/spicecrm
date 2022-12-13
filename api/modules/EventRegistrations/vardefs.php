@@ -93,6 +93,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
             'relationship' => 'eventregistration_campaign_rel',
             'source' => 'non-db',
         ],
+        'description' => [
+            'name' => 'description',
+            'vname' => 'LBL_DESCRIPTION',
+            'type' => 'text'
+        ],
         'event_id' => [
             'name' => 'event_id',
             'vname' => 'LBL_EVENT_ID',
@@ -144,6 +149,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
             'link' => 'campaigntask_link',
             'len' => '255',
             'source' => 'non-db',
+        ],
+        'date_end' => [
+            'name' => 'date_end',
+            'vname' => 'LBL_DATE_END',
+            'type' => 'datetimecombo',
+            'dbType' => 'datetime',
+            'enable_range_search' => true,
+            'options' => 'date_range_search_dom',
         ],
         'campaigntask_link' => [
             'name' => 'campaigntask_link',

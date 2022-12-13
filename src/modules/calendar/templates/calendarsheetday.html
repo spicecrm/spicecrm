@@ -5,7 +5,7 @@
         </div>
         <div class="slds-border--left slds-p-top--xx-small slds-grow">
             <div class="slds-p-bottom--xx-small" [ngClass]="dayTextContainerClass" [ngStyle]="isTodayStyle">
-                <div class="slds-p-left--x-small slds-truncate" [ngClass]="dayTextClass">{{displayDate('day')}}</div>
+                <div class="slds-p-left--x-small slds-truncate" [ngClass]="dayTextClass">{{calendar.weekdayShort(displayDate('weekday'))}}</div>
                 <h1 class="slds-p-left--x-small slds-truncate" [ngClass]="dateTextClass">{{displayDate('date')}}</h1>
             </div>
             <div [style.min-height.px]="calendar.multiEventHeight" class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small">

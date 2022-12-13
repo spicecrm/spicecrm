@@ -11,6 +11,7 @@ abstract class PdfHandler
     protected $options = [];
     protected $content = '';
     protected $template;
+    public $htmlOfPdfCreation;
 
     public function __construct(OutputTemplate $template)
     {

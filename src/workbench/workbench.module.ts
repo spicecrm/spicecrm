@@ -81,6 +81,7 @@ import {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestim
 import {MailboxesGmailTrafficManager} from "./components/mailboxesgmailtrafficmanager";
 import {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
+import {MailboxesSendinblueTrafficManager} from "./components/mailboxessendinbluetrafficmanager";
 import {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
 import {MailboxesA1SmsTrafficManager} from "./components/mailboxesa1smstrafficmanager";
 import {MailboxesA1TrafficManager} from "./components/mailboxesa1trafficmanager";
@@ -229,6 +230,7 @@ import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanag
         MailboxesGmailTrafficManager,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
+        MailboxesSendinblueTrafficManager,
         MailboxesTwillioTrafficManager,
         MailboxesA1SmsTrafficManager,
         MailboxesA1TrafficManager,

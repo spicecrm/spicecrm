@@ -1,34 +1,34 @@
 <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !hostNameCondition}">
     <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Host Name</label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_host_name"/>
-        <div *ngIf="!hostNameCondition" class="slds-form-element__help">This field is required</div>
+        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_host_name" system-trim-input (change)="selfStep.completed=false"/>
+        <div *ngIf="!hostNameCondition" class="slds-form-element__help">Input required.</div>
     </div>
 </div>
 <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !userNameCondition}">
     <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Administrator User Name</label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_user_name"/>
-        <div *ngIf="!userNameCondition" class="slds-form-element__help">This field is required</div>
+        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_user_name" system-trim-input (change)="selfStep.completed=false"/>
+        <div *ngIf="!userNameCondition" class="slds-form-element__help">Input required.</div>
     </div>
 </div>
 <div class="slds-form-element slds-p-vertical--small">
     <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Administrator Password</label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_password"/>
+        <input type="password" class="slds-input" [(ngModel)]="spiceinstaller.db_password" system-trim-input (change)="selfStep.completed=false"/>
     </div>
 </div>
 <div class="slds-form-element slds-p-vertical--small">
     <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Port</label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_port"/>
+        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_port" system-trim-input (change)="selfStep.completed=false"/>
     </div>
 </div>
 <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !dbNameCondition}">
     <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Database Name</label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_name"/>
-        <div *ngIf="!dbNameCondition" class="slds-form-element__help">This field is required</div>
+        <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.db_name" system-trim-input (change)="selfStep.completed=false"/>
+        <div *ngIf="!dbNameCondition" class="slds-form-element__help">Input required.</div>
     </div>
 </div>
 

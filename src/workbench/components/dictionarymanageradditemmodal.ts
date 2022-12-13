@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component
+    Component, OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
@@ -12,7 +12,7 @@ import {DictionaryItem, DictionaryManagerMessage} from "../interfaces/dictionary
 @Component({
     templateUrl: '../templates/dictionarymanageradditemmodal.html',
 })
-export class DictionaryManagerAddItemModal {
+export class DictionaryManagerAddItemModal{
 
     /**
      * reference to the modal self
@@ -91,6 +91,9 @@ export class DictionaryManagerAddItemModal {
 
         // sort the domain name alphabetically
         this.templates.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
+
+        // set the scope by default
+        this.dictionaryitem.scope = this.dictionarymanager.changescope == 'global' ? 'g' : 'c';
 
         // get the current type
         this.currentType = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).sysdictionary_type;

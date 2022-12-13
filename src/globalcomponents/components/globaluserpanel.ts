@@ -12,6 +12,7 @@ import {modal} from "../../services/modal.service";
 import {userpreferences} from '../../services/userpreferences.service';
 import {toast} from '../../services/toast.service';
 import {socket} from '../../services/socket.service';
+import { language } from '../../services/language.service';
 
 declare var _: any;
 
@@ -39,7 +40,8 @@ export class GlobaUserPanel {
        public modal: modal,
        public userprefs: userpreferences,
        public toast: toast,
-       public socket: socket
+       public socket: socket,
+       public language: language
     ) {
 
     }
@@ -161,7 +163,7 @@ export class GlobaUserPanel {
    public set currentTz(value) {
         if (this.userprefs.unchangedPreferences.global && this.userprefs.unchangedPreferences.global.timezone === value) return;
         this.userprefs.setPreference('timezone', value, true).subscribe((data: any) => {
-            this.toast.sendToast('Timezone set successfully to "' + data.timezone + '".', 'success');
+            this.toast.sendToast(this.language.getLabel('LBL_TIMEZONE_WAS_SET_TO')+': '+data.timezone, 'success');
         }, error => {
             this.toast.sendToast('Error setting timezone.', 'error');
         });

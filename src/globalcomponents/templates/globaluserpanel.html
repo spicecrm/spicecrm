@@ -20,7 +20,7 @@
         <system-language-selector (selected)="close()"></system-language-selector>
         <div class="slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"></system-label></label>
-            <system-input-timezone [(ngModel)]="currentTz" ></system-input-timezone>
+            <system-input-timezone [(ngModel)]="currentTz" denyEmpty="true"></system-input-timezone>
         </div>
         <div *ngIf="displayDeveloperMode" class="slds-p-top--small">
             <system-checkbox [disabled]="!canSetDeveloperMode" [(ngModel)]="developermode"><system-label label="LBL_DEVELOPER_MODE"></system-label></system-checkbox>

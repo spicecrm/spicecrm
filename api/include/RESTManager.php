@@ -333,7 +333,7 @@ class RESTManager
      * @param $exception
      * @return string
      */
-    public function outputError($exception): string {
+    public function outputError($exception) {
         $inDevMode = SpiceUtils::inDeveloperMode();
 
         if (is_object($exception)) {
@@ -487,6 +487,7 @@ class RESTManager
 
     /**
      * Initializes the routes, by iterating over the $routes array and registering them with the slim app.
+     * @throws Exception
      */
     public function initRoutes(): void {
 
@@ -499,6 +500,10 @@ class RESTManager
                 if (isset($route['options']['noAuth']) && $route['options']['noAuth'] == false
                     && $authController->isAuthenticated()===false) {
                     continue;
+                }
+
+                if (!class_exists($route['class'])) {
+                    throw new Exception("RestManager failed initialize route. Class does not exist calling {$route['class']}");
                 }
 
                 $routeObject = $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);

@@ -94,7 +94,7 @@ class SystemTenant extends SpiceBean
 
         // create local and in tenant
         if (!$config['tenant']['disable_copy_config']) {
-            $installer->retrieveCoreandLanguages($db, ['language' => ['language_code' => 'en_us']]);
+            $installer->retrieveCoreandLanguages($db, 'en_us');
         }
 
         $this->copyMetadataFromMaster();

@@ -10,6 +10,7 @@ import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
 import {configurationService} from '../../services/configuration.service';
 import {broadcast} from '../../services/broadcast.service';
+import {language} from "../../services/language.service";
 
 @Component({
     selector: 'global-header-search',
@@ -18,7 +19,7 @@ import {broadcast} from '../../services/broadcast.service';
 })
 export class GlobalHeaderSearch {
 
-    @ViewChild('searchfield', {read: ViewContainerRef, static: false}) public serachfield: ViewContainerRef;
+    @ViewChild('searchfield', {read: ViewContainerRef, static: false}) public searchfield: ViewContainerRef;
 
     public showRecent: boolean = false;
     public searchTimeOut: any = undefined;
@@ -33,11 +34,14 @@ export class GlobalHeaderSearch {
      * @param event
      */
     @HostListener('document:keydown.control.s')quickLaunch(event: KeyboardEvent) {
-        this.serachfield.element.nativeElement.focus();
+        this.searchfield.element.nativeElement.focus();
     }
 
     get searchmodule() {
-        return this._searchmodule;
+        if(this._searchmodule == 'all'){
+            return this.language.getLabel('LBL_ALL');
+        }
+        return this.language.getModuleName(this._searchmodule);
     }
 
     set searchmodule(module) {
@@ -53,7 +57,8 @@ export class GlobalHeaderSearch {
         public fts: fts,
         public configuration: configurationService,
         public elementRef: ElementRef,
-        public renderer: Renderer2
+        public renderer: Renderer2,
+        public language: language
     ) {
     }
 

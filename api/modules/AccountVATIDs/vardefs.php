@@ -64,7 +64,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountVATID'] = [
     ],
     'relationships' => [],
 
-    'indices' => [],
+    'indices' => [
+        ['name' => 'idx_accountvatids_accid_del', 'type' => 'index', 'fields' => ['account_id', 'deleted'],],
+    ],
 
 ];
 
