@@ -170,9 +170,9 @@ export class OutlookCalendarItemAddContainer {
      * loads the modules that can be added from Outlook
      */
     public loadExchangeConfig() {
-        let config = this.configuration.getData('exchangeuserconfig');
+        let config = this.configuration.getData('microsoftserviceuserconfig');
         for (let e of config) {
-            if (['calendar', 'events'].indexOf(e.exchange_object) > -1 && e.outlookaddenabled == '1') {
+            if (['calendar', 'events'].indexOf(e.exchange_object ?? e.service_name) > -1 && e.outlookaddenabled == '1') {
                 let addmodule = this.metadata.getModuleById(e.sysmodule_id);
                 this.modules.push({
                     value: addmodule,
