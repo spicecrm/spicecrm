@@ -73,7 +73,9 @@ export class ExchangeUserSettings implements OnInit {
     }
 
     set activeAPI(val: 'msgraph' | 'spicecrmexchange') {
-        this.userPreferences.setPreference('microsoftActiveService', val);
+        this.userPreferences.setPreference('microsoftActiveService', val).subscribe(() => {
+            this.getConfig();
+        });
     }
 
     get activeAPI(): 'msgraph' | 'spicecrmexchange' {
@@ -99,7 +101,13 @@ export class ExchangeUserSettings implements OnInit {
      * loads the config from the backend
      */
     public getConfig() {
+
+        const loadingModal = this.modal.await('LBL_LOADING');
+
         this.backend.getRequest(`${this.activeAPI}/config/${this.model.id}`).subscribe(response => {
+            loadingModal.next(true);
+            loadingModal.complete();
+
             this.modules = response.modules;
             this.modules.forEach(m => m.moduleName = this.metadata.getModuleById(m.sysmodule_id))
             this.userconfig = response.userconfig;
