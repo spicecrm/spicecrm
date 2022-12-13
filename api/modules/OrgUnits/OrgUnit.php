@@ -32,9 +32,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         return $response;
     }
 
-    public function orgUnitEntryToRevisionList ($bean, $data)
-    {
-
+    public function orgUnitEntryToRevisionList ($bean, $data){
         $current_date = $bean->db->now();
         $guidSQL = $bean->db->getGuidSQL();
         if ($data['related_module'] == 'Users') {
@@ -67,7 +65,34 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
                         }
                     }
             }
+        }
+    }
 
+    public function removeDeletedOrgUnitEntry ($bean, $data) {
+        if ($data['related_module'] == 'Users') {
+            $userBean = BeanFactory::getBean('Users', $data[related_id]);
+            $linkedDocuments = $bean->get_linked_beans('documents', 'Documents');
+            foreach ($linkedDocuments as $linkedDocument) {
+                $documentRevisions = $linkedDocument->get_linked_beans('documentrevisions','DocumentRevisions');
+                foreach ($documentRevisions as $documentRevision) {
+                $delete_query="delete from users_documentrevisions where user_id='$userBean->id' and acceptance_status=0 and document_revision_id='$documentRevision->id'";
+
+                $bean->db->query($delete_query);
+                }
+            }
+        }
+        if ($data['related_module'] == 'OrgUnits' && $data['module'] == 'Documents') {
+            $documentBean = BeanFactory::getBean('Documents', $data[id]);
+            $documentRevisions = $documentBean->get_linked_beans('documentrevisions', 'DocumentRevisions');
+            $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
+            $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
+            foreach ($documentRevisions as $documentRevision) {
+                    foreach ($relatedUsers as $relatedUser) {
+                        $delete_query = "delete from users_documentrevisions where user_id='$relatedUser->id' and acceptance_status=0 and document_revision_id='$documentRevision->id'";
+
+                        $bean->db->query($delete_query);
+                    }
+            }
         }
     }
 
