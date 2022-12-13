@@ -64,7 +64,7 @@ class DomPdfHandler extends LibPdfHandler
     {
         parent::process($html, $options);
 
-        $this->createDomPdf('<style>'.$this->template->getStyle().'</style>'.$this->html_content, $this->options);
+        $this->createDomPdf($this->html_content, $this->options);
         return true;
     }
 
@@ -72,6 +72,9 @@ class DomPdfHandler extends LibPdfHandler
     {
         $options = (object) $options;
 
+        # echo $html; exit; # for testing
+
+        $this->htmlOfPdfCreation = $html; # Save the HTML code the PDF is based on.
         $this->class_instance->loadHtml($html);
 
         // set page format

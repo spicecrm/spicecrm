@@ -63,7 +63,7 @@ class SpiceDictionaryVardefsParser
 
         $field['audited'] = !(bool)intval($row['exclude_from_audited']);
 
-        $field['required'] = (bool)intval($row['itemrequired']);
+        $field['required'] = (bool)intval($row['required']);
 
         if (!empty($row['validationname'])) {
             $field['options'] = $row['validationname'];

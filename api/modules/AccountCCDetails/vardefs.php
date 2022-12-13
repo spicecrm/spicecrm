@@ -107,6 +107,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
     ],
     'indices' => [
         ['name' => 'idx_accountccdetails_id_del', 'type' => 'index', 'fields' => ['id', 'deleted'],],
+        ['name' => 'idx_accountccdetails_accid_del', 'type' => 'index', 'fields' => ['account_id', 'deleted'],],
         ['name' => 'idx_accountccdetails_companycode_id', 'type' => 'index', 'fields' => ['companycode_id'],],
     ],
     'relationships' => [

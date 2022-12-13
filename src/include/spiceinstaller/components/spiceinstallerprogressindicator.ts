@@ -3,7 +3,7 @@
  */
 
 import {Component} from '@angular/core';
-import {spiceinstaller} from "../services/spiceinstaller.service";
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 
 @Component({
@@ -22,11 +22,13 @@ export class SpiceInstallerProgressIndicator {
      * passes the clicked step as an object whose component is then rendered in the container
      * @param step
      */
-    public render(step) {
-        if (step.completed) {
-            this.spiceinstaller.selectedStep = step;
-        }
-
+    public jump( step) {
+        if ( step === this.spiceinstaller.selectedStep ) return;
+        if ( !this.spiceinstaller.selectedStep.completed && step.pos > this.spiceinstaller.selectedStep.pos ) return;
+        this.spiceinstaller.jumpSubject.next({ from: this.spiceinstaller.selectedStep, to: step });
     }
 
+    public isCurrentStep( step: stepObject ): boolean {
+        return step === this.spiceinstaller.selectedStep;
+    }
 }

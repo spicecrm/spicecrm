@@ -45,9 +45,12 @@ export class userpreferences {
         calendar_day_end_hour: '22',
         currency: -99,
         datef: 'm/d/Y',
-        default_currency_significant_digits: 2,
-        default_export_charset: 'UTF-8',
-        default_locale_name_format: 's f l',
+        // default_currency_significant_digits: 2,
+        currency_significant_digits: 2,
+        // default_export_charset: 'UTF-8',
+        export_charset: 'UTF-8',
+        // default_locale_name_format: 's f l',
+        locale_name_format: 's f l',
         dec_sep: '.',
         distance_unit_system: 'METRIC',
         export_delimiter: ',',
@@ -92,7 +95,14 @@ export class userpreferences {
         this.preferences.global = _.extendOwn(this.preferences.global, prefs);
         this.unchangedPreferences.global = _.clone(prefs);
         this.defaults = _.extendOwn(this.defaults, this.configuration.getData('defaultuserpreferences'));
-        this.askForMissingPreferences();
+        if ( !this.unchangedPreferences.global.timezone ) {
+            let guessedTimezone = moment.tz.guess();
+            this.setPreference('timezone', guessedTimezone, true).subscribe((data: any) => {
+                this.toast.sendToast( this.language.getLabel('LBL_TIMEZONE_WAS_SET_TO')+': '+data.timezone, 'success', null,10 );
+                this.session.setTimezone( guessedTimezone ); // Let the UI together with all the models and components know about the new configured timezone.
+            });
+        }
+
         this.completePreferencesWithDefaults();
         this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone.
 
@@ -293,7 +303,8 @@ export class userpreferences {
      * formatting functions
      * http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
      */
-    public formatMoney(i, n = this.toUse.default_currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep) {
+    // public formatMoney(i, n = this.toUse.default_currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep) {
+    public formatMoney(i, n = this.toUse.currency_significant_digits, x = 3, grpSep = this.toUse.num_grp_sep, decSep = this.toUse.dec_sep) {
         let re = '\\d(?=(\\d{' + x + '})+' + (n > 0 ? '\\D' : '$') + ')';
         /* tslint:disable:no-bitwise */
         let num = i.toFixed(Math.max(0, ~~n));
@@ -324,39 +335,6 @@ export class userpreferences {
             return d.format(this.getDateFormat()) + ' ' + d.format(this.getTimeFormat());
         }
         return moment.utc(d).format(this.getDateFormat()) + ' ' + moment.utc(d).format(this.getTimeFormat());
-    }
-
-    public askForMissingPreferences() {
-
-        // Which important user preferences are not set?
-        let namesOfMissingPrefs = this.getNamesOfMissingImportantPrefs();
-
-        // Is there a timeshift between the configured user timezone and the timezone of the currently used client computer system?
-        let timeshift = 0;
-        if (this.unchangedPreferences.global && this.unchangedPreferences.global.timezone) {
-            let a = moment.tz(moment.tz.guess()).utcOffset();
-            let b = moment.tz(this.unchangedPreferences.global.timezone).utcOffset();
-            if (a !== b) {
-                timeshift = (a * b < 0 ? Math.abs(a) + Math.abs(b) : Math.abs(a - b)) / 60;
-            }
-        }
-
-        // No user preferences missing and no timeshift? Nothing to do!
-        if (namesOfMissingPrefs.length === 0 && timeshift === 0) return;
-
-        // Otherwise open the modal window to obtain preferences:
-        this.modalservice.openModal('GlobalObtainImportantPreferences').subscribe(modal => {
-            modal.instance.namesOfMissingPrefs = namesOfMissingPrefs;
-            modal.instance.timeshift = timeshift;
-        });
-    }
-
-    public getNamesOfMissingImportantPrefs(): string[] {
-        let missing = [];
-        for (let name of ['timezone', 'datef', 'timef']) {
-            if (!this.unchangedPreferences.global[name]) missing.push(name);
-        }
-        return missing;
     }
 
     public getPossibleDateFormats(): object[] {

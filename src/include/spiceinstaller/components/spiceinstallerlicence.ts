@@ -2,8 +2,8 @@
  * @module SpiceInstallerModule
  */
 
-import {Component} from '@angular/core';
-import {spiceinstaller} from "../services/spiceinstaller.service";
+import { Component, Input } from '@angular/core';
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 
 @Component({
@@ -12,17 +12,23 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstallerLicence {
+
+    @Input() public selfStep: stepObject;
+
     public year: any = new Date();
     public author: string = '';
 
     constructor(
         public spiceinstaller: spiceinstaller
     ) {
-
-        this.spiceinstaller.steps[2] = this.spiceinstaller.selectedStep;
         this.author = 'SpiceCRM';
         this.year = this.year.getFullYear();
+        this.spiceinstaller.jumpSubject.subscribe( fromTo => {
+            if ( !fromTo.to ) return;
+            if ( fromTo.from === this.selfStep ) {
+                if ( this.selfStep.completed || fromTo.to?.pos < this.selfStep.pos ) this.spiceinstaller.jump( fromTo.to );
+            }
+        });
     }
-
 
 }

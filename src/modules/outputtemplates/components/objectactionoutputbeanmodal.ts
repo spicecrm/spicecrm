@@ -366,6 +366,13 @@ export class ObjectActionOutputBeanModal {
     }
 
     /**
+     * returns if we have an email content and that is not disabled
+     */
+    get canSend(){
+        return this.emailContent && !this.emailContent.disabled;
+    }
+
+    /**
      * call the child method that will send the mail
      */
     public sendEmail() {

@@ -72,8 +72,25 @@ class OutputTemplate extends SpiceBean
         if ($bodyOnly) {
             $html = $templateCompiler->compile(html_entity_decode( $this->body), $bean, $this->language, $this->additonalValues);
         } else {
-            $html =  $templateCompiler->compile('<body><header>'
-                    .html_entity_decode( $this->header ).'</header><footer>'.html_entity_decode( $this->footer ).'</footer><main>'.html_entity_decode( $this->body ).'</main></body>', $bean, $this->language, $this->additonalValues);
+            $html = $templateCompiler->compile('
+                <body>
+                    <header id="spice_page_header">
+                        '.html_entity_decode( $this->header ).'
+                    </header>
+                    <main>
+                            '.html_entity_decode( $this->body ).'
+                    </main>
+                    <footer id="spice_page_footer">
+                            '.html_entity_decode( $this->footer ).'
+                    </footer>
+                    </body>', $bean, $this->language, $this->additonalValues);
+            $html = preg_replace('#^<html>#s', '<html>
+                <head>
+                    <style>
+                        '.$this->getStyle().'
+                    </style>
+                </head>
+            ', $html );
         }
 
         return $html;
@@ -173,4 +190,13 @@ class OutputTemplate extends SpiceBean
         return $css;
     }
 
+    /**
+     * Gets the HTML code the PDF document is based on. For debugging the template.
+     *
+     * @return string the HTML code
+     */
+    public function getHtmlOfPdfCreation(): string
+    {
+        return $this->pdf_handler->htmlOfPdfCreation;
+    }
 }
