@@ -1,7 +1,9 @@
-<div class="slds-p-around--medium" [system-overlay-loading-spinner]="loading">
-    <h2 class="slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
+<div class="slds-p-horizontal_medium" [system-overlay-loading-spinner]="loading">
+
+    <h2 class="slds-text-heading--medium slds-m-bottom_medium">
         Database Configuration
     </h2>
+
     <div class="slds-form-element slds-p-vertical--small">
         <label class="slds-form-element__label">Database Type</label>
         <div class="slds-form-element__control">
@@ -13,18 +15,21 @@
         </div>
     </div>
     <div *ngIf="spiceinstaller.db_type == 'mysql'">
-        <spice-installer-mysqli [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-mysqli>
+        <spice-installer-mysqli [selfStep]="selfStep" [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-mysqli>
     </div>
     <div *ngIf="spiceinstaller.db_type == 'mssql'">
-        <spice-installer-mysqli [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-mysqli>
+        <spice-installer-mysqli [selfStep]="selfStep" [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-mysqli>
     </div>
     <div *ngIf="spiceinstaller.db_type == 'pgsql'">
-        <spice-installer-pgsql [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-pgsql>
+        <spice-installer-pgsql [selfStep]="selfStep" [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-pgsql>
     </div>
     <div *ngIf="spiceinstaller.db_type == 'oci8'">
-        <spice-installer-oci8 [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-oci8>
+        <spice-installer-oci8 [selfStep]="selfStep" [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-oci8>
     </div>
+
     <div class="slds-p-vertical--small slds-text-align--right">
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
         <button class="slds-button slds-button--brand" (click)="checkDB()">next</button>
     </div>
+
 </div>

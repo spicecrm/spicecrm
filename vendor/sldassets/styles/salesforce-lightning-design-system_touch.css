@@ -1,5 +1,4 @@
-/*! Lightning Design System 2.17.5 */
-@charset "UTF-8";
+/*! Lightning Design System 2.19.0 */
 @media (pointer: coarse) and (hover: none){
   body{
     font-size:1rem;
@@ -47,6 +46,12 @@
 .slds-button--icon-more,
 .slds-button_icon-container-more,
 .slds-button--icon-container-more{
+    width:2.75rem;
+    height:2.75rem;
+  }
+
+  .slds-button_icon-large,
+.slds-button--icon-large{
     width:2.75rem;
     height:2.75rem;
   }
@@ -360,20 +365,24 @@
     height:1rem;
     margin-top:-0.5rem;
   }
-  .slds-input-has-icon_left .slds-input__icon, .slds-input-has-icon--left .slds-input__icon{
+  .slds-input__icon_left .slds-input__icon,
+.slds-input__icon--left .slds-input__icon{
     left:0.5rem;
   }
-  .slds-input-has-icon_right .slds-input__icon, .slds-input-has-icon--right .slds-input__icon{
+  .slds-input__icon_right .slds-input__icon,
+.slds-input__icon--right .slds-input__icon{
     right:0.5rem;
   }
-  .slds-input-has-icon_left-right .slds-input__icon_left,
-.slds-input-has-icon_left-right .slds-input__icon--left, .slds-input-has-icon--left-right .slds-input__icon_left,
-.slds-input-has-icon--left-right .slds-input__icon--left{
+  .slds-input__icon_left-right .slds-input__icon_left,
+.slds-input__icon_left-right .slds-input__icon--left,
+.slds-input__icon--left-right .slds-input__icon_left,
+.slds-input__icon--left-right .slds-input__icon--left{
     left:0.5rem;
   }
-  .slds-input-has-icon_left-right .slds-input__icon_right,
-.slds-input-has-icon_left-right .slds-input__icon--right, .slds-input-has-icon--left-right .slds-input__icon_right,
-.slds-input-has-icon--left-right .slds-input__icon--right{
+  .slds-input__icon_left-right .slds-input__icon_right,
+.slds-input__icon_left-right .slds-input__icon--right,
+.slds-input__icon--left-right .slds-input__icon_right,
+.slds-input__icon--left-right .slds-input__icon--right{
     right:0.5rem;
   }
   .slds-input__icon-group_right .slds-input__spinner{
@@ -449,13 +458,16 @@
   .slds-pill + .slds-pill{
     margin-left:0.25rem;
   }
-  .slds-pill__container, .slds-pill-container, .slds-pill_container{
+  .slds-pill .slds-pill__container,
+.slds-pill .slds-pill-container,
+.slds-pill .slds-pill_container{
     padding:0.25rem;
   }
-  .slds-pill__label{
+  .slds-pill .slds-pill__label{
     font-size:0.875rem;
   }
-  .slds-pill__icon ~ .slds-pill__action, .slds-pill__icon_container ~ .slds-pill__action{
+  .slds-pill .slds-pill__icon ~ .slds-pill__action,
+.slds-pill .slds-pill__icon_container ~ .slds-pill__action{
     padding-left:calc(1.25rem + 0.5rem);
   }
   .slds-pill_link,
@@ -474,9 +486,10 @@
     margin:0;
     border:0;
   }
-  .slds-pill_link__icon ~ .slds-pill__action, .slds-pill_link__icon_container ~ .slds-pill__action,
-.slds-pill--link__icon ~ .slds-pill__action,
-.slds-pill--link__icon_container ~ .slds-pill__action{
+  .slds-pill_link .slds-pill__icon ~ .slds-pill__action,
+.slds-pill_link .slds-pill__icon_container ~ .slds-pill__action,
+.slds-pill--link .slds-pill__icon ~ .slds-pill__action,
+.slds-pill--link .slds-pill__icon_container ~ .slds-pill__action{
     padding-left:calc(1.25rem + 0.5rem);
   }
   .slds-pill__action{

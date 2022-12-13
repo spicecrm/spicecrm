@@ -31,6 +31,9 @@
         <tbody>
             <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}"  *ngFor="let dictionarydefinition of dictionarydefinitions; trackBy: trackByFn" (click)="setCurrentDictionaryDefinition(dictionarydefinition.id, dictionarydefinition.scope)">
                 <td>
+                    <button class="slds-button slds-button--icon" (click)="repairDictionaryDefinition(dictionarydefinition)">
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="'custom_apps'" [system-title]="language.getLabel('LBL_REPAIR_CACHE')"></system-utility-icon>
+                    </button>
                     <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
                     <dictionary-manager-item-status [(ngModel)]="dictionarydefinition.status"></dictionary-manager-item-status>
                 </td>

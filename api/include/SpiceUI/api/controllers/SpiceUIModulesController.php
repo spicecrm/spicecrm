@@ -182,6 +182,7 @@ class SpiceUIModulesController
         $modules = self::getModules();
         foreach ($modules as $module => $moduleDetails) {
             $seed = BeanFactory::getBean($module);
+            if(!$seed) continue;
             foreach($seed->field_defs as $fieldname => $fielddata){
                 $retArray[$module][$fieldname] = $fielddata;
                 switch($fielddata['type']){
