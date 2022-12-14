@@ -35,15 +35,16 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
     //the function below will add or remove entries from useres_documentrevisions according to changes made in documents or orgunits
     public function orgUnitEntryToRevisionList ($bean, $data){
 
-        //this triggers when you add a User to an OrgUnit
         $current_date = $bean->db->now();
         $guidSQL = $bean->db->getGuidSQL();
+        //this triggers when you add a User to an OrgUnit
         if ($data['related_module'] == 'Users') {
             $linkedDocuments = $bean->get_linked_beans('documents', 'Documents');
             foreach ($linkedDocuments as $linkedDocument) {
                 $documentRevisions = $linkedDocument->get_linked_beans('documentrevisions','DocumentRevisions');
                 foreach ($documentRevisions as $documentRevision) {
                     if ($documentRevision->documentrevisionstatus == "r"){
+
                         $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
                         $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$data[related_id]', '$documentRevision->id', '0'";
 
@@ -58,23 +59,30 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
             $documentBean = BeanFactory::getBean('Documents', $data[id]);
             $documentRevisions = $documentBean->get_linked_beans('documentrevisions','DocumentRevisions');
             $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
-            $memberOrgUnits = $orgUnitBean->get_full_list('', "parent_id=($orgUnitBean)");
-            foreach ($memberOrgUnits as $memberOrgUnit){
-                $memberOrgUnitBean = BeanFactory::getBean('OrgUnits', $memberOrgUnit[related_id]);
-                $firstChildren = $memberOrgUnitBean->get_full_list('', "parent_id=($memberOrgUnitBean)");
-                foreach ($firstChildren as $firstChild)
-            }
-            $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
-                foreach ($documentRevisions as $documentRevision) {
-                    if ($documentRevision->documentrevisionstatus == "r"){
-                        foreach ($relatedUsers as $relatedUser){
-                            $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
-                            $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$relatedUser->id', '$documentRevision->id', '0'";
 
-                            $bean->db->query($insert_query);
+            $memberOrgUnits = $orgUnitBean->get_full_list('', "parent_id=($orgUnitBean)");
+            $this->userHelper($orgUnitBean, $documentRevisions);
+            if ($memberOrgUnits !== 0){
+                foreach ($memberOrgUnits as $memberOrgUnit){
+                    $memberOrgUnitBean = BeanFactory::getBean('OrgUnits', $memberOrgUnit[related_id]);
+                    $firstChildren = $memberOrgUnitBean->get_full_list('', "parent_id=($memberOrgUnitBean)");
+                    $this->userHelper($memberOrgUnitBean, $documentRevisions);
+                    if ($firstChildren !== 0) {
+                        foreach ($firstChildren as $firstChild) {
+                            $memberOrgUnitChild = BeanFactory::getBean('OrgUnits', $firstChild[related_id]);
+                            $secondChildren = $memberOrgUnitChild->get_full_list('', "parent_id=($memberOrgUnitChild)");
+                            $this->userHelper($memberOrgUnitChild, $documentRevisions);
+                            if ($secondChildren !== 0) {
+                                foreach ($secondChildren as $secondChild) {
+                                    $memberOrgUnitGrandChild = BeanFactory::getBean('OrgUnits', $secondChild[related_id]);
+                                    $this->userHelper($memberOrgUnitGrandChild, $documentRevisions);
+                                }
+                            }
                         }
                     }
+                }
             }
+
         }
     }
 
@@ -105,6 +113,22 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
 
                         $bean->db->query($delete_query);
                     }
+            }
+        }
+    }
+
+    public function userHelper ($userRelation, $documentRevisions){
+        $current_date = $userRelation->db->now();
+        $guidSQL = $userRelation->db->getGuidSQL();
+        $relatedUsers = $userRelation->get_linked_beans('users', 'Users');
+        foreach ($documentRevisions as $documentRevision) {
+            if ($documentRevision->documentrevisionstatus == "r"){
+                foreach ($relatedUsers as $relatedUser){
+                    $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
+                    $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$relatedUser->id', '$documentRevision->id', '0'";
+
+                    $userRelation->db->query($insert_query);
+                }
             }
         }
     }
