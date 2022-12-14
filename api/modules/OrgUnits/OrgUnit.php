@@ -32,7 +32,10 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         return $response;
     }
 
+    //the function below will add or remove entries from useres_documentrevisions according to changes made in documents or orgunits
     public function orgUnitEntryToRevisionList ($bean, $data){
+
+        //this triggers when you add a User to an OrgUnit
         $current_date = $bean->db->now();
         $guidSQL = $bean->db->getGuidSQL();
         if ($data['related_module'] == 'Users') {
@@ -50,11 +53,18 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
             }
 
         }
+        //this triggers when you add an OrgUnit to a Document
         if ($data['related_module'] == 'OrgUnits' && $data['module'] == 'Documents') {
             $documentBean = BeanFactory::getBean('Documents', $data[id]);
-                $documentRevisions = $documentBean->get_linked_beans('documentrevisions','DocumentRevisions');
+            $documentRevisions = $documentBean->get_linked_beans('documentrevisions','DocumentRevisions');
             $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
-                $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
+            $memberOrgUnits = $orgUnitBean->get_full_list('', "parent_id=($orgUnitBean)");
+            foreach ($memberOrgUnits as $memberOrgUnit){
+                $memberOrgUnitBean = BeanFactory::getBean('OrgUnits', $memberOrgUnit[related_id]);
+                $firstChildren = $memberOrgUnitBean->get_full_list('', "parent_id=($memberOrgUnitBean)");
+                foreach ($firstChildren as $firstChild)
+            }
+            $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
                 foreach ($documentRevisions as $documentRevision) {
                     if ($documentRevision->documentrevisionstatus == "r"){
                         foreach ($relatedUsers as $relatedUser){
@@ -69,6 +79,8 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
     }
 
     public function removeDeletedOrgUnitEntry ($bean, $data) {
+
+        //this triggers when you remove a User from an OrgUnit
         if ($data['related_module'] == 'Users') {
             $userBean = BeanFactory::getBean('Users', $data[related_id]);
             $linkedDocuments = $bean->get_linked_beans('documents', 'Documents');
@@ -81,6 +93,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
                 }
             }
         }
+        //this triggers when you remove an OrgUnit from a Document
         if ($data['related_module'] == 'OrgUnits' && $data['module'] == 'Documents') {
             $documentBean = BeanFactory::getBean('Documents', $data[id]);
             $documentRevisions = $documentBean->get_linked_beans('documentrevisions', 'DocumentRevisions');
