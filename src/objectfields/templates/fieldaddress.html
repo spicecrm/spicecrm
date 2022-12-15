@@ -3,8 +3,8 @@
     <field-generic-display  [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()" [fieldid]="fieldid">
         <div class="slds-grid slds-grid--align-spread">
             <span>{{value}}</span>
-            <system-checkbox *ngIf="!!referenceMetadata && !fieldconfig.referenceCheckboxDisplayNone" [(ngModel)]="isReferenced" [disabled]="true" class="slds-m-left--xx-small">
-                <system-label label="LBL_REFERENCE"></system-label>
+            <system-checkbox  *ngIf="!!referenceMetadata && !fieldconfig.referenceCheckboxDisplayNone" [(ngModel)]="isReferenced" [disabled]="true" class="slds-m-left--xx-small">
+                <system-label system-title="LBL_REFERENCE" label="LBL_REFERENCE"></system-label>
             </system-checkbox>
         </div>
     </field-generic-display>
