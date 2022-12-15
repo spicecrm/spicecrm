@@ -8,15 +8,14 @@
                         <system-icon [module]="'DocumentRevisions'"></system-icon>
                         <div class="slds-media__body">
                             <div>
-                                <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{eventModel.data.summary_text}}</h1>
+                                <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate"></h1>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
-            <ng-container *ngIf="!model.isLoading">
+        <div class="slds-scrollable--y" >
                 <div class="slds-scrollable--y slds-height_full">
 <!--                    <table class="slds-table slds-table&#45;&#45;fixed-layout slds-table&#45;&#45;bordered slds-max-medium-table&#45;&#45;stacked-horizontal" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}" role="listbox">-->
 <!--                        <tbody>-->
@@ -25,7 +24,6 @@
 <!--                        <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect" [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>-->
 <!--                    </table>-->
                 </div>
-            </ng-container>
         </div>
     </system-modal-content>
 </system-modal>

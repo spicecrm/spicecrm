@@ -25,10 +25,10 @@ export class GlobalHeaderDocumentRevisions {
     }
 
     /**
-     * toggle open popover and handle closing the popover when the click is outside the container
+     * toggle open popover
      */
     public openModal() {
-        this.modal.openModal( 'GlobalHeaderDocumentRevisionsModal', true, this.viewContainerRef.injector).subscribe()
+        this.modal.openModal( 'GlobalHeaderDocumentRevisionsModal')
     }
 
     /**

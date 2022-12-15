@@ -59,28 +59,11 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
             $documentBean = BeanFactory::getBean('Documents', $data[id]);
             $documentRevisions = $documentBean->get_linked_beans('documentrevisions','DocumentRevisions');
             $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
-
-            $memberOrgUnits = $orgUnitBean->get_full_list('', "parent_id=($orgUnitBean)");
-            $this->userHelper($orgUnitBean, $documentRevisions);
-            if ($memberOrgUnits !== 0){
-                foreach ($memberOrgUnits as $memberOrgUnit){
-                    $memberOrgUnitBean = BeanFactory::getBean('OrgUnits', $memberOrgUnit[related_id]);
-                    $firstChildren = $memberOrgUnitBean->get_full_list('', "parent_id=($memberOrgUnitBean)");
-                    $this->userHelper($memberOrgUnitBean, $documentRevisions);
-                    if ($firstChildren !== 0) {
-                        foreach ($firstChildren as $firstChild) {
-                            $memberOrgUnitChild = BeanFactory::getBean('OrgUnits', $firstChild[related_id]);
-                            $secondChildren = $memberOrgUnitChild->get_full_list('', "parent_id=($memberOrgUnitChild)");
-                            $this->userHelper($memberOrgUnitChild, $documentRevisions);
-                            if ($secondChildren !== 0) {
-                                foreach ($secondChildren as $secondChild) {
-                                    $memberOrgUnitGrandChild = BeanFactory::getBean('OrgUnits', $secondChild[related_id]);
-                                    $this->userHelper($memberOrgUnitGrandChild, $documentRevisions);
-                                }
-                            }
+            foreach ($documentRevisions as $documentRevision) {
+                if ($documentRevision->documentrevisionstatus == "r") {
+                    $userEntries = new OrgUnit;
+                    echo $userEntries->recurringMember($orgUnitBean, $documentRevision, $guidSQL, $current_date, null);
                         }
-                    }
-                }
             }
 
         }
@@ -117,17 +100,34 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         }
     }
 
-    public function userHelper ($userRelation, $documentRevisions){
-        $current_date = $userRelation->db->now();
-        $guidSQL = $userRelation->db->getGuidSQL();
-        $relatedUsers = $userRelation->get_linked_beans('users', 'Users');
-        foreach ($documentRevisions as $documentRevision) {
-            if ($documentRevision->documentrevisionstatus == "r"){
-                foreach ($relatedUsers as $relatedUser){
-                    $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
-                    $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$relatedUser->id', '$documentRevision->id', '0'";
+    public function recurringMember ($orgUnitBean, $documentRevision, $guidSQL, $current_date, $orgUnitChildren){
+        global $holdRelatedUserIds;
+        if ($orgUnitChildren == null){
+            $memberOrgUnits = $orgUnitBean->get_full_list('', "parent_id='{$orgUnitBean->id}'");
+            $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
+            foreach ($relatedUsers as $relatedUser) {
+                $holdRelatedUserIds[] = $relatedUser->id;
+            }
+            if ($memberOrgUnits !== 0){
+                $this->recurringMember($orgUnitBean, $documentRevision, $guidSQL, $current_date, $memberOrgUnits);
+            }
+            array_unique($holdRelatedUserIds);
+            foreach ($holdRelatedUserIds as $holdRelatedUserId){
+                $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
+                $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$holdRelatedUserId', '$documentRevision->id', '0'";
 
-                    $userRelation->db->query($insert_query);
+                $orgUnitBean->db->query($insert_query);
+            }
+        }else{
+            foreach ($orgUnitChildren as $orgUnitChild) {
+                $orgUnitBean = BeanFactory::getBean('OrgUnits', $orgUnitChild->id);
+                $memberOrgUnits = $orgUnitBean->get_full_list('', "parent_id='{$orgUnitBean->id}'");
+                $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
+                foreach ($relatedUsers as $relatedUser) {
+                    $holdRelatedUserIds[] = $relatedUser->id;
+                }
+                if ($memberOrgUnits !== null) {
+                    $this->recurringMember($orgUnitBean, $documentRevision, $guidSQL, $current_date, $memberOrgUnits);
                 }
             }
         }
