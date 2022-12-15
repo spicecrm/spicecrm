@@ -89,13 +89,11 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
             $documentBean = BeanFactory::getBean('Documents', $data[id]);
             $documentRevisions = $documentBean->get_linked_beans('documentrevisions', 'DocumentRevisions');
             $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
-            $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
+            $userEntries = new OrgUnit;
+            echo $userEntries->recurringMemberDeletion($orgUnitBean, $documentRevision, null);
             foreach ($documentRevisions as $documentRevision) {
-                    foreach ($relatedUsers as $relatedUser) {
-                        $delete_query = "delete from users_documentrevisions where user_id='$relatedUser->id' and acceptance_status=0 and document_revision_id='$documentRevision->id'";
-
-                        $bean->db->query($delete_query);
-                    }
+                $userEntries = new OrgUnit;
+                echo $userEntries->recurringMemberDeletion($orgUnitBean, $documentRevision, null);
             }
         }
     }
@@ -128,6 +126,37 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
                 }
                 if ($memberOrgUnits !== null) {
                     $this->recurringMember($orgUnitBean, $documentRevision, $guidSQL, $current_date, $memberOrgUnits);
+                }
+            }
+        }
+    }
+
+    public function recurringMemberDeletion ($orgUnitBean, $documentRevision, $orgUnitChildren){
+        global $holdRelatedUserIds;
+        if ($orgUnitChildren == null){
+            $memberOrgUnits = $orgUnitBean->get_full_list('', "parent_id='{$orgUnitBean->id}'");
+            $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
+            foreach ($relatedUsers as $relatedUser) {
+                $holdRelatedUserIds[] = $relatedUser->id;
+            }
+            if ($memberOrgUnits !== 0){
+                $this->recurringMemberDeletion($orgUnitBean, $documentRevision, $memberOrgUnits);
+            }
+            foreach ($holdRelatedUserIds as $holdRelatedUserId){
+                $delete_query = "delete from users_documentrevisions where user_id='$holdRelatedUserId' and acceptance_status=0 and document_revision_id='$documentRevision->id'";
+
+                $orgUnitBean->db->query($delete_query);
+            }
+        }else{
+            foreach ($orgUnitChildren as $orgUnitChild) {
+                $orgUnitBean = BeanFactory::getBean('OrgUnits', $orgUnitChild->id);
+                $memberOrgUnits = $orgUnitBean->get_full_list('', "parent_id='{$orgUnitBean->id}'");
+                $relatedUsers = $orgUnitBean->get_linked_beans('users', 'Users');
+                foreach ($relatedUsers as $relatedUser) {
+                    $holdRelatedUserIds[] = $relatedUser->id;
+                }
+                if ($memberOrgUnits !== null) {
+                    $this->recurringMemberDeletion($orgUnitBean, $documentRevision, $memberOrgUnits);
                 }
             }
         }
