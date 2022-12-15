@@ -221,7 +221,8 @@ import {GlobalHeaderDocumentRevisionsModal} from "./components/globalheaderdocum
         GlobalDockedComposer,
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
-        GlobalHeaderSearchResultsItem
+        GlobalHeaderSearchResultsItem,
+        GlobalHeaderDocumentRevisionsModal
     ]
 })
 export class GlobalComponents {
