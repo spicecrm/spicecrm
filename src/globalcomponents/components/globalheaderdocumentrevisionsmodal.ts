@@ -11,12 +11,13 @@ import {modellist} from "../../services/modellist.service";
 })
 export class GlobalHeaderDocumentRevisionsModal {
 
-    public self;
+    public self: ComponentRef<GlobalHeaderDocumentRevisionsModal>;
 
     public componentconfig: any;
 
-    constructor() {
-        null
+    constructor(public model: model, public backend: backend) {
+        this.model.module = 'DocumentRevisions'
+        this.backend.getRequest()
     }
 
     // Close the modal.
