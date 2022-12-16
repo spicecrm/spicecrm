@@ -31,7 +31,7 @@ export class CampaignSendMailButton {
             this.sending = true;
             this.backend.postRequest(`module/CampaignTasks/${this.model.id}/queuemail`).subscribe((results: any) => {
                 this.sending = false;
-                this.toast.sendToast('Mails queued');
+                this.toast.sendToast(this.language.getLabel("LBL_MAILS_QUEUED"));
 
                 // set the campaigntask to activated
                 this.model.setField('activated', true);
