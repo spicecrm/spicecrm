@@ -17,9 +17,9 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
         '79f66bc0a1900f77abe4a9a299057a0a' => __DIR__ . '/..' . '/starkbank/ecdsa/src/ellipticcurve.php',
+        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'b33e3d135e5d9e47d845c576147bda89' => __DIR__ . '/..' . '/php-di/php-di/src/functions.php',
-        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -368,6 +368,22 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'TwilioEmail' => __DIR__ . '/..' . '/sendgrid/sendgrid/lib/TwilioEmail.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+        'XMLSchema' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'nusoap_base' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'nusoap_client' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'nusoap_fault' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'nusoap_parser' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'nusoap_server' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'nusoap_wsdlcache' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'nusoap_xmlschema' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'soap_fault' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'soap_parser' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'soap_server' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'soap_transport_http' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'soapclient' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'soapval' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'wsdl' => __DIR__ . '/..' . '/nusoap/nusoap.php',
+        'wsdlcache' => __DIR__ . '/..' . '/nusoap/nusoap.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
