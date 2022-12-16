@@ -15,7 +15,10 @@
       "SpiceCRM\\data\\": "data",
       "SpiceCRM\\extensions\\includes\\": "extensions/include",
       "SpiceCRM\\extensions\\": "extensions"
-    }
+    },
+    "classmap": [
+      "vendor/nusoap/nusoap.php"
+    ]
   },
   "require": {
     "giggsey/libphonenumber-for-php": "^8.10",
