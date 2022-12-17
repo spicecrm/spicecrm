@@ -11,7 +11,7 @@ import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
-import {Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {ComponentsetManagerEditDialog} from './componentsetmanagereditdialog';
 import {modal} from '../../services/modal.service';
 import {ComponentsetManagerAddDialog} from './componentsetmanageradddialog';
@@ -233,7 +233,21 @@ export class ComponentsetManager {
         this.editComponentset();
     }
 
-    public editComponentset() {
+    public duplicateComponentset() {
+        let currentComponentSet = this.currentComponentSet
+        this.reset();
+        this.editComponentset().subscribe({
+            next: (cs) => {
+                let componentsetItems = this.metadata.getComponentSetObjects(currentComponentSet);
+                for( let componentsetItem of componentsetItems){
+                    this.metadata.addComponentToComponentset(this.modelutilities.generateGuid(), cs.id, componentsetItem.component, componentsetItem.componentconfig);
+                }
+            }
+        });
+    }
+
+    public editComponentset(): Observable<any> {
+        let responseSubject = new Subject<any>();
         this.modalservice.openModal('ComponentsetManagerEditDialog').subscribe(modal => {
             modal.instance.componentset = this.currentComponentSet;
             modal.instance.edit_mode = this.edit_mode;
@@ -244,13 +258,18 @@ export class ComponentsetManager {
                         this.metadata.addComponentSet(id, this.currentModule, componentset.name, componentset.type);
                         this.currentComponentSet = id;
                         this.checkMode();
+
+                        responseSubject.next({id: id, type: componentset.type});
                     } else {
                         let componentset = this.metadata.getComponentSet(this.currentComponentSet);
                         componentset.name = componentset.name;
                     }
                 }
+                responseSubject.complete();
             });
         });
+
+        return responseSubject.asObservable();
     }
 
     /**

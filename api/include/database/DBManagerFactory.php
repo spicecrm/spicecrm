@@ -58,7 +58,6 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 class DBManagerFactory
 {
     static $config = ['dbconfig' => [], 'dbconfigoption' => []];
-
     /**
      * hold the instances
      * @var array
@@ -70,6 +69,28 @@ class DBManagerFactory
      * @var string
      */
     static $instanceName = 'initial';
+
+    /**
+     * set the db config called in index.php
+     * @return void
+     */
+    public static function setDBConfig()
+    {
+        self::$config = [
+            'dbconfig' => SpiceConfig::getInstance()->config['dbconfig'],
+            'dbconfigoption' => SpiceConfig::getInstance()->config['dbconfigoption']
+        ];
+    }
+
+    /**
+     * change
+     * @param $dbName
+     * @return void
+     */
+    public static function changeDBName($dbName)
+    {
+        self::$config['dbconfig']['db_name'] = $dbName;
+    }
 
     /**
      * Returns a reference to the DB object of specific type
@@ -120,19 +141,16 @@ class DBManagerFactory
      */
     public static function getInstance(string $instanceName = 'initial')
     {
+        if (empty(self::$config['dbconfig'])) return null;
+
         self::$instanceName = $instanceName;
         static $count = 0, $old_count = 0;
 
         //fall back to the default instance name
         if (!isset(self::$instances[self::$instanceName])) {
 
-            $dbConfig = [
-                'dbconfig' => SpiceConfig::getInstance()->config['dbconfig'],
-                'dbconfigoption' => SpiceConfig::getInstance()->config['dbconfigoption']
-            ];
-
             $count++;
-            self::$instances[self::$instanceName] = self::getTypeInstance($dbConfig['dbconfig']['db_type'], $dbConfig);
+            self::$instances[self::$instanceName] = self::getTypeInstance(self::$config['dbconfig']['db_type'], self::$config);
             if (!empty($dbConfig['dbconfigoption'])) {
                 self::$instances[self::$instanceName]->setOptions($dbConfig['dbconfigoption']);
             }
@@ -164,46 +182,6 @@ class DBManagerFactory
         self::$instances[self::$instanceName]->disconnect();
         unset (self::$instances[self::$instanceName]);
 
-    }
-
-    /**
-     * switch an instance to a new db name
-     * @param $dbName
-     * @param string $instanceName
-     * @return MysqliManager|object|SqlsrvManager|null
-     * @throws Exception
-     */
-    public static function switchDatabase($dbName, string $instanceName = 'initial')
-    {
-        if (!isset(self::$instances[$instanceName])) return null;
-
-        self::$instances[$instanceName]->disconnect();
-        BeanFactory::clearLoadedBeans();
-
-        $dbConfig = self::$instances[$instanceName]->dbConfig;
-
-        $dbConfig['dbconfig']['db_name'] = $dbName;
-
-        self::$instances[$instanceName] = self::getTypeInstance($dbConfig['dbconfig']['db_type'], $dbConfig);
-        if (!empty($dbConfig['dbconfigoption'])) {
-            self::$instances[$instanceName]->setOptions($dbConfig['dbconfigoption']);
-        }
-        self::$instances[$instanceName]->connect($dbConfig['dbconfig'], true);
-        self::$instances[$instanceName]->references = 0;
-        self::$instances[$instanceName]->resetQueryCount();
-
-        return self::$instances[$instanceName];
-    }
-
-    /**
-     * switch back to the master db connection
-     * @param string $instanceName
-     * @return MysqliManager|object|SqlsrvManager|null
-     * @throws Exception
-     */
-    public static function switchToMasterDatabase(string $instanceName = 'initial')
-    {
-        return self::switchDatabase(SpiceConfig::getInstance()->config['dbconfig']['db_name'], $instanceName);
     }
 
     /**

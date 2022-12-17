@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {session} from '../../services/session.service';
+import {TokenObjectI} from "../interfaces/globalcomponents.interfaces";
 
 /**
  * a modal to prompt the user for the password to relogin
@@ -49,17 +50,17 @@ export class GlobalReLogin {
     constructor(public login: loginService,public session: session) {
     }
 
-   public tokenLogin(token) {
+    public tokenLogin(token: {issuer: string, tokenObject: TokenObjectI}) {
         this.loggingIn = true;
-        this.login.relogin(null, token.accessToken).subscribe(
-            res => {
+        this.login.relogin(null, token.tokenObject).subscribe({
+            next: res => {
                 this.loggedin.emit(true);
                 this.close();
             },
-            error => {
+            error: error => {
                 this.loggingIn = false;
             }
-        );
+        });
     }
 
    public relogin() {

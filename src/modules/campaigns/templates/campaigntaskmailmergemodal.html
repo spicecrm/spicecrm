@@ -2,11 +2,15 @@
     <system-modal-header (close)="close()"><system-label label="LBL_MAILMERGE"></system-label></system-modal-header>
     <system-modal-content margin="none">
         <div class="slds-p-around--small">
+            <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--small">
+                <system-label class="slds-p-horizontal--x-small" label="LBL_LIMIT"></system-label>
+                <p class="slds-text-body--regular slds-truncate slds-p-horizontal--x-small" >{{this.pdfLimitConf}}</p>
+            </div>
             <div class="slds-grid slds-grid--vertical-align-center">
                 <system-label class="slds-p-horizontal--x-small" label="LBL_START"></system-label>
                 <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" [(ngModel)]="start"></system-input-number>
                 <system-label class="slds-p-horizontal--x-small" label="LBL_COUNT"></system-label>
-                <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" [(ngModel)]="limit"></system-input-number>
+                <system-input-number [asNumber]="true" class="slds-p-horizontal--x-small" [precision]="0" (change)="checkLimit()" [(ngModel)]="limit"></system-input-number>
                 <system-label class="slds-p-horizontal--x-small" label="LBL_TOTAL"></system-label>
                 <system-input-number class="slds-p-horizontal--x-small" [disabled]="true" [precision]="0" [ngModel]="totalCount"></system-input-number>
                 <button [disabled]="!canGenerate" class="slds-col--bump-left slds-button slds-button_neutral" (click)="rendertemplate()" system-title="LBL_MAILMERGE"><system-button-icon addclasses="slds-button__icon slds-button__icon_left" icon="print"></system-button-icon><system-label label="LBL_GENERATE"></system-label></button>

@@ -31,6 +31,15 @@ export class SystemDisplayNumber implements OnChanges {
     @Input() public number: any;
 
     /**
+     * The number of digits after decimal separator
+     * @param precision
+     */
+    @Input('precision') set onPrecisionChange(precision: number){
+        this.precision = precision;
+    }
+    public precision: number;
+
+    /**
      * the field
      */
     @Input() public currency_id: string;
@@ -76,8 +85,10 @@ export class SystemDisplayNumber implements OnChanges {
 
             // check if thsi is a string and tehn try to parse to float
             if(typeof(this.number) == "string") this.number = parseFloat(this.number);
-
-            return this.noDigits ?  this.userpreferences.formatMoney(this.number, 0) : this.userpreferences.formatMoney(this.number);
+            if(this.precision === undefined){
+                this.precision = this.userpreferences.toUse.currency_significant_digits;
+            }
+            return this.noDigits ?  this.userpreferences.formatMoney(this.number, 0) : this.userpreferences.formatMoney(this.number, this.precision);
         }
     }
 

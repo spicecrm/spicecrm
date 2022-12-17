@@ -59,6 +59,13 @@ export class SystemInputDate implements ControlValueAccessor {
     public isDisabled: boolean = false;
 
     /**
+     * holds if the value is edited (the input field is "dirty")
+     *
+     * @public
+     */
+    @Input() public isDirty = false;
+
+    /**
      * emits if the date is valid or not
      */
     @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -76,6 +83,10 @@ export class SystemInputDate implements ControlValueAccessor {
             this.isDisabled = true;
         }
     }
+
+    @Input() public id: string;
+
+    @Input() public showClear = false;
 
     /**
      * option to hide the error message
@@ -99,7 +110,8 @@ export class SystemInputDate implements ControlValueAccessor {
                 public renderer: Renderer2,
                 public userpreferences: userpreferences,
                 public modal: modal,
-                public cdref: ChangeDetectorRef) {
+                public cdref: ChangeDetectorRef,
+                private elementRef: ElementRef) {
     }
 
     get isValid() {
@@ -140,7 +152,7 @@ export class SystemInputDate implements ControlValueAccessor {
     }
 
     get canclear() {
-        return !!this._date.display;
+        return this.showClear && !!this._date.display;
     }
 
     /**
@@ -196,6 +208,7 @@ export class SystemInputDate implements ControlValueAccessor {
         this._date.moment = null;
         this._date.display = '';
         this._date.valid = true;
+        this.valid.emit(true);
 
         // emit the value to the ngModel directive
         if (typeof this.onChange === 'function' && notify) {
@@ -219,6 +232,7 @@ export class SystemInputDate implements ControlValueAccessor {
             }
             this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
             this._date.valid = true;
+            this.valid.emit(true);
 
             // emit the value to the ngModel directive
             if (typeof this.onChange === 'function') {
@@ -237,6 +251,10 @@ export class SystemInputDate implements ControlValueAccessor {
                     this.datePicked(date, true);
                 });
         });
+    }
+
+    public emitBlur() {
+        this.elementRef.nativeElement.dispatchEvent(new Event('blur',{bubbles: true}));
     }
 
 }

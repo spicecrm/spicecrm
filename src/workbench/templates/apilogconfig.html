@@ -11,7 +11,7 @@
                     <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_ROUTE"></system-label></th>
                     <th style="width: 4rem"><system-label class="slds-th__action" label="LBL_METHOD"></system-label></th>
                     <th style="width: 8rem"><system-label class="slds-th__action" label="LBL_USER"></system-label></th>
-                    <th style="width: 8rem"><system-label class="slds-th__action" label="LBL_IP"></system-label></th>
+                    <th style="width: 8rem"><system-label class="slds-th__action" label="LBL_IP_ADDRESS"></system-label></th>
                     <th style="width: 2rem"><system-label class="slds-th__action" label="LBL_DIRECTION"></system-label></th>
                     <th style="width: 6rem"><system-label class="slds-th__action" label="LBL_LOGTABLE"></system-label></th>
                     <th style="width: 4rem"><system-label class="slds-th__action" label="LBL_ACTION"></system-label></th>
@@ -72,7 +72,7 @@
                     <td>
                         <div class="slds-button-group slds-float--right" role="group">
                             <button *ngIf="!entry.editing" class="slds-button slds-button--icon-border" (click)="toggleActive(entry.id)">
-                                <system-utility-icon icon="light_bulb" [colorclass]="entry.is_active ? 'slds-icon-text-warning' : 'slds-icon-text-light'" size="x-small"></system-utility-icon>
+                                <system-utility-icon icon="light_bulb" [colorclass]="entry.is_active ? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small"></system-utility-icon>
                             </button>
                             <button *ngIf="!entry.editing" class="slds-button slds-button--icon-border" (click)="entry.editing = true">
                                 <system-button-icon [icon]="'edit'" [size]="'small'"></system-button-icon>

@@ -175,6 +175,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'name' => 'editor_type',
             'vname' => 'LBL_VIA_SPICE_PAGE_BUILDER',
             'type' => 'enum',
+            'len' => 32,
             'comment' => 'options: richText, pageBuilder, html'
         ],
         'body' => [

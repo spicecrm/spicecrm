@@ -1,22 +1,25 @@
-<div>
+<div [system-overlay-loading-spinner]="isLoading">
+
     <system-collapsable-tab [collapsible]="false"  tabtitle="LBL_LOCALE_PREFERENCES">
         <div class="slds-grid slds-grid--align-spread">
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_TIMEZONE">
-                <system-preferences-panel-item-display>
-                    {{preferences.timezone}}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('timezone')">
+                    {{ getPrefValue('timezone') }}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
-                    <system-input-timezone [(ngModel)]="preferences.timezone"></system-input-timezone>
+                    <system-input-timezone [(ngModel)]="preferences.timezone" [denyEmpty]="!isPersonalContext"></system-input-timezone>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DISTANCE_UNIT_SYSTEM">
-                <system-preferences-panel-item-display>
-                    <system-label *ngIf="!!preferences.distance_unit_system" [label]="'LBL_' + preferences.distance_unit_system"></system-label>
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('distance_unit_system')">
+                    <system-label *ngIf="!!getPrefValue('distance_unit_system')" [label]="'LBL_' + getPrefValue('distance_unit_system')"></system-label>
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.distance_unit_system">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.distance_unit_system" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option value="METRIC">
                                 <system-label label="LBL_METRIC"></system-label>
                             </option>
@@ -27,14 +30,15 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DATE_FORMAT">
-                <system-preferences-panel-item-display>
-                    {{dateFormat}}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('datef')">
+                    {{display_dateFormat}}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [ngModel]="preferences.datef" (ngModelChange)="setDateFormat($event)">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.datef" (ngModelChange)="prefChanged();setDisplay_dateFormat()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of dateFormatList" [value]="item.value">
                                 {{ item.name }}
                             </option>
@@ -42,14 +46,15 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_TIME_FORMAT">
-                <system-preferences-panel-item-display>
-                    {{timeFormat}}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('timef')">
+                    {{display_timeFormat}}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [ngModel]="preferences.timef" (ngModelChange)="setTimeFormat($event)">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.timef" (ngModelChange)="prefChanged();setDisplay_timeFormat()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of timeFormatList" [value]="item.value">
                                 {{ item.name }}
                             </option>
@@ -57,20 +62,22 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
         </div>
         <div class="slds-grid slds-grid--align-spread">
+
             <system-preferences-panel-item class="slds-size--2-of-5" itemlabel="LBL_CURRENCY">
-                <system-preferences-panel-item-display>
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('currency')">
                     <span class="slds-form-element__static">
                         <ng-container *ngFor="let item of currencyList">
-                            {{  item.id == preferences.currency ? item.name : '' }}
+                            {{  item.id == getPrefValue('currency') ? item.name : '' }}
                         </ng-container>
                     </span>
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.currency">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.currency" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of currencyList" [value]="item.id">
                                 {{ item.name }}
                             </option>
@@ -78,14 +85,15 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-5" itemlabel="LBL_DECIMAL_DIGITS">
-                <system-preferences-panel-item-display>
-                    {{preferences.default_currency_significant_digits}}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('currency_significant_digits')">
+                    {{ getPrefValue('currency_significant_digits') }}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.default_currency_significant_digits">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.currency_significant_digits" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of currencySignificantDigitsList" [value]="item">
                                 {{ item }}
                             </option>
@@ -93,23 +101,26 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
-            <system-preferences-panel-item class="slds-size--2-of-5" itemlabel="LBL_FORMATTING">
-                <system-preferences-panel-item-display>
-                    {{numbersFormatting?.show}}
+
+            <system-preferences-panel-item class="slds-size--2-of-5" itemlabel="LBL_NUMBER_FORMAT">
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('_numberDelimitation')">
+                    {{display_numberDelimitation}}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [ngModel]="numbersFormatting" (ngModelChange)="setNumbersFormatting($event)">
-                            <option></option>
-                            <option *ngFor="let item of formattingOfNumbersList; let index=index" [ngValue]="item">
+                        <select class="slds-select" [(ngModel)]="numberDelimitation">
+                            <option *ngIf="isPersonalContext" [selected]="!numberDelimitation"></option>
+                            <option *ngFor="let item of numberDelimitationsList; let index=index" [ngValue]="item" [selected]="numberDelimitation === item">
                                 {{ item.show }}
                             </option>
                         </select>
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
         </div>
     </system-collapsable-tab>
+
 <!--    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_NAVIGATION_PREFERENCES">-->
 <!--        <div class="slds-grid slds-grid&#45;&#45;align-spread">-->
 <!--            <system-preferences-panel-item class="slds-size&#45;&#45;1-of-1" itemlabel="LBL_NAVIGATION_PARADIGM">-->
@@ -119,7 +130,7 @@
 <!--                <system-preferences-panel-item-edit>-->
 <!--                    <div class="slds-select_container">-->
 <!--                        <select class="slds-select" [(ngModel)]="preferences.navigation_paradigm">-->
-<!--                            <option></option>-->
+<!--                            <option *ngIf="isPersonalContext"></option>-->
 <!--                            <option value="simple" disabled>simple</option>-->
 <!--                            <option value="tabbed" disabled>tabbed</option>-->
 <!--                            <option value="subtabbed">tabbed w subtabs</option>-->
@@ -129,16 +140,18 @@
 <!--            </system-preferences-panel-item>-->
 <!--        </div>-->
 <!--    </system-collapsable-tab>-->
+
     <system-collapsable-tab [collapsible]="false" tabtitle="LBL_EXPORT_PREFERENCES">
         <div class="slds-grid slds-grid--align-spread">
+
             <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_EXPORT_DELIMITER">
-                <system-preferences-panel-item-display>
-                    {{ preferences.export_delimiter }}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('export_delimiter')">
+                    {{ getPrefValue('export_delimiter') }}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.export_delimiter">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.export_delimiter" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of exportDelimiterList" [value]="item">
                                 {{ item }}
                             </option>
@@ -146,14 +159,15 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_EXPORT_CHARSET">
-                <system-preferences-panel-item-display>
-                    {{ preferences.default_export_charset }}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('export_charset')">
+                    {{ getPrefValue('export_charset') }}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.default_export_charset">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.export_charset" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of charsetList" [value]="item">
                                 {{ item}}
                             </option>
@@ -161,32 +175,36 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
         </div>
     </system-collapsable-tab>
 
     <system-collapsable-tab [collapsible]="false" tabtitle="LBL_OTHER_PREFERENCES">
         <div class="slds-grid slds-grid--align-spread">
+
             <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_NAME_FORMAT">
-                <system-preferences-panel-item-display>
-                    {{nameExampleText}}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('locale_name_format')">
+                    {{display_name}}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [ngModel]="preferences.default_locale_name_format" (ngModelChange)="setNameExampleText($event)">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.locale_name_format" (ngModelChange)="prefChanged();setDisplay_name()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of nameFormats" [value]="item.name">{{item.example}}</option>
                         </select>
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_HELP_ICON">
-                <system-preferences-panel-item-display>
-                    {{preferences.help_icon}}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('help_icon')">
+                    <system-label *ngIf="getPrefValue('help_icon') === 'visible'" label="LBL_VISIBLE"></system-label>
+                    <system-label *ngIf="getPrefValue('help_icon') === 'hidden'" label="LBL_HIDDEN"></system-label>
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.help_icon">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.help_icon" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option value="visible">
                                 <system-label label="LBL_VISIBLE"></system-label>
                             </option>
@@ -197,44 +215,51 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
         </div>
     </system-collapsable-tab>
 
     <system-collapsable-tab [collapsible]="false" tabtitle="LBL_CALENDAR_PREFERENCES">
+
         <div class="slds-grid slds-grid--align-spread">
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_WEEK_START_DAY">
-                <system-preferences-panel-item-display>
-                    {{preferences.week_day_start}}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('week_day_start')">
+                    {{ getPrefValue('week_day_start') }}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.week_day_start">
-                            <option></option>
-                            <option *ngFor="let day of weekDayStartList" [value]="day">{{day}}</option>
+                        <select class="slds-select" [(ngModel)]="preferences.week_day_start" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
+                            <option *ngFor="let day of weekDayStartList" [value]="day"><system-label [label]="('LBL_'+day).toUpperCase()"></system-label></option>
                         </select>
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_WEEK_DAYS_COUNT">
-                <system-preferences-panel-item-display>
-                    {{preferences.week_days_count}}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('week_days_count')">
+                    {{ getPrefValue('week_days_count') }}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.week_days_count">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.week_days_count" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let count of weekDaysCountList" [value]="count">
-                                {{count}}<system-label label="LBL_DAYS"></system-label></option>
+                                {{count}}&nbsp;<system-label label="LBL_DAYS"></system-label></option>
                         </select>
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DAY_START_HOUR">
-                <system-preferences-panel-item-display>{{preferences.calendar_day_start_hour}}</system-preferences-panel-item-display>
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('calendar_day_start_hour')">
+                    {{ getPrefValue('calendar_day_start_hour') }}
+                </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.calendar_day_start_hour">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.calendar_day_start_hour" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let hour of dayHoursList" [value]="hour" [disabled]="preferences.calendar_day_end_hour <= hour">
                                 {{hour}}
                             </option>
@@ -242,12 +267,15 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DAY_END_HOUR">
-                <system-preferences-panel-item-display>{{preferences.calendar_day_end_hour}}</system-preferences-panel-item-display>
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('calendar_day_end_hour')">
+                    {{ getPrefValue('calendar_day_end_hour') }}
+                </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.calendar_day_end_hour">
-                            <option></option>
+                        <select class="slds-select" [(ngModel)]="preferences.calendar_day_end_hour" (ngModelChange)="prefChanged()">
+                            <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let hour of dayHoursList" [value]="hour" [disabled]="preferences.calendar_day_start_hour >= hour">
                                 {{hour}}
                             </option>
@@ -255,21 +283,24 @@
                     </div>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
         </div>
+
         <div class="slds-grid slds-grid--align-spread">
+
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DEFAULT_REMINDER_TIME">
-                <system-preferences-panel-item-display>{{preferences.week_day_start}}</system-preferences-panel-item-display>
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('reminder_time')">
+                    <system-label *ngIf="display_reminderTime" [label]="display_reminderTime"></system-label>
+                </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
-                    <div class="slds-select_container">
-                        <select [(ngModel)]="preferences.reminder_time" class="slds-select">
-                            <option></option>
-                            <option *ngFor="let time of reminderTimeOptions" [value]="time.value">
-                                {{time.display}}
-                            </option>
-                        </select>
-                    </div>
+                    <system-dynamic-component component="fieldActivityReminder"
+                        [system-model-provider]="{ module:'Calls', id: '', data: { 'reminder_time': this.preferences.reminder_time }}" (data$)="reminderTimeChanged($event)"
+                        [componentattributes]="{ fieldname: 'reminder_time', fieldconfig: { hidelabel: true, showEmptyOption: isPersonalContext }}">
+                    </system-dynamic-component>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
+
         </div>
     </system-collapsable-tab>
+
 </div>

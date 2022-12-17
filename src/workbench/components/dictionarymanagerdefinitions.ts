@@ -38,7 +38,12 @@ export class DictionaryManagerDefinitions {
      */
     public definitionfiltertype: string;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language,  public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+    /**
+     * for loading spinner in repair button
+     */
+    public repairing: boolean = false;
+
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language,  public modal: modal, public injector: Injector, public modelutilities: modelutilities, public backend: backend) {
 
     }
 
@@ -110,4 +115,21 @@ export class DictionaryManagerDefinitions {
         });
     }
 
+    /**
+     * open edit dictionary definition
+     */
+    public editDictionaryDefinition(definition: DictionaryDefinition) {
+
+        this.modal.openModal('DictionaryManagerEditDefinitionModal', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.dictionarydefinition = definition;
+        });
+    }
+
+    /**
+     * trigger the repair of the dictionary
+     * @param definition
+     */
+    public repairDictionaryDefinition(definition: DictionaryDefinition) {
+        this.dictionarymanager.repairDictionary(definition);
+    }
 }

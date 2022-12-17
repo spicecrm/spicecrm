@@ -50,7 +50,13 @@ export class fieldDateTimeDuration extends fieldGeneric {
         this.subscriptions.add(
             this.model.data$.subscribe((data) => {
                 if (this.value && this.dateEnd) {
-                    this.duration = moment.duration(this.dateEnd.diff(this.value));
+                    let duration = 0;
+                    if(typeof this.dateEnd === 'string') {
+                        duration = moment(this.dateEnd).diff(this.value);
+                    } else {
+                        duration = this.dateEnd.diff(this.value);
+                    }
+                    this.duration = moment.duration(duration);
                 }
             })
         );

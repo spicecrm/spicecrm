@@ -78,8 +78,10 @@ class Contact extends Person
 
         //if account_id was replaced unlink the previous account_id.
         //this rel_fields_before_value is populated by sugarbean during the retrieve call.
-        if (!empty($this->account_id) and !empty($this->rel_fields_before_value['account_id']) and
-            (trim($this->account_id) != trim($this->rel_fields_before_value['account_id']))) {
+        if ((!empty($this->account_id) && !empty($this->rel_fields_before_value['account_id']) &&
+            (trim($this->account_id) != trim($this->rel_fields_before_value['account_id']))) ||
+            (empty($this->account_id) && $this->account_id != trim($this->rel_fields_before_value['account_id']))
+        ) {
             //unlink the old record.
             $this->load_relationship('accounts');
             $this->accounts->delete($this->id, $this->rel_fields_before_value['account_id']);

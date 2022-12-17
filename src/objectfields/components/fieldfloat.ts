@@ -16,51 +16,22 @@ import {userpreferences} from '../../services/userpreferences.service';
 })
 export class fieldFloat extends fieldGeneric implements OnInit {
 
-    @ViewChild('floatinput', {static: false}) public inputel: ElementRef;
-
-    public textvalue: string = '';
+    /**
+     * number of digits after decimal separator
+     * user default preference
+     * override with fieldconfig value if set
+     */
+    public precision: number = 0;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
     }
 
+    /**
+     * @ignore
+     */
     public ngOnInit() {
-        this.textvalue = this.getValAsText();
-        this.subscriptions.add(this.model.data$.subscribe(() => {
-            this.textvalue = this.getValAsText();
-        }));
-    }
-
-    public getValAsText() {
-        if (this.value === undefined) return '';
-        let val = parseFloat(this.value);
-        if (isNaN(val)) return '';
-        return this.userpreferences.formatMoney(val);
-    }
-
-    public checkInput(e) {
-        let allowedKeys = ['ArrowRight', 'ArrowLeft', 'Backspace', 'Delete'];
-        let regex = /^[0-9.,]+$/;
-        if (!regex.test(e.key) && allowedKeys.indexOf(e.key) < 0) {
-            e.preventDefault();
-            console.log(e.key);
-        }
-    }
-
-    public changed() {
-        let curpos = this.inputel.nativeElement.selectionEnd;
-        let val: any = this.textvalue;
-        val = val.split(this.userpreferences.toUse.num_grp_sep).join('');
-        val = val.split(this.userpreferences.toUse.dec_sep).join('.');
-        if (isNaN(val = parseFloat(val))) {
-            this.value = '';
-        } else {
-            this.value = (Math.round(val * Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits)) / Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits));
-        }
-        this.textvalue = this.getValAsText();
-        // set a brieftimeout and set the current pos back to the field tricking the Change Detection
-        setTimeout(()=> {
-            this.inputel.nativeElement.selectionEnd = curpos;
-        });
+        // set decimal precision
+        this.precision = (this.fieldconfig.precision === undefined || this.fieldconfig.precision === '' ? parseInt(this.userpreferences.toUse.currency_significant_digits, 10) : parseInt(this.fieldconfig.precision, 10));
     }
 }

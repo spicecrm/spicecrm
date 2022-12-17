@@ -82,7 +82,8 @@ export class SystemInputRadio implements ControlValueAccessor {
     }
 
     public writeValue(value: any): void {
-        if (value && value == this.value) {
+        if ( value === undefined ) return;
+        if ( value == this.value ) {
             this.checked = true;
         } else {
             this.checked = false;

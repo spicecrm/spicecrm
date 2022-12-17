@@ -2,8 +2,8 @@
  * @module SpiceInstaller
  */
 
-import {Component} from '@angular/core';
-import {spiceinstaller} from "../services/spiceinstaller.service";
+import { Component, Input } from '@angular/core';
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 
 @Component({
@@ -13,6 +13,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 export class SpiceInstallerCredentials {
 
+    @Input() public selfStep: stepObject;
     /**
      * condition booleans
      */
@@ -21,15 +22,21 @@ export class SpiceInstallerCredentials {
     public rpPasswordCondition: boolean = true;
     public surnameCondition: boolean = true;
     public emailCondition: boolean = true;
+
     /**
-     * repeated password variable holder and Regexp for password
+     * Regex for password
      */
-    public rpPassword: string = '';
     public pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})");
 
     constructor(
         public spiceinstaller: spiceinstaller
     ) {
+        this.spiceinstaller.jumpSubject.subscribe( fromTo => {
+            if ( fromTo.from === this.selfStep ) {
+                if ( this.selfStep.completed || fromTo.to?.pos < this.selfStep.pos ) this.spiceinstaller.jump( fromTo.to );
+                else this.saveUser();
+            }
+        });
     }
 
     /**
@@ -38,7 +45,7 @@ export class SpiceInstallerCredentials {
     public saveUser() {
         this.usernameCondition = this.spiceinstaller.username.length > 0;
         this.passwordCondition = this.spiceinstaller.password.length > 0 && this.pwRegexp.test(this.spiceinstaller.password);
-        this.rpPasswordCondition = this.rpPassword == this.spiceinstaller.password;
+        this.rpPasswordCondition = this.spiceinstaller.rpPassword == this.spiceinstaller.password;
         this.surnameCondition = this.spiceinstaller.surname.length > 0;
         this.emailCondition = this.spiceinstaller.email.length > 0;
 
@@ -51,9 +58,9 @@ export class SpiceInstallerCredentials {
                 surname: this.spiceinstaller.surname,
                 email: this.spiceinstaller.email
             };
+
             this.spiceinstaller.selectedStep.completed = true;
-            this.spiceinstaller.steps[5] = this.spiceinstaller.selectedStep;
-            this.spiceinstaller.next(this.spiceinstaller.steps[5]);
+            this.spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next });
         }
     }
 

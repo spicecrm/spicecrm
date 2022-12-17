@@ -9,13 +9,13 @@ import {configurationService} from '../../../services/configuration.service';
 import {toast} from '../../../services/toast.service';
 import {backend} from "../../../services/backend.service";
 import {spiceinstaller} from "../services/spiceinstaller.service";
-
+import {view} from '../../../services/view.service';
 
 @Component({
     selector: 'spice-installer-detail-container',
     templateUrl: '../templates/spiceinstallerdetailcontainer.html',
+    providers: [view]
 })
-
 export class SpiceInstallerDetailContainer {
 
     constructor(
@@ -25,8 +25,9 @@ export class SpiceInstallerDetailContainer {
         public configurationService: configurationService,
         public backend: backend,
         public spiceinstaller: spiceinstaller,
+        public view: view
     ) {
-
+        this.view.setEditMode();
     }
 
 

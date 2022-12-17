@@ -1,10 +1,10 @@
 /**
  * @module ObjectFields
  */
-import {Component} from '@angular/core';
+import {Component, ComponentRef, Injector} from '@angular/core';
 import {Router} from "@angular/router";
 
-import {model} from "../../services/model.service";
+import {AddressRefMetadataI, model} from "../../services/model.service";
 import {view} from "../../services/view.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
@@ -12,7 +12,11 @@ import {configurationService} from "../../services/configuration.service";
 
 import {fieldGeneric} from './fieldgeneric';
 import {backend} from "../../services/backend.service";
-
+import {toast} from "../../services/toast.service";
+import {modal} from "../../services/modal.service";
+import {ObjectSelectBeanListModal} from "../../objectcomponents/components/objectselectbeanlistmodal";
+/** @ignore */
+declare var _;
 /**
  * renders an address field with all elements
  */
@@ -23,16 +27,19 @@ import {backend} from "../../services/backend.service";
 export class fieldAddress extends fieldGeneric {
 
     /**
+     * holds the reference metadata
+     */
+    public referenceMetadata: AddressRefMetadataI;
+    /**
      * set to true if the address inpout shoudl be strict according to the dropdown values
      */
     public strict: boolean = false;
+    /**
+     * holds the loading value
+     */
+    public isLoading: boolean = false;
 
     public config_address_format: any = {};
-
-    /**
-     * a fallback address format in case none is specified
-     */
-    public addressFormat = '{street} {street_number}, {postalcode} {city}, {statename}, {countryname}';
 
     constructor(
         public model: model,
@@ -42,6 +49,9 @@ export class fieldAddress extends fieldGeneric {
         public router: Router,
         public configuration: configurationService,
         public backend: backend,
+        public toast: toast,
+        public modal: modal,
+        public injector: Injector
     ) {
         super(model, view, language, metadata, router);
 
@@ -52,11 +62,136 @@ export class fieldAddress extends fieldGeneric {
         this.getAddressConfig();
     }
 
+    /**
+     * a fallback address format in case none is specified
+     */
+    public addressFormat = '{street} {street_number}, {postalcode} {city}, {statename}, {countryname}';
+
+    public ngOnInit() {
+        super.ngOnInit();
+        this.handleReferenceAddress();
+    }
+
+    /**
+     * set the initial value of isReferenced
+     */
+    public ngAfterViewInit() {
+        super.ngAfterViewInit();
+        if(!this.referenceMetadata) return;
+        this._isReferenced = this.model.getField(this.addresskey + 'address_reference_id');
+    }
+
+    /**
+     * update isReferenced on reference id change
+     * @private
+     */
+    private handleReferenceAddress() {
+
+        const referenceMetadata = this.configuration.getData('spice_address_references');
+
+        if (!Array.isArray(referenceMetadata)) return;
+
+        const metadata = (referenceMetadata as AddressRefMetadataI[]).find(m =>
+            m.child_module == this.model.module && m.child_address_key == this.fieldconfig.key
+        );
+
+        if (!metadata) return;
+
+        this.referenceMetadata = metadata;
+
+        this.subscriptions.add(
+            this.model.observeFieldChanges(metadata.child_address_key + '_address_reference_id').subscribe(value => {
+                this._isReferenced = !!value;
+            })
+        );
+    }
+
+    /**
+     * if ture disable editing
+     */
+    private _isReferenced: boolean = false;
+    /**
+     * search related beans through the reference link
+     * @param bool
+     */
+    set isReferenced(bool: boolean) {
+
+        if (bool == this._isReferenced) return;
+
+        this._isReferenced = bool;
+
+        if (this.model.isNew) return;
+
+        if (bool) {
+            this.handleReferenceActivation();
+        } else {
+            this.model.setField(this.addresskey + 'address_reference_id', '');
+        }
+    }
+
+    /**
+     * @return boolean isReferenced
+     */
+    get isReferenced(): boolean {
+        return this._isReferenced;
+    }
+
+    /**
+     * get the reference entries list through the backend vardefs link and handle the response
+     * @private
+     */
+    private handleReferenceActivation() {
+
+        this.isLoading = true;
+        const url = `module/${this.model.module}/${this.model.id}/related/${this.referenceMetadata.child_link_name}`;
+
+        this.backend.getRequest(url).subscribe({
+            next: res => {
+                this.isLoading = false;
+                this.handleReferenceResponse(_.toArray(res));
+            },
+            error: () => {
+                this.isLoading = false;
+                this._isReferenced = false;
+                this.toast.sendToast('MSG_NO_RECORDS_FOUND', 'warning');
+            }
+        });
+    }
+
+    /**
+     * handle the reference entries response and open choose modal or fill in the address fields if only one reference found
+     * @param res
+     * @private
+     */
+    private handleReferenceResponse(res: any[]) {
+
+        if (res.length > 1) {
+            this.modal.openModal('ObjectSelectBeanListModal', true, this.injector).subscribe((
+                modalRef: ComponentRef<ObjectSelectBeanListModal>) => {
+                modalRef.instance.listData = res;
+                modalRef.instance.selectedIds$.subscribe({
+                    next: ids => {
+                        if (!ids) {
+                            this._isReferenced = false;
+                        } else {
+                            this.model.copyReferencedAddress(this.referenceMetadata, res.find(e => e.id == ids[0]));
+                        }
+                    }
+                });
+            });
+        } else if (res.length == 1) {
+            this.model.copyReferencedAddress(this.referenceMetadata, res[0]);
+        } else {
+            this._isReferenced = false;
+            this.toast.sendToast('MSG_NO_RECORDS_FOUND', 'warning');
+        }
+    }
+
     /*
     * get the hidden fields from the config table in db
      */
     public getAddressConfig() {
-        this.config_address_format = JSON.parse(this.configuration.data.backendextensions.address_format.config.format);
+        this.config_address_format = JSON.parse(this.configuration.data?.backendextensions?.address_format?.config?.format ?? '{}');
     }
 
     /*

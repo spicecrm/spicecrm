@@ -5,7 +5,7 @@
 <ng-template #preferencesContainer>
     <div [system-overlay-loading-spinner]="isLoading">
 
-        <system-preferences-panel [preferences]="preferences"></system-preferences-panel>
+        <system-preferences-panel #systemPreferencesPanel [preferences]="preferences" [isPersonalContext]="true"></system-preferences-panel>
 
         <system-collapsable-tab [collapsible]="false" tabtitle="LBL_HOME_PREFERENCES">
             <div class="slds-grid">
@@ -36,12 +36,13 @@
                     </system-preferences-panel-item-edit>
                 </system-preferences-panel-item>
                 <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_ASSISTANT">
-                    <system-preferences-panel-item-display>
-                        {{preferences.home_assistant}}
+                    <system-preferences-panel-item-display [global]="systemPreferencesPanel.prefValueIsGlobalFallback('home_assistant')">
+                        <system-label *ngIf="systemPreferencesPanel.getPrefValue('home_assistant') === 'visible'" label="LBL_VISIBLE"></system-label>
+                        <system-label *ngIf="systemPreferencesPanel.getPrefValue('home_assistant') === 'hidden'" label="LBL_HIDDEN"></system-label>
                     </system-preferences-panel-item-display>
                     <system-preferences-panel-item-edit>
                         <div class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="preferences.home_assistant">
+                            <select class="slds-select" [(ngModel)]="preferences.home_assistant" (ngModelChange)="systemPreferencesPanel.prefChanged()">
                                 <option></option>
                                 <option value="visible">
                                     <system-label label="LBL_VISIBLE"></system-label>

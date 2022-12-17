@@ -14,7 +14,7 @@ RewriteEngine On
 
 
 RewriteCond %{REQUEST_URI} ^(.*)soap(.*)$
-RewriteRule ^ service/v4_1/soap.php [QSA,L]
+RewriteRule ^ include/Soap/soap.php [QSA,L]
 #RewriteRule ^ soap.php [QSA,L]
 
 RewriteCond %{REQUEST_URI} ^(.*)install(.*)$ [OR]

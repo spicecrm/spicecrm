@@ -1,6 +1,10 @@
-<ng-container *ngIf="!language.inlineEditEnabled; else labelListenerContainer">{{language.getLabel(label, undefined, length)}}</ng-container>
+<ng-container *ngIf="!language.inlineEditEnabled; else labelListenerContainer">
+    <span *ngIf="length === 'long'; else notLong" [innerHTML]="sanitizer.bypassSecurityTrustHtml( getLabel() )"></span>
+    <ng-template #notLong>{{getLabel()}}</ng-template>
+</ng-container>
 <ng-template #labelListenerContainer>
     <span (dblclick)="onDblClick($event)" (contextmenu)="onRightClick($event)">
-        {{language.getLabel(label, undefined, length)}}
+        <span *ngIf="length === 'long'; else notLong2" [innerHTML]="sanitizer.bypassSecurityTrustHtml( getLabel() )"></span>
+        <ng-template #notLong2>{{getLabel()}}</ng-template>
     </span>
 </ng-template>

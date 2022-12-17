@@ -129,12 +129,12 @@ export class LeadConvert {
         switch (this.currentConvertStep) {
 
             case 0:
-                if (this.account && this.account.isNew && this.account.validate()) {
+                if (this.account &&  this.account.validate()) {
                     this.currentConvertStep++;
                 }
                 break;
             case 1:
-                if (this.contact.isNew && this.contact.validate()) {
+                if (this.contact && this.contact.validate()) {
                     this.currentConvertStep++;
                 }
                 break;

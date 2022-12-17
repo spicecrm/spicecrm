@@ -1,6 +1,6 @@
 <li [attr.aria-expanded]="expanded" [attr.aria-level]="level" role="treeitem" tabindex="0">
     <div class="slds-tree__item" [class.slds-is-selected]="isSelected">
-        <button class="slds-button slds-button_icon slds-m-right_x-small" [disabled]="disabled" (click)="expandItem()">
+        <button *ngIf="!nodedata.leaf" class="slds-button slds-button_icon slds-m-right_x-small" [disabled]="disabled" (click)="expandItem()">
             <system-button-icon [icon]="icon"></system-button-icon>
         </button>
         <span class="slds-has-flexi-truncate">
@@ -8,6 +8,6 @@
         </span>
     </div>
     <ul role="group">
-        <system-module-tree-item *ngFor="let nodeitem of nodeitems; trackBy: trackByFn" [module]="nodeitem.module" [name]="nodeitem.displayname" [nodedata]="nodeitem" [level]="level + 1" [path]="nodeitem.path" [selectedNodeId]="selectedNodeId" (itemSelected)="emitSelected($event)"></system-module-tree-item>
+        <system-module-tree-item *ngFor="let nodeitem of nodeitems; trackBy: trackByFn" [module]="nodeitem.module" [name]="nodeitem.displayname" [nodedata]="nodeitem" [level]="level + 1" [path]="nodeitem.path" [selectedNodeId]="selectedNodeId" (itemSelected)="emitSelected($event)" [displayAuditFields]="displayAuditFields" [displayRelationshipFields]="displayRelationshipFields"></system-module-tree-item>
     </ul>
 </li>

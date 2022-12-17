@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceNumberRanges;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\TimeDate;
 
 /**
  * Class SpiceNumberRanges
@@ -75,7 +76,7 @@ class SpiceNumberRanges
     {
         $db = DBManagerFactory::getInstance('numberrange');
         $db->transactionStart();
-        $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field' FOR UPDATE"));
+        $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field' AND sysnumberrangeallocation.valid_from <= '".TimeDate::getInstance()->nowDbDate()."' AND sysnumberrangeallocation.valid_to >= '".TimeDate::getInstance()->nowDbDate()."' FOR UPDATE"));
         if (!$numberRange) {
             $db->transactionRollback();
             DBManagerFactory::disconnectInstance('numberrange');

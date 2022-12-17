@@ -16,6 +16,7 @@ import {Subscription} from "rxjs";
 import {language} from '../../services/language.service';
 import {modal} from "../../services/modal.service";
 import {footer} from "../../services/footer.service";
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'system-label',
@@ -35,6 +36,11 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
     @Input() public length: 'default' | 'long' | 'short' = 'default';
 
     /**
+     * Array (in the future maybe also an object) of values to be included in the label text.
+     */
+    @Input() public nestedValues: any;
+
+    /**
      * the subscription on the language
      */
     public subsciptions: Subscription = new Subscription();
@@ -43,7 +49,8 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
                 public modal: modal,
                 public footer: footer,
                 public renderer: Renderer2,
-                public cdRef: ChangeDetectorRef) {
+                public cdRef: ChangeDetectorRef,
+                public sanitizer: DomSanitizer ) {
         this.subsciptions.add(
             this.language.currentlanguage$.subscribe(() => this.detectChanges())
         );
@@ -150,4 +157,13 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
         this.renderer.appendChild(dropdown, ul);
         return dropdown;
     }
+
+    /**
+     * Gets the label text, using getLabelFormatted() or getLabel(), depending of the existence of nested values.
+     */
+    getLabel() {
+        return this.nestedValues ?
+            this.language.getLabelFormatted(this.label, this.nestedValues, this.length ) : this.language.getLabel( this.label, undefined, this.length );
+    }
+
 }

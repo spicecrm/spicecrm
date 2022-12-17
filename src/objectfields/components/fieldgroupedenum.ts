@@ -85,7 +85,7 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
         this.localValue = {
             valueText: value,
             valueArray: valueArray,
-            valueDisplay: valueArray.map(v => languageOptions[v]).join(', '),
+            valueDisplay: valueArray.map(v => languageOptions[v] ?? v).join(', '),
             valueGroups: {}
         };
 
@@ -112,11 +112,21 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit {
     /**
      * set the group item value locally and update the model value
      * @param valueArray
+     * @param group
      * @private
      */
-    public setItemValue(valueArray) {
+    public setItemValue(valueArray, group: string) {
+
+        // check the group if any of its items was checked
+
+        if (valueArray.some(e => e !== group && e.startsWith(group)) && !valueArray.some(e => e == group)) {
+            valueArray.push(group);
+        } else if (!valueArray.some(e => e !== group && e.startsWith(group))) {
+            valueArray = valueArray.filter(e => e !== group);
+        }
 
         const value = valueArray.map(item => `^${item}^`).join(',');
+
         this.setLocalValues(value);
         this.value = value;
     }

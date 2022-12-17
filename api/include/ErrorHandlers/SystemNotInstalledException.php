@@ -2,15 +2,15 @@
 namespace SpiceCRM\includes\ErrorHandlers;
 
 /**
- * throws a specific not installed exception with http code 599 which is unassigned and caught with the frontend
+ * throws a an exception with http code 503 with error code "crmNotInstalled" which is caught with the frontend
  */
 class SystemNotInstalledException extends Exception {
 
     protected $isFatal = true;
-    protected $httpCode = 599;
+    protected $httpCode = 503;
 
-    function __construct( $message = null, $errorCode = null ) {
-        parent::__construct( 'system is not installed', $errorCode );
+    function __construct( $message = null, $errorCode = 'crmNotInstalled' ) {
+        parent::__construct( 'CRM is not installed yet.', $errorCode );
     }
 
 }

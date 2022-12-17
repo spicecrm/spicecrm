@@ -73,4 +73,11 @@ export class SpicePageBuilderElementSection implements OnInit {
     public setIsMouseIn(value) {
         this.spicePageBuilderService.isMouseIn = value ? 'section' : undefined;
     }
+
+    /**
+     * save element as custom
+     */
+    public saveAsCustom() {
+        this.spicePageBuilderService.saveCustomElement(this.section, 'section');
+    }
 }

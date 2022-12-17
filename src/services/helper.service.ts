@@ -237,8 +237,7 @@ export class helper {
      *
      * @param filesize
      */
-    public humanFileSize(filesize) {
-        let thresh = 1024;
+    public humanFileSize(filesize, thresh = 1024) {
         let bytes: number = filesize;
         if (Math.abs(filesize) < thresh) {
             return bytes + " B";

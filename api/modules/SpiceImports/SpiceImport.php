@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceImports;
 
@@ -100,9 +72,9 @@ class SpiceImport extends SpiceBean
     public function deleteImportFile($filemd5)
     {
         if (!unlink("upload://" . $filemd5)) {
-            return json_encode(['status' => 'File cant be deleted']);
+            return ['status' => 'File cant be deleted'];
         } else {
-            return json_encode(['status' => 'succeed']);
+            return ['status' => 'succeed'];
         }
     }
 
@@ -144,11 +116,12 @@ class SpiceImport extends SpiceBean
         return $imports;
     }
 
-    function saveFromImport($data)
+    function saveFromImport( $data )
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $this->objectimport = json_decode($data['objectimport']);
-        $this->data = $data['objectimport'];
+
+        $this->data = json_encode( $data );
+        $this->objectimport = (object)$data;
         $this->module = $this->objectimport->module;
         $this->name = $this->objectimport->module . "_" . gmdate('Y-m-d H:i:s');
         $this->assigned_user_id = $current_user->id;
@@ -159,7 +132,7 @@ class SpiceImport extends SpiceBean
         if ($this->objectimport->fileTooBig) {
             $this->status = 'q';
             parent::save();
-            return json_encode(['status' => 'scheduled', 'msg' => 'Import has been scheduled']);
+            return ['status' => 'scheduled', 'msg' => 'Import has been scheduled'];
         } else {
             $this->status = 'i';
             parent::save();
@@ -169,8 +142,6 @@ class SpiceImport extends SpiceBean
 
     public function process()
     {
-        $decodedData = json_decode($this->data);
-        $this->objectimport = $decodedData;
         $error = false;
         $list = [];
         $delimiter = ($this->objectimport->separator == 'comma') ? ',' : ';';
@@ -232,10 +203,10 @@ class SpiceImport extends SpiceBean
             $this->db->query($sql);
             $this->status = 'e';
             $this->save();
-            return json_encode(['status' => 'error', 'list' => $list, 'import_id' => $this->id, 'msg' => 'Cant open file ' . $this->objectimport->fileName]);
+            return ['status' => 'error', 'list' => $list, 'import_id' => $this->id, 'msg' => 'Cant open file ' . $this->objectimport->fileName];
         }
 
-        return json_encode(['status' => 'imported', 'list' => $list, 'import_id' => $this->id]);
+        return ['status' => 'imported', 'list' => $list, 'import_id' => $this->id];
     }
 
 

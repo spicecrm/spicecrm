@@ -15,7 +15,10 @@
       "SpiceCRM\\data\\": "data",
       "SpiceCRM\\extensions\\includes\\": "extensions/include",
       "SpiceCRM\\extensions\\": "extensions"
-    }
+    },
+    "classmap": [
+      "vendor/nusoap/nusoap.php"
+    ]
   },
   "require": {
     "giggsey/libphonenumber-for-php": "^8.10",
@@ -28,7 +31,8 @@
     "hfig/mapi": "^1.1",
     "tecnickcom/tc-lib-barcode": "^1.17",
     "mtdowling/cron-expression": "^1.2",
-    "sendinblue/api-v3-sdk": "7.x.x"
+    "sendinblue/api-v3-sdk": "7.x.x",
+    "sendgrid/sendgrid": "^8.0"
   },
   "minimum-stability": "rc",
   "description": ""

@@ -73,13 +73,15 @@ export class SystemCurrency implements OnInit {
      */
     public savePreference() {
 
-        let body = [
-            {name: 'default_currency_iso4217', value: this.iso},
-            {name: 'default_currency_name', value: this.name},
-            {name: 'default_currency_symbol', value: this.symbol},
-            {name: 'default_currency_conversion_rate', value: this.conversion_rate},
-        ];
-        this.backend.postRequest('admin/writesettings', {}, body).subscribe(response => {
+        let body = {
+            currencies: {
+                default_currency_iso4217: this.iso,
+                default_currency_name: this.name,
+                default_currency_symbol: this.symbol,
+                default_currency_conversion_rate: this.conversion_rate
+            }
+        };
+        this.backend.postRequest('configuration/settings', {}, body).subscribe(response => {
             if (!response.status) {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
             } else {

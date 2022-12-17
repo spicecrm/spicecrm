@@ -1,11 +1,13 @@
-<div class="slds-grid slds-grid_vertical slds-p-around--medium">
-    <h2 class="slds-text-heading_medium slds-p-bottom--medium">Settings Review</h2>
-    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
-        <tbody>
+<h2 class="slds-text-heading_medium slds-m-horizontal--medium slds-m-bottom_medium">Review &amp; Install</h2>
+
+<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+
+    <thead>
         <tr>
-            <td><h2 class="slds-text-heading_medium">Backend Configuration Settings:</h2></td>
-            <td></td>
+            <th colspan="2" class="slds-text-heading_small">Backend Configuration Settings</th>
         </tr>
+    </thead>
+    <tbody>
         <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.backendconfig| keyvalue">
             <td>
                 <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
@@ -14,10 +16,13 @@
                 <div class="slds-truncate">{{setting.value}}</div>
             </td>
         </tr>
+    </tbody>
+    <thead>
         <tr>
-            <td><h2 class="slds-text-heading_medium">Database Configuration Settings:</h2></td>
-            <td></td>
+            <th colspan="2" class="slds-text-heading_small slds-border_top">Database Configuration Settings</th>
         </tr>
+    </thead>
+    <tbody>
         <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.database| keyvalue">
             <td>
                 <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
@@ -34,10 +39,13 @@
                 <div class="slds-truncate">{{setting.value}}</div>
             </td>
         </tr>
+    </tbody>
+    <thead>
         <tr>
-            <td><h2 class="slds-text-heading_medium">FTS Configuration Settings:</h2></td>
-            <td></td>
+            <th colspan="2" class="slds-text-heading_small slds-border_top">FTS Configuration Settings</th>
         </tr>
+    </thead>
+    <tbody>
         <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.fts| keyvalue">
             <td>
                 <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
@@ -46,10 +54,13 @@
                 <div class="slds-truncate">{{setting.value}}</div>
             </td>
         </tr>
+    </tbody>
+    <thead>
         <tr>
-            <td><h2 class="slds-text-heading_medium">Credentials:</h2></td>
-            <td></td>
+            <th colspan="2" class="slds-text-heading_small slds-border_top">Credentials</th>
         </tr>
+    </thead>
+    <tbody>
         <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.credentials| keyvalue">
             <td>
                 <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
@@ -58,37 +69,50 @@
                 <div class="slds-truncate">{{setting.value}}</div>
             </td>
         </tr>
+    </tbody>
+    <thead>
         <tr>
-            <td><h2 class="slds-text-heading_medium">Language:</h2></td>
-            <td></td>
+            <th colspan="2" class="slds-text-heading_small slds-border_top">Output &amp; Export Settings</th>
         </tr>
-        <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.language| keyvalue">
+    </thead>
+    <tbody>
+        <tr class="slds-hint-parent">
             <td>
-                <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
+                <div class="slds-truncate">Language</div>
             </td>
             <td>
-                <div class="slds-truncate">{{setting.value}}</div>
+                <div class="slds-truncate">{{spiceinstaller.configObject.language}}</div>
             </td>
         </tr>
-        </tbody>
-    </table>
-    <div class="slds-align-bottom slds-grid slds-grid--vertical-align-center slds-p-vertical--small">
-        <div class="slds-m-left--small slds-size--1-of-1">
-            <button class="slds-button slds-button--brand" (click)="install()">begin installation</button>
-        </div>
+        <tr class="slds-hint-parent" *ngFor="let pref of prefsToReview | keyvalue">
+            <td>
+                <div class="slds-truncate">{{pref.key}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{showPreference(pref.key)}}</div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="slds-text-align_right slds-align-bottom slds-grid slds-grid--vertical-align-center slds-p-vertical--small slds-p-horizontal_medium">
+    <div class="slds-size--1-of-1">
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
+        <button class="slds-button slds-button--brand" (click)="install()">Begin Installation</button>
     </div>
 </div>
+
 <ng-container *ngIf="installing">
-    <section role="dialog" aria-modal="true"  class="slds-modal slds-fade-in-open">
-        <div class="slds-modal__container">
-            <div class="slds-modal__header slds-modal__header_empty"></div>
-            <div class="slds-modal__content slds-p-around_medium slds-align--absolute-center">
-                <div class="slds-p-horizontal--x-large slds-grid slds-grid--vertical-align-center">
-                    <div class="cssload-double-torus" style="width: 16px; height: 16px;"></div>
-                    <div class="slds-p-left--medium">Installing</div>
-                </div>
+<section role="dialog" aria-modal="true" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-modal__header_empty"></div>
+        <div class="slds-modal__content slds-p-around_medium slds-align--absolute-center">
+            <div class="slds-p-horizontal--x-large slds-grid slds-grid--vertical-align-center">
+                <div class="cssload-double-torus" style="width: 16px; height: 16px;"></div>
+                <div class="slds-p-left--medium">Installing</div>
             </div>
         </div>
-    </section>
-    <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
 </ng-container>

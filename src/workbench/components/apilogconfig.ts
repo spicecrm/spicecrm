@@ -133,7 +133,8 @@ export class APIlogConfig {
             user_id: record.user_id,
             ip: record.ip,
             direction: record.direction,
-            logtable: record.logtable
+            logtable: record.logtable,
+            is_active: record.is_active
         }
         this.backend.postRequest(`admin/apilog/config/${record.id}`, {}, postData).subscribe({
             next: () => {

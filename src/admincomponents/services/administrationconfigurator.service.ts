@@ -196,7 +196,7 @@ export class administrationconfigurator {
      */
     public sort(field) {
         if (this.sorting.field === field) {
-            this.sorting.direction = this.sorting.direction == 'asc' ? 'dsc' : 'asc';
+            this.sorting.direction = this.sorting.direction == 'asc' ? 'desc' : 'asc';
         } else {
             this.sorting.field = field;
             this.sorting.direction = 'asc';

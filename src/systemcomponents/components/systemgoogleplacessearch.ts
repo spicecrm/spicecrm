@@ -111,7 +111,9 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
      */
     public focus() {
         setTimeout(() => {
-            if (!this.inputfield.element.nativeElement.tabIndex) this.inputfield.element.nativeElement.tabIndex = '-1';
+            if (!this.inputfield.element.nativeElement.tabIndex) {
+                this.renderer.setAttribute(this.inputfield.element.nativeElement, 'tabIndex', '-1');
+            }
             this.inputfield.element.nativeElement.focus();
         });
     }

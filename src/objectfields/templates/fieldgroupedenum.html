@@ -24,7 +24,7 @@
             </system-checkbox>
         </div>
         <div class="slds-form-element__control" [ngClass]="css_classes" >
-            <system-checkbox-group [ngModel]="localValue.valueArray" (ngModelChange)="setItemValue($event)" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
+            <system-checkbox-group [ngModel]="localValue.valueArray" (ngModelChange)="setItemValue($event, group.value)" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
                 <div *ngFor="let option of group.options; trackBy: trackByFn" class="slds-truncate" [ngClass]="columnsClass">
                     <system-checkbox-group-checkbox [value]="option.value">
                         {{option.display}}

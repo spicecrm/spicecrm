@@ -2286,6 +2286,8 @@ protected function checkQuery($sql, $object_name = false)
 					return floatval($val);
 				case 'time':
 				case 'date':
+				case 'datetime':
+				case 'datetimecombo':
 					// empty date can't be '', so convert it to either NULL or empty date value
 					if($val == '') {
 						if (!empty($fieldDef['required'])) {
@@ -3004,12 +3006,15 @@ protected function checkQuery($sql, $object_name = false)
         $values['transaction_id'] = $this->massageValue(LoggerManager::getLogger()->getTransactionId(), $fieldDefs['transaction_id']);
 		$values['field_name']= $this->massageValue($changes['field_name'], $fieldDefs['field_name']);
 		$values['data_type'] = $this->massageValue($changes['data_type'], $fieldDefs['data_type']);
-		if (in_array($changes['data_type'], ['text', 'longtext', 'json'])) {
-			$values['before_value_text'] = $this->massageValue($changes['before'], $fieldDefs['before_value_text']);
-			$values['after_value_text'] = $this->massageValue($changes['after'], $fieldDefs['after_value_text']);
+		if ( in_array( $changes['data_type'], ['text', 'longtext', 'json'] ) or strlen( $changes['before'] > 255 )) {
+			$values['before_value_text'] = $this->massageValue( $changes['before'], $fieldDefs['before_value_text'] );
 		} else {
-			$values['before_value_string'] = $this->massageValue($changes['before'], $fieldDefs['before_value_string']);
-			$values['after_value_string'] = $this->massageValue($changes['after'], $fieldDefs['after_value_string']);
+            $values['before_value_string'] = $this->massageValue( $changes['before'], $fieldDefs['before_value_string'] );
+        }
+        if ( in_array( $changes['data_type'], ['text', 'longtext', 'json'] ) or strlen( $changes['after'] > 255 )) {
+            $values['after_value_text'] = $this->massageValue( $changes['after'], $fieldDefs['after_value_text'] );
+        } else {
+			$values['after_value_string'] = $this->massageValue( $changes['after'], $fieldDefs['after_value_string'] );
 		}
 		$values['date_created'] = $this->massageValue(TimeDate::getInstance()->nowDb(), $fieldDefs['date_created'] );
 		$values['created_by'] = $this->massageValue($current_user->id, $fieldDefs['created_by']);
@@ -3376,7 +3381,9 @@ protected function checkQuery($sql, $object_name = false)
 		if(isset($this->type_class[$type]) && ($this->type_class[$type] == 'bool' || $this->type_class[$type] == 'int' || $this->type_class[$type] == 'float')) {
 			return 0;
 		}
-
+        if(isset($this->type_class[$type]) && ($this->type_class[$type] == 'date' || $this->type_class[$type] == 'datetime' || $this->type_class[$type] == 'datetimecombo')) {
+            return "NULL";
+        }
 		return "''";
 	}
 

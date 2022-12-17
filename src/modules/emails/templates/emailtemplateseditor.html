@@ -9,10 +9,19 @@
             </li>
         </ul>
         <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'editor', 'slds-hide': selectedTab != 'editor'}" role="tabpanel">
-            <div *ngIf="!view.isEditMode() && !model.data[fieldsNames.bodyHtmlField]; else contentEditingContainer" (dblclick)="setEditMode()" class="slds-grid slds-grid--vertical-align-start slds-grid--align-end" style="min-height: 250px">
-                <button class="slds-button slds-button--icon spice-hover-button" (click)="setEditMode()">
-                    <system-button-icon [icon]="'edit'"></system-button-icon>
-                </button>
+            <div *ngIf="!view.isEditMode() && !model.data[fieldsNames.bodyHtmlField]; else contentEditingContainer" (dblclick)="setEditMode()" style="min-height: 250px">
+                <div class="slds-grid slds-m-bottom--xx-small">
+                    <field-container *ngIf="!!fieldsNames.subjectField" [field]="fieldsNames.subjectField" class="slds-grow slds-m-right--x-small"  fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small"></field-container>
+                    <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-right--x-small"></field-container>
+                </div>
+                <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center" style="min-height: 250px">
+                    <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1"></field-container>
+                    <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1"></field-container>
+                    <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1"></field-container>
+                    <div *ngSwitchDefault>
+                        <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1"></field-container>
+                    </div>
+                </div>
             </div>
             <ng-template #contentEditingContainer>
                 <div class="slds-grid slds-m-bottom--xx-small">

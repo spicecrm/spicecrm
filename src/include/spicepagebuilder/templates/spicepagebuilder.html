@@ -1,6 +1,6 @@
 <div class="slds-grid spice-page-builder-main-container" system-to-bottom-noscroll cdkDropListGroup>
     <ng-container *ngIf="dropListGroupDefined">
-        <spice-page-builder-panel [self]="self" class="slds-size--1-of-4 spice-display-block slds-height_full slds-border--right" style="box-shadow: 10px 0 20px 0 #1b1b1b;"></spice-page-builder-panel>
+        <spice-page-builder-panel [self]="self" [customSections]="spicePageBuilderService.customSections"  [customItems]="spicePageBuilderService.customItems" class="slds-size--1-of-4 spice-display-block slds-height_full slds-border--right" style="box-shadow: 10px 0 20px 0 #1b1b1b;"></spice-page-builder-panel>
         <spice-page-builder-renderer class="slds-size--3-of-4 spice-display-block slds-height_full"></spice-page-builder-renderer>
     </ng-container>
 </div>

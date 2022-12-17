@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {AfterViewInit, Component, ElementRef, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import { AfterViewInit, Component, ComponentRef, ElementRef, Injector, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {model} from "../../services/model.service";
 import {language} from "../../services/language.service";
@@ -14,6 +14,7 @@ import {configurationService} from "../../services/configuration.service";
 import {backend} from "../../services/backend.service";
 import {broadcast} from "../../services/broadcast.service";
 import {Subscription} from "rxjs";
+import {AgreementsAddRevisionModal} from "../../modules/agreements/components/agreementsaddrevisionmodal";
 
 /**
  * a generic component that renders a panel in teh contect of a model. This allows uploading files and also has a drag and drop functionality to cimply drop files over the component and upload the file
@@ -101,19 +102,6 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      */
     public subscriptions: Subscription = new Subscription();
 
-    /**
-     * contructor sets the module and id for the laoder
-     * @param modelattachments
-     * @param language
-     * @param model
-     * @param renderer
-     * @param toast
-     * @param footer
-     * @param metadata
-     * @param backend
-     * @param configurationService
-     * @param modalservice
-     */
     constructor(public modelattachments: modelattachments,
                 public language: language,
                 public model: model,
@@ -125,7 +113,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
                 public broadcast: broadcast,
                 public elementRef: ElementRef,
                 public configurationService: configurationService,
-                public modalservice: modal) {
+                public modal: modal,
+                public injector: Injector
+    ) {
     }
 
     /**
@@ -249,6 +239,11 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param event the drop event
      */
     public fileDrop(files) {
+        if(this.componentconfig.disableupload && this.componentconfig.disableupload === true){
+            this.toast.sendToast(this.language.getLabel('LBL_UPLOAD_IS_DISABLED'), 'error');
+            return false;
+        }
+
         if (files && files.length >= 1) {
             this.doupload(files);
         }
@@ -276,7 +271,56 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param files an array with files
      */
     public doupload(files) {
-        this.modelattachments.uploadAttachmentsBase64(files);
+        if (this.componentconfig.revComponent) {
+            if (files.length != 1) {
+                this.toast.sendToast(this.language.getLabel('LBL_ONE_FILE_ONLY'), 'error');
+                return false;
+            }
+        }
+
+        this.modelattachments.uploadAttachmentsBase64(files).subscribe({
+            next: (res) => {
+                if (this.componentconfig.revComponent) {
+                    this.openRevisionModal(files);
+                }
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+            }
+        });
+    }
+
+    /**
+     *
+     * @param files
+     * opens AgreementsRevisionModal
+     * used only in Agreements Module
+     */
+    public openRevisionModal(files) {
+        let loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        this.backend.getRequest('common/spiceattachments/module/' + this.model.module + '/' + this.model.id).subscribe(result => {
+            loadingModal.emit(true);
+            if (result) {
+                this.modal.openModal('AgreementsAddRevisionModal', true, this.injector).subscribe(
+                    (modalRef: ComponentRef<AgreementsAddRevisionModal>) => {
+                        modalRef.instance.files = files;
+                        modalRef.instance.revComponent = this.componentconfig;
+                        modalRef.instance.spiceattachment = result[0];
+
+                        modalRef.instance.responseSubject.subscribe({
+                            next: res => {
+                                if (!res) return;
+                                this.toast.sendToast('MSG_REVISION_CREATED', 'success');
+                                // re-initialize modelattachments model for Agreements
+                                this.setModelData();
+                            }
+                        })
+                    }
+                );
+            } else {
+                this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+            }
+        });
     }
 
     /**

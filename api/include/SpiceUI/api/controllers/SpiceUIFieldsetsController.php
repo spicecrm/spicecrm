@@ -2,8 +2,11 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHelper;
 use stdClass;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -83,6 +86,10 @@ class SpiceUIFieldsetsController
         return $retArray;
     }
 
+    /**
+     * @throws ForbiddenException
+     * @throws Exception
+     */
     static function setFieldSets(Request $req, Response $res, $args): Response
     {
         $db = DBManagerFactory::getInstance();
@@ -92,85 +99,168 @@ class SpiceUIFieldsetsController
         // check if we are an admin user
         SpiceUIRESTHelper::checkAdmin();
 
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
-
-
         // add items
-        foreach ($data['add'] as $fieldsetid => $fieldsetdata) {
-            $db->query("INSERT INTO sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsets (id, module, name, package, version) VALUES('$fieldsetid', '" . $fieldsetdata['module'] . "', '" . $fieldsetdata['name'] . "', '" . $fieldsetdata['package'] . "', '{$_SESSION['confversion']}')");
+        foreach ($data['add'] as $fieldsetId => $fieldsetData) {
 
-            // add to the CR
-            if ($cr) $cr->addDBEntry("sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsets", $fieldsetid, 'I', $fieldsetdata['module'] . "/" . $fieldsetdata['name']);
+            self::insertFieldset($fieldsetId, $fieldsetData);
 
-            foreach ($fieldsetdata['items'] as $fieldsetitem) {
-                $db->query("INSERT INTO sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems (id, fieldset_id, field, fieldset, sequence, fieldconfig, package, version) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "','" . $fieldsetitem['package'] . "', '{$_SESSION['confversion']}')");
+            $fieldsetItemTable = "sysui" . ($fieldsetData['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems";
 
-                // add to the CR
-                if ($cr) $cr->addDBEntry("sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems", $fieldsetitem['id'], 'I', $fieldsetdata['module'] . "/" . $fieldsetdata['name'] . '/' . $fieldsetitem['field']);
+            foreach ($fieldsetData['items'] as $fieldsetItem) {
+
+                self::insertFieldsetItem($fieldsetItem, $fieldsetId, $fieldsetData, $fieldsetItemTable);
             }
         }
 
         // handle the update
-        foreach ($data['update'] as $fieldsetid => $fieldsetdata) {
+        foreach ($data['update'] as $fieldsetId => $fieldsetData) {
 
-            // get the record and check for change
-            $record = $db->fetchByAssoc($db->query("SELECT * FROM sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsets WHERE id='$fieldsetid'"));
-            if ($record['name'] != $fieldsetdata['name'] || $record['package'] != $fieldsetdata['package']) {
-                // update the record
-                $db->query("UPDATE sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsets SET name='" . $fieldsetdata['name'] . "', package='" . $fieldsetdata['package'] . "', version='{$_SESSION['confversion']}' WHERE id='$fieldsetid'");
+            $fieldsetTable = "sysui" . ($fieldsetData['type'] == 'custom' ? 'custom' : '') . "fieldsets";
 
-                // add to the CR
-                if ($cr) $cr->addDBEntry("sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsets", $fieldsetid, 'U', $fieldsetdata['module'] . "/" . $fieldsetdata['name']);
+            $existingFieldset = $db->fetchByAssoc($db->query("SELECT * FROM $fieldsetTable WHERE id='$fieldsetId'"));
+
+            // handle fieldset
+            if ($existingFieldset && SystemDeploymentCR::hasChanged($existingFieldset, $fieldsetData, ['name', 'version', 'package'])) {
+
+                $dbData = [
+                    'name' => $fieldsetData['name'],
+                    'package' => $fieldsetData['package'],
+                    'version' => $_SESSION['confversion']
+                ];
+
+                $name = $fieldsetData['module'] . "/" . $fieldsetData['name'];
+
+                SystemDeploymentCR::writeDBEntry($fieldsetTable, $fieldsetId, $dbData, $name, SystemDeploymentCR::ACTION_UPDATE);
+
+            } else if (!$existingFieldset) {
+
+                self::insertFieldset($fieldsetId, $fieldsetData);
             }
 
-            // get all fieldset items
-            $items = $db->query("SELECT * FROM sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems WHERE fieldset_id = '$fieldsetid'");
-            while ($item = $db->fetchByAssoc($items)) {
-                $i = 0;
-                $itemIndex = false;
-                foreach ($fieldsetdata['items'] as $index => $fieldsetitem) {
-                    if ($fieldsetitem['id'] == $item['id']) {
-                        unset($fieldsetdata['items'][$index]);
-                        $itemIndex = true;
-                        break;
-                    }
-                }
-
-                // if we have the entry
-                if ($itemIndex !== false) {
-                    if ($item['sequence'] != $fieldsetitem['sequence'] ||
-                        $item['package'] != $fieldsetitem['package'] ||
-                        $item['field'] != $fieldsetitem['field'] ||
-                        $item['fieldset'] != $fieldsetitem['fieldset'] ||
-                        md5($item['fieldconfig']) != md5(json_encode($fieldsetitem['fieldconfig']))) {
-                        $db->query("UPDATE sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems  SET package = '" . $fieldsetitem['package'] . "', field = '" . $fieldsetitem['field'] . "', fieldset = '" . $fieldsetitem['fieldset'] . "', sequence = '" . $fieldsetitem['sequence'] . "', fieldconfig = '" . json_encode($fieldsetitem['fieldconfig']) . "', version = '{$_SESSION['confversion']}' WHERE id='{$item['id']}'");
-
-                        // add to the CR
-                        if ($cr) $cr->addDBEntry("sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems", $fieldsetitem['id'], 'U', $fieldsetdata['module'] . "/" . $fieldsetdata['name'] . '/' . $fieldsetitem['field']);
-                    }
-
-                } else {
-                    // remove it
-                    $db->query("DELETE FROM sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems WHERE id='{$item['id']}'");
-                    // add to the CR
-                    if ($cr) $cr->addDBEntry("sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems", $fieldsetitem['id'], 'D', $fieldsetdata['module'] . "/" . $fieldsetdata['name'] . '/' . $fieldsetitem['field']);
-
-                }
-            }
-
-            // add all items we did not find
-            foreach ($fieldsetdata['items'] as $fieldsetitem) {
-                $db->query("INSERT INTO sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems (id, fieldset_id, package, field, fieldset, sequence, fieldconfig, version) VALUES('" . $fieldsetitem['id'] . "','$fieldsetid','" . $fieldsetitem['package'] . "','" . $fieldsetitem['field'] . "','" . $fieldsetitem['fieldset'] . "','" . $fieldsetitem['sequence'] . "','" . json_encode($fieldsetitem['fieldconfig']) . "', '{$_SESSION['confversion']}')");
-
-                // add to the CR
-                if ($cr) $cr->addDBEntry("sysui" . ($fieldsetdata['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems", $fieldsetitem['id'], 'I', $fieldsetdata['module'] . "/" . $fieldsetdata['name'] . '/' . $fieldsetitem['field']);
-
-            }
+            self::handleFieldsetItems($fieldsetId, $fieldsetData);
         }
 
         return $res->withJson(true);
+    }
 
+    /**
+     * @throws Exception
+     */
+    private static function handleFieldsetItems($fieldsetId, $fieldsetData)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $fieldsetItemTable = "sysui" . ($fieldsetData['type'] == 'custom' ? 'custom' : '') . "fieldsetsitems";
+        $name = $fieldsetData['module'] . "/" . $fieldsetData['name'] . '/';
+
+        $query = $db->query("SELECT * FROM $fieldsetItemTable WHERE fieldset_id = '$fieldsetId'");
+
+        // manage existing items
+        while ($existingItem = $db->fetchByAssoc($query)) {
+
+            $fieldsetItem = null;
+
+            // check if the existing item exists in the update array
+            $existingItemInPostData = false;
+            foreach ($fieldsetData['items'] as $index => $fieldsetItem) {
+
+                if ($fieldsetItem['id'] == $existingItem['id']) {
+
+                    $fieldsetItem = $fieldsetData['items'][$index];
+                    // remove the item from items array
+                    unset($fieldsetData['items'][$index]);
+                    $existingItemInPostData = true;
+                    break;
+                }
+            }
+
+            // prepare for check
+            $existingItem['fieldconfig'] = json_decode($existingItem['fieldconfig']);
+
+            // if we have the item and it has changed
+            if ($existingItemInPostData && SystemDeploymentCR::hasChanged($existingItem, $fieldsetItem, ['sequence', 'package', 'field', 'fieldset', 'fieldconfig'])) {
+
+                $dbData = [
+                    'field' => $fieldsetItem['field'],
+                    'fieldset' => $fieldsetItem['fieldset'],
+                    'sequence' => $fieldsetItem['sequence'],
+                    'fieldconfig' => json_encode($fieldsetItem['fieldconfig']),
+                    'package' => $fieldsetItem['package'],
+                    'version' => $_SESSION['confversion'],
+                ];
+
+                $name = $name . $fieldsetItem['field'];
+
+                SystemDeploymentCR::writeDBEntry($fieldsetItemTable, $fieldsetItem['id'], $dbData, $name, SystemDeploymentCR::ACTION_UPDATE);
+
+            } else if (!$existingItemInPostData) {
+
+                $name = $name . $existingItem['field'];
+                SystemDeploymentCR::deleteDBEntry($fieldsetItemTable, $existingItem['id'], $name);
+            }
+        }
+
+        // add all new items
+        foreach ($fieldsetData['items'] as $fieldsetItem) {
+
+            self::insertFieldsetItem($fieldsetItem, $fieldsetId, $fieldsetData, $fieldsetItemTable);
+        }
+    }
+
+    /**
+     * insert fieldset items
+     * @param array $fieldsetItem
+     * @param string $fieldsetId
+     * @param array $fieldsetData
+     * @param string $fieldsetItemTable
+     * @throws Exception
+     */
+    private static function insertFieldsetItem(array $fieldsetItem, string $fieldsetId, array $fieldsetData, string $fieldsetItemTable)
+    {
+        $dbData = [
+            'id' => $fieldsetItem['id'],
+            'fieldset_id' => $fieldsetId,
+            'field' => $fieldsetItem['field'],
+            'fieldset' => $fieldsetItem['fieldset'],
+            'sequence' => $fieldsetItem['sequence'],
+            'fieldconfig' => json_encode($fieldsetItem['fieldconfig']),
+            'package' => $fieldsetItem['package'],
+            'version' => $_SESSION['confversion'],
+        ];
+
+        $itemName = $fieldsetItem['field'];
+
+        if (empty($fieldsetItem['field']) && !empty($fieldsetItem['fieldset'])) {
+            $db = DBManagerFactory::getInstance();
+            $itemName = $db->getOne("SELECT name FROM sysuifieldsets WHERE id='{$fieldsetItem['fieldset']}' UNION SELECT name FROM sysuicustomfieldsets WHERE id='{$fieldsetItem['fieldset']}' ");
+        }
+
+        $name = $fieldsetData['module'] . "/" . $fieldsetData['name'] . '/' . $itemName;
+
+        SystemDeploymentCR::writeDBEntry($fieldsetItemTable, $fieldsetItem['id'], $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
+    }
+
+    /**
+     * insert fieldset
+     * @param string $fieldsetId
+     * @param array $fieldsetData
+     * @return void
+     * @throws Exception
+     */
+    private static function insertFieldset(string $fieldsetId, array $fieldsetData)
+    {
+        $fieldsetTable = "sysui" . ($fieldsetData['type'] == 'custom' ? 'custom' : '') . "fieldsets";
+
+        $dbData = [
+            'id' => $fieldsetId,
+            'module' => $fieldsetData['module'],
+            'name' => $fieldsetData['name'],
+            'package' => $fieldsetData['package'],
+            'version' => $_SESSION['confversion'],
+        ];
+
+        $name = $fieldsetData['module'] . "/" . $fieldsetData['name'];
+
+        SystemDeploymentCR::writeDBEntry($fieldsetTable, $fieldsetId, $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
     }
 }

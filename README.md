@@ -5,7 +5,7 @@ Welcome to the [SpiceCRM](https://www.spicecrm.com)
 ![SpiceUI](https://www.spicecrm.com/wp-content/uploads/2020/12/allformfactors-1.png)
 
 * Built from scratch as new flexible UI that can be used with the SpiceCRM backend
-* written in Angular (current Release 14.0.6)
+* written in Angular (current Release 14.2.0)
 * based on the lightning design system
 
 SpiceCRM is available as public core release and as licensed more release. You can learn about the differences between core and more release at [www.spicecrm.com](https://www.spicecrm.com/editions/)
@@ -23,7 +23,7 @@ you will need a classic Web server to run SpiceCRM.
 1. Clone the project or download the files as ZIP files
 2. Launch installer by calling installation folder path in your webbrowser and follow the installation procedure.
 
-You can also find a more detailed installation guide [here](https://www.spicecrm.com/wp-content/uploads/2021/11/SpiceCRM_UI_installation_guide_allinone.pdf)
+You can also find a more detailed installation guide [here](https://www.spicecrm.com/wp-content/uploads/2022/11/SpiceCRM-Installation-Guide_202202001.pdf)
 
 ## Support
 

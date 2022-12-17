@@ -39,17 +39,18 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
             case 'applauncher.setrole':
                 this.loadDashboardConfig();
                 break;
-                case 'wizard.complete':
-                this.loadDashboardConfig();
+            case 'wizard.complete':
+                this.reloadContainer();
                 break;
 
         }
     }
 
+    /**
+     * load the dashboard id
+     */
     public loadDashboardConfig() {
-        if(this.dashboardcontainercomponent){
-            this.dashboardcontainercomponent.instance.destroy()
-        }
+
         let homeDashboard = this.userpreferences.toUse.home_dashboard || undefined;
         let activeRole = this.metadata.getActiveRole();
         this.dashboardid = homeDashboard || activeRole.default_dashboard || '';
@@ -61,6 +62,20 @@ export class HomeDashboard implements AfterViewInit, OnDestroy {
     }
 
     public ngAfterViewInit() {
+        this.reloadContainer();
+    }
+
+    /**
+     * reload the dashboard container component
+     * @private
+     */
+    private reloadContainer() {
+
+        if (this.dashboardcontainercomponent) {
+            this.dashboardcontainercomponent.destroy();
+            this.dashboardcontainercomponent = undefined;
+        }
+
         this.metadata.addComponent('DashboardContainer', this.dashboardcontainer).subscribe(component => {
             component.instance.dashboardid = this.dashboardid;
             component.instance.context = 'Home';

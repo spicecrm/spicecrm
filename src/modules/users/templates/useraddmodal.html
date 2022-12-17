@@ -5,33 +5,32 @@
             <object-record-fieldset [fieldset]="profileFieldset" [direction]="'vertical'"></object-record-fieldset>
         </system-section>
         <system-section titlelabel="LBL_USER_PASSWORD">
-            <div class="slds-small-size--1-of-1 slds-medium-size--1-of-2">
-                <div class="slds-p-around--x-small">
+            <div *ngIf="pwdGuideline">
+                <system-label style="display:inline-block" label="LBL_PWD_GUIDELINE"></system-label>: {{pwdGuideline}}<br>
+            </div>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-p-around--x-small slds-size--1-of-1 slds-large-size--1-of-2">
                     <div class="slds-form--stacked slds-text-align--left">
-                        <div *ngIf="pwdGuideline">
-                            <system-label style="display:inline-block" label="LBL_PWD_GUIDELINE"></system-label>: {{pwdGuideline}}<br>
-                        </div>
                         <div class="slds-grid">
                             <div class="slds-size--10-of-12">
                                 <div class="slds-form-element slds-m-vertical--small" [ngClass]="pwdFieldStyle">
                                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                         <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
                                         <input [type]="PwdFieldType" [(ngModel)]="password" class="slds-input" [placeholder]="language.getLabel('MSG_ENTER_NEW_PASSWORD')"
-                                               [disabled]="autoGenerate" [ngModelOptions]="modelOptions">
+                                               [disabled]="autoGenerate || externalAuthOnly" [ngModelOptions]="modelOptions">
                                     </div>
-                                    <field-messages [messages]="passwordMsg"></field-messages>
+                                    <field-messages *ngIf="!externalAuthOnly" [messages]="passwordMsg"></field-messages>
                                 </div>
                                 <div class="slds-form-element  slds-m-vertical--small" [ngClass]="rePwdFieldStyle">
                                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                         <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
                                         <input [type]="PwdFieldType" [(ngModel)]="repeatPassword" class="slds-input" [placeholder]="language.getLabel('LBL_REPEAT_PWD')"
-                                               [disabled]="autoGenerate" [ngModelOptions]="modelOptions">
+                                               [disabled]="autoGenerate || externalAuthOnly" [ngModelOptions]="modelOptions">
                                     </div>
-                                    <field-messages [messages]="rePasswordMsg"></field-messages>
+                                    <field-messages *ngIf="!externalAuthOnly" [messages]="rePasswordMsg"></field-messages>
                                 </div>
 
                             </div>
-
                             <div class="slds-size--2-of-12 slds-p-horizontal--xx-small slds-p-vertical--small" style="white-space:nowrap">
                                 <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="toggleShowPassword()">
                                     <system-button-icon [icon]="!showPassword ? 'preview': 'hide'" size="medium"></system-button-icon>
@@ -42,9 +41,12 @@
                             </div>
                         </div>
                     </div>
-                    <system-checkbox [(ngModel)]="autoGenerate"><system-label label="LBL_AUTO_GENERATE"></system-label></system-checkbox>
-                    <system-checkbox class="slds-m-left--small" [(ngModel)]="sendByEmail"><system-label label="LBL_SEND_BY_EMAIL"></system-label></system-checkbox>
-                    <system-checkbox class="slds-m-left--small" [(ngModel)]="forceReset"><system-label label="LBL_FORCE_RESET"></system-label></system-checkbox>
+                </div>
+                <div class="slds-p-horizontal--small slds-p-vertical_medium slds-size--1-of-1 slds-large-size--1-of-2 slds-grid slds-grid--vertical">
+                    <system-checkbox [disabled]="externalAuthOnly" [(ngModel)]="autoGenerate"><system-label label="LBL_AUTO_GENERATE"></system-label></system-checkbox>
+                    <system-checkbox [disabled]="externalAuthOnly" [(ngModel)]="sendByEmail"><system-label label="LBL_SEND_BY_EMAIL"></system-label></system-checkbox>
+                    <system-checkbox [disabled]="externalAuthOnly" [(ngModel)]="forceReset"><system-label label="LBL_FORCE_RESET"></system-label></system-checkbox>
+                    <system-checkbox  [(ngModel)]="externalAuthOnly"><system-label label="LBL_EXT_AUTHENTICATE"></system-label></system-checkbox>
                 </div>
             </div>
         </system-section>

@@ -1,40 +1,12 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\authentication\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TwoFactorAuthenticate;
-use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -52,18 +24,34 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class AuthenticateController
 {
+    /**
+     * reset password by token
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
     public function authResetPasswordByToken(Request $req, Response $res, array $args): Response
     {
         $parsedBody = $req->getParsedBody();
-        $userAuthenticationController = new UserAuthenticate();
+        $userAuthenticationController = new SpiceCRMPasswordUtils();
         $userAuthenticationController->resetPasswordByToken($args['token'], $parsedBody['newPassword']);
         return $res->withJson($res);
 
     }
 
+    /**
+     * send password token to user
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
     public function authSendTokenToUser(Request $req, Response $res, array $args): Response
     {
-        $sugarAuthenticationObj = new UserAuthenticate();
+        $sugarAuthenticationObj = new SpiceCRMPasswordUtils();
         try {
             $sugarAuthenticationObj->sendTokenToUser($args['emailAddress']);
         } catch (Exception $exception) {
@@ -74,31 +62,43 @@ class AuthenticateController
     }
 
     /**
-     *this function is in beta state and can be used for two factor authentication
+     * change user password
+     * @throws Exception
+     * @throws UnauthorizedException | \Exception | ForbiddenException
      */
-    public function authCheckCode(Request $req, Response $res, array $args): Response
-    {
-        $twoFactorAuthentication = new TwoFactorAuthenticate();
-
-        return $res->withJson($twoFactorAuthentication->checkCode("12345", "56789"));
-    }
-
-    public function authChangePassword(Request $req, Response $res, array $args)
+    public function authChangePassword(Request $req, Response $res, array $args): Response
     {
         $parsedBody = $req->getParsedBody();
-        AuthenticationController::getInstance()->changePassword($parsedBody['username'], $parsedBody['password'], $parsedBody['newPassword'], false);
+
+        $spiceCRMAuth = new SpiceCRMAuthenticate();
+        $userId = $spiceCRMAuth->handleCredentials($parsedBody['username'], $parsedBody['password']);
+
+        /** @var User $user */
+        $user = BeanFactory::getBean('Users', $userId);
+
+        if (!$user) {
+            throw new UnauthorizedException("User not found");
+        }
+
+        AuthenticationController::getInstance()->setCurrentUser($user);
+
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
+        $sugarAuthenticationObj->changePassword($parsedBody['username'], $parsedBody['newPassword']);
 
         return $res->withJson($res);
 
     }
 
-    public function authGetModuleACL(Request $req, Response $res, array $args): Response
-    {
-        $sugarAuthenticateObj = new UserAuthenticate();
-
-        return $res->withJson($sugarAuthenticateObj->get_modules_acl());
-    }
-
+    /**
+     * set new user password
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws ForbiddenException
+     * @throws UnauthorizedException
+     */
     public function authSetNewPassword(Request $req, Response $res, array $args): Response
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -128,7 +128,7 @@ class AuthenticateController
             throw new UnauthorizedException("Password Reset due to external_auth_only unavailable");
         }
 
-        $sugarAuthenticationObj = new UserAuthenticate();
+        $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
         $sugarAuthenticationObj->setNewPassword($userObj, $parsedBody['newPassword'], $parsedBody['sendEmail'], $parsedBody['forceReset']);
 
         return $res->withJson(['success' => true]);
@@ -155,32 +155,45 @@ class AuthenticateController
      * @throws \Com\Tecnick\Color\Exception
      * @throws \SpiceCRM\includes\ErrorHandlers\BadRequestException
      */
-    public function generateTOTPSecret($req, $res, array $args)
+    public function generateTOTPSecret( Request $req, Response $res, array $args)
     {
         $spice_config = SpiceConfig::getInstance()->config;
         $db = DBManagerFactory::getInstance();
         $timeDate = TimeDate::getInstance();
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        if ( !$current_user ) {
+        $queryParams = $req->getQueryParams();
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        if ( isset( $queryParams['onBehalfUserId'] ) and $currentUser->isAdmin() ) {
+            $forUser = BeanFactory::getBean('Users', $queryParams['onBehalfUserId'] );
+        } else {
+            $forUser = $currentUser;
+        }
+        if ( !$forUser ) {
             $body = $req->getParsedBody();
             if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
-                $userAuthenticateObj = new UserAuthenticate();
-                $current_user = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+                $userAuthenticateObj = new SpiceCRMAuthenticate();
+                $authData = new \StdClass();
+                $authData->username = $body['username'];
+                $authData->password = $body['password'];
+                $authResponse = $userAuthenticateObj->authenticate($authData, 'credentials');
+                // load a User object
+                $forUser = BeanFactory::getBean('Users');
+                $forUser = $forUser->retrieve_by_string_fields(['user_name' => $authResponse->username]);
             }
         }
+
         $auth = new TOTPAuthentication();
         $secret = $auth->generateSecret();
 
         // delete all old not confirmed records
-        $db->query("UPDATE users_totp SET deleted = 1 WHERE user_id='{$current_user->id}'AND auth_status='C' AND deleted = 0");
+        $db->query("UPDATE users_totp SET deleted = 1 WHERE user_id='{$forUser->id}'AND auth_status='C' AND deleted = 0");
 
         // generate a new pending record
         $id = SpiceUtils::createGuid();
-        $db->query("INSERT INTO users_totp (id, user_id, user_secret, date_generated,auth_status, deleted) VALUES('{$id}', '{$current_user->id}', '{$secret}', '{$timeDate->nowDb()}', 'C', 0)");
+        $db->query("INSERT INTO users_totp (id, user_id, user_secret, date_generated,auth_status, deleted) VALUES('{$id}', '{$forUser->id}', '{$secret}', '{$timeDate->nowDb()}', 'C', 0)");
 
         $hostname = str_replace(' ', '_', $spice_config['system']['name']);
 
-        return $res->withJson(['secret' => $secret, 'name' => "{$current_user->user_name}@{$hostname}"  , 'qrcode' => $auth->getQRCode($current_user->user_name, $hostname, $secret)]);
+        return $res->withJson(['secret' => $secret, 'name' => "{$forUser->user_name}@{$hostname}"  , 'qrcode' => $auth->getQRCode($forUser->user_name, $hostname, $secret)]);
     }
 
     /**
@@ -192,20 +205,32 @@ class AuthenticateController
      * @return mixed
      * @throws NotFoundException
      */
-    public function validateTOTPCode($req, $res, array $args)
+    public function validateTOTPCode( Request $req, Response $res, array $args)
     {
         $db = DBManagerFactory::getInstance();
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $queryParams = $req->getQueryParams();
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        if ( isset( $queryParams['onBehalfUserId'] ) and $currentUser->isAdmin() ) {
+            $forUser = BeanFactory::getBean('Users', $queryParams['onBehalfUserId'] );
+        } else {
+            $forUser = $currentUser;
+        }
 
-        if ( !$current_user ) {
+        if ( !$forUser ) {
             $body = $req->getParsedBody();
             if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
-                $userAuthenticateObj = new UserAuthenticate();
-                $current_user = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+                $userAuthenticateObj = new SpiceCRMAuthenticate();
+                $authData = new \StdClass();
+                $authData->username = $body['username'];
+                $authData->password = $body['password'];
+                $authResponse = $userAuthenticateObj->authenticate($authData, 'credentials');
+                // load a User object
+                $forUser = BeanFactory::getBean('Users');
+                $forUser = $forUser->retrieve_by_string_fields(['user_name' => $authResponse->username]);
             }
         }
 
-        $record = $db->fetchOne($x="SELECT * FROM users_totp WHERE user_id = '{$current_user->id}' AND auth_status = 'C' AND deleted = 0");
+        $record = $db->fetchOne("SELECT * FROM users_totp WHERE user_id = '{$forUser->id}' AND auth_status = 'C' AND deleted = 0");
 
         if(!$record){
             throw new NotFoundException('no record to validate');
@@ -231,9 +256,15 @@ class AuthenticateController
      * @return mixed
      * @throws NotFoundException
      */
-    public function checkTOTPActive($req, $res, array $args)
+    public function checkTOTPActive( Request $req, Response $res, array $args)
     {
-        return $res->withJson(['active' => TOTPAuthentication::checkTOTPActive()]);
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $queryParams = $req->getQueryParams();
+        if ( isset( $queryParams['onBehalfUserId'] ) and $currentUser->isAdmin() ) {
+            $forUser = BeanFactory::getBean('Users', $queryParams['onBehalfUserId'] );
+        } else $forUser = null;
+
+        return $res->withJson(['active' => TOTPAuthentication::checkTOTPActive( $forUser->id )]);
     }
     /**
      * vdeletes an active TOTP Code
@@ -244,8 +275,14 @@ class AuthenticateController
      * @return mixed
      * @throws NotFoundException
      */
-    public function deleteTOTPActive($req, $res, array $args)
+    public function deleteTOTPActive( Request $req, Response $res, array $args)
     {
-        return $res->withJson(['success' => TOTPAuthentication::deleteTOTP()]);
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $queryParams = $req->getQueryParams();
+        if ( isset( $queryParams['onBehalfUserId'] ) and $currentUser->isAdmin() ) {
+            $forUser = BeanFactory::getBean('Users', $queryParams['onBehalfUserId'] );
+        } else $forUser = null;
+
+        return $res->withJson(['success' => TOTPAuthentication::deleteTOTP( $forUser->id )]);
     }
 }

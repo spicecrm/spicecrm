@@ -1,11 +1,8 @@
 /**
  * @module services
  */
-import {from, Observable, of, Subject, throwError} from "rxjs";
+import {catchError, from, Observable, of, Subject, switchMap, throwError} from "rxjs";
 import {
-    Compiler,
-    ComponentFactory,
-    ComponentFactoryResolver,
     ComponentRef,
     EventEmitter,
     Injectable,
@@ -22,26 +19,21 @@ import {SystemComponentContainer} from "../systemcomponents/components/systemcom
 import {map} from "rxjs/operators";
 import {SystemNavigationCollector} from "../systemcomponents/components/systemnavigationcollector";
 import {SystemComponentMissing} from "../systemcomponents/components/systemcomponentmissing";
+import {ComponentType} from "@angular/cdk/overlay";
 
 declare var _;
 
 @Injectable()
 export class metadata {
     // modules: Array<any> = [];
-    /**
-     * hols the module defs returned from teh backend. This has all teh necesary info on the module itself
-     */
-    public componentFactories: any = {};
     public role: string = "";
 
     constructor(
         public http: HttpClient,
         public session: session,
         public configuration: configurationService,
-        public componentFactoryResolver: ComponentFactoryResolver,
         public router: Router,
         public broadcast: broadcast,
-        public compiler: Compiler,
         public Injector: Injector
     ) {
         this.broadcast.message$.subscribe(msg => this.handleMessage(msg));
@@ -133,6 +125,13 @@ export class metadata {
         return this.configuration.getData('htmlstyles');
     }
 
+    /**
+     * the countries from syscountries tabale
+     */
+    get countries() {
+        return this.configuration.getData('countries');
+    }
+
     /*
     * dynamically add routes from this.routes with a route container hat will handle the dynamic routes
      */
@@ -155,66 +154,49 @@ export class metadata {
     }
 
     /*
-    public addRoute(path: string, component: string) {
-        let module = this.componentDirectory[component].module;
-
-        System.import(this.moduleDirectory[module].path)
-            .then((fileContents: any) => {
-                return fileContents[this.moduleDirectory[module].module];
-            })
-            .then((type: any) => {
-                this.moduleDirectory[module].factories = {};
-                this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                    componentfactory.componentFactories.some(factory => {
-                        if (factory.componentType.name === component) {
-                            this.router.config.push({
-                                path: path,
-                                component: factory.componentType,
-                                canActivate: [aclCheck]
-                            });
-                            return true;
-                        }
-                    });
-                });
-            });
-    }
-    */
-
-    /*
      * function to add a Component direct
      *
      * no system container is rendered. This is faster but can cause that the sequence is mixed up
      */
-    public addComponentDirect(component: string, vcr: ViewContainerRef, injector?: Injector): Observable<ComponentRef<any>> {
+    public addComponentDirect(componentName: string, vcr: ViewContainerRef, injector?: Injector): Observable<ComponentRef<any>> {
 
-        const renderError = this.hasRenderError(component, vcr);
+        const renderError = this.hasRenderError(componentName, vcr);
 
         if (renderError) {
-            return throwError(() => new Error(renderError));
+            this.renderMissingComponent(vcr, componentName);
+            console.error(renderError);
+            return throwError(() => renderError);
         }
 
         const resSubject = new Subject<ComponentRef<any>>();
 
-        const module = this.componentDirectory[component].module;
+        const module = this.componentDirectory[componentName].module;
         const moduleMetadata = {
             name: this.moduleDirectory[module].module,
             path: this.moduleDirectory[module].path.replace('app/', '')
         };
-        this.renderComponent(moduleMetadata, component, vcr, [], injector).subscribe(componentRef => {
-            componentRef.instance.self = componentRef;
-            resSubject.next(componentRef);
-            resSubject.complete();
+
+        this.renderComponent(moduleMetadata, componentName, vcr, [], injector).subscribe({
+            next: componentRef => {
+                componentRef.instance.self = componentRef;
+                resSubject.next(componentRef);
+                resSubject.complete();
+            },
+            error: err => {
+                 this.renderMissingComponent(vcr, componentName);
+                resSubject.error(err);
+            }
         });
 
         return resSubject.asObservable();
     }
 
+    /**
+     * check if the component exists in the config directory
+     * @param component
+     */
     public checkComponent(component: string) {
-        if (this.componentDirectory[component]) {
-            return true;
-        } else {
-            return false;
-        }
+        return !!this.componentDirectory[component];
     }
 
     /**
@@ -232,28 +214,56 @@ export class metadata {
             .then(m => m[moduleMetadata.name]);
     }
 
+    private renderMissingComponent(vcr: ViewContainerRef, ComponentName: string) {
+        const systemComponentMissing = vcr.createComponent(SystemComponentMissing);
+        systemComponentMissing.instance.component = ComponentName;
+    }
+
     /**
-     * load component factory from module or from cached factories
+     * load component type from module or from cached factories
      * @param moduleMetadata
      * @param componentName
      * @private
      */
-    public loadComponentFactory(moduleMetadata: { name: string, path: string }, componentName: string): Observable<ComponentFactory<any>> {
+    public loadComponentType(moduleMetadata: { name: string, path: string }, componentName: string): Observable<ComponentType<any>> {
 
-        if (this.componentFactories[moduleMetadata.name]) {
+        const notDeclaredMsg = `Component ${componentName} in the config is not declared in the angular ngModule.`;
+
+/*        if (this.moduleDeclarations[moduleMetadata.name]) {
+
+            const componentType = this.moduleDeclarations[moduleMetadata.name].find(f => f.name == componentName);
+
+            if (!componentType) {
+                return throwError(() => notDeclaredMsg)
+            }
             return from(
-                Promise.resolve(this.componentFactories[moduleMetadata.name].find(f => f.componentType.name == componentName))
+                Promise.resolve(componentType)
             );
-        }
+        }*/
 
         return from(
-            this.importModule(moduleMetadata))
-            .pipe(
-                map(moduleFactory => {
-                    this.componentFactories[moduleMetadata.name] = this.compiler.compileModuleAndAllComponentsSync(moduleFactory).componentFactories;
-                    return this.componentFactories[moduleMetadata.name].find(f => f.componentType.name == componentName);
+            this.importModule(moduleMetadata)
+        ).pipe(
+            catchError(() =>
+                throwError(() => `Could not find the module file for path ${moduleMetadata.path}. Check if the module file exists or use a correct module path.`)
+            ),
+            switchMap(module => {
 
-                }));
+                if (!module) {
+                    return throwError(() => `Module name ${moduleMetadata.name} in the config does not match the class name in the module file.`);
+                }
+
+                let componentType;
+
+                Object.keys(module).some(k => {
+                    if (!module[k].hasOwnProperty('declarations')) return false;
+                    componentType = module[k].declarations.find(f => f.name == componentName);
+                    return true;
+                });
+
+                return of(componentType);
+
+            }));
     }
 
     /**
@@ -267,19 +277,18 @@ export class metadata {
      */
     public renderComponent(moduleMetadata: { name: string, path: string }, componentName: string, vcr: ViewContainerRef, data?: { property: string, value: any }[], injector?: Injector): Observable<ComponentRef<any>> {
 
-        return this.loadComponentFactory(moduleMetadata, componentName)
+        return this.loadComponentType(moduleMetadata, componentName)
             .pipe(
-                map(componentFactory => {
+                map(componentType => {
 
-                    // const componentContainerFactory = this.componentFactoryResolver.resolveComponentFactory(componentFactory.componentType);
-                    const componentRef = vcr.createComponent(componentFactory, undefined, injector);
+                    const componentRef = vcr.createComponent(componentType, {injector});
 
                     // pass data to the component instance
                     data.forEach(e => componentRef.instance[e.property] = e.value);
 
                     componentRef.changeDetectorRef.markForCheck();
                     return componentRef;
-                })
+                }),
             );
 
     }
@@ -297,10 +306,6 @@ export class metadata {
 
         if (!this.componentDirectory[ComponentName] || !this.componentDirectory[ComponentName].module) {
 
-            const systemComponentMissingFactory = this.componentFactoryResolver.resolveComponentFactory(SystemComponentMissing);
-            const systemComponentMissing = vcr.createComponent(systemComponentMissingFactory);
-            systemComponentMissing.instance.component = ComponentName;
-
             return `misconfiguration for component ${ComponentName} in object repository`;
         }
 
@@ -317,8 +322,7 @@ export class metadata {
      */
     public loadComponentContainer(component: string, vcr: ViewContainerRef, injector: Injector): ComponentRef<SystemComponentContainer> {
 
-        const systemComponentContainerFactory = this.componentFactoryResolver.resolveComponentFactory(SystemComponentContainer);
-        const systemComponentContainer = vcr.createComponent(systemComponentContainerFactory, undefined, injector);
+        const systemComponentContainer = vcr.createComponent(SystemComponentContainer, {injector});
 
         systemComponentContainer.instance.containerComponent = component;
 
@@ -328,21 +332,22 @@ export class metadata {
     /*
      * add a Component dynamically, by placing a container element wrapper first and inside the component itself
      */
-    public addComponent(component: string, vcr: ViewContainerRef, injector?: Injector): Observable<ComponentRef<any>> {
+    public addComponent(componentName: string, vcr: ViewContainerRef, injector?: Injector): Observable<ComponentRef<any>> {
 
-        const renderError = this.hasRenderError(component, vcr);
+        const renderError = this.hasRenderError(componentName, vcr);
 
         if (renderError) {
-            return throwError(() => new Error(renderError));
+            this.renderMissingComponent(vcr, componentName);
+            return throwError(() => renderError);
         }
 
         const resSubject = new Subject<ComponentRef<any>>();
 
-        const componentContainer = this.loadComponentContainer(component, vcr, injector);
+        const componentContainer = this.loadComponentContainer(componentName, vcr, injector);
 
         componentContainer.instance.containerRef.subscribe(vcr => {
             componentContainer.changeDetectorRef.detectChanges();
-            this.addComponentDirect(component, vcr).subscribe(componentRef => {
+            this.addComponentDirect(componentName, vcr).subscribe(componentRef => {
                 resSubject.next(componentRef);
                 resSubject.complete();
             })
@@ -415,11 +420,19 @@ export class metadata {
         }
     }
 
-    public addComponentToComponentset(id, componentset, item) {
+    /**
+     * adds a component to a componentset
+     *
+     * @param id
+     * @param componentset
+     * @param item
+     * @param componentconfig
+     */
+    public addComponentToComponentset(id, componentset, item, componentconfig = {} ) {
         this.componentSets[componentset].items.push({
             id: id,
             component: item,
-            componentconfig: {},
+            componentconfig: componentconfig,
             sequence: 0
         });
 
@@ -1492,7 +1505,7 @@ export class metadata {
     }
 
     public getHtmlStylesheetCode(stylesheetId: string): string {
-        return _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
+        return stylesheetId && this.htmlStyleData && this.htmlStyleData.stylesheets && _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
     }
 
     public getHtmlFormats(stylesheetId: string): any[] {
@@ -1528,6 +1541,14 @@ export class metadata {
             return "";
         }
     }
+
+    /**
+     * get available countries
+     */
+    public getCountries() {
+        return this.countries;
+    }
+
 
     /**
      * message handler for workbench updates

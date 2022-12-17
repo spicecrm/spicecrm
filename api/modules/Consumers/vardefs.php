@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -156,6 +128,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'campaign_consumers',
             'source' => 'non-db',
         ],
+        'bonuscards' => [
+            'name' => 'bonuscards',
+            'type' => 'link',
+            'relationship' => 'bonuscards_consumers',
+            'module' => 'BonusCards',
+            'bean_name' => 'BonusCard',
+            'source' => 'non-db',
+            'vname' => 'LBL_BONUSCARDS',
+        ],
         'c_accept_status_fields' => [
             'name' => 'c_accept_status_fields',
             'rname' => 'id',
@@ -277,7 +258,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'module' => 'Agreements',
             'bean_name' => 'Agreement',
             'vname' => 'LBL_AGREEMENTS',
-            'default' => false
+            'default' => false,
+            'comment' => 'One-2-many relationship link'
         ],
         'letters' => [
             'name' => 'letters',
@@ -295,6 +277,31 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'relationship' => 'consumer_eventregistrations',
             'source' => 'non-db',
         ],
+        'salesdocsop' => [
+            'name' => 'salesdocsop',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCS',
+            'relationship' => 'salesdocs_consumerop',
+            'module' => 'SalesDocs',
+            'source' => 'non-db',
+        ],
+        'salesdocsrp' => [
+            'name' => 'salesdocsrp',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCS',
+            'relationship' => 'salesdocs_consumerrp',
+            'module' => 'SalesDocs',
+            'source' => 'non-db',
+        ],
+        'salesdocitems' => [
+            'name' => 'salesdocitems',
+            'type' => 'link',
+            'vname' => 'LBL_SALESDOCITEMS',
+            'relationship' => 'salesdocitems_consumerop',
+            'module' => 'SalesDocItems',
+            'source' => 'non-db',
+            'comment' => 'allows to display items on salesdocs via a n:m relationship using the salesdocs table'
+        ]
     ],
     'relationships' => [
         'consumers_email_addresses' => [

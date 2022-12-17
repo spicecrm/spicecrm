@@ -41,6 +41,9 @@ class SpiceDictionaryVardefsParser
         $field['duplicate_merge'] = true;
         $field['sysdomainfield_id'] = $row['sysdomainfield_id'];
         $field['vname'] = (!empty($row['label']) ? $row['label'] : $row['itemlabel']);
+        if(!empty($row['itemlabelinputhelper'])){
+            $field['popupHelp'] = $row['itemlabelinputhelper'];
+        }
         $field['type'] = (!empty($row['fieldtype']) ? $row['fieldtype'] : $row['dbtype']);
         if (!empty($row['len'])) {
             $field['len'] = $row['len'];
@@ -48,9 +51,9 @@ class SpiceDictionaryVardefsParser
         if ($field['type'] != $row['dbtype'] && !is_null($row['dbtype'])) {
             $field['dbtype'] = $row['dbtype'];
         }
-        if (!empty($row['fieldsource'])) {
-            $field['source'] = $row['fieldsource'];
-        }
+//        if (!empty($row['fieldsource'])) {
+//            $field['source'] = $row['fieldsource'];
+//        }
         if (!empty($row['non_db'])) { // from sysdictionaryitem
             $field['source'] = 'non-db';
         }
@@ -60,7 +63,7 @@ class SpiceDictionaryVardefsParser
 
         $field['audited'] = !(bool)intval($row['exclude_from_audited']);
 
-        $field['required'] = (bool)intval($row['itemrequired']);
+        $field['required'] = (bool)intval($row['required']);
 
         if (!empty($row['validationname'])) {
             $field['options'] = $row['validationname'];

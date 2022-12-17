@@ -47,6 +47,16 @@ interface savedata {
     backupdata: any;
 }
 
+export interface AddressRefMetadataI {
+    id: string,
+    parent_module: string,
+    parent_address_key: string,
+    parent_link_name: string,
+    child_module: string,
+    child_address_key: string,
+    child_link_name: string,
+}
+
 /**
  * a generic service that handles the model instance. This is one of the most central items in SpiceUI as this is the instance of an object (record) in the backend. The service provides all relevant getters and setters for the data handling, it validates etc.
  */
@@ -507,18 +517,19 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe({
             next: (res) => {
 
+                this.isLoading = false;
+
                 // set data and acl
                 this.data = res;
                 this.acl = res.acl;
                 this.acl_fieldcontrol = res.acl_fieldcontrol;
 
-                this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
                 this.initializeFieldsStati();
                 this.evaluateValidationRules(null, 'initialize');
-                this.isLoading = false;
+                this.emitFieldsChanges(res);
                 this.data$.next(res);
                 this.broadcast.broadcastMessage("model.loaded", {id: this.id, module: this.module, data: this.data});
                 responseSubject.next(res);
@@ -603,10 +614,9 @@ export class model implements OnDestroy {
 
         // editable... acl check?!
         if (
-            this.data &&
-            this.data.acl_fieldcontrol &&
-            this.data.acl_fieldcontrol[field] &&
-            parseInt(this.data.acl_fieldcontrol[field], 10) < 3
+            this.acl_fieldcontrol &&
+            this.acl_fieldcontrol[field] &&
+            parseInt(this.acl_fieldcontrol[field], 10) < 3
         ) {
             stati.editable = false;
         }
@@ -910,7 +920,7 @@ export class model implements OnDestroy {
         }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
-        this.navigation.addModelEditing(this, this.getFieldValue('summary_text'));
+        this.navigation.addModelEditing(this.id, this.module, this, this.getFieldValue('summary_text'));
     }
 
 
@@ -960,16 +970,18 @@ export class model implements OnDestroy {
      */
     public setField(field, value, silent: boolean = false) {
         if (!field) return false;
+
+        this.data[field] = value;
+
+        this.evaluateValidationRules(field, "change");
+
         if (this.data[field] !== value) {
             this.field$.next({field, value});
         }
-        this.data[field] = value;
 
         if (silent !== true) {
             this.data$.next(this.data);
         }
-
-        this.evaluateValidationRules(field, "change");
 
         // run the duplicate check
         this.duplicateCheckOnChange([field]);
@@ -1293,7 +1305,7 @@ export class model implements OnDestroy {
 
         this.executeCopyRules(parent);
         this.setFieldsDefaultValues();
-        this.evaluateValidationRules();
+        this.evaluateValidationRules(null,'initialize');
 
         // set default acl to allow editing
         this.acl = {
@@ -1367,7 +1379,7 @@ export class model implements OnDestroy {
             }
 
             // run the evaluation rules
-            this.evaluateValidationRules();
+            this.evaluateValidationRules(null, 'initialize');
 
             this.modal.openModal("ObjectEditModal", false, this.injector).subscribe(editModalRef => {
                 if (editModalRef) {
@@ -1409,6 +1421,11 @@ export class model implements OnDestroy {
      * @param parent a model or an array of models
      */
     public executeCopyRules(parent?: any) {
+
+        this.copyParentReferenceAddresses(parent);
+
+        this.executeCopyRulesGeneric();
+
         if (parent) {
             if (_.isArray(parent)) {
                 for (let thisParent of parent) {
@@ -1419,8 +1436,58 @@ export class model implements OnDestroy {
             }
         }
 
-        this.executeCopyRulesGeneric();
     }
+
+    /**
+     * copy referenced addresses from parent
+     * @param parent
+     * @private
+     */
+    private copyParentReferenceAddresses(parent?: model) {
+
+        if (!parent) return;
+
+        const referenceMetadata = this.configuration.getData('spice_address_references');
+
+        if (!Array.isArray(referenceMetadata)) return;
+
+        (referenceMetadata as AddressRefMetadataI[]).forEach(m => {
+
+            if (m.child_module != this.module || parent.module != m.parent_module) return;
+
+            this.copyReferencedAddress(m, parent.data);
+        });
+    }
+
+    /**
+     * fill in the address fields from the parent reference bean address
+     * @param metadata
+     * @param data
+     */
+    public copyReferencedAddress(metadata: AddressRefMetadataI, data) {
+
+        const fields = {};
+        [
+            'address_street',
+            'address_street_number',
+            'address_street_number_suffix',
+            'address_attn',
+            'address_city',
+            'address_district',
+            'address_postalcode',
+            'address_state',
+            'address_country',
+            'address_latitude',
+            'address_longitude'
+        ].forEach(f =>
+            fields[`${metadata.child_address_key}_${f}`] = data[`${metadata.parent_address_key}_${f}`]
+        );
+
+        fields[metadata.child_address_key + '_address_reference_id'] = data.id;
+
+        this.setFields(fields);
+    }
+
 
     /**
      * set fields default values from the fields definitions
@@ -1483,6 +1550,9 @@ export class model implements OnDestroy {
 
         // handle links
         switch (fieldDef.type) {
+            case 'json':
+                this.setField(toField, JSON.parse(JSON.stringify(value)));
+                break;
             case 'link':
                 if (_.isObject(value) && value.beans) {
                     const newLink = {beans: {}};
@@ -1612,7 +1682,7 @@ export class model implements OnDestroy {
      *
      *  @param changedFields an array with fieldnames that has been changed in order to allow the method to determine the scope fo the change and if a duplicate check shoudl be performed
      */
-    public duplicateCheckOnChange(changedFields: string[]): Observable<boolean> {
+    public duplicateCheckOnChange(changedFields: string[], forcecheck: boolean = false): Observable<boolean> {
         if (this.isNew && this.metadata.getModuleDuplicatecheckOnChange(this.module)) {
             let dupCheckFields = this.metadata.getModuleDuplicateCheckFields(this.module);
 
@@ -1630,7 +1700,7 @@ export class model implements OnDestroy {
             }
 
             // execute the check or empty the duplicates array on the bean
-            if (cancheck && shouldcheck) {
+            if ((cancheck && shouldcheck) || forcecheck) {
                 let retSubject = new Subject<any>();
                 // do the check
                 this.duplicateCheck(true).subscribe({
@@ -1911,12 +1981,16 @@ export class model implements OnDestroy {
 
 
     public ngOnDestroy(): void {
-        if (this.modelRegisterId
-        ) {
+
+        if (this.isEditing) {
+            this.navigation.removeModelEditing(this.module, this.id);
+        }
+
+        if (this.modelRegisterId) {
             this.navigation.unregisterModel(this.modelRegisterId);
         }
 
-// unsubscribe from any subscriptions we might have
+        // unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();
     }
 

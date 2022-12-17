@@ -1,7 +1,7 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <div class="slds-grid slds-grid--align-end">
-        <system-display-number [number]="value" [currency_id]="currencyId"></system-display-number>
+        <system-display-number [number]="value" [currency_id]="currencyId" [precision]="precision"></system-display-number>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="slds-form-element slds-grow">
-            <input #floatinput class="slds-input slds-text-align--right" (keydown)="checkInput($event)" (keyup)="changed()" [(ngModel)]="textvalue"/>
+            <system-input-number [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
         </div>
     </div>
     <field-messages [fieldname]="fieldname"></field-messages>

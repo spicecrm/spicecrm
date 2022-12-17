@@ -1,6 +1,6 @@
 <div (click)="onEditorClick($event)" class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap slds-grid slds-grid--vertical slds-theme--default" style="  top: 0; right: 0; left: 0; bottom: 0; z-index: 9999;" [ngStyle]="richTextStyle">
     <!--system-richtext-toolbar [isActive]="isActive" #editorToolbar (execute)="executeCommand($event)"></system-richtext-toolbar-->
-    <div *ngIf="!readOnly" role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none">
+    <div *ngIf="!readOnly" role="toolbar" style="top: 0; z-index: 2; position: sticky" class="slds-rich-text-editor__toolbar slds-shrink-none">
         <ul *ngIf="extendedmode" class="slds-button-group-list">
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" aria-pressed=true [title]="language.getLabel('LBL_UNDO')" (click)="executeCommand('undo')">
@@ -55,13 +55,24 @@
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
                             <select class="slds-select" [(ngModel)]="block" (change)="heading(block)" >
-                                <option value="heading1"><h1>Heading 1</h1></option>
-                                <option value="heading2"><h2>Heading 2</h2></option>
-                                <option value="heading3"><h3>Heading 3</h3></option>
-                    <!--            <option value="heading4"><h4>Heading 4</h4></option>
-                                <option value="heading5"><h5>Heading 5</h5></option>
-                                <option value="heading6"><h6>Heading 6</h6></option>-->
+                                <option value="heading2">Heading 2</option>
+                                <option value="heading3">Heading 3</option>
+                                <option value="heading4">Heading 4</option>
+                                <!--<option value="heading5">Heading 5</option>
+                                <option value="heading6">Heading 6</option>-->
                                 <option value="paragraph">Paragraph</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-rich-text-editor__select">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" (change)="customStyle($event.target.value)" >
+                                <option value="">&mdash;</option>
+                                <option *ngFor="let customStyle of customStyleDefinitions" value="{{customStyle.id}}">{{customStyle.display}}</option>
                             </select>
                         </div>
                     </div>

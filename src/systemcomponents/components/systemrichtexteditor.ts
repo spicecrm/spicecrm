@@ -33,7 +33,7 @@ import {libloader} from "../../services/libloader.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as less from 'less'
 
-declare var CKSource;
+declare var ClassicEditor;
 
 @Component({
     selector: "system-richtext-editor",
@@ -75,6 +75,12 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @private
      */
     @Input() public useMedialFile: boolean = false;
+
+    /**
+     * the id of the stylesheet to apply
+     * @private
+     */
+    @Input() private stylesheetId: string;
 
     public get useTemplateVariableHelper() {
         return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
@@ -142,15 +148,56 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public editor: {execute: (command: string, params?: any) => void, setData: (data: string) => void, getData: () => string, model: any, ui: any, editing: any, enableReadOnlyMode: (val: string) => void};
 
+    public customStyleDefinitions: { id: string, display: string, classes: string[], element: string }[] = [];
+
     public ngOnInit() {
+
+        this.loadCustomStyleDefinitions();
 
         this.libLoader.loadLib('ckeditor').subscribe(res => {
             this.zone.runOutsideAngular(() => {
 
-                CKSource.Editor.create(this.ckEditor.element.nativeElement, {
+                ClassicEditor.create(this.ckEditor.element.nativeElement, {
+                    removePlugins: ['Markdown','Title'],
+                    style: {
+                        definitions: this.customStyleDefinitions.map(s => ({
+                            name: s.id,
+                            element: s.element,
+                            classes: s.classes
+                        }))
+                    },
+                    image: {
+                        styles: [
+                            'alignCenter',
+                            'alignLeft',
+                            'alignRight'
+                        ],
+                        resizeOptions: [
+                            {
+                                name: 'resizeImage:original',
+                                label: 'Original size',
+                                value: null
+                            },
+                            {
+                                name: 'resizeImage:50',
+                                label: '50%',
+                                value: '50'
+                            },
+                            {
+                                name: 'resizeImage:75',
+                                label: '75%',
+                                value: '75'
+                            }
+                        ],
+                        toolbar: [ // 'toggleImageCaption'
+                            'imageTextAlternative', '|',
+                            'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+                            'resizeImage'
+                        ]
+                    },
                     toolbar: [],
                     htmlSupport: {
-                        allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
+                        allow: this.generateHtmlTagsAllowAttributes(['div', 'img', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
                         // hr
                     },
                     autosave: {
@@ -167,11 +214,27 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
                     });
                     this.editor.setData(this._html);
+
                 });
             });
 
         });
         this.handleKeyboardShortcuts();
+    }
+
+    /**
+     * load custom style definitions
+     * @private
+     */
+    private loadCustomStyleDefinitions() {
+        this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
+            this.customStyleDefinitions.push({
+                display: format.name,
+                id: format.id,
+                classes: format.classes ? format.classes.trim().split(/\s+/) : [],
+                element: format.block ? format.block : ( format.inline ? format.inline : '' )
+            })
+        });
     }
 
     /**
@@ -190,6 +253,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'data-spicefor-first': true,
                     'data-spicefor-last': true,
                     'data-spicetemplate': true,
+                    'data-signature': true,
+                    'data-spice-reply-quote': true,
+                    'data-spice-temp-quote': true,
                     'class': true,
                     'style': true,
                     'value': true,
@@ -216,7 +282,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'cols': true,
                     'rows': true,
                     'wrap': true,
-                    'label': true
+                    'label': true,
+                    'width': true,
+                    'height': true
                 }
             }
         });
@@ -287,6 +355,14 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public heading(command: string){
         this.editor.execute('heading', {value: command});
+    }
+
+    /**
+     *
+     * execute custom style
+     */
+    public customStyle(name: string){
+        if ( name ) this.editor.execute('style', name);
     }
     /**
      *

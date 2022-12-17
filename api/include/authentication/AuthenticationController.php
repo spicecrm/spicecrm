@@ -1,86 +1,48 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\authentication;
 
-use http\Exception\UnexpectedValueException;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\authentication\IpAddresses\IpAddresses;
+use SpiceCRM\includes\authentication\GoogleAuthenticate\GoogleAuthenticate;
+use SpiceCRM\includes\authentication\interfaces\AccessUtilsI;
+use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
+use SpiceCRM\includes\authentication\interfaces\AuthResponse;
+use SpiceCRM\includes\authentication\LDAPAuthenticate\LDAPAuthenticate;
+use SpiceCRM\includes\authentication\OAuth2Authenticate\OAuth2Authenticate;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAccessUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
+use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAccessUtils;
+use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAuthenticate;
+use SpiceCRM\includes\authentication\TenantAuthenticate\TenantPasswordUtils;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
-use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\modules\Administration\Administration;
-use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\Users\User;
-use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
-use SpiceCRM\includes\authentication\LDAPAuthenticate\LDAPAuthenticate;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TwoFactorAuthenticate;
 
 class AuthenticationController
 {
-
-
-    /**
-     * Stores the current token.
-     * @var string|null
-     */
-    public $token = null;
-
     /**
      * Stores the User object of the user that is currently logged in.
      * @var User|null
      */
     private $currentUser = null;
-    protected static $authControllerInstance = null;
     /**
-     * @var UserAuthenticate
+     * instance of this class
      */
-    public $authController;
+    protected static $authControllerInstance = null;
 
     /**
      * the systemtenant id if we are in a tenant
@@ -101,6 +63,12 @@ class AuthenticationController
      * @var bool
      */
     public $systemTenantLegalNoticeAccepted = false;
+    /**
+     * holds a boolean of the wizard completion
+     *
+     * @var bool
+     */
+    public $systemTenantWizardCompleted = false;
 
     public $errorReason;
     public $errorCode;
@@ -109,11 +77,25 @@ class AuthenticationController
      * The Singleton's constructor should always be private to prevent direct
      * construction calls with the `new` operator.
      */
-    protected function __construct()
+    protected function __construct(){}
+
+    /**
+     * get a single tone instance
+     * @return AuthenticationController
+     */
+    public static function getInstance(): ?AuthenticationController
     {
+        if (empty(self::$authControllerInstance)) {
+            self::$authControllerInstance = new static();
+        }
+        return self::$authControllerInstance;
     }
 
-    public function getCanChangePassword()
+    /**
+     * check if the user can change his password
+     * @return bool
+     */
+    public function getCanChangePassword(): bool
     {
         if (LDAPAuthenticate::isLdapEnabled()) {
             return false;
@@ -134,179 +116,359 @@ class AuthenticationController
     }
 
     /**
-     * Getter for the current User object.
-     *
-     * @return User
+     * set current user
+     * @param User $userBean
      */
-    public function getCurrentUser()
+    public function setCurrentUser(User $userBean)
+    {
+        $this->currentUser = $userBean;
+    }
+
+    /**
+     * get current user
+     * @return ?User
+     */
+    public function getCurrentUser(): ?User
     {
         return $this->currentUser;
     }
 
-    public function isAuthenticated()
+    /**
+     * check if the authentication was successful
+     * @return bool
+     */
+    public function isAuthenticated(): bool
     {
         return $this->currentUser instanceof User;
     }
 
-    public function isAdmin()
+    /**
+     * check if the current user is admin
+     * @return bool
+     */
+    public function isAdmin(): bool
     {
         return $this->currentUser instanceof User && $this->currentUser->isAdmin();
     }
 
     /**
-     * Setter for the current User object.
-     *
-     * @param User $userBean
-     * @return bool
-     */
-    public function setCurrentUser(User $userBean)
-    { //todo shouldnt we set currentuser on usersingleton?
-        $this->currentUser = $userBean;
-        return true;
-    }
-
-
-    /**
-     * @param $username
-     * @param $currentPwd
-     * @param $newPwd
-     * @param false $sendByEmail
-     * @return bool
-     * @throws Exception
-     * @throws ForbiddenException
-     * @throws UnauthorizedException
-     */
-    public function changePassword($username, $currentPwd, $newPwd, $sendByEmail = false)
-    {
-        try {
-            $userAuthenticateObj = new UserAuthenticate();
-            $userObj = $userAuthenticateObj->authenticate($username, $currentPwd);
-            $this->setCurrentUser($userObj);
-        } catch (UnauthorizedException $e) {
-            //convert error message
-            throw new UnauthorizedException("Current Password is not correct");
-        }
-
-        if ($this->getCanChangePassword() === false) {
-            throw new ForbiddenException("Password Change not allowed");
-        }
-
-        return $userAuthenticateObj->setNewPassword($userObj, $newPwd, $sendByEmail, false);
-
-    }
-
-    /**
-     * @param string|null $username
-     * @param string|null $password
-     * @param null $token
-     * @param null $tokenIssuer
-     * @return array
-     * @throws UnauthorizedException
-     */
-    public function authenticate($username = null, $password = null, $token = null, $tokenIssuer = null, $impersonationUser = null )
-    {
-        $config = SpiceConfig::getInstance()->config;
-
-        try {
-            /** @var User $userObj */
-
-            if ($token) {
-
-                $issuerObject = $this->getIssuerObject($tokenIssuer);
-                $userObj = $issuerObject->authenticate($token);
-
-                if ( !IpAddresses::checkIpAddress() ) {
-                    if ( !User::isAdmin_byName( $userObj->user_name )) # don´t block the admin
-                        throw ( new UnauthorizedException('No access from this IP address. Contact the admin.', 11))->setIPblocked( true );
-                }
-            } elseif ($username && $password) {
-                if ( !IpAddresses::checkIpAddress() ) {
-                    if ( !User::isAdmin_byName( $username )) # don´t block the admin
-                        throw ( new UnauthorizedException('No access from this IP address. Contact the admin.', 11))->setIPblocked( true );
-                }
-                $userObj = $this->handleUserPassAuth($username, $password, $impersonationUser );
-            } else {
-                throw new UnauthorizedException("Invalid authentication method", 6);
-            }
-
-            //check status field on user
-            $this->checkUserStatus($userObj);
-
-            $this->setCurrentUser($userObj);
-
-            if (($username && $password) || $tokenIssuer !== 'SpiceCRM') { //login was via user/pass therefore create session and log login
-                $this->token = SpiceCRMAuthenticate::createSession($this->currentUser);
-
-                //should we log successful login?
-                if (array_key_exists("logSuccessLogin", $config )) {
-                    $this->logSuccessLogin($userObj);
-                }
-
-            }
-
-            $this->handleTenants();
-
-        } catch (UnauthorizedException $e) {
-            /** @var UserAccessLog $userAccessLogObj */
-
-            # isUserBlocked() in case the login or password check has not happened, because the user is already blocked (temporary or permanent).
-            # Otherwise the check has happened and failed, so log the failed attempt:
-            if ( !$e->isUserBlocked() and !empty( $username )) {
-                $userAccessLogObj = BeanFactory::getBean('UserAccessLogs');
-                $userAccessLogObj->addRecord("loginfail", empty($impersonationUser) ? $username : $impersonationUser . '#as#' . $username);
-                unset($userAccessLogObj);
-                if ( $config['login_attempt_restriction']['user_enabled'] ) {
-                    $amountFailedLogins = UserAccessLog::getAmountFailedLoginsWithinByUsername( $username, $config['login_attempt_restriction']['user_monitored_period'] );
-                    if ( $amountFailedLogins >= $config['login_attempt_restriction']['user_number_attempts'] ) {
-                        User::blockUserByName( $username, $config['login_attempt_restriction']['user_blocking_duration'] );
-                    }
-                }
-            }
-
-            # In case the max. failed login attempts are reached, black list the IP address.
-            # ( But only if IP restriction is enabled and the IP address is not white listed and the IP address has not been black listed just before (isIPblocked). )
-            if (
-                $config['login_attempt_restriction']['ip_enabled']
-                and UserAccessLog::getNumberLoginAttemptsByIp() >= (int)$config['login_attempt_restriction']['ip_number_attempts']
-                and !IpAddresses::ipAddressIsWhite()
-                and !$e->isIPblocked()
-                and !User::isAdmin_byName( $username ) # don´t block the admin
-            ) {
-                IpAddresses::addIpAddress('b');
-                $e->setIPblocked( true );
-            };
-
-            $this->errorReason = $e->getMessage();
-            $this->errorCode = $e->getErrorCode();
-
-            throw ( new UnauthorizedException($e->getMessage(), $e->getErrorCode()))->setDetails( $e->getDetails() );
-        }
-
-        return [ //todo find a solution to specify return format
-            'token' => $this->token,
-            'user' => $userObj,
-            'pwChangeEnabled' => LDAPAuthenticate::isLdapEnabled() === false && $userObj->external_auth_only === false && TOTPAuthentication::checkTOTPActive($userObj->id) === false
-        ];
-
-    }
-
-    /**
-     * get issuer class
+     * @throws BadRequestException | Exception | UnauthorizedException
      * @throws \Exception
      */
-    public static function getIssuerObject($tokenIssuer)
+    public function authenticate()
     {
-        $db = DBManagerFactory::getInstance();
-        $service = $db->fetchOne("SELECT class_name FROM authentication_services WHERE issuer = '$tokenIssuer'");
+        $authParams = RESTManager::getInstance()->parseAuthParams();
 
-        $authenticationClass = "SpiceCRM\includes\authentication\\{$tokenIssuer}Authenticate\\{$tokenIssuer}Authenticate";
+        if ($authParams->authType == 'none') return;
+
+        try {
+            $authenticator = $this->getAuthenticator();
+
+            $authResponse = $authenticator->authenticate($authParams->authData, $authParams->authType);
+            $this->handleSuccessfulAuthentication($authParams->authData, $authResponse, $authParams->authType);
+
+            if (method_exists($authenticator, 'afterSuccessfulAuthentication')) {
+                $authenticator->afterSuccessfulAuthentication($authParams->authData);
+            }
+
+        } catch (UnauthorizedException $e) {
+            $this->handleFailedAuthentication($e, $authParams->authData);
+        }
+    }
+
+    /**
+     * get password utils handler
+     * @return SpiceCRMPasswordUtils | TenantPasswordUtils
+     */
+    public function getPasswordUtilsInstance()
+    {
+        $type = $this->getAuthenticatorType();
+
+        $namespace = "SpiceCRM\includes\authentication\\{$type}Authenticate\\{$type}PasswordUtils";
+
+        if (!class_exists($namespace, true)) {
+            $namespace = "SpiceCRM\includes\authentication\\SpiceCRMAuthenticate\\SpiceCRMPasswordUtils";
+        }
+
+        return new $namespace();
+    }
+
+    /**
+     * determine the authenticator type based on the token issuer or the default system authenticator
+     * default type is SpiceCRM
+     * @return string
+     */
+    private function getAuthenticatorType(): string
+    {
+        $type = 'SpiceCRM';
+
+        if (LDAPAuthenticate::isLdapEnabled()) $type = 'LDAP';
+
+        $tokenIssuer = RESTManager::getInstance()->parseAuthParams()->authData->tokenIssuer;
+
+        if (!empty($tokenIssuer)) $type = $tokenIssuer;
+
+        $config = SpiceConfig::getInstance()->config;
+
+        if ($type == 'SpiceCRM' && !empty($config['system']['defaultAuthenticator'])) {
+            $type = $config['system']['defaultAuthenticator'];
+        }
+
+        return $type;
+    }
+
+    /**
+     * handle failed authentication
+     * @throws BadRequestException | Exception | UnauthorizedException
+     * @throws \Exception
+     */
+    private function handleFailedAuthentication(UnauthorizedException $e, object $authData)
+    {
+        if ( !$e->isUserBlocked() and !empty( $authData->username )) {
+           $this->blockUserByUsername($authData);
+        }
+
+        $this->blockUserIp($e);
+
+        $this->errorReason = $e->getMessage();
+        $this->errorCode = $e->getErrorCode();
+
+        throw (new UnauthorizedException($e->getMessage(), $e->getErrorCode()))->setDetails($e->getDetails());
+    }
+
+    /**
+     * block user ip if the max login attempts exceeded
+     * @param UnauthorizedException $e
+     * @return void
+     * @throws BadRequestException | \Exception | Exception
+     */
+    private function blockUserIp(UnauthorizedException $e) {
+
+        $accessUtils = $this->getAccessUtilsInstance();
+        $config = SpiceConfig::getInstance()->config;
+        $maxAttemptsExceeded = UserAccessLog::getNumberLoginAttemptsByIp() >= (int)$config['login_attempt_restriction']['ip_number_attempts'];
+
+        if ( $config['login_attempt_restriction']['ip_enabled'] and $maxAttemptsExceeded and !$accessUtils::ipAddressIsWhite() and !$e->isIPblocked()) {
+            $accessUtils::addIpAddress('b');
+            $e->setIPblocked( true );
+        };
+    }
+
+    /**
+     * block the user if the max login attempts exceeded
+     * @param object $authData
+     * @return void
+     * @throws \Exception
+     */
+    private function blockUserByUsername(object $authData)
+    {
+        $config = SpiceConfig::getInstance()->config;
+        $accessUtils = $this->getAccessUtilsInstance();
+
+        /** @var UserAccessLog $userAccessLogObj */
+        $userAccessLogObj = BeanFactory::getBean('UserAccessLogs');
+        $loginName = empty($authData->impersonationUser) ? $authData->username : $authData->impersonationUser . '#as#' . $authData->username;
+        $userAccessLogObj->addRecord("loginfail", $loginName);
+
+        unset($userAccessLogObj);
+
+        if (!$config['login_attempt_restriction']['user_enabled']) return;
+
+        $amountFailedLogins = UserAccessLog::getAmountFailedLoginsWithinByUsername($authData->username, $config['login_attempt_restriction']['user_monitored_period']);
+
+        if ($amountFailedLogins >= $config['login_attempt_restriction']['user_number_attempts']) {
+            $accessUtils->blockUserByName($authData->username, $config['login_attempt_restriction']['user_blocking_duration']);
+        }
+    }
+
+    /**
+     * get access utils instance
+     * @return SpiceCRMAccessUtils | TenantAccessUtils
+     * @throws \Exception
+     */
+    public function getAccessUtilsInstance()
+    {
+        $type = $this->getAuthenticatorType();
+
+        $namespace = "SpiceCRM\includes\authentication\\{$type}Authenticate\\{$type}AccessUtils";
+
+        if (!class_exists($namespace, true)) {
+            $namespace = "SpiceCRM\includes\authentication\\SpiceCRMAuthenticate\\SpiceCRMAccessUtils";
+        }
+
+        /** @var SpiceCRMAccessUtils | TenantAccessUtils $accessUtilsInstance */
+        $accessUtilsInstance = new $namespace();
+
+        if (!($accessUtilsInstance instanceof AccessUtilsI)) {
+            throw new \Exception("Authentication Class {$namespace} must implement AuthenticatorI");
+        }
+
+        return $accessUtilsInstance;
+    }
+
+    /**
+     * handle successful authentication
+     * @param object $authData
+     * @param AuthResponse $authResponse
+     * @param string $authType 'token' | 'credentials'
+     * @throws NotFoundException | UnauthorizedException
+     */
+    private function handleSuccessfulAuthentication(object $authData, AuthResponse $authResponse, string $authType)
+    {
+        if ($authType == 'credentials') {
+            $this->checkUserBlocked($authData);
+        }
+
+        if (!empty($authResponse->tenantId)) {
+            $this->connectToTenant($authResponse->tenantId);
+        }
+
+        $userObj = $this->getUserByUsername($authResponse->username);
+
+        $this->checkUserStatus($userObj);
+
+        $this->checkPasswordExpire($userObj);
+
+        $this->checkTimeBasedOnetimePassword($userObj);
+
+        // retrieve impersonation user
+        if (!empty($authData->impersonationUser)) {
+            $impersonatingUser = $this->getUserByUsername($authData->impersonationUser);
+            $userObj->impersonating_user_id = $impersonatingUser->id;
+        }
+
+        $this->setCurrentUser($userObj);
+
+        global $current_language;
+        $current_language = $userObj->getPreference('language');
+
+        if (!empty($authResponse->tenantId)) {
+            $userObj->reloadPreferences();
+        }
+
+        if (LDAPAuthenticate::isLdapEnabled()) {
+            $userObj->call_custom_logic('after_ldap_login', $authResponse);
+        }
+
+        // if there was no session started create a new one
+        if (empty($_SESSION['authenticated_user_id'])) {
+            SpiceCRMAuthenticate::createSession($this->currentUser);
+        }
+    }
+
+    /**
+     * check if the user was blocked by login attempts policy or by ip
+     * @param object $authData
+     * @return void
+     * @throws UnauthorizedException | \Exception
+     */
+    private function checkUserBlocked(object $authData)
+    {
+        $accessUtils = $this->getAccessUtilsInstance();
+        $isBlocked = $accessUtils->isBlocked($authData->impersonationUser ?? $authData->username);
+
+        if ($isBlocked === true) {
+            throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 3))->setUserBlocked(true);
+        } elseif ($isBlocked !== false) {
+            throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 3))->setUserBlocked(true);
+        }
+
+        if (!$accessUtils::checkIpAddress() && !User::isAdmin_byName($authData->username)) {
+            throw (new UnauthorizedException('No access from this IP address. Contact the admin.', 11))->setIPblocked(true);
+        }
+    }
+
+    /**
+     * throw an exception if the time-based one-time password is required and was not activated
+     * @param User $userObj
+     * @return void
+     * @throws UnauthorizedException
+     */
+    private function checkTimeBasedOnetimePassword(User $userObj)
+    {
+        if ( SpiceConfig::getInstance()->config['login_methods']['totp_authentication_required'] and !TOTPAuthentication::checkTOTPActive( $userObj->id )) {
+            $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+                'LBL_SAVE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'LBL_CODE', 'LBL_CANCEL', 'LBL_CODE'
+            ]);
+            throw ( new UnauthorizedException('TOTP.', 12 ))->setDetails(['labels' => $necessaryLabels]);
+        }
+    }
+
+    /**
+     * throw an exception if the password expired
+     * @param User $userObj
+     * @return void
+     * @throws UnauthorizedException
+     */
+    private function checkPasswordExpire(User $userObj)
+    {
+        if (( $userObj->system_generated_password || $userObj->hasExpiredPassword() ) && !$userObj->is_api_user && !$userObj->external_auth_only) {
+            $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+                'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
+                'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
+                'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY'
+            ]);
+            throw ( new UnauthorizedException('Password expired.', 2 ))->setDetails(['labels' => $necessaryLabels]);
+        }
+    }
+
+    /**
+     * get user by username
+     * @param string $username
+     * @return User
+     * @throws UnauthorizedException | NotFoundException
+     */
+    public function getUserByUsername(string $username): User
+    {
+        /** @var User $userObj */
+        $userObj = BeanFactory::newBean('Users');
+
+        if (!$userObj->findByUserName($username)) {
+            throw new UnauthorizedException('User not found', 404);
+        }
+
+        return $userObj;
+    }
+
+    /**
+     * get authenticator class
+     * @return SpiceCRMAuthenticate | GoogleAuthenticate | OAuth2Authenticate | TenantAuthenticate
+     * @throws \Exception
+     */
+    public function getAuthenticator()
+    {
+        $type = $this->getAuthenticatorType();
+
+        return $this->getAuthenticatorObject($type);
+    }
+
+    /**
+     * get authenticator class instance
+     * @param string $type
+     * @return SpiceCRMAuthenticate | OAuth2Authenticate | TenantAuthenticate | LDAPAuthenticate | GoogleAuthenticate
+     * @throws \Exception
+     */
+    public static function getAuthenticatorObject(string $type)
+    {
+        $db = DBManagerFactory::getInstance('master');
+        $service = $db->fetchOne("SELECT class_name FROM authentication_services WHERE issuer = '$type'");
+
+        $authenticationClass = "SpiceCRM\includes\authentication\\{$type}Authenticate\\{$type}Authenticate";
 
         if (!empty($service)) $authenticationClass = $service['class_name'];
 
         if (class_exists($authenticationClass, true)) {
-            return new $authenticationClass($tokenIssuer);
+
+            /** @var SpiceCRMAuthenticate | OAuth2Authenticate | TenantAuthenticate | LDAPAuthenticate | GoogleAuthenticate $classInstance */
+            $classInstance = new $authenticationClass($type);
+
+            if (!($classInstance instanceof AuthenticatorI)) {
+                throw new \Exception("Authentication Class {$authenticationClass} must implement AuthenticatorI");
+            }
+
+            return $classInstance;
         } else {
-            throw new \Exception("AuthenticationClass {$authenticationClass} not found");
+            throw new \Exception("Authentication Class {$authenticationClass} not found");
         }
     }
 
@@ -318,121 +480,67 @@ class AuthenticationController
     public static function loadServices(): array
     {
         $services = [];
-        $db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance('master');
         $query = $db->query("SELECT s.*, c.config config FROM authentication_services s INNER JOIN sysauthconfig c ON s.issuer = c.issuer ORDER BY sequence");
 
-        while ($service = $db->fetchByAssoc($query)) $services[] = $service;
+        while ($service = $db->fetchByAssoc($query)) {
+            if (!empty($service['config'])) {
+                $service['config'] = json_decode($service['config']);
+                unset($service['config']->client_secret);
+                $service['config'] = json_encode($service['config']);
+            }
+            $services[] = $service;
+        }
 
         return $services;
     }
 
-    private function logSuccessfulLogin(User $userObj)
-    {
-        $userAccessLogObj = BeanFactory::getBean('UserAccessLogs');
-        if (!$userAccessLogObj->addRecord("loginsuccess", $userObj->user_name)) {
-            unset($userAccessLogObj);
-            throw new \Exception("Unable to log successful login");
-        }
-        unset($userAccessLogObj);
-        return true;
-    }
-
+    /**
+     * throw exception if the user is inactive
+     * @param User $userObj
+     * @throws UnauthorizedException
+     */
     private function checkUserStatus(User $userObj)
     {
         switch ($userObj->status) {
             case "Active":
-                break;
+                return;
             case "Inactive":
                 throw new UnauthorizedException("User is inactive", 4);
             default:
                 throw new UnauthorizedException("User Status is unknown", 5);
         }
-        return true;
     }
 
     /**
-     * Handles the authentication with username/password credentials.
-     * @return User | false
+     * connect to the tenant database
+     * @param string $tenantId
+     * @return void
      * @throws UnauthorizedException
      */
-    private function handleUserPassAuth($authUser, $authPass, $impersonationUser = null )
+    private function connectToTenant(string $tenantId)
     {
-        //first check if ldap authentication is enabled
-        if (LDAPAuthenticate::isLdapEnabled()) {
-            /** @var LDAPAuthenticate $ldapController */
-            $ldapController = new LDAPAuthenticate();
-            try {
-                if ($userObj = $ldapController->authenticate($authUser, $authPass)) {
+        /** @var SystemTenant $tenant */
+        $tenant = BeanFactory::getBean('SystemTenants', $tenantId);
 
-                    return $userObj;
-                }
-            } catch (UnauthorizedException | \Exception $e) {
-                $ldapError = $e;
-            }
+        if ($tenant->valid_until < TimeDate::getInstance()->nowDbDate() && $tenant->valid_until =! null) {
+            throw new UnauthorizedException('Tenant expired', 401);
         }
 
-        //second use sugar authentication
-        try {
+        $tenant->switchToTenant();
 
-            # Check if the user is blocked (after too many login attempts with wrong passwords).
-            # This check must happen BEFORE checking the password. No password check (and answer to the user) in case the user is blocked!
-            $isBlocked = User::isBlocked(isset($impersonationUser) ? $impersonationUser : $authUser);
-            if ($isBlocked === true) {
-                throw (new UnauthorizedException('User is blocked. Contact the admin for access.', 3))->setUserBlocked(true);
-            } elseif ($isBlocked !== false) {
-                throw (new UnauthorizedException('User is blocked temporary. Access again in ' . $isBlocked . ' Minutes.', 3))->setUserBlocked(true);
-            }
-
-            $sugarAuthenticationController = new UserAuthenticate();
-            $userObj = $sugarAuthenticationController->authenticate( $authUser, $authPass, $impersonationUser );
-
-            // check if password is expired
-            if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() ) and !$userObj->is_api_user ) {
-                $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
-                    'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
-                    'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
-                    'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY'
-                ]);
-                throw ( new UnauthorizedException('Password expired.', 2 ))->setDetails(['labels' => $necessaryLabels]);
-            }
-
-            if ( SpiceConfig::getInstance()->config['login_methods']['totp_authentication_required'] and !TOTPAuthentication::checkTOTPActive( $userObj->id )) {
-                $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
-                    'LBL_SAVE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'LBL_CODE', 'LBL_CANCEL', 'LBL_CODE'
-                ]);
-                throw ( new UnauthorizedException('TOTP.', 12 ))->setDetails(['labels' => $necessaryLabels]);
-            }
-
-        } catch (UnauthorizedException $e) {
-            throw ( new UnauthorizedException($ldapError ? $ldapError->getMessage() : $e->getMessage(), $ldapError ? $ldapError->getErrorCode() : $e->getErrorCode()))
-                ->setUserBlocked( $e->isUserBlocked() )
-                ->setDetails( $e->getDetails() );
-        }
-        return $userObj;
-    }
-
-
-    private function handleTenants()
-    {
-        /* switch to a different tenant if the tenant id is set for the user */
-        if (!empty($this->getCurrentUser()->systemtenant_id)) {
-            $tenant = BeanFactory::getBean('SystemTenants', $this->getCurrentUser()->systemtenant_id);
-            if ($tenant->valid_until < TimeDate::getInstance()->nowDbDate()) {
-                throw new UnauthorizedException('Tenant expired', 401);
-            }
-            $tenant->switchToTenant();
-            $this->systemtenantid = $tenant->id;
-            $this->systemtenantname = $tenant->name;
-            $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
-        }
+        $this->systemtenantid = $tenant->id;
+        $this->systemtenantname = $tenant->name;
+        $this->systemTenantLegalNoticeAccepted = !empty($tenant->accept_data) && $tenant->accept_data != '{}';
+        $this->systemTenantWizardCompleted = boolval($tenant->wizard_completed);
     }
 
     /**
-     * Returns an array with basic data about the current user.
-     *
+     * return an array with basic current user data
      * @return array
+     * @throws UnauthorizedException
      */
-    public function getLoginData()
+    public function getLoginData(): array
     {
         $authenticationController = AuthenticationController::getInstance();
         if ($authenticationController->getCurrentUser() === null) {
@@ -462,6 +570,7 @@ class AuthenticationController
             'tenant_id' => $currentUser->systemtenant_id,
             'tenant_name' => $this->systemtenantname,
             'tenant_accepted_legal_notice' => $this->systemTenantLegalNoticeAccepted,
+            'tenant_wizard_completed' => $this->systemTenantWizardCompleted,
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
             'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays,
@@ -483,40 +592,13 @@ class AuthenticationController
     }
 
     /**
-     * Returns an instance of the authentication controller
-     *
-     * @param string $type this is the type of authentication you want to use default is SugarAuthenticate
-     * @return AuthenticationController
-     */
-    public static function getInstance()
-    {
-        if (empty(self::$authControllerInstance)) {
-            self::$authControllerInstance = new static();
-        }
-        return self::$authControllerInstance;
-    }
-
-
-    /**
-     * Deletes the session if it was created without login.
-     */
-    public function cleanup()
-    {
-        if (!empty($this->tmpSessionId)) {
-            session_destroy();
-        }
-    }
-
-
-    /**
      * Called when a user requests to logout. Should invalidate the session and redirect
      * to the login page.
      */
     public function logout()
     {
         $this->getCurrentUser()->call_custom_logic('before_logout');
-        $this->authController->logout();
-        LogicHook::getInstance()->call_custom_logic('Users', 'after_logout');
+        session_destroy();
+        LogicHook::getInstance()->call_custom_logic('Users', null,'after_logout');
     }
-
 }

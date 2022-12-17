@@ -1,13 +1,13 @@
 <div class="slds-form-element">
     <div *ngIf="strict; else countryinput" class="slds-select_container">
-        <select #focus class="slds-select " [(ngModel)]="value">
+        <select #focus class="slds-select " [(ngModel)]="value" [disabled]="disabled">
             <option value=""></option>
             <option *ngFor="let c of countries" [value]="c.cc"><system-label [label]="c.label"></system-label></option>
         </select>
     </div>
     <ng-template #countryinput>
         <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="value"/>
+            <input type="text" class="slds-input" [(ngModel)]="value" [disabled]="disabled"/>
         </div>
     </ng-template>
 </div>

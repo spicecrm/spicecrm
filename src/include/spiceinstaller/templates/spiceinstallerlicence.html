@@ -1,7 +1,8 @@
-<h2 class="slds-p-around--small slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small slds-border--bottom">
+<h2 class="slds-text-heading--medium slds-p-bottom_medium slds-border--bottom slds-p-horizontal--medium">
     License Agreement
 </h2>
 <div system-to-bottom>
+
     <div class="slds-p-around--medium slds-theme--default">
         <p>GNU AFFERO GENERAL PUBLIC LICENSE
             Version 3, 19 November 2007</p>
@@ -632,8 +633,11 @@
                 <a href="http://www.gnu.org/licenses/">gnu.org/licenses</a>.</p>
         </div>
     </div>
-    <div class="slds-grid slds-p-around--small slds-grid--vertical-align-center slds-grid--align-spread slds-border--top">
+
+    <div class="slds-grid slds-p-around--medium slds-border--top">
         <system-checkbox [(ngModel)]="spiceinstaller.selectedStep.completed">agree to Terms & Conditions</system-checkbox>
-        <button class="slds-button slds-button--brand" [disabled]="!spiceinstaller.selectedStep.completed" (click)="spiceinstaller.next(spiceinstaller.steps[2])">next</button>
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
+        <button class="slds-button slds-button--brand" [disabled]="!spiceinstaller.selectedStep.completed" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next })">next</button>
     </div>
+
 </div>

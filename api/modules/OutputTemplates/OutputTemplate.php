@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\OutputTemplates;
 
@@ -36,6 +8,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
+use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class OutputTemplate extends SpiceBean
@@ -66,7 +39,7 @@ class OutputTemplate extends SpiceBean
     private $additonalValues = [];
 
     /**
-     * an be calleed to set an array or object with different values to be
+     * an be called to set an array or object with different values to be
      *
      * @param $additonalValues an stdclass object
      */
@@ -79,6 +52,8 @@ class OutputTemplate extends SpiceBean
      * @var
      */
     public $idsOfParentTemplates = [];
+
+    public $useFrontendStylesheet = false;
 
     public function translateBody($bean = null, $bodyOnly = false)
     {
@@ -97,8 +72,25 @@ class OutputTemplate extends SpiceBean
         if ($bodyOnly) {
             $html = $templateCompiler->compile(html_entity_decode( $this->body), $bean, $this->language, $this->additonalValues);
         } else {
-            $html = '<style>' . $this->getStyle() . '</style>' . $templateCompiler->compile('<body><header>'
-                    .html_entity_decode( $this->header ).'</header><footer>'.html_entity_decode( $this->footer ).'</footer><main>'.html_entity_decode( $this->body ).'</main></body>', $bean, $this->language, $this->additonalValues);
+            $html = $templateCompiler->compile('
+                <body>
+                    <header id="spice_page_header">
+                        '.html_entity_decode( $this->header ).'
+                    </header>
+                    <main>
+                            '.html_entity_decode( $this->body ).'
+                    </main>
+                    <footer id="spice_page_footer">
+                            '.html_entity_decode( $this->footer ).'
+                    </footer>
+                    </body>', $bean, $this->language, $this->additonalValues);
+            $html = preg_replace('#^<html>#s', '<html>
+                <head>
+                    <style>
+                        '.$this->getStyle().'
+                    </style>
+                </head>
+            ', $html );
         }
 
         return $html;
@@ -110,6 +102,7 @@ class OutputTemplate extends SpiceBean
     }
 
     private function setPDFHandler(){
+        if ( $this->pdf_handler ) return; // PDF handler already set, nothing to do
         $class = @SpiceConfig::getInstance()->config['outputtemplates']['pdf_handler_class'];
         if(!$class) $class = '\SpiceCRM\modules\OutputTemplates\handlers\pdf\DomPdfHandler';
         $this->pdf_handler = new $class($this);
@@ -138,6 +131,11 @@ class OutputTemplate extends SpiceBean
         return $this->pdf_handler->__toString();
     }
 
+    public function setOutputHtml( $html ) {
+        $this->setPDFHandler();
+        $this->pdf_handler->html_content = $html;
+    }
+
     public function convertToSpiceAttatchment()
     {
         $file = $this->saveAsTmpFile();
@@ -153,8 +151,9 @@ class OutputTemplate extends SpiceBean
         return $this->bean;
     }
 
-    public function getStyle()
+    public function getStyle(): string
     {
+        if ( $this->useFrontendStylesheet ) return $this->getFrontendStylesheet();
         $style = '';
         if (!empty($this->stylesheet_id)) {
             $styleRecord = $this->db->fetchByAssoc($this->db->query("SELECT csscode FROM sysuihtmlstylesheets WHERE id='{$this->stylesheet_id}'"));
@@ -163,5 +162,41 @@ class OutputTemplate extends SpiceBean
         return str_replace(["\n", "\t"], "", $style);
     }
 
-}
+    /**
+     * Gets the stylesheet of the SpiceCRM frontend
+     */
+    public static function getFrontendStylesheet(): string
+    {
+        $css = '';
 
+        // first the stylesheet of the core
+        $filepath = '../app/styles.css';
+        if ( is_readable( $filepath )) $css .= file_get_contents( $filepath )."\n";
+
+        // second the custom stylesheet, if available
+        $filepath = '../config/assets/css/spicecrm.css';
+        if ( is_readable( $filepath )) $css .= file_get_contents( $filepath )."\n";
+
+        // at last last the CI colors/styles from the assets table
+        $assets = ( new SpiceUIRESTHandler() )->getAssets();
+        foreach ( $assets as $asset ) {
+            if ( $asset['assetkey'] === 'colors' ) {
+                $dummy = json_decode( $asset['assetvalue'] );
+                foreach ( $dummy as $k => $v ) {
+                    $css .= '--'.$k.':'.$v.';';
+                }
+            }
+        }
+        return $css;
+    }
+
+    /**
+     * Gets the HTML code the PDF document is based on. For debugging the template.
+     *
+     * @return string the HTML code
+     */
+    public function getHtmlOfPdfCreation(): string
+    {
+        return $this->pdf_handler->htmlOfPdfCreation;
+    }
+}

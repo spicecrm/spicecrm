@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
@@ -55,41 +27,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 require_once('modules/TableDictionary.php');
 
 
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 class SpiceInstaller
 {
 
@@ -636,7 +574,7 @@ class SpiceInstaller
      * inserts defaults into the config table
      * @param $db
      */
-    public function insertDefaults($db)
+    public function insertDefaults($db, $postData = null )
     {
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromaddress', 'do_not_reply@example.com')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromname', 'SpiceCRM')");
@@ -644,17 +582,40 @@ class SpiceInstaller
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'send_from_assigning_user', '0')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('tracker', 'Tracker', '1')");
 
-        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', 'SpiceCRM')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'export_delimiter', '')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'default_charset', '')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', '".$db->quote( $postData['system_name'] ?: 'SpiceCRM' )."')");
 
-        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'default_date_format', '')");
-        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'default_time_format', '')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'timezone', '".$db->quote( $postData['preferences']['timezone'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'datef', '".$db->quote( $postData['preferences']['datef'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'timef', '".$db->quote( $postData['preferences']['timef'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'distance_unit_system', '".$db->quote( $postData['preferences']['distance_unit_system'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'num_grp_sep', '".$db->quote( $postData['preferences']['num_grp_sep'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'dec_sep', '".$db->quote( $postData['preferences']['dec_sep'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'currency_significant_digits', '".$db->quote( $postData['preferences']['currency_significant_digits'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'export_charset', '".$db->quote( $postData['preferences']['export_charset'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'export_delimiter', '".$db->quote( $postData['preferences']['export_delimiter'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'week_day_start', '".$db->quote( $postData['preferences']['week_day_start'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'week_days_count', '".$db->quote( $postData['preferences']['week_days_count'] ?: '' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'locale_name_format', '".$db->quote( $postData['preferences']['locale_name_format'] ?: '' )."')");
+
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'currency', '-99')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'reminder_time', '-1')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'calendar_day_end_hour', '18')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'calendar_day_start_hour', '8')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'help_icon', 'visible')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'home_assistant', 'visible')");
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_iso4217', 'EUR')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_name', 'Euro')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_significant_digits', 2)");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'currencies', 'default_currency_symbol', '€')");
+
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'minpwdlength', '6')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'oneupper', '1')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'onelower', '1')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'onenumber', '1')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'onespecial', '0')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'passwordsetting', 'pwdvaliditydays', '0')");
+
     }
 
     /**
@@ -691,7 +652,7 @@ class SpiceInstaller
      * @param $postData
      */
 
-    public function retrieveCoreAndLanguages($db, $postData)
+    public function retrieveCoreAndLanguages( $db, $language )
     {
         $confLoader = new SpiceUIConfLoader();
         // load some packages to enable a good start
@@ -700,13 +661,12 @@ class SpiceInstaller
             $confLoader->loadPackage($loadPackage);
         }
 
-        $lang = $postData['language']['language_code'];
         $languageLoader = new SpiceLanguageLoader();
-        $languageLoader->loadLanguage($lang);
-        if ($lang != 'en_us') {
+        $languageLoader->loadLanguage( $language );
+        if ( $language != 'en_us') {
             $languageLoader->loadLanguage('en_us');
         }
-        $db->query("UPDATE syslangs SET is_default = 1 WHERE language_code = '$lang'");
+        $db->query("UPDATE syslangs SET is_default = 1 WHERE language_code = '".$db->quote( $language )."'");
     }
 
     private function retrieveSysModules()
@@ -742,9 +702,9 @@ class SpiceInstaller
 
         if (!empty($db)) {
             $this->createTables($db);
-            $this->insertDefaults($db);
+            $this->insertDefaults( $db, $postData );
             $this->createCurrentUser($db, $postData);
-            $this->retrieveCoreandLanguages($db, $postData);
+            $this->retrieveCoreandLanguages( $db, $postData['language'] );
             $repair->repairAndRebuildforInstaller();
         } else {
             $errors[] = "empty database instance";

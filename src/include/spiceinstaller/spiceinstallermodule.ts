@@ -19,12 +19,11 @@ import {SpiceInstallerFTS} from "./components/spiceinstallerfts";
 import {SpiceInstallerSystemCheck} from "./components/spiceinstallersystemcheck";
 import {SpiceInstallerLicence} from "./components/spiceinstallerlicence";
 import {SpiceInstallerCredentials} from "./components/spiceinstallercredentials";
-import {SpiceInstallerSetLanguage} from "./components/spiceinstallersetlanguage";
+import {SpiceInstallerSetPreferences} from "./components/spiceinstallersetpreferences";
 import {SpiceInstallerReview} from "./components/spiceinstallerreview";
 import {SpiceinstallerMySQLi} from "./components/spiceinstallermysqli";
 import {SpiceinstallerPostgreSQL} from "./components/spiceinstallerpgsql";
 import {SpiceinstallerOCI8} from "./components/spiceinstalleroci8";
-
 
 @NgModule({
     imports: [
@@ -46,7 +45,7 @@ import {SpiceinstallerOCI8} from "./components/spiceinstalleroci8";
         SpiceinstallerOCI8,
         SpiceInstallerFTS,
         SpiceInstallerCredentials,
-        SpiceInstallerSetLanguage,
+        SpiceInstallerSetPreferences,
         SpiceInstallerReview
     ],
     exports:[

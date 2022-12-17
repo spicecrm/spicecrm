@@ -30,6 +30,7 @@ export class SpiceImporter implements OnInit {
     public processing: boolean = false;
     public modelFields: any[] = undefined;
     public requiredModelFields: any[] = undefined;
+    public showNonDbFields = false;
 
     constructor(public spiceImporter: SpiceImporterService,
                 public language: language,
@@ -88,12 +89,9 @@ export class SpiceImporter implements OnInit {
                 if (fields.hasOwnProperty(field)) {
                     let thisField = fields[field];
                     // check if file can be imported
-                    if (thisField.type !== 'link' && thisField.type !== 'relate' && (thisField.name == 'email1' || thisField.source !== 'non-db') && thisField.name != 'id') {
-                        if (thisField.vname) {
-                            thisField.displayname = this.language.getLabel(this.model.module, thisField.vname) + ' (' + thisField.name + ')';
-                        } else {
-                            thisField.displayname = thisField.name;
-                        }
+                    if (thisField.type !== 'link' && thisField.type !== 'relate' && (thisField.source != 'non-db' || this.showNonDbFields) && thisField.name != 'id') {
+
+                        thisField.displayname = thisField.name;
 
                         this.modelFields.push(thisField);
                     }
@@ -283,9 +281,9 @@ export class SpiceImporter implements OnInit {
         this.spiceImporter.result = {};
         this.processing = true;
 
-        this.backend.postRequest('module/SpiceImports/import', {
+        this.backend.postRequest('module/SpiceImports/import',  null,{
             objectimport: preparedObjectImport,
-        }).subscribe(res => {
+        }).subscribe(res => { 
 
             switch (res.status) {
                 case 'imported':

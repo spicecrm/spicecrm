@@ -34,6 +34,7 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 
 SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>false,
 	'comment' => 'Tracks items of interest that occurred after you send an email campaign',
@@ -297,50 +298,71 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'relationship' => 'campaignlog_sent_emails',
             'source'       => 'non-db',
         ],
+        'source_id' => [
+            'name' => 'source_id',
+            'vname' => 'LBL_SOURCE_ID',
+            'type' => 'id',
+            'reportable' => false,
+            'comment' => 'Id of the bean that is the original reason for the campaign log entry'
+        ],
+        'source_type' => [
+            'name' => 'source_type',
+            'vname' => 'LBL_SOURCE_TYPE',
+            'type' => 'varchar',
+            'len' => 100,
+            'comment' => 'Module name of the bean that is the original reason for the campaign log entry'
+        ],
     ],
 	'indices' => [
 		[
 			'name' =>'campaign_log_pk',
-
 			'type' =>'primary',
 			'fields'=> ['id']
         ],
 		[
 			'name' =>'idx_camp_tracker',
-
 			'type' =>'index',
 			'fields'=> ['target_tracker_key']
         ],
 
 		[
 			'name' =>'idx_camp_campaign_id',
-
 			'type' =>'index',
 			'fields'=> ['campaign_id']
         ],
 
 		[
 			'name' =>'idx_camp_more_info',
-
 			'type' =>'index',
 			'fields'=> ['more_information']
         ],
 		[
 			'name' =>'idx_target_id',
-
 			'type' =>'index',
 			'fields'=> ['target_id']
         ],
         [
 			'name' =>'idx_target_id_deleted',
-
 			'type' =>'index',
 			'fields'=> ['target_id','deleted']
         ],
-
-
+        [
+            'name' =>'idx_campainlog_sourceiddel',
+            'type' =>'index',
+            'fields'=> ['source_id', 'source_type', 'deleted']
+        ],
     ],
 	'relationships' => [
+        'campaignlog_source_eventregistrations' => ['lhs_module'=> 'CampaignLog',
+            'lhs_table'=> 'campaign_log',
+            'lhs_key' => 'related_id',
+            'rhs_module'=> 'EventRegistrations',
+            'rhs_table'=> 'eventregistrations',
+            'rhs_key' => 'id',
+            'relationship_type'=>'one-to-many',
+            'relationship_role_column' => 'source_type',
+            'relationship_role_column_value' => 'EventRegistrations',
+        ],
         'campaignlog_contact' => ['lhs_module'=> 'CampaignLog',
 								        'lhs_table'=> 'campaign_log',
 								        'lhs_key' => 'related_id',
@@ -384,4 +406,5 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
         ],
     ]
 ];
-?>
+
+VardefManager::createVardef('CampaignLog', 'CampaignLog', ['assignable']);

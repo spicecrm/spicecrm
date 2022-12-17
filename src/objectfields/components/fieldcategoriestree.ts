@@ -51,6 +51,13 @@ export class fieldCategoriesTree{
     @Input() public categories: any[] = [];
 
     /**
+     * the sort property to sort on
+     * currently possible: node_key | node_name, node_key is default
+     * @private
+     */
+    @Input() public sortby: string = 'node_key';
+
+    /**
      * a searchterm
      *
      * @private
@@ -140,12 +147,43 @@ export class fieldCategoriesTree{
     public levelCategories(level) {
         switch (level) {
             case 0:
-                return this.categories.filter(c => !c.parent_id || c.parent_id == '').sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1);
+                // return this.categories.filter(c => !c.parent_id || c.parent_id == '').sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1);
+                return this.sortCategories(this.categories.filter(c => !c.parent_id || c.parent_id == ''), this.sortby);
                 break;
             default:
-                return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]).sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1) : [];
+                // return this.levels[level - 1] ? this.categories.filter(c => c.parent_id == this.levels[level - 1]).sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1) : [];
+                return this.levels[level - 1] ? this.sortCategories(this.categories.filter(c => c.parent_id == this.levels[level - 1]), this.sortby) : [];
                 break;
         }
+    }
+
+
+    /**
+     * sort categories by sortby parameter
+     * @param categories
+     * @param sortby
+     */
+    public sortCategories(categories = [], sortby = 'node_key'){
+        if(sortby == 'node_name'){
+            return this.sortCategoriesByTranslation(categories);
+        }
+        return this.sortCategoriesByKey(categories);
+    }
+
+    /**
+     * sort categories by translated name
+     * @param categories
+     */
+    public sortCategoriesByTranslation(categories = []){
+        return categories.sort((a, b) => this.language.getLabel(a.node_name).localeCompare(this.language.getLabel(b.node_name)))
+    }
+
+    /**
+     * sort categories by key vale
+     * @param categories
+     */
+    public sortCategoriesByKey(categories = []){
+        return categories.sort((a, b) => parseFloat(a.node_key) > parseFloat(b.node_key) ? 1 : -1)
     }
 
     /**

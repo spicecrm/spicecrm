@@ -14,6 +14,8 @@ import {broadcast} from './broadcast.service';
 import {modal} from './modal.service';
 import {metadata} from './metadata.service';
 import {modelutilities} from "./modelutilities.service";
+import {backend} from "./backend.service";
+import {TokenObjectI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
 
 interface loginAuthDataIf {
     userName: string;
@@ -40,7 +42,7 @@ export class loginService {
     /**
      * an oauthToken passed in
      */
-    public oauthToken: string = '';
+    public tokenObject: TokenObjectI;
 
     /**
      * the issuing authority for the OAuth Token
@@ -59,7 +61,8 @@ export class loginService {
         public broadcast: broadcast,
         public modelutilities: modelutilities,
         public modal: modal,
-        public metadata: metadata
+        public metadata: metadata,
+        public backend: backend
     ) {
         this.broadcast.message$.subscribe((message: any) => {
             if (message.messagetype === 'loader.completed' && message.messagedata === 'loadUserData') {
@@ -99,14 +102,19 @@ export class loginService {
                 'Authorization',
                 'Basic ' + this.helper.encodeBase64(this.authData.userName + ':' + this.authData.password)
             );
-        } else if (this.oauthToken) {
+        } else if (this.tokenObject) {
             headers = headers.set(
                 'OAuth-Token',
-                this.oauthToken
-            );
-            headers = headers.set(
+                this.tokenObject.access_token
+            ).set(
                 'OAuth-Issuer',
                 this.oauthIssuer
+            ).set(
+                'OAuth-Refresh-Token',
+                this.tokenObject.refresh_token ?? ''
+            ).set(
+                'OAuth-Token-Valid-Until',
+                this.tokenObject.valid_until ?? ''
             );
         } else {
             throw new Error('Cannot Log In');
@@ -172,7 +180,7 @@ export class loginService {
     /**
      * logs back into the backend
      */
-    public relogin(password, token): Observable<boolean> {
+    public relogin(password, tokenObject: TokenObjectI): Observable<boolean> {
         let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
 
         let loginSuccess = new Subject<boolean>();
@@ -187,14 +195,20 @@ export class loginService {
                 'Authorization',
                 'Basic ' + this.helper.encodeBase64(this.session.authData.userName + ':' + password)
             );
-        } else if (token) {
+        } else if (tokenObject) {
+
             headers = headers.set(
                 'OAuth-Token',
-                token
-            );
-            headers = headers.set(
+                tokenObject.access_token
+            ).set(
                 'OAuth-Issuer',
                 this.oauthIssuer
+            ).set(
+                'OAuth-Refresh-Token',
+                this.tokenObject.refresh_token ?? ''
+            ).set(
+                'OAuth-Token-Valid-Until',
+                this.tokenObject.valid_until ?? ''
             );
         }
 
@@ -288,9 +302,7 @@ export class loginService {
     public logout(localonly: boolean = false) {
         // check if we shoudl also logout on the server
         if(!localonly) {
-            this.http.delete(
-                this.configurationService.getBackendUrl() + '/authentication/login?session_id=' + this.session.authData.sessionId
-            );
+            this.backend.deleteRequest('authentication/login', {session_id: this.session.authData.sessionId});
         }
         this.session.endSession();
         this.loader.reset();

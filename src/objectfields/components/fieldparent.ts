@@ -5,6 +5,8 @@ import {Component, ElementRef, Renderer2, ViewChild, ViewContainerRef, OnInit} f
 import {Router} from '@angular/router';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
+import {backend} from '../../services/backend.service';
+import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
@@ -30,6 +32,8 @@ export class fieldParent extends fieldGeneric implements OnInit {
     constructor(
         public model: model,
         public view: view,
+        public backend: backend,
+        public toast: toast,
         public broadcast: broadcast,
         public language: language,
         public metadata: metadata,
@@ -72,11 +76,26 @@ export class fieldParent extends fieldGeneric implements OnInit {
         // determine the valid types
         this.determineParentTypes();
         // initialize the parenttype
-      if (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '') {
+        if (this.view.isEditMode() && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
             this.model.setField(this.parentTypeField, this.parentTypes[0]);
-       }
+        }
 
     }
+
+    /**
+     * handle the view mode change and set the parent type if it is not set yet
+     * @param mode
+     */
+    public handleViewModeChange(mode) {
+        if (mode == 'edit' && this.view.editfieldid && this.view.editfieldid == this.fieldid) {
+            this.setFocus();
+        }
+
+        if (mode == 'edit' && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
+            this.model.setField(this.parentTypeField, this.parentTypes[0]);
+        }
+    }
+
 
     /**
      * get the valid parent types from the metadata or the field config
@@ -134,6 +153,35 @@ export class fieldParent extends fieldGeneric implements OnInit {
     public setParent(parent) {
         this.model.setField(this.fieldname, parent.text);
         this.model.setField(this.parentIdField, parent.id);
+        if (this.fieldconfig.executeCopyRules == 2) {
+            this.executeCopyRules(parent.id);
+        } else if (this.fieldconfig.executeCopyRules == 1) {
+            this.modal.confirm(this.language.getLabel('MSG_COPY_DATA', '', 'long'), this.language.getLabel('MSG_COPY_DATA')).subscribe(answer => answer && this.executeCopyRules(parent.id));
+        }
+    }
+
+
+    /**
+     * if config is set the copy rules are evaluated and data from the related record is copied to the current one
+     *
+     * @param idRelated the related id
+     */
+    public executeCopyRules(idRelated) {
+        let awaitStopper = this.modal.await('LBL_LOADING');
+        this.backend.get(this.parentType, idRelated).subscribe(
+            (response: any) => {
+                let relateModel = {
+                    module: this.parentType,
+                    id: response.id,
+                    data: response
+                };
+                this.model.executeCopyRulesParent(relateModel);
+                awaitStopper.emit();
+            },
+            () => {
+                this.toast.sendToast('ERR_LOADING_RECORD', 'error');
+                awaitStopper.emit();
+            });
     }
 
     public toggleParentTypeSelect() {

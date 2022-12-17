@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
@@ -268,11 +240,13 @@ class SpiceFTSHandler
 
         // determine the charset
         $supportedCharsets = mb_list_encodings();
-        $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        # $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        $charsetTo = UserPreference::getDefaultPreference('export_charset');
         if (!empty($postBody['charset'])) {
             if (in_array($postBody['charset'], $supportedCharsets)) $charsetTo = $postBody['charset'];
         } else {
-            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            // if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset');
         }
 
         $fh = @fopen('php://output', 'w');
@@ -1032,17 +1006,22 @@ class SpiceFTSHandler
 
         $indexSettings = SpiceFTSUtils::getBeanIndexSettings($bean->_module);
         $indexProperties = SpiceFTSUtils::getBeanIndexProperties($bean->_module);
+
+        $beanHandler = new SpiceFTSBeanHandler($bean);
+        $ftsBean = $beanHandler->normalizeBean();
+
         $searchParts = [];
         foreach ($indexProperties as $indexProperty) {
             if ($indexProperty['duplicatecheck']) {
                 $indexField = $indexProperty['indexfieldname'];
-                if (empty($bean->$indexField)) {
+                if (empty($ftsBean[$indexProperty['indexfieldname']])) {
                     //return [];
                     // don't stop, just continue, ignore it
                     continue;
                 } else {
 
-                    $queryField = $bean->$indexField;
+                    //$queryField = $bean->$indexField;
+                    $queryField = $ftsBean[$indexProperty['indexfieldname']];
 
                     switch ($indexProperty['duplicatequery']) {
                         case 'term':
@@ -1360,6 +1339,9 @@ class SpiceFTSHandler
                     }
 
                 }
+
+                // reset array keys in case we removed one
+                $searchresults[$module]['hits'] = array_values($searchresults[$module]['hits']);
 
                 // add the aggregations
                 $searchresults[$module]['aggregations'] = $searchresultsraw['aggregations'];
@@ -1800,15 +1782,14 @@ class SpiceFTSHandler
                     $beanCounter++;
                     $counterIndexed++;
                 } else {
-                    $seed->retrieve($indexBean['id'], true, false, false);
                     $bulkItems[] = json_encode([
                         'delete' => [
                             '_index' => $this->elasticHandler->indexPrefix . strtolower($bean['module']),
-                            '_id' => $seed->id
+                            '_id' => $indexBean['id']
                         ]
                     ]);
 
-                    $bulkUpdates['deleted'][] = $seed->id;
+                    $bulkUpdates['deleted'][] = $indexBean['id'];
 
                     $beanCounter++;
                     $counterDeleted++;

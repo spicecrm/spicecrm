@@ -1,21 +1,26 @@
-<div class="slds-p-around--small">
-    <h2 class="slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
-        Welcome to SpiceCRM
+<div class="slds-m-horizontal--medium">
+
+    <h2 class="slds-text-heading--medium slds-m-bottom_medium">
+        <div class="slds-text-body--regular slds-p-bottom--xx-small">Welcome to SpiceCRM<br></div>
+        Set Backend
     </h2>
+
     <!--div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>id</label>
         <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [disabled]="checking" [(ngModel)]="spiceinstaller.systemid"/>
+            <input type="text" class="slds-input" [disabled]="checking" [(ngModel)]="spiceinstaller.systemid" system-trim-input/>
         </div>
     </div-->
-    <div class="slds-form-element slds-p-vertical--xx-small" >
+
+    <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-has-error': !systemNameCondition}">
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Name</label>
         <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [disabled]="checking" [(ngModel)]="spiceinstaller.systemname"/>
+            <input type="text" class="slds-input" [disabled]="checking" [(ngModel)]="spiceinstaller.systemname" system-trim-input="blur" (change)="selfStep.completed=false"/>
+            <div *ngIf="!systemNameCondition" class="slds-form-element__help">Input required.</div>
         </div>
     </div>
     <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
-        <label class="slds-form-element__label">Show Forgot Password on Login Screen</label>
+        <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Show Forgot Password on Login Screen</label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
                 <select class="slds-select" [disabled]="checking" [(ngModel)]="spiceinstaller.systemallowforgotpass">
@@ -26,7 +31,7 @@
         </div>
     </div>
     <div class="slds-form-element slds-p-vertical--xx-small" [ngClass]="{'slds-hide': apiFound}">
-        <label class="slds-form-element__label">Show LoginSidebar</label>
+        <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Show LoginSidebar</label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
                 <select class="slds-select" [disabled]="checking" [(ngModel)]="spiceinstaller.systemloginsidebar">
@@ -36,7 +41,9 @@
             </div>
         </div>
     </div>
+
     <div class="slds-p-vertical--small slds-text-align--right">
-        <button class="slds-button slds-button--brand" (click)="next()">next</button>
+        <button class="slds-button slds-button--brand" (click)="this.spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next })">next</button>
     </div>
+
 </div>

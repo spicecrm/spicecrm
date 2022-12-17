@@ -3,6 +3,7 @@
 namespace SpiceCRM\includes\SpiceUI;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -205,94 +206,171 @@ class SpiceUIRESTHandler
         return $retArray;
     }
 
-    function setComponentSets($data)
+    /**
+     * @throws ForbiddenException
+     * @throws \Exception
+     */
+    function setComponentSets($data): bool
     {
-
         $db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
 
-        // check if we have a CR set
-        if ($_SESSION['SystemDeploymentCRsActiveCR'])
-            $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
+        foreach ($data['add'] as $componentsetId => $componentsetData) {
 
-        foreach ($data['add'] as $componentsetid => $componentsetdata) {
+            $componentsetItemTable = "sysui".($componentsetData['type'] == 'custom' ? 'custom' : '')."componentsetscomponents";
 
-            $componentsettable = $componentsetdata['type'] == 'custom' ? 'sysuicustomcomponentsets' : 'sysuicomponentsets';
+            self::insertComponentset($componentsetId, $componentsetData);
 
-            $db->query("INSERT INTO sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets (id, module, name, package) VALUES('$componentsetid', '" . $componentsetdata['module'] . "', '" . $componentsetdata['name'] . "', '" . $componentsetdata['package'] . "')");
+            foreach ($componentsetData['items'] as $componentsetItem) {
 
-            // add to the CR
-            if($cr) $cr->addDBEntry("sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets", $componentsetid, 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name']);
-
-
-            foreach ($componentsetdata['items'] as $componentsetitem) {
-                $db->query("INSERT INTO sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents (id, componentset_id, component, sequence, componentconfig, package, version) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentconfig']) . "','" . $componentsetitem['pakage'] . "', '{$_SESSION['confversion']}')");
-
-                // add to the CR
-                if($cr) $cr->addDBEntry(" sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
-
+                self::insertComponentsetItem($componentsetItem, $componentsetId, $componentsetData, $componentsetItemTable);
             }
         }
 
         // handle the update
-        foreach ($data['update'] as $componentsetid => $componentsetdata) {
+        foreach ($data['update'] as $componentsetId => $componentsetData) {
 
-            $record = $db->fetchByAssoc($db->query("SELECT * FROM sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsets WHERE id='$componentsetid'"));
-            if($record['name'] != $componentsetdata['name'] || $record['package'] != $componentsetdata['package']) {
-                $db->query("UPDATE sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsets SET name='" . $componentsetdata['name'] . "',  package='" . $componentsetdata['package'] . "', version = '{$_SESSION['confversion']}' WHERE id='$componentsetid'");
+            $componentsetTable = "sysui" . ($componentsetData['type'] == 'custom' ? 'custom' : '') . "componentsets";
+            $name = $componentsetData['module'] . "/" . $componentsetData['name'];
 
-                // add to the CR
-                if ($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsets", $componentsetid, 'U', $componentsetdata['module'] . "/" . $componentsetdata['name']);
+            $existingSet = $db->fetchByAssoc($db->query("SELECT * FROM $componentsetTable WHERE id='$componentsetId'"));
+
+            // update the componentset
+            if ($existingSet && SystemDeploymentCR::hasChanged($existingSet, $componentsetData, ['name', 'package'])) {
+
+                $data = [
+                    'name' => $componentsetData['name'],
+                    'package' => $componentsetData['package'],
+                    'version' => $_SESSION['confversion']
+                ];
+
+                SystemDeploymentCR::writeDBEntry($componentsetTable, $componentsetId, $data, $name, SystemDeploymentCR::ACTION_UPDATE);
+
+            } else if (!$existingSet) {
+
+                self::insertComponentset($componentsetId, $componentsetData);
+
             }
 
-            // delete all current items
-            // $db->query("DELETE FROM sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents WHERE componentset_id = '$componentsetid'");
-
-            // get all componentset components
-            $items = $db->query("SELECT * FROM sysui".($componentsetdata['type'] == 'custom' ? 'custom' : '')."componentsetscomponents WHERE componentset_id = '$componentsetid'");
-            while($item = $db->fetchByAssoc($items)){
-                $i = 0;$itemIndex = false;
-                foreach ($componentsetdata['items'] as $index => $componentsetitem) {
-                    if($componentsetitem['id'] == $item['id']){
-                        unset($componentsetdata['items'][$index]);
-                        $itemIndex = true;
-                        break;
-                    }
-                }
-
-                // if we have the entry
-                if($itemIndex !== false){
-                    if($item['sequence'] != $componentsetitem['sequence'] ||
-                        $item['package'] != $componentsetitem['package'] ||
-                        md5($item['componentconfig']) != md5(json_encode($componentsetitem['componentconfig']))){
-                        $db->query("UPDATE sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents  SET package = '" . $componentsetitem['package'] . "', sequence = '" . $componentsetitem['sequence'] . "', componentconfig = '" . json_encode($componentsetitem['componentconfig']) . "', version = '{$_SESSION['confversion']}' WHERE id='{$item['id']}'");
-
-                        // add to the CR
-                        if($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'U',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
-                    }
-
-                } else {
-                    // remove it
-                    $db->query("DELETE FROM sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents WHERE id='{$item['id']}'");
-                    // add to the CR
-                    if($cr) $cr->addDBEntry("sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'D',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
-
-                }
-            }
-
-            // add all items
-            foreach ($componentsetdata['items'] as $componentsetitem) {
-                $db->query("INSERT INTO sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents (id, componentset_id, component, sequence, componentconfig, package, version) VALUES('" . $componentsetitem['id'] . "','$componentsetid','" . $componentsetitem['component'] . "','" . $componentsetitem['sequence'] . "','" . json_encode($componentsetitem['componentconfig']) . "','" . $componentsetitem['package'] . "', '{$_SESSION['confversion']}')");
-
-                // add to the CR
-                if($cr) $cr->addDBEntry(" sysui" . ($componentsetdata['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents", $componentsetitem['id'], 'I',  $componentsetdata['module'] . "/" . $componentsetdata['name'] . '/' . $componentsetitem['component']);
-            }
+            self::setComponentsetItems($componentsetId, $componentsetData);
         }
 
         return true;
-
     }
+
+    /**
+     * set componentset items
+     * @throws Exception | \Exception
+     */
+    private static function setComponentsetItems(string $componentsetId, array $componentsetData)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $componentsetItemTable = "sysui".($componentsetData['type'] == 'custom' ? 'custom' : '')."componentsetscomponents";
+        $name = $componentsetData['module'] . "/" . $componentsetData['name'];
+
+        // get all componentset components
+        $query = $db->query("SELECT * FROM $componentsetItemTable WHERE componentset_id = '$componentsetId'");
+
+        while ($existingItem = $db->fetchByAssoc($query)) {
+
+            $componentsetItem = null;
+
+            // check if the existing item exists in the update array
+            $existingItemInPostData = false;
+
+            foreach ($componentsetData['items'] as $index => $componentsetItem) {
+                if ($componentsetItem['id'] == $existingItem['id']) {
+
+                    $componentsetItem = $componentsetData['items'][$index];
+                    // remove the item from items array
+                    unset($componentsetData['items'][$index]);
+                    $existingItemInPostData = true;
+                    break;
+                }
+            }
+
+            // prepare for check
+            $existingItem['componentconfig'] = json_decode($existingItem['componentconfig']);
+
+            // if we have the entry
+            if ($existingItemInPostData && SystemDeploymentCR::hasChanged($existingItem, $componentsetItem, ['sequence', 'component', 'componentconfig', 'version', 'package'])) {
+
+                $data = [
+                    'sequence' => $componentsetItem['sequence'],
+                    'componentconfig' => json_encode($componentsetItem['componentconfig']),
+                    'package' => $componentsetItem['package'],
+                    'version' => $_SESSION['confversion']
+                ];
+
+                $name = $name . '/' . $componentsetItem['component'];
+
+                SystemDeploymentCR::writeDBEntry($componentsetItemTable, $existingItem['id'], $data, $name, SystemDeploymentCR::ACTION_UPDATE);
+
+            } else if (!$existingItemInPostData) {
+
+                $name = $name . '/' . $existingItem['component'];
+
+                SystemDeploymentCR::deleteDBEntry($componentsetItemTable, $existingItem['id'], $name);
+            }
+        }
+
+        // add all items
+        foreach ($componentsetData['items'] as $componentsetItem) {
+
+            self::insertComponentsetItem($componentsetItem, $componentsetId, $componentsetData, $componentsetItemTable);
+        }
+    }
+
+    /**
+     * insert componentset item
+     * @param array $componentsetItem
+     * @param string $componentsetId
+     * @param array $componentsetData
+     * @param string $componentsetItemTable
+     * @throws Exception|\Exception
+     */
+    private static function insertComponentsetItem(array $componentsetItem, string $componentsetId, array $componentsetData, string $componentsetItemTable)
+    {
+        $dbData = [
+            'id' => $componentsetItem['id'],
+            'componentset_id' => $componentsetId,
+            'component' => $componentsetItem['component'],
+            'sequence' => $componentsetItem['sequence'],
+            'componentconfig' => json_encode($componentsetItem['componentconfig']),
+            'package' => $componentsetItem['pakage'],
+            'version' => $_SESSION['confversion']
+        ];
+
+        $name = $componentsetData['module'] . "/" . $componentsetData['name'] . '/' . $componentsetItem['component'];
+
+        SystemDeploymentCR::writeDBEntry($componentsetItemTable, $componentsetItem['id'], $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
+    }
+
+    /**
+     * insert componentset item
+     * @param string $componentsetId
+     * @param array $componentsetData
+     * @throws \Exception
+     */
+    private static function insertComponentset(string $componentsetId, array $componentsetData)
+    {
+        $tableName = "sysui".($componentsetData['type'] == 'custom' ? 'custom' : '')."componentsets";
+
+        $dbData = [
+            'id' => $componentsetId,
+            'module' => $componentsetData['module'],
+            'name' => $componentsetData['name'],
+            'package' => $componentsetData['package'],
+            'version' => $_SESSION['confversion']
+        ];
+
+        $name = $componentsetData['module'] . "/" . $componentsetData['name'];
+
+        SystemDeploymentCR::writeDBEntry($tableName, $componentsetId, $dbData, $name, SystemDeploymentCR::ACTION_INSERT);
+    }
+
 
     /**
      * @deprected .. moved to controller

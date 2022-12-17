@@ -110,6 +110,17 @@ export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
         this.view.isEditable = true;
     }
 
+    /**
+     * a getter that returns the disabled status. This getter checks if all data are available
+     */
+    get disabled() {
+        let recipientAddresses = this.model.getFieldValue('recipient_addresses');
+        let mailbox = this.model.getFieldValue('mailbox_id');
+        let name = this.model.getFieldValue('name');
+        let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
+
+        return (!name || !mailbox || !recipientAddresses || !recipientTo) ? true : this.sending;
+    }
 
     public sendEmail() {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {

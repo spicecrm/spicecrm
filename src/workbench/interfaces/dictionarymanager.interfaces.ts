@@ -17,6 +17,7 @@ export interface DictionaryDefinition {
     status: 'd'|'a'|'i';
     tablename: string;
     sysdictionary_type: string;
+    sysdictionary_contenttype?: string;
     description?: string;
     deleted: number;
     version?: string;
@@ -36,6 +37,7 @@ export interface DictionaryItem {
     sysdictionary_ref_id?: string;
     sysdomaindefinition_id?: string;
     label?: string;
+    labelinputhelper?: string;
     non_db: number;
     exclude_from_audited: number;
     required: number;

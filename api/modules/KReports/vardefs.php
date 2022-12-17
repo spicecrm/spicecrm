@@ -1,16 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of KReporter. KReporter is an enhancement developed
- * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- *
- * This Version of the KReporter is licensed software and may only be used in
- * alignment with the License Agreement received with this Software.
- * This Software is copyrighted and may not be further distributed without
- * witten consent of aac services k.s.
- *
- * You can contact us at info@kreporter.org
- ********************************************************************************/
-
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -114,7 +103,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['KReport'] = ['table' => 'krep
         ],
         'category_id' => [
             'name' => 'category_id',
-            'type' => 'id',
+            'type' => 'char',
+            'len' => 36,
             'vname' => 'LBL_CATEGORIES_ID'
         ],
         'category_name' => [

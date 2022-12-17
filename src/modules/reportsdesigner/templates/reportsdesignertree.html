@@ -24,8 +24,8 @@
             </div>
         </div>
         <div class="slds-grow" style="height: 0" *ngIf="!!activeModule.unionid">
-            <div *ngFor="let module of allModules; trackBy: trackByFn" [class.slds-hide]="activeModule.unionid != module.unionid" class="slds-scrollable--y" style="height: 100%">
-                <system-module-tree [module]="module.module" (itemSelected)="onItemSelection($event, module.module)"></system-module-tree>
+            <div *ngFor="let module of allModules; trackBy: trackByFn" [class.slds-hide]="activeModule.unionid != module.unionid" [system-overlay-loading-spinner]="systemModuleTree.isLoading" class="slds-scrollable--y" style="height: 100%">
+                <system-module-tree #systemModuleTree [module]="module.module" [displayRelationshipFields]="true" [displayAuditFields]="true" (itemSelected)="onItemSelection($event, module.module)"></system-module-tree>
             </div>
         </div>
     </div>

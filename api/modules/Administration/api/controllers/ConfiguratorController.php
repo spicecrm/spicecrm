@@ -2,6 +2,7 @@
 namespace SpiceCRM\modules\Administration\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
@@ -75,11 +76,11 @@ class ConfiguratorController{
             SpiceConfig::getInstance()->config[$args['category']][$name] = $value;
 
             // write to database
-            $entry = $db->fetchByAssoc($db->query("SELECT * FROM config WHERE category='{$args['category']}' AND name='{$name}'"));
+            $entry = $db->fetchByAssoc($db->query("SELECT * FROM config WHERE category='{$db->quote($args['category'])}' AND name='{$db->quote($name)}'"));
             if($entry){
-                $db->query("UPDATE config SET value='{$value}' WHERE category='{$args['category']}' AND name='{$name}'");
+                $db->query("UPDATE config SET value='{$db->quote($value)}' WHERE category='{$db->quote($args['category'])}' AND name='{$db->quote($name)}'");
             } else {
-                $db->query("INSERT INTO config (category, name, value) VALUES('{$args['category']}', '{$name}', '{$value}')");
+                $db->query("INSERT INTO config (category, name, value) VALUES('{$db->quote($args['category'])}', '{$db->quote($name)}', '{$db->quote($value)}')");
             }
         }
 
@@ -105,7 +106,7 @@ class ConfiguratorController{
 
         $retArray = [];
 
-        $entries = $db->query("SELECT * FROM {$args['table']}");
+        $entries = $db->query("SELECT * FROM `{$db->quote($args['table'])}`");
         while ($entry = $db->fetchByAssoc($entries)) {
             $retArrayEntry = [];
             foreach ($entry as $key => $value) {
@@ -128,34 +129,16 @@ class ConfiguratorController{
      * @throws \Exception
      */
 
-    public function checkMetaData( Request $req, Response $res, $args ): Response {
+    public function deleteConfig(Request $req, Response $res, $args): Response
+    {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
         # header("Access-Control-Allow-Origin: *");
-        if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
+        if (!$current_user->is_admin) throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
-            if ($meta['table'] == $args['table']) {
-                // check if we have a CR set
-                if ($meta['changerequests']['active'] && $_SESSION['SystemDeploymentCRsActiveCR'])
-                    $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
+        SystemDeploymentCR::deleteDBEntry($args['table'], $args['id'], $args['table']);
 
-                if($cr){
-                    $record = $db->fetchByAssoc($db->query("SELECT * FROM {$args['table']} WHERE id = '{$args['id']}'"));
-                    if(is_array($meta['changerequests']['name'])){
-                        $nameArray = [];
-                        foreach($meta['changerequests']['name'] as $item){
-                            $nameArray[]=$record['item'];
-                        }
-                        $cr->addDBEntry($args['table'], $args['id'], 'D', implode('/', $nameArray));
-                    } else {
-                        $cr->addDBEntry($args['table'], $args['id'], 'D', $record[$meta['changerequests']['name']]);
-                    }
-                }
-            }
-        }
-        $db->query("DELETE FROM {$args['table']} WHERE id = '{$args['id']}'");
         return $res->withJson(['status' => 'success']);
     }
 
@@ -177,14 +160,6 @@ class ConfiguratorController{
 
         $postBody = $req->getParsedBody();
 
-        /**
-        $setArray = [];
-        foreach ($postBody['config'] as $field => $value) {
-            if ($field !== 'id' && $value !== "")
-                $setArray[] = sprintf('%s = "%s"', $field, $db->quote( $value ));
-        }
-        */
-
         // no error handling, fire and forget :)
         if (count($postBody['config']) > 0) {
             // make sure array is only 1 level
@@ -193,41 +168,12 @@ class ConfiguratorController{
                     $postBody['config'][$key] = json_encode($val);
                 }
             }
-
-            $db->upsertQuery($args['table'], ['id' => $postBody['config']['id']], $postBody['config']);
-
-            /*
-            $exists = $db->fetchByAssoc($db->query("SELECT id FROM {$args['table']} WHERE id='{$args['id']}'"));
-            if ($exists) {
-                $db->query("UPDATE {$args['table']} SET " . implode(',', $setArray) . " WHERE id='{$args['id']}'");
-            } else {
-                $setArray[] = "id='{$args['id']}'";
-                $db->query("INSERT INTO {$args['table']} SET " . implode(',', $setArray));
-            }
-            */
-
-            // check for CR relevancy
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $meta) {
-                if ($meta['table'] == $args['table']) {
-                    // check if we have a CR set
-                    if ($meta['changerequests']['active'] && $_SESSION['SystemDeploymentCRsActiveCR'])
-                        $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
-
-                    if($cr){
-                        if(is_array($meta['changerequests']['name'])){
-                            $nameArray = [];
-                            foreach($meta['changerequests']['name'] as $item){
-                                $nameArray[]=$postBody['item'];
-                            }
-                            $cr->addDBEntry($args['table'], $args['id'], $exists ? 'U' : 'I', implode('/', $nameArray));
-                        } else {
-                            $cr->addDBEntry($args['table'], $args['id'], $exists ? 'U' : 'I', $postBody[$meta['changerequests']['name']]);
-                        }
-                    }
-
-                }
+            // make sure id field is there
+            if(!isset($postBody['config']['id'])){
+                $postBody['config']['id'] = $args['id'];
             }
 
+            SystemDeploymentCR::writeDBEntry($args['table'], $args['id'], $postBody['config'], $args['table']);
         }
 
         return $res->withJson(['status' => 'success']);

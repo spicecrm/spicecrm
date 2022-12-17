@@ -79,6 +79,8 @@ class SpiceConfig
             //set instance
             self::$instance = new self;
             self::$instance->loadConfigFiles();
+            self::$instance->loadConfigFromDB();
+            self::$instance->mappingBWC();
         }
         return self::$instance;
     }
@@ -119,8 +121,6 @@ class SpiceConfig
             session_save_path($this->config['session_dir']);
         }
 
-        // load the config from teh database
-        $this->loadConfigFromDB();
     }
 
     /**
@@ -140,7 +140,7 @@ class SpiceConfig
             if ($db) {
                 $result = $db->query("SELECT * FROM config");
                 while ($configEntry = $db->fetchByAssoc($result)) {
-                    $dbconfig[$configEntry['category']][$configEntry['name']] = $configEntry['value'];
+                    $dbconfig[$configEntry['category']][$configEntry['name']] = $this->convertValue($configEntry['value']);
                 }
             }
 
@@ -153,6 +153,29 @@ class SpiceConfig
         return true;
     }
 
+    /**
+     * db values will all be strings....
+     * make sure a "true" will be set as a boolean
+     * make sure a "1" will be set as an integer
+     * @return void
+     */
+    public function convertValue($value){
+        switch($value){
+            case 'true':
+                $value = true;
+                break;
+            case 'false':
+                $value = false;
+                break;
+            case '1':
+                $value = 1;
+                break;
+            case '0':
+                $value = 0;
+                break;
+        }
+        return $value;
+    }
 
 
     /**
@@ -161,6 +184,19 @@ class SpiceConfig
     function reloadConfig(){
         $this->loadConfigFiles();
         $this->loadConfigFromDB();
+        self::$instance->mappingBWC();
     }
+
+    function mappingBWC() {
+        if ( isset( $this->config['default_preferences']['datef'] )) $this->config['default_date_format'] = $this->config['default_preferences']['datef'];
+        if ( isset( $this->config['default_preferences']['timef'] )) $this->config['default_time_format'] = $this->config['default_preferences']['timef'];
+        if ( isset( $this->config['default_preferences']['export_charset'] )) $this->config['default_export_charset'] = $this->config['default_preferences']['export_charset'];
+        if ( isset( $this->config['default_preferences']['locale_name_format'] )) $this->config['default_locale_name_format'] = $this->config['default_preferences']['locale_name_format'];
+        if ( isset( $this->config['default_preferences']['dec_sep'] )) $this->config['default_decimal_seperator'] = $this->config['default_preferences']['dec_sep'];
+        if ( isset( $this->config['default_preferences']['num_grp_sep'] )) $this->config['default_number_grouping_seperator'] = $this->config['default_preferences']['num_grp_sep'];
+        if ( isset( $this->config['default_preferences']['currency_significant_digits'] )) $this->config['default_currency_significant_digits'] = $this->config['default_preferences']['currency_significant_digits'];
+        if ( isset( $this->config['default_preferences']['currency'] )) $this->config['default_currency'] = $this->config['default_preferences']['currency'];
+    }
+
 }
 

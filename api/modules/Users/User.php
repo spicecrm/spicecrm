@@ -2,31 +2,31 @@
 /*********************************************************************************
 * SugarCRM Community Edition is a customer relationship management program developed by
 * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
+*
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU Affero General Public License version 3 as published by the
 * Free Software Foundation with the addition of the following permission added
 * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
 * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
 * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
 * details.
-* 
+*
 * You should have received a copy of the GNU Affero General Public License along with
 * this program; if not, see http://www.gnu.org/licenses or write to the Free
 * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 * 02110-1301 USA.
-* 
+*
 * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
 * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
+*
 * The interactive user interfaces in modified source and object code versions
 * of this program must display Appropriate Legal Notices, as required under
 * Section 5 of the GNU Affero General Public License version 3.
-* 
+*
 * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
 * these Appropriate Legal Notices must retain the display of the "Powered by
 * SugarCRM" logo. If the display of the logo is not reasonably feasible for
@@ -58,6 +58,7 @@ class User extends Person
 {
     var $user_preferences;
     var $impersonating_user_id;
+    public $_userPreferenceFocus;
 
     public function __construct()
     {
@@ -223,30 +224,16 @@ class User extends Person
     }
 
     /**
-     * Interface for the User object to calling the UserPreference::setPreference() method in modules/UserPreferences/UserPreference.php
-     *
-     * @param string $name name of the preference to retreive
-     * @param string $category name of the category to retreive, defaults to global scope
-     * @return mixed the value of the preference (string, array, int etc)
-     * @see UserPreference::getPreference()
-     *
+     * get user preference by name and category
+     * @param string $name
+     * @param string $category
+     * @param $default
+     * @return mixed
      */
-    public function getPreference(
-        $name,
-        $category = 'global',
-        $fallBackToSystem = false,
-        $default = null
-    ) {
-        // for BC
-        if (func_num_args() > 2 and !is_bool( $fallBackToSystem )) {
-            $user = func_get_arg(2);
-            LoggerManager::getLogger()->deprecated('User::getPreference() should not be used statically.');
-        } else
-            $user = $this;
-
-        return $user->_userPreferenceFocus->getPreference($name, $category, $fallBackToSystem, $default );
+    public function getPreference(string $name, string $category = 'global', $default = null)
+    {
+        return $this->_userPreferenceFocus->getPreference($name, $category, $default);
     }
-
 
     function save($check_notify = false, $fts_index_bean = true)
     {
@@ -254,7 +241,7 @@ class User extends Person
 
         if (!SpiceConfig::getInstance()->installing && $current_user !== null) {
             if ($current_user->isAdmin()) {
-                if (isset($this->UserType[0])) {
+                if (!empty($this->UserType)) {
                     switch ($this->UserType) {
                         case 'Administrator':
                             $this->is_admin = 1;
@@ -756,7 +743,7 @@ class User extends Person
         $sql = "SELECT id,user_name FROM users WHERE status = 'Active' AND deleted = 0";
         if (!empty($userIdToIgnore))
             $sql .= " AND id <> '".$db->quote($userIdToIgnore) . "'";
-        $sql .= "AND LOWER(user_name) = '" . $db->quote(mb_strtolower($username)) . "'";
+        $sql .= " AND LOWER(user_name) = '" . $db->quote(mb_strtolower($username)) . "'";
         $user = $db->fetchOne($sql);
         return $user !== false;
     }
@@ -800,59 +787,6 @@ class User extends Person
     public function findByUserName($name)
     {
         return $this->retrieve_by_string_fields(['user_name' => $name]);
-    }
-
-    /**
-     * blockUserByName
-     *
-     * Blocks a user (prevent from login) permanent or for a specific time.
-     *
-     * @param $username The name of the user.
-     * @param $blockingDuration The time in minutes that the user should be blocked from logging in. From now on.
-     * @return The user bean.
-     */
-    public static function blockUserByName( $username, $blockingDuration = null ) {
-        $user = BeanFactory::getBean('Users');
-        // if we do not find the user return .. causes empty users to be created
-        if(!$user->findByUserName( $username )){
-            return;
-        }
-
-        // set a block end date
-        if ( $blockingDuration ) {
-            $user->login_blocked_until = date_create()->add(new DateInterval("PT{$blockingDuration}S"))->format(TimeDate::DB_DATETIME_FORMAT);
-        } else {
-            $user->login_blocked = true;
-        }
-
-        $user->save();
-        return $user;
-    }
-
-    /**
-     * isBlocked
-     *
-     * Checks if a user is blocked permanent or for a specific time.
-     *
-     * @param $username The name of the user.
-     * @return True if permanent or the amount of minutes in case the blocking is for a specific time.
-     */
-    public static function isBlocked( $username )
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $row = $db->fetchOne( sprintf("SELECT login_blocked, login_blocked_until FROM users WHERE user_name = '%s'", $db->quote( $username )));
-
-        if ( $row['login_blocked'] ) return true; # The user is blocked permanently.
-        if ( $row['login_blocked_until'] === null ) return false; # The user (is not blocked permanently and) is not blocked temporarily.
-
-        # The user is blocked temporarily, so calculate the remaining blocking time:
-        $remainingBlockingSeconds =
-            ( new \DateTime( $row['login_blocked_until'], new \DateTimeZone('UTC')))->getTimestamp()
-            - ( new \DateTime( 'NOW', new \DateTimeZone('UTC')))->getTimestamp();
-        if ( $remainingBlockingSeconds > 0 ) return ceil( $remainingBlockingSeconds/60 ); # return the remaining blocking time (in minutes)
-
-        return false; # The user is not blocked any more (login_blocked_until is in the past).
     }
 
     /**

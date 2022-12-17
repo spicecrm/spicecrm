@@ -2,24 +2,26 @@
  * @module SpiceInstallerModule
  */
 
-import {Component} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {toast} from '../../../services/toast.service';
-import {spiceinstaller} from "../services/spiceinstaller.service";
-
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-fts',
     templateUrl: '../templates/spiceinstallerfts.html'
 })
-
 export class SpiceInstallerFTS {
+
+    @Input() public selfStep: stepObject;
+
     /**
      * condition booleans
      */
     public serverCondition: boolean = true;
     public portCondition: boolean = true;
     public prefixCondition: boolean = true;
+
     /**
      * loading boolean
      */
@@ -31,6 +33,12 @@ export class SpiceInstallerFTS {
         public spiceinstaller: spiceinstaller
     ) {
         if(!this.spiceinstaller.prefix) this.spiceinstaller.prefix = this.spiceinstaller.db_name + '_';
+        this.spiceinstaller.jumpSubject.subscribe( fromTo => {
+            if ( fromTo.from === this.selfStep ) {
+                if ( this.selfStep.completed || fromTo.to?.pos < this.selfStep.pos ) this.spiceinstaller.jump( fromTo.to );
+                else this.checkFTS();
+            }
+        });
     }
 
     /**
@@ -62,10 +70,9 @@ export class SpiceInstallerFTS {
                             this.toast.sendAlert('Error with: ' + res.errors[e], 'error');
                         }
                     } else {
-                        this.spiceinstaller.selectedStep.completed = true;
+                        this.selfStep.completed = true;
                         this.spiceinstaller.configObject.fts = res.config;
-                        this.spiceinstaller.steps[4] = this.spiceinstaller.selectedStep;
-                        this.spiceinstaller.next(this.spiceinstaller.steps[4]);
+                        this.spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next });
                     }
                 });
         }

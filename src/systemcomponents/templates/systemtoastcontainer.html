@@ -7,7 +7,7 @@
             <system-utility-icon [icon]="getToastIcon(activeToast.type)" [size]="'small'" [addclasses]="'slds-m-right--small slds-col slds-no-flex'" [colorclass]="'slds-icon'"></system-utility-icon>
             <div class="slds-col slds-align-middle">
                 <h2 class="slds-text-heading--small"><system-label [label]="activeToast.text"></system-label></h2>
-                <p *ngIf="activeToast.description"><system-label [label]="activeToast.description" length="long"></system-label></p>
+                <p *ngIf="activeToast.description" style="max-width: 400px;overflow-wrap: break-word; white-space: normal;"><system-label [label]="activeToast.description" length="long"></system-label></p>
             </div>
         </div>
     </div>

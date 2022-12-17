@@ -44,6 +44,11 @@ export class ValidationRulesActions implements OnInit {
         for (let opt in this.metadata.getModuleFields(this.data.module)) {
             this.fieldname_options.push(opt);
         }
+        // sort field list by field name
+        this.fieldname_options.sort();
+
+        // sort the rows by fieldname on init only
+        this.data.actions.sort((a, b) => (a.fieldname ? a.fieldname.localeCompare(b.fieldname) : false));
     }
 
     get actions() {
@@ -70,7 +75,7 @@ export class ValidationRulesActions implements OnInit {
             this.data.actions[idx].deleted = 1;
         }
         return true;
-        //return this.data.actions.splice(idx,1);
+        // return this.data.actions.splice(idx,1);
     }
 
 }

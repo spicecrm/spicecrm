@@ -21,7 +21,10 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     ]
 })
 export class SystemInputCountry implements OnInit, ControlValueAccessor {
-
+    /**
+     * holds the passed disabled boolean
+     */
+    @Input() public disabled: boolean = false;
     /**
      * the options from the enum
      */

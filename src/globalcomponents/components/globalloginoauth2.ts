@@ -3,7 +3,7 @@
  */
 import {Component, EventEmitter, Input, OnDestroy, Output} from "@angular/core";
 import {configurationService} from "../../services/configuration.service";
-import {AuthServiceI} from "../interfaces/globalcomponents.interfaces";
+import {AuthServiceI, TokenObjectI} from "../interfaces/globalcomponents.interfaces";
 import {loginService} from "../../services/login.service";
 import {broadcast} from "../../services/broadcast.service";
 import {Subscription} from "rxjs";
@@ -29,7 +29,7 @@ export class GlobalLoginOAuth2 implements OnDestroy {
     /**
      * emits the token
      */
-    @Output() public token = new EventEmitter<{ issuer: string, accessToken: string }>();
+    @Output() public token = new EventEmitter<{issuer: string, tokenObject: TokenObjectI}>();
 
     constructor(
         public configuration: configurationService,

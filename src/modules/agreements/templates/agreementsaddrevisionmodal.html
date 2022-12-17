@@ -1,0 +1,21 @@
+<system-modal size="medium">
+    <system-modal-header (close)="closeModal()">
+        <system-label label="LBL_ADD_REVISION"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <system-componentset [componentset]="componentset"></system-componentset>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="closeModal()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!canAdd" (click)="addRevision()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!canAdd" (click)="addRevision(true)">
+                <system-label label="LBL_SAVE_AND_GO_TO_RECORD"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

@@ -44,6 +44,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\Middleware\AdminOnlyAccessMiddleware;
+use SpiceCRM\includes\Middleware\ApiOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ErrorMiddleware;
 use SpiceCRM\includes\Middleware\ExceptionMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
@@ -255,11 +256,11 @@ class RESTManager
     }
 
     /**
-     * Authenticates the user based on the headers or post parameters.
-     *
-     * @throws UnauthorizedException
+     * parse the auth params from the server data
+     * @return object {authType: 'credentials' | 'token', authData: {token?: string, username?: string, password?: string, tokenIssuer?: string, impersonationUser?: string}
      */
-    public function authenticate() {
+    public function parseAuthParams(): object
+    {
         // set SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1 in .htaccessfile
 
         // get the headers
@@ -271,32 +272,50 @@ class RESTManager
         $pass = null;
 
         if (!empty($headers['oauth-token'])) {
-            $token = $headers['oauth-token'];
+
+            $token = (object) [
+                'access_token' => $headers['oauth-token'],
+                'refresh_token' => $headers['oauth-refresh-token'],
+                'expires_in' => $headers['oauth-token-valid-until'],
+            ];
+
             $tokenIssuer = $headers['oauth-issuer'];
+
             if(empty($tokenIssuer)) {
                 $tokenIssuer="SpiceCRM";
             }
+
         } elseif (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+
             $user = $_SERVER['PHP_AUTH_USER'];
             $pass = $_SERVER['PHP_AUTH_PW'];
+
         } elseif (!empty($_GET['PHP_AUTH_DIGEST_RAW'])) {
-            $auth = explode(':', base64_decode(str_replace('Basic ', '', $_GET['PHP_AUTH_DIGEST_RAW'])));
-            $user = $auth[0];
-            $pass = $auth[1];
+
+            list($user, $pass) = explode(':', base64_decode(str_replace('Basic ', '', $_GET['PHP_AUTH_DIGEST_RAW'])));
+
         } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+
             list($user, $pass) = explode(':', base64_decode(substr($_SERVER['REDIRECT_HTTP_AUTHORIZATION'], 6)));
         }
 
-        /*
-         * if we have a user or a token try to authenticate
-         * otherwise we continue unauthenticated
-         */
-        if($user || $token) {
-            $authController = AuthenticationController::getInstance();
-            $impersonationUser = @SpiceConfig::getInstance()->config['system']['impersonation_enabled'] == true ? $_GET['impersonationuser'] : null;
-            return $authController->authenticate($user, $pass, $token, $tokenIssuer, $impersonationUser);
+        $authType = !empty($token) ? 'token' : ($user && $pass ? 'credentials' : 'none');
+
+        $authData = [
+            'impersonationUser' => SpiceConfig::getInstance()->config['system']['impersonation_enabled'] ? $_GET['impersonationuser'] : null,
+            'tokenIssuer' => $tokenIssuer
+        ];
+
+        if ($authType == 'token') {
+            $authData['token'] = $token;
+        } elseif ($user && $pass) {
+            $authData['username'] = $user;
+            $authData['password'] = $pass;
         }
+
+        return (object) ['authData' => (object) $authData, 'authType' => $authType];
     }
+
 
     /**
      * Initialize Error Handling
@@ -315,7 +334,7 @@ class RESTManager
      * @param $exception
      * @return string
      */
-    public function outputError($exception): string {
+    public function outputError($exception) {
         $inDevMode = SpiceUtils::inDeveloperMode();
 
         if (is_object($exception)) {
@@ -469,6 +488,7 @@ class RESTManager
 
     /**
      * Initializes the routes, by iterating over the $routes array and registering them with the slim app.
+     * @throws Exception
      */
     public function initRoutes(): void {
 
@@ -483,10 +503,19 @@ class RESTManager
                     continue;
                 }
 
+                if (!class_exists($route['class'])) {
+                    throw new Exception("RestManager failed initialize route. Class does not exist calling {$route['class']}");
+                }
+
                 $routeObject = $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
 
                 if (isset($route['options']['adminOnly']) && $route['options']['adminOnly'] == true) {
                     $routeObject->add(AdminOnlyAccessMiddleware::class);
+                }
+
+                // add validation for API only
+                if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] == true) {
+                    $routeObject->add(ApiOnlyAccessMiddleware::class);
                 }
 
                 if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] == true) {

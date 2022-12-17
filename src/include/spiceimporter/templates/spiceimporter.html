@@ -1,6 +1,6 @@
 <div class="slds-page-header">
     <div class="slds-grid">
-        <div class="slds-col slds-has-flexi-truncate">
+        <div class="slds-col slds-has-flexi-truncate slds-grid">
             <div class="slds-media slds-no-space slds-grow">
                 <system-icon [module]="model.module"></system-icon>
                 <div class="slds-media__body">
@@ -22,6 +22,10 @@
                             {{getCurrentStep()}}</h1>
                     </div>
                 </div>
+            </div>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-label label="LBL_SHOW_NON_DB_FIELDS"></system-label>
+                <system-checkbox-toggle [(ngModel)]="showNonDbFields" (ngModelChange)="getModuleFields()"></system-checkbox-toggle>
             </div>
         </div>
     </div>

@@ -10,7 +10,8 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
 @Component({
-    templateUrl: '../templates/campaigntaskactivatebutton.html'
+    templateUrl: '../templates/campaigntaskactivatebutton.html',
+    selector: "campaign-activate-button",
 })
 export class CampaignTaskActivateButton {
 

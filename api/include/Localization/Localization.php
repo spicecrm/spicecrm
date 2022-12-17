@@ -98,7 +98,7 @@ class Localization
 	public function __construct()
     {
 		
-		$this->localeNameFormatDefault = empty( SpiceConfig::getInstance()->config['default_locale_name_format'] ) ? 's f l' : SpiceConfig::getInstance()->config['default_locale_name_format'];
+		$this->localeNameFormatDefault = empty( SpiceConfig::getInstance()->config['default_preferences']['locale_name_format'] ) ? 's f l' : SpiceConfig::getInstance()->config['default_preferences']['locale_name_format'];
 		$this->loadCurrencies();
 	}
 
@@ -111,16 +111,16 @@ class Localization
 			'currency'								=> '',
 			'datef'									=> 'm/d/Y',
 			'timef'									=> 'H:i',
-			'default_currency_significant_digits'	=> 2,
-			'default_currency_symbol'				=> '$',
-			'default_export_charset'				=> $this->default_export_charset,
-			'default_locale_name_format'			=> 's f l',
+			'currency_significant_digits'	=> 2,
+			'currency_symbol'				=> '$',
+			'export_charset'				=> $this->default_export_charset,
+			'locale_name_format'			=> 's f l',
             'name_formats'                          => ['s f l' => 's f l', 'f l' => 'f l', 's l' => 's l', 'l, s f' => 'l, s f',
                                                             'l, f' => 'l, f', 's l, f' => 's l, f', 'l s f' => 'l s f', 'l f s' => 'l f s'],
-			'default_number_grouping_seperator'		=> ',',
-			'default_decimal_seperator'				=> '.',
+			'number_grouping_seperator'		=> ',',
+			'decimal_seperator'				=> '.',
 			'export_delimiter'						=> ',',
-			'default_email_charset'					=> $this->default_email_charset,
+			'email_charset'					=> $this->default_email_charset,
         ];
 
 		return $coreDefaults;
@@ -146,7 +146,7 @@ class Localization
 			$userPref = $current_user->getPreference($prefName);
 		}
 		// Bug 39171 - If we are asking for default_email_charset, check in emailSettings['defaultOutboundCharset'] as well
-		if ( $prefName == 'default_email_charset' ) {
+		if ( $prefName == 'email_charset' ) {
 		    if($user != null) {
                 $emailSettings = $user->getPreference('emailSettings', 'Emails');
             } elseif(!empty($current_user)) {
@@ -434,7 +434,7 @@ class Localization
 	 * @return string charset the chosen character set
 	 */
 	function getExportCharset($charset='', $user=null) {
-		$charset = $this->getPrecedentPreference('default_export_charset', $user);
+		$charset = $this->getPrecedentPreference('export_charset', $user);
 		return $charset;
 	}
 
@@ -443,7 +443,7 @@ class Localization
 	 * @return string charset the chosen character set
 	 */
 	function getOutboundEmailCharset($user=null) {
-		$charset = $this->getPrecedentPreference('default_email_charset', $user);
+		$charset = $this->getPrecedentPreference('email_charset', $user);
 		return $charset;
 	}
 	////	END CHARSET TRANSLATION
@@ -451,29 +451,41 @@ class Localization
 
 	///////////////////////////////////////////////////////////////////////////
 	////	NUMBER DISPLAY FORMATTING CODE
+    /**
+     * @deprecated
+     * @param $user
+     * @return string|null
+     */
 	function getDecimalSeparator($user=null) {
         // Bug50887 this is purposefully misspelled as ..._seperator to match the way it's defined throughout the app.
-		$dec = $this->getPrecedentPreference('default_decimal_seperator', $user);
+		$dec = $this->getPrecedentPreference('decimal_seperator', $user);
 		return $dec;
 	}
 
-	function getNumberGroupingSeparator($user=null) {
-		$sep = $this->getPrecedentPreference('default_number_grouping_seperator', $user);
+    /**
+     * @deprecated
+     */
+     function getNumberGroupingSeparator($user=null) {
+		$sep = $this->getPrecedentPreference('number_grouping_seperator', $user);
 		return $sep;
 	}
 
+    /**
+     * @deprecated
+     */
 	function getPrecision($user=null) {
-		$precision = $this->getPrecedentPreference('default_currency_significant_digits', $user);
+		$precision = $this->getPrecedentPreference('currency_significant_digits', $user);
 		return $precision;
 	}
 
 	function getCurrencySymbol($user=null) {
-		$dec = $this->getPrecedentPreference('default_currency_symbol', $user);
+		$dec = $this->getPrecedentPreference('currency_symbol', $user);
 		return $dec;
 	}
 
 
 	/**
+     * @deprecated
 	 * returns a number formatted by user preference or system default
 	 * @param string number Number to be formatted and returned
 	 * @param string currencySymbol Currency symbol if override is necessary
@@ -617,7 +629,7 @@ eoq;
 	 * @return string format Name Format macro for locale
 	 */
 	function getLocaleFormatMacro($user=null) {
-		$returnFormat = $this->getPrecedentPreference('default_locale_name_format', $user);
+		$returnFormat = $this->getPrecedentPreference('locale_name_format', $user);
 		return $returnFormat;
 	}
 

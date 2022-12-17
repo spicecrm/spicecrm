@@ -1,0 +1,163 @@
+<div class="slds-m-horizontal--medium">
+
+    <h2 class="slds-text-heading--medium">Screen Output &amp; Data Export</h2>
+
+    <div class="slds-m-top_medium slds-m-bottom_small">Set the most important settings for screen output and data export. These settings also apply automatically to each user as long as a user does not make any individual settings.</div>
+
+    <div style="width:fit-content">
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Language</label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.language">
+                        <option *ngFor="let language of this.languages" [ngValue]="language.language_code">{{language.language_name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Timezone</label>
+            <div class="slds-form-element">
+                <system-input-timezone [(ngModel)]="spiceinstaller.configObject.preferences.timezone" denyEmpty="true"></system-input-timezone>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Date Format</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.datef">
+                        <option *ngFor="let item of dateFormatList" [value]="item.value">
+                            {{ item.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Time Format</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.timef">
+                        <option *ngFor="let item of timeFormatList" [value]="item.value">
+                            {{ item.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Distance Unit System</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.distance_unit_system">
+                        <option value="METRIC" selected>metric</option>
+                        <option value="IMPERIAL">imperial</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Decimal Digits</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.currency_significant_digits" (change)="updateNumberDelimitationsList()">
+                        <option *ngFor="let item of currencySignificantDigitsList" [value]="item" [selected]="item==2">
+                            {{ item }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Number Format</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="numberDelimitation">
+                        <option *ngFor="let item of numberDelimitationsList; let index=index" [ngValue]="item">
+                            {{ item.show }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Name Format</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.locale_name_format">
+                        <option *ngFor="let item of spiceinstaller.nameFormats | keyvalue" [value]="item.key">
+                            {{ item.value }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Week Start Day</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.week_day_start">
+                        <option *ngFor="let item of weekDayStartList" [value]="item">
+                            {{ item }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Week Days Count</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="spiceinstaller.configObject.preferences.week_days_count">
+                        <option *ngFor="let item of weekDaysCountList" [value]="item">
+                            {{ item }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Export Delimiter</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="this.spiceinstaller.configObject.preferences.export_delimiter">
+                        <option *ngFor="let item of exportDelimiterList" [value]="item">
+                            {{ item }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-form-element slds-m-top_xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Export Charset</label>
+            <div class="slds-form-element">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="this.spiceinstaller.configObject.preferences.export_charset">
+                        <option *ngFor="let item of charsetList" [value]="item">
+                            {{ item}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="slds-m-top--medium slds-text-align_right">
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
+        <button class="slds-button slds-button--brand" (click)="setPreferences()">next</button>
+    </div>
+
+</div>

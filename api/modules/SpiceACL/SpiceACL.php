@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceACL;
 
@@ -589,7 +561,7 @@ class SpiceACL
     /*
      * function to get the field config
      */
-    public function getFieldAccess($bean, $view)
+    public function getFieldAccess($beanOrModuleName, $view)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -611,13 +583,13 @@ class SpiceACL
         if (!$this->territory)
             $this->territory = BeanFactory::getBean('SpiceACLTerritories');
 
-        if (is_object($bean)) {
-            foreach ($aclObject->getUserACLObjects($bean->_module ?: $bean->_module) as $aclObjectId => $aclObjectData) {
+        if (is_object($beanOrModuleName)) {
+            foreach ($aclObject->getUserACLObjects($beanOrModuleName->_module) as $aclObjectData) {
 
                 if ($aclObjectData['spiceaclobjecttype'] != '0' && $aclObjectData['spiceaclobjecttype'] != '3')
                     continue;
 
-                if ($this->aclObject->matchBean2Object($bean, $thisActivity, $aclObjectData)) {
+                if ($this->aclObject->matchBean2Object($beanOrModuleName, $thisActivity, $aclObjectData)) {
                     foreach ($aclObjectData['objectfieldcontrols'] as $fieldName => $fieldControl) {
                         if ($fieldControl > $fieldControlArray[$fieldName]) {
                             $fieldControlArray[$fieldName] = $fieldControl;
@@ -626,7 +598,7 @@ class SpiceACL
                 }
             }
         } else {
-            foreach ($aclObject->getUserACLObjects($bean->_module ?: $bean->_module) as $aclObjectId => $aclObjectData) {
+            foreach ($aclObject->getUserACLObjects($beanOrModuleName) as $aclObjectData) {
                 if (array_search($thisActivity, $aclObjectData['objectactions']) === false)
                     continue;
 

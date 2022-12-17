@@ -1,16 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of KReporter. KReporter is an enhancement developed
- * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- *
- * This Version of the KReporter is licensed software and may only be used in
- * alignment with the License Agreement received with this Software.
- * This Software is copyrighted and may not be further distributed without
- * witten consent of aac services k.s.
- *
- * You can contact us at info@kreporter.org
- ********************************************************************************/
-
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -38,7 +27,7 @@ class KReporterRESTHandler
 
         $curArray = [];
         $curArray['-99'] = [
-            'symbol' => SpiceConfig::getInstance()->config['default_currency_symbol'],
+            'symbol' => SpiceConfig::getInstance()->config['currencies']['default_currency_symbol'],
             'conversion_rate' => 1
         ];
         while ($thisCurEntry = DBManagerFactory::getInstance()->fetchByAssoc($curResArray)) {
@@ -175,7 +164,7 @@ class KReporterRESTHandler
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $timef = $current_user->getPreference('timef');
         if (empty($timef)) {
-            $timef = SpiceConfig::getInstance()->config['default_time_format'];
+            $timef = SpiceConfig::getInstance()->config['default_preferences']['timef'];
         }
         if (empty($timef)) {
             $timef = '';
@@ -183,7 +172,7 @@ class KReporterRESTHandler
 
         $datef = $current_user->getPreference('datef');
         if (empty($datef)) {
-            $datef = SpiceConfig::getInstance()->config['default_date_format'];
+            $datef = SpiceConfig::getInstance()->config['default_preferences']['datef'];
         }
         if (empty($datef)) {
             $datef = '';
@@ -197,7 +186,7 @@ class KReporterRESTHandler
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $timef = $current_user->getPreference('timef');
         if (empty($timef)) {
-            $timef = SpiceConfig::getInstance()->config['default_time_format'];
+             $timef = SpiceConfig::getInstance()->config['default_preferences']['timef'];
         }
         if (empty($timef)) {
             $timef = '';
@@ -205,15 +194,17 @@ class KReporterRESTHandler
 
         $datef = $current_user->getPreference('datef');
         if (empty($datef)) {
-            $datef = SpiceConfig::getInstance()->config['default_date_format'];
+             $datef = SpiceConfig::getInstance()->config['default_preferences']['datef'];
         }
         if (empty($datef)) {
             $datef = '';
         }
 
-        $precision = $current_user->getPreference('default_currency_significant_digits');
+        # $precision = $current_user->getPreference('default_currency_significant_digits');
+        $precision = $current_user->getPreference('currency_significant_digits');
         if (empty($precision)) {
-            $precision = SpiceConfig::getInstance()->config['default_currency_significant_digits'];
+            # $precision = SpiceConfig::getInstance()->config['default_currency_significant_digits'];
+            $precision = SpiceConfig::getInstance()->config['default_preferences']['currency_significant_digits'];
         }
         if (empty($precision)) {
             $precision = '';
@@ -1954,7 +1945,7 @@ $db = DBManagerFactory::getInstance();
 
         $configurator = new Configurator();
         $configurator->loadConfig();
-        $default_currency_symbol = $configurator->config['default_currency_symbol'];
+        $default_currency_symbol = $configurator->config['currencies']['default_currency_symbol'];
         $kreporter_version = 'ce';
         if (file_exists('modules/KReports/plugins.dictionary.extended'))
             $kreporter_version = 'pro';

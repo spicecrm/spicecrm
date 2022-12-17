@@ -1,21 +1,21 @@
 <div [ngSwitch]="variation" class="slds-grid_align-center">
 
-    <div *ngSwitchDefault>
+    <div *ngSwitchDefault class="slds-grid slds-grid--vertical-align-center">
         <span class="slds-m-right--x-small">
-            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="!canSwitch || page < 2" (click)="page = 1"><system-button-custom-icon [icon]="'chevrondoubleleft'" title="go to first page"></system-button-custom-icon></button>
-            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="!canSwitch || page <= 1" (click)="pageDown()" title="go to previous page"><system-button-icon [icon]="'chevronleft'"></system-button-icon></button>
+            <button class="slds-button slds-button_icon slds-button--icon-small " [disabled]="!canSwitch || page < 2" (click)="page = 1"><system-button-custom-icon [icon]="'chevrondoubleleft'" title="go to first page"></system-button-custom-icon></button>
+            <button class="slds-button slds-button_icon slds-button--icon-small " [disabled]="!canSwitch || page <= 1" (click)="pageDown()" title="go to previous page"><system-button-icon [icon]="'chevronleft'"></system-button-icon></button>
         </span>
-        <span><ng-container *ngIf="page">{{page}} <system-label label="LBL_OF"></system-label> </ng-container>{{max_page}} <system-label label="LBL_PAGES"></system-label> (showing up to {{limit}} <system-label label="LBL_OF"></system-label> {{total_records}} <system-label label="LBL_RECORDS"></system-label>)</span>
+        <span><ng-container *ngIf="page">{{page}}&nbsp;<system-label label="LBL_OF"></system-label>&nbsp;</ng-container>{{max_page}} <system-label label="LBL_PAGES"></system-label> (showing up to {{limit}} <system-label label="LBL_OF"></system-label> {{total_records}} <system-label label="LBL_RECORDS"></system-label>)</span>
         <span class="slds-m-left--x-small">
-            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="!canSwitch || page >= max_page" (click)="pageUp()" title="go to next page"><system-button-icon [icon]="'chevronright'"></system-button-icon></button>
-            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="!canSwitch || page >= max_page-1" (click)="page = max_page"><system-button-custom-icon [icon]="'chevrondoubleright'" title="go to last page"></system-button-custom-icon></button>
+            <button class="slds-button slds-button_icon slds-button--icon-small " [disabled]="!canSwitch || page >= max_page" (click)="pageUp()" title="go to next page"><system-button-icon [icon]="'chevronright'"></system-button-icon></button>
+            <button class="slds-button slds-button_icon slds-button--icon-small " [disabled]="!canSwitch || page >= max_page-1" (click)="page = max_page"><system-button-custom-icon [icon]="'chevrondoubleright'" title="go to last page"></system-button-custom-icon></button>
         </span>
     </div>
 
-    <div *ngSwitchCase="'short'">
-        <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border slds-button_outline-brand" [disabled]="page <= 1" (click)="pageDown()"><system-button-icon [icon]="'chevronleft'" title="go to previous page"></system-button-icon></button>
-        <span>{{page}} <system-label label="LBL_OF"></system-label> {{max_page}} <system-label label="LBL_PAGES"></system-label></span>
-        <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border slds-button_outline-brand" [disabled]="page >= max_page" (click)="pageUp()"><system-button-icon [icon]="'chevronright'" title="go to next page"></system-button-icon></button>
+    <div *ngSwitchCase="'short'" class="slds-grid slds-grid--vertical-align-center">
+        <button class="slds-button slds-button_icon slds-button--icon-small" [disabled]="page <= 1" (click)="pageDown()"><system-button-icon [icon]="'chevronleft'" title="go to previous page"></system-button-icon></button>
+        <div class="slds-p-horizontal--x-small">{{page}} <system-label label="LBL_OF"></system-label> {{max_page}} <system-label label="LBL_PAGES"></system-label></div>
+        <button class="slds-button slds-button_icon slds-button--icon-small" [disabled]="page >= max_page" (click)="pageUp()"><system-button-icon [icon]="'chevronright'" title="go to next page"></system-button-icon></button>
     </div>
 
 </div>

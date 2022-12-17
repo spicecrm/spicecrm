@@ -171,5 +171,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Relationship'] =[
 	    ['name' =>'idx_rel_name', 'type' =>'index', 'fields'=>['relationship_name']],
 	    ['name' =>'idx_relationship_lhs_module', 'type' =>'index', 'fields'=>['lhs_module']],
 	    ['name' =>'idx_relationship_rhs_module', 'type' =>'index', 'fields'=>['rhs_module']], 
+	    ['name' =>'idx_relationship_lhsrhsdel', 'type' =>'index', 'fields'=>['lhs_module', 'rhs_module', 'deleted']],
 	]
 ];

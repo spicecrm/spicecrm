@@ -18,6 +18,16 @@ declare var _: any;
 export class SystemModuleTree implements AfterViewInit {
 
     /**
+     * enable displaying the audit fields
+     */
+    @Input() public displayAuditFields: boolean = false;
+
+    /**
+     * enable displaying the relationship fields
+     */
+    @Input() public displayRelationshipFields: boolean = false;
+
+    /**
      * the module to start from
      */
     @Input() public module: string;
@@ -28,6 +38,10 @@ export class SystemModuleTree implements AfterViewInit {
     @Output() public itemSelected: EventEmitter<any> = new EventEmitter<any>();
 
     public selectedNodeId: string = '';
+    /**
+     * if nodes are loading
+     */
+    public isLoading = false;
 
     constructor(public language: language) {
 

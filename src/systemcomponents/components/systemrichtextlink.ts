@@ -135,11 +135,11 @@ export class SystemRichTextLink implements OnInit {
         } else delete this.trackingId;
         let responseObject = {
             url: this.linkType === 'conv' ? this.url.trim() : '',
-            toTrack: this.toTrack,
-            trackingId: this.trackingId,
+            toTrack: this.linkType === 'conv' ? this.toTrack : undefined,
+            trackingId: this.linkType === 'conv' ? this.trackingId : undefined,
             text: undefined as string,
             linkType: this.linkType,
-            marketingAction: this.marketingAction
+            marketingAction: this.linkType === 'mark' ? this.marketingAction : undefined
         };
         if ( !this.alterMode ) responseObject.text = this.text.trim();
         this.response.emit( responseObject );

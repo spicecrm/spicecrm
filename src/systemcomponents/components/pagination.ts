@@ -12,7 +12,7 @@ export class PaginationControlsComponent implements OnChanges {
     @Input('page') public _page = 1;
     @Input() public limit = 1;
     @Input() public total_records = 0;
-    @Input() public variation = 'default';
+    @Input() public variation: 'default'|'short' = 'default';
     @Output('pageChange') public page$ = new EventEmitter<number>(); // angular takes by default the Input value with a 'Change' Suffix when using two way binding: [(page)]
     @Output('leftPage') public oldPage$ = new EventEmitter<number>();
     @Input() public canSwitch = true;

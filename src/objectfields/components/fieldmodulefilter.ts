@@ -21,7 +21,7 @@ import { modal } from '../../services/modal.service';
 export class fieldModuleFilter extends fieldGeneric implements OnInit {
     public clickListener: any;
     public moduleSelectOpen: boolean = false;
-    public modules: any[] = ['Contacts','Accounts','Leads','Users',];
+    public modules: any[] = [];
 
     constructor(
         public model: model,
@@ -36,7 +36,6 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
         public modal: modal
     ) {
         super(model, view, language, metadata, router);
-
         // subscribe to the popup handler
         this.popup.closePopup$.subscribe(() => this.closePopups());
 
@@ -70,7 +69,18 @@ export class fieldModuleFilter extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
+        this.modules = this.parentTypes;
         this.setModule(this.module);
+    }
+
+    get parentTypes(): string[]{
+        let parenttypes = ['Contacts','Accounts','Leads','Users',];
+
+        if(this.fieldconfig.parenttypes) {
+            parenttypes = this.fieldconfig.parenttypes.replace(/\s/g,'').split(',');
+        }
+
+        return parenttypes;
     }
 
     public setModule(module) {

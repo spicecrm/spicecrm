@@ -7,6 +7,7 @@ environments/*.js.map
 environments/*.js
 config.json
 package-lock.json
+/config/sites_xxx
 /dist
 documentation
 docs

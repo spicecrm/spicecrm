@@ -56,6 +56,7 @@ export class fieldEmailEmailAddress {
 
     /**
      * validate the email address by regex
+     * RFC 5322 regex to validate email address syntax
      * @private
      */
     public validateEmailAddress() {

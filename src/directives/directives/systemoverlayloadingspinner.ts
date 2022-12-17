@@ -37,8 +37,7 @@ export class SystemOverlayLoadingSpinnerDirective {
         this.renderer.setStyle(this.overlayElement, 'z-index', '999');
         this.renderer.setStyle(this.overlayElement, 'top', '0');
         this.renderer.setStyle(this.overlayElement, 'left', '0');
-        this.renderer.setStyle(this.overlayElement, 'background-color', 'rgb(0,0,0,0.075)');
-        let spinnerContainer = this.renderer.createElement('div');
+        this.renderer.setStyle(this.overlayElement, 'background-color', 'rgba(0,0,0,0.25)');
         this.renderer.setProperty(this.overlayElement, 'innerHTML', `
             <div style="border-radius: 50%; box-shadow: 0 0 5px 0 #555; padding:.75rem; background-color:#fff; color:#080707">
                 <div class="cssload-container">
@@ -46,9 +45,6 @@ export class SystemOverlayLoadingSpinnerDirective {
                 </div>
             </div>
         `);
-
-        this.renderer.appendChild(this.elementRef.nativeElement, spinnerContainer);
-
 
         // set relative position to the reference
         this.renderer.addClass(this.elementRef.nativeElement, 'slds-is-relative');

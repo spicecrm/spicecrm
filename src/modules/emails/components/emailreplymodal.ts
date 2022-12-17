@@ -92,10 +92,13 @@ export class EmailReplyModal implements OnInit {
                 toaddress.address_type = "to";
                 toaddress.id = '';
                 recipient_addresses.push(toaddress);
-            } else if (address.address_type != "from" && address.address_type != "to") {
-                let addaddress = {...address};
-                addaddress.id = '';
-                recipient_addresses.push(addaddress);
+            } else if (this.mode == 'replyall') {
+                if(address.address_type == "cc" || address.address_type == "to") {
+                    let addaddress = {...address};
+                    addaddress.address_type = "cc";
+                    addaddress.id = '';
+                    recipient_addresses.push(addaddress);
+                }
             }
         }
 
@@ -120,7 +123,7 @@ export class EmailReplyModal implements OnInit {
 
         let historytext = "";
         historytext += "<br><br>";
-        historytext += "<div spicecrm_reply_quote='' class='spicecrm_reply_quote'>";
+        historytext += "<div data-spice-reply-quote='' class='spicecrm_reply_quote'>";
         historytext += "<div dir='ltr' class='crm_attr'>";
         historytext += "<b>" + this.language.getLabel('LBL_FROM') + ":</b> <a href='mailto:" + this.parent.getField('from_addr') + "'>" + this.parent.getField('from_addr') + "</a>";
         historytext += "<br>";
@@ -128,12 +131,25 @@ export class EmailReplyModal implements OnInit {
         historytext += "<br>";
         historytext += "<b>" + this.language.getLabel('LBL_TO') + ":</b> " + this.parent.getField('to_addrs');
         historytext += "<br>";
-        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.getField('data.name');
+        historytext += "<b>" + this.language.getLabel('LBL_SUBJECT') + ":</b> " + this.parent.getField('name');
         historytext += "<br><br>";
         historytext += "</div>";
 
         historytext += '<blockquote class="crm_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">';
-        historytext += this.parent.getField('body').replace('data-signature=""', '').replace('spicecrm_temp_quote=""', '');
+
+        const body: string = this.parent.getField('body').replace('data-signature=""', '').replace('data-spice-temp-quote=""', '');
+
+        if (body.startsWith('<html>')) {
+            const containerDiv = document.createElement('html');
+            containerDiv.innerHTML = body;
+            const bodyTag = containerDiv.getElementsByTagName('body')[0];
+            historytext += bodyTag ? bodyTag.innerHTML : body;
+            containerDiv.remove();
+
+        } else {
+            historytext += body;
+        }
+
         historytext += '</blockquote>';
 
         historytext += '</div>';

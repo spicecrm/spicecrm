@@ -204,6 +204,18 @@ class SpiceUIConfLoader
     }
 
     /**
+     * get package name from route params
+     * @param $routeparams
+     * @return bool
+     */
+    public function getLoadingPackageName($routeparams){
+        $loadingCore = false;
+        $routeParts = explode("/", $routeparams);
+        if($routeParts[1] == 'core') $loadingCore = true;
+        return $loadingCore;
+    }
+
+    /**
      * load sysui config from reference database
      * get column name for each table
      * make a select passing the column names
@@ -213,6 +225,14 @@ class SpiceUIConfLoader
      */
     public function loadDefaultConf($routeparams, $params, $checkopen = true)
     {
+        // check which package is being loaded and prepare workaround for core
+        $loadingCore = $this->getLoadingPackageName($routeparams);
+        // make sure we have core legacy dictionaries when core package is being loaded
+        if($loadingCore){
+            SpiceDictionaryVardefs::loadLegacyFiles('all');
+        }
+
+        // initialize
         $db = DBManagerFactory::getInstance();
         $tables = [];
         $inserts = [];
@@ -340,12 +360,13 @@ class SpiceUIConfLoader
 //            throw new Exception("No inserts or no inserts run successfully. Action aborted.");
 //        }
 
-        $success = true;
         if(count($errors) > 0){
-            $success = false;
+            $packages = implode(', ', $params['packages']);
+            throw (new \SpiceCRM\includes\ErrorHandlers\Exception("Failed to load packages $packages", 'packageLoadFailed'))->
+            setDetails($errors);
         }
 
-        return ["success" => $success, "queries" => count($inserts), "errors" => array_unique($errors), "tables" => $tables];
+        return ["success" => true, "queries" => count($inserts), "errors" => array_unique($errors), "tables" => $tables];
     }
 
 

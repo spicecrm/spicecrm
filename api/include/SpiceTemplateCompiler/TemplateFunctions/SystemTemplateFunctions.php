@@ -15,7 +15,9 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SystemTemplateFunctions {
 
-    static function dateFormat($inputString, $format, $placeHolderForOldLanguageParameter = null){
+    static function dateFormat( $compiler, $bean, $inputString, $format, $placeHolderForOldLanguageParameter = null){
+
+        if (empty($inputString)) return '';
 
         # For formatting look here:
         # https://www.php.net/manual/de/datetime.format.php
@@ -32,7 +34,7 @@ class SystemTemplateFunctions {
 
     }
 
-    static function dateFormatIntl( $inputString, $format, $language = 'en_US'){
+    static function dateFormatIntl( $compiler, $bean, $inputString, $format, $language = 'en_US'){
 
         # For formatting look here:
         # https://unicode-org.github.io/icu/userguide/format_parse/datetime/
@@ -55,42 +57,42 @@ class SystemTemplateFunctions {
 
     }
 
-    static function cat( $inputstring, $stringToAdd ) {
-        return isset( $inputstring[0] ) ? $$inputstring.$stringToAdd : $$inputstring;
+    static function cat( $compiler, $bean, $inputString, $stringToAdd ) {
+        return isset( $inputstring[0] ) ? $$inputstring.$stringToAdd : $$inputString;
     }
 
-    static function uppercase( $inputstring ) {
+    static function uppercase( $compiler, $bean, $inputstring ) {
         return strtoupper( $inputstring );
     }
 
-    static function lowercase( $inputstring ) {
+    static function lowercase( $compiler, $bean, $inputstring ) {
         return strtolower( $inputstring );
     }
 
-    static function nl2br( $inputstring ) {
+    static function nl2br( $compiler, $bean, $inputstring ) {
         return nl2br( $inputstring );
     }
 
-    static function truncate( $inputstring, $length, $endchars = '' ) {
+    static function truncate( $compiler, $bean, $inputString, $length, $endchars = '' ) {
         if ( !is_numeric( $length ) and !ctype_digit( $length )) {
             throw new BadRequestException('Output template function "truncate": Invalid truncation length "'.$length.'"');
         }
-        return substr( $inputstring, 0, $length ).$endchars;
+        return substr( $inputString, 0, $length ).$endchars;
     }
 
-    static function replace( $inputstring, $needle, $replacement ) {
-        return str_replace( $needle, $replacement, $inputstring );
+    static function replace( $compiler, $bean, $inputString, $needle, $replacement ) {
+        return str_replace( $needle, $replacement, $inputString );
     }
 
-    static function capitalize( $inputstring ) {
-        return ucwords( $inputstring );
+    static function capitalize( $compiler, $bean, $inputString ) {
+        return ucwords( $inputString );
     }
 
-    static function spacify( $inputstring ) {
-        return preg_replace( '#[\w\-](?!$)#', '\\0 ', str_replace( ' ', '   ', $inputstring ));
+    static function spacify( $compiler, $bean, $inputString ) {
+        return preg_replace( '#[\w\-](?!$)#', '\\0 ', str_replace( ' ', '   ', $inputString ));
     }
 
-    static function barcode( $inputstring, $type = null, $width = null, $height = null, $color = 'black') {
+    static function barcode( $compiler, $bean, $inputString, $type = null, $width = null, $height = null, $color = 'black') {
         if( !extension_loaded('gd')) {
             // throw new Exception('Output template function "barcode": GD library not loaded!');
             throw new BadRequestException('Output template function "barcode": GD library not loaded!');
@@ -109,7 +111,7 @@ class SystemTemplateFunctions {
         try {
             $barcode = $barcodeFactory->getBarcodeObj(
                 strtoupper( $type ),
-                $inputstring,
+                $inputString,
                 $width, $height, $color
             );
         } catch (\Exception $e) {
@@ -123,7 +125,7 @@ class SystemTemplateFunctions {
 
     // No piping functions (functions without input value):
 
-    static function lorem( $length ) {
+    static function lorem( $compiler, $bean, $length ) {
         if ( !is_numeric( $length ) and !ctype_digit( $length )) {
             throw new BadRequestException('Output template function "lorem": Missing or invalid text length "'.$length.'".');
         }
@@ -135,7 +137,7 @@ class SystemTemplateFunctions {
         return $output;
     }
 
-    static function currentDateTime( $format = null ) {
+    static function currentDateTime( $compiler, $bean, $format = null ) {
         if ( !isset( $format[0] )) {
             $current_user = AuthenticationController::getInstance()->getCurrentUser();
             $format = $current_user->getUserDateTimePreferences()['date'];
@@ -163,17 +165,17 @@ class SystemTemplateFunctions {
      * @param $language
      * @return mixed
      */
-    static function getCountryName( $inputstring, $language = 'en_us') {
+    static function getCountryName( $compiler, $bean, $inputString, $language = 'en_us') {
         $db = DBManagerFactory::getInstance();
-        $c = $db->fetchOne("SELECT * FROM syscountries WHERE cc = '{$inputstring}'");
+        $c = $db->fetchOne("SELECT * FROM syscountries WHERE cc = '{$inputString}'");
 
         // if no country is found return it
-        if(!$c) return $inputstring;
+        if(!$c) return $inputString;
 
         // get the label
         $label = $db->fetchOne("SELECT st.* FROM syslanguagetranslations st, syslanguagelabels sl WHERE st.syslanguagelabel_id = sl.id AND sl.name = 'LBL_COUNTRY_AT' AND st.syslanguage = '{$language}'");
 
-        return $label['translation_default'] ?: $inputstring;
+        return $label['translation_default'] ?: $inputString;
     }
 
 }

@@ -2,18 +2,19 @@
  * @module SpiceInstallerModule
  */
 
-import {Component} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {toast} from '../../../services/toast.service';
-import {spiceinstaller} from "../services/spiceinstaller.service";
-
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 @Component({
     selector: 'spice-installer-database',
     templateUrl: '../templates/spiceinstallerdatabase.html'
 })
-
 export class SpiceInstallerDatabase {
+
+    @Input() public selfStep: stepObject;
+
     /**
      * condition booleans
      */
@@ -34,6 +35,12 @@ export class SpiceInstallerDatabase {
         if(spiceinstaller.dbdrivers.length == 1){
             spiceinstaller.db_type = spiceinstaller.dbdrivers[0].extension;
         }
+        this.spiceinstaller.jumpSubject.subscribe( fromTo => {
+            if ( fromTo.from === this.selfStep ) {
+                if ( this.selfStep.completed || fromTo.to?.pos < this.selfStep.pos ) this.spiceinstaller.jump( fromTo.to );
+                else this.checkDB();
+            }
+        });
     }
 
     /**
@@ -106,9 +113,8 @@ export class SpiceInstallerDatabase {
                             collation: this.spiceinstaller.collation,
                             charset: this.charset
                         };
-                        this.spiceinstaller.selectedStep.completed = true;
-                        this.spiceinstaller.steps[3] = this.spiceinstaller.selectedStep;
-                        this.spiceinstaller.next(this.spiceinstaller.steps[3]);
+                        this.selfStep.completed = true;
+                        this.spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next })
                     }
                 },
                 (error: any) => {

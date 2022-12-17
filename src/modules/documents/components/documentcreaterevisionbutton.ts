@@ -61,6 +61,7 @@ export class DocumentCreateRevisionButton implements OnDestroy{
                             documentrevisionstatus: 'r'
                         }).subscribe(handled => {
                             this.relatedmodels.getData();
+                            this.model.getData(false, '', true);
                         })
                     })
                 );

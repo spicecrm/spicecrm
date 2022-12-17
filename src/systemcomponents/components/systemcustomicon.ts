@@ -38,13 +38,13 @@ export class SystemCustomIcon {
     }
 
     get iconStyle() {
-        let iconStyle = {};
+        let iconStyle: any = {};
         if (this.color) {
-            iconStyle['color'] = this.color;
+            iconStyle.color = this.color;
         }
 
         if (this.desaturate) {
-            iconStyle['filter'] = 'saturate(0)';
+            iconStyle.filter = 'saturate(0)';
         }
 
         return iconStyle;

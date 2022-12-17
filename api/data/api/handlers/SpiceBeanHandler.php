@@ -1,39 +1,12 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data\api\handlers;
 
-use LanguageManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
@@ -638,11 +611,13 @@ class SpiceBeanHandler
 
         // determine the charset
         $supportedCharsets = mb_list_encodings();
-        $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        # $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        $charsetTo = UserPreference::getDefaultPreference('export_charset');
         if (!empty($postBody['charset'])) {
             if (in_array($postBody['charset'], $supportedCharsets)) $charsetTo = $postBody['charset'];
         } else {
-            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            # if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset');
         }
 
         // prepare the output
@@ -692,8 +667,52 @@ class SpiceBeanHandler
             $this->_trackAction($requestParams['trackaction'], $beanModule, $thisBean);
         }
 
-        $includeReminder = $requestParams['includeReminder'] ? true : false;
-        $includeNotes = $requestParams['includeNotes'] ? true : false;
+        return $this->mapBeanToArray($beanModule, $thisBean);
+    }
+
+    /**
+     * retrieves a bean based on an external id passed in
+     *
+     * @param $beanModule
+     * @param $externalId
+     * @param $requestParams
+     * @return array
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     */
+    public function get_bean_detail_by_external_id($beanModule, $externalId, $requestParams)
+    {
+        // acl check if user can get the detail
+        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
+            throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
+
+        $thisBean = BeanFactory::getBean($beanModule); //set encode to false to avoid things like ' being translated to &#039;
+
+        // check that we have an external id property on the module
+        if(!isset($thisBean->field_defs['ext_id'])) {
+            throw new BadRequestException('Module has no ext_id property');
+        }
+
+        if (!$thisBean->retrieve_by_string_fields(['ext_id' => $externalId])) {
+            throw (new NotFoundException('Record not found.'))->setLookedFor(['ext_id' => $externalId, 'module' => $beanModule]);
+        }
+
+        // if id only is requested return only the id
+        if($requestParams['idonly']){
+            return ['id' => $thisBean->id];
+        }
+
+        if (!$thisBean->ACLAccess('view')) {
+            throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
+        }
+
+        // load the view details
+        $thisBean->retrieveViewDetails();
+
+        if ($requestParams['trackaction']) {
+            $this->_trackAction($requestParams['trackaction'], $beanModule, $thisBean);
+        }
 
         return $this->mapBeanToArray($beanModule, $thisBean);
 
@@ -1185,6 +1204,19 @@ class SpiceBeanHandler
         // load the bean and populate from row
         $seed = BeanFactory::getBean($beanModule);
         $seed->populateFromRow($beanData);
+
+        // specific handling for email addresses for duplicate check
+        if(isset($beanData['email_addresses']) && count($beanData['email_addresses']['beans']) > 0) {
+            $seed->load_relationship('email_addresses');
+            foreach ($beanData['email_addresses']['beans'] as $emailId => $emailData) {
+                $em = BeanFactory::getBean('EmailAddresses');
+                $em->email_address = $emailData['email_address'];
+                $em->id = $emailData['id'];
+                $seed->email_addresses->addBean($em);
+            }
+            $seed->email_addresses->setLoaded();
+        }
+
         $duplicates = $seed->checkForDuplicates();
 
         $retArray = [];
@@ -2143,9 +2175,6 @@ class SpiceBeanHandler
         $appStrings = array_merge($appListStrings, $dynamicDomains);
 
         // grab labels from syslanguagetranslations
-        // $syslanguages = $this->get_languages(strtolower($language));
-        if (!class_exists('LanguageManager')) require_once 'include/SugarObjects/LanguageManager.php';
-
         $syslanguagelabels = LanguageManager::loadDatabaseLanguage($language);
         // file_put_contents("sugarcrm.log", print_r($syslanguagelabels, true), FILE_APPEND);
         $syslanguages = [];

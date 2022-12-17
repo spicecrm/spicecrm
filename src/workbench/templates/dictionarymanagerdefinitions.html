@@ -31,6 +31,9 @@
         <tbody>
             <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}"  *ngFor="let dictionarydefinition of dictionarydefinitions; trackBy: trackByFn" (click)="setCurrentDictionaryDefinition(dictionarydefinition.id, dictionarydefinition.scope)">
                 <td>
+                    <button class="slds-button slds-button--icon" (click)="repairDictionaryDefinition(dictionarydefinition)">
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="'custom_apps'" [system-title]="language.getLabel('LBL_REPAIR_CACHE')"></system-utility-icon>
+                    </button>
                     <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
                     <dictionary-manager-item-status [(ngModel)]="dictionarydefinition.status"></dictionary-manager-item-status>
                 </td>
@@ -44,6 +47,9 @@
                     <div class="slds-truncate">{{dictionarydefinition.sysdictionary_type}}</div>
                 </td>
                 <td>
+                    <button class="slds-button slds-button--icon" (click)="editDictionaryDefinition(dictionarydefinition)">
+                        <system-button-icon size="xx-small" icon="edit"></system-button-icon>
+                    </button>
                     <button class="slds-button slds-button--icon" [disabled]="!dictionarymanager.canChange(dictionarydefinition.scope)" (click)="deleteDictionaryDefinition($event, dictionarydefinition.id)">
                         <system-button-icon size="xx-small" icon="delete"></system-button-icon>
                     </button>
@@ -52,7 +58,7 @@
         </tbody>
 
     </table>
-    <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
+    <div *ngIf="dictionarymanager.changescope != 'none'" class="ng-star-inserted slds-align--absolute-center slds-border--top slds-p-around--small slds-theme--default" style="position: sticky;bottom: 0;">
         <system-utility-icon (click)="addDictionaryDefinition($event)" icon="new" size="x-small"></system-utility-icon>
     </div>
 </div>

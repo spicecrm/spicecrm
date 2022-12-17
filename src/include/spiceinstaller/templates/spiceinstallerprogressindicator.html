@@ -1,11 +1,18 @@
-<div class="slds-progress slds-progress_vertical slds-align_absolute-center slds-p-horizontal--large">
+<div class="slds-progress slds-progress_vertical slds-align_absolute-center slds-p-horizontal--large slds-m-vertical--x-small">
     <ol class="slds-progress__list">
-        <li (click)=render(step) class="slds-progress__item" *ngFor="let step of spiceinstaller.steps" [ngClass]="{'slds-is-active': step.visible, 'slds-is-completed': step.completed}" >
-            <div class="slds-progress__marker"></div>
-            <div class="slds-progress__item_content slds-grid slds-grid_align-spread">{{step.name}}</div>
+        <li class="slds-progress__item" *ngFor="let step of spiceinstaller.steps" [ngClass]="{'slds-is-active':isCurrentStep( step ), 'slds-is-completed': step.completed}">
+            <span *ngIf="step.completed && step != spiceinstaller.selectedStep; else notCompleted" class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon" title="Complete">
+                <svg class="slds-icon slds-icon_xx-small" aria-hidden="true">
+                    <use xlink:href="./vendor/sldassets/icons/utility-sprite/svg/symbols.svg#success"></use>
+                </svg>
+                <span class="slds-assistive-text">Complete</span>
+            </span>
+            <ng-template #notCompleted><div class="slds-progress__marker"></div></ng-template>
+            <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
+                <a *ngIf="( step.completed || ( step.prev?.completed )) && !isCurrentStep( step ); else noLink" href="javascript:void(0)" (click)=jump(step)>{{step.name}}</a>
+                <ng-template #noLink>{{step.name}}</ng-template>
+            </div>
         </li>
     </ol>
-    <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" role="progressbar">
-
-    </div>
+    <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" role="progressbar"></div>
 </div>

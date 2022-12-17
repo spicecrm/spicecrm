@@ -46,6 +46,14 @@ export class CampaignTaskMailMergeModal implements OnInit {
     public limit: number;
 
     /**
+     * the limit set in the backend config
+     * do not overwrite value
+     *
+     * @private
+     */
+    public pdfLimitConf: number;
+
+    /**
      * the count of inactive items from the target group
      *
      * @public
@@ -74,8 +82,12 @@ export class CampaignTaskMailMergeModal implements OnInit {
         public modal: modal,
         public sanitizer: DomSanitizer,
         public configuration: configurationService,
+        public toast: toast
     ) {
         this.getCount();
+
+        // set pdflimit from config once to display in frontend
+        this.pdfLimitConf = this.configuration.getCapabilityConfig('campaigntasks').pdflimit;
     }
 
     public ngOnInit() {
@@ -101,7 +113,16 @@ export class CampaignTaskMailMergeModal implements OnInit {
      * getter if we can generate and all criteria are met
      */
     get canGenerate() {
-        return this.totalCount > 0 && this.start && this.start > 0 && this.start <= this.totalCount && this.limit && (this.start + this.limit - 1) <= this.totalCount;
+        return this.totalCount > 0 && this.start && this.start > 0 && this.start <= this.totalCount && this.limit && this.limit > 0 && (this.start + this.limit - 1) <= this.totalCount && this.limit <= this.pdfLimitConf;
+    }
+
+    /**
+     * throw error if entered limit is higher than pdflimit set in config
+     */
+    public checkLimit() {
+        if (this.limit > this.configuration.getCapabilityConfig('campaigntasks').pdflimit) {
+            this.toast.sendToast(this.language.getLabel('LBL_QUANTITY_HIGHER_THAN') + ' ' + this.pdfLimitConf, 'error');
+        }
     }
 
     /**
@@ -113,19 +134,18 @@ export class CampaignTaskMailMergeModal implements OnInit {
         this.backend.getRequest(`module/CampaignTasks/${this.model.id}/mailmerge`, {
             start: this.start - 1,
             limit: this.limit,
-        }).subscribe(
-            results => {
-                this.pdf = results.content;
+        }).subscribe({
+            next: (res) => {
+                this.pdf = res.content;
                 // send the inactiveCount to be displayed in front-end
-                this.inactiveCount = results.inactiveCount;
-                let blob = this.datatoBlob(atob(results.content));
+                this.inactiveCount = res.inactiveCount;
+                let blob = this.datatoBlob(atob(res.content));
                 this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                 this.loading = false;
-            },
-            () => {
+            }, error: () => {
                 this.loading = false;
             }
-        );
+        });
     }
 
     /**

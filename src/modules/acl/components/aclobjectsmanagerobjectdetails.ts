@@ -56,7 +56,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     }
 
     get showActions() {
-        return this.model.getFieldValue('spiceaclobjecttype') == '0' || this.model.getFieldValue('spiceaclobjecttype') == '3';
+        return this.model.getFieldValue('spiceaclobjecttype') == '0' || this.model.getFieldValue('spiceaclobjecttype') == '3' || this.model.getFieldValue('spiceaclobjecttype') == '6';
     }
 
     public getActionValue(actionid) {

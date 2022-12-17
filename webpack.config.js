@@ -87,6 +87,15 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin(
             generateOptions({name: "../index.html", template: "assets/index.html"})
+        ),
+        new HtmlWebpackPlugin(
+            generateOptions({name: "../outlook.html", template: "assets/outlook/outlook.html"})
+       ),
+        new HtmlWebpackPlugin(
+            generateOptions({name: "../outlookcrm.html", template: "assets/outlook/outlookcrm.html"})
+        ),
+        new HtmlWebpackPlugin(
+            generateOptions({name: "../gsuite.html", template: "assets/gsuite/gsuite.html"})
         )
     ],
 };

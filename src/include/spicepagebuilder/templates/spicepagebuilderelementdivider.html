@@ -9,6 +9,9 @@
                     <system-label label="LBL_DIVIDER"></system-label>
                 </h2>
             </div>
+            <button (click)="spicePageBuilderService.saveCustomElement(element, 'item')" class="slds-button slds-button--icon slds-m-right--xx-small">
+                <system-utility-icon icon="save" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+            </button>
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">

@@ -1,15 +1,37 @@
-import {Injectable} from "@angular/core";
+import {ChangeDetectorRef, Injectable} from "@angular/core";
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {modal} from "../../../services/modal.service";
-import {ColumnI, TagElementI, PanelElementI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
+import {
+    ColumnI,
+    ContentElementI,
+    CustomElement,
+    PanelElementI,
+    SectionI,
+    TagElementI
+} from "../interfaces/spicepagebuilder.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
+import {backend} from "../../../services/backend.service";
+import {toast} from "../../../services/toast.service";
+import {helper} from "../../../services/helper.service";
 
 /** @ignore */
 declare var _;
 
 @Injectable()
 export class SpicePageBuilderService {
+    /**
+     * loading flag for data retrieve
+     */
+    public isLoading: boolean = false;
+    /**
+     * user predefined sections
+     */
+    public customSections: CustomElement[] = [];
+    /**
+     * user predefined items
+     */
+    public customItems: CustomElement[] = [];
     /**
      * hold a response subject to emit the data to the page builder modal listener
      */
@@ -104,7 +126,7 @@ export class SpicePageBuilderService {
                 'color': '#ffffff',
                 'padding': '4px',
                 'inner-padding': '4px',
-                'width': '150px',
+                'width': '100px',
                 'align': 'center',
                 'font-size': '13px',
                 'text-align': 'center',
@@ -168,7 +190,11 @@ export class SpicePageBuilderService {
      */
     public defaultSuffix: 'px' | 'rem' = 'px';
 
-    constructor(public modal: modal) {
+    constructor(public modal: modal,
+                private toast: toast,
+                private helper: helper,
+                private cdRef: ChangeDetectorRef,
+                private backend: backend) {
         this.contentListId = _.uniqueId('panel-drop-list-');
     }
 
@@ -222,5 +248,88 @@ export class SpicePageBuilderService {
     public emitData(isNull?: boolean) {
         this.response.next(!isNull ? this.page : null);
         this.response.complete();
+    }
+
+    /**
+     * load user predefined elements
+     */
+    public loadCustomElements() {
+
+        this.isLoading = true;
+
+        this.backend.getRequest('common/PageBuilder/customElements').subscribe(res => {
+
+            this.isLoading = false;
+
+            res.sections.forEach(s => s.content = JSON.parse(s.content));
+            this.customSections = res.sections;
+
+            res.items.forEach(item => item.content = JSON.parse(item.content));
+            this.customItems = res.items;
+
+            this.cdRef.detectChanges();
+        });
+    }
+
+    /**
+     * load user predefined elements
+     * @param content
+     * @param type
+     */
+    public saveCustomElement(content: SectionI | ContentElementI, type: 'section' | 'item') {
+
+        this.modal.input('LBL_ENTER_NAME', 'LBL_NAME').subscribe(name => {
+
+            if (!name) return;
+
+            const element = {
+                id: this.helper.generateGuid(),
+                name: name,
+                type: type,
+                content: content,
+            };
+
+            switch (type) {
+                case 'item':
+                    this.customItems = [...this.customItems, {...element}];
+                    break;
+                case 'section':
+                    this.customSections = [...this.customSections, {...element}];
+                    break;
+            }
+
+            this.cdRef.detectChanges();
+
+            element.content = JSON.stringify(element.content) as any;
+
+            this.backend.postRequest('common/PageBuilder/customElements', null, element).subscribe({
+                next: () => this.toast.sendToast('LBL_DATA_SAVED', 'success'),
+                error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
+            });
+        })
+    }
+
+    /**
+     * delete custom element
+     * @param id
+     * @param type
+     */
+    public deleteCustomElement(id: string, type: 'section' | 'item') {
+
+        switch (type) {
+            case 'item':
+                this.customItems = this.customItems.filter(e => e.id != id);
+                break;
+            case 'section':
+                this.customSections = this.customSections.filter(e => e.id != id);
+                break;
+        }
+
+        this.cdRef.detectChanges();
+
+        this.backend.deleteRequest('common/PageBuilder/customElements/' + id).subscribe({
+            next: () => this.toast.sendToast('LBL_DATA_SAVED', 'success'),
+            error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
+        });
     }
 }

@@ -320,7 +320,7 @@ class EmailsController
 
         $ModuleHandler = new SpiceBeanHandler();
 
-        $emailResponse = $ModuleHandler->mapBeanToArray('EMails', $email);
+        $emailResponse = $ModuleHandler->mapBeanToArray('Emails', $email);
 
         // prepare email addresses
         // email addresse temporär umschreiben ..

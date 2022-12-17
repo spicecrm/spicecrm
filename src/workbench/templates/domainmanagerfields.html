@@ -18,6 +18,9 @@
             <th class="" scope="col">
                 <div class="slds-truncate"><system-label label="LBL_REQUIRED"></system-label></div>
             </th>
+            <th class="" scope="col">
+                <div class="slds-truncate"><system-label label="LBL_EXCLUDE_FROM_INDEX"></system-label></div>
+            </th>
             <th style="width:2rem" scope="col"></th>
         </tr>
         </thead>
@@ -42,6 +45,9 @@
                 </td>
                 <td data-label="Type" class="slds-p-vertical--none">
                     <system-checkbox disabled [ngModel]="domainfield.required == '1'"></system-checkbox>
+                </td>
+                <td data-label="Type" class="slds-p-vertical--none">
+                    <system-checkbox disabled [ngModel]="domainfield.exclude_from_index == '1'"></system-checkbox>
                 </td>
                 <td class="slds-align--absolute-center" style="width: 2rem;">
                     <system-utility-icon size="xx-small" icon="delete" (click)="deleteDomainField($event, domainfield.id)"></system-utility-icon>

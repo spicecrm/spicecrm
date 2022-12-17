@@ -7,7 +7,7 @@
 
 // ----------- build information ------------- //
 global.build = {
-    releaseNumber: '2022.02.001',
+    releaseNumber: '2022.03.001',
     buildNumber: ''
 };
 
