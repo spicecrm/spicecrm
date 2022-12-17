@@ -2,7 +2,7 @@
     <div class="slds-border--bottom">
         <div class="slds-grid">
             <div class="slds-text-align--center slds-p-vertical--small slds-border--left"
-                 *ngFor="let sheetDay of sheetDays; trackBy: trackByFnDate" [ngStyle]="getDayColStyle(sheetDay.text)">{{calendar.weekdayShort(sheetDay.index)}}
+                 *ngFor="let sheetDay of sheetDays; trackBy: trackByFnDate" [ngStyle]="getDayColStyle(sheetDay.text)">{{calendar.weekdayShort(sheetDay.day)}}
             </div>
         </div>
     </div>
