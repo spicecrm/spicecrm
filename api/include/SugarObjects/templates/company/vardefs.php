@@ -1,6 +1,5 @@
 <?php
-
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 /** @var string $module */
 /** @var string $object_name */
