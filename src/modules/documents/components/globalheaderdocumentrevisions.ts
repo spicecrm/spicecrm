@@ -2,9 +2,9 @@
  * @module GlobalComponents
  */
 import {ChangeDetectorRef, Component, ElementRef, Renderer2, ViewContainerRef} from '@angular/core';
-import {notification} from "../../services/notification.service";
-import {modal} from "../../services/modal.service";
-import {subscription} from "../../services/subscription.service";
+import {notification} from "../../../services/notification.service";
+import {modal} from "../../../services/modal.service";
+import {subscription} from "../../../services/subscription.service";
 
 /**
  * display notifications on the global header

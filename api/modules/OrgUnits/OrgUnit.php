@@ -54,7 +54,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
             }
 
         }
-        //this triggers when you add an OrgUnit to a Document
+        //this triggers when you add an OrgUnit to a Document, also adds all Users that are assigned to children of the original OrgUnit
         if ($data['related_module'] == 'OrgUnits' && $data['module'] == 'Documents') {
             $documentBean = BeanFactory::getBean('Documents', $data[id]);
             $documentRevisions = $documentBean->get_linked_beans('documentrevisions','DocumentRevisions');
