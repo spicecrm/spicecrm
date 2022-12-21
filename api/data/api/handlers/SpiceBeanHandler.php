@@ -3,7 +3,7 @@
 
 namespace SpiceCRM\data\api\handlers;
 
-use LanguageManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -2175,9 +2175,6 @@ class SpiceBeanHandler
         $appStrings = array_merge($appListStrings, $dynamicDomains);
 
         // grab labels from syslanguagetranslations
-        // $syslanguages = $this->get_languages(strtolower($language));
-        if (!class_exists('LanguageManager')) require_once 'include/SugarObjects/LanguageManager.php';
-
         $syslanguagelabels = LanguageManager::loadDatabaseLanguage($language);
         // file_put_contents("sugarcrm.log", print_r($syslanguagelabels, true), FILE_APPEND);
         $syslanguages = [];

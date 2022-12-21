@@ -127,7 +127,7 @@ export class AgreementsAddRevisionModal implements OnInit {
      * a getter that checks that the required fields are not empty
      */
     get canAdd() {
-        return this.model.getFieldValue('change_log');
+        return this.model.validate();
     }
 
     /**
@@ -138,9 +138,7 @@ export class AgreementsAddRevisionModal implements OnInit {
         // store model to avoid loosing data
         let currModelData = this.model.data;
 
-        if (!this.model.data.change_log) {
-            this.toast.sendToast(this.language.getLabel('LBL_ENTER_CHANGELOG'), 'error');
-        } else {
+        if (this.model.validate()) {
             this.modelattachments.files = [];
             // upload AgreementRevision as SpiceAttachment
             // wait until attachment has been saved to avoid overwriting modelattachments.module
