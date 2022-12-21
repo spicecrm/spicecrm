@@ -123,11 +123,11 @@ class SpiceInstaller
         }
 
         //check mailparse
-//        if (!function_exists('mailparse_msg_parse_file')) {
-//            $requirements['mailparse'] = false;
-//        } else {
-//            $requirements['mailparse'] = true;
-//        }
+        if (!function_exists('mailparse_msg_parse_file')) {
+            $requirements['mailparse'] = false;
+        } else {
+            $requirements['mailparse'] = true;
+        }
 
         // db check
         $drivers = $this->dbManagerFactory::getDbDrivers();
