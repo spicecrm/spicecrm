@@ -971,15 +971,16 @@ export class model implements OnDestroy {
     public setField(field, value, silent: boolean = false) {
         if (!field) return false;
 
+        const previousValue = this.data[field];
         this.data[field] = value;
 
         this.evaluateValidationRules(field, "change");
 
-        if (this.data[field] !== value) {
+        if (previousValue !== value && !silent) {
             this.field$.next({field, value});
         }
 
-        if (silent !== true) {
+        if (!silent) {
             this.data$.next(this.data);
         }
 

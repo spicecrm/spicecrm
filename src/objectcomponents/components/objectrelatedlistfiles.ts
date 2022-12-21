@@ -239,6 +239,11 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param event the drop event
      */
     public fileDrop(files) {
+        if(this.componentconfig.disableupload && this.componentconfig.disableupload === true){
+            this.toast.sendToast(this.language.getLabel('LBL_UPLOAD_IS_DISABLED'), 'error');
+            return false;
+        }
+
         if (files && files.length >= 1) {
             this.doupload(files);
         }
