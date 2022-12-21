@@ -15,7 +15,7 @@ $RESTManager = RESTManager::getInstance();
 $routes = [
     [
         'method'      => 'get',
-        'route'       => 'module/documentrevisions/relatedRevisions',
+        'route'       => '/module/documentrevisions/relatedRevisions/{id}',
         'class'       => DocumentRevisionsController::class,
         'function'    => 'loadUnreadRevisions',
         'description' => 'returns all user related users_documentrevision entries',
@@ -23,8 +23,9 @@ $routes = [
         'parameters' => [
             'id' => [
                 'in' => 'path',
-                'description' => 'User id',
+                'description' => 'User Id',
                 'type' => 'guid',
+                'required' => true
             ]
 
         ]
