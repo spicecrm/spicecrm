@@ -40,6 +40,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
@@ -674,12 +675,12 @@ class User extends Person
     private function getNewPasswordEmailTemplate($templateId, $additionalData = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $mod_strings = return_module_language('', 'Users');
+        $mod_strings = LanguageManager::loadDatabaseLanguage(LanguageManager::getDefaultLanguage());
 
-        $emailTemp = new EmailTemplate();
+        $emailTemp = BeanFactory::getBean('EmailTemplates');
         $emailTemp->disable_row_level_security = true;
         if ($emailTemp->retrieve($templateId) == '') {
-            $result['message'] = $mod_strings['LBL_EMAIL_TEMPLATE_MISSING'];
+            $result['message'] = $mod_strings['LBL_EMAIL_TEMPLATE_MISSING']['default'];
             return $result;
         }
 
