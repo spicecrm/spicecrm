@@ -4,9 +4,11 @@ namespace SpiceCRM\includes\Soap;
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class SpiceSoapServiceUtil
@@ -31,7 +33,7 @@ class SpiceSoapServiceUtil
     {
 
         // grab client ip address
-        $clientIP = query_client_ip();
+        $clientIP = SpiceUtils::getClientIP();
         $classCheck = 0;
         // check to see if config entry is present, if not, verify client ip
         if (!isset (SpiceConfig::getInstance()->config['verify_client_ip']) || SpiceConfig::getInstance()->config['verify_client_ip'] == true) {
@@ -252,7 +254,7 @@ class SpiceSoapServiceUtil
         if ($module == 'Users' && $value->id != $current_user->id) {
             $value->user_hash = '';
         }
-        $value = clean_sensitive_data($value->field_defs, $value);
+        $value = SpiceUtils::cleanSensitiveData($value->field_defs, $value);
         LoggerManager::getLogger()->info('End: SoapHelperWebServices->get_return_value_for_fields');
         return ['id'=>$value->id,
             'module_name' => $module,
@@ -410,8 +412,9 @@ class SpiceSoapServiceUtil
             } // if
         }
         LoggerManager::getLogger()->info("Users language is = " . $current_language);
-        $app_strings = return_application_language($current_language);
-        $app_list_strings = return_app_list_strings_language($current_language);
+        $app_strings = LanguageManager::loadDatabaseLanguage($current_language);
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+
         LoggerManager::getLogger()->info('End: SoapHelperWebServices->login_success');
     } // fn
 
@@ -456,9 +459,9 @@ class SpiceSoapServiceUtil
 
             if (!empty($account_id))  // bug # 44280
             {
-                $query = "select id, deleted from {$focus->table_name} WHERE id='" . $seed->db->quote($account_id) . "'";
+                $query = "select id, deleted from {$focus->_tablename} WHERE id='" . $seed->db->quote($account_id) . "'";
             } else {
-                $query = "select id, deleted from {$focus->table_name} WHERE name='" . $seed->db->quote($account_name) . "'";
+                $query = "select id, deleted from {$focus->_tablename} WHERE name='" . $seed->db->quote($account_name) . "'";
             }
             $result = $seed->db->query($query, true);
 
@@ -468,7 +471,7 @@ class SpiceSoapServiceUtil
             if (isset($row['id']) && $row['id'] != -1) {
                 // if it exists but was deleted, just remove it entirely
                 if (isset($row['deleted']) && $row['deleted'] == 1) {
-                    $query2 = "delete from {$focus->table_name} WHERE id='" . $seed->db->quote($row['id']) . "'";
+                    $query2 = "delete from {$focus->_tablename} WHERE id='" . $seed->db->quote($row['id']) . "'";
                     $result2 = $seed->db->query($query2, true);
                 } // else just use this id to link the contact to the account
                 else {
@@ -612,7 +615,7 @@ class SpiceSoapServiceUtil
                     && $var['name'] != 'email1' && $var['name'] != 'email2'
                     && (!isset($var['type']) || $var['type'] != 'relate')) {
 
-                    if ($value->module_dir == 'Emails'
+                    if ($value->_module == 'Emails'
                         && (($var['name'] == 'description') || ($var['name'] == 'description_html') || ($var['name'] == 'from_addr_name')
                             || ($var['name'] == 'reply_to_addr') || ($var['name'] == 'to_addrs_names') || ($var['name'] == 'cc_addrs_names')
                             || ($var['name'] == 'bcc_addrs_names') || ($var['name'] == 'raw_source'))) {
@@ -653,7 +656,7 @@ class SpiceSoapServiceUtil
         {
             $monitor->setValue('date_modified', TimeDate::getInstance()->nowDb());
             $monitor->setValue('user_id', AuthenticationController::getInstance()->getCurrentUser()->id);
-            $monitor->setValue('module_name', $seed->module_dir);
+            $monitor->setValue('module_name', $seed->_module);
             $monitor->setValue('action', $current_view);
             $monitor->setValue('item_id', $seed->id);
             $monitor->setValue('item_summary', $seed->get_summary_text());
@@ -737,7 +740,7 @@ class SpiceSoapServiceUtil
                     $var['options'] = 'checkbox_dom';
 
                 if(isset($var['options'])){
-                    $options_dom = translate($var['options'], $value->module_dir);
+                    $options_dom = SpiceUtils::translate($var['options'], $value->_module);
                     if(!is_array($options_dom)) $options_dom = [];
                     foreach($options_dom as $key=>$oneOption)
                         $options_ret[$key] = $this->get_name_value($key,$oneOption);
@@ -760,7 +763,7 @@ class SpiceSoapServiceUtil
                     $link_fields[$var['name']] = $entry;
                 } else {
                     if($translate) {
-                        $entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
+                        $entry['label'] = isset($var['vname']) ? SpiceUtils::translate($var['vname'], $value->_module) : $var['name'];
                     } else {
                         $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
                     }
@@ -781,7 +784,7 @@ class SpiceSoapServiceUtil
             } //foreach
         } //if
 
-        if($value->module_dir == 'Meetings' || $value->module_dir == 'Calls')
+        if($value->_module == 'Meetings' || $value->_module == 'Calls')
         {
             if( isset($module_fields['duration_minutes']) && isset($GLOBALS['app_list_strings']['duration_intervals']))
             {
@@ -794,31 +797,6 @@ class SpiceSoapServiceUtil
             }
         }
 
-        if($value->module_dir == 'Bugs'){
-
-            $seedRelease = BeanFactory::getBean('Releases');
-            $options = $seedRelease->get_releases(TRUE, "Active");
-            $options_ret = [];
-            foreach($options as $name=>$value){
-                $options_ret[] =  ['name'=> $name , 'value'=>$value];
-            }
-            if(isset($module_fields['fixed_in_release'])){
-                $module_fields['fixed_in_release']['type'] = 'enum';
-                $module_fields['fixed_in_release']['options'] = $options_ret;
-            }
-            if(isset($module_fields['found_in_release'])){
-                $module_fields['found_in_release']['type'] = 'enum';
-                $module_fields['found_in_release']['options'] = $options_ret;
-            }
-            if(isset($module_fields['release'])){
-                $module_fields['release']['type'] = 'enum';
-                $module_fields['release']['options'] = $options_ret;
-            }
-            if(isset($module_fields['release_name'])){
-                $module_fields['release_name']['type'] = 'enum';
-                $module_fields['release_name']['options'] = $options_ret;
-            }
-        }
 
         if(isset($value->assigned_user_name) && isset($module_fields['assigned_user_id'])) {
             $module_fields['assigned_user_name'] = $module_fields['assigned_user_id'];
@@ -844,7 +822,7 @@ class SpiceSoapServiceUtil
 
     function new_handle_set_entries($module_name, $name_value_lists, $select_fields = FALSE) {
         LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->new_handle_set_entries');
-        global $beanList, $beanFiles, $app_list_strings;
+        global $app_list_strings;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $ret_values = [];
@@ -877,8 +855,8 @@ class SpiceSoapServiceUtil
                     $val = $value['value'];
                 }
 
-                if($seed->field_name_map[$field_name]['type'] == 'enum'){
-                    $vardef = $seed->field_name_map[$field_name];
+                if($seed->field_defs[$field_name]['type'] == 'enum'){
+                    $vardef = $seed->field_defs[$field_name];
                     if(isset($app_list_strings[$vardef['options']]) && !isset($app_list_strings[$vardef['options']][$val]) ) {
                         if ( in_array($val,$app_list_strings[$vardef['options']]) ){
                             $val = array_search($val,$app_list_strings[$vardef['options']]);
@@ -888,7 +866,7 @@ class SpiceSoapServiceUtil
                 if($module_name == 'Users' && !empty($seed->id) && ($seed->id != $current_user->id) && $field_name == 'user_hash'){
                     continue;
                 }
-                if(!empty($seed->field_name_map[$field_name]['sensitive'])) {
+                if(!empty($seed->field_defs[$field_name]['sensitive'])) {
                     continue;
                 }
                 $seed->$field_name = $val;
@@ -917,7 +895,7 @@ class SpiceSoapServiceUtil
 
                     //since we found a duplicate we should set the sync flag
                     if( $seed->ACLAccess('Save')){
-                        $seed = new $class_name();
+                        $seed = BeanFactory::getBean($module_name);
                         $seed->id = $duplicate_id;
                         $seed->contacts_users_id = $current_user->id;
                         $seed->save();
@@ -939,7 +917,7 @@ class SpiceSoapServiceUtil
                             //have an object with this outlook_id, if we do
                             //then we can set the id, otherwise this is a new object
                             $order_by = "";
-                            $query = $seed->table_name.".outlook_id = '".$seed->outlook_id."'";
+                            $query = $seed->_tablename.".outlook_id = '".$seed->outlook_id."'";
                             $response = $seed->get_list($order_by, $query, 0,-1,-1,0);
                             $list = $response['list'];
                             if(count($list) > 0){
@@ -1011,12 +989,7 @@ class SpiceSoapServiceUtil
         }
         if(!$session) return false;
 
-
-        if(!AuthenticationController::getInstance()->authenticate(null, null , $session, 'SpiceCRM')){
-            $errorObject->set_error('invalid_login');
-            setFaultObject($errorObject);
-            return false;
-        } // if
+        AuthenticationController::getInstance()->authenticate();
 
         return SpiceACL::getInstance()->checkACLAccess($module_name, $access_level);
 
