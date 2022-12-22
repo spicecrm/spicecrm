@@ -513,7 +513,7 @@ class UserPreference extends SpiceBean
 
         // Admin-only function; die if calling as a non-admin
         if (!SpiceUtils::isAdmin($current_user)) {
-            sugar_die('only admins may call this function');
+            SpiceUtils::sugarDie('only admins may call this function');
         }
 
         // we can skip this if we've already upgraded to the user_preferences format.

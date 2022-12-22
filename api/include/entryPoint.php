@@ -51,7 +51,6 @@ SpiceConfig::getInstance();
 //SpiceDictionaryHandler::loadMetaDataFiles();
 SpiceDictionaryHandler::loadCachedVardefs();
 
-require_once('include/utils.php');
 
 require_once('sugar_version.php'); // provides $sugar_version, $sugar_db_version
 

@@ -272,7 +272,7 @@ class SpiceSoapServiceUtil
         if ($module == 'Users' && $bean->id != $current_user->id) {
             $bean->user_hash = '';
         }
-        $bean = clean_sensitive_data($bean->field_defs, $bean);
+        $bean = SpiceUtils::cleanSensitiveData($bean->field_defs, $bean);
 
         if (empty($link_name_to_value_fields_array) || !is_array($link_name_to_value_fields_array)) {
             LoggerManager::getLogger()->debug('End: SoapHelperWebServices->get_return_value_for_link_fields - Invalid link information passed ');
@@ -377,7 +377,7 @@ class SpiceSoapServiceUtil
         if ($module == 'Users' && $value->id != $current_user->id) {
             $value->user_hash = '';
         }
-        $value = clean_sensitive_data($value->field_defs, $value);
+        $value = SpiceUtils::cleanSensitiveData($value->field_defs, $value);
         LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_entries');
         return ['id'=>$value->id,
             'module_name' => $module,
@@ -1089,7 +1089,7 @@ class SpiceSoapServiceUtil
                 if (is_a($bean, 'User') && $current_user->id != $bean->id && isset($row['user_hash'])) {
                     $row['user_hash'] = "";
                 }
-                $row = clean_sensitive_data($bean->field_defs, $row);
+                $row = SpiceUtils::cleanSensitiveData($bean->field_defs, $row);
                 $list[] = $row;
             }
             LoggerManager::getLogger()->info('End: SoapHelperWebServices->getRelationshipResults');

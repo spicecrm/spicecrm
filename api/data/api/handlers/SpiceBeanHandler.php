@@ -81,12 +81,18 @@ class SpiceBeanHandler
         $tracker->save();
     }
 
+    /**
+     * @deprecated
+     * @param $modules
+     * @param $lang
+     * @return array
+     */
     public function get_mod_language($modules, $lang)
     {
         $modLang = [];
 
-        foreach ($modules as $module)
-            $modLang[$module] = return_module_language($lang, $module, true);
+//        foreach ($modules as $module)
+//            $modLang[$module] = return_module_language($lang, $module, true);
 
         return $modLang;
     }

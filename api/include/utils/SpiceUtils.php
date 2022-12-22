@@ -118,6 +118,7 @@ class SpiceUtils
      * @param DateTime $date
      * @param string $language
      * @return string
+     * @deprecated since release 2023.01.001
      */
     public static function getShortWeekdayName(DateTime $date, string $language = 'de_DE'): string {
         // todo move that array once it grows.
@@ -166,6 +167,7 @@ class SpiceUtils
      *
      * @param $value
      * @throws Exception
+     * @deprecated since release 2023.01.001
      */
     public static function exampleValidationRule($value) {
         if (strlen($value) % 2) {
@@ -232,6 +234,7 @@ class SpiceUtils
      *
      * @param $user
      * @return bool
+     * @deprecated since release 2023.01.001
      */
     public static function isAdminForAnyModule($user): bool {
         if (!isset($user)) {
@@ -271,7 +274,6 @@ class SpiceUtils
 
         $returnValue = '';
 
-        global $app_strings, $app_list_strings;
         if (!isset( $app_list_strings )) {
             $app_list_strings = self::returnAppListStringsLanguage($current_language);
         }
@@ -380,6 +382,7 @@ class SpiceUtils
      * @param $errstr
      * @param $errfile
      * @param $errline
+     * @deprecated since relese 2023.01.001
      */
     public static function StackTraceErrorHandler($errno, $errstr, $errfile, $errline) {
         $error_msg = " $errstr occurred in <b>$errfile</b> on line $errline [" . date("Y-m-d H:i:s") . ']';
@@ -432,6 +435,7 @@ class SpiceUtils
 
     /**
      * @param false $textOnly
+     * @deprecated since release 2023.01.001
      */
     public static function displayStackTrace(bool $textOnly = false): void {
         $stack = debug_backtrace();
@@ -648,6 +652,7 @@ class SpiceUtils
     }
 
     /**
+     * @deprecated since release 2023.01.001 function cmp_beans removed
      * @param $beans
      * @param $field_name
      * @return mixed
@@ -839,7 +844,7 @@ class SpiceUtils
         if ($showCurrencySymbol && !isset($params['currency_symbol'])) {
             $params["currency_symbol"] = true;
         }
-        return format_number($amount, $real_round, $real_decimals, $params);
+        return self::formatNumber($amount, $real_round, $real_decimals, $params);
 
     }
 
@@ -1171,6 +1176,7 @@ echo print_r($return_value, true);
      * @param file string the language that you want include,
      * @param app_list_strings array the golbal strings
      * @return array
+     * @deprecated since release 2023.01.001
      */ //jchi 25347
     public static function mergeCustomAppListStrings($file, $app_list_strings) {
         $app_list_strings_original = $app_list_strings;
@@ -1371,7 +1377,11 @@ echo print_r($return_value, true);
         return $string;
     }
 
-
+    /**
+     * @deprecated since release 2023.01.001
+     * @param $str
+     * @return array|string|string[]
+     */
     public static function br2nl($str) {
         $regex = "#<[^>]+br.+?>#i";
         preg_match_all($regex, $str, $matches);
@@ -1403,5 +1413,15 @@ echo print_r($return_value, true);
             $countryFields[] = $field['name'];
         }
         return $countryFields;
+    }
+
+    /**
+     * Call this method instead of die().
+     * We print the error message and then die with an appropriate
+     * exit code.
+     */
+    public static function sugarDie($error_message, $exit_code = 1) {
+        self::spiceCleanup();
+        throw new \Exception( $error_message , 500) ;
     }
 }

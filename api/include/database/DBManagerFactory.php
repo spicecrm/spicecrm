@@ -40,6 +40,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
  * Description: This file generates the appropriate manager for the database
@@ -116,7 +117,7 @@ class DBManagerFactory
                     $my_db_manager = self::getManagerByType($type, false);
                     if (empty($my_db_manager)) {
                         LoggerManager::getLogger()->fatal("unable to load DB manager for: $type");
-                        sugar_die("Cannot load DB manager");
+                        SpiceUtils::sugarDie("Cannot load DB manager");
                     }
             }
         } else {
