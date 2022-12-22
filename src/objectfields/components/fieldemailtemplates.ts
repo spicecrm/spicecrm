@@ -127,6 +127,8 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                     modalRef.instance.self.destroy();
                 });
             });
+        } else {
+            this.model.setField(this.bodyField, '');
         }
     }
 }
