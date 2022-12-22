@@ -11,6 +11,7 @@ use SpiceCRM\includes\SpiceFavorites\SpiceFavorites;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSActivityHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -721,7 +722,7 @@ class SpiceUIRESTHandler
         $retArray = [
             'fielddefs' => [],
             'fieldtypemappings' => $this->getFieldDefMapping(),
-            'fieldstatusnetworks' => $this->getStatusNetworks()
+            'fieldstatusnetworks' => SpiceUIModulesController::getModuleStatusNetworks()
         ];
         foreach ($modules as $module) {
             $seed = BeanFactory::getBean($module);
