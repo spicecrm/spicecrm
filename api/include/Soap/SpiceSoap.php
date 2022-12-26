@@ -13,7 +13,7 @@ class SpiceSoap {
 
     protected $soap_version = '1.1';
     protected $namespace = 'http://www.spicecrm.com/spicecrm';
-    protected $implementationClass = 'SugarWebServiceImpl';
+    protected $implementationClass = 'SpiceWebServiceImpl';
     protected $registryClass = "";
     protected $soapURL = "";
 
@@ -38,7 +38,7 @@ class SpiceSoap {
         LoggerManager::getLogger()->info('Begin: NusoapSoap->__construct');
         $this->server = new soap_server();
         $this->soapURL = $url;
-        $this->server->configureWSDL('sugarsoap', $this->getNameSpace(), $url);
+        $this->server->configureWSDL('spicesoap', $this->getNameSpace(), $url);
         if (!isset($GLOBALS['HTTP_RAW_POST_DATA'])) $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents('php://input');
         $this->setObservers();
         LoggerManager::getLogger()->info('End: NusoapSoap->__construct');
@@ -160,12 +160,12 @@ class SpiceSoap {
      * @param array $excludeFunctions - All the functions you don't want to register
      */
     public function register($excludeFunctions = []){
-        LoggerManager::getLogger()->info('Begin: SugarSoapService2->register');
+        LoggerManager::getLogger()->info('Begin: SpiceSoap->register');
         $this->excludeFunctions = $excludeFunctions;
         $registryObject = new $this->registryClass($this);
         $registryObject->register();
         $this->excludeFunctions = [];
-        LoggerManager::getLogger()->info('End: SugarSoapService2->register');
+        LoggerManager::getLogger()->info('End: SpiceSoap->register');
     }
 
     /**

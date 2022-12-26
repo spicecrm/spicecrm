@@ -7,6 +7,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -435,7 +436,7 @@ class SpiceFTSHandler
             if (file_exists($metadataFile))
                 require_once($metadataFile);
 
-            $modLang = return_module_language($current_language, $module['module'], true);
+            $modLang = LanguageManager::loadDatabaseLanguage($current_language);
 
 
             $totalWidth = 0;
@@ -444,7 +445,7 @@ class SpiceFTSHandler
                     $viewDefs[$module['module']][] = [
                         'name' => $fieldName,
                         'width' => str_replace('%', '', $fieldData['width']),
-                        'label' => $modLang[$fieldData['label']] ?: $appLang[$fieldData['label']] ?: $fieldData['label'],
+                        'label' => $modLang[$fieldData['label']]['default'] ?: $appLang[$fieldData['label']] ?: $fieldData['label'],
                         'link' => ($fieldData['link'] && empty($fieldData['customCode'])) ? true : false,
                         'linkid' => $fieldData['id'],
                         'linkmodule' => $fieldData['module']
