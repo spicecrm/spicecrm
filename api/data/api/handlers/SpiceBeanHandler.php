@@ -41,7 +41,6 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\ConflictException;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\modules\Trackers\TrackerManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use stdClass;
 use SpiceCRM\modules\UserPreferences\UserPreference;
