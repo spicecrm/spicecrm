@@ -52,12 +52,8 @@ import { AdministrationSysTrashcanRecover } from './components/administrationsys
 import { AdministrationDictRepair } from './components/administrationdictrepair';
 import {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
 import {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
-import {AdministrationDictRepairLanguage} from "./components/administrationdictrepairlanguage";
 import {AdministrationDictRepairACLRoles} from "./components/administrationdictrepairaclroles";
-import {AdministrationDictRepairCache} from "./components/administrationdictrepaircache";
-import {AdministrationDictRepairDbColumns} from "./components/administrationdictrepairdbcolumns";
 import {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
-import {AdministrationDictRepairConvertDBCharset} from "./components/administrationdictrepairconvertdbcharset";
 import {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
 import { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
@@ -87,9 +83,7 @@ import {AdministrationLoginMethods} from './components/administrationloginmethod
 
 import {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
-import {AdministrationDictRepairResetCache} from "./components/administrationdictrepairresetcache";
 import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
-import {AdministrationDictRepairCustomEnum} from "./components/administrationdictrepaircustomenum";
 
 @NgModule({
     imports: [
@@ -132,12 +126,8 @@ import {AdministrationDictRepairCustomEnum} from "./components/administrationdic
         AdministrationSysTrashcanRecover,
         AdministrationDictRepair,
         AdministrationDictRepairItem,
-        AdministrationDictRepairLanguage,
         AdministrationDictRepairModal,
         AdministrationDictRepairACLRoles,
-        AdministrationDictRepairCache,
-        AdministrationDictRepairResetCache,
-        AdministrationDictRepairDbColumns,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
         AdministrationJobMethods,
@@ -160,7 +150,6 @@ import {AdministrationDictRepairCustomEnum} from "./components/administrationdic
         AdministrationMigrateLegacyDoms,
         AdministrationDefaultPreferences,
         AdministrationUserAccessLogViewer,
-        AdministrationDictRepairConvertDBCharset,
         AdministrationDictRepairConvertDBCharsetModal,
         AdministrationLoginRestriction,
         AdministrationLoginRestrictionIpAddresses,
@@ -169,8 +158,7 @@ import {AdministrationDictRepairCustomEnum} from "./components/administrationdic
         AdministrationBlockedUsers,
         AdministrationLoginManagement,
         AdministrationAssetManager,
-        AdministrationLoginMethods,
-        AdministrationDictRepairCustomEnum
+        AdministrationLoginMethods
     ]
 
 })
