@@ -9,6 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
  * Description: This file handles the Data base functionality for the application.
@@ -365,9 +366,9 @@ class MysqliManager extends DBManager
                 LoggerManager::getLogger()->fatal("Could not connect to DB server " . $dbhost . " as " . $configOptions['db_user_name'] . ". port " . $dbport . ": " . mysqli_connect_error());
                 if ($dieOnError) {
                     if (isset($GLOBALS['app_strings']['ERR_NO_DB'])) {
-                        sugar_die($GLOBALS['app_strings']['ERR_NO_DB']);
+                        SpiceUtils::sugarDie($GLOBALS['app_strings']['ERR_NO_DB']);
                     } else {
-                        sugar_die("Could not connect to the database. Please refer to spicecrm.log for details.");
+                        SpiceUtils::sugarDie("Could not connect to the database. Please refer to spicecrm.log for details.");
                     }
                 } else {
                     return false;
@@ -379,9 +380,9 @@ class MysqliManager extends DBManager
             LoggerManager::getLogger()->fatal("Unable to select database {$configOptions['db_name']}: " . mysqli_connect_error());
             if ($dieOnError) {
                 if (isset($GLOBALS['app_strings']['ERR_NO_DB'])) {
-                    sugar_die($GLOBALS['app_strings']['ERR_NO_DB']);
+                    SpiceUtils::sugarDie($GLOBALS['app_strings']['ERR_NO_DB']);
                 } else {
-                    sugar_die("Could not connect to the database. Please refer to spicecrm.log for details.");
+                    SpiceUtils::sugarDie("Could not connect to the database. Please refer to spicecrm.log for details.");
                 }
             } else {
                 return false;
