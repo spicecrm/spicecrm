@@ -224,14 +224,14 @@ class SqlsrvManager extends DBManager
         $sql = $this->_appendN($sql);
 
         $this->countQuery($sql);
-        LoggerManager::getLogger()->info('Query:' . $sql);
+        if($this->enablelog) LoggerManager::getLogger()->info('Query:' . $sql);
         $this->checkConnection();
         $this->query_time = microtime(true);
 
         $result = $suppress?@sqlsrv_query($this->database, $sql):sqlsrv_query($this->database, $sql);
 
         $this->query_time = microtime(true) - $this->query_time;
-        LoggerManager::getLogger()->info('Query Execution Time:'.$this->query_time);
+        if($this->enablelog) LoggerManager::getLogger()->info('Query Execution Time:'.$this->query_time);
 
 
         $this->checkError($msg.' Query Failed:' . $sql . '::', $dieOnError);

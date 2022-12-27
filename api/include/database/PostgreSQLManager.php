@@ -145,20 +145,20 @@ class PostgreSQLManager extends DBManager
         }
 
         parent::countQuery($sql);
-        LoggerManager::getLogger()->info('Query:' . $sql);
+        if($this->enablelog) LoggerManager::getLogger()->info('Query:' . $sql);
         $this->checkConnection();
         $this->query_time = microtime(true);
         $this->lastsql = $sql;
         $result = $suppress?@pg_query($this->database, $sql):pg_query($this->database, $sql);
 
         $this->query_time = microtime(true) - $this->query_time;
-        LoggerManager::getLogger()->info('Query Execution Time:'.$this->query_time);
+        if($this->enablelog) LoggerManager::getLogger()->info('Query Execution Time:'.$this->query_time);
 
 
         if($keepResult)
             $this->lastResult = $result;
 
-        $this->checkError($msg.' Query Failed:' . $sql . '::', $dieOnError);
+        if($this->enablelog) $this->checkError($msg.' Query Failed:' . $sql . '::', $dieOnError);
         return $result;
     }
 
