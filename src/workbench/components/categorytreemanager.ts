@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component,
+    Component,Injector
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -69,7 +69,8 @@ export class CategoryTreeManager {
         public config: configurationService,
         public utils: modelutilities,
         public toast: toast,
-        public modal: modal
+        public modal: modal,
+        public injector: Injector
     ) {
         this.loadTrees();
     }
@@ -102,6 +103,9 @@ export class CategoryTreeManager {
      * opens a modal to allow linking the tree and storing the values in table syscategorytreelinks
      */
     public linkTree() {
+        this.modal.openModal('CategoryTreeManagerLinkModal',true, this.injector).subscribe(selectModal => {
+            selectModal.instance.activeTreeId = this.activeTree;
+        });
 
     }
 
