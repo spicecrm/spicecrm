@@ -86,4 +86,56 @@ class SysCategoryTreesController
         return $res->withJson(['status' => 'success']);
     }
 
+    /**
+     * set tree links
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function setTreeLinks(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $body = $req->getParsedBody();
+
+        $delWhere = ['syscategorytree_id' => $args['id']];
+        $db->deleteQuery('syscategorytreelinks', $delWhere);
+
+        foreach ($body as $link) {
+
+
+            // run the query
+            $db->upsertQuery('syscategorytreelinks', ['id' => $args['id']], $link, true);
+        }
+
+
+        return $res->withJson(['status' => 'success']);
+    }
+
+    public function getTreeLinks(Request $req, Response $res, $args): Response
+    {
+
+        $treeLinkArray = $this->getTreeLinksCategory($args['id']);
+        return $res->withJson($treeLinkArray);
+    }
+
+
+    public function getTreeLinksCategory($id) {
+        $db = DBManagerFactory::getInstance();
+
+        $sql = $db->query("SELECT * FROM syscategorytreelinks WHERE syscategorytree_id = '{$id}'");
+        $response = [];
+
+        while ( $row = $db->fetchByAssoc($sql)) {
+            $response[] = $row;
+        }
+
+        return $response;
+
+    }
+
+
+
 }
