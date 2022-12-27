@@ -25,7 +25,7 @@ use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\includes\utils\SpiceUtils;

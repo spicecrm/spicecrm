@@ -41,7 +41,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -194,7 +194,7 @@ class VardefManager{
         $key = "VardefManager.$module.$object";
         //Sometimes bad definitions can get in from left over extensions or file system lag(caching). We need to clean those.
         $data = self::cleanVardefs(SpiceDictionaryHandler::getInstance()->dictionary[$object]);
-        SugarCache::sugar_cache_put($key,$data);
+        SpiceCache::set($key,$data);
     }
 
     /**
@@ -237,7 +237,7 @@ class VardefManager{
             if(file_exists($file)){
                 unlink($file);
                 $key = "VardefManager.$module_dir.$object_name";
-                SugarCache::sugar_cache_clear($key);
+                SpiceCache::clear($key);
             }
         }
     }
@@ -373,6 +373,10 @@ class VardefManager{
 
     public static function getLinkFieldForRelationship($module, $object, $relName)
     {
+        if(empty($object)){
+            return false;
+        }
+
         // load relationship from database cache table when turned on
         if (SpiceDictionaryVardefs::isDbManaged()) {
             $cachedRel = SpiceDictionaryVardefs::loadRelationshipsForModuleFromCache($module);
@@ -385,7 +389,7 @@ class VardefManager{
 
 
         $cacheKey = "LFR{$module}{$object}{$relName}";
-        $cacheValue = SugarCache::sugar_cache_retrieve($cacheKey);
+        $cacheValue = SpiceCache::get($cacheKey);
         if(!empty($cacheValue))
             return $cacheValue;
 
@@ -409,7 +413,7 @@ class VardefManager{
             //For relationships where both sides are the same module, more than one link will be returned
             $results = $matches;
 
-        SugarCache::sugar_cache_put($cacheKey, $results);
+        SpiceCache::set($cacheKey, $results);
         return $results ;
     }
 
@@ -478,7 +482,7 @@ class VardefManager{
         if(!$refresh)
         {
             $key = "VardefManager.$module.$object";
-            $return_result = SugarCache::sugar_cache_retrieve($key);
+            $return_result = SpiceCache::get($key);
             $return_result = self::applyGlobalAccountRequirements($return_result);
 
             if(!empty($return_result))
@@ -510,7 +514,7 @@ class VardefManager{
                 if(!empty(SpiceDictionaryHandler::getInstance()->dictionary[$object]))
                 {
                     SpiceDictionaryHandler::getInstance()->dictionary[$object] = self::applyGlobalAccountRequirements(SpiceDictionaryHandler::getInstance()->dictionary[$object]);
-                    SugarCache::sugar_cache_put($key,SpiceDictionaryHandler::getInstance()->dictionary[$object]);
+                    SpiceCache::set($key,SpiceDictionaryHandler::getInstance()->dictionary[$object]);
                 }
             }
         }

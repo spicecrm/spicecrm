@@ -10,6 +10,7 @@ use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -186,6 +187,10 @@ class CoreController
             $language = LanguageManager::getDefaultLanguage();
         }
 
+        // see if we have cached the language
+        $cached = SpiceCache::get("cachedlanguage{$language}");
+        if($cached) return $res->withJson($cached);
+
         // get the app List Strings
         $appStrings = SpiceUtils::returnAppListStringsLanguage($language);
 
@@ -207,6 +212,9 @@ class CoreController
             'applang' => $syslanguages,
             'applist' => $appStrings
         ];
+
+        // cache the values
+        SpiceCache::set("cachedlanguage{$language}", $responseArray);
 
         return $res->withJson($responseArray);
     }

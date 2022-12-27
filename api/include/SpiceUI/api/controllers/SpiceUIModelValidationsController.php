@@ -4,11 +4,16 @@ namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 class SpiceUIModelValidationsController
 {
     static function getAllModelValidations()
     {
+        // check if cached
+        $cached = SpiceCache::get('spiceModelValidations');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $sql = "SELECT id, module
                 FROM sysuimodelvalidations 
@@ -19,6 +24,10 @@ class SpiceUIModelValidationsController
         {
             $return[$row['module']]['validations'][] = self::getModelValidations($row['id']);
         }
+
+        // set the Cache
+        SpiceCache::set('spiceModelValidations', $return);
+
         return $return;
     }
 

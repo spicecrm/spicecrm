@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -83,6 +84,9 @@ class ConfiguratorController{
                 $db->query("INSERT INTO config (category, name, value) VALUES('{$db->quote($args['category'])}', '{$db->quote($name)}', '{$db->quote($value)}')");
             }
         }
+
+        // clear the config cache
+        SpiceCache::clear('dbconfig');
 
         return $res->withJson($postBody);
 

@@ -34,17 +34,17 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-namespace SpiceCRM\includes\SugarCache;
+namespace SpiceCRM\includes\SpiceCache;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 
-class SugarCacheFile extends SugarCacheAbstract
+class SpiceCacheFile extends SpiceCacheAbstract
 {
     /**
      * @var path and file which will store the cache used for this backend
      */
-    protected $_cacheFileName = 'externalCache.php';
+    protected $_cacheFileName = 'externalCache';
 
     /**
      * @var bool true if the cache has changed and needs written to disk
@@ -52,50 +52,26 @@ class SugarCacheFile extends SugarCacheAbstract
     protected $_cacheChanged = false;
 
     /**
-     * @see SugarCacheAbstract::$_priority
+     * @see SpiceCacheAbstract::$_priority
      */
     protected $_priority = 990;
 
     /**
-     * @see SugarCacheAbstract::useBackend()
-     */
-    public function useBackend()
-    {
-        if ( !parent::useBackend() )
-            return false;
-
-        if ( !empty(SpiceConfig::getInstance()->config['external_cache_enabled_file']) )
-            return true;
-
-        return false;
-    }
-
-    /**
-     * @see SugarCacheAbstract::__construct()
+     * @see SpiceCacheAbstract::__construct()
      *
-     * For this backend, we'll read from the SugarCacheFile::_cacheFileName file into
-     * the SugarCacheFile::$localCache array.
+     * For this backend, we'll read from the SpiceCacheFile::_cacheFileName file into
+     * the SpiceCacheFile::$localCache array.
      */
     public function __construct()
     {
         parent::__construct();
 
         if ( isset(SpiceConfig::getInstance()->config['external_cache_filename']) )
-            $this->_cacheFileName = SpiceConfig::getInstance()->config['external_cache_filename'];
+            $this->_cacheFileName = sys_get_temp_dir() .SpiceConfig::getInstance()->config['external_cache_filename'];
     }
 
-    /**
-     * @see SugarCacheAbstract::__destruct()
-     *
-     * For this backend, we'll write the SugarCacheFile::$localCache array serialized out to a file
-     */
-    public function __destruct()
-    {
-        parent::__destruct();
-
-        if ($this->_cacheChanged) {
-            SpiceFileUtils::spiceFilePutContents(SpiceFileUtils::spiceCached($this->_cacheFileName), serialize($this->_localStore));
-        }
+    private function getCachedFileName($key){
+        return sys_get_temp_dir() . "spicecrmcache_{$this->_keyPrefix}_{$this->_cacheFileName}".md5($key);
     }
 
     /**
@@ -111,7 +87,7 @@ class SugarCacheFile extends SugarCacheAbstract
     }
 
     /**
-     * @see SugarCacheAbstract::_setExternal()
+     * @see SpiceCacheAbstract::_setExternal()
      *
      * Does nothing; we write to cache on destroy
      */
@@ -120,29 +96,27 @@ class SugarCacheFile extends SugarCacheAbstract
         $value
         )
     {
-        $this->_cacheChanged = true;
+        file_put_contents($this->getCachedFileName($key), serialize($value));
     }
 
     /**
-     * @see SugarCacheAbstract::_getExternal()
+     * @see SpiceCacheAbstract::_getExternal()
      */
     protected function _getExternal(
         $key
         )
     {
         // load up the external cache file
-        if (SpiceFileUtils::spiceIsFile($cachedfile = SpiceFileUtils::spiceCached($this->_cacheFileName))) {
-            $this->localCache = unserialize(file_get_contents($cachedfile));
+        $c = $this->getCachedFileName($key);
+        if (file_exists($c)) {
+            return unserialize(file_get_contents($c));
         }
-
-        if ( isset($this->_localStore[$key]) )
-            return $this->_localStore[$key];
 
         return null;
     }
 
     /**
-     * @see SugarCacheAbstract::_clearExternal()
+     * @see SpiceCacheAbstract::_clearExternal()
      *
      * Does nothing; we write to cache on destroy
      */
@@ -150,16 +124,23 @@ class SugarCacheFile extends SugarCacheAbstract
         $key
         )
     {
-        $this->_cacheChanged = true;
+        $c = $this->getCachedFileName($key);
+        if (file_exists($c)) {
+            unlink($c);
+        }
     }
 
     /**
-     * @see SugarCacheAbstract::_resetExternal()
+     * @see SpiceCacheAbstract::_resetExternal()
      *
      * Does nothing; we write to cache on destroy
      */
     protected function _resetExternal()
     {
-        $this->_cacheChanged = true;
+        $pattern = sys_get_temp_dir() . 'spicecrmcache_' . $this->_keyPrefix . '*';
+        $cacheFiles = glob($pattern);
+        foreach($cacheFiles as $cacheFile){
+            unlink($cacheFile);
+        }
     }
 }
