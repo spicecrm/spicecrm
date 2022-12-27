@@ -15,6 +15,14 @@ $routes = [
         'options' => ['adminOnly' => true]
     ],
     [
+        'method' => 'post',
+        'route' => '/admin/repair/pull',
+        'class' => AdminController::class,
+        'function' => 'pullFromRepository',
+        'description' => 'pulls from Repository',
+        'options' => ['adminOnly' => true]
+    ],
+    [
         'method' => 'get',
         'route' => '/configuration/systemstats',
         'oldroute' => '/admin/systemstats',
