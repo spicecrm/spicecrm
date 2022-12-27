@@ -139,6 +139,7 @@ import {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
 import {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 import {APIlogConfig} from "./components/apilogconfig";
 import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanagereditdefinitionmodal";
+import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
 
 @NgModule({
     imports: [
@@ -154,6 +155,7 @@ import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanag
     declarations: [
         CategoryTreeManager,
         CategoryTreeManagerNode,
+        CategoryTreeManagerLinkModal,
         DomainManager,
         DomainManagerDefinitions,
         DomainManagerFields,
@@ -270,7 +272,7 @@ import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanag
         ConfigTransfer
     ],
     exports: [
-        SortPipe
+        SortPipe,
     ]
 })
 export class WorkbenchModule {}
