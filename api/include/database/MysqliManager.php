@@ -186,7 +186,7 @@ class MysqliManager extends DBManager
             static $queryMD5 = [];
 
             parent::countQuery();
-            LoggerManager::getLogger()->info('Query:' . $sql);
+            if($this->enablelog) LoggerManager::getLogger()->info('Query:' . $sql);
             $this->checkConnection();
             $this->query_time = microtime(true);
             $this->lastsql = $sql;
@@ -197,7 +197,7 @@ class MysqliManager extends DBManager
                 $queryMD5[$md5] = true;
 
             $this->query_time = microtime(true) - $this->query_time;
-            LoggerManager::getLogger()->info('Query Execution Time:' . $this->query_time);
+            if($this->enablelog) LoggerManager::getLogger()->info('Query Execution Time:' . $this->query_time);
 
             if (isset($GLOBALS['totalquerytime'])) $GLOBALS['totalquerytime'] += $this->query_time;
 

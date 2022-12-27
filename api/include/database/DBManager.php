@@ -259,6 +259,15 @@ abstract class DBManager
      * @var
      */
     public $log;
+
+    /**
+     * set to false to disable logging of queries
+     * in case of syslog this might lead to recurisve statements
+     *
+     * @var bool
+     */
+    public $enablelog = true;
+
     /**
      * holds the current db config
      * @var array
