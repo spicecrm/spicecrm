@@ -128,8 +128,8 @@ class SpiceFTSUtils
         if (SpiceConfig::getInstance()->installing) return false;
 
         $cached = SpiceCache::get('ftsBeanIndexProperties');
-        if (!$overrideCache && $cached) {
-            return $cached;
+        if (!$overrideCache && $cached && $cached[$module]) {
+            return $cached[$module];
         } else {
 
             $moduleProperties = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
@@ -157,8 +157,10 @@ class SpiceFTSUtils
                     }
                 }
 
-                // cache teh values
-                SpiceCache::set('ftsBeanIndexProperties', $modulePropertiesarray);
+                // cache the values
+                if(!$cached) $cached = [];
+                $cached[$module] = $modulePropertiesarray;
+                SpiceCache::set('ftsBeanIndexProperties', $cached);
 
                 return $modulePropertiesarray;
             }
