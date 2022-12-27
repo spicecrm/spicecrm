@@ -34,16 +34,21 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-namespace SpiceCRM\includes\SugarCache;
+namespace SpiceCRM\includes\SpiceCache;
 
 use Redis;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 /**
- * Redis SugarCache backend, using the PHP Redis C library at http://github.com/nicolasff/phpredis
+ * Redis SpiceCache backend, using the PHP Redis C library at http://github.com/nicolasff/phpredis
  */
-class SugarCacheRedis extends SugarCacheAbstract
+class SpiceCacheRedis extends SpiceCacheAbstract
 {
+    /**
+     * @var set to false if you don't want to use the local store, true by default.
+     */
+    public $useLocalStore = false;
+
     /**
      * @var Redis server name string
      */
@@ -60,28 +65,12 @@ class SugarCacheRedis extends SugarCacheAbstract
     protected $_redis = null;
     
     /**
-     * @see SugarCacheAbstract::$_priority
+     * @see SpiceCacheAbstract::$_priority
      */
     protected $_priority = 920;
     
     /**
-     * @see SugarCacheAbstract::useBackend()
-     */
-    public function useBackend()
-    {
-        if ( !parent::useBackend() )
-            return false;
-        
-        if ( extension_loaded("redis")
-                && empty(SpiceConfig::getInstance()->config['external_cache_disabled_redis'])
-                && $this->_getRedisObject() )
-            return true;
-            
-        return false;
-    }
-    
-    /**
-     * @see SugarCacheAbstract::__construct()
+     * @see SpiceCacheAbstract::__construct()
      */
     public function __construct()
     {
@@ -112,7 +101,7 @@ class SugarCacheRedis extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_setExternal()
+     * @see SpiceCacheAbstract::_setExternal()
      */
     protected function _setExternal(
         $key,
@@ -127,7 +116,7 @@ class SugarCacheRedis extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_getExternal()
+     * @see SpiceCacheAbstract::_getExternal()
      */
     protected function _getExternal(
         $key
@@ -146,7 +135,7 @@ class SugarCacheRedis extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_clearExternal()
+     * @see SpiceCacheAbstract::_clearExternal()
      */
     protected function _clearExternal(
         $key
@@ -157,11 +146,14 @@ class SugarCacheRedis extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_resetExternal()
+     * @see SpiceCacheAbstract::_resetExternal()
      */
     protected function _resetExternal()
     {
-        $this->_getRedisObject()->flushAll();
+        $keys = $this->_redis->keys("{$this->_keyPrefix}*");
+        $this->_redis->del($keys);
+
+        // $this->_getRedisObject()->flushAll();
     }
     
     /**

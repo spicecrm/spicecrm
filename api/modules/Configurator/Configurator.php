@@ -38,7 +38,7 @@ namespace SpiceCRM\modules\Configurator;
 
 
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\ArrayUtils;
 use SpiceCRM\includes\utils\SpiceFileUtils;
@@ -74,7 +74,7 @@ class Configurator {
 
 		$overideString = "<?php\n/***CONFIGURATOR***/\n";
 
-        SugarCache::sugar_cache_put('sugar_config', $this->config);
+        SpiceCache::set('sugar_config', $this->config);
 		SpiceConfig::getInstance()->config = $this->config;
 
 		foreach($overrideArray as $key => $val) {
@@ -104,7 +104,7 @@ class Configurator {
 
 		$overideString = "<?php\n/***CONFIGURATOR***/\n";
 
-        SugarCache::sugar_cache_put('sugar_config', $this->config);
+        SpiceCache::set('sugar_config', $this->config);
 		SpiceConfig::getInstance()->config = $this->config;
 
 		foreach($overrideArray as $key => $val) {

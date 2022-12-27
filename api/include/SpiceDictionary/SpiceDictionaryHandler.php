@@ -6,6 +6,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSingleton;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 class SpiceDictionaryHandler extends SpiceSingleton
 {
@@ -116,6 +117,10 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @throws Exception
      */
     public static function getDictionaryDefinitions(string $status = null){
+
+        $cached = SpiceCache::get('dictionarydefinitions');
+        if($cached) return $cached;
+
         $defArray = [];
         $defTables = [
             ['name' => 'sysdictionarydefinitions', 'scope' => 'g'],
@@ -137,6 +142,9 @@ class SpiceDictionaryHandler extends SpiceSingleton
                 $defArray[] = $dictionarydefinition;
             }
         }
+
+        SpiceCache::set('dictionarydefinitions', $defArray);
+
         return $defArray;
     }
 
@@ -160,6 +168,9 @@ class SpiceDictionaryHandler extends SpiceSingleton
                     break;
             }
         }
+
+        // clear the cache
+        SpiceCache::clear('dictionarydefinitions');
     }
 
 
@@ -169,6 +180,9 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @return array
      */
     public function getDictionaryItems(){
+        $cached = SpiceCache::get('dictionaryitems');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $itemArray = [];
         $dictionaryitems = $db->query("SELECT * FROM sysdictionaryitems WHERE deleted = 0");
@@ -183,6 +197,8 @@ class SpiceDictionaryHandler extends SpiceSingleton
             $dictionaryitem['deleted'] = intval($dictionaryitem['deleted']);
             $itemArray[] = array_merge($dictionaryitem, ['scope' => 'c']);;
         }
+
+        SpiceCache::set('dictionaryitems', $itemArray);
 
         return $itemArray;
     }
@@ -207,6 +223,9 @@ class SpiceDictionaryHandler extends SpiceSingleton
                     break;
             }
         }
+
+        // clear the cache
+        SpiceCache::clear('dictionaryitems');
     }
 
 
@@ -300,7 +319,7 @@ LEFT JOIN
 
         // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
         // todo: see if we can get rid of them
-        $unsetKeys = ['lhs_key', 'rhs_key', 'lhs_table', 'rhs_table', 'lhs_module', 'rhs_module', 'join_table', 'join_key_lhs', 'join_key_rhs'];
+        $unsetKeys = ['lhs_key', 'rhs_key', 'lhs_linkdefault', 'rhs_linkdefault', 'lhs_table', 'rhs_table', 'lhs_module', 'rhs_module', 'join_table', 'join_key_lhs', 'join_key_rhs', 'reverse'];
 
         foreach($relationships as $relationship){
             // unset the fields we do not save (historically present in the array but not no longer in use for save purpose
@@ -522,6 +541,10 @@ LEFT JOIN
     }
 
     public function getDomainDefinitions(){
+
+        $cached = SpiceCache::get('domaindefinitions');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $defArray = [];
         $domaindefinitions = $db->query("SELECT * FROM sysdomaindefinitions WHERE deleted = 0");
@@ -534,6 +557,8 @@ LEFT JOIN
             $domaindefinition['deleted'] = intval($domaindefinition['deleted']);
             $defArray[] = array_merge($domaindefinition, ['scope' => 'c']);;
         }
+
+        SpiceCache::set('domaindefinitions', $defArray);
 
         return $defArray;
     }
@@ -555,9 +580,15 @@ LEFT JOIN
                     break;
             }
         }
+
+        // clear the cache
+        SpiceCache::clear('domaindefinitions');
     }
 
     public function getDomainFields(){
+        $cached = SpiceCache::get('domainfields');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $fieldsArray = [];
         $domainfields = $db->query("SELECT * FROM sysdomainfields WHERE deleted = 0");
@@ -574,6 +605,8 @@ LEFT JOIN
             $domainfield['exclude_from_index'] = intval($domainfield['exclude_from_index']);
             $fieldsArray[] = array_merge($domainfield, ['scope' => 'c']);
         }
+
+        SpiceCache::set('domainfields', $fieldsArray);
 
         return $fieldsArray;
     }
@@ -593,9 +626,16 @@ LEFT JOIN
                     break;
             }
         }
+
+        // clear the cache
+        SpiceCache::clear('domainfields');
     }
 
     public function getDomainFieldValidations(){
+
+        $cached = SpiceCache::get('domainfieldvalidations');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $validationsArray = [];
         $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations WHERE deleted = 0");
@@ -615,6 +655,8 @@ LEFT JOIN
             $validationsArray[] = array_merge($domainfield, ['scope' => 'c']);
         }
 
+        SpiceCache::set('domainfieldvalidations', $validationsArray);
+
         return $validationsArray;
     }
 
@@ -633,9 +675,16 @@ LEFT JOIN
                     break;
             }
         }
+
+        // clear the cache
+        SpiceCache::clear('domainfieldvalidations');
     }
 
     public function getDomainFieldValidationValues(){
+
+        $cached = SpiceCache::get('domainfieldvalidationvaluess');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $validationvaluesArray = [];
         $domainfieldvalidations = $db->query("SELECT * FROM sysdomainfieldvalidationvalues WHERE deleted = 0");
@@ -646,6 +695,8 @@ LEFT JOIN
         while($domainfieldvalidation = $db->fetchByAssoc($domainfieldvalidations)){
             $validationvaluesArray[] = array_merge($domainfieldvalidation, ['scope' => 'c']);
         }
+
+        SpiceCache::set('domainfieldvalidationvaluess', $cached);
 
         return $validationvaluesArray;
     }
@@ -665,6 +716,9 @@ LEFT JOIN
                     break;
             }
         }
+
+        // clear the cache
+        SpiceCache::clear('domainfieldvalidationvaluess');
     }
 
     /**

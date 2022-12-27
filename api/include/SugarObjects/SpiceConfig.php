@@ -38,7 +38,7 @@ namespace SpiceCRM\includes\SugarObjects;
 
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\SugarArray;
 
 /**
@@ -132,7 +132,7 @@ class SpiceConfig
         // check that a config exists
         if (!$this->configExists()) return false;
 
-        $dbconfig = SugarCache::sugar_cache_retrieve('dbconfig');
+        $dbconfig = SpiceCache::get('dbconfig');
         if(!$dbconfig) {
             $dbconfig = [];
             // load the config
@@ -144,7 +144,7 @@ class SpiceConfig
                 }
             }
 
-            SugarCache::sugar_cache_put('dbconfig', $dbconfig);
+            SpiceCache::set('dbconfig', $dbconfig);
         }
 
         // merge the configs

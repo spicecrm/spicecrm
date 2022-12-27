@@ -34,7 +34,7 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-namespace SpiceCRM\includes\SugarCache;
+namespace SpiceCRM\includes\SpiceCache;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -42,7 +42,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  * Abstract cache class
  * @api
  */
-abstract class SugarCacheAbstract
+abstract class SpiceCacheAbstract
 {
     /**
      * @var set to false if you don't want to use the local store, true by default.
@@ -57,7 +57,7 @@ abstract class SugarCacheAbstract
     /**
      * @var prefix to use for all cache key entries
      */
-    protected $_keyPrefix = 'sugarcrm_';
+    protected $_keyPrefix = 'spicecrm_';
 
     /**
      * @var stores locally any cached items so we don't have to hit the external cache as much
@@ -118,7 +118,7 @@ abstract class SugarCacheAbstract
      */
     public function __get($key)
     {
-        if ( SugarCache::$isCacheReset )
+        if ( SpiceCache::$isCacheReset )
             return null;
 
         $this->_cacheRequests++;
@@ -166,7 +166,7 @@ abstract class SugarCacheAbstract
     {
         if ( is_null($value) )
         {
-            $value = SugarCache::EXTERNAL_CACHE_NULL_VALUE;
+            $value = SpiceCache::EXTERNAL_CACHE_NULL_VALUE;
         }
 
 
@@ -217,7 +217,7 @@ abstract class SugarCacheAbstract
     public function reset()
     {
         $this->_localStore = [];
-        SugarCache::$isCacheReset = true;
+        SpiceCache::$isCacheReset = true;
     }
 
     /**
@@ -260,7 +260,7 @@ abstract class SugarCacheAbstract
      */
     public function __toString()
     {
-        return strtolower(str_replace('SugarCache','',get_class($this)));
+        return strtolower(str_replace('SpiceCache','',get_class($this)));
     }
 
     /**
@@ -295,30 +295,6 @@ abstract class SugarCacheAbstract
      */
     abstract protected function _resetExternal();
 
-    /**
-     * Hook for testing if the backend should be used or not. Typically we'll extend this for backend specific
-     * checks as well.
-     *
-     * @return boolean true if we can use the backend, false if not
-     */
-    public function useBackend()
-    {
-        if ( !empty(SpiceConfig::getInstance()->config['external_cache_disabled'])
-                && SpiceConfig::getInstance()->config['external_cache_disabled'] == true ) {
-            return false;
-        }
-
-        if (defined('SUGARCRM_IS_INSTALLING')) {
-            return false;
-        }
-
-        if ( isset(SpiceConfig::getInstance()->config['external_cache_force_backend'])
-                && ( SpiceConfig::getInstance()->config['external_cache_force_backend'] != (string) $this ) ) {
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * Returns the priority level for this backend

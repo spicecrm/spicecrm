@@ -34,7 +34,7 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-namespace SpiceCRM\includes\SugarCache;
+namespace SpiceCRM\includes\SpiceCache;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -42,7 +42,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  * Sugar Cache manager
  * @api
  */
-class SugarCache
+class SpiceCache
 {
     const EXTERNAL_CACHE_NULL_VALUE = "SUGAR_CACHE_NULL_ZZ";
 
@@ -67,20 +67,20 @@ class SugarCache
     {
         $spice_config = SpiceConfig::getInstance()->config;
         if (isset($spice_config['cache']) &&  isset($spice_config['cache']['class'])) {
-            $cacheClassFileName = $spice_config['cache']['class'];
+            $cacheClassFileName = "SpiceCRM\includes\SpiceCache\\{$spice_config['cache']['class']}" ;
             self::$_cacheInstance = new $cacheClassFileName();
         } else {
-            self::$_cacheInstance = new SugarCacheMemory();
+            self::$_cacheInstance = new SpiceCacheFile();
         }
     }
 
     /**
-     * Returns the instance of the SugarCacheAbstract object, cooresponding to the external
+     * Returns the instance of the SpiceCacheAbstract object, cooresponding to the external
      * cache being used.
      */
     public static function instance()
     {
-        if (!is_subclass_of(self::$_cacheInstance, 'SpiceCRM\includes\SugarCache\SugarCacheAbstract')) {
+        if (!is_subclass_of(self::$_cacheInstance, 'SpiceCRM\includes\SpiceCache\SpiceCacheAbstract')) {
             self::_init();
         }
 
@@ -107,14 +107,14 @@ class SugarCache
         }
     }
 
-    public static function sugar_cache_put($key, $value, $ttl = null)
+    public static function set($key, $value, $ttl = null)
     {
-        SugarCache::instance()->set($key, $value, $ttl);
+        SpiceCache::instance()->set($key, $value, $ttl);
     }
 
-    public static function sugar_cache_retrieve($key)
+    public static function get($key)
     {
-        return SugarCache::instance()->$key;
+        return SpiceConfig::getInstance()->config['developerMode'] === true ? false : SpiceCache::instance()->$key;
     }
 
     /**
@@ -123,7 +123,7 @@ class SugarCache
      *
      * @param $key
      */
-    public static function sugar_cache_clear($key)
+    public static function clear($key)
     {
         unset(self::instance()->$key);
     }

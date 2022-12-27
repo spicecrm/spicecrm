@@ -34,26 +34,17 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-namespace SpiceCRM\includes\SugarCache;
+namespace SpiceCRM\includes\SpiceCache;
 
-class SugarCacheMemory extends SugarCacheAbstract
+class SpiceCacheMemory extends SpiceCacheAbstract
 {
     /**
-     * @see SugarCacheAbstract::$_priority
+     * @see SpiceCacheAbstract::$_priority
      */
     protected $_priority = 999;
     
     /**
-     * @see SugarCacheAbstract::useBackend()
-     */
-    public function useBackend()
-    {
-        // we'll always have this backend available
-        return true;
-    }
-    
-    /**
-     * @see SugarCacheAbstract::_setExternal()
+     * @see SpiceCacheAbstract::_setExternal()
      *
      * Does nothing; cache is gone after request is done.
      */
@@ -62,7 +53,7 @@ class SugarCacheMemory extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_getExternal()
+     * @see SpiceCacheAbstract::_getExternal()
      *
      * Does nothing; cache is gone after request is done.
      */
@@ -71,7 +62,7 @@ class SugarCacheMemory extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_clearExternal()
+     * @see SpiceCacheAbstract::_clearExternal()
      *
      * Does nothing; cache is gone after request is done.
      */
@@ -80,7 +71,7 @@ class SugarCacheMemory extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_resetExternal()
+     * @see SpiceCacheAbstract::_resetExternal()
      *
      * Does nothing; cache is gone after request is done.
      */
