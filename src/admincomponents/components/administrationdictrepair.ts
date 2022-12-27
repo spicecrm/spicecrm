@@ -87,4 +87,12 @@ export class AdministrationDictRepair {
             }
         });
     }
+
+    /**
+     * initiates a pull from the repo and updates the code
+     *
+     */
+    public pullFromRepository(){
+        console.log('pull from repository');
+    }
 }
