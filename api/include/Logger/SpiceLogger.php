@@ -125,11 +125,11 @@ class SpiceLogger implements LoggerTemplate
         // add the '.' if missing
         if (substr($this->ext, 0, 1) != '.') $this->ext = '.' . $this->ext;
 
-        $this->logfile = $config->get('logger.file.name', $this->logfile);
-        $this->dateFormat = $config->get('logger.file.dateFormat', $this->dateFormat);
-        $this->logSize = $config->get('logger.file.maxSize', $this->logSize);
-        $this->maxLogs = $config->get('logger.file.maxLogs', $this->maxLogs);
-        $this->filesuffix = $config->get('logger.file.suffix', $this->filesuffix);
+        $this->logfile = $config->get('logger.file_name', $this->logfile);
+        $this->dateFormat = $config->get('logger.file_dateformat', $this->dateFormat);
+        $this->logSize = $config->get('logger.file_maxsize', $this->logSize);
+        $this->maxLogs = $config->get('logger.file_maxlogs', $this->maxLogs);
+        $this->filesuffix = $config->get('logger.file_suffix', $this->filesuffix);
         $log_dir = $config->get('log_dir', $this->log_dir);
         $this->log_dir = $log_dir . (empty($log_dir) ? '' : '/');
         //unset($config);
@@ -243,15 +243,7 @@ class SpiceLogger implements LoggerTemplate
             $userID = AuthenticationController::getInstance()->getCurrentUser()->id;
         }
 
-        //if we haven't opened a file pointer yet let's do that
-        if (!$this->fp) {
-            $this->fp = fopen($this->full_log_file, 'a');
-        }
-
-        //write out to the file including the time in the dateFormat the process id , the user id , and the log level as well as the message
-        fwrite($this->fp,
-            strftime($this->dateFormat) . ' [' . getmypid() . '][' . $userID . '][' . strtoupper($level) . '] ' . $message . "\n"
-        );
+        file_put_contents($this->full_log_file, date(TimeDate::DB_DATETIME_FORMAT) . ' [' . getmypid() . '][' . $userID . '][' . strtoupper($level) . '] ' . $message . "\n", FILE_APPEND);
     }
 
     /**
@@ -280,7 +272,12 @@ class SpiceLogger implements LoggerTemplate
             "description" => $message,
             "transaction_id" => LoggerManager::getLogger()->getTransactionId()];
 
-        DBManagerFactory::getInstance('spicelogger')->insertQuery("syslogs", $log, true);
+        // get an instance
+        $instance = DBManagerFactory::getInstance('spicelogger');
+        // make sure to set enable log to false
+        $instance->enablelog = false;
+        // write the query
+        $instance->insertQuery("syslogs", $log, true);
 
     }
 
