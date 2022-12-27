@@ -196,11 +196,7 @@ class BeanFactory
      */
     public static function getObjectName($module)
     {
-        global $objectList;
-        if (empty($objectList[$module]))
-            return self::getBeanName($module);
-
-        return $objectList[$module];
+        return SpiceModules::getInstance()->getBeanName($module);
     }
 
 
