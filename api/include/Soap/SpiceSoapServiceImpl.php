@@ -355,10 +355,6 @@ class SpiceSoapServiceImpl
                 $linkoutput_list[] = self::$helperObject->get_return_value_for_link_fields($seed, $module_name, $link_name_to_fields_array);
             }
 
-            LoggerManager::getLogger()->info('Should we track view: ' . $track_view);
-            if ($track_view) {
-                self::$helperObject->trackView($seed, 'detailview');
-            }
         }
 
         LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_entries');
@@ -433,11 +429,7 @@ class SpiceSoapServiceImpl
             $seed->mark_deleted($seed->id);
         }
 
-        if ($track_view) {
-            self::$helperObject->trackView($seed, 'editview');
-        }
-
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_entry');
+        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entry');
         return ['id'=>$seed->id, 'entry_list' => $return_entry_list];
     } // fn
 
