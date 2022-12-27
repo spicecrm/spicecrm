@@ -4,6 +4,7 @@
 namespace SpiceCRM\modules\CampaignTasks;
 
 use Cassandra\Time;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
@@ -216,6 +217,34 @@ class CampaignTask extends SpiceBean
             }
         }
         fclose($fh);
+    }
+
+    function getTargets($searchterm = null, $start = 0, $limit = 50){
+        $handler = new SpiceBeanHandler();
+        $prospects = [];
+        $prospectlists = [];
+        $res = $this->db->query("SELECT pl.id, pl.name, pl.list_type, plp.related_id, plp.related_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.list_type <> 'test' AND plc.campaigntask_id = '{$this->id}' AND plc.prospect_list_id = pl.id INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id WHERE plc.deleted = 0 AND pl.deleted = 0 AND plp.deleted = 0");
+        while ($row = $this->db->fetchByAssoc($res)) {
+            // get the
+            $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
+            if(isset($prospects[$bean->id])){
+                $prospects[$bean->id]['prospectlists'][] = $row['id'];
+            } else {
+                $prospects[$bean->id]['module'] = $row['related_type'];
+                $prospects[$bean->id]['prospectlists'] = [$row['id']];
+                $prospects[$bean->id]['data'] = $handler->mapBean($bean);
+            }
+
+            if(!isset($prospectlists[$row['id']])){
+                $prospectlists[$row['id']] = [
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'list_type' => $row['list_type']
+                ];
+            }
+        }
+
+        return ['prospectlists' => array_values($prospectlists), 'prospects' => array_values($prospects)];
     }
 
     function sendTestEmail($emailAddresses = [])

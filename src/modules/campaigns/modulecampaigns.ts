@@ -29,6 +29,9 @@ import {EventRegistrationModal} from "./components/eventregistrationmodal";
 import {EventRegistrationModalList} from "./components/eventregistrationmodallist";
 import {EventRegistrationModalType} from "./components/eventregistrationmodaltype";
 import {EventWithCampaignActivateButton} from "./components/eventwithcampaignactivatebutton";
+import {CampaignTaskTargetsManager} from "./components/campaigntasktargetsmanager";
+import {CampaignTaskTargetsManagerButton} from "./components/campaigntasktargetsmanagerbutton";
+import {CampaignTaskTargetsManagerDetails} from "./components/campaigntasktargetsmanagerdetail";
 
 @NgModule({
     imports: [
@@ -53,6 +56,9 @@ import {EventWithCampaignActivateButton} from "./components/eventwithcampaignact
         CampaignTaskMailMergePanel,
         CampaignTaskMailergeButton,
         CampaignTaskMailMergeModal,
+        CampaignTaskTargetsManager,
+        CampaignTaskTargetsManagerDetails,
+        CampaignTaskTargetsManagerButton,
         EventRegistrationButton,
         EventRegistrationModal,
         EventRegistrationModalList,

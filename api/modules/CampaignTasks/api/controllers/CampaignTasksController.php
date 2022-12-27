@@ -273,4 +273,24 @@ class CampaignTasksController
         }
         return $res->withJson(['count' => $campaignTask->getTargetCount()]);
     }
+
+    /**
+     * gets all targets in a targetist
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws NotFoundException
+     */
+    public function getTargets(Request $req, Response $res, array $args): Response
+    {
+        /** @var CampaignTask $campaignTask */
+        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+        if (!$campaignTask) {
+            throw new NotFoundException('CampaignTask not found');
+        }
+        return $res->withJson($campaignTask->getTargets());
+    }
 }
