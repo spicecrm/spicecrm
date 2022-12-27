@@ -43,7 +43,7 @@ class SysCategoryTreesController
     {
         // check if we have it cached
         $cached = SpiceCache::get('categorytreenodes'.md5($args['id']));
-        if($cached) $res->withJson($cached);
+        if($cached) return $res->withJson($cached);
 
         $db = DBManagerFactory::getInstance();
 
