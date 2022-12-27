@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SysCategoryTrees\api\controllers;
 
 use Psr\Http\Message\RequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\TimeDate;
@@ -40,6 +41,10 @@ class SysCategoryTreesController
 
     public function getTreeNodes(Request $req, Response $res, $args): Response
     {
+        // check if we have it cached
+        $cached = SpiceCache::get('categorytreenodes'.md5($args['id']));
+        if($cached) $res->withJson($cached);
+
         $db = DBManagerFactory::getInstance();
 
         $params = $req->getQueryParams();
@@ -61,6 +66,10 @@ class SysCategoryTreesController
 
             $return[] = $row;
         }
+
+        // set the cached values
+        SpiceCache::set('categorytreenodes'.md5($args['id']), $return);
+
         return $res->withJson($return);
     }
 
@@ -83,6 +92,10 @@ class SysCategoryTreesController
             // run the query
             $db->upsertQuery('syscategorytreenodes', ['id' => $node['id']], $node, true);
         }
+
+        // clear the cached values
+        SpiceCache::clear('categorytreenodes'.md5($args['id']));
+
         return $res->withJson(['status' => 'success']);
     }
 
