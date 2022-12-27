@@ -10,6 +10,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SysCategoryTrees\SysCategoryTree;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class SpiceUIModulesController
@@ -139,7 +140,8 @@ class SpiceUIModulesController
                         'ftsaggregates' => $ftsBeanHandler->getAggregates(),
                         'ftssortable' => $ftsBeanHandler->getSortable(),
                         'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
-                        'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module'])
+                        'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module']),
+                        'categorytrees' => SysCategoryTree::getTreeLinksByModule($module['module'])
                     ];
                 }
             }
