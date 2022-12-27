@@ -32,6 +32,7 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -111,7 +112,7 @@ class SpiceDictionaryController
         ];
 
         // remove from the session
-        unset($_SESSION['systemvardefs']['domains']);
+        SpiceCache::clear('domains');
 
         // return the response
         return $res->withJson($results);

@@ -14,7 +14,7 @@ use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 
 /**
@@ -1068,7 +1068,7 @@ class SpiceUtils
         $cache_key = 'app_strings.' . $language;
 
         // Check for cached value
-        $cache_entry = SugarCache::sugar_cache_retrieve($cache_key);
+        $cache_entry = SpiceCache::get($cache_key);
         if (!empty($cache_entry)) {
             return $cache_entry;
         }
@@ -1165,7 +1165,7 @@ class SpiceUtils
         $return_value = $app_strings;
         $app_strings = $temp_app_strings;
 
-        SugarCache::sugar_cache_put($cache_key, $return_value);
+        SpiceCache::set($cache_key, $return_value);
 echo print_r($return_value, true);
         return $return_value;
     }
@@ -1217,7 +1217,7 @@ echo print_r($return_value, true);
 
         // Check for cached value
         if ($scope == 'all') {
-            $cache_entry = SugarCache::sugar_cache_retrieve($cache_key);
+            $cache_entry = SpiceCache::get($cache_key);
             if (!empty($cache_entry)) {
                 return $cache_entry;
             }
@@ -1329,9 +1329,9 @@ echo print_r($return_value, true);
         $return_value = $app_list_strings;
         $app_list_strings = $temp_app_list_strings;
 
-        if ($scope != 'all') {
-            SugarCache::sugar_cache_put($cache_key, $return_value);
-        }
+        //if ($scope != 'all') {
+            SpiceCache::set($cache_key, $return_value);
+        //}
 
         return $return_value;
     }

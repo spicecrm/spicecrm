@@ -10,7 +10,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -74,7 +74,7 @@ class AdminController
      * @return Response
      */
     public function resetCache(Request $req, Response $res, array $args): Response {
-        SugarCache::instance()->resetFull();
+        SpiceCache::instance()->resetFull();
         return $res->withJson(['success' => true]);
     }
 
@@ -165,6 +165,14 @@ class AdminController
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
                 'upload_dir' => SpiceConfig::getInstance()->config['upload_dir']
             ],
+            'cache' => [
+                'class' => SpiceConfig::getInstance()->config['cache']['class'] ?? 'SpiceCacheFile',
+                'external_cache_disabled' => SpiceConfig::getInstance()->config['cache']['external_cache_disabled'] ?? false,
+                'redis_host' => SpiceConfig::getInstance()->config['cache']['redis_host'] ?? 'localhost',
+                'redis_port' => SpiceConfig::getInstance()->config['cache']['redis_port'] ?? 6379,
+                'memcached_host' => SpiceConfig::getInstance()->config['cache']['memcached_host'] ?? '127.0.0.1',
+                'memcached_port' => SpiceConfig::getInstance()->config['cache']['memcached_port'] ?? 11211
+            ],
             'logger' => SpiceConfig::getInstance()->config['logger']
         ]);
 
@@ -212,6 +220,13 @@ class AdminController
                 $diffArray[$itemname] = $itemvalue;
             }
 
+            // handle the cache settings
+            foreach ($postBody['cache'] as $itemname => $itemvalue) {
+                if($itemvalue == null) continue;
+                SpiceConfig::getInstance()->config['cache'][$itemname] = $itemvalue;
+                $diffArray['cache'][$itemname] = $itemvalue;
+            }
+
             // handle logger settings
             if($postBody['logger']) {
                 SpiceConfig::getInstance()->config['logger'] = $postBody['logger'];
@@ -229,6 +244,9 @@ class AdminController
 
         $configurator = new Configurator();
         $configurator->handleOverrideFromArray($diffArray);
+
+        // clear the config cache
+        SpiceCache::clear('dbconfig');
 
         return $res->withJson([
             'status' => boolval($query)
@@ -294,6 +312,10 @@ class AdminController
                 }
             }
         }
+
+        // clear the complete cache
+        SpiceCache::instance()->resetFull();
+
         return $sql;
     }
 
@@ -743,6 +765,8 @@ class AdminController
             $nodeModule = BeanFactory::getBean($args['module']);
             return $res->withJson($db->get_columns($nodeModule->_tablename));
         }
+
+        throw new UnauthorizedException('only admin access');
     }
 
     /**
@@ -776,6 +800,8 @@ class AdminController
 
             return $res->withJson($result);
         }
+
+        throw new UnauthorizedException('only admin access');
     }
 
     /**

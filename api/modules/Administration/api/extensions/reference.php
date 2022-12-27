@@ -26,7 +26,7 @@ $routes = [
         'class'       => ReferenceController::class,
         'function'    => 'getCurrentSystemConf',
         'description' => 'get the current system Configuration',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['adminOnly' => false],
     ],
     [
         'method'      => 'get',
@@ -35,7 +35,7 @@ $routes = [
         'class'       => ReferenceController::class,
         'function'    => 'loadSystemLanguage',
         'description' => 'load the system languages',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options'     => ['adminOnly' => false],
         'parameters'  => [
             'languages' => [
                 'in' => 'path',
@@ -53,7 +53,7 @@ $routes = [
         'class'       => ReferenceController::class,
         'function'    => 'cleanUpDefaultConf',
         'description' => 'cleanup and load the default configuration',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options'     => ['adminOnly' => false, 'validate' => true],
         'parameters'  => [
             'package' => [
                 'in' => 'query',

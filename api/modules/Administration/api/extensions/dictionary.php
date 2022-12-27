@@ -13,7 +13,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'repairCacheDb',
         'description' => 'save all vardefs to sysdictionaryfields table and relationships to relationships table',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
     ],
     [
         'method' => 'post',
@@ -21,7 +21,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'repairDictionary',
         'description' => 'repaire database, cache and relationships for specific dictionaries',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'dictionaries' => [
                 'in' => 'body',
@@ -37,7 +37,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'repairCustomEnum',
         'description' => 'save all vardefs to sysdictionaryfields table and relationships to relationships table',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
     ],
 //    [
 //        'method' => 'get',
@@ -45,7 +45,7 @@ $routes = [
 //        'class' => DictionaryController::class,
 //        'function' => 'checkLinks',
 //        'description' => 'save all vardefs to sysdictionaryfields table and relationships to relationships table',
-//        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => false],
+//        'options' => ['adminOnly' => true, 'validate' => false],
 //    ]
 ];
 

@@ -69,6 +69,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Exceptions\MissingEwsCredentialsException;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Exceptions\EwsConnectionException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class LogicHook

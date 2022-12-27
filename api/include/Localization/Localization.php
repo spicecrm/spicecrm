@@ -39,7 +39,7 @@ namespace SpiceCRM\includes\Localization;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;

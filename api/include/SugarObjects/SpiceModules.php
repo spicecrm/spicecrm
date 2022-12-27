@@ -3,6 +3,7 @@
 namespace SpiceCRM\includes\SugarObjects;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 /**
  * Class SpiceModules
@@ -56,7 +57,8 @@ class SpiceModules
      * @throws \Exception
      */
     public function loadModules($forceReload = false): void {
-        if (!isset($_SESSION['modules']) || $forceReload) {
+        $cached = SpiceCache::get('spiceModules');
+        if (!$cached || $forceReload) {
             $this->modules = [];
             $columns = ['id', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id'];
             $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns)." FROM sysmodules UNION SELECT ".implode(', ', $columns)." FROM syscustommodules");
@@ -84,18 +86,24 @@ class SpiceModules
                     }
                 }
             }
-            $_SESSION['modules'] = [
+            $cached = [
                 'moduleDetails' => $this->modules,
                 'moduleList'    => $this->moduleList,
                 'beanList'      => $this->beanList,
                 'beanFiles'     => $this->beanFiles,
                 'beanClasses'   => $this->beanClasses
             ];
-        } elseif (isset($_SESSION['modules'])) {
-            $this->setLocalsFromSession();
+            SpiceCache::set('spiceModules', $cached);
+
+        } elseif ($cached) {
+            $this->modules     = $cached['moduleDetails'];
+            $this->moduleList  = $cached['moduleList'];
+            $this->beanList    = $cached['beanList'];
+            $this->beanClasses = $cached['beanClasses'];
+            $this->beanFiles   = $cached['beanFiles'];
         }
 
-        $this->setGlobals();
+        $this->setGlobals($cached);
     }
 
     /**
@@ -261,23 +269,13 @@ class SpiceModules
      * Sets the values for the global variables.
      * Left for backwards compatibility.
      */
-    private function setGlobals(): void {
+    private function setGlobals($cached): void {
         global $moduleList, $beanList, $beanClasses, $beanFiles;
 
-        $moduleList  = $_SESSION['modules']['moduleList'];
-        $beanList    = $_SESSION['modules']['beanList'];
-        $beanClasses = $_SESSION['modules']['beanClasses'];
-        $beanFiles   = $_SESSION['modules']['beanFiles'];
+        $moduleList  = $cached['moduleList'];
+        $beanList    = $cached['beanList'];
+        $beanClasses = $cached['beanClasses'];
+        $beanFiles   = $cached['beanFiles'];
     }
 
-    /**
-     * Sets the local attributes if the modules were already loaded in the session.
-     */
-    private function setLocalsFromSession(): void {
-        $this->modules     = $_SESSION['modules']['moduleDetails'];
-        $this->moduleList  = $_SESSION['modules']['moduleList'];
-        $this->beanList    = $_SESSION['modules']['beanList'];
-        $this->beanClasses = $_SESSION['modules']['beanClasses'];
-        $this->beanFiles   = $_SESSION['modules']['beanFiles'];
-    }
 }

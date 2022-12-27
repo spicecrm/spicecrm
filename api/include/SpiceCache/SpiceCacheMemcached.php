@@ -34,13 +34,13 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
-namespace SpiceCRM\includes\SugarCache;
+namespace SpiceCRM\includes\SpiceCache;
 
 use Memcache;
 use Memcached;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
-class SugarCacheMemcached extends SugarCacheAbstract
+class SpiceCacheMemcached extends SpiceCacheAbstract
 {
     /**
      * @var Memcache server name string
@@ -58,25 +58,12 @@ class SugarCacheMemcached extends SugarCacheAbstract
     protected $_memcached = '';
     
     /**
-     * @see SugarCacheAbstract::$_priority
+     * @see SpiceCacheAbstract::$_priority
      */
     protected $_priority = 900;
-     
-    /**
-     * @see SugarCacheAbstract::useBackend()
-     */
-    public function useBackend()
-    {
-        if ( extension_loaded('memcached')
-                && empty(SpiceConfig::getInstance()->config['external_cache_disabled_memcached'])
-                && $this->_getMemcachedObject() )
-            return true;
-            
-        return false;
-    }
     
     /**
-     * @see SugarCacheAbstract::__construct()
+     * @see SpiceCacheAbstract::__construct()
      */
     public function __construct()
     {
@@ -90,8 +77,8 @@ class SugarCacheMemcached extends SugarCacheAbstract
     {
         if ( !($this->_memcached instanceOf Memcached) ) {
             $this->_memcached = new Memcached();
-            $this->_host = SpiceConfig::getInstance()->get('external_cache.memcache.host', $this->_host);
-            $this->_port = SpiceConfig::getInstance()->get('external_cache.memcache.port', $this->_port);
+            $this->_host = SpiceConfig::getInstance()->config['cache']['memcached_host'] ?:  $this->_host;
+            $this->_port = SpiceConfig::getInstance()->config['cache']['memcached_port'] ?:  $this->_port;
             if ( !@$this->_memcached->addServer($this->_host,$this->_port) ) {
                 return false;
             }
@@ -101,7 +88,7 @@ class SugarCacheMemcached extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_setExternal()
+     * @see SpiceCacheAbstract::_setExternal()
      */
     protected function _setExternal(
         $key,
@@ -112,7 +99,7 @@ class SugarCacheMemcached extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_getExternal()
+     * @see SpiceCacheAbstract::_getExternal()
      */
     protected function _getExternal(
         $key
@@ -127,7 +114,7 @@ class SugarCacheMemcached extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_clearExternal()
+     * @see SpiceCacheAbstract::_clearExternal()
      */
     protected function _clearExternal(
         $key
@@ -137,10 +124,18 @@ class SugarCacheMemcached extends SugarCacheAbstract
     }
     
     /**
-     * @see SugarCacheAbstract::_resetExternal()
+     * @see SpiceCacheAbstract::_resetExternal()
      */
     protected function _resetExternal()
     {
-        $this->_getMemcachedObject()->flush();
+        $allKeys = $this->_getMemcachedObject()->getAllKeys();
+        $delKeys = [];
+        foreach($allKeys as $key){
+            if(strpos($key, $this->_keyPrefix) === 0){
+                $delKeys[] = $key;
+            }
+        }
+
+        if(count($delKeys) > 0) $this->_getMemcachedObject()->deleteMulti($delKeys);
     }
 }

@@ -31,6 +31,7 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -126,9 +127,9 @@ class SpiceFTSUtils
         //catch installation process and abort. table sysfts will not exist at the point during installation
         if (SpiceConfig::getInstance()->installing) return false;
 
-
-        if (!$overrideCache && isset($_SESSION['SpiceFTS']['indexes'][$module]['properties'])) {
-            return $_SESSION['SpiceFTS']['indexes'][$module]['properties'];
+        $cached = SpiceCache::get('ftsBeanIndexProperties');
+        if (!$overrideCache && $cached) {
+            return $cached;
         } else {
 
             $moduleProperties = $db->fetchByAssoc($db->query("SELECT * FROM sysfts WHERE module = '$module'"));
@@ -156,14 +157,13 @@ class SpiceFTSUtils
                     }
                 }
 
-                // check if index exists
-
-                $_SESSION['SpiceFTS']['indexes'][$module]['properties'] = $modulePropertiesarray;
+                // cache teh values
+                SpiceCache::set('ftsBeanIndexProperties', $modulePropertiesarray);
 
                 return $modulePropertiesarray;
             }
 
-            $_SESSION['SpiceFTS']['indexes'][$module]['properties'] = false;
+            // $_SESSION['SpiceFTS']['indexes'][$module]['properties'] = false;
         }
 
         return false;
@@ -201,20 +201,26 @@ class SpiceFTSUtils
         //BEGIN CR1000190
         if( SpiceConfig::getInstance()->installing) return false;
 
+
+        $cached = SpiceCache::get('ftsBeanIndexSettings');
+        if(!$cached) $cached = [];
+
         //END
         $db = DBManagerFactory::getInstance();
 
-        if (isset($_SESSION['SpiceFTS']['indexes'][$module]['settings'])) {
-            return $_SESSION['SpiceFTS']['indexes'][$module]['settings'];
+        if ($cached && isset($cached[$module]['settings'])) {
+            return $cached[$module]['settings'];
         } else {
             $moduleProperties = $db->fetchByAssoc($db->query("SELECT settings FROM sysfts WHERE module = '$module'"));
             if ($moduleProperties) {
-                $_SESSION['SpiceFTS']['indexes'][$module]['settings'] = json_decode(html_entity_decode($moduleProperties['settings']), true);
+                $cached[$module]['settings'] = json_decode(html_entity_decode($moduleProperties['settings']), true);
                 return json_decode(html_entity_decode($moduleProperties['settings']), true);
             } else {
-                $_SESSION['SpiceFTS']['indexes'][$module]['settings'] = false;
+                $cached[$module]['settings'] = false;
             }
         }
+
+        SpiceCache::set('ftsBeanIndexSettings', $cached);
         return false;
     }
 

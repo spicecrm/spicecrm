@@ -13,7 +13,7 @@ $routes = [
         'class'       => CleanUpController::class,
         'function'    => 'getIncompleteRecords',
         'description' => 'get Incomplete Records',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true]
+        'options'     => ['adminOnly' => true, 'validate' => true]
     ],
     [
         'method'      => 'get',
@@ -21,7 +21,7 @@ $routes = [
         'class'       => CleanUpController::class,
         'function'    => 'getIncompleteRecords',
         'description' => 'get Incomplete Records',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true, 'validate' => true],
         'parameters'  => [
             'scope' => [
                 'in' => 'path',
@@ -36,7 +36,7 @@ $routes = [
         'class'       => CleanUpController::class,
         'function'    => 'getUnusedRecords',
         'description' => 'get unused Records',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true]
+        'options'     => ['adminOnly' => true, 'validate' => true]
     ],
     [
         'method'      => 'get',
@@ -44,7 +44,7 @@ $routes = [
         'class'       => CleanUpController::class,
         'function'    => 'getUnusedRecords',
         'description' => 'get unused Records',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'scope' => [
                 'in' => 'path',
@@ -59,7 +59,7 @@ $routes = [
         'class'       => CleanUpController::class,
         'function'    => 'cleanDompdfStyleCacheFile',
         'description' => 'clean dompdf caches styles',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
     ]
 ];
 
