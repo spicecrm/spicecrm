@@ -317,7 +317,7 @@ class KReporterRESTHandler
     {
         global $app_list_strings, $current_language;
 
-        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+        //$app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         global $kreporterWhereOperatorCount, $kreporterWhereOperatorTypes, $kreporterWhereOperatorAssignments;
         include('modules/KReports/config/KReportWhereOperators.php');
@@ -331,7 +331,7 @@ class KReporterRESTHandler
     function getWhereOperators($path, $grouping, $designer)
     {
         global $app_list_strings,  $current_language;
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
@@ -970,7 +970,7 @@ $db = DBManagerFactory::getInstance();
 
         global $current_language, $app_list_strings;
         $db = DBManagerFactory::getInstance();
-        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+        // $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         // initialize Return Array
         $retData = [];
