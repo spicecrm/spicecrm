@@ -199,6 +199,21 @@ $routes = [
         'description' => 'get all reports based on CampaignTasks module',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/CampaignTasks/{id}/targets',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'getTargets',
+        'description' => 'get all targets for a comaping task',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+            ],
+        ]
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);
