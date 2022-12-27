@@ -36,6 +36,36 @@ class AdminController
 {
 
     /**
+     * post request that expects the username and password in the body
+     * executes a git pull cpmmand with the params for username and password on the shell
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function pullFromRepository(Request $req, Response $res, array $args): Response {
+        // get the body
+        $postBody = $req->getParsedBody();
+
+        // extract username and password from the body
+
+        // execute git pull
+        // get the remote url
+        $output = '';
+        exec("git config --get remote.origin.url", $output);
+
+        // error handling if this fails
+
+
+        // if success
+        $remoteUrl = str_replace('//', '//' . $postBody['username'] . ':' . $postBody['password'] . '@');
+        exec("git pull '$remoteUrl'", $output);
+
+        return $res->withJson(['success' => true, 'output' => $output]);
+    }
+
+    /**
      * resets the cache
      *
      * @param Request $req
