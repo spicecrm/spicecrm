@@ -26,7 +26,7 @@ class DocumentRevisionsController
 
 
         if(!$result){
-            throw new NotFoundException('Beep boop, boop beep');
+            throw new NotFoundException('No new DocumentRevisions to review');
         }
 
         return $res->withJson($result);
