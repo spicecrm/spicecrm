@@ -1,28 +1,26 @@
 <system-modal>
     <system-modal-header (close)="closeModal()"><system-label label="LBL_UNAPPROVED_REVISIONS"></system-label></system-modal-header>
     <system-modal-content [system-modal-content-grow]="false" class="slds-scrollable_none">
-        <div class="slds-page-header">
-            <div class="slds-grid">
-                <div class="slds-col slds-has-flexi-truncate">
-                    <div class="slds-media slds-no-space slds-grow">
-                        <system-icon [module]="'DocumentRevisions'"></system-icon>
-                        <div class="slds-media__body">
-                            <div>
-                                <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate"></h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="slds-scrollable--y" >
                 <div class="slds-scrollable--y slds-height_full">
-<!--                    <table class="slds-table slds-table&#45;&#45;fixed-layout slds-table&#45;&#45;bordered slds-max-medium-table&#45;&#45;stacked-horizontal" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}" role="listbox">-->
-<!--                        <tbody>-->
-<!--                        <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listItem]="listItem" [showActionMenu]="false" [rowselect]="multiselect" [displaylinks]="false" class="slds-hint-parent slds-p-horizontal&#45;&#45;x-small" (click)="clickRow($event, listItem)"></tr>-->
-<!--                        </tbody>-->
-<!--                        <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect" [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>-->
-<!--                    </table>-->
+                    <div *ngFor="let relatedRevision of relatedRevisions" class="slds-cell-buffer--left">
+<!--                        <object-record-fieldset direction="horizontal" [fieldset]="fieldset"></object-record-fieldset>-->
+                        <a (click)="process(relatedRevision.id)" class="slds-box_link slds-media" href="javascript:void(0);">
+                            <div class="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center">
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-welcome-mat__tile-body">
+                                    <h3 class="slds-welcome-mat__tile-title">
+                                        <system-label [label]="relatedRevision.document_name"></system-label>
+                                    </h3>
+                                    <p class="slds-welcome-mat__tile-description">
+                                        <system-label label="LBL_REVISION_NUMBER"></system-label>:
+                                        <system-label [label]="relatedRevision.revision"></system-label>
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
         </div>
     </system-modal-content>
