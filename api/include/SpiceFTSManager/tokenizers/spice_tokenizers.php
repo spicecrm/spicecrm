@@ -20,7 +20,7 @@ $elasticTokenizers = [
         ],
     ],
     "spice_ngram" => [
-        "type" => "nGram",
+        "type" => "ngram",
         "min_gram" => $minNgram,
         "max_gram" => $maxNgram,
         "token_chars" => [
@@ -29,7 +29,7 @@ $elasticTokenizers = [
         ]
     ],
     "spice_ngram_all" => [
-        "type" => "nGram",
+        "type" => "ngram",
         "min_gram" => $minNgram,
         "max_gram" => $maxNgram,
         "token_chars"=> [
@@ -43,7 +43,7 @@ $elasticTokenizers = [
         "custom_token_chars" => "+&/"
     ],
     "spice_ngram_all_search" => [
-        "type" => "nGram",
+        "type" => "ngram",
         "min_gram" => $minNgram,
         "max_gram" => $maxNgram,
         "token_chars"=> [
