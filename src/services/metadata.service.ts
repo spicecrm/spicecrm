@@ -1399,7 +1399,7 @@ export class metadata {
 
                 let i = 0;
                 while (i < routeArray.length && matched) {
-                    if (matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
+                    if (matchArray[i].substring(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
                         matched = false;
                     }
                     i++;
@@ -1427,7 +1427,7 @@ export class metadata {
 
                 let i = 0;
                 while (i < routeArray.length && matched) {
-                    if (matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
+                    if (matchArray[i].substring(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
                         matched = false;
                     }
                     i++;
