@@ -160,7 +160,7 @@ class SpiceFTSActivityHandler
                 'year' => [
                     'date_histogram' => [
                         'field' => '_activitydate',
-                        'interval' => '1y',
+                        'calendar_interval' => '1y',
                         'format' => 'yyyy'
                     ]
                 ]
