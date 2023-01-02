@@ -56,6 +56,7 @@ import {AdministrationDictRepairACLRoles} from "./components/administrationdictr
 import {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
 import {AdministrationDictRepairConvertDBCharsetModal} from "./components/administrationdictrepairconvertdbcharsetmodal";
 import { AdministrationConfigEditor } from './components/administrationconfigeditor';
+import {AdministrationConfigEditorEnum} from "./components/administrationconfigeditorenum";
 
 import { AdministrationJobMethods } from './components/administrationjobmethods';
 import { AdministrationJobLog } from './components/administrationjoblog';
@@ -130,6 +131,7 @@ import {AdministrationMigrateLegacyDoms} from "./components/administrationmigrat
         AdministrationDictRepairACLRoles,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
+        AdministrationConfigEditorEnum,
         AdministrationJobMethods,
         AdministrationJobLog,
         AdministrationJobRunButton,
