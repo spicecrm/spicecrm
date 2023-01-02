@@ -22,8 +22,10 @@ class ElasticHandler
     var $server = '127.0.0.1';
     var $port = '9200';
     var $protocol = 'http';
-    var $ssl_verifyhost = 2;
-    var $ssl_verifypeer = 1;
+    var $username = '';
+    var $password = '';
+    var $ssl_verifyhost = 0;
+    var $ssl_verifypeer = 0;
 
     var $version = '7';
 
@@ -68,6 +70,8 @@ class ElasticHandler
             $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_replicas'];
         }
 
+        $this->username = SpiceConfig::getInstance()->config['fts']['username'];
+        $this->password = SpiceConfig::getInstance()->config['fts']['password'];
 
         // get the elastic version - only themajor number is important
         //$version = $this->getVersion();
@@ -218,6 +222,15 @@ class ElasticHandler
         }
 
         return $indexes;
+    }
+
+    public function deleteAllIndexes()
+    {
+        $response = json_decode($this->query('GET', $this->indexPrefix . '*/_stats'), true);
+        foreach($response['indices'] as $index => $data){
+            $response = $this->query('DELETE', $index);
+        }
+        return true;
     }
 
     /**
@@ -493,6 +506,12 @@ class ElasticHandler
                 'Content-Length: ' . strlen($data_string)
             ]
         ];
+
+        // if we have auth data add it to the request
+        if($this->username && $this->password){
+            $curlOptions[CURLOPT_USERPWD] = "{$this->username}:{$this->password}";
+        }
+
         curl_setopt_array($ch, $curlOptions);
 
         $logEntryHandler = new APILogEntryHandler();
@@ -549,6 +568,12 @@ class ElasticHandler
                 'Content-Length: ' . strlen($body)
             ]
         ];
+
+        // if we have auth data add it to the request
+        if($this->username && $this->password){
+            $curlOptions[CURLOPT_USERPWD] = "{$this->username}:{$this->password}";
+        }
+
         curl_setopt_array($ch, $curlOptions);
 
         $logEntryHandler = new APILogEntryHandler();
