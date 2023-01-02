@@ -826,7 +826,7 @@ class SpiceUtils
      * @return String representation of amount with formatting applied
      */
     public static function currencyFormatNumber($amount, $params = []): string {
-        global $locale;
+        $locale = new Localization();
         if (isset($params['round']) && is_int($params['round'])) {
             $real_round = $params['round'];
         } else {
@@ -888,7 +888,7 @@ class SpiceUtils
      * @see include/Localization/Localization.php
      */
     public static function formatNumber($amount, $round = null, $decimals = null, $params = []): string {
-        global $app_strings,  $locale;
+        $locale = new Localization();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         static $current_users_currency = null;
         static $last_override_currency = null;
