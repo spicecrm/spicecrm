@@ -1027,8 +1027,8 @@ class SpiceFTSHandler
                     switch ($indexProperty['duplicatequery']) {
                         case 'term':
                             $searchParts[] = [
-                                "match" => [
-                                    $indexProperty['indexfieldname'] . '.raw' => $queryField
+                                "terms" => [
+                                    $indexProperty['indexfieldname']. '.raw' => is_array($queryField) ? $queryField : [$queryField]
                                 ]
                             ];
                             break;
