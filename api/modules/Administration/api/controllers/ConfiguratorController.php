@@ -85,8 +85,8 @@ class ConfiguratorController{
             }
         }
 
-        // clear the config cache
-        SpiceCache::clear('dbconfig');
+        // clear the config cache and reload from DB
+        SpiceConfig::getInstance()->reloadConfig(true);
 
         return $res->withJson($postBody);
 

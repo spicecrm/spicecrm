@@ -127,13 +127,13 @@ class SpiceConfig
      * @return bool
      * @throws Exception
      */
-    private function loadConfigFromDB()
+    private function loadConfigFromDB($forceReload = false)
     {
         // check that a config exists
         if (!$this->configExists()) return false;
 
         $dbconfig = SpiceCache::get('dbconfig');
-        if(!$dbconfig) {
+        if($forceReload || !$dbconfig) {
             $dbconfig = [];
             // load the config
             $db = DBManagerFactory::getInstance();
@@ -181,9 +181,9 @@ class SpiceConfig
     /**
      * reloads the complete config
      */
-    function reloadConfig(){
+    function reloadConfig($force = false){
         $this->loadConfigFiles();
-        $this->loadConfigFromDB();
+        $this->loadConfigFromDB($force);
         self::$instance->mappingBWC();
     }
 
