@@ -169,26 +169,23 @@ class SpiceCRMPasswordUtils
 
     /**
      * send token to user
-     * @param string $usernameOrEmail
+     * @param string $emailOrUsername
      * @return bool
      * @throws Exception | \Exception
      */
-    public function sendTokenToUser(string $usernameOrEmail): bool
+    public function sendTokenToUser(string $emailOrUsername): bool
     {
         $db = DBManagerFactory::getInstance();
 
         /** @var User $userClass */
         $userClass = BeanFactory::getBean("Users");
-        $userObj = $userClass->findByUserName($usernameOrEmail);
-
-        if ($userObj) {
+        $userObj = $userClass->retrieve_by_email_address($emailOrUsername);
+        if (!$userObj) {
+            // fallback to search by user name
+            $userObj = $userClass->findByUserName($emailOrUsername);
             //we need to retrieve in order to have email1 popuplated.
             //findbyusername is doing a retrieve_by_string_fields which doesnt populate email1
             $userObj = BeanFactory::getBean("Users", $userObj->id);
-
-        } else {
-            //fallback to search by email address
-            $userObj = $userClass->retrieve_by_email_address($usernameOrEmail);
             if (!$userObj) {
                 throw new Exception("User not found via username/email");
             }
@@ -196,9 +193,8 @@ class SpiceCRMPasswordUtils
         $email = $userObj->email1;
         $user_id = $userObj->id;
 
-
         if (empty($user_id)) {
-            throw new Exception("User with email " . $usernameOrEmail . " not found");
+            throw new Exception("User with email " . $emailOrUsername . " not found");
         }
 
         $user = BeanFactory::newBean('Users');
