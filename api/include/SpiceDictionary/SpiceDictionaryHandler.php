@@ -682,7 +682,7 @@ LEFT JOIN
 
     public function getDomainFieldValidationValues(){
 
-        $cached = SpiceCache::get('domainfieldvalidationvaluess');
+        $cached = SpiceCache::get('domainfieldvalidationvalues');
         if($cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
@@ -696,7 +696,7 @@ LEFT JOIN
             $validationvaluesArray[] = array_merge($domainfieldvalidation, ['scope' => 'c']);
         }
 
-        SpiceCache::set('domainfieldvalidationvaluess', $cached);
+        SpiceCache::set('domainfieldvalidationvalues', $cached);
 
         return $validationvaluesArray;
     }
