@@ -36,10 +36,8 @@ class SpiceSoapServiceImpl
      */
     static function set_relationship($session, $module_name, $module_id, $link_field_name, $related_ids, $name_value_list, $delete)
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->set_relationship');
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_relationship');
             return;
         } // if
 
@@ -64,7 +62,6 @@ class SpiceSoapServiceImpl
         } else {
             $failed++;
         } // else
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_relationship');
 	return ['created'=>$count , 'failed'=>$failed, 'deleted' => $deletedCount];
     }
 
@@ -86,10 +83,8 @@ class SpiceSoapServiceImpl
      */
     static function set_relationships($session, $module_names, $module_ids, $link_field_names, $related_ids, $name_value_lists, $delete_array)
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->set_relationships');
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_relationships');
             return;
         } // if
 
@@ -97,7 +92,6 @@ class SpiceSoapServiceImpl
             (sizeof($module_names) != (sizeof($module_ids) || sizeof($link_field_names) || sizeof($related_ids)))) {
             $error->set_error('invalid_data_format');
             self::$helperObject->setFaultObject($error);
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_relationships');
             return;
         } // if
 
@@ -125,7 +119,6 @@ class SpiceSoapServiceImpl
             } // else
             $counter++;
         } // foreach
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_relationships');
 	return ['created'=>$count , 'failed'=>$failed, 'deleted' => $deletedCount];
     } // fn
 
@@ -141,17 +134,12 @@ class SpiceSoapServiceImpl
      */
     static function set_entries($session, $module_name, $name_value_lists)
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->set_entries');
-        if (self::$helperObject->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->set_entries - input data is ' . var_export($name_value_lists, true));
-        } // if
+
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'write', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_entries');
             return;
         } // if
 
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_entries');
         return self::$helperObject->new_handle_set_entries($module_name, $name_value_lists, FALSE);
     }
 
@@ -166,19 +154,16 @@ class SpiceSoapServiceImpl
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->logout');
         $error = new SoapError();
         $logicHook = LogicHook::getInstance();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
             if($current_user) $logicHook->call_custom_logic('Users', $current_user,'after_logout');
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->logout');
             return;
         } // if
 
         if($current_user) $current_user->call_custom_logic('before_logout');
         session_destroy();
         if($current_user)  $logicHook->call_custom_logic('Users', $current_user, 'after_logout');
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->logout');
     } // fn
 
 
@@ -194,12 +179,10 @@ class SpiceSoapServiceImpl
      */
     static function get_module_fields($session, $module_name, $fields = [])
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->get_module_fields for ' . $module_name);
         $error = new SoapError();
 	    $module_fields = [];
 
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->error('End: SpiceSoapServiceImpl->get_module_fields FAILED on checkSessionAndModuleAccess for ' . $module_name);
             return;
         } // if
 
@@ -207,7 +190,6 @@ class SpiceSoapServiceImpl
         $seed = BeanFactory::getBean($module_name);
         if ($seed->ACLAccess('ListView', true) || $seed->ACLAccess('DetailView', true) || $seed->ACLAccess('EditView', true)) {
             $return = self::$helperObject->get_return_module_fields($seed, $module_name, $fields);
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_module_fields SUCCESS for ' . $module_name);
             return $return;
         }
         $error->set_error('no_access');
@@ -228,11 +210,9 @@ class SpiceSoapServiceImpl
      */
     static function get_entries_count($session, $module_name, $query, $deleted)
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->get_entries_count');
 
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'list', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_entries_count');
             return;
         } // if
 
@@ -241,7 +221,6 @@ class SpiceSoapServiceImpl
         $seed = BeanFactory::getBean($module_name);
 
         if (!self::$helperObject->checkQuery($error, $query)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_entries_count');
             return;
         } // if
 
@@ -269,7 +248,6 @@ class SpiceSoapServiceImpl
         $res = DBManagerFactory::getInstance()->query($sql);
         $row = DBManagerFactory::getInstance()->fetchByAssoc($res);
 
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_entries_count');
         return [
                 'result_count' => $row['result_count'],
         ];
@@ -291,9 +269,7 @@ class SpiceSoapServiceImpl
      */
     static function get_entry($session, $module_name, $id, $select_fields = [], $link_name_to_fields_array  = [],$track_view = FALSE)
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->get_entry');
         return self::get_entries($session, $module_name, [$id], $select_fields, $link_name_to_fields_array, $track_view);
-        LoggerManager::getLogger()->info('end: SpiceSoapServiceImpl->get_entry');
     }
 
 
@@ -313,7 +289,6 @@ class SpiceSoapServiceImpl
      */
     static function get_entries($session, $module_name, $ids, $select_fields, $link_name_to_fields_array, $track_view = FALSE)
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->get_entries');
         $error = new SoapError();
 
         $linkoutput_list = [];
@@ -324,7 +299,6 @@ class SpiceSoapServiceImpl
             $using_cp = true;
         }
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('No Access: SpiceSoapServiceImpl->get_entries');
             return;
         } // if
 
@@ -357,7 +331,6 @@ class SpiceSoapServiceImpl
 
         }
 
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_entries');
         return ['entry_list'=>$output_list, 'relationship_list' => $linkoutput_list];
     }
 
@@ -375,13 +348,8 @@ class SpiceSoapServiceImpl
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->set_entry');
-        if (self::$helperObject->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->set_entry - input data is ' . var_export($name_value_list, true));
-        } // if
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'write', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_entry');
             return;
         } // if
 
@@ -417,7 +385,6 @@ class SpiceSoapServiceImpl
             }
         }
         if (!self::$helperObject->checkACLAccess($seed, 'Save', $error, 'no_access') || ($seed->deleted == 1 && !self::$helperObject->checkACLAccess($seed, 'Delete', $error, 'no_access'))) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->set_entry');
             return;
         } // if
 
@@ -429,7 +396,6 @@ class SpiceSoapServiceImpl
             $seed->mark_deleted($seed->id);
         }
 
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entry');
         return ['id'=>$seed->id, 'entry_list' => $return_entry_list];
     } // fn
 
@@ -450,7 +416,6 @@ class SpiceSoapServiceImpl
      */
     static function login($user_auth, $application = '', $name_value_list = [])
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->login');
         global $system_config;
         $error = new SoapError();
 
@@ -458,7 +423,7 @@ class SpiceSoapServiceImpl
             AuthenticationController::getInstance()->authenticate($user_auth['user_name'], $user_auth['password']);
         } catch (\SpiceCRM\includes\ErrorHandlers\UnauthorizedException $e) {
             $error->set_error($e->getMessage());
-            LoggerManager::getLogger()->fatal('Lockout reached for user ' . $user_auth['user_name']);
+            LoggerManager::getLogger()->fatal('soap','Lockout reached for user ' . $user_auth['user_name']);
             // LogicHook::getInstance()->call_custom_logic('Users', 'login_failed');
             self::$helperObject->setFaultObject($error);
             return;
@@ -477,7 +442,6 @@ class SpiceSoapServiceImpl
         $_SESSION['authenticated_user_id'] = $current_user->id;
         $_SESSION['unique_key'] = SpiceConfig::getInstance()->config['unique_key'];
         $current_user->call_custom_logic('after_login');
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->login - succesful login');
         $nameValueArray = [];
         global $current_language;
         $nameValueArray['user_id'] = self::$helperObject->get_name_value('user_id', $current_user->id);
@@ -529,7 +493,6 @@ class SpiceSoapServiceImpl
     static function get_entry_list($session, $module_name, $query = '', $order_by = '', $offset = 0, $select_fields = [], $link_name_to_fields_array = [], $max_results = 0, $deleted = 0)
     {
 
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->get_entry_list');
         $error = new SoapError();
 //        $using_cp = false;
 //        if ($module_name == 'CampaignProspects') {
@@ -542,7 +505,6 @@ class SpiceSoapServiceImpl
         } // if
 
         if (!self::$helperObject->checkQuery($error, $query, $order_by)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_entry_list');
             return;
         } // if
 
@@ -605,7 +567,6 @@ class SpiceSoapServiceImpl
         if (!empty(SpiceConfig::getInstance()->config['disable_count_query']))
             $totalRecordCount = -1;
 
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_entry_list - SUCCESS');
         return ['result_count'=>sizeof($output_list), 'total_count' => $totalRecordCount, 'next_offset'=>$next_offset, 'entry_list'=>$output_list, 'relationship_list' => $returnRelationshipList];
     } // fn
 
@@ -627,7 +588,6 @@ class SpiceSoapServiceImpl
      */
     static function search_by_module($session, $search_string, $modules, $offset, $max_results, $assigned_user_id = '', $select_fields = [], $unified_search_only = TRUE, $favorites = FALSE)
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->search_by_module');
 
         $error = new SoapError();
         $output_list = [];
@@ -651,7 +611,6 @@ class SpiceSoapServiceImpl
             $output_list[] = ['name' => $module, 'records' => $records];
         }
 
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->search_by_module');
         return ['entry_list' => $output_list];
     }
 
@@ -676,24 +635,20 @@ class SpiceSoapServiceImpl
      */
     static function get_relationships($session, $module_name, $module_id, $link_field_name, $related_module_query, $related_fields, $related_module_link_name_to_fields_array, $deleted, $order_by = '', $offset = 0, $limit = false)
     {
-        LoggerManager::getLogger()->info('Begin: SpiceSoapServiceImpl->get_relationships');
         self::$helperObject = new SpiceSoapServiceUtil();
         $error = new SoapError();
 
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_relationships');
             return;
         } // if
 
         $mod = BeanFactory::getBean($module_name, $module_id);
 
         if (!self::$helperObject->checkQuery($error, $related_module_query, $order_by)) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_relationships');
             return;
         } // if
 
         if (!self::$helperObject->checkACLAccess($mod, 'DetailView', $error, 'no_access')) {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_relationships');
             return;
         } // if
 
@@ -703,9 +658,6 @@ class SpiceSoapServiceImpl
         // get all the related modules data.
         $result = self::$helperObject->getRelationshipResults($mod, $link_field_name, $related_fields, $related_module_query, $order_by, $offset, $limit);
 
-        if (self::$helperObject->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->get_relationships - return data for getRelationshipResults is ' . var_export($result, true));
-        } // if
         if ($result) {
 
             $list = $result['rows'];
@@ -735,7 +687,6 @@ class SpiceSoapServiceImpl
 
         } // if
 
-        LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_relationships');
         return ['entry_list'=>$output_list, 'relationship_list' => $linkoutput_list];
     }
 
@@ -785,7 +736,6 @@ class SpiceSoapServiceImpl
         self::$helperObject = new SpiceSoapServiceUtil();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error))
         {
-            LoggerManager::getLogger()->info('End: SpiceSoapServiceImpl->get_modified_relationships');
             return;
         } // if
 

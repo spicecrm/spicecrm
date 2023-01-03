@@ -198,7 +198,7 @@ class PostgreSQLManager extends DBManager
      */
     public function disconnect()
     {
-        LoggerManager::getLogger()->debug('Calling PgSQL::disconnect()');
+        LoggerManager::getLogger()->debug('sql', 'Calling PgSQL::disconnect()');
         if(!empty($this->database)){
             $this->freeResult();
             pg_close($this->database);
@@ -249,7 +249,7 @@ class PostgreSQLManager extends DBManager
 
         if ($start < 0)
             $start = 0;
-        LoggerManager::getLogger()->debug('Limit Query:' . $sql. ' Start: ' .$start . ' count: ' . $count);
+        LoggerManager::getLogger()->debug('sql', 'Limit Query:' . $sql. ' Start: ' .$start . ' count: ' . $count);
 
         $sql = "$sql LIMIT $count OFFSET $start";
         $this->lastsql = $sql;
@@ -423,8 +423,6 @@ class PostgreSQLManager extends DBManager
      */
     public function tableExists($tableName)
     {
-        $this->log->info("tableExists: $tableName");
-
         if ($this->getDatabase()) {
             $result = $this->query("SELECT n.nspname as Schema,
 										  c.relname as Name,
@@ -555,11 +553,11 @@ class PostgreSQLManager extends DBManager
         // Set Client encoding
         pg_set_client_encoding($this->database, "UNICODE");
 
-        if(!$this->checkError('Could Not Connect:', $dieOnError))
-            LoggerManager::getLogger()->info("connected to db");
+        if(!$this->checkError('Could Not Connect:', $dieOnError)) {
+            LoggerManager::getLogger()->debug('sql', "connected to db");
+        }
 
         $this->connectOptions = $configOptions;
-        LoggerManager::getLogger()->info("Connect:".$this->database);
 
         return true;
     }
@@ -719,7 +717,6 @@ class PostgreSQLManager extends DBManager
         $columnsAlter = [];
 
         if ($this->isFieldArray($fieldDefs)){
-            LoggerManager::getLogger()->debug("is fieldArray");
             foreach ($fieldDefs as $def){
                 if ($action == 'drop') {
                     $columnsAlter[] = $def['name'];
@@ -1247,7 +1244,7 @@ class PostgreSQLManager extends DBManager
     public function canInstall()
     {
         $db_version = $this->version();
-        LoggerManager::getLogger()->info("PostgreSQL Server Info:" . $db_version);
+        LoggerManager::getLogger()->debug('sql', "PostgreSQL Server Info:" . $db_version);
 
         if(empty($db_version)) {
             return ['ERR_DB_VERSION_FAILURE'];

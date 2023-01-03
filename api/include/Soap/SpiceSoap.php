@@ -35,13 +35,12 @@ class SpiceSoap {
      */
     public function __construct($url)
     {
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->__construct');
+        LoggerManager::getLogger()->debug('Begin: NusoapSoap->__construct');
         $this->server = new soap_server();
         $this->soapURL = $url;
         $this->server->configureWSDL('spicesoap', $this->getNameSpace(), $url);
         if (!isset($GLOBALS['HTTP_RAW_POST_DATA'])) $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents('php://input');
         $this->setObservers();
-        LoggerManager::getLogger()->info('End: NusoapSoap->__construct');
         // set a global transaction id
         $GLOBALS['transactionID'] = SpiceUtils::createGuid();
     }
@@ -123,7 +122,7 @@ class SpiceSoap {
         if ($this->in_service) {
             $out = ob_get_contents();
             ob_end_clean();
-            LoggerManager::getLogger()->info('NusoapSoap->shutdown: service died unexpectedly');
+            LoggerManager::getLogger()->fatal('soap', 'NusoapSoap->shutdown: service died unexpectedly');
             $this->server->fault(-1, "Unknown error in SOAP call: service died unexpectedly", '', $out);
             $this->server->send_response();
             $this->generateLogEntry();
@@ -139,7 +138,6 @@ class SpiceSoap {
     public function serve()
     {
         $this->startingTime = $GLOBALS['soapstart'] ?: microtime(true);
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->serve');
         ob_clean();
         $this->in_service = true;
         register_shutdown_function([$this, "shutdown"]);
@@ -151,7 +149,6 @@ class SpiceSoap {
         $this->in_service = false;
         ob_end_flush();
         flush();
-        LoggerManager::getLogger()->info('End: NusoapSoap->serve');
     }
 
     /**
@@ -160,12 +157,10 @@ class SpiceSoap {
      * @param array $excludeFunctions - All the functions you don't want to register
      */
     public function register($excludeFunctions = []){
-        LoggerManager::getLogger()->info('Begin: SpiceSoap->register');
         $this->excludeFunctions = $excludeFunctions;
         $registryObject = new $this->registryClass($this);
         $registryObject->register();
         $this->excludeFunctions = [];
-        LoggerManager::getLogger()->info('End: SpiceSoap->register');
     }
 
     /**
@@ -217,12 +212,10 @@ class SpiceSoap {
      */
     function registerImplClass($implementationClass)
     {
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->registerImplClass');
         if (empty($implementationClass)) {
             $implementationClass = $this->implementationClass;
         } // if
         $this->server->register_class($implementationClass);
-        LoggerManager::getLogger()->info('End: NusoapSoap->registerImplClass');
     }
 
     /**
@@ -233,9 +226,7 @@ class SpiceSoap {
      */
     function registerClass($registryClass)
     {
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->registerClass');
         $this->registryClass = $registryClass;
-        LoggerManager::getLogger()->info('End: NusoapSoap->registerClass');
     }
 
     /**
@@ -246,9 +237,7 @@ class SpiceSoap {
      */
     public function error($errorObject)
     {
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->error');
         $this->server->fault($errorObject->getFaultCode(), $errorObject->getName(), '', $errorObject->getDescription());
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->error');
     }
 
     private function generateLogEntry()

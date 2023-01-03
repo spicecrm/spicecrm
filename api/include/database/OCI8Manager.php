@@ -414,7 +414,7 @@ class OCI8Manager extends DBManager
         $this->query_time = microtime(true);
         $this->lastQuery = $sql;
 
-        $this->log->info('EXECUTING Query: ' . $sql);
+        $this->log->sql('EXECUTING Query: ' . $sql);
 
         $stmt = $suppress ? @oci_parse($this->database, $sql) : oci_parse($this->database, $sql);
         $exec_result = $suppress ? @oci_execute($stmt, $this->transactional ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS) : oci_execute($stmt, $this->transactional ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS);
@@ -424,7 +424,7 @@ class OCI8Manager extends DBManager
         // write a global querytime
         $GLOBALS['totalquerytime'] += $this->query_time;
         if ($this->query_time > 1000)
-            LoggerManager::getLogger()->fatal('SLOW QUERY ' . $sql);
+            LoggerManager::getLogger()->slowsql('SLOW QUERY ' . $sql);
 
         if (!$exec_result) {
             if (!empty($stmt)) {
@@ -1639,10 +1639,10 @@ class OCI8Manager extends DBManager
             $sql .= " RETURNING " . implode(",", array_keys($lob_fields)) . ' INTO ' . implode(",", array_values($lob_fields));
         }
 
-        $this->log->info("Oracle Execute: $sql");
+        $this->log->sql("Oracle Execute: $sql");
         $stmt = oci_parse($this->database, $sql);
         if ($this->checkError("Update parse failed: $sql", false)) {
-            $this->log->info("Oracle Execute ERROR RAISED !!!");
+            $this->log->sql("Oracle Execute ERROR RAISED !!!");
             return false;
         }
 
@@ -1673,9 +1673,9 @@ class OCI8Manager extends DBManager
                     // save the actual value stored inside the orcale variable reference by reassigning it
                     // because we returned the values before into heap, we can now overwrite them and did a backdoor to the 1k signs cap
                     if ($lob->save($lob_data[$field])) {
-                        $this->log->info("saved LOB content of " . $field . " directly: " . $lob_data[$field]);
+                        $this->log->sql('oci8lob', "saved LOB content of " . $field . " directly: " . $lob_data[$field]);
                     } else {
-                        $this->log->info("not saved LOB content of " . $field . " directly: " . $lob_data[$field]);
+                        $this->log->sql('oci8lob', "not saved LOB content of " . $field . " directly: " . $lob_data[$field]);
                     }
                 }
             }
@@ -1685,7 +1685,6 @@ class OCI8Manager extends DBManager
                 $result = true;
             }
             $this->checkError();
-            $this->log->info("Oracle Execute COMMITTED");
         }
 
         // free all the lobs.

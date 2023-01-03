@@ -1088,30 +1088,30 @@ class SpiceUtils
             $app_strings = [];
             if (file_exists("include/language/$lang.lang.php")) {
                 include("include/language/$lang.lang.php");
-                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+                LoggerManager::getLogger()->info('language', "Found language file: $lang.lang.php");
             }
             if (file_exists("include/language/$lang.lang.override.php")) {
                 include("include/language/$lang.lang.override.php");
-                LoggerManager::getLogger()->info("Found override language file: $lang.lang.override.php");
+                LoggerManager::getLogger()->info('language', "Found override language file: $lang.lang.override.php");
             }
             if (file_exists("include/language/$lang.lang.php.override")) {
                 include("include/language/$lang.lang.php.override");
-                LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
+                LoggerManager::getLogger()->info('language', "Found override language file: $lang.lang.php.override");
             }
             if (file_exists("custom/application/Ext/Language/$lang.lang.ext.php")) {
                 include("custom/application/Ext/Language/$lang.lang.ext.php");
-                LoggerManager::getLogger()->info("Found extended language file: $lang.lang.ext.php");
+                LoggerManager::getLogger()->info('language', "Found extended language file: $lang.lang.ext.php");
             }
             if (file_exists("custom/include/language/$lang.lang.php")) {
                 include("custom/include/language/$lang.lang.php");
-                LoggerManager::getLogger()->info("Found custom language file: $lang.lang.php");
+                LoggerManager::getLogger()->info('language', "Found custom language file: $lang.lang.php");
             }
             // BEGIN syslanguages
             if (file_exists("custom/application/Ext/Language/$lang.override.ext.php")) {
                 global $extlabels;
                 include("custom/application/Ext/Language/$lang.override.ext.php");
                 $app_strings = array_merge($app_strings, $extlabels);
-                LoggerManager::getLogger()->info("Found extended language file: $lang.override.ext.php");
+                LoggerManager::getLogger()->info('language', "Found extended language file: $lang.override.ext.php");
             }
             //END syslanguages
             $app_strings_array[] = $app_strings;

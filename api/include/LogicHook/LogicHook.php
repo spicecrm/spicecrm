@@ -213,7 +213,7 @@ class LogicHook
      */
 	public function call_custom_logic(string $moduleDir, $bean, string $event, $arguments = null): void {
         if (LoggerManager::getLogger()) {
-            LoggerManager::getLogger()->debug("Hook called: $moduleDir::$event");
+            LoggerManager::getLogger()->debug('hook', "Hook called: $moduleDir::$event");
         }
 
         $allHooks = [];

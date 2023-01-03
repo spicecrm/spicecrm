@@ -201,7 +201,7 @@ class SqlsrvManager extends DBManager
         }
 
         if($this->checkError('Could Not Connect:', $dieOnError))
-            LoggerManager::getLogger()->info("connected to db");
+            LoggerManager::getLogger()->debug('sql', "connected to db");
 
         sqlsrv_query($this->database, 'SET DATEFORMAT mdy');
 
@@ -224,14 +224,14 @@ class SqlsrvManager extends DBManager
         $sql = $this->_appendN($sql);
 
         $this->countQuery($sql);
-        if($this->enablelog) LoggerManager::getLogger()->info('Query:' . $sql);
+        if($this->enablelog) LoggerManager::getLogger()->sql('Query:' . $sql);
         $this->checkConnection();
         $this->query_time = microtime(true);
 
         $result = $suppress?@sqlsrv_query($this->database, $sql):sqlsrv_query($this->database, $sql);
 
         $this->query_time = microtime(true) - $this->query_time;
-        if($this->enablelog) LoggerManager::getLogger()->info('Query Execution Time:'.$this->query_time);
+        if($this->enablelog) LoggerManager::getLogger()->sql('Query Execution Time:'.$this->query_time);
 
 
         $this->checkError($msg.' Query Failed:' . $sql . '::', $dieOnError);
@@ -334,7 +334,7 @@ class SqlsrvManager extends DBManager
      */
     public function disconnect()
     {
-    	LoggerManager::getLogger()->debug('Calling Mssql::disconnect()');
+    	LoggerManager::getLogger()->debug('sql', 'Calling Mssql::disconnect()');
         if(!empty($this->database)){
             $this->freeResult();
             sqlsrv_close($this->database);
@@ -373,7 +373,7 @@ class SqlsrvManager extends DBManager
         //set the start to 0, no negs
         if ($start < 0)
             $start=0;
-        LoggerManager::getLogger()->debug(print_r(func_get_args(),true));
+        LoggerManager::getLogger()->debug('sql', print_r(func_get_args(),true));
         #$GLOBALS['log']->debug(print_r(func_get_args(),true));
 
         $this->lastsql = $sql;
@@ -473,7 +473,7 @@ class SqlsrvManager extends DBManager
         else {
             if ($start < 0)
                 $start = 0;
-            LoggerManager::getLogger()->debug(print_r(func_get_args(),true));
+            LoggerManager::getLogger()->debug('sql', print_r(func_get_args(),true));
 
 #            $GLOBALS['log']->debug(print_r(func_get_args(),true));
             $this->lastsql = $sql;
@@ -624,7 +624,7 @@ class SqlsrvManager extends DBManager
                 }
             }
         }
-        LoggerManager::getLogger()->debug('Limit Query: ' . $newSQL);
+        LoggerManager::getLogger()->debug('sql', 'Limit Query: ' . $newSQL);
 #        $GLOBALS['log']->debug('Limit Query: ' . $newSQL);
         if($execute) {
             $result =  $this->query($newSQL, $dieOnError, $msg);
@@ -908,14 +908,14 @@ class SqlsrvManager extends DBManager
                 return $col_name;
             }
             //break out of here, log this
-            LoggerManager::getLogger()->debug("No match was found for order by, pass string back untouched as: $orig_order_match");
+            LoggerManager::getLogger()->debug('sql', "No match was found for order by, pass string back untouched as: $orig_order_match");
  #           $GLOBALS['log']->debug("No match was found for order by, pass string back untouched as: $orig_order_match");
             return $orig_order_match;
         }
         else {
             //if found, then parse and return
             //grab string up to the aliased column
-            LoggerManager::getLogger()->debug("order by found, process sql string");
+            LoggerManager::getLogger()->debug('sql', "order by found, process sql string");
 
  #           $GLOBALS['log']->debug("order by found, process sql string");
 
@@ -949,7 +949,7 @@ class SqlsrvManager extends DBManager
             $col_name = $col_name. " ". $asc_desc;
 
             //pass in new order by
-            LoggerManager::getLogger()->debug("order by being returned is " . $col_name);
+            LoggerManager::getLogger()->debug('sql', "order by being returned is " . $col_name);
 
     #        $GLOBALS['log']->debug("order by being returned is " . $col_name);
             return $col_name;
@@ -1104,9 +1104,6 @@ EOSQL;
      */
     public function tableExists($tableName)
     {
-        LoggerManager::getLogger()->info("tableExists: $tableName");
- #       $GLOBALS['log']->info("tableExists: $tableName");
-
         $this->checkConnection();
         $result = $this->getOne(
             "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE' AND TABLE_NAME=".$this->quoted($tableName));
@@ -1159,7 +1156,7 @@ EOSQL;
      */
     public function getTablesArray()
     {
-        LoggerManager::getLogger()->debug('MSSQL fetching table list');
+        LoggerManager::getLogger()->debug('sql', 'MSSQL fetching table list');
  #       $GLOBALS['log']->debug('MSSQL fetching table list');
 
         if($this->getDatabase()) {

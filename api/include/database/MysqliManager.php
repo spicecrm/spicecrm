@@ -186,7 +186,7 @@ class MysqliManager extends DBManager
             static $queryMD5 = [];
 
             parent::countQuery();
-            if($this->enablelog) LoggerManager::getLogger()->info('Query:' . $sql);
+            // if($this->enablelog) LoggerManager::getLogger()->sql('Query:' . $sql);
             $this->checkConnection();
             $this->query_time = microtime(true);
             $this->lastsql = $sql;
@@ -197,7 +197,7 @@ class MysqliManager extends DBManager
                 $queryMD5[$md5] = true;
 
             $this->query_time = microtime(true) - $this->query_time;
-            if($this->enablelog) LoggerManager::getLogger()->info('Query Execution Time:' . $this->query_time);
+            if($this->enablelog) LoggerManager::getLogger()->sql('', ['Query Execution Time' => $this->query_time, "Query" => $sql]);
 
             if (isset($GLOBALS['totalquerytime'])) $GLOBALS['totalquerytime'] += $this->query_time;
 
@@ -221,6 +221,7 @@ class MysqliManager extends DBManager
                 $this->checkError($msg . ' Query Failed: ' . $sql, $dieOnError);
             }
         } catch (Exception $e) {
+            LoggerManager::getLogger()->fatal('sql', ['error' => $e->getMessage(), "query" => $this->lastsql]);
             throw $e;
         }
 
@@ -273,7 +274,7 @@ class MysqliManager extends DBManager
      */
     public function disconnect()
     {
-        LoggerManager::getLogger()->debug('Calling MySQLi::disconnect()');
+        LoggerManager::getLogger()->debug('sql', 'Calling MySQLi::disconnect()');
         if (!empty($this->database)) {
             $this->freeResult();
             mysqli_close($this->database);
@@ -405,7 +406,7 @@ class MysqliManager extends DBManager
 	    mysqli_query($this->database,$names);
 
 		if($this->checkError('Could Not Connect', $dieOnError))
-		    LoggerManager::getLogger()->info("connected to db");
+		    LoggerManager::getLogger()->debug('sql', "connected to db");
 
 		$this->connectOptions = $configOptions;
 		return true;
@@ -607,7 +608,7 @@ class MysqliManager extends DBManager
         $count = (int)$count;
         if ($start < 0)
             $start = 0;
-        LoggerManager::getLogger()->debug('Limit Query:' . $sql. ' Start: '.$start.' count:'.$count);
+        LoggerManager::getLogger()->debug('sql', 'Limit Query:' . $sql. ' Start: '.$start.' count:'.$count);
 
         $sql = "$sql LIMIT $start,$count";
         $this->lastsql = $sql;
@@ -751,9 +752,8 @@ class MysqliManager extends DBManager
      */
     public function tableExists($tableName)
     {
-        $this->log->info("tableExists: $tableName");
 
-        if ($this->getDatabase()) {
+       if ($this->getDatabase()) {
             $result = $this->query("SHOW TABLES LIKE ".$this->quoted($tableName));
             if(empty($result)) return false;
             $row = $this->fetchByAssoc($result);
@@ -1109,7 +1109,7 @@ class MysqliManager extends DBManager
                     if ($this->full_text_indexing_installed())
                         $columns[] = " FULLTEXT ($fields)";
                     else
-                        LoggerManager::getLogger()->debug('MYISAM engine is not available/enabled, full-text indexes will be skipped. Skipping:',$name);
+                        LoggerManager::getLogger()->debug('sql', 'MYISAM engine is not available/enabled, full-text indexes will be skipped. Skipping:',$name);
                     break;
             }
         }

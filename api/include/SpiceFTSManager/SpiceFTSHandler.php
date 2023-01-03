@@ -896,10 +896,6 @@ class SpiceFTSHandler
             $queryParam['aggs'] = $aggs;
         }
 
-        // make the search
-        LoggerManager::getLogger()->debug(json_encode($queryParam));
-
-
         /* ToDo: experimental to think about scoring based on age of record
         $queryParam['query'] = [
             'function_score' => [
@@ -1123,7 +1119,6 @@ class SpiceFTSHandler
         */
 
         // make the search
-        LoggerManager::getLogger()->debug(json_encode($queryParam));
         $searchresults = $this->elasticHandler->searchModule($bean->_module, $queryParam, 100, 0);
 
         $duplicateIds = [];
