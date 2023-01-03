@@ -159,7 +159,7 @@ class SpiceModules
      * @param string $modulename
      * @return bool|null
      */
-    public function moudleExists(string $modulename): ?bool{
+    public function moduleExists(string $modulename): ?bool{
         return isset($this->modules[$modulename]);
     }
 

@@ -16,6 +16,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 /**
  * Class SpiceUtils
@@ -182,12 +183,7 @@ class SpiceUtils
      * @return bool
      */
     public static function isValidModule(string $moduleName): bool {
-        $controller = new SpiceUIModulesController();
-        $moduleList = $controller->geUnfilteredModules();
-        if (array_key_exists($moduleName, $moduleList)) {
-            return true;
-        }
-        return false;
+        return SpiceModules::getInstance()->moduleExists($moduleName);
     }
 
     /**
