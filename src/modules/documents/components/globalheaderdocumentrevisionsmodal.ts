@@ -4,6 +4,7 @@ import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {modellist} from "../../../services/modellist.service";
+import {modelattachments} from "../../../services/modelattachments.service";
 import {view} from "../../../services/view.service";
 import {Observable, Subject, Subscription} from "rxjs";
 import {modal} from "../../../services/modal.service";
@@ -11,7 +12,7 @@ import {modal} from "../../../services/modal.service";
 @Component({
     selector: 'global-header-document-revisions-modal',
     templateUrl: '../templates/globalheaderdocumentrevisionsmodal.html',
-    providers: [model, view, modellist]
+    providers: [model, view, modellist, modelattachments]
 })
 export class GlobalHeaderDocumentRevisionsModal implements OnInit {
 
@@ -27,6 +28,7 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
         public metadata: metadata,
         public model: model,
         public modal: modal,
+        public modelattachments: modelattachments,
         public injector: Injector,
         public view: view,
         public modellist: modellist,
@@ -67,31 +69,64 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
             })
     }
 
+
+
     /**
      * process one step by rendering the modal component
      *
      * @param id
      */
     process(id) {
-        let step = this.relatedRevisions.find(s => s.id == id);
-        // if(step && !step.completed && step.component){
-            this.modal.openModal(step.document_revision, true, this.injector).subscribe(modalref => {
-                modalref.instance.completed$.subscribe(result => {
-                    if (result) {
-                        step.completed = true;
+        let retSubject = new Subject();
+        let relatedRevision = this.relatedRevisions.find(s => s.id == id);
+        this.backend.getRequest(`common/spiceattachments/module/${this.model.module}/${relatedRevision.id}/byfield/file`).subscribe(
+            fileData => {
+                retSubject.next(fileData.file);
+                    let fileTypeArray = fileData.file_mime_type.toLowerCase().split("/");
+                    // check the application
+                    switch (fileTypeArray[0].trim()) {
+                        case "image":
+                            this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
+                                modalref.instance.imgname = fileData.file_name;
+                                modalref.instance.imgtype = fileData.file_mime_type.toLowerCase();
+                                modalref.instance.imgsrc = 'data:' + fileData.file_mime_type.toLowerCase() + ';base64,' + fileData;
+                            });
+                            break;
+                        case 'text':
+                        case 'audio':
+                        case 'video':
+                            this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                                modalref.instance.name = fileData.file_name;
+                                modalref.instance.type = fileData.file_mime_type.toLowerCase();
+                                modalref.instance.data = atob(fileData.file);
+                            });
+                            break;
+                        case "application":
+                            switch (fileTypeArray[1]) {
+                                case 'pdf':
+                                    this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                                        modalref.instance.name = fileData.file_name;
+                                        modalref.instance.type = fileData.file_mime_type.toLowerCase();
+                                        modalref.instance.data = atob(fileData.file);
+                                    });
+                                    break;
+                                default:
+                                    this.modelattachments.downloadAttachmentForField(this.model.module, relatedRevision.id, 'file');
+                                    break;
+                            }
+                            break;
+                        default:
+                            this.modelattachments.downloadAttachmentForField(this.model.module, relatedRevision.id, 'file');
+                            break;
                     }
-                })
-            });
-    }
-
-    /**
-     * emits when an item is selected and which items are selected
-     */
-    @Output() public selectedItems = new EventEmitter<any>();
-
-    public clickRow(event, item) {
-        this.selectedItems.emit([item]);
-        // console.log(this.selectedItems[item]);
+                retSubject.complete();
+            },
+            err => {
+                retSubject.error(err);
+                retSubject.complete();
+            }
+        );
+        return retSubject;
     }
 
     // Close the modal.
