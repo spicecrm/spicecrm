@@ -852,8 +852,7 @@ class SpiceBeanHandler
 
         foreach ($results['hits']['hits'] as &$hit) {
             if(!$seed = BeanFactory::getBean($elastichandler->getHitModule($hit), $hit['_id'])){
-                LoggerManager::getLogger()->fatal(__CLASS__. 'on line '.__LINE__.': no '.$elastichandler->getHitModule($hit).' found with id='.$hit['_id'].'. Check if bean is indexed properly');
-                LoggerManager::getLogger()->fatal($hit);
+                LoggerManager::getLogger()->fatal('elastic', ['message' => __CLASS__. 'on line '.__LINE__.': no '.$elastichandler->getHitModule($hit).' found with id='.$hit['_id'].'. Check if bean is indexed properly', 'data' => $hit]);
                 continue;
             }
 
@@ -1260,7 +1259,7 @@ class SpiceBeanHandler
         if ($thisBean->load_relationship($linkName)) {
             $relModule = $thisBean->{$linkName}->getRelatedModuleName();
         } else {
-            LoggerManager::getLogger()->fatal("Error trying to load relationship using link name = " . $linkName . " in bean " . $beanModule);
+            LoggerManager::getLogger()->fatal('relationships', "Error trying to load relationship using link name = " . $linkName . " in bean " . $beanModule);
         }
 
         if (isset($thisBean->field_defs[$linkName]['sequence_field'])) {

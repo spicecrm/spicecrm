@@ -764,7 +764,7 @@ class SpiceBean
         }
 
         if (!is_array($dictionary) or !array_key_exists($key, $dictionary)) {
-            LoggerManager::getLogger()->fatal("createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
+            LoggerManager::getLogger()->fatal('dictionary', "createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
             SpiceUtils::displayNotice("meta data absent for table " . $tablename . " keyed to $key ");
         } else {
             if (isset($dictionary[$key]['relationships'])) {
@@ -943,7 +943,7 @@ class SpiceBean
                 return true;
             }
         }
-        LoggerManager::getLogger()->info("SpiceBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
+        LoggerManager::getLogger()->developer('relationships', "SpiceBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
 
         return false;
     }
@@ -1252,7 +1252,7 @@ class SpiceBean
     {
         $key = $this->getObjectName();
         if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
-            LoggerManager::getLogger()->fatal("drop_tables: Metadata for table " . $this->_tablename . " does not exist");
+            LoggerManager::getLogger()->fatal('dictionary', "drop_tables: Metadata for table " . $this->_tablename . " does not exist");
             echo "meta data absent for table " . $this->_tablename . "<br>\n";
         } else {
             if (empty($this->_tablename))
@@ -2636,7 +2636,7 @@ class SpiceBean
             if ($this->load_relationship($name)) {
                 $this->$name->delete($id);
             } else {
-                LoggerManager::getLogger()->fatal("error loading relationship $name");
+                LoggerManager::getLogger()->fatal('relationships', "error loading relationship $name in " . __FILE__);
             }
         }
     }

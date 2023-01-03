@@ -104,14 +104,8 @@ class User extends Person
         $name, $value, $nosession = 0, $category = 'global'
     )
     {
-        // for BC
-        if (func_num_args() > 4) {
-            $user = func_get_arg(4);
-            LoggerManager::getLogger()->deprecated('User::setPreferences() should not be used statically.');
-        } else
-            $user = $this;
 
-        $user->_userPreferenceFocus->setPreference($name, $value, $category);
+        $this->_userPreferenceFocus->setPreference($name, $value, $category);
     }
 
     /**
@@ -125,14 +119,7 @@ class User extends Person
         $category = null
     )
     {
-        // for BC
-        if (func_num_args() > 1) {
-            $user = func_get_arg(1);
-            LoggerManager::getLogger()->deprecated('User::resetPreferences() should not be used statically.');
-        } else
-            $user = $this;
-
-        $user->_userPreferenceFocus->resetPreferences($category);
+        $this->_userPreferenceFocus->resetPreferences($category);
     }
 
     /**
@@ -142,14 +129,7 @@ class User extends Person
      */
     public function savePreferencesToDB()
     {
-        // for BC
-        if (func_num_args() > 0) {
-            $user = func_get_arg(0);
-            LoggerManager::getLogger()->deprecated('User::savePreferencesToDB() should not be used statically.');
-        } else
-            $user = $this;
-
-        $user->_userPreferenceFocus->savePreferencesToDB();
+        $this->_userPreferenceFocus->savePreferencesToDB();
     }
 
     /**
@@ -171,14 +151,8 @@ class User extends Person
      */
     public function getUserDateTimePreferences()
     {
-        // for BC
-        if (func_num_args() > 0) {
-            $user = func_get_arg(0);
-            LoggerManager::getLogger()->deprecated('User::getUserDateTimePreferences() should not be used statically.');
-        } else
-            $user = $this;
 
-        return $user->_userPreferenceFocus->getUserDateTimePreferences();
+        return $this->_userPreferenceFocus->getUserDateTimePreferences();
     }
 
     /**
@@ -193,14 +167,7 @@ class User extends Person
         $category = 'global'
     )
     {
-        // for BC
-        if (func_num_args() > 1) {
-            $user = func_get_arg(1);
-            LoggerManager::getLogger()->deprecated('User::loadPreferences() should not be used statically.');
-        } else
-            $user = $this;
-
-        return $user->_userPreferenceFocus->loadPreferences($category);
+        return $this->_userPreferenceFocus->loadPreferences($category);
     }
 
 
@@ -214,14 +181,7 @@ class User extends Person
         $category = 'global'
     )
     {
-        // for BC
-        if (func_num_args() > 1) {
-            $user = func_get_arg(1);
-            LoggerManager::getLogger()->deprecated('User::loadEnrichedPreferences() should not be used statically.');
-        } else
-            $user = $this;
-
-        return $user->_userPreferenceFocus->loadEnrichedPreferences($category);
+        return $this->_userPreferenceFocus->loadEnrichedPreferences($category);
     }
 
     /**
@@ -473,21 +433,6 @@ class User extends Person
     {
         // jmorais@dri Bug #56269
         parent::fill_in_additional_detail_fields();
-        // ~jmorais@dri
-        global $locale;
-
-        $query = "SELECT u1.first_name, u1.last_name from users  u1, users  u2 where u1.id = u2.reports_to_id AND u2.id = '$this->id' and u1.deleted=0";
-        $result = $this->db->query($query, true, "Error filling in additional detail fields");
-
-        $row = $this->db->fetchByAssoc($result);
-
-        if ($row != null) {
-            $this->reports_to_name = stripslashes($row['first_name'] . ' ' . $row['last_name']);
-        } else {
-            $this->reports_to_name = '';
-        }
-
-        $this->_create_proper_name_field();
 
         if ($this->is_admin) $this->UserType = 'Administrator';
         elseif ($this->portal_only) $this->UserType = 'PortalUser';
@@ -495,19 +440,6 @@ class User extends Person
         else $this->UserType = 'RegularUser';
 
     }
-
-    public function retrieve_user_id(
-        $user_name
-    )
-    {
-        $userFocus = BeanFactory::getBean('Users');
-        $userFocus->retrieve_by_string_fields(['user_name' => $user_name]);
-        if (empty($userFocus->id))
-            return false;
-
-        return $userFocus->id;
-    }
-
 
     /**
      * Is this user a system wide admin
