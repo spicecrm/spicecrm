@@ -224,7 +224,7 @@ class LoggerManager
         }
 
         if(DBManagerFactory::getInstance()) {
-            $res = DBManagerFactory::getInstance()->queryOnly("SELECT level, user_id FROM syslogusers WHERE logstatus = 1");
+            $res = DBManagerFactory::getInstance()->queryOnly("SELECT log_level level, user_id FROM syslogusers WHERE logstatus = 1");
             while ($row = DBManagerFactory::getInstance()->fetchByAssoc($res)) {
                 $this->_levelCategories[$row['level']][$row['user_id']] = true;
             }
