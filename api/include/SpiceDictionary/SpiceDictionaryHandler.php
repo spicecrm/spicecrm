@@ -696,7 +696,7 @@ LEFT JOIN
             $validationvaluesArray[] = array_merge($domainfieldvalidation, ['scope' => 'c']);
         }
 
-        SpiceCache::set('domainfieldvalidationvalues', $cached);
+        SpiceCache::set('domainfieldvalidationvalues', $validationvaluesArray);
 
         return $validationvaluesArray;
     }
