@@ -134,9 +134,6 @@ class SpiceLogger implements LoggerTemplate
         $this->log_dir = $log_dir . (empty($log_dir) ? '' : '/');
         //unset($config);
         $this->_doInitialization();
-        LoggerManager::setLogger('default', SpiceLogger::class);
-
-
     }
 
     static function getTimestamp()
@@ -191,7 +188,7 @@ class SpiceLogger implements LoggerTemplate
     /**
      * see LoggerTemplate::log()
      */
-    public function log($level, $message, $logparams = [])
+    public function log($level, $sublevel, $message, $logparams = [])
     {
         if (!$this->initialized) {
             return;
@@ -199,10 +196,10 @@ class SpiceLogger implements LoggerTemplate
 
         $message = $this->prepareMessage($message);
 
-        $this->logToFile($level, $message);
+        $this->logToFile($level, $sublevel, $message,$logparams);
 
         try {
-            $this->logToSyslogs($level, $message, $logparams);
+            $this->logToSyslogs($level, $sublevel, $message, $logparams);
         } catch (DatabaseException $e) {
             $this->logToFile('fatal', $this->prepareMessage($e->getMessage()));
         }
@@ -235,15 +232,12 @@ class SpiceLogger implements LoggerTemplate
      * @param $level
      * @param $message
      */
-    public function logToFile($level, $message)
+    public function logToFile($level, $sublevel, $message, $logparams = [])
     {
         //lets get the current user id or default to -none- if it is not set yet
-        $userID = '-none-';
-        if (is_object(AuthenticationController::getInstance()->getCurrentUser()) && AuthenticationController::getInstance()->getCurrentUser()->id) {
-            $userID = AuthenticationController::getInstance()->getCurrentUser()->id;
-        }
+        $userID = !empty($logparams['user']) ?: '-none-';
 
-        file_put_contents($this->full_log_file, date(TimeDate::DB_DATETIME_FORMAT) . ' [' . getmypid() . '][' . $userID . '][' . strtoupper($level) . '] ' . $message . "\n", FILE_APPEND);
+        file_put_contents($this->full_log_file, date(TimeDate::DB_DATETIME_FORMAT) . ' [' . getmypid() . '][' . $userID . '][' . strtoupper($level) . '][' . strtoupper($sublevel) . '] ' . $message . "\n", FILE_APPEND);
     }
 
     /**
@@ -254,17 +248,19 @@ class SpiceLogger implements LoggerTemplate
      */
     public function logToSyslogs(
         $level,
+        $sublevel,
         $message,
         $logparams = []
     )
     {
-        //do not log on install!
+        //do not log on install
         if (!SpiceConfig::getInstance()->configExists() || SpiceConfig::getInstance()->installing) return true;
 
         $td = new TimeDate();
         $log = ["id" => SpiceUtils::createGuid(),
             "table_name" => "syslogs",
             "log_level" => $level,
+            "log_sublevel" => $sublevel,
             "pid" => getmypid(),
             "created_by" => (!empty($logparams['user']) ?: '-none-'),
             'microtime' => $this->getTimestamp(),

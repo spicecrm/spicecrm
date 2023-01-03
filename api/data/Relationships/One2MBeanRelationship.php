@@ -166,7 +166,7 @@ class One2MBeanRelationship extends One2MRelationship
             $query = $this->getQuery($link, $params);
             if (empty($query))
             {
-                LoggerManager::getLogger()->fatal("query for {$this->name} was empty when loading from   {$this->lhsLink}\n");
+                LoggerManager::getLogger()->fatal('relationships', "query for {$this->name} was empty when loading from  {$this->lhsLink} in One2MBean");
                 return ["rows" => []];
             }
             $result = $db->query($query);

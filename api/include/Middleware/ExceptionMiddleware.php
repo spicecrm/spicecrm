@@ -93,6 +93,15 @@ class ExceptionMiddleware extends FailureMiddleware
         // todo does it have to be always 500?
         $httpCode = $exception->getCode() ?: 500;
 
+        // try to log this
+        LoggerManager::getLogger()->fatal(print_r([
+            'code'    => $exception->getCode(),
+            'message' => $exception->getMessage(),
+            'line'    => $exception->getLine(),
+            'file'    => $exception->getFile(),
+            'trace'   => $exception->getTraceAsString(),
+        ], true));
+
         return $this->generateResponse($responseData, $httpCode);
     }
 }

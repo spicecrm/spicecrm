@@ -215,14 +215,15 @@ class SpiceFTSUtils
         } else {
             $moduleProperties = $db->fetchByAssoc($db->query("SELECT settings FROM sysfts WHERE module = '$module'"));
             if ($moduleProperties) {
+                // add to cache
                 $cached[$module]['settings'] = json_decode(html_entity_decode($moduleProperties['settings']), true);
+                SpiceCache::set('ftsBeanIndexSettings', $cached);
                 return json_decode(html_entity_decode($moduleProperties['settings']), true);
             } else {
                 $cached[$module]['settings'] = false;
             }
         }
 
-        SpiceCache::set('ftsBeanIndexSettings', $cached);
         return false;
     }
 
@@ -287,9 +288,13 @@ class SpiceFTSUtils
 
     static function getActivityModules($scope = 'Activities')
     {
+        // check if we have cached values
+        $cached = SpiceCache::get('ftsActivityModules');
+        if($cached) return $cached;
+
+        // build the data
         $db = DBManagerFactory::getInstance();
         $modules = [];
-
         $moduleProperties = $db->query("SELECT * FROM sysfts");
         while ($moduleProperty = $db->fetchByAssoc($moduleProperties)) {
             $moduleSettings = json_decode(html_entity_decode($moduleProperty['settings']), true);
@@ -304,11 +309,18 @@ class SpiceFTSUtils
             }
         }
 
+        // set the cache
+        SpiceCache::set('ftsActivityModules',$modules);
+
         return $modules;
     }
 
     static function getTimelineModules()
     {
+        // check if we have cached values
+        $cached = SpiceCache::get('ftsTimelineModules');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $modules = [];
 
@@ -326,11 +338,18 @@ class SpiceFTSUtils
             }
         }
 
+        // set the cache
+        SpiceCache::set('ftsActivityModules',$modules);
+
         return $modules;
     }
 
     static function getCalendarModules()
     {
+        // check if we have cached values
+        $cached = SpiceCache::get('ftsCalendarModules');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $modules = [];
 
@@ -344,6 +363,10 @@ class SpiceFTSUtils
                 ];
             }
         }
+
+
+        // set the cache
+        SpiceCache::set('ftsCalendarModules',$modules);
 
         return $modules;
     }

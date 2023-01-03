@@ -67,7 +67,7 @@ class EmailAddressRelationship extends M2MRelationship
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
         {
             $lhsClass = get_class($lhs);
-            LoggerManager::getLogger()->fatal("could not load LHS $lhsLinkName in $lhsClass");
+            LoggerManager::getLogger()->fatal('relationships', "could not load LHS $lhsLinkName in $lhsClass in EmailAddressRelationship");
             return false;
         }
 
@@ -121,16 +121,16 @@ class EmailAddressRelationship extends M2MRelationship
         $lhsLinkName = $this->lhsLink;
 
         if (!($lhs instanceof SpiceBean)) {
-            LoggerManager::getLogger()->fatal("LHS is not a SpiceBean object");
+            LoggerManager::getLogger()->fatal('relationships', "LHS is not a SpiceBean object in EmailAddressRelationship");
             return false;
         }
         if (!($rhs instanceof SpiceBean)) {
-            LoggerManager::getLogger()->fatal("RHS is not a SpiceBean object");
+            LoggerManager::getLogger()->fatal('relationships', "RHS is not a SpiceBean object in EmailAddressRelationship");
             return false;
         }
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
         {
-            LoggerManager::getLogger()->fatal("could not load LHS $lhsLinkName");
+            LoggerManager::getLogger()->fatal('relationships', "could not load LHS $lhsLinkName in EmailAddressRelationship");
             return false;
         }
 

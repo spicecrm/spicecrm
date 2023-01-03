@@ -89,7 +89,7 @@ class MailboxesController
                 $email->status = $event['event'];
                 $email->save();
             } catch (Exception $e) {
-                LoggerManager::getLogger()->info($e->getMessage());
+                LoggerManager::getLogger()->fatal('sendgrid','handle Sendgrid event error: ' . $e->getMessage());
             }
 
             /*switch ($event['event']) {

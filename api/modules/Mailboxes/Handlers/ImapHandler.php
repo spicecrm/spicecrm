@@ -474,11 +474,11 @@ class ImapHandler extends TransportHandler
             $response['result'] = true;
         } catch (Swift_TransportException $e) {
             $response['errors'] = $e->getMessage();
-            LoggerManager::getLogger()->info($e->getMessage());
+            LoggerManager::getLogger()->debug('imap', $e->getMessage());
             $response['result'] = false;
         } catch (Exception $e) {
             $response['errors'] = $e->getMessage();
-            LoggerManager::getLogger()->info($e->getMessage());
+            LoggerManager::getLogger()->debug('imap', $e->getMessage());
             $response['result'] = false;
         }
 
