@@ -259,7 +259,7 @@ class CampaignTask extends SpiceBean
             }
         }
 
-        return $testCount > 0 ? ['status' => 'success'] : ['status' => 'error', 'msg' => 'no targets found'] ;
+        return $testCount > 0 ? ['status' => 'success'] : ['status' => 'error'] ;
     }
 
     /**
