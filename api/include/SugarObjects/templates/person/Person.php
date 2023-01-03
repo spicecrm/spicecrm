@@ -307,11 +307,17 @@ class Person extends Basic
      * fill in the email1 field called by fill_in_additional_detail_fields
      */
     private function fillInEmail1Field() {
+        $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}'  AND ear.primary_address=1 AND ear.deleted = 1 AND ear.email_address_id = ea.id AND ea.deleted = 0");
+        if($emailAddress){
+            $this->email1 = $emailAddress['email_address'];
+        }
+        /* performance increase
         $emailAddresses = $this->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $emailAddress) {
             if ($emailAddress->primary_address != 1) continue;
             $this->email1 = $emailAddress->email_address;
             break;
         }
+        */
     }
 }
