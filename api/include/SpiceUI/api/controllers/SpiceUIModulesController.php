@@ -24,19 +24,11 @@ class SpiceUIModulesController
         if(!is_array($modInvisList)) $modInvisList = [];
 
         // select from sysmodules
-        $dbresult = $db->query("SELECT * FROM sysmodules");
-        while ($m = $db->fetchByAssoc($dbresult)) {
+        $modules = SpiceModules::getInstance()->modules;
+        foreach (SpiceModules::getInstance()->modules as $module => $moduleDetails) {
             // check if we have the module or if it has been filtered out
-            if (!$m['acl'] || ( isset( $current_user ) and $current_user->is_admin ) || $m['module'] == 'Home' || array_search($m['module'], SpiceModules::getInstance()->getModuleList()) !== false || array_search($m['module'], $modInvisList) !== false)
-                $modules[$m['module']] = $m;
-        }
-
-        // select from custom modules and also allow override
-        $dbresult = $db->query("SELECT * FROM syscustommodules");
-        while ($m = $db->fetchByAssoc($dbresult)) {
-            // check if we have the module or if it has been filtered out
-            if (!$m['acl'] || ( isset( $current_user ) and $current_user->is_admin  ) || $m['module'] == 'Home' || array_search($m['module'], SpiceModules::getInstance()->getModuleList()) !== false || array_search($m['module'], $modInvisList) !== false)
-                $modules[$m['module']] = $m;
+            if (!$moduleDetails['acl'] || ( isset( $current_user ) and $current_user->is_admin ) || $module == 'Home' || array_search($module, $modInvisList) !== false)
+                $modules[$module] = $moduleDetails;
         }
 
         return $modules;
