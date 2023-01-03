@@ -60,7 +60,7 @@ class SpiceModules
         $cached = SpiceCache::get('spiceModules');
         if (!$cached || $forceReload) {
             $this->modules = [];
-            $columns = ['id', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id'];
+            $columns = ['id', 'acl', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id'];
             $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns)." FROM sysmodules UNION SELECT ".implode(', ', $columns)." FROM syscustommodules");
             while ($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)) {
                 $this->moduleList[$module['module']] = $module['module'];
@@ -151,6 +151,16 @@ class SpiceModules
     public function getModuleDetails(string $modulename): ?array {
 
         return $this->modules[$modulename] ?: [];
+    }
+
+    /**
+     * check if a module exists
+     *
+     * @param string $modulename
+     * @return bool|null
+     */
+    public function moudleExists(string $modulename): ?bool{
+        return isset($this->modules[$modulename]);
     }
 
     /**
