@@ -2994,14 +2994,6 @@ class SpiceBean
         return $invalidFields ? $invalidFields : true;
     }
 
-    protected static function logDeprecated()
-    {
-        LoggerManager::getLogger()->deprecated(
-            get_class() . " Deprecated. " .
-            LoggerManager::formatBackTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4))
-        );
-    }
-
     /**
      * returns the frontend url
      * ToDo: move to other general class
