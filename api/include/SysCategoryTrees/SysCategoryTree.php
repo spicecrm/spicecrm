@@ -3,25 +3,31 @@
 namespace SpiceCRM\includes\SysCategoryTrees;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 
-class SysCategoryTree
+class SysCategoryTree extends SpiceSingleton
 {
-    static function getTreeLinksByModule($module){
-        // get the db
+    private $initialized = false;
+
+    private $categoryTreeLinks;
+
+    private function initialize(){
         $db = DBManagerFactory::getInstance();
+        $treeLinks = $db->query("SELECT module_id, syscategorytree_id, module_field, module_field_c1, module_field_c2, module_field_c3, module_field_c4 FROM syscategorytreelinks");
+        while($treeLink = $db->fetchByAssoc($treeLinks)){
+            $this->categoryTreeLinks[$treeLink['module_id']][] = $treeLink;
+        }
+        $this->initialized = true;
+    }
+
+    public function getTreeLinksByModule($module){
+        if(!$this->initialized) $this->initialize();
 
         // getthe module id
         $moduleId = SpiceModules::getInstance()->getModuleId($module);
 
-        // get the tree links
-        $treelinks = $db->query("SELECT syscategorytree_id, module_field, module_field_c1, module_field_c2, module_field_c3, module_field_c4 FROM syscategorytreelinks WHERE syscategorytreelinks.module_id = '$moduleId'");
+        return isset($this->categoryTreeLinks[$moduleId]) ? array_values($this->categoryTreeLinks[$moduleId]) : [];
 
-        // build the response
-        $response = [];
-        while ( $row = $db->fetchByAssoc($treelinks)) {
-            $response[] = $row;
-        }
-        return $response;
     }
 }
