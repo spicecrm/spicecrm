@@ -2691,7 +2691,7 @@ class SpiceBean
      * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
      * @return object Instance of this bean with fetched data.
      */
-    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true)
+    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true, $relationships = true)
     {
         $where_clause = $this->get_where($fields_array, $deleted);
         $query = "SELECT $this->_tablename.id" . " FROM $this->_tablename ";
@@ -2711,7 +2711,7 @@ class SpiceBean
         }
         // Removed getRowCount-if-clause earlier and insert duplicates_found here as it seems that we have found something
         // if we didn't return null in the previous clause.
-        return $this->retrieve($row['id'], $encode, $deleted);
+        return $this->retrieve($row['id'], $encode, $deleted, $relationships);
     }
 
     /**

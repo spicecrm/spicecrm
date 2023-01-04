@@ -36,7 +36,7 @@ class SpiceCRMAuthenticate implements AuthenticatorI
                 throw new UnauthorizedException("Invalid authentication method", 6);
         }
 
-        $username = BeanFactory::getBean('Users', $userId)->user_name;
+        $username = BeanFactory::getBean('Users', $userId, ['relationships' => false])->user_name;
 
         return new AuthResponse($username);
     }
