@@ -719,7 +719,7 @@ class User extends Person
      */
     public function findByUserName($name)
     {
-        return $this->retrieve_by_string_fields(['user_name' => $name]);
+        return $this->retrieve_by_string_fields(['user_name' => $name], true, true, false);
     }
 
     /**
