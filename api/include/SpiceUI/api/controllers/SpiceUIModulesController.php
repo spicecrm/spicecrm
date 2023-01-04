@@ -11,6 +11,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysCategoryTrees\SysCategoryTree;
+use SpiceCRM\includes\SysModuleLists\SysModuleListManager;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class SpiceUIModulesController
@@ -85,13 +86,6 @@ class SpiceUIModulesController
 
             foreach ($modules as $module) {
 
-                // load custom lists for the module
-                $listArray = [];
-                $lists = $db->query("SELECT * FROM sysmodulelists WHERE module='" . $module['module'] . "' AND (created_by_id = '$current_user->id' OR global = 1)");
-                while ($list = $db->fetchByAssoc($lists)) {
-                    $listArray[] = $list;
-                }
-
                 // get acls for the module
                 $aclArray = [];
                 if($module['module'] == 'LandingPages'){
@@ -123,7 +117,7 @@ class SpiceUIModulesController
                         'workflow' => $module['workflow'] ? true : false,
                         'duplicatecheck' => $module['duplicatecheck'],
                         'favorites' => $module['favorites'],
-                        'listtypes' => $listArray,
+                        'listtypes' => SysModuleListManager::getInstance()->getListsForModule($module['module']),
                         'acl' => $aclArray,
                         'acl_fieldcontrol' => SpiceACL::getInstance()->getFieldAccess($module['module'], 'create'),
                         'acl_multipleusers' => $module['acl_multipleusers'],
