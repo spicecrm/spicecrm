@@ -43,7 +43,7 @@ SpiceDictionaryHandler::loadMetaDataFiles();
 UploadStream::register();
 SpiceModules::getInstance()->loadModules();
 //SpiceDictionaryHandler::loadMetaDataDefinitions();
-SpiceDictionaryHandler::loadCachedVardefs();
+SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 //$system_config = (new Administration())->retrieveSettings();
 
 /**

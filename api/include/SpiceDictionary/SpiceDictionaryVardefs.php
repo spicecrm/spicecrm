@@ -58,6 +58,13 @@ class SpiceDictionaryVardefs  {
 
     public final function __construct()
     {
+
+        $cached = SpiceCache::get('dictionaryfields');
+        if($cached) {
+            $this->dictionary = $cached;
+            return;
+        }
+
         $db = DBManagerFactory::getInstance();
         $q = "SELECT sysfields.sysdictionarydefinition_id sysdictionaryid, sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, sysfields.sysdictionarytablecontenttype, sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition FROM sysdictionaryfields sysfields";
         $res = $db->query($q);
@@ -70,6 +77,9 @@ class SpiceDictionaryVardefs  {
             $this->dictionary[$row['sysdictionaryname']]['module'] = SpiceModules::getInstance()->getModuleName($row['sysdictionaryname']);
             $this->dictionary[$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
         }
+
+        // write the cache
+        SpiceCache::set('dictionaryfields', $this->dictionary);
     }
 
     private function __clone()
@@ -370,13 +380,6 @@ class SpiceDictionaryVardefs  {
     public static function loadVardefsForModule($module, $object){
         $vardefs = [];
 
-        $cached = SpiceCache::get('dictionaries');
-
-        if($cached && !empty($cached[$object])){
-            $vardefs[$object] =  $cached[$object];
-            return $vardefs;
-        }
-
         // now load from modules
         SpiceDictionaryHandler::loadModuleFiles($module);
 
@@ -399,10 +402,6 @@ class SpiceDictionaryVardefs  {
         }
         $vardefs[$object]['dictionaryname'] = $object;
         $vardefs[$object]['type'] = 'module';
-
-        // set to Cache
-        $cached[$object] = $vardefs[$object];
-        SpiceCache::set('dictionaries', $cached);
 
         return $vardefs;
     }
@@ -613,21 +612,6 @@ class SpiceDictionaryVardefs  {
     }
 
 
-    /**
-     * get dictionary array for passed module from cache table
-     *
-     * @param string $module
-     * @return array|bool
-     */
-    public static function loadDictionaryModuleCacheFromDb($module) {
-        LoggerManager::getLogger()->debug('loadDictionaryModuleCacheFromDb '.$module);
-        $dictionaryId = self::getDictionaryIdByModule($module);
-        return self::getDictionaryCacheFromDb($dictionaryId);
-    }
-    public static function loadDictionaryCacheFromDb($object, $forceReload = false) {
-        LoggerManager::getLogger()->debug('loadDictionaryModuleCacheFromDb '.$object);
-        return self::getDictionaryCacheFromDbByObject($object, $forceReload);
-    }
     public static function loadDictionariesCacheFromDb($forceReload = false) {
         LoggerManager::getLogger()->debug('loadDictionariesCacheFromDb ');
         return self::getDictionariesCacheFromDb($forceReload);
@@ -1849,7 +1833,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             return [];
         }
 
-        $cached = SpiceCache::get('dictionaries');
+        $cached = SpiceCache::get('dictionaryfields');
 
         // check if dictionary is present in session and return right away
         if(!$forceReload && $cached &&  isset($cached[$object])){
@@ -1880,10 +1864,17 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             }
         }
 
+
         // load indices
         if (!empty($dict['fields'])) {
             $dict['indices'] = self::getDictionaryIndexCacheFromDb($dict['id']);
         }
+
+        // enrich and write the cache
+        if(!$cached) $cached = [];
+        $cached[$object] = $dict;
+        SpiceCache::set('dictionaryfields', $cached);
+
         return $dict;
     }
 
