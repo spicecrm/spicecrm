@@ -128,7 +128,7 @@ class SpiceFTSUtils
         if (SpiceConfig::getInstance()->installing) return false;
 
         $cached = SpiceCache::get('ftsBeanIndexProperties');
-        if (!$overrideCache && $cached && $cached[$module]) {
+        if (!$overrideCache && $cached && isset($cached[$module])) {
             return $cached[$module];
         } else {
 
@@ -163,6 +163,10 @@ class SpiceFTSUtils
                 SpiceCache::set('ftsBeanIndexProperties', $cached);
 
                 return $modulePropertiesarray;
+            } else {
+                if(!$cached) $cached = [];
+                $cached[$module] = false;
+                SpiceCache::set('ftsBeanIndexProperties', $cached);
             }
 
             // $_SESSION['SpiceFTS']['indexes'][$module]['properties'] = false;
@@ -221,6 +225,7 @@ class SpiceFTSUtils
                 return json_decode(html_entity_decode($moduleProperties['settings']), true);
             } else {
                 $cached[$module]['settings'] = false;
+                SpiceCache::set('ftsBeanIndexSettings', $cached);
             }
         }
 

@@ -63,9 +63,7 @@ try {
     // add the developer middleware
     $app->add(DeveloperMiddleware::class);
 
-    // load the core dictionary files
-//    SpiceDictionaryHandler::loadMetaDataFiles();
-
+    // authenticate
     AuthenticationController::getInstance()->authenticate();
 
     // register the upload stream handler
@@ -75,9 +73,7 @@ try {
     SpiceModules::getInstance()->loadModules();
 
     // load the metadata from the database
-//    SpiceDictionaryHandler::loadMetaDataDefinitions();
-    // load
-    SpiceDictionaryHandler::loadCachedVardefs();
+    SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 
     if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);
