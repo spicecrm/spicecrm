@@ -38,26 +38,15 @@ class SpiceDictionaryHandler extends SpiceSingleton
         }
     }
 
-    /**
-     *
-     * loads the dictionary Definitions of type metadata from the database
-     */
-    public static function loadMetaDataDefinitions() {
-        SpiceDictionaryHandler::loadMetaDataFiles();
-
-        if(SpiceDictionaryVardefs::isDbManaged()){
-            SpiceDictionaryVardefs::loadDictionaries();
-        }
-    }
 
     /**
      * load vardefs cached in sysdictionaryfields & relationships
      * @return void
      */
-    public static function loadCachedVardefs($forceReload = false){
+    public function loadCachedVardefs($forceReload = false){
+
         if(SpiceDictionaryVardefs::isDbManaged()){
             SpiceDictionaryVardefs::loadDictionariesCacheFromDb($forceReload);
-            // SpiceDictionaryVardefs::loadRelationshipsCacheFromDb($forceReload);
         }
     }
 

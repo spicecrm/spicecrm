@@ -342,41 +342,17 @@ class SpiceBean
      */
     public function initialize_bean()
     {
-//        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        static $loaded_defs = [];
         $this->db = DBManagerFactory::getInstance();
         $dictHandler = SpiceDictionaryHandler::getInstance();
-//        if (empty($this->module_name))
-//            $this->module_name = $this->_module;
-        if ((false == $this->disable_vardefs && empty($loaded_defs[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
+
+        if ((false == $this->disable_vardefs && empty($dictHandler->dictionary[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
             VardefManager::loadVardef($this->_module, $this->_objectname);
 
             // logic hook to create vardefs .. if any additonal fields are required
-
             // ToDo - check why we need this here
             $this->call_custom_logic('create_vardefs');
 
-            // build $this->column_fields from the field_defs if they exist
-//            if (!empty($dictHandler->dictionary[$this->_objectname]['fields'])) {
-//                foreach ($dictHandler->dictionary[$this->_objectname]['fields'] as $key => $value_array) {
-//                    $column_fields[] = $key;
-//                    if (!empty($value_array['required']) && !empty($value_array['name'])) {
-//                        $this->required_fields[$value_array['name']] = 1;
-//                    }
-//                }
-//                $this->column_fields = $column_fields;
-//            }
-
-            //load up field_arrays from CacheHandler;
-//            if (empty($this->list_fields))
-//                $this->list_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'list_fields');
-//            if (empty($this->column_fields))
-//                $this->column_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'column_fields');
-//            if (empty($this->required_fields))
-//                $this->required_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'required_fields');
-
             if (isset($dictHandler->dictionary[$this->_objectname]) && !$this->disable_vardefs) {
-//                $this->field_name_map = $dictHandler->dictionary[$this->_objectname]['fields'];
                 $this->field_defs = $dictHandler->dictionary[$this->_objectname]['fields'];
 
                 if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
@@ -385,8 +361,7 @@ class SpiceBean
             }
 
         } else {
-//            $this->field_name_map = &$loaded_defs[$this->_objectname]['field_name_map'];
-            $this->field_defs = &$loaded_defs[$this->_objectname]['field_defs'];
+            $this->field_defs = &$dictHandler->dictionary[$this->_objectname]['fields'];
 
             if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
                 $this->optimistic_lock = true;
