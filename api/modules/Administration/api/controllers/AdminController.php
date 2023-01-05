@@ -31,13 +31,14 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use function DI\string;
 
 class AdminController
 {
 
     /**
      * post request that expects the username and password in the body
-     * executes a git pull cpmmand with the params for username and password on the shell
+     * executes a git pull command with the params for username and password on the shell
      *
      * @param Request $req
      * @param Response $res
@@ -49,8 +50,11 @@ class AdminController
         $postBody = $req->getParsedBody();
 
         // extract username and password from the body
+        $username = str_replace('@','%',$postBody['username']);
 
         // execute git pull
+        $gitPullLog = '';
+
         // get the remote url
         $output = '';
         exec("git config --get remote.origin.url", $output);
@@ -59,11 +63,13 @@ class AdminController
 
 
         // if success
-        $remoteUrl = str_replace('//', '//' . $postBody['username'] . ':' . $postBody['password'] . '@');
-        exec("git pull '$remoteUrl'", $output);
+        $remoteUrl = str_replace('//', '//' . $username . ':' . $postBody['password'] . '@', $output);
+        exec("git pull $remoteUrl[0]", $gitPullLog);
 
-        return $res->withJson(['success' => true, 'output' => $output]);
+        return $res->withJson(['success' => true, 'output' => $gitPullLog]);
     }
+
+
 
     /**
      * resets the cache
