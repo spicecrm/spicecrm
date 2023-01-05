@@ -415,7 +415,7 @@ class OCI8Manager extends DBManager
         $this->query_time = microtime(true);
         $this->lastQuery = $sql;
 
-        $this->log->sql('EXECUTING Query: ' . $sql);
+        if($this->enablelog) $this->log->sql('EXECUTING Query: ' . $sql);
 
         $stmt = $suppress ? @oci_parse($this->database, $sql) : oci_parse($this->database, $sql);
         $exec_result = $suppress ? @oci_execute($stmt, $this->transactional ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS) : oci_execute($stmt, $this->transactional ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS);
@@ -1641,10 +1641,10 @@ class OCI8Manager extends DBManager
             $sql .= " RETURNING " . implode(",", array_keys($lob_fields)) . ' INTO ' . implode(",", array_values($lob_fields));
         }
 
-        $this->log->sql("Oracle Execute: $sql");
+        if($this->enablelog) $this->log->sql("Oracle Execute: $sql");
         $stmt = oci_parse($this->database, $sql);
         if ($this->checkError("Update parse failed: $sql", false)) {
-            $this->log->sql("Oracle Execute ERROR RAISED !!!");
+            if($this->enablelog) $this->log->sql("Oracle Execute ERROR RAISED !!!");
             return false;
         }
 
@@ -1675,9 +1675,9 @@ class OCI8Manager extends DBManager
                     // save the actual value stored inside the orcale variable reference by reassigning it
                     // because we returned the values before into heap, we can now overwrite them and did a backdoor to the 1k signs cap
                     if ($lob->save($lob_data[$field])) {
-                        $this->log->sql('oci8lob', "saved LOB content of " . $field . " directly: " . $lob_data[$field]);
+                        if($this->enablelog) $this->log->sql('oci8lob', "saved LOB content of " . $field . " directly: " . $lob_data[$field]);
                     } else {
-                        $this->log->sql('oci8lob', "not saved LOB content of " . $field . " directly: " . $lob_data[$field]);
+                        if($this->enablelog) $this->log->sql('oci8lob', "not saved LOB content of " . $field . " directly: " . $lob_data[$field]);
                     }
                 }
             }
