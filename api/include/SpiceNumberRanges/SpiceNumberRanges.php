@@ -25,7 +25,15 @@ class SpiceNumberRanges
     {
         $db = DBManagerFactory::getInstance('numberrange');
         $db->transactionStart();
-        $numberRange = $db->fetchByAssoc($db->query(sprintf("SELECT * FROM sysnumberranges WHERE id = '%s' FOR UPDATE", $db->quote($range))));
+        switch($db->dbType){
+            case 'oci8':
+                $numberRange = $db->fetchByAssoc($db->query(sprintf("SELECT * FROM sysnumberranges WHERE id = '%s' FOR UPDATE WAIT 5", $db->quote($range))));
+                break;
+            default:
+                $numberRange = $db->fetchByAssoc($db->query(sprintf("SELECT * FROM sysnumberranges WHERE id = '%s' FOR UPDATE", $db->quote($range))));
+                break;
+        }
+
         if (!$numberRange) {
             LoggerManager::getLogger()->error('Number range (ID: ' . $range . ' not found');
             $db->transactionRollback();
@@ -76,7 +84,16 @@ class SpiceNumberRanges
     {
         $db = DBManagerFactory::getInstance('numberrange');
         $db->transactionStart();
-        $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field' AND sysnumberrangeallocation.valid_from <= '".TimeDate::getInstance()->nowDbDate()."' AND sysnumberrangeallocation.valid_to >= '".TimeDate::getInstance()->nowDbDate()."' FOR UPDATE"));
+
+        switch($db->dbType){
+            case 'oci8':
+                $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field' AND sysnumberrangeallocation.valid_from <= '".TimeDate::getInstance()->nowDbDate()."' AND sysnumberrangeallocation.valid_to >= '".TimeDate::getInstance()->nowDbDate()."' FOR UPDATE WAIT 5"));
+                break;
+            default:
+                $numberRange = $db->fetchByAssoc($db->query("SELECT sysnumberranges.* FROM sysnumberranges, sysnumberrangeallocation WHERE sysnumberranges.id = sysnumberrangeallocation.numberrange AND sysnumberrangeallocation.module = '$module' AND sysnumberrangeallocation.field = '$field' AND sysnumberrangeallocation.valid_from <= '".TimeDate::getInstance()->nowDbDate()."' AND sysnumberrangeallocation.valid_to >= '".TimeDate::getInstance()->nowDbDate()."' FOR UPDATE"));
+                break;
+        }
+
         if (!$numberRange) {
             $db->transactionRollback();
             DBManagerFactory::disconnectInstance('numberrange');
