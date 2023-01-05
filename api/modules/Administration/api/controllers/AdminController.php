@@ -49,8 +49,12 @@ class AdminController
         // get the body
         $postBody = $req->getParsedBody();
 
-        // extract username and password from the body
+        // extract username and password or token from the body
         $username = str_replace('@','%',$postBody['username']);
+        if (empty($postBody['password'])){
+            $password = $postBody['token'];
+        } else
+            $password = $postBody['password'];
 
         // execute git pull
         $gitPullLog = '';
@@ -63,7 +67,10 @@ class AdminController
 
 
         // if success
-        $remoteUrl = str_replace('//', '//' . $username . ':' . $postBody['password'] . '@', $output);
+        if (empty($postBody['password'])) {
+            $remoteUrl = str_replace('//', '//' . $password . '@', $output);
+        } else
+            $remoteUrl = str_replace('//', '//' . $username . ':' . $password . '@', $output);
         exec("git pull $remoteUrl[0]", $gitPullLog);
 
         return $res->withJson(['success' => true, 'output' => $gitPullLog]);
