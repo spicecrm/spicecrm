@@ -1255,7 +1255,7 @@ class SpiceFTSHandler
 
                     $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs);
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
-                        $seed = BeanFactory::getBean($module, $hit['_id']);
+                        $seed = BeanFactory::getBean($module, $hit['_id'], ['forceRetrieve' => true]);
 
                         // if we do not find the record .. do not return it
                         if (!$seed) continue;
@@ -1306,7 +1306,8 @@ class SpiceFTSHandler
                 }
 
                 foreach ($searchresults[$module]['hits'] as $index => &$hit) {
-                    $seed = BeanFactory::getBean($module, $hit['_id']);
+                    // force retrieval since we might have the record without relationships cached
+                    $seed = BeanFactory::getBean($module, $hit['_id'], ['forceRetrieve' => true]);
 
                     // if we do not find the record .. do not return it
                     if (!$seed) {
