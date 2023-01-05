@@ -380,10 +380,6 @@ class OCI8Manager extends DBManager
 
     public function fromConvert($string, $type)
     {
-        // YYYY-MM-DD HH:MM:SS
-        // ToDo: fix this so to check if we really have an OCILob
-        if(!is_string($string)) return $string->load();
-
         switch ($type) {
             case 'date':
                 $tmp = explode(' ', $string);
@@ -835,8 +831,9 @@ class OCI8Manager extends DBManager
             $new_row = [];
 
             foreach ($row as $k => $v) {
-                if (is_object($v) && $v->size() > 0) {
-                    $v = $v->read($v->size());
+                // if we have an object it is an OCIlob
+                if (is_object($v)) {
+                    $v = $v->load();
                 }
                 $new_row[strtolower($k)] = $v;
             }
