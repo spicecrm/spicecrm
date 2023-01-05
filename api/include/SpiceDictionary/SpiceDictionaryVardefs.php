@@ -1723,7 +1723,12 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                     $sqlInserts[] = "(" . implode(",", $insertParams) . ")";
                 }
             }
-            $sqls[] = "INSERT INTO sysdictionaryindices (" . implode(', ', $insertColumns) . ") VALUES ".implode(', ', $sqlInserts).";";
+
+            foreach($sqlInserts as $sqlInsert){
+                $sqls[] = "INSERT INTO sysdictionaryindices (" . implode(', ', $insertColumns) . ") VALUES $sqlInsert";
+            }
+
+            // $sqls[] = "INSERT INTO sysdictionaryindices (" . implode(', ', $insertColumns) . ") VALUES ".implode(', ', $sqlInserts).";";
         }
 
         // process slqs
