@@ -380,6 +380,8 @@ class OCI8Manager extends DBManager
 
     public function fromConvert($string, $type)
     {
+        if(!is_string($string)) return $string;
+
         // YYYY-MM-DD HH:MM:SS
         $tmp = explode(' ', $string);
         switch ($type) {
