@@ -380,12 +380,12 @@ class OCI8Manager extends DBManager
 
     public function fromConvert($string, $type)
     {
-        // YYYY-MM-DD HH:MM:SS
-        $tmp = explode(' ', $string);
         switch ($type) {
             case 'date':
+                $tmp = explode(' ', $string);
                 return $tmp[0];
             case 'time':
+                $tmp = explode(' ', $string);
                 return $tmp[1];
         }
 
@@ -831,8 +831,9 @@ class OCI8Manager extends DBManager
             $new_row = [];
 
             foreach ($row as $k => $v) {
+                // if we have an object it is an OCIlob
                 if (is_object($v)) {
-                    $v = $v->read($v->size());
+                    $v = $v->load();
                 }
                 $new_row[strtolower($k)] = $v;
             }
@@ -1634,7 +1635,7 @@ class OCI8Manager extends DBManager
             return false;
         }
 
-        if (count($lob_fields) > 0) {
+        if (is_array($lob_fields) && count($lob_fields) > 0) {
             // perform the sql and return the wanted column into an oracle variable represented by ":" in order to use it later on
             $sql .= " RETURNING " . implode(",", array_keys($lob_fields)) . ' INTO ' . implode(",", array_values($lob_fields));
         }
@@ -1647,7 +1648,7 @@ class OCI8Manager extends DBManager
         }
 
         $lobs = [];
-        if (count($lob_fields) > 0) {
+        if (is_array($lob_fields) && count($lob_fields) > 0) {
             foreach ($lob_fields as $field => $descriptor) {
                 if (isset($lob_dataType[$field])) {
                     $newlob = oci_new_descriptor($this->database, OCI_DTYPE_LOB);

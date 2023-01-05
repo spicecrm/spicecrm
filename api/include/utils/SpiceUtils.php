@@ -972,7 +972,7 @@ class SpiceUtils
         }
 
         if (!empty($params['percentage']) && $params['percentage']) {
-            $amount .= $app_strings['LBL_PERCENTAGE_SYMBOL'];
+            $amount .= '%';
         }
         return $amount;
 
