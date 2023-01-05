@@ -1,7 +1,7 @@
 <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse slds-border--right">
     <ng-container *ngIf="!administration.minimized">
         <div class="slds-p-horizontal--xx-small slds-p-vertical--small slds-border--bottom slds-grid slds-grid--vertical-align-center">
-            <div class="slds-p-horizontal--x-small">
+            <div class="slds-p-horizontal--xx-small">
                 <button class="slds-button slds-button_icon"  (click)="administration.navigateHome()" tabindex="-1">
                     <system-button-icon icon="home"></system-button-icon>
                 </button>
@@ -15,8 +15,8 @@
                     </button>
                 </div>
             </div>
-            <div class="slds-p-horizontal--x-small" *ngIf="administration.opened_block">
-                <button class="slds-button slds-button_icon"  (click)="administration.toggleMinimized()" tabindex="-1">
+            <div class="slds-p-horizontal--xx-small">
+                <button class="slds-button slds-button_icon" [disabled]="!administration.opened_block" (click)="administration.toggleMinimized()" tabindex="-1">
                     <system-button-icon icon="left"></system-button-icon>
                 </button>
             </div>
