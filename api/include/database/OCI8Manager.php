@@ -831,7 +831,7 @@ class OCI8Manager extends DBManager
             $new_row = [];
 
             foreach ($row as $k => $v) {
-                if (is_object($v)) {
+                if (is_object($v) && $v->size() > 0) {
                     $v = $v->read($v->size());
                 }
                 $new_row[strtolower($k)] = $v;
