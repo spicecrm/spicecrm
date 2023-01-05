@@ -3,18 +3,38 @@
         <system-label label="LBL_PULL_FROM_REPOSITORY"></system-label>
     </system-modal-header>
     <system-modal-content>
-            <div class="slds-grid slds-grid--vertical-align-center">
-                <div class="slds-form-element__control slds-col">
-                    <label class="slds-form-element__label"><system-label label="LBL_USERNAME"></system-label></label>
-                    <system-input-text [(ngModel)]="loginDetails.username" ></system-input-text>
-                </div>
-                <div class="slds-form-element__control slds-col">
-                    <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_PASSWORD"></system-label></label>
-                    <system-input-password [(ngModel)]="loginDetails.password"></system-input-password>
-                </div>
-            </div>
         <div class="slds-form-element__control">
-            <div style="height:250px" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small"  ><p *ngFor="let d of data">{{d}}</p></div>
+            <system-input-radio-button-group [(ngModel)]="loginDetails.loginOption" [inputOptions]="loginFormChosen">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_LOGIN"></system-label>
+                </label>
+            </system-input-radio-button-group>
+        </div>
+        <div class="slds-grid slds-grid--vertical-align-center" *ngIf="loginDetails.loginOption == 'token'">
+            <div class="slds-form-element__control slds-col">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_TOKEN"></system-label>
+                </label>
+                <system-input-password [(ngModel)]="loginDetails.token"></system-input-password>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid--vertical-align-center" *ngIf="loginDetails.loginOption == 'username'">
+            <div class="slds-form-element__control slds-col">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_USERNAME"></system-label>
+                </label>
+                <system-input-text [(ngModel)]="loginDetails.username"></system-input-text>
+            </div>
+            <div class="slds-form-element__control slds-col">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_PASSWORD"></system-label>
+                </label>
+                <system-input-password [(ngModel)]="loginDetails.password"></system-input-password>
+            </div>
+        </div>
+        <div class="slds-form-element__control">
+            <div style="height:250px" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small"><p
+                    *ngFor="let d of data">{{d}}</p></div>
         </div>
     </system-modal-content>
     <system-modal-footer>
@@ -23,7 +43,7 @@
         </button>
         <button class="slds-button slds-button--brand" (click)="pullFromRepository(loginDetails)">
             <system-label label="LBL_PULL"></system-label>
-          </button>
+        </button>
     </system-modal-footer>
 </system-modal>
 

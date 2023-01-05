@@ -19,14 +19,28 @@ export class AdministrationDictRepairGitPullModal {
      */
     public self: ComponentRef<AdministrationDictRepairGitPullModal>;
 
+    /**
+     * form of login chosen by user in modal
+     * username / tocken
+     */
+    public loginFormChosen =
+        [{label: 'username', value: 'username'}, {label: 'token', value: 'token'}];
+    /**
+     * details for loging in
+     */
     public loginDetails: any = {
         username: '',
-        password: ''
+        password: '',
+        token: '',
+        loginOption: 'token' || 'username'
     };
 
     public data: any;
-
+    /**
+     * conditions for login details
+     */
     public passwordCondition: boolean = true;
+    public tokenCondition: boolean = true;
     public usernameCondition: boolean = true;
     public emailCondition: boolean = true;
 
@@ -34,6 +48,7 @@ export class AdministrationDictRepairGitPullModal {
      * Regex for password
      */
     public pwRegexp: RegExp = new RegExp("^ghp_[a-zA-Z0-9]{36}$");
+    public tokenRegexp: RegExp = new RegExp("^ghp_[a-zA-Z0-9]{36}$");
     public userRegexp: RegExp = new RegExp("^[a-zA-Z0-9]+$")
     public emailRegexp: RegExp = new RegExp("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$")
 
@@ -41,16 +56,35 @@ export class AdministrationDictRepairGitPullModal {
 
     }
 
+    /**
+     * pull from repository
+     * @param loginDetails
+     */
     public pullFromRepository(loginDetails) {
 
-        this.passwordCondition = this.loginDetails.password.length > 0 && this.pwRegexp.test(this.loginDetails.password);
+        /**
+         * check that login details are correct
+         */
+        this.passwordCondition = this.loginDetails.password.length > 0 && this.pwRegexp.test(this.loginDetails.password); //todo
+        this.tokenCondition = this.loginDetails.token.length > 0 && this.tokenRegexp.test(this.loginDetails.token);
         this.usernameCondition = this.loginDetails.username.length > 0 && this.userRegexp.test(this.loginDetails.username);
         this.emailCondition = this.loginDetails.username.length > 0 && this.emailRegexp.test(this.loginDetails.username);
-
-        if (this.passwordCondition && this.usernameCondition || this.emailCondition && this.passwordCondition) {
+        /**
+         * remove extra and empty values
+         */
+        if (this.passwordCondition && this.usernameCondition || this.emailCondition && this.passwordCondition || this.tokenCondition) {
             let loadingModal = this.modal.await('LBL_LOADING');
+            delete loginDetails.loginOption;
+            if (this.loginDetails.username === "" || this.loginDetails.password === "") {
+                delete loginDetails.username
+                delete loginDetails.password
+            } else {
+                delete loginDetails.token
+            }
+            /**
+             * post to backend and display result
+             */
             this.backend.postRequest(`/admin/repair/pull`, null, loginDetails).subscribe((res: any) => {
-                console.log(res);
                 this.data = res.output;
                 loadingModal.emit(true);
                 this.toast.sendToast('LBL_DATA_SAVED', 'success');
