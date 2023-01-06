@@ -617,6 +617,14 @@ class SpiceUtils
     }
 
     /**
+     * @return bool
+     */
+    public static function stackTrace(): bool {
+        return isset(SpiceConfig::getInstance()->config['stack_trace_errors'])
+            && SpiceConfig::getInstance()->config['stack_trace_errors'] === true;
+    }
+
+    /**
      * @param $string
      * @return array|false|string[]
      */

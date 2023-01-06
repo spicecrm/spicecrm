@@ -79,7 +79,7 @@ class ExceptionMiddleware extends FailureMiddleware
     private function handleException(\Exception $exception): ResponseInterface {
         $inDevMode = SpiceUtils::inDeveloperMode();
 
-        if ($inDevMode) {
+        if ($inDevMode || SpiceUtils::stackTrace()) {
             $responseData = [
                 'code'    => $exception->getCode(),
                 'message' => $exception->getMessage(),
