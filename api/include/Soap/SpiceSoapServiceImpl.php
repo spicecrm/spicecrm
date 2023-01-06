@@ -416,11 +416,14 @@ class SpiceSoapServiceImpl
      */
     static function login($user_auth, $application = '', $name_value_list = [])
     {
-        global $system_config;
+
         $error = new SoapError();
 
         try {
-            AuthenticationController::getInstance()->authenticate($user_auth['user_name'], $user_auth['password']);
+
+            $authParams = (object) ['authData' => (object) ['username' => $user_auth['user_name'], 'password' => $user_auth['password']], 'authType' => 'credentials'];
+
+            AuthenticationController::getInstance()->authenticate($authParams);
         } catch (\SpiceCRM\includes\ErrorHandlers\UnauthorizedException $e) {
             $error->set_error($e->getMessage());
             LoggerManager::getLogger()->fatal('soap','Lockout reached for user ' . $user_auth['user_name']);
