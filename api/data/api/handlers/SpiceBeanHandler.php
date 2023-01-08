@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\data\api\handlers;
 
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -2172,7 +2173,7 @@ class SpiceBeanHandler
     {
 
         // see if we have a language passed in .. if not use the default
-        if (empty($language)) $language = SpiceConfig::getInstance()->config['default_language'];
+        if (empty($language)) $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
 
         $dynamicDomains = $this->get_dynamic_domains($modules, $language);
         $appListStrings = SpiceUtils::returnAppListStringsLanguage($language);
