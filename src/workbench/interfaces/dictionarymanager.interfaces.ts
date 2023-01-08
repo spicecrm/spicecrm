@@ -38,9 +38,9 @@ export interface DictionaryItem {
     sysdomaindefinition_id?: string;
     label?: string;
     labelinputhelper?: string;
-    non_db: number;
-    exclude_from_audited: number;
-    required: number;
+    non_db?: number;
+    exclude_from_audited?: number;
+    required?: number;
     default_value?: string;
     field_comment?: string;
     description?: string;
