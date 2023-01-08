@@ -109,6 +109,9 @@ import {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal"
 import {SystemRoleSelector} from "./components/systemroleselector";
 import {SystemSection} from "./components/systemsection";
 import {SystemSelect} from "./components/systemselect";
+import {SystemSelectIcon, } from "./components/systemselecticon";
+import {SystemSelectIconItem} from "./components/systemselecticonitem";
+import {SystemSelectUOM} from "./components/systemselectuom";
 import {SystemSpinner} from "./components/systemspinner";
 import {SystemSplitView} from "./components/systemsplitview";
 import {SystemStencil} from "./components/systemstencil";
@@ -287,6 +290,9 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemRoleSelector,
         SystemSection,
         SystemSelect,
+        SystemSelectIcon,
+        SystemSelectIconItem,
+        SystemSelectUOM,
         SystemSpinner,
         SystemSplitView,
         SystemStencil,
@@ -457,7 +463,9 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemInputColor,
         SystemLabelEditorModal,
         SystemHtmlEditor,
-        SystemCardStencil
+        SystemCardStencil,
+        SystemSelectIcon,
+        SystemSelectIconItem
     ]
 })
 export class SystemComponents {}
