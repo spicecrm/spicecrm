@@ -1,4 +1,4 @@
-<div class="slds-lookup__item--label slds-text-body--small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+<div class="slds-lookup__item--label slds-text-body--small slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-border--bottom">
     {{language.getModuleCombinedLabel('LBL_RECENTLYVIEWED', module)}}
     <button *ngIf="module == 'Users'" system-title="LBL_SET_CURRENT_USER" class="slds-button slds-button--icon" size="xx-small" (mousedown)="setCurrentUser($event)"><system-button-icon icon="user"></system-button-icon></button>
 </div>
