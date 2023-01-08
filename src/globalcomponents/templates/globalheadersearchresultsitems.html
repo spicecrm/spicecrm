@@ -8,6 +8,14 @@
                </div>
            </span>
     </li>
+    <ng-container *ngIf="fts.runningmodulesearch">
+        <li style="opacity: 1"><system-searchresult-stencil></system-searchresult-stencil></li>
+        <li style="opacity: 0.6"><system-searchresult-stencil></system-searchresult-stencil></li>
+        <li style="opacity: 0.2"><system-searchresult-stencil></system-searchresult-stencil></li>
+    </ng-container>
+    <div *ngIf="!fts.runningmodulesearch && searchResults.length == 0" class="slds-align--absolute-center slds-p-around--small">
+        <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+    </div>
     <ng-container *ngIf="!fts.runningmodulesearch">
         <li global-header-search-results-item *ngFor="let searchResult of searchResults" [hit]="searchResult" (selected)="selected.emit(true)"></li>
     </ng-container>
