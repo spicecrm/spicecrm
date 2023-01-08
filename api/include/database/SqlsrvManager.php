@@ -141,6 +141,7 @@ class SqlsrvManager extends DBManager
             'tinyint'  => 'tinyint',
             'char'     => 'char',
             'blob'     => 'nvarchar(max)',
+            'json'     => 'nvarchar(max)',
             'longblob' => 'nvarchar(max)',
             'currency' => 'decimal(26,6)',
             'decimal'  => 'decimal',
