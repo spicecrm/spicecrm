@@ -4,7 +4,7 @@
         <system-collapsable-tab *ngIf="fieldset" [title]="language.getLabel('LBL_DETAILS')">
             <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
         </system-collapsable-tab>
-        <system-collapsable-tab [title]="language.getLabel('LBL_GDPR_RECORDS')">
+        <system-collapsable-tab [title]="language.getLabel('LBL_GDPR_RECORDS')" margin="none">
             <table class="slds-table slds-table--bordered slds-table--cell-buffer">
                 <thead>
                 <tr class="slds-text-title--caps">
@@ -32,7 +32,7 @@
                 <tbody>
                 <tr *ngFor="let gdprEntry of gdprRelatedLog">
                     <td scope="row">
-                        <div class="slds-truncate">{{gdprEntry.date_entered}}</div>
+                        <system-display-datetime [date]="gdprEntry.date_entered"></system-display-datetime>
                     </td>
                     <td scope="row">
                         <div class="slds-truncate">{{gdprEntry.created_by_name}}</div>
@@ -59,7 +59,7 @@
                 <system-label label="MSG_NO_GDPRRECORDS_FOUND"></system-label>
             </div>
         </system-collapsable-tab>
-        <system-collapsable-tab system-title="LBL_AUDITLOG">
+        <system-collapsable-tab system-title="LBL_AUDITLOG" margin="none">
             <table class="slds-table slds-table--bordered slds-table--cell-buffer">
                 <thead>
                 <tr class="slds-text-title--caps">
@@ -80,7 +80,7 @@
                 <tbody [system-view-provider]="{displayLabels: false, displayLinks: true, editable: false}">
                 <tr *ngFor="let gdprAuditEntry of gdprAuditLog" [system-model-provider]="{id: null, module: model.module, data: gdprAuditEntry.model}">
                     <td scope="row">
-                        <div class="slds-truncate">{{gdprAuditEntry.date_created}}</div>
+                        <system-display-datetime [date]="gdprAuditEntry.date_created"></system-display-datetime>
                     </td>
                     <td scope="row">
                         <div class="slds-truncate">{{gdprAuditEntry.created_by_name}}</div>
