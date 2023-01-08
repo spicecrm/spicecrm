@@ -41,7 +41,7 @@ export class CampaignSendTestMailButton {
                     if (results.status == 'success') {
                         this.toast.sendToast(this.language.getLabel('LBL_TEST_MAILS_SENT'), 'success');
                     } else {
-                        this.toast.sendToast(this.language.getLabel('LBL_NO_TARGETS_FOUND'), 'error');
+                        this.toast.sendToast(this.language.getLabel('LBL_NO_TEST_TARGETS'), 'error');
                     }
                 }, error: (error) => {
                     loading.emit(true);
