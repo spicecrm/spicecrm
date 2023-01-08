@@ -201,6 +201,11 @@ class SpiceDictionaryHandler extends SpiceSingleton
     public function setDictionaryItems($items){
 
         foreach($items as $item){
+
+            // make sure wqe have all values
+            if(!$item['non_db']) $item['non_db'] = 0;
+            if(!$item['exclude_from_audited']) $item['exclude_from_audited'] = 0;
+
             switch($item['scope']){
                 case 'c':
                     unset($item['scope']);

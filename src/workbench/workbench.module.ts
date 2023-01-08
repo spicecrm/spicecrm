@@ -22,6 +22,7 @@ import {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdef
 import {DictionaryManagerItems} from "./components/dictionarymanageritems";
 import {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
 import {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
+import {DictionaryManagerMigrateDefinitionModal} from "./components/dictionarymanagermigratedefinitionmodal";
 import {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
 import {DictionaryManagerRelationships} from "./components/dictionarymanagerrelationships";
 import {DictionaryManagerRelationshipsDetails} from "./components/dictionarymanagerrelationshipsdetails";
@@ -141,6 +142,7 @@ import {APIlogConfig} from "./components/apilogconfig";
 import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanagereditdefinitionmodal";
 import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -174,6 +176,7 @@ import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlink
         DictionaryManagerItemDetails,
         DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
+        DictionaryManagerMigrateDefinitionModal,
         DictionaryManagerEditDefinitionModal,
         DictionaryManagerAddItemModal,
         DictionaryManagerRelationships,
