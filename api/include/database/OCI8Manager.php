@@ -167,6 +167,7 @@ class OCI8Manager extends DBManager
         'encrypt' => 'varchar2(255)',
         'file' => 'varchar2(255)',
         'decimal_tpl' => 'number(%d, %d)',
+        'json' => 'json'
     ];
 
     /**
