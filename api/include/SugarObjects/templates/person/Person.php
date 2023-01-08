@@ -77,7 +77,8 @@ class Person extends Basic
      */
     public function _create_proper_name_field()
     {
-        return $this->first_name ? "{$this->first_name} {$this->last_name}" : $this->last_name;
+        $this->full_name = $this->first_name ? "{$this->first_name} {$this->last_name}" : $this->last_name;
+        return $this->full_name;
     }
 
     /**
@@ -214,7 +215,7 @@ class Person extends Basic
                 $gdprReleases['audit'][]= [
                     'date_created' => $auditField['date_created'],
                     'field_name' => $auditField['field_name'],
-                    'value' => $auditField['after_value_string'],
+                    'value' => $auditField['after_value_text'] ??$auditField['after_value_string'],
                     'created_by' => $auditField['created_by'],
                     'created_by_name' => $createdUser->full_name
                 ];
