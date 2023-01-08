@@ -403,7 +403,8 @@ class AuthenticationController
     private function checkPasswordExpire(User $userObj)
     {
         if (( $userObj->system_generated_password || $userObj->hasExpiredPassword() ) && !$userObj->is_api_user && !$userObj->external_auth_only) {
-            $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+            $userLanguage = $userObj->getPreference('language');
+            $necessaryLabels = LanguageManager::getSpecificLabels( $userLanguage ?: SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
                 'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
                 'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
                 'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY'
