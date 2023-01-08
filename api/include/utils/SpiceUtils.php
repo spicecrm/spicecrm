@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Localization\Localization;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -1070,7 +1071,7 @@ class SpiceUtils
         }
 
         $temp_app_strings = $app_strings;
-        $default_language = SpiceConfig::getInstance()->config['default_language'];
+        $default_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
 
         $langs = [];
         if ($language != 'en_us') {
@@ -1219,7 +1220,7 @@ echo print_r($return_value, true);
             }
         }
 
-        $default_language = SpiceConfig::getInstance()->config['default_language'];
+        $default_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
         $temp_app_list_strings = $app_list_strings;
 
         $langs = [];
