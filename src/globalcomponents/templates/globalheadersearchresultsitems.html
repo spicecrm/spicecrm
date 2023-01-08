@@ -1,7 +1,7 @@
 <ul role="listbox">
     <li role="presentation" (click)="goSearch()">
            <span class="slds-lookup__item-action slds-media slds-media--center" role="option">
-               <system-spinner *ngIf="fts.runningmodulesearch" [size]="20" class="slds-p-right--x-small"></system-spinner>
+               <system-spinner *ngIf="fts.runningmodulesearch" [size]="24" class="slds-p-right--x-small"></system-spinner>
                <system-icon *ngIf="!fts.runningmodulesearch" icon="search" size="small" sprite="utility"></system-icon>
                <div class="slds-media__body">
                     <div class="slds-lookup__result-text"><system-label label="LBL_SEARCH"></system-label> "{{searchTerm}}" {{searchModuleName}}</div>
