@@ -890,7 +890,9 @@ class SpiceSoapServiceUtil
         }
         if(!$session) return false;
 
-        AuthenticationController::getInstance()->authenticate();
+        // build the auth params & authenticate
+        $authParams = (object) ['authData' => (object) ['token' => (object)['access_token' => $session], 'tokenIssuer' => 'SpiceCRM'], 'authType' => 'token'];
+        AuthenticationController::getInstance()->authenticate($authParams);
 
         return SpiceACL::getInstance()->checkACLAccess($module_name, $access_level);
 
