@@ -321,7 +321,8 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
         if(!this.selectedCategoryId && this.defaultCategoryId) {
             this.selectedCategoryId = this.defaultCategoryId;
         }
-        this.modelattachments.uploadAttachmentsBase64(files, this.selectedCategoryId).subscribe({
+
+        this.modelattachments.uploadAttachmentsBase64(files, (this.selectedCategoryId == '*' ? this.defaultCategoryId : this.selectedCategoryId)).subscribe({
             next: (res) => {
                 if (this.componentconfig.revComponent) {
                     this.openRevisionModal(files);
