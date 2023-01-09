@@ -356,7 +356,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 status: 'd',
                 sequence: s,
                 label: f.fielddefinition.vname,
-                field_comment: f.fielddefinition.comment
+                description: f.fielddefinition.comment
             }
             s++;
 
