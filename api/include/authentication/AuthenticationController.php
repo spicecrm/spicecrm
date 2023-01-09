@@ -165,7 +165,7 @@ class AuthenticationController
         if ($authParams->authType == 'none') return;
 
         try {
-            $authenticator = $this->getAuthenticator();
+            $authenticator = $this->getAuthenticator($authParams->authData);
 
             $authResponse = $authenticator->authenticate($authParams->authData, $authParams->authType);
             $this->handleSuccessfulAuthentication($authParams->authData, $authResponse, $authParams->authType);
@@ -201,13 +201,15 @@ class AuthenticationController
      * default type is SpiceCRM
      * @return string
      */
-    private function getAuthenticatorType(): string
+    private function getAuthenticatorType($authData = null): string
     {
         $type = 'SpiceCRM';
 
         if (LDAPAuthenticate::isLdapEnabled()) $type = 'LDAP';
 
-        $tokenIssuer = RESTManager::getInstance()->parseAuthParams()->authData->tokenIssuer;
+        // if we do not have the audata get it from teh REST Call
+        if(!$authData) $authData = RESTManager::getInstance()->parseAuthParams()->authData;
+        $tokenIssuer = $authData->tokenIssuer;
 
         if (!empty($tokenIssuer)) $type = $tokenIssuer;
 
@@ -440,9 +442,9 @@ class AuthenticationController
      * @return SpiceCRMAuthenticate | GoogleAuthenticate | OAuth2Authenticate | TenantAuthenticate
      * @throws \Exception
      */
-    public function getAuthenticator()
+    public function getAuthenticator($authData = null)
     {
-        $type = $this->getAuthenticatorType();
+        $type = $this->getAuthenticatorType($authData);
 
         return $this->getAuthenticatorObject($type);
     }
