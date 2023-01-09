@@ -11,6 +11,7 @@ use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysCategoryTrees\SysCategoryTree;
+use SpiceCRM\includes\SysModuleLists\SysModuleListManager;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class SpiceUIModulesController
@@ -24,19 +25,11 @@ class SpiceUIModulesController
         if(!is_array($modInvisList)) $modInvisList = [];
 
         // select from sysmodules
-        $dbresult = $db->query("SELECT * FROM sysmodules");
-        while ($m = $db->fetchByAssoc($dbresult)) {
+        $modules = SpiceModules::getInstance()->modules;
+        foreach (SpiceModules::getInstance()->modules as $module => $moduleDetails) {
             // check if we have the module or if it has been filtered out
-            if (!$m['acl'] || ( isset( $current_user ) and $current_user->is_admin ) || $m['module'] == 'Home' || array_search($m['module'], SpiceModules::getInstance()->getModuleList()) !== false || array_search($m['module'], $modInvisList) !== false)
-                $modules[$m['module']] = $m;
-        }
-
-        // select from custom modules and also allow override
-        $dbresult = $db->query("SELECT * FROM syscustommodules");
-        while ($m = $db->fetchByAssoc($dbresult)) {
-            // check if we have the module or if it has been filtered out
-            if (!$m['acl'] || ( isset( $current_user ) and $current_user->is_admin  ) || $m['module'] == 'Home' || array_search($m['module'], SpiceModules::getInstance()->getModuleList()) !== false || array_search($m['module'], $modInvisList) !== false)
-                $modules[$m['module']] = $m;
+            if (!$moduleDetails['acl'] || ( isset( $current_user ) and $current_user->is_admin ) || $module == 'Home' || array_search($module, $modInvisList) !== false)
+                $modules[$module] = $moduleDetails;
         }
 
         return $modules;
@@ -93,13 +86,6 @@ class SpiceUIModulesController
 
             foreach ($modules as $module) {
 
-                // load custom lists for the module
-                $listArray = [];
-                $lists = $db->query("SELECT * FROM sysmodulelists WHERE module='" . $module['module'] . "' AND (created_by_id = '$current_user->id' OR global = 1)");
-                while ($list = $db->fetchByAssoc($lists)) {
-                    $listArray[] = $list;
-                }
-
                 // get acls for the module
                 $aclArray = [];
                 if($module['module'] == 'LandingPages'){
@@ -131,7 +117,7 @@ class SpiceUIModulesController
                         'workflow' => $module['workflow'] ? true : false,
                         'duplicatecheck' => $module['duplicatecheck'],
                         'favorites' => $module['favorites'],
-                        'listtypes' => $listArray,
+                        'listtypes' => SysModuleListManager::getInstance()->getListsForModule($module['module']),
                         'acl' => $aclArray,
                         'acl_fieldcontrol' => SpiceACL::getInstance()->getFieldAccess($module['module'], 'create'),
                         'acl_multipleusers' => $module['acl_multipleusers'],
@@ -141,7 +127,7 @@ class SpiceUIModulesController
                         'ftssortable' => $ftsBeanHandler->getSortable(),
                         'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
                         'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module']),
-                        'categorytrees' => SysCategoryTree::getTreeLinksByModule($module['module'])
+                        'categorytrees' => SysCategoryTree::getInstance()->getTreeLinksByModule($module['module'])
                     ];
                 }
             }

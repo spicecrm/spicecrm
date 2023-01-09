@@ -242,9 +242,9 @@ class SchedulerJob extends SpiceBean
         $res = $task->run($this->id);
 
         if (!$res['success']) {
-            LoggerManager::getLogger()->fatal("SchedulerJobTask: {$task->id}: ({$task->name}) failed");
+            LoggerManager::getLogger()->fatal('scheduler', "SchedulerJobTask: {$task->id}: ({$task->name}) failed");
         } else {
-            LoggerManager::getLogger()->info("SchedulerJobTask: {$task->id}: ({$task->name}) successfully executed");
+            LoggerManager::getLogger()->info('scheduler', "SchedulerJobTask: {$task->id}: ({$task->name}) successfully executed");
         }
 
         return $res;

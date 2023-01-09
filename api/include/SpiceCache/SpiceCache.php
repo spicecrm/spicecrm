@@ -44,9 +44,21 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  */
 class SpiceCache
 {
-    const EXTERNAL_CACHE_NULL_VALUE = "SUGAR_CACHE_NULL_ZZ";
+    const EXTERNAL_CACHE_NULL_VALUE = "SPICE_CACHE_NULL";
 
+    /**
+     * the default cache instance
+     *
+     * @var
+     */
     protected static $_cacheInstance;
+
+    /**
+     * the temporary memory cache instance
+     *
+     * @var
+     */
+    protected static $_memoryCacheInstance;
 
     /**
      * @var true if the cache has been reset during this request, so we no longer return values from
@@ -72,6 +84,7 @@ class SpiceCache
         } else {
             self::$_cacheInstance = new SpiceCacheFile();
         }
+
     }
 
     /**
@@ -88,33 +101,64 @@ class SpiceCache
     }
 
     /**
-     * Try to reset any opcode caches we know about
-     *
-     * @todo make it so developers can extend this somehow
+     * Returns the instance of the SpiceCacheAbstract object, cooresponding to the external
+     * cache being used.
      */
-    public static function cleanOpcodes()
+    public static function memoryInstance()
     {
+        if (!self::$_memoryCacheInstance) {
+            self::$_memoryCacheInstance = new SpiceCacheMemory();
+        }
+
+        return self::$_memoryCacheInstance;
     }
 
     /**
-     * Try to reset file from caches
+     * set values to the cache
+     *
+     * @param $key
+     * @param $value
+     * @param $ttl
+     * @return void
      */
-    public static function cleanFile($file)
-    {
-        // APC
-        if (function_exists('apc_delete_file') && ini_get('apc.stat') == 0) {
-            apc_delete_file($file);
-        }
-    }
-
     public static function set($key, $value, $ttl = null)
     {
         SpiceCache::instance()->set($key, $value, $ttl);
     }
 
+    /**
+     * get values from the cache
+     *
+     * @param $key
+     * @return false
+     */
     public static function get($key)
     {
         return SpiceConfig::getInstance()->config['developerMode'] === true ? false : SpiceCache::instance()->$key;
+    }
+
+    /**
+     * separate call to create a memory instance and cache some values there in a memory cahce instance
+     *
+     * @param $key
+     * @param $value
+     * @param $ttl
+     * @return void
+     */
+    public static function setMemory($key, $value, $ttl = null)
+    {
+        SpiceCache::memoryInstance()->set($key, $value, $ttl);
+    }
+
+    /**
+     * get function for the memory instance
+     *
+     * @param $key
+     * @return mixed|null
+     */
+    public static function getMemory($key)
+    {
+        return SpiceCache::memoryInstance()->$key;
     }
 
     /**

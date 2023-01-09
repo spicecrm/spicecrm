@@ -6,6 +6,7 @@ import {backend} from '../../services/backend.service';
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {language} from "../../services/language.service";
+import {result} from "underscore";
 
 
 @Component({
@@ -93,6 +94,7 @@ export class AdministrationDictRepair {
      *
      */
     public pullFromRepository(){
-        console.log('pull from repository');
+        this.modal.openModal('AdministrationDictRepairGitPullModal', true, this.injector);
     }
+
 }

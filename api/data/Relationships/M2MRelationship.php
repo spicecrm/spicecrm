@@ -114,13 +114,13 @@ class M2MRelationship extends SugarRelationship
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
         {
             $lhsClass = get_class($lhs);
-            LoggerManager::getLogger()->fatal("could not load LHS $lhsLinkName in $lhsClass");
+            LoggerManager::getLogger()->fatal('relationships', "could not load LHS $lhsLinkName in $lhsClass in M2M");
             return false;
         }
         if (empty($rhs->$rhsLinkName) && !$rhs->load_relationship($rhsLinkName))
         {
             $rhsClass = get_class($rhs);
-            LoggerManager::getLogger()->fatal("could not load RHS $rhsLinkName in $rhsClass");
+            LoggerManager::getLogger()->fatal('relationships', "could not load RHS $rhsLinkName in $rhsClass in M2M");
             return false;
         }
 
@@ -202,28 +202,28 @@ class M2MRelationship extends SugarRelationship
     public function remove($lhs, $rhs)
     {
         if(!($lhs instanceof SpiceBean) || !($rhs instanceof SpiceBean)) {
-            LoggerManager::getLogger()->fatal("LHS and RHS must be beans");
+            LoggerManager::getLogger()->fatal('relationships', "LHS and RHS must be beans in M2M");
             return false;
         }
         $lhsLinkName = $this->lhsLink;
         $rhsLinkName = $this->rhsLink;
 
         if (!($lhs instanceof SpiceBean)) {
-            LoggerManager::getLogger()->fatal("LHS is not a SpiceBean object");
+            LoggerManager::getLogger()->fatal('relationships',"LHS is not a SpiceBean object in M2M");
             return false;
         }
         if (!($rhs instanceof SpiceBean)) {
-            LoggerManager::getLogger()->fatal("RHS is not a SpiceBean object");
+            LoggerManager::getLogger()->fatal('relationships',"RHS is not a SpiceBean object in M2M");
             return false;
         }
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
         {
-            LoggerManager::getLogger()->fatal("could not load LHS $lhsLinkName");
+            LoggerManager::getLogger()->fatal('relationships',"could not load LHS $lhsLinkName in M2M");
             return false;
         }
         if (empty($rhs->$rhsLinkName) && !$rhs->load_relationship($rhsLinkName))
         {
-            LoggerManager::getLogger()->fatal("could not load RHS $rhsLinkName");
+            LoggerManager::getLogger()->fatal('relationships',"could not load RHS $rhsLinkName in M2M");
             return false;
         }
 

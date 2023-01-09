@@ -342,41 +342,17 @@ class SpiceBean
      */
     public function initialize_bean()
     {
-//        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        static $loaded_defs = [];
         $this->db = DBManagerFactory::getInstance();
         $dictHandler = SpiceDictionaryHandler::getInstance();
-//        if (empty($this->module_name))
-//            $this->module_name = $this->_module;
-        if ((false == $this->disable_vardefs && empty($loaded_defs[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
+
+        if ((false == $this->disable_vardefs && empty($dictHandler->dictionary[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
             VardefManager::loadVardef($this->_module, $this->_objectname);
 
             // logic hook to create vardefs .. if any additonal fields are required
-
             // ToDo - check why we need this here
             $this->call_custom_logic('create_vardefs');
 
-            // build $this->column_fields from the field_defs if they exist
-//            if (!empty($dictHandler->dictionary[$this->_objectname]['fields'])) {
-//                foreach ($dictHandler->dictionary[$this->_objectname]['fields'] as $key => $value_array) {
-//                    $column_fields[] = $key;
-//                    if (!empty($value_array['required']) && !empty($value_array['name'])) {
-//                        $this->required_fields[$value_array['name']] = 1;
-//                    }
-//                }
-//                $this->column_fields = $column_fields;
-//            }
-
-            //load up field_arrays from CacheHandler;
-//            if (empty($this->list_fields))
-//                $this->list_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'list_fields');
-//            if (empty($this->column_fields))
-//                $this->column_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'column_fields');
-//            if (empty($this->required_fields))
-//                $this->required_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'required_fields');
-
             if (isset($dictHandler->dictionary[$this->_objectname]) && !$this->disable_vardefs) {
-//                $this->field_name_map = $dictHandler->dictionary[$this->_objectname]['fields'];
                 $this->field_defs = $dictHandler->dictionary[$this->_objectname]['fields'];
 
                 if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
@@ -385,8 +361,7 @@ class SpiceBean
             }
 
         } else {
-//            $this->field_name_map = &$loaded_defs[$this->_objectname]['field_name_map'];
-            $this->field_defs = &$loaded_defs[$this->_objectname]['field_defs'];
+            $this->field_defs = &$dictHandler->dictionary[$this->_objectname]['fields'];
 
             if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
                 $this->optimistic_lock = true;
@@ -764,7 +739,7 @@ class SpiceBean
         }
 
         if (!is_array($dictionary) or !array_key_exists($key, $dictionary)) {
-            LoggerManager::getLogger()->fatal("createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
+            LoggerManager::getLogger()->fatal('dictionary', "createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
             SpiceUtils::displayNotice("meta data absent for table " . $tablename . " keyed to $key ");
         } else {
             if (isset($dictionary[$key]['relationships'])) {
@@ -943,7 +918,7 @@ class SpiceBean
                 return true;
             }
         }
-        LoggerManager::getLogger()->info("SpiceBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
+        LoggerManager::getLogger()->developer('relationships', "SpiceBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
 
         return false;
     }
@@ -1252,7 +1227,7 @@ class SpiceBean
     {
         $key = $this->getObjectName();
         if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
-            LoggerManager::getLogger()->fatal("drop_tables: Metadata for table " . $this->_tablename . " does not exist");
+            LoggerManager::getLogger()->fatal('dictionary', "drop_tables: Metadata for table " . $this->_tablename . " does not exist");
             echo "meta data absent for table " . $this->_tablename . "<br>\n";
         } else {
             if (empty($this->_tablename))
@@ -2636,7 +2611,7 @@ class SpiceBean
             if ($this->load_relationship($name)) {
                 $this->$name->delete($id);
             } else {
-                LoggerManager::getLogger()->fatal("error loading relationship $name");
+                LoggerManager::getLogger()->fatal('relationships', "error loading relationship $name in " . __FILE__);
             }
         }
     }
@@ -2691,7 +2666,7 @@ class SpiceBean
      * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
      * @return object Instance of this bean with fetched data.
      */
-    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true)
+    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true, $relationships = true)
     {
         $where_clause = $this->get_where($fields_array, $deleted);
         $query = "SELECT $this->_tablename.id" . " FROM $this->_tablename ";
@@ -2711,7 +2686,7 @@ class SpiceBean
         }
         // Removed getRowCount-if-clause earlier and insert duplicates_found here as it seems that we have found something
         // if we didn't return null in the previous clause.
-        return $this->retrieve($row['id'], $encode, $deleted);
+        return $this->retrieve($row['id'], $encode, $deleted, $relationships);
     }
 
     /**
@@ -2992,14 +2967,6 @@ class SpiceBean
             }
         }
         return $invalidFields ? $invalidFields : true;
-    }
-
-    protected static function logDeprecated()
-    {
-        LoggerManager::getLogger()->deprecated(
-            get_class() . " Deprecated. " .
-            LoggerManager::formatBackTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4))
-        );
     }
 
     /**

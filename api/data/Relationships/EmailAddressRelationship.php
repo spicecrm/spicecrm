@@ -3,9 +3,12 @@
 
 namespace SpiceCRM\data\Relationships;
 
+use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceCache\SpiceCacheMemory;
 use SpiceCRM\includes\TimeDate;
 
 
@@ -15,6 +18,41 @@ use SpiceCRM\includes\TimeDate;
  */
 class EmailAddressRelationship extends M2MRelationship
 {
+
+    /**
+     * @param  $link Link2 loads the relationship for this link.
+     * @return void
+     */
+    public function load($link, $params = [])
+    {
+        $db = DBManagerFactory::getInstance();
+        $query = $this->getQuery($link, $params);
+
+        // check if we kept it in memory
+        $cached = SpiceCache::getMemory('spicerelationshipresult'.md5($query));
+        if($cached){
+            return ["rows" => $cached];
+        }
+
+        $result = $db->query($query);
+        $rows = [];
+        $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
+        while ($row = $db->fetchByAssoc($result))
+        {
+            if (empty($row['id']) && empty($row[$idField]))
+                continue;
+            $id = empty($row['id']) ? $row[$idField] : $row['id'];
+            $rows[$id] = $row;
+        }
+
+        // put to globals so we keep it
+        SpiceCache::setMemory('spicerelationshipresult'.md5($query), $rows);
+
+
+        // return the rows
+        return ["rows" => $rows];
+    }
+
     /**
      * For Email Addresses, there is only a link from the left side, so we need a new add function that ignores rhs
      * @param  $lhs SpiceBean left side bean to add to the relationship.
@@ -29,7 +67,7 @@ class EmailAddressRelationship extends M2MRelationship
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
         {
             $lhsClass = get_class($lhs);
-            LoggerManager::getLogger()->fatal("could not load LHS $lhsLinkName in $lhsClass");
+            LoggerManager::getLogger()->fatal('relationships', "could not load LHS $lhsLinkName in $lhsClass in EmailAddressRelationship");
             return false;
         }
 
@@ -83,16 +121,16 @@ class EmailAddressRelationship extends M2MRelationship
         $lhsLinkName = $this->lhsLink;
 
         if (!($lhs instanceof SpiceBean)) {
-            LoggerManager::getLogger()->fatal("LHS is not a SpiceBean object");
+            LoggerManager::getLogger()->fatal('relationships', "LHS is not a SpiceBean object in EmailAddressRelationship");
             return false;
         }
         if (!($rhs instanceof SpiceBean)) {
-            LoggerManager::getLogger()->fatal("RHS is not a SpiceBean object");
+            LoggerManager::getLogger()->fatal('relationships', "RHS is not a SpiceBean object in EmailAddressRelationship");
             return false;
         }
         if (empty($lhs->$lhsLinkName) && !$lhs->load_relationship($lhsLinkName))
         {
-            LoggerManager::getLogger()->fatal("could not load LHS $lhsLinkName");
+            LoggerManager::getLogger()->fatal('relationships', "could not load LHS $lhsLinkName in EmailAddressRelationship");
             return false;
         }
 

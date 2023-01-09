@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Localization\Localization;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -16,6 +17,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 /**
  * Class SpiceUtils
@@ -182,12 +184,7 @@ class SpiceUtils
      * @return bool
      */
     public static function isValidModule(string $moduleName): bool {
-        $controller = new SpiceUIModulesController();
-        $moduleList = $controller->geUnfilteredModules();
-        if (array_key_exists($moduleName, $moduleList)) {
-            return true;
-        }
-        return false;
+        return SpiceModules::getInstance()->moduleExists($moduleName);
     }
 
     /**
@@ -621,6 +618,14 @@ class SpiceUtils
     }
 
     /**
+     * @return bool
+     */
+    public static function stackTrace(): bool {
+        return isset(SpiceConfig::getInstance()->config['stack_trace_errors'])
+            && SpiceConfig::getInstance()->config['stack_trace_errors'] === true;
+    }
+
+    /**
      * @param $string
      * @return array|false|string[]
      */
@@ -976,7 +981,7 @@ class SpiceUtils
         }
 
         if (!empty($params['percentage']) && $params['percentage']) {
-            $amount .= $app_strings['LBL_PERCENTAGE_SYMBOL'];
+            $amount .= '%';
         }
         return $amount;
 
@@ -1074,7 +1079,7 @@ class SpiceUtils
         }
 
         $temp_app_strings = $app_strings;
-        $default_language = SpiceConfig::getInstance()->config['default_language'];
+        $default_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
 
         $langs = [];
         if ($language != 'en_us') {
@@ -1092,30 +1097,30 @@ class SpiceUtils
             $app_strings = [];
             if (file_exists("include/language/$lang.lang.php")) {
                 include("include/language/$lang.lang.php");
-                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+                LoggerManager::getLogger()->info('language', "Found language file: $lang.lang.php");
             }
             if (file_exists("include/language/$lang.lang.override.php")) {
                 include("include/language/$lang.lang.override.php");
-                LoggerManager::getLogger()->info("Found override language file: $lang.lang.override.php");
+                LoggerManager::getLogger()->info('language', "Found override language file: $lang.lang.override.php");
             }
             if (file_exists("include/language/$lang.lang.php.override")) {
                 include("include/language/$lang.lang.php.override");
-                LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
+                LoggerManager::getLogger()->info('language', "Found override language file: $lang.lang.php.override");
             }
             if (file_exists("custom/application/Ext/Language/$lang.lang.ext.php")) {
                 include("custom/application/Ext/Language/$lang.lang.ext.php");
-                LoggerManager::getLogger()->info("Found extended language file: $lang.lang.ext.php");
+                LoggerManager::getLogger()->info('language', "Found extended language file: $lang.lang.ext.php");
             }
             if (file_exists("custom/include/language/$lang.lang.php")) {
                 include("custom/include/language/$lang.lang.php");
-                LoggerManager::getLogger()->info("Found custom language file: $lang.lang.php");
+                LoggerManager::getLogger()->info('language', "Found custom language file: $lang.lang.php");
             }
             // BEGIN syslanguages
             if (file_exists("custom/application/Ext/Language/$lang.override.ext.php")) {
                 global $extlabels;
                 include("custom/application/Ext/Language/$lang.override.ext.php");
                 $app_strings = array_merge($app_strings, $extlabels);
-                LoggerManager::getLogger()->info("Found extended language file: $lang.override.ext.php");
+                LoggerManager::getLogger()->info('language', "Found extended language file: $lang.override.ext.php");
             }
             //END syslanguages
             $app_strings_array[] = $app_strings;
@@ -1223,7 +1228,7 @@ echo print_r($return_value, true);
             }
         }
 
-        $default_language = SpiceConfig::getInstance()->config['default_language'];
+        $default_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
         $temp_app_list_strings = $app_list_strings;
 
         $langs = [];
