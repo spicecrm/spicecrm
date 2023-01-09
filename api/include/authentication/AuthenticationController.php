@@ -156,9 +156,11 @@ class AuthenticationController
      * @throws BadRequestException | Exception | UnauthorizedException
      * @throws \Exception
      */
-    public function authenticate()
+    public function authenticate($authParams = null)
     {
-        $authParams = RESTManager::getInstance()->parseAuthParams();
+        if(!$authParams) {
+            $authParams = RESTManager::getInstance()->parseAuthParams();
+        }
 
         if ($authParams->authType == 'none') return;
 

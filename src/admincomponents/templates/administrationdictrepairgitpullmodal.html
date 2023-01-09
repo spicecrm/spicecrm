@@ -10,7 +10,8 @@
                 </label>
             </system-input-radio-button-group>
         </div>
-        <div class="slds-grid slds-grid--vertical-align-center" *ngIf="loginDetails.loginOption == 'token'">
+
+        <div class="slds-grid slds-grid--vertical-align-center" *ngIf="loginDetails.loginOption == 'token'; else username">
             <div class="slds-form-element__control slds-col">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
                     <system-label label="LBL_TOKEN"></system-label>
@@ -18,7 +19,8 @@
                 <system-input-password [(ngModel)]="loginDetails.token"></system-input-password>
             </div>
         </div>
-        <div class="slds-grid slds-grid--vertical-align-center" *ngIf="loginDetails.loginOption == 'username'">
+        <ng-template #username>
+        <div class="slds-grid slds-grid--vertical-align-center">
             <div class="slds-form-element__control slds-col">
                 <label class="slds-form-element__label">
                     <system-label label="LBL_USERNAME"></system-label>
@@ -32,6 +34,7 @@
                 <system-input-password [(ngModel)]="loginDetails.password"></system-input-password>
             </div>
         </div>
+        </ng-template>
         <div class="slds-form-element__control">
             <div style="height:250px" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small"><p
                     *ngFor="let d of data">{{d}}</p></div>
