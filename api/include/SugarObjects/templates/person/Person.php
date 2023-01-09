@@ -77,7 +77,9 @@ class Person extends Basic
      */
     public function _create_proper_name_field()
     {
+        // for the backwards compatibility
         $this->full_name = $this->first_name ? "{$this->first_name} {$this->last_name}" : $this->last_name;
+        $this->name = $this->full_name;
         return $this->full_name;
     }
 
@@ -221,7 +223,6 @@ class Person extends Basic
                 ];
             }
         }
-
 
         return $gdprReleases;
     }
