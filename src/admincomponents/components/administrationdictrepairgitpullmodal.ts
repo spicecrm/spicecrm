@@ -47,10 +47,10 @@ export class AdministrationDictRepairGitPullModal {
     /**
      * Regex for password
      */
-    public pwRegexp: RegExp = new RegExp("^ghp_[a-zA-Z0-9]{36}$");
+    public pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})");
     public tokenRegexp: RegExp = new RegExp("^ghp_[a-zA-Z0-9]{36}$");
-    public userRegexp: RegExp = new RegExp("^[a-zA-Z0-9]+$")
-    public emailRegexp: RegExp = new RegExp("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$")
+    public userRegexp: RegExp = new RegExp("^[a-zA-Z0-9]+$");
+    public emailRegexp: RegExp = new RegExp("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$");
 
     constructor(public backend: backend, public toast: toast, public modal: modal) {
 
@@ -65,7 +65,7 @@ export class AdministrationDictRepairGitPullModal {
         /**
          * check that login details are correct
          */
-        this.passwordCondition = this.loginDetails.password.length > 0 && this.pwRegexp.test(this.loginDetails.password); //todo
+        this.passwordCondition = this.loginDetails.password.length > 0 && this.pwRegexp.test(this.loginDetails.password);
         this.tokenCondition = this.loginDetails.token.length > 0 && this.tokenRegexp.test(this.loginDetails.token);
         this.usernameCondition = this.loginDetails.username.length > 0 && this.userRegexp.test(this.loginDetails.username);
         this.emailCondition = this.loginDetails.username.length > 0 && this.emailRegexp.test(this.loginDetails.username);
@@ -76,10 +76,10 @@ export class AdministrationDictRepairGitPullModal {
             let loadingModal = this.modal.await('LBL_LOADING');
             delete loginDetails.loginOption;
             if (this.loginDetails.username === "" || this.loginDetails.password === "") {
-                delete loginDetails.username
-                delete loginDetails.password
+                delete loginDetails.username;
+                delete loginDetails.password;
             } else {
-                delete loginDetails.token
+                delete loginDetails.token;
             }
             /**
              * post to backend and display result
