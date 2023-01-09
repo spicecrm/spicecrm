@@ -45,7 +45,7 @@ export class dictionarymanager implements OnDestroy {
     /**
      * sets the allowed change scope
      */
-    public changescope: 'global' | 'custom' | 'none' = this.configurationService.getCapabilityConfig('core').edit_mode;
+    public changescope: 'all' | 'custom' | 'none' = this.configurationService.getCapabilityConfig('core').edit_mode;
 
     /**
      * the loaded list of domains
@@ -231,7 +231,7 @@ export class dictionarymanager implements OnDestroy {
     public canChange(scope: string) {
 
         // if we have all ... we can change
-        if (this.changescope == 'global') return true;
+        if (this.changescope == 'all') return true;
 
         // if we have custom we can only change custom
         if (this.changescope == 'custom' && scope == 'c') {
@@ -247,7 +247,7 @@ export class dictionarymanager implements OnDestroy {
      * returns the default scope for the new entries
      */
     get defaultScope() {
-        return this.changescope == 'global' ? 'g' : 'c';
+        return this.changescope == 'all' ? 'g' : 'c';
     }
 
     /**
