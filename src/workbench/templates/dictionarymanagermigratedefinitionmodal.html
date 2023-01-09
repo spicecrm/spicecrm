@@ -39,7 +39,7 @@
                     <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="dictionarydefinition.scope">
-                            <option *ngIf="dictionarymanager.changescope == 'global'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                            <option *ngIf="dictionarymanager.changescope == 'all'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
                             <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
                         </select>
                     </div>
@@ -105,7 +105,7 @@
                             <td>
                                 <div class="slds-select_container">
                                     <select class="slds-select" [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.scope">
-                                        <option *ngIf="dictionarymanager.changescope == 'global' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                                        <option *ngIf="dictionarymanager.changescope == 'all' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
                                         <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
                                     </select>
                                 </div>
@@ -213,7 +213,7 @@
                         <td>
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="index.scope">
-                                    <option *ngIf="dictionarymanager.changescope == 'global' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                                    <option *ngIf="dictionarymanager.changescope == 'all' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
                                     <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
                                 </select>
                             </div>
@@ -251,7 +251,7 @@
                         <td>
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="template.scope">
-                                    <option *ngIf="dictionarymanager.changescope == 'global' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                                    <option *ngIf="dictionarymanager.changescope == 'all' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
                                     <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
                                 </select>
                             </div>
