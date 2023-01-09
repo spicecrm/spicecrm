@@ -6,6 +6,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -1960,7 +1961,7 @@ class KReporterRESTHandler
      */
     public function getLabels()
     {
-        $labels = LanguageManager::loadDatabaseLanguage((empty($GLOBALS['current_language']) ? SpiceConfig::getInstance()->config['default_language'] : $GLOBALS['current_language']));
+        $labels = LanguageManager::loadDatabaseLanguage((empty($GLOBALS['current_language']) ? SpiceLanguageManager::getInstance()->getSystemDefaultLanguage() : $GLOBALS['current_language']));
 
         return $labels;
     }
