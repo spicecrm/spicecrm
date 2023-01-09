@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\Soap;
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -350,7 +351,7 @@ class SpiceSoapServiceUtil
     function login_success($name_value_list = [])
     {
         global $current_language, $app_strings, $app_list_strings;
-        $current_language = SpiceConfig::getInstance()->config['default_language'];
+        $current_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
         if (is_array($name_value_list) && !empty($name_value_list)) {
             foreach ($name_value_list as $key => $value) {
                 if (isset($value['name']) && ($value['name'] == 'language')) {

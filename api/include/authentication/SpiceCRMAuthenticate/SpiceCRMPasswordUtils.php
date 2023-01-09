@@ -13,6 +13,7 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
@@ -146,7 +147,7 @@ class SpiceCRMPasswordUtils
         $destUserPrefs = BeanFactory::getBean('UserPreferences')->setUser($user);
         $destUserPrefs->reloadPreferences();
         $destLang = $destUserPrefs->getPreference('language');
-        if (!isset($destLang[0])) $destLang = SpiceConfig::getInstance()->config['default_language'];
+        if (!isset($destLang[0])) $destLang = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
         if (!isset($destLang[0])) $destLang = 'en_us';
 
         /** @var EmailTemplate $emailTempl */
