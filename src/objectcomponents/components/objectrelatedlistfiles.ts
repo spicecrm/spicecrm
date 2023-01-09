@@ -164,7 +164,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
         }
 
         // categories
-        if (!!this.configurationService.getData('spiceattachments_categories')) {
+        if (this.configurationService.getData('spiceattachments_categories')) {
             return this.categories = this.configurationService.getData('spiceattachments_categories');
         }
         this.backend.getRequest('common/spiceattachments/categories/' + this.model.module).subscribe(res => {
