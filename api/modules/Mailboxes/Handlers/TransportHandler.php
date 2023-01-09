@@ -40,6 +40,12 @@ abstract class TransportHandler
     abstract protected function initTransportHandler();
 
     /**
+     * Gets username (email address) defined in the mailbox
+     * @return string|null
+     */
+    abstract public function getUsername(): ?string;
+
+    /**
      * Performs a check on the connection to the message (email/text message) server.
      * It usually involves sending a test message.
      * Some APIs may have other possibilities to check if the connection can be established.

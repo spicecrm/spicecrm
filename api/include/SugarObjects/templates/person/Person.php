@@ -77,7 +77,10 @@ class Person extends Basic
      */
     public function _create_proper_name_field()
     {
-        return $this->first_name ? "{$this->first_name} {$this->last_name}" : $this->last_name;
+        // for the backwards compatibility
+        $this->full_name = $this->first_name ? "{$this->first_name} {$this->last_name}" : $this->last_name;
+        $this->name = $this->full_name;
+        return $this->full_name;
     }
 
     /**
@@ -214,13 +217,12 @@ class Person extends Basic
                 $gdprReleases['audit'][]= [
                     'date_created' => $auditField['date_created'],
                     'field_name' => $auditField['field_name'],
-                    'value' => $auditField['after_value_string'],
+                    'value' => $auditField['after_value_text'] ??$auditField['after_value_string'],
                     'created_by' => $auditField['created_by'],
                     'created_by_name' => $createdUser->full_name
                 ];
             }
         }
-
 
         return $gdprReleases;
     }
@@ -307,11 +309,17 @@ class Person extends Basic
      * fill in the email1 field called by fill_in_additional_detail_fields
      */
     private function fillInEmail1Field() {
+        $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}'  AND ear.primary_address=1 AND ear.deleted = 1 AND ear.email_address_id = ea.id AND ea.deleted = 0");
+        if($emailAddress){
+            $this->email1 = $emailAddress['email_address'];
+        }
+        /* performance increase
         $emailAddresses = $this->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $emailAddress) {
             if ($emailAddress->primary_address != 1) continue;
             $this->email1 = $emailAddress->email_address;
             break;
         }
+        */
     }
 }

@@ -150,7 +150,7 @@ class Configurator {
 		SpiceConfig::getInstance()->config = [];
 		if (file_exists('config_override.php')) {
 		    if ( !is_readable('config_override.php') ) {
-		        LoggerManager::getLogger()->fatal("Unable to read the config_override.php file. Check the file permissions");
+		        LoggerManager::getLogger()->fatal('configurator', "Unable to read the config_override.php file. Check the file permissions");
 		    }
 	        else {
 	            include('config_override.php');
@@ -164,7 +164,7 @@ class Configurator {
 	    	touch('config_override.php');
 	    }
 	    if ( !($this->make_writable('config_override.php')) ||  !(is_writable('config_override.php')) ) {
-	        LoggerManager::getLogger()->fatal("Unable to write to the config_override.php file. Check the file permissions");
+	        LoggerManager::getLogger()->fatal('configurator', "Unable to write to the config_override.php file. Check the file permissions");
 	        return;
 	    }
 		$fp = SpiceFileUtils::spiceFopen('config_override.php', 'w');

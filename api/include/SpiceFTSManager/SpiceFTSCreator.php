@@ -30,6 +30,7 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -82,7 +83,7 @@ class SpiceFTSCreator {
 
     public function createFtsFieldsForModule($module){
         $ftsfields = [];
-        $labels = LanguageManager::loadDatabaseLanguage(SpiceConfig::getInstance()->config['default_language']);
+        $labels = LanguageManager::loadDatabaseLanguage(SpiceLanguageManager::getInstance()->getSystemDefaultLanguage());
         //get listview defs
         global $listViewDefs;
         $useVardefs = false;

@@ -384,7 +384,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
             $msg = DBManagerFactory::getInstance()->lastDbError();
         }
         //@todo: update relationship cache
-        return $res->withJson(['success' => $success, 'msg' => $msg]);
+        return $res->withJson(['success' => $success, 'msg' => $msg, 'sql' => $sql]);
     }
 
 

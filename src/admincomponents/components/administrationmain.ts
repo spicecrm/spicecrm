@@ -59,6 +59,15 @@ export class AdministrationMain implements AfterViewInit {
     }
 
     /**
+     * returns the width for the menu bar
+     */
+    get menuWidth(){
+        return {
+            width: this.administration.minimized ? '40px' : '220px'
+        }
+    }
+
+    /**
      * handle nav changes
      *
      * @param event

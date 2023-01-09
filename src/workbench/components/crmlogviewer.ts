@@ -21,23 +21,17 @@ declare var moment: any;
 export class CRMLogViewer {
 
     /**
-     * Reference to the log level checkbox group.
-     * @private
-     */
-    @ViewChild('loglevelsCheckboxes') public loglevelsCheckboxes;
-
-    /**
      * filter
      * @private
      */
-    public filter = { loglevels: [], pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
+    public filter = { loglevel: '', subloglevel: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
     public filterUserName: string;
 
     /**
      * Limit: maximal entries from the backend.
      * @private
      */
-    public limit = '250';
+    public limit: number = 250;
 
     public load$ = new EventEmitter();
 
@@ -115,11 +109,14 @@ export class CRMLogViewer {
                 break;
             }
             case 'log_level':
-                let i = this.filter.loglevels.findIndex( element => element === value);
-                if ( i === -1 ) this.filter.loglevels.push( value );
-                this.loglevelsCheckboxes.writeValue( this.filter.loglevels );
+                this.filter.loglevel = value;
                 break;
-            case 'pid': this.filter.pid = value.toString(); break;
+            case 'log_sublevel':
+                this.filter.subloglevel = value;
+                break;
+            case 'pid':
+                this.filter.pid = value.toString();
+                break;
         }
     }
 

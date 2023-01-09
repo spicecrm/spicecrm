@@ -83,6 +83,19 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     /**
+     * gets a style for the dropdown that sets it to the middle and to the full width of the dropdown box
+     */
+    get dropdownStyle(){
+        let rect = this.elementRef.nativeElement.getBoundingClientRect();
+        return {
+            'max-width': 'initial',
+            'left': 'initial',
+            'width': (rect.width - 5) + 'px',
+            'right': '-' + (rect.width / 2  - 5) + 'px'
+        }
+    }
+
+    /**
      * handle the view mode change and set the parent type if it is not set yet
      * @param mode
      */

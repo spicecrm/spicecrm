@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\Soap;
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -16,9 +17,6 @@ class SpiceSoapServiceUtil
 
     function setFaultObject($errorObject)
     {
-        if ($this->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->setFaultObject - ' . var_export($errorObject, true));
-        }
         global $service_object;
         $service_object->error($errorObject);
     }
@@ -58,7 +56,7 @@ class SpiceSoapServiceUtil
                 }
                 // we have a different IP address
                 if ($_SESSION[$session_var] != $clientIP && empty ($classCheck)) {
-                    LoggerManager::getLogger()->fatal("IP Address mismatch: SESSION IP: {$_SESSION[$session_var]} CLIENT IP: {$clientIP}");
+                    LoggerManager::getLogger()->fatal('soap',"IP Address mismatch: SESSION IP: {$_SESSION[$session_var]} CLIENT IP: {$clientIP}");
                     return false;
                 }
             } else {
@@ -70,15 +68,12 @@ class SpiceSoapServiceUtil
 
     function checkACLAccess($bean, $viewType, $errorObject, $error_key)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->checkACLAccess');
         if (!$bean->ACLAccess($viewType)) {
             LoggerManager::getLogger()->error('SoapHelperWebServices->checkACLAccess - no ACLAccess');
             $errorObject->set_error($error_key);
             $this->setFaultObject($errorObject);
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->checkACLAccess');
             return false;
         } // if
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->checkACLAccess');
         return true;
     } // fn
 
@@ -91,7 +86,6 @@ class SpiceSoapServiceUtil
 
     function get_user_module_list($user)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_user_module_list');
         SpiceACL::getInstance()->filterModuleList($modules, false);
         return $modules;
 
@@ -99,7 +93,6 @@ class SpiceSoapServiceUtil
 
     function get_name_value_list($value)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_name_value_list');
         global $app_list_strings;
         $list = [];
         if (!empty($value->field_defs)) {
@@ -129,14 +122,12 @@ class SpiceSoapServiceUtil
                 }
             }
         }
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->get_name_value_list');
         return $list;
 
     }
 
     function get_name_value_list_for_fields($value, $fields)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_name_value_list_for_fields');
         global $app_list_strings;
         global $invalid_contact_fields;
 
@@ -172,10 +163,6 @@ class SpiceSoapServiceUtil
                 } // if
             } // foreach
         } // if
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->get_name_value_list_for_fields');
-        if ($this->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->get_name_value_list_for_fields - return data = ' . var_export($list, true));
-        } // if
         return $list;
 
     } // fn
@@ -183,12 +170,10 @@ class SpiceSoapServiceUtil
 
     function array_get_name_value_list($array)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->array_get_name_value_list');
         $list = [];
         foreach ($array as $name => $value) {
             $list[$name] = $this->get_name_value($name, $value);
         }
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->array_get_name_value_list');
         return $list;
 
     }
@@ -196,7 +181,6 @@ class SpiceSoapServiceUtil
 
     function array_get_name_value_lists($array)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->array_get_name_value_lists');
         $list = [];
         foreach ($array as $name => $value) {
             $tmp_value = $value;
@@ -208,14 +192,12 @@ class SpiceSoapServiceUtil
             }
             $list[$name] = $this->get_name_value($name, $tmp_value);
         }
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->array_get_name_value_lists');
         return $list;
     }
 
 
     function name_value_lists_get_array($list)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->name_value_lists_get_array');
         $array = [];
         foreach ($list as $key => $value) {
             if (isset($value['value']) && isset($value['name'])) {
@@ -229,7 +211,6 @@ class SpiceSoapServiceUtil
                 }
             }
         }
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->name_value_lists_get_array');
         return $array;
     }
 
@@ -237,7 +218,6 @@ class SpiceSoapServiceUtil
     function array_get_return_value($array, $module)
     {
 
-        LoggerManager::getLogger()->info('Begin/End: SoapHelperWebServices->array_get_return_value');
         return ['id'=>$array['id'],
             'module_name' => $module,
             'name_value_list' => $this->array_get_name_value_list($array)
@@ -247,7 +227,6 @@ class SpiceSoapServiceUtil
 
     function get_return_value_for_fields($value, $module, $fields)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_return_value_for_fields');
         global $module_name;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $module_name = $module;
@@ -255,7 +234,6 @@ class SpiceSoapServiceUtil
             $value->user_hash = '';
         }
         $value = SpiceUtils::cleanSensitiveData($value->field_defs, $value);
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->get_return_value_for_fields');
         return ['id'=>$value->id,
             'module_name' => $module,
             'name_value_list' => $this->get_name_value_list_for_fields($value, $fields)
@@ -265,7 +243,6 @@ class SpiceSoapServiceUtil
 
     function get_return_value_for_link_fields($bean, $module, $link_name_to_value_fields_array)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_return_value_for_link_fields');
         global $module_name;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $module_name = $module;
@@ -275,13 +252,9 @@ class SpiceSoapServiceUtil
         $bean = SpiceUtils::cleanSensitiveData($bean->field_defs, $bean);
 
         if (empty($link_name_to_value_fields_array) || !is_array($link_name_to_value_fields_array)) {
-            LoggerManager::getLogger()->debug('End: SoapHelperWebServices->get_return_value_for_link_fields - Invalid link information passed ');
             return [];
         }
 
-        if ($this->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->get_return_value_for_link_fields - link info = ' . var_export($link_name_to_value_fields_array, true));
-        } // if
         $link_output = [];
         foreach ($link_name_to_value_fields_array as $link_name_value_fields) {
             if (!is_array($link_name_value_fields) || !isset($link_name_value_fields['name']) || !isset($link_name_value_fields['value'])) {
@@ -313,29 +286,22 @@ class SpiceSoapServiceUtil
                 } // if
             } // if
         } // foreach
-        LoggerManager::getLogger()->debug('End: SoapHelperWebServices->get_return_value_for_link_fields');
-        if ($this->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->get_return_value_for_link_fields - output = ' . var_export($link_output, true));
-        } // if
         return $link_output;
     } // fn
 
 
     function new_handle_set_relationship($module_name, $module_id, $link_field_name, $related_ids, $name_value_list, $delete)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->new_handle_set_relationship');
         global $beanList, $beanFiles;
 
         if (empty($beanList[$module_name])) {
             LoggerManager::getLogger()->debug('SoapHelperWebServices->new_handle_set_relationship - module ' . $module_name . ' does not exists');
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_relationship');
             return false;
         } // if
 
         $mod = BeanFactory::getBean($module_name);
         $mod->retrieve($module_id);
         if (!$mod->ACLAccess('DetailView')) {
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_relationship');
             return false;
         }
 
@@ -359,10 +325,8 @@ class SpiceSoapServiceUtil
                     $mod->$link_field_name->delete($module_id, $id);
                 } // foreach
             } // else
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_relationship');
             return true;
         } else {
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_relationship');
             return false;
         }
     }
@@ -370,7 +334,6 @@ class SpiceSoapServiceUtil
 
     function get_return_value($value, $module)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_return_value');
         global $module_name;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $module_name = $module;
@@ -378,7 +341,6 @@ class SpiceSoapServiceUtil
             $value->user_hash = '';
         }
         $value = SpiceUtils::cleanSensitiveData($value->field_defs, $value);
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_entries');
         return ['id'=>$value->id,
             'module_name' => $module,
             'name_value_list' => $this->get_name_value_list($value)
@@ -388,9 +350,8 @@ class SpiceSoapServiceUtil
 
     function login_success($name_value_list = [])
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->login_success');
         global $current_language, $app_strings, $app_list_strings;
-        $current_language = SpiceConfig::getInstance()->config['default_language'];
+        $current_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
         if (is_array($name_value_list) && !empty($name_value_list)) {
             foreach ($name_value_list as $key => $value) {
                 if (isset($value['name']) && ($value['name'] == 'language')) {
@@ -411,11 +372,9 @@ class SpiceSoapServiceUtil
                 $current_language = $_SESSION['user_language'];
             } // if
         }
-        LoggerManager::getLogger()->info("Users language is = " . $current_language);
         $app_strings = LanguageManager::loadDatabaseLanguage($current_language);
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->login_success');
     } // fn
 
 
@@ -431,7 +390,6 @@ class SpiceSoapServiceUtil
 
     function add_create_account($seed)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->add_create_account');
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $account_name = $seed->account_name;
         $account_id = $seed->account_id;
@@ -452,7 +410,6 @@ class SpiceSoapServiceUtil
 
             if ($seed->account_name == '' && isset($temp->account_id)) {
                 $seed->accounts->delete($seed->id, $temp->account_id);
-                LoggerManager::getLogger()->info('End: SoapHelperWebServices->add_create_account');
                 return;
             }
             $arr = [];
@@ -497,20 +454,15 @@ class SpiceSoapServiceUtil
             if (isset($focus->id) && $focus->id != '') {
                 $seed->account_id = $focus->id;
             } // if
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->add_create_account');
 
-        } else {
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->add_create_account - Insufficient ACLAccess');
-        } // else
+        }
     } // fn
 
 
     function check_for_duplicate_contacts($seed)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->check_for_duplicate_contacts');
 
         if (isset($seed->id)) {
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_for_duplicate_contacts - no duplicte found');
             return null;
         }
 
@@ -527,7 +479,6 @@ class SpiceSoapServiceUtil
             $contacts2 = $seed->emailAddress->getBeansByEmailAddress($trimmed_email2);
             $contacts = array_merge($contacts, $contacts2);
             if (count($contacts) == 0) {
-                LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_for_duplicate_contacts - no duplicte found');
                 return null;
             } else {
                 foreach ($contacts as $contact) {
@@ -535,57 +486,16 @@ class SpiceSoapServiceUtil
                         if ((!empty($trimmed_email) || !empty($trimmed_email2)) && (strcmp($trimmed_email, $contact->email1) == 0 || strcmp($trimmed_email, $contact->email2) == 0 || strcmp($trimmed_email2, $contact->email) == 0 || strcmp($trimmed_email2, $contact->email2) == 0)) {
                             $contact->load_relationship('accounts');
                             if (empty($seed->account_name) || strcmp($seed->account_name, $contact->account_name) == 0) {
-                                LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_for_duplicate_contacts - duplicte found ' . $contact->id);
                                 return $contact->id;
                             }
                         }
                     }
                 }
-                LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_for_duplicate_contacts - no duplicte found');
                 return null;
             }
         } else
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->check_for_duplicate_contacts - no duplicte found');
         return null;
     }
-
-
-    function decrypt_string($string)
-    {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->decrypt_string');
-        if (function_exists('mcrypt_cbc')) {
-
-            $focus = BeanFactory::getBean('Administration');
-            $focus->retrieveSettings();
-            $key = '';
-            if (!empty($focus->settings['ldap_enc_key'])) {
-                $key = $focus->settings['ldap_enc_key'];
-            }
-            if (empty($key)) {
-                LoggerManager::getLogger()->info('End: SoapHelperWebServices->decrypt_string - empty key');
-                return $string;
-            } // if
-            $buffer = $string;
-            $key = substr(md5($key), 0, 24);
-            $iv = "password";
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->decrypt_string');
-            return mcrypt_cbc(MCRYPT_3DES, $key, pack("H*", $buffer), MCRYPT_DECRYPT, $iv);
-        } else {
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->decrypt_string');
-            return $string;
-        }
-    } // fn
-
-
-    function isLogLevelDebug()
-    {
-        if (isset(SpiceConfig::getInstance()->config['logger'])) {
-            if (isset(SpiceConfig::getInstance()->config['logger']['level'])) {
-                return (SpiceConfig::getInstance()->config['logger']['level'] == 'debug');
-            } // if
-        }
-        return false;
-    } // fn
 
 
     function get_name_value($field, $value)
@@ -598,7 +508,6 @@ class SpiceSoapServiceUtil
 
     function filter_fields($value, $fields)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->filter_fields');
         global $invalid_contact_fields;
         $filterFields = [];
         foreach ($fields as $field) {
@@ -627,18 +536,15 @@ class SpiceSoapServiceUtil
             }
             $filterFields[] = $field;
         }
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->filter_fields');
         return $filterFields;
     }
 
 
     function get_return_module_fields($value, $module,$fields, $translate=true)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_return_module_fields');
         global $module_name;
         $module_name = $module;
         $result = $this->get_field_list($value,$fields,  $translate);
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->get_return_module_fields');
 
         $tableName = $value->getTableName();
 
@@ -716,7 +622,6 @@ class SpiceSoapServiceUtil
 
     function get_field_list($value,$fields,  $translate=true) {
 
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->get_field_list(too large a struct, '.print_r($fields, true).", $translate");
         $module_fields = [];
         $link_fields = [];
         if(!empty($value->field_defs)){
@@ -815,13 +720,11 @@ class SpiceSoapServiceUtil
             $module_fields['created_by_name']['name'] = 'created_by_name';
         }
 
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->get_field_list');
         return ['module_fields' => $module_fields, 'link_fields' => $link_fields];
     }
 
 
     function new_handle_set_entries($module_name, $name_value_lists, $select_fields = FALSE) {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->new_handle_set_entries');
         global $app_list_strings;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -968,13 +871,11 @@ class SpiceSoapServiceUtil
 
         // handle returns for set_entries_detail() and set_entries()
         if ($select_fields !== FALSE) {
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_entries');
             return [
                 'name_value_lists' => $ret_values,
             ];
         }
         else {
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->new_handle_set_entries');
             return [
                 'ids' => $ids,
             ];
@@ -998,7 +899,6 @@ class SpiceSoapServiceUtil
 
     function validate_authenticated($session_id)
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->validate_authenticated');
         if (!empty($session_id)) {
 
             // only initialize session once in case this method is called multiple times
@@ -1014,8 +914,6 @@ class SpiceSoapServiceUtil
                 $current_user = $authController->getCurrentUser();
                 $current_user->retrieve($_SESSION['user_id']);
                 $this->login_success();
-                LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->validate_authenticated - passed');
-                LoggerManager::getLogger()->info('End: SoapHelperWebServices->validate_authenticated');
                 return true;
             }
 
@@ -1023,7 +921,6 @@ class SpiceSoapServiceUtil
             session_destroy();
         }
         LogicHook::getInstance()->call_custom_logic('Users', 'login_failed');
-        LoggerManager::getLogger()->info('End: SoapHelperWebServices->validate_authenticated - validation failed');
         return false;
     }
 
@@ -1049,7 +946,6 @@ class SpiceSoapServiceUtil
 
     function getRelationshipResults($bean, $link_field_name, $link_module_fields, $optional_where = '', $order_by = '', $offset = 0, $limit = '')
     {
-        LoggerManager::getLogger()->info('Begin: SoapHelperWebServices->getRelationshipResults');
 
         global $beanList, $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -1092,10 +988,8 @@ class SpiceSoapServiceUtil
                 $row = SpiceUtils::cleanSensitiveData($bean->field_defs, $row);
                 $list[] = $row;
             }
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->getRelationshipResults');
             return ['rows' => $list, 'fields_set_on_rows' => $filterFields];
         } else {
-            LoggerManager::getLogger()->info('End: SoapHelperWebServices->getRelationshipResults - ' . $link_field_name . ' relationship does not exists');
             return false;
         } // else
 

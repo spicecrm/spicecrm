@@ -38,26 +38,15 @@ class SpiceDictionaryHandler extends SpiceSingleton
         }
     }
 
-    /**
-     *
-     * loads the dictionary Definitions of type metadata from the database
-     */
-    public static function loadMetaDataDefinitions() {
-        SpiceDictionaryHandler::loadMetaDataFiles();
-
-        if(SpiceDictionaryVardefs::isDbManaged()){
-            SpiceDictionaryVardefs::loadDictionaries();
-        }
-    }
 
     /**
      * load vardefs cached in sysdictionaryfields & relationships
      * @return void
      */
-    public static function loadCachedVardefs($forceReload = false){
+    public function loadCachedVardefs($forceReload = false){
+
         if(SpiceDictionaryVardefs::isDbManaged()){
             SpiceDictionaryVardefs::loadDictionariesCacheFromDb($forceReload);
-            // SpiceDictionaryVardefs::loadRelationshipsCacheFromDb($forceReload);
         }
     }
 
@@ -212,6 +201,11 @@ class SpiceDictionaryHandler extends SpiceSingleton
     public function setDictionaryItems($items){
 
         foreach($items as $item){
+
+            // make sure wqe have all values
+            if(!$item['non_db']) $item['non_db'] = 0;
+            if(!$item['exclude_from_audited']) $item['exclude_from_audited'] = 0;
+
             switch($item['scope']){
                 case 'c':
                     unset($item['scope']);
@@ -682,7 +676,7 @@ LEFT JOIN
 
     public function getDomainFieldValidationValues(){
 
-        $cached = SpiceCache::get('domainfieldvalidationvaluess');
+        $cached = SpiceCache::get('domainfieldvalidationvalues');
         if($cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
@@ -696,7 +690,7 @@ LEFT JOIN
             $validationvaluesArray[] = array_merge($domainfieldvalidation, ['scope' => 'c']);
         }
 
-        SpiceCache::set('domainfieldvalidationvaluess', $cached);
+        SpiceCache::set('domainfieldvalidationvalues', $validationvaluesArray);
 
         return $validationvaluesArray;
     }
