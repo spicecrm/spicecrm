@@ -54,7 +54,7 @@
         </h3>
         <div class="slds-section__content">
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
-                <div class="slds-p-around--x-small">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
                     <div class="slds-form-element">
                         <label class="slds-form-element__label"><system-label label="LBL_DEVELOPER_MODE"></system-label></label>
                         <div class="slds-form-element__control">
@@ -68,22 +68,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">
+                <div class="slds-form-element__control slds-size--1-of-2 slds-truncate slds-p-around--x-small">
                     <system-label label="LBL_STACKTRACE"></system-label>
                     <div class="slds-p-vertical--xx-small">
                         <system-checkbox [(ngModel)]="settings.advanced.stack_trace_errors"></system-checkbox>
                     </div>
                 </div>
-                <div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">
+                <!--div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">
                     <system-label label="LBL_LOG_SLOW_QUERIES"></system-label>
                     <div class="slds-p-vertical--xx-small">
                         <system-checkbox [(ngModel)]="settings.advanced.dump_slow_queries"></system-checkbox>
                     </div>
-                </div>
-                <div class="slds-form-element__control slds-size--1-of-2 slds-p-around--x-small">
-                    <system-label label="LBL_SLOW_QUERYTIME_TRESHHOLD"></system-label>
-                    <system-input-integer [(ngModel)]="settings.advanced.slow_query_time_msec"></system-input-integer>
-                </div>
+                </div-->
+
             </div>
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
                 <div class="slds-form-element__control slds-size--1-of-2 slds-p-around--x-small">
@@ -181,6 +178,10 @@
                             <system-input-integer autocomplete="off" [(ngModel)]="settings.logger.file_maxlogs"></system-input-integer>
                         </div>
                     </div>
+                    <div class="slds-form-element__control slds-size--1-of-1 slds-p-around--x-small">
+                        <system-label label="LBL_SLOW_QUERYTIME_TRESHHOLD"></system-label>
+                        <system-input-integer [(ngModel)]="settings.advanced.slow_query_time_msec"></system-input-integer>
+                    </div>
                 </div>
                 <div class="slds-size--1-of-2 slds-grid slds-grid--vertical">
                     <div class="slds-form-element__control slds-size--1-of-1 slds-p-around--x-small">
@@ -192,6 +193,9 @@
                             <system-checkbox-group-checkbox value="warn" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_WARN"></system-label></system-checkbox-group-checkbox>
                             <system-checkbox-group-checkbox value="security" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SECURITY"></system-label></system-checkbox-group-checkbox>
                             <system-checkbox-group-checkbox value="fatal" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_FATAL"></system-label></system-checkbox-group-checkbox>
+                            <system-checkbox-group-checkbox value="sql" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SQL"></system-label></system-checkbox-group-checkbox>
+                            <system-checkbox-group-checkbox value="slowsql" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SLOWSQL"></system-label></system-checkbox-group-checkbox>
+                            <system-checkbox-group-checkbox value="developer" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_DEVELOPER"></system-label></system-checkbox-group-checkbox>
                         </system-checkbox-group>
                     </div>
                 </div>

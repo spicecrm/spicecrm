@@ -2,9 +2,10 @@
  * @module WorkbenchModule
  */
 import {
-    Component
+    Component, Injector
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
+import {modal} from '../../services/modal.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
@@ -30,7 +31,7 @@ export class DictionaryManagerAddDefinitionModal {
      */
     public messages: DictionaryManagerMessage[] = [];
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modal: modal, public modelutilities: modelutilities, public injector: Injector) {
         this.dictionarydefinition = {
             id: this.modelutilities.generateGuid(),
             name: '',

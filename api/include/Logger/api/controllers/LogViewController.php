@@ -105,7 +105,12 @@ class LogViewController{
     public function APIlogConfigSet( Request $req, Response $res, $args ): Response {
         $db = DBManagerFactory::getInstance();
         $body = $req->getParsedBody();
+        // set the id
         $body['id'] = $args['id'];
+        // mingle is active
+        $body['is_active'] = $body['is_active'] === true || $body['is_active'] == '1' ? 1 : 0;
+
+        // run the query
         $db->upsertQuery('sysapilogconfig', ['id' => $args['id']], $body);
         return $res->withJson(['success' => true]);
     }

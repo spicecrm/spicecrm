@@ -36,7 +36,15 @@ export class DictionaryManagerDefinitions {
      *
      * @private
      */
-    public definitionfiltertype: string;
+    public definitionfiltertype: string = '';
+    /**
+     * a filter for the scopes
+     */
+    public definitionfilterscope: ''|'g'|'c' = '';
+    /**
+     * a filter fot the status
+     */
+    public definitionfilterstatus: ''|'i' | 'd' | 'a' = '';
 
     /**
      * for loading spinner in repair button
@@ -61,6 +69,10 @@ export class DictionaryManagerDefinitions {
             if(this.definitionfiltertype && d.sysdictionary_type != this.definitionfiltertype) return false;
             // if we have a term filter apply it
             if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0 || (d.tablename && d.tablename.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0))) return false;
+            // if scope is set apply scope Filter
+            if(this.definitionfilterscope != '' && d.scope != this.definitionfilterscope) return false;
+            // if scope is set apply status Filter
+            if(this.definitionfilterstatus != '' && d.status != this.definitionfilterstatus) return false;
             // otherwise list it
             return true;
         }).sort((a, b) => a.name.localeCompare(b.name));

@@ -37,8 +37,6 @@ class SpiceSoapRegistry {
 	protected function registerFunction() {
 		// START OF REGISTER FUNCTIONS
 		
-		LoggerManager::getLogger()->info('Begin: registry->registerFunction');
-		
 		$this->serviceClass->registerFunction(
 		  	'login',
 		     ['user_auth'=>'tns:user_auth', 'application_name'=>'xsd:string', 'name_value_list'=>'tns:name_value_list'],
@@ -95,7 +93,6 @@ class SpiceSoapRegistry {
 	        ['session'=>'xsd:string', 'module_name'=>'xsd:string', 'query'=>'xsd:string', 'deleted' => 'xsd:int'],
 	        ['return'=>'tns:get_entries_count_result']);
 
-	    LoggerManager::getLogger()->info('END: registry->registerFunction');
 	}
 
 	/**
@@ -105,8 +102,6 @@ class SpiceSoapRegistry {
 	protected function registerTypes() {
 		
 		// START OF REGISTER COMPLEX TYPES
-		LoggerManager::getLogger()->info('Begin: registry->registerTypes');
-
 		$this->serviceClass->registerType(
 		   	 'user_auth',
 		   	 'complexType',
@@ -743,7 +738,5 @@ class SpiceSoapRegistry {
                 'error' => ['name' =>'error', 'type'=>'tns:error_value'],
             ]
         );
-		
-		LoggerManager::getLogger()->info('End: registry->registerTypes');
 	}
 }
