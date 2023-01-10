@@ -535,6 +535,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'relationship' => 'emails_leads_rel',
                 'source' => 'non-db',
                 'unified_search' => true,
+                'module' => 'Emails',
+                'bean_name' => 'Email',
                 'vname' => 'LBL_EMAILS',
             ],
         'campaigns' =>
