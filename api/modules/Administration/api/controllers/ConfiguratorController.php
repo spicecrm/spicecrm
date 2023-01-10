@@ -1,16 +1,14 @@
 <?php
 namespace SpiceCRM\modules\Administration\api\controllers;
 
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use Slim\Routing\RouteCollectorProxy;
 use stdClass;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -101,7 +99,7 @@ class ConfiguratorController{
      * @throws \Exception
      */
 
-    public function convertToHTMLDecoded( Request $req, Response $res, $args ): Response {
+    public function readConfig( Request $req, Response $res, $args ): Response {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
@@ -109,6 +107,11 @@ class ConfiguratorController{
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
         $retArray = [];
+
+        // check that we have a dictionary entry
+        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+            throw new NotFoundException('not a known table');
+        }
 
         $entries = $db->query("SELECT * FROM {$db->quote($args['table'])}");
         while ($entry = $db->fetchByAssoc($entries)) {
@@ -141,6 +144,10 @@ class ConfiguratorController{
         # header("Access-Control-Allow-Origin: *");
         if (!$current_user->is_admin) throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
+        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+            throw new NotFoundException('not a known table');
+        }
+
         SystemDeploymentCR::deleteDBEntry($args['table'], $args['id'], $args['table']);
 
         return $res->withJson(['status' => 'success']);
@@ -161,6 +168,10 @@ class ConfiguratorController{
 
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
         # header("Access-Control-Allow-Origin: *");
+
+        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+            throw new NotFoundException('not a known table');
+        }
 
         $postBody = $req->getParsedBody();
 
