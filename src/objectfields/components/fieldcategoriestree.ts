@@ -193,7 +193,7 @@ export class fieldCategoriesTree{
      */
     public getMatchedNodes() {
         return this.buildSelectableCategories().filter(i => {
-            return this.matchTerms(i.levels.map(x => x.node_name).join(), this.searchTerm);
+            return this.matchTerms(i.levels.map(x => this.language.getLabel(x.node_name)).join(), this.searchTerm);
         }).sort((a, b) => this.compareFullCategories(a.levels, b.levels));
     }
 
