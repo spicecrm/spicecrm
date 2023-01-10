@@ -29,5 +29,14 @@ RewriteRule ^ include/SpiceInstaller/install.php [QSA,L]
 # the default rewrite
 RewriteRule ^ index.php [QSA,L]
 
+#deny any unauthorized file access
+<Files *.*>
+    Order Deny,Allow
+    Deny from all
+</Files>
+<Files ~ "index.php|install.php|soap.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
 
 
