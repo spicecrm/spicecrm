@@ -171,6 +171,7 @@ export class UserPreferences implements OnDestroy {
         }
 
         this.loadDasboardPlaceHolder();
+        this.loadDashboardSetPlaceHolder();
         this.loadDashboardsLists();
         this.loadPreferences();
 
@@ -222,7 +223,7 @@ export class UserPreferences implements OnDestroy {
                     this.isLoading = false;
                     this.preferences = prefs;
 
-                    this.setHomeDashboardSetData(prefs.home_dashboardset);
+                    this.setHomeDashboardSetData(this.preferences.home_dashboardset);
                     this.setHomeDashboardData(this.preferences.home_dashboard);
                 },
                 error => {
@@ -256,10 +257,10 @@ export class UserPreferences implements OnDestroy {
      * @param value
      * @private
      */
-    public setDashboardSetData(value) {
-        this.preferences.home_dashboardset = value;
-        this.dashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
-    }
+    // public setDashboardSetData(value) {
+    //     this.preferences.home_dashboardset = value;
+    //     this.dashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
+    // }
 
     /**
      * set the home dashboard data
