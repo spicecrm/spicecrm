@@ -50,10 +50,9 @@ $routes = [
     [
         'method'      => 'get',
         'route'       => '/configuration/configurator/entries/{table}',
-        'oldroute'    => '/configurator/entries/{table}',
         'class'       => ConfiguratorController::class,
-        'function'    => 'convertToHTMLDecoded',
-        'description' => 'converts the arguments to an html decoded value',
+        'function'    => 'readConfig',
+        'description' => 'reads the config from a db table as gen eric interface',
         'options'     => ['adminOnly' => true, 'validate' => true ],
         'parameters'  => [
             'table' => [

@@ -141,6 +141,8 @@ import {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashl
 import {APIlogConfig} from "./components/apilogconfig";
 import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanagereditdefinitionmodal";
 import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
+import {RoleMenuManager} from "./components/rolemenumanager";
+import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
 
 
 @NgModule({
@@ -272,7 +274,9 @@ import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlink
         DashletGenerator,
         DashletGeneratorDashlets,
         DashletGeneratorDashletDetails,
-        ConfigTransfer
+        ConfigTransfer,
+        RoleMenuManager,
+        RoleMenuManagerEditRoleModal
     ],
     exports: [
         SortPipe,
