@@ -54,11 +54,12 @@ class SpiceDictionaryVardefs  {
      */
     private static $instance;
 
-    private $dictionary = [];
+    // private $dictionary = [];
 
     public final function __construct()
     {
 
+        /*
         $cached = SpiceCache::get('dictionaryfields');
         if($cached) {
             $this->dictionary = $cached;
@@ -80,6 +81,7 @@ class SpiceDictionaryVardefs  {
 
         // write the cache
         SpiceCache::set('dictionaryfields', $this->dictionary);
+        */
     }
 
     private function __clone()
@@ -709,6 +711,7 @@ class SpiceDictionaryVardefs  {
                 $dict['id'] = $row['dictionaryid'];
                 $dict['name'] = $row['dictionaryname'];
                 $dict['dictionaryname'] = $row['dictionaryname'];
+                $dict['dictionarytype'] = $row['dictionarytype'];
                 $dict['type'] = $row['dictionarytype'];
                 $dict['table'] = $row['tablename'];
                 $dict['contenttype'] = $row['contenttype'];
