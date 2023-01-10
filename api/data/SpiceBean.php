@@ -2951,10 +2951,6 @@ class SpiceBean
         foreach ($this->field_defs as $field) {
             if (isset($this->{$field['name']})) {
                 switch ($field['type']) {
-                    case 'enum':
-                        if (!isset($GLOBALS['app_list_strings'][$field['options']][$this->{$field['name']}]))
-                            $invalidFields[$field['name']][] = 'Invalid enum value (allowed: \'' . implode('\'|\'', $GLOBALS['app_list_strings'][$field['options']]) . '\').';
-                        break;
                     case 'varchar':
                     case 'text':
                         if (isset($field['len']) and strlen($this->{$field['name']}) > $field['len'])
