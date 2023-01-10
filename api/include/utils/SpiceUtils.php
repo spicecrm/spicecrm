@@ -193,10 +193,9 @@ class SpiceUtils
      * @param bool $exit
      */
     public static function spiceCleanup(bool $exit = false) {
-        // todo check if there's even a database
         if (SpiceConfig::getInstance()->configExists()) { // workaround for installer for now. variable is set in SpiceInstallerController ... find a better way
             $db = DBManagerFactory::getInstance();
-            $db->disconnect();
+            if($db) $db->disconnect();
         }
         if ($exit) {
             exit;
