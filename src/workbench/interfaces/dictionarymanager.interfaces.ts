@@ -42,7 +42,6 @@ export interface DictionaryItem {
     exclude_from_audited?: number;
     required?: number;
     default_value?: string;
-    field_comment?: string;
     description?: string;
     deleted: number;
     version?: string;
