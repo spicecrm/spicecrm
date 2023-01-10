@@ -110,7 +110,7 @@ class ConfiguratorController{
 
         $retArray = [];
 
-        $entries = $db->query("SELECT * FROM `{$db->quote($args['table'])}`");
+        $entries = $db->query("SELECT * FROM {$db->quote($args['table'])}");
         while ($entry = $db->fetchByAssoc($entries)) {
             $retArrayEntry = [];
             foreach ($entry as $key => $value) {
