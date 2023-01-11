@@ -6,6 +6,7 @@ import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
+import {toast} from "../../../services/toast.service";
 
 declare var moment: any;
 
@@ -18,9 +19,13 @@ export class CampaignExportModal {
 
     public exportReports: any[] = [];
 
-    constructor(public language: language, public model: model, public backend: backend, public modal: modal) {
-        this.backend.getRequest('module/CampaignTasks/export/reports').subscribe(reports => {
-            this.exportReports = reports;
+    constructor(public language: language, public model: model, public backend: backend, public modal: modal, public toast: toast) {
+        this.backend.getRequest('module/CampaignTasks/export/reports').subscribe({
+            next: (reports) => {
+                this.exportReports = reports;
+            }, error: (error) => {
+                this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+            }
         });
     }
 
@@ -34,15 +39,15 @@ export class CampaignExportModal {
             record: reportid,
             parentbeanId: this.model.id,
             parentbeanModule: this.model.module
-        }).subscribe(
-            url => {
+        }).subscribe({
+            next: (url) => {
                 this.downloadURL(url, 'csv');
                 loading.emit(true);
                 this.close();
-            },
-            error => {
+            }, error: (error) => {
                 loading.emit(true);
-            });
+            }
+        });
     }
 
     public downloadXLS(reportid) {
@@ -51,15 +56,15 @@ export class CampaignExportModal {
             record: reportid,
             parentbeanId: this.model.id,
             parentbeanModule: this.model.module
-        }).subscribe(
-            url => {
+        }).subscribe({
+            next: (url) => {
                 this.downloadURL(url, 'xlsx');
                 loading.emit(true);
                 this.close();
-            },
-            error => {
+            }, error: (error) => {
                 loading.emit(true);
-            });
+            }
+        });
     }
 
     /**
