@@ -11,6 +11,7 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 
 import {reporterconfig} from '../services/reporterconfig';
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 /**
  * @ignore
@@ -71,8 +72,8 @@ export class ReporterIntegrationCSVexportButton {
         this.backend.getDownloadPostRequestFile('module/KReports/plugins/action/kcsvexport/export', {
             record: this.model.id,
             dynamicoptions: JSON.stringify(whereConditions)
-        }).subscribe(
-            url => {
+        }).subscribe({
+            next: (url: string) => {
                 let a = document.createElement("a");
                 document.body.appendChild(a);
                 a.href = url;
@@ -82,11 +83,10 @@ export class ReporterIntegrationCSVexportButton {
                 a.remove();
 
                 awaitpromise.emit(true);
-            },
-            error => {
+            }, error: (error) => {
                 awaitpromise.emit(true);
-                this.toast.sendToast('Error Loading File', "error");
-            });
-
+                this.toast.sendToast(this.language.getLabel('MSG_ERROR_LOADING_FILE'), 'error');
+            }
+        });
     }
 }

@@ -29,10 +29,8 @@
                     </system-preferences-panel-item-display>
                     <system-preferences-panel-item-edit>
                         <div class="slds-select_container">
-                            <select class="slds-select" [ngModel]="preferences.home_dashboardset" (ngModelChange)="setHomeDashboardSetData($event)">
-                                <option *ngFor="let dashboardSet of dashboardSets" [value]="dashboardSet.id">
-                                    {{dashboardSet.name}}
-                                </option>
+                            <select class="slds-select" [(ngModel)]="preferences.home_dashboardset" (ngModelChange)="setHomeDashboardSetData($event)">
+                                <option *ngFor="let dashboardSet of dashboardSets" [value]="dashboardSet.id">{{dashboardSet.name}}</option>
                             </select>
                         </div>
                     </system-preferences-panel-item-edit>
