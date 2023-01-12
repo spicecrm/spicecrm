@@ -29,6 +29,23 @@ $routes = [
             ]
 
         ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/documentrevisions/revisionAccepted/{id}',
+        'class'       => DocumentRevisionsController::class,
+        'function'    => 'setAcceptanceStatus',
+        'description' => 'set acceptance_status to 1',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'users_documentrevisions Id',
+                'type' => 'guid',
+                'required' => true
+            ]
+
+        ]
     ]
 ];
 

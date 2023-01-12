@@ -31,4 +31,17 @@ class DocumentRevisionsController
 
         return $res->withJson($result);
     }
+
+    public function setAcceptanceStatus(Request $req, Response $res, array $args){
+
+        $seed = BeanFactory::getBean('users_documentrevisions', $args['id']);
+
+        $insert_query = "UPDATE users_documentrevisions SET acceptance_status = 1 WHERE users_documentrevisions.document_revision_id = '{$args['id']}' ";
+
+        $this->db->query($insert_query);
+
+//        $bean->db->query($insert_query);
+//        $list = $seed->get_linked_beans( 'documentrevisions', 'DocumentRevisions' );
+
+    }
 };
