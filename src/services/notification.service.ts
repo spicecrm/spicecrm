@@ -100,7 +100,7 @@ export class notification {
         });
 
         this.unreadNotifications = this.unreadNotifications.filter(n => n.id !== id);
-        this.unreadCount--;
+        // this.unreadCount--;
         this.backend.postRequest(`common/SpiceNotifications/${id}/markasread`);
     }
 
