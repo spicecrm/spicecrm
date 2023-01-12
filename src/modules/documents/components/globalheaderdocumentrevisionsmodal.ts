@@ -1,18 +1,16 @@
-import {Component, ComponentRef, EventEmitter, OnInit, Output, SkipSelf, Injector} from '@angular/core';
+import {Component, ComponentRef, EventEmitter, OnInit, Input, SkipSelf} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
-import {modellist} from "../../../services/modellist.service";
 import {modelattachments} from "../../../services/modelattachments.service";
-import {view} from "../../../services/view.service";
 import {Observable, Subject, Subscription} from "rxjs";
 import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'global-header-document-revisions-modal',
     templateUrl: '../templates/globalheaderdocumentrevisionsmodal.html',
-    providers: [model, view, modellist, modelattachments]
+    providers: [model, modelattachments]
 })
 export class GlobalHeaderDocumentRevisionsModal implements OnInit {
 
@@ -20,8 +18,13 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
 
     public fieldset: string = '';
 
+    /**
+     * the documentrevisions coming from the button
+     */
+    @Input() public relatedRevisions: any;
+
     public componentconfig: any;
-    public relatedRevisions = [];
+    // public relatedRevisions = [];
 
     constructor(
         public backend: backend,
@@ -29,46 +32,19 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
         public model: model,
         public modal: modal,
         public modelattachments: modelattachments,
-        public injector: Injector,
-        public view: view,
-        public modellist: modellist,
     ) {
-        // this.model.module = 'DocumentRevisions';
-        // this.model.initialize();
-        // this.backend.getRequest(`/module/documentrevisions/relatedRevisions/${this.model.data.assigned_user_id}`).subscribe(
-        //     res => {
-        //         this.relatedRevisions = res;
-        //         console.log('Test')
-
-        // })
-
+        this.model.module = 'DocumentRevisions';
+        this.model.initialize();
     }
 
 
     public ngOnInit() {
-        this.model.module = 'DocumentRevisions';
-        this.model.initialize();
-        this.loadRelated();
         // this.model.module = 'DocumentRevisions'
         // get the config
+        let exampleArray = this.relatedRevisions;
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderDocumentRevisionsModal', 'DocumentRevisions');
         this.fieldset = componentconfig.fieldset;
     }
-
-
-
-    public loadRelated(){
-
-        this.backend.getRequest(`/module/documentrevisions/relatedRevisions/${this.model.data.assigned_user_id}`).subscribe(
-            res => {
-                this.relatedRevisions = res;
-
-
-                // this.orgunits = beans.orgunits;
-                // this.orgcharts = beans.orgcharts;
-            })
-    }
-
 
 
     /**
@@ -127,6 +103,10 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
             }
         );
         return retSubject;
+    }
+
+    acceptance(id) {
+        this.backend.postRequest(`/module/documentrevisions/revisionAccepted/${id}`)
     }
 
     // Close the modal.
