@@ -170,21 +170,21 @@ export class notification {
 
         this.isLoading = true;
 
-        this.backend.getRequest('common/SpiceNotifications', {offset: this.notifications.length})
-            .subscribe((res: { count: number, records: NotificationI[] }) => {
+        this.backend.getRequest('common/SpiceNotifications', {offset: this.notifications.length}).subscribe({
+            next: (res: { count: number, records: NotificationI[] }) => {
 
-                    this.isLoading = false;
+                this.isLoading = false;
 
-                    this.notifications = this.notifications.concat(
-                        res.records.map(n => this.parseNotification(n))
-                    );
-                    this.unreadNotifications = this.notifications.filter(n => n.notification_read != 1);
+                this.notifications = this.notifications.concat(
+                    res.records.map(n => this.parseNotification(n))
+                );
+                this.unreadNotifications = this.notifications.filter(n => n.notification_read != 1);
 
-                    this.setUnreadCount();
-
-                }, () =>
-                    this.isLoading = false
-            );
+                this.setUnreadCount();
+            }, error: (err) => {
+                this.isLoading = false
+            }
+        });
     }
 
     /**
