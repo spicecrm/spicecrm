@@ -201,7 +201,7 @@ class SpiceLogger implements LoggerTemplate
         try {
             $this->logToSyslogs($level, $sublevel, $message, $logparams);
         } catch (DatabaseException $e) {
-            $this->logToFile('fatal', $this->prepareMessage($e->getMessage()));
+            $this->logToFile('fatal',$sublevel, $this->prepareMessage($e->getMessage()), $logparams);
         }
     }
 
