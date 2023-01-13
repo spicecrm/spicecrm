@@ -74,7 +74,7 @@ class LanguageManager
                     $retArray['default'] = $language['language_code'];
                 }
             }
-            SpiceCache::set('languges', $retArray);
+            SpiceCache::set('languages', $retArray);
         } else {
             return $ret;
         }
