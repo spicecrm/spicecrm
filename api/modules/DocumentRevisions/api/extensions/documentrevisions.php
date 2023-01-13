@@ -15,7 +15,7 @@ $RESTManager = RESTManager::getInstance();
 $routes = [
     [
         'method'      => 'get',
-        'route'       => '/module/documentrevisions/relatedRevisions/{id}',
+        'route'       => '/module/documentrevisions/{id}/relateduserrevisions',
         'class'       => DocumentRevisionsController::class,
         'function'    => 'loadUnreadRevisions',
         'description' => 'returns all user related users_documentrevision entries',
@@ -32,7 +32,7 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/documentrevisions/revisionAccepted/{id}',
+        'route'       => '/module/documentrevisions/{id}/revisionaccepted',
         'class'       => DocumentRevisionsController::class,
         'function'    => 'setAcceptanceStatus',
         'description' => 'set acceptance_status to 1',
@@ -43,7 +43,13 @@ $routes = [
                 'description' => 'users_documentrevisions Id',
                 'type' => 'guid',
                 'required' => true
-            ]
+            ],
+            'userid'       => [
+                'in' => 'body',
+                'type' => 'guid',
+                'required' => true,
+                'description' => 'contains the userid',
+            ],
 
         ]
     ]
