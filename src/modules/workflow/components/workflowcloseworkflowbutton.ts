@@ -30,22 +30,22 @@ export class WorkflowCloseWorkflowButton {
         return this.model.getField('workflow_status') == '40' || !this.session.authData.admin;
     }
 
-    /*
-    * close the task
-    */
+    /**
+     * close the task
+     */
     public execute() {
         this.modal.confirm(this.language.getLabel('MSG_CLOSE_WORKFLOW', '', 'long'), this.language.getLabel('MSG_CLOSE_WORKFLOW')).subscribe(response => {
             if (response) {
-                let spinner = this.modal.await('closing');
-                this.backend.postRequest(`module/Workflows/${this.model.id}/close`).subscribe(
-                    completed => {
+                const spinner = this.modal.await('LBL_PROCESSING');
+                this.backend.postRequest(`module/Workflows/${this.model.id}/close`).subscribe({
+                    next: () => {
                         spinner.emit(true);
                         this.model.getData(true);
-                    },
-                    error => {
+                    }, error: () => {
                         spinner.emit(true);
                         this.toast.sendToast(this.language.getLabel('MSG_ERROR_CLOSING_WORKFLOW'), 'error');
-                    });
+                    }
+                });
             }
         });
     }
