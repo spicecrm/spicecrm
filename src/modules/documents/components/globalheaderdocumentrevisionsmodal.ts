@@ -6,6 +6,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {Observable, Subject, Subscription} from "rxjs";
 import {modal} from "../../../services/modal.service";
+import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'global-header-document-revisions-modal',
@@ -32,6 +33,7 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
         public model: model,
         public modal: modal,
         public modelattachments: modelattachments,
+        public session: session,
     ) {
         this.model.module = 'DocumentRevisions';
         this.model.initialize();
@@ -106,7 +108,8 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
     }
 
     acceptance(id) {
-        this.backend.postRequest(`/module/documentrevisions/revisionAccepted/${id}`)
+        let body = {userid: this.session.authData.userId};
+        this.backend.postRequest(`/module/documentrevisions/${id}/revisionaccepted`, '', body)
     }
 
     // Close the modal.
