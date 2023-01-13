@@ -1632,12 +1632,16 @@ class SpiceBeanHandler
                         foreach ($beans as $thisBeanId => $beanData) {
                             $seed = BeanFactory::getBean($relModule, $thisBeanId);
 
+                            // cache for later use when retrieving related data
+                            $new_with_id = false;
+
                             if (empty($beanData['deleted'])) {
                                 // if it does not exist create new bean
                                 if (!$seed) {
                                     $seed = BeanFactory::getBean($relModule);
                                     $seed->id = $thisBeanId;
                                     $seed->new_with_id = true;
+                                    $new_with_id = true;
                                 }
 
                                 // populate and save and add
@@ -1655,8 +1659,12 @@ class SpiceBeanHandler
                                     }
                                 }
                                 // save if we had changes
-                                if ($changed)
+                                if ($changed) {
                                     $seed->save();
+                                }
+
+                                // retrieve relationship fields
+                                if($new_with_id) $seed->fill_in_relationship_fields();
 
                                 // CR1000357: added $additional_values parameter
                                 $thisBean->$fieldId->add($seed, $additional_values);
