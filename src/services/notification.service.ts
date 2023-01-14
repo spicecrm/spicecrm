@@ -72,7 +72,7 @@ export class notification {
 
         if (!('Notification' in window)) {
 
-            window.console.error('This browser does not support desktop notification');
+            console.error('This browser does not support desktop notification');
             return Promise.resolve(null);
 
         } else if (Notification.permission === 'default') {
