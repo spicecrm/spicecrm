@@ -119,7 +119,26 @@
                 <div class="slds-form-element__control slds-size--1-of-2 slds-truncate slds-p-around--x-small">
                     <system-label label="LBL_DISABLE_EXTERNAL_CACHE"></system-label>
                     <div class="slds-p-vertical--xx-small">
-                        <system-checkbox [(ngModel)]="settings.cache.external_cache_disabled"></system-checkbox>
+                        <system-checkbox [(ngModel)]="settings.cache.external_cache_disabled"><system-label label="LBL_CACHE_DISABLED"></system-label></system-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="settings.cache.class == 'SpiceCacheFile'" class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <system-label label="LBL_FILE_LOCTATION"></system-label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="settings.cache.file_location">
+                                <option value="cache">./cache</option>
+                                <option value="systemdir">System Temp Dir</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <div class="slds-grid slds-grid_vertical">
+                        <system-label label="LBL_FILE_NAME"></system-label>
+                        <system-checkbox class="slds-p-vertical--xx-small" [(ngModel)]="settings.cache.file_transparentnames"><system-label label="LBL_TRANSPARENT_FILENAMES"></system-label></system-checkbox>
                     </div>
                 </div>
             </div>
