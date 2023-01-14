@@ -40,10 +40,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SpiceCacheFile extends SpiceCacheAbstract
 {
-    /**
-     * @var path and file which will store the cache used for this backend
-     */
-    protected $_cacheFileName = 'externalCache';
+
+    protected $_cacheDirectory = 'cache';
 
     /**
      * @var bool true if the cache has changed and needs written to disk
@@ -64,13 +62,21 @@ class SpiceCacheFile extends SpiceCacheAbstract
     public function __construct()
     {
         parent::__construct();
-
-        if ( isset(SpiceConfig::getInstance()->config['external_cache_filename']) )
-            $this->_cacheFileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR .SpiceConfig::getInstance()->config['external_cache_filename'];
+            // get the dirctory to store it
+            switch (SpiceConfig::getInstance()->get('cache.file_location')){
+                case 'systemdir':
+                    $this->_cacheDirectory = sys_get_temp_dir();
+                    break;
+                default:
+                    $this->_cacheDirectory = 'cache';
+                    break;
+            }
     }
 
     private function getCachedFileName($key){
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . "spicecrmcache_{$this->_keyPrefix}_{$this->_cacheFileName}".md5($key);
+        if(!SpiceConfig::getInstance()->get('cache.file_transparentnames')) $key = md5($key);
+
+        return $this->_cacheDirectory . DIRECTORY_SEPARATOR . "spicecrmcache_{$this->_keyPrefix}_{$key}";
     }
 
     /**
