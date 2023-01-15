@@ -78,15 +78,21 @@ export class AdministrationDictRepair {
     }
 
     public repairResetExternalCache() {
-        let loadingModal = this.modal.await('LBL_LOADING');
-        this.backend.deleteRequest('system/cache').subscribe(result => {
-            loadingModal.emit(true);
-            if(result) {
-                this.toast.sendToast('LBL_CACHE_RESET', 'success');
-            } else {
-                this.toast.sendToast('LBL_ERROR', 'error');
+        this.modal.confirm('MSG_RESET_CACHE', 'MSG_RESET_CACHE').subscribe({
+            next: (res) => {
+                if (res) {
+                    let loadingModal = this.modal.await('LBL_LOADING');
+                    this.backend.deleteRequest('system/cache').subscribe(result => {
+                        loadingModal.emit(true);
+                        if (result) {
+                            this.toast.sendToast('LBL_CACHE_RESET', 'success');
+                        } else {
+                            this.toast.sendToast('LBL_ERROR', 'error');
+                        }
+                    });
+                }
             }
-        });
+        })
     }
 
     /**

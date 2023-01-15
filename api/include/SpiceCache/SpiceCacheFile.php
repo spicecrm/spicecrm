@@ -37,6 +37,7 @@
 namespace SpiceCRM\includes\SpiceCache;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 
 class SpiceCacheFile extends SpiceCacheAbstract
 {
@@ -76,7 +77,7 @@ class SpiceCacheFile extends SpiceCacheAbstract
     private function getCachedFileName($key){
         if(!SpiceConfig::getInstance()->get('cache.file_transparentnames')) $key = md5($key);
 
-        return $this->_cacheDirectory . DIRECTORY_SEPARATOR . "spicecrmcache_{$this->_keyPrefix}_{$key}";
+        return $this->_cacheDirectory . DIRECTORY_SEPARATOR . "spicecrmcache_{$key}";
     }
 
     /**
@@ -108,11 +109,12 @@ class SpiceCacheFile extends SpiceCacheAbstract
      * @see SpiceCacheAbstract::_getExternal()
      */
     protected function _getExternal(
-        $key
+        $key,
+        $direct = false
         )
     {
         // load up the external cache file
-        $c = $this->getCachedFileName($key);
+        $c = $direct ? $this->_cacheDirectory . $key : $this->getCachedFileName($key);
         if (file_exists($c)) {
             return unserialize(file_get_contents($c));
         }
@@ -136,13 +138,42 @@ class SpiceCacheFile extends SpiceCacheAbstract
     }
 
     /**
+     * returns the keys
+     *
+     * @return array
+     */
+    public function __getKeys(){
+        $stats = [];
+        $pattern = $this->_cacheDirectory . 'spicecrmcache_' . $this->_keyPrefix . '*';
+        $cacheFiles = glob($pattern);
+        foreach($cacheFiles as $cacheFile){
+            $fileStats = stat($cacheFile);
+            $stats[] = [
+                'key' => str_replace($this->_cacheDirectory, '', $cacheFile),
+                'size' => $fileStats[7],
+                'date' => date_create()->setTimestamp($fileStats[10])->format(TimeDate::DB_DATETIME_FORMAT)
+            ];
+        }
+        return $stats;
+    }
+
+    public function __deleteKeyDirect($key): bool{
+        if(file_exists($this->_cacheDirectory.$key)){
+            unlink($this->_cacheDirectory.$key);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * @see SpiceCacheAbstract::_resetExternal()
      *
      * Does nothing; we write to cache on destroy
      */
     protected function _resetExternal()
     {
-        $pattern = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'spicecrmcache_' . $this->_keyPrefix . '*';
+        $pattern = $this->_cacheDirectory . 'spicecrmcache_' . $this->_keyPrefix . '*';
         $cacheFiles = glob($pattern);
         foreach($cacheFiles as $cacheFile){
             unlink($cacheFile);

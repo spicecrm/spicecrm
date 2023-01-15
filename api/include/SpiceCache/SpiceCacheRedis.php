@@ -119,10 +119,11 @@ class SpiceCacheRedis extends SpiceCacheAbstract
      * @see SpiceCacheAbstract::_getExternal()
      */
     protected function _getExternal(
-        $key
+        $key,
+        $direct = false
         )
     {
-        $key = $this->_fixKeyName($key);
+        $key = $direct ? $key : $this->_fixKeyName($key);
         $returnValue = $this->_getRedisObject()->get($key);
         // return null if we don't get a cache hit
         if ( $returnValue === false ) {
@@ -144,11 +145,37 @@ class SpiceCacheRedis extends SpiceCacheAbstract
         $key = $this->_fixKeyName($key);
         $this->_getRedisObject()->delete($key);
     }
-    
+
+    /**
+     * returns the keys
+     *
+     * @return array
+     */
+    protected function _getKeys(){
+        $stats = [];
+        $keys = $this->_redis->keys("{$this->_keyPrefix}*");
+        foreach($keys as $key){
+
+            $stats[] = [
+                'key' => $key,
+                'size' => $this->_redis->strlen($key)
+            ];
+        }
+        return $stats;
+    }
+
+    public function __deleteKeyDirect($key): bool{
+        if($this->_getRedisObject()->get($key)){
+            $this->_redis->del($key);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @see SpiceCacheAbstract::_resetExternal()
      */
-    protected function _resetExternal()
+    public function __resetExternal()
     {
         $keys = $this->_redis->keys("{$this->_keyPrefix}*");
         $this->_redis->del($keys);
