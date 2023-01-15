@@ -184,7 +184,9 @@ class AdminController
                 'redis_host' => SpiceConfig::getInstance()->config['cache']['redis_host'] ?? 'localhost',
                 'redis_port' => SpiceConfig::getInstance()->config['cache']['redis_port'] ?? 6379,
                 'memcached_host' => SpiceConfig::getInstance()->config['cache']['memcached_host'] ?? '127.0.0.1',
-                'memcached_port' => SpiceConfig::getInstance()->config['cache']['memcached_port'] ?? 11211
+                'memcached_port' => SpiceConfig::getInstance()->config['cache']['memcached_port'] ?? 11211,
+                'file_location' => SpiceConfig::getInstance()->config['cache']['file_location'] ?? 'cache',
+                'file_transparentnames' => SpiceConfig::getInstance()->config['cache']['file_transparentnames'] ?? false,
             ],
             'logger' => SpiceConfig::getInstance()->config['logger']
         ]);
