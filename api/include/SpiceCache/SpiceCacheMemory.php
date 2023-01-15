@@ -57,7 +57,7 @@ class SpiceCacheMemory extends SpiceCacheAbstract
      *
      * Does nothing; cache is gone after request is done.
      */
-    protected function _getExternal($key)
+    protected function _getExternal($key, $direct = false)
     {
     }
     
@@ -69,7 +69,21 @@ class SpiceCacheMemory extends SpiceCacheAbstract
     protected function _clearExternal($key)
     {
     }
-    
+
+    /**
+     * returns the keys
+     *
+     * @return array
+     */
+    public function __getKeys(){
+        $stats = [];
+        return $stats;
+    }
+
+    public function __deleteKeyDirect($key): bool{
+        return true;
+    }
+
     /**
      * @see SpiceCacheAbstract::_resetExternal()
      *
