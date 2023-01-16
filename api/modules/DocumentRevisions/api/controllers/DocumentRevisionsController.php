@@ -26,10 +26,6 @@ class DocumentRevisionsController extends SpiceBean
             $result [] =  $modHandler->mapBean($listEntry);
         }
 
-        if(!$result){
-            throw new NotFoundException('No new DocumentRevisions to review');
-        }
-
         return $res->withJson($result);
     }
 

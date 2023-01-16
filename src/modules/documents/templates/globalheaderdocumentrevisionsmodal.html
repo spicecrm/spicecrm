@@ -3,7 +3,7 @@
     <system-modal-content [system-modal-content-grow]="false" class="slds-scrollable_none">
         <div class="slds-scrollable--y" >
                 <div class="slds-scrollable--y slds-height_full">
-                    <div *ngFor="let relatedRevision of relatedRevisions" class="slds-cell-buffer--left  slds-grid">
+                    <div *ngFor="let relatedRevision of relatedRevisions" class="slds-cell slds-grid">
                         <a (click)="process(relatedRevision.id)" class="slds-box_link slds-media  slds-size_11-of-12" href="javascript:void(0);">
                             <div class="slds-media__body">
                                 <div class="slds-welcome-mat__tile-body">
@@ -26,9 +26,9 @@
                                 </div>
                             </div>
                         </a>
-                        <div (click)="acceptance(relatedRevision.id)" class="slds-media slds-size_1-of-12 slds-align-content-center slds-box_link" href="javascript:void(0);">
-                        <system-utility-icon icon="check" size="medium"></system-utility-icon>
-                        </div>
+                        <a (click)="acceptance(relatedRevision.id)" class="slds-box_link slds-media slds-size_1-of-12" href="javascript:void(0);">
+                        <system-utility-icon class="slds-align--absolute-center" icon="check" size="medium"></system-utility-icon>
+                        </a>
                     </div>
                 </div>
         </div>
