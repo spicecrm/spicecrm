@@ -22,6 +22,7 @@ import {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdef
 import {DictionaryManagerItems} from "./components/dictionarymanageritems";
 import {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
 import {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
+import {DictionaryManagerMigrateDefinitionModal} from "./components/dictionarymanagermigratedefinitionmodal";
 import {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
 import {DictionaryManagerRelationships} from "./components/dictionarymanagerrelationships";
 import {DictionaryManagerRelationshipsDetails} from "./components/dictionarymanagerrelationshipsdetails";
@@ -139,6 +140,10 @@ import {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
 import {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 import {APIlogConfig} from "./components/apilogconfig";
 import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanagereditdefinitionmodal";
+import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
+import {RoleMenuManager} from "./components/rolemenumanager";
+import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
+
 
 @NgModule({
     imports: [
@@ -154,6 +159,7 @@ import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanag
     declarations: [
         CategoryTreeManager,
         CategoryTreeManagerNode,
+        CategoryTreeManagerLinkModal,
         DomainManager,
         DomainManagerDefinitions,
         DomainManagerFields,
@@ -172,6 +178,7 @@ import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanag
         DictionaryManagerItemDetails,
         DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
+        DictionaryManagerMigrateDefinitionModal,
         DictionaryManagerEditDefinitionModal,
         DictionaryManagerAddItemModal,
         DictionaryManagerRelationships,
@@ -267,10 +274,12 @@ import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanag
         DashletGenerator,
         DashletGeneratorDashlets,
         DashletGeneratorDashletDetails,
-        ConfigTransfer
+        ConfigTransfer,
+        RoleMenuManager,
+        RoleMenuManagerEditRoleModal
     ],
     exports: [
-        SortPipe
+        SortPipe,
     ]
 })
 export class WorkbenchModule {}

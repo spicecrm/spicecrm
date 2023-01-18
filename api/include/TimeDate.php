@@ -40,7 +40,7 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
@@ -288,7 +288,7 @@ class TimeDate
             $datef = AuthenticationController::getInstance()->getCurrentUser()->getPreference('datef');
         }
         if (empty($datef)) {
-            $datef = SpiceConfig::getInstance()->config['default_date_format'];
+            $datef = SpiceConfig::getInstance()->config['default_preferences']['datef'];
         }
         if (empty($datef)) {
             $datef = '';
@@ -324,10 +324,10 @@ class TimeDate
         $timef = $user->getPreference('timef');
         if(empty($timef) && AuthenticationController::getInstance()->getCurrentUser() && AuthenticationController::getInstance()->getCurrentUser() !== $user) {
             // if we got another user and it has no time format, try current user
-            $timef = AuthenticationController::getInstance()->getCurrentUser()->getPreference('$timef');
+            $timef = AuthenticationController::getInstance()->getCurrentUser()->getPreference('timef');
         }
         if (empty($timef)) {
-            $timef = SpiceConfig::getInstance()->config['default_time_format'];
+             $timef = SpiceConfig::getInstance()->config['default_preferences']['timef'];
         }
         if (empty($timef)) {
             $timef = '';
@@ -355,19 +355,10 @@ class TimeDate
             }
         }
 
-        $cacheKey= $this->get_date_time_format_cache_key($user);
-        $cachedValue = SugarCache::sugar_cache_retrieve($cacheKey);
 
-        if(!empty($cachedValue) )
-        {
-            return $cachedValue;
-        }
-        else
-        {
-            $value = $this->merge_date_time($this->get_date_format($user), $this->get_time_format($user));
-            SugarCache::sugar_cache_put($cacheKey,$value,0);
-            return $value;
-        }
+        $value = $this->merge_date_time($this->get_date_format($user), $this->get_time_format($user));
+        return $value;
+
     }
 
     /**

@@ -199,7 +199,7 @@ class SpiceLanguageLoader{
                         'language_code' => $languages[$i],
                         'language_name' => (!empty($appForLang['language_pack_name']) ? $appForLang['language_pack_name'] : $languages[$i]),
                         'sort_sequence' => $i+1,
-                        'is_default' => ($languages[$i] == SpiceConfig::getInstance()->config['default_language'] ? 1 : 0),
+                        'is_default' => ($languages[$i] == SpiceLanguageManager::getInstance()->getSystemDefaultLanguage() ? 1 : 0),
                         'system_language' => 1,
                         'communication_language' => 1
                     ];

@@ -5,6 +5,7 @@
     </div>
     <div class="slds-grid slds-grid--vertical-align-center">
         <system-input-delayed *ngIf="activitiytimeline.usefts" [placeholder]="language.getLabel('LBL_SEARCH')" delay="1000" [(ngModel)]="ftsSearchTerm" class="slds-p-horizontal--xx-small"></system-input-delayed>
+        <activitytimeline-spice-mail-button class="slds-p-horizontal--xxx-small"></activitytimeline-spice-mail-button>
         <activity-timeline-filter class="slds-p-horizontal--xxx-small"></activity-timeline-filter>
         <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_RELOAD')" (click)="reload()">
             <system-button-icon class="slds-p-horizontal--xxx-small slds-icon-text-default" icon="refresh"></system-button-icon>

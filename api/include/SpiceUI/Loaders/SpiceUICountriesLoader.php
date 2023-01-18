@@ -3,12 +3,17 @@
 namespace SpiceCRM\includes\SpiceUI\Loaders;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 class SpiceUICountriesLoader
 {
 
     static function getCountries()
     {
+        // check if we have the key cached
+        $cached = SpiceCache::get('SpiceCountries');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $retArray = [
             'countries' => [],
@@ -24,6 +29,8 @@ class SpiceUICountriesLoader
         while($state = $db->fetchByAssoc($states)){
             $retArray['states'][] = $state;
         }
+
+        SpiceCache::set('SpiceCountries', $retArray);
 
         return $retArray;
     }

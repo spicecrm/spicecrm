@@ -3,6 +3,7 @@ namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -119,6 +120,43 @@ class SystemUIController{
     {
         $uiRestHandler = new SpiceUIRESTHandler();
         return $res->withJson($uiRestHandler->getAllRoles($args['userid']));
+    }
+
+    /**
+     * get all system roles
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function getSystemRoles(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $roles = [];
+        $query = $db->query("SELECT *, 'global' scope FROM sysuiroles UNION SELECT *, 'custom' scope FROM sysuicustomroles order by name");
+        while( $row = $db->fetchByAssoc($query) ){
+            $roles[] = $row;
+        }
+        return $res->withJson($roles);
+    }
+
+    /**
+     * get role modules for the given role
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getRoleModules(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $roleModules = [];
+        $query = $db->query("SELECT *, 'global' scope FROM sysuirolemodules WHERE sysuirole_id = '{$args['role_id']}' UNION SELECT *, 'custom' scope FROM sysuicustomrolemodules WHERE sysuirole_id = '{$args['role_id']}' order by module");
+        while( $row = $db->fetchByAssoc($query) ){
+            $roleModules[] = $row;
+        }
+        return $res->withJson($roleModules);
     }
 
     /**

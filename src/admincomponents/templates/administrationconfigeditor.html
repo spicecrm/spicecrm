@@ -18,11 +18,15 @@
     </tr>
     </thead>
         <tbody>
-            <tr style="vertical-align: middle" class="slds-align-top"  *ngFor="let item of items">
-                <td>{{item.name}}</td>
+            <tr style="height: 41px; vertical-align: middle" class="slds-align-middle"  *ngFor="let item of items">
+                <td>
+                    <span *ngIf="item.label"><system-label [label]="item.label"></system-label></span>
+                    <span *ngIf="!item.label">{{item.name}}</span>
+                </td>
                 <td>
                     <ng-container [ngSwitch]="item.type">
                         <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="configvalues[item.name]"></system-checkbox>
+                        <administration-configeditor-enum *ngSwitchCase="'enum'" [value]="configvalues[item.name]" (newvalue)="configvalues[item.name] = $event" [options]="item.options"></administration-configeditor-enum>
                         <div *ngSwitchDefault class="slds-form-element__control">
                             <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]" />
                         </div>

@@ -8,7 +8,7 @@ import {Router} from '@angular/router';
 import {configurationService} from '../../../services/configuration.service';
 import {toast} from '../../../services/toast.service';
 import {backend} from "../../../services/backend.service";
-import {spiceinstaller} from "../services/spiceinstaller.service";
+import { spiceinstaller, stepObject } from "../services/spiceinstaller.service";
 
 /** @ignore */
 declare var moment: any;
@@ -17,8 +17,9 @@ declare var moment: any;
     selector: 'spice-installer-set-preferences',
     templateUrl: '../templates/spiceinstallersetpreferences.html'
 })
-
 export class SpiceInstallerSetPreferences {
+
+    @Input() public selfStep: stepObject;
 
     public languages: any = [];
     public loading = false;
@@ -113,7 +114,8 @@ export class SpiceInstallerSetPreferences {
 
     public updateNumberDelimitationsList() {
         for ( let item of this.numberDelimitationsList ) {
-            item.show = '1'+this.spiceinstaller.configObject.preferences.num_grp_sep+'000'+this.spiceinstaller.configObject.preferences.num_grp_sep+'000'+this.spiceinstaller.configObject.preferences.dec_sep+'0'.repeat(this.spiceinstaller.configObject.preferences.currency_significant_digits);
+            item.show = '1'+item.num_grp_sep+'000'+item.num_grp_sep+'000'+item.dec_sep+'0'
+                .repeat( typeof this.spiceinstaller.configObject.preferences.currency_significant_digits !== 'undefined' ? this.spiceinstaller.configObject.preferences.currency_significant_digits : 2 );
         }
     };
 
@@ -131,7 +133,7 @@ export class SpiceInstallerSetPreferences {
 
         // pre-set language by browser/system language
         let browserLanguage = navigator.language;
-        if ( this.browserLanguages[browserLanguage] ) this.spiceinstaller.configObject.preferences.language = this.browserLanguages[browserLanguage];
+        if ( this.browserLanguages[browserLanguage] ) this.spiceinstaller.configObject.language = this.browserLanguages[browserLanguage];
 
         // pre-set timezone by guessing it with moment
         this.spiceinstaller.configObject.preferences.timezone = moment.tz.guess();
@@ -146,6 +148,12 @@ export class SpiceInstallerSetPreferences {
             this.languages = result.languages;
         });
 
+        this.spiceinstaller.jumpSubject.subscribe( fromTo => {
+            if ( fromTo.from === this.selfStep ) {
+                if ( this.selfStep.completed || fromTo.to?.pos < this.selfStep.pos ) this.spiceinstaller.jump( fromTo.to );
+                else this.setPreferences();
+            }
+        });
     }
 
 
@@ -168,8 +176,7 @@ export class SpiceInstallerSetPreferences {
      */
     public setPreferences() {
         this.spiceinstaller.selectedStep.completed = true;
-        this.spiceinstaller.steps[6] = this.spiceinstaller.selectedStep;
-        this.spiceinstaller.next(this.spiceinstaller.steps[6]);
+        this.spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next })
     }
 
     public preSetPreferences() {

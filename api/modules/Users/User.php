@@ -40,6 +40,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
 use SpiceCRM\includes\TimeDate;
@@ -58,6 +59,7 @@ class User extends Person
 {
     var $user_preferences;
     var $impersonating_user_id;
+    public $_userPreferenceFocus;
 
     public function __construct()
     {
@@ -102,14 +104,8 @@ class User extends Person
         $name, $value, $nosession = 0, $category = 'global'
     )
     {
-        // for BC
-        if (func_num_args() > 4) {
-            $user = func_get_arg(4);
-            LoggerManager::getLogger()->deprecated('User::setPreferences() should not be used statically.');
-        } else
-            $user = $this;
 
-        $user->_userPreferenceFocus->setPreference($name, $value, $category);
+        $this->_userPreferenceFocus->setPreference($name, $value, $category);
     }
 
     /**
@@ -123,14 +119,7 @@ class User extends Person
         $category = null
     )
     {
-        // for BC
-        if (func_num_args() > 1) {
-            $user = func_get_arg(1);
-            LoggerManager::getLogger()->deprecated('User::resetPreferences() should not be used statically.');
-        } else
-            $user = $this;
-
-        $user->_userPreferenceFocus->resetPreferences($category);
+        $this->_userPreferenceFocus->resetPreferences($category);
     }
 
     /**
@@ -140,14 +129,7 @@ class User extends Person
      */
     public function savePreferencesToDB()
     {
-        // for BC
-        if (func_num_args() > 0) {
-            $user = func_get_arg(0);
-            LoggerManager::getLogger()->deprecated('User::savePreferencesToDB() should not be used statically.');
-        } else
-            $user = $this;
-
-        $user->_userPreferenceFocus->savePreferencesToDB();
+        $this->_userPreferenceFocus->savePreferencesToDB();
     }
 
     /**
@@ -169,14 +151,8 @@ class User extends Person
      */
     public function getUserDateTimePreferences()
     {
-        // for BC
-        if (func_num_args() > 0) {
-            $user = func_get_arg(0);
-            LoggerManager::getLogger()->deprecated('User::getUserDateTimePreferences() should not be used statically.');
-        } else
-            $user = $this;
 
-        return $user->_userPreferenceFocus->getUserDateTimePreferences();
+        return $this->_userPreferenceFocus->getUserDateTimePreferences();
     }
 
     /**
@@ -191,14 +167,7 @@ class User extends Person
         $category = 'global'
     )
     {
-        // for BC
-        if (func_num_args() > 1) {
-            $user = func_get_arg(1);
-            LoggerManager::getLogger()->deprecated('User::loadPreferences() should not be used statically.');
-        } else
-            $user = $this;
-
-        return $user->_userPreferenceFocus->loadPreferences($category);
+        return $this->_userPreferenceFocus->loadPreferences($category);
     }
 
 
@@ -212,41 +181,20 @@ class User extends Person
         $category = 'global'
     )
     {
-        // for BC
-        if (func_num_args() > 1) {
-            $user = func_get_arg(1);
-            LoggerManager::getLogger()->deprecated('User::loadEnrichedPreferences() should not be used statically.');
-        } else
-            $user = $this;
-
-        return $user->_userPreferenceFocus->loadEnrichedPreferences($category);
+        return $this->_userPreferenceFocus->loadEnrichedPreferences($category);
     }
 
     /**
-     * Interface for the User object to calling the UserPreference::setPreference() method in modules/UserPreferences/UserPreference.php
-     *
-     * @param string $name name of the preference to retreive
-     * @param string $category name of the category to retreive, defaults to global scope
-     * @return mixed the value of the preference (string, array, int etc)
-     * @see UserPreference::getPreference()
-     *
+     * get user preference by name and category
+     * @param string $name
+     * @param string $category
+     * @param $default
+     * @return mixed
      */
-    public function getPreference(
-        $name,
-        $category = 'global',
-        $fallBackToSystem = false,
-        $default = null
-    ) {
-        // for BC
-        if (func_num_args() > 2 and !is_bool( $fallBackToSystem )) {
-            $user = func_get_arg(2);
-            LoggerManager::getLogger()->deprecated('User::getPreference() should not be used statically.');
-        } else
-            $user = $this;
-
-        return $user->_userPreferenceFocus->getPreference($name, $category, $fallBackToSystem, $default );
+    public function getPreference(string $name, string $category = 'global', $default = null)
+    {
+        return $this->_userPreferenceFocus->getPreference($name, $category, $default);
     }
-
 
     function save($check_notify = false, $fts_index_bean = true)
     {
@@ -485,21 +433,6 @@ class User extends Person
     {
         // jmorais@dri Bug #56269
         parent::fill_in_additional_detail_fields();
-        // ~jmorais@dri
-        global $locale;
-
-        $query = "SELECT u1.first_name, u1.last_name from users  u1, users  u2 where u1.id = u2.reports_to_id AND u2.id = '$this->id' and u1.deleted=0";
-        $result = $this->db->query($query, true, "Error filling in additional detail fields");
-
-        $row = $this->db->fetchByAssoc($result);
-
-        if ($row != null) {
-            $this->reports_to_name = stripslashes($row['first_name'] . ' ' . $row['last_name']);
-        } else {
-            $this->reports_to_name = '';
-        }
-
-        $this->_create_proper_name_field();
 
         if ($this->is_admin) $this->UserType = 'Administrator';
         elseif ($this->portal_only) $this->UserType = 'PortalUser';
@@ -507,19 +440,6 @@ class User extends Person
         else $this->UserType = 'RegularUser';
 
     }
-
-    public function retrieve_user_id(
-        $user_name
-    )
-    {
-        $userFocus = BeanFactory::getBean('Users');
-        $userFocus->retrieve_by_string_fields(['user_name' => $user_name]);
-        if (empty($userFocus->id))
-            return false;
-
-        return $userFocus->id;
-    }
-
 
     /**
      * Is this user a system wide admin
@@ -687,12 +607,12 @@ class User extends Person
     private function getNewPasswordEmailTemplate($templateId, $additionalData = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $mod_strings = return_module_language('', 'Users');
+        $mod_strings = LanguageManager::loadDatabaseLanguage(LanguageManager::getDefaultLanguage());
 
-        $emailTemp = new EmailTemplate();
+        $emailTemp = BeanFactory::getBean('EmailTemplates');
         $emailTemp->disable_row_level_security = true;
         if ($emailTemp->retrieve($templateId) == '') {
-            $result['message'] = $mod_strings['LBL_EMAIL_TEMPLATE_MISSING'];
+            $result['message'] = $mod_strings['LBL_EMAIL_TEMPLATE_MISSING']['default'];
             return $result;
         }
 
@@ -756,7 +676,7 @@ class User extends Person
         $sql = "SELECT id,user_name FROM users WHERE status = 'Active' AND deleted = 0";
         if (!empty($userIdToIgnore))
             $sql .= " AND id <> '".$db->quote($userIdToIgnore) . "'";
-        $sql .= "AND LOWER(user_name) = '" . $db->quote(mb_strtolower($username)) . "'";
+        $sql .= " AND LOWER(user_name) = '" . $db->quote(mb_strtolower($username)) . "'";
         $user = $db->fetchOne($sql);
         return $user !== false;
     }
@@ -799,7 +719,7 @@ class User extends Person
      */
     public function findByUserName($name)
     {
-        return $this->retrieve_by_string_fields(['user_name' => $name]);
+        return $this->retrieve_by_string_fields(['user_name' => $name], true, true, false);
     }
 
     /**

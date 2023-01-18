@@ -1,7 +1,8 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output, TemplateRef} from "@angular/core";
+import {SystemTreeItemI} from "../interfaces/systemcomponents.interfaces";
 
 @Component({
     selector: "system-tree-item",
@@ -9,6 +10,8 @@ import {Component, EventEmitter, Input, Output} from "@angular/core";
 })
 
 export class SystemTreeItem {
+
+    @Input() public customButtonsContainer: TemplateRef<any>;
     /*
     * @output onItemAdd: object
     * {
@@ -29,17 +32,10 @@ export class SystemTreeItem {
     * }
     */
     @Output() public dragPositionChange: EventEmitter<any> = new EventEmitter<any>();
-    /*
-    * @input item: object
-    * {
-    *     id: string,
-    *     parent_id: string,
-    *     parent_sequence: number,
-    *     name: string,
-    *     systemTreeDefs: object
-    * }
-    */
-    @Input() public item: any = [];
+    /**
+     * tree item object
+     */
+    @Input() public item: SystemTreeItemI;
     /*
     * @input config: object
     */

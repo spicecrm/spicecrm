@@ -88,13 +88,15 @@ export class modelattachments {
     }
 
     /**
-     * broadcasts the number of open workflows found
+     * broadcasts the total number of files found
+     * sends a reload information
      */
     public broadcastAttachmentCount() {
         this.broadcast.broadcastMessage('attachments.loaded', {
             module: this.module,
             id: this.id,
-            attachmentcount: this.count
+            attachmentcount: this.count,
+            reload: true
         });
     }
 

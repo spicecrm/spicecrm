@@ -38,7 +38,7 @@ namespace SpiceCRM\includes\SugarObjects;
 
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\SugarArray;
 
 /**
@@ -79,6 +79,8 @@ class SpiceConfig
             //set instance
             self::$instance = new self;
             self::$instance->loadConfigFiles();
+            self::$instance->loadConfigFromDB();
+            self::$instance->mappingBWC();
         }
         return self::$instance;
     }
@@ -119,21 +121,19 @@ class SpiceConfig
             session_save_path($this->config['session_dir']);
         }
 
-        // load the config from teh database
-        $this->loadConfigFromDB();
     }
 
     /**
      * @return bool
      * @throws Exception
      */
-    private function loadConfigFromDB()
+    private function loadConfigFromDB($forceReload = false)
     {
         // check that a config exists
         if (!$this->configExists()) return false;
 
-        $dbconfig = SugarCache::sugar_cache_retrieve('dbconfig');
-        if(!$dbconfig) {
+        $dbconfig = SpiceCache::get('dbconfig');
+        if($forceReload || !$dbconfig) {
             $dbconfig = [];
             // load the config
             $db = DBManagerFactory::getInstance();
@@ -144,7 +144,7 @@ class SpiceConfig
                 }
             }
 
-            SugarCache::sugar_cache_put('dbconfig', $dbconfig);
+            SpiceCache::set('dbconfig', $dbconfig);
         }
 
         // merge the configs
@@ -181,9 +181,22 @@ class SpiceConfig
     /**
      * reloads the complete config
      */
-    function reloadConfig(){
+    function reloadConfig($force = false){
         $this->loadConfigFiles();
-        $this->loadConfigFromDB();
+        $this->loadConfigFromDB($force);
+        self::$instance->mappingBWC();
     }
+
+    function mappingBWC() {
+        if ( isset( $this->config['default_preferences']['datef'] )) $this->config['default_date_format'] = $this->config['default_preferences']['datef'];
+        if ( isset( $this->config['default_preferences']['timef'] )) $this->config['default_time_format'] = $this->config['default_preferences']['timef'];
+        if ( isset( $this->config['default_preferences']['export_charset'] )) $this->config['default_export_charset'] = $this->config['default_preferences']['export_charset'];
+        if ( isset( $this->config['default_preferences']['locale_name_format'] )) $this->config['default_locale_name_format'] = $this->config['default_preferences']['locale_name_format'];
+        if ( isset( $this->config['default_preferences']['dec_sep'] )) $this->config['default_decimal_seperator'] = $this->config['default_preferences']['dec_sep'];
+        if ( isset( $this->config['default_preferences']['num_grp_sep'] )) $this->config['default_number_grouping_seperator'] = $this->config['default_preferences']['num_grp_sep'];
+        if ( isset( $this->config['default_preferences']['currency_significant_digits'] )) $this->config['default_currency_significant_digits'] = $this->config['default_preferences']['currency_significant_digits'];
+        if ( isset( $this->config['default_preferences']['currency'] )) $this->config['default_currency'] = $this->config['default_preferences']['currency'];
+    }
+
 }
 

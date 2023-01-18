@@ -218,7 +218,7 @@ class LDAPAuthenticate implements AuthenticatorI
         $ldapConn = ldap_connect($this->server, $this->port);
         if ($this->ldapConn === false) {
             $message = 'Unable to ldap_connect. check syntax of server and port (' . $this->server . ':' . $this->port . '). ldap server has not been contacted in this stage.';
-            LoggerManager::getLogger()->fatal($message);
+            LoggerManager::getLogger()->fatal('ldap', $message);
             return false;
         }
         ldap_set_option($this->ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -420,7 +420,7 @@ class LDAPAuthenticate implements AuthenticatorI
             $requiredSpiceAclProfileIds[] = $row['spiceaclprofile_id'];
             if (!in_array($row['spiceaclprofile_id'], $userAclProfileIds)) {
                 //required profile is not in spiceaclprofile, lets add it
-                LoggerManager::getLogger()->info("ldap maintainAclProfiles: adding acl profile " . $row['spiceaclprofile_id'] . " for user " . $userObj->id);
+                LoggerManager::getLogger()->debug('ldap', "ldap maintainAclProfiles: adding acl profile " . $row['spiceaclprofile_id'] . " for user " . $userObj->id);
                 $q = "insert into spiceaclprofiles_users(id,user_id, spiceaclprofile_id) values('" . SpiceUtils::createGuid() . "','" . $userObj->id . "', '" . $row['spiceaclprofile_id'] . "')";
                 $db->query($q);
             }
@@ -429,7 +429,7 @@ class LDAPAuthenticate implements AuthenticatorI
         //now check if user has too many aclprofiles
         foreach ($userAclProfiles as $existingSpiceAclProfile) {
             if (!in_array($existingSpiceAclProfile['id'], $requiredSpiceAclProfileIds)) {
-                LoggerManager::getLogger()->info("ldap maintainAclProfiles: removing acl profile " . $existingSpiceAclProfile['id'] . " from user " . $userObj->id);
+                LoggerManager::getLogger()->debug('ldap', "ldap maintainAclProfiles: removing acl profile " . $existingSpiceAclProfile['id'] . " from user " . $userObj->id);
                 $db->query("DELETE FROM spiceaclprofiles_users WHERE spiceaclprofile_id = '" . $existingSpiceAclProfile['id'] . "' and user_id = '" . $userObj->id . "'");
             }
         }
@@ -598,7 +598,7 @@ class LDAPAuthenticate implements AuthenticatorI
             }
             return $rows;
         } catch (\Exception $e) {
-            LoggerManager::getLogger()->info("unable to query ldap_settings, table not existing?");
+            LoggerManager::getLogger()->fatal('ldap', "unable to query ldap_settings, table not existing?");
             return [];
         }
 
