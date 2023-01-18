@@ -3,6 +3,7 @@
 namespace SpiceCRM\modules\OrgUnits;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -31,7 +32,10 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
 
         return $response;
     }
-
+    /**
+     * @param $bean SpiceBean
+     * @param $data
+     */
     //the function below will add or remove entries from useres_documentrevisions according to changes made in documents or orgunits
     public function orgUnitEntryToRevisionList ($bean, $data){
 
@@ -51,6 +55,10 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
                         $bean->db->query($insert_query);
                     }
                 }
+            }
+            if ($bean->parent_id) {
+                $parentRelation = new OrgUnit;
+                echo $parentRelation->recurringParent($bean, $guidSQL, $current_date, $data);
             }
 
         }
@@ -83,14 +91,16 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
                 $bean->db->query($delete_query);
                 }
             }
+            if ($bean->parent_id) {
+                $parentRelation = new OrgUnit;
+                echo $parentRelation->recurringParentDeletion($bean, $data);
+            }
         }
         //this triggers when you remove an OrgUnit from a Document
         if ($data['related_module'] == 'OrgUnits' && $data['module'] == 'Documents') {
             $documentBean = BeanFactory::getBean('Documents', $data[id]);
             $documentRevisions = $documentBean->get_linked_beans('documentrevisions', 'DocumentRevisions');
             $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
-            $userEntries = new OrgUnit;
-            echo $userEntries->recurringMemberDeletion($orgUnitBean, $documentRevision, null);
             foreach ($documentRevisions as $documentRevision) {
                 $userEntries = new OrgUnit;
                 echo $userEntries->recurringMemberDeletion($orgUnitBean, $documentRevision, null);
@@ -98,6 +108,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         }
     }
 
+    //this checks for Members of Orgunits that are children of the original Orgunit and creates users_documentrevisions for them
     public function recurringMember ($orgUnitBean, $documentRevision, $guidSQL, $current_date, $orgUnitChildren){
         global $holdRelatedUserIds;
         if ($orgUnitChildren == null){
@@ -159,6 +170,44 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
                     $this->recurringMemberDeletion($orgUnitBean, $documentRevision, $memberOrgUnits);
                 }
             }
+        }
+    }
+
+    public function recurringParent ($bean, $guidSQL, $current_date, $data){
+        $parentBean = BeanFactory::getBean('OrgUnits', $bean->parent_id);
+        $parentDocuments = $parentBean->get_linked_beans('documents', 'Documents');
+        foreach ($parentDocuments as $parentDocument) {
+            $documentRevisions = $parentDocument->get_linked_beans('documentrevisions','DocumentRevisions');
+            foreach ($documentRevisions as $documentRevision) {
+                if ($documentRevision->documentrevisionstatus == "r"){
+
+                    $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
+                    $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$data[related_id]', '$documentRevision->id', '0'";
+
+                    $bean->db->query($insert_query);
+                }
+            }
+        }
+        if ($parentBean->parent_id !== '') {
+            $this->recurringParent($parentBean, $guidSQL, $current_date, $data);
+        }
+    }
+
+    //when a user is removed from an Orgunit, this checks all possible parent orgunits for relating documents and deletes all entries in users_documentrevisions related to those
+    public function recurringParentDeletion ($bean, $data){
+        $parentBean = BeanFactory::getBean('OrgUnits', $bean->parent_id);
+        $parentDocuments = $parentBean->get_linked_beans('documents', 'Documents');
+        foreach ($parentDocuments as $parentDocument) {
+            $documentRevisions = $parentDocument->get_linked_beans('documentrevisions','DocumentRevisions');
+            foreach ($documentRevisions as $documentRevision) {
+
+                    $delete_query="delete from users_documentrevisions where user_id='$data[related_id]' and acceptance_status=0 and document_revision_id='$documentRevision->id'";
+
+                    $bean->db->query($delete_query);
+            }
+        }
+        if ($parentBean->parent_id !== '') {
+            $this->recurringParentDeletion($parentBean, $data);
         }
     }
 
