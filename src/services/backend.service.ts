@@ -17,6 +17,7 @@ import {modelutilities} from './modelutilities.service';
 import {modal} from './modal.service';
 import {language} from './language.service';
 import {broadcast} from "./broadcast.service";
+import {tap} from "rxjs/operators";
 
 
 /**
@@ -41,6 +42,15 @@ interface backendRequestParams {
  */
 @Injectable()
 export class backend {
+
+    /**
+     * holds the pending requests count
+     */
+    public pendingRequestsCount = 0;
+    /**
+     * subject to emit the pending requests count
+     */
+    public pendingCountChange$ = new Subject<number>();
     /**
      *
      */
@@ -135,6 +145,7 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Accounts'
      * @param params an object with additonal params to be sent to the backend with the get request
      *
+     * @param responseSubject
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
     public getRequest(route: string = "", params: any = {}, responseSubject?: Subject<any>): Observable<any> {
@@ -147,21 +158,29 @@ export class backend {
         if (this.stageRequests) {
             this.stageRequest('GET', route, {getParams: params}, responseSubject);
         } else {
+
+            this.increasePendingCount();
+
             this.http.get(
                 this.configurationService.getBackendUrl() + "/" + encodeURI(route),
 
                 {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
+
                     responseSubject.next(res.body);
                     responseSubject.complete();
                 },
-                err => {
+                error: err => {
+                    this.decreasePendingCount();
+
                     if (this.handleError(err, route, 'GET', {getParams: params}, responseSubject) == false) {
                         responseSubject.error(err);
                     }
                 }
-            );
+
+            });
         }
         return responseSubject.asObservable();
     }
@@ -183,6 +202,8 @@ export class backend {
             headers2 = headers2.set(prop, headers[prop]);
         }
 
+        this.increasePendingCount();
+
         return this.http.get(
             this.configurationService.getBackendUrl() + "/" + route,
             {
@@ -190,7 +211,10 @@ export class backend {
                 params: this.prepareParams(params),
                 responseType: 'blob',
             }
-        );
+        ).pipe(tap({
+            next: () => this.decreasePendingCount(),
+            error: () => this.decreasePendingCount()
+        }));
     }
 
     /**
@@ -199,7 +223,7 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
+     * @param responseSubject
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
@@ -213,6 +237,8 @@ export class backend {
             this.stageRequest('GET', route, {getParams: params, body: body}, responseSubject);
         } else {
 
+            this.increasePendingCount();
+
             let headers = this.getHeaders();
             if (body) {
                 headers = headers.set("Content-Type", "application/json");
@@ -224,17 +250,19 @@ export class backend {
                 this.configurationService.getBackendUrl() + "/" + encodeURI(route),
                 body,
                 {headers: headers, observe: "response", params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
                     responseSubject.next(res.body);
                     responseSubject.complete();
                 },
-                err => {
+                error: err => {
+                    this.decreasePendingCount();
                     if (!this.handleError(err, route, 'POST', {getParams: params, body: body}, responseSubject)) {
                         responseSubject.error(err);
                     }
                 }
-            );
+            });
         }
         return responseSubject.asObservable();
     }
@@ -245,7 +273,7 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
+     * @param responseSubject
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
@@ -266,21 +294,26 @@ export class backend {
                 headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
             }
 
+            this.increasePendingCount();
+
             this.http.patch(
                 this.configurationService.getBackendUrl() + "/" + encodeURI(route),
                 body,
                 {headers: headers, observe: "response", params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
                     responseSubject.next(res.body);
                     responseSubject.complete();
                 },
-                err => {
+                error: err => {
+                    this.decreasePendingCount();
                     if (!this.handleError(err, route, 'POST', {getParams: params, body: body}, responseSubject)) {
                         responseSubject.error(err);
                     }
                 }
-            );
+
+            });
         }
         return responseSubject.asObservable();
     }
@@ -291,9 +324,9 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
      * @param progress: A subject where the upload progress will be reported.
      *
+     * @param responseSubject
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
     public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, progress: BehaviorSubject<number> = null, responseSubject?: Subject<any>): Observable<any> {
@@ -310,6 +343,7 @@ export class backend {
             }, responseSubject);
         } else {
 
+
             let headers = this.getHeaders();
             if (body) {
                 headers = headers.set("Content-Type", "application/json");
@@ -319,30 +353,33 @@ export class backend {
 
             let reportProgress = progress !== null;
             if (reportProgress) progress.next(0);
+
+            this.increasePendingCount();
+
             this.http.post(this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, {
                 headers: headers,
                 observe: 'events',
                 params: this.prepareParams(params),
                 reportProgress: !!progress
-            }).subscribe(
-                event => {
-                    if (event.type === HttpEventType.UploadProgress) {
-                        progress.next(100 * event.loaded / event.total);
-                    } else if (event.type === HttpEventType.Response) {
-                        responseSubject.next(event.body);
-                        responseSubject.complete();
-                    }
-                },
-                err => {
-                    if (!this.handleError(err, route, 'POSTWITHPROGRESS', {
-                        getParams: params,
-                        body: body,
-                        progress: progress
-                    }, responseSubject)) {
+            }).subscribe({
+                next:
+                    event => {
+                        if (event.type === HttpEventType.UploadProgress) {
+                            progress.next(100 * event.loaded / event.total);
+                        } else if (event.type === HttpEventType.Response) {
+                            this.decreasePendingCount();
+                            responseSubject.next(event.body);
+                            responseSubject.complete();
+                        }
+                    },
+                error: err => {
+                    this.decreasePendingCount();
+                    if (!this.handleError(err, route, 'POSTWITHPROGRESS', {getParams: params, body: body, progress: progress}, responseSubject)) {
                         responseSubject.error(err);
                     }
                 }
-            );
+
+            });
         }
         return responseSubject.asObservable();
     }
@@ -369,8 +406,8 @@ export class backend {
             this.configurationService.getBackendUrl() + "/" + route,
             body,
             {headers: headers, observe: "response", params: this.prepareParams(params), responseType: "blob"}
-        ).subscribe(
-            (response: any) => {
+        ).subscribe({
+            next: (response: any) => {
                 // let blob = new Blob([response], {type: "octet/stream"});
                 // let objectUrl = URL.createObjectURL(new Blob([blob], {type: "octet/stream"}));
                 // let objectUrl = URL.createObjectURL(response.blob());
@@ -379,15 +416,15 @@ export class backend {
                 responseSubject.next(objectUrl);
                 responseSubject.complete();
             },
-            err => {
-                this.handleError(err, route, 'POST', {getParams: params, body: body});
-                let blobReader = new FileReader();
-                blobReader.readAsText(err.error);
-                blobReader.onloadend = (e) => {
-                    responseSubject.error(JSON.parse(blobReader.result.toString()));
-                };
-            }
-        );
+            error: err => {
+            this.handleError(err, route, 'POST', {getParams: params, body: body});
+            let blobReader = new FileReader();
+            blobReader.readAsText(err.error);
+            blobReader.onloadend = (e) => {
+                responseSubject.error(JSON.parse(blobReader.result.toString()));
+            };
+        }
+        });
 
         return responseSubject.asObservable();
     }
@@ -405,18 +442,14 @@ export class backend {
      *
      * @return an Observable for the request. If the response is successful the observable will return an objecturl to the dowlnoaded file in the browser
      */
-    public getLinkToDownload(
-        route: string,
-        method: 'GET' | 'POST' = 'GET',
-        params = null,
-        body = null,
-        headers = null,
-    ): Observable<any> {
+    public getLinkToDownload(route: string, method: 'GET' | 'POST' = 'GET', params = null, body = null, headers = null): Observable<any> {
         let sub = new Subject<any>();
 
         let _headers = this.getHeaders();
         _headers = _headers.set("Accept", "*/*");
         // todo: add given headers here...
+
+        this.increasePendingCount();
 
         this.http.request(
             method,
@@ -427,8 +460,11 @@ export class backend {
                 observe: "response",
                 params: this.prepareParams(params),
                 responseType: "blob",
-            }).subscribe(
-            (response: any) => {
+            }).subscribe({
+            next: (response: any) => {
+
+                this.decreasePendingCount();
+
                 if (response.status == 200) {
                     // let objectUrl = URL.createObjectURL(response.blob());
                     let objectUrl = window.URL.createObjectURL(response.body);
@@ -438,11 +474,12 @@ export class backend {
                     sub.error(response.statusText);
                 }
             },
-            (err) => {
+            error: (err) => {
+                this.decreasePendingCount();
                 this.handleError(err, route, method, {getParams: params, body: body});
                 sub.error(err);
             }
-        );
+        });
 
         return sub.asObservable();
     }
@@ -454,13 +491,10 @@ export class backend {
      * @param request_params an object of type [[backendRequestParams]]
      * @param file_name
      *
+     * @param file_type
      * @return an Observable that is reolved when the file has been tranferred and the download is triggered
      */
-    public downloadFile(
-        request_params: backendRequestParams,
-        file_name: string = null,
-        file_type: string = null
-    ): Observable<void> {
+    public downloadFile(request_params: backendRequestParams, file_name: string = null, file_type: string = null): Observable<void> {
         let sub = new Subject<void>();
 
         this.getLinkToDownload(
@@ -469,8 +503,8 @@ export class backend {
             request_params.params,
             request_params.body,
             request_params.headers
-        ).subscribe(
-            (res) => {
+        ).subscribe({
+            next: (res) => {
                 let downloadUrl = res;
                 // window.open(downloadUrl);
                 let a = document.createElement("a");
@@ -484,8 +518,8 @@ export class backend {
                 sub.next();
                 sub.complete();
             },
-            error => sub.error(error)
-        );
+            error: error => sub.error(error)
+        });
 
         return sub.asObservable();
     }
@@ -496,7 +530,7 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
+     * @param responseSubject
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
@@ -509,21 +543,24 @@ export class backend {
         if (this.stageRequests) {
             this.stageRequest('PUT', route, {getParams: params, body: body}, responseSubject);
         } else {
+            this.increasePendingCount();
             this.http.put(
                 this.configurationService.getBackendUrl() + "/" + route,
                 body,
                 {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
                     responseSubject.next(res.body);
                     responseSubject.complete();
                 },
-                (err) => {
-                    if(!this.handleError(err, route, 'PUT', {getParams: params, body: body},responseSubject)) {
+                error: (err) => {
+                    this.decreasePendingCount();
+                    if (!this.handleError(err, route, 'PUT', {getParams: params, body: body}, responseSubject)) {
                         responseSubject.error(err);
                     }
                 }
-            );
+            });
         }
         return responseSubject.asObservable();
     }
@@ -534,6 +571,7 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param params an object with additonal params to be sent to the backend with the get request
      *
+     * @param responseSubject
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
     public deleteRequest(route: string = "", params: any = {}, responseSubject?: Subject<any>): Observable<any> {
@@ -545,19 +583,22 @@ export class backend {
         if (this.stageRequests) {
             this.stageRequest('DELETE', route, {getParams: params}, responseSubject);
         } else {
+            this.increasePendingCount();
             this.http.delete(
                 this.configurationService.getBackendUrl() + "/" + route,
                 {headers: this.getHeaders(), params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
                     responseSubject.next(res ? res : true);
                     responseSubject.complete();
                 },
-                (err) => {
+                error: (err) => {
+                    this.decreasePendingCount();
                     this.handleError(err, route, 'DELETE', {getParams: params}, responseSubject);
                     responseSubject.error(err);
                 }
-            );
+            });
         }
         return responseSubject.asObservable();
     }
@@ -569,7 +610,7 @@ export class backend {
      * @param route the route that has been called
      * @param method the method of the all (e.g. POST, GET, ...
      * @param data the data passed in
-     * @param httpErrorReport a boolean flag that specifies if the error shoudl be logged on the backend. Defaults to true.
+     * @param responseSubject
      */
     public handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
         switch (err.status) {
@@ -712,17 +753,37 @@ export class backend {
      */
     public errorsToBackend() {
         if (this.httpErrorsToReport.length) {
-            this.postRequest('system/httperrors', null, {errors: this.httpErrorsToReport}).subscribe(
-                () => {
-                    this.httpErrorsToReport.length = 0;
-                    this.httpErrorReporting = false;
-                },
-                (e) => {
+            this.postRequest('system/httperrors', null, {errors: this.httpErrorsToReport}).subscribe({
+                next:
+                    () => {
+                        this.httpErrorsToReport.length = 0;
+                        this.httpErrorReporting = false;
+                    },
+                error: (e) => {
                     this.httpErrorReporting = true;
                     window.setTimeout(() => this.errorsToBackend(), this.httpErrorReportingRetryTime);
                 }
-            );
+
+            });
         }
+    }
+
+    /**
+     * increase pending requests count and set total
+     * @private
+     */
+    private increasePendingCount() {
+        this.pendingRequestsCount++;
+        this.pendingCountChange$.next(this.pendingRequestsCount);
+    }
+
+    /**
+     * decrease pending requests count and rest total
+     * @private
+     */
+    private decreasePendingCount() {
+        this.pendingRequestsCount--;
+        this.pendingCountChange$.next(this.pendingRequestsCount);
     }
 
     /*
@@ -735,19 +796,21 @@ export class backend {
         if (trackAction) {
             params.trackaction = trackAction;
         }
-        this.getRequest("module/" + module + "/" + id, params).subscribe(
-            (response: any) => {
+
+        this.getRequest("module/" + module + "/" + id, params).subscribe({
+            next: (response: any) => {
                 for (let fieldName in response) {
                     response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
                 }
 
                 responseSubject.next(response);
                 responseSubject.complete();
-            }, error => {
+            },
+            error: error => {
                 responseSubject.error(error);
                 responseSubject.complete();
             }
-        );
+        });
         return responseSubject.asObservable();
     }
 
@@ -811,8 +874,8 @@ export class backend {
         }
 
         // todo: break out Options String
-        this.getRequest("module/" + module, reqparams).subscribe(
-            (response: any) => {
+        this.getRequest("module/" + module, reqparams).subscribe({
+            next: (response: any) => {
                 try {
                     for (let itemIndex in response.list) {
                         for (let fieldName in response.list[itemIndex]) {
@@ -830,26 +893,29 @@ export class backend {
                 responseSubject.next(response);
                 responseSubject.complete();
             },
-            error => {
+            error: error => {
                 responseSubject.error(error);
                 responseSubject.complete();
             }
-        );
+
+        });
         return responseSubject.asObservable();
     }
 
     public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null, templateId: string = null): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
         this.postRequestWithProgress("module/" + module + "/" + id, {templateId: templateId}, this.modelutilities.spiceModel2backend(module, cdata), progress)
-            .subscribe(
-                (response: any) => {
-                    responseSubject.next(this.modelutilities.backendModel2spice(module, response));
-                    responseSubject.complete();
-                },
-                (error: any) => {
+            .subscribe({
+                next:
+                    (response: any) => {
+                        responseSubject.next(this.modelutilities.backendModel2spice(module, response));
+                        responseSubject.complete();
+                    },
+                error: (error: any) => {
                     responseSubject.error(error);
                     responseSubject.complete();
-                });
+                }
+            });
         return responseSubject.asObservable();
     }
 

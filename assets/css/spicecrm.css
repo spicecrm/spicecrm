@@ -474,3 +474,18 @@ input[type="submit"] {
 .slds-progress_vertical .slds-progress__item.slds-has-error:before, .slds-progress_vertical .slds-progress__item.slds-is-active:before, .slds-progress_vertical .slds-progress__item.slds-is-completed:after, .slds-progress_vertical .slds-progress__item.slds-is-completed:before {
     background-color: var(--brand-primary,#CA1B21);
 }
+
+.slds-context-bar-progress-bar {
+    height: 2.2px;
+    background: #aaa;
+    position: absolute;
+    left: 0;
+    bottom: -2.4px;
+    width: 100vw;
+}
+
+.slds-context-bar-progress-bar div {
+    background: var(--brand-primary,#CA1B21);
+    transition: width .5s linear;
+}
+
