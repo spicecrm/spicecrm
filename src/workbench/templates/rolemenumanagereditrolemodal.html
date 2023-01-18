@@ -2,7 +2,7 @@
     <system-modal-header (close)="close()"><system-label label="LBL_ROLE"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-form-element__control">
-            <system-label label="LBL_SCOPE"></system-label>
+            <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
             <system-input-radio-button-group [(ngModel)]="newRole.scope" [inputOptions]="radioOptions" [disabled]="!!newRole.id"></system-input-radio-button-group>
         </div>
         <div class="slds-grid">
