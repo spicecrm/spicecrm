@@ -1,6 +1,5 @@
-<workbench-header titlelabel="LBL_INTERFACE">
+<workbench-header titlelabel="LBL_ROLE_MENU_MANAGER">
     <workbench-header-controls>
-
     </workbench-header-controls>
 </workbench-header>
 <div [system-overlay-loading-spinner]="isLoading" class="slds-grid" system-to-bottom-noscroll>
@@ -26,7 +25,7 @@
         </div>
     </div>
     <div class="slds-size--2-of-3 slds-theme--default slds-border--left slds-scrollable--y">
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout">
             <thead>
             <tr class="slds-line-height_reset">
                 <th class="" scope="col">
@@ -41,9 +40,9 @@
                 <th class="" scope="col">
                     <div class="slds-truncate">module</div>
                 </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate">sequence</div>
-                </th>
+<!--                <th class="" scope="col">-->
+<!--                    <div class="slds-truncate">sequence</div>-->
+<!--                </th>-->
                 <th class="" scope="col">
                     <div class="slds-truncate">version</div>
                 </th>
@@ -55,18 +54,18 @@
                 </th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="dragboundary"  cdkDropList [cdkDropListData]="roleModules" (cdkDropListDropped)="drop($event)" >
 
             <tr #viewProvider="system-view-provider" *ngFor="let roleModule of roleModules; let index = index"
-                [system-view-provider]="{editable: true}" class="slds-hint-parent" cdkDrag
+                [system-view-provider]="{editable: true}"  class="slds-hint-parent" cdkDrag
                 cdkDragBoundary=".dragboundary">
                 <td>
                     <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
                                          style="cursor:move"></system-utility-icon>
-                    <system-utility-icon *ngIf="viewProvider.view.mode != 'edit'" size="xx-small"
-                                         [icon]="roleModule.scope == 'global' ? 'world' : 'people'"></system-utility-icon>
+                    <system-utility-icon *ngIf="viewProvider.view.mode != 'edit' || !!roleModule.id" size="xx-small"
+                                         [icon]="roleModule.scope == 'global' ? 'world' : 'people'" ></system-utility-icon>
                     <span class="slds-form-element__control">
-                        <system-input-radio-button-group *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.scope" [inputOptions]="[{icon: 'people', value: 'custom'}, {icon: 'world', value: 'global'}]"></system-input-radio-button-group>
+                        <system-input-radio-button-group *ngIf="viewProvider.view.mode == 'edit' && !roleModule.id" [(ngModel)]="roleModule.scope" [inputOptions]="[{icon: 'people', value: 'custom'}, {icon: 'world', value: 'global'}]"></system-input-radio-button-group>
                     </span>
                 </td>
                 <td>
@@ -85,11 +84,11 @@
                     <system-input-module *ngIf="viewProvider.view.mode == 'edit'"
                                          [(ngModel)]="roleModule.module"></system-input-module>
                 </td>
-                <td>
-                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.sequence}}</div>
-                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'"
-                           [(ngModel)]="roleModule.sequence">
-                </td>
+<!--                <td>-->
+<!--                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.sequence}}</div>-->
+<!--                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'"-->
+<!--                           [(ngModel)]="roleModule.sequence">-->
+<!--                </td>-->
                 <td>
                     <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.version}}</div>
                     <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.version">
