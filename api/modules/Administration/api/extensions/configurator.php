@@ -116,6 +116,28 @@ $routes = [
         ]
     ],
     [
+        'method'      => 'post',
+        'route'       => '/configuration/configurator/{table}',
+        'class'       => ConfiguratorController::class,
+        'function'    => 'writeConfigList',
+        'description' => 'writes config list to database',
+        'options'     => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters'  => [
+            'table' => [
+                'in' => 'path',
+                'description' => 'Table',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
+            ],
+            'config' => [
+                'in' => 'body',
+                'description' => 'Various fields of the configuration DB table.',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'required' => true
+            ]
+        ]
+    ],
+    [
         'method'      => 'get',
         'route'       => '/configuration/configurator/load',
         'oldroute'    => '/configurator/load',
