@@ -8,6 +8,7 @@ use DateTimeZone;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 
 class KReportQueryArray
 {
@@ -264,7 +265,7 @@ class KReportQueryArray
     {
         $returnArray = [];
 
-        $modStrings = return_module_language('en_us', 'KReports');
+        $modStrings = LanguageManager::loadDatabaseLanguage('en_us');
 
         foreach ($this->whereArray as $thisWhereCondition) {
             // 2011-06-05 do not pass over conditions with Operator ignore
@@ -282,7 +283,7 @@ class KReportQueryArray
                 // add to the array
                 $returnArray[] = [
                     'name' => $thisWhereCondition['name'],
-                    'operator' => $modStrings['LBL_OP_' . strtoupper($thisWhereCondition['operator'])],
+                    'operator' => $modStrings['LBL_OP_' . strtoupper($thisWhereCondition['operator'])]['default'],
                     'value' => $valueString
                 ];
             }

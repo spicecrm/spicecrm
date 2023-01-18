@@ -57,12 +57,13 @@
 
             <div class="slds-grid slds-grid_vertical-align-end slds-m-bottom_xxx-small" style="padding-top:0">
 
-                <div class="slds-p-right_x-small slds-size--3-of-12">
+                <div class="slds-p-right_x-small slds-size--1-of-4">
                     <label class="slds-form-element__label">{{lang.getLabel('LBL_USER')}}</label>
                     <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
                 </div>
 
-                <div class="slds-form-element slds-p-right_x-small slds-size--6-of-12">
+                <div class="slds-form-element slds-p-right_x-small slds-size--1-of-4">
+                    <!--
                     <system-label label="LBL_LOGFILE_LEVEL"></system-label>
                     <system-checkbox-group #loglevelsCheckboxes [(ngModel)]="filter.loglevels" class="slds-grid slds-wrap">
                         <system-checkbox-group-checkbox value="debug" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_DEBUG"></system-label></system-checkbox-group-checkbox>
@@ -71,25 +72,50 @@
                         <system-checkbox-group-checkbox value="warn" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_WARN"></system-label></system-checkbox-group-checkbox>
                         <system-checkbox-group-checkbox value="security" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SECURITY"></system-label></system-checkbox-group-checkbox>
                         <system-checkbox-group-checkbox value="fatal" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_FATAL"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="sql" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SQL"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="slowsql" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SLOWSQL"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="developer" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_DEVELPPER"></system-label></system-checkbox-group-checkbox>
                     </system-checkbox-group>
-                </div>
+                    -->
+                    <label class="slds-form-element__label"><system-label label="LBL_LOGFILE_LEVEL"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="filter.loglevel">
+                                <option value=""><system-label label="LBL_ALL"></system-label></option>
+                                <option value="debug"><system-label label="LBL_LOGLEVEL_DEBUG"></system-label></option>
+                                <option value="info"><system-label label="LBL_LOGLEVEL_INFO"></system-label></option>
+                                <option value="error"><system-label label="LBL_LOGLEVEL_ERROR"></system-label></option>
+                                <option value="warn"><system-label label="LBL_LOGLEVEL_WARN"></system-label></option>
+                                <option value="security"><system-label label="LBL_LOGLEVEL_SECURITY"></system-label></option>
+                                <option value="fatal"><system-label label="LBL_LOGLEVEL_FATAL"></system-label></option>
+                                <option value="sql"><system-label label="LBL_LOGLEVEL_SQL"></system-label></option>
+                                <option value="slowsql"><system-label label="LBL_LOGLEVEL_SLOWSQL"></system-label></option>
+                                <option value="developer"><system-label label="LBL_LOGLEVEL_DEVELOPER"></system-label></option>
 
-                <div class="slds-form-element slds-size--3-of-12">
-                    <label class="slds-form-element__label" for="filtertextBackend">Text</label>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-4 slds-p-right_x-small">
+                    <label class="slds-form-element__label" >Sub Log Level</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="filtertextBackend" system-trim-input class="slds-input" type="text" [(ngModel)]="filter.text" />
+                        <input system-trim-input class="slds-input" type="text" [(ngModel)]="filter.subloglevel" />
+                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.subloglevel=''">
+                            <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-4">
+                    <label class="slds-form-element__label" >Text</label>
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                        <input  system-trim-input class="slds-input" type="text" [(ngModel)]="filter.text" />
                         <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.text=''">
                             <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                         </button>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
-    <crm-log-viewer-list [load]='load$' [filter]="filter" (countEntries$)="countEntries=$event" (valueClicked)="valueClicked($event.type,$event.value)"></crm-log-viewer-list><!-- [period]="period" -->
-
+    <crm-log-viewer-list [load]='load$' [filter]="filter" [limit]="limit" (countEntries$)="countEntries=$event" (valueClicked)="valueClicked($event.type,$event.value)"></crm-log-viewer-list><!-- [period]="period" -->
 </div>

@@ -20,9 +20,9 @@
     </table>
 
     <div class="slds-text-align--right slds-m-top--medium slds-m-horizontal--medium">
-        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.prev(spiceinstaller.steps[1])">back</button>
+        <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
         <button class="slds-button slds-m-right--xx-small slds-button--neutral" (click)="checkSystem()">recheck</button>
-        <button [disabled]="checkFailed" class="slds-button slds-button--brand" (click)="spiceinstaller.next(spiceinstaller.steps[1])">next</button>
+        <button [disabled]="checkFailed" class="slds-button slds-button--brand" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.next })">next</button>
     </div>
 
 </div>

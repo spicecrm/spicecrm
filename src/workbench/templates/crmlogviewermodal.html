@@ -2,7 +2,8 @@
     <system-modal-header (close)="closeModal()"><system-display-datetime [date]="entry.date_entered"></system-display-datetime>&nbsp;• {{entry.pid}} • {{user_name}} • {{entry.log_level}}</system-modal-header>
     <system-modal-content style="height:100%">
         <system-spinner *ngIf="isLoading" class="slds-m-top--medium" style="display:block"></system-spinner>
-        <div *ngIf="isLoaded" class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace" style="overflow-wrap:break-word">{{entry.fullDescription}}</div>
+        <div *ngIf="isLoaded && !jsonResponse" class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace" style="overflow-wrap:break-word">{{entry.fullDescription}}</div>
+        <pre *ngIf="isLoaded && jsonResponse" class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace" style="overflow-wrap:break-word;white-space: pre-wrap;">{{formattedJson}}</pre>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CLOSE"></system-label></button>

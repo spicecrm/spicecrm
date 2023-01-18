@@ -8,7 +8,7 @@
                 <div *ngFor="let sheetDay of sheetDays; trackBy: trackByIndexFn" class="slds-border--left" [ngStyle]="dayWidthStyle">
                     <div class="slds-p-top--xx-small" [style.color]="sheetDay.color">
                         <div class="slds-text-body--regular slds-p-left--x-small">
-                            {{calendar.weekdayShort(sheetDay.index)}}
+                            {{calendar.weekdayShort(sheetDay.day)}}
                         </div>
                         <div class="slds-p-left--x-small slds-p-bottom--xx-small slds-border--bottom slds-text-heading--large">
                             <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay.date)">

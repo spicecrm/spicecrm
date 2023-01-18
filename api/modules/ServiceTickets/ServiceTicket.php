@@ -103,12 +103,13 @@ class ServiceTicket extends SpiceBean
                     $this->assigned_user_id = $current_user->id;
                     $this->assigned_user_name = $current_user->get_summary_text();
                     break;
-                case 'In Process':
-                case 'Pending Input':
-                case 'Closed':
-                    $this->assigned_user_id = '';
-                    $this->assigned_user_name = '';
-                    break;
+// CR1000860
+//                case 'In Process':
+//                case 'Pending Input':
+//                case 'Closed':
+//                    $this->assigned_user_id = '';
+//                    $this->assigned_user_name = '';
+//                    break;
             }
         }
 

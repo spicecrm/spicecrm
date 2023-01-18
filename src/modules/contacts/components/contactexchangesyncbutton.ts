@@ -42,7 +42,7 @@ export class ContactExchangeSyncButton implements OnDestroy {
 
         // subscribe to config hcnges and potentially change the hidden flag
         this.configuration.datachanged$.subscribe(key => {
-            if (key == 'exchangeuserconfig') this.setHidden();
+            if (key == 'microsoftserviceuserconfig') this.setHidden();
         });
 
     }
@@ -55,7 +55,7 @@ export class ContactExchangeSyncButton implements OnDestroy {
     }
 
     public setHidden() {
-        let config = this.configuration.getData('exchangeuserconfig');
+        let config = this.configuration.getData('microsoftserviceuserconfig');
         let moduleData = this.metadata.getModuleDefs('Contacts');
 
         this.hidden = !config || (config && config?.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1);

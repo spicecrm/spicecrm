@@ -32,7 +32,7 @@ class One2MRelationship extends M2MRelationship
             );
             if (empty($links))
             {
-                LoggerManager::getLogger()->fatal("No Links found for relationship {$this->name}");
+                LoggerManager::getLogger()->fatal('relationships',"No Links found for relationship {$this->name} in One2M");
             }
             else {
                 if (!is_array($links)) //Only one link for a self referencing relationship, this is very bad.

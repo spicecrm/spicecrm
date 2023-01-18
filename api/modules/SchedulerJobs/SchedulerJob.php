@@ -14,6 +14,7 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 use SpiceCRM\modules\Mailboxes\Mailbox;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 
 /**
  * handles loading/creating jobs and their jobs to manage executing crontab jobs
@@ -241,9 +242,9 @@ class SchedulerJob extends SpiceBean
         $res = $task->run($this->id);
 
         if (!$res['success']) {
-            LoggerManager::getLogger()->fatal("SchedulerJobTask: {$task->id}: ({$task->name}) failed");
+            LoggerManager::getLogger()->fatal('scheduler', "SchedulerJobTask: {$task->id}: ({$task->name}) failed");
         } else {
-            LoggerManager::getLogger()->info("SchedulerJobTask: {$task->id}: ({$task->name}) successfully executed");
+            LoggerManager::getLogger()->info('scheduler', "SchedulerJobTask: {$task->id}: ({$task->name}) successfully executed");
         }
 
         return $res;

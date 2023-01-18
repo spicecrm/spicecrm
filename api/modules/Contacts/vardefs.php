@@ -289,6 +289,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'name' => 'emails',
                 'type' => 'link',
                 'relationship' => 'emails_contacts_rel',
+                'module' => 'Emails',
+                'bean_name' => 'Email',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAILS',
             ],

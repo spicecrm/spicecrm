@@ -23,6 +23,8 @@ import {domainmanager} from '../services/domainmanager.service';
 export class DomainManagerDefinitions {
 
     public definitionfilterterm: string;
+    public definitionfilterscope: ''|'g'|'c' = '';
+    public definitionfilterstatus: ''|'i' | 'd' | 'a' = '';
 
     constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
@@ -37,6 +39,10 @@ export class DomainManagerDefinitions {
             if (d.deleted) return false;
             // match name if set
             if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0)) return false;
+            // if scope is set apply scope Filter
+            if(this.definitionfilterscope != '' && d.scope != this.definitionfilterscope) return false;
+            // if scope is set apply status Filter
+            if(this.definitionfilterstatus != '' && d.status != this.definitionfilterstatus) return false;
             // else return true
             return true;
         }).sort((a, b) => a.name > b.name ? 1 : -1);

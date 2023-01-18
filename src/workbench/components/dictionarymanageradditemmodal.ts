@@ -93,7 +93,7 @@ export class DictionaryManagerAddItemModal{
         this.templates.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
 
         // set the scope by default
-        this.dictionaryitem.scope = this.dictionarymanager.changescope == 'global' ? 'g' : 'c';
+        this.dictionaryitem.scope = this.dictionarymanager.changescope == 'all' ? 'g' : 'c';
 
         // get the current type
         this.currentType = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).sysdictionary_type;

@@ -22,8 +22,10 @@ class ElasticHandler
     var $server = '127.0.0.1';
     var $port = '9200';
     var $protocol = 'http';
-    var $ssl_verifyhost = 2;
-    var $ssl_verifypeer = 1;
+    var $username = '';
+    var $password = '';
+    var $ssl_verifyhost = 0;
+    var $ssl_verifypeer = 0;
 
     var $version = '7';
 
@@ -54,11 +56,12 @@ class ElasticHandler
         if (isset(SpiceConfig::getInstance()->config['fts']['protocol'])) {
             $this->protocol = SpiceConfig::getInstance()->config['fts']['protocol'];
         }
-        if (isset(SpiceConfig::getInstance()->config['fts']['ssl_verifyhost'])) {
-            $this->ssl_verifyhost = SpiceConfig::getInstance()->config['fts']['ssl_verifyhost'];
-        }
-        if (isset(SpiceConfig::getInstance()->config['fts']['ssl_verifypeer'])) {
-            $this->ssl_verifypeer = SpiceConfig::getInstance()->config['fts']['ssl_verifypeer'];
+
+        if(SpiceConfig::getInstance()->config['fts']['https']) $this->protocol = 'https';
+
+        if(SpiceConfig::getInstance()->config['fts']['ssl_verify']){
+            $this->ssl_verifyhost = 1;
+            $this->ssl_verifypeer = 1;
         }
 
         if (isset(SpiceConfig::getInstance()->config['fts']['number_of_shards'])) {
@@ -68,6 +71,8 @@ class ElasticHandler
             $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_replicas'];
         }
 
+        $this->username = SpiceConfig::getInstance()->config['fts']['username'];
+        $this->password = SpiceConfig::getInstance()->config['fts']['password'];
 
         // get the elastic version - only themajor number is important
         //$version = $this->getVersion();
@@ -112,7 +117,7 @@ class ElasticHandler
      */
     function getHitModule($hit)
     {
-        if ($hit['_type'] != '_doc') {
+        if ($hit['_type'] && $hit['_type'] != '_doc') {
             return $hit['_type'];
         } else {
             return $hit['_source']['_module'];
@@ -220,6 +225,15 @@ class ElasticHandler
         return $indexes;
     }
 
+    public function deleteAllIndexes()
+    {
+        $response = json_decode($this->query('GET', $this->indexPrefix . '*/_stats'), true);
+        foreach($response['indices'] as $index => $data){
+            $response = $this->query('DELETE', $index);
+        }
+        return true;
+    }
+
     /**
      * returns the stats for the index with the current prefix
      *
@@ -240,12 +254,14 @@ class ElasticHandler
         // get the indexing stats
         foreach($response['indices'] as $index => $data){
             $table = $dbTables[str_replace($response['_prefix'], '', $index)];
-            $count = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE deleted = 0");
-            $unindexed = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE ((date_indexed IS NULL OR date_indexed < date_modified) AND deleted = 0) OR (date_indexed IS NOT NULL AND deleted = 1)");
-            $response['indexed'][$index] = [
-                'count' => $count['totalcount'],
-                'unindexed' => $unindexed['totalcount'],
-            ];
+            if(!empty($table)) {
+                $count = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE deleted = 0");
+                $unindexed = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE ((date_indexed IS NULL OR date_indexed < date_modified) AND deleted = 0) OR (date_indexed IS NOT NULL AND deleted = 1)");
+                $response['indexed'][$index] = [
+                    'count' => $count['totalcount'],
+                    'unindexed' => $unindexed['totalcount'],
+                ];
+            }
         }
 
         return $response;
@@ -454,6 +470,45 @@ class ElasticHandler
         return $response;
     }
 
+    private function buildUrl($url = '', $params = []){
+        // build the basic URL
+        $cURL = $this->protocol . '://' . $this->server . ':' . $this->port;
+
+        // add the add url
+        if (!empty($url)) $cURL .= '/' . $url;
+
+        // build with params
+        if (!empty($params)) {
+            if (substr($cURL, -1) != '?')
+                $cURL .= '?';
+            $cURL .= http_build_query($params);
+        }
+
+        return $cURL;
+    }
+
+    private function buildOptions($method, $data, $contenttype = 'application/json'){
+        $curlOptions = [
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
+            CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
+            CURLOPT_HEADER => 1,
+            CURLOPT_HTTPHEADER => [
+                "Content-Type: $contenttype",
+                'Content-Length: ' . strlen($data)
+            ]
+        ];
+
+        // if we have auth data add it to the request
+        if($this->username && $this->password){
+            $curlOptions[CURLOPT_USERPWD] = "{$this->username}:{$this->password}";
+        }
+
+        return $curlOptions;
+    }
+
     /**
      * exeutes the query on the elastic index
      *
@@ -468,29 +523,9 @@ class ElasticHandler
 
         $data_string = !empty($body) ? json_encode($body) : '';
 
-        $cURL = $this->protocol . '://' . $this->server . ':' . $this->port . '/';
-        if (!empty($url)) $cURL .= $url;
+        $ch = curl_init( $this->buildUrl($url, $params));
 
-        if (!empty($params)) {
-            if (substr($cURL, -1) != '?')
-                $cURL .= '?';
-            $cURL .= http_build_query($params);
-        }
-
-        $ch = curl_init($cURL);
-
-        $curlOptions = [
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => $data_string,
-            CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
-            CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
-            CURLOPT_HEADER => 1,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string)
-            ]
-        ];
+        $curlOptions = $this->buildOptions($method, $data_string);
         curl_setopt_array($ch, $curlOptions);
 
         $logEntryHandler = new APILogEntryHandler();
@@ -525,28 +560,8 @@ class ElasticHandler
     {
         $body = implode("\n", $lines) . "\n";
 
-        $cURL = $this->protocol . '://' . $this->server . ':' . $this->port . '/_bulk';
-
-        // check if we have params for the synchronous processing
-        if (!empty($params)) {
-            if (substr($cURL, -1) != '?')
-                $cURL .= '?';
-            $cURL .= http_build_query($params);
-        }
-
-        $ch = curl_init($cURL);
-        $curlOptions = [
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => $body,
-            CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
-            CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
-            CURLOPT_HEADER => 1,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/x-ndjson',
-                'Content-Length: ' . strlen($body)
-            ]
-        ];
+        $ch = curl_init( $this->buildUrl('_bulk', $params));
+        $curlOptions = $this->buildOptions('POST', $body, 'application/x-ndjson');
         curl_setopt_array($ch, $curlOptions);
 
         $logEntryHandler = new APILogEntryHandler();

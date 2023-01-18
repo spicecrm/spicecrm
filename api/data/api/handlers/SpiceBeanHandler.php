@@ -3,7 +3,8 @@
 
 namespace SpiceCRM\data\api\handlers;
 
-use LanguageManager;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -41,7 +42,6 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\ConflictException;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\modules\Trackers\TrackerManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use stdClass;
 use SpiceCRM\modules\UserPreferences\UserPreference;
@@ -81,12 +81,18 @@ class SpiceBeanHandler
         $tracker->save();
     }
 
+    /**
+     * @deprecated
+     * @param $modules
+     * @param $lang
+     * @return array
+     */
     public function get_mod_language($modules, $lang)
     {
         $modLang = [];
 
-        foreach ($modules as $module)
-            $modLang[$module] = return_module_language($lang, $module, true);
+//        foreach ($modules as $module)
+//            $modLang[$module] = return_module_language($lang, $module, true);
 
         return $modLang;
     }
@@ -611,11 +617,13 @@ class SpiceBeanHandler
 
         // determine the charset
         $supportedCharsets = mb_list_encodings();
-        $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        # $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        $charsetTo = UserPreference::getDefaultPreference('export_charset');
         if (!empty($postBody['charset'])) {
             if (in_array($postBody['charset'], $supportedCharsets)) $charsetTo = $postBody['charset'];
         } else {
-            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            # if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset');
         }
 
         // prepare the output
@@ -845,8 +853,7 @@ class SpiceBeanHandler
 
         foreach ($results['hits']['hits'] as &$hit) {
             if(!$seed = BeanFactory::getBean($elastichandler->getHitModule($hit), $hit['_id'])){
-                LoggerManager::getLogger()->fatal(__CLASS__. 'on line '.__LINE__.': no '.$elastichandler->getHitModule($hit).' found with id='.$hit['_id'].'. Check if bean is indexed properly');
-                LoggerManager::getLogger()->fatal($hit);
+                LoggerManager::getLogger()->fatal('elastic', ['message' => __CLASS__. 'on line '.__LINE__.': no '.$elastichandler->getHitModule($hit).' found with id='.$hit['_id'].'. Check if bean is indexed properly', 'data' => $hit]);
                 continue;
             }
 
@@ -1253,7 +1260,7 @@ class SpiceBeanHandler
         if ($thisBean->load_relationship($linkName)) {
             $relModule = $thisBean->{$linkName}->getRelatedModuleName();
         } else {
-            LoggerManager::getLogger()->fatal("Error trying to load relationship using link name = " . $linkName . " in bean " . $beanModule);
+            LoggerManager::getLogger()->fatal('relationships', "Error trying to load relationship using link name = " . $linkName . " in bean " . $beanModule);
         }
 
         if (isset($thisBean->field_defs[$linkName]['sequence_field'])) {
@@ -1625,12 +1632,16 @@ class SpiceBeanHandler
                         foreach ($beans as $thisBeanId => $beanData) {
                             $seed = BeanFactory::getBean($relModule, $thisBeanId);
 
+                            // cache for later use when retrieving related data
+                            $new_with_id = false;
+
                             if (empty($beanData['deleted'])) {
                                 // if it does not exist create new bean
                                 if (!$seed) {
                                     $seed = BeanFactory::getBean($relModule);
                                     $seed->id = $thisBeanId;
                                     $seed->new_with_id = true;
+                                    $new_with_id = true;
                                 }
 
                                 // populate and save and add
@@ -1648,8 +1659,12 @@ class SpiceBeanHandler
                                     }
                                 }
                                 // save if we had changes
-                                if ($changed)
+                                if ($changed) {
                                     $seed->save();
+                                }
+
+                                // retrieve relationship fields
+                                if($new_with_id) $seed->fill_in_relationship_fields();
 
                                 // CR1000357: added $additional_values parameter
                                 $thisBean->$fieldId->add($seed, $additional_values);
@@ -2166,16 +2181,13 @@ class SpiceBeanHandler
     {
 
         // see if we have a language passed in .. if not use the default
-        if (empty($language)) $language = SpiceConfig::getInstance()->config['default_language'];
+        if (empty($language)) $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
 
         $dynamicDomains = $this->get_dynamic_domains($modules, $language);
         $appListStrings = SpiceUtils::returnAppListStringsLanguage($language);
         $appStrings = array_merge($appListStrings, $dynamicDomains);
 
         // grab labels from syslanguagetranslations
-        // $syslanguages = $this->get_languages(strtolower($language));
-        if (!class_exists('LanguageManager')) require_once 'include/SugarObjects/LanguageManager.php';
-
         $syslanguagelabels = LanguageManager::loadDatabaseLanguage($language);
         // file_put_contents("sugarcrm.log", print_r($syslanguagelabels, true), FILE_APPEND);
         $syslanguages = [];

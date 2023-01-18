@@ -12,6 +12,7 @@
             [attr.aria-selected]="item.systemTreeDefs.isSelected"
             class="slds-grid slds-drag--preview">
             <system-tree-item [item]="item"
+                              [customButtonsContainer]="customButtonsContainer"
                               (click)="handleClick(item.id)"
                               [config]="config"
                               [isDragging]="isDragging"
@@ -32,3 +33,4 @@
         <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
     </button>
 </div>
+<ng-content></ng-content>

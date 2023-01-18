@@ -1,6 +1,5 @@
 <?php
-
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 /** @var string $module */
 /** @var string $object_name */
@@ -28,11 +27,11 @@ $vardefs = [
             'len' => 50,
             'vname' => 'LBL_NAME_2',
         ],
-        strtolower($object_name) . '_type' => [
-            'name' => strtolower($object_name) . '_type',
+        'account_type' => [
+            'name' => 'account_type',
             'vname' => 'LBL_TYPE',
             'type' => 'enum',
-            'options' => strtolower($object_name) . '_type_dom',
+            'options' => 'account_type_dom',
             'len' => 50,
             'comment' => 'The Company is of this type',
         ],
