@@ -29,12 +29,16 @@ export class CampaignSendMailButton {
     public execute() {
         if (!this.sending) {
             this.sending = true;
-            this.backend.postRequest(`module/CampaignTasks/${this.model.id}/queuemail`).subscribe((results: any) => {
-                this.sending = false;
-                this.toast.sendToast('Mails queued');
+            this.backend.postRequest(`module/CampaignTasks/${this.model.id}/queuemail`).subscribe({
+                next: (results: any) => {
+                    this.sending = false;
+                    this.toast.sendToast(this.language.getLabel("LBL_MAILS_QUEUED"));
 
-                // set the campaigntask to activated
-                this.model.setField('activated', true);
+                    // set the campaigntask to activated
+                    this.model.setField('activated', true);
+                }, error: (error) => {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR"), 'error');
+                }
             });
         }
     }

@@ -11,7 +11,8 @@ import { QuestionRenderBasic } from './questionrenderbasic';
     styles: [
         'table.question-render-question { border-collapse: collapse; }',
         'div.question-render-question:last-child { margin-bottom: 0; }',
-        '.question-hover:hover { background-color: #f3f2f2; }'
+        '.question-hover:hover { background-color: #f3f2f2; }',
+        '.slds-table td, .slds-table th { white-space: initial; }'
     ]
 })
 export class QuestionRenderSingle extends QuestionRenderBasic implements OnInit {

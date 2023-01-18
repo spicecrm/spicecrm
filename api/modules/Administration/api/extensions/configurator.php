@@ -14,7 +14,7 @@ $routes = [
         'class'       => ConfiguratorController::class,
         'function'    => 'checkForConfig',
         'description' => 'checks if an config exists if not create an stdclass',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true ],
+        'options'     => ['adminOnly' => true, 'validate' => true ],
         'parameters'  => [
             'category' => [
                 'in' => 'path',
@@ -31,7 +31,7 @@ $routes = [
         'class'       => ConfiguratorController::class,
         'function'    => 'writeConfToDb',
         'description' => 'writes not forbidden categories to the database',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
         'parameters'  => [
             'category' => [
                 'in' => 'path',
@@ -50,11 +50,10 @@ $routes = [
     [
         'method'      => 'get',
         'route'       => '/configuration/configurator/entries/{table}',
-        'oldroute'    => '/configurator/entries/{table}',
         'class'       => ConfiguratorController::class,
-        'function'    => 'convertToHTMLDecoded',
-        'description' => 'converts the arguments to an html decoded value',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true ],
+        'function'    => 'readConfig',
+        'description' => 'reads the config from a db table as gen eric interface',
+        'options'     => ['adminOnly' => true, 'validate' => true ],
         'parameters'  => [
             'table' => [
                 'in' => 'path',
@@ -71,7 +70,7 @@ $routes = [
         'class'       => ConfiguratorController::class,
         'function'    => 'deleteConfig',
         'description' => 'delete config entry',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true ],
+        'options'     => ['adminOnly' => true, 'validate' => true ],
         'parameters'  => [
             'table' => [
                 'in' => 'path',
@@ -94,7 +93,7 @@ $routes = [
         'class'       => ConfiguratorController::class,
         'function'    => 'writeConfig',
         'description' => 'writes config to database',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
         'parameters'  => [
             'table' => [
                 'in' => 'path',
@@ -123,7 +122,7 @@ $routes = [
         'class'       => ConfiguratorController::class,
         'function'    => 'loadDefaultConfig',
         'description' => 'loads clears the default config',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true ],
+        'options'     => ['adminOnly' => false, 'validate' => true ],
         'parameters'  => [
             'versions' => [
                 'in' => 'query',
@@ -147,7 +146,7 @@ $routes = [
         'class'       => ConfiguratorController::class,
         'function'    => 'getObjectRepositoryItems',
         'description' => 'Gets the object repository items as string, comma separated.',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true ],
+        'options'     => ['adminOnly' => true, 'validate' => true ],
     ],
 ];
 

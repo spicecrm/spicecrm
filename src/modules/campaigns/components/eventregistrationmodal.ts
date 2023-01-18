@@ -6,6 +6,7 @@ import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
+import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'event-registration-modal',
@@ -30,7 +31,7 @@ export class EventRegistrationModal {
      */
     public totalSteps: string[] = ['ProspectLists', 'EventRegistrations'];
 
-    constructor(public model: model, public metadata: metadata, public backend: backend, @SkipSelf() public eventModel: model, public modelutilities: modelutilities) {
+    constructor(public model: model, public metadata: metadata, public backend: backend, @SkipSelf() public eventModel: model, public modelutilities: modelutilities, public relatedmodels: relatedmodels) {
         this.model.module = 'EventRegistrations';
         this.model.initialize();
         this.model.startEdit();
@@ -110,6 +111,11 @@ export class EventRegistrationModal {
         }
 
         this.backend.postRequest(`module/Events/${this.eventModel.id}/registrations`, {}, postData).subscribe((results: any) => {
+            // reload subpanel
+            this.relatedmodels.relatedModule = 'EventRegistrations';
+            this.relatedmodels.getData();
+
+            // close window
             this.closeModal();
         });
     }

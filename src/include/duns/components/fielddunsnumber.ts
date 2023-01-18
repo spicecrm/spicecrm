@@ -67,12 +67,12 @@ export class FieldDunsNumber extends fieldGeneric {
         this.modal.openModal('DunsNumberModal', true, this.ViewContainerRef.injector)
             .subscribe(modalRef => {
                 this.getResults(modalRef);
-                modalRef.instance.response.subscribe(res => {
+                modalRef.instance.responseSubject.subscribe({ next: res => {
                     this.value = res.duns;
                     if (res != 'none') {
                         this.setAddressFields(res);
                     }
-                });
+                }});
             });
     }
 

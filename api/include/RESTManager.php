@@ -44,6 +44,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\Middleware\AdminOnlyAccessMiddleware;
+use SpiceCRM\includes\Middleware\ApiOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ErrorMiddleware;
 use SpiceCRM\includes\Middleware\ExceptionMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
@@ -510,6 +511,11 @@ class RESTManager
 
                 if (isset($route['options']['adminOnly']) && $route['options']['adminOnly'] == true) {
                     $routeObject->add(AdminOnlyAccessMiddleware::class);
+                }
+
+                // add validation for API only
+                if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] == true) {
+                    $routeObject->add(ApiOnlyAccessMiddleware::class);
                 }
 
                 if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] == true) {

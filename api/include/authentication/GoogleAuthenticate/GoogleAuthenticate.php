@@ -122,7 +122,7 @@ class GoogleAuthenticate implements AuthenticatorI
         if($userObj->status == "Active") {
             return $this->getTokenByUserName($userObj->user_name);
         }
-        LoggerManager::getLogger()->fatal("Trying to get token of an inactive user with user id: {$userid} and user_name: {$userObj->user_name}");
+        LoggerManager::getLogger()->error('googleauth', "Trying to get token of an inactive user with user id: {$userid} and user_name: {$userObj->user_name}");
     }
 
     /**

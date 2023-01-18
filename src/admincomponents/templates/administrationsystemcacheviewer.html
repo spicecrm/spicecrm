@@ -1,0 +1,57 @@
+<ng-container *ngIf="loaded; else loading">
+    <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
+        <h2 class="slds-text-heading_medium slds-col--bump-right"><system-label label="LBL_CACHE_VIEWER"></system-label></h2>
+        <button class="slds-button slds-button--neutral" (click)="reset()">
+            <system-label label="LBL_RESET_CACHE"></system-label>
+        </button>
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="refresh()">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
+    <div class="slds-border--top" system-to-bottom>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--header-fixed">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate">Key</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate slds-p-horizontal--xx-small slds-text-align--right">size</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate slds-p-horizontal--xx-small slds-text-align--right">date</div>
+                    </th>
+                    <th scope="col" style="width: 1rem">
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let stat of stats">
+                    <td>
+                        <div class="slds-truncate" >{{stat.key}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate" >{{stat.size}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate" >{{stat.date}}</div>
+                    </td>
+                    <td>
+                        <button class="slds-button slds-button--icon" (click)="getKey(stat.key)">
+                            <system-button-icon icon="search"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon" (click)="deleteKey(stat.key)">
+                            <system-button-icon icon="delete"></system-button-icon>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-container>
+<ng-template #loading>
+    <div class="slds-align--absolute-center slds-height_full slds-size--1-of-1">
+        <system-spinner></system-spinner>
+    </div>
+</ng-template>

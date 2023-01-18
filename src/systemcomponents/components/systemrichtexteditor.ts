@@ -33,7 +33,7 @@ import {libloader} from "../../services/libloader.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as less from 'less'
 
-declare var CKSource;
+declare var ClassicEditor;
 
 @Component({
     selector: "system-richtext-editor",
@@ -157,7 +157,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.libLoader.loadLib('ckeditor').subscribe(res => {
             this.zone.runOutsideAngular(() => {
 
-                CKSource.Editor.create(this.ckEditor.element.nativeElement, {
+                ClassicEditor.create(this.ckEditor.element.nativeElement, {
                     removePlugins: ['Markdown','Title'],
                     style: {
                         definitions: this.customStyleDefinitions.map(s => ({
@@ -193,11 +193,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                             'imageTextAlternative', '|',
                             'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
                             'resizeImage'
-                        ],
+                        ]
                     },
                     toolbar: [],
                     htmlSupport: {
-                        allow: this.generateHtmlTagsAllowAttributes(['div', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
+                        allow: this.generateHtmlTagsAllowAttributes(['div', 'img', 'span', 'table', 'p', 'h1', 'h2', 'h3', 'h4', 'input', 'fieldset', 'button', 'label', 'textarea', 'select', 'option', 'optgroup'])
                         // hr
                     },
                     autosave: {
@@ -214,6 +214,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
                     });
                     this.editor.setData(this._html);
+
                 });
             });
 
@@ -252,6 +253,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'data-spicefor-first': true,
                     'data-spicefor-last': true,
                     'data-spicetemplate': true,
+                    'data-signature': true,
+                    'data-spice-reply-quote': true,
+                    'data-spice-temp-quote': true,
                     'class': true,
                     'style': true,
                     'value': true,
@@ -278,7 +282,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'cols': true,
                     'rows': true,
                     'wrap': true,
-                    'label': true
+                    'label': true,
+                    'width': true,
+                    'height': true
                 }
             }
         });

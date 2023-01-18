@@ -3,17 +3,21 @@
 
 namespace SpiceCRM\modules\CampaignTasks;
 
+use Cassandra\Time;
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 use SpiceCRM\modules\UserPreferences\UserPreference;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 
 class CampaignTask extends SpiceBean
 {
@@ -44,7 +48,7 @@ class CampaignTask extends SpiceBean
     {
         $db = DBManagerFactory::getInstance();
         $thisId = $db->quote($this->id);
-        $sysModuleFilters = new \SpiceCRM\includes\SysModuleFilters\SysModuleFilters();
+        $sysModuleFilters = new SysModuleFilters();
 
         // disable ONLY_FULL_GROUP_BY if this is set
         $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
@@ -96,47 +100,60 @@ class CampaignTask extends SpiceBean
 
     public function activateFromEvent($status)
     {
-        $db = DBManagerFactory::getInstance();
-        $thisId = $db->quote($this->id);
-        $sysModuleFilters = new \SpiceCRM\includes\SysModuleFilters\SysModuleFilters();
+        $sysModuleFilters = new SysModuleFilters();
 
         // disable ONLY_FULL_GROUP_BY if this is set
-        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+//        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
         // set the group by mode off on MySQL
-        if($this->db->dbType == 'mysql') {
-            $this->db->query("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+//        if($this->db->dbType == 'mysql') {
+//            $this->db->query("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+//        }
+
+        // delete old campaignLog
+        $campaignLog = BeanFactory::getBean('CampaignLog');
+        $deleteWhere = ['campaign_id' => $this->campaign_id, 'campaigntask_id' => $this->id, 'activity_type' => $status];
+        $campaignLog->db->deleteQuery($campaignLog->_tablename, $deleteWhere);
+
+        // grab campaign
+        $campaign = BeanFactory::getBean('Campaigns', $this->campaign_id, ['relationships' => false]);
+
+        // check on filter and build where clause
+        if(!empty($this->module_filter)){
+            $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->module_filter);
+            $filter = !empty($filter) ? "AND $filter" : "";
         }
 
-        $delete_query = "DELETE FROM campaign_log WHERE campaign_id='" . $this->campaign_id . "' AND campaigntask_id='" . $this->id . "' AND activity_type='$status'";
-        $this->db->query($delete_query);
-
-        $current_date = $this->db->now();
+        // prepare insert query
+        $current_date = TimeDate::getInstance()->nowDb();
         $guidSQL = $this->db->getGuidSQL();
+        $target_tracker_key = $this->db->getGuidSQL();
 
-        $filter = $sysModuleFilters->generateWhereClauseForFilterId($this->module_filter);
+        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id, source_id, source_type)";
+        $insert_query .= " SELECT $guidSQL, '$current_date', '$campaign->id', '$this->id', $target_tracker_key, eventregistrations.parent_id, eventregistrations.parent_type,'$status',0, '$current_date', '{$this->assigned_user_id}', eventregistrations.id, 'EventRegistrations'";
+        $insert_query .= " FROM events INNER JOIN eventregistrations ON eventregistrations.event_id = events.id ";
+        $insert_query .= " WHERE events.id = '$campaign->event_id' AND events.deleted != 1 AND eventregistrations.deleted != 1 $filter ";
 
-        $filter = !empty($filter) ? "AND $filter" : "";
+        // create campainlog entries
+        if($success = $this->db->query($insert_query)){
+            // set to activated
+            $this->activated = true;
+            $this->status = 'Active';
+            $this->save();
 
-        $campaigns = $this->get_linked_beans('campaigns');
-        foreach ($campaigns as $campaign){
-            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
-            $insert_query .= " SELECT $guidSQL, $current_date, '$campaign->id', '$this->id', $guidSQL, '$campaign->event_id', eventregistrations.parent_id, eventregistrations.parent_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
-            $insert_query .= "FROM events INNER JOIN eventregistrations ON eventregistrations.event_id = events.id";
-            $insert_query .= " WHERE events.id = '$campaign->event_id' AND events.deleted != 1 AND eventregistrations.deleted != 1 $filter GROUP BY eventregistrations.parent_id";
-
-            $success = $this->db->query($insert_query);
-
+            // set eventregistrationstatus if any value set
+            if(!empty($this->eventregistration_status)){
+                $eventReg = BeanFactory::getBean('EventRegistrations');
+                $where = "event_id = '$campaign->event_id' ".$filter;
+                $registrations = $eventReg->get_full_list('', $where);
+                foreach($registrations as $registration){
+                    $registration->registration_status = $this->eventregistration_status;
+                    $registration->save(); // update and index
+                }
+            }
         }
 
-
-
-        // set to activated
-        $this->activated = true;
-        $this->status = 'Active';
-        $this->save();
-
-
+        return $success;
     }
 
     function export()
@@ -146,7 +163,7 @@ class CampaignTask extends SpiceBean
         $exportFields = ['name', 'salutation', 'first_name', 'last_name', 'email1', 'primary_address_street', 'primary_address_city'];
 
         $thisId = $db->quote($this->id);
-        $sysModuleFilters = new \SpiceCRM\includes\SysModuleFilters\SysModuleFilters();
+        $sysModuleFilters = new SysModuleFilters();
 
         $current_date = $this->db->now();
         $guidSQL = $this->db->getGuidSQL();
@@ -178,11 +195,13 @@ class CampaignTask extends SpiceBean
 
         // determine the charset
         $supportedCharsets = mb_list_encodings();
-        $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        # $charsetTo = UserPreference::getDefaultPreference('default_charset');
+        $charsetTo = UserPreference::getDefaultPreference('export_charset');
         if (!empty($postBody['charset'])) {
             if (in_array($postBody['charset'], $supportedCharsets)) $charsetTo = $postBody['charset'];
         } else {
-            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            # if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
+            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset');
         }
 
         $fh = @fopen('php://output', 'w');
@@ -200,6 +219,34 @@ class CampaignTask extends SpiceBean
         fclose($fh);
     }
 
+    function getTargets($searchterm = null, $start = 0, $limit = 50){
+        $handler = new SpiceBeanHandler();
+        $prospects = [];
+        $prospectlists = [];
+        $res = $this->db->query("SELECT pl.id, pl.name, pl.list_type, plp.related_id, plp.related_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.list_type <> 'test' AND plc.campaigntask_id = '{$this->id}' AND plc.prospect_list_id = pl.id INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id WHERE plc.deleted = 0 AND pl.deleted = 0 AND plp.deleted = 0");
+        while ($row = $this->db->fetchByAssoc($res)) {
+            // get the
+            $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
+            if(isset($prospects[$bean->id])){
+                $prospects[$bean->id]['prospectlists'][] = $row['id'];
+            } else {
+                $prospects[$bean->id]['module'] = $row['related_type'];
+                $prospects[$bean->id]['prospectlists'] = [$row['id']];
+                $prospects[$bean->id]['data'] = $handler->mapBean($bean);
+            }
+
+            if(!isset($prospectlists[$row['id']])){
+                $prospectlists[$row['id']] = [
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'list_type' => $row['list_type']
+                ];
+            }
+        }
+
+        return ['prospectlists' => array_values($prospectlists), 'prospects' => array_values($prospects)];
+    }
+
     function sendTestEmail($emailAddresses = [])
     {
         $testCount = 0;
@@ -212,7 +259,7 @@ class CampaignTask extends SpiceBean
             }
         }
 
-        return $testCount > 0 ? ['status' => 'success'] : ['status' => 'error', 'msg' => 'no targets found'] ;
+        return $testCount > 0 ? ['status' => 'success'] : ['status' => 'error'] ;
     }
 
     /**

@@ -1160,7 +1160,15 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $thisWhereString .= ' IS NULL';
                 break;
             case 'isnotempty':
-                $thisWhereString .= ' <> \'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' is not null';
+                switch ($this->fieldNameMap[$fieldid]['type']) {
+                    case 'date':
+                    case 'datetime':
+                        $thisWhereString .= ' IS NOT NULL';
+                        break;
+                    default:
+                        $thisWhereString .= ' <> \'\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' is not null';
+                        break;
+                }
                 break;
             case 'oneof':
                 if ($this->fieldNameMap[$fieldid]['type'] == 'multienum') {

@@ -66,11 +66,11 @@ export class CampaignTaskActivateButton {
 
             // send toast and set actrive
             if (status.success) {
-                this.toast.sendToast('Activated');
+                this.toast.sendToast(this.language.getLabel("LBL_CAMPAIGNTASK_ACTIVATED"));
                 this.model.setField('activated', true);
 
             } else {
-                this.toast.sendToast('Error');
+                this.toast.sendToast(this.language.getLabel("LBL_ERROR"), 'error');
             }
         });
     }

@@ -6,7 +6,9 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\modules\Contacts\Contact;
@@ -27,7 +29,7 @@ class KReporterRESTHandler
 
         $curArray = [];
         $curArray['-99'] = [
-            'symbol' => SpiceConfig::getInstance()->config['default_currency_symbol'],
+            'symbol' => SpiceConfig::getInstance()->config['currencies']['default_currency_symbol'],
             'conversion_rate' => 1
         ];
         while ($thisCurEntry = DBManagerFactory::getInstance()->fetchByAssoc($curResArray)) {
@@ -145,12 +147,11 @@ class KReporterRESTHandler
             $inputModule = BeanFactory::getBean($module);
 
             //2013-01-18 take in account the users language
-            $langArray = return_module_language($current_language, $module);
-
+            $langArray = LanguageManager::loadDatabaseLanguage($current_language);
             foreach ($inputModule->field_defs as $fieldname => $fielddefs) {
                 $retarray[] = [
                     'field' => $fieldname,
-                    'description' => isset($fielddefs['vname']) ? isset($langArray[$fielddefs['vname']]) ? $langArray[$fielddefs['vname']] : $fielddefs['vname'] : $fieldname,
+                    'description' => isset($fielddefs['vname']) ? isset($langArray[$fielddefs['vname']]) ? $langArray[$fielddefs['vname']]['default'] : $fielddefs['vname'] : $fieldname,
                     'type' => $fielddefs['type']
                 ];
             }
@@ -164,7 +165,7 @@ class KReporterRESTHandler
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $timef = $current_user->getPreference('timef');
         if (empty($timef)) {
-            $timef = SpiceConfig::getInstance()->config['default_time_format'];
+            $timef = SpiceConfig::getInstance()->config['default_preferences']['timef'];
         }
         if (empty($timef)) {
             $timef = '';
@@ -172,7 +173,7 @@ class KReporterRESTHandler
 
         $datef = $current_user->getPreference('datef');
         if (empty($datef)) {
-            $datef = SpiceConfig::getInstance()->config['default_date_format'];
+            $datef = SpiceConfig::getInstance()->config['default_preferences']['datef'];
         }
         if (empty($datef)) {
             $datef = '';
@@ -186,7 +187,7 @@ class KReporterRESTHandler
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $timef = $current_user->getPreference('timef');
         if (empty($timef)) {
-            $timef = SpiceConfig::getInstance()->config['default_time_format'];
+             $timef = SpiceConfig::getInstance()->config['default_preferences']['timef'];
         }
         if (empty($timef)) {
             $timef = '';
@@ -194,15 +195,17 @@ class KReporterRESTHandler
 
         $datef = $current_user->getPreference('datef');
         if (empty($datef)) {
-            $datef = SpiceConfig::getInstance()->config['default_date_format'];
+             $datef = SpiceConfig::getInstance()->config['default_preferences']['datef'];
         }
         if (empty($datef)) {
             $datef = '';
         }
 
-        $precision = $current_user->getPreference('default_currency_significant_digits');
+        # $precision = $current_user->getPreference('default_currency_significant_digits');
+        $precision = $current_user->getPreference('currency_significant_digits');
         if (empty($precision)) {
-            $precision = SpiceConfig::getInstance()->config['default_currency_significant_digits'];
+            # $precision = SpiceConfig::getInstance()->config['default_currency_significant_digits'];
+            $precision = SpiceConfig::getInstance()->config['default_preferences']['currency_significant_digits'];
         }
         if (empty($precision)) {
             $precision = '';
@@ -315,7 +318,7 @@ class KReporterRESTHandler
     {
         global $app_list_strings, $current_language;
 
-        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+        //$app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         global $kreporterWhereOperatorCount, $kreporterWhereOperatorTypes, $kreporterWhereOperatorAssignments;
         include('modules/KReports/config/KReportWhereOperators.php');
@@ -329,7 +332,7 @@ class KReporterRESTHandler
     function getWhereOperators($path, $grouping, $designer)
     {
         global $app_list_strings,  $current_language;
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
@@ -337,12 +340,12 @@ $db = DBManagerFactory::getInstance();
         include('modules/KReports/config/KReportWhereOperators.php');
 
         //2013-01-18 take in account the users language
-        $mod_strings = return_module_language($GLOBALS['current_language'], 'KReports');
+        $mod_strings = LanguageManager::loadDatabaseLanguage($GLOBALS['current_language']);
 
         $retarray[] = [
             'operator' => 'ignore',
             'values' => $kreporterWhereOperatorCount['ignore'],
-            'display' => $mod_strings['LBL_OP_IGNORE']
+            'display' => $mod_strings['LBL_OP_IGNORE']['default']
         ];
 
 
@@ -353,7 +356,7 @@ $db = DBManagerFactory::getInstance();
                 $retarray[] = [
                     'operator' => $operator,
                     'values' => $kreporterWhereOperatorCount[$operator],
-                    'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]
+                    'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]['default']
                 ];
         } else {
 
@@ -396,7 +399,7 @@ $db = DBManagerFactory::getInstance();
                             $retarray[] = [
                                 'operator' => $operator,
                                 'values' => $kreporterWhereOperatorCount[$operator],
-                                'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]
+                                'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]['default']
                             ];
                         break;
                     default:
@@ -404,7 +407,7 @@ $db = DBManagerFactory::getInstance();
                             $retarray[] = [
                                 'operator' => $operator,
                                 'values' => $kreporterWhereOperatorCount[$operator],
-                                'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]
+                                'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]['default']
                             ];
                         break;
                 }
@@ -416,7 +419,7 @@ $db = DBManagerFactory::getInstance();
                     $retarray[] = [
                         'operator' => $operator,
                         'values' => $kreporterWhereOperatorCount[$operator],
-                        'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]
+                        'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]['default']
                     ];
 
                 //2013-02-26 ... add reference also for kreporter fields
@@ -424,7 +427,7 @@ $db = DBManagerFactory::getInstance();
                     $retarray[] = [
                         'operator' => 'reference',
                         'values' => 1,
-                        'display' => $mod_strings['LBL_OP_REFERENCE']
+                        'display' => $mod_strings['LBL_OP_REFERENCE']['default']
                     ];
                 }
             } else {
@@ -437,19 +440,19 @@ $db = DBManagerFactory::getInstance();
                     $retarray[] = [
                         'operator' => $operator,
                         'values' => $kreporterWhereOperatorCount[$operator],
-                        'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]
+                        'display' => $mod_strings['LBL_OP_' . strtoupper($operator)]['default']
                     ];
 
                 if ($designer) {
                     $retarray[] = [
                         'operator' => 'function',
                         'values' => 1,
-                        'display' => $mod_strings['LBL_OP_FUNCTION']
+                        'display' => $mod_strings['LBL_OP_FUNCTION']['default']
                     ];
                     $retarray[] = [
                         'operator' => 'reference',
                         'values' => 1,
-                        'display' => $mod_strings['LBL_OP_REFERENCE']
+                        'display' => $mod_strings['LBL_OP_REFERENCE']['default']
                     ];
                 }
             }
@@ -715,7 +718,7 @@ $db = DBManagerFactory::getInstance();
     private function buildNodeArray($module, $thisLink = '')
     {
         global $excludedModules;
-        require_once('include/utils.php');
+//        require_once('include/utils.php');
 
         include('modules/KReports/kreportsConfig.php');
 
@@ -841,7 +844,7 @@ $db = DBManagerFactory::getInstance();
     private function buildFieldArray($module)
     {
 
-        require_once('include/utils.php');
+//        require_once('include/utils.php');
         $returnArray = [];
         if ($module != '' && $module != 'undefined') {
             $nodeModule = BeanFactory::getBean($module);
@@ -968,7 +971,7 @@ $db = DBManagerFactory::getInstance();
 
         global $current_language, $app_list_strings;
         $db = DBManagerFactory::getInstance();
-        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+        // $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
 
         // initialize Return Array
         $retData = [];
@@ -1943,7 +1946,7 @@ $db = DBManagerFactory::getInstance();
 
         $configurator = new Configurator();
         $configurator->loadConfig();
-        $default_currency_symbol = $configurator->config['default_currency_symbol'];
+        $default_currency_symbol = $configurator->config['currencies']['default_currency_symbol'];
         $kreporter_version = 'ce';
         if (file_exists('modules/KReports/plugins.dictionary.extended'))
             $kreporter_version = 'pro';
@@ -1958,7 +1961,7 @@ $db = DBManagerFactory::getInstance();
      */
     public function getLabels()
     {
-        $labels = return_module_language((empty($GLOBALS['current_language']) ? SpiceConfig::getInstance()->config['default_language'] : $GLOBALS['current_language']), 'KReports');
+        $labels = LanguageManager::loadDatabaseLanguage((empty($GLOBALS['current_language']) ? SpiceLanguageManager::getInstance()->getSystemDefaultLanguage() : $GLOBALS['current_language']));
 
         return $labels;
     }

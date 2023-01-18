@@ -21,6 +21,7 @@ export class QuestionsManagerAddModal implements OnInit {
     @Input() public questionid = '';
     @Input() public categorypool: any;
     @Input() public questiontype: string;
+    @Input() public questionnaire: model;
 
     public response: Observable<object> = null;
     public responseSubject: Subject<any> = null;

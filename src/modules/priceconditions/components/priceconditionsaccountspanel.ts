@@ -15,6 +15,7 @@ import {priceconditonsconfiguration} from '../services/priceconditonsconfigurati
 declare var _: any;
 
 @Component({
+    selector:'price-conditions-accounts-panel',
     templateUrl: '../templates/priceconditionsaccountspanel.html',
     providers: [priceconditonsconfiguration],
     animations: [

@@ -32,6 +32,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
 
@@ -120,6 +121,7 @@ class PostgreSQLManager extends DBManager
         'encrypt'  => 'varchar',
         'file'     => 'varchar',
         'decimal_tpl' => 'decimal(%d, %d)',
+        'json' => 'json'
 
     ];
 
@@ -144,20 +146,20 @@ class PostgreSQLManager extends DBManager
         }
 
         parent::countQuery($sql);
-        LoggerManager::getLogger()->info('Query:' . $sql);
+        if($this->enablelog) LoggerManager::getLogger()->info('Query:' . $sql);
         $this->checkConnection();
         $this->query_time = microtime(true);
         $this->lastsql = $sql;
         $result = $suppress?@pg_query($this->database, $sql):pg_query($this->database, $sql);
 
         $this->query_time = microtime(true) - $this->query_time;
-        LoggerManager::getLogger()->info('Query Execution Time:'.$this->query_time);
+        if($this->enablelog) LoggerManager::getLogger()->info('Query Execution Time:'.$this->query_time);
 
 
         if($keepResult)
             $this->lastResult = $result;
 
-        $this->checkError($msg.' Query Failed:' . $sql . '::', $dieOnError);
+        if($this->enablelog) $this->checkError($msg.' Query Failed:' . $sql . '::', $dieOnError);
         return $result;
     }
 
@@ -197,7 +199,7 @@ class PostgreSQLManager extends DBManager
      */
     public function disconnect()
     {
-        LoggerManager::getLogger()->debug('Calling PgSQL::disconnect()');
+        LoggerManager::getLogger()->debug('sql', 'Calling PgSQL::disconnect()');
         if(!empty($this->database)){
             $this->freeResult();
             pg_close($this->database);
@@ -248,7 +250,7 @@ class PostgreSQLManager extends DBManager
 
         if ($start < 0)
             $start = 0;
-        LoggerManager::getLogger()->debug('Limit Query:' . $sql. ' Start: ' .$start . ' count: ' . $count);
+        LoggerManager::getLogger()->debug('sql', 'Limit Query:' . $sql. ' Start: ' .$start . ' count: ' . $count);
 
         $sql = "$sql LIMIT $count OFFSET $start";
         $this->lastsql = $sql;
@@ -422,8 +424,6 @@ class PostgreSQLManager extends DBManager
      */
     public function tableExists($tableName)
     {
-        $this->log->info("tableExists: $tableName");
-
         if ($this->getDatabase()) {
             $result = $this->query("SELECT n.nspname as Schema,
 										  c.relname as Name,
@@ -536,9 +536,9 @@ class PostgreSQLManager extends DBManager
                 LoggerManager::getLogger()->fatal("Could not connect to server ".$configOptions['db_host_name']." as ".$configOptions['db_user_name']);
                 if($dieOnError) {
                     if(isset($GLOBALS['app_strings']['ERR_NO_DB'])) {
-                        sugar_die($GLOBALS['app_strings']['ERR_NO_DB']);
+                        SpiceUtils::sugarDie($GLOBALS['app_strings']['ERR_NO_DB']);
                     } else {
-                        sugar_die("Could not connect to the database. Please refer to spicecrm.log for details.");
+                        SpiceUtils::sugarDie("Could not connect to the database. Please refer to spicecrm.log for details.");
                     }
                 } else {
                     return false;
@@ -554,11 +554,11 @@ class PostgreSQLManager extends DBManager
         // Set Client encoding
         pg_set_client_encoding($this->database, "UNICODE");
 
-        if(!$this->checkError('Could Not Connect:', $dieOnError))
-            LoggerManager::getLogger()->info("connected to db");
+        if(!$this->checkError('Could Not Connect:', $dieOnError)) {
+            LoggerManager::getLogger()->debug('sql', "connected to db");
+        }
 
         $this->connectOptions = $configOptions;
-        LoggerManager::getLogger()->info("Connect:".$this->database);
 
         return true;
     }
@@ -718,7 +718,6 @@ class PostgreSQLManager extends DBManager
         $columnsAlter = [];
 
         if ($this->isFieldArray($fieldDefs)){
-            LoggerManager::getLogger()->debug("is fieldArray");
             foreach ($fieldDefs as $def){
                 if ($action == 'drop') {
                     $columnsAlter[] = $def['name'];
@@ -1246,7 +1245,7 @@ class PostgreSQLManager extends DBManager
     public function canInstall()
     {
         $db_version = $this->version();
-        LoggerManager::getLogger()->info("PostgreSQL Server Info:" . $db_version);
+        LoggerManager::getLogger()->debug('sql', "PostgreSQL Server Info:" . $db_version);
 
         if(empty($db_version)) {
             return ['ERR_DB_VERSION_FAILURE'];

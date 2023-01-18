@@ -29,12 +29,12 @@ export class WorkflowManagerTaskTypesSms {
     /**
      * holds a list of the available email templates
      */
-    public emailTemplates: { id: string, name: string }[] = [];
+    public textMessageTemplates: { id: string, name: string }[] = [];
     /**
      * holds the content option for the email body
      * @private
      */
-    public contentOption: 'method' | 'email_template' = 'email_template';
+    public contentOption: 'method' | 'sms_template' = 'sms_template';
 
     constructor(private metadata: metadata,
                 public model: model,
@@ -42,7 +42,7 @@ export class WorkflowManagerTaskTypesSms {
                 private userpreferences: userpreferences,
                 public workflowManagerService: WorkflowManagerService,
                 private configuration: configurationService) {
-        this.contentOption = this.model.data.emailcontclass && this.model.data.emailcontclass.length > 0 ? 'method' : 'email_template';
+        this.contentOption = this.model.data.emailcontclass && this.model.data.emailcontclass.length > 0 ? 'method' : 'sms_template';
     }
 
     /**
@@ -62,7 +62,7 @@ export class WorkflowManagerTaskTypesSms {
         const options = this.configuration.getData(`mailboxesoutbound`);
 
         if (_.isEmpty(options)) {
-            this.backend.getRequest("module/Mailboxes/scope", {scope: 'outbound'}).subscribe(
+            this.backend.getRequest("module/Mailboxes/scope", {scope: 'outboundsms'}).subscribe(
                 (results: any) => {
 
                     this.mailboxes = results.sort((a, b) => a.display.localeCompare(b.display));
@@ -84,18 +84,17 @@ export class WorkflowManagerTaskTypesSms {
      */
     public loadAvailableEmailTemplates() {
 
-        const options = this.configuration.getData(`EmailTemplates`);
+        const options = this.configuration.getData(`TextMessageTemplates`);
 
         if (_.isEmpty(options)) {
-            this.backend.getList('EmailTemplates', [], {start: 0, limit: 500}).subscribe(
+            this.backend.getList('TextMessageTemplates', [], {start: 0, limit: 500}).subscribe(
                 (data: any) => {
 
-                    this.emailTemplates = data.list.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule));
                     // cache the options
-                    this.configuration.setData(`EmailTemplates`, this.emailTemplates);
+                    this.configuration.setData(`TextMessageTemplates`, this.textMessageTemplates);
                 });
         } else {
-            this.emailTemplates = options.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule));
+            this.textMessageTemplates = options.filter(et => et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule);
         }
     }
 

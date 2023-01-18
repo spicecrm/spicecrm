@@ -190,7 +190,8 @@ export class TelephonyToolbarIndicator {
             callid: eventData.id,
             status: this.translateStatus(eventData.state),
             msisdn: eventData.direction == 'inbound' ? eventData.callernumber : eventData.callednumber,
-            direction: eventData.direction
+            direction: eventData.direction,
+            start: eventData.state == 'CONNECTED' ? moment() : undefined
         });
     }
 

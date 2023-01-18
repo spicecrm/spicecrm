@@ -15,7 +15,7 @@
                         <telephony-call-panel-search-button [calldata]="callData" (actionemitter)="setRelatedData()"></telephony-call-panel-search-button>
                     </li>
                     <li class="slds-item">
-                        <telephony-call-panel-create-related-button [calldata]="callData" (actionemitter)="setRelatedData()"></telephony-call-panel-create-related-button>
+                        <telephony-call-panel-create-related-button [calldata]="callData" [presets]="presets" (actionemitter)="setRelatedData()"></telephony-call-panel-create-related-button>
                     </li>
                     <li *ngIf="heroldRelatedFound.length > 0" class="slds-item">
                         <telephony-call-found-beans-button [foundBeans]="heroldRelatedFound" [calldata]="callData" (actionemitter)="setRelatedData()"></telephony-call-found-beans-button>

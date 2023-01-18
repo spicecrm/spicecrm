@@ -170,10 +170,17 @@ class AuthenticateController
         if ( !$forUser ) {
             $body = $req->getParsedBody();
             if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
-                $userAuthenticateObj = new UserAuthenticate();
-                $forUser = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+                $userAuthenticateObj = new SpiceCRMAuthenticate();
+                $authData = new \StdClass();
+                $authData->username = $body['username'];
+                $authData->password = $body['password'];
+                $authResponse = $userAuthenticateObj->authenticate($authData, 'credentials');
+                // load a User object
+                $forUser = BeanFactory::getBean('Users');
+                $forUser = $forUser->retrieve_by_string_fields(['user_name' => $authResponse->username]);
             }
         }
+
         $auth = new TOTPAuthentication();
         $secret = $auth->generateSecret();
 
@@ -212,8 +219,14 @@ class AuthenticateController
         if ( !$forUser ) {
             $body = $req->getParsedBody();
             if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
-                $userAuthenticateObj = new UserAuthenticate();
-                $forUser = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+                $userAuthenticateObj = new SpiceCRMAuthenticate();
+                $authData = new \StdClass();
+                $authData->username = $body['username'];
+                $authData->password = $body['password'];
+                $authResponse = $userAuthenticateObj->authenticate($authData, 'credentials');
+                // load a User object
+                $forUser = BeanFactory::getBean('Users');
+                $forUser = $forUser->retrieve_by_string_fields(['user_name' => $authResponse->username]);
             }
         }
 

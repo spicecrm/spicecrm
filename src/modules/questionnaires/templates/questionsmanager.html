@@ -36,7 +36,8 @@
     <div *ngFor="let question of questions; let i = index;" class="slds-box slds-box_xx-small slds-m-top_small" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)">
         <div class="slds-grid slds-grid--vertical-align-center">
             <system-utility-icon *ngIf="canMoveQuestion(question)" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move" class="slds-p-left--x-small slds-p-right_xxx-small"></system-utility-icon>
-            <p class="slds-p-left--xx-small slds-truncate">{{question.name}}</p>
+            <questions-manager-specific-id *ngIf="showSpecificIDs" class="slds-m-left_x-small" [question]="question"></questions-manager-specific-id>
+            <p class="slds-p-left--x-small slds-truncate">{{question.name}}</p>
             <div class="slds-col_bump-left" style="white-space:nowrap">
                 <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="editQuestion(question.id)" [disabled]="!canEditQuestion(question)"><system-button-icon [icon]="'edit'" title="{{language.getLabel('LBL_EDIT')}}"></system-button-icon></button>
                 <button class="slds-button slds-button--icon slds-button--icon-border slds-button--icon-border-filled" (click)="deleteQuestion(question.id)" [disabled]="!canDeleteQuestion(question)"><system-button-icon [icon]="'delete'" title="{{language.getLabel('LBL_DELETE')}}"></system-button-icon></button>

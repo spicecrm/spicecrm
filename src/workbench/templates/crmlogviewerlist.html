@@ -11,6 +11,7 @@
                         <th style="width:17rem" class="slds-text-align--right"><system-label class="slds-th__action" label="LBL_TRANSACTION"></system-label></th>
                         <th style="width:4.5rem" class="slds-resizable"><system-label class="slds-th__action" label="LBL_USER"></system-label></th>
                         <th style="width:3rem"><system-label class="slds-th__action" label="LBL_LEVEL"></system-label></th>
+                        <th style="width:3rem"><system-label class="slds-th__action" label="LBL_SUBLEVEL"></system-label></th>
                         <th style="width:100%" class="slds-resizable"><system-label class="slds-th__action" label="LBL_TEXT"></system-label></th>
                         <th style="width:2.5rem"></th>
                     </tr>
@@ -22,10 +23,11 @@
                         <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'transaction_id',value:entry.transaction_id})">{{entry.transaction_id}}</a><ng-container *ngIf="valuesNotClickable">{{entry.transaction_id}}</ng-container></td>
                         <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'user',value:{user_id:entry.user_id,user_name:entry.user_name}})">{{entry.user_name}}</a><ng-container *ngIf="valuesNotClickable">{{entry.user_name}}</ng-container></td>
                         <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'log_level',value:entry.log_level})">{{entry.log_level}}</a><ng-container *ngIf="valuesNotClickable">{{entry.log_level}}</ng-container></td>
+                        <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'log_sublevel',value:entry.log_sublevel})">{{entry.log_sublevel}}</a><ng-container *ngIf="valuesNotClickable">{{entry.log_sublevel}}</ng-container></td>
                         <td><div class="slds-truncate slds-text-font_monospace">{{entry.description}}</div></td>
                         <td>
                             <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(i)">
-                                <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                                <system-button-icon icon='expand'></system-button-icon>
                             </button>
                         </td>
                     </tr>

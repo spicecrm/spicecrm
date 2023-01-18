@@ -15,6 +15,7 @@ export class QuestionsetManager implements OnInit {
 
     @Input() public questionset: any;
     @Input() public categorypool: any;
+    @Input() public showSpecificIDs = false;
     @Output() public changed = new EventEmitter();
     @Output() public deleted = new EventEmitter();
 

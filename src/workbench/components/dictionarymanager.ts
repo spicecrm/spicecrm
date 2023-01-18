@@ -18,13 +18,19 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
  * the central dictionary Manager
  */
 @Component({
+    selector: 'dictionary-manager',
     templateUrl: '../templates/dictionarymanager.html',
     providers: [dictionarymanager]
 })
 export class DictionaryManager {
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata) {
+    constructor(public dictionarymanager: dictionarymanager, public modal: modal, public injector: Injector) {
 
     }
+
+    public migrate(){
+        this.modal.openModal('DictionaryManagerMigrateDefinitionModal', true, this.injector);
+    }
+
 
 }

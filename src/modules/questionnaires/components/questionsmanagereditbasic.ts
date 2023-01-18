@@ -20,6 +20,13 @@ export class QuestionsManagerEditBasic implements OnInit {
     /**
      * The categories that are available for selection.
      */
+    /*
+    @Input() public questionnaire: model;
+     */
+
+    /**
+     * The categories that are available for selection.
+     */
     @Input() public categorypool;
 
     /**
@@ -108,6 +115,24 @@ export class QuestionsManagerEditBasic implements OnInit {
     }
 
     /**
+     * Getter for the specific ID.
+     */
+    /*
+    get specificID(){
+        return this.model.getField('specific_id');
+    }
+    */
+
+    /**
+     * Getter for the specific ID.
+     */
+    /*
+    set specificID( val: number ){
+        this.model.setField('specific_id', val );
+    }
+    */
+
+    /**
      * Handler when the question text field lost focus and might got changed.
      */
     public questiontextBlurred(): void {
@@ -133,5 +158,14 @@ export class QuestionsManagerEditBasic implements OnInit {
     public nameChanged(): void {
         this.nameMissing = !this.name;
     }
+
+    /**
+     * Are the specific question ids used?
+     */
+    /*
+    public get showSpecificID(): boolean {
+        return this.questionnaire.getField('use_specific_question_ids');
+    }
+     */
 
 }

@@ -11,6 +11,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Campaigns\Campaign;
 use SpiceCRM\modules\ProspectLists\ProspectList;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 
 require_once('modules/KReports/utils.php');
 
@@ -518,8 +519,7 @@ class KReport extends SpiceBean
 
     function getXtypeRenderer($fieldType, $fieldID = '')
     {
-        global $mod_strings;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // check if we have a custom SQL function -- then reset the value .. we do  not know how to format
         if($this->kQueryArray->queryArray['root']['kQuery']){
@@ -723,11 +723,13 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
                             foreach ($arrayList as $fieldId => $fieldArray)
                                 if ($fieldArray['fieldid'] == $key){
                                     $translation = $spiceLanguageHandler->getTranslationLabelDataByName($fieldArray['name'], $current_language);
-                                    $header .= '"' .iconv("UTF-8", $current_user->getPreference('default_export_charset'), $translation) . '"' . $export_delimiter;
+                                    # $header .= '"' .iconv("UTF-8", $current_user->getPreference('default_export_charset'), $translation) . '"' . $export_delimiter;
+                                    $header .= '"' .iconv("UTF-8", $current_user->getPreference('export_charset'), $translation) . '"' . $export_delimiter;
                                 }
                         }
 
-                        $rows .= '"' . iconv("UTF-8", $current_user->getPreference('default_export_charset') . '//IGNORE', preg_replace(['/"/'], ['""'], strip_tags(html_entity_decode($value, ENT_QUOTES)))) . '"' . $export_delimiter;
+                        # $rows .= '"' . iconv("UTF-8", $current_user->getPreference('default_export_charset') . '//IGNORE', preg_replace(['/"/'], ['""'], strip_tags(html_entity_decode($value, ENT_QUOTES)))) . '"' . $export_delimiter;
+                        $rows .= '"' . iconv("UTF-8", $current_user->getPreference('export_charset') . '//IGNORE', preg_replace(['/"/'], ['""'], strip_tags(html_entity_decode($value, ENT_QUOTES)))) . '"' . $export_delimiter;
                     }
                 }
                 if ($getHeader)
@@ -902,12 +904,10 @@ $db = DBManagerFactory::getInstance();
 
             $parameters ['limit'] = $selectionLimit;
         } else {
-            if (isset($parameters ['limit']) && $parameters ['limit'] != '' && isset($parameters ['start'])) {
-                // $queryResults = $db->limitquery($query, $parameters ['start'], $parameters ['limit']);
-            } else {
+            // remove parameters when they shall not be in use to avoid a limit query like 0,0
+            if (isset($parameters ['limit']) && empty($parameters ['limit']) && isset($parameters ['start'])) {
                 unset($parameters ['start']);
                 unset($parameters ['limit']);
-                //$queryResults = $db->query($query);
             }
         }
 //        file_put_contents("sugarcrm.log", "#######". print_r($this->whereOverride, true)."\n", FILE_APPEND);
@@ -1206,8 +1206,7 @@ $db = DBManagerFactory::getInstance();
     function getSnapshots($withoutActual = false)
     {
         // 2012-11-21 change so a label can be used
-        global $mod_strings;
-        $mod_strings = return_module_language($_SESSION['authenticated_user_language'], 'KReports');
+        $mod_strings = LanguageManager::loadDatabaseLanguage($_SESSION['authenticated_user_language']);
 
         $retArray = [];
 
@@ -1217,7 +1216,7 @@ $db = DBManagerFactory::getInstance();
 
         // 2012-11-21 change so a label can be used
         if ($withoutActual == 'true')
-            $retArray [] = ['snapshot' => '0', 'description' => $mod_strings['LBL_CURRENT_SNAPSHOT']];
+            $retArray [] = ['snapshot' => '0', 'description' => $mod_strings['LBL_CURRENT_SNAPSHOT']['default']];
 
         while ($thisSnapshot = $this->db->fetchByAssoc($snapShotsResults)) {
             $retArray [] = ['snapshot' => $thisSnapshot ['id'], 'description' => $thisSnapshot ['snapshotdate']];
@@ -1281,7 +1280,7 @@ $db = DBManagerFactory::getInstance();
     // for the GeoCoding
     function massGeoCode()
     {
-        global $app_list_strings, $mod_strings;
+        global $app_list_strings;
 
         require_once('modules/KReports/BingMaps/BingMaps.php');
 
@@ -1352,7 +1351,7 @@ $db = DBManagerFactory::getInstance();
 
     function getGeoCodes()
     {
-        global $app_list_strings, $mod_strings;
+        global $app_list_strings;
 
         $mapDetails = json_decode(html_entity_decode($this->mapoptions, ENT_QUOTES, 'UTF-8'));
         // $jsonerror = json_last_error();
