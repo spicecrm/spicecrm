@@ -211,7 +211,7 @@ class ConfiguratorController{
 
         $postBody = $req->getParsedBody();
 
-        foreach ($postBody['configs'] as $entry) {
+        foreach ($postBody['config'] as $entry) {
 
             foreach($entry as $key => $val){
                 if(!is_array($val)) continue;
