@@ -14,6 +14,7 @@ import {view} from "../../../services/view.service";
  * additonal fields might be added
  */
 @Component({
+    selector: 'service-ticket-close-modal',
     templateUrl: '../templates/serviceticketclosemodal.html',
     providers: [view]
 })
