@@ -1,37 +1,10 @@
 <div class="slds-p-around--small slds-theme--default" system-to-bottom>
-    <div class="slds-box--border">
-        <div class="slds-theme--shade slds-p-around--small">
-            <system-label label="LBL_DICTIONARY"></system-label>
-        </div>
-        <div class="slds-m-around--small">
-            <administration-dict-repair-item class="slds-m-bottom--x-small" itemlabel="LBL_REPAIR_DATABASE" (execute)="repairDB()"></administration-dict-repair-item>
-            <administration-dict-repair-item itemlabel="LBL_CONVERT_DB_CHARSET" (execute)="convertCharset()"></administration-dict-repair-item>
-            <administration-dict-repair-item itemlabel="LBL_REPAIR_DBCOLUMNS" (execute)="repairDBColumns()"></administration-dict-repair-item>
-            <administration-dict-repair-item itemlabel="LBL_REPAIR_CACHE" (execute)="repairDBCache()"></administration-dict-repair-item>
-        </div>
-    </div>
-    <div class="slds-box--border slds-m-top--small">
-        <div class="slds-theme--shade slds-p-around--small">
-            <system-label label="LBL_LANGUAGE"></system-label>
-        </div>
-        <div class="slds-m-around--small">
-            <administration-dict-repair-item itemlabel="LBL_REPAIR_CUSTOM_CACHE" (execute)="repairCustomENUMs()"></administration-dict-repair-item>
-        </div>
-    </div>
     <div class="slds-box--border slds-m-top--small">
         <div class="slds-theme--shade slds-p-around--small">
             <system-label label="LBL_GIT_REPOSITORY"></system-label>
         </div>
         <div class="slds-m-around--small">
             <administration-dict-repair-item itemlabel="LBL_PULL_FROM_GIT_REPOSITORY" (execute)="pullFromRepository()"></administration-dict-repair-item>
-        </div>
-    </div>
-    <div class="slds-box--border slds-m-top--small">
-        <div class="slds-theme--shade slds-p-around--small">
-            <system-label label="LBL_EXTERNAL_CACHE"></system-label>
-        </div>
-        <div class="slds-m-around--small">
-            <administration-dict-repair-item itemlabel="LBL_RESET_CACHE" (execute)="repairResetExternalCache()"></administration-dict-repair-item>
         </div>
     </div>
 </div>
