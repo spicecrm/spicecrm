@@ -476,11 +476,11 @@ input[type="submit"] {
 }
 
 .slds-context-bar-progress-bar {
-    height: 2.2px;
+    height: 3px;
     background: #aaa;
     position: absolute;
     left: 0;
-    bottom: -2.4px;
+    bottom: -3px;
     width: 100vw;
 }
 
