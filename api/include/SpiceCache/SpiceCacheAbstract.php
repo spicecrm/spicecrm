@@ -143,6 +143,17 @@ abstract class SpiceCacheAbstract
     }
 
     /**
+     * returns the value direct from the cache and no key change
+     * used for the cahce Viewer
+     *
+     * @param $key
+     * @return mixed
+     */
+    public function __getByKey($key){
+        return $this->_getExternal($key, true);
+    }
+
+    /**
      * PHP's magic __set() method, used here for setting a value for a key in the cache.
      *
      * @param  string $key
@@ -210,6 +221,8 @@ abstract class SpiceCacheAbstract
         unset($this->_localStore[$key]);
         $this->_clearExternal($this->_keyPrefix.$key);
     }
+
+    abstract public function __deleteKeyDirect($key):bool;
 
     /**
      * Reset the cache for this request
@@ -279,7 +292,7 @@ abstract class SpiceCacheAbstract
      * @param  string $key
      * @return mixed  $value, returns null if the key is not in the cache
      */
-    abstract protected function _getExternal($key);
+    abstract protected function _getExternal($key, $direct = false);
 
     /**
      * Hook for the child implementations of the individual backends to provide thier own logic for
@@ -294,6 +307,12 @@ abstract class SpiceCacheAbstract
      * clearing thier cache out fully
      */
     abstract protected function _resetExternal();
+
+    /**
+     * returns all keys stored plus data when the key has been stored
+     * @return mixed
+     */
+    abstract public function __getKeys();
 
 
     /**

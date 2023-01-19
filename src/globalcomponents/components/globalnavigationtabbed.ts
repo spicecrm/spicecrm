@@ -1,10 +1,11 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
 import {Subscription} from "rxjs";
+import {backend} from "../../services/backend.service";
 
 @Component({
     selector: 'global-navigation-tabbed',
@@ -22,11 +23,18 @@ export class GlobalNavigationTabbed implements OnDestroy {
 
 
    public subscriptions: Subscription = new Subscription();
+    /**
+     * holds the pending requests total count
+     */
+   @Input() public progressWidth = 0;
+    /**
+     * true when there are backend pending requests
+     */
+   @Input() public showProgressBar = false;
 
     constructor(public metadata: metadata,
                public navigation: navigation,
                public cdRef: ChangeDetectorRef) {
-
     }
 
     /**
