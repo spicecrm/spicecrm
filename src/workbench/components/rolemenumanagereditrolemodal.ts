@@ -4,8 +4,7 @@
 import {Component, ComponentRef} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
-import {RoleMenuManager} from "./rolemenumanager";
-import {RoleI, RoleModuleI} from "../interfaces/systemui.interfaces";
+import {RoleI} from "../interfaces/systemui.interfaces";
 import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {Subject} from "rxjs";
