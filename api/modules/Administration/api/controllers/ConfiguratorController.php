@@ -112,8 +112,8 @@ class ConfiguratorController{
         if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
             throw new NotFoundException('not a known table');
         }
+        $entries = $db->query("SELECT * FROM {$args['table']}");
 
-        $entries = $db->query("SELECT * FROM {$db->quote($args['table'])}");
         while ($entry = $db->fetchByAssoc($entries)) {
             $retArrayEntry = [];
             foreach ($entry as $key => $value) {
@@ -211,7 +211,7 @@ class ConfiguratorController{
 
         $postBody = $req->getParsedBody();
 
-        foreach ($postBody['configs'] as $entry) {
+        foreach ($postBody['config'] as $entry) {
 
             foreach($entry as $key => $val){
                 if(!is_array($val)) continue;

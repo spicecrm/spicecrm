@@ -58,7 +58,7 @@ $routes = [
             'table' => [
                 'in' => 'path',
                 'description' => 'Table',
-                'type' => ValidationMiddleware::TYPE_STRING,
+                'type' => ValidationMiddleware::TYPE_ALPHANUMERIC,
                 'required' => true
             ]
         ]
