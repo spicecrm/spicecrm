@@ -352,7 +352,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         element.innerHTML = this.value;
         const styleTag = element.getElementsByTagName('style')[0];
         styleContent += styleTag?.innerHTML ?? '';
-        styleTag.remove();
+        styleTag?.remove();
 
         this.model.setField(this.fieldname, element.innerHTML, true);
         this._styleTag = styleContent;
