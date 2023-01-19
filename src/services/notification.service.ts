@@ -72,7 +72,7 @@ export class notification {
 
         if (!('Notification' in window)) {
 
-            window.console.error('This browser does not support desktop notification');
+            console.error('This browser does not support desktop notification');
             return Promise.resolve(null);
 
         } else if (Notification.permission === 'default') {
@@ -100,7 +100,7 @@ export class notification {
         });
 
         this.unreadNotifications = this.unreadNotifications.filter(n => n.id !== id);
-        this.unreadCount--;
+        // this.unreadCount--;
         this.backend.postRequest(`common/SpiceNotifications/${id}/markasread`);
     }
 
@@ -170,21 +170,21 @@ export class notification {
 
         this.isLoading = true;
 
-        this.backend.getRequest('common/SpiceNotifications', {offset: this.notifications.length})
-            .subscribe((res: { count: number, records: NotificationI[] }) => {
+        this.backend.getRequest('common/SpiceNotifications', {offset: this.notifications.length}).subscribe({
+            next: (res: { count: number, records: NotificationI[] }) => {
 
-                    this.isLoading = false;
+                this.isLoading = false;
 
-                    this.notifications = this.notifications.concat(
-                        res.records.map(n => this.parseNotification(n))
-                    );
-                    this.unreadNotifications = this.notifications.filter(n => n.notification_read != 1);
+                this.notifications = this.notifications.concat(
+                    res.records.map(n => this.parseNotification(n))
+                );
+                this.unreadNotifications = this.notifications.filter(n => n.notification_read != 1);
 
-                    this.setUnreadCount();
-
-                }, () =>
-                    this.isLoading = false
-            );
+                this.setUnreadCount();
+            }, error: (err) => {
+                this.isLoading = false
+            }
+        });
     }
 
     /**

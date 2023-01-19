@@ -123,6 +123,10 @@ class SpiceCache
      */
     public static function set($key, $value, $ttl = null)
     {
+        // check if we shoudl write the cache at all
+        if(SpiceConfig::getInstance()->get('cache.external_cache_disabled')) return;
+
+        // returen the item
         SpiceCache::instance()->set($key, $value, $ttl);
     }
 
@@ -134,7 +138,35 @@ class SpiceCache
      */
     public static function get($key)
     {
-        return SpiceConfig::getInstance()->config['developerMode'] === true ? false : SpiceCache::instance()->$key;
+        return SpiceConfig::getInstance()->get('cache.external_cache_disabled') || SpiceConfig::getInstance()->config['developerMode'] === true ? false : SpiceCache::instance()->$key;
+    }
+
+    /**
+     * returns all currently held keys in the cache
+     *
+     * @return mixed
+     */
+    public static function getKeys(){
+        return SpiceCache::instance()->__getKeys();
+    }
+
+    /**
+     * deletes one key by the given name
+     *
+     * @return mixed
+     */
+    public static function getByKey($key){
+        return SpiceCache::instance()->__deleteKeyDirect($key);
+    }
+
+
+    /**
+     * deletes one key by the given name
+     *
+     * @return mixed
+     */
+    public static function deleteByKey($key){
+        return SpiceCache::instance()->__deleteKeyDirect($key);
     }
 
     /**

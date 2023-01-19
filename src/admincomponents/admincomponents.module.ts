@@ -36,6 +36,8 @@ import {AdministrationHomeScreenCard} from "./components/administrationhomescree
 import {AdministrationHomeScreenCardItem} from "./components/administrationhomescreencarditem";
 
 import { AdministrationSystemStats } from './components/administrationsystemstats';
+import {AdministrationSystemCacheViewer} from "./components/administrationsystemcacheviewer";
+import {AdministrationSystemCacheViewerDetails} from "./components/administrationsystemcacheviewerdetails";
 import { AdministrationSystemVersions } from './components/administrationsystemversions';
 
 import { AdministrationAPIInspector } from './components/administrationapiinspector';
@@ -86,6 +88,7 @@ import {AdministrationGDPRRetentionManager} from "./components/administrationgdp
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
 import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
 import {AdministrationDictRepairGitPullModal} from "./components/administrationdictrepairgitpullmodal";
+
 
 @NgModule({
     imports: [
@@ -143,6 +146,8 @@ import {AdministrationDictRepairGitPullModal} from "./components/administrationd
         AdministrationJobFailedList,
         AdministrationJobCockpit,
         AdministrationSystemStats,
+        AdministrationSystemCacheViewer,
+        AdministrationSystemCacheViewerDetails,
         AdministrationSystemVersions,
         AdministrationFtsManagerIndexModal,
         AdministrationHomeScreen,

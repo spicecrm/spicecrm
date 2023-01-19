@@ -102,10 +102,11 @@ class SpiceCacheMemcached extends SpiceCacheAbstract
      * @see SpiceCacheAbstract::_getExternal()
      */
     protected function _getExternal(
-        $key
+        $key,
+        $direct = false
         )
     {
-        $returnValue = $this->_getMemcachedObject()->get($key);
+        $returnValue =$this->_getMemcachedObject()->get($key);
         if ( $this->_getMemcachedObject()->getResultCode() != Memcached::RES_SUCCESS ) {
             return null;
         }
@@ -122,7 +123,33 @@ class SpiceCacheMemcached extends SpiceCacheAbstract
     {
         $this->_getMemcachedObject()->delete($key);
     }
-    
+
+    /**
+     * returns the keys
+     *
+     * @return array
+     */
+    public function __getKeys(){
+        $stats = [];
+        $keys = $this->_getMemcachedObject()->getAllKeys();
+        foreach($keys as $key){
+            $stats[] = [
+                'key' => $key,
+                'size' => strlen($this->_getMemcachedObject()->get($key))
+            ];
+        }
+        return $stats;
+    }
+
+    public function __deleteKeyDirect($key): bool{
+        $this->_getMemcachedObject()->get($key);
+        if ($this->_getMemcachedObject()->getResultCode() == Memcached::RES_SUCCESS ) {
+            $this->_getMemcachedObject()->delete($key);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @see SpiceCacheAbstract::_resetExternal()
      */
