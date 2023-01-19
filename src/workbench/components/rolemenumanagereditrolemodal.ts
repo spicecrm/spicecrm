@@ -30,12 +30,13 @@ export class RoleMenuManagerEditRoleModal {
           name: '',
           label: '',
           icon: '',
-          systemdefault: '',
-          portaldefault: '',
+          systemdefault: 0,
+          portaldefault: 0,
           showsearch: 1,
           showfavorites: 1,
           description: '',
           default_dashboard: '',
+          default_dashboardset: '',
           version: '',
           package: '',
           scope: 'custom',
@@ -75,7 +76,7 @@ export class RoleMenuManagerEditRoleModal {
         delete data.systemTreeDefs;
 
 
-        this.backend.postRequest(`configuration/configurator/${table}/${this.newRole.id}`, null, {config: data}).subscribe({
+        this.backend.postRequest(`configuration/configurator/${table}/${this.newRole.id}`, null, {config: this.newRole}).subscribe({
             next: () => {
                 this.newRole.scope_icon = this.newRole.scope == 'custom' ? 'people' : 'world';
                 this.save$.next(this.newRole);
