@@ -2,7 +2,7 @@ export interface RoleModuleI {
     id: string;
     sysuirole_id: string;
     module: string;
-    sequence: string;
+    sequence: number;
     version: string;
     package: string;
     scope: 'custom' | 'global';

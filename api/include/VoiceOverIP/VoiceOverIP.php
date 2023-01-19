@@ -1,18 +1,19 @@
 <?php
+
 namespace SpiceCRM\includes\VoiceOverIP;
 
 use Exception;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
-use SpiceCRM\includes\authentication\AuthenticationController;
 
 class VoiceOverIP
 {
     const DIRECTION_INCOMING = 'inbound';
     const DIRECTION_OUTGOING = 'outbound';
 
-    protected $preferenceName;
-    protected $preferenceCategory;
+    protected $preferenceName = 'config';
+    protected $preferenceCategory = 'VoiceOverIP';
     protected $config;
     protected $channelPrefix;
 
@@ -21,7 +22,8 @@ class VoiceOverIP
      *
      * @return mixed
      */
-    public function getPreferences() {
+    public function getPreferences()
+    {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $prefs = $current_user->getPreference($this->preferenceName, $this->preferenceCategory);
 
@@ -30,26 +32,38 @@ class VoiceOverIP
 
     /**
      * Sets the users preferences.
-     *
      * @param $prefs
      * @return bool
      */
-    public function setPreferences($prefs) {
+    public function setPreferences($prefs): bool
+    {
         $connector = $this->getNewConnector();
 
-        // overwrite phoneusername, username and password
-        $connector->phoneusername = $prefs['phoneusername'];
-        $connector->username = $prefs['username'];
-        $connector->userpass = $prefs['userpass'];
-
-        if ($connector->login()) {
-            $current_user = AuthenticationController::getInstance()->getCurrentUser();
-            $current_user->setPreference($this->preferenceName, $prefs, 0, $this->preferenceCategory);
-            $current_user->savePreferencesToDB();
-            return true;
+        # if connector exists and the login failed return false and do not save preferences
+        if ($connector) {
+            # overwrite phoneusername, username and password
+            $connector->phoneusername = $prefs['phoneusername'];
+            $connector->username = $prefs['username'];
+            $connector->userpass = $prefs['userpass'];
+            if (!$connector->login()) {
+                return false;
+            }
         }
 
-        return false;
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user->setPreference($this->preferenceName, $prefs, 0, $this->preferenceCategory);
+        $current_user->savePreferencesToDB();
+
+        return true;
+    }
+
+    /**
+     * protected
+     * @return null
+     */
+    protected function getNewConnector()
+    {
+        return null;
     }
 
     /**
@@ -58,7 +72,8 @@ class VoiceOverIP
      * @param $call
      * @throws Exception
      */
-    protected function writeCall($call) {
+    protected function writeCall($call)
+    {
         $db = DBManagerFactory::getInstance();
 
         $record = $db->fetchByAssoc($db->query("SELECT id FROM voipcalls WHERE id = '{$call->id}'"));
@@ -75,7 +90,8 @@ VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{
      *
      * @return bool
      */
-    public function login() {
+    public function login()
+    {
         $connector = $this->getNewConnector();
         return $connector->login();
     }
@@ -92,16 +108,17 @@ VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{
      * @param $event
      * @return VoiceOverIPCall
      */
-    protected function createCall($channel, $direction, $id, $state, $callernumber, $callednumber, $event) {
+    protected function createCall($channel, $direction, $id, $state, $callernumber, $callednumber, $event)
+    {
         $call = new VoiceOverIPCall();
 
-        $call->channel      = $this->channelPrefix . $channel;
-        $call->direction    = $direction;
-        $call->id           = $id;
-        $call->state        = $state;
+        $call->channel = $this->channelPrefix . $channel;
+        $call->direction = $direction;
+        $call->id = $id;
+        $call->state = $state;
         $call->callernumber = $callernumber;
         $call->callednumber = $callednumber;
-        $call->event        = $event;
+        $call->event = $event;
 
         return $call;
     }
@@ -114,7 +131,8 @@ VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{
      * @param $data
      * @return mixed
      */
-    public function notifySocket($namespace, $room, $data) {
+    public function notifySocket($namespace, $room, $data)
+    {
 
         SpiceSocket::getInstance()->emit(
             $namespace,
@@ -132,7 +150,8 @@ VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{
      * @param $callId
      * @return bool
      */
-    public function hangupcall($callId) {
+    public function hangupcall($callId)
+    {
         $connector = $this->getNewConnector();
         return $connector->hangupcall($callId);
     }
@@ -143,7 +162,8 @@ VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{
      * @param $callId
      * @return mixed
      */
-    protected function getCall($callId) {
+    protected function getCall($callId)
+    {
         $db = DBManagerFactory::getInstance();
         $record = $db->fetchByAssoc($db->query("SELECT * FROM voipcalls WHERE id = '$callId'"));
         return $record;
@@ -156,7 +176,8 @@ VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{
      * @param $callData
      * @throws Exception
      */
-    public function handleEvent($user, $callData) {
+    public function handleEvent($user, $callData)
+    {
 
         $call = $this->createCall(
             $user,

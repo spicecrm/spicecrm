@@ -17,6 +17,8 @@ import {SystemViewProviderDirective} from "../../directives/directives/systemvie
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {RoleMenuManagerEditRoleModal} from "./rolemenumanagereditrolemodal";
+import {switchMap} from "rxjs";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
     selector: 'role-menu-manager',
@@ -40,8 +42,6 @@ export class RoleMenuManager implements OnInit {
      * loading data
      */
     public isLoading: boolean = false;
-    @ViewChild('test') private test: SystemViewProviderDirective;
-    @ViewChildren(SystemViewProviderDirective) private customTrigger: QueryList<SystemViewProviderDirective>;
     @ViewChildren(SystemViewProviderDirective) private viewProviders: QueryList<SystemViewProviderDirective>;
 
     private roleModulesBackup: { [key: symbol]: RoleModuleI } = {};
@@ -62,19 +62,20 @@ export class RoleMenuManager implements OnInit {
 
         viewProvider.view.setViewMode();
         delete this.roleModulesBackup[roleModule.id];
-        roleModule.id = this.backend.modelutilities.generateGuid();
+        if (!roleModule.id) roleModule.id = this.backend.modelutilities.generateGuid();
         roleModule.sysuirole_id = this.selectedRoleId;
+
 
         const table = roleModule.scope == 'global' ? 'sysuirolemodules' : 'sysuicustomrolemodules';
         const data = {...roleModule};
         delete data.scope;
+
 
         this.backend.postRequest(`configuration/configurator/${table}/${roleModule.id}`, null, {config: data}).subscribe({
             next: () => {
                 this.toast.sendToast('LBL_DATA_SAVED', 'success');
             }
         });
-
     }
 
     /**
@@ -99,14 +100,13 @@ export class RoleMenuManager implements OnInit {
             id: '',
             sysuirole_id: this.selectedRoleId,
             module: '',
-            sequence: '',
+            sequence: null,
             version: '',
             package: '',
             scope: 'custom' || 'global',
         };
 
         this.roleModules.push(roleModule);
-
 
 
         // triggering change detection to find changes in order for angular to render edit view
@@ -128,7 +128,9 @@ export class RoleMenuManager implements OnInit {
         this.backend.getRequest(`configuration/spiceui/core/rolemodules/${id}`).subscribe({
             next: (res: RoleModuleI[]) => {
                 this.isLoading = false;
-                this.roleModules = res;
+                this.roleModules = res.sort((a, b) => a.sequence - b.sequence);
+                // this.selectedRoleModule = res[res.length-1].sequence;
+
             }
         });
     }
@@ -172,7 +174,7 @@ export class RoleMenuManager implements OnInit {
 
     /**
      * edit the role
-     * @param role
+     * @param id
      */
     public editRole(id: string) {
 
@@ -210,14 +212,48 @@ export class RoleMenuManager implements OnInit {
                 this.roles = res.map(role => ({...role, icon: role.scope == 'custom' ? 'people' : 'world'}));
                 this.selectedRoleId = res[0].id;
                 this.loadRoleModules(res[0].id);
-                setTimeout(() => {
-                    this.customTrigger.forEach(console.log);
-                    console.log(this.test);
-                });
             }
         });
     }
 
+    /**
+     * drag and drop for modules
+     */
+    public drop(event: CdkDragDrop<RoleModuleI[]>) {
 
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+        this.roleModules.forEach((entry, index) => {
+            entry.sequence = index;
+        });
+
+        this.saveSequence();
+    }
+
+    /**
+     * saving the new sequence of rolemodules
+     */
+    public saveSequence() {
+
+        const globalEntries = this.roleModules.filter(e => e.scope == 'global').map(e => {
+            const clonedEntry = {...e};
+            delete clonedEntry.scope;
+            return clonedEntry;
+        });
+
+        this.backend.postRequest(`configuration/configurator/sysuirolemodules`, null, {config: globalEntries})
+            .pipe(
+                switchMap(() => {
+                    const customEntries = this.roleModules.filter(e => e.scope == 'custom').map(e => {
+                        const clonedEntry = {...e};
+                        delete clonedEntry.scope;
+                        return clonedEntry;
+                    });
+                    return this.backend.postRequest(`configuration/configurator/sysuicustomrolemodules`, null, {config: customEntries});
+                }))
+            .subscribe(res => {
+                this.toast.sendToast('LBL_DATA_SAVED', 'success');
+            });
+    }
 }
 

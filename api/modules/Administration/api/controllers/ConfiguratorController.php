@@ -195,6 +195,36 @@ class ConfiguratorController{
     }
 
     /**
+     * @throws NotFoundException
+     * @throws ForbiddenException
+     */
+    public function writeConfigList(Request $req, Response $res, $args ): Response
+    {
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
+
+        if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
+
+        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+            throw new NotFoundException('not a known table');
+        }
+
+        $postBody = $req->getParsedBody();
+
+        foreach ($postBody['configs'] as $entry) {
+
+            foreach($entry as $key => $val){
+                if(!is_array($val)) continue;
+                $entry[$key] = json_encode($val);
+            }
+
+            SystemDeploymentCR::writeDBEntry($args['table'], $entry['id'], $entry, $args['table']);
+        }
+
+        return $res->withJson(['status' => 'success']);
+    }
+
+    /**
      * loads clears the default config
      * @param $req
      * @param $res
