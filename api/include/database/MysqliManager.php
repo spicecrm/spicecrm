@@ -243,6 +243,60 @@ class MysqliManager extends DBManager
         return $result;
     }
 
+
+    /**
+     * runs a query as a prepared statement
+     * this is experimental at this stage
+     *
+     * @param string $stm
+     * @param array $params
+     * @return array
+     */
+    public function queryPrepared(string $stm, array $params = []){
+        $results = [];
+
+        if(function_exists('mysqli_execute_query')){
+            $result = @mysqli_execute_query($this->database, $stm, $params);
+        } else {
+            $stmt = @mysqli_prepare($this->database, $stm);
+            if (count($params) > 0) $stmt->bind_param($this->getTypeString($params), ...$params);
+            //if(count($params) > 0) call_user_func_array(array($stmt, 'bind_param'),  $params);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        }
+        while ($row = $result->fetch_assoc()) {
+            $results[] = $row;
+        }
+        $stmt->close();
+        return $results;
+    }
+
+    /**
+     * private function to determine the types for the paramaters passed in as needed by bind_params
+     * @param $values
+     * @return string
+     */
+    private function getTypeString($values){
+        $typeString = '';
+
+        foreach ($values as $value){
+            switch (gettype($value)){
+                case 'integer':
+                    $typeString .= 'i';
+                    break;
+                case 'double':
+                    $typeString .= 'd';
+                    break;
+                default:
+                    $typeString .= 's';
+                    break;
+            }
+        }
+
+        return $typeString;
+    }
+
+
     /**
      * Returns the number of rows affected by the last query
      *
