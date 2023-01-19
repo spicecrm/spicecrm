@@ -366,13 +366,14 @@ export class fieldRichText extends fieldGeneric implements OnInit {
             [this.fieldname]: content
         };
         this.backend.save(this.model.module, this.model.id, toSave)
-            .subscribe(
-                (res: any) => {
+            .subscribe({
+                next: (res: any) => {
                     this.model.setField('date_modified', res.date_modified, true);
                     this.value = res[this.fieldname];
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
-                },
-                error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
-            );
+                }, error: (error) => {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
+                }
+            });
     }
 }
