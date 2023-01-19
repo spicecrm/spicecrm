@@ -44,12 +44,16 @@ export class ServiceTicketCloseModal {
         // load the fieldset
         let componentconfig = this.metadata.getComponentConfig('ServiceTicketCloseModal', this.model.module);
         this.fieldset = componentconfig.fieldset;
+
+        // start editing the model and set the status
+        this.model.startEdit(true, true);
     }
 
     /**
      * closes the modal
      */
     public close() {
+        this.model.cancelEdit();
         this.self.destroy();
     }
 
@@ -66,13 +70,11 @@ export class ServiceTicketCloseModal {
     public setStatus() {
         if(!this.canSave) return;
 
-        // start editing the model and set the status
-        this.model.startEdit(true, true);
         this.model.setField('serviceticket_status', 'Closed');
         if (this.model.validate()) {
             this.model.save();
         } else {
-            this.model.edit();
+            this.model.edit(false);
         }
         this.close();
     }
