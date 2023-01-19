@@ -23,14 +23,14 @@
                     </system-preferences-panel-item-edit>
                 </system-preferences-panel-item>
                 <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARDSET">
-                    <field-container *ngIf="!!preferences.home_dashboardset" [system-model-provider]="{module: 'DashboardSets', id: preferences.home_dashboardset, data: dashboardSetData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+<!--                    <field-container *ngIf="!!preferences.home_dashboardset" [system-model-provider]="{module: 'DashboardSets', id: preferences.home_dashboardset, data: dashboardSetData}" field="name" [fieldconfig]="{link: true, hidelabel: true}"></field-container>-->
+                    <system-preferences-panel-item-display>
+                        <span *ngIf="homeDashboardSetData && homeDashboardSetData.name">{{homeDashboardSetData.name}}</span>
+                    </system-preferences-panel-item-display>
                     <system-preferences-panel-item-edit>
                         <div class="slds-select_container">
-                            <select class="slds-select" [ngModel]="preferences.home_dashboardset" (ngModelChange)="setDashboardSetData($event)">
-                                <option></option>
-                                <option *ngFor="let option of dashboardSets" [value]="option.id">
-                                    {{option.name}}
-                                </option>
+                            <select class="slds-select" [(ngModel)]="preferences.home_dashboardset" (ngModelChange)="setHomeDashboardSetData($event)">
+                                <option *ngFor="let dashboardSet of dashboardSets" [value]="dashboardSet.id">{{dashboardSet.name}}</option>
                             </select>
                         </div>
                     </system-preferences-panel-item-edit>

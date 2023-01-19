@@ -50,10 +50,9 @@ $routes = [
     [
         'method'      => 'get',
         'route'       => '/configuration/configurator/entries/{table}',
-        'oldroute'    => '/configurator/entries/{table}',
         'class'       => ConfiguratorController::class,
-        'function'    => 'convertToHTMLDecoded',
-        'description' => 'converts the arguments to an html decoded value',
+        'function'    => 'readConfig',
+        'description' => 'reads the config from a db table as gen eric interface',
         'options'     => ['adminOnly' => true, 'validate' => true ],
         'parameters'  => [
             'table' => [
@@ -112,6 +111,28 @@ $routes = [
                 'in' => 'body',
                 'description' => 'Various fields of the configuration DB table.',
                 'type' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/configuration/configurator/{table}',
+        'class'       => ConfiguratorController::class,
+        'function'    => 'writeConfigList',
+        'description' => 'writes config list to database',
+        'options'     => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters'  => [
+            'table' => [
+                'in' => 'path',
+                'description' => 'Table',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
+            ],
+            'config' => [
+                'in' => 'body',
+                'description' => 'Various fields of the configuration DB table.',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
                 'required' => true
             ]
         ]
