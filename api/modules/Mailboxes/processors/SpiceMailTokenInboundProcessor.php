@@ -81,21 +81,26 @@ class SpiceMailTokenInboundProcessor extends Processor
             throw new NotFoundException('Email Recipients Array is empty.');
         }
 
-        foreach ($emailRecipients as $recipient_address) {
+        foreach ($emailRecipients as $key => $value) {
             $pattern = '/' . $emailPrefix . '/i';
 
-            if (preg_match($pattern, $recipient_address['email_address'])) {
+            if (preg_match($pattern, $value['email_address'])) {
 
                 // retrieve hashed token from email address
                 $regex = '/[a-zA-Z0-9]{32}/i';
-                preg_match($regex, $recipient_address['email_address'], $match);
+                preg_match($regex, $value['email_address'], $match);
                 $hashedToken = $match[0];
 
                 // search module name and module id related to token
                 $this->findBean($hashedToken);
 
                 // delete hashed email address from recipients
-                if (isset($hashedToken)) $this->deleteHashedEmailAddr($recipient_address['email_address']);
+                if (isset($hashedToken)) {
+                    $this->deleteHashedEmailAddr($value['email_address']);
+
+                    // empty recipient_addresses array by key
+                    $this->email->recipient_addresses[$key] = [];
+                }
             }
         }
     }
