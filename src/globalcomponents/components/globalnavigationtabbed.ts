@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
 import {Subscription} from "rxjs";
@@ -26,15 +26,14 @@ export class GlobalNavigationTabbed implements OnDestroy {
     /**
      * holds the pending requests total count
      */
-   public pendingRequestsTotal = 0;
+   @Input() public progressWidth = 0;
     /**
-     * holds the progress bar width in percent
+     * true when there are backend pending requests
      */
-   public progressWidth = 0;
+   @Input() public showProgressBar = false;
 
     constructor(public metadata: metadata,
                public navigation: navigation,
-               public backend: backend,
                public cdRef: ChangeDetectorRef) {
     }
 
@@ -42,27 +41,7 @@ export class GlobalNavigationTabbed implements OnDestroy {
      * call subscribe to navigation changes
      */
     public ngAfterViewInit() {
-        this.subscribeToBackendPendingRequests();
         this.subscribeToNavigationChanges();
-    }
-
-    /**
-     * subscribe to backend pending requests to set the
-     * @private
-     */
-    private subscribeToBackendPendingRequests() {
-        this.subscriptions.add(this.backend.pendingCountChange$.subscribe(count => {
-
-            if (count > this.pendingRequestsTotal) {
-                this.pendingRequestsTotal = count;
-            } else if (count == 0) {
-                this.pendingRequestsTotal = 0;
-            }
-
-            this.progressWidth = count == 0 ? 100 : (100 / this.pendingRequestsTotal) * (this.pendingRequestsTotal - this.backend.pendingRequestsCount);
-
-            this.cdRef.detectChanges();
-        }));
     }
 
     /**
