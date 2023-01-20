@@ -36,8 +36,6 @@ export class GlobalHeaderDocumentRevisions implements OnInit {
         this.model.module = 'DocumentRevisions';
         this.model.initialize();
         this.loadRelated();
-        // this.model.module = 'DocumentRevisions'
-        // get the config
     }
 
 
