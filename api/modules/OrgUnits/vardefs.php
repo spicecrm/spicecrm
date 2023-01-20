@@ -105,7 +105,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'bean_name' => 'SpiceACLProfile',
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
-        ]
+        ],
+        'documents' => [
+            'name' => 'documents',
+            'type' => 'link',
+            'relationship' => 'documents_orgunits',
+            'source' => 'non-db',
+            'module' => 'Documents',
+            'vname' => 'LBL_DOCUMENTS',
+        ],
     ],
     'relationships' => [
         'member_orgunits' => [
