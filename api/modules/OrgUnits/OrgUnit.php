@@ -50,7 +50,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
                     if ($documentRevision->documentrevisionstatus == "r"){
 
                         $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
-                        $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$data[related_id]', '$documentRevision->id', '0'";
+                        $insert_query .= " VALUES ($guidSQL, $current_date, $current_date, '0', '{$data['related_id']}', '{$documentRevision->id}', '0')";
 
                         $bean->db->query($insert_query);
                     }
@@ -64,9 +64,9 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         }
         //this triggers when you add an OrgUnit to a Document, also adds all Users that are assigned to children of the original OrgUnit
         if ($data['related_module'] == 'OrgUnits' && $data['module'] == 'Documents') {
-            $documentBean = BeanFactory::getBean('Documents', $data[id]);
+            $documentBean = BeanFactory::getBean('Documents', $data['id']);
             $documentRevisions = $documentBean->get_linked_beans('documentrevisions','DocumentRevisions');
-            $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
+            $orgUnitBean = BeanFactory::getBean('OrgUnits', $data['related_id']);
             foreach ($documentRevisions as $documentRevision) {
                 if ($documentRevision->documentrevisionstatus == "r") {
                     $userEntries = new OrgUnit;
@@ -81,7 +81,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
 
         //this triggers when you remove a User from an OrgUnit
         if ($data['related_module'] == 'Users') {
-            $userBean = BeanFactory::getBean('Users', $data[related_id]);
+            $userBean = BeanFactory::getBean('Users', $data['related_id']);
             $linkedDocuments = $bean->get_linked_beans('documents', 'Documents');
             foreach ($linkedDocuments as $linkedDocument) {
                 $documentRevisions = $linkedDocument->get_linked_beans('documentrevisions','DocumentRevisions');
@@ -98,9 +98,9 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         }
         //this triggers when you remove an OrgUnit from a Document
         if ($data['related_module'] == 'OrgUnits' && $data['module'] == 'Documents') {
-            $documentBean = BeanFactory::getBean('Documents', $data[id]);
+            $documentBean = BeanFactory::getBean('Documents', $data['id']);
             $documentRevisions = $documentBean->get_linked_beans('documentrevisions', 'DocumentRevisions');
-            $orgUnitBean = BeanFactory::getBean('OrgUnits', $data[related_id]);
+            $orgUnitBean = BeanFactory::getBean('OrgUnits', $data['related_id']);
             foreach ($documentRevisions as $documentRevision) {
                 $userEntries = new OrgUnit;
                 echo $userEntries->recurringMemberDeletion($orgUnitBean, $documentRevision, null);
@@ -123,7 +123,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
             array_unique($holdRelatedUserIds);
             foreach ($holdRelatedUserIds as $holdRelatedUserId){
                 $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
-                $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$holdRelatedUserId', '$documentRevision->id', '0'";
+                $insert_query .= " VALUES ($guidSQL, $current_date, $current_date, '0', '$holdRelatedUserId', '$documentRevision->id', '0')";
 
                 $orgUnitBean->db->query($insert_query);
             }
@@ -182,7 +182,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
                 if ($documentRevision->documentrevisionstatus == "r"){
 
                     $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
-                    $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$data[related_id]', '$documentRevision->id', '0'";
+                    $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '{$data['related_id']}', '$documentRevision->id', '0'";
 
                     $bean->db->query($insert_query);
                 }

@@ -1,12 +1,12 @@
-import {Component, ComponentRef, EventEmitter, OnInit, Input, SkipSelf} from '@angular/core';
+import {Component, ComponentRef, OnInit, Input} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
-import {modelutilities} from "../../../services/modelutilities.service";
 import {modelattachments} from "../../../services/modelattachments.service";
-import {Observable, Subject, Subscription} from "rxjs";
+import {Subject} from "rxjs";
 import {modal} from "../../../services/modal.service";
 import {session} from "../../../services/session.service";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: 'global-header-document-revisions-modal',
@@ -25,7 +25,6 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
     @Input() public relatedRevisions: any;
 
     public componentconfig: any;
-    // public relatedRevisions = [];
 
     constructor(
         public backend: backend,
@@ -34,6 +33,7 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
         public modal: modal,
         public modelattachments: modelattachments,
         public session: session,
+        public toast: toast,
     ) {
         this.model.module = 'DocumentRevisions';
         this.model.initialize();
@@ -41,7 +41,6 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
 
 
     public ngOnInit() {
-        // this.model.module = 'DocumentRevisions'
         // get the config
         let exampleArray = this.relatedRevisions;
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderDocumentRevisionsModal', 'DocumentRevisions');
@@ -107,9 +106,15 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
         return retSubject;
     }
 
+    /**
+     * set the reision as accepted in the backend
+     * @param id
+     */
     acceptance(id) {
+        this.relatedRevisions.splice(this.relatedRevisions.findIndex(item => item.id === id), 1)
         let body = {userid: this.session.authData.userId};
         this.backend.postRequest(`/module/documentrevisions/${id}/revisionaccepted`, '', body)
+        this.toast.sendToast('revision accepted');
     }
 
     // Close the modal.
