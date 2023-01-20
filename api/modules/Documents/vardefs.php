@@ -110,6 +110,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
             'options' => 'document_status_dom',
             'reportable' => false,
         ],
+        'acceptance_required' => [
+            'name' => 'acceptance_required',
+            'vname' => 'LBL_ACCEPTANCE_REQUIRED',
+            'type' => 'bool',
+            ],
         'status' => [
             'name' => 'status',
             'vname' => 'LBL_STATUS',
