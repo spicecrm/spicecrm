@@ -78,7 +78,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
     }
 
     public function removeDeletedOrgUnitEntry ($bean, $data) {
-
+        //a reminder, the associated hook triggers also when you move a user from one orgunit to another as a user is only supposed to be assigned to one
         //this triggers when you remove a User from an OrgUnit
         if ($data['related_module'] == 'Users') {
             $userBean = BeanFactory::getBean('Users', $data['related_id']);
@@ -142,6 +142,7 @@ class OrgUnit extends \SpiceCRM\data\SpiceBean
         }
     }
 
+    //as we can't know how many layers of orgunits a customer uses recurrsion ensures that we still delete everything properly
     public function recurringMemberDeletion ($orgUnitBean, $documentRevision, $orgUnitChildren){
         global $holdRelatedUserIds;
         if ($orgUnitChildren == null){
