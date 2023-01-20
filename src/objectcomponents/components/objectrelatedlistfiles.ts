@@ -210,7 +210,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
             // reload container
             this.setFilteredFiles('category', this.selectedCategoryId);
             // in case no files are available in the default category, set all and display all files
-            if(this.filteredFiles.length == 0 && this.defaultCategoryId && this.selectedCategoryId != '*') {
+            if(this.filteredFiles.length == 0 && this.selectedCategoryId != '*') {
                 this.selectedCategoryId = '*';
                 this.setFilteredFiles('category', this.selectedCategoryId);
             }
