@@ -60,7 +60,7 @@ interface AccessUtilsI
      * @return array
      * @throws NotFoundException
      */
-    static function deleteIpAddress( $ipAddress = null ): array;
+    static function deleteIpAddress( $ipAddress = null ): string;
 
     /**
      * alter an ip address entry
