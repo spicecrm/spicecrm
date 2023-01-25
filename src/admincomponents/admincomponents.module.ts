@@ -87,7 +87,7 @@ import {AdministrationLoginMethods} from './components/administrationloginmethod
 import {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
 import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
-import {AdministrationDictRepairGitPullModal} from "./components/administrationdictrepairgitpullmodal";
+
 
 
 @NgModule({
@@ -167,7 +167,7 @@ import {AdministrationDictRepairGitPullModal} from "./components/administrationd
         AdministrationLoginManagement,
         AdministrationAssetManager,
         AdministrationLoginMethods,
-        AdministrationDictRepairGitPullModal
+
     ]
 
 })
