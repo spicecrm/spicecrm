@@ -76,7 +76,7 @@ export class RoleMenuManagerEditRoleModal {
         delete data.systemTreeDefs;
 
 
-        this.backend.postRequest(`configuration/configurator/${table}/${this.newRole.id}`, null, {config: this.newRole}).subscribe({
+        this.backend.postRequest(`configuration/configurator/${table}/${this.newRole.id}`, null, {config: data}).subscribe({
             next: () => {
                 this.newRole.scope_icon = this.newRole.scope == 'custom' ? 'people' : 'world';
                 this.save$.next(this.newRole);
