@@ -8,7 +8,6 @@ import {
     Injector,
     OnInit,
     QueryList,
-    ViewChild,
     ViewChildren
 } from "@angular/core";
 import {backend} from "../../services/backend.service";
@@ -191,6 +190,7 @@ export class RoleMenuManager implements OnInit {
         this.modal.openModal('RoleMenuManagerEditRoleModal', true, this.injector).subscribe((modalRef: ComponentRef<RoleMenuManagerEditRoleModal>) => {
             modalRef.instance.save$.subscribe({
                 next: (role: RoleI) => {
+                    role.systemTreeDefs = {icon: role.scope == 'custom' ? 'people' : 'world'};
                     this.roles = [...this.roles, role];
                 }
             })
@@ -208,7 +208,10 @@ export class RoleMenuManager implements OnInit {
         this.backend.getRequest(`configuration/spiceui/core/roles`).subscribe({
             next: (res: RoleI[]) => {
                 this.isLoading = false;
-                this.roles = res.map(role => ({...role, icon: role.scope == 'custom' ? 'people' : 'world'}));
+                this.roles = res.map(role => ({
+                    ...role,
+                    systemTreeDefs: {icon: role.scope == 'custom' ? 'people' : 'world'}
+                }));
                 this.selectedRoleId = res[0].id;
                 this.loadRoleModules(res[0].id);
             }
