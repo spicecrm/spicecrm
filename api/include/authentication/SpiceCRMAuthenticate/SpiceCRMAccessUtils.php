@@ -133,7 +133,7 @@ class SpiceCRMAccessUtils implements AccessUtilsI
      * @return array
      * @throws NotFoundException
      */
-    static function deleteIpAddress( $ipAddress = null ): array
+    static function deleteIpAddress( $ipAddress = null ): string
     {
         if ( $ipAddress === null ) $ipAddress = SpiceUtils::getClientIP();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();

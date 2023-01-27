@@ -90,6 +90,7 @@ export class RoleMenuManager implements OnInit {
             this.toast.sendToast('MSG_SUCCESSFULLY_DELETED', 'success')
         });
         this.roleModules = this.roleModules.filter(id => id.id != roleModule.id);
+        this.saveSequence();
     }
 
     /**
@@ -100,7 +101,7 @@ export class RoleMenuManager implements OnInit {
             id: '',
             sysuirole_id: this.selectedRoleId,
             module: '',
-            sequence: null,
+            sequence: this.roleModules.length,
             version: '',
             package: '',
             scope: 'custom' || 'global',
@@ -129,8 +130,6 @@ export class RoleMenuManager implements OnInit {
             next: (res: RoleModuleI[]) => {
                 this.isLoading = false;
                 this.roleModules = res.sort((a, b) => a.sequence - b.sequence);
-                // this.selectedRoleModule = res[res.length-1].sequence;
-
             }
         });
     }
@@ -158,7 +157,7 @@ export class RoleMenuManager implements OnInit {
 
     /**
      * delete the role
-     * @param role
+     * @param id
      */
     public deleteRole(id: string) {
 
@@ -223,10 +222,6 @@ export class RoleMenuManager implements OnInit {
 
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
-        this.roleModules.forEach((entry, index) => {
-            entry.sequence = index;
-        });
-
         this.saveSequence();
     }
 
@@ -234,6 +229,10 @@ export class RoleMenuManager implements OnInit {
      * saving the new sequence of rolemodules
      */
     public saveSequence() {
+
+        this.roleModules.forEach((entry, index) => {
+            entry.sequence = index;
+        });
 
         const globalEntries = this.roleModules.filter(e => e.scope == 'global').map(e => {
             const clonedEntry = {...e};

@@ -41,10 +41,10 @@ class CampaignTask extends SpiceBean
      * created entries in campaign log with passed status
      * set campaign task to activated
      * set camapign task status to Active
-     * @todo find another way to bild query so that sql_mode workaround may be removed
      * @param string $status
+     *@todo find another way to bild query so that sql_mode workaround may be removed
      */
-    function activate($status = 'targeted')
+    function activate(string $status = 'targeted')
     {
         $db = DBManagerFactory::getInstance();
         $thisId = $db->quote($this->id);
@@ -91,11 +91,16 @@ class CampaignTask extends SpiceBean
             $this->db->query($insert_query);
         }
 
-        // set to activated
-        $this->activated = true;
-        $this->status = 'Active';
-        $this->save();
+        $logs = $this->get_linked_beans('log_entries');
 
+        if(!empty($logs)) {
+            // set to activated
+            $this->activated = true;
+            $this->status = 'Active';
+            $this->save();
+        }
+
+        return count($logs) > 0 ? ['success' => true, 'id' => $this->id] : ['success' => false, 'msg' => 'no targets found'] ;
     }
 
     public function activateFromEvent($status)
