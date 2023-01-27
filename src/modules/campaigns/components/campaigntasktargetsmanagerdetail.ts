@@ -24,12 +24,6 @@ declare var moment: any;
     providers: [model, view]
 })
 export class CampaignTaskTargetsManagerDetails implements OnInit {
-
-    /**
-     * hoilds the component config
-     */
-    public componentconfig: any;
-
     /**
      * the module
      */
@@ -40,6 +34,11 @@ export class CampaignTaskTargetsManagerDetails implements OnInit {
      */
     @Input() public data: any;
 
+    /**
+     * the model data
+     */
+    @Input() public fieldset: string;
+
     constructor(public metadata: metadata, public modal: modal, public model: model, public view: view) {
 
         // hide labels
@@ -47,8 +46,6 @@ export class CampaignTaskTargetsManagerDetails implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.componentconfig = this.metadata.getComponentConfig('CampaignTaskTargetsManagerDetails', this.module);
-
         // initialize the model
         this.model.module = this.module;
         this.model.data = this.model.utils.backendModel2spice(this.module, this.data);
