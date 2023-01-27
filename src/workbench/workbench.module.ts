@@ -143,6 +143,7 @@ import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanag
 import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
 import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
+import {GitPullFromRepository} from "./components/gitpullfromrepository";
 
 
 @NgModule({
@@ -276,7 +277,8 @@ import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrole
         DashletGeneratorDashletDetails,
         ConfigTransfer,
         RoleMenuManager,
-        RoleMenuManagerEditRoleModal
+        RoleMenuManagerEditRoleModal,
+        GitPullFromRepository
     ],
     exports: [
         SortPipe,
