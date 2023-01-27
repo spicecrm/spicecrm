@@ -106,7 +106,7 @@ $vardefs = [
             'reportable' => true,
             'comment' => 'User who last modified record',
             'massupdate' => false,
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'modified_by_user' => [
@@ -120,7 +120,8 @@ $vardefs = [
             'link' => 'modified_user_link',
             'reportable' => false,
             'comment' => 'User who last modified record',
-            'audited' => false
+            'audited' => false,
+            'duplicate_merge' => false
         ],
         'modified_by_name' => [
             'name' => 'modified_by_name',
@@ -133,7 +134,7 @@ $vardefs = [
             'id_name' => 'modified_user_id',
             'module' => 'Users',
             'link' => 'modified_user_link',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'massupdate' => false,
             'audited' => false
         ],
@@ -149,7 +150,7 @@ $vardefs = [
             'group' => 'created_by_name',
             'comment' => 'User who created record',
             'massupdate' => false,
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'created_by_user' => [
@@ -160,7 +161,8 @@ $vardefs = [
             'rname' => 'user_name',
             'source' => 'non-db',
             'id_name' => 'created_by',
-            'module' => 'Users'
+            'module' => 'Users',
+            'duplicate_merge' => false
         ],
         'created_by_name' => [
             'name' => 'created_by_name',
@@ -175,7 +177,7 @@ $vardefs = [
             'module' => 'Users',
             'importable' => 'false',
             'massupdate' => false,
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => false
         ],
         'description' => [
             'name' => 'description',
