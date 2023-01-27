@@ -703,4 +703,13 @@ class ImapHandler extends TransportHandler
                 VALUES ('" . SpiceUtils::createGuid() . "', '" . $this->id . "', '" . $beanId . "', '" . $module . "')";
         $this->db->query($query);
     }
+
+    /**
+     * gets username configured in mailbox settings
+     * @return string|null
+     */
+    public function getUsername(): ?string {
+        $username = $this->mailbox->imap_pop3_username;
+        return $username;
+    }
 }
