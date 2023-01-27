@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\CampaignTasks;
 
 use Cassandra\Time;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
@@ -224,32 +225,170 @@ class CampaignTask extends SpiceBean
         fclose($fh);
     }
 
-    function getTargets($searchterm = null, $start = 0, $limit = 50){
-        $handler = new SpiceBeanHandler();
-        $prospects = [];
-        $prospectlists = [];
-        $res = $this->db->query("SELECT pl.id, pl.name, pl.list_type, plp.related_id, plp.related_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.list_type <> 'test' AND plc.campaigntask_id = '{$this->id}' AND plc.prospect_list_id = pl.id INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id WHERE plc.deleted = 0 AND pl.deleted = 0 AND plp.deleted = 0");
-        while ($row = $this->db->fetchByAssoc($res)) {
-            // get the
-            $bean = BeanFactory::getBean($row['related_type'], $row['related_id']);
-            if(isset($prospects[$bean->id])){
-                $prospects[$bean->id]['prospectlists'][] = $row['id'];
-            } else {
-                $prospects[$bean->id]['module'] = $row['related_type'];
-                $prospects[$bean->id]['prospectlists'] = [$row['id']];
-                $prospects[$bean->id]['data'] = $handler->mapBean($bean);
-            }
+    /**
+     * fetch targets modules
+     * @param array $prospectLists
+     * @return array
+     */
+    private function fetchTargetsModules(array $prospectLists): array
+    {
+        $listsString = implode(',', array_map(function ($e) {return "'$e'";}, $prospectLists));
+        $query = $this->db->query("SELECT DISTINCT plp.related_type FROM prospect_lists_prospects plp WHERE plp.prospect_list_id IN ($listsString) AND deleted != 1");
 
-            if(!isset($prospectlists[$row['id']])){
-                $prospectlists[$row['id']] = [
-                    'id' => $row['id'],
-                    'name' => $row['name'],
-                    'list_type' => $row['list_type']
-                ];
+        $modules = [];
+
+        while($module = $this->db->fetchByAssoc($query)) {
+            $modules[] = $module['related_type'];
+        }
+
+        return $modules;
+    }
+
+    /**
+     * get campaign target lists
+     * @return array
+     */
+    private function getCampaignTargetLists(): array
+    {
+        $query = $this->db->query("SELECT pl.id, pl.name, pl.list_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id WHERE campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1");
+
+        $lists = [];
+
+        while($list = $this->db->fetchByAssoc($query)) {
+            $lists[] = $list;
+        }
+        return $lists;
+    }
+
+    /**
+     * generate targets fts search body for
+     * @param string $modules
+     * @param string $limit
+     * @param string $offset
+     * @param array $targetsIds
+     * @param string|null $searchTerm
+     * @return array
+     */
+    private function generateTargetsSearchBody(string $modules, string $limit, string $offset, array $targetsIds, ?string $searchTerm): array
+    {
+        $addFilter = [
+            'bool' => [
+                'must' => [
+                    [
+                        'terms' => [
+                            "id" => array_keys($targetsIds)
+                        ]
+                    ],
+                ],
+            ]
+        ];
+
+        return [
+            'modules' => $modules,
+            'addFilter' => $addFilter,
+            'searchterm' => $searchTerm,
+            'records' => $limit,
+            'start' => $offset
+        ];
+    }
+
+    /**
+     * get targets ids for the provided list ids
+     * @param array $listIds
+     * @return array
+     */
+    private function getListsTargets(array $listIds): array
+    {
+        $listIdsString = implode(',', array_map(function ($e) {return "'$e'";}, $listIds));
+        $query = $this->db->query("SELECT related_id, GROUP_CONCAT(prospect_list_id) listsIds FROM prospect_lists_prospects WHERE prospect_list_id IN ($listIdsString) AND deleted != 1 GROUP BY related_id");
+        $targets = [];
+        while($target = $this->db->fetchByAssoc($query)) {
+            $targets[$target['related_id']] = $target;
+        }
+
+        return $targets;
+    }
+
+    /**
+     * get campaign targets
+     * @param string $modules
+     * @param int $limit
+     * @param int $offset
+     * @param string|null $status
+     * @param array|null $prospectListIds
+     * @param string|null $searchTerm
+     * @return array
+     */
+    public function getTargets(string $modules, int $limit, int $offset, ?string $status, ?array $prospectListIds, ?string $searchTerm): array
+    {
+        $response = [
+            'prospectlists' => $this->getCampaignTargetLists(),
+            'prospects' => [],
+            'count' => 0
+        ];
+
+        $prospectListIds = $prospectListIds ?: array_column($response['prospectlists'], 'id');
+        $listsTargets = $this->getListsTargets($prospectListIds);
+
+        $postBody = $this->generateTargetsSearchBody($modules, $limit, $offset, $listsTargets, $searchTerm);
+
+        $searchRes = SpiceFTSHandler::getInstance()->search($postBody);
+
+        foreach ($searchRes as $module => $moduleRes) {
+
+            # sum total count from each module
+            $response['count'] += $moduleRes['total']['value'];
+
+            foreach ($moduleRes['hits'] as $target) {
+
+                $targetStatus = $this->getTargetStatus($target['_id']);
+
+                if (!$this->statusMatch($status, $targetStatus)) {
+                    continue;
+                }
+                $targetLists = $listsTargets[$target['_id']]['listsIds'];
+
+                $response['prospects'][] = $this->generateTargetArray($target, $module, $targetStatus, $targetLists);
             }
         }
 
-        return ['prospectlists' => array_values($prospectlists), 'prospects' => array_values($prospects)];
+        return $response;
+    }
+
+    /**
+     * check if the given status matches the target status
+     * @param string|null $status
+     * @param array|false $targetStatus
+     * @return bool
+     */
+    private function statusMatch(?string $status, $targetStatus): bool
+    {
+        return empty($status) || ($status == 'unchecked' && !$targetStatus) || $status == $targetStatus['status'];
+    }
+
+    private function getTargetStatus(string $targetId)
+    {
+        return $this->db->fetchOne("SELECT * FROM campaigntask_targets_status WHERE campaigntask_id = '$this->id' AND prospect_id = '$targetId'");
+    }
+
+    /**
+     * generate target array from the db entry
+     * @param array $target
+     * @param string $module
+     * @param array|false $targetStatus
+     * @param string $relLists
+     * @return array
+     */
+    private function generateTargetArray(array $target, string $module, $targetStatus, string $relLists): array
+    {
+        return [
+            'id' => $target['_id'],
+            'module' => $module,
+            'prospectlists' => explode(',', $relLists),
+            'data' => $target['_source'],
+            'status' => $targetStatus ? $targetStatus['status'] : '',
+            'status_date_changed' => $targetStatus ? $targetStatus['date_modified'] : '',
+        ];
     }
 
     function sendTestEmail($emailAddresses = [])

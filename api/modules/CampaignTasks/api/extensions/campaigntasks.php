@@ -212,6 +212,76 @@ $routes = [
                 'description' => 'Campaign Task id',
                 'type'        => ValidationMiddleware::TYPE_GUID,
             ],
+            'searchTerm'    => [
+                'in'          => 'query',
+                'description' => 'query search term',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+            'offset'    => [
+                'in'          => 'query',
+                'description' => 'query offset',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+            ],
+            'limit'    => [
+                'in'          => 'query',
+                'description' => 'query limit',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+            ],
+            'prospectListIds'    => [
+                'in'          => 'query',
+                'description' => 'query list ids',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+            ],
+            'status'    => [
+                'in'          => 'query',
+                'description' => 'query status filter',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+            'modules'    => [
+                'in'          => 'query',
+                'description' => 'query modules filter',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/CampaignTasks/{id}/targets/status/{status}',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'setTargetsStatus',
+        'description' => 'set targets status',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+            ],
+            'targets'    => [
+                'in'          => 'body',
+                'description' => 'targets to set status',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+            ],
+            'status'    => [
+                'in'          => 'path',
+                'description' => 'targets status',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/CampaignTasks/{id}/targets/list/inclusion',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'createInclusionList',
+        'description' => 'create campaign task inclusion list',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+            ]
         ]
     ],
 ];
