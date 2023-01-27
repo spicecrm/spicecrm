@@ -14,12 +14,13 @@ export interface RoleI {
     name: string;
     label: string;
     icon: string;
-    systemdefault: string;
-    portaldefault: string;
+    systemdefault: 1|0;
+    portaldefault: 1|0;
     showsearch: 1|0;
     showfavorites: 1|0;
     description: string;
     default_dashboard: string;
+    default_dashboardset: string,
     version: string;
     package: string;
     scope: 'custom' | 'global';
