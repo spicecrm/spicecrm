@@ -63,7 +63,6 @@ class AdminController
         $output = '';
         exec("git config --get remote.origin.url", $output);
 
-        // error handling if this fails
 
 
         // if success
@@ -73,10 +72,13 @@ class AdminController
             $remoteUrl = str_replace('//', '//' . $username . ':' . $password . '@', $output);
         exec("git pull $remoteUrl[0]", $gitPullLog);
 
+        // error handling if this fails
+        if(empty($gitPullLog)){
+            $gitPullLog = ['Something went wrong, please check the login credentials'];
+        }
+
         return $res->withJson(['success' => true, 'output' => $gitPullLog]);
     }
-
-
 
     /**
      * resets the cache
