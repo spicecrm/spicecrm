@@ -1175,6 +1175,11 @@ class SpiceFTSHandler
 
             // check if we have an owner set as parameter
             $addFilters = [];
+
+            if ($params['addFilter']) {
+                $addFilters[] = $params['addFilter'];
+            }
+
             if ($params['owner'] == 1) {
                 $addFilters[] = [
                     'bool' => [
