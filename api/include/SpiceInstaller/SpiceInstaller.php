@@ -292,7 +292,7 @@ class SpiceInstaller
         $response = $this->curlCall($this->curl, $url);
 
         if (!empty($response)) {
-            if (version_compare($response->version->number, '7.5', '<')) {
+            if (version_compare($response->version->number, '7.5', '<') || (version_compare($response->version->number, '8.0', '>=') && version_compare($response->version->number, '8.6', '<') ) ) {
                 $errors = ['version not supported'];
             } else {
                 $ftsconfig = ['protocol' => $postData['protocol'], 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
