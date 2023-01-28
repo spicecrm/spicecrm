@@ -84,6 +84,17 @@ class DBManagerFactory
     }
 
     /**
+     * set the db config in Installer
+     * @return void
+     */
+    public static function setDBConfigInstaller(array $dbconfig): void
+    {
+        foreach($dbconfig as $conf => $value){
+            self::$config[$conf] = $value;
+        }
+    }
+
+    /**
      * change
      * @param $dbName
      * @return void
