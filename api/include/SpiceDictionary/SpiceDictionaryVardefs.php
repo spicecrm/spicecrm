@@ -1174,7 +1174,8 @@ WHERE rels.lhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
                     'module' => $row['module'],
                     'relationship' => $row['relationship_name'],
                     'source' => 'non-db',
-                    'side' => 'left'
+                    'side' => 'left',
+                    'duplicate_merge' => (is_null($row['lhs_duplicatemerge']) ? 1 : $row['lhs_duplicatemerge']),
                 ];
             }
         }
@@ -1202,7 +1203,8 @@ WHERE rels.rhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
                     'module' => $row['module'],
                     'relationship' => $row['relationship_name'],
                     'source' => 'non-db',
-                    'side' => 'right'
+                    'side' => 'right',
+                    'duplicate_merge' => (is_null($row['rhs_duplicatemerge']) ? 0 : $row['rhs_duplicatemerge']),
                 ];
                 if(!empty($row['rhs_relatename'])){
                     $dict['fields'][$row['rhs_relatename']] = [
