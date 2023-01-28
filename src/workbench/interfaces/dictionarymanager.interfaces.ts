@@ -62,10 +62,12 @@ export interface Relationship {
     lhs_sysdictionaryitem_id: string;
     lhs_linkname: string;
     lhs_linklabel: string;
+    lhs_duplicatemerge?: number;
     rhs_sysdictionarydefinition_id: string;
     rhs_sysdictionaryitem_id: string;
     rhs_linkname: string;
     rhs_linklabel: string;
+    rhs_duplicatemerge?: number;
     rhs_relatename: string;
     rhs_relatelabel: string;
     relationship_type: 'one-to-many'|'many-to-many'|'parent';
