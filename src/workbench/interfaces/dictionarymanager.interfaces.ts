@@ -39,6 +39,7 @@ export interface DictionaryItem {
     label?: string;
     labelinputhelper?: string;
     non_db?: number;
+    duplicate_merge?: number;
     exclude_from_audited?: number;
     required?: number;
     default_value?: string;
