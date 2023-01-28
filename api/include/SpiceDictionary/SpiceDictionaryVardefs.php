@@ -1187,7 +1187,7 @@ WHERE rels.lhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
      * @return void
      */
     public static function loadRHSLinks(&$dict) {
-        $q = "SELECT sysmods.module, rels.rhs_linkname, rels.rhs_linklabel, rels.rhs_relatename, rels.rhs_relatelabel, rels.rhs_sysdictionaryitem_name, rels.relationship_name, dictitems.name id_name
+        $q = "SELECT sysmods.module, rels.rhs_linkname, rels.rhs_linklabel, rels.rhs_relatename, rels.rhs_relatelabel, rels.rhs_sysdictionaryitem_name, rels.relationship_name, dictitems.name id_name, rels.rhs_duplicatemerge
 FROM (SELECT * from sysdictionaryrelationships UNION SELECT * from syscustomdictionaryrelationships) rels 
 INNER JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmods ON sysmods.sysdictionarydefinition_id = rels.lhs_sysdictionarydefinition_id
 INNER JOIN (SELECT * from sysdictionaryitems UNION SELECT * from syscustomdictionaryitems) dictitems ON dictitems.id = rels.rhs_sysdictionaryitem_id
