@@ -723,6 +723,12 @@ export class model implements OnDestroy {
             let checksum: number = 0;
             let is_valid: boolean = true;
 
+            // make sure we have an array of events to filter properly on events
+            let onEventCheck = validation.onevents instanceof Array;
+            if(!onEventCheck){
+                validation.onevents = validation.onevents.split(',');
+            }
+
             if (validation.onevents instanceof Array && !validation.onevents.includes(event)) {
                 continue;
             }
