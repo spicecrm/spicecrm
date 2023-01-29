@@ -19,6 +19,7 @@ import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
 import {SocketEventI} from "./interfaces.service";
 import {filter, map} from "rxjs/operators";
+import {userpreferences} from "./userpreferences.service";
 
 /**
  * @ignore
@@ -278,7 +279,8 @@ export class model implements OnDestroy {
         public navigation: navigation,
         public configuration: configurationService,
         public injector: Injector,
-        public socket: socket
+        public socket: socket,
+        public userpreferences: userpreferences
     ) {
 
         this.data$ = new BehaviorSubject(this.data);
@@ -804,6 +806,13 @@ export class model implements OnDestroy {
                 return true;
             case "set_value_from_field":
                 this.data[action.fieldname] = this.data[params];
+                return true;
+            case "set_value_from_user":
+                if(this.session.authData.user[params]){
+                    this.data[action.fieldname] = this.session.authData.user[params];
+                } else if(this.userpreferences.toUse[params]){
+                    this.data[action.fieldname] = this.userpreferences.toUse[params];
+                }
                 return true;
             case "set_message":
                 if (params instanceof Object) {
