@@ -1,7 +1,4 @@
-/**
- * @module AdminComponentsModule
- */
-import {Component, ComponentRef} from '@angular/core';
+import {Component} from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
@@ -43,7 +40,7 @@ export class GitPullFromRepository {
      */
     public pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})");
     public tokenRegexp: RegExp = new RegExp("^ghp_[a-zA-Z0-9]{36}$");
-    public userRegexp: RegExp = new RegExp("^[a-zA-Z0-9]+$");
+    public userRegexp: RegExp = new RegExp("^[a-zA-Z0-9-]+$");
     public emailRegexp: RegExp = new RegExp("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$");
 
     constructor(public backend: backend, public toast: toast, public modal: modal) {
@@ -66,8 +63,8 @@ export class GitPullFromRepository {
     public pullFromRepository(loginDetails) {
         this.loginCheck();
 
-        if (this.loginDetails.loginOption == 'token'){
-            if (this.tokenCondition){
+        if (this.loginDetails.loginOption == 'token') {
+            if (this.tokenCondition) {
                 let loadingModal = this.modal.await('LBL_LOADING');
                 delete this.loginDetails.username;
                 delete this.loginDetails.password;
@@ -77,26 +74,22 @@ export class GitPullFromRepository {
                     loadingModal.emit(true);
                     this.toast.sendToast('LBL_DATA_SAVED', 'success');
                 });
-            }
-            else if (!this.tokenCondition){
+            } else if (!this.tokenCondition) {
                 this.toast.sendToast('token is empty or incorrect', 'error');
             }
-        }
-
-        else if (this.loginDetails.loginOption == 'username'){
-            if (this.usernameCondition && this.passwordCondition){
+        } else if (this.loginDetails.loginOption == 'username') {
+            if (this.usernameCondition && this.passwordCondition) {
                 let loadingModal = this.modal.await('LBL_LOADING');
                 this.backend.postRequest(`/admin/repair/pull`, null, loginDetails).subscribe((res: any) => {
                     this.data = res.output;
                     loadingModal.emit(true);
                     this.toast.sendToast('LBL_DATA_SAVED', 'success');
                 });
-            }
-            else if (!this.usernameCondition && !this.passwordCondition){
+            } else if (!this.usernameCondition && !this.passwordCondition) {
                 this.toast.sendToast('username and password is empty or incorrect', 'error');
-            }else if (!this.usernameCondition){
+            } else if (!this.usernameCondition) {
                 this.toast.sendToast('username is empty or incorrect', 'error');
-            }else if (!this.passwordCondition){
+            } else if (!this.passwordCondition) {
                 this.toast.sendToast('password is empty or incorrect', 'error');
             }
         }

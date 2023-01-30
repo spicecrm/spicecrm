@@ -63,7 +63,8 @@ export class AdministrationMain implements AfterViewInit {
      */
     get menuWidth(){
         return {
-            width: this.administration.minimized ? '40px' : '220px'
+            'width': this.administration.minimized ? '40px' : '220px',
+            'min-width': this.administration.minimized ? '40px' : '220px',
         }
     }
 
