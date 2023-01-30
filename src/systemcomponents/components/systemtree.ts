@@ -172,8 +172,7 @@ export class SystemTree implements OnChanges {
                     item.systemTreeDefs = {};
                 }
                 item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
-                item.systemTreeDefs.clickable = item.hasOwnProperty('clickable') ? item.clickable : true;
-                item.systemTreeDefs.icon = item.icon;
+                item.systemTreeDefs.clickable = item.systemTreeDefs.hasOwnProperty('clickable') ? item.systemTreeDefs.clickable : true;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
                 this.tree.push(item);

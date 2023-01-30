@@ -144,6 +144,7 @@ import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlink
 import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
 import {GitPullFromRepository} from "./components/gitpullfromrepository";
+import {GitStatusOfRepository} from "./components/gitstatusofrepository";
 
 
 @NgModule({
@@ -278,7 +279,8 @@ import {GitPullFromRepository} from "./components/gitpullfromrepository";
         ConfigTransfer,
         RoleMenuManager,
         RoleMenuManagerEditRoleModal,
-        GitPullFromRepository
+        GitPullFromRepository,
+        GitStatusOfRepository
     ],
     exports: [
         SortPipe,
