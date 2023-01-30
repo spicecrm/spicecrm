@@ -292,7 +292,7 @@ class SpiceInstaller
         $response = $this->curlCall($this->curl, $url);
 
         if (!empty($response)) {
-            if (version_compare($response->version->number, '7.5', '<')) {
+            if (version_compare($response->version->number, '7.5', '<') || (version_compare($response->version->number, '8.0', '>=') && version_compare($response->version->number, '8.6', '<') ) ) {
                 $errors = ['version not supported'];
             } else {
                 $ftsconfig = ['protocol' => $postData['protocol'], 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
@@ -346,10 +346,19 @@ class SpiceInstaller
     }
 
     /**
+     * @deprecated
+     * @param $postData
+     * @return void
+     */
+    private function generateSugarConfig($postData){
+        return $this->generateSpiceConfig($postData);
+    }
+
+    /**
      * @param $postData
      * @return array
      */
-    private function generateSugarConfig($postData)
+    private function generateSpiceConfig($postData)
     {
         return [
             'dbconfig' => $postData['database'],
@@ -393,8 +402,8 @@ class SpiceInstaller
      */
     private function writeConfig($spice_config)
     {
-        SpiceFileUtils::spiceFilePutContents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$sugar_config=');
-        SpiceFileUtils::spiceWriteArrayToFile("sugar_config", $spice_config, 'config.php');
+        SpiceFileUtils::spiceFilePutContents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$spice_config=');
+        SpiceFileUtils::spiceWriteArrayToFile("spice_config", $spice_config, 'config.php');
         return true;
     }
 
@@ -433,7 +442,7 @@ class SpiceInstaller
 
         }
 
-        $this->dbManagerFactory::$config = ['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']];
+        $this->dbManagerFactory::setDBConfigInstaller(['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']]);
 
         $db = $this->dbManagerFactory->getInstance();
 
@@ -582,7 +591,8 @@ class SpiceInstaller
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'send_from_assigning_user', '0')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('tracker', 'Tracker', '1')");
 
-        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', '".$db->quote( $postData['system_name'] ?: 'SpiceCRM' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', '".$db->quote( $postData['systemname'] ?: 'SpiceCRM' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'version', '".SpiceConfig::getSystemVersion()."')");
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'timezone', '".$db->quote( $postData['preferences']['timezone'] ?: '' )."')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'datef', '".$db->quote( $postData['preferences']['datef'] ?: '' )."')");
@@ -687,8 +697,8 @@ class SpiceInstaller
         $errors = [];
         $postData = $body->getParsedBody();
 
-        //generate a new sugar_config
-        $spice_config = $this->generateSugarConfig($postData);
+        //generate a new spice_config
+        $spice_config = $this->generateSpiceConfig($postData);
 
         //assign to global instance
         SpiceConfig::getInstance()->config = $spice_config;

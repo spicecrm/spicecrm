@@ -78,6 +78,15 @@ class AdminController
         }
 
         return $res->withJson(['success' => true, 'output' => $gitPullLog]);
+
+    }    public function showStatusRepository(Request $req, Response $res, array $args): Response {
+
+        // execute git status
+        $gitStatus = '';
+
+        exec("git status", $gitStatus);
+
+        return $res->withJson(['success' => true, 'output' => $gitStatus]);
     }
 
     /**

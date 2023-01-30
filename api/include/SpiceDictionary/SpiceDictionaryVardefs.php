@@ -595,10 +595,10 @@ class SpiceDictionaryVardefs  {
      */
     public static function getDictionaryQuery($dictionaryId)
     {
-        return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
+        $query =  "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname,
-        sysdi.name itemname, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted,
+        sysdi.name itemname, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted,
         sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
         LEFT JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmod ON sysmod.sysdictionarydefinition_id = sysd.id
@@ -610,6 +610,7 @@ class SpiceDictionaryVardefs  {
         WHERE sysd.id = '{$dictionaryId}'
         ORDER BY sysdi.sequence ASC
        ";
+        return $query;
 
     }
 
@@ -1173,7 +1174,8 @@ WHERE rels.lhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
                     'module' => $row['module'],
                     'relationship' => $row['relationship_name'],
                     'source' => 'non-db',
-                    'side' => 'left'
+                    'side' => 'left',
+                    'duplicate_merge' => (is_null($row['lhs_duplicatemerge']) ? 1 : $row['lhs_duplicatemerge']),
                 ];
             }
         }
@@ -1201,7 +1203,8 @@ WHERE rels.rhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
                     'module' => $row['module'],
                     'relationship' => $row['relationship_name'],
                     'source' => 'non-db',
-                    'side' => 'right'
+                    'side' => 'right',
+                    'duplicate_merge' => (is_null($row['rhs_duplicatemerge']) ? 0 : $row['rhs_duplicatemerge']),
                 ];
                 if(!empty($row['rhs_relatename'])){
                     $dict['fields'][$row['rhs_relatename']] = [
