@@ -60,6 +60,7 @@ export class DictionaryManagerAddItemModal{
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
             name: '',
             non_db: 0,
+            duplicate_merge: 1,
             exclude_from_audited: 0,
             default_value: '',
             required: 0,

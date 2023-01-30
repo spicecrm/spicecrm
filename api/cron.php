@@ -16,7 +16,6 @@ register_shutdown_function(function () {
 });
 
 require_once 'vendor/autoload.php';
-require_once('sugar_version.php');
 
 global $overCLI;
 $overCLI = substr(php_sapi_name(), 0, 3) == 'cli';

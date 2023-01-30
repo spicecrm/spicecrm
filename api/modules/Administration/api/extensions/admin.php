@@ -21,6 +21,13 @@ $routes = [
         'function' => 'pullFromRepository',
         'description' => 'pulls from Repository',
         'options' => ['adminOnly' => true]
+    ],    [
+        'method' => 'post',
+        'route' => '/admin/repair/status',
+        'class' => AdminController::class,
+        'function' => 'showStatusRepository',
+        'description' => 'status of git Repository',
+        'options' => ['adminOnly' => true]
     ],
     [
         'method' => 'get',
