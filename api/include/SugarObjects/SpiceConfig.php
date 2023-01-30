@@ -101,7 +101,7 @@ class SpiceConfig
      */
     protected function loadConfigFiles()
     {
-        $sugar_config = [];
+        $spice_config = [];
         if (is_file('config.php')) {
             include('config.php'); // provides \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config
         } else {
@@ -113,8 +113,13 @@ class SpiceConfig
             include('config_override.php');
         }
 
+        // BWC with sugar_config
+        if(isset($sugar_config) && is_array($sugar_config)){
+            $spice_config = array_merge($spice_config, $sugar_config);
+        }
+
         // set the config
-        $this->config = $sugar_config;
+        $this->config = $spice_config;
 
         // set the session Dir
         if (!empty($this->config['session_dir'])) {
@@ -152,6 +157,46 @@ class SpiceConfig
 
         return true;
     }
+
+    /**
+     * @return array|mixed
+     */
+    public static function loadConfigFromSpiceJson(){
+        $configJsonPath = './api/spiceconfigurations/spiceconfigurations.json';
+        if(is_file($configJsonPath)){
+            $json = file_get_contents($configJsonPath);
+            if($spiceconfigurations = json_decode($json, true)){
+                return $spiceconfigurations;
+            }
+        }
+        return [];
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public static function getSystemVersion(){
+        $match = '';
+        $versionPattern = '/\d{4}\.\d{2}\.\d{3}/';
+        $text = file_get_contents('../gulpfile_globals.js', true);
+        if(preg_match($versionPattern, $text, $matches)){
+            $match = $matches[0];
+        }
+        return $match;
+    }
+
+    /**
+     * handle BWC for version property
+     * new is system.version
+     * @return void
+     */
+    public function getVersion(){
+        if(empty($this->config['system']['version'] && !empty($this->config['version']))){
+            $this->config['system']['version'] = $this->config['version'];
+        }
+        return $this->config['system']['version'];
+    }
+
 
     /**
      * db values will all be strings....
