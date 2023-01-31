@@ -13,6 +13,7 @@ import {toast} from "../../../services/toast.service";
 import {metadata} from "../../../services/metadata.service";
 import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {lastValueFrom} from "rxjs";
+import {userpreferences} from "../../../services/userpreferences.service";
 
 /**
  * allows management of targets in multiple targetlists on a campaigntask
@@ -28,6 +29,10 @@ export class CampaignTaskTargetsManager implements OnInit {
      * modules: comma separated modules to be searched
      */
     public componentconfig: { modules: string };
+    /**
+     * modules: comma separated modules to be searched
+     */
+    public currentPage = 1;
     /**
      * holds the prospect lists
      */
@@ -68,6 +73,7 @@ export class CampaignTaskTargetsManager implements OnInit {
                 public injector: Injector,
                 public language: language,
                 public metadata: metadata,
+                public userPreferences: userpreferences,
                 public navigationtab: navigationtab) {
 
     }
@@ -92,7 +98,7 @@ export class CampaignTaskTargetsManager implements OnInit {
     set searchTerm(term: string) {
 
         this._searchTerm = term;
-
+        this.onPageChange(1);
         this.getTargets();
     }
 
@@ -116,7 +122,7 @@ export class CampaignTaskTargetsManager implements OnInit {
     set currentListId(id: string) {
 
         this._currentListId = id;
-
+        this.onPageChange(1)
         this.getTargets();
     }
 
@@ -124,12 +130,12 @@ export class CampaignTaskTargetsManager implements OnInit {
      * local property for the current filter status
      * @private
      */
-    private _currentFilterStatus: 'checked' | 'unchecked' | 'excluded';
+    private _currentFilterStatus: 'checked' | 'unchecked' | 'excluded' | 'included';
 
     /**
      * return the current filter status
      */
-    get currentFilterStatus(): 'checked' | 'unchecked' | 'excluded' {
+    get currentFilterStatus(): 'checked' | 'unchecked' | 'excluded' | 'included' {
         return this._currentFilterStatus;
     }
 
@@ -137,10 +143,10 @@ export class CampaignTaskTargetsManager implements OnInit {
      * set the current filter status and reload the targets
      * @param status
      */
-    set currentFilterStatus(status: 'checked' | 'unchecked' | 'excluded') {
+    set currentFilterStatus(status: 'checked' | 'unchecked' | 'excluded' | 'included') {
 
         this._currentFilterStatus = status;
-
+        this.onPageChange(1)
         this.getTargets();
     }
 
@@ -242,14 +248,17 @@ export class CampaignTaskTargetsManager implements OnInit {
             next: (res) => {
                 this.prospectLists = res.prospectlists;
                 this.prospects = res.prospects;
-                this.prospects.forEach(prospect =>
-                    prospect.prospectListsDisplay = this.getProspectListsDisplay(prospect.prospectlists)
-                );
+                this.prospects.forEach(prospect => {
+                    prospect.prospectListsDisplay = this.getProspectListsDisplay(prospect.prospectlists);
+                    prospect.status_date_changed = this.userPreferences.formatDateTime(prospect.status_date_changed);
+                });
 
                 this.totalCount = parseInt(res.count, 10);
                 // if we have less than 50 records set the limit automatically
-                if (this.totalCount < this.limit) {
+                if (this.totalCount <= this.limit) {
                     this.limit = this.totalCount;
+                } else {
+                    this.limit = 50;
                 }
 
                 this.loading = false;
@@ -318,11 +327,12 @@ export class CampaignTaskTargetsManager implements OnInit {
     }
 
     /**
-     * get page targets
+     * set page and offset and reload targets
      * @param page
      */
-    public getPageTargets(page: number) {
+    public onPageChange(page: number) {
 
+        this.currentPage = page;
         this.offset = (page - 1) * this.limit;
 
         this.getTargets();

@@ -5,4 +5,5 @@ export interface TargetI {
     prospectlists: string[];
     prospectListsDisplay?: string;
     status: 'checked' | 'excluded' | 'included';
+    status_date_changed: string;
 }
