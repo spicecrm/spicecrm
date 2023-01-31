@@ -172,7 +172,7 @@ class User extends Person
 
 
     /**
-     * CR1000267: additional user prefs like datef... Set default from sugar_config when not set yet
+     * CR1000267: additional user prefs like datef... Set default from spice_config when not set yet
      * Needed for UI
      * @param string $category
      * @return mixed
@@ -320,7 +320,7 @@ class User extends Person
         if ($ret) {
             if (isset($_SESSION)) {
                 $this->loadPreferences();
-                // BEGIN CR1000267: additional user prefs like datef... Set default from sugar_config when not set yet
+                // BEGIN CR1000267: additional user prefs like datef... Set default from spice_config when not set yet
                 // Needed for UI
                 // $this->loadEnrichedPreferences();
                 // END

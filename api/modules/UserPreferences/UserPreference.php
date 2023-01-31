@@ -294,7 +294,7 @@ class UserPreference extends SpiceBean
     }
 
     /**
-     * CR1000267: additional user prefs like datef... Set default from sugar_config when not set yet
+     * CR1000267: additional user prefs like datef... Set default from spice_config when not set yet
      * Needed for UI
      * @param string $category
      */
