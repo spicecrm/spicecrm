@@ -78,7 +78,7 @@
             <tr *ngFor="let prospect of prospects" class="slds-hint-parent">
                 <td class="slds-text-align--center"><system-icon [module]="prospect.module" size="xx-small"></system-icon></td>
                 <td><campaigntask-target-manager-details [fieldset]="detailsFieldSets[prospect.module]" [module]="prospect.module" [data]="prospect.data"></campaigntask-target-manager-details></td>
-                <td>{{prospect.prospectListsDisplay}}</td>
+                <td [system-title]="prospect.prospectListsDisplay" class="slds-truncate">{{prospect.prospectListsDisplay}}</td>
                 <td [system-title]="prospect.status_date_changed" class="slds-text-align--right">
                     <ng-container *ngIf="prospect.status != 'included'; else includedActions">
                         <button (click)="setStatus('checked', prospect)" [disabled]="prospect.status == 'checked'" class="slds-button slds-button--icon">
