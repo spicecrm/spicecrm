@@ -634,6 +634,9 @@ class KReport extends SpiceBean
 
     function createCSV($dynamicolsOverride = '', $parentbean = null)
     {
+        global $app_list_strings, $current_language;
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $this->tocsv = true;
 
