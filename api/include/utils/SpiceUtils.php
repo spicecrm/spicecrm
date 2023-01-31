@@ -995,7 +995,7 @@ class SpiceUtils
      */
     public static function formatPlaceSymbol($amount, $symbol, $symbol_space, $symbol_position = 'left'): string {
         if ($symbol != '') {
-            //get symbol_position from sugar_config
+            //get symbol_position from spice_config
             if (isset(SpiceConfig::getInstance()->config['default_currency_symbol_position'])) {
                 $symbol_position = SpiceConfig::getInstance()->config['default_currency_symbol_position'];
             }

@@ -17,8 +17,6 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-require_once('sugar_version.php'); // provides $sugar_version, $sugar_db_version
-
 register_shutdown_function([SpiceUtils::class, 'spiceCleanup']);
 
 //set some basic php settings ensure they are proper if not set in the php.ini as it shoudl have been

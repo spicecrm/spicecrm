@@ -65,8 +65,6 @@ class Configurator {
 	}
 
 	function handleOverride($fromParseLoggerSettings=false) {
-		global  $sugar_version;
-		$sc = SpiceConfig::getInstance();
 		$overrideArray = $this->readOverride();
 		$this->previous_sugar_override_config_array = $overrideArray;
 		$diffArray = ArrayUtils::deepArrayDiff($this->config, SpiceConfig::getInstance()->config);
@@ -74,7 +72,7 @@ class Configurator {
 
 		$overideString = "<?php\n/***CONFIGURATOR***/\n";
 
-        SpiceCache::set('sugar_config', $this->config);
+        SpiceCache::set('spice_config', $this->config);
 		SpiceConfig::getInstance()->config = $this->config;
 
 		foreach($overrideArray as $key => $val) {
@@ -88,7 +86,7 @@ class Configurator {
 					$this->config[$key] = false;
 				}
 			}
-			$overideString .= ArrayUtils::overrideValueToStringRecursive2('sugar_config', $key, $val);
+			$overideString .= ArrayUtils::overrideValueToStringRecursive2('spice_config', $key, $val);
 		}
 		$overideString .= '/***CONFIGURATOR***/';
 
@@ -97,14 +95,13 @@ class Configurator {
 	}
 
 	function handleOverrideFromArray($diffArray) {
-		global  $sugar_version;
 		$overrideArray = $this->readOverride();
 		$this->previous_sugar_override_config_array = $overrideArray;
 		$overrideArray = SpiceUtils::spiceArrayMergeRecursive($overrideArray, $diffArray);
 
 		$overideString = "<?php\n/***CONFIGURATOR***/\n";
 
-        SpiceCache::set('sugar_config', $this->config);
+        SpiceCache::set('spice_config', $this->config);
 		SpiceConfig::getInstance()->config = $this->config;
 
 		foreach($overrideArray as $key => $val) {
@@ -118,7 +115,7 @@ class Configurator {
 					$this->config[$key] = false;
 				}
 			}
-			$overideString .= ArrayUtils::overrideValueToStringRecursive2('sugar_config', $key, $val);
+			$overideString .= ArrayUtils::overrideValueToStringRecursive2('spice_config', $key, $val);
 		}
 		$overideString .= '/***CONFIGURATOR***/';
 
@@ -128,7 +125,6 @@ class Configurator {
 
 	//bug #27947 , if previous \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config['stack_trace_errors'] is true and now we disable it , we should clear all the cache.
 	function clearCache(){
-		global  $sugar_version;
 		$currentConfigArray = $this->readOverride();
 		foreach($currentConfigArray as $key => $val) {
 			if (in_array($key, $this->allow_undefined) || isset (SpiceConfig::getInstance()->config[$key])) {
