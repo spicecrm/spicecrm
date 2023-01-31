@@ -26,10 +26,13 @@ class CampaignTasksController
 {
 
 
+    /**
+     * create inclusion list if not exist
+     * @throws \Exception
+     */
     public function createInclusionList(Request $req, Response $res, array $args): Response
     {
-        $db = DBManagerFactory::getInstance();
-        $inclusionListId = $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '{$args['id']}' and pl.list_type = 'include' and pl.deleted != 1  and plc.deleted != 1 ");
+        $inclusionListId = CampaignTask::getListIdByType($args['id'], 'include');
 
         if (!empty($inclusionListId)) {
             return $res->withJson(['id' => $inclusionListId]);
@@ -53,15 +56,16 @@ class CampaignTasksController
     {
         $params = $req->getParsedBody();
         $db = DBManagerFactory::getInstance();
+        $exclusionListId = CampaignTask::getListIdByType($args['id'], 'exclude');
 
         foreach ($params['targets'] as $targetId) {
 
             $existingId = $db->getOne("SELECT id FROM campaigntask_targets_status WHERE campaigntask_id = '{$args['id']}' AND prospect_id = '$targetId'");
 
             if ($args['status'] == 'excluded') {
-                $this->handleExcludedTarget($args['id'], $targetId);
+                $this->handleExcludedTarget($args['id'], $targetId, $exclusionListId);
             } else {
-                $this->revertExcludedTarget($args['id'], $targetId);
+                $this->revertExcludedTarget($targetId, $exclusionListId);
             }
 
             $this->updateTargetStatus($db, $existingId, $args['id'], $targetId, $args['status']);
@@ -94,15 +98,14 @@ class CampaignTasksController
 
     /**
      * delete excluded target from the exclusion list
-     * @param string $campaignTaskId
      * @param string $targetId
+     * @param string|false $excludeListId
      * @return void
      * @throws \Exception
      */
-    private function revertExcludedTarget(string $campaignTaskId, string $targetId)
+    private function revertExcludedTarget(string $targetId, $excludeListId)
     {
         $db = DBManagerFactory::getInstance();
-        $excludeListId = (string) $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = 'exclude' and pl.deleted != 1  and plc.deleted != 1 ");
 
         if (!$excludeListId) return;
 
@@ -113,13 +116,13 @@ class CampaignTasksController
      * create exclusion list if undefined and add the target to the list
      * @param string $campaignTaskId
      * @param string $targetId
+     * @param string|false $excludeListId
      * @return void
      * @throws \Exception
      */
-    private function handleExcludedTarget(string $campaignTaskId, string $targetId)
+    private function handleExcludedTarget(string $campaignTaskId, string $targetId, $excludeListId)
     {
         $db = DBManagerFactory::getInstance();
-        $excludeListId = $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = 'exclude' and pl.deleted != 1  and plc.deleted != 1 ");
 
         if (!$excludeListId) {
             $list = $this->createList($campaignTaskId, 'exclude');
