@@ -157,69 +157,6 @@ class CampaignTask extends SpiceBean
         return $success;
     }
 
-    function export()
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $exportFields = ['name', 'salutation', 'first_name', 'last_name', 'email1', 'primary_address_street', 'primary_address_city'];
-
-        $thisId = $db->quote($this->id);
-        $sysModuleFilters = new SysModuleFilters();
-
-        $current_date = $this->db->now();
-        $guidSQL = $this->db->getGuidSQL();
-
-
-        $targets_query = "SELECT plp.related_id recordid, plp.related_type recordmodule FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id";
-        $targets_query .= " INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id";
-        $targets_query .= " WHERE plc.campaigntask_id='$thisId' AND prospect_lists.deleted=0  AND plc.deleted=0  AND plp.deleted=0";
-        $targets_query .= " AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%'";
-
-        // go fot the propects lists filters
-        $prospect_list_filters = "SELECT plf.module, plf.module_filter, plf.prospectlist_id FROM prospect_list_filters plf";
-        $prospect_list_filters .= " INNER JOIN prospect_list_campaigntasks plc ON plf.prospectlist_id = plc.prospect_list_id";
-        $prospect_list_filters .= " WHERE plc.campaigntask_id = '$thisId' AND plc.deleted = 0";
-        $prospect_list_filters = $this->db->query($prospect_list_filters);
-
-        while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
-            $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
-            $seed = BeanFactory::getBean($row['module']);
-            $filter_query = " SELECT id recordid, '{$row['module']}' recordmodule FROM {$seed->_tablename} WHERE deleted=0 AND $where";
-            $targets_query .= " UNION $filter_query";
-        }
-
-
-
-        // determine the delimiter
-        $delimiter = UserPreference::getDefaultPreference('export_delimiter');
-        if (!empty(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_delimiter'))) $delimiter = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_delimiter');
-
-        // determine the charset
-        $supportedCharsets = mb_list_encodings();
-        # $charsetTo = UserPreference::getDefaultPreference('default_charset');
-        $charsetTo = UserPreference::getDefaultPreference('export_charset');
-        if (!empty($postBody['charset'])) {
-            if (in_array($postBody['charset'], $supportedCharsets)) $charsetTo = $postBody['charset'];
-        } else {
-            # if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
-            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset');
-        }
-
-        $fh = @fopen('php://output', 'w');
-        $records = $this->db->query($targets_query);
-        while($record = $db->fetchByAssoc($records)){
-            $seed = BeanFactory::getBean($record['recordmodule'], $record['recordid']);
-            if($seed){
-                $entryArray = [];
-                foreach ($exportFields as $exportField){
-                    $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($seed->$exportField, $charsetTo) : $seed->$exportField;
-                }
-                fputcsv($fh, $entryArray, $delimiter);
-            }
-        }
-        fclose($fh);
-    }
-
     /**
      * fetch targets modules
      * @param array $prospectLists

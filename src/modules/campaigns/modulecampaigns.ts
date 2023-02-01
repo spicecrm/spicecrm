@@ -11,7 +11,6 @@ import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
 import {CampaignTaskActivateButton} from "./components/campaigntaskactivatebutton";
-import {CampaignTaskExportButton} from "./components/campaigntaskexportbutton";
 
 import {CampaignSendMailButton} from './components/campaignsendmailbutton';
 import {CampaignSendTestMailButton} from './components/campaignsendtestmailbutton';
@@ -45,7 +44,6 @@ import {CampaignTaskTargetsManagerDetails} from "./components/campaigntasktarget
     ],
     declarations: [
         CampaignTaskActivateButton,
-        CampaignTaskExportButton,
         CampaignSendMailButton,
         CampaignSendTestMailButton,
         CampaignExportButton,

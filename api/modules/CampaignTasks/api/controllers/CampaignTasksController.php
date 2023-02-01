@@ -271,21 +271,6 @@ class CampaignTasksController
         return $res->withJson(['success' => $success, 'id' => $args['id']]);
     }
 
-
-    public function exportCampaignTask(Request $req, Response $res, array $args): Response
-    {
-        // ACL Check
-        if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'export', true))
-            throw (new ForbiddenException("Forbidden to export for module CampaignTasks."));
-
-        /** @var CampaignTask load the campaign task **/
-        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-
-        // activate the campaigntask
-        $campaignTask->export();
-
-    }
-
     /**
      * send a test email to the test prospect lists in the campaign task
      *
