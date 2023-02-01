@@ -621,43 +621,61 @@ class OCI8Manager extends DBManager
     public function get_columns($tablename)
     {
 
-        // http://ss64.com/orad/USER_TAB_COLUMNS.html
-        $result = $this->query("SELECT * FROM user_tab_columns WHERE TABLE_NAME = '" . strtoupper($tablename) . "'");
-
         $columns = [];
-        while ($row = $this->fetchRow($result)) {
-            $name = strtolower($row['column_name']);
+        // check if the table exists
+        if($this->tableExists($tablename)) {
+            $result = $this->query("SELECT * FROM user_tab_columns WHERE TABLE_NAME = '" . strtoupper($tablename) . "'");
 
-            $columns[$name]['name'] = $name;
-            $columns[$name]['type'] = strtolower($row['data_type']);
+            while ($row = $this->fetchRow($result)) {
+                $name = strtolower($row['column_name']);
 
-            if ($columns[$name]['type'] == 'number') {
-                $columns[$name]['len'] = (!empty($row['data_precision']) ? $row['data_precision'] : '38');
+                $columns[$name]['name'] = $name;
+                $columns[$name]['type'] = strtolower($row['data_type']);
 
-                if (!empty($row['data_scale'])) {
-                    $columns[$name]['len'] .= ',' . $row['data_scale'];
+                if ($columns[$name]['type'] == 'number') {
+                    $columns[$name]['len'] = (!empty($row['data_precision']) ? $row['data_precision'] : '38');
+
+                    if (!empty($row['data_scale'])) {
+                        $columns[$name]['len'] .= ',' . $row['data_scale'];
+                    }
+                } elseif (in_array($columns[$name]['type'], ['date', 'clob', 'blob'])) {
+                    // do nothing
+                } else {
+                    $columns[$name]['len'] = strtolower($row['char_length']);
                 }
-            } elseif (in_array($columns[$name]['type'], ['date', 'clob', 'blob'])) {
-                // do nothing
-            } else {
-                $columns[$name]['len'] = strtolower($row['char_length']);
-            }
 
-            if (!empty($row['data_default'])) {
-                $matches = [];
-                $row['data_default'] = html_entity_decode($row['data_default'], ENT_QUOTES);
+                if (!empty($row['data_default'])) {
+                    $matches = [];
+                    $row['data_default'] = html_entity_decode($row['data_default'], ENT_QUOTES);
 
-                if (preg_match("/^'(.*)'$/i", $row['data_default'], $matches)) {
-                    $columns[$name]['default'] = $matches[1];
+                    if (preg_match("/^'(.*)'$/i", $row['data_default'], $matches)) {
+                        $columns[$name]['default'] = $matches[1];
+                    }
                 }
-            }
 
-            if ($row['nullable'] == 'N') {
-                $columns[$name]['required'] = 'true';
+                if ($row['nullable'] == 'N') {
+                    $columns[$name]['required'] = 'true';
+                }
             }
         }
 
         return $columns;
+    }
+
+    /**
+     * remove columns from a table
+     *
+     * @param $tablename
+     * @param array $columns
+     * @return mixed|void
+     */
+    public function delete_columns($tablename, array $columns = [])
+    {
+        $dropColumns = [];
+        foreach ($columns as $column) {
+            $dropColumns[] = "DROP COLUMN $column";
+        }
+        $this->query("ALTER TABLE $tablename " . join(", ", $dropColumns));
     }
 
     /**

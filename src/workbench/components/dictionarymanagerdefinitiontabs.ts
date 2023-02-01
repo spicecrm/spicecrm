@@ -24,10 +24,24 @@ export class DictionaryManagerDefinitionTabs {
     /**
      * define the scope for the tabs
      */
-    public scope: 'items'|'relationships'|'indexes'|'fields' = 'items';
+    public _scope: 'items' | 'relationships' | 'indexes' | 'fields' = 'items';
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language,  public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
+    }
+
+
+    get isTemplate(){
+        return this.dictionarymanager.currentIsTemplate();
+    }
+
+
+    get scope() {
+        return this._scope;
+    }
+
+    set scope(scope) {
+        this._scope = scope;
     }
 
 }

@@ -2,11 +2,12 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, EventEmitter, Injector, Output
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modal} from '../../services/modal.service';
 import {modelutilities} from '../../services/modelutilities.service';
+import {backend} from '../../services/backend.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
 
@@ -31,7 +32,12 @@ export class DictionaryManagerAddDefinitionModal {
      */
     public messages: DictionaryManagerMessage[] = [];
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modal: modal, public modelutilities: modelutilities, public injector: Injector) {
+    /**
+     * an emitter for the new ID
+     */
+    @Output() public newDefinitionID: EventEmitter<string> = new EventEmitter<string>();
+
+    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public modal: modal, public modelutilities: modelutilities, public injector: Injector) {
         this.dictionarydefinition = {
             id: this.modelutilities.generateGuid(),
             name: '',
@@ -101,10 +107,14 @@ export class DictionaryManagerAddDefinitionModal {
     public save() {
         if (this.canSave) {
             this.dictionarydefinition.id = this.modelutilities.generateGuid();
-            this.dictionarymanager.dictionarydefinitions.push(this.dictionarydefinition);
-            this.close();
+            this.backend.postRequest(`dictionary/definition/${this.dictionarydefinition.id}`, {}, this.dictionarydefinition).subscribe({
+                next: (res) => {
+                    this.dictionarymanager.dictionarydefinitions.push(this.dictionarydefinition);
+                    this.newDefinitionID.emit(this.dictionarydefinition.id);
+                    this.close();
+                }
+            })
         }
     }
-
 
 }

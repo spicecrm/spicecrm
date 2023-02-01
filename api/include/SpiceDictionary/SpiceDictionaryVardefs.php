@@ -58,30 +58,6 @@ class SpiceDictionaryVardefs  {
 
     public final function __construct()
     {
-
-        /*
-        $cached = SpiceCache::get('dictionaryfields');
-        if($cached) {
-            $this->dictionary = $cached;
-            return;
-        }
-
-        $db = DBManagerFactory::getInstance();
-        $q = "SELECT sysfields.sysdictionarydefinition_id sysdictionaryid, sysfields.sysdictionaryname, sysfields.sysdictionarytablename, sysfields.sysdictionarytableaudited, sysfields.sysdictionarytablecontenttype, sysfields.fieldname, sysfields.fieldtype, sysfields.fielddefinition FROM sysdictionaryfields sysfields";
-        $res = $db->query($q);
-        while($row = $db->fetchByAssoc($res)){
-            $this->dictionary[$row['sysdictionaryname']]['id'] = $row['sysdictionaryid'];
-            $this->dictionary[$row['sysdictionaryname']]['name'] = $row['sysdictionaryname'];
-            $this->dictionary[$row['sysdictionaryname']]['table'] = $row['sysdictionarytablename'];
-            $this->dictionary[$row['sysdictionaryname']]['audited'] = $row['sysdictionarytableaudited'];
-            $this->dictionary[$row['sysdictionaryname']]['contenttype'] = $row['sysdictionarytablecontenttype'];
-            $this->dictionary[$row['sysdictionaryname']]['module'] = SpiceModules::getInstance()->getModuleName($row['sysdictionaryname']);
-            $this->dictionary[$row['sysdictionaryname']]['fields'][$row['fieldname']] = json_decode(html_entity_decode($row['fielddefinition'], ENT_QUOTES), true);
-        }
-
-        // write the cache
-        SpiceCache::set('dictionaryfields', $this->dictionary);
-        */
     }
 
     private function __clone()
@@ -595,10 +571,10 @@ class SpiceDictionaryVardefs  {
      */
     public static function getDictionaryQuery($dictionaryId)
     {
-        $query =  "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
+        return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname,
-        sysdi.name itemname, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted,
+        sysdi.name itemname, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted,
         sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
         LEFT JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmod ON sysmod.sysdictionarydefinition_id = sysd.id
@@ -610,7 +586,6 @@ class SpiceDictionaryVardefs  {
         WHERE sysd.id = '{$dictionaryId}'
         ORDER BY sysdi.sequence ASC
        ";
-        return $query;
 
     }
 
@@ -762,15 +737,6 @@ class SpiceDictionaryVardefs  {
         return self::loadDictionaryIndicesByDictionary('dictionaryid', $dictionaryId);
     }
 
-    /**
-     * create full indices for a dictionary using dictionaryname
-     * @param string $dictionaryName
-     * @return array
-     */
-    public static function loadDictionaryIndicesByDictionaryName($dictionaryName){
-        return self::loadDictionaryIndicesByDictionary('dictionaryname', $dictionaryName);
-    }
-
 
     /**
      * load indices from dictionary
@@ -781,6 +747,10 @@ class SpiceDictionaryVardefs  {
      * @throws \Exception
      */
     public static function loadDictionaryIndicesByDictionary($checkFieldWhere, $value){
+        $indices = SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($value, []);
+        return $indices;
+
+        /*
         $db = DBManagerFactory::getInstance();
         $indices = [];
         $q = "SELECT sysdx.indexname, sysdx.indextype, sysdi.sysdictionaryitemname indexfield, sysd.tablename
@@ -798,6 +768,9 @@ class SpiceDictionaryVardefs  {
         ORDER BY sysdx.indexname ASC, sysdx.indextype ASC
 ";
 
+        // get the indices
+
+
         if($res = $db->query($q)){
             // loop a first time to reorganize data(
             while($row = $db->fetchByAssoc($res)){
@@ -811,6 +784,7 @@ class SpiceDictionaryVardefs  {
             $indices = SpiceDictionaryVardefsParser::parseIndexDefinitions($defRows, $tablename);
         }
         return $indices;
+        */
     }
 
     /**
@@ -1174,8 +1148,7 @@ WHERE rels.lhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
                     'module' => $row['module'],
                     'relationship' => $row['relationship_name'],
                     'source' => 'non-db',
-                    'side' => 'left',
-                    'duplicate_merge' => (is_null($row['lhs_duplicatemerge']) ? 1 : $row['lhs_duplicatemerge']),
+                    'side' => 'left'
                 ];
             }
         }
@@ -1203,8 +1176,7 @@ WHERE rels.rhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
                     'module' => $row['module'],
                     'relationship' => $row['relationship_name'],
                     'source' => 'non-db',
-                    'side' => 'right',
-                    'duplicate_merge' => (is_null($row['rhs_duplicatemerge']) ? 0 : $row['rhs_duplicatemerge']),
+                    'side' => 'right'
                 ];
                 if(!empty($row['rhs_relatename'])){
                     $dict['fields'][$row['rhs_relatename']] = [
@@ -1603,36 +1575,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     }
 
     /**
-     * check if there is a sysdictionarydefinition for that dictionary
-     * create one if not
-     * @param string $dictName
-     * @return void
-     */
-    public static function getDictionaryDefinitionIdByName($dictName){
-        if(empty($dictName)) return [];
-        $q = "SELECT id FROM (SELECT id, name from sysdictionarydefinitions UNION SELECT id, name, status FROM syscustomdictionarydefinitions) defs WHERE defs.name='{$dictName}' and defs.status='a'";
-        if($row = DBManagerFactory::getInstance()->fetchOne($q)){
-            return $row;
-        }
-        return [];
-    }
-
-    /*
-     * get the list of all dictionarydefinitions as name => id pairs
-     *
-     */
-    public static function getDictionaryDefinitionsNameWithId(){
-        $defs = [];
-        $q = "SELECT id, name FROM (SELECT id, name, status from sysdictionarydefinitions UNION SELECT id, name, status FROM syscustomdictionarydefinitions) defs WHERE defs.status='a'";
-        if($res = DBManagerFactory::getInstance()->query($q)){
-            while($row = DBManagerFactory::getInstance()->fetchByAssoc($res)){
-                $defs[$row['name']] = $row['id'];
-            }
-        }
-
-        return $defs;
-    }
-    /**
      * save entry to cache table sysdictionaryindices
      * @param array $dict
      * @return void
@@ -1649,13 +1591,10 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
             self::deleteDictionaryCacheFromDb($dictName);
         }
 
-        // load dictionary pairs name => id
-        $defs = self::getDictionaryDefinitionsNameWithId();
-
         // We should have a dictionary definition for that dictionary
         // todo: what shall happen if not? It Will be the case hwne updating a SpiceCRM having custom modules
         if(empty($dict['id'])){
-            $dict['id'] = $defs[$dictName];
+            $dict['id'] =SpiceDictionaryDefinitions::getInstance()->getIdByName($dictName);
         }
         foreach($dict['fields'] as $fieldDef){
             if(empty($fieldDef['name'])) continue;
@@ -1934,127 +1873,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     }
 
     /**
-     * read validations and create app_list_strings doms
-     *
-     * @return array
-     */
-    public static function loadDictionaryValidations(){
-        $db = DBManagerFactory::getInstance();
-
-        // try to get the cached values
-        $cached = SpiceCache::get('domains');
-
-        // already loaded
-        if($cached){
-            return $cached;
-        }
-
-        // load first time
-        $retArray = [];
-        // core values
-        $coreEnums = $db->query("SELECT id, name FROM sysdomainfieldvalidations WHERE (validation_type = 'enum' OR validation_type = 'options') AND status='a' AND deleted = 0");
-
-        while($coreEnum = $db->fetchByAssoc($coreEnums)){
-            $retArray[$coreEnum['name']]['name'] = $coreEnum['name'];
-            $retArray[$coreEnum['name']]['values'] = [];
-            $enumValues = $db->query("SELECT enumvalue, sequence, label FROM sysdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$coreEnum['id']}' AND status = 'a' AND deleted = 0");
-            while($enumValue = $db->fetchByAssoc($enumValues)){
-                $retArray[$coreEnum['name']]['values'][$enumValue['enumvalue']] = [
-                    'enumvalue' => $enumValue['enumvalue'],
-                    'label' => $enumValue['label'],
-                    'sequence' => $enumValue['sequence']
-                ];
-            }
-
-            // load custom enum values added to original dom
-            $cenumValues = $db->query("SELECT enumvalue, sequence, label FROM syscustomdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$coreEnum['id']}' AND status = 'a' AND deleted = 0");
-            while($cenumValue = $db->fetchByAssoc($cenumValues)){
-                $retArray[$coreEnum['name']]['values'][$cenumValue['enumvalue']] = [
-                    'enumvalue' => $cenumValue['enumvalue'],
-                    'label' => $cenumValue['label'],
-                    'sequence' => $cenumValue['sequence']
-                ];
-            }
-        }
-
-        // custom values
-        $coreEnums = $db->query("SELECT id, name FROM syscustomdomainfieldvalidations WHERE validation_type = 'enum' AND status='a' AND deleted = 0");
-        while($coreEnum = $db->fetchByAssoc($coreEnums)){
-            $retArray[$coreEnum['name']]['name'] = $coreEnum['name'];
-            $retArray[$coreEnum['name']]['values'] = [];
-
-            // load custom enum values
-            $cenumValues = $db->query("SELECT enumvalue, sequence, label FROM syscustomdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$coreEnum['id']}' AND status = 'a' AND deleted = 0");
-            while($cenumValue = $db->fetchByAssoc($cenumValues)){
-                $retArray[$coreEnum['name']]['values'][$cenumValue['enumvalue']] = [
-                    'enumvalue' => $cenumValue['enumvalue'],
-                    'label' => $cenumValue['label'],
-                    'sequence' => $cenumValue['sequence']
-                ];
-            }
-        }
-
-        // save to the session
-        SpiceCache::set('domains', $retArray);
-
-        return $retArray;
-    }
-
-
-    /**
-     * get system languages
-     *
-     * @param bool $sysonly
-     * @return array
-     */
-    public static function getLanguages($sysonly = true){
-        $db = DBManagerFactory::getInstance();
-        $languages = [];
-        $results = $db->query("SELECT language_code FROM syslangs " . ($sysonly ? "WHERE system_language = 1" : ""). " ORDER BY sort_sequence, language_name");
-        while($row = $db->fetchByAssoc($results)){
-            $languages[] = $row['language_code'];
-        }
-        return $languages;
-    }
-
-    /**
-     * build an array containing doms for each language
-     *
-     * @param string $language
-     * @return array
-     */
-    public static function createDictionaryValidationDoms($language = null){
-        if(empty($language)){
-            $language = $GLOBALS['current_language'];
-        }
-
-        $sys_app_list_strings = [];
-        $validations = self::loadDictionaryValidations();
-        $syslanguagelabels[$language] = LanguageManager::loadDatabaseLanguage($language);
-
-        foreach($validations as $dom => $definition){
-            // re-organize and add translation
-            foreach($definition['values'] as $enumvalue => $def){
-                $translation = (!empty($syslanguagelabels[$language][$def['label']]['default']) ? $syslanguagelabels[$language][$def['label']]['default'] : $enumvalue);
-                $sys_app_list_strings[$dom][$language]['values'][$enumvalue]['enumvalue'] = $enumvalue;
-                $sys_app_list_strings[$dom][$language]['values'][$enumvalue]['translation'] = $translation;
-                $sys_app_list_strings[$dom][$language]['values'][$enumvalue]['sequence'] = $def['sequence'];
-            }
-
-            // sort by the sequence
-            if(is_array($sys_app_list_strings[$dom][$language]['values'])){
-                $arrmap = array_map(function($element) {
-                    return $element['sequence'];
-                }, $sys_app_list_strings[$dom][$language]['values']);
-                array_multisort($arrmap, ($definition['sort_flag'] == 'desc' ? SORT_DESC : SORT_ASC), $sys_app_list_strings[$dom][$language]['values']);
-            }
-        }
-
-        return $sys_app_list_strings;
-    }
-
-
-    /**
      * delete a relationship entry from cache table by relationship name
      *
      * @param string $relName
@@ -2220,45 +2038,6 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
         $db->transactionStart();
         return $returnArray;
     }
-
-    /**
-     * trying to improve performance
-     * save the full dictionary array into sysdictionarycache table
-     * @param $dictionaries
-     * @return void
-     * @throws \Exception
-     */
-    public static function saveDictionariesCache($dictionaries){
-        $db = DBManagerFactory::getInstance();
-        $db->truncateQuery('sysdictionarycache');
-        if($data = base64_encode(gzdeflate(serialize($dictionaries), 9))){
-            if(!$db->query("INSERT INTO sysdictionarycache (id, dictionaryfields) VALUES(uuid(), '".$db->quote($data)."')")){
-                LoggerManager::getLogger()->fatal('saveDictionariesCache '.$db->lastDbError());
-            }
-        }
-    }
-
-    /**
-     * @deprecated
-     *
-     * trying to improve performance
-     * table definition in system_vardefs
-     * load the full dictionary array from sysdictionarycache table
-     * @param $dictionaries
-     * @return void
-     * @throws \Exception
-     */
-    /*
-    public static function loadDictionariesCache(){
-        $db = DBManagerFactory::getInstance();
-        $q = "SELECT dictionaryfields from sysdictionarycache";
-        if($row = $db->fetchOne($q)) {
-            $_SESSION['dictionaries'] = unserialize(gzinflate(base64_decode($row['dictionaryfields'])));
-            return true;
-        }
-        return false;
-    }
-    */
 
     /**
      * prepare the query for the table

@@ -20,5 +20,8 @@ export class DictionaryManagerRelationshipsDetails {
 
     }
 
+    get readonly(){
+        return this.dictionaryRelationship.rhs_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition && this.dictionaryRelationship.lhs_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition;
+    }
 
 }

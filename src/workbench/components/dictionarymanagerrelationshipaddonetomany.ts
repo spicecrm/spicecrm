@@ -11,6 +11,7 @@ import {language} from '../../services/language.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {Relationship} from "../interfaces/dictionarymanager.interfaces";
+import {backend} from "../../services/backend.service";
 
 /**
  * renders a modal to add a one to many relationship
@@ -34,7 +35,7 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
      */
     public relationship: Relationship;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
         this.relationship = {
             id: this.modelutilities.generateGuid(),
             name: '',
@@ -103,7 +104,12 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
      * @private
      */
     public add(){
-        this.dictionarymanager.dictionaryrelationships.push({...this.relationship});
-        this.close();
+        this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, this.relationship).subscribe({
+            next: (res) => {
+                this.dictionarymanager.dictionaryrelationships.push({...this.relationship});
+                this.close();
+            }
+        })
+
     }
 }
