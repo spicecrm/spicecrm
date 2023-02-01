@@ -12,7 +12,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
             'vname' => 'LBL_ACCOUNT_ID',
             'type' => 'id',
             'reportable' => false,
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'account_name' => [
             'name' => 'account_name',
@@ -36,7 +36,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
             'relationship' => 'accounts_accountccdetails',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'account_classification' => [
             'name' => 'account_classification',
@@ -71,7 +71,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['AccountCCDetail'] = [
             'relationship' => 'companycodes_accountccdetails',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'abccategory' => [
             'name' => 'abccategory',

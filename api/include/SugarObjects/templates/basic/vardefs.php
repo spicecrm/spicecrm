@@ -43,7 +43,7 @@ $vardefs = [
             'required' => true,
             'reportable' => true,
             'comment' => 'Unique identifier',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'name' => [
@@ -57,7 +57,7 @@ $vardefs = [
             'full_text_search' => ['boost' => 3],
             'required' => true,
             'importable' => 'required',
-            'duplicate_merge' => 'enabled',
+            'duplicate_merge' => true,
             //'duplicate_merge_dom_value' => '3',
             'merge_filter' => 'selected',
         ],
@@ -69,7 +69,7 @@ $vardefs = [
             'comment' => 'Date record created',
             'enable_range_search' => true,
             'options' => 'date_range_search_dom',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'date_modified' => [
@@ -80,7 +80,7 @@ $vardefs = [
             'comment' => 'Date record last modified',
             'enable_range_search' => true,
             'options' => 'date_range_search_dom',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'date_indexed' => [
@@ -90,7 +90,7 @@ $vardefs = [
             'comment' => 'Date record last indexed',
             'enable_range_search' => true,
             'options' => 'date_range_search_dom',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'modified_user_id' => [
@@ -192,7 +192,7 @@ $vardefs = [
             'default' => '0',
             'reportable' => false,
             'comment' => 'Record deletion indicator',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'tags' => [
@@ -200,7 +200,7 @@ $vardefs = [
             'vname' => 'LBL_TAGS',
             'type' => 'tags',
             'dbType' => 'text',
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => false
         ],
         'created_by_link' => [
             'name' => 'created_by_link',
@@ -212,7 +212,7 @@ $vardefs = [
             'bean_name' => 'User',
             'source' => 'non-db',
             'recover' => false,
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => false
         ],
         'modified_user_link' => [
             'name' => 'modified_user_link',
@@ -224,7 +224,7 @@ $vardefs = [
             'bean_name' => 'User',
             'source' => 'non-db',
             'recover' => false,
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => false
         ]
     ],
     'indices' => [
