@@ -98,7 +98,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Campaigns',
             //'dbType' => 'char',
             'reportable' => false,
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'campaign_name' => [
             'name' => 'campaign_name',
@@ -236,7 +236,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Currencies',
             'source' => 'non-db',
             'function' => ['name' => 'getCurrencyNameDropDown', 'returns' => 'html'],
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'currency_symbol' => [
             'name' => 'currency_symbol',
@@ -249,7 +249,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Currencies',
             'source' => 'non-db',
             'function' => ['name' => 'getCurrencySymbolDropDown', 'returns' => 'html'],
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'date_closed' => [
             'name' => 'date_closed',

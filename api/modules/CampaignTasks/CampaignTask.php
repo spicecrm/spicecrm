@@ -4,6 +4,7 @@
 namespace SpiceCRM\modules\CampaignTasks;
 
 use Cassandra\Time;
+use Exception;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -38,70 +39,64 @@ class CampaignTask extends SpiceBean
     }
 
     /**
+     * return exclusion list id
+     * @return array|false
+     * @throws Exception
+     */
+    public static function getListIdByType(string $campaignTaskId, string $type)
+    {
+        $db = DBManagerFactory::getInstance();
+        return $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = '$type' and pl.deleted != 1  and plc.deleted != 1 ");
+    }
+
+    /**
      * remove entries from campaign log for passed status
      * created entries in campaign log with passed status
      * set campaign task to activated
-     * set camapign task status to Active
      * @param string $status
-     *@todo find another way to bild query so that sql_mode workaround may be removed
+     * @return array
+     * @throws Exception
      */
-    function activate(string $status = 'targeted')
+    function activate(string $status = 'targeted'): array
     {
-        $db = DBManagerFactory::getInstance();
-        $thisId = $db->quote($this->id);
-        $sysModuleFilters = new SysModuleFilters();
+        $delQuery = "DELETE FROM campaign_log WHERE campaign_id='$this->campaign_id' AND campaigntask_id='$this->id' AND activity_type='$status'";
+        $this->db->query($delQuery);
 
-        // disable ONLY_FULL_GROUP_BY if this is set
-        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+        # merge targets arrays to remove duplicates by key (bean.id)
+        $targets = array_merge(
+            $this->getTargetsEntries(),
+            $this->getTargetsFilterEntries()
+        );
 
-        // set the group by mode off on MySQL
-        if($this->db->dbType == 'mysql') {
-            $this->db->query("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+        if (count($targets) == 0) {
+            return ['success' => false, 'msg' => 'no targets found'];
         }
 
-        $delete_query = "DELETE FROM campaign_log WHERE campaign_id='" . $this->campaign_id . "' AND campaigntask_id='" . $this->id . "' AND activity_type='$status'";
-        $this->db->query($delete_query);
-
-        $current_date = $this->db->now();
         $guidSQL = $this->db->getGuidSQL();
+        $currentDate = $this->db->now();
 
-        $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id";
-        $insert_query .= ') ';
-        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL}, plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0, $current_date, '{$this->assigned_user_id}'";
-        $insert_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id";
-        $insert_query .= " INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id";
-        $insert_query .= " WHERE plc.campaigntask_id='$thisId'";
-        $insert_query .= " AND prospect_lists.deleted=0";
-        $insert_query .= " AND plc.deleted=0";
-        $insert_query .= " AND plp.deleted=0";
-        $insert_query .= " AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%' GROUP BY plp.related_id";
-        $this->db->query($insert_query);
+        $chunks = array_chunk($targets, 500);
 
-        $prospect_list_filters = "SELECT plf.module, plf.module_filter, plf.prospectlist_id FROM prospect_list_filters plf";
-        $prospect_list_filters .= " INNER JOIN prospect_list_campaigntasks plc ON plf.prospectlist_id = plc.prospect_list_id";
-        $prospect_list_filters .= " WHERE plc.campaigntask_id = '$thisId' AND plc.deleted = 0";
-        $prospect_list_filters = $this->db->query($prospect_list_filters);
+        foreach ($chunks as $chunkTargets) {
 
-        while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
-            $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
-            $seed = BeanFactory::getBean($row['module']);
-            $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id)";
-            $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0, $current_date, {'$this->assigned_user_id'}";
-            $insert_query .= " FROM {$seed->_tablename}";
-            $insert_query .= " WHERE deleted=0 AND NOT EXISTS (SELECT target_id FROM campaign_log WHERE campaign_log.target_id = {$seed->_tablename}.id) AND $where";
-            $this->db->query($insert_query);
+            $query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id) VALUES ";
+
+            foreach ($chunkTargets as $target) {
+
+                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}', '$status', 0, $currentDate, '$this->assigned_user_id'),";
+            }
+
+            # remove the last comma from the query
+            $query = substr($query, 0, -1);
+
+            $this->db->query($query, true);
         }
 
-        $logs = $this->get_linked_beans('log_entries');
+        $this->activated = true;
+        $this->status = 'Active';
+        $this->save();
 
-        if(!empty($logs)) {
-            // set to activated
-            $this->activated = true;
-            $this->status = 'Active';
-            $this->save();
-        }
-
-        return count($logs) > 0 ? ['success' => true, 'id' => $this->id] : ['success' => false, 'msg' => 'no targets found'] ;
+        return ['success' => true, 'id' => $this->id];
     }
 
     public function activateFromEvent($status)
@@ -162,69 +157,6 @@ class CampaignTask extends SpiceBean
         return $success;
     }
 
-    function export()
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $exportFields = ['name', 'salutation', 'first_name', 'last_name', 'email1', 'primary_address_street', 'primary_address_city'];
-
-        $thisId = $db->quote($this->id);
-        $sysModuleFilters = new SysModuleFilters();
-
-        $current_date = $this->db->now();
-        $guidSQL = $this->db->getGuidSQL();
-
-
-        $targets_query = "SELECT plp.related_id recordid, plp.related_type recordmodule FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id";
-        $targets_query .= " INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id";
-        $targets_query .= " WHERE plc.campaigntask_id='$thisId' AND prospect_lists.deleted=0  AND plc.deleted=0  AND plp.deleted=0";
-        $targets_query .= " AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%'";
-
-        // go fot the propects lists filters
-        $prospect_list_filters = "SELECT plf.module, plf.module_filter, plf.prospectlist_id FROM prospect_list_filters plf";
-        $prospect_list_filters .= " INNER JOIN prospect_list_campaigntasks plc ON plf.prospectlist_id = plc.prospect_list_id";
-        $prospect_list_filters .= " WHERE plc.campaigntask_id = '$thisId' AND plc.deleted = 0";
-        $prospect_list_filters = $this->db->query($prospect_list_filters);
-
-        while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
-            $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
-            $seed = BeanFactory::getBean($row['module']);
-            $filter_query = " SELECT id recordid, '{$row['module']}' recordmodule FROM {$seed->_tablename} WHERE deleted=0 AND $where";
-            $targets_query .= " UNION $filter_query";
-        }
-
-
-
-        // determine the delimiter
-        $delimiter = UserPreference::getDefaultPreference('export_delimiter');
-        if (!empty(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_delimiter'))) $delimiter = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_delimiter');
-
-        // determine the charset
-        $supportedCharsets = mb_list_encodings();
-        # $charsetTo = UserPreference::getDefaultPreference('default_charset');
-        $charsetTo = UserPreference::getDefaultPreference('export_charset');
-        if (!empty($postBody['charset'])) {
-            if (in_array($postBody['charset'], $supportedCharsets)) $charsetTo = $postBody['charset'];
-        } else {
-            # if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_export_charset');
-            if (in_array(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset'), $supportedCharsets)) $charsetTo = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_charset');
-        }
-
-        $fh = @fopen('php://output', 'w');
-        $records = $this->db->query($targets_query);
-        while($record = $db->fetchByAssoc($records)){
-            $seed = BeanFactory::getBean($record['recordmodule'], $record['recordid']);
-            if($seed){
-                $entryArray = [];
-                foreach ($exportFields as $exportField){
-                    $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($seed->$exportField, $charsetTo) : $seed->$exportField;
-                }
-                fputcsv($fh, $entryArray, $delimiter);
-            }
-        }
-        fclose($fh);
-    }
-
     /**
      * fetch targets modules
      * @param array $prospectLists
@@ -250,7 +182,10 @@ class CampaignTask extends SpiceBean
      */
     private function getCampaignTargetLists(): array
     {
-        $query = $this->db->query("SELECT pl.id, pl.name, pl.list_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id WHERE campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1");
+        $query = $this->db->query("
+            SELECT pl.id, pl.name, pl.list_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id 
+            WHERE pl.list_type != 'test' AND campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1"
+        );
 
         $lists = [];
 
@@ -295,14 +230,22 @@ class CampaignTask extends SpiceBean
     /**
      * get targets ids for the provided list ids
      * @param array $listIds
+     * @param string|null $status
      * @return array
      */
-    private function getListsTargets(array $listIds): array
+    private function getListsTargets(array $listIds, ?string $status): array
     {
         $listIdsString = implode(',', array_map(function ($e) {return "'$e'";}, $listIds));
-        $query = $this->db->query("SELECT related_id, GROUP_CONCAT(prospect_list_id) listsIds FROM prospect_lists_prospects WHERE prospect_list_id IN ($listIdsString) AND deleted != 1 GROUP BY related_id");
+
+        $query = $this->db->query("
+            SELECT related_id, GROUP_CONCAT(prospect_list_id) AS listsIds, st.status, st.date_modified AS status_date_changed FROM prospect_lists_prospects plp
+            LEFT JOIN campaigntask_targets_status st on plp.related_id = st.prospect_id and st.campaigntask_id = '$this->id'
+            WHERE prospect_list_id IN ($listIdsString) AND deleted != 1 GROUP BY related_id"
+        );
+
         $targets = [];
         while($target = $this->db->fetchByAssoc($query)) {
+            if (!$this->statusMatch($status, $target['status'])) continue;
             $targets[$target['related_id']] = $target;
         }
 
@@ -328,7 +271,7 @@ class CampaignTask extends SpiceBean
         ];
 
         $prospectListIds = $prospectListIds ?: array_column($response['prospectlists'], 'id');
-        $listsTargets = $this->getListsTargets($prospectListIds);
+        $listsTargets = $this->getListsTargets($prospectListIds, $status);
 
         $postBody = $this->generateTargetsSearchBody($modules, $limit, $offset, $listsTargets, $searchTerm);
 
@@ -341,14 +284,11 @@ class CampaignTask extends SpiceBean
 
             foreach ($moduleRes['hits'] as $target) {
 
-                $targetStatus = $this->getTargetStatus($target['_id']);
+                $target['listsIds'] = $listsTargets[$target['_id']]['listsIds'];
+                $target['status'] = $listsTargets[$target['_id']]['status'];
+                $target['status_date_changed'] = $listsTargets[$target['_id']]['status_date_changed'];
 
-                if (!$this->statusMatch($status, $targetStatus)) {
-                    continue;
-                }
-                $targetLists = $listsTargets[$target['_id']]['listsIds'];
-
-                $response['prospects'][] = $this->generateTargetArray($target, $module, $targetStatus, $targetLists);
+                $response['prospects'][] = $this->generateTargetArray($target, $module);
             }
         }
 
@@ -363,31 +303,24 @@ class CampaignTask extends SpiceBean
      */
     private function statusMatch(?string $status, $targetStatus): bool
     {
-        return empty($status) || ($status == 'unchecked' && !$targetStatus) || $status == $targetStatus['status'];
-    }
-
-    private function getTargetStatus(string $targetId)
-    {
-        return $this->db->fetchOne("SELECT * FROM campaigntask_targets_status WHERE campaigntask_id = '$this->id' AND prospect_id = '$targetId'");
+        return empty($status) || ($status == 'unchecked' && !$targetStatus) || $status == $targetStatus;
     }
 
     /**
      * generate target array from the db entry
      * @param array $target
      * @param string $module
-     * @param array|false $targetStatus
-     * @param string $relLists
      * @return array
      */
-    private function generateTargetArray(array $target, string $module, $targetStatus, string $relLists): array
+    private function generateTargetArray(array $target, string $module): array
     {
         return [
             'id' => $target['_id'],
             'module' => $module,
-            'prospectlists' => explode(',', $relLists),
+            'prospectlists' => explode(',', $target['listsIds']),
             'data' => $target['_source'],
-            'status' => $targetStatus ? $targetStatus['status'] : '',
-            'status_date_changed' => $targetStatus ? $targetStatus['date_modified'] : '',
+            'status' => $target['status'],
+            'status_date_changed' => $target['status_date_changed'],
         ];
     }
 
@@ -575,42 +508,119 @@ class CampaignTask extends SpiceBean
 
     /**
      * returns an array of beans linked to the prospect lists
-     * take care as this instantiates beans for each record and thus ight take some time and ressources
-     * defaut limit is 100 records
+     * take care as this instantiates beans for each record and thus might take some time and resources
+     * default limit is 100 records
      *
      * @param int $start
      * @param int $limit
      * @return array
+     * @throws Exception
      */
-    public function getProspectBeans($start = 0, $limit = 100){
+    public function getProspectBeans(int $start = 0, int $limit = 100): array
+    {
         $beans = [];
-        $select_query = "SELECT plp.related_id id, max(plp.related_type) module ";
-        $select_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
-        $select_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
-        $select_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
-        $select_query .= "AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%' GROUP BY plp.related_id ";
 
-        $records = $this->db->limitQuery($select_query, $start, $limit);
-        while($record = $this->db->fetchByAssoc($records)){
-            $seed = BeanFactory::getBean($record['module'],$record['id']);
-            if($seed) $beans[] = $seed;
+        $targets = $this->getTargetsEntries($start, $limit);
+
+        foreach ($targets as $target) {
+            $seed = BeanFactory::getBean($target['related_type'], $target['related_id']);
+            if ($seed) $beans[] = $seed;
         }
 
         return $beans;
     }
 
     /**
-     * returns the expected number of targets
+     * get targets entries
+     * @param int $start
+     * @param int $limit
+     * @return array ['related_id' => string, 'related_type' => string, 'prospect_list_id' => string]
+     * @throws Exception
      */
-    public function getTargetCount(){
-        $count_query = "SELECT count(distinct plp.related_id) totalcount ";
-        $count_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
-        $count_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
-        $count_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
-        $count_query .= "AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%'";
-        $records = $this->db->fetchByAssoc($this->db->query($count_query));
+    public function getTargetsEntries(int $start = 0, int $limit = 1000000): array
+    {
+        $entries = [];
 
-        return $records ? $records['totalcount'] : 0;
+        $query = $this->buildTargetsEntriesQuery();
+
+        $records = $this->db->limitQuery($query, $start, $limit);
+
+        while($entry = $this->db->fetchByAssoc($records)){
+            if($entries[$entry['related_id']]) continue;
+            $entries[$entry['related_id']] = $entry;
+        }
+
+        return $entries;
+    }
+
+    /**
+     * build targets entries query
+     * @param bool $countOnly
+     * @return string
+     * @throws Exception
+     */
+    private function buildTargetsEntriesQuery(bool $countOnly = false): string
+    {
+        $exclusionListId = (string) self::getListIdByType($this->id, 'exclude');
+
+        $query = 'SELECT ' . ($countOnly ? 'COUNT(distinct plp.related_id) ' : "plp.related_id, plp.related_type, plp.prospect_list_id ");
+        $query .= "FROM prospect_lists pl INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id ";
+        $query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id ";
+        $query .= "WHERE plc.campaigntask_id='$this->id' AND pl.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
+        $query .= "AND pl.list_type != 'test' AND pl.list_type != 'exclude' AND pl.list_type not like 'exempt%'";
+
+        if ($exclusionListId) {
+            $query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id = '$exclusionListId' AND plp.related_id = related_id AND deleted != 1)";
+        }
+
+        return $query;
+    }
+
+    /**
+     * get targets filter entries
+     * @return array
+     */
+    public function getTargetsFilterEntries(): array
+    {
+        $entries = [];
+
+        $listFilters = "SELECT plf.module, plf.module_filter, plf.prospectlist_id FROM prospect_list_filters plf";
+        $listFilters .= " INNER JOIN prospect_list_campaigntasks plc ON plf.prospectlist_id = plc.prospect_list_id";
+        $listFilters .= " WHERE plc.campaigntask_id = '$this->id' AND plc.deleted != 1 AND plf.deleted != 1";
+        $listFilters = $this->db->query($listFilters);
+
+        $sysModuleFilters = new SysModuleFilters();
+
+        while ($listFilter = $this->db->fetchByAssoc($listFilters)) {
+            $seed = BeanFactory::getBean($listFilter['module']);
+            $where = $sysModuleFilters->generateWhereClauseForFilterId($listFilter['module_filter']);
+            $query = $this->db->query("SELECT id FROM $seed->_tablename WHERE deleted != 1 AND $where");
+
+            while($entry = $this->db->fetchByAssoc($query)) {
+
+                if ($entries[$entry['id']]) continue;
+
+                $entries[$entry['id']] = [
+                    'related_id' => $entry['id'],
+                    'prospectlist_id' => $listFilter['prospectlist_id'],
+                    'related_type' => $listFilter['module'],
+                ];
+            }
+        }
+
+        return $entries;
+    }
+
+    /**
+     * get target count
+     * @return array|false
+     * @throws Exception
+     */
+    public function getTargetCount()
+    {
+        $query = $this->buildTargetsEntriesQuery(true);
+
+        return $this->db->getOne($query);
     }
 
     /**
