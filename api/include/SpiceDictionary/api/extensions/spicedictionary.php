@@ -1,7 +1,13 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
+
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryController;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryDefinitionsController;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryIndexesController;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryItemsController;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryRelationshipsController;
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
 /**
  * get a Rest Manager Instance
@@ -13,23 +19,23 @@ $RESTManager = RESTManager::getInstance();
  */
 $routes = [
     [
-        'method'      => 'get',
-        'route'       => '/dictionary/domains',
-        'oldroute'       => '/system/dictionary/domains',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'getDomains',
+        'method' => 'get',
+        'route' => '/dictionary/domains',
+        'oldroute' => '/system/dictionary/domains',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getDomains',
         'description' => 'get domains',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['noAuth' => false, 'adminOnly' => false],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/dictionary/domains',
-        'oldroute'       => '/system/dictionary/domains',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'postDomains',
+        'method' => 'post',
+        'route' => '/dictionary/domains',
+        'oldroute' => '/system/dictionary/domains',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'postDomains',
         'description' => 'set domains',
-        'options'     => ['noAuth' => false, 'adminOnly' => true],
-        'parameters'  => [
+        'options' => ['noAuth' => false, 'adminOnly' => true],
+        'parameters' => [
             'domaindefinitions' => [
                 'in' => 'body',
                 'description' => '',
@@ -97,48 +103,76 @@ $routes = [
         ]
     ],
     [
-        'method'      => 'get',
-        'route'       => '/dictionary/domains/appliststrings',
-        'oldroute'    => '/system/dictionary/domains/appliststrings',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'getAppListStrings',
+        'method' => 'get',
+        'route' => '/dictionary/domains/appliststrings',
+        'oldroute' => '/system/dictionary/domains/appliststrings',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getAppListStrings',
         'description' => 'get AppListStrings',
-        'options'     => ['noAuth' => false, 'adminOnly' => true],
+        'options' => ['noAuth' => false, 'adminOnly' => true],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/dictionary/definitions',
-        'oldroute'       => '/system/dictionary/definitions',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'getDefinitions',
+        'method' => 'get',
+        'route' => '/dictionary/definitions',
+        'oldroute' => '/system/dictionary/definitions',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getDefinitions',
         'description' => 'get dictionary definitions including relationship & index definitions ',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['noAuth' => false, 'adminOnly' => false],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/dictionary/fields',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'getDictionaryFields',
+        'method' => 'get',
+        'route' => '/dictionary/fields',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getDictionaryFields',
         'description' => 'get dictionary definitions including relationship & index definitions ',
-        'options'     => ['adminOnly' => true],
+        'options' => ['adminOnly' => true],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/dictionary/vardefs/{dictionaryname}',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'getDictionaryVardefs',
+        'method' => 'get',
+        'route' => '/dictionary/columns/{dictionaryname}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getDBColumns',
+        'description' => 'get dictionary definitions as defined on the database',
+        'options' => ['adminOnly' => true],
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/dictionary/columns/{dictionaryname}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'deleteDBColumns',
+        'description' => 'deletes columns from the database',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'dictionaryname' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'fields' => [
+                'in' => 'params',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_ARRAY
+            ]
+        ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/dictionary/vardefs/{dictionaryname}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getDictionaryVardefs',
         'description' => 'get dictionary definitions vardefs for a given dictionary item by name',
-        'options'     => ['adminOnly' => true],
+        'options' => ['adminOnly' => true],
     ],
     [
-        'method'      => 'post',
-        'route'       => '/dictionary/definitions',
-        'oldroute'       => '/system/dictionary/definitions',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'postDefinitions',
+        'method' => 'post',
+        'route' => '/dictionary/definitions',
+        'oldroute' => '/system/dictionary/definitions',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'postDefinitions',
         'description' => 'save dictionary definitions including relationship & index definitions ',
-        'options'     => ['noAuth' => false, 'adminOnly' => true],
-        'parameters'  => [
+        'options' => ['noAuth' => false, 'adminOnly' => true],
+        'parameters' => [
             'dictionarydefinitions' => [
                 'in' => 'body',
                 'description' => '',
@@ -198,22 +232,135 @@ $routes = [
         ],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/dictionary/spicewords',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'getSpiceWords',
+        'method' => 'get',
+        'route' => '/dictionary/spicewords',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getSpiceWords',
         'description' => 'will get the list of database related keywords and reserved words',
-        'options'     => ['noAuth' => false, 'adminOnly' => true],
+        'options' => ['noAuth' => false, 'adminOnly' => true],
     ],
     [
-        'method'      => 'get',
-        'route'       => '/dictionary/spicewords/reservedwords',
-        'class'       => SpiceDictionaryController::class,
-        'function'    => 'checkSpiceWordsInVardefs',
+        'method' => 'get',
+        'route' => '/dictionary/spicewords/reservedwords',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'checkSpiceWordsInVardefs',
         'description' => 'will check on current column names that are reserved word. USed only in MySQL. ONly for dev purpose. Will be removed.',
-        'options'     => ['noAuth' => false, 'adminOnly' => true],
+        'options' => ['noAuth' => false, 'adminOnly' => true],
     ],
-
+    // for the definitions
+    [
+        'method' => 'post',
+        'route' => '/dictionary/definition/{id}',
+        'class' => SpiceDictionaryDefinitionsController::class,
+        'function' => 'postDictionaryDefinition',
+        'description' => 'posts a dictionary Definition',
+        'options' => ['adminOnly' => true]
+    ],[
+        'method' => 'delete',
+        'route' => '/dictionary/definition/{id}',
+        'class' => SpiceDictionaryDefinitionsController::class,
+        'function' => 'deleteDictionaryDefinition',
+        'description' => 'delets a dictionary Definition',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/definition/{id}/activate',
+        'class' => SpiceDictionaryDefinitionsController::class,
+        'function' => 'activateDictionaryDefinition',
+        'description' => 'activates a dictionary Definition',
+        'options' => ['adminOnly' => true]
+    ],[
+        'method' => 'delete',
+        'route' => '/dictionary/definition/{id}/activate',
+        'class' => SpiceDictionaryDefinitionsController::class,
+        'function' => 'deactivateDictionaryDefinition',
+        'description' => 'deactivates a dictionary Definition',
+        'options' => ['adminOnly' => true]
+    ],
+    // for the items
+    [
+        'method' => 'post',
+        'route' => '/dictionary/item/{id}',
+        'class' => SpiceDictionaryItemsController::class,
+        'function' => 'postDictionaryItem',
+        'description' => 'posts a dictionary Index',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/dictionary/item/{id}',
+        'class' => SpiceDictionaryItemsController::class,
+        'function' => 'deleteDictionaryItem',
+        'description' => 'posts a dictionary Index',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/item/{id}/activate',
+        'class' => SpiceDictionaryItemsController::class,
+        'function' => 'activateDictionaryItem',
+        'description' => 'posts a dictionary Index',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/dictionary/item/{id}/activate',
+        'class' => SpiceDictionaryItemsController::class,
+        'function' => 'deactivateDictionaryItem',
+        'description' => 'posts a dictionary Index',
+        'options' => ['adminOnly' => true]
+    ],
+    // for the indexes
+    [
+        'method' => 'post',
+        'route' => '/dictionary/index/{id}',
+        'class' => SpiceDictionaryIndexesController::class,
+        'function' => 'postDictionaryIndex',
+        'description' => 'posts a dictionary Index',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/dictionary/index/{id}',
+        'class' => SpiceDictionaryIndexesController::class,
+        'function' => 'deleteDictionaryIndex',
+        'description' => 'posts a dictionary Index',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/index/{id}/activate',
+        'class' => SpiceDictionaryIndexesController::class,
+        'function' => 'activateDictionaryIndex',
+        'description' => 'activates a dictionary Index',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/dictionary/index/{id}/activate',
+        'class' => SpiceDictionaryIndexesController::class,
+        'function' => 'dropDictionaryIndex',
+        'description' => 'drops a dictionary Index',
+        'options' => ['adminOnly' => true]
+    ],
+    // for the relationships
+    [
+        'method' => 'post',
+        'route' => '/dictionary/relationship/{id}',
+        'class' => SpiceDictionaryRelationshipsController::class,
+        'function' => 'postDictionaryRelationship',
+        'description' => 'posts a Relationship',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/dictionary/relationship/{id}',
+        'class' => SpiceDictionaryRelationshipsController::class,
+        'function' => 'deleteDictionaryRelationship',
+        'description' => 'deletes a Relationship',
+        'options' => ['adminOnly' => true]
+    ],
 ];
 
 /**

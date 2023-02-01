@@ -21,12 +21,9 @@ import {domainmanager} from '../services/domainmanager.service';
     templateUrl: '../templates/domainmanagerfields.html',
 })
 export class DomainManagerFields {
-
-
     constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
     }
-
     get domainfields() {
         let domainfields = this.domainmanager.domainfields.filter(f => f.deleted == 0 && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope == 'c');
         for (let domainfield of this.domainmanager.domainfields.filter(f => f.deleted == 0 && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope != 'c')) {
@@ -36,7 +33,6 @@ export class DomainManagerFields {
         }
         return domainfields.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
-
 
     /**
      * handles the drop event and resets the sequence fiels
@@ -55,7 +51,6 @@ export class DomainManagerFields {
             i++;
         }
     }
-
 
     /**
      * react to the click to add a new domain field

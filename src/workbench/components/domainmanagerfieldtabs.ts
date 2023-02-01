@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, EventEmitter, Injector, Output
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -27,6 +27,13 @@ export class DomainManagerFieldTabs {
      */
     public tabScope: 'details' | 'validations' = 'details';
 
+    /**
+     * holds value internal if tab is epxnaded
+     */
+    public _isexpanded: boolean = false;
+
+    @Output() public expanded: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
     }
@@ -37,6 +44,13 @@ export class DomainManagerFieldTabs {
 
     get currentField() {
         return this.domainfields.find(field => field.id == this.domainmanager.currentDomainField);
+    }
+
+    public toggleExpanded(e: MouseEvent){
+        e.preventDefault();
+        e.stopPropagation();
+        this._isexpanded = !this._isexpanded;
+        this.expanded.emit(this._isexpanded);
     }
 
 }

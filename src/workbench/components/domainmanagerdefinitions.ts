@@ -26,6 +26,8 @@ export class DomainManagerDefinitions {
     public definitionfilterscope: ''|'g'|'c' = '';
     public definitionfilterstatus: ''|'i' | 'd' | 'a' = '';
 
+    public definitionsfiltertype: string = ''
+
     constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
     }
@@ -43,6 +45,8 @@ export class DomainManagerDefinitions {
             if(this.definitionfilterscope != '' && d.scope != this.definitionfilterscope) return false;
             // if scope is set apply status Filter
             if(this.definitionfilterstatus != '' && d.status != this.definitionfilterstatus) return false;
+            // filter by type
+            if(this.definitionsfiltertype != '' && d.fieldtype != this.definitionsfiltertype) return false;
             // else return true
             return true;
         }).sort((a, b) => a.name > b.name ? 1 : -1);

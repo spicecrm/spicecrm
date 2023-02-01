@@ -1,4 +1,4 @@
-<div *ngIf="field.sysdomainfieldvalidation_id; else novalidation">
+<div *ngIf="field.sysdomainfieldvalidation_id; else novalidation" style="height: 100%">
     <div class="slds-grid slds-gutters_direct-xx-small slds-p-around--x-small">
         <div class="slds-col slds-grow slds-form-element">
             <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
@@ -26,84 +26,72 @@
             </div>
         </div>
     </div>
-    <div system-to-bottom>
+    <div style="height: calc(100% - 117px)" class="slds-scrollable--y">
         <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed">
             <thead>
-            <tr class="slds-line-height_reset">
-                <th style="width:2rem" scope="col">
-                </th>
-                <th *ngIf="validation.validation_type == 'enum'" class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">value</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">valuetype</div>
-                </th>
-                <!--                    <th *ngIf="validation.validation_type != 'enum'" class="" scope="col">-->
-                <!--                        <div class="slds-truncate slds-th__action slds-p-horizontal&#45;&#45;x-small">min</div>-->
-                <!--                    </th>-->
-                <!--                    <th *ngIf="validation.validation_type != 'enum'"  class="" scope="col">-->
-                <!--                        <div class="slds-truncate slds-th__action slds-p-horizontal&#45;&#45;x-small">max</div>-->
-                <!--                    </th>-->
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">label</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">comment</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">version</div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">package</div>
-                </th>
-                <th style="width:2rem" scope="col">
-                </th>
-            </tr>
+                <tr class="slds-line-height_reset">
+                    <th style="width:2rem" scope="col">
+                    </th>
+                    <th *ngIf="validation.validation_type == 'enum'" class="" scope="col">
+                        <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">value</div>
+                    </th>
+                    <th *ngIf="view == 'extended'" class="" scope="col">
+                        <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">valuetype</div>
+                    </th>
+                    <th *ngIf="view == 'core'" class="" scope="col">
+                        <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">label</div>
+                    </th>
+                    <th *ngIf="view == 'core'" class="" scope="col">
+                        <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">comment</div>
+                    </th>
+                    <th *ngIf="view == 'extended'" class="" scope="col">
+                        <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">version</div>
+                    </th>
+                    <th *ngIf="view == 'extended'" class="" scope="col">
+                        <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">package</div>
+                    </th>
+                    <th class="slds-text-align--center" style="width:2rem" scope="col">
+                        <system-utility-icon [icon]="view == 'extended' ? 'chevronleft' : 'chevronright'" size="x-small" (click)="switchView($event)"/>
+                    </th>
+                </tr>
             </thead>
             <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
-            <tr class="slds-hint-parent" *ngFor="let validationvalue of validationvalues" cdkDrag cdkDragBoundary=".dragboundary">
-                <td class="slds-grid slds-align--absolute-center" style="min-height: 40px;">
-                    <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
-                    <system-utility-icon (click)="customizeValidationValue($event, validationvalue)" class="slds-p-right--xx-small" size="xx-small" [icon]="validationvalue.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <dictionary-manager-item-status [(ngModel)]="validationvalue.status"></dictionary-manager-item-status>
-                </td>
-                <td *ngIf="validation.validation_type == 'enum'" >
-                    <input type="text" [(ngModel)]="validationvalue.enumvalue" class="slds-input"/>
-                </td>
-
-                <!--                    <td *ngIf="validation.validation_type != 'enum'" >-->
-                <!--                        <input type="text" [(ngModel)]="validationvalue.minvalue" class="slds-input"/>-->
-                <!--                    </td>-->
-                <!--                    <td *ngIf="validation.validation_type != 'enum'" >-->
-                <!--                        <input type="text" [(ngModel)]="validationvalue.maxvalue" class="slds-input"/>-->
-                <!--                    </td>-->
-                <td>
-                    <select class="slds-select" [(ngModel)]="validationvalue.valuetype">
-                        <option value="string"><system-label label="LBL_STRING"></system-label></option>
-                        <option value="integer"><system-label label="LBL_INTEGER"></system-label></option>
-                    </select>
-                </td>
-                <td>
-                    <system-input-label [(ngModel)]="validationvalue.label"></system-input-label>
-                </td>
-                <td>
-                    <input type="text" [(ngModel)]="validationvalue.comment" class="slds-input"/>
-                </td>
-                <td>
-                    <input type="text" [(ngModel)]="validationvalue.version" class="slds-input"/>
-                </td>
-                <td>
-                    <input type="text" [(ngModel)]="validationvalue.package" class="slds-input"/>
-                </td>
-                <td class="slds-align--absolute-center" style="min-height: 40px;">
-                    <system-utility-icon size="xx-small" (click)="deleteValidation($event, validationvalue.id)" icon="delete"></system-utility-icon>
-                </td>
-            </tr>
+                <tr class="slds-hint-parent" *ngFor="let validationvalue of validationvalues" cdkDrag cdkDragBoundary=".dragboundary">
+                    <td class="slds-grid slds-align--absolute-center" style="min-height: 40px;">
+                        <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                        <system-utility-icon (click)="customizeValidationValue($event, validationvalue)" class="slds-p-right--xx-small" size="xx-small" [icon]="validationvalue.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        <dictionary-manager-item-status [(ngModel)]="validationvalue.status"></dictionary-manager-item-status>
+                    </td>
+                    <td *ngIf="validation.validation_type == 'enum'" >
+                        <input type="text" [(ngModel)]="validationvalue.enumvalue" class="slds-input"/>
+                    </td>
+                    <td *ngIf="view == 'extended'">
+                        <select class="slds-select" [(ngModel)]="validationvalue.valuetype">
+                            <option value="string"><system-label label="LBL_STRING"></system-label></option>
+                            <option value="integer"><system-label label="LBL_INTEGER"></system-label></option>
+                        </select>
+                    </td>
+                    <td *ngIf="view == 'core'">
+                        <system-input-label [(ngModel)]="validationvalue.label"></system-input-label>
+                    </td>
+                    <td *ngIf="view == 'core'">
+                        <input type="text" [(ngModel)]="validationvalue.comment" class="slds-input"/>
+                    </td>
+                    <td *ngIf="view == 'extended'">
+                        <input type="text" [(ngModel)]="validationvalue.version" class="slds-input"/>
+                    </td>
+                    <td *ngIf="view == 'extended'">
+                        <input type="text" [(ngModel)]="validationvalue.package" class="slds-input"/>
+                    </td>
+                    <td class="slds-text-align--center" style="min-height: 40px;">
+                        <system-utility-icon size="xx-small" (click)="deleteValidation($event, validationvalue.id)" icon="delete"></system-utility-icon>
+                    </td>
+                </tr>
             </tbody>
         </table>
-        <div class="slds-align--absolute-center slds-p-around--small">
-            <system-utility-icon (click)="addValidationValue($event)" icon="new" size="x-small"></system-utility-icon>
-        </div>
+    </div>
+    <div class="slds-align--absolute-center slds-p-around--small slds-theme--shade slds-border--top">
+        <system-utility-icon (click)="addValidationValue($event)" icon="new" size="x-small"></system-utility-icon>
     </div>
 </div>
 <ng-template #novalidation>

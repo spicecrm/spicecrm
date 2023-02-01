@@ -21,6 +21,8 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 })
 export class DictionaryManager {
 
+    public definitionsExpanded: boolean = false;
+
     constructor(public dictionarymanager: dictionarymanager, public modal: modal, public backend: backend, public toast: toast, public injector: Injector) {
 
     }

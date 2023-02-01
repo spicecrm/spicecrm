@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, Injector, ViewChild
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -22,13 +22,23 @@ import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 })
 export class DictionaryManagerItems {
 
+
     /**
      * the current dictionaryitem
      */
     public dictionaryitem: DictionaryItem;
 
+    /**
+     * boolean if the details panel is expanded
+     */
+    public detailsExpanded: boolean = false;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+    /**
+     * a term to filter by
+     */
+    public filterterm: string;
+
+    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
@@ -40,11 +50,26 @@ export class DictionaryManagerItems {
      * gets all non deleted entries sorted by name
      */
     get dictionaryitems() {
-
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        return this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+        return this.dictionarymanager.dictionaryitems.filter(d => (d.id == this.dictionarymanager.currentDictionaryItem || !this.filterterm || d.name.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+    }
+
+    get itemsliststyle() {
+        let height = this.detailsExpanded ? 458 : 79;
+        return {
+            height: `calc(100% - ${height}px`
+        }
+    }
+
+    /**
+     * returns the status of the current definiton
+     *
+     * we can only activate when the definition is active as well
+     */
+    get definitionStatus(){
+        return this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).status;
     }
 
     /**
@@ -56,6 +81,22 @@ export class DictionaryManagerItems {
     }
 
     /**
+     * edits the dictionary item
+     *
+     * @param event
+     * @param id
+     */
+    public editDictionaryItem(item: DictionaryItem) {
+
+        this.modal.openModal('DictionaryManagerItemDetails', true, this.injector).subscribe({
+            next: (modalRef) => {
+                modalRef.instance.dictionaryitem = item;
+            }
+        })
+
+    }
+
+    /**
      * prompts the user and delets the dictionary definition
      *
      * @param event
@@ -63,16 +104,20 @@ export class DictionaryManagerItems {
      */
     public deleteDictionaryItem(event: MouseEvent, id: string) {
         event.stopPropagation();
-        this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
-            if (answer) {
-                let di = this.dictionarymanager.dictionaryitems.find(f => f.id == id).deleted = 1;
-                if (this.dictionarymanager.currentDictionaryDefinition == id) {
-                    this.dictionarymanager.currentDictionaryDefinition == null;
-                }
-            }
-        });
-    }
 
+        this.dictionarymanager.promptDelete('MSG_DELETE_DICTIONARYITEM').subscribe({
+            next: (value) => {
+                let params: any = {};
+                if(value == 'drop') params.drop = 1;
+                this.backend.deleteRequest(`dictionary/item/${id}`, params).subscribe({
+                    next: () => {
+                        let di = this.dictionarymanager.dictionaryitems.findIndex(f => f.id == id);
+                        this.dictionarymanager.dictionaryitems.splice(di, 1);
+                    }
+                })
+            }
+        })
+    }
 
     /**
      * handles the drop event and resets the sequence fiels
@@ -105,21 +150,60 @@ export class DictionaryManagerItems {
     /**
      * returns if there are any items thar are in status 'd'
      */
-    get hasDraftItems(){
+    get hasDraftItems() {
         return this.dictionaryitems.filter(d => d.status == 'd').length > 0;
     }
 
     /**
      * activate All
      */
-    public activateAll(e: MouseEvent){
+    public activateAll(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        this.modal.confirm('MSG_ACTIVATE_ALL','MSG_ACTIVATE_ALL').subscribe({
+        this.modal.confirm('MSG_ACTIVATE_ALL', 'MSG_ACTIVATE_ALL').subscribe({
             next: (res) => {
-                if(res) this.dictionaryitems.filter(d => d.status == 'd').forEach(d => d.status = 'a');
+                if (res) this.dictionaryitems.filter(d => d.status == 'd').forEach(d => d.status = 'a');
             }
         })
     }
+
+    /**
+     * sets the status and write the cahced entries ont eh backend
+     *
+     * @param item
+     * @param status
+     */
+    public setStatus(item, status) {
+        let loadingModal;
+        switch (status) {
+            case 'a':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.postRequest(`dictionary/item/${item.id}/activate`).subscribe({
+                    next: () => {
+                        item.status = status;
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            case 'i':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.deleteRequest(`dictionary/item/${item.id}/activate`).subscribe({
+                    next: () => {
+                        item.status = status;
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            default:
+                item.status = status;
+        }
+    }
+
 
 }

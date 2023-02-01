@@ -1,0 +1,12 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()"><system-label label="LBL_DELETE_COLUMNS"/></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid slds-grid_vertical">
+            <system-checkbox *ngFor="let item of items" [(ngModel)]="item.selected">{{item.name}}</system-checkbox>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button class="slds-button slds-button--brand" (click)="delete()"><system-label label="LBL_DELETE"/></button>
+    </system-modal-footer>
+</system-modal>
