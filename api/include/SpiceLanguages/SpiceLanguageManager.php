@@ -28,6 +28,6 @@ class SpiceLanguageManager extends SpiceSingleton
      */
     public function getSystemDefaultLanguage(){
         $defaultLanguage = DBManagerFactory::getInstance()->fetchOne("SELECT language_code FROM syslangs WHERE is_default = 1");
-        return $defaultLanguage['language_code'] ?? 'en_ud';
+        return $defaultLanguage['language_code'] ?? 'en_us';
     }
 }
