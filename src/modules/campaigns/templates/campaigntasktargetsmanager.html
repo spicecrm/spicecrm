@@ -29,6 +29,7 @@
                             <option value="unchecked"><system-label label="LBL_UNCHECKED"></system-label></option>
                             <option value="checked"><system-label label="LBL_CHECKED"></system-label></option>
                             <option value="excluded"><system-label label="LBL_EXCLUDED"></system-label></option>
+                            <option value="included"><system-label label="LBL_INCLUDED"></system-label></option>
                         </select>
                     </div>
                 </div>
@@ -46,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <system-input-delayed class="slds-col" [(ngModel)]="searchTerm" system-placeholder="LBL_SEARCH" delay="500"></system-input-delayed>
+            <system-input-delayed class="slds-col" [(ngModel)]="searchTerm" placeholder="LBL_SEARCH" delay="500"></system-input-delayed>
         </div>
         <div class="slds-page-header__controls">
             <div class="slds-page-header__control">
@@ -77,8 +78,8 @@
             <tr *ngFor="let prospect of prospects" class="slds-hint-parent">
                 <td class="slds-text-align--center"><system-icon [module]="prospect.module" size="xx-small"></system-icon></td>
                 <td><campaigntask-target-manager-details [fieldset]="detailsFieldSets[prospect.module]" [module]="prospect.module" [data]="prospect.data"></campaigntask-target-manager-details></td>
-                <td>{{prospect.prospectListsDisplay}}</td>
-                <td class="slds-text-align--right">
+                <td [system-title]="prospect.prospectListsDisplay" class="slds-truncate">{{prospect.prospectListsDisplay}}</td>
+                <td [system-title]="prospect.status_date_changed" class="slds-text-align--right">
                     <ng-container *ngIf="prospect.status != 'included'; else includedActions">
                         <button (click)="setStatus('checked', prospect)" [disabled]="prospect.status == 'checked'" class="slds-button slds-button--icon">
                             <system-utility-icon class="slds-col" icon="success" size="xx-small" [colorclass]="prospect.status == 'checked' ? 'slds-icon-text-success' : 'slds-icon-text-light'"></system-utility-icon>
@@ -109,7 +110,7 @@
         <button (click)="excludeAll()" class="slds-button slds-button--neutral">
             <system-label label="LBL_EXCLUDE_ALL"></system-label>
         </button>
-        <pagination-controls [total_records]="totalCount" [limit]="limit" (pageChange)="getPageTargets($event)"></pagination-controls>
+        <pagination-controls [total_records]="totalCount" [limit]="limit" [page]="currentPage" (pageChange)="onPageChange($event)"></pagination-controls>
     </div>
 
 </div>
