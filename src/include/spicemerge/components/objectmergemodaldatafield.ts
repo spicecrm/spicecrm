@@ -19,6 +19,12 @@ export class ObjectMergeModalDataField implements OnInit {
     @Input() public fieldname: string = '';
 
     /**
+     * config of the field
+     * @private
+     */
+    @Input() public fieldConfig: {fieldtype?: string, key?: string};
+
+    /**
      * the data of the field
      * @private
      */
