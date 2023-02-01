@@ -508,25 +508,23 @@ class CampaignTask extends SpiceBean
 
     /**
      * returns an array of beans linked to the prospect lists
-     * take care as this instantiates beans for each record and thus ight take some time and ressources
-     * defaut limit is 100 records
+     * take care as this instantiates beans for each record and thus might take some time and resources
+     * default limit is 100 records
      *
      * @param int $start
      * @param int $limit
      * @return array
+     * @throws Exception
      */
-    public function getProspectBeans($start = 0, $limit = 100){
+    public function getProspectBeans(int $start = 0, int $limit = 100): array
+    {
         $beans = [];
-        $select_query = "SELECT plp.related_id id, max(plp.related_type) module ";
-        $select_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
-        $select_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
-        $select_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
-        $select_query .= "AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%' GROUP BY plp.related_id ";
 
-        $records = $this->db->limitQuery($select_query, $start, $limit);
-        while($record = $this->db->fetchByAssoc($records)){
-            $seed = BeanFactory::getBean($record['module'],$record['id']);
-            if($seed) $beans[] = $seed;
+        $targets = $this->getTargetsEntries($start, $limit);
+
+        foreach ($targets as $target) {
+            $seed = BeanFactory::getBean($target['related_type'], $target['related_id']);
+            if ($seed) $beans[] = $seed;
         }
 
         return $beans;
@@ -536,26 +534,16 @@ class CampaignTask extends SpiceBean
      * get targets entries
      * @param int $start
      * @param int $limit
-     * @return array
+     * @return array ['related_id' => string, 'related_type' => string, 'prospect_list_id' => string]
      * @throws Exception
      */
     public function getTargetsEntries(int $start = 0, int $limit = 1000000): array
     {
         $entries = [];
 
-        $exclusionListId = (string) self::getListIdByType($this->id, 'exclude');
+        $query = $this->buildTargetsEntriesQuery();
 
-        $select_query = "SELECT plp.related_id, plp.related_type, plp.prospect_list_id ";
-        $select_query .= "FROM prospect_lists pl INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id ";
-        $select_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id ";
-        $select_query .= "WHERE plc.campaigntask_id='$this->id' AND pl.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
-        $select_query .= "AND pl.list_type != 'test' AND pl.list_type != 'exclude' AND pl.list_type not like 'exempt%'";
-
-        if ($exclusionListId) {
-            $select_query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id = '$exclusionListId' AND plp.related_id = related_id AND deleted != 1)";
-        }
-
-        $records = $this->db->limitQuery($select_query, $start, $limit);
+        $records = $this->db->limitQuery($query, $start, $limit);
 
         while($entry = $this->db->fetchByAssoc($records)){
             if($entries[$entry['related_id']]) continue;
@@ -563,6 +551,29 @@ class CampaignTask extends SpiceBean
         }
 
         return $entries;
+    }
+
+    /**
+     * build targets entries query
+     * @param bool $countOnly
+     * @return string
+     * @throws Exception
+     */
+    private function buildTargetsEntriesQuery(bool $countOnly = false): string
+    {
+        $exclusionListId = (string) self::getListIdByType($this->id, 'exclude');
+
+        $query = 'SELECT ' . ($countOnly ? 'COUNT(distinct plp.related_id) ' : "plp.related_id, plp.related_type, plp.prospect_list_id ");
+        $query .= "FROM prospect_lists pl INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id ";
+        $query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id ";
+        $query .= "WHERE plc.campaigntask_id='$this->id' AND pl.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
+        $query .= "AND pl.list_type != 'test' AND pl.list_type != 'exclude' AND pl.list_type not like 'exempt%'";
+
+        if ($exclusionListId) {
+            $query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id = '$exclusionListId' AND plp.related_id = related_id AND deleted != 1)";
+        }
+
+        return $query;
     }
 
     /**
@@ -601,17 +612,15 @@ class CampaignTask extends SpiceBean
     }
 
     /**
-     * returns the expected number of targets
+     * get target count
+     * @return array|false
+     * @throws Exception
      */
-    public function getTargetCount(){
-        $count_query = "SELECT count(distinct plp.related_id) totalcount ";
-        $count_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id ";
-        $count_query .= "INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id ";
-        $count_query .= "WHERE plc.campaigntask_id='{$this->id}' AND prospect_lists.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
-        $count_query .= "AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%'";
-        $records = $this->db->fetchByAssoc($this->db->query($count_query));
+    public function getTargetCount()
+    {
+        $query = $this->buildTargetsEntriesQuery(true);
 
-        return $records ? $records['totalcount'] : 0;
+        return $this->db->getOne($query);
     }
 
     /**
