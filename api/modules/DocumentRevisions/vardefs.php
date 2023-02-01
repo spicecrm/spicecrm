@@ -137,7 +137,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
             'relationship' => 'document_revisions',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'latest_revision' => [
             'name' => 'latest_revision',
