@@ -1,13 +1,13 @@
-<div class="slds-text-heading--small slds-p-around--x-small slds-theme--shade"><system-label label="LBL_ITEM_DETAILS"></system-label></div>
-<div *ngIf="dictionarymanager.currentDictionaryRelationship; else SelectItem" class="slds-p-around--x-small" system-to-bottom>
+<div class="slds-text-heading--small slds-p-around--x-small slds-theme--shade slds-border--top"><system-label label="LBL_ITEM_DETAILS"></system-label></div>
+<div *ngIf="dictionarymanager.currentDictionaryRelationship; else SelectItem" class="slds-scrollable--y" style="height: calc(100% - 37px)">
     <ng-container [ngSwitch]="dictionaryRelationship.relationship_type">
-        <dictionary-manager-relationship-container-onetomany [relationship]="dictionaryRelationship" *ngSwitchCase="'one-to-many'"></dictionary-manager-relationship-container-onetomany>
-        <dictionary-manager-relationship-container-manytomany [relationship]="dictionaryRelationship" *ngSwitchCase="'many-to-many'"></dictionary-manager-relationship-container-manytomany>
+        <dictionary-manager-relationship-container-onetomany [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'one-to-many'"></dictionary-manager-relationship-container-onetomany>
+        <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'many-to-many'"></dictionary-manager-relationship-container-manytomany>
         <dictionary-manager-relationship-container-parent [relationship]="dictionaryRelationship" *ngSwitchCase="'parent'"></dictionary-manager-relationship-container-parent>
     </ng-container>
 </div>
 <ng-template #SelectItem>
-    <div class="slds-height_full slds-align--absolute-center">
+    <div class="slds-align--absolute-center" style="height: calc(100% - 37px)">
         <system-label label="LBL_SELECT_ITEM"></system-label>
     </div>
 </ng-template>

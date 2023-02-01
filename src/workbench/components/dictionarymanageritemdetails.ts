@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector, Input
+    Component, Injector, Input, OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -16,13 +16,64 @@ import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
     selector: 'dictionary-manager-item-details',
     templateUrl: '../templates/dictionarymanageritemdetails.html',
 })
-export class DictionaryManagerItemDetails {
+export class DictionaryManagerItemDetails implements OnInit{
 
+    /**
+     * reference to the modal itself
+     */
+    public self: any;
+
+    /**
+     * the item to be edited
+     */
     @Input() public dictionaryitem: DictionaryItem;
+
+    /**
+     * a JSON reprensetnation of the original item
+     * @private
+     */
+    private backup: string;
 
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language) {
 
     }
 
+    /**
+     * initialize and create a backup
+     */
+    public ngOnInit() {
+        // create a backup
+        this.backup = JSON.stringify(this.dictionaryitem);
+    }
 
+    /**
+     * save the values
+     */
+    public save(){
+        this.self.destroy();
+    }
+
+    /**
+     * returns if we detect changes
+     */
+    get canSave(){
+        let changed = false;
+        let backup = JSON.parse(this.backup);
+        Object.keys(backup).forEach(k => {
+            if(backup[k] != this.dictionaryitem[k]) {
+                changed = true;
+                return true;
+            }
+        })
+        return changed;
+    }
+
+    /**
+     * close the modal
+     */
+    public close(){
+        // set back the values from teh backup
+        this.dictionaryitem = JSON.parse(this.backup);
+        this.self.destroy();
+    }
 }

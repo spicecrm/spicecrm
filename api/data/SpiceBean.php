@@ -1233,7 +1233,7 @@ class SpiceBean
             if (empty($this->_tablename))
                 return;
             if ($this->db->tableExists($this->_tablename))
-                $this->db->dropTable($this);
+                $this->db->dropTableName($this->getTableName());
 
             if ($this->db->tableExists($this->get_audit_table_name())) {
                 $this->db->dropTableName($this->get_audit_table_name());

@@ -1,0 +1,68 @@
+<?php
+
+namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
+
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+
+class SpiceDictionaryItemsController
+{
+    /**
+     * posts a Dictionary Item
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function postDictionaryItem(Request $req, Response $res, array $args): Response
+    {
+        // get the body
+        $body = $req->getParsedBody();
+
+        SpiceDictionaryItems::getInstance()->addItem($body);
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * posts a Dictionary Item
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function deleteDictionaryItem(Request $req, Response $res, array $args): Response
+    {
+        return $res->withJson(['success' => (new SpiceDictionaryItem($args['id']))->delete()]);
+    }
+
+    /**
+     * activates a Dictionary Item
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function activateDictionaryItem(Request $req, Response $res, array $args): Response
+    {
+        return $res->withJson(['success' => (new SpiceDictionaryItem($args['id']))->activate()]);
+    }
+
+    /**
+     * deactivates a Dictionary Item
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function deactivateDictionaryItem(Request $req, Response $res, array $args): Response
+    {
+        return $res->withJson(['success' => (new SpiceDictionaryItem($args['id']))->deactivate()]);
+    }
+}

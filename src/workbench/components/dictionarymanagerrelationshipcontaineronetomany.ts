@@ -47,6 +47,11 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
      */
     @Input() public relationship: Relationship;
 
+    /**
+     * to set to readonly
+     */
+    @Input() public readonly: boolean = false;
+
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
     }
 

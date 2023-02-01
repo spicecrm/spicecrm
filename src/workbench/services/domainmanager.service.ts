@@ -6,6 +6,8 @@ import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
+import {modal} from '../../services/modal.service';
+import {toast} from '../../services/toast.service';
 
 @Injectable()
 export class domainmanager {
@@ -55,14 +57,14 @@ export class domainmanager {
     /**
      * the dbtypes
      */
-    public dbtypes = ['non-db','varchar', 'char', 'text', 'shorttext', 'mediumtext', 'longtext', 'date', 'datetime', 'int', 'tinyint', 'bigint', 'double', 'bool', 'float', 'json'];
+    public dbtypes = ['non-db','varchar', 'char', 'text', 'shorttext', 'mediumtext', 'longtext', 'date', 'datetime', 'int', 'tinyint', 'bigint', 'double', 'bool', 'float', 'json', 'enum'];
 
     /**
      * holds the fieldtypes
      */
     public fieldtypes: string[] = [];
 
-    constructor(public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities) {
+    constructor(public backend: backend, public metadata: metadata, public modal: modal, public toast: toast, public language: language, public modelutilities: modelutilities) {
         this.loadDomains();
 
         for (let filedtype in this.metadata.fieldTypeMappings) {
@@ -76,13 +78,20 @@ export class domainmanager {
      * load the domains
      */
     public loadDomains() {
-        this.backend.getRequest('dictionary/domains').subscribe(res => {
-            this.domaindefinitions = res.domaindefinitions;
-            this.domainfields = res.domainfields;
-            this.domainfieldvalidations = res.domainfieldvalidations;
-            this.domainfieldvalidationvalues = res.domainfieldvalidationvalues;
+        let awaitLoad = this.modal.await('LBL_LOADING');
+        this.backend.getRequest('dictionary/domains').subscribe({
+            next: (res) => {
+                this.domaindefinitions = res.domaindefinitions;
+                this.domainfields = res.domainfields;
+                this.domainfieldvalidations = res.domainfieldvalidations;
+                this.domainfieldvalidationvalues = res.domainfieldvalidationvalues;
 
-            this.loaded = JSON.stringify(res);
+                this.loaded = JSON.stringify(res);
+                awaitLoad.emit(true);
+            },
+            error: () => {
+                awaitLoad.emit(true);
+            }
         });
     }
 
@@ -143,7 +152,13 @@ export class domainmanager {
             changes.languagecustomtranslations = this.languagecustomtranslations;
         }
 
-        this.backend.postRequest('dictionary/domains', {}, changes).subscribe(res => {
+        this.backend.postRequest('dictionary/domains', {}, changes).subscribe({
+            next: () => {
+                this.toast.sendToast('LBL_SAVED', 'success');
+            },
+            error: () => {
+                this.toast.sendToast('ERROR saving domains', 'error');
+            }
 
         });
 

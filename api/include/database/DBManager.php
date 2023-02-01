@@ -223,6 +223,7 @@ abstract class DBManager
         'currency' => 'float',
         'decimal' => 'float',
         'decimal2' => 'float',
+        'enum' => 'enum'
     ];
 
     /**
@@ -1072,7 +1073,7 @@ abstract class DBManager
             if ($value['type'] == 'fulltext')
                 continue;
 
-            if (in_array($value['type'], ['alternate_key', 'foreign']))
+            if (in_array($value['type'], ['alternate_key']))
                 $value['type'] = 'index';
 
             if (!in_array($name, array_keys($compareIndices))) {
@@ -1424,23 +1425,12 @@ abstract class DBManager
     }
 
     /**
-     * Drops the table associated with a bean
-     *
-     * @param SpiceBean $bean SpiceBean instance
-     * @return bool query result
-     */
-    public function dropTable(SpiceBean $bean)
-    {
-        return $this->dropTableName($bean->getTableName());
-    }
-
-    /**
      * Drops the table by name
      *
      * @param string $name Table name
      * @return bool query result
      */
-    public function dropTableName($name)
+    public function dropTable($name)
     {
         $sql = $this->dropTableNameSQL($name);
         return $this->query($sql, true, "Error dropping table $name:");
@@ -2626,17 +2616,6 @@ abstract class DBManager
     /**
      * Generates SQL for dropping a table.
      *
-     * @param SpiceBean $bean Sugarbean instance
-     * @return string SQL statement
-     */
-    public function dropTableSQL(SpiceBean $bean)
-    {
-        return $this->dropTableNameSQL($bean->getTableName());
-    }
-
-    /**
-     * Generates SQL for dropping a table.
-     *
      * @param string $name table name
      * @return string SQL statement
      */
@@ -3440,7 +3419,7 @@ abstract class DBManager
             return "Failed to create temp table!";
         }
 
-        $this->dropTableName($tempname);
+        $this->dropTable($tempname);
         return '';
     }
 
@@ -3747,6 +3726,15 @@ abstract class DBManager
      * @return array
      */
     abstract public function get_columns($tablename);
+
+    /**
+     * drops columns from a table
+     *
+     * @param $tablename
+     * @param array $columns
+     * @return mixed
+     */
+    abstract public function delete_columns($tablename, array $columns = []);
 
     /**
      * Returns columns list for passed table.

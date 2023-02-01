@@ -24,9 +24,15 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
      * allows this to be disabled
      * useful when the status shoudl be displayed but we do not want it ot be changeable since it is a referenced item
      *
-     * @private
      */
-    @Input() public disabled: boolean = false;
+    public _disabled: boolean = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
 
     /**
      * internal variable if checked
@@ -83,7 +89,7 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
      * @private
      */
     public toggleValue($e: MouseEvent) {
-        if(!this.disabled) {
+        if(!this._disabled) {
             $e.stopPropagation();
             this.status === 'a' ? this.status = 'i' : this.status = 'a';
             this.onChange(this.status);

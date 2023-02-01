@@ -40,6 +40,34 @@ export class DictionaryManagerRelationships {
     }
 
     /**
+     * gets all non deleted entries sorted by name
+     */
+    get dictionaryRelationshipsForTemplates(): any[] {
+        let relatedRelationships: any[] = [];
+
+        for(let item of this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionary_ref_id && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)){
+            let relRelationships = this.dictionarymanager.dictionaryrelationships.filter(d => d.deleted == 0 && (d.lhs_sysdictionarydefinition_id == item.sysdictionary_ref_id || d.rhs_sysdictionarydefinition_id == item.sysdictionary_ref_id));
+            if(relRelationships.length > 0) {
+                relatedRelationships.push({
+                    relatedTemplateId: item.sysdictionary_ref_id,
+                    relationships: relRelationships
+                });
+            }
+        }
+
+        return relatedRelationships;
+    }
+
+
+    /**
+     * translates the template name
+     * @param indexname
+     */
+    public translateRelationshipName(indexname: string){
+        return indexname.replace('{tablename}', this.dictionarymanager.getCurrentDefinition().tablename);
+    }
+
+    /**
      * react to the click to add a new dictionary definition
      */
     public addDictionaryRelationship(event: MouseEvent) {

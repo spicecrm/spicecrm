@@ -24,6 +24,11 @@ export class DomainManagerFieldValidation implements OnChanges {
      */
     @Input() public field: any = {};
 
+    /**
+     * define which fields are displayed
+     */
+    public view: 'core'|'extended' = "core";
+
     constructor(public domainmanager: domainmanager, public language: language, public modelutilities: modelutilities, public modal: modal, public injector: Injector) {
 
     }
@@ -38,6 +43,22 @@ export class DomainManagerFieldValidation implements OnChanges {
 
     get validationvalues() {
         return this.domainmanager.getValidationValuesdById(this.field.sysdomainfieldvalidation_id).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+    }
+
+    /**
+     * sitches the view
+     */
+    public switchView(e: MouseEvent){
+        e.preventDefault();
+        e.stopPropagation();
+        switch (this.view){
+            case 'core':
+                this.view = 'extended';
+                break;
+            case 'extended':
+                this.view = 'core';
+                break;
+        }
     }
 
     /**

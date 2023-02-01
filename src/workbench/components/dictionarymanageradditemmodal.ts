@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
+import {backend} from '../../services/backend.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
 
@@ -53,14 +54,13 @@ export class DictionaryManagerAddItemModal{
      */
     public currentType: string;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public modelutilities: modelutilities) {
 
         this.dictionaryitem = {
             id: this.modelutilities.generateGuid(),
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
             name: '',
             non_db: 0,
-            duplicate_merge: 1,
             exclude_from_audited: 0,
             default_value: '',
             required: 0,
@@ -93,8 +93,8 @@ export class DictionaryManagerAddItemModal{
         // sort the domain name alphabetically
         this.templates.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
 
-        // set the scope by default
-        this.dictionaryitem.scope = this.dictionarymanager.changescope == 'all' ? 'g' : 'c';
+        // if scope is not all reset to custom in any case
+        if(this.dictionaryitem.scope == 'g' && this.dictionarymanager.changescope != 'all') this.dictionaryitem.scope = 'c';
 
         // get the current type
         this.currentType = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).sysdictionary_type;
@@ -171,8 +171,13 @@ export class DictionaryManagerAddItemModal{
 
             this.dictionaryitem.id = this.modelutilities.generateGuid();
             this.dictionaryitem.sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-            this.dictionarymanager.dictionaryitems.push(this.dictionaryitem);
-            this.close();
+
+            this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, this.dictionaryitem).subscribe({
+                next: (res) => {
+                    this.dictionarymanager.dictionaryitems.push(this.dictionaryitem);
+                    this.close();
+                }
+            })
         }
     }
 

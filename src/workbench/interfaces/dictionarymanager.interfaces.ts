@@ -24,6 +24,13 @@ export interface DictionaryDefinition {
     package?: string;
 }
 
+export interface DictionaryDatabaseField{
+    name: string,
+    len: string,
+    type: string,
+    comment: string
+}
+
 /**
  * the dictionaryItems
  */
@@ -39,7 +46,6 @@ export interface DictionaryItem {
     label?: string;
     labelinputhelper?: string;
     non_db?: number;
-    duplicate_merge?: number;
     exclude_from_audited?: number;
     required?: number;
     default_value?: string;
@@ -47,6 +53,11 @@ export interface DictionaryItem {
     deleted: number;
     version?: string;
     package?: string;
+    defined?:boolean;
+    cached?:boolean;
+    database?:boolean;
+
+    selected?: boolean;
 }
 
 /**
@@ -62,12 +73,11 @@ export interface Relationship {
     lhs_sysdictionaryitem_id: string;
     lhs_linkname: string;
     lhs_linklabel: string;
-    lhs_duplicatemerge?: number;
+    lhs_duplicatemerge: number;
     rhs_sysdictionarydefinition_id: string;
     rhs_sysdictionaryitem_id: string;
     rhs_linkname: string;
     rhs_linklabel: string;
-    rhs_duplicatemerge?: number;
     rhs_relatename: string;
     rhs_relatelabel: string;
     relationship_type: 'one-to-many'|'many-to-many'|'parent';
@@ -76,6 +86,7 @@ export interface Relationship {
     join_rhs_sysdictionaryitem_id?: string;
     relationship_role_column?: string;
     relationship_role_column_value?: string;
+    rhs_duplicatemerge: number;
     deleted: number;
     version?: string;
     package?: string;
@@ -116,7 +127,7 @@ export interface DictionaryIndex {
     scope: 'c'|'g';
     status: 'd'|'a'|'i';
     sysdictionarydefinition_id: string;
-    indextype: 'primary'|'index'|'unique';
+    indextype: 'primary'|'index'|'unique'|'foreign';
     description?: string;
     deleted: number;
     version?: string;
@@ -132,6 +143,8 @@ export interface DictionaryIndexItem {
     status: 'd'|'a'|'i';
     sysdictionaryindex_id: string;
     sysdictionaryitem_id: string;
+    sysdictionaryforeigndefinition_id?: string;
+    sysdictionaryforeignitem_id?: string;
     sequence: number;
     deleted: number;
     version?: string;

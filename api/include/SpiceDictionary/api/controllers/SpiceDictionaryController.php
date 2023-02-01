@@ -30,11 +30,16 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\Loaders\SpiceUIWordsLoader;
@@ -62,7 +67,7 @@ class SpiceDictionaryController
     {
         $handler = SpiceDictionaryHandler::getInstance();
         $results = [
-            'domaindefinitions' => $handler->getDomainDefinitions(),
+            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
             'domainfields' => $handler->getDomainFields(),
             'domainfieldvalidations' => $handler->getDomainFieldValidations(),
             'domainfieldvalidationvalues' => $handler->getDomainFieldValidationValues()
@@ -106,7 +111,7 @@ class SpiceDictionaryController
         }
 
         $results = [
-            'domaindefinitions' => $handler->getDomainDefinitions(),
+            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
             'domainfields' => $handler->getDomainFields(),
             'domainfieldvalidations' => $handler->getDomainFieldValidations(),
             'domainfieldvalidationvalues' => $handler->getDomainFieldValidationValues()
@@ -123,16 +128,16 @@ class SpiceDictionaryController
     {
         $handler =  SpiceDictionaryHandler::getInstance();
         $results = [
-            'domaindefinitions' => $handler->getDomainDefinitions(),
+            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
             'domainfields' => $handler->getDomainFields(),
             'dictionarydefinitions' => $handler->getDictionaryDefinitions(),
             'dictionaryitems' => $handler->getDictionaryItems(),
             'dictionaryrelationships' => $handler->getDictionaryRelationships(),
             'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
-            'dictionaryindexes' => $handler->getDictionaryIndexes(),
-            'dictionaryindexitems' => $handler->getDictionaryIndexItems(),
-            'settings' => ['migration_enabled' => SpiceConfig::getInstance()->get('systemvardefs.migration_enabled') == 1]
+            'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes(null, []),
+            'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexItems(),
+            'settings' => ['migration_enabled' => SpiceConfig::getInstance()->get('systemvardefs.migration_enabled') == 1, ]
         ];
         return $res->withJson($results);
     }
@@ -148,13 +153,6 @@ class SpiceDictionaryController
      */
     public function postDefinitions(Request $req, Response $res, array $args): Response
     {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-
-//        // check that we are an admin
-//        if(!$current_user->is_admin){
-//            throw new UnauthorizedException('Admin Access Only');
-//        }
-
         $handler =  SpiceDictionaryHandler::getInstance();
 
         // get the body
@@ -165,19 +163,19 @@ class SpiceDictionaryController
         $handler->setDictionaryRelationships($body['dictionaryrelationships']);
         $handler->setDictionaryRelationshipFields($body['dictionaryrelationshipfields']);
         $handler->setDictionaryRelateFields($body['dictionaryrelationshiprelatefields']);
-        $handler->setDictionaryIndexes($body['dictionaryindexes']);
-        $handler->setDictionaryIndexItems($body['dictionaryindexitems']);
+        SpiceDictionaryIndexes::getInstance()->setDictionaryIndexes($body['dictionaryindexes']);
+        SpiceDictionaryIndexes::getInstance()->setDictionaryIndexItems($body['dictionaryindexitems']);
 
         $results = [
-            'domaindefinitions' => $handler->getDomainDefinitions(),
+            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
             'domainfields' => $handler->getDomainFields(),
             'dictionarydefinitions' => $handler->getDictionaryDefinitions(),
             'dictionaryitems' => $handler->getDictionaryItems(),
             'dictionaryrelationships' => $handler->getDictionaryRelationships(),
             'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
-            'dictionaryindexes' => $handler->getDictionaryIndexes(),
-            'dictionaryindexitems' => $handler->getDictionaryIndexItems()
+            'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes(),
+            'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexItems()
         ];
         return $res->withJson($results);
     }
@@ -319,6 +317,36 @@ class SpiceDictionaryController
         return $res->withJson(SpiceDictionaryVardefs::loadVardefs([$args['dictionaryname']]));
     }
 
+    /**
+     * get all columns from the module-table in the database
+     * allowed as admin
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getDBColumns(Request $req, Response $res, array $args): Response {
+        return $res->withJson(array_values(DBManagerFactory::getInstance()->get_columns($args['dictionaryname'])));
+    }
+
+    /**
+     * deletes DB Columns
+     * allowed as admin
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function deleteDBColumns(Request $req, Response $res, array $args): Response {
+        $params = $req->getQueryParams();
+        $fields = json_decode($params['fields'], true);
+        if(!is_array($fields) || count($fields) == 0){
+            throw new BadRequestException('no fields supplied');
+        }
+        return $res->withJson(['success' => DBManagerFactory::getInstance()->delete_columns($args['dictionaryname'], $fields)]);
+    }
 
 
 }

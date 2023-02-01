@@ -35,8 +35,11 @@ import {DictionaryManagerRelationshipAddParent} from "./components/dictionaryman
 import {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
 import {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
 import {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
+import {DictionaryManagerIndexAddType} from "./components/dictionarymanagerindexaddtype";
 import {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
 import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
+import {DictionaryManagerDeleteFieldsModal} from "./components/dictionarymanagerdeletefieldsmodal";
+import {DictionaryManagerDeleteModal} from "./components/dictionarymanagerdeletemodal";
 
 
 import {DomainManager} from "./components/domainmanager";
@@ -194,8 +197,11 @@ import {GitStatusOfRepository} from "./components/gitstatusofrepository";
         DictionaryManagerRelationshipContainerParent,
         DictionaryManagerIndexes,
         DictionaryManagerIndexAdd,
+        DictionaryManagerIndexAddType,
         DictionaryManagerIndexDetails,
         DictionaryManagerFields,
+        DictionaryManagerDeleteFieldsModal,
+        DictionaryManagerDeleteModal,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,

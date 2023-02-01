@@ -8,6 +8,7 @@ import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
 import {
+    DictionaryDatabaseField,
     DictionaryDefinition,
     DictionaryIndex,
     DictionaryIndexItem,
@@ -19,6 +20,7 @@ import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfa
 import {configurationService} from "../../services/configuration.service";
 import {toast} from "../../services/toast.service";
 import {navigation} from "../../services/navigation.service";
+import {Observable, Subject} from "rxjs";
 
 @Injectable()
 export class dictionarymanager implements OnDestroy {
@@ -68,6 +70,16 @@ export class dictionarymanager implements OnDestroy {
     public dictionaryitems: DictionaryItem[] = [];
 
     /**
+     * the dictionary items
+     */
+    public dictionaryfields: any[] = [];
+
+    /**
+     * the loaded list of dictionaryDefinitions
+     */
+    public dictionarydatabasefields: DictionaryDatabaseField[] = [];
+
+    /**
      * the dictionary relationships
      */
     public dictionaryrelationships: Relationship[] = [];
@@ -96,11 +108,6 @@ export class dictionarymanager implements OnDestroy {
      * the currently selected dictionary element
      */
     public currentDictionaryDefinition: string;
-
-    /**
-     * the currently selected dictionary scope  element
-     */
-    public currentDictionaryScope: 'c' | 'g';
 
     /**
      * the currently selected dictionary item
@@ -136,6 +143,7 @@ export class dictionarymanager implements OnDestroy {
                 public modal: modal,
                 public configurationService: configurationService) {
         this.loadDictionaryDefinitions();
+        this.loadDictionaryFields();
         this.loadWords();
 
         this.navigation.addModelEditing('dictmgr', 'Administration', this, 'dictionary manager');
@@ -179,6 +187,45 @@ export class dictionarymanager implements OnDestroy {
     }
 
     /**
+     * the currently selected dictionary definition scope
+     */
+    get currentDictionaryScope(): 'c'|'g'{
+        return this.currentDictionaryDefinition ? this.dictionarydefinitions.find(i => i.id == this.currentDictionaryDefinition).scope : 'g';
+    }
+
+    /**
+     * renders a modal that prompts confimration and enables dropping of the item
+     *
+     * @param messge
+     */
+    public promptDelete(messge:string): Observable<string>{
+        let retSubject = new Subject<string>();
+        this.modal.openModal('DictionaryManagerDeleteModal').subscribe({
+            next: (componentRef) => {
+                componentRef.instance.message = messge;
+                componentRef.instance.responseSubject = retSubject;
+            }
+        })
+        return retSubject.asObservable();
+    }
+
+    /**
+     * returns true if the current definition is a template
+     */
+    public currentIsTemplate(){
+        return  this.currentDictionaryDefinition && this.dictionarydefinitions.find(d => d.id == this.currentDictionaryDefinition)?.sysdictionary_type == 'template';
+    }
+
+    /**
+     * returns the current definition object
+     */
+    public getCurrentDefinition(){
+        if(!this.currentDictionaryDefinition)  return null;
+
+        return this.dictionarydefinitions.find(d => d.id == this.currentDictionaryDefinition);
+    }
+
+    /**
      * load the domains
      */
     public loadDictionaryDefinitions() {
@@ -208,6 +255,31 @@ export class dictionarymanager implements OnDestroy {
     }
 
     /**
+     * load the fields
+     */
+    public loadDictionaryFields() {
+        this.backend.getRequest('dictionary/fields').subscribe({
+            next: (fields) => {
+                this.dictionaryfields = fields
+            }
+        });
+    }
+
+    /**
+     * load the fields sotred in the database
+     */
+    public loadDatabaseFields(dictionaryname) {
+        this.dictionarydatabasefields = [];
+        // check if we have a template
+        if(this.currentIsTemplate()) return;
+        this.backend.getRequest(`dictionary/columns/${dictionaryname}`).subscribe({
+            next: (fields) => {
+                this.dictionarydatabasefields = fields
+            }
+        });
+    }
+
+    /**
      * returns the reserved words for all database types
      */
     public loadWords() {
@@ -229,13 +301,14 @@ export class dictionarymanager implements OnDestroy {
      * @param scope
      */
     public canChange(scope: string) {
+        return true;
 
         // if we have all ... we can change
         if (this.changescope == 'all') return true;
 
         // if we have custom we can only change custom
         if (this.changescope == 'custom' && scope == 'c') {
-            this.currentDictionaryScope = 'c';
+            // this.currentDictionaryScope = 'c';
             return true;
         }
 
@@ -306,7 +379,7 @@ export class dictionarymanager implements OnDestroy {
     public getDictionaryDefinitionItems(refid) {
         let itemsArray: any[] = [];
 
-        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
             if (item.sysdictionary_ref_id && item.sysdictionary_ref_id != refid) {
                 itemsArray = itemsArray.concat(this.getDictionaryDefinitionItems(item.sysdictionary_ref_id));
             } else if (!item.sysdictionary_ref_id) {
@@ -360,18 +433,25 @@ export class dictionarymanager implements OnDestroy {
 
     }
 
-
     /**
      *
      * @param definition
      */
-    public repairDictionary(definition) {
-        let body = {dictionaries: [definition.name]};
-        this.backend.postRequest('admin/repair/dictionary', {}, body).subscribe(result => {
-            if (result.success) {
-                this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success');
-            } else {
-                this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error');
+    public repairDictionary(definitionid) {
+        let awaitModal =  this.modal.await('LBL_REPAIRING');
+        let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
+        this.backend.postRequest('admin/repair/dictionary', {}, {dictionaries: [definition.name]}).subscribe({
+            next: (result) => {
+                if (result.success) {
+                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success', result.sql, !result.sql);
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
+                }
+                awaitModal.emit(true);
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERROR repairing dictonaray'), 'error');
+                awaitModal.emit(true);
             }
         });
     }
