@@ -110,7 +110,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'dbType' => 'id',
                 'reportable' => false,
                 'source' => 'non-db',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
                 'hideacl' => true,
             ],
             'opportunity_role_fields' => [
@@ -124,7 +124,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'join_link_name' => 'opportunities_contacts',
                 'source' => 'non-db',
                 'importable' => 'false',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
             'opportunity_role_id' => [
                 'name' => 'opportunity_role_id',
@@ -228,7 +228,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'link_type' => 'one',
                 'source' => 'non-db',
                 'vname' => 'LBL_ACCOUNT',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
                 'module' => 'Accounts'
             ],
             'reports_to_link' => [
@@ -416,7 +416,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'rname' => 'user_name',
                 'id_name' => 'assigned_user_id',
                 'table' => 'users',
-                'duplicate_merge' => 'enabled'
+                'duplicate_merge' => true
             ],
             'campaign_id' => [
                 'name' => 'campaign_id',
@@ -428,7 +428,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'table' => 'campaigns',
                 'isnull' => 'true',
                 'module' => 'Campaigns',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
             'campaign_name' => [
                 'name' => 'campaign_name',
@@ -442,7 +442,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'table' => 'campaigns',
                 'id_name' => 'campaign_id',
                 'module' => 'Campaigns',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
                 'comment' => 'The first campaign name for Contact (Meta-data only)',
             ],
             'campaigns' => [
@@ -471,7 +471,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'link_type' => 'relationship_info',
                 'source' => 'non-db',
                 'importable' => 'false',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
             'm_accept_status_fields' => [
                 'name' => 'm_accept_status_fields',
@@ -484,7 +484,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'source' => 'non-db',
                 'importable' => 'false',
                 'hideacl' => true,
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
             'accept_status_id' => [
                 'name' => 'accept_status_id',
@@ -604,7 +604,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'bean_name' => 'Contact',
                 'source' => 'non-db',
                 'vname' => 'LBL_ENVIRONMENT_CONTACTS',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
                 'link_type' => 'one',
                 'rel_fields' =>
                     [
@@ -898,7 +898,7 @@ if (file_exists("extensions/modules/ContactCCDetails")) {
         'relationship' => 'contacts_contactccdetails',
         'link_type' => 'one',
         'source' => 'non-db',
-        'duplicate_merge' => 'disabled',
+        'duplicate_merge' => false,
         'default' => true, //UI: load related beans on contact load. module property required!
         'module' => 'ContactCCDetails'
     ];

@@ -109,7 +109,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
                 'dbType' => 'id',
                 'reportable' => true,
                 'comment' => 'User who last modified record',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
                 'audited' => false
             ],
         'modified_by_name' =>  [
@@ -123,7 +123,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'id_name' => 'modified_user_id',
             'module' => 'Users',
             'link' => 'modified_user_link',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'created_by' =>            [
@@ -136,7 +136,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'isnull' => 'false',
             'dbType' => 'id',
             'comment' => 'User who created record',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'audited' => false
         ],
         'created_by_name' =>            [
@@ -151,7 +151,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'id_name' => 'created_by',
             'module' => 'Users',
             'importable' => 'false',
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => false
         ],
         'deleted' => [
             'name' => 'deleted',
@@ -183,7 +183,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
                 'bean_name' => 'User',
                 'source' => 'non-db',
                 'recover' => false,
-                'duplicate_merge' => 'disabled'
+                'duplicate_merge' => false
             ],
         'modified_user_link' =>
             [
@@ -196,7 +196,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
                 'bean_name' => 'User',
                 'source' => 'non-db',
                 'recover' => false,
-                'duplicate_merge' => 'disabled'
+                'duplicate_merge' => false
             ],
 
     ],
