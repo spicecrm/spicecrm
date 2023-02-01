@@ -2457,17 +2457,15 @@ class SpiceBean
             foreach ($linked_fields as $name => $properties) {
                 if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link' || $properties['name'] == 'assigned_user_link')
                     continue;
-
+                
                 if (isset($properties['duplicate_merge'])) {
                     if ($properties['duplicate_merge'] == 'disabled' or
                         $properties['duplicate_merge'] == 'false' or
-                        $properties['duplicate_merge'] === false
-
-                    ) {
+                        $properties['duplicate_merge'] === '0' or
+                        $properties['duplicate_merge'] === false) {
                         continue;
                     }
                 }
-
 
                 if ($tmpBean->load_relationship($name)) {
                     //check to see if loaded relationship is with email address
