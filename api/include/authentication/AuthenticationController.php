@@ -339,12 +339,15 @@ class AuthenticationController
 
         $this->setCurrentUser($userObj);
 
+        global $current_language;
+        $current_language = $userObj->getPreference('language');
+
         if (!empty($authResponse->tenantId)) {
             $userObj->reloadPreferences();
         }
 
         if (LDAPAuthenticate::isLdapEnabled()) {
-            $userObj->call_custom_logic('after_ldap_login', $this);
+            $userObj->call_custom_logic('after_ldap_login', $authResponse);
         }
 
         // if there was no session started create a new one
@@ -399,7 +402,7 @@ class AuthenticationController
      */
     private function checkPasswordExpire(User $userObj)
     {
-        if (( $userObj->system_generated_password or $userObj->hasExpiredPassword() ) and !$userObj->is_api_user ) {
+        if (( $userObj->system_generated_password || $userObj->hasExpiredPassword() ) && !$userObj->is_api_user && !$userObj->external_auth_only) {
             $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
                 'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
                 'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
@@ -480,7 +483,14 @@ class AuthenticationController
         $db = DBManagerFactory::getInstance('master');
         $query = $db->query("SELECT s.*, c.config config FROM authentication_services s INNER JOIN sysauthconfig c ON s.issuer = c.issuer ORDER BY sequence");
 
-        while ($service = $db->fetchByAssoc($query)) $services[] = $service;
+        while ($service = $db->fetchByAssoc($query)) {
+            if (!empty($service['config'])) {
+                $service['config'] = json_decode($service['config']);
+                unset($service['config']->client_secret);
+                $service['config'] = json_encode($service['config']);
+            }
+            $services[] = $service;
+        }
 
         return $services;
     }

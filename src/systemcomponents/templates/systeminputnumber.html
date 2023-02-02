@@ -6,5 +6,5 @@
 <ng-template *ngIf="onlyField" [ngTemplateOutlet]="field"></ng-template>
 
 <ng-template #field>
-    <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="textValue" (change)="fieldChanged($event)" [attr.placeholder]="placeholder" [disabled]="disabled" [attr.size]="size" [ngStyle]="{'width':size?'auto':undefined}"/>
+    <input #numberinput class="slds-input slds-text-align--right" type="text" [(ngModel)]="textValue" (keydown)="checkInput($event)" (ngModelChange)="fieldChanged($event)"  [attr.placeholder]="placeholder" [disabled]="disabled" [attr.size]="size" [ngStyle]="{'width':size?'auto':undefined}"/>
 </ng-template>

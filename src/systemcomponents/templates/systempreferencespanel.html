@@ -87,12 +87,12 @@
             </system-preferences-panel-item>
 
             <system-preferences-panel-item class="slds-size--1-of-5" itemlabel="LBL_DECIMAL_DIGITS">
-                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('default_currency_significant_digits')">
-                    {{ getPrefValue('default_currency_significant_digits') }}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('currency_significant_digits')">
+                    {{ getPrefValue('currency_significant_digits') }}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.default_currency_significant_digits" (ngModelChange)="prefChanged()">
+                        <select class="slds-select" [(ngModel)]="preferences.currency_significant_digits" (ngModelChange)="prefChanged()">
                             <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of currencySignificantDigitsList" [value]="item">
                                 {{ item }}
@@ -161,12 +161,12 @@
             </system-preferences-panel-item>
 
             <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_EXPORT_CHARSET">
-                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('default_export_charset')">
-                    {{ getPrefValue('default_export_charset') }}
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('export_charset')">
+                    {{ getPrefValue('export_charset') }}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.default_export_charset" (ngModelChange)="prefChanged()">
+                        <select class="slds-select" [(ngModel)]="preferences.export_charset" (ngModelChange)="prefChanged()">
                             <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of charsetList" [value]="item">
                                 {{ item}}
@@ -183,12 +183,12 @@
         <div class="slds-grid slds-grid--align-spread">
 
             <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_NAME_FORMAT">
-                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('default_locale_name_format')">
+                <system-preferences-panel-item-display [global]="prefValueIsGlobalFallback('locale_name_format')">
                     {{display_name}}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.default_locale_name_format" (ngModelChange)="prefChanged();setDisplay_name()">
+                        <select class="slds-select" [(ngModel)]="preferences.locale_name_format" (ngModelChange)="prefChanged();setDisplay_name()">
                             <option *ngIf="isPersonalContext"></option>
                             <option *ngFor="let item of nameFormats" [value]="item.name">{{item.example}}</option>
                         </select>
