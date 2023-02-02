@@ -173,7 +173,7 @@ class SpiceCacheFile extends SpiceCacheAbstract
      */
     protected function _resetExternal()
     {
-        $pattern = $this->_cacheDirectory . 'spicecrmcache_' . $this->_keyPrefix . '*';
+        $pattern = $this->_cacheDirectory . DIRECTORY_SEPARATOR . 'spicecrmcache_*';
         $cacheFiles = glob($pattern);
         foreach($cacheFiles as $cacheFile){
             unlink($cacheFile);
