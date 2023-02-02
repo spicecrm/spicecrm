@@ -152,7 +152,7 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
      */
     public addMasterSystem(element: HTMLElement) {
 
-        this.model.addModel('', null, {systemdeploymentlandscape_id: this.landscapeModel.id}).subscribe(data => {
+        this.model.addModel('', null, {systemdeploymentlandscape_id: this.landscapeModel.id, this_system: 1}).subscribe(data => {
 
             if (!data) return;
 
