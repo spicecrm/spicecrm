@@ -40,6 +40,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\Loaders\SpiceUIWordsLoader;
@@ -132,7 +133,8 @@ class SpiceDictionaryController
             'domainfields' => $handler->getDomainFields(),
             'dictionarydefinitions' => $handler->getDictionaryDefinitions(),
             'dictionaryitems' => $handler->getDictionaryItems(),
-            'dictionaryrelationships' => $handler->getDictionaryRelationships(),
+            'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
+            'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->getRelationships(null, []),
             'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
             'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes(null, []),
@@ -171,7 +173,8 @@ class SpiceDictionaryController
             'domainfields' => $handler->getDomainFields(),
             'dictionarydefinitions' => $handler->getDictionaryDefinitions(),
             'dictionaryitems' => $handler->getDictionaryItems(),
-            'dictionaryrelationships' => $handler->getDictionaryRelationships(),
+            'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
+            'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->relationships,
             'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
             'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes(),
@@ -293,7 +296,8 @@ class SpiceDictionaryController
                     'fieldtype' => $definitionField['fieldtype'],
                     'fieldname' => $definitionField['fieldname'],
                     'fielddefinition' => json_decode(html_entity_decode($definitionField['fielddefinition'], true)),
-                    'sysdomainfield_id' => $definitionField['sysdomainfield_id']
+                    'sysdomainfield_id' => $definitionField['sysdomainfield_id'],
+                    'sysdictionaryrelationship_id' => $definitionField['sysdictionaryrelationship_id'],
                 ];
             }
 

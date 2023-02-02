@@ -10,7 +10,7 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
-import {Relationship, RelationshipRelateField} from "../interfaces/dictionarymanager.interfaces";
+import {DictionaryDefinition, Relationship, RelationshipRelateField} from "../interfaces/dictionarymanager.interfaces";
 
 /**
  * renders a modal to add a one to many relationship
@@ -52,6 +52,8 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
      */
     @Input() public readonly: boolean = false;
 
+    public relatedIds: DictionaryDefinition[] = [];
+
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
     }
 
@@ -64,6 +66,7 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
 
         // load the relationship relate fields
         this.loadRelationshipFields();
+
     }
 
     /**

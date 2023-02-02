@@ -45,6 +45,7 @@ class SpiceDictionaryDomainField
     public function getDefinition(SpiceDictionaryItem $sysdictionaryItem = null){
         $definiton = new stdClass();
         $definiton->sysdictionarydomainfield_id = $this->id;
+        $definiton->sysdictionaryitem_id = $sysdictionaryItem->id;
         $definiton->name = $sysdictionaryItem ? str_replace("{sysdictionaryitems.name}", $sysdictionaryItem->name, $this->domainField->name) : $this->domainField->name;
         $definiton->type = $this->domainField->fieldtype;
         $definiton->sysdomaindefinition_id = $this->domainField->sysdomaindefinition_id;

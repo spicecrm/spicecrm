@@ -8,9 +8,10 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {backend} from '../../services/backend.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
-import {Relationship} from "../interfaces/dictionarymanager.interfaces";
+import {DictionaryDefinition, Relationship, RelationshipType} from "../interfaces/dictionarymanager.interfaces";
 
 /**
  * renders a modal to add a one to many relationship
@@ -27,6 +28,9 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      */
     public self: any;
 
+
+    public type: RelationshipType = null;
+
     /**
      * the relationship
      *
@@ -34,7 +38,10 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      */
     public relationship: Relationship;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+
+    public relatedId: string;
+
+    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
         this.relationship = {
             id: this.modelutilities.generateGuid(),
             name: '',
@@ -63,8 +70,20 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      */
     public ngOnInit() {
 
-        // set defaults
+    }
+
+
+    get relatedIds(): DictionaryDefinition[] {
+        return this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module' && d.deleted == 0).sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+
+    public setRelated(){
         this.setDefaults();
+    }
+
+    get hasRelated(){
+       return !!this.relationship.lhs_sysdictionarydefinition_id;
     }
 
     /**
@@ -72,6 +91,9 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      * @private
      */
     public setDefaults() {
+        this.relationship.lhs_sysdictionarydefinition_id = this.relatedId;
+        this.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
+
         // build default name and relationship name
         this.relationship.relationship_name = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase() + '_' + this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename.toLowerCase();
         this.relationship.name = this.relationship.relationship_name;
@@ -102,7 +124,12 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      * @private
      */
     public add() {
-        this.dictionarymanager.dictionaryrelationships.push({...this.relationship});
-        this.close();
+        this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, this.relationship).subscribe({
+            next: (res) => {
+                this.dictionarymanager.dictionaryrelationships.push({...this.relationship});
+                this.close();
+            }
+        })
+
     }
 }

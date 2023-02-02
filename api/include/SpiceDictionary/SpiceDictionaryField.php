@@ -4,9 +4,29 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 
 class SpiceDictionaryField
 {
+
+    /**
+     * returns one field by itemid and definitionid
+     *
+     * @param SpiceDictionaryItem $dictionaryItem
+     * @param SpiceDictionaryDefinition $dictionaryDefinition
+     * @return array|false
+     * @throws \Exception
+     */
+    static function getField(SpiceDictionaryItem $dictionaryItem, SpiceDictionaryDefinition $dictionaryDefinition){
+        $field = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryfields WHERE sysdictionarydefinition_id='{$dictionaryDefinition->id}' AND sysdictionaryitem_id='{$dictionaryItem->id}'");
+
+        if(!$field){
+            throw new Exception('dictionary field not found');
+        }
+
+        return (object) $field;
+    }
+
     static function getFieldDefsForDomain(SpiceDictionaryItem $dictionaryItem, SpiceDictionaryDefinition $dictionaryDefinition, string $sysdomaindefinition_id){
         $alldefinitons = [];
         $db = DBManagerFactory::getInstance();
