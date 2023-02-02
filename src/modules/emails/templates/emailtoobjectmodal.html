@@ -8,7 +8,8 @@
         </div>
         <div class="slds-modal__content" >
             <div class="slds-grid" style="height: 80vh;">
-                <div class="slds-size--1-of-2 slds-p-around--small" style="height: 100%;">
+                <div system-view-provider [system-model-provider]="{module: 'Emails', id: email_model.id, data: email_model.data}" class="slds-size--1-of-2 slds-p-around--small" style="height: 100%;">
+                    <object-record-fieldset *ngIf="!!componentconfig?.emailFieldset" [fieldset]="componentconfig.emailFieldset"></object-record-fieldset>
                     <email-to-object-emailtext [target_module_name]="object_module_name" [text]="email_model.data.body" [html]="email_model.data.body" [target_module_fields]="object_fields" (setfield)="setField($event)"></email-to-object-emailtext>
                 </div>
                 <div class="slds-size--1-of-2 slds-scrollable" style="height: 100%;">

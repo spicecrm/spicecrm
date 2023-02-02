@@ -1,11 +1,15 @@
 /**
  * @module ModuleTelephony
  */
-import {Component, OnDestroy} from '@angular/core';
+import {Component, ComponentRef} from '@angular/core';
 
 import {modal} from '../../../services/modal.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {telephony} from "../../../services/telephony.service";
+import {Subscription} from "rxjs";
+import {socket} from "../../../services/socket.service";
+import {backend} from "../../../services/backend.service";
+import {TelephonyPreferences} from "./telephonypreferences";
 
 /**
  * @ignore
@@ -19,29 +23,101 @@ declare var moment: any;
     selector: 'telephony-toolbar-indicator',
     templateUrl: '../templates/telephonytoolbarindicator.html'
 })
-export class TelephonyToolbarIndicator  {
+export class TelephonyToolbarIndicator {
 
+    /**
+     * the status of the connection
+     */
+    public status: 'initial' | 'connecting' | 'connected' | 'disconnected' = 'initial';
+    /**
+     * phone number
+     */
     public msisdn: string = '';
-
+    /**
+     * id of the call
+     */
     public callid: string;
+    /**
+     * rxjs subscriptions to unsubscribe
+     */
+    public subscriptions = new Subscription();
+    /**
+     * username
+     */
+    public username: string;
 
     constructor(
         public modal: modal,
         public modelutilities: modelutilities,
+        public socket: socket,
+        public backend: backend,
         public telephony: telephony
     ) {
         this.callid = this.modelutilities.generateGuid();
+        this.getPreferences();
     }
 
+    /**
+     * returns a status dependet icon class
+     */
+    get iconClass() {
+        switch (this.status) {
+            case 'connecting':
+                return 'slds-icon-text-warning';
+            case 'connected':
+                return 'slds-icon-text-success';
+            case 'disconnected':
+                return 'slds-icon-text-error';
+            default:
+                return 'slds-icon-text-light';
+        }
+    }
+
+    private _enabled: boolean;
+
+    get enabled() {
+        return this._enabled;
+    }
+
+    /**
+     * toggle connection to the socket
+     * @param value
+     */
+    set enabled(value) {
+        this._enabled = value;
+
+        if (!this.enabled) {
+            this.connectSocket();
+        } else {
+            this.disconnect();
+        }
+    }
+
+    /**
+     * toggle connection to socket
+     */
+    public toggleConnection() {
+        this.enabled = !this.enabled;
+    }
+
+    /**
+     * get the preferences and check if we have a username set
+     */
+    public getPreferences() {
+        this.backend.getRequest('channels/voice/telephonyGeneric/preferences').subscribe(prefs => {
+            if (!prefs.username) return;
+            this.username = prefs.username;
+            this.connectSocket();
+        });
+    }
 
     /**
      * adds the call
-     *
      * @private
      */
     public doAddCall() {
         this.modal.prompt('input', 'msisdn', 'enter the calling number', 'shade', this.msisdn).subscribe(msisdn => {
-            this.msisdn= msisdn;
+            this.msisdn = msisdn;
             let calldata = {
                 id: this.callid,
                 direction: 'inbound',
@@ -56,8 +132,6 @@ export class TelephonyToolbarIndicator  {
 
     /**
      * connects the call
-     *
-     * @private
      */
     public doConnectCall() {
         let calldata = {
@@ -69,11 +143,8 @@ export class TelephonyToolbarIndicator  {
         this.handleCallEvent(calldata);
     }
 
-
     /**
      * disconnects the call
-     *
-     * @private
      */
     public doDisconnectCall() {
         let calldata = {
@@ -87,7 +158,6 @@ export class TelephonyToolbarIndicator  {
 
     /**
      * handle the event from the socket
-     *
      * @param eventData
      */
     public handleCallEvent(eventData: any) {
@@ -112,15 +182,9 @@ export class TelephonyToolbarIndicator  {
 
     /**
      * adds the call to the telephony service
-     *
      * @param eventData
      */
     public addCall(eventData) {
-        /*
-        let util = libphonenumber.PhoneNumberUtil.getInstance();
-        let msisdn = eventData.direction == 'inbound' ? eventData.callernumber : eventData.callednumber;
-        let number = util.parseAndKeepRawInput(msisdn);
-         */
         this.telephony.calls.push({
             id: this.modelutilities.generateGuid(),
             callid: eventData.id,
@@ -130,6 +194,10 @@ export class TelephonyToolbarIndicator  {
         });
     }
 
+    /**
+     * map status
+     * @param status
+     */
     public translateStatus(status) {
         switch (status) {
             case 'PROCEEDING':
@@ -147,5 +215,55 @@ export class TelephonyToolbarIndicator  {
         }
     }
 
+    /**
+     * connect to the socket
+     */
+    public connectSocket() {
 
+        if (!this.username) return;
+
+        this.subscriptions.add(
+            this.socket.initializeNamespace('telephonyGeneric').subscribe(event => {
+                if (event.data) this.handleCallEvent(event.data);
+            })
+        );
+
+        // join the room
+        this.socket.joinRoom('telephonyGeneric', `telephonyGeneric::${this.username}`);
+
+        if (this.socket.connected) {
+            this.status = 'connected';
+        }
+    }
+
+    /**
+     * disconnect from the socket
+     */
+    public disconnectSocket() {
+        if (this.socket) {
+            this.socket.leaveRoom('telephonyGeneric', `telephonyGeneric::${this.username}`);
+        }
+    }
+
+    /**
+     * disconnects
+     */
+    public disconnect() {
+        this.status = 'disconnected';
+        this.disconnectSocket();
+        this.telephony.isActive = false;
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * get the preferences and check if we have a username set
+     */
+    public setPreferences() {
+        this.modal.openModal('TelephonyPreferences').subscribe((modalRef: ComponentRef<TelephonyPreferences>) => {
+            modalRef.instance.saved$.subscribe(saved => {
+                this.username = modalRef.instance.preferences.username;
+                this.connectSocket();
+            });
+        });
+    }
 }

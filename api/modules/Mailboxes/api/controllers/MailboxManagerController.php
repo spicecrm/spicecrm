@@ -125,6 +125,9 @@ class MailboxManagerController
             case 'inbound_sms':
                 $where .= ' AND (outbound_comm="single_sms" OR outbound_comm="mass_sms")';
                 break;
+            case 'outboundsms':
+                $where .= ' AND (outbound_comm="single_sms" OR outbound_comm="mass_sms")';
+                break;
             case 'outboundsingle_sms':
                 $where .= ' AND outbound_comm="single_sms"';
                 break;

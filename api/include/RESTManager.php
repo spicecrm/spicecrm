@@ -44,6 +44,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\Middleware\AdminOnlyAccessMiddleware;
+use SpiceCRM\includes\Middleware\ApiOnlyAccessMiddleware;
 use SpiceCRM\includes\Middleware\ErrorMiddleware;
 use SpiceCRM\includes\Middleware\ExceptionMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
@@ -333,7 +334,7 @@ class RESTManager
      * @param $exception
      * @return string
      */
-    public function outputError($exception): string {
+    public function outputError($exception) {
         $inDevMode = SpiceUtils::inDeveloperMode();
 
         if (is_object($exception)) {
@@ -487,6 +488,7 @@ class RESTManager
 
     /**
      * Initializes the routes, by iterating over the $routes array and registering them with the slim app.
+     * @throws Exception
      */
     public function initRoutes(): void {
 
@@ -501,10 +503,19 @@ class RESTManager
                     continue;
                 }
 
+                if (!class_exists($route['class'])) {
+                    throw new Exception("RestManager failed initialize route. Class does not exist calling {$route['class']}");
+                }
+
                 $routeObject = $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
 
                 if (isset($route['options']['adminOnly']) && $route['options']['adminOnly'] == true) {
                     $routeObject->add(AdminOnlyAccessMiddleware::class);
+                }
+
+                // add validation for API only
+                if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] == true) {
+                    $routeObject->add(ApiOnlyAccessMiddleware::class);
                 }
 
                 if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] == true) {

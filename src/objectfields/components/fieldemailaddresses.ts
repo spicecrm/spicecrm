@@ -84,6 +84,9 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             this.startAdding();
         }
 
+        // enforce a duplicate check
+        this.model.duplicateCheckOnChange([], true);
+
         this.handleFieldInvalid();
     }
 
@@ -220,10 +223,16 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         this.model.addRelatedRecords('email_addresses', emailAddresses.unique);
         this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
 
-        this.handleFieldInvalid();
+        let invalid = this.handleFieldInvalid();
         this.setEmail1Field(
             emailAddresses.unique.find(e => e.primary_address == '1')
         );
+
+        // if the field is not invalid
+        if(invalid == false) {
+            this.model.duplicateCheckOnChange([], true);
+        }
+
         this.setCanAdd();
     }
 
@@ -245,16 +254,20 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     }
     /**
      * handle setting/clearing the field message for invalid status
+     * returns ture if invalid, otherwise false
+     *
      * @private
      */
     public handleFieldInvalid() {
         if (((this.emailAddresses.length == 1 && !!this.emailAddresses[0].email_address) || this.emailAddresses.length > 1) && this.emailAddresses.some(e => e.invalid_email == 1)) {
             this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
+            return true;
         } else {
             if (this.emailAddresses.length == 1) {
                 this.emailAddresses[0].invalid_email = 0;
             }
             this.clearFieldError();
+            return false;
         }
     }
 

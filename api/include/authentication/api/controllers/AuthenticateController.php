@@ -4,9 +4,9 @@
 namespace SpiceCRM\includes\authentication\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TwoFactorAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -62,16 +62,6 @@ class AuthenticateController
     }
 
     /**
-     *this function is in beta state and can be used for two factor authentication
-     */
-    public function authCheckCode(Request $req, Response $res, array $args): Response
-    {
-        $twoFactorAuthentication = new TwoFactorAuthenticate();
-
-        return $res->withJson($twoFactorAuthentication->checkCode("12345", "56789"));
-    }
-
-    /**
      * change user password
      * @throws Exception
      * @throws UnauthorizedException | \Exception | ForbiddenException
@@ -80,14 +70,17 @@ class AuthenticateController
     {
         $parsedBody = $req->getParsedBody();
 
-        $authenticator = AuthenticationController::getInstance()->getAuthenticator();
-        $authData = (object) ['username' => $parsedBody['username'], 'password' => $parsedBody['password']];
+        $spiceCRMAuth = new SpiceCRMAuthenticate();
+        $userId = $spiceCRMAuth->handleCredentials($parsedBody['username'], $parsedBody['password']);
 
-        $oldPasswordMatch = $authenticator->authenticate($authData, 'credentials');
+        /** @var User $user */
+        $user = BeanFactory::getBean('Users', $userId);
 
-        if (!$oldPasswordMatch) {
-            throw new UnauthorizedException("Current Password is not correct");
+        if (!$user) {
+            throw new UnauthorizedException("User not found");
         }
+
+        AuthenticationController::getInstance()->setCurrentUser($user);
 
         $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
         $sugarAuthenticationObj->changePassword($parsedBody['username'], $parsedBody['newPassword']);
@@ -177,10 +170,17 @@ class AuthenticateController
         if ( !$forUser ) {
             $body = $req->getParsedBody();
             if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
-                $userAuthenticateObj = new UserAuthenticate();
-                $forUser = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+                $userAuthenticateObj = new SpiceCRMAuthenticate();
+                $authData = new \StdClass();
+                $authData->username = $body['username'];
+                $authData->password = $body['password'];
+                $authResponse = $userAuthenticateObj->authenticate($authData, 'credentials');
+                // load a User object
+                $forUser = BeanFactory::getBean('Users');
+                $forUser = $forUser->retrieve_by_string_fields(['user_name' => $authResponse->username]);
             }
         }
+
         $auth = new TOTPAuthentication();
         $secret = $auth->generateSecret();
 
@@ -219,8 +219,14 @@ class AuthenticateController
         if ( !$forUser ) {
             $body = $req->getParsedBody();
             if ( !empty( $body['username'] ) and !empty( $body['password'] )) {
-                $userAuthenticateObj = new UserAuthenticate();
-                $forUser = $userAuthenticateObj->authenticate($body['username'], $body['password']);
+                $userAuthenticateObj = new SpiceCRMAuthenticate();
+                $authData = new \StdClass();
+                $authData->username = $body['username'];
+                $authData->password = $body['password'];
+                $authResponse = $userAuthenticateObj->authenticate($authData, 'credentials');
+                // load a User object
+                $forUser = BeanFactory::getBean('Users');
+                $forUser = $forUser->retrieve_by_string_fields(['user_name' => $authResponse->username]);
             }
         }
 

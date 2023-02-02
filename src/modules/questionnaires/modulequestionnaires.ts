@@ -71,6 +71,7 @@ import {QuestionnaireFillOutActionItem} from './components/QuestionnaireFillOutA
 import {QuestionRenderSingle} from "./components/questionrendersingle";
 import {QuestionRenderBinary} from "./components/questionrenderbinary";
 import {QuestionRenderMulti} from "./components/questionrendermulti";
+import { QuestionsManagerSpecificID } from './components/questionsmanagereditspecificid';
 
 @NgModule( {
     imports: [
@@ -141,7 +142,8 @@ import {QuestionRenderMulti} from "./components/questionrendermulti";
         QuestionRenderIST,
         QuestionsManagerEditRatingGroup,
         fieldQuestionnaire,
-        QuestionnaireFillOutActionItem
+        QuestionnaireFillOutActionItem,
+        QuestionsManagerSpecificID
     ],
     exports: [ QuestionnaireFillOutActionItem ]
 })

@@ -75,6 +75,8 @@ export class questionnaireParticipationService {
 
     public routeForSave: string;
 
+    public acquisitionType: string;
+
     /**
      * isDirty indicates that one or more question answers has been given/changed and that the information is still not saved to the backend.
      */
@@ -658,7 +660,7 @@ export class questionnaireParticipationService {
     public save( setCompleted = false ): EventEmitter<boolean> {
         this.isSaving = true;
         let finishedSaving$ = new EventEmitter<boolean>();
-        this.backend.postRequest( this.routeForSave, {}, { setCompleted: setCompleted, questionnaireId: this.questionnaireId, answers: this.answers } ).subscribe( response => {
+        this.backend.postRequest( this.routeForSave, {}, { setCompleted: setCompleted, questionnaireId: this.questionnaireId, answers: this.answers, acquisitionType: this.acquisitionType } ).subscribe( response => {
                 this.isSaving = false;
                 this.isDirty = false;
                 this.isCompleted = !!response.isCompleted;

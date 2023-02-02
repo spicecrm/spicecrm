@@ -1,0 +1,44 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()"><system-label label="LBL_MAKE_SELECTION"></system-label></system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <div class="slds-height_full">
+            <div class="slds-is-relative">
+                <div class="slds-scrollable--y slds-height_full">
+                    <table [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect, 'slds-table--header-fixed': !smallView}" class="slds-table slds-table--fixed-layout slds-table--bordered slds-max-medium-table--stacked-horizontal" role="listbox">
+                        <thead *ngIf="!smallView">
+                        <tr>
+                            <th *ngFor="let item of listFields" [system-model-provider]="{module: module, id: null, data: null}" scope="col" class="slds-resizable">
+                                <field-label [fieldname]="item.field" [fieldconfig]="item.fieldconfig" addclasses="slds-truncate slds-p-vertical--xx-small slds-p-horizontal--x-small"></field-label>
+                            </th>
+                            <th *ngIf="listFields.length == 0">
+                                <field-label fieldname="name" addclasses="slds-truncate slds-p-vertical--xx-small slds-p-horizontal--x-small"></field-label>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let listItem of listData" (click)="onRowClick(listItem)" [system-model-provider]="{module: module, id: listItem.id, data: listItem}" [style.cursor]="multiselect ? 'initial' : 'pointer'" class="slds-hint-parent slds-p-horizontal--x-small">
+                            <td *ngIf="multiselect" role="gridcell" class="slds-show--medium">
+                                <system-checkbox [(ngModel)]="listItem.selected"></system-checkbox>
+                            </td>
+                            <td style="min-width: 2rem" *ngFor="let item of listFields">
+                                <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+                            </td>
+                            <td *ngIf="listFields.length == 0" style="min-width: 2rem">
+                                <field-container field="name" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" [disabled]="selectedIds.length == 0" (click)="confirmSelection()">
+            <system-label label="LBL_SELECT"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>

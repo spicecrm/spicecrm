@@ -112,7 +112,7 @@ class KReportRenderer
     public static function knumberRenderer($fieldid, $record)
     {
         return round($record[$fieldid], 2);
-//        return SpiceUtils::formatNumber($record[$fieldid], \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->getPreference('default_currency_significant_digits'));
+//        return SpiceUtils::formatNumber($record[$fieldid], \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->getPreference('currency_significant_digits'));
     }
 
     public static function kintRenderer($fieldid, $record)

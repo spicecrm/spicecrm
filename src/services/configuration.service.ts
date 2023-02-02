@@ -24,7 +24,7 @@ declare var _: any;
 export class configurationService {
 
     /**
-     * set to true if sysinfo returned 599 so the installer can run
+     * set to true if sysinfo returned 503/crmNotInstalled so the installer can run
      */
     public enableinstall: boolean = false;
 
@@ -284,6 +284,9 @@ export class configurationService {
                     this.data.systemparameters = res.systemsettings;
                     this.data.socket_frontend = res.socket_frontend;
                     this.data.unique_key = res.unique_key;
+                    this.data.displayloginsidebar = res.displayloginsidebar;
+                    this.data.loginSidebarUrl = res.loginSidebarUrl;
+                    this.data.allowForgotPass = res.allowForgotPass;
                     this.data.name = res.name ? res.name : 'SpiceCRM',
                         this.loaded$.next(true);
                 }
@@ -303,7 +306,7 @@ export class configurationService {
             },
             error: (err: any) => {
                 // if we figure the system is not installed add the route to the routes available so it can also be called and redirect to the installer
-                if(err.status == '599' || err.error.error.message == 'system is not installed') {
+                if(err.status == '503' && err.error.error.errorCode == 'crmNotInstalled') {
                     this.enableinstall = true;
                     this.router.config.unshift({
                         path: 'install',

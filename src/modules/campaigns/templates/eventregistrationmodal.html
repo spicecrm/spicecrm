@@ -1,0 +1,40 @@
+<system-modal>
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_ADD_FROM_TARGETLISTS"></system-label></system-modal-header>
+    <system-modal-content [system-modal-content-grow]="false" class="slds-scrollable_none">
+        <div class="slds-page-header">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-no-space slds-grow">
+                        <system-icon [module]="'Events'"></system-icon>
+                        <div class="slds-media__body">
+                            <div>
+                                <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{eventModel.data.summary_text}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid--align-spread slds-p-around--small slds-theme--shade slds-border--bottom">
+            <button class="slds-button slds-button--neutral" [disabled]="model.isLoading || currentStep == 0" (click)="prevStep()"><system-label label="LBL_PREVIOUS"></system-label></button>
+            <div class="slds-progress slds-progress--shade">
+                <ol class="slds-progress__list">
+                    <li *ngFor="let Step of totalSteps" class="slds-progress__item" [ngClass]="getStepClass(Step)">
+                        <button class="slds-button slds-progress__marker" [ngClass]="{'slds-button--icon slds-progress__marker--icon': getStepComplete(Step)}">
+                            <span class="slds-assistive-text">{{Step}}</span>
+                            <system-button-icon *ngIf="getStepComplete(Step)" [icon]="'success'"></system-button-icon>
+                        </button>
+                    </li>
+                </ol>
+            </div>
+            <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>
+            <button *ngIf="showSave()" class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        </div>
+        <div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
+            <ng-container *ngIf="!model.isLoading">
+                <event-registration-modal-list (selectedItems)="fetchListData($event)" [hidden]="currentStep!==0" ></event-registration-modal-list>
+                <event-registration-modal-type [hidden]="currentStep!==1"></event-registration-modal-type>
+            </ng-container>
+        </div>
+    </system-modal-content>
+</system-modal>
