@@ -134,6 +134,9 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
      */
     public addNewRelatedSystem(sourceItem: LandscapeItemI, element: HTMLElement) {
 
+        this.model.id = this.model.generateGuid();
+        this.model.resetData();
+
         this.model.addModel('', null, {systemdeploymentlandscape_id: this.landscapeModel.id}).subscribe(data => {
 
             if (!data) return;
