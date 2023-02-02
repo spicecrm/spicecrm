@@ -142,7 +142,7 @@ class SpiceFTSUtils
                 }
 
                 $seed = BeanFactory::getBean($module);
-                if (method_exists($seed, 'add_fts_metadata')) {
+                if ($seed && method_exists($seed, 'add_fts_metadata')) {
                     $addFields = $seed->add_fts_metadata();
                     foreach ($addFields as $addFieldName => $addField) {
                         $modulePropertiesarray[] = [
