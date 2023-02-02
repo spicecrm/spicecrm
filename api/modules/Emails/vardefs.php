@@ -396,7 +396,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'relationship' => 'mailboxes_emails_rel',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'module' => 'Mailboxes',
             'bean_name' => 'Mailbox',
         ],

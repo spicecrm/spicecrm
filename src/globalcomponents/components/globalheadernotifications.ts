@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectorRef, Component, ElementRef, Renderer2} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2} from '@angular/core';
 import {notification} from "../../services/notification.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {modal} from "../../services/modal.service";
@@ -15,7 +15,7 @@ import {Router} from "@angular/router";
     selector: 'global-header-notifications',
     templateUrl: '../templates/globalheadernotifications.html'
 })
-export class GlobalHeaderNotifications {
+export class GlobalHeaderNotifications implements OnInit {
     /**
      * if true show the notifications popover
      * @private
@@ -45,6 +45,11 @@ export class GlobalHeaderNotifications {
                 public cdRef: ChangeDetectorRef,
                 public router: Router,
                 public renderer: Renderer2) {
+    }
+
+    public ngOnInit() {
+        // retrieve the unread notifications count to avoid caching
+        this.notificationService.reloadNotifications();
     }
 
     /**
