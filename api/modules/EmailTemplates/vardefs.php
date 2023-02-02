@@ -87,7 +87,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'id_name' => 'modified_user_id',
             'module' => 'Users',
             'link' => 'modified_user_link',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'modified_user_link' => [
             'name' => 'modified_user_link',
@@ -121,7 +121,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'table' => 'users',
             'id_name' => 'created_by',
             'module' => 'Users',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'importable' => 'false',
         ],
         'created_by_link' => [
@@ -219,7 +219,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'dbType' => 'id',
             'audited' => true,
             'comment' => 'User ID assigned to record',
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => false
         ],
         'assigned_user_name' => [
             'name' => 'assigned_user_name',
@@ -232,7 +232,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'table' => 'users',
             'id_name' => 'assigned_user_id',
             'module' => 'Users',
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => false
         ],
         'assigned_user_link' => [
             'name' => 'assigned_user_link',
@@ -243,7 +243,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'module' => 'Users',
             'bean_name' => 'User',
             'source' => 'non-db',
-            'duplicate_merge' => 'enabled',
+            'duplicate_merge' => true,
             'rname' => 'user_name',
             'id_name' => 'assigned_user_id',
             'table' => 'users',

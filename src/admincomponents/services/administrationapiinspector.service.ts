@@ -281,7 +281,6 @@ export class administrationapiinspectorService {
             route: route,
             parent_id: parentID,
             parent_sequence: this.apiTree.filter(a => a.parent_id == parentID).length,
-            clickable: true
         });
         return itemId;
     }

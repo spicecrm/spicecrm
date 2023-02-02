@@ -77,54 +77,11 @@ class Person extends Basic
      */
     public function _create_proper_name_field()
     {
-        global $locale, $app_list_strings;
-        if (empty($locale)) {
-            $locale = new Localization();
-        }
-
-        // Bug# 46125 - make first name, last name, salutation and title of Contacts respect field level ACLs
-        $first_name = "";
-        $last_name = "";
-        $salutation = "";
-        $title = "";
-
-        // first name has at least read access
-        $first_name = $this->first_name;
-
-        // last name has at least read access
-        $last_name = $this->last_name;
-
-
-        // salutation has at least read access
-        if (isset($this->field_defs['salutation']['options'])
-            && isset($app_list_strings[$this->field_defs['salutation']['options']])
-            && isset($app_list_strings[$this->field_defs['salutation']['options']][$this->salutation])) {
-
-            $salutation = $app_list_strings[$this->field_defs['salutation']['options']][$this->salutation];
-        } // if
-
-        // last name has at least read access
-        $title = $this->title;
-
-        // Corner Case:
-        // Both first name and last name cannot be empty, at least one must be shown
-        // In that case, we can ignore field level ACL and just display last name...
-        // In the ACL field level access settings, last_name cannot be set to "none"
-        if (empty($first_name) && empty($last_name)) {
-            $full_name = $locale->getLocaleFormattedName("", $last_name, $salutation, $title);
-        } else {
-            if ($this->createLocaleFormattedName) {
-                $full_name = $locale->getLocaleFormattedName($first_name, $last_name, $salutation, $title);
-            } else {
-                $full_name = $locale->getLocaleFormattedName($first_name, $last_name);
-            }
-        }
-
-        $this->name = $full_name;
-        $this->full_name = $full_name; //used by campaigns
+        // for the backwards compatibility
+        $this->full_name = $this->first_name ? "{$this->first_name} {$this->last_name}" : $this->last_name;
+        $this->name = $this->full_name;
+        return $this->full_name;
     }
-
-
 
     /**
      * handle saving/adding the primary email address
@@ -260,13 +217,12 @@ class Person extends Basic
                 $gdprReleases['audit'][]= [
                     'date_created' => $auditField['date_created'],
                     'field_name' => $auditField['field_name'],
-                    'value' => $auditField['after_value_string'],
+                    'value' => $auditField['after_value_text'] ??$auditField['after_value_string'],
                     'created_by' => $auditField['created_by'],
                     'created_by_name' => $createdUser->full_name
                 ];
             }
         }
-
 
         return $gdprReleases;
     }
@@ -353,11 +309,17 @@ class Person extends Basic
      * fill in the email1 field called by fill_in_additional_detail_fields
      */
     private function fillInEmail1Field() {
+        $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}'  AND ear.primary_address=1 AND ear.deleted = 1 AND ear.email_address_id = ea.id AND ea.deleted = 0");
+        if($emailAddress){
+            $this->email1 = $emailAddress['email_address'];
+        }
+        /* performance increase
         $emailAddresses = $this->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $emailAddress) {
             if ($emailAddress->primary_address != 1) continue;
             $this->email1 = $emailAddress->email_address;
             break;
         }
+        */
     }
 }

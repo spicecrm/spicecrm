@@ -33,4 +33,26 @@ export class DomainManager {
         this.domainmanager.save();
     }
 
+    /**
+     * repair custom enum
+     */
+    public repairCustomENUMs() {
+        this.modal.confirm('are you sure you want to migrate all old legacy Cache language files', 'migrate Labels').subscribe({
+            next: (res) => {
+                if(res) {
+                    let loadingModal = this.modal.await('LBL_LOADING');
+                    this.backend.postRequest('admin/repair/custom/enum').subscribe(result => {
+                        loadingModal.emit(true);
+                        if (result) {
+                            this.toast.sendToast('LBL_CACHE_REPAIRED', 'success');
+                        } else {
+                            this.toast.sendToast('LBL_ERROR', 'error');
+                        }
+                    });
+                }
+            }
+        })
+
+    }
+
 }

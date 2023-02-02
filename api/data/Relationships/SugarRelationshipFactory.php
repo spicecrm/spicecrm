@@ -5,6 +5,7 @@ namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
@@ -87,28 +88,13 @@ class SugarRelationshipFactory {
      */
     public function loadRelationships($forceLoadFromDb = false)
     {
-        if(empty($_SESSION['relationships']) || $forceLoadFromDb) {
-            $this->loadRelationshipsFromDb();
+        $cached = SpiceCache::get('relationships');
+        if(!$cached || $forceLoadFromDb) {
+            $this->relationships = SpiceDictionaryVardefs::loadRelationships();
+            SpiceCache::set('relationships', $this->relationships);
         } else {
-            $this->loadRelationshipsFromSession();
+            $this->relationships = $cached;
         }
-    }
-
-    /**
-     * fill relationships from database and set to session
-     */
-    public function loadRelationshipsFromDb(){
-        $this->relationships = SpiceDictionaryVardefs::loadRelationships();
-        // reset session
-        $_SESSION['relationships'] = [];
-        $_SESSION['relationships'] = $this->relationships;
-    }
-
-    /**
-     * fill relationships from session
-     */
-    private function loadRelationshipsFromSession(){
-        $this->relationships = $_SESSION['relationships'];
     }
 
 

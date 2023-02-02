@@ -1,0 +1,112 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_LINK_TREE_CATEGORIES"></system-label></system-modal-header>
+
+    <system-modal-content margin="none">
+        <div class="slds-table_edit_container slds-is-relative">
+            <table class="slds-table slds-table_bordered" role="grid" style="width: 100%;" *ngIf="categoriesInputArray.length; else notLinkTree">
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col">
+                        <span class="slds-truncate" title="Model"><system-label label="LBL_MODEL"></system-label></span>
+                    </th>
+                    <th scope="col">
+                        <span class="slds-truncate" title="module field"><system-label label="LBL_MODULE_FIELD"></system-label></span>
+                    </th>
+                    <th scope="col">
+                        <span class="slds-truncate" title="syscategory 1"><system-label label="LBL_SYS_CAT_1"></system-label></span>
+                    </th>
+                    <th scope="col">
+                        <span class="slds-truncate" title="syscategory 2"><system-label label="LBL_SYS_CAT_2"></system-label></span>
+                    </th>
+                    <th scope="col">
+                        <span class="slds-truncate" title="syscategory 3"><system-label label="LBL_SYS_CAT_3"></system-label></span>
+                    </th>
+                    <th scope="col">
+                        <span class="slds-truncate" title="syscategory 4"><system-label label="LBL_SYS_CAT_4"></system-label></span>
+                    </th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-container *ngFor="let categoryInput of categoriesInputArray; index as i">
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-edit" role="gridcell" style="width: 16%;">
+                            <span class="slds-grid slds-grid_align-spread">
+                                <div class="slds-form-element__control" style="width: 100%;">
+                                    <div class="slds-form-element__control" style="min-width:250px;">
+                                        <div class="slds-select_container">
+                                            <select [disabled]="loading" class="slds-select" [(ngModel)]="categoryInput.module_id" (change)="canSaveOnInit = true">
+                                                <option *ngFor="let sysModule of sysModules" [value]="sysModule.id">{{sysModule.module}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </span>
+                        </td>
+                        <td class="slds-cell-edit" role="gridcell" style="width: 16%;">
+                            <span class="slds-grid slds-grid_align-spread">
+                                <div class="slds-form-element__control" style="width: 100%;">
+                                    <input [disabled]="loading" aria-describedby="error-message" type="text" class="slds-input" [(ngModel)]="categoryInput.module_field" (keydown)="canSaveOnInit = true" />
+                                </div>
+                            </span>
+                        </td>
+                        <td class="slds-cell-edit" role="gridcell" style="width: 16%;">
+                            <span class="slds-grid slds-grid_align-spread">
+                                <div class="slds-form-element__control" style="width: 100%;">
+                                    <input [disabled]="loading" aria-describedby="error-message" type="text" class="slds-input" [(ngModel)]="categoryInput.module_field_c1" (keydown)="canSaveOnInit = true"/>
+                                </div>
+                            </span>
+                        </td>
+                        <td class="slds-cell-edit" role="gridcell" style="width: 16%;">
+                            <span class="slds-grid slds-grid_align-spread">
+                                <div class="slds-form-element__control" style="width: 100%;">
+                                    <input [disabled]="loading" aria-describedby="error-message" type="text" class="slds-input" [(ngModel)]="categoryInput.module_field_c2" (keydown)="canSaveOnInit = true"/>
+                                </div>
+                            </span>
+                        </td>
+                        <td class="slds-cell-edit" role="gridcell" style="width: 16%;">
+                            <span class="slds-grid slds-grid_align-spread">
+                                <div class="slds-form-element__control" style="width: 100%;">
+                                    <input [disabled]="loading" aria-describedby="error-message" type="text" class="slds-input" [(ngModel)]="categoryInput.module_field_c3" (keydown)="canSaveOnInit = true"/>
+                                </div>
+                            </span>
+                        </td>
+                        <td class="slds-cell-edit" role="gridcell" style="width: 16%;">
+                            <span class="slds-grid slds-grid_align-spread">
+                                <div class="slds-form-element__control" style="width: 100%;">
+                                    <input [disabled]="loading" aria-describedby="error-message" type="text" class="slds-input" [(ngModel)]="categoryInput.module_field_c4" (keydown)="canSaveOnInit = true"/>
+                                </div>
+                            </span>
+                        </td>
+                        <td class="slds-cell-edit" role="gridcell">
+                            <div class="slds-p-around--small slds-align--absolute-center slds-float_right">
+                                <button [disabled]="loading" class="slds-button slds-button--icon" title="delete item" (click)="deleteConfig(i)">
+                                    <system-button-icon [icon]="'delete'"></system-button-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+                </tbody>
+            </table>
+            <ng-template #notLinkTree>
+                <system-label class="slds-align--absolute-center slds-is-relative slds-p-around--xx-large" label="LBL_PLEASE_ADD_LINK_TREE_CATEGORIES"></system-label>
+            </ng-template>
+        </div>
+    </system-modal-content>
+
+    <system-modal-footer>
+        <div class="slds-text-align--right slds-p-vertical--x-small">
+            <button type="button" [disabled]="loading" class="slds-button slds-button--brand slds-float--left" (click)="addConfig()">
+                <system-label label="LBL_ADD"></system-label>
+            </button>
+            <button type="button" class="slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button [disabled]="canSave || !canSaveOnInit || categoriesInputArray.length == 0"  type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

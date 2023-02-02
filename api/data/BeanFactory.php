@@ -98,9 +98,7 @@ class BeanFactory
     {
         // log when this function is called without
         if (is_array($params) && !key_exists('encode', $params) && !empty($id)) {
-            LoggerManager::getLogger()->info(__CLASS__ . "::" . __FUNCTION__ . "() was called for retrieve with id $id without encode value. Back trace:");
-            LoggerManager::getLogger()->info(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
-
+            LoggerManager::getLogger()->developer(['class' => __CLASS__ . "::" . __FUNCTION__ . "() was called for retrieve with id $id without encode value", 'backtrace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)]);
         }
 
         // Check if params is an array, if not use old arguments
@@ -196,11 +194,7 @@ class BeanFactory
      */
     public static function getObjectName($module)
     {
-        global $objectList;
-        if (empty($objectList[$module]))
-            return self::getBeanName($module);
-
-        return $objectList[$module];
+        return SpiceModules::getInstance()->getBeanName($module);
     }
 
 

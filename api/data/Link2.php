@@ -69,7 +69,7 @@ class Link2
                 }
             }
             if (empty($this->def['name'])) {
-                LoggerManager::getLogger()->fatal("failed to find link for $linkName");
+                LoggerManager::getLogger()->fatal('link', "failed to find link for $linkName in " . __FILE__);
                 return false;
             }
 

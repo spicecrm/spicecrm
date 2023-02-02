@@ -3,22 +3,175 @@
 
 namespace SpiceCRM\modules\CampaignTasks\api\controllers;
 
+use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\CampaignTasks\CampaignTask;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\TimeDate;
+use function DI\string;
 
 class CampaignTasksController
 {
+
+
+    /**
+     * create inclusion list if not exist
+     * @throws \Exception
+     */
+    public function createInclusionList(Request $req, Response $res, array $args): Response
+    {
+        $inclusionListId = CampaignTask::getListIdByType($args['id'], 'include');
+
+        if (!empty($inclusionListId)) {
+            return $res->withJson(['id' => $inclusionListId]);
+        }
+
+        $list = $this->createList($args['id'], 'include');
+
+        return $res->withJson(['id' => $list->id]);
+    }
+
+    /**
+     * set campaign task target status
+     * handle excluded targets
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function setTargetsStatus(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getParsedBody();
+        $db = DBManagerFactory::getInstance();
+        $exclusionListId = CampaignTask::getListIdByType($args['id'], 'exclude');
+
+        foreach ($params['targets'] as $targetId) {
+
+            $existingId = $db->getOne("SELECT id FROM campaigntask_targets_status WHERE campaigntask_id = '{$args['id']}' AND prospect_id = '$targetId'");
+
+            if ($args['status'] == 'excluded') {
+                $this->handleExcludedTarget($args['id'], $targetId, $exclusionListId);
+            } else {
+                $this->revertExcludedTarget($targetId, $exclusionListId);
+            }
+
+            $this->updateTargetStatus($db, $existingId, $args['id'], $targetId, $args['status']);
+        }
+
+        return $res->withJson(true);
+    }
+
+    /**
+     * update target status
+     * @param $db DBManager
+     * @param false|string $existingId
+     * @param string $campaignTaskId
+     * @param string $targetId
+     * @param string $status
+     * @return void
+     */
+    private function updateTargetStatus(DBManager $db, $existingId, string $campaignTaskId, string $targetId, string $status)
+    {
+        $data = [
+            'id' => $existingId ?: SpiceUtils::createGuid(),
+            'campaigntask_id' => $campaignTaskId,
+            'prospect_id' => $targetId,
+            'status' => $status,
+            'date_modified' => TimeDate::getInstance()->nowDb(),
+        ];
+
+        $db->upsertQuery('campaigntask_targets_status', ['id' => $existingId], $data);
+    }
+
+    /**
+     * delete excluded target from the exclusion list
+     * @param string $targetId
+     * @param string|false $excludeListId
+     * @return void
+     * @throws \Exception
+     */
+    private function revertExcludedTarget(string $targetId, $excludeListId)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        if (!$excludeListId) return;
+
+        $db->query("DELETE FROM prospect_lists_prospects WHERE prospect_list_id = '$excludeListId' AND related_id ='$targetId'");
+    }
+
+    /**
+     * create exclusion list if undefined and add the target to the list
+     * @param string $campaignTaskId
+     * @param string $targetId
+     * @param string|false $excludeListId
+     * @return void
+     * @throws \Exception
+     */
+    private function handleExcludedTarget(string $campaignTaskId, string $targetId, $excludeListId)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        if (!$excludeListId) {
+            $list = $this->createList($campaignTaskId, 'exclude');
+        } else {
+            $list = BeanFactory::getBean('ProspectLists', $excludeListId);
+        }
+
+        $target = $db->fetchOne("SELECT * FROM prospect_lists_prospects WHERE related_id ='$targetId' AND deleted != 1");
+        $target['id'] = SpiceUtils::createGuid();
+        $target['prospect_list_id'] = $list->id;
+        $target['date_modified'] = TimeDate::getInstance()->nowDb();
+
+        $db->insertQuery('prospect_lists_prospects', $target);
+    }
+
+    /**
+     * create list and link it to the campaign task
+     * @param string $campaignTaskId
+     * @param string $type
+     * @return false|SpiceBean
+     * @throws \Exception
+     */
+    private function createList(string $campaignTaskId, string $type)
+    {
+        $list = BeanFactory::newBean('ProspectLists');
+        $typeLabel = $type == 'exclude' ? 'exclusion' : 'inclusion';
+        $list->name = $this->generateExcludeListName($campaignTaskId, $typeLabel);
+        $list->list_type = $type;
+        $list->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
+        $list->save();
+        $list->load_relationship('campaigntasks');
+        $list->campaigntasks->add($campaignTaskId);
+
+        return $list;
+    }
+
+    /**
+     * @param string $campaignTaskId
+     * @param string $type
+     * @return string
+     */
+    private function generateExcludeListName(string $campaignTaskId, string $type): string
+    {
+        $campaignTask = BeanFactory::getBean('CampaignTasks', $campaignTaskId);
+        $name = SpiceNumberRanges::getNextNumberForField('ProspectLists', 'name');
+        $name .= " $type $campaignTask->name";
+        return $name;
+    }
+
     public function getCampaignTaskItems(Request $req, Response $res, array $args): Response
     {
         $timedate = TimeDate::getInstance();
@@ -89,9 +242,7 @@ class CampaignTasksController
                 break;
         }
 
-        // activate the campaigntask
-        $campaignTask->activate($status);
-        return $res->withJson(['success' => true, 'id' => $args['id']]);
+        return $res->withJson($campaignTask->activate($status));
     }
     /**
      * activates the campaign tasks and writes the campaign log entries
@@ -120,21 +271,6 @@ class CampaignTasksController
         return $res->withJson(['success' => $success, 'id' => $args['id']]);
     }
 
-
-    public function exportCampaignTask(Request $req, Response $res, array $args): Response
-    {
-        // ACL Check
-        if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'export', true))
-            throw (new ForbiddenException("Forbidden to export for module CampaignTasks."));
-
-        /** @var CampaignTask load the campaign task **/
-        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-
-        // activate the campaigntask
-        $campaignTask->export();
-
-    }
-
     /**
      * send a test email to the test prospect lists in the campaign task
      *
@@ -161,8 +297,7 @@ class CampaignTasksController
     {
         /** @var CampaignTask load the campaign task **/
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-        $campaignTask->activate('queued');
-        return $res->withJson(['success' => true]);
+        return $res->withJson($campaignTask->activate('queued'));
     }
 
     /**
@@ -272,5 +407,31 @@ class CampaignTasksController
             throw new NotFoundException('CampaignTask not found');
         }
         return $res->withJson(['count' => $campaignTask->getTargetCount()]);
+    }
+
+    /**
+     * gets all targets in a targetist
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws NotFoundException
+     */
+    public function getTargets(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getQueryParams();
+
+        /** @var CampaignTask $campaignTask */
+        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+
+        if (!$campaignTask) {
+            throw new NotFoundException('CampaignTask not found');
+        }
+
+        $response = $campaignTask->getTargets($params['modules'], $params['limit'], $params['offset'], $params['status'],  json_decode($params['prospectListIds'] ?? null), $params['searchTerm']);
+
+        return $res->withJson($response);
     }
 }
