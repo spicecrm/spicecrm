@@ -143,6 +143,22 @@ class SpiceModules
     }
 
     /**
+     * gets the module name by the definition id
+     *
+     * @param $definitionId
+     * @return false|int|string
+     */
+    public function getModuleByDictionaryDefinitionId($definitionId){
+        foreach ($this->modules as $moduleName => $moduleDetails) {
+            if($moduleDetails['sysdictionarydefinition_id'] == $definitionId){
+                return $moduleName;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns the module details
      *
      * @param string $modulename

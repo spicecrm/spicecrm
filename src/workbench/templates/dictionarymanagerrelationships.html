@@ -1,9 +1,8 @@
 <div *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition" system-to-bottom-noscroll>
-    <div  style="height: calc(100% - 450px)">
-        <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <table  class="slds-table slds-table--fixed-layout slds-table_bordered">
             <thead>
                 <tr class="slds-line-height_reset">
-                    <th style="width:2.5rem" scope="col"></th>
+                    <th style="width:3.5rem" scope="col"></th>
                     <th class="" scope="col">
                         <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                     </th>
@@ -26,7 +25,7 @@
                 <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionaryrelationships" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
                     <td>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryrelationship.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                        <dictionary-manager-item-status [(ngModel)]="dictionaryrelationship.status"></dictionary-manager-item-status>
+                        <dictionary-manager-item-status [ngModel]="dictionaryrelationship.status" (ngModelChange)="setStatus(dictionaryrelationship, $event)"></dictionary-manager-item-status>
                     </td>
                     <td data-label="NAME">
                         <div class="slds-truncate">{{dictionaryrelationship.name}} / {{dictionaryrelationship.relationship_name}}</div>
@@ -76,10 +75,6 @@
         <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
             <system-utility-icon icon="new" size="x-small" (click)="addDictionaryRelationship($event)" ></system-utility-icon>
         </div>
-    </div>
-    <div style="height: 450px" class="slds-scrollable--y">
-        <dictionary-manager-relationships-details [dictionaryRelationship]="currentRelationship"></dictionary-manager-relationships-details>
-    </div>
 </div>
 <ng-template #selectdefinition>
     <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center" system-to-bottom-noscroll>

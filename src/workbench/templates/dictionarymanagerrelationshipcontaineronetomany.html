@@ -23,8 +23,7 @@
                 <system-label label="LBL_LHS_DICTIONARYDEFINITION"></system-label>
             </label>
             <div class="slds-form-element__control">
-                <input [disabled]="readonly" disabled class="slds-input"
-                       [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationship.lhs_sysdictionarydefinition_id)"/>
+                <input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationship.lhs_sysdictionarydefinition_id)"/>
             </div>
         </div>
         <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
@@ -32,8 +31,7 @@
                 <system-label label="LBL_RHS_DICTIONARYDEFINITION"></system-label>
             </label>
             <div class="slds-form-element__control">
-                <input disabled class="slds-input"
-                       [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationship.rhs_sysdictionarydefinition_id)"/>
+                <input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationship.rhs_sysdictionarydefinition_id)"/>
             </div>
         </div>
     </div>

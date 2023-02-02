@@ -19,6 +19,11 @@ class SpiceDictionaryRelationships
      */
     public $relationships;
 
+    /**
+     * @var holds the relationshiptypes
+     */
+    public $relationshiptypes;
+
     private function __clone()
     {
     }
@@ -41,6 +46,20 @@ class SpiceDictionaryRelationships
 
     public function __construct()
     {
+        $this->loadRelationshipTypes();
+        $this->loadRelationships();
+    }
+
+    private function loadRelationshipTypes(){
+        $this->relationshiptypes = [];
+        $db = DBManagerFactory::getInstance();
+        $types = $db->query("SELECT * FROM sysdictionaryrelationshiptypes");
+        while($type = $db->fetchByAssoc($types)){
+            $this->relationshiptypes[] = $type;
+        }
+    }
+
+    private function loadRelationships(){
         // check if we have a cached value
         $cached = SpiceCache::get('dictionaryrelationships');
         if($cached) {
@@ -54,7 +73,6 @@ class SpiceDictionaryRelationships
 
         $this->relationships = $itemArray;
     }
-
 
     /**
      * loads the relationships from the Database

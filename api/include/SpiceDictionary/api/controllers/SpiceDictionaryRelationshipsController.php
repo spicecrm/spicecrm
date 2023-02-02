@@ -32,6 +32,30 @@ class SpiceDictionaryRelationshipsController
     }
 
     /**
+     * activates a Dictionary Relationship
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function activate(Request $req, Response $res, array $args): Response
+    {
+        return $res->withJson(['success' => (new SpiceDictionaryRelationship($args['id']))->activate()]);
+    }
+    /**
+     * deactivates a Dictionary Relationship
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function deactivate(Request $req, Response $res, array $args): Response
+    {
+        return $res->withJson(['success' => (new SpiceDictionaryRelationship($args['id']))->deactivate()]);
+    }
+    /**
      * posts a Dictionary Relationship
      *
      * @param $req

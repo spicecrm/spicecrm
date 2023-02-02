@@ -361,6 +361,22 @@ $routes = [
         'description' => 'deletes a Relationship',
         'options' => ['adminOnly' => true]
     ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/relationship/{id}/activate',
+        'class' => SpiceDictionaryRelationshipsController::class,
+        'function' => 'activate',
+        'description' => 'activates a Relationship',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/dictionary/relationship/{id}/activate',
+        'class' => SpiceDictionaryRelationshipsController::class,
+        'function' => 'deactivate',
+        'description' => 'deactivates  relationshipü',
+        'options' => ['adminOnly' => true]
+    ],
 ];
 
 /**

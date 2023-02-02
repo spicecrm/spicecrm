@@ -10,12 +10,13 @@ class SpiceDictionaryRelationship
 {
 
     // the id
-    protected $id;
+    public $id;
 
     public $relationship;
 
     // data on teh relationship to be read direct
     public $name;
+    public $type;
     public $scope;
 
     public function __construct($id)
@@ -30,8 +31,21 @@ class SpiceDictionaryRelationship
         // set the values
         $this->relationship = (object) $relationship;
         $this->name = $this->relationship->name;
+        $this->type = $this->relationship->relationship_type;
         $this->scope = $this->relationship->scope;
 
+    }
+
+    public function activate(){
+        // get the class for the activation
+        $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
+        (new $relType['class'](null))->activate($this);
+    }
+
+    public function deactivate(){
+// get the class for the activation
+        $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
+        (new $relType['class'](null))->deactivate($this);
     }
 
     /**

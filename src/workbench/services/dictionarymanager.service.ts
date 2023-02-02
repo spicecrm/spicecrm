@@ -14,7 +14,8 @@ import {
     DictionaryIndexItem,
     DictionaryItem,
     Relationship,
-    RelationshipRelateField
+    RelationshipRelateField,
+    RelationshipType
 } from "../interfaces/dictionarymanager.interfaces";
 import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfaces";
 import {configurationService} from "../../services/configuration.service";
@@ -78,6 +79,11 @@ export class dictionarymanager implements OnDestroy {
      * the loaded list of dictionaryDefinitions
      */
     public dictionarydatabasefields: DictionaryDatabaseField[] = [];
+
+    /**
+     * the dictionary relationshiptypes
+     */
+    public dictionaryrelationshiptypes: RelationshipType[] = [];
 
     /**
      * the dictionary relationships
@@ -237,6 +243,7 @@ export class dictionarymanager implements OnDestroy {
                 this.domainfields = res.domainfields;
                 this.dictionarydefinitions = res.dictionarydefinitions;
                 this.dictionaryitems = res.dictionaryitems;
+                this.dictionaryrelationshiptypes = res.dictionaryrelationshiptypes;
                 this.dictionaryrelationships = res.dictionaryrelationships;
                 this.dictionaryrelationshiprelatefields = res.dictionaryrelationshiprelatefields;
                 this.dictionaryindexes = res.dictionaryindexes;

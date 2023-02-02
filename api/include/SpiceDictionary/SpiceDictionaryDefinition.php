@@ -7,6 +7,7 @@ use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 class SpiceDictionaryDefinition
 {
@@ -42,6 +43,14 @@ class SpiceDictionaryDefinition
         return $this->definition;
     }
 
+    /**
+     * returns the module name for the definition
+     *
+     * @return false|int|string
+     */
+    public function getModuleName(){
+        return SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($this->id);
+    }
 
     /**
      * drops the table for the definition

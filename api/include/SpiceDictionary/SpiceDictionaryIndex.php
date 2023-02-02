@@ -71,7 +71,7 @@ class SpiceDictionaryIndex
         return $fieldnames;
     }
 
-    public function getIndexDefinition($tablename)
+    public function getIndexDefinition($tablename = null)
     {
         $def = [
             'name' => $this->getIndexName($tablename),

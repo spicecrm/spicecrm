@@ -56,8 +56,14 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit 
      */
     @Input() public readonly: boolean = false;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+    public relationsTables: DictionaryDefinition[] = [];
 
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+        this.getRelationshipTables();
+    }
+
+    public getRelationshipTables(){
+        this.relationsTables = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'relationship' || d.sysdictionary_type == 'metadata').sort((a, b) => a.name.localeCompare(b.name));
     }
 
     /**

@@ -91,6 +91,7 @@ class SpiceDictionaryDomain
                 'sysdictionaryname' => $dictionaryDefinition->name,
                 'sysdictionarytablename' => $dictionaryDefinition->tablename,
                 'sysdictionarydefinition_id' => $dictionaryDefinition->id,
+                'sysdictionaryitem_id' => $dictionaryitem->id,
                 'sysdomainfield_id' => $definition->sysdictionarydomainfield_id,
                 'fieldname' => $definition->name,
                 'fieldtype' => $definition->type,

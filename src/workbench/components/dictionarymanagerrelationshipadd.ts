@@ -31,7 +31,7 @@ export class DictionaryManagerRelationshipAdd {
      * the type of the relationship
      * @private
      */
-    public relationshipType: 'one-to-many' | 'many-to-one' | 'many-to-many' | 'parent' = 'one-to-many';
+    public selectedType: string;
 
     /**
      * the id of the related dictionaryitem
@@ -73,36 +73,11 @@ export class DictionaryManagerRelationshipAdd {
      * @private
      */
     public add() {
-        switch (this.relationshipType) {
-            case 'one-to-many':
-                this.modal.openModal('DictionaryManagerRelationshipAddOneToMany', true, this.injector).subscribe(modalRef => {
-                    modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.related_id;
-                    modalRef.instance.relationship.scope = this.scope;
-                    modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-                });
-                break;
-            case 'many-to-one':
-                this.modal.openModal('DictionaryManagerRelationshipAddOneToMany', true, this.injector).subscribe(modalRef => {
-                    modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.related_id;
-                    modalRef.instance.relationship.scope = this.scope;
-                    modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-                });
-                break;
-            case 'many-to-many':
-                this.modal.openModal('DictionaryManagerRelationshipAddManyToMany', true, this.injector).subscribe(modalRef => {
-                    modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.related_id;
-                    modalRef.instance.relationship.scope = this.scope;
-                    modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-                });
-                break;
-            case 'parent':
-                this.modal.openModal('DictionaryManagerRelationshipAddParent', true, this.injector).subscribe(modalRef => {
-                    modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.related_id;
-                    modalRef.instance.relationship.scope = this.scope;
-                    modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-                });
-                break;
-        }
+        let relType = this.dictionarymanager.dictionaryrelationshiptypes.find(rt => rt.id == this.selectedType);
+        this.modal.openModal(relType.component_add, true, this.injector).subscribe(modalRef => {
+            modalRef.instance.relationship.scope = this.scope;
+            modalRef.instance.type = relType;
+        });
         this.close();
     }
 
