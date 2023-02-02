@@ -1,6 +1,6 @@
 
 export const environment = {
     production: true,
-    buildNumber: "2022.02.001.1665743042879",
-    copyright: "© 2015 -  2022 aac services k.s. All rights reserved."
+    buildNumber: "2023.01.001.1675349026230",
+    copyright: "© 2015 -  2023 aac services k.s. All rights reserved."
     }
