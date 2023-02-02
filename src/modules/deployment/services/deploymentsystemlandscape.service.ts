@@ -33,30 +33,7 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
     /**
      * holds the diagram data array
      */
-    public data: LandscapeItemI[] = [
-        {
-            id: 'b75a29c9-9d64-3742-6fc7-dd1051c5df3b',
-            type: 'item',
-            name: {
-                text: 'Master',
-                position: {x: 810, y: 30}
-            },
-            data: {
-                "id": "b75a29c9-9d64-3742-6fc7-dd1051c5df3b",
-                "name": "Master",
-                "url": "http://localhost/crm",
-                "sys_username": "mehyar@spicecrm.com",
-                "sys_password": "1111Aa"
-            },
-            position: {x: 800, y: 20},
-            style: {
-                'top': '20px',
-                'left': '50%',
-                width: `${this.defaultBoxSize.width}px`,
-                height: `${this.defaultBoxSize.height}px`
-            },
-        }
-    ];
+    public data: LandscapeItemI[] = [];
     /**
      * holds a json string backup of the data array
      * @private
