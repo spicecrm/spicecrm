@@ -1,13 +1,12 @@
 <?php
 namespace SpiceCRM\includes\VoiceOverIP;
 
+use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-abstract class VoiceOverIP
+class VoiceOverIP
 {
     const DIRECTION_INCOMING = 'inbound';
     const DIRECTION_OUTGOING = 'outbound';
@@ -57,7 +56,7 @@ abstract class VoiceOverIP
      * Saves the call information in the DB.
      *
      * @param $call
-     * @throws \Exception
+     * @throws Exception
      */
     protected function writeCall($call) {
         $db = DBManagerFactory::getInstance();
@@ -151,17 +150,29 @@ VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{
     }
 
     /**
-     * Returns a new VoIP connector.
+     * handles an incoming Event
      *
-     * @return mixed
+     * @param $user
+     * @param $callData
+     * @throws Exception
      */
-    protected abstract function getNewConnector();
+    public function handleEvent($user, $callData) {
 
-    /**
-     * Starts an outgoing call.
-     *
-     * @param $mdisdn
-     * @return mixed
-     */
-    public abstract function initiateCall($mdisdn);
+        $call = $this->createCall(
+            $user,
+            self::DIRECTION_INCOMING,
+            $callData['id'],
+            $callData['state'],
+            $callData['callerNumber'],
+            '',
+            ''
+        );
+
+        # write to the database
+        $this->writeCall($call);
+
+        # post to the nodejs server
+        $this->notifySocket('telephonyGeneric', "telephonyGeneric::$call->channel", $call);
+    }
+
 }

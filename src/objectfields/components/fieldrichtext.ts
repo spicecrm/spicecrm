@@ -176,7 +176,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         tempElement.innerHTML = this.value;
 
         let selectedEleSign = tempElement.querySelectorAll("div[data-signature]");
-        let selectedEleReply = tempElement.querySelectorAll("div[spicecrm_reply_quote]");
+        let selectedEleReply = tempElement.querySelectorAll("div[data-spice-reply-quote]");
 
 
         // keep text till signature or reply (find index position)

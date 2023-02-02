@@ -344,4 +344,20 @@ export class dictionarymanager implements OnDestroy {
         return changed;
 
     }
+
+
+    /**
+     *
+     * @param definition
+     */
+    public repairDictionary(definition){
+        let body = {dictionaries: [definition.name]};
+        this.backend.postRequest('admin/repair/dictionary', {}, body).subscribe(result => {
+            if (result.success) {
+                this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success');
+            } else {
+                this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error');
+            }
+        });
+    }
 }

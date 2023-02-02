@@ -76,11 +76,26 @@ export class fieldParent extends fieldGeneric implements OnInit {
         // determine the valid types
         this.determineParentTypes();
         // initialize the parenttype
-      if (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '') {
+        if (this.view.isEditMode() && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
             this.model.setField(this.parentTypeField, this.parentTypes[0]);
-       }
+        }
 
     }
+
+    /**
+     * handle the view mode change and set the parent type if it is not set yet
+     * @param mode
+     */
+    public handleViewModeChange(mode) {
+        if (mode == 'edit' && this.view.editfieldid && this.view.editfieldid == this.fieldid) {
+            this.setFocus();
+        }
+
+        if (mode == 'edit' && (!this.model.getField(this.parentTypeField) || this.model.getField(this.parentTypeField) == '')) {
+            this.model.setField(this.parentTypeField, this.parentTypes[0]);
+        }
+    }
+
 
     /**
      * get the valid parent types from the metadata or the field config

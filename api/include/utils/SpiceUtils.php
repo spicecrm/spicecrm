@@ -7,6 +7,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
+use SpiceCRM\includes\Localization\Localization;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
@@ -894,6 +895,7 @@ class SpiceUtils
         $dec_sep = $seps[1];
 
         // cn: bug 8522 - sig digits not honored in pdfs
+        /** @var $locale Localization */
         if (is_null($decimals)) {
             $decimals = $locale->getPrecision();
         }
@@ -1340,7 +1342,7 @@ echo print_r($return_value, true);
         if(strlen($string) <= $limit) {
             return $string;
         }
-        $newString = substr(html_entity_decode(strip_tags($string)), 0, $limit -3);
+        $newString = mb_substr(html_entity_decode(strip_tags($string)), 0, $limit -3);
 
 
         return self::removeInvalidCharacter($newString).'…';
@@ -1385,5 +1387,21 @@ echo print_r($return_value, true);
         $str = str_ireplace($brs, "\n", $str); // to retrieve it
 
         return $str;
+    }
+
+    /**
+     * will return a list of field names that contain a value for an address country
+     * base the search technical address names
+     * @return void
+     */
+    public static function getListOfCountryFields(SpiceBean $bean) {
+        $countryFields = [];
+        foreach($bean->field_defs as $fieldName => $field){
+            if(!preg_match("/(.*)address_country/", $field['name'])){
+                continue;
+            }
+            $countryFields[] = $field['name'];
+        }
+        return $countryFields;
     }
 }

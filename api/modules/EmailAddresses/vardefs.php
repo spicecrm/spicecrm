@@ -216,6 +216,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'type' => 'index',
             'fields' => ['email_address', 'opt_out', 'invalid_email']
         ],
+        [
+            'name' => 'idx_ea_modifby_del',
+            'type' => 'index',
+            'fields' => ['modified_user_id', 'deleted']
+        ],
+        [
+            'name' => 'idx_ea_creatby_del',
+            'type' => 'index',
+            'fields' => ['created_by', 'deleted']
+        ],
     ],
     'relationships' => [
         'email_addresses_modified_user' =>

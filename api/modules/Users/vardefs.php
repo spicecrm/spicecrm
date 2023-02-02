@@ -366,6 +366,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'varchar',
             'len' => '150',
         ],
+        'address' => [
+            'name' => 'address',
+            'vname' => 'LBL_ADDRESS',
+            'type' => 'bool',
+            'source' => 'non-db',
+        ],
         'address_city' => [
             'name' => 'address_city',
             'vname' => 'LBL_CITY',
@@ -1010,6 +1016,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
                 'last_name',
                 'first_name',
                 'id'
+            ]
+        ],
+        [
+            'name' => 'idx_users_reportto',
+            'type' => 'index',
+            'fields' => [
+                'reports_to_id',
+                'id',
+                'deleted'
             ]
         ]
     ],

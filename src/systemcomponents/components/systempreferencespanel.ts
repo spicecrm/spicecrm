@@ -8,6 +8,7 @@ import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {currency} from '../../services/currency.service';
 import { userpreferences } from '../../services/userpreferences.service';
+import { configurationService } from '../../services/configuration.service';
 
 /** @ignore */
 declare var moment: any;
@@ -136,7 +137,10 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      */
     public numberDelimitationsList = [
         { show: '1.000.000,00', num_grp_sep: '.', dec_sep: ',' },
-        { show: '1,000,000.00', num_grp_sep: ',', dec_sep: '.' }];
+        { show: '1,000,000.00', num_grp_sep: ',', dec_sep: '.' },
+        { show: '1 000 000,00', num_grp_sep: ' ', dec_sep: ',' }
+    ];
+
 
     /**
      * holds the name formats
@@ -166,7 +170,6 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
     public set numberDelimitation( value: { show: string, num_grp_sep: string, dec_sep: string } ) {
         this.preferences.dec_sep = value.dec_sep;
         this.preferences.num_grp_sep = value.num_grp_sep;
-        this.loadGlobalPreferencesIfNeeded();
         this.setDisplay_numberDelimitation();
     }
 
@@ -189,14 +192,20 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      * The preferences of the crm system.
      * @public
      */
-    public globalPreferences: any;
+    public defaultPreferences: any;
 
     /**
      * The names of the preferences.
      * @private
      */
+    /*
     private preferencesNames = [ 'calendar_day_start_hour', 'calendar_day_end_hour', 'currency', 'datef', 'default_export_charset', 'default_locale_name_format',
         'dec_sep', 'default_currency_significant_digits', 'distance_unit_system', 'export_delimiter', 'help_icon',
+        'home_assistant', 'num_grp_sep', 'reminder_time', 'timef', 'timezone', 'week_day_start', 'week_days_count',
+    ];
+     */
+    private preferencesNames = [ 'calendar_day_start_hour', 'calendar_day_end_hour', 'currency', 'datef', 'export_charset', 'locale_name_format',
+        'dec_sep', 'currency_significant_digits', 'distance_unit_system', 'export_delimiter', 'help_icon',
         'home_assistant', 'num_grp_sep', 'reminder_time', 'timef', 'timezone', 'week_day_start', 'week_days_count',
     ];
 
@@ -212,30 +221,18 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
         public toast: toast,
         public currency: currency,
         public language: language,
-        public userpreferences: userpreferences ) {
+        public userpreferences: userpreferences,
+        public configurationService: configurationService ) {
         this.setInitialValues();
     }
 
     public ngOnInit(): void {
-        this.loadGlobalPreferencesIfNeeded();
         this.setDisplayValues();
     }
 
     public ngOnChanges(): void {
         if ( !this.preferences ) return;
         this.setDisplayValues();
-        this.loadGlobalPreferencesIfNeeded();
-    }
-
-    /**
-     * Load the preferences of the crm system in case ...
-     * - we are "in personal context" (displaying the user preferences)
-     * - we need them because at least one user preference is not set
-     * - they are not already loaded
-     * @public
-     */
-    public loadGlobalPreferencesIfNeeded(): void {
-        if ( this.isPersonalContext && this.atLeastOnePrefMissing() && !this.globalPreferences ) this.loadGlobalPreferences();
     }
 
     /**
@@ -254,9 +251,7 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      * A preference has been changed.
      * @public
      */
-    public prefChanged(): void {
-        this.loadGlobalPreferencesIfNeeded();
-    }
+    public prefChanged(): void { 1; }
 
     /**
      * Sets initial values
@@ -267,6 +262,7 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
         this.createNameFormats();
         this.currencyList = this.currency.getCurrencies();
         for (let i = 0; i < 24; i++) this.dayHoursList.push(i);
+        this.defaultPreferences = this.configurationService.getData('defaultuserpreferences');
     }
 
     /**
@@ -335,7 +331,8 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      */
     public setDisplay_name(): void {
         this.display_name = '';
-        const value = this.getPrefValue('default_locale_name_format');
+        // const value = this.getPrefValue('default_locale_name_format');
+        const value = this.getPrefValue('locale_name_format');
         if ( value && this.nameFormats ) {
             this.nameFormats.some( format => {
                 if ( value === format.name ) {
@@ -353,13 +350,13 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      */
     public getPrefValue( name: string ): any {
         if ( name !== '_numberDelimitation' ) {
-            return this.prefValueIsGlobalFallback( name ) ? this.globalPreferences[name] : this.preferences[name];
+            return this.prefValueIsGlobalFallback( name ) ? this.defaultPreferences[name] : this.preferences[name];
         } else {
             const global = this.prefValueIsGlobalFallback( name );
             let found;
             if ( global ) {
                 found = this.numberDelimitationsList.find( f =>
-                    f.dec_sep == this.globalPreferences.dec_sep && f.num_grp_sep == this.globalPreferences.num_grp_sep );
+                    f.dec_sep == this.defaultPreferences.dec_sep && f.num_grp_sep == this.defaultPreferences.num_grp_sep );
             } else {
                 found = this.numberDelimitationsList.find( f =>
                     f.dec_sep == this.preferences.dec_sep && f.num_grp_sep == this.preferences.num_grp_sep );
@@ -375,12 +372,12 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      * @public
      */
     public prefValueIsGlobalFallback( name: string ): boolean {
-        if ( !this.isPersonalContext || !this.globalPreferences ) return false;
+        if ( !this.isPersonalContext || !this.defaultPreferences ) return false;
         if ( name !== '_numberDelimitation' ) {
-            return !this.isSet( this.preferences[name] ) && this.isSet( this.globalPreferences[name] );
+            return !this.isSet( this.preferences[name] ) && this.isSet( this.defaultPreferences[name] );
         } else {
             return ( !this.isSet( this.preferences.num_grp_sep ) || !this.isSet( this.preferences.dec_sep ))
-                && this.isSet( this.globalPreferences.num_grp_sep ) && this.isSet( this.globalPreferences.dec_sep );
+                && this.isSet( this.defaultPreferences.num_grp_sep ) && this.isSet( this.defaultPreferences.dec_sep );
         }
     }
 
@@ -390,19 +387,6 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      */
     public isSet( prefValue ): boolean {
         return ( prefValue !== undefined && ( typeof prefValue !== 'string' || prefValue.length !== 0 ));
-    }
-
-    /**
-     * Load default preferences (system preferences) from the backend
-     * @private
-     */
-    private loadGlobalPreferences(): void {
-        this.isLoading = true;
-        this.backend.getRequest('configuration/configurator/editor/default_preferences').subscribe(data => {
-            this.globalPreferences = data;
-            this.setDisplayValues();
-            this.isLoading = false;
-        });
     }
 
     /**

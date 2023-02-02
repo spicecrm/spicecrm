@@ -386,7 +386,7 @@ class Link2
             $rel_module = $this->getRelatedModuleName();
 
             //First swap in the temp loaded beans, only if we are doing a complete load (no params)
-            if (empty($params)) {
+            if (empty($params) || (count($params) == 1 && isset($params['relationship_fields']) )) {
                 $result = $this->tempBeans;
                 $this->tempBeans = [];
             }
