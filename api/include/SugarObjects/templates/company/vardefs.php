@@ -1,6 +1,5 @@
 <?php
-
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 /** @var string $module */
 /** @var string $object_name */
@@ -405,7 +404,7 @@ $vardefs = [
                 'relationship' => strtolower($object_name) . '_email_addresses_primary',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
         'email_addresses' =>
             [

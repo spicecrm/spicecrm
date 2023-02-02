@@ -19,6 +19,7 @@ import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
 import {SocketEventI} from "./interfaces.service";
 import {filter, map} from "rxjs/operators";
+import {userpreferences} from "./userpreferences.service";
 
 /**
  * @ignore
@@ -278,7 +279,8 @@ export class model implements OnDestroy {
         public navigation: navigation,
         public configuration: configurationService,
         public injector: Injector,
-        public socket: socket
+        public socket: socket,
+        public userpreferences: userpreferences
     ) {
 
         this.data$ = new BehaviorSubject(this.data);
@@ -721,6 +723,12 @@ export class model implements OnDestroy {
             let checksum: number = 0;
             let is_valid: boolean = true;
 
+            // make sure we have an array of events to filter properly on events
+            let onEventCheck = validation.onevents instanceof Array;
+            if(!onEventCheck){
+                validation.onevents = validation.onevents.split(',');
+            }
+
             if (validation.onevents instanceof Array && !validation.onevents.includes(event)) {
                 continue;
             }
@@ -804,6 +812,13 @@ export class model implements OnDestroy {
                 return true;
             case "set_value_from_field":
                 this.data[action.fieldname] = this.data[params];
+                return true;
+            case "set_value_from_user":
+                if(this.session.authData.user[params]){
+                    this.data[action.fieldname] = this.session.authData.user[params];
+                } else if(this.userpreferences.toUse[params]){
+                    this.data[action.fieldname] = this.userpreferences.toUse[params];
+                }
                 return true;
             case "set_message":
                 if (params instanceof Object) {
@@ -971,15 +986,16 @@ export class model implements OnDestroy {
     public setField(field, value, silent: boolean = false) {
         if (!field) return false;
 
+        const previousValue = this.data[field];
         this.data[field] = value;
 
         this.evaluateValidationRules(field, "change");
 
-        if (this.data[field] !== value) {
+        if (previousValue !== value && !silent) {
             this.field$.next({field, value});
         }
 
-        if (silent !== true) {
+        if (!silent) {
             this.data$.next(this.data);
         }
 

@@ -17,9 +17,6 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
-require_once('include/utils.php');
-require_once('sugar_version.php'); // provides $sugar_version, $sugar_db_version
-
 register_shutdown_function([SpiceUtils::class, 'spiceCleanup']);
 
 //set some basic php settings ensure they are proper if not set in the php.ini as it shoudl have been
@@ -64,9 +61,7 @@ try {
     // add the developer middleware
     $app->add(DeveloperMiddleware::class);
 
-    // load the core dictionary files
-//    SpiceDictionaryHandler::loadMetaDataFiles();
-
+    // authenticate
     AuthenticationController::getInstance()->authenticate();
 
     // register the upload stream handler
@@ -76,9 +71,7 @@ try {
     SpiceModules::getInstance()->loadModules();
 
     // load the metadata from the database
-//    SpiceDictionaryHandler::loadMetaDataDefinitions();
-    // load
-    SpiceDictionaryHandler::loadCachedVardefs();
+    SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 
     if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);

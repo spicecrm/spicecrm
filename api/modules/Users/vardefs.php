@@ -579,7 +579,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'link' => 'reports_to_link',
             'reportable' => false,
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'side' => 'right',
         ],
         'reports_to_link' => [
@@ -702,7 +702,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'relationship' => 'users_email_addresses_primary',
             'source' => 'non-db',
             'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'required' => false,
         ],
         'email_signature' => [
@@ -996,7 +996,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'relationship' => 'orgunits_users',
             'module' => 'OrgUnits',
             'source' => 'non-db'
-        ]
+        ],
+        'documentrevisions' => [
+            'name' => 'documentrevisions',
+            'type' => 'link',
+            'relationship' => 'users_documentrevisions',
+            'source' => 'non-db',
+            'module' => 'DocumentRevisions',
+            'vname' => 'LBL_DOCUMENTREVISIONS',
+        ],
     ],
     'indices' => [
         [

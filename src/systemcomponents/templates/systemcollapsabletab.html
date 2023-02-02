@@ -1,4 +1,4 @@
-<div class="slds-section" [ngClass]="{'slds-is-open': expanded}">
+<div class="slds-section" [ngClass]="{'slds-is-open': expanded, 'slds-m-around--none': margin == 'none'}">
     <h3 *ngIf="_title != ''" class="slds-section__title">
         <ng-container *ngIf="collapsible; else simpleheader">
             <button aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel()">

@@ -27,11 +27,19 @@ export class administration implements OnDestroy {
     public opened_itemid: any = {};
 
     /**
+     * keep the open block
+     */
+    public opened_block: any;
+
+    /**
      * the subscription to the broadfast service for laoder changes
      */
     public broadcastsubscription: any;
 
-
+    /**
+     * when the admin menu is minimized
+     */
+    public minimized: boolean = false;
 
     /**
      * the current admin
@@ -104,6 +112,13 @@ export class administration implements OnDestroy {
     }
 
     /**
+     * toggles the minimized flag
+     */
+    public toggleMinimized(){
+        this.minimized = !this.minimized;
+    }
+
+    /**
      * navigate to the home screen for the admin section
      */
     public navigateHome() {
@@ -122,9 +137,11 @@ export class administration implements OnDestroy {
      */
     public getItemLabel(itemid: string): string {
         let adminaction;
+        this.opened_block = undefined;
         this.adminNavigation.some(block => {
                 adminaction = block.groupcomponents.find(comp => comp.id == itemid);
                 if (adminaction) {
+                    this.opened_block = block;
                     return true;
                 }
             }
@@ -164,7 +181,7 @@ export class administration implements OnDestroy {
      */
     get navigationGroups() {
         // check if we have a filter .. if not just return the complete tree
-        if (this.itemfilter == '') {
+        if (this.itemfilter == '' || this.minimized) {
             return this.adminNavigation;
         }
 

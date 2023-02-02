@@ -7,8 +7,9 @@
         "de_DE": "de_DE.txt"
     },
     "build": {
-        "releasenumber": "2021.01.001",
-        "buildnumber": "2021.01.001.1613930873124"
+        "releasenumber": "2023.01.001",
+        "timestamp": "2021.02.21 06:07:53pm",
+        "buildnumber": "2023.01.001.1613930873124"
     },
     "system": {
         "php": {

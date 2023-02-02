@@ -16,7 +16,7 @@ $routes = [
         'class' => DictionaryManagerController::class,
         'function' => 'getDictionaryFields',
         'description' => 'get the columns name for the table from the database',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => false, 'validate' => true],
         'parameters' => [
             'table' => [
                 'in' => 'path',
@@ -33,7 +33,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'getNodes',
         'description' => 'builds an array with all the field nodes for specified module',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => false, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -50,7 +50,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'getFields',
         'description' => 'builds an array with all the fields defined for specified module',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => false, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -68,7 +68,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'getModuleRelationshipFields',
         'description' => 'get module relationship fields',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => false, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -93,7 +93,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'getAuditFields',
         'description' => 'get module relationship fields',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+        'options' => ['adminOnly' => false, 'validate' => false],
     ],
     [
         'method' => 'get',
@@ -101,7 +101,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'getDBColumns',
         'description' => 'get all columns from the module-table in the database allowed as admin',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -119,7 +119,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'buildSQLArray',
         'description' => 'building the query for a relationship repair',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -129,7 +129,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairAndRebuild',
         'description' => 'repairs and rebuilds the database',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
         'parameters' => [
             'selectedqueries' => [
                 'in' => 'body',
@@ -149,7 +149,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairLanguage',
         'description' => 'clears language cache and repairs the language extensions',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -159,7 +159,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairCache',
         'description' => 'clears the vardef cache, executes rebuilding of vardefs extensions and',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -169,7 +169,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairDBColumns',
         'description' => 'delete all the given columns in the database ',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'dbcolumns' => [
                 'in' => 'body',
@@ -192,7 +192,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairAndReloadCore',
         'description' => 'repairs the database and loads the core package',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -201,7 +201,7 @@ $routes = [
         'class'       => AdminController::class,
         'function'    => 'getDatabaseCharsetInfo',
         'description' => 'returns information on the charset and collation of a database and its tables',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [],
     ],
     [
@@ -210,7 +210,7 @@ $routes = [
         'class'       => AdminController::class,
         'function'    => 'convertDatabase',
         'description' => 'converts the DB charset and collation',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'charset' => [
                 'in'          => 'body',
@@ -230,7 +230,7 @@ $routes = [
         'class'       => AdminController::class,
         'function'    => 'convertTables',
         'description' => 'converts the charset of the given tables',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'tables' => [
                 'in'          => 'body',

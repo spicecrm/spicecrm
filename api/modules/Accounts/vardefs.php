@@ -320,7 +320,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'module' => 'Users',
                 'bean_name' => 'User',
                 'source' => 'non-db',
-                'duplicate_merge' => 'enabled',
+                'duplicate_merge' => true,
                 'rname' => 'user_name',
                 'id_name' => 'assigned_user_id',
                 'table' => 'users',
@@ -339,7 +339,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'isnull' => 'true',
                 'module' => 'Campaigns',
                 'reportable' => false,
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
 
         'campaign_name' =>
@@ -354,7 +354,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'id_name' => 'campaign_id',
                 'link' => 'campaign_accounts',
                 'module' => 'Campaigns',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
                 'comment' => 'The first campaign name for Account (Meta-data only)',
             ],
 
@@ -422,7 +422,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'relationship' => 'accounts_accountccdetails',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'default' => true, //UI: load related beans on account load. module property required!
             'module' => 'AccountCCDetails'
         ],

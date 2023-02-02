@@ -41,7 +41,7 @@ export class GlobalAppLauncherDialogRoleTile implements OnInit {
 
                 if (this.description && this.description.length > 75) {
                     this.descriptionfull = this.description;
-                    this.description = this.description.substr(0, 75) + '...';
+                    this.description = this.description.substring(0, 75) + '...';
                 }
                 return true;
             }

@@ -175,8 +175,8 @@ class ChromeLocalPdfHandler extends PdfHandler
             $fs = filesize( $tmpPdfFilename );
         } while ( $fs < 2000 and $counter < 10 );
         if ( $counter > 1 ) {
-            if ( $counter === 10 and $fs < 2000 ) LoggerManager::getLogger()->fatal('ChromeLocalPdfHandler: Could not generate PDF successfully after 10 attempts (PDF size less than 2000 Bytes).');
-            else LoggerManager::getLogger()->warn('ChromeLocalPdfHandler: Problems to generate PDF successfully (PDF size less than 2000 Bytes). Tried '.$counter.' times to succeed.');
+            if ( $counter === 10 and $fs < 2000 ) LoggerManager::getLogger()->fatal('chromepdf', 'ChromeLocalPdfHandler: Could not generate PDF successfully after 10 attempts (PDF size less than 2000 Bytes).');
+            else LoggerManager::getLogger()->warn('chromepdf', 'ChromeLocalPdfHandler: Problems to generate PDF successfully (PDF size less than 2000 Bytes). Tried '.$counter.' times to succeed.');
         }
         unlink( $tmpHtmlFilename );
 

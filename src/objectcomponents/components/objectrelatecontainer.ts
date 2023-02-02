@@ -19,8 +19,12 @@ export class ObjectRelateContainer implements OnInit {
     }
 
     public ngOnInit() {
-        let componentconfig = this.metadata.getComponentConfig('ObjectRelateContainer', this.model.module);
-        this.componentset = componentconfig.componentset;
+        if(!this.componentconfig.componentset) {
+            let componentconfig = this.metadata.getComponentConfig('ObjectRelateContainer', this.model.module);
+            this.componentset = componentconfig.componentset;
+        } else {
+            this.componentset = this.componentconfig.componentset;
+        }
     }
 
     /**

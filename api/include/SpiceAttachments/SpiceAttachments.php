@@ -561,9 +561,21 @@ class SpiceAttachments
                 if (!empty($module['module'])) {
                     $seed = BeanFactory::getBean($module['module']);
                     if ($seed) {
-                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type = '{$module['module']}' AND id IN (SELECT id FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0 AND NOT EXISTS (SELECT id FROM {$seed->_tablename} s where s.deleted = 0 and a.bean_id = s.id))");
+                        $idsObject  = $db->query("SELECT id FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0 AND NOT EXISTS (SELECT id FROM {$seed->_tablename} s where s.deleted = 0 and a.bean_id = s.id)");
+                        $ids = [];
+                        while($id = $db->fetchByAssoc($idsObject)){
+                            $ids[] = $id['id'];
+                        }
+                        // check that we have ids
+                        if(count($ids) == 0) continue;
+
+                        // build the ids
+                        $ids = implode("','", $ids);
+
+                        // set to deleted
+                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type = '{$module['module']}' AND id IN ('{$ids}')");
                     } else {
-                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type='{$module['module']}' AND a.deleted = 0");
+                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type='{$module['module']}' AND deleted = 0");
                     }
                 } else {
                     $db->query("DELETE FROM spiceattachments WHERE bean_type='' AND deleted = 0");

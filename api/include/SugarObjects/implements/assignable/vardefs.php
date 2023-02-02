@@ -51,7 +51,7 @@ $vardefs = [
             'len' => '36',
             'audited' => true,
             'comment' => 'User ID assigned to record',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => true,
             'link' => 'assigned_user_link'
         ],
         'assigned_user_name' => [
@@ -65,7 +65,7 @@ $vardefs = [
             'table' => 'users',
             'id_name' => 'assigned_user_id',
             'module' => 'Users',
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => false
         ],
         'assigned_user' => [
             'name' => 'assigned_user',
@@ -77,7 +77,7 @@ $vardefs = [
             'source' => 'non-db',
             'id_name' => 'assigned_user_id',
             'module' => 'Users',
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => true
         ],
         'assigned_user_link' => [
             'name' => 'assigned_user_link',
@@ -92,7 +92,7 @@ $vardefs = [
             'id_name' => 'assigned_user_id',
             'table' => 'users',
             'recover' => false,
-            'duplicate_merge' => 'disabled'
+            'duplicate_merge' => true
         ]
     ],
     'relationships' => [

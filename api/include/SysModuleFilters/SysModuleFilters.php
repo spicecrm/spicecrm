@@ -217,17 +217,20 @@ class SysModuleFilters
             $filterCondition = '(' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
+                $userIds = "'" . join("','", $userIds) . "'";
                 $filterCondition = "({$tablename}.assigned_user_id IN ({$userIds}) AND ($filterCondition))";
             }
 
             if ($group->groupscope == 'ownorgunit') {
                 $orgunitIds = array_merge([$current_user->orgunit_id], $absence->getSubstituteOrgUnitIDs());
+                $orgunitIds = "'" . join("','", $orgunitIds) . "'";
                 $filterCondition = "({$tablename}.assigned_orgunit_id IN ({$orgunitIds}) AND ($filterCondition))";
             }
 
             // added an option for the creator
             if ($group->groupscope == 'creator') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
+                $userIds = "'" . join("','", $userIds) . "'";
                 $filterCondition = "({$tablename}.created_by IN ({$userIds}) AND ($filterCondition))";
             }
         }

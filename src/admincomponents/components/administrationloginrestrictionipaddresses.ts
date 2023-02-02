@@ -49,13 +49,15 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         this.isLoading = true;
         this.backend.getRequest('authentication/ipAddresses/'+this.color)
             .pipe(take(1))
-            .subscribe(data => {
-                this.ipAddresses = data;
-                this.sortIpAddresses();
-                this.isLoading = false;
-            },
-            error => {
-                this.toast.sendToast('Error loading '+this.color+' listed IP Addresses.', error.error.error.message, 'error');
+            .subscribe({
+                next: data => {
+                    this.ipAddresses = data;
+                    this.sortIpAddresses();
+                    this.isLoading = false;
+                },
+                error: error => {
+                    this.toast.sendToast('Error loading '+this.color+' listed IP Addresses.', error.error.error.message, 'error');
+                }
             });
     }
 
@@ -77,34 +79,37 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         if ( addressesToDelete.length ) {
             this.modal.confirm('Remove '+addressesToDelete.length+' IP Addresses? This can not be undone.', 'Remove IP Addresses?', null )
                 .pipe(take(1))
-                .subscribe( response => {
-                    if ( response ) {
-                        this.isLoading = true;
-                        let numberOfToDo = addressesToDelete.length;
-                        addressesToDelete.forEach( ( i ) => {
-                            this.backend.deleteRequest( 'authentication/ipAddress/' + this.ipAddresses[i].address )
-                                .pipe(take(1))
-                                .subscribe( response => {
-                                    if( response.success === true ) {
-                                        registeredToRemove.push(i);
-                                    }
-                                    numberOfToDo--;
-                                    if( numberOfToDo <= 0 ) {
-                                        this._removeFromList(registeredToRemove);
-                                        this.isLoading = false;
-                                    }
-                                },
-                                error => () => {
-                                    numberOfToDo--;
-                                    if( numberOfToDo <= 0 ) {
-                                        this._removeFromList(registeredToRemove);
-                                        this.isLoading = false;
-                                    }
-                                    this.toast.sendToast('Error deleting IP Address '+this.ipAddresses[i].address+'.', error.error.error.message, 'error');
-                                }
-                            );
-                        } );
-                    } else this.isLoading = false;
+                .subscribe( {
+                    next: response => {
+                        if( response ) {
+                            this.isLoading = true;
+                            let numberOfToDo = addressesToDelete.length;
+                            addressesToDelete.forEach( ( i ) => {
+                                this.backend.deleteRequest( 'authentication/ipAddress/' + this.ipAddresses[i].address )
+                                    .pipe( take( 1 ) )
+                                    .subscribe({
+                                        next: response => {
+                                            if( response.success === true ) {
+                                                registeredToRemove.push( i );
+                                            }
+                                            numberOfToDo--;
+                                            if( numberOfToDo <= 0 ) {
+                                                this._removeFromList( registeredToRemove );
+                                                this.isLoading = false;
+                                            }
+                                        },
+                                        error: error => {
+                                            numberOfToDo--;
+                                            if( numberOfToDo <= 0 ) {
+                                                this._removeFromList( registeredToRemove );
+                                                this.isLoading = false;
+                                            }
+                                            this.toast.sendToast( 'Error deleting IP Address ' + this.ipAddresses[i].address + '.', error.error.error.message, 'error' );
+                                        }
+                                });
+                            });
+                        } else this.isLoading = false;
+                    }
                 });
         }
     }
@@ -123,28 +128,29 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
                     addressesToMove.forEach( ( i ) => {
                         this.backend.putRequest( 'authentication/ipAddress/' + this.ipAddresses[i].address + '/move/' + destinationColor )
                             .pipe(take(1))
-                            .subscribe( response => {
-                                if( response.success === true ) {
-                                    this.siblingComponent.ipAddresses.push( this.ipAddresses[i] );
-                                    this.ipAddresses[i].selected = false;
-                                    registeredToRemove.push(i);
-                                    this.siblingComponent.sortIpAddresses();
+                            .subscribe({
+                                next: response => {
+                                    if( response.success === true ) {
+                                        this.siblingComponent.ipAddresses.push( this.ipAddresses[i] );
+                                        this.ipAddresses[i].selected = false;
+                                        registeredToRemove.push(i);
+                                        this.siblingComponent.sortIpAddresses();
+                                    }
+                                    numberOfToDo--;
+                                    if( numberOfToDo <= 0 ) {
+                                        this._removeFromList( registeredToRemove );
+                                        this.isLoading = this.siblingComponent.isLoading = false;
+                                    }
+                                },
+                                error: error => {
+                                    numberOfToDo--;
+                                    if( numberOfToDo <= 0 ) {
+                                        this._removeFromList( registeredToRemove );
+                                        this.isLoading = this.siblingComponent.isLoading = false;
+                                    }
+                                    this.toast.sendToast('Error moving IP Address '+this.ipAddresses[i].address+'.', error.error.error.message, 'error');
                                 }
-                                numberOfToDo--;
-                                if( numberOfToDo <= 0 ) {
-                                    this._removeFromList( registeredToRemove );
-                                    this.isLoading = this.siblingComponent.isLoading = false;
-                                }
-                            },
-                            error => () => {
-                                numberOfToDo--;
-                                if( numberOfToDo <= 0 ) {
-                                    this._removeFromList( registeredToRemove );
-                                    this.isLoading = this.siblingComponent.isLoading = false;
-                                }
-                                this.toast.sendToast('Error moving IP Address '+this.ipAddresses[i].address+'.', error.error.error.message, 'error');
-                            }
-                        );
+                            });
                     });
                 });
         }
@@ -168,19 +174,21 @@ export class AdministrationLoginRestrictionIpAddresses implements OnInit {
         this.isLoading = true;
         this.backend.postRequest( 'authentication/ipAddress/' + this.newAddress, null, { color: this.color[0], description: this.newDescription } )
             .pipe(take(1))
-            .subscribe( response => {
-                this.isLoading = false;
-                this.ipAddresses.push(response.data);
-                this.sortIpAddresses();
-                this.toast.sendToast( 'IP Address ' + this.newAddress + ' added ('+this.color+' listed).', 'success' );
-                this.newAddress = '';
-                this.newDescription = '';
-                this.isAdding = false;
-            },
-                error => {
-                this.toast.sendToast( 'Error saving IP Address.','error', error.error.error.message );
-                this.isLoading = false;
-                this.isAdding = false;
+            .subscribe({
+                next: response => {
+                    this.isLoading = false;
+                    this.ipAddresses.push(response.data);
+                    this.sortIpAddresses();
+                    this.toast.sendToast( 'IP Address ' + this.newAddress + ' added ('+this.color+' listed).', 'success' );
+                    this.newAddress = '';
+                    this.newDescription = '';
+                    this.isAdding = false;
+                },
+                error: error => {
+                    this.toast.sendToast( 'Error saving IP Address.','error', error.error.error.message );
+                    this.isLoading = false;
+                    this.isAdding = false;
+                }
             });
     }
 

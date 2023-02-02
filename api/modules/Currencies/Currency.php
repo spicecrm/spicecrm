@@ -38,7 +38,7 @@ namespace SpiceCRM\modules\Currencies;
 
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -188,7 +188,7 @@ class Currency extends SpiceBean
      }
 
     function save($check_notify = FALSE, $fts_index_bean = TRUE) {
-        SugarCache::sugar_cache_clear('currency_list');
+        SpiceCache::clear('currency_list');
         return parent::save($check_notify, $fts_index_bean);
     }
 } // end currency class
