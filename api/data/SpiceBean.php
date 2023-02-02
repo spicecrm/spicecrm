@@ -2455,13 +2455,13 @@ class SpiceBean
         foreach ($tmpBeans as $beanId => $tmpBean) {
             //handle related beans
             foreach ($linked_fields as $name => $properties) {
-                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link' || $properties['name'] == 'assigned_user_link')
+                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link')
                     continue;
-                
+
                 if (isset($properties['duplicate_merge'])) {
-                    if ($properties['duplicate_merge'] == 'disabled' or
-                        $properties['duplicate_merge'] == 'false' or
-                        $properties['duplicate_merge'] === '0' or
+                    if (
+                        $properties['duplicate_merge'] === 'disabled' or
+                        $properties['duplicate_merge'] === 0 or
                         $properties['duplicate_merge'] === false) {
                         continue;
                     }
