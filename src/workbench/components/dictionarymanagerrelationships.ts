@@ -24,7 +24,7 @@ export class DictionaryManagerRelationships {
 
     public currentRelationship: Relationship;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
 
@@ -76,7 +76,7 @@ export class DictionaryManagerRelationships {
     }
 
     /**
-     * prompts the user and delets the dictionary definition
+     * prompts the user and deletes the dictionary definition
      *
      * @param event
      * @param id
@@ -85,11 +85,19 @@ export class DictionaryManagerRelationships {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
-                let di = this.dictionarymanager.dictionaryrelationships.find(f => f.id == id).deleted = 1;
-                if (this.dictionarymanager.currentDictionaryRelationship == id) {
-                    this.dictionarymanager.currentDictionaryRelationship == null;
-                    this.currentRelationship = null;
-                }
+                this.backend.deleteRequest(`dictionary/relationship/${id}`).subscribe({
+                    next: (res) => {
+                        // remove the relationship
+                        let di = this.dictionarymanager.dictionaryrelationships.findIndex(f => f.id == id);
+                        this.dictionarymanager.dictionaryrelationships.splice(di, 1);
+
+                        // reset the current selection
+                        if (this.dictionarymanager.currentDictionaryRelationship == id) {
+                            this.dictionarymanager.currentDictionaryRelationship == null;
+                            this.currentRelationship = null;
+                        }
+                    }
+                })
             }
         });
     }
@@ -111,6 +119,45 @@ export class DictionaryManagerRelationships {
     public setActiveId(id) {
         this.dictionarymanager.currentDictionaryRelationship = id;
         this.currentRelationship = this.dictionarymanager.dictionaryrelationships.find(r => r.id == id);
+    }
+
+
+    /**
+     * sets the status and write the cahced entries ont eh backend
+     *
+     * @param item
+     * @param status
+     */
+    public setStatus(relationship, status) {
+        let loadingModal;
+        switch (status) {
+            case 'a':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.postRequest(`dictionary/relationship/${relationship.id}/activate`).subscribe({
+                    next: () => {
+                        relationship.status = status;
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            case 'i':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.deleteRequest(`dictionary/relationship/${relationship.id}/activate`).subscribe({
+                    next: () => {
+                        relationship.status = status;
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            default:
+                relationship.status = status;
+        }
     }
 
 

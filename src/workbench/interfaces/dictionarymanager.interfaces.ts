@@ -61,6 +61,18 @@ export interface DictionaryItem {
 }
 
 /**
+ * the relationship types
+ */
+export interface RelationshipType{
+    id: string;
+    name: string;
+    label: string;
+    class: string;
+    component_add: string;
+    component_edit: string;
+}
+
+/**
  * the Relationship
  */
 export interface Relationship {
@@ -80,7 +92,7 @@ export interface Relationship {
     rhs_linklabel: string;
     rhs_relatename: string;
     rhs_relatelabel: string;
-    relationship_type: 'one-to-many'|'many-to-many'|'parent';
+    relationship_type: string;
     join_sysdictionarydefinition_id?: string;
     join_lhs_sysdictionaryitem_id?: string;
     join_rhs_sysdictionaryitem_id?: string;

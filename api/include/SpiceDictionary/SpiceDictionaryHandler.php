@@ -185,10 +185,6 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @return array
      */
     public function getDictionaryRelationships(){
-        return (new SpiceDictionaryRelationships())->getRelationships(null, []);
-    }
-
-    public function getDictionaryRelationships_old(){
         $db = DBManagerFactory::getInstance();
         $relOriginTables = ['sysdictionaryrelationships' => 'g', 'syscustomdictionaryrelationships' => 'c'];
         $relArray = [];

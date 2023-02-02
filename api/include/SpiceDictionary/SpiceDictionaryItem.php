@@ -8,7 +8,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryItem
 {
-    protected $id;
+    public $id;
 
     public $itemDefinition;
 
