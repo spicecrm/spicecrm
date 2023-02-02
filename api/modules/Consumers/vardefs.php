@@ -95,7 +95,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'table' => 'campaigns',
             'isnull' => 'true',
             'module' => 'Campaigns',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'campaign_name' => [
             'name' => 'campaign_name',
@@ -109,7 +109,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'table' => 'campaigns',
             'id_name' => 'campaign_id',
             'module' => 'Campaigns',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'comment' => 'The first campaign name for Consumer (Meta-data only)',
         ],
         'campaigns' => [
@@ -147,7 +147,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'link_type' => 'relationship_info',
             'source' => 'non-db',
             'importable' => 'false',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'm_accept_status_fields' => [
             'name' => 'm_accept_status_fields',
@@ -160,7 +160,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'source' => 'non-db',
             'importable' => 'false',
             'hideacl' => true,
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'accept_status_id' => [
             'name' => 'accept_status_id',
@@ -275,6 +275,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'vname' => 'LBL_EVENTREGISTRATIONS',
             'type' => 'link',
             'relationship' => 'consumer_eventregistrations',
+            'source' => 'non-db',
+        ],
+        'emails' => [
+            'name' => 'emails',
+            'vname' => 'LBL_EMAILS',
+            'type' => 'link',
+            'relationship' => 'emails_consumers_rel',
+            'module' => 'Emails',
             'source' => 'non-db',
         ],
         'salesdocsop' => [

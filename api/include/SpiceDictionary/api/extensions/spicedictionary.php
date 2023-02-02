@@ -115,6 +115,22 @@ $routes = [
         'options'     => ['noAuth' => false, 'adminOnly' => false],
     ],
     [
+        'method'      => 'get',
+        'route'       => '/dictionary/fields',
+        'class'       => SpiceDictionaryController::class,
+        'function'    => 'getDictionaryFields',
+        'description' => 'get dictionary definitions including relationship & index definitions ',
+        'options'     => ['adminOnly' => true],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/dictionary/vardefs/{dictionaryname}',
+        'class'       => SpiceDictionaryController::class,
+        'function'    => 'getDictionaryVardefs',
+        'description' => 'get dictionary definitions vardefs for a given dictionary item by name',
+        'options'     => ['adminOnly' => true],
+    ],
+    [
         'method'      => 'post',
         'route'       => '/dictionary/definitions',
         'oldroute'       => '/system/dictionary/definitions',

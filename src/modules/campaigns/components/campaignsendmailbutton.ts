@@ -6,6 +6,7 @@ import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
+import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'campaign-send-mail-button',
@@ -16,7 +17,11 @@ export class CampaignSendMailButton {
     public sending: boolean = false;
     public disabled: boolean = true;
 
-    constructor(public language: language, public model: model, public backend: backend, public toast: toast) {
+    constructor(public language: language,
+                public model: model,
+                public backend: backend,
+                public toast: toast,
+                public modal: modal) {
         this.model.mode$.subscribe(mode => {
             this.handleDisabled();
         });
@@ -26,15 +31,28 @@ export class CampaignSendMailButton {
         });
     }
 
+    /**
+     * sends emails to que
+     * writes campaign_log entry in the backend
+     */
     public execute() {
+        let loading = this.modal.await('LBL_SENDING');
+
         if (!this.sending) {
             this.sending = true;
-            this.backend.postRequest(`module/CampaignTasks/${this.model.id}/queuemail`).subscribe((results: any) => {
-                this.sending = false;
-                this.toast.sendToast('Mails queued');
-
-                // set the campaigntask to activated
-                this.model.setField('activated', true);
+            this.backend.postRequest(`module/CampaignTasks/${this.model.id}/queuemail`).subscribe({
+                next: (results: { success: boolean, id: string }) => {
+                    this.sending = false;
+                    loading.emit(true);
+                    if (results.success) {
+                        this.toast.sendToast(this.language.getLabel("LBL_MAILS_QUEUED"));
+                    } else {
+                        this.toast.sendToast(this.language.getLabel('LBL_NO_TARGETS_SELECTED'), 'error');
+                    }
+                }, error: () => {
+                    loading.emit(true);
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR"), 'error');
+                }
             });
         }
     }

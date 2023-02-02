@@ -17,7 +17,7 @@ $routes = [
         'class' => AdminPHPClassController::class,
         'function' => 'checkClass',
         'description' => 'check if a class exists',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['adminOnly' => false],
         'parameters' => [
             'class' => [
                 'in' => 'path',

@@ -89,7 +89,7 @@ $routes = [
     ],
     [
         'method' => 'post',
-        'route' => '/configuration/spiceui/core/categorytrees/id}/links',
+        'route' => '/configuration/spiceui/core/categorytrees/{id}/links',
         'class' => SysCategoryTreesController::class,
         'function' => 'setTreeLinks',
         'description' => 'adds or updates a tree links',

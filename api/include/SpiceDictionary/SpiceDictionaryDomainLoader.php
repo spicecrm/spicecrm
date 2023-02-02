@@ -2,6 +2,7 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 /**
  * a loader for the domains and domain validations
@@ -13,6 +14,9 @@ class SpiceDictionaryDomainLoader
 {
     public function loadDomainValidations()
     {
+        $cached = SpiceCache::get('domainvalidations');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         $validationsArray = [];
         $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations WHERE deleted = 0 AND status = 'a'");
@@ -66,6 +70,8 @@ class SpiceDictionaryDomainLoader
                 'sequence' => $domainvalue['sequence']
             ];
         }
+
+        SpiceCache::set('domainvalidations', $validationsArray);
 
         return $validationsArray;
     }

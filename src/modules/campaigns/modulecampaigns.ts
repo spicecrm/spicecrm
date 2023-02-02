@@ -11,7 +11,6 @@ import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
 import {CampaignTaskActivateButton} from "./components/campaigntaskactivatebutton";
-import {CampaignTaskExportButton} from "./components/campaigntaskexportbutton";
 
 import {CampaignSendMailButton} from './components/campaignsendmailbutton';
 import {CampaignSendTestMailButton} from './components/campaignsendtestmailbutton';
@@ -29,6 +28,9 @@ import {EventRegistrationModal} from "./components/eventregistrationmodal";
 import {EventRegistrationModalList} from "./components/eventregistrationmodallist";
 import {EventRegistrationModalType} from "./components/eventregistrationmodaltype";
 import {EventWithCampaignActivateButton} from "./components/eventwithcampaignactivatebutton";
+import {CampaignTaskTargetsManager} from "./components/campaigntasktargetsmanager";
+import {CampaignTaskTargetsManagerButton} from "./components/campaigntasktargetsmanagerbutton";
+import {CampaignTaskTargetsManagerDetails} from "./components/campaigntasktargetsmanagerdetail";
 
 @NgModule({
     imports: [
@@ -42,7 +44,6 @@ import {EventWithCampaignActivateButton} from "./components/eventwithcampaignact
     ],
     declarations: [
         CampaignTaskActivateButton,
-        CampaignTaskExportButton,
         CampaignSendMailButton,
         CampaignSendTestMailButton,
         CampaignExportButton,
@@ -53,6 +54,9 @@ import {EventWithCampaignActivateButton} from "./components/eventwithcampaignact
         CampaignTaskMailMergePanel,
         CampaignTaskMailergeButton,
         CampaignTaskMailMergeModal,
+        CampaignTaskTargetsManager,
+        CampaignTaskTargetsManagerDetails,
+        CampaignTaskTargetsManagerButton,
         EventRegistrationButton,
         EventRegistrationModal,
         EventRegistrationModalList,

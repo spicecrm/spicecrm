@@ -25,6 +25,7 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -155,14 +156,16 @@ class AuthenticationController
      * @throws BadRequestException | Exception | UnauthorizedException
      * @throws \Exception
      */
-    public function authenticate()
+    public function authenticate($authParams = null)
     {
-        $authParams = RESTManager::getInstance()->parseAuthParams();
+        if(!$authParams) {
+            $authParams = RESTManager::getInstance()->parseAuthParams();
+        }
 
         if ($authParams->authType == 'none') return;
 
         try {
-            $authenticator = $this->getAuthenticator();
+            $authenticator = $this->getAuthenticator($authParams->authData);
 
             $authResponse = $authenticator->authenticate($authParams->authData, $authParams->authType);
             $this->handleSuccessfulAuthentication($authParams->authData, $authResponse, $authParams->authType);
@@ -198,13 +201,15 @@ class AuthenticationController
      * default type is SpiceCRM
      * @return string
      */
-    private function getAuthenticatorType(): string
+    private function getAuthenticatorType($authData = null): string
     {
         $type = 'SpiceCRM';
 
         if (LDAPAuthenticate::isLdapEnabled()) $type = 'LDAP';
 
-        $tokenIssuer = RESTManager::getInstance()->parseAuthParams()->authData->tokenIssuer;
+        // if we do not have the audata get it from teh REST Call
+        if(!$authData) $authData = RESTManager::getInstance()->parseAuthParams()->authData;
+        $tokenIssuer = $authData->tokenIssuer;
 
         if (!empty($tokenIssuer)) $type = $tokenIssuer;
 
@@ -387,7 +392,8 @@ class AuthenticationController
     private function checkTimeBasedOnetimePassword(User $userObj)
     {
         if ( SpiceConfig::getInstance()->config['login_methods']['totp_authentication_required'] and !TOTPAuthentication::checkTOTPActive( $userObj->id )) {
-            $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+            $language = $userObj->getPreference('language');
+            $necessaryLabels = LanguageManager::getSpecificLabels( $language ?: SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
                 'LBL_SAVE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'LBL_CODE', 'LBL_CANCEL', 'LBL_CODE'
             ]);
             throw ( new UnauthorizedException('TOTP.', 12 ))->setDetails(['labels' => $necessaryLabels]);
@@ -403,7 +409,8 @@ class AuthenticationController
     private function checkPasswordExpire(User $userObj)
     {
         if (( $userObj->system_generated_password || $userObj->hasExpiredPassword() ) && !$userObj->is_api_user && !$userObj->external_auth_only) {
-            $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+            $userLanguage = $userObj->getPreference('language');
+            $necessaryLabels = LanguageManager::getSpecificLabels( $userLanguage ?: SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
                 'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
                 'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
                 'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY'
@@ -435,9 +442,9 @@ class AuthenticationController
      * @return SpiceCRMAuthenticate | GoogleAuthenticate | OAuth2Authenticate | TenantAuthenticate
      * @throws \Exception
      */
-    public function getAuthenticator()
+    public function getAuthenticator($authData = null)
     {
-        $type = $this->getAuthenticatorType();
+        $type = $this->getAuthenticatorType($authData);
 
         return $this->getAuthenticatorObject($type);
     }

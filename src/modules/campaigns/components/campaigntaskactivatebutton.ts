@@ -64,13 +64,11 @@ export class CampaignTaskActivateButton {
         this.backend.postRequest(`module/CampaignTasks/${this.model.id}/activate`).subscribe(status => {
             this.activating = false;
 
-            // send toast and set actrive
+            // send toast and set active
             if (status.success) {
-                this.toast.sendToast('Activated');
-                this.model.setField('activated', true);
-
+                this.toast.sendToast(this.language.getLabel("LBL_CAMPAIGNTASK_ACTIVATED"));
             } else {
-                this.toast.sendToast('Error');
+                this.toast.sendToast(this.language.getLabel('LBL_NO_TARGETS_SELECTED'), 'error');
             }
         });
     }

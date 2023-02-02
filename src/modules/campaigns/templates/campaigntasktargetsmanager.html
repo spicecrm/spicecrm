@@ -1,0 +1,116 @@
+<div class="slds-page-header slds-grid slds-grid--align-spread">
+    <div class="slds-col slds-has-flexi-truncate">
+        <div class="slds-media slds-no-space slds-grow">
+            <system-icon module="ProspectLists" (click)="goModule()"></system-icon>
+            <div class="slds-media__body">
+                <p class="slds-text-title--caps slds-line-height--reset" style="min-width: 200px;">
+                    <system-label label="LBL_MANAGE_TARGETS"></system-label>
+                </p>
+                <div>
+                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                        <a href="javascript:void(0);" (click)="goModel()">
+                            {{parent.data.summary_text}}
+                        </a>
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-page-header__col-actions slds-grid">
+        <div class="slds-grid slds-gutters_direct-xx-small">
+            <div class="slds-form-element slds-col slds-grid slds-grid--vertical-align-center">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_STATUS"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select [(ngModel)]="currentFilterStatus" class="slds-select" style="min-width: 120px;">
+                            <option></option>
+                            <option value="unchecked"><system-label label="LBL_UNCHECKED"></system-label></option>
+                            <option value="checked"><system-label label="LBL_CHECKED"></system-label></option>
+                            <option value="excluded"><system-label label="LBL_EXCLUDED"></system-label></option>
+                            <option value="included"><system-label label="LBL_INCLUDED"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-col slds-grid slds-grid--vertical-align-center">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_PROSPECTLIST"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select [(ngModel)]="currentListId" class="slds-select" style="min-width: 120px;">
+                            <option></option>
+                            <option *ngFor="let pl of prospectLists" [ngValue]="pl.id">{{pl.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <system-input-delayed class="slds-col" [(ngModel)]="searchTerm" placeholder="LBL_SEARCH" delay="500"></system-input-delayed>
+        </div>
+        <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+                <button (click)="reload()" class="slds-button slds-button--icon slds-button--icon-border-filled">
+                    <system-button-icon icon="refresh"></system-button-icon>
+                </button>
+            </div>
+            <div class="slds-page-header__control">
+                <button (click)="add()" class="slds-button slds-button--icon slds-button--icon-border-filled">
+                    <system-button-icon icon="add"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-theme--default slds-grid slds-grid--vertical" system-to-bottom style="min-height: 100px">
+    <div class="slds-grow">
+        <table  class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed"  role="grid">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col" style="width: 2rem"></th>
+                <th scope="col"><div class="slds-th__action"><system-label label="LBL_NAME"></system-label></div></th>
+                <th scope="col" style="width: 15rem"><div class="slds-th__action"><system-label label="LBL_PROSPECTLISTS"></system-label></div></th>
+                <th scope="col" style="width: 5rem"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let prospect of prospects" class="slds-hint-parent">
+                <td class="slds-text-align--center"><system-icon [module]="prospect.module" size="xx-small"></system-icon></td>
+                <td><campaigntask-target-manager-details [fieldset]="detailsFieldSets[prospect.module]" [module]="prospect.module" [data]="prospect.data"></campaigntask-target-manager-details></td>
+                <td [system-title]="prospect.prospectListsDisplay" class="slds-truncate">{{prospect.prospectListsDisplay}}</td>
+                <td [system-title]="prospect.status_date_changed" class="slds-text-align--right">
+                    <ng-container *ngIf="prospect.status != 'included'; else includedActions">
+                        <button (click)="setStatus('checked', prospect)" [disabled]="prospect.status == 'checked'" class="slds-button slds-button--icon">
+                            <system-utility-icon class="slds-col" icon="success" size="xx-small" [colorclass]="prospect.status == 'checked' ? 'slds-icon-text-success' : 'slds-icon-text-light'"></system-utility-icon>
+                        </button>
+                        <button (click)="setStatus('excluded', prospect)" [disabled]="prospect.status == 'excluded'" class="slds-button slds-button--icon">
+                            <system-utility-icon class="slds-col" icon="error" size="xx-small" [colorclass]="prospect.status == 'excluded' ? 'slds-icon-text-error' : 'slds-icon-text-light'"></system-utility-icon>
+                        </button>
+                    </ng-container>
+                    <ng-template #includedActions>
+                        <system-utility-icon class="slds-col slds-m-right--xx-small" icon="add" size="xx-small" colorclass="slds-icon-text-success"></system-utility-icon>
+                        <button (click)="removeIncluded(prospect)" class="slds-button slds-button--icon">
+                            <system-utility-icon class="slds-col" icon="delete" size="xx-small"></system-utility-icon>
+                        </button>
+                    </ng-template>
+                </td>
+            </tr>
+            </tbody>
+            <tbody system-table-stencils columns="4" rows="20" *ngIf="loading"></tbody>
+        </table>
+    </div>
+    <div *ngIf="!loading && prospects.length == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+        <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+    </div>
+    <div class="slds-border--top slds-grid slds-grid--align-end slds-p-vertical--xx-small slds-theme--default" style="bottom: 0; position: sticky">
+        <button (click)="checkAll()" class="slds-button slds-button--neutral">
+            <system-label label="LBL_CHECK_ALL"></system-label>
+        </button>
+        <button (click)="excludeAll()" class="slds-button slds-button--neutral">
+            <system-label label="LBL_EXCLUDE_ALL"></system-label>
+        </button>
+        <pagination-controls [total_records]="totalCount" [limit]="limit" [page]="currentPage" (pageChange)="onPageChange($event)"></pagination-controls>
+    </div>
+
+</div>

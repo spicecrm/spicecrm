@@ -102,5 +102,24 @@ export class DictionaryManagerItems {
         this.dictionaryitem = this.dictionarymanager.dictionaryitems.find(i => i.id == id);
     }
 
+    /**
+     * returns if there are any items thar are in status 'd'
+     */
+    get hasDraftItems(){
+        return this.dictionaryitems.filter(d => d.status == 'd').length > 0;
+    }
+
+    /**
+     * activate All
+     */
+    public activateAll(e: MouseEvent){
+        e.stopPropagation();
+        e.preventDefault();
+        this.modal.confirm('MSG_ACTIVATE_ALL','MSG_ACTIVATE_ALL').subscribe({
+            next: (res) => {
+                if(res) this.dictionaryitems.filter(d => d.status == 'd').forEach(d => d.status = 'a');
+            }
+        })
+    }
 
 }

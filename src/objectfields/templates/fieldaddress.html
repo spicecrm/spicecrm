@@ -3,8 +3,8 @@
     <field-generic-display  [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()" [fieldid]="fieldid">
         <div class="slds-grid slds-grid--align-spread">
             <span>{{value}}</span>
-            <system-checkbox *ngIf="!!referenceMetadata && !fieldconfig.referenceCheckboxDisplayNone" [(ngModel)]="isReferenced" [disabled]="true" class="slds-m-left--xx-small">
-                <system-label label="LBL_REFERENCE"></system-label>
+            <system-checkbox  *ngIf="!!referenceMetadata && !fieldconfig.referenceCheckboxDisplayNone" [(ngModel)]="isReferenced" [disabled]="true" class="slds-m-left--xx-small">
+                <system-label system-title="LBL_REFERENCE" label="LBL_REFERENCE"></system-label>
             </system-checkbox>
         </div>
     </field-generic-display>
@@ -38,7 +38,7 @@
                     <field-messages [fieldname]="fieldName('street_number_suffix')"></field-messages>
                 </div>
                 <div *ngIf="!!referenceMetadata" class="slds-form-element slds-col slds-size--1-of-6 ">
-                    <label class="slds-truncate slds-form-element__label">
+                    <label system-title="LBL_REFERENCE" class="slds-truncate slds-form-element__label">
                         <system-label label="LBL_REFERENCE"></system-label>
                     </label>
                     <system-checkbox [(ngModel)]="isReferenced" hidelabel [disabled]="model.isNew && !isReferenced" class="slds-m-left--xx-small spice-display-block">

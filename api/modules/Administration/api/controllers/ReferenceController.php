@@ -6,6 +6,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\SystemDeploymentPackages\SystemDeploymentPackageSource;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
@@ -29,7 +30,7 @@ class ReferenceController
         $content = json_decode($getJSONcontent);
         if ($loader->release === true) {
             $content->versions = [];
-            $content->versions[0]->version = $GLOBALS['sugar_version'];
+            $content->versions[0]->version = SpiceConfig::getInstance()->getVersion();
         }
         $content->loaded = $loader->getCurrentConf();
         return $res->withJson($content);

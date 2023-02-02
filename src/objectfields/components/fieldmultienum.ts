@@ -56,7 +56,7 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         try {
             let value = this.model.getFieldValue(this.fieldname);
             // delete leading and trailing ^ if there is any
-            if(value.substr(0, 1) == '^') value = value.substr(1, value.length - 2);
+            if(value.substring(0, 1) == '^') value = value.substring(1, value.length - 2);
             return value.split('^,^');
         } catch (e) {
             return [];

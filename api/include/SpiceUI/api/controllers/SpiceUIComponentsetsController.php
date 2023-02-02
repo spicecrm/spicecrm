@@ -3,6 +3,7 @@
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use stdClass;
 
 class SpiceUIComponentsetsController
@@ -12,6 +13,10 @@ class SpiceUIComponentsetsController
     
     static function getComponentSets()
     {
+        // check if cached
+        $cached = SpiceCache::get('spiceComponentSets');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
         
         $retArray = [];
@@ -63,6 +68,10 @@ class SpiceUIComponentsetsController
                 'componentconfig' => json_decode(str_replace(["\r", "\n", "&#039;", "'"], ['', '', '"', '"'], $componentset['componentconfig']), true) ?: new stdClass()
             ];
         }
+
+        // set the Cache
+        SpiceCache::set('spiceComponentSets', $retArray);
+
         return $retArray;
     }
 }

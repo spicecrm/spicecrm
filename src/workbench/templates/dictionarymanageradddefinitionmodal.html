@@ -18,7 +18,7 @@
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="dictionarydefinition.scope">
-                        <option *ngIf="dictionarymanager.changescope == 'global'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                        <option *ngIf="dictionarymanager.changescope == 'all'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
                         <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
                     </select>
                 </div>
@@ -30,7 +30,8 @@
                         <option value="module">module</option>
                         <option value="metadata">metadata</option>
                         <option value="template">template</option>
-                        <option value="template">relationship</option>
+                        <option value="relationship">relationship</option>
+                        <option value="system">system</option>
                     </select>
                 </div>
             </div>
@@ -55,7 +56,7 @@
             </div>
         </div>
         <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
-        <system-richtext-editor [(ngModel)]="dictionarydefinition.description"></system-richtext-editor>
+        <system-input-text maxlength="150" [ngModel]="dictionarydefinition.description"></system-input-text>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label> </button>
