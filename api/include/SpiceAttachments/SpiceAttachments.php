@@ -595,18 +595,18 @@ class SpiceAttachments
      * @return void
      * @throws Exception
      */
-    public static function mergeSpiceAttachments(string $mergeBeanType, string $mergeBeanId, string $delBeanId): void {
-        // get spice attachment to be merged
+    public static function mergeSpiceAttachments(string $mergeBeanType, string $masterBeanId, string $delBeanId): void {
+        // get SpiceAttachment to be merged
         $db = DBManagerFactory::getInstance();
 
-        $spiceAttachments = $db->fetchByAssoc($db->query("SELECT * FROM spiceattachments WHERE bean_type = '$mergeBeanType' and bean_id = '$delBeanId'"));
+        $spiceAttachmentIds = $db->query("SELECT id FROM spiceattachments WHERE bean_type = '$mergeBeanType' and bean_id = '$delBeanId'");
 
-        foreach ($spiceAttachments as $spiceAttachment) {
-            if (isset($spiceAttachment->id)) {
+        while($spiceAttachmentId = $db->fetchByAssoc($spiceAttachmentIds) ) {
+            if (isset($spiceAttachmentId['id'])) {
                 $db = DBManagerFactory::getInstance();
 
                 // overwrite bean_id with the ID of the merged Bean
-                $sql = "INSERT INTO spiceattachments (bean_id) VALUES ('{$mergeBeanId}') WHERE id = '{$spiceAttachment['id']}'";
+                $sql = "UPDATE spiceattachments SET bean_id='{$masterBeanId}' WHERE  id='{$spiceAttachmentId['id']}'";
                 $db->query($sql);
             }
         }
