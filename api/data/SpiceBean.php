@@ -10,6 +10,7 @@ use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceNotes\SpiceNotes;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -2442,10 +2443,11 @@ class SpiceBean
         foreach ($duplicates as $beanId) {
             $tmpBeans[$beanId] = BeanFactory::getBean($this->_module, $beanId);
 
-            // merge SpiceAttachments for duplicate
+            // merge SpiceAttachments & SpiceNotes for duplicate
                 // $this->id == ID of Master Bean (Bean to be kept)
                 // $beanId == ID of the Bean to be deleted
             SpiceAttachments::mergeSpiceAttachments($this->_module, $this->id, $beanId);
+            SpiceNotes::mergeSpiceNotes($this->_module, $this->id, $beanId);
         }
 
         // overwrite fields
