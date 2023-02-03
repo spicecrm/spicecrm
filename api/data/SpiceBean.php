@@ -7,6 +7,7 @@ use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
@@ -2440,7 +2441,13 @@ class SpiceBean
         $tmpBeans = [];
         foreach ($duplicates as $beanId) {
             $tmpBeans[$beanId] = BeanFactory::getBean($this->_module, $beanId);
+
+            // merge SpiceAttachments for duplicate
+                // $this->id == ID of Master Bean (Bean to be kept)
+                // $beanId == ID of the Bean to be deleted
+            SpiceAttachments::mergeSpiceAttachments($this->_module, $this->id, $beanId);
         }
+
         // overwrite fields
         foreach ($overwriteFieldsWithId as $fieldname => $beanId) {
             $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};

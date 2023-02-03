@@ -585,4 +585,30 @@ class SpiceAttachments
         }
         return false;
     }
+
+
+    /**
+     * merges SpiceAttachments with the Master Bean merged
+     * @param string $mergeBeanType (_module)
+     * @param string $mergeBeanId (id of the Master Bean - bean to be kept)
+     * @param string $delBeanId (id of the deleted Bean)
+     * @return void
+     * @throws Exception
+     */
+    public static function mergeSpiceAttachments(string $mergeBeanType, string $mergeBeanId, string $delBeanId): void {
+        // get spice attachment to be merged
+        $db = DBManagerFactory::getInstance();
+
+        $spiceAttachments = $db->fetchByAssoc($db->query("SELECT * FROM spiceattachments WHERE bean_type = '$mergeBeanType' and bean_id = '$delBeanId'"));
+
+        foreach ($spiceAttachments as $spiceAttachment) {
+            if (isset($spiceAttachment->id)) {
+                $db = DBManagerFactory::getInstance();
+
+                // overwrite bean_id with the ID of the merged Bean
+                $sql = "INSERT INTO spiceattachments (bean_id) VALUES ('{$mergeBeanId}') WHERE id = '{$spiceAttachment['id']}'";
+                $db->query($sql);
+            }
+        }
+    }
 }
