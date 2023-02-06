@@ -1359,7 +1359,10 @@ class SpiceBeanHandler
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if ($thisBean === false) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
 
-        $thisBean->load_relationship($linkName);
+        if(!$thisBean->load_relationship($linkName)){
+            throw (new ForbiddenException('could not load relationship  ' . $linkName . ' for bean '.$beanModule.'.'))->setErrorCode('noRelationshipLoaded');
+        }
+
         $relModule = $thisBean->{$linkName}->getRelatedModuleName();
 
         if (!SpiceACL::getInstance()->checkAccess($relModule, 'list', true))
