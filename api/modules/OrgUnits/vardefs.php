@@ -135,8 +135,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
 ];
 
 if (file_exists("extensions/modules/ServiceQueues")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit']['fields']['orgunits'] = [
-        'name' => 'orgunits',
+    SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit']['fields']['servicequeues'] = [
+        'name' => 'servicequeues',
         'type' => 'link',
         'relationship' => 'servicequeues_orgunits',
         'module' => 'ServiceQueues',
