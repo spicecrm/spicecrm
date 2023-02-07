@@ -162,6 +162,8 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
             this.backup();
 
             this.pushNewItem(undefined, element, data);
+
+            this.saveView();
         })
     }
 
@@ -184,6 +186,8 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
             }
 
             this.saveRelationRequest(sourceItem, targetItem.data, element);
+
+            this.saveView();
             return;
         }
 
@@ -202,6 +206,8 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
                 }
 
                 this.saveRelationRequest(sourceItem, items[0], element);
+
+                this.saveView();
             });
         });
     }
