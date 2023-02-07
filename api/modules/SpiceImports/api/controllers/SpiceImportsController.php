@@ -112,8 +112,8 @@ class SpiceImportsController{
         $db = DBManagerFactory::getInstance();
         $logs = [];
 
-        $res = $db->query("SELECT * FROM spiceimportlogs WHERE import_id = '$id'");
-        while ($log = $db->fetchByAssoc($res)) {
+        $spiceImportLogIds = $db->query("SELECT * FROM spiceimportlogs WHERE import_id = '$id'");
+        while ($log = $db->fetchByAssoc($spiceImportLogIds)) {
             $logs[] = $log;
         }
 
