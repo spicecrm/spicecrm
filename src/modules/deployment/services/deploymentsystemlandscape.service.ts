@@ -89,6 +89,8 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
             const target = this.data.find(e => e.id == c.items.target.id);
             c.path = this.drawConnectionPath(source, target);
         });
+
+        this.saveView();
     }
 
     /**
