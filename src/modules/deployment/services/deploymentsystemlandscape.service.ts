@@ -304,8 +304,6 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
      */
     private pushNewItem(sourceItem: LandscapeItemI, element: HTMLElement, data) {
 
-        sourceItem.hasChildren = true;
-
         const {y, x} = this.getPossibleCoordinate(element);
 
         const newItem: LandscapeItemI = {
@@ -328,6 +326,7 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
         this.data.push(newItem);
 
         if (!!sourceItem) {
+            sourceItem.hasChildren = true;
             this.connect(sourceItem, newItem);
         }
     }
