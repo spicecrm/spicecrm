@@ -1,5 +1,6 @@
 export interface LandscapeItemI {
     id: string;
+    hasChildren?: boolean;
     name?: {
         text: string,
         position: { x: number, y: number }

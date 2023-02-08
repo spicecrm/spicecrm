@@ -214,6 +214,14 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
         });
     }
 
+    public deleteSystem(id: string) {
+
+        this.data = this.data.filter(item => item.id != id && item.items?.target.id != id);
+        this.saveView();
+
+        this.backend.deleteRequest(`module/SystemDeploymentSystems/${id}`);
+    }
+
     /**
      * create a connector for two items
      * @param source
@@ -295,6 +303,9 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
      * @private
      */
     private pushNewItem(sourceItem: LandscapeItemI, element: HTMLElement, data) {
+
+        sourceItem.hasChildren = true;
+
         const {y, x} = this.getPossibleCoordinate(element);
 
         const newItem: LandscapeItemI = {

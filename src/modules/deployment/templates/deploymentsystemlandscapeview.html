@@ -20,7 +20,7 @@
                 <text  [attr.x]="item.name.position.x" [attr.y]="item.name.position.y" fill="#fff">
                     <tspan dy="1.2em">{{item.name.text}}</tspan>
                 </text>
-                <foreignObject height="35" width="57" [attr.x]="item.position.x + 20" [attr.y]="item.position.y + 50" class="spice-hover-child">
+                <foreignObject height="37" width="57" [attr.x]="item.position.x + 20" [attr.y]="item.position.y + 50" class="spice-hover-child">
                     <button (click)="add(item, itemContainer)" class="slds-button slds-button--icon">
                         <system-button-icon icon="add" [inverse]="true"></system-button-icon>
                     </button>
@@ -29,6 +29,9 @@
                     </button>
                     <button *ngIf="dsl.data.length > 1" (click)="link(item, itemContainer); $event.stopPropagation();" [style.cursor]="!isLinking ? 'pointer' : 'crosshair'" class="slds-button slds-button--icon">
                         <system-button-icon icon="link" [inverse]="true"></system-button-icon>
+                    </button>
+                    <button (click)="delete(item.id)" [disabled]="item.hasChildren" class="slds-button slds-button--icon">
+                        <system-button-icon icon="delete" [inverse]="true" [addclasses]="item.hasChildren ? 'slds-icon-text-light' : ''"></system-button-icon>
                     </button>
                 </foreignObject>
                 <rect *ngIf="!!isLinking && isLinking != item.id" [attr.x]="item.position.x" [attr.y]="item.position.y" [id]="item.id" width="100" height="100" rx="5" fill="#001639" style="opacity: .5"></rect>
