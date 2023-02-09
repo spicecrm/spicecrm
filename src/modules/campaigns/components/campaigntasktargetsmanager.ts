@@ -302,7 +302,7 @@ export class CampaignTaskTargetsManager implements OnInit {
         const targets = [];
 
         this.prospects.forEach(p => {
-            if (p.status == 'included') return;
+            if (p.status == 'included' || p.status == 'excluded') return;
             targets.push(p.id);
             p.status = 'excluded';
         });
