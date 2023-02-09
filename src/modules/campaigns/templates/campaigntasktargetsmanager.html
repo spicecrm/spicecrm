@@ -26,10 +26,10 @@
                     <div class="slds-select_container">
                         <select [(ngModel)]="currentFilterStatus" class="slds-select" style="min-width: 120px;">
                             <option></option>
-                            <option value="unchecked"><system-label label="LBL_UNCHECKED"></system-label></option>
-                            <option value="checked"><system-label label="LBL_CHECKED"></system-label></option>
-                            <option value="excluded"><system-label label="LBL_EXCLUDED"></system-label></option>
-                            <option value="included"><system-label label="LBL_INCLUDED"></system-label></option>
+                            <option value="unchecked"><system-label label="LBL_TARGET_MANAGER_UNCHECKED"></system-label></option>
+                            <option value="checked"><system-label label="LBL_TARGET_MANAGER_CHECKED"></system-label></option>
+                            <option value="excluded"><system-label label="LBL_TARGET_MANAGER_EXCLUDED"></system-label></option>
+                            <option value="included"><system-label label="LBL_TARGET_MANAGER_INCLUDED"></system-label></option>
                         </select>
                     </div>
                 </div>
@@ -104,11 +104,11 @@
         <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
     </div>
     <div class="slds-border--top slds-grid slds-grid--align-end slds-p-vertical--xx-small slds-theme--default" style="bottom: 0; position: sticky">
-        <button (click)="checkAll()" class="slds-button slds-button--neutral">
-            <system-label label="LBL_CHECK_ALL"></system-label>
+        <button (click)="checkAll()" class="slds-button slds-button--brand">
+            <system-label label="LBL_TARGET_MANAGER_CHECK_ALL"></system-label>
         </button>
-        <button (click)="excludeAll()" class="slds-button slds-button--neutral">
-            <system-label label="LBL_EXCLUDE_ALL"></system-label>
+        <button (click)="excludeAll()" class="slds-button slds-button--brand">
+            <system-label label="LBL_TARGET_MANAGER_EXCLUDE_ALL"></system-label>
         </button>
         <pagination-controls [total_records]="totalCount" [limit]="limit" [page]="currentPage" (pageChange)="onPageChange($event)"></pagination-controls>
     </div>
