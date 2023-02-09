@@ -130,12 +130,12 @@ export class CampaignTaskTargetsManager implements OnInit {
      * local property for the current filter status
      * @private
      */
-    private _currentFilterStatus: 'checked' | 'unchecked' | 'excluded' | 'included';
+    private _currentFilterStatus: 'checked' | 'unchecked' | 'excluded' | 'included' | '' = '';
 
     /**
      * return the current filter status
      */
-    get currentFilterStatus(): 'checked' | 'unchecked' | 'excluded' | 'included' {
+    get currentFilterStatus(): 'checked' | 'unchecked' | 'excluded' | 'included' | '' {
         return this._currentFilterStatus;
     }
 
@@ -143,7 +143,7 @@ export class CampaignTaskTargetsManager implements OnInit {
      * set the current filter status and reload the targets
      * @param status
      */
-    set currentFilterStatus(status: 'checked' | 'unchecked' | 'excluded' | 'included') {
+    set currentFilterStatus(status: 'checked' | 'unchecked' | 'excluded' | 'included' | '') {
 
         this._currentFilterStatus = status;
         this.onPageChange(1)
