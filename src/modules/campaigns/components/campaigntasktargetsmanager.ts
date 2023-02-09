@@ -255,7 +255,7 @@ export class CampaignTaskTargetsManager implements OnInit {
 
                 this.totalCount = parseInt(res.count, 10);
                 // if we have less than 50 records set the limit automatically
-                if (this.totalCount <= this.limit) {
+                if (this.totalCount <= this.limit || (this.currentPage * this.limit) > this.totalCount) {
                     this.limit = this.totalCount;
                 } else {
                     this.limit = 50;
