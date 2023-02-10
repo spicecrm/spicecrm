@@ -326,7 +326,7 @@ class AdminController
 
             // Classic scenario will be: creating a new dictionary item, going to repair database and expecting the variable to be available right away
             // We therefore save the dictionary field definitions to the proper cache table
-            SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
+            // SpiceDictionaryVardefs::saveDictionaryCacheToDb($dict);
 
             // repair table if there is any
             if(!empty($dict['table'])) {
