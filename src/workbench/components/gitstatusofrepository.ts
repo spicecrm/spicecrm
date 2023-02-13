@@ -25,7 +25,6 @@ export class GitStatusOfRepository implements OnInit {
         this.backend.postRequest(`/admin/repair/status`, null).subscribe((res: any) => {
             this.data = res.output;
             loadingModal.emit(true);
-            this.toast.sendToast('LBL_DATA_SAVED', 'success');
         });
     }
 }
