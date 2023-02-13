@@ -10,10 +10,13 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceImport extends SpiceBean
 {
     var $objectimport;
+
+    const IMPORT_TASKS_DIRECTORY = 'importtasks';
 
     public static function getFilePreview($params)
     {
@@ -144,8 +147,10 @@ class SpiceImport extends SpiceBean
     {
         $error = false;
         $list = [];
+        if(is_null($this->objectimport)) $this->objectimport = json_decode($this->data);
         $delimiter = ($this->objectimport->separator == 'comma') ? ',' : ';';
         $enclosure = chr(8);
+        $classMethod = SpiceUtils::loadExecutionClassMethod($this->objectimport->selectedMethod);
 
         switch ($this->objectimport->enclosure) {
             case 'single':
@@ -165,10 +170,16 @@ class SpiceImport extends SpiceBean
 
             while (($row = fgetcsv($handle, 1000, $delimiter, $enclosure)) !== FALSE) {
 
-                if ([null] !== $row) {
+                if ([null] === $row) continue;
+
                     $row = array_map(function ($item) {
                         return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
                     }, $row);
+
+                if (!empty($classMethod)) {
+                    $list[] = $classMethod->class->{$classMethod->method}($row, $fileHeader);
+                    continue;
+                }
 
                     $retrieve = [];
 
@@ -185,7 +196,6 @@ class SpiceImport extends SpiceBean
                             $this->createNewRecord($newBean, $row, $fileHeader, $error, $list);
                             break;
                     }
-                }
             }
 
             fclose($handle);
