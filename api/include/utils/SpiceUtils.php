@@ -1170,7 +1170,7 @@ class SpiceUtils
         $app_strings = $temp_app_strings;
 
         SpiceCache::set($cache_key, $return_value);
-echo print_r($return_value, true);
+
         return $return_value;
     }
 
