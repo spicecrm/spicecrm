@@ -17,6 +17,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use stdClass;
 
 class SpiceUIRESTHandler
@@ -834,6 +835,8 @@ class SpiceUIRESTHandler
             throw ( new Exception($error))->setFatal(true);
         }
 
+        // handle caching
+        SpiceCache::clear('spiceModelValidations');
         return true;
     }
 
