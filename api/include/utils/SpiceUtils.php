@@ -27,6 +27,37 @@ use SpiceCRM\includes\SugarObjects\SpiceModules;
 class SpiceUtils
 {
     /**
+     * get the execution class and method and return an object
+     * @return null|object
+     */
+    public static function loadExecutionClassMethod($method)
+    {
+        $isFunction = strpos(html_entity_decode($method), 'function::') === 0;
+        $separator = $isFunction ? '::' : '->';
+        $methodArray = explode($separator, html_entity_decode($method));
+        $className = $methodArray[0];
+        $methodName = $methodArray[1];
+
+        if ($isFunction) {
+            if (!is_callable($methodName)) {
+                return null;
+            }
+            return (object)['class' => null, 'method' => $methodName];
+        }
+
+        if (!class_exists($className)) {
+            return null;
+        }
+
+        $classInstance = new $className();
+
+        if (!is_callable([$classInstance, $methodName])) {
+            return null;
+        }
+
+        return (object)['class' => $classInstance, 'method' => $methodName];
+    }
+    /**
      * catches the request_uri and php_self and checks if one of them matches the allowed backend paths
      * @return mixed|string|null
      */
