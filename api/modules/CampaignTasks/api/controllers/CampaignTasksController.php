@@ -326,7 +326,7 @@ class CampaignTasksController
         # reset the current user for the system after parsing
         AuthenticationController::getInstance()->setCurrentUser($current_user);
 
-        return $res->withJson(['html' => DBUtils::fromHtml(wordwrap($parsedTpl['body_html'], true))]);
+        return $res->withJson(['html' => $parsedTpl['body_html'], true]);
     }
 
     /**
