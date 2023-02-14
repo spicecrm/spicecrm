@@ -12,6 +12,7 @@ import {model} from '../../../services/model.service';
 import {session} from '../../../services/session.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {modelutilities} from '../../../services/modelutilities.service';
+import {Router} from "@angular/router";
 
 declare var moment: any;
 
@@ -40,7 +41,13 @@ export class WorkflowTasksDashlet {
 
     public loading: boolean = false;
 
-    constructor(public model: model, public modelutilities: modelutilities, public session: session, public backend: backend, public broadcast: broadcast, public elementref: ElementRef) {
+    constructor(public model: model,
+                public modelutilities: modelutilities,
+                public session: session,
+                public backend: backend,
+                public broadcast: broadcast,
+                public elementref: ElementRef,
+                public router: Router) {
         this.loadWorkflows();
 
         this.broadcast.message$.subscribe(message => {
@@ -118,5 +125,14 @@ export class WorkflowTasksDashlet {
     public isPast(date) {
         let today = new moment.utc().tz(this.session.getSessionData('timezone'));
         return  new moment.utc(date).tz(this.session.getSessionData('timezone')).isBefore(today, 'day');
+    }
+
+    /**
+     * navigates to parent bean
+     * @param parent_type
+     * @param parent_id
+     */
+    public navigateTo(parent_type, parent_id) {
+        this.router.navigate([`module/${parent_type}/${parent_id}`]);
     }
 }
