@@ -461,7 +461,7 @@ class SpiceFTSBeanHandler
         // if we have a phone searc enabled add a _phone field
         if ($this->indexSettings['phonesearch']) {
             $properties['_phone'] = [
-                'type' => 'text',
+                'type' => 'keyword',
                 'index' => true
             ];
         }
