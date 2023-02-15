@@ -16,10 +16,12 @@
                     <system-icon [module]="workflowtask.parent_type"></system-icon>
                     <div class="slds-media__body slds-grid slds-grid--align-spread slds-grid--vertical-align-start">
                         <div>
-                            <div class="slds-text-title_caps slds-text-link_reset"><span system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name}}</span><workflow-task-status-icon [status]="workflowtask.workflowtask_status"></workflow-task-status-icon></div>
+                            <div class="slds-text-title_caps slds-text-link_reset" (click)="navigateTo(workflowtask.parent_type, workflowtask.parent_id)">
+                                <span system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name.summary_text}}</span>
+                                <workflow-task-status-icon [status]="workflowtask.workflowtask_status"></workflow-task-status-icon></div>
                             <div class="slds-p-top--xxx-small slds-text-body_small slds-line-height_reset">{{workflowtask.workflow_name}}&nbsp;/&nbsp;{{workflowtask.name}}</div>
                         </div>
-                        <div style="border-radius: 10px; height: 18px;" class="slds-timeline__date slds-p-horizontal--x-small slds-theme--shade"  [ngClass]="{'slds-theme--error' : isPast(workflowtask.date_due), 'slds-theme--warning' : isToday(workflowtask.date_due)}">
+                        <div style="border-radius: 10px; height: 18px;" class="slds-timeline__date slds-p-horizontal--x-small slds-theme--shade" [ngClass]="{'slds-theme--error' : isPast(workflowtask.date_due), 'slds-theme--warning' : isToday(workflowtask.date_due)}">
                             <div class="slds-align--absolute-center"><system-display-datetime [date]="workflowtask.date_due"></system-display-datetime></div>
                         </div>
                     </div>
