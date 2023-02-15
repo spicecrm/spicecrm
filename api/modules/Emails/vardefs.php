@@ -678,12 +678,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['emailtempl
 
 SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['emailtemplates_link'] = [
     'name' => 'emailtemplates_link',
+    'vname' => 'LBL_EMAILTEMPLATES',
     'type' => 'link',
     'relationship' => 'emailtemplates_emails',
     'link_type' => 'one',
     'side' => 'right',
     'source' => 'non-db',
-    'vname' => 'LBL_EMAILTEMPLATES_EMAILS_LINK',
 ];
 
 #create index
@@ -696,7 +696,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email']['indices']['emailtemp
 if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
-        'vname' => 'LBL_EMAILS_SERVICETICKETS_REL',
+        'vname' => 'LBL_SERVICETICKETS',
         'type' => 'link',
         'relationship' => 'emails_servicetickets_rel',
         'module' => 'ServiceTickets',
@@ -707,7 +707,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
 if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['serviceorders'] = [
         'name' => 'serviceorders',
-        'vname' => 'LBL_EMAILS_SERVICEORDERS_REL',
+        'vname' => 'LBL_SERVICEORDERS',
         'type' => 'link',
         'relationship' => 'emails_serviceorders_rel',
         'module' => 'ServiceOrders',
