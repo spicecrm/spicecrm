@@ -154,7 +154,9 @@ export class fieldLinkedParent extends fieldGeneric implements OnInit {
             parenttypes = this.field_defs.parent_modules;
         }
 
-        parenttypes.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+        if (!this.fieldconfig.sortbyparenttypes){
+            parenttypes.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+        }
 
         this.parentTypes = parenttypes;
     }
