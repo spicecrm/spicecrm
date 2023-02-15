@@ -17,7 +17,7 @@
                     <div class="slds-media__body slds-grid slds-grid--align-spread slds-grid--vertical-align-start">
                         <div>
                             <div class="slds-text-title_caps slds-text-link_reset" (click)="navigateTo(workflowtask.parent_type, workflowtask.parent_id)">
-                                <span system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id" [system-title]="workflowtask.parent_name.summary_text">{{workflowtask.parent_name.summary_text}}</span>
+                                <span system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name.summary_text}}</span>
                                 <workflow-task-status-icon [status]="workflowtask.workflowtask_status"></workflow-task-status-icon></div>
                             <div class="slds-p-top--xxx-small slds-text-body_small slds-line-height_reset">{{workflowtask.workflow_name}}&nbsp;/&nbsp;{{workflowtask.name}}</div>
                         </div>
