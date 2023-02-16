@@ -40,7 +40,7 @@ class CampaignTasksController
 
         $list = $this->createList($args['id'], 'include');
 
-        return $res->withJson(['id' => $list->id]);
+        return $res->withJson(['id' => $list->id, 'name' => $list->name]);
     }
 
     /**
@@ -428,7 +428,15 @@ class CampaignTasksController
             throw new NotFoundException('CampaignTask not found');
         }
 
-        $response = $campaignTask->getTargets($params['modules'], $params['limit'], $params['offset'], $params['status'],  json_decode($params['prospectListIds'] ?? null), $params['searchTerm']);
+        $response = $campaignTask->getTargets(
+            $params['modules'],
+            $params['limit'],
+            $params['offset'],
+            $params['status'],
+            json_decode($params['prospectListIds'] ?? null),
+            $params['searchTerm'],
+            json_decode($params['sort'])
+        );
 
         return $res->withJson($response);
     }

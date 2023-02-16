@@ -184,7 +184,7 @@ class CampaignTask extends SpiceBean
     {
         $query = $this->db->query("
             SELECT pl.id, pl.name, pl.list_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id 
-            WHERE pl.list_type != 'test' AND campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1"
+            WHERE pl.list_type != 'test' AND campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1 ORDER BY pl.name"
         );
 
         $lists = [];
@@ -202,9 +202,10 @@ class CampaignTask extends SpiceBean
      * @param string $offset
      * @param array $targetsIds
      * @param string|null $searchTerm
+     * @param object|null $sort
      * @return array
      */
-    private function generateTargetsSearchBody(string $modules, string $limit, string $offset, array $targetsIds, ?string $searchTerm): array
+    private function generateTargetsSearchBody(string $modules, string $limit, string $offset, array $targetsIds, ?string $searchTerm, ?object $sort): array
     {
         $addFilter = [
             'bool' => [
@@ -223,7 +224,8 @@ class CampaignTask extends SpiceBean
             'addFilter' => $addFilter,
             'searchterm' => $searchTerm,
             'records' => $limit,
-            'start' => $offset
+            'start' => $offset,
+            'sort' => !$sort ? [] : ['sortfield' => $sort->sortfield, 'sortdirection' => $sort->sortdirection]
         ];
     }
 
@@ -260,9 +262,10 @@ class CampaignTask extends SpiceBean
      * @param string|null $status
      * @param array|null $prospectListIds
      * @param string|null $searchTerm
+     * @param object|null $sort
      * @return array
      */
-    public function getTargets(string $modules, int $limit, int $offset, ?string $status, ?array $prospectListIds, ?string $searchTerm): array
+    public function getTargets(string $modules, int $limit, int $offset, ?string $status, ?array $prospectListIds, ?string $searchTerm, ?object $sort): array
     {
         $response = [
             'prospectlists' => $this->getCampaignTargetLists(),
@@ -273,7 +276,7 @@ class CampaignTask extends SpiceBean
         $prospectListIds = $prospectListIds ?: array_column($response['prospectlists'], 'id');
         $listsTargets = $this->getListsTargets($prospectListIds, $status);
 
-        $postBody = $this->generateTargetsSearchBody($modules, $limit, $offset, $listsTargets, $searchTerm);
+        $postBody = $this->generateTargetsSearchBody($modules, $limit, $offset, $listsTargets, $searchTerm, $sort);
 
         $searchRes = SpiceFTSHandler::getInstance()->search($postBody);
 
@@ -314,6 +317,9 @@ class CampaignTask extends SpiceBean
      */
     private function generateTargetArray(array $target, string $module): array
     {
+        $target['_source']['acl'] = $target['acl'];
+        $target['_source']['acl_fieldcontrol'] = $target['acl_fieldcontrol'];
+
         return [
             'id' => $target['_id'],
             'module' => $module,
