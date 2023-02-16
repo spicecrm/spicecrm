@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {fieldGeneric} from "./fieldgeneric";
 import {model} from "../../services/model.service";
 import {Router} from "@angular/router";
@@ -16,7 +16,12 @@ import {modal} from "../../services/modal.service";
  * renders checkbox toggle in a field
  */
 
-export class fieldToggle extends fieldGeneric {
+export class fieldToggle extends fieldGeneric implements OnInit{
+
+    /**
+     * the hidden property hiding the toggle field if the user does not have the proper access rights
+     */
+    public hidden: boolean = false;
 
     constructor(public model: model,
                 public view: view,
@@ -28,22 +33,27 @@ export class fieldToggle extends fieldGeneric {
         super(model, view, language, metadata, router);
     }
 
-    /**
-     * disables the field
-     */
-    get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'edit') || this.restrictAccess();
+    public ngOnInit(): void {
+        // if acl action is required and user has no access, hide the field
+        if (this.fieldconfig.acl && !this.metadata.checkModuleAcl(this.model.module, this.fieldconfig.acl)) {
+            this.hidden = true;
+        }
     }
 
     /**
-     * if strictAccess is set in field config
-     * the toggle is disabled if the current_user is not the assigned_user of th bean
+     * disables the field
+     * @return boolean
+     * */
+    get disabled(): boolean {
+        return !this.metadata.checkModuleAcl(this.model.module, 'edit') || !this.hasAccess();
+    }
+
+    /**
+     * the toggle is enabled if the current_user is the created_by user of the bean
+     * @return boolean
      */
-    public restrictAccess(): boolean {
-        if(this.fieldconfig.strictAccess){
-            if(this.metadata.session.authData.user.id != this.model.data.assigned_user_id) return true;
-        }
-        return false
+    public hasAccess(): boolean {
+        return this.metadata.session.authData.user.id === this.model.data.created_by;
     }
 
     /**
