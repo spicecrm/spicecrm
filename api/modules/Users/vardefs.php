@@ -861,6 +861,30 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'module' => 'UserAbsences'
         ],
+        'userhcmmeasures' => [
+            'name' => 'userhcmmeasures',
+            'vname' => 'LBL_HCMMEASURES',
+            'type' => 'link',
+            'relationship' => 'users_hcmmeasures',
+            'source' => 'non-db',
+            'module' => 'HCMMeasures'
+        ],
+        'userhcmtrainings' => [
+            'name' => 'userhcmtrainings',
+            'vname' => 'LBL_HCMTRAININGS',
+            'type' => 'link',
+            'relationship' => 'users_hcmtrainings',
+            'source' => 'non-db',
+            'module' => 'HCMTrainings'
+        ],
+        'userhcmskilltypes' => [
+            'name' => 'userhcmskilltypes',
+            'vname' => 'LBL_HCMSKILLTYPES',
+            'type' => 'link',
+            'relationship' => 'users_hcmskilltypes',
+            'source' => 'non-db',
+            'module' => 'HCMSkilltypes',
+        ],
         // service orders many to many
         'serviceorders' => [
             'name' => 'serviceorders',

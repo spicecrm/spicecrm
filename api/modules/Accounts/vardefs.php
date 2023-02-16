@@ -533,6 +533,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'bean_name' => 'Letter',
             'vname' => 'LBL_LETTERS',
         ],
+        'hcmtrainings' =>
+            [
+                'name' => 'hcmtrainings',
+                'type' => 'link',
+                'relationship' => 'hcmtrainings_accounts',
+                'module' => 'HCMMeasures',
+                'bean_name' => 'HCMMeasure',
+                'source' => 'non-db',
+                'vname' => 'LBL_HCMMEASURES',
+            ],
     ],
     'indices' => [
         ['name' => 'idx_accnt_id_del', 'type' => 'index', 'fields' => ['id', 'deleted']],
