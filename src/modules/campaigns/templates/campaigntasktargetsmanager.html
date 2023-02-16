@@ -42,7 +42,13 @@
                     <div class="slds-select_container">
                         <select [(ngModel)]="currentListId" class="slds-select" style="min-width: 120px;">
                             <option value=""><system-label label="LBL_ALL_RESULTS"></system-label></option>
-                            <option *ngFor="let pl of prospectLists" [ngValue]="pl.id">{{pl.name}}</option>
+                            <optgroup label="------------------- ">
+                                <option *ngFor="let pl of prospectLists" [ngValue]="pl.id">{{pl.name}}</option>
+                            </optgroup>
+                            <optgroup *ngIf="exclusionList || inclusionList" label="------------------- ">
+                                <option *ngIf="inclusionList" [ngValue]="inclusionList.id">{{inclusionList.name}}</option>
+                                <option *ngIf="exclusionList" [ngValue]="exclusionList.id">{{exclusionList.name}}</option>
+                            </optgroup>
                         </select>
                     </div>
                 </div>
@@ -65,19 +71,42 @@
 </div>
 <div class="slds-theme--default slds-grid slds-grid--vertical" system-to-bottom style="min-height: 100px">
     <div class="slds-grow">
-        <table  class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed"  role="grid">
+        <table [system-view-provider]="{displayLabels: false}" class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed"  role="grid">
             <thead>
             <tr class="slds-text-title--caps">
-                <th scope="col" style="width: 2rem"></th>
-                <th scope="col"><div class="slds-th__action"><system-label label="LBL_NAME"></system-label></div></th>
+                <th scope="col" style="width: 3.2rem"></th>
+                <th *ngIf="!currentModule || !modulesFields[currentModule]; else headerFieldsContainer" scope="col">
+                    <div class="slds-th__action"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <ng-template #headerFieldsContainer>
+                    <ng-container [system-model-provider]="{module: currentModule, id: null, data: null}">
+                        <th *ngFor="let field of modulesFields[currentModule]" scope="col">
+                            <div class="slds-th__action"><field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label></div>
+                        </th>
+                    </ng-container>
+                </ng-template>
                 <th scope="col" style="width: 15rem"><div class="slds-th__action"><system-label label="LBL_PROSPECTLISTS"></system-label></div></th>
                 <th scope="col" style="width: 5rem"></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let prospect of prospects" class="slds-hint-parent">
-                <td class="slds-text-align--center"><system-icon [module]="prospect.module" size="xx-small"></system-icon></td>
-                <td><campaigntask-target-manager-details [fieldset]="detailsFieldSets[prospect.module]" [module]="prospect.module" [data]="prospect.data"></campaigntask-target-manager-details></td>
+            <tr *ngFor="let prospect of prospects" #modelProvider="system-model-provider" (click)="setClickedEntry(prospect.id)"  [system-model-provider]="{module: prospect.module, id: prospect.id, data: prospect.data}" [class.slds-theme--warning]="clickedEntryId == prospect.id" class="slds-hint-parent">
+                <td class="slds-text-align--center">
+                    <div class="slds-grid">
+                        <system-icon [module]="prospect.module" size="xx-small"></system-icon>
+                        <button (click)="modelProvider.model.edit(); $event.stopPropagation()" [disabled]="!modelProvider?.model?.checkAccess('edit')" class="slds-button slds-button--icon">
+                            <system-button-icon icon="edit" size="xx-small"></system-button-icon>
+                        </button>
+                    </div>
+                </td>
+                <td *ngIf="!currentModule || !modulesFields[currentModule]; else bodyFieldsContainer">
+                    <campaigntask-target-manager-details [fieldset]="detailsFieldSets[prospect.module]"></campaigntask-target-manager-details>
+                </td>
+                <ng-template #bodyFieldsContainer>
+                    <td *ngFor="let field of modulesFields[prospect.module]">
+                        <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" fielddisplayclass=""></field-container>
+                    </td>
+                </ng-template>
                 <td [system-title]="prospect.prospectListsDisplay" class="slds-truncate">{{prospect.prospectListsDisplay}}</td>
                 <td [system-title]="prospect.status_date_changed" class="slds-text-align--right">
                     <ng-container *ngIf="prospect.status != 'included'; else includedActions">
@@ -97,20 +126,66 @@
                 </td>
             </tr>
             </tbody>
-            <tbody system-table-stencils columns="4" rows="20" *ngIf="loading"></tbody>
+            <tbody system-table-stencils [columns]="!currentModule || !modulesFields[currentModule] ? 4 : modulesFields[currentModule].length + 3" rows="20" *ngIf="loading"></tbody>
         </table>
     </div>
     <div *ngIf="!loading && prospects.length == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
         <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
     </div>
-    <div class="slds-border--top slds-grid slds-grid--align-end slds-p-vertical--xx-small slds-theme--default" style="bottom: 0; position: sticky">
-        <button (click)="checkAll()" class="slds-button slds-button--brand">
-            <system-label label="LBL_TARGET_MANAGER_CHECK_ALL"></system-label>
-        </button>
-        <button (click)="excludeAll()" class="slds-button slds-button--brand">
-            <system-label label="LBL_TARGET_MANAGER_EXCLUDE_ALL"></system-label>
-        </button>
-        <pagination-controls [total_records]="totalCount" [limit]="limit" [page]="currentPage" (pageChange)="onPageChange($event)"></pagination-controls>
+    <div class="slds-border--top slds-grid slds-grid--align-spread slds-p-vertical--xx-small slds-theme--default" style="bottom: 0; position: sticky">
+        <div class="slds-grid">
+            <div class="slds-form-element slds-col slds-grid slds-grid--vertical-align-center">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_MODULE"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select [(ngModel)]="currentModule" class="slds-select" style="min-width: 120px;">
+                            <option value=""><system-label label="LBL_ALL_RESULTS"></system-label></option>
+                            <option *ngFor="let module of modules" [value]="module">
+                                <system-label-modulename [module]="module"></system-label-modulename>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngIf="!!currentModule && modulesSortFields[currentModule]">
+                <div class="slds-grid slds-grid_vertical-align-center slds-p-left--x-small">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_SORT"></system-label>
+                    </label>
+                    <div class="slds-form-element__control slds-col">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="sortField">
+                                <option value="">
+                                    <system-label label="LBL_SELECT"></system-label>
+                                </option>
+                                <option *ngFor="let field of modulesSortFields[currentModule]" [value]="field">
+                                    <system-label-fieldname [module] = "currentModule" [field]="field"></system-label-fieldname>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__control slds-col slds-p-left--x-small">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="sortDirection">
+                                <option value="ASC"><system-label label="LBL_ASCENDING"></system-label></option>
+                                <option value="DESC"><system-label label="LBL_DESCENDING"></system-label></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <div class="slds-grid">
+            <button (click)="checkAll()" class="slds-button slds-button--brand">
+                <system-label label="LBL_TARGET_MANAGER_CHECK_ALL"></system-label>
+            </button>
+            <button (click)="excludeAll()" class="slds-button slds-button--brand">
+                <system-label label="LBL_TARGET_MANAGER_EXCLUDE_ALL"></system-label>
+            </button>
+            <pagination-controls [total_records]="totalCount" [limit]="limit" [page]="currentPage" (pageChange)="onPageChange($event)"></pagination-controls>
+        </div>
     </div>
 
 </div>
