@@ -697,12 +697,7 @@ class TimeDate
      */
     public function nowDb()
     {
-        if(!$this->allow_cache) {
-            $nowGMT = $this->getNow();
-        } else {
-            $nowGMT = $this->now;
-        }
-        return $this->asDb($nowGMT);
+        return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format(self::DB_DATETIME_FORMAT);
     }
 
     /**
@@ -711,12 +706,7 @@ class TimeDate
      */
     public function nowDbDate()
     {
-        if(!$this->allow_cache) {
-            $nowGMT = $this->getNow();
-        } else {
-            $nowGMT = $this->now;
-        }
-        return $this->asDbDate($nowGMT, true);
+        return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format(self::DB_DATE_FORMAT);
     }
 
     /**
