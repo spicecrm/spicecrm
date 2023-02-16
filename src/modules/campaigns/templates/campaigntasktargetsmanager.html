@@ -108,7 +108,7 @@
                     </td>
                 </ng-template>
                 <td [system-title]="prospect.prospectListsDisplay" class="slds-truncate">{{prospect.prospectListsDisplay}}</td>
-                <td [system-title]="prospect.status_date_changed" class="slds-text-align--right">
+                <td [system-title]="prospect.status_date_changed" (click)="$event.stopPropagation()" class="slds-text-align--right">
                     <ng-container *ngIf="prospect.status != 'included'; else includedActions">
                         <button (click)="setStatus('checked', prospect)" [disabled]="prospect.status == 'checked'" class="slds-button slds-button--icon">
                             <system-utility-icon class="slds-col" icon="success" size="xx-small" [colorclass]="prospect.status == 'checked' ? 'slds-icon-text-success' : 'slds-icon-text-light'"></system-utility-icon>
