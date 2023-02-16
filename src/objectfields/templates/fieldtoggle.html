@@ -1,0 +1,2 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<system-checkbox-toggle *ngIf="fieldname" [disabled]="disabled" [(ngModel)]="value" (ngModelChange)="setValue(value)"></system-checkbox-toggle>
