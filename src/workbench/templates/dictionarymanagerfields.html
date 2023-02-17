@@ -27,7 +27,7 @@
                         <div class="slds-truncate slds-th__action"><system-label label="LBL_FIELD"/></div>
                     </th>
                     <th class="" scope="col">
-                        <div class="slds-truncate slds-th__action"><system-label label="LBL_TEMPLATE"/></div>
+                        <div class="slds-truncate slds-th__action"><system-label label="LBL_SOURCE"/></div>
                     </th>
                     <th style="width: 30px"  scope="col">
                         <system-utility-icon class="slds-th__action" icon="builder" size="xx-small"/>
@@ -53,8 +53,9 @@
                             <div class="slds-truncate" *ngIf="getDomainFields(dictionaryitem.sysdomaindefinition_id)[0]">{{translateDomainField(getDomainFields(dictionaryitem.sysdomaindefinition_id)[0].name, dictionaryitem)}}</div>
                             <div class="slds-truncate" *ngIf="!getDomainFields(dictionaryitem.sysdomaindefinition_id)[0]"></div>
                         </td>
-                        <td data-label="Template">
-                            <div class="slds-truncate">{{getRefDefinitionName(dictionaryitem.sysdictionarydefinition_id)}}</div>
+                        <td data-label="Source">
+                            <div *ngIf="dictionaryitem.sysdictionarydefinition_id != dictionarymanager.currentDictionaryDefinition" class="slds-truncate">{{getRefDefinitionName(dictionaryitem.sysdictionarydefinition_id)}}</div>
+                            <div *ngIf="dictionaryitem.sysdictionaryrelationship_id" class="slds-truncate">{{getRelationshipName(dictionaryitem.sysdictionaryrelationship_id)}}</div>
                         </td>
                         <td class="slds-text-align--center">
                             <system-checkbox disabled [ngModel]="dictionaryitem.defined"></system-checkbox>
@@ -66,7 +67,7 @@
                             <system-checkbox *ngIf="!dictionaryitem.non_db" disabled [ngModel]="dictionaryitem.database"></system-checkbox>
                         </td>
                     </tr>
-                    <tr class="slds-hint-parent" *ngFor="let field of getDomainFields(dictionaryitem.sysdomaindefinition_id, false)">
+                    <tr class="slds-hint-parent" *ngFor="let field of dictionaryitem.addFields">
                         <td data-label="Name">
                         </td>
                         <td data-label="Domain">
@@ -75,9 +76,15 @@
                             <div class="slds-truncate">{{translateDomainField(field.name, dictionaryitem)}}</div>
                         </td>
                         <td data-label="Template"></td>
-                        <td data-label="def"></td>
-                        <td data-label="cache"></td>
-                        <td data-label="database"></td>
+                        <td class="slds-text-align--center">
+                            <system-checkbox disabled [ngModel]="field.defined"></system-checkbox>
+                        </td>
+                        <td class="slds-text-align--center">
+                            <system-checkbox disabled [ngModel]="field.cached"></system-checkbox>
+                        </td>
+                        <td class="slds-text-align--center">
+                            <system-checkbox *ngIf="field.dbtype != 'non-db'" disabled [ngModel]="field.database"></system-checkbox>
+                        </td>
                     </tr>
                 </ng-container>
             </tbody>

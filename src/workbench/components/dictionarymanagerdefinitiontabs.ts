@@ -30,14 +30,19 @@ export class DictionaryManagerDefinitionTabs {
 
     }
 
-
+    /**
+     * checks if we have a template
+     */
     get isTemplate(){
         return this.dictionarymanager.currentIsTemplate();
     }
 
 
+    /**
+     * returns the scope and in case of temaplta anjd fields returns items
+     */
     get scope() {
-        return this._scope;
+        return this.isTemplate && this._scope == 'fields' ? 'items' : this._scope;
     }
 
     set scope(scope) {

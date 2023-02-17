@@ -33,4 +33,7 @@ export interface DomainField {
     deleted: number;
     version?: string;
     package?: string;
+    defined?:boolean;
+    cached?:boolean;
+    database?:boolean;
 }
