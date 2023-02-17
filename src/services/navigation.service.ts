@@ -635,7 +635,8 @@ export class navigation {
      * @param routeparams
      */
     public matchRouteParams(objecttab: objectTab, routeparams: any): boolean {
-        if (_.isEqual(objecttab.params, routeparams)) return true;
+        // check if we have params and if then if the params match
+        if (objecttab.path.split(':').length == 1 || _.isEqual(objecttab.params, routeparams)) return true;
 
         // if not check if the object has a tabid and that matches the objecttab
         if (routeparams.tabid && routeparams.tabid == objecttab.id) {
@@ -660,7 +661,7 @@ export class navigation {
         // get the route data replacing the tab and tabid if this is passed in as part of the route
         let routeData = this.metadata.getRouteDetails(routeConfig.path.replace('tab/:tabid/', ''));
 
-        if (routeData?.target == 'M' || this.navigationparadigm == 'simple') {
+        if (routeData?.target == 'M') {
             // if we just navigate to the maintab .. no checks
             if (this.maintab.path == routeConfig.path && _.isEqual(this.maintab.params, routeParams)) {
                 this.activeTab = 'main';
@@ -702,7 +703,7 @@ export class navigation {
 
             // chdeck if we should open in a subtab and the parenttab exists
             let parentTab: objectTab;
-            if (this.navigationparadigm == 'subtabbed' && routeParams.tabid) {
+            if (routeParams.tabid) {
                 parentTab = this.objectTabs.find(tab => tab.id == routeParams.tabid);
             }
 
