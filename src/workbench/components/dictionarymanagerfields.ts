@@ -45,19 +45,35 @@ export class DictionaryManagerFields {
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        // get the definition
-        let definitions: DictionaryItem[] = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition);
+        // get the active definition
+        let definitions: DictionaryItem[] = [...this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition).filter(d => d.status == 'a')];
         definitions.forEach(s => {
+            // get the domainfield and set non_db
+            let domainField = this.getDomainFields(s.sysdomaindefinition_id, true);
+            if(domainField[0].dbtype == 'non-db') s.non_db = 1;
+
             s.defined = true;
             s.cached = false;
             s.database = false;
+
+            // get the additonbal domain fields
+            s.addFields = this.getDomainFields(s.sysdomaindefinition_id, false);
+            s.addFields.forEach(a => {
+                // a.name = this.translateDomainField(a.name, s);
+                a.defined = true;
+                a.cached = false;
+                a.database = false;
+            })
         });
 
         // get the cached fields
         let cachedDef = this.dictionarymanager.dictionaryfields.find(f => f.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition);
         if(cachedDef?.fields) {
             cachedDef.fields.forEach(f => {
-                let def = definitions.find(d => d.name == f.fieldname);
+                let def = definitions.find(d => {
+                    if(d.name == f.fieldname) return true;
+                    return d.addFields && d.addFields.find(a => this.translateDomainField(a.name, d) == f.fieldname);
+                });
                 if (!def) {
                     definitions.push({
                         id: f.id,
@@ -67,20 +83,28 @@ export class DictionaryManagerFields {
                         non_db: f.fielddefinition?.source == 'non-db' ? 1 : 0,
                         sequence: definitions.length + 1,
                         sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
+                        sysdictionaryrelationship_id: f.sysdictionaryrelationship_id,
                         deleted: 0,
                         defined: !!f.sysdictionaryrelationship_id ? true : false,
                         cached: true,
                         database: false
                     })
                 } else {
-                    def.cached = true;
+                    if(def.name == f.fieldname) {
+                        def.cached = true;
+                    } else {
+                        def.addFields.find(a => this.translateDomainField(a.name, def) == f.fieldname).cached = true
+                    }
                 }
             })
         }
 
         // get the database fields
         this.dictionarymanager.dictionarydatabasefields.forEach(f =>{
-            let def = definitions.find(d => d.name == f.name);
+            let def = definitions.find(d => {
+                if(d.name == f.name) return true;
+                return d.addFields && d.addFields.find(a => this.translateDomainField(a.name, d) == f.name);
+            });
             if(!def){
                 definitions.push({
                     id: '',
@@ -95,13 +119,17 @@ export class DictionaryManagerFields {
                     database: true
                 })
             } else {
-                def.database = true;
+                if(def.name == f.name) {
+                    def.database = true;
+                } else {
+                    def.addFields.find(a => this.translateDomainField(a.name, def) == f.name).database = true
+                }
             }
         })
 
         // filter and sort the result
         return definitions.filter(d => {
-            if(this.filterdbonly && d.non_db) return false;
+            if(this.filterdbonly && (d.non_db && !d.addFields)) return false;
             if(this.filterterm && d.name.indexOf(this.filterterm) == -1) return false;
             return true;
         }); // .sort((a, b) => a.name.localeCompare(b.name));
@@ -186,6 +214,16 @@ export class DictionaryManagerFields {
      */
     public getRefDefinitionName(dictionarydefinitionid: string) {
         return dictionarydefinitionid != this.dictionarymanager.currentDictionaryDefinition ? this.dictionarymanager.dictionarydefinitions.find(d => d.id == dictionarydefinitionid)?.name : '';
+    }
+
+    /**
+     * return the name of the relationship
+     *
+     * @param dictionaryrelationshipid
+     * @private
+     */
+    public getRelationshipName(dictionaryrelationshipid: string) {
+        return this.dictionarymanager.dictionaryrelationships.find(r => r.id == dictionaryrelationshipid)?.relationship_name;
     }
 
     /**

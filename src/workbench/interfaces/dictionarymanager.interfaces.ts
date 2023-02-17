@@ -1,3 +1,5 @@
+import {DomainField} from "./domainmanager.interfaces";
+
 /**
  * a generic interface for messages related to specific fields when creating
  * dictionary manager records
@@ -42,6 +44,7 @@ export interface DictionaryItem {
     sequence: number;
     sysdictionarydefinition_id: string;
     sysdictionary_ref_id?: string;
+    sysdictionaryrelationship_id?: string;
     sysdomaindefinition_id?: string;
     label?: string;
     labelinputhelper?: string;
@@ -53,10 +56,10 @@ export interface DictionaryItem {
     deleted: number;
     version?: string;
     package?: string;
+    addFields?: DomainField[];
     defined?:boolean;
     cached?:boolean;
     database?:boolean;
-
     selected?: boolean;
 }
 
