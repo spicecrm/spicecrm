@@ -39,7 +39,8 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
     public relationship: Relationship;
 
 
-    public relatedId: string;
+    public rhsRelatedId: string;
+    public lhsRelatedId: string;
 
     constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
         this.relationship = {
@@ -69,9 +70,22 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      * initialize and build the names
      */
     public ngOnInit() {
+        if(this.currentIsModule){
+            this.lhsRelatedId = this.dictionarymanager.currentDictionaryDefinition;
+        }
 
+        // if we have a relationship or metadata table use it as joint table
+        if(this.dictionarymanager.getCurrentDefinition()?.sysdictionary_type == 'metadata' || this.dictionarymanager.getCurrentDefinition()?.sysdictionary_type == 'relationship'){
+            this.relationship.join_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
+        }
     }
 
+    /**
+     * checks if the current is a module
+     */
+    get currentIsModule(){
+        return this.dictionarymanager.getCurrentDefinition().sysdictionary_type == 'module'
+    }
 
     get relatedIds(): DictionaryDefinition[] {
         return this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module' && d.deleted == 0).sort((a, b) => a.name.localeCompare(b.name));
@@ -83,7 +97,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
     }
 
     get hasRelated(){
-       return !!this.relationship.lhs_sysdictionarydefinition_id;
+       return !!this.relationship.lhs_sysdictionarydefinition_id && !!this.relationship.rhs_sysdictionarydefinition_id;
     }
 
     /**
@@ -91,8 +105,8 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      * @private
      */
     public setDefaults() {
-        this.relationship.lhs_sysdictionarydefinition_id = this.relatedId;
-        this.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
+        this.relationship.lhs_sysdictionarydefinition_id = this.lhsRelatedId;
+        this.relationship.rhs_sysdictionarydefinition_id = this.rhsRelatedId;
 
         // build default name and relationship name
         this.relationship.relationship_name = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase() + '_' + this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename.toLowerCase();

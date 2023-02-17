@@ -1,8 +1,27 @@
 <system-modal [size]="hasRelated ? 'medium' : 'small'">
     <system-modal-header (close)="close()"><system-label label="LBL_MANY_TO_MANY"></system-label></system-modal-header>
     <system-modal-content>
-        <div *ngIf="!hasRelated" class="slds-grid slds-grid--vertical">
-            <system-input-radio *ngFor="let ri of relatedIds" name="relatedid" [(ngModel)]="relatedId" [value]="ri.id">{{ri.name}}</system-input-radio>
+        <div *ngIf="!hasRelated" class="slds-grid">
+            <div class="slds-size--1-of-2 slds-p-horizontal--xx-small slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_LEFT_SIDE"/></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [disabled]="currentIsModule" [(ngModel)]="lhsRelatedId">
+                            <option  *ngFor="let ri of relatedIds" [value]="ri.id">{{ri.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-size--1-of-2 slds-p-horizontal--xx-small slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_RIGHT_SIDE"/></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="rhsRelatedId">
+                            <option  *ngFor="let ri of relatedIds" [value]="ri.id">{{ri.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
         <dictionary-manager-relationship-container-manytomany *ngIf="hasRelated" [relationship]="relationship"></dictionary-manager-relationship-container-manytomany>
     </system-modal-content>

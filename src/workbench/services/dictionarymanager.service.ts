@@ -445,6 +445,29 @@ export class dictionarymanager implements OnDestroy {
      * @param definition
      */
     public repairDictionary(definitionid) {
+        // let awaitModal =  this.modal.await('LBL_REPAIRING');
+        let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
+        this.backend.putRequest(`dictionary/definition/${definitionid}/repair`).subscribe({
+            next: (result) => {
+                if (result.success) {
+                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success', result.sql, !result.sql);
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
+                }
+                // awaitModal.emit(true);
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERROR repairing dictonaray'), 'error');
+                // awaitModal.emit(true);
+            }
+        });
+    }
+
+    /**
+     *
+     * @param definition
+     */
+    public repairDictionaryOld(definitionid) {
         let awaitModal =  this.modal.await('LBL_REPAIRING');
         let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
         this.backend.postRequest('admin/repair/dictionary', {}, {dictionaries: [definition.name]}).subscribe({
