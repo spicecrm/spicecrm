@@ -187,6 +187,7 @@ export class CampaignTaskTargetsManager implements OnInit {
     set currentModule(module: string) {
 
         this._currentModule = module;
+        this.sortObject.sortfield = undefined;
         this.onPageChange(1)
     }
 
