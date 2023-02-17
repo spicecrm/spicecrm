@@ -78,7 +78,7 @@ export class ObjectMergeModalData {
             const notEmpty = (!!selected[field.name] && !_.isObject(selected[field.name])) || _.isObject(selected[field.name]) && !_.isEmpty(selected[field.name]);
 
             if (notEmpty) {
-                return !(field.name == 'assigned_user_id' || this.isAddressField(field.name));
+                return !(field.name == 'assigned_user_id' || field.name == 'parent_id' || this.isAddressField(field.name));
                 // show address non-db field instead of the address fields
             } else if (this.isAddressGroupField(field)) {
                 const addressFieldsFilled = Object.keys(selected).some(fieldName => fieldName.startsWith(`${field.name}_`) && !!selected[fieldName]);
