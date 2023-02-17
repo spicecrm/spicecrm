@@ -26,6 +26,11 @@ class Person extends Basic
      */
     public $email_addresses;
 
+    /**
+     * @var false|\SpiceCRM\data\SpiceBean
+     */
+    public $emailAddress;
+
     public function __construct()
     {
         parent::__construct();

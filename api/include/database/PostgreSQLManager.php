@@ -580,7 +580,7 @@ class PostgreSQLManager extends DBManager
      * (non-PHPdoc)
      * @see DBManager::repairTableParams()
      */
-    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
+    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null, $commented = false)
     {
         //Modules with names close to 63 characters may have index names over 63 characters, we need to clean them
         foreach ($indices as $key => $value) {

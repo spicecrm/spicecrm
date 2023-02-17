@@ -19,6 +19,14 @@ $RESTManager = RESTManager::getInstance();
  */
 $routes = [
     [
+        'method' => 'put',
+        'route' => '/dictionary/repair',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'repair',
+        'description' => 'does a general repair',
+        'options' => ['adminOnly' => false],
+    ],
+    [
         'method' => 'get',
         'route' => '/dictionary/domains',
         'oldroute' => '/system/dictionary/domains',
@@ -276,6 +284,13 @@ $routes = [
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'deactivateDictionaryDefinition',
         'description' => 'deactivates a dictionary Definition',
+        'options' => ['adminOnly' => true]
+    ],[
+        'method' => 'put',
+        'route' => '/dictionary/definition/{id}/repair',
+        'class' => SpiceDictionaryDefinitionsController::class,
+        'function' => 'repairDictionaryDefinition',
+        'description' => 'repairs a dictionary Definition',
         'options' => ['adminOnly' => true]
     ],
     // for the items

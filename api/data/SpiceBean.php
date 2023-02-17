@@ -3,6 +3,8 @@
 
 namespace SpiceCRM\data;
 
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use stdClass;
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -233,6 +235,11 @@ class SpiceBean
     var $field_defs;
 
     /**
+     * @var holds acl fields that are under ACL control
+     */
+    var $acl_fields;
+
+    /**
      * @deprecated
      *
      * @var array
@@ -321,6 +328,21 @@ class SpiceBean
     var $newFromTemplate = '';
 
     /**
+     * @var int helper var for the logic hook depth
+     */
+    var $logicHookDepth = [];
+
+    /**
+     * @var holds the data values of the bean
+     */
+    protected $_data = null;
+
+    /**
+     * @var string a generic summary text for the Bean
+     */
+    public $summary_text = '';
+
+    /**
      * Constructor for the bean, it performs following tasks:
      *
      * 1. Initalized a database connections
@@ -332,9 +354,39 @@ class SpiceBean
      */
     function __construct()
     {
-        // $this->initialize_bean();
+        // initialize the _data object
+        $this->_data = new stdClass();
 
+        // return the object
         return $this;
+    }
+
+    /**
+     * generic setter for the bean values
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     * @throws Exception
+     */
+    public function __set(string $name, mixed $value): void {
+
+        // if we do not have the field defined throw an error if we are in strict mode
+        if(SpiceConfig::getInstance()->get('systemvardefs.strict') && !$this->field_defs[$name]){
+            throw new Exception("property {$name} not defined on {$this->_module}");
+        }
+
+        $this->_data->{$name} = $value;
+    }
+
+    /**
+     * generic getter for the bean values
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get(string $name): mixed {
+        return $this->_data->{$name};
     }
 
     /**

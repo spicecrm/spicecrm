@@ -114,6 +114,38 @@ class SpiceDictionaryItem
         return ['definitions' => $definitions, 'indexes' => $indexes ?: []];
     }
 
+    /**
+     * geta all definitions
+     *
+     * @return void
+     */
+    public function getDefinitions()
+    {
+        // collect the definitions
+        $definitions = [];
+
+        // get the definition
+        $dictionaryDefinition = new SpiceDictionaryDefinition($this->sysdictionarydefinition_id);
+
+        if ($dictionaryDefinition->type != 'template' && $this->sysdomaindefinition_id) {
+            $definitions = (new SpiceDictionaryDomain($this->sysdomaindefinition_id))->activateForItem($this, $dictionaryDefinition);
+
+        } elseif ($dictionaryDefinition->type != 'template' && $this->sysdictionary_ref_id) {
+            // process the template
+            $items = SpiceDictionaryItems::getInstance()->getItems($this->sysdictionary_ref_id);
+            $definitions = [];
+            foreach($items as $item){
+                $definitions = array_merge( $definitions, (new SpiceDictionaryDomain($item['sysdomaindefinition_id']))->activateForItem(new SpiceDictionaryItem($item['id']), $dictionaryDefinition));
+            }
+
+            // get template indexes
+            $indexes = SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->sysdictionary_ref_id);
+        }
+
+        // return the definitions
+        return ['definitions' => $definitions, 'indexes' => $indexes ?: []];
+    }
+
     private function repairItem($tablename, $definitions)
     {
         // get a db instance

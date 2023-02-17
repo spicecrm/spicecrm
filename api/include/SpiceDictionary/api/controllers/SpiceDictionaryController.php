@@ -35,6 +35,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -350,6 +351,18 @@ class SpiceDictionaryController
             throw new BadRequestException('no fields supplied');
         }
         return $res->withJson(['success' => DBManagerFactory::getInstance()->delete_columns($args['dictionaryname'], $fields)]);
+    }
+
+    /**
+     * does a complöeet repair
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function repair(Request $req, Response $res, array $args): Response {
+        return $res->withJson(['sql' => SpiceDictionaryDefinitions::getInstance()->repair()]);
     }
 
 

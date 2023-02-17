@@ -932,7 +932,7 @@ abstract class DBManager
      * @return string
      * @todo: refactor engine param to be more generic
      */
-    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
+    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null, $commented = false)
     {
         //jc: had a bug when running the repair if the tablename is blank the repair will
         //fail when it tries to create a repair table
@@ -940,14 +940,14 @@ abstract class DBManager
             return '';
 
         //if the table does not exist create it and we are done
-        $sql = "/* Table : $tablename */\n";
+        if($commented) $sql = "/* Table : $tablename */\n";
         if (!$this->tableExists($tablename)) {
             $createtablesql = $this->createTableSQLParams($tablename, $fielddefs, $indices, $engine);
             if ($execute && $createtablesql) {
                 $this->createTableParams($tablename, $fielddefs, $indices, $engine);
             }
 
-            $sql .= "/* MISSING TABLE: {$tablename} */\n";
+            if($commented) $sql .= "/* MISSING TABLE: {$tablename} */\n";
             $sql .= $createtablesql . ";\n";
             return $sql;
         }
@@ -958,17 +958,17 @@ abstract class DBManager
         $take_action = false;
 
         // do column comparisons
-        $sql .= "/*COLUMNS*/\n";
+        if($commented) $sql .= "/*COLUMNS*/\n";
         foreach ($fielddefs as $name => $value) {
             if (isset($value['source']) && $value['source'] != 'db')
                 continue;
 
             // Bug #42406. Skipping breaked vardef without type or name
             if (isset($value['name']) == false || $value['name'] == false) {
-                $sql .= "/* NAME IS MISSING IN VARDEF $tablename::$name */\n";
+                if($commented) $sql .= "/* NAME IS MISSING IN VARDEF $tablename::$name */\n";
                 continue;
             } else if (isset($value['type']) == false || $value['type'] == false) {
-                $sql .= "/* TYPE IS MISSING IN VARDEF $tablename::$name */\n";
+                if($commented) $sql .= "/* TYPE IS MISSING IN VARDEF $tablename::$name */\n";
                 continue;
             }
 
@@ -993,24 +993,25 @@ abstract class DBManager
 
             if (!isset($compareFieldDefs[$name])) {
                 // ok we need this field lets create it
-                $sql .= "/*MISSING IN DATABASE - $name -  ROW*/\n";
+                if($commented) $sql .= "/*MISSING IN DATABASE - $name -  ROW*/\n";
                 $sql .= $this->addColumnSQL($tablename, $value) . ";\n";
                 if ($execute)
                     $this->addColumn($tablename, $value);
                 $take_action = true;
             } elseif (!$this->compareVarDefs($compareFieldDefs[$name], $value)) {
                 //fields are different lets alter it
-                $sql .= "/*MISMATCH WITH DATABASE - $name -  ROW ";
-                foreach ($compareFieldDefs[$name] as $rKey => $rValue) {
-                    $sql .= "[$rKey] => '$rValue'  ";
+                if($commented) {
+                    $sql .= "/*MISMATCH WITH DATABASE - $name -  ROW ";
+                    foreach ($compareFieldDefs[$name] as $rKey => $rValue) {
+                        $sql .= "[$rKey] => '$rValue'  ";
+                    }
+                    $sql .= "*/\n";
+                    $sql .= "/* VARDEF - $name -  ROW";
+                    foreach ($value as $rKey => $rValue) {
+                        $sql .= "[$rKey] => '$rValue'  ";
+                    }
+                    $sql .= "*/\n";
                 }
-                $sql .= "*/\n";
-                $sql .= "/* VARDEF - $name -  ROW";
-                foreach ($value as $rKey => $rValue) {
-                    $sql .= "[$rKey] => '$rValue'  ";
-                }
-                $sql .= "*/\n";
-
                 //jc: oracle will complain if you try to execute a statement that sets a column to (not) null
                 //when it is already (not) null
                 if (isset($value['isnull']) && isset($compareFieldDefs[$name]['isnull']) &&
@@ -1037,7 +1038,7 @@ abstract class DBManager
         }
 
         // do index comparisons
-        $sql .= "/* INDEXES */\n";
+        if($commented) $sql .= "/* INDEXES */\n";
         $correctedIndexs = [];
 
         $compareIndices_case_insensitive = [];
@@ -1077,7 +1078,7 @@ abstract class DBManager
                 $value['type'] = 'index';
 
             if (!in_array($name, array_keys($compareIndices))) {
-                $sql .= "/*MISSING INDEX IN DATABASE - $name -{$value['type']}  ROW */\n";
+                if($commented) $sql .= "/*MISSING INDEX IN DATABASE - $name -{$value['type']}  ROW */\n";
                 $sql .= $this->addIndexes($tablename, [$value], $execute) . "\n";
 
                 $take_action = true;
@@ -1085,26 +1086,28 @@ abstract class DBManager
 
             } elseif (!$this->compareVarDefs($compareIndices[$name], $value)) {
                 // fields are different lets alter it
-                $sql .= "/*INDEX MISMATCH WITH DATABASE - $name -  ROW ";
-                foreach ($compareIndices[$name] as $n1 => $t1) {
-                    $sql .= "<$n1>";
-                    if ($n1 == 'fields')
-                        foreach ($t1 as $rKey => $rValue)
-                            $sql .= "[$rKey] => '$rValue'  ";
-                    else
-                        $sql .= " $t1 ";
+                if($commented) {
+                    $sql .= "/*INDEX MISMATCH WITH DATABASE - $name -  ROW ";
+                    foreach ($compareIndices[$name] as $n1 => $t1) {
+                        $sql .= "<$n1>";
+                        if ($n1 == 'fields')
+                            foreach ($t1 as $rKey => $rValue)
+                                $sql .= "[$rKey] => '$rValue'  ";
+                        else
+                            $sql .= " $t1 ";
+                    }
+                    $sql .= "*/\n";
+                    $sql .= "/* VARDEF - $name -  ROW";
+                    foreach ($value as $n1 => $t1) {
+                        $sql .= "<$n1>";
+                        if ($n1 == 'fields')
+                            foreach ($t1 as $rKey => $rValue)
+                                $sql .= "[$rKey] => '$rValue'  ";
+                        else
+                            $sql .= " $t1 ";
+                    }
+                    $sql .= "*/\n";
                 }
-                $sql .= "*/\n";
-                $sql .= "/* VARDEF - $name -  ROW";
-                foreach ($value as $n1 => $t1) {
-                    $sql .= "<$n1>";
-                    if ($n1 == 'fields')
-                        foreach ($t1 as $rKey => $rValue)
-                            $sql .= "[$rKey] => '$rValue'  ";
-                    else
-                        $sql .= " $t1 ";
-                }
-                $sql .= "*/\n";
                 $sql .= $this->modifyIndexes($tablename, [$value], $execute) . ";\n";
                 $take_action = true;
                 $correctedIndexs[$name] = true;

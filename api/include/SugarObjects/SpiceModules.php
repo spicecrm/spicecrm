@@ -35,8 +35,6 @@ class SpiceModules
 
     private $beanClasses = [];
 
-    private $beanFiles = [];
-
     private function __construct() {}
 
     private function __clone() {}
@@ -72,17 +70,15 @@ class SpiceModules
                 if ($module['bean']) {
                     $this->beanList[$module['module']] = $module['bean'];
 
-                    if (file_exists("custom/modules/{$module['module']}/{$module['bean']}.php")) {
-                        $this->beanFiles[$module['bean']] = "custom/modules/{$module['module']}/{$module['bean']}.php";
+
+                    if($module['beanfile']) {
+                        $this->beanClasses[$module['module']] = $module['beanfile'];
+                    } else if (file_exists("custom/modules/{$module['module']}/{$module['bean']}.php")) {
                         $this->beanClasses[$module['module']] = '\\SpiceCRM\\custom\\modules\\' . $module['module'] . '\\' . $module['bean'];
                     } else if (file_exists("extensions/modules/{$module['module']}/{$module['bean']}.php")) {
-                        $this->beanFiles[$module['bean']] = "extensions/modules/{$module['module']}/{$module['bean']}.php";
                         $this->beanClasses[$module['module']] = '\\SpiceCRM\\extensions\\modules\\' . $module['module'] . '\\' . $module['bean'];
                     } else if (file_exists("modules/{$module['module']}/{$module['bean']}.php")) {
-                        $this->beanFiles[$module['bean']] = "modules/{$module['module']}/{$module['bean']}.php";
                         $this->beanClasses[$module['module']] = '\\SpiceCRM\\modules\\' . $module['module'] . '\\' . $module['bean'];
-                    } else {
-                        $this->beanFiles[$module['bean']] = 'data/SpiceBean.php';
                     }
                 }
             }

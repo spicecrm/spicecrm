@@ -65,6 +65,22 @@ class SpiceDictionaryDefinitions
         $this->dictionaryDefinitions = $defArray;
     }
 
+    /**
+     * does a generic repair
+     *
+     * @return void
+     */
+    public function repair(){
+        $definitions = $this->getDefinitions('a');
+        $sql = [];
+        foreach ($definitions as $definition){
+            $sql[] = (new SpiceDictionaryDefinition($definition['id']))->repair(false);
+        }
+        SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition(null);
+
+        return $sql;
+    }
+
     public function getDefinitions($status = null){
         if($status){
             $definitions = [];
