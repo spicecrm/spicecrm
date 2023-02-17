@@ -81,7 +81,11 @@
                 <ng-template #headerFieldsContainer>
                     <ng-container [system-model-provider]="{module: currentModule, id: null, data: null}">
                         <th *ngFor="let field of modulesFields[currentModule]" scope="col" class="slds-resizable">
-                            <div class="slds-th__action"><field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label></div>
+                            <div class="slds-th__action">
+                                <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+                                <system-utility-icon *ngIf="!!sortField && sortField === field.field" [icon]="sortDirection == 'DESC' ? 'arrowdown' : 'arrowup'" size="xx-small" colorclass="slds-icon-text-success"></system-utility-icon>
+                                <system-utility-icon *ngIf="field.fieldconfig?.sortable && sortField != field.field" icon="sort" size="xx-small"></system-utility-icon>
+                            </div>
                         </th>
                     </ng-container>
                 </ng-template>
