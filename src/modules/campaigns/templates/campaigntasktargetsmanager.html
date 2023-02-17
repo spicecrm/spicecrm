@@ -80,7 +80,7 @@
                 </th>
                 <ng-template #headerFieldsContainer>
                     <ng-container [system-model-provider]="{module: currentModule, id: null, data: null}">
-                        <th *ngFor="let field of modulesFields[currentModule]" scope="col">
+                        <th *ngFor="let field of modulesFields[currentModule]" scope="col" class="slds-resizable">
                             <div class="slds-th__action"><field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label></div>
                         </th>
                     </ng-container>
@@ -133,7 +133,7 @@
         <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
     </div>
     <div class="slds-border--top slds-grid slds-grid--align-spread slds-p-vertical--xx-small slds-theme--default" style="bottom: 0; position: sticky">
-        <div class="slds-grid">
+        <div class="slds-grid slds-p-left--small">
             <div class="slds-form-element slds-col slds-grid slds-grid--vertical-align-center">
                 <label class="slds-form-element__label">
                     <system-label label="LBL_MODULE"></system-label>
@@ -149,7 +149,7 @@
                     </div>
                 </div>
             </div>
-            <ng-container *ngIf="!!currentModule && modulesSortFields[currentModule]">
+            <ng-container *ngIf="!!currentModule && modulesSortFields[currentModule]?.length > 0">
                 <div class="slds-grid slds-grid_vertical-align-center slds-p-left--x-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_SORT"></system-label>

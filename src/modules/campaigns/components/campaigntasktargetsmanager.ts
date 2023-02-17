@@ -194,7 +194,7 @@ export class CampaignTaskTargetsManager implements OnInit {
      * holds the sort object
      * @private
      */
-    private sortObject = {sortfield: undefined, sortdirection: undefined};
+    private sortObject: {sortfield: string, sortdirection: 'ASC' | 'DESC'} = {sortfield: undefined, sortdirection: 'ASC'};
 
     /**
      * getter for the sort field
