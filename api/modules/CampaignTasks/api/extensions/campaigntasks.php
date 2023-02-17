@@ -225,6 +225,11 @@ $routes = [
                 'in'          => 'query',
                 'description' => 'query modules filter',
                 'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+            'sort'    => [
+                'in'          => 'query',
+                'description' => 'query sort field',
+                'type'        => ValidationMiddleware::TYPE_OBJECT,
             ]
         ]
     ],

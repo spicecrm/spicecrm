@@ -103,21 +103,21 @@ $routes = [
                 'example' => '40109eab-ddc0-01fb-3a85-b3f3f87cfa1c'
             ],
             'newPassword' => [
-                'in' => 'path',
+                'in' => 'body',
                 'description' => 'ID of the user',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => true,
                 'example' => 'newP@$$word1!!'
             ],
             'sendEmail' => [
-                'in' => 'path',
+                'in' => 'body',
                 'description' => 'Whether send the password to the user via email',
                 'type' => ValidationMiddleware::TYPE_BOOL,
                 'required' => true,
                 'example' => true
             ],
             'forceReset' => [
-                'in' => 'path',
+                'in' => 'body',
                 'description' => 'Force user to change the password on next login',
                 'type' => ValidationMiddleware::TYPE_BOOL,
                 'required' => true,
