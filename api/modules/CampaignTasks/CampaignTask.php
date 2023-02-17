@@ -280,6 +280,8 @@ class CampaignTask extends SpiceBean
 
         $searchRes = SpiceFTSHandler::getInstance()->search($postBody);
 
+        $beanHandler = new SpiceBeanHandler();
+
         foreach ($searchRes as $module => $moduleRes) {
 
             # sum total count from each module
@@ -291,7 +293,7 @@ class CampaignTask extends SpiceBean
                 $target['status'] = $listsTargets[$target['_id']]['status'];
                 $target['status_date_changed'] = $listsTargets[$target['_id']]['status_date_changed'];
 
-                $response['prospects'][] = $this->generateTargetArray($target, $module);
+                $response['prospects'][] = $this->generateTargetArray($target, $module, $beanHandler);
             }
         }
 
@@ -313,18 +315,18 @@ class CampaignTask extends SpiceBean
      * generate target array from the db entry
      * @param array $target
      * @param string $module
+     * @param SpiceBeanHandler $beanHandler
      * @return array
      */
-    private function generateTargetArray(array $target, string $module): array
+    private function generateTargetArray(array $target, string $module, SpiceBeanHandler $beanHandler): array
     {
-        $target['_source']['acl'] = $target['acl'];
-        $target['_source']['acl_fieldcontrol'] = $target['acl_fieldcontrol'];
+        $bean = BeanFactory::getBean($module, $target['_id']);
 
         return [
             'id' => $target['_id'],
             'module' => $module,
             'prospectlists' => explode(',', $target['listsIds']),
-            'data' => $target['_source'],
+            'data' => $beanHandler->mapBeanToArray($module, $bean, false),
             'status' => $target['status'],
             'status_date_changed' => $target['status_date_changed'],
         ];
