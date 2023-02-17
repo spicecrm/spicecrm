@@ -9,7 +9,7 @@
                 <a href="javascript:void(0);" role="menuitem" >
                     <system-utility-icon *ngIf="moreObject.displayicon" [icon]="moreObject.displayicon" size="x-small" class="slds-p-right--x-small"></system-utility-icon>
                     <system-icon *ngIf="moreObject.displaymodule" [module]="moreObject.displaymodule" size="x-small" divClass="slds-p-right--x-small"></system-icon>
-                    <div class="slds-grow" (click)="setActiveTab(moreObject.id)">{{moreObject.displayname}}</div>
+                    <div class="slds-grow" (click)="setActiveTab(moreObject.id)"><system-label [label]="moreObject.displayname"></system-label></div>
                     <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" aria-haspopup="true" (click)="closeObjectTab(moreObject.id)">
                         <system-button-icon icon="close"></system-button-icon>
                     </button>
