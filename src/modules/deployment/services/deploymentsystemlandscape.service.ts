@@ -89,6 +89,8 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
             const target = this.data.find(e => e.id == c.items.target.id);
             c.path = this.drawConnectionPath(source, target);
         });
+
+        this.saveView();
     }
 
     /**
@@ -134,6 +136,9 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
      */
     public addNewRelatedSystem(sourceItem: LandscapeItemI, element: HTMLElement) {
 
+        this.model.id = this.model.generateGuid();
+        this.model.resetData();
+
         this.model.addModel('', null, {systemdeploymentlandscape_id: this.landscapeModel.id}).subscribe(data => {
 
             if (!data) return;
@@ -152,13 +157,15 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
      */
     public addMasterSystem(element: HTMLElement) {
 
-        this.model.addModel('', null, {systemdeploymentlandscape_id: this.landscapeModel.id}).subscribe(data => {
+        this.model.addModel('', null, {systemdeploymentlandscape_id: this.landscapeModel.id, this_system: 1, master_flag: 1}).subscribe(data => {
 
             if (!data) return;
 
             this.backup();
 
             this.pushNewItem(undefined, element, data);
+
+            this.saveView();
         })
     }
 
@@ -181,6 +188,8 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
             }
 
             this.saveRelationRequest(sourceItem, targetItem.data, element);
+
+            this.saveView();
             return;
         }
 
@@ -199,8 +208,18 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
                 }
 
                 this.saveRelationRequest(sourceItem, items[0], element);
+
+                this.saveView();
             });
         });
+    }
+
+    public deleteSystem(id: string) {
+
+        this.data = this.data.filter(item => item.id != id && item.items?.target.id != id);
+        this.saveView();
+
+        this.backend.deleteRequest(`module/SystemDeploymentSystems/${id}`);
     }
 
     /**
@@ -284,6 +303,7 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
      * @private
      */
     private pushNewItem(sourceItem: LandscapeItemI, element: HTMLElement, data) {
+
         const {y, x} = this.getPossibleCoordinate(element);
 
         const newItem: LandscapeItemI = {
@@ -306,6 +326,7 @@ export class DeploymentSystemLandscapeService implements OnDestroy {
         this.data.push(newItem);
 
         if (!!sourceItem) {
+            sourceItem.hasChildren = true;
             this.connect(sourceItem, newItem);
         }
     }

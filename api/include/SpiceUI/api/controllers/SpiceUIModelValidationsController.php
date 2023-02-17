@@ -17,7 +17,7 @@ class SpiceUIModelValidationsController
         $db = DBManagerFactory::getInstance();
         $sql = "SELECT id, module
                 FROM sysuimodelvalidations 
-                WHERE deleted = 0 AND active = 1
+                WHERE deleted = 0
                 ORDER BY priority ASC";
         $res = $db->query($sql);
         while($row = $db->fetchByAssoc($res))
@@ -38,6 +38,7 @@ class SpiceUIModelValidationsController
         $sql = "SELECT * FROM sysuimodelvalidations WHERE id = '{$id}'";
         $res = $db->query($sql);
         $return = $db->fetchByAssoc($res);
+        $return['active'] = ($return['active'] ? true : false);
         if( !$return['logicoperator'] ){    $return['logicoperator'] = 'and';   }
         if( json_decode($return['onevents']) ){$return['onevents'] = json_decode($return['onevents']);}
 

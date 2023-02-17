@@ -116,7 +116,7 @@ export class DeploymentSystemLandscapeView implements OnInit {
      * @param item
      * @param itemContainer
      */
-    public link(item, itemContainer: HTMLElement) {
+    public link(item: LandscapeItemI, itemContainer: HTMLElement) {
 
         this.isLinking = item.id;
 
@@ -144,5 +144,13 @@ export class DeploymentSystemLandscapeView implements OnInit {
      */
     public toggleFullscreen() {
         this.isFullscreen = !this.isFullscreen;
+    }
+
+    /**
+     * delete a system from the landscape
+     * @param id
+     */
+    public delete(id: string) {
+        this.dsl.deleteSystem(id);
     }
 }
