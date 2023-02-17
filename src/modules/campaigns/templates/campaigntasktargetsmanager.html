@@ -110,10 +110,10 @@
                 <td [system-title]="prospect.prospectListsDisplay" class="slds-truncate">{{prospect.prospectListsDisplay}}</td>
                 <td [system-title]="prospect.status_date_changed" (click)="$event.stopPropagation()" class="slds-text-align--right">
                     <ng-container *ngIf="prospect.status != 'included'; else includedActions">
-                        <button (click)="setStatus('checked', prospect)" [disabled]="prospect.status == 'checked'" class="slds-button slds-button--icon">
+                        <button (click)="setStatus('checked', prospect)" system-title="LBL_TARGET_MANAGER_CHECK" [disabled]="prospect.status == 'checked'" class="slds-button slds-button--icon">
                             <system-utility-icon class="slds-col" icon="success" size="xx-small" [colorclass]="prospect.status == 'checked' ? 'slds-icon-text-success' : 'slds-icon-text-light'"></system-utility-icon>
                         </button>
-                        <button (click)="setStatus('excluded', prospect)" [disabled]="prospect.status == 'excluded'" class="slds-button slds-button--icon">
+                        <button (click)="setStatus('excluded', prospect)" system-title="LBL_TARGET_MANAGER_EXCLUDE" [disabled]="prospect.status == 'excluded'" class="slds-button slds-button--icon">
                             <system-utility-icon class="slds-col" icon="error" size="xx-small" [colorclass]="prospect.status == 'excluded' ? 'slds-icon-text-error' : 'slds-icon-text-light'"></system-utility-icon>
                         </button>
                     </ng-container>
@@ -177,7 +177,7 @@
                 </div>
             </ng-container>
         </div>
-        <div class="slds-grid">
+        <div class="slds-grid slds-grid--vertical-align-center">
             <button (click)="checkAll()" class="slds-button slds-button--brand">
                 <system-label label="LBL_TARGET_MANAGER_CHECK_ALL"></system-label>
             </button>

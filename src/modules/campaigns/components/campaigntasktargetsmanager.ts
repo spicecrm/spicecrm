@@ -1,7 +1,7 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component, ComponentRef, Injector, OnInit} from '@angular/core';
+import {Component, ComponentRef, Injector, OnDestroy, OnInit} from '@angular/core';
 import {Params} from '@angular/router';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -11,8 +11,9 @@ import {backend} from '../../../services/backend.service';
 import {TargetI} from "../interfaces/campaigns.interfaces";
 import {toast} from "../../../services/toast.service";
 import {metadata} from "../../../services/metadata.service";
+import {broadcast} from "../../../services/broadcast.service";
 import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
-import {lastValueFrom} from "rxjs";
+import {lastValueFrom, Subscription} from "rxjs";
 import {userpreferences} from "../../../services/userpreferences.service";
 
 /**
@@ -23,12 +24,17 @@ import {userpreferences} from "../../../services/userpreferences.service";
     templateUrl: '../templates/campaigntasktargetsmanager.html',
     providers: [model]
 })
-export class CampaignTaskTargetsManager implements OnInit {
+export class CampaignTaskTargetsManager implements OnInit, OnDestroy {
 
     /**
      * modules: comma separated modules to be searched
      */
     public componentconfig: { modules: string };
+
+    /**
+     * modules: comma separated modules to be searched
+     */
+    public subscriptions = new Subscription();
     /**
      * modules: comma separated modules to be searched
      */
@@ -93,6 +99,7 @@ export class CampaignTaskTargetsManager implements OnInit {
                 public injector: Injector,
                 public language: language,
                 public metadata: metadata,
+                public broadcast: broadcast,
                 public userPreferences: userpreferences,
                 public navigationtab: navigationtab) {
 
@@ -233,6 +240,13 @@ export class CampaignTaskTargetsManager implements OnInit {
         this.initialize(this.navigationtab.activeRoute.params);
     }
 
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
     public reload() {
         this.getTargets();
     }
@@ -310,6 +324,25 @@ export class CampaignTaskTargetsManager implements OnInit {
         });
 
         this.getTargets();
+
+        this.subscribeToModelChanges();
+    }
+
+    /**
+     * subscribe to model changes to update the entries on save in other tab
+     */
+    private subscribeToModelChanges() {
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(msg => {
+
+                if (msg.messagetype != 'model.save' || !this.modules.some(m => msg.messagedata.module == m)) return;
+
+                this.prospects.some(p => {
+                    if (p.id != msg.messagedata.id) return false;
+                    p.data = msg.messagedata.data;
+                });
+            })
+        );
     }
 
     /**
@@ -341,7 +374,9 @@ export class CampaignTaskTargetsManager implements OnInit {
                 this.prospects = res.prospects;
                 this.prospects.forEach(prospect => {
                     prospect.prospectListsDisplay = this.getProspectListsDisplay(prospect.prospectlists);
-                    prospect.status_date_changed = this.userPreferences.formatDateTime(prospect.status_date_changed);
+                    if (!!prospect.status_date_changed) {
+                        prospect.status_date_changed = this.userPreferences.formatDateTime(prospect.status_date_changed);
+                    }
                 });
 
                 this.totalCount = parseInt(res.count, 10);
