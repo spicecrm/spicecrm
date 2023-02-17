@@ -47,16 +47,13 @@ class ProductGroup extends SpiceBean
     }
 
 
-    function fill_in_additional_list_fields()
+    /**
+     * load counts on retrieve view Details only
+     *
+     * @return void
+     */
+    function retrieveViewDetails()
     {
-        parent::fill_in_additional_list_fields();
-        $this->member_count = $this->get_member_count();
-        $this->product_count = $this->get_product_count();
-    }
-
-    function fill_in_additional_detail_fields()
-    {
-        parent::fill_in_additional_detail_fields();
         $this->member_count = $this->get_member_count();
         $this->product_count = $this->get_product_count();
     }

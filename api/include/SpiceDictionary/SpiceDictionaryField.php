@@ -10,6 +10,21 @@ class SpiceDictionaryField
 {
 
     /**
+     * CLears all entries for the given definiton
+     *
+     * @param $dictionaryDefinitionID
+     * @return void
+     * @throws \Exception
+     */
+    static function clearForDefiniton($dictionaryDefinitionID, bool $relationshipFields = false){
+
+        // add if we should or shoudl not exclude items from relationships
+        $addWhere = $relationshipFields ? '' : " AND sysdictionaryrelationship_id IS NULL";
+
+        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionarydefinition_id='{$dictionaryDefinitionID}' $addWhere");
+    }
+
+    /**
      * returns one field by itemid and definitionid
      *
      * @param SpiceDictionaryItem $dictionaryItem

@@ -77,7 +77,8 @@ class One2MBeanRelationship extends One2MRelationship
                     'module' => $rhsDictionaryDefinition->getModuleName(),
                     'vname' => $relationship->relationship->lhs_linklabel
                 ]),
-                'sysdictionaryrelationship_id' => $relationship->id
+                'sysdictionaryrelationship_id' => $relationship->id,
+                'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
             ]);
         }
 
@@ -97,7 +98,8 @@ class One2MBeanRelationship extends One2MRelationship
                     'module' => $lhsDictionaryDefinition->getModuleName(),
                     'vname' => $relationship->relationship->rhs_linklabel
                 ]),
-                'sysdictionaryrelationship_id' => $relationship->id
+                'sysdictionaryrelationship_id' => $relationship->id,
+                'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
             ]);
 
             // write the rhs relate
@@ -117,7 +119,8 @@ class One2MBeanRelationship extends One2MRelationship
                         'module' => $lhsDictionaryDefinition->getModuleName(),
                         'vname' => $relationship->relationship->rhs_relatelabel
                     ]),
-                    'sysdictionaryrelationship_id' => $relationship->id
+                    'sysdictionaryrelationship_id' => $relationship->id,
+                    'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
                 ]);
             }
         }
@@ -131,7 +134,7 @@ class One2MBeanRelationship extends One2MRelationship
      * @throws \Exception
      */
     public  function deactivate(SpiceDictionaryRelationship $relationship){
-        DBManagerFactory::getInstance()->query("DELETE FROM relationships WHERE id='{$relationship->id}''");
+        DBManagerFactory::getInstance()->query("DELETE FROM relationships WHERE id='{$relationship->id}'");
         DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id='{$relationship->id}'");
     }
 

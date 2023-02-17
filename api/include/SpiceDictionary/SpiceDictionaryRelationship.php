@@ -36,16 +36,52 @@ class SpiceDictionaryRelationship
 
     }
 
+    /**
+     * sets the status on the index
+     *
+     * @param $status
+     * @return void
+     * @throws \Exception
+     */
+    private function setStatus($status)
+    {
+        // get the proper table name
+        $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
+
+        // write the stazus update
+        SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->name);
+    }
+
+
+    /**
+     * activates the relationship
+     *
+     * @return void
+     * @throws \Exception
+     */
     public function activate(){
         // get the class for the activation
         $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
         (new $relType['class'](null))->activate($this);
+
+        // set the status
+        $this->setStatus('a');
     }
 
+    /**
+     * deactiovates the relationship
+     *
+     * @return void
+     * @throws \Exception
+     */
     public function deactivate(){
-// get the class for the activation
+        // get the class for the activation
         $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
         (new $relType['class'](null))->deactivate($this);
+
+        // set the status
+        $this->setStatus('i');
+
     }
 
     /**

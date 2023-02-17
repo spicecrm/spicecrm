@@ -209,11 +209,6 @@ class OCI8Manager extends DBManager
     //   Extended the functionality of implemented functions in DB Manager
     //--------------------------------------------------------------------------
 
-    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
-    {
-        return parent::repairTableParams($tablename, $fielddefs, $indices, $execute, $engine);
-    }
-
     public function getAffectedRowCount($result)
     {
         return oci_num_rows($result);

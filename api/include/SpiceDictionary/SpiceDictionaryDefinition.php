@@ -8,6 +8,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDefinition
 {
@@ -32,6 +33,110 @@ class SpiceDictionaryDefinition
         $this->name = $this->definition->name;
         $this->tablename = $this->definition->tablename;
         $this->type = $this->definition->sysdictionary_type;
+    }
+
+    /**
+     * repairs the dictionary Definition
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function repair(bool $relationships = true){
+
+        // reset the cached items
+        SpiceDictionaryField::clearForDefiniton($this->id);
+
+        // get all items and activate them without repair
+        $definitions = [];
+        $indexes = [];
+        $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
+        foreach ($items as $item){
+            // get the definitions and also potential indexes if coming from a template
+            $res = (new SpiceDictionaryItem($item['id']))->activate(false);
+            $definitions = array_merge($definitions, $res['definitions']);
+            $indexes = array_merge($indexes, $res['indexes']);
+        }
+
+        // repair this item
+        $repairDefinitions = [];
+        foreach($definitions as $definition){
+            if($definition->source != 'non-db') $repairDefinitions[] = (array) $definition;
+        }
+
+        // load the vardefs
+        $vardefDetails = $this->loadVardefs();
+
+        // repair this item
+        $repairDefinitions = [];
+        foreach($definitions as $definition){
+            if($definition->source != 'non-db') $repairDefinitions[] = (array) $definition;
+            unset($vardefDetails['fields'][$definition->name]);
+        }
+
+        // merge the remaining fields
+        foreach ($vardefDetails['fields'] as $fieldName => $definition){
+            // write to the cached fields
+            $sysDictionaryField = [
+                'id' => SpiceUtils::createGuid(),
+                'sysdictionaryname' => $this->name,
+                'sysdictionarytablename' => $this->tablename,
+                'sysdictionarydefinition_id' => $this->id,
+                'fieldname' => $definition['name'],
+                'fieldtype' => $definition['type'],
+                'fielddefinition' => json_encode($definition)
+            ];
+
+            // insert into the cached file
+            DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', $sysDictionaryField);
+
+            // if non db add to the repair definitions
+            if($definition['source'] != 'non-db'){
+                $repairDefinitions[] = $definition;
+            }
+        }
+
+        // build the indexes
+        // get all indexes  for the definition itself and merge them
+        $indexes =  array_merge($indexes, SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->id, ['a']));
+        // build a repair index array
+        $repairIndexes = [];
+        foreach ($indexes as $index){
+            $repairIndexes[] = (new SpiceDictionaryIndex($index['id']))->getIndexDefinition($this->tablename);
+        }
+        $repairIndexes = SpiceDictionaryIndexes::getInstance()->mergeIndexes($repairIndexes, $vardefDetails['indices'] ?: []);
+
+        // do the reopair
+        $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, $repairIndexes, false);
+
+        // repair the relationships
+        if($relationships) {
+            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($this->id);
+        }
+
+        // return the sql
+        return $sql;
+    }
+
+    /**
+     * load the vardefs additonally
+     *
+     * @return void
+     */
+    public function loadVardefs(){
+        $module = SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($this->id);
+
+        SpiceModules::getInstance()->getModuleDetails('Accounts');
+        $moduleDetaile = SpiceModules::getInstance()->getModuleDetails($module);
+        SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']] = [];
+
+        SpiceDictionaryHandler::loadModuleFiles($module);
+
+        // get the module Details and return the data
+        return [
+            'fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['fields'],
+            'indices' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['indices'],
+            'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['relationships']
+        ];
     }
 
     /**
