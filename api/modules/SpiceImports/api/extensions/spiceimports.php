@@ -104,6 +104,14 @@ $routes = [
             ],
         ],
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/SpiceImports/{module}/methods',
+        'class'       => SpiceImportsController::class,
+        'function'    => 'getImportMethods',
+        'description' => 'Returns a list of classes that can be used for import.',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ]
 ];
 
 /**

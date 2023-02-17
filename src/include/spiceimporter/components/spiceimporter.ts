@@ -73,7 +73,7 @@ export class SpiceImporter implements OnInit {
             displayname: this.language.getLabel('LBL_IMPORT'),
             displaymodule: this.model.module
         });
-
+        this.spiceImporter.loadModuleAvailableMethods();
         // get saved imports
         this.backend.getRequest('module/SpiceImports/savedimports/' + this.model.module).subscribe(res => {
             this.spiceImporter.savedImports = res;
@@ -276,6 +276,10 @@ export class SpiceImporter implements OnInit {
 
     public import() {
 
+        if (!this.spiceImporter.processByMethod && this.importAction == 'update' && this.spiceImporter.checkFields.length < 1) {
+            return this.toast.sendToast(this.language.getLabel('LBL_MAKE_SELECTION'), 'error');
+        }
+
         let preparedObjectImport = this.prepareObjectImport();
 
         this.spiceImporter.result = {};
@@ -299,7 +303,7 @@ export class SpiceImporter implements OnInit {
             }
 
             this.processing = false;
-            this.spiceImporter.currentImportStep++;
+            this.spiceImporter.currentImportStep = 4;
         });
     }
 
@@ -320,6 +324,7 @@ export class SpiceImporter implements OnInit {
             'idField',
             'fixedFields',
             'importDuplicateAction',
+            'selectedMethod'
         );
         objectImport.fixedFieldsValues = this.model.data;
         objectImport.module = this.model.module;

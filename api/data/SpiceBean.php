@@ -7,8 +7,10 @@ use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceNotes\SpiceNotes;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -2440,7 +2442,14 @@ class SpiceBean
         $tmpBeans = [];
         foreach ($duplicates as $beanId) {
             $tmpBeans[$beanId] = BeanFactory::getBean($this->_module, $beanId);
+
+            // merge SpiceAttachments & SpiceNotes for duplicate
+                // $this->id == ID of Master Bean (Bean to be kept)
+                // $beanId == ID of the Bean to be deleted
+            SpiceAttachments::mergeSpiceAttachments($this->_module, $this->id, $beanId);
+            SpiceNotes::mergeSpiceNotes($this->_module, $this->id, $beanId);
         }
+
         // overwrite fields
         foreach ($overwriteFieldsWithId as $fieldname => $beanId) {
             $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
@@ -2455,13 +2464,13 @@ class SpiceBean
         foreach ($tmpBeans as $beanId => $tmpBean) {
             //handle related beans
             foreach ($linked_fields as $name => $properties) {
-                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link' || $properties['name'] == 'assigned_user_link')
+                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link')
                     continue;
-                
+
                 if (isset($properties['duplicate_merge'])) {
-                    if ($properties['duplicate_merge'] == 'disabled' or
-                        $properties['duplicate_merge'] == 'false' or
-                        $properties['duplicate_merge'] === '0' or
+                    if (
+                        $properties['duplicate_merge'] === 'disabled' or
+                        $properties['duplicate_merge'] === 0 or
                         $properties['duplicate_merge'] === false) {
                         continue;
                     }

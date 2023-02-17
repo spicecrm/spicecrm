@@ -184,7 +184,7 @@ class CampaignTask extends SpiceBean
     {
         $query = $this->db->query("
             SELECT pl.id, pl.name, pl.list_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id 
-            WHERE pl.list_type != 'test' AND campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1"
+            WHERE pl.list_type != 'test' AND campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1 ORDER BY pl.name"
         );
 
         $lists = [];
@@ -202,9 +202,10 @@ class CampaignTask extends SpiceBean
      * @param string $offset
      * @param array $targetsIds
      * @param string|null $searchTerm
+     * @param object|null $sort
      * @return array
      */
-    private function generateTargetsSearchBody(string $modules, string $limit, string $offset, array $targetsIds, ?string $searchTerm): array
+    private function generateTargetsSearchBody(string $modules, string $limit, string $offset, array $targetsIds, ?string $searchTerm, ?object $sort): array
     {
         $addFilter = [
             'bool' => [
@@ -223,7 +224,8 @@ class CampaignTask extends SpiceBean
             'addFilter' => $addFilter,
             'searchterm' => $searchTerm,
             'records' => $limit,
-            'start' => $offset
+            'start' => $offset,
+            'sort' => !$sort ? [] : ['sortfield' => $sort->sortfield, 'sortdirection' => $sort->sortdirection]
         ];
     }
 
@@ -260,9 +262,10 @@ class CampaignTask extends SpiceBean
      * @param string|null $status
      * @param array|null $prospectListIds
      * @param string|null $searchTerm
+     * @param object|null $sort
      * @return array
      */
-    public function getTargets(string $modules, int $limit, int $offset, ?string $status, ?array $prospectListIds, ?string $searchTerm): array
+    public function getTargets(string $modules, int $limit, int $offset, ?string $status, ?array $prospectListIds, ?string $searchTerm, ?object $sort): array
     {
         $response = [
             'prospectlists' => $this->getCampaignTargetLists(),
@@ -273,9 +276,11 @@ class CampaignTask extends SpiceBean
         $prospectListIds = $prospectListIds ?: array_column($response['prospectlists'], 'id');
         $listsTargets = $this->getListsTargets($prospectListIds, $status);
 
-        $postBody = $this->generateTargetsSearchBody($modules, $limit, $offset, $listsTargets, $searchTerm);
+        $postBody = $this->generateTargetsSearchBody($modules, $limit, $offset, $listsTargets, $searchTerm, $sort);
 
         $searchRes = SpiceFTSHandler::getInstance()->search($postBody);
+
+        $beanHandler = new SpiceBeanHandler();
 
         foreach ($searchRes as $module => $moduleRes) {
 
@@ -288,7 +293,7 @@ class CampaignTask extends SpiceBean
                 $target['status'] = $listsTargets[$target['_id']]['status'];
                 $target['status_date_changed'] = $listsTargets[$target['_id']]['status_date_changed'];
 
-                $response['prospects'][] = $this->generateTargetArray($target, $module);
+                $response['prospects'][] = $this->generateTargetArray($target, $module, $beanHandler);
             }
         }
 
@@ -310,15 +315,18 @@ class CampaignTask extends SpiceBean
      * generate target array from the db entry
      * @param array $target
      * @param string $module
+     * @param SpiceBeanHandler $beanHandler
      * @return array
      */
-    private function generateTargetArray(array $target, string $module): array
+    private function generateTargetArray(array $target, string $module, SpiceBeanHandler $beanHandler): array
     {
+        $bean = BeanFactory::getBean($module, $target['_id']);
+
         return [
             'id' => $target['_id'],
             'module' => $module,
             'prospectlists' => explode(',', $target['listsIds']),
-            'data' => $target['_source'],
+            'data' => $beanHandler->mapBeanToArray($module, $bean, false),
             'status' => $target['status'],
             'status_date_changed' => $target['status_date_changed'],
         ];

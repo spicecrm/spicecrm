@@ -65,13 +65,6 @@ export class ObjectMergeModalData {
     }
 
     /**
-     * returns mergeFields sorted alphabetically
-     */
-    public getMergeFields() {
-        return this.objectmerge.mergeFields.sort((a, b) => (a.name > b.name) ? 1 : -1)
-    }
-
-    /**
      * shows/hides fields in template
      * hides assigned_user_id and address fields from the template
      * displays non-db address field (i.e. primary_address)
@@ -113,7 +106,7 @@ export class ObjectMergeModalData {
      */
     public setMergeSource(fieldDef: {name: string, source: 'non-db'}, mergeSourceId: string) {
         if (this.isAddressGroupField(fieldDef)) {
-            this.getMergeFields().forEach((f: {name: string, source: 'non-db'}) => {
+            this.objectmerge.mergeFields.forEach((f: {name: string, source: 'non-db'}) => {
                 if (!f.name.startsWith(`${fieldDef.name}_`)) return;
                 this.objectmerge.mergeSource[f.name] = mergeSourceId;
             });

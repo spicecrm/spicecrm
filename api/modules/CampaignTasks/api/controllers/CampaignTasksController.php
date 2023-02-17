@@ -40,7 +40,7 @@ class CampaignTasksController
 
         $list = $this->createList($args['id'], 'include');
 
-        return $res->withJson(['id' => $list->id]);
+        return $res->withJson(['id' => $list->id, 'name' => $list->name]);
     }
 
     /**
@@ -58,12 +58,17 @@ class CampaignTasksController
         $db = DBManagerFactory::getInstance();
         $exclusionListId = CampaignTask::getListIdByType($args['id'], 'exclude');
 
+        if (!$exclusionListId) {
+            $list = $this->createList($args['id'], 'exclude');
+            $exclusionListId = $list->id;
+        }
+
         foreach ($params['targets'] as $targetId) {
 
             $existingId = $db->getOne("SELECT id FROM campaigntask_targets_status WHERE campaigntask_id = '{$args['id']}' AND prospect_id = '$targetId'");
 
             if ($args['status'] == 'excluded') {
-                $this->handleExcludedTarget($args['id'], $targetId, $exclusionListId);
+                $this->handleExcludedTarget($targetId, $exclusionListId);
             } else {
                 $this->revertExcludedTarget($targetId, $exclusionListId);
             }
@@ -114,25 +119,18 @@ class CampaignTasksController
 
     /**
      * create exclusion list if undefined and add the target to the list
-     * @param string $campaignTaskId
      * @param string $targetId
      * @param string|false $excludeListId
      * @return void
      * @throws \Exception
      */
-    private function handleExcludedTarget(string $campaignTaskId, string $targetId, $excludeListId)
+    private function handleExcludedTarget(string $targetId, $excludeListId)
     {
         $db = DBManagerFactory::getInstance();
 
-        if (!$excludeListId) {
-            $list = $this->createList($campaignTaskId, 'exclude');
-        } else {
-            $list = BeanFactory::getBean('ProspectLists', $excludeListId);
-        }
-
         $target = $db->fetchOne("SELECT * FROM prospect_lists_prospects WHERE related_id ='$targetId' AND deleted != 1");
         $target['id'] = SpiceUtils::createGuid();
-        $target['prospect_list_id'] = $list->id;
+        $target['prospect_list_id'] = $excludeListId;
         $target['date_modified'] = TimeDate::getInstance()->nowDb();
 
         $db->insertQuery('prospect_lists_prospects', $target);
@@ -430,7 +428,15 @@ class CampaignTasksController
             throw new NotFoundException('CampaignTask not found');
         }
 
-        $response = $campaignTask->getTargets($params['modules'], $params['limit'], $params['offset'], $params['status'],  json_decode($params['prospectListIds'] ?? null), $params['searchTerm']);
+        $response = $campaignTask->getTargets(
+            $params['modules'],
+            $params['limit'],
+            $params['offset'],
+            $params['status'],
+            json_decode($params['prospectListIds'] ?? null),
+            $params['searchTerm'],
+            json_decode($params['sort'])
+        );
 
         return $res->withJson($response);
     }

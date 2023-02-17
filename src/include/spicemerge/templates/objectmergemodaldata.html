@@ -27,7 +27,7 @@
         </tr>
     </thead>
     <tbody>
-        <ng-container *ngFor="let mergeField of getMergeFields()">
+        <ng-container *ngFor="let mergeField of objectmerge.mergeFields">
             <tr *ngIf="showField(mergeField)" class="slds-align-top">
                 <td class="slds-truncate">
                     <system-label-fieldname [module]="modellist.module" [field]="mergeField.name"></system-label-fieldname>
