@@ -10,6 +10,11 @@ use SpiceCRM\modules\EmailAddresses\EmailAddress;
 class Company extends Basic
 {
     /**
+     * @var false|\SpiceCRM\data\SpiceBean
+     */
+    public $emailAddress;
+
+    /**
      * Constructor
      */
     public function __construct()

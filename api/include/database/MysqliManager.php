@@ -911,7 +911,7 @@ class MysqliManager extends DBManager
      * up quite a bit. So here, we'll parse the returned SQL into a single ALTER TABLE command.
      */
 
-    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
+    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null, $commented = false)
     {
         $sql = parent::repairTableParams($tablename,$fielddefs,$indices,false,$engine);
 

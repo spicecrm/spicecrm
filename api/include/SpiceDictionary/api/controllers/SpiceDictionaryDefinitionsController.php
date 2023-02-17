@@ -102,4 +102,18 @@ class SpiceDictionaryDefinitionsController
         return $res->withJson((new SpiceDictionaryDefinition($args['id']))->deactivate($params['drop'] == '1' ? true : false));
     }
 
+    /**
+     * repairs a Dictionary Definition
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function repairDictionaryDefinition(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getQueryParams();
+        return $res->withJson(['success' => true, 'sql' => (new SpiceDictionaryDefinition($args['id']))->repair()]);
+    }
+
 }

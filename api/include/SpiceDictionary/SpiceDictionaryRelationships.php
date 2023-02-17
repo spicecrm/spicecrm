@@ -75,18 +75,31 @@ class SpiceDictionaryRelationships
     }
 
     /**
+     * repairs the relationships for the one definiton
+     *
+     * @param $sysdictionaryDefinitonId
+     * @return void
+     */
+    public function repairForDctionaryDefinition(string $sysdictionaryDefinitonId){
+        $relationships = $this->getRelationships($sysdictionaryDefinitonId);
+        foreach ($relationships as $relationship){
+              (new SpiceDictionaryRelationship($relationship['id']))->activate();
+        }
+    }
+
+    /**
      * loads the relationships from the Database
      *
      * @return array
      * @throws \Exception
      */
-    public function getRelationships($sysdictionaryDefinitonId = null, $statusFilter = ['a']){
+    public function getRelationships(string $sysdictionaryDefinitonId = null, array $statusFilter = ['a']){
         $db = DBManagerFactory::getInstance();
 
         // build a where filter clause
         $whereArray = [];
         if($sysdictionaryDefinitonId){
-            $whereArray[] = "sysdictionarydefinition_id='{$sysdictionaryDefinitonId}'";
+            $whereArray[] = "(lhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}' OR rhs_sysdictionarydefinition_id='{$sysdictionaryDefinitonId}')";
         }
         if(is_array($statusFilter) && count($statusFilter) > 0){
             $whereArray[] = "status IN ('".implode("','", $statusFilter)."')";

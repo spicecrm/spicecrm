@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\includes\Logger;
 
+use SpiceCRM\includes\Logger\SpiceLogger;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;

@@ -56,6 +56,11 @@ class Email extends SpiceBean
     const TYPE_OUTBOUND = 'out';
 
     /**
+     * @var false|\SpiceCRM\data\SpiceBean
+     */
+    public $emailAddress;
+
+    /**
      * sole constructor
      */
     function __construct()
