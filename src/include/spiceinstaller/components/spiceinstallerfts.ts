@@ -19,7 +19,6 @@ export class SpiceInstallerFTS {
      * condition booleans
      */
     public serverCondition: boolean = true;
-    public portCondition: boolean = true;
     public prefixCondition: boolean = true;
 
     /**
@@ -60,10 +59,9 @@ export class SpiceInstallerFTS {
         };
 
         this.serverCondition = this.spiceinstaller.server.length > 0;
-        this.portCondition = this.spiceinstaller.port.length > 0;
         this.prefixCondition = this.spiceinstaller.prefix.length > 0;
 
-        if (this.serverCondition && this.portCondition && this.prefixCondition) {
+        if (this.serverCondition && this.prefixCondition) {
             this.loading = true;
             this.http.post(`${this.spiceinstaller.systemurl}/install/checkfts`, body).subscribe(
                 (response: any) => {
@@ -80,6 +78,5 @@ export class SpiceInstallerFTS {
                     }
                 });
         }
-
     }
 }
