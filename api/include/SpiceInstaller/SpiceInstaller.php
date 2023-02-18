@@ -293,17 +293,17 @@ class SpiceInstaller
         $errors = [];
         $postData = $body->getParsedBody();
 
-        $protocol = $postData['https'] ? 'hhtps' : 'http';
+        $protocol = $postData['https'] ? 'https' : 'http';
 
         $url = $protocol . "://" . $postData['server'] . ":" . $postData['port'] . "/";
 
         $response = $this->curlCall($this->curl, $url, $postData['sllverify'], $postData['username'], $postData['password']);
 
         if (!empty($response)) {
-            if (version_compare($response->version->number, '7.5', '<') || (version_compare($response->version->number, '8.0', '>=') && version_compare($response->version->number, '8.6', '<') ) ) {
+            if (version_compare($response->version->number, '7.5', '<') ) {
                 $errors = ['version not supported'];
             } else {
-                $ftsconfig = ['protocol' => $postData['protocol'], 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
+                $ftsconfig = ['https' => $postData['https'], 'username' => $postData['username'], 'password' => $postData['password'], 'protocol' => $protocol, 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
             }
         } else {
             $errors = ['invalid url', $response];
