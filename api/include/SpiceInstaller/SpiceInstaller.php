@@ -50,7 +50,7 @@ class SpiceInstaller
      * @param bool $ssl
      * @return mixed
      */
-    private function curlCall($curl, $url, $ssl = false)
+    private function curlCall($curl, $url, $ssl = false, $username = null, $password = null)
     {
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -60,6 +60,11 @@ class SpiceInstaller
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $ssl);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $ssl);
         curl_setopt($curl, CURLOPT_ENCODING, "UTF-8");
+
+
+        if($username && $password) {
+            curl_setopt($curl, CURLOPT_USERPWD, "{$username}:{$password}");
+        }
 
         $response = curl_exec($curl);
         if (empty($response)) {
@@ -287,9 +292,12 @@ class SpiceInstaller
     {
         $errors = [];
         $postData = $body->getParsedBody();
-        $url = $postData['protocol'] . "://" . $postData['server'] . ":" . $postData['port'] . "/";
 
-        $response = $this->curlCall($this->curl, $url);
+        $protocol = $postData['https'] ? 'hhtps' : 'http';
+
+        $url = $protocol . "://" . $postData['server'] . ":" . $postData['port'] . "/";
+
+        $response = $this->curlCall($this->curl, $url, $postData['sllverify'], $postData['username'], $postData['password']);
 
         if (!empty($response)) {
             if (version_compare($response->version->number, '7.5', '<') || (version_compare($response->version->number, '8.0', '>=') && version_compare($response->version->number, '8.6', '<') ) ) {
