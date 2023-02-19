@@ -26,10 +26,13 @@ class CampaignTasksController
 {
 
 
+    /**
+     * create inclusion list if not exist
+     * @throws \Exception
+     */
     public function createInclusionList(Request $req, Response $res, array $args): Response
     {
-        $db = DBManagerFactory::getInstance();
-        $inclusionListId = $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '{$args['id']}' and pl.list_type = 'include' and pl.deleted != 1  and plc.deleted != 1 ");
+        $inclusionListId = CampaignTask::getListIdByType($args['id'], 'include');
 
         if (!empty($inclusionListId)) {
             return $res->withJson(['id' => $inclusionListId]);
@@ -37,7 +40,7 @@ class CampaignTasksController
 
         $list = $this->createList($args['id'], 'include');
 
-        return $res->withJson(['id' => $list->id]);
+        return $res->withJson(['id' => $list->id, 'name' => $list->name]);
     }
 
     /**
@@ -53,15 +56,21 @@ class CampaignTasksController
     {
         $params = $req->getParsedBody();
         $db = DBManagerFactory::getInstance();
+        $exclusionListId = CampaignTask::getListIdByType($args['id'], 'exclude');
+
+        if (!$exclusionListId) {
+            $list = $this->createList($args['id'], 'exclude');
+            $exclusionListId = $list->id;
+        }
 
         foreach ($params['targets'] as $targetId) {
 
             $existingId = $db->getOne("SELECT id FROM campaigntask_targets_status WHERE campaigntask_id = '{$args['id']}' AND prospect_id = '$targetId'");
 
             if ($args['status'] == 'excluded') {
-                $this->handleExcludedTarget($args['id'], $targetId);
+                $this->handleExcludedTarget($targetId, $exclusionListId);
             } else {
-                $this->revertExcludedTarget($args['id'], $targetId);
+                $this->revertExcludedTarget($targetId, $exclusionListId);
             }
 
             $this->updateTargetStatus($db, $existingId, $args['id'], $targetId, $args['status']);
@@ -94,15 +103,14 @@ class CampaignTasksController
 
     /**
      * delete excluded target from the exclusion list
-     * @param string $campaignTaskId
      * @param string $targetId
+     * @param string|false $excludeListId
      * @return void
      * @throws \Exception
      */
-    private function revertExcludedTarget(string $campaignTaskId, string $targetId)
+    private function revertExcludedTarget(string $targetId, $excludeListId)
     {
         $db = DBManagerFactory::getInstance();
-        $excludeListId = (string) $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = 'exclude' and pl.deleted != 1  and plc.deleted != 1 ");
 
         if (!$excludeListId) return;
 
@@ -111,25 +119,18 @@ class CampaignTasksController
 
     /**
      * create exclusion list if undefined and add the target to the list
-     * @param string $campaignTaskId
      * @param string $targetId
+     * @param string|false $excludeListId
      * @return void
      * @throws \Exception
      */
-    private function handleExcludedTarget(string $campaignTaskId, string $targetId)
+    private function handleExcludedTarget(string $targetId, $excludeListId)
     {
         $db = DBManagerFactory::getInstance();
-        $excludeListId = $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = 'exclude' and pl.deleted != 1  and plc.deleted != 1 ");
-
-        if (!$excludeListId) {
-            $list = $this->createList($campaignTaskId, 'exclude');
-        } else {
-            $list = BeanFactory::getBean('ProspectLists', $excludeListId);
-        }
 
         $target = $db->fetchOne("SELECT * FROM prospect_lists_prospects WHERE related_id ='$targetId' AND deleted != 1");
         $target['id'] = SpiceUtils::createGuid();
-        $target['prospect_list_id'] = $list->id;
+        $target['prospect_list_id'] = $excludeListId;
         $target['date_modified'] = TimeDate::getInstance()->nowDb();
 
         $db->insertQuery('prospect_lists_prospects', $target);
@@ -266,21 +267,6 @@ class CampaignTasksController
         // activate the campaigntask
         $success = $campaignTask->activateFromEvent($status);
         return $res->withJson(['success' => $success, 'id' => $args['id']]);
-    }
-
-
-    public function exportCampaignTask(Request $req, Response $res, array $args): Response
-    {
-        // ACL Check
-        if (!SpiceACL::getInstance()->checkAccess('CampaignTasks', 'export', true))
-            throw (new ForbiddenException("Forbidden to export for module CampaignTasks."));
-
-        /** @var CampaignTask load the campaign task **/
-        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-
-        // activate the campaigntask
-        $campaignTask->export();
-
     }
 
     /**
@@ -442,7 +428,15 @@ class CampaignTasksController
             throw new NotFoundException('CampaignTask not found');
         }
 
-        $response = $campaignTask->getTargets($params['modules'], $params['limit'], $params['offset'], $params['status'],  json_decode($params['prospectListIds'] ?? null), $params['searchTerm']);
+        $response = $campaignTask->getTargets(
+            $params['modules'],
+            $params['limit'],
+            $params['offset'],
+            $params['status'],
+            json_decode($params['prospectListIds'] ?? null),
+            $params['searchTerm'],
+            json_decode($params['sort'])
+        );
 
         return $res->withJson($response);
     }

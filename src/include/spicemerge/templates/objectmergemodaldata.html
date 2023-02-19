@@ -2,13 +2,13 @@
     <tbody>
     <tr>
         <td></td>
-        <td class="slds-text-align--center" *ngFor="let item of getSelected()">
+        <td class="slds-text-align--center" *ngFor="let item of getSelected(); trackBy: trackByFn">
             <a href="javascript:void(0)" (click)="selectAllFields(item.id)"><system-label label="LBL_SELECT_ALL_FIELDS"></system-label></a>
         </td>
     </tr>
     <tr>
         <td></td>
-        <td class="slds-text-align--center" *ngFor="let item of getSelected()">
+        <td class="slds-text-align--center" *ngFor="let item of getSelected(); trackBy: trackByFn">
             <div class="slds-form-element">
                 <div class="slds-form-element__control">
                     <system-input-radio name="master" [value]="item.id" [disabled]="!canSwitchMaster" [(ngModel)]="objectmerge.masterId"><system-label class="slds-p-left--xx-small" label="LBL_USE_AS_MASTER"></system-label></system-input-radio>
@@ -21,8 +21,8 @@
     <thead>
         <tr class="slds-text-title_bold slds-border--bottom slds-border--top">
             <th scope="col"></th>
-            <th scope="col" *ngFor="let item of getSelected()">
-                <div class="slds-truncate slds-text-align--center" [ngClass]="{'slds-text-color_success': isCurrentModel(item.id)}">{{item.summary_text}}</div>
+            <th scope="col" *ngFor="let item of getSelected(); trackBy: trackByFn">
+                <div class="slds-truncate slds-text-align--center" [ngClass]="{'slds-text-color_success': isCurrentModel(item.id)} ">{{item.summary_text}}</div>
             </th>
         </tr>
     </thead>
@@ -32,10 +32,10 @@
                 <td class="slds-truncate">
                     <system-label-fieldname [module]="modellist.module" [field]="mergeField.name"></system-label-fieldname>
                 </td>
-                <td class="slds-truncate" *ngFor="let item of getSelected()">
+                <td class="slds-truncate" *ngFor="let item of getSelected(); trackBy: trackByFn">
                     <div class="slds-grid">
-                        <system-input-radio name="master" [name]="mergeField.name" [value]="item.id" [(ngModel)]="objectmerge.mergeSource[mergeField.name]"></system-input-radio>
-                        <object-merge-modal-data-field [fieldname]="mergeField.name" [fielddata]="item"></object-merge-modal-data-field>
+                        <system-input-radio name="master" [name]="mergeField.name" [value]="item.id" [ngModel]="objectmerge.mergeSource[mergeField.name]" (ngModelChange)="setMergeSource(mergeField, $event)"></system-input-radio>
+                        <object-merge-modal-data-field [fieldname]="mergeField.name" [fieldConfig]="!isAddressGroupField(mergeField) ? {} : {fieldtype: 'address', key: mergeField.name.split('_')[0]}" [fielddata]="item" ></object-merge-modal-data-field>
                     </div>
                 </td>
             </tr>

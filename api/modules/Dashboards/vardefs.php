@@ -11,7 +11,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Dashboard'] = [
             'global' => [
                 'name' => 'global',
                 'type' => 'bool',
-                'vname' => 'LBL_GLOBAL'
+                'vname' => 'LBL_GLOBAL',
+                'default' => 0
             ],
             'dashboardcomponents' =>  [
                 'name' => 'dashboardcomponents',
