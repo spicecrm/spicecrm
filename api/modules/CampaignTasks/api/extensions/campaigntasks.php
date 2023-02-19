@@ -113,22 +113,6 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/CampaignTasks/{id}/export',
-        'oldroute'    => '/module/CampaignTasks/{campaignid}/export',
-        'class'       => CampaignTasksController::class,
-        'function'    => 'exportCampaignTask',
-        'description' => 'Export Campaign Task',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
-        'parameters'  => [
-            'id'    => [
-                'in'          => 'path',
-                'description' => 'Campaign Task id',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-            ],
-        ],
-    ],
-    [
-        'method'      => 'post',
         'route'       => '/module/CampaignTasks/{id}/sendtestmail',
         'oldroute'    => '/module/CampaignTasks/{campaigntaskid}/sendtestmail',
         'class'       => CampaignTasksController::class,
@@ -241,6 +225,11 @@ $routes = [
                 'in'          => 'query',
                 'description' => 'query modules filter',
                 'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+            'sort'    => [
+                'in'          => 'query',
+                'description' => 'query sort field',
+                'type'        => ValidationMiddleware::TYPE_OBJECT,
             ]
         ]
     ],

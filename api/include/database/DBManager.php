@@ -636,7 +636,8 @@ abstract class DBManager
     public function insertParams($table, $field_defs, $data, $field_map = null, $execute = true)
     {
         $values = [];
-        foreach ($field_defs as $field => $fieldDef) {
+        foreach ($field_defs as $fieldIdx => $fieldDef) {
+            $field = $fieldDef['name'];
             if (isset($fieldDef['source']) && $fieldDef['source'] != 'db') continue;
             //custom fields handle there save seperatley
             if (!empty($field_map) && !empty($field_map[$field]['custom_type'])) continue;

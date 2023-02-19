@@ -212,7 +212,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'link_type' => 'one',
                 'source' => 'non-db',
                 'vname' => 'LBL_ACCOUNTS',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
         'account_description' =>
             [
@@ -383,7 +383,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'link_type' => 'relationship_info',
                 'source' => 'non-db',
                 'importable' => 'false',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
         'm_accept_status_fields' =>
             [
@@ -397,7 +397,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'importable' => 'false',
                 'hideacl' => true,
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
         'accept_status_id' =>
             [

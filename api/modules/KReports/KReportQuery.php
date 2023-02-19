@@ -1665,8 +1665,13 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         // empty String
         $this->groupbyString = '';
         if (is_array($additionalGroupBy)) {
-            foreach ($additionalGroupBy as $thisFieldData)
-                $groupedFields[] = $thisFieldData['fieldid'];
+            foreach ($additionalGroupBy as $thisFieldData){
+                if(is_array($thisFieldData)) {
+                    $groupedFields[] = $thisFieldData['fieldid'];
+                } else{
+                    $groupedFields[] = $thisFieldData;
+                }
+            }
         } else
             $additionalGroupBy = [];
 

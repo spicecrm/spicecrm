@@ -14,6 +14,17 @@ import {DeploymentCRDBEntries} from './components/deploymentcrdbentries';
 import {DeploymentCRSetActiveButton} from './components/deploymentcrsetactivebutton';
 import {DeploymentCRActive} from './components/deploymentcractive';
 import {DeploymentCRDBSQL} from './components/deploymentcrdbsql';
+import {DeploymentSystemValidationField} from "./components/deploymentsystemvalidationfield";
+import {DeploymentSystemAddRelatedButton} from "./components/deploymentsystemaddrelatedbutton";
+import {DeploymentSystemSelectRelatedButton} from "./components/deploymentsystemselectrelatedbutton";
+import {DeploymentFetchPackagesButton} from "./components/deploymentsystemfetchpackagesbutton";
+import {DeploymentSystemPackagesModal} from "./components/deploymentsystempackagesmodal";
+import {DeploymentSystemLandscapeView} from "./components/deploymentsystemlandscapeview";
+import {DirectivesModule} from "../../directives/directives";
+import {DragDropModule} from "@angular/cdk/drag-drop";
+import {DeploymentSystemPackagesCockpitView} from "./components/deploymentsystempackagescockpitview";
+import {DeploymentSystemPackagesCockpitViewPackage} from "./components/deploymentsystempackagescockpitviewpackage";
+import {DeploymentCRCompleteButton} from "./components/deploymentcrcompletebutton";
 
 
 @NgModule({
@@ -24,8 +35,19 @@ import {DeploymentCRDBSQL} from './components/deploymentcrdbsql';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule,
+        DragDropModule
     ],
     declarations: [
+        DeploymentCRCompleteButton,
+        DeploymentSystemPackagesCockpitView,
+        DeploymentSystemPackagesCockpitViewPackage,
+        DeploymentSystemLandscapeView,
+        DeploymentSystemPackagesModal,
+        DeploymentFetchPackagesButton,
+        DeploymentSystemSelectRelatedButton,
+        DeploymentSystemAddRelatedButton,
+        DeploymentSystemValidationField,
         DeploymentCRDBEntries,
         DeploymentCRSetActiveButton,
         DeploymentCRActive,

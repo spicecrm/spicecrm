@@ -1,7 +1,7 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component, ComponentRef, Injector, OnInit} from '@angular/core';
+import {Component, ComponentRef, Injector, OnDestroy, OnInit} from '@angular/core';
 import {Params} from '@angular/router';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -11,8 +11,10 @@ import {backend} from '../../../services/backend.service';
 import {TargetI} from "../interfaces/campaigns.interfaces";
 import {toast} from "../../../services/toast.service";
 import {metadata} from "../../../services/metadata.service";
+import {broadcast} from "../../../services/broadcast.service";
 import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
-import {lastValueFrom} from "rxjs";
+import {lastValueFrom, Subscription} from "rxjs";
+import {userpreferences} from "../../../services/userpreferences.service";
 
 /**
  * allows management of targets in multiple targetlists on a campaigntask
@@ -22,12 +24,21 @@ import {lastValueFrom} from "rxjs";
     templateUrl: '../templates/campaigntasktargetsmanager.html',
     providers: [model]
 })
-export class CampaignTaskTargetsManager implements OnInit {
+export class CampaignTaskTargetsManager implements OnInit, OnDestroy {
 
     /**
      * modules: comma separated modules to be searched
      */
     public componentconfig: { modules: string };
+
+    /**
+     * modules: comma separated modules to be searched
+     */
+    public subscriptions = new Subscription();
+    /**
+     * modules: comma separated modules to be searched
+     */
+    public currentPage = 1;
     /**
      * holds the prospect lists
      */
@@ -55,11 +66,31 @@ export class CampaignTaskTargetsManager implements OnInit {
     /**
      * holds the inclusion list id
      */
-    public inclusionListId: string;
+    public inclusionList: {id: string, name: string};
+    /**
+     * holds the inclusion list id
+     */
+    public exclusionList: {id: string, name: string};
     /**
      * holds the fieldset ids for the elements where the key is the module name and the value is the fieldset id
      */
     public detailsFieldSets: { [key: symbol]: string } = {};
+    /**
+     * holds the sort fields for the modules
+     */
+    public modulesSortFields: { [key: symbol]: string[] } = {};
+    /**
+     * holds the sort fields for the modules
+     */
+    public modulesFields: { [key: symbol]: {field: string, fieldconfig: string}[] } = {};
+    /**
+     * holds the available modules defined in the component config
+     */
+    public modules: string[] = [];
+    /**
+     * id of the clicked entry to highlight
+     */
+    public clickedEntryId: string;
 
     constructor(public backend: backend,
                 public modal: modal,
@@ -68,6 +99,8 @@ export class CampaignTaskTargetsManager implements OnInit {
                 public injector: Injector,
                 public language: language,
                 public metadata: metadata,
+                public broadcast: broadcast,
+                public userPreferences: userpreferences,
                 public navigationtab: navigationtab) {
 
     }
@@ -92,8 +125,7 @@ export class CampaignTaskTargetsManager implements OnInit {
     set searchTerm(term: string) {
 
         this._searchTerm = term;
-
-        this.getTargets();
+        this.onPageChange(1);
     }
 
     /**
@@ -116,20 +148,19 @@ export class CampaignTaskTargetsManager implements OnInit {
     set currentListId(id: string) {
 
         this._currentListId = id;
-
-        this.getTargets();
+        this.onPageChange(1)
     }
 
     /**
      * local property for the current filter status
      * @private
      */
-    private _currentFilterStatus: 'checked' | 'unchecked' | 'excluded';
+    private _currentFilterStatus: 'checked' | 'unchecked' | 'excluded' | 'included' | '' = '';
 
     /**
      * return the current filter status
      */
-    get currentFilterStatus(): 'checked' | 'unchecked' | 'excluded' {
+    get currentFilterStatus(): 'checked' | 'unchecked' | 'excluded' | 'included' | '' {
         return this._currentFilterStatus;
     }
 
@@ -137,15 +168,83 @@ export class CampaignTaskTargetsManager implements OnInit {
      * set the current filter status and reload the targets
      * @param status
      */
-    set currentFilterStatus(status: 'checked' | 'unchecked' | 'excluded') {
+    set currentFilterStatus(status: 'checked' | 'unchecked' | 'excluded' | 'included' | '') {
 
         this._currentFilterStatus = status;
+        this.onPageChange(1)
+    }
 
-        this.getTargets();
+    /**
+     * local property for the current filter module
+     * @private
+     */
+    private _currentModule: string = '';
+
+    /**
+     * return the current filter module
+     */
+    get currentModule(): string {
+        return this._currentModule;
+    }
+
+    /**
+     * set the current filter module and reload the targets
+     * @param module
+     */
+    set currentModule(module: string) {
+
+        this._currentModule = module;
+        this.sortObject.sortfield = undefined;
+        this.onPageChange(1)
+    }
+
+    /**
+     * holds the sort object
+     * @private
+     */
+    private sortObject: {sortfield: string, sortdirection: 'ASC' | 'DESC'} = {sortfield: undefined, sortdirection: 'ASC'};
+
+    /**
+     * getter for the sort field
+     */
+    get sortField(): string {
+        return this.sortObject.sortfield;
+    }
+
+    /**
+     * sets the sort field
+     * @param field
+     */
+    set sortField(field: string) {
+        this.sortObject.sortfield = field;
+        this.onPageChange(1)
+    }
+
+    /**
+     * getter for the sort field
+     */
+    get sortDirection(): 'ASC' | 'DESC' {
+        return this.sortObject.sortdirection;
+    }
+
+    /**
+     * sets the sort direction
+     * @param direction
+     */
+    set sortDirection(direction: 'ASC' | 'DESC') {
+        this.sortObject.sortdirection = direction;
+        this.onPageChange(1)
     }
 
     public ngOnInit(): void {
         this.initialize(this.navigationtab.activeRoute.params);
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     public reload() {
@@ -157,13 +256,13 @@ export class CampaignTaskTargetsManager implements OnInit {
      */
     public async add() {
 
-        const options = this.componentconfig.modules.split(',').map(m => ({
+        const options = this.modules.map(m => ({
             value: m,
             display: this.language.getModuleName(m)
         }));
 
-        if (!this.inclusionListId) {
-            this.inclusionListId = await this.createInclusionList() as any;
+        if (!this.inclusionList) {
+            this.inclusionList = await this.createInclusionList() as {id: string, name: string};
         }
 
         this.modal.prompt('input', '', 'LBL_SELECT_MODULE', 'shade', undefined, options, true)
@@ -177,7 +276,7 @@ export class CampaignTaskTargetsManager implements OnInit {
                             selectModal.instance.selectedItems.subscribe({
                                 next: selectedItems => {
                                     const body = selectedItems.map(e => e.id);
-                                    this.backend.postRequest(`module/ProspectLists/${this.inclusionListId}/related/${module.toLowerCase()}`, [], body)
+                                    this.backend.postRequest(`module/ProspectLists/${this.inclusionList.id}/related/${module.toLowerCase()}`, [], body)
                                         .subscribe({
                                             next: () => {
                                                 this.updateStatus('included', selectedItems.map(t => t.id)).then(() => {
@@ -212,12 +311,38 @@ export class CampaignTaskTargetsManager implements OnInit {
 
         this.componentconfig = this.metadata.getComponentConfig('CampaignTaskTargetsManager', this.parent.module);
 
-        this.componentconfig.modules.split(',').forEach(m => {
+        this.modules = this.componentconfig.modules.split(',');
+
+        this.modules.forEach(m => {
             const config = this.metadata.getComponentConfig('CampaignTaskTargetsManagerDetails', m);
             this.detailsFieldSets[m] = config?.fieldset;
+
+            if (!!config?.fieldset) {
+                this.modulesFields[m] = this.metadata.getFieldSetItems(config.fieldset);
+                this.modulesSortFields[m] = this.modulesFields[m].filter(e => e.fieldconfig?.sortable).map(e => e.field);
+            }
         });
 
         this.getTargets();
+
+        this.subscribeToModelChanges();
+    }
+
+    /**
+     * subscribe to model changes to update the entries on save in other tab
+     */
+    private subscribeToModelChanges() {
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(msg => {
+
+                if (msg.messagetype != 'model.save' || !this.modules.some(m => msg.messagedata.module == m)) return;
+
+                this.prospects.some(p => {
+                    if (p.id != msg.messagedata.id) return false;
+                    p.data = msg.messagedata.data;
+                });
+            })
+        );
     }
 
     /**
@@ -234,22 +359,32 @@ export class CampaignTaskTargetsManager implements OnInit {
             limit: 50,
             searchTerm: this.searchTerm,
             status: this.currentFilterStatus,
-            modules: this.componentconfig.modules,
+            modules: !!this.currentModule ? this.currentModule : this.componentconfig.modules,
+            sort: this.sortObject,
             prospectListIds: !this.currentListId ? undefined : [this.currentListId]
         };
 
         this.backend.getRequest(`module/${this.parent.module}/${this.parent.id}/targets`, params).subscribe({
             next: (res) => {
-                this.prospectLists = res.prospectlists;
+
+                this.inclusionList = res.prospectlists.find(l => l.list_type == 'include');
+                this.exclusionList = res.prospectlists.find(l => l.list_type == 'exclude');
+                this.prospectLists = res.prospectlists.filter(l => ['include', 'exclude'].indexOf(l.list_type) == -1);
+
                 this.prospects = res.prospects;
-                this.prospects.forEach(prospect =>
-                    prospect.prospectListsDisplay = this.getProspectListsDisplay(prospect.prospectlists)
-                );
+                this.prospects.forEach(prospect => {
+                    prospect.prospectListsDisplay = this.getProspectListsDisplay(prospect.prospectlists);
+                    if (!!prospect.status_date_changed) {
+                        prospect.status_date_changed = this.userPreferences.formatDateTime(prospect.status_date_changed);
+                    }
+                });
 
                 this.totalCount = parseInt(res.count, 10);
                 // if we have less than 50 records set the limit automatically
-                if (this.totalCount < this.limit) {
+                if (this.totalCount <= this.limit) {
                     this.limit = this.totalCount;
+                } else {
+                    this.limit = 50;
                 }
 
                 this.loading = false;
@@ -293,7 +428,7 @@ export class CampaignTaskTargetsManager implements OnInit {
         const targets = [];
 
         this.prospects.forEach(p => {
-            if (p.status == 'included') return;
+            if (p.status == 'included' || p.status == 'excluded') return;
             targets.push(p.id);
             p.status = 'excluded';
         });
@@ -318,11 +453,12 @@ export class CampaignTaskTargetsManager implements OnInit {
     }
 
     /**
-     * get page targets
+     * set page and offset and reload targets
      * @param page
      */
-    public getPageTargets(page: number) {
+    public onPageChange(page: number) {
 
+        this.currentPage = page;
         this.offset = (page - 1) * this.limit;
 
         this.getTargets();
@@ -349,19 +485,20 @@ export class CampaignTaskTargetsManager implements OnInit {
      * create inclusion list
      * @private
      */
-    private createInclusionList(): Promise<string> {
+    private createInclusionList(): Promise<{name: string, id: string}> {
 
         const loadingModal = this.modal.await('LBL_LOADING');
 
         return lastValueFrom(this.backend.postRequest(`module/${this.parent.module}/${this.parent.id}/targets/list/inclusion`))
-            .then((res: { id }) => {
+            .then((res: { id: string, name: string }) => {
                 loadingModal.next(true);
                 loadingModal.complete();
-                return res.id;
+                return res;
             })
             .catch(() => {
                 loadingModal.next(true);
                 loadingModal.complete();
+                return undefined;
             });
     }
 
@@ -392,6 +529,14 @@ export class CampaignTaskTargetsManager implements OnInit {
      * @param prospectListIds
      */
     private getProspectListsDisplay(prospectListIds: string[]): string {
-        return prospectListIds.map(id => this.prospectLists.find(p => p.id == id).name).join(', ');
+        return prospectListIds.map(id => this.prospectLists.find(p => p.id == id)?.name).filter(p => !!p).join(', ');
+    }
+
+    /**
+     * set the clicked entry
+     * @param id
+     */
+    public setClickedEntry(id: string) {
+        this.clickedEntryId = id == this.clickedEntryId ? undefined : id;
     }
 }

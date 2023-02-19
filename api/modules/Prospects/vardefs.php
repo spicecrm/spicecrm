@@ -90,7 +90,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Prospect'] = [
         'module' => 'Campaigns',
         //'dbType' => 'char',
         'reportable'=>false,
-            'duplicate_merge'=> 'disabled',
+        'duplicate_merge' => false,
       ],
 	  'campaigns' =>
 	  [
