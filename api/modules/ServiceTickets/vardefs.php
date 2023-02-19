@@ -300,6 +300,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'side' => 'right',
             'source' => 'non-db',
         ],
+        // emails
+        'emails_as_parent' => [
+            'name' => 'emails_as_parent',
+            'vname' => 'LBL_EMAILS_AS_PARENT',
+            'type' => 'link',
+            'relationship' => 'servicetickets_emails',
+            'module' => 'Emails',
+            'bean_name' => 'Email',
+            'source' => 'non-db'
+        ],
     ],
     'relationships' => [
         'servicetickets_accounts' => [

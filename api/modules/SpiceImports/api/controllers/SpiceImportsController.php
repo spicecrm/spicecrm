@@ -9,6 +9,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\modules\SpiceImports\SpiceImport;
 
 class SpiceImportsController{
 
@@ -112,13 +113,54 @@ class SpiceImportsController{
         $db = DBManagerFactory::getInstance();
         $logs = [];
 
-        $res = $db->query("SELECT * FROM spiceimportlogs WHERE import_id = '$id'");
-        while ($log = $db->fetchByAssoc($res)) {
+        $spiceImportLogIds = $db->query("SELECT * FROM spiceimportlogs WHERE import_id = '$id'");
+        while ($log = $db->fetchByAssoc($spiceImportLogIds)) {
             $logs[] = $log;
         }
 
         return $res->withJson($logs);
     }
 
+    /**
+     * Returns all class names of schedulerjobtasks classes.
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getImportMethods(Request $req, Response $res, array $args): Response {
+        $classList = [];
+        $checkRootPaths = ['include', 'modules', 'extensions/include', 'extensions/modules', 'custom/modules', 'custom/extensions/modules', 'custom/include', 'custom/extensions/include', 'custom/Extension/modules'];
+        $module = $args['module'];
+
+        foreach ($checkRootPaths as $checkRootPath) {
+            $dirHandle = opendir("./$checkRootPath");
+            if ($dirHandle) {
+                while (($nextDir = readdir($dirHandle)) !== false) {
+                    if ($nextDir != '.' && $nextDir != '..' && $module == $nextDir && is_dir("./$checkRootPath/$module")
+                        && file_exists("./$checkRootPath/$module/".  SpiceImport::IMPORT_TASKS_DIRECTORY)
+                    ) {
+                        $subDirHandle = opendir("./$checkRootPath/$module/" . SpiceImport::IMPORT_TASKS_DIRECTORY);
+                        if ($subDirHandle) {
+                            while (false !== ($nextFile = readdir($subDirHandle))) {
+                                if (preg_match('/.php$/', $nextFile)) {
+                                    require_once("./$checkRootPath/$module/" . SpiceImport::IMPORT_TASKS_DIRECTORY . "/$nextFile");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach (get_declared_classes() as $className) {
+            if (strpos($className, SpiceImport::IMPORT_TASKS_DIRECTORY) !== false) {
+                $classList[] = $className;
+            }
+        }
+
+        return $res->withJson($classList);
+    }
 
 }

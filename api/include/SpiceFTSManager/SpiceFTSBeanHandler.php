@@ -30,6 +30,7 @@
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\utils\DBUtils;
@@ -258,6 +259,10 @@ class SpiceFTSBeanHandler
         // add ACL Check filters
         if (!$current_user->is_admin && SpiceACL::getInstance() && method_exists(SpiceACL::getInstance(), 'getFTSQuery')) {
             $aclFilters = SpiceACL::getInstance()->getFTSQuery($this->seedModule);
+            // enrich aclFilters with specific bean access logic
+                if($this->seed instanceof SpiceBean && method_exists($this->seed, 'ACLAccessFTSQuery')){
+                    $this->seed->ACLAccessFTSQuery($aclFilters);
+                }
             if (count($aclFilters) > 0) {
                 // do not write empty entries
                 if (isset($aclFilters['should']) && count($aclFilters['should']) >= 1) {

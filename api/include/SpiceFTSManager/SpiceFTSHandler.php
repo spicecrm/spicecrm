@@ -9,6 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
@@ -835,6 +836,10 @@ class SpiceFTSHandler
         // add ACL Check filters
         if (!$current_user->is_admin && SpiceACL::getInstance() && method_exists(SpiceACL::getInstance(), 'getFTSQuery')) {
             $aclFilters = SpiceACL::getInstance()->getFTSQuery($module);
+            // enrich aclFilters with specific bean access logic
+            if(method_exists($seed, 'ACLAccessFTSQuery')){
+                $seed->ACLAccessFTSQuery($aclFilters);
+            }
             if (count($aclFilters) > 0) {
                 // do not write empty entries
                 if (isset($aclFilters['should']) && count($aclFilters['should']) >= 1) {
@@ -847,7 +852,6 @@ class SpiceFTSHandler
                 if (isset($aclFilters['must']) && count($aclFilters['must']) >= 1) {
                     $queryParam['query']['bool']['filter']['bool']['must'] = $aclFilters['must'];
                 }
-
             }
         }
 
@@ -958,6 +962,12 @@ class SpiceFTSHandler
         // add ACL Check filters
         if (!$current_user->is_admin && SpiceACL::getInstance() && method_exists(SpiceACL::getInstance(), 'getFTSQuery')) {
             $aclFilters = SpiceACL::getInstance()->getFTSQuery($module);
+            // enrich aclFilters with specific bean access logic
+            if($seed = BeanFactory::newBean($module)){
+                if(method_exists($seed, 'ACLAccessFTSQuery')){
+                    $seed->ACLAccessFTSQuery($aclFilters);
+                }
+            }
             if (count($aclFilters) > 0) {
                 // do not write empty entries
                 if (isset($aclFilters['should']) && count($aclFilters['should']) >= 1) {
@@ -1075,6 +1085,10 @@ class SpiceFTSHandler
         // add ACL Check filters
         if (!$current_user->is_admin && SpiceACL::getInstance() && method_exists(SpiceACL::getInstance(), 'getFTSQuery')) {
             $aclFilters = SpiceACL::getInstance()->getFTSQuery($bean->_module);
+            // enrich aclFilters with specific bean access logic
+            if(method_exists($bean, 'ACLAccessFTSQuery')){
+                $bean->ACLAccessFTSQuery($aclFilters);
+            }
             if (count($aclFilters) > 0) {
                 // do not write empty entries
                 if (isset($aclFilters['should']) && count($aclFilters['should']) > 1) {
