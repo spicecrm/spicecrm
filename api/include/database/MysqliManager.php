@@ -150,6 +150,19 @@ class MysqliManager extends DBManager
     ];
 
     /**
+     * Create DB Driver
+     */
+    public function __construct(array $config)
+    {
+        parent::__construct($config);
+
+        // map enums back to varchar if we do not write them in the database
+        if (!SpiceConfig::getInstance()->get('systemvardefs.write_enums')) {
+            $this->type_map['enum'] = 'varchar';
+        }
+    }
+
+    /**
      * get the stats
      *
      * @return array
@@ -1605,7 +1618,6 @@ class MysqliManager extends DBManager
     {
         return $this->query('COMMIT');
     }
-
 
     /**
      * @see DBManager::massageFieldDef()
