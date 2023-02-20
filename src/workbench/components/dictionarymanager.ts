@@ -52,21 +52,7 @@ export class DictionaryManager {
      * calls the backend repair method that delivers the sql string, injects it in the modal
      */
     public repairDBnew() {
-        let loadingModal = this.modal.await('LBL_LOADING');
-        this.backend.putRequest('dictionary/repair').subscribe({ next: (result) => {
-            loadingModal.emit(true);
-            let sql = result.sql;
-            let wholeSQL = result.wholeSQL;
-            if(result) {
-                this.modal.openModal('AdministrationDictRepairModal', true, this.injector).subscribe(modal => {
-                    modal.instance.sql = sql;
-                    modal.instance.wholeSQL = wholeSQL;
-                });
-            }
-        },
-        error: () => {
-            loadingModal.emit(true);
-        }});
+        this.modal.openModal('DictionaryManagerRepairAll', true, this.injector);
     }
 
     public repairDBCache() {

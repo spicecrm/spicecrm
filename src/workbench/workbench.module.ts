@@ -148,6 +148,7 @@ import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
 import {GitPullFromRepository} from "./components/gitpullfromrepository";
 import {GitStatusOfRepository} from "./components/gitstatusofrepository";
+import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairall";
 
 
 @NgModule({
@@ -202,6 +203,7 @@ import {GitStatusOfRepository} from "./components/gitstatusofrepository";
         DictionaryManagerFields,
         DictionaryManagerDeleteFieldsModal,
         DictionaryManagerDeleteModal,
+        DictionaryManagerRepairAll,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,

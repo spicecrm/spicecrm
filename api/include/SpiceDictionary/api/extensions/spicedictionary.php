@@ -9,6 +9,7 @@ use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryItemsContro
 use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryRelationshipsController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
+
 /**
  * get a Rest Manager Instance
  */
@@ -24,7 +25,58 @@ $routes = [
         'class' => SpiceDictionaryController::class,
         'function' => 'repair',
         'description' => 'does a general repair',
-        'options' => ['adminOnly' => false],
+        'options' => ['adminOnly' => true],
+    ],
+    [
+        'method' => 'get',
+        'route' => '/dictionary/repair',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getRepairDefintions',
+        'description' => 'gets all definitions and relationships to be repaired',
+        'options' => ['adminOnly' => true],
+    ],
+    [
+        'method' => 'put',
+        'route' => '/dictionary/repair/sqls/reset',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'resetSQLs',
+        'description' => 'does a resetr',
+        'options' => ['adminOnly' => true],
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/repair/sqls/{hash}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'executeSQL',
+        'description' => 'executes a hased and cached SQL',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'hash' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
+    ],
+    [
+        'method' => 'put',
+        'route' => '/dictionary/repair/definition/{id}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'repair',
+        'description' => 'does a general repair for one item',
+        'options' => ['adminOnly' => true,'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the definition',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'execute' => [
+                'in' => 'query',
+                'description' => 'set to true of the query shoudl be executed also immediately',
+                'type' => ValidationMiddleware::TYPE_BOOL
+            ]
+        ]
     ],
     [
         'method' => 'get',
@@ -263,7 +315,7 @@ $routes = [
         'function' => 'postDictionaryDefinition',
         'description' => 'posts a dictionary Definition',
         'options' => ['adminOnly' => true]
-    ],[
+    ], [
         'method' => 'delete',
         'route' => '/dictionary/definition/{id}',
         'class' => SpiceDictionaryDefinitionsController::class,
@@ -278,14 +330,14 @@ $routes = [
         'function' => 'activateDictionaryDefinition',
         'description' => 'activates a dictionary Definition',
         'options' => ['adminOnly' => true]
-    ],[
+    ], [
         'method' => 'delete',
         'route' => '/dictionary/definition/{id}/activate',
         'class' => SpiceDictionaryDefinitionsController::class,
         'function' => 'deactivateDictionaryDefinition',
         'description' => 'deactivates a dictionary Definition',
         'options' => ['adminOnly' => true]
-    ],[
+    ], [
         'method' => 'put',
         'route' => '/dictionary/definition/{id}/repair',
         'class' => SpiceDictionaryDefinitionsController::class,
