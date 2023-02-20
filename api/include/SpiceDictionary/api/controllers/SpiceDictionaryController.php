@@ -33,6 +33,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
@@ -41,6 +42,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -354,7 +356,67 @@ class SpiceDictionaryController
     }
 
     /**
-     * does a complöeet repair
+     * gets all definitions for a repair
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getRepairDefintions(Request $req, Response $res, array $args): Response {
+        // get all active that are not templates
+        $spiceDictionaryDefinitions = array_filter(SpiceDictionaryDefinitions::getInstance()->getDefinitions('a'), function($d){ return $d['sysdictionary_type'] != 'template';});
+
+        // get all relationships
+        $relArray = [];
+        foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition){
+            $relArray = array_merge($relArray, SpiceDictionaryRelationships::getInstance()->getRelationships($spiceDictionaryDefinition['id'], ['a'], true));
+        }
+
+        // rebuild the relationships Array to be unique
+        $spiceDictionaryRelationships = [];
+        foreach ($relArray as $rel) {
+            // duploicate check
+            $isDuplicate = false;
+            foreach($spiceDictionaryRelationships as $spiceDictionaryRelationship){
+                if($rel['id'] == $spiceDictionaryRelationship['id']) $isDuplicate = true;
+                if($rel['relationship_name'] == $spiceDictionaryRelationship['relationship_name']) $isDuplicate = true;
+                if($isDuplicate) break;
+
+            }
+            if($isDuplicate) continue;
+
+            // if this is considered unique ... go for it
+            $spiceDictionaryRelationships[] = $rel;
+        }
+
+        // get vardefs
+        $vardefDefinitions = SpiceDictionaryVardefs::loadVardefs();
+        $vardefDictionaryDefinitions = [];
+        foreach($vardefDefinitions as $vardefDefinition){
+            // if we do not have a table ... remove it
+            if(!$vardefDefinition['table']) continue;
+
+            // check that this is not defined in the dictionary already
+            $isDuplicate = false;
+            foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition){
+                if($spiceDictionaryDefinition['tablename'] == $vardefDefinition['table']){
+                    $isDuplicate = true;
+                    break;
+                }
+            }
+
+            // if we are here add it
+            if(!$isDuplicate) $vardefDictionaryDefinitions[] = $vardefDefinition;
+        }
+
+
+        // return all values
+        return $res->withJson(['SpiceDictionaryDefinitions' => array_values($spiceDictionaryDefinitions), 'VardefDictionaryDefinitions' => array_values($vardefDictionaryDefinitions), 'SpiceDictionaryRelationships' => array_values($spiceDictionaryRelationships)]);
+    }
+
+    /**
+     * does a dictionary repair
      *
      * @param Request $req
      * @param Response $res
@@ -362,8 +424,75 @@ class SpiceDictionaryController
      * @return Response
      */
     public function repair(Request $req, Response $res, array $args): Response {
-        return $res->withJson(['sql' => SpiceDictionaryDefinitions::getInstance()->repair()]);
+        $params = $req->getQueryParams();
+
+        $sql = SpiceDictionaryDefinitions::getInstance()->repair($args['id'] ,true);
+
+        if($params['execute'] && $sql){
+            try {
+                DBManagerFactory::getInstance()->query($sql);
+            } catch (\Exception $exception){
+                $error = DBManagerFactory::getInstance()->lastDbError();
+            }
+        }
+
+        return $res->withJson(['sql' => $sql, 'sqlerror' => $error]);
     }
+
+    /**
+     * does a clpmplete repair onm all relationships
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function repairRerlationships(Request $req, Response $res, array $args): Response {
+        $definitions = SpiceDictionaryDefinitions::getInstance()->getDefinitions('a');
+        foreach ($definitions as $definition){
+            SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($definition['id']);
+        }
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * does a complete repair
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function resetSQLs(Request $req, Response $res, array $args): Response {
+        unset($_SESSION['sysdictionary']['sqls']);
+        return $res->withJson(['success' => true]);
+    }
+
+
+    /**
+     * executes a statement based on the given hash
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function executeSQL(Request $req, Response $res, array $args): Response {
+        if(!isset($_SESSION['sysdictionary']['sqls'][$args['hash']])){
+            throw new NotFoundException('SQL statement with the given hash not found');
+        }
+
+        try {
+            DBManagerFactory::getInstance()->query($_SESSION['sysdictionary']['sqls'][$args['hash']]);
+        } catch (\Exception $exception){
+            $error = DBManagerFactory::getInstance()->lastDbError();
+        }
+
+        return $res->withJson(['error' => $error]);
+    }
+
+
 
 
 }

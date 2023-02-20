@@ -52,20 +52,43 @@ class SpiceDictionaryRelationship
         SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->name);
     }
 
-
     /**
      * activates the relationship
      *
      * @return void
      * @throws \Exception
      */
-    public function activate(){
+    public function activate($setStatus = true, $originalDefinitionId = null,  $newDefinitonId = null){
+        if($originalDefinitionId && $newDefinitonId){
+            // get the definition
+            $definition = new SpiceDictionaryDefinition($newDefinitonId);
+            // manage the names and replacements
+            $this->name = str_replace('{tablename}', $definition->tablename, $this->name);
+            $this->relationship->name = str_replace('{tablename}', $definition->tablename, $this->relationship->name);
+            $this->relationship->relationship_name = str_replace('{tablename}', $definition->tablename, $this->relationship->relationship_name);
+            $this->relationship->lhs_linkname = str_replace('{tablename}', $definition->tablename, $this->relationship->lhs_linkname);
+            $this->relationship->rhs_linkname = str_replace('{tablename}', $definition->tablename, $this->relationship->rhs_linkname);
+
+            // witch the IDs from the template
+            if($this->relationship->lhs_sysdictionarydefinition_id == $originalDefinitionId)$this->relationship->lhs_sysdictionarydefinition_id = $newDefinitonId;
+            if($this->relationship->rhs_sysdictionarydefinition_id == $originalDefinitionId)$this->relationship->rhs_sysdictionarydefinition_id = $newDefinitonId;
+
+            // build a new ID
+            $this->id = md5("{$originalDefinitionId}{$newDefinitonId}");
+        }
+
         // get the class for the activation
         $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
-        (new $relType['class'](null))->activate($this);
+
+        // check if left or right is a template ... if it is do not activate
+        if((new SpiceDictionaryDefinition($this->relationship->lhs_sysdictionarydefinition_id))->type != 'template' && (new SpiceDictionaryDefinition($this->relationship->rhs_sysdictionarydefinition_id))->type != 'template') {
+            (new $relType['class'](null))->activate($this);
+        }
 
         // set the status
-        $this->setStatus('a');
+        if($setStatus) $this->setStatus('a');
+
+        return $this;
     }
 
     /**
@@ -74,14 +97,21 @@ class SpiceDictionaryRelationship
      * @return void
      * @throws \Exception
      */
-    public function deactivate(){
+    public function deactivate($setStatus = true, $originalDefinitionId = null,  $newDefinitonId = null){
         // get the class for the activation
         $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
+
+        if($originalDefinitionId && $newDefinitonId){
+            // build a new ID
+            $this->id = md5("{$originalDefinitionId}{$newDefinitonId}");
+        }
+
         (new $relType['class'](null))->deactivate($this);
 
         // set the status
-        $this->setStatus('i');
+        if($setStatus) $this->setStatus('i');
 
+        return $this;
     }
 
     /**
