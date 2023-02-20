@@ -3,9 +3,11 @@
 
 namespace SpiceCRM\modules\CampaignTasks\api\controllers;
 
+use SpiceCRM\data\api\controllers\SpiceBeanController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -89,9 +91,7 @@ class CampaignTasksController
                 break;
         }
 
-        // activate the campaigntask
-        $campaignTask->activate($status);
-        return $res->withJson(['success' => true, 'id' => $args['id']]);
+        return $res->withJson($campaignTask->activate($status));
     }
     /**
      * activates the campaign tasks and writes the campaign log entries
@@ -161,8 +161,7 @@ class CampaignTasksController
     {
         /** @var CampaignTask load the campaign task **/
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-        $campaignTask->activate('queued');
-        return $res->withJson(['success' => true]);
+        return $res->withJson($campaignTask->activate('queued'));
     }
 
     /**

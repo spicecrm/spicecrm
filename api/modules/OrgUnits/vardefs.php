@@ -134,4 +134,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
     ]
 ];
 
+if (file_exists("extensions/modules/ServiceQueues")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit']['fields']['orgunits'] = [
+        'name' => 'orgunits',
+        'type' => 'link',
+        'relationship' => 'servicequeues_orgunits',
+        'module' => 'ServiceQueues',
+        'bean_name' => 'ServiceQueue',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICE_QUEUES',
+    ];
+}
 VardefManager::createVardef('OrgUnits', 'OrgUnit', ['default', 'assignable']);
