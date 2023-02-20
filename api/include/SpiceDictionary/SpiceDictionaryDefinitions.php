@@ -36,9 +36,10 @@ class SpiceDictionaryDefinitions
         return self::$instance;
     }
 
-    public function __construct(){
+    public function __construct()
+    {
         $cached = SpiceCache::get('dictionarydefinitions');
-        if($cached) {
+        if ($cached) {
             $this->dictionaryDefinitions = $cached;
             return;
         }
@@ -51,9 +52,9 @@ class SpiceDictionaryDefinitions
         $db = DBManagerFactory::getInstance();
         $whereClause = '';
 
-        foreach($defTables as $defTable){
-            $dictionarydefinitions = $db->query("SELECT * FROM {$defTable['name']} WHERE deleted = 0".$whereClause);
-            while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
+        foreach ($defTables as $defTable) {
+            $dictionarydefinitions = $db->query("SELECT * FROM {$defTable['name']} WHERE deleted = 0" . $whereClause);
+            while ($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)) {
                 $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
                 $dictionarydefinition['scope'] = $defTable['scope'];
                 $defArray[] = $dictionarydefinition;
@@ -66,26 +67,25 @@ class SpiceDictionaryDefinitions
     }
 
     /**
-     * does a generic repair
+     * does a generic repair or for a specific id if given
      *
      * @return void
      */
-    public function repair(){
-        $definitions = $this->getDefinitions('a');
-        $sql = [];
-        foreach ($definitions as $definition){
-            $sql[] = (new SpiceDictionaryDefinition($definition['id']))->repair(false);
+    public function repair($id, $keep = false)
+    {
+        $sql = (new SpiceDictionaryDefinition($id))->repair(false);
+        if ($keep) {
+            $_SESSION['sysdictionary']['sqls'][md5($sql)] = $sql;
         }
-        SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition(null);
-
         return $sql;
     }
 
-    public function getDefinitions($status = null){
-        if($status){
+    public function getDefinitions($status = null)
+    {
+        if ($status) {
             $definitions = [];
-            foreach ($this->dictionaryDefinitions as $def){
-                if($def['status'] == $status) $definitions[] = $def;
+            foreach ($this->dictionaryDefinitions as $def) {
+                if ($def['status'] == $status) $definitions[] = $def;
             }
             return $definitions;
         } else {
@@ -99,23 +99,26 @@ class SpiceDictionaryDefinitions
      * @param $name
      * @return mixed|void
      */
-    public function getIdByName($name){
+    public function getIdByName($name)
+    {
         foreach ($this->dictionaryDefinitions as $dictionaryDefinition) {
-            if($dictionaryDefinition['name'] == $name) return $dictionaryDefinition['id'];
+            if ($dictionaryDefinition['name'] == $name) return $dictionaryDefinition['id'];
         }
         return null;
     }
 
-    public function addDefinition(array $definition){
+    public function addDefinition(array $definition)
+    {
         //get teh table
         $table = $definition['scope'] == 'c' ? 'syscustomdictionarydefinitions' : 'sysdictionarydefinitions';
         unset($definition['scope']);
         DBManagerFactory::getInstance()->insertQuery($table, $definition);
     }
 
-    public function deleteDefinition($definitionId, $droptaböe = false){
+    public function deleteDefinition($definitionId, $droptaböe = false)
+    {
         // if we need to drop the table ... do it
-        if($droptaböe){
+        if ($droptaböe) {
             (new SpiceDictionaryDefinition($definitionId))->dropTable();
         }
 

@@ -1,0 +1,64 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()"><system-label label="LBL_REPAIR_ALL"/></system-modal-header>
+    <system-modal-content margin="none">
+        <div style="height: 80vh" class="slds-scrollable--y">
+            <table class="slds-table slds-table--header-fixed slds-no-row-hover slds-table--fixed-layout slds-table_bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th style="width: 2rem" scope="col"></th>
+                        <th style="width: 2rem" scope="col"></th>
+                        <th style="width: 15rem" scope="col">
+                            <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_NAME"/></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_SQL"/></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-hint-parent" *ngFor="let definition of definitions" [ngClass]="{'slds-theme--info': definition.status == 'p', 'slds-theme--error': definition.status == 'e'}">
+                        <td>
+                            <system-utility-icon size="xx-small" [icon]="getIcon(definition.status)" [colorclass]="iconThemeClass(definition)"></system-utility-icon>
+                        </td>
+                        <td>
+                            <system-utility-icon size="xx-small" [icon]="getTypeIcon(definition.type)" [colorclass]="iconThemeClass(definition)"></system-utility-icon>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{definition.name}}</div>
+                        </td>
+                        <td>
+                            <div *ngIf="definition.status == 'c' && definition.sql" class="slds-grid slds-grid_vertical-align-center">
+                                <!-- display an error icon if the executioon of the sql failed -->
+                                <system-utility-icon class="slds-m-right--xx-small" *ngIf="definition.sqlerror" [title]="definition.sqlerror" icon="warning" colorclass="slds-icon-text-error"></system-utility-icon>
+                                <div class="slds-truncate slds-grow" [title]="definition.sql">{{definition.sql}}</div>
+                                <!-- action btuoons to copy and execute the SQL statement -->
+                                <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="copyToClipBoard(definition.sql)"><system-button-icon icon="copy"/></button>
+                                <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" [disabled]="repairing" (click)="execute(definition)"><system-button-icon icon="play"/></button>
+                            </div>
+                            <div *ngIf="definition.status == 'e'" class="slds-truncate">{{definition.error}}</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
+            <div class="slds-size--1-of-2 slds-grid slds-grid_vertical-align-center">
+                <system-checkbox class="slds-p-around--xx-small" [disabled]="repairing" [(ngModel)]="executerSQLs"><system-label label="LBL_EXECUTE_SQLS"/></system-checkbox>
+                <button *ngIf="!repairing" class="slds-button slds-button--icon" (click)="start()" system-title="LBL_START">
+                    <system-button-icon icon="play"/>
+                </button>
+                <button *ngIf="repairing" class="slds-button slds-button--icon" [disabled]="stopped" (click)="stop()">
+                    <system-button-icon icon="stop"></system-button-icon>
+                </button>
+                <system-progress-bar class="slds-grow slds-m-horizontal--x-small" [progress]="getProgress()" [hideText]="true"></system-progress-bar>
+                <div>{{processedCount}}/{{definitions.length}}</div>
+            </div>
+            <div class="slds-size--1-of-2 slds-grid slds-grid--align-end">
+                <button class="slds-button slds-button--icon-border" *ngIf="canCopySQLs" [disabled]="repairing" (click)="copyAllToClipBoard()"><system-button-icon icon="copy"></system-button-icon></button>
+                <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/> </button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>

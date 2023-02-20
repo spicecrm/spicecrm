@@ -59,17 +59,25 @@ class SpiceDictionaryItems
      * @return array
      * @throws \Exception
      */
-    public function getItems($sysdictionaryDefiniitonId = null, $statusFilter = ['a']){
+    public function getItems($sysdictionaryDefiniitonId = null, $statusFilter = ['a'], $templatesOnly = false){
         $db = DBManagerFactory::getInstance();
 
         // build a where filter clause
         $whereArray = [];
+        // adda filter for the id
         if($sysdictionaryDefiniitonId){
             $whereArray[] = "sysdictionarydefinition_id='{$sysdictionaryDefiniitonId}'";
         }
+
+        // add a filter for the status
         if(is_array($statusFilter) && count($statusFilter) > 0){
             $whereArray[] = "status IN ('".implode("','", $statusFilter)."')";
         }
+
+        if($templatesOnly){
+            $whereArray[] = "sysdictionary_ref_id IS NOT NULL";
+        }
+
         $whereClause = count($whereArray) > 0 ? " WHERE " . implode(" AND ", $whereArray) : '';
 
         // build the items
