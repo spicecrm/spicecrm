@@ -143,6 +143,10 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
         if(this.componentconfig.hasOwnProperty('defaultcategory') && this.componentconfig.defaultcategory){
             this.defaultCategoryId = this.componentconfig.defaultcategory;
         }
+        // in case no defaultCategoryId is set, load all & display all files
+        if(!this.defaultCategoryId && !this.selectedCategoryId) {
+            this.selectedCategoryId = '*';
+        }
 
         setTimeout(() => this.loadFiles(), 10);
 
@@ -209,11 +213,6 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
             this.loadCategories();
             // reload container
             this.setFilteredFiles('category', this.selectedCategoryId);
-            // in case no files are available in the default category, set all and display all files
-            if(this.filteredFiles.length == 0 && this.selectedCategoryId != '*') {
-                this.selectedCategoryId = '*';
-                this.setFilteredFiles('category', this.selectedCategoryId);
-            }
         });
     }
 
