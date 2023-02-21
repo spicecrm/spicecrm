@@ -877,7 +877,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'module' => 'HCMTrainings'
         ],
-        'userhcmskilltypes' => [
+            'userhcmskilltypes' => [
             'name' => 'userhcmskilltypes',
             'vname' => 'LBL_HCMSKILLTYPES',
             'type' => 'link',
