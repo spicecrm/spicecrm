@@ -15,6 +15,7 @@ import {DirectivesModule} from "../directives/directives";
 // Pipes...
 import {SystemModuleCustomPipe} from "./pipes/systemmodulecustompipe";
 import {SystemModuleGlobalPipe} from "./pipes/systemmoduleglobalpipe";
+import {SystemStripHtmlTagsPipe} from "./pipes/systemstriphtmltagspipe";
 
 // COMPONENTs...
 import {PaginationControlsComponent, PaginationPipe} from "./components/pagination";
@@ -330,11 +331,13 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemInputFileContent,
         SystemWrappedText,
         SystemRichTextEditorContent,
-        SystemHtmlEditor
+        SystemHtmlEditor,
+        SystemStripHtmlTagsPipe
     ],
     exports: [
         PaginationControlsComponent,
         PaginationPipe,
+        SystemStripHtmlTagsPipe,
         SpeechRecognition,
         SystemActionIcon,
         SystemButtonCustomIcon,
