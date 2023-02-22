@@ -57,6 +57,7 @@ export class fieldText extends fieldGeneric implements OnInit {
         }
 
         this.getFieldLength();
+        this.setStripHtml();
     }
 
     /**
