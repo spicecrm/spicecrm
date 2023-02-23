@@ -41,8 +41,8 @@ class SpiceImport extends SpiceBean
 
         if (($handle = fopen("upload://" . $params['file_md5'], "r")) !== FALSE) {
             $fileHeader = fgetcsv($handle, 0, $delimiter, $enclosure);
-            $fileHeader = array_map(function($item) {
-                return !mb_detect_encoding($item,'utf-8',true) ? utf8_encode($item) : $item;
+            $fileHeader = array_map(function ($item) {
+                return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
             }, $fileHeader);
 
             if (!is_array($fileHeader) || count($fileHeader) < 2) {
@@ -119,11 +119,11 @@ class SpiceImport extends SpiceBean
         return $imports;
     }
 
-    function saveFromImport( $data )
+    function saveFromImport($data)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $this->data = json_encode( $data );
+        $this->data = json_encode($data);
         $this->objectimport = (object)$data;
         $this->module = $this->objectimport->module;
         $this->name = $this->objectimport->module . "_" . gmdate('Y-m-d H:i:s');
@@ -143,14 +143,53 @@ class SpiceImport extends SpiceBean
         }
     }
 
+    /**
+     * get the pointer for the end position
+     * pointer is used to show locations in file for dividing the processing into smaller pieces
+     * @return $end
+     */
+    public function getPointerForEndPosition(){
+        $handle = fopen("upload://" . $this->objectimport->fileId, "r");
+        fseek($handle,0,SEEK_END);
+        $end = ftell($handle);
+        fclose($handle);
+        return $end;
+    }
+
+    /**
+     * gets the first row in the file and processes it as a header
+     * @param $delimiter
+     * @param $enclosure
+     * @return array|string[]
+     */
+    public function getFileHeader($delimiter, $enclosure){
+        if (($handle = fopen("upload://" . $this->objectimport->fileId, "r")) !== FALSE) {
+            $fileHeader = fgetcsv($handle, 1000, $delimiter, $enclosure);
+            $fileHeader = array_map(function ($item) {
+                return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
+            }, $fileHeader);
+            fclose($handle);
+        }
+        return $fileHeader;
+    }
+
+    /**
+     * processes the data row by row in the csv file
+     * pointer is used to show locations in file for dividing the processing into smaller pieces
+     * specifiv method of processing can be defined
+     * @return array
+     * @throws \Exception
+     */
     public function process()
     {
         $error = false;
         $list = [];
-        if(is_null($this->objectimport)) $this->objectimport = json_decode($this->data);
+        if (is_null($this->objectimport)) $this->objectimport = json_decode($this->data);
         $delimiter = ($this->objectimport->separator == 'comma') ? ',' : ';';
         $enclosure = chr(8);
         $classMethod = SpiceUtils::loadExecutionClassMethod($this->objectimport->selectedMethod);
+
+        $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 50);
 
         switch ($this->objectimport->enclosure) {
             case 'single':
@@ -160,26 +199,39 @@ class SpiceImport extends SpiceBean
                 $enclosure = '"';
                 break;
         }
-
+        /**
+         * get the pointer for the end of the file
+         * get the file header
+         * set the limit for the file
+         */
+        $end = $this->getPointerForEndPosition();
+        $fileHeader = $this->getFileHeader($delimiter,$enclosure);
+        //set limit for rows amount to process in one batch
+        $limit = $maxRows;
         if (($handle = fopen("upload://" . $this->objectimport->fileId, "r")) !== FALSE) {
 
-            $fileHeader = fgetcsv($handle, 1000, $delimiter, $enclosure);
-            $fileHeader = array_map(function($item) {
-                return !mb_detect_encoding($item,'utf-8',true) ? utf8_encode($item) : $item;
-            }, $fileHeader);
-
-            while (($row = fgetcsv($handle, 1000, $delimiter, $enclosure)) !== FALSE) {
-
-                if ([null] === $row) continue;
+                // find if the pointer has been set otherwise set it to 0
+                if(!isset($this->objectimport->pointer)) $this->objectimport->pointer = 0;
+                fseek($handle, $this->objectimport->pointer);
+                //count rows for the limit
+                $r = 0;
+                while (($row = fgetcsv($handle, 1000, $delimiter, $enclosure)) !== FALSE) {
+                    //skip the first row (header row) or empty row and set the pointer to the first data row
+                    if ([null] === $row || $this->objectimport->pointer == 0){
+                        $this->objectimport->pointer = ftell($handle);
+                        continue;
+                    }
+                    // increase row count
+                    $r++;
 
                     $row = array_map(function ($item) {
                         return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
                     }, $row);
 
-                if (!empty($classMethod)) {
-                    $list[] = $classMethod->class->{$classMethod->method}($row, $fileHeader);
-                    continue;
-                }
+                    if (!empty($classMethod)) {
+                        $list[] = $classMethod->class->{$classMethod->method}($row, $fileHeader);
+                        continue;
+                    }
 
                     $retrieve = [];
 
@@ -196,14 +248,23 @@ class SpiceImport extends SpiceBean
                             $this->createNewRecord($newBean, $row, $fileHeader, $error, $list);
                             break;
                     }
+                    // reset the pointer after the rowcount reaches its limit
+                    if ($r >= $limit) {
+                        $this->objectimport->pointer = ftell($handle);
+                        $this->data = json_encode($this->objectimport);
+                        break;
+                    }
             }
-
+            // set the pointer to the end of line
+            $this->objectimport->pointer = ftell($handle);
             fclose($handle);
 
             if ($error)
                 $this->status = 'e';
+            if($this->objectimport->pointer == $end)
+               $this->status = 'c';
             else
-                $this->status = 'c';
+                $this->status = 'q';
 
             $this->save();
 
