@@ -228,26 +228,30 @@ class SpiceImport extends SpiceBean
                         return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
                     }, $row);
 
-                    if (!empty($classMethod)) {
-                        $list[] = $classMethod->class->{$classMethod->method}($row, $fileHeader);
-                        continue;
-                    }
-
                     $retrieve = [];
-
-                    foreach ($this->objectimport->checkFields as $check_field)
-                        $retrieve[$check_field['moduleField']] = $row[array_search($check_field['mappedField'], $fileHeader)];
-
+                    if (empty($classMethod)) {
+                        foreach ($this->objectimport->checkFields as $check_field)
+                            $retrieve[$check_field['moduleField']] = $row[array_search($check_field['mappedField'], $fileHeader)];
+                    }
                     $newBean = BeanFactory::getBean($this->objectimport->module);
 
                     switch ($this->objectimport->importAction) {
                         case 'update':
-                            $this->updateExistingRecord($fileHeader, $newBean, $row, $retrieve, $error, $list);
+                            if (!empty($classMethod)) {
+                                $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
+                            } else {
+                                $this->updateExistingRecord($fileHeader, $newBean, $row, $retrieve, $error, $list);
+                            }
                             break;
                         case 'new':
-                            $this->createNewRecord($newBean, $row, $fileHeader, $error, $list);
+                            if (!empty($classMethod)) {
+                                $classMethod->class->{$classMethod->method}($row, $fileHeader, $this->objectimport, $list);
+                            } else {
+                                $this->createNewRecord($newBean, $row, $fileHeader, $error, $list);
+                            }
                             break;
                     }
+
                     // reset the pointer after the rowcount reaches its limit
                     if ($r >= $limit) {
                         $this->objectimport->pointer = ftell($handle);
