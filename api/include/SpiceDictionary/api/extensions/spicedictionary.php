@@ -37,11 +37,18 @@ $routes = [
     ],
     [
         'method' => 'put',
-        'route' => '/dictionary/repair/sqls/reset',
+        'route' => '/dictionary/repair/reset',
         'class' => SpiceDictionaryController::class,
-        'function' => 'resetSQLs',
+        'function' => 'reset',
         'description' => 'does a resetr',
-        'options' => ['adminOnly' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'fullreset' => [
+                'in' => 'query',
+                'description' => 'indicates that all cached table shoudl be truncated',
+                'type' => ValidationMiddleware::TYPE_BOOL
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -70,6 +77,79 @@ $routes = [
                 'in' => 'path',
                 'description' => 'the id of the definition',
                 'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'execute' => [
+                'in' => 'query',
+                'description' => 'set to true of the query shoudl be executed also immediately',
+                'type' => ValidationMiddleware::TYPE_BOOL
+            ]
+        ]
+    ],
+    [
+        'method' => 'put',
+        'route' => '/dictionary/repair/relationship/{id}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'repairRelationship',
+        'description' => 'does a general repair for one relationship',
+        'options' => ['adminOnly' => true,'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the definition',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'template_sysdictionarydefinition_id' => [
+                'in' => 'query',
+                'description' => 'the id of the template from teh dictionary',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'referencing_sysdictionarydefinition_id' => [
+                'in' => 'query',
+                'description' => 'the id of the item this reference is going to',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
+        'method' => 'put',
+        'route' => '/dictionary/repair/relationship/{dictionaryname}/{relationshipname}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'repairVardefRelationship',
+        'description' => 'does a general repair for one relationship',
+        'options' => ['adminOnly' => true,'validate' => true],
+        'parameters' => [
+            'dictionaryname' => [
+                'in' => 'path',
+                'description' => 'the name of the dictionary where this relationship is defined',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'relationshipname' => [
+                'in' => 'path',
+                'description' => 'the name of the relationship',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
+    ],
+    [
+        'method' => 'put',
+        'route' => '/dictionary/repair/relationships/vardefs',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'repairVardefRelationships',
+        'description' => 'does a general repair for all vardef relationship',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'put',
+        'route' => '/dictionary/repair/vardef/{name}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'repairVardef',
+        'description' => 'does a general repair for one vardef definition',
+        'options' => ['adminOnly' => true,'validate' => true],
+        'parameters' => [
+            'name' => [
+                'in' => 'path',
+                'description' => 'the name of the vardef entry',
+                'type' => ValidationMiddleware::TYPE_STRING
             ],
             'execute' => [
                 'in' => 'query',

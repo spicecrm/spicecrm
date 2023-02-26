@@ -146,6 +146,17 @@ class SpiceUtils
     }
 
     /**
+     * builds an md5 hash for a string and formats it GUID like
+     *
+     * @param $value
+     * @return string
+     */
+    public static function generateMD5GUID($value){
+        $hash = md5($value);
+        return substr($hash, 0, 8) . '-' . substr($hash, 8, 4) . '-' . substr($hash, 12, 4) . '-' . substr($hash, 16, 4) . '-' . substr($hash, 20);
+    }
+
+    /**
      * Returns a translated abbreviation for a week day.
      * In case no translation is provided, just the default english version is returned.
      *
