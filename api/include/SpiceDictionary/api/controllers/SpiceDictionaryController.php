@@ -393,26 +393,69 @@ class SpiceDictionaryController
         // get vardefs
         $vardefDefinitions = SpiceDictionaryVardefs::loadVardefs();
         $vardefDictionaryDefinitions = [];
+        $vardefDictionaryRelationships = [];
         foreach($vardefDefinitions as $vardefDefinition){
-            // if we do not have a table ... remove it
-            if(!$vardefDefinition['table']) continue;
+            // check if we have relationships
+            if($vardefDefinition['relationships']){
+                foreach ($vardefDefinition['relationships'] as $vardefRelationshipName => $vardefRelationship) {
+                    // check that this is not defined in the dictionary already
+                    $isDuplicate = false;
+                    foreach ($spiceDictionaryRelationships as $spiceDictionaryRelationship) {
+                        if ($spiceDictionaryRelationship['relationship_name'] == $vardefRelationshipName) {
+                            $isDuplicate = true;
+                            break;
+                        }
+                    }
 
-            // check that this is not defined in the dictionary already
-            $isDuplicate = false;
-            foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition){
-                if($spiceDictionaryDefinition['tablename'] == $vardefDefinition['table']){
-                    $isDuplicate = true;
-                    break;
+                    // check the vardefs as well as we might have duplicates there as well
+                    if (!$isDuplicate) {
+                        foreach ($vardefDictionaryRelationships as $e) {
+                            if ($e['relationship_name'] == $vardefRelationshipName) {
+                                $isDuplicate = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // if we are here add it
+                    if (!$isDuplicate) {
+                        $vardefRelationship['dictionaryname'] = $vardefDefinition['dictionaryname'];
+                        $vardefRelationship['relationship_name'] = $vardefRelationshipName;
+                        $vardefDictionaryRelationships[] = $vardefRelationship;
+                    }
                 }
             }
 
-            // if we are here add it
-            if(!$isDuplicate) $vardefDictionaryDefinitions[] = $vardefDefinition;
+            // check if this also defines a table
+            if($vardefDefinition['table']) {
+
+                // check that this is not defined in the dictionary already
+                $isDuplicate = false;
+                foreach ($spiceDictionaryDefinitions as $spiceDictionaryDefinition) {
+                    if ($spiceDictionaryDefinition['tablename'] == $vardefDefinition['table']) {
+                        $isDuplicate = true;
+                        break;
+                    }
+                }
+
+                // if we are here add it
+                if (!$isDuplicate) {
+                    $vardefDictionaryDefinitions[] = [
+                        'dictionaryname' => $vardefDefinition['dictionaryname'],
+                        'table' => $vardefDefinition['table']
+                    ];
+                }
+            }
         }
 
-
         // return all values
-        return $res->withJson(['SpiceDictionaryDefinitions' => array_values($spiceDictionaryDefinitions), 'VardefDictionaryDefinitions' => array_values($vardefDictionaryDefinitions), 'SpiceDictionaryRelationships' => array_values($spiceDictionaryRelationships)]);
+        return $res->withJson([
+            'SpiceDictionaryDefinitions' => array_values($spiceDictionaryDefinitions),
+            'VardefDictionaryDefinitions' => array_values($vardefDictionaryDefinitions),
+            'SpiceDictionaryRelationships' => array_values($spiceDictionaryRelationships),
+            'VardefDictionaryRelationships' => array_values($vardefDictionaryRelationships)
+        ]);
+
     }
 
     /**
@@ -427,6 +470,87 @@ class SpiceDictionaryController
         $params = $req->getQueryParams();
 
         $sql = SpiceDictionaryDefinitions::getInstance()->repair($args['id'] ,true);
+
+        if($params['execute'] && $sql){
+            try {
+                DBManagerFactory::getInstance()->query($sql);
+            } catch (\Exception $exception){
+                $error = DBManagerFactory::getInstance()->lastDbError();
+            }
+        }
+
+        return $res->withJson(['sql' => $sql, 'sqlerror' => $error]);
+    }
+
+    /**
+     * does a dictionary repair for a given relationship
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function repairRelationship(Request $req, Response $res, array $args): Response {
+        // get the params
+        $params = $req->getQueryParams();
+
+        if($params['template_sysdictionarydefinition_id'] && $params['referencing_sysdictionarydefinition_id']){
+            (new SpiceDictionaryRelationship($args['id']))->activate(false, $params['template_sysdictionarydefinition_id'], $params['referencing_sysdictionarydefinition_id']);
+        } else {
+            (new SpiceDictionaryRelationship($args['id']))->activate(false);
+        }
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * does a dictionary repair for a given relationship fromt eh vardefs
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function repairVardefRelationship(Request $req, Response $res, array $args): Response {
+
+        return $res->withJson(['success' => SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($args['dictionaryname'], $args['relationshipname'])]);
+    }
+
+    /**
+     * does a dictionary repair for a given relationship fromt eh vardefs
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function repairVardefRelationships(Request $req, Response $res, array $args): Response {
+        // set the time limit
+        set_time_limit(600);
+
+        // get the body
+        $body = $req->getParsedBody();
+
+        // process the relationshipüs
+        foreach ($body as $rel){
+            SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($rel['dictionaryname'], $rel['relationshipname']);
+        }
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * does a dictionary repair
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function repairVardef(Request $req, Response $res, array $args): Response {
+        $params = $req->getQueryParams();
+
+        $sql = SpiceDictionaryDefinitions::getInstance()->repairVardefDefinition($args['name'] ,true);
 
         if($params['execute'] && $sql){
             try {
@@ -464,7 +588,14 @@ class SpiceDictionaryController
      * @param array $args
      * @return Response
      */
-    public function resetSQLs(Request $req, Response $res, array $args): Response {
+    public function reset(Request $req, Response $res, array $args): Response {
+        $params = $req->getQueryParams();
+
+        if($params['fullreset']){
+            DBManagerFactory::getInstance()->query("TRUNCATE TABLE relationships");
+            DBManagerFactory::getInstance()->query("TRUNCATE TABLE sysdictionaryfields");
+        }
+
         unset($_SESSION['sysdictionary']['sqls']);
         return $res->withJson(['success' => true]);
     }

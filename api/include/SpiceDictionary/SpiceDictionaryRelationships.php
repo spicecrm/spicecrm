@@ -3,7 +3,9 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryRelationships
 {
@@ -146,9 +148,14 @@ class SpiceDictionaryRelationships
                     // replace the name
                     $relationship['name'] = str_replace('{tablename}', $sysdictionaryDefiniton->tablename, $relationship['name']);
                     $relationship['relationship_name'] = str_replace('{tablename}', $sysdictionaryDefiniton->tablename, $relationship['relationship_name']);
+                    $relationship['lhs_linkname'] = str_replace('{tablename}', $sysdictionaryDefiniton->tablename, $relationship['lhs_linkname']);
+                    $relationship['rhs_linkname'] = str_replace('{tablename}', $sysdictionaryDefiniton->tablename, $relationship['rhs_linkname']);
 
-                    // build a new ID
-                    $relationship['id'] = md5("{$item['id']}{$sysdictionaryDefinitonId}");
+                    // build a new ID and keep the related ids
+                    $relationship['original_id'] = $relationship['id'];
+                    $relationship['template_sysdictionarydefinition_id'] = $item['sysdictionary_ref_id'];
+                    $relationship['referencing_sysdictionarydefinition_id'] = $sysdictionaryDefinitonId;
+                    $relationship['id'] = SpiceUtils::generateMD5GUID("{$item['id']}{$sysdictionaryDefinitonId}");
 
                     $relationshipsArray[] = $relationship;
                 }
@@ -163,5 +170,29 @@ class SpiceDictionaryRelationships
         $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
         unset($relationship['scope']);
         DBManagerFactory::getInstance()->insertQuery($table, $relationship);
+    }
+
+
+    /**
+     * dlegacy support to repair a vardef relationshiü
+     *
+     * @return void
+     */
+    public function repairVardefRelationship($dictionaryName, $relationshipName){
+        $db = DBManagerFactory::getInstance();
+
+        // get the relationship data
+        $relationshipDefinition = SpiceDictionaryVardefs::loadVardefs([$dictionaryName])[$dictionaryName]['relationships'][$relationshipName];
+        if(!$relationshipDefinition){
+            throw new NotFoundException("Relationshipdefinition for {$relationshipName} not found");
+        }
+
+        // delete the rel from teh rel ta
+        $db->query("DELETE FROM relationships WHERE relationship_name='{$relationshipName}'");
+        $relationshipDefinition['relationship_name'] = $relationshipName;
+        $relationshipDefinition['id'] = SpiceUtils::generateMD5GUID($relationshipName);
+        $db->insertQuery('relationships', $relationshipDefinition);
+
+        return true;
     }
 }

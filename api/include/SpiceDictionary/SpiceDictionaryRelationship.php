@@ -58,10 +58,10 @@ class SpiceDictionaryRelationship
      * @return void
      * @throws \Exception
      */
-    public function activate($setStatus = true, $originalDefinitionId = null,  $newDefinitonId = null){
-        if($originalDefinitionId && $newDefinitonId){
+    public function activate($setStatus = true, $templateDefinitionId = null,  $referencingDefinitonId = null){
+        if($templateDefinitionId && $referencingDefinitonId){
             // get the definition
-            $definition = new SpiceDictionaryDefinition($newDefinitonId);
+            $definition = new SpiceDictionaryDefinition($referencingDefinitonId);
             // manage the names and replacements
             $this->name = str_replace('{tablename}', $definition->tablename, $this->name);
             $this->relationship->name = str_replace('{tablename}', $definition->tablename, $this->relationship->name);
@@ -70,11 +70,11 @@ class SpiceDictionaryRelationship
             $this->relationship->rhs_linkname = str_replace('{tablename}', $definition->tablename, $this->relationship->rhs_linkname);
 
             // witch the IDs from the template
-            if($this->relationship->lhs_sysdictionarydefinition_id == $originalDefinitionId)$this->relationship->lhs_sysdictionarydefinition_id = $newDefinitonId;
-            if($this->relationship->rhs_sysdictionarydefinition_id == $originalDefinitionId)$this->relationship->rhs_sysdictionarydefinition_id = $newDefinitonId;
+            if($this->relationship->lhs_sysdictionarydefinition_id == $templateDefinitionId)$this->relationship->lhs_sysdictionarydefinition_id = $referencingDefinitonId;
+            if($this->relationship->rhs_sysdictionarydefinition_id == $templateDefinitionId)$this->relationship->rhs_sysdictionarydefinition_id = $referencingDefinitonId;
 
             // build a new ID
-            $this->id = md5("{$originalDefinitionId}{$newDefinitonId}");
+            $this->id = md5("{$templateDefinitionId}{$referencingDefinitonId}");
         }
 
         // get the class for the activation
