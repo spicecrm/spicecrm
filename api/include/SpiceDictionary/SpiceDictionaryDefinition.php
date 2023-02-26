@@ -20,7 +20,8 @@ class SpiceDictionaryDefinition
     public $tablename;
     public $type;
 
-    public function __construct($id){
+    public function __construct($id)
+    {
         $this->id = $id;
 
         $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionarydefinitions WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionarydefinitions WHERE deleted = 0 AND id='{$id}'");
@@ -41,7 +42,8 @@ class SpiceDictionaryDefinition
      * @return void
      * @throws \Exception
      */
-    public function repair(bool $relationships = true){
+    public function repair(bool $relationships = true)
+    {
 
         // reset the cached items
         SpiceDictionaryField::clearForDefiniton($this->id);
@@ -50,7 +52,7 @@ class SpiceDictionaryDefinition
         $definitions = [];
         $indexes = [];
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
-        foreach ($items as $item){
+        foreach ($items as $item) {
             // get the definitions and also potential indexes if coming from a template
             $res = (new SpiceDictionaryItem($item['id']))->activate(false);
             $definitions = array_merge($definitions, $res['definitions']);
@@ -59,8 +61,8 @@ class SpiceDictionaryDefinition
 
         // repair this item
         $repairDefinitions = [];
-        foreach($definitions as $definition){
-            if($definition->source != 'non-db') $repairDefinitions[] = (array) $definition;
+        foreach ($definitions as $definition) {
+            if ($definition->source != 'non-db') $repairDefinitions[] = (array)$definition;
         }
 
         // load the vardefs
@@ -68,13 +70,13 @@ class SpiceDictionaryDefinition
 
         // repair this item
         $repairDefinitions = [];
-        foreach($definitions as $definition){
-            if($definition->source != 'non-db') $repairDefinitions[] = (array) $definition;
+        foreach ($definitions as $definition) {
+            if ($definition->source != 'non-db') $repairDefinitions[] = (array)$definition;
             unset($vardefDetails['fields'][$definition->name]);
         }
 
         // merge the remaining fields
-        foreach ($vardefDetails['fields'] as $fieldName => $definition){
+        foreach ($vardefDetails['fields'] as $fieldName => $definition) {
             // write to the cached fields
             $sysDictionaryField = [
                 'id' => SpiceUtils::createGuid(),
@@ -90,17 +92,17 @@ class SpiceDictionaryDefinition
             DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', $sysDictionaryField);
 
             // if non db add to the repair definitions
-            if($definition['source'] != 'non-db'){
+            if ($definition['source'] != 'non-db') {
                 $repairDefinitions[] = $definition;
             }
         }
 
         // build the indexes
         // get all indexes  for the definition itself and merge them
-        $indexes =  array_merge($indexes, SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->id, ['a']));
+        $indexes = array_merge($indexes, SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->id, ['a']));
         // build a repair index array
         $repairIndexes = [];
-        foreach ($indexes as $index){
+        foreach ($indexes as $index) {
             $repairIndexes[] = (new SpiceDictionaryIndex($index['id']))->getIndexDefinition($this->tablename);
         }
         $repairIndexes = SpiceDictionaryIndexes::getInstance()->mergeIndexes($repairIndexes, $vardefDetails['indices'] ?: []);
@@ -109,7 +111,7 @@ class SpiceDictionaryDefinition
         $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, $repairIndexes, false);
 
         // repair the relationships
-        if($relationships) {
+        if ($relationships) {
             SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($this->id);
         }
 
@@ -122,21 +124,35 @@ class SpiceDictionaryDefinition
      *
      * @return void
      */
-    public function loadVardefs(){
-        $module = SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($this->id);
+    public function loadVardefs()
+    {
+        switch ($this->type) {
+            case 'module':
+                $module = SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($this->id);
 
-        SpiceModules::getInstance()->getModuleDetails('Accounts');
-        $moduleDetaile = SpiceModules::getInstance()->getModuleDetails($module);
-        SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']] = [];
+                SpiceModules::getInstance()->getModuleDetails('Accounts');
+                $moduleDetaile = SpiceModules::getInstance()->getModuleDetails($module);
+                SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']] = [];
 
-        SpiceDictionaryHandler::loadModuleFiles($module);
+                SpiceDictionaryHandler::loadModuleFiles($module);
 
-        // get the module Details and return the data
-        return [
-            'fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['fields'],
-            'indices' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['indices'],
-            'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['relationships']
-        ];
+                // get the module Details and return the data
+                return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['fields'],
+                    'indices' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['indices'],
+                    'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['relationships']];
+                break;
+            default:
+                SpiceDictionaryHandler::getInstance()->dictionary[$this->name] = [];
+
+                SpiceDictionaryHandler::loadMetaDataFiles();
+
+                // get the module Details and return the data
+                return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$this->name]['fields'],
+                    'indices' => SpiceDictionaryHandler::getInstance()->dictionary[$this->name]['indices'],
+                    'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$this->name]['relationships']];
+                break;
+
+        }
     }
 
     /**
@@ -144,7 +160,8 @@ class SpiceDictionaryDefinition
      *
      * @return object
      */
-    public function getDefinition(){
+    public function getDefinition()
+    {
         return $this->definition;
     }
 
@@ -153,7 +170,8 @@ class SpiceDictionaryDefinition
      *
      * @return false|int|string
      */
-    public function getModuleName(){
+    public function getModuleName()
+    {
         return SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($this->id);
     }
 
@@ -163,10 +181,11 @@ class SpiceDictionaryDefinition
      * @return bool|resource|void
      * @throws \Exception
      */
-    public function dropTable(){
+    public function dropTable()
+    {
         // check if the drop prevention is set .. then no drop can be done by the system
         if (SpiceConfig::getInstance()->get('systemvardefs.preventdrop')) return;
-        if(DBManagerFactory::getInstance()->tableExists($this->tablename)) DBManagerFactory::getInstance()->dropTable($this->tablename);
+        if (DBManagerFactory::getInstance()->tableExists($this->tablename)) DBManagerFactory::getInstance()->dropTable($this->tablename);
         return true;
     }
 
@@ -177,7 +196,8 @@ class SpiceDictionaryDefinition
      * @return void
      * @throws \Exception
      */
-    private function setStatus($status){
+    private function setStatus($status)
+    {
         // get the proper table name
         $table = $this->definition->scope == 'c' ? 'syscustomdictionarydefinitions' : 'sysdictionarydefinitions';
 
@@ -190,12 +210,13 @@ class SpiceDictionaryDefinition
      *
      * @return void
      */
-    public function activate(){
+    public function activate()
+    {
         // get all items and activate them without repair
         $definitions = [];
         $indexes = [];
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['i', 'd']);
-        foreach ($items as $item){
+        foreach ($items as $item) {
             // get the definitions and also potential indexes if coming from a template
             $res = (new SpiceDictionaryItem($item['id']))->activate(false);
             $definitions = array_merge($definitions, $res['definitions']);
@@ -204,14 +225,14 @@ class SpiceDictionaryDefinition
 
         // repair this item
         $repairDefinitions = [];
-        foreach($definitions as $definition){
-            if($definition->source != 'non-db') $repairDefinitions[] = (array) $definition;
+        foreach ($definitions as $definition) {
+            if ($definition->source != 'non-db') $repairDefinitions[] = (array)$definition;
         }
-        DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions,[], true);
+        DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, [], true);
 
         // get all indexes and create them
-        $indexes =  array_merge($indexes, SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->id, ['i', 'd']));
-        foreach ($indexes as $index){
+        $indexes = array_merge($indexes, SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->id, ['i', 'd']));
+        foreach ($indexes as $index) {
             (new SpiceDictionaryIndex($index['id']))->activate(true, $this);
         }
 
@@ -224,16 +245,17 @@ class SpiceDictionaryDefinition
      * @param $drop
      * @return void
      */
-    public function deactivate($drop = false){
+    public function deactivate($drop = false)
+    {
         // get all active items and deactivate them
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
-        foreach ($items as $item){
-           (new SpiceDictionaryItem($item['id']))->deactivate();
+        foreach ($items as $item) {
+            (new SpiceDictionaryItem($item['id']))->deactivate();
         }
 
         // get all indexes and deactivate them
         $indexes = SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->id, ['a']);
-        foreach ($indexes as $index){
+        foreach ($indexes as $index) {
             (new SpiceDictionaryIndex($index['id']))->deactivate(false);
         }
 
@@ -247,16 +269,17 @@ class SpiceDictionaryDefinition
      * @return true
      * @throws \Exception
      */
-    public function delete($dropTable = false){
+    public function delete($dropTable = false)
+    {
         // delete the indexes
         $indexes = SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->id, []);
-        foreach ($indexes as $index){
+        foreach ($indexes as $index) {
             (new SpiceDictionaryIndex($index['id']))->delete();
         }
 
         // delete the items
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, []);
-        foreach ($items as $item){
+        foreach ($items as $item) {
             (new SpiceDictionaryItem($item['id']))->delete(false);
         }
 
