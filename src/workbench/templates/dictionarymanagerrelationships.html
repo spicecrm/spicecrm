@@ -18,7 +18,7 @@
                     <th class="" scope="col">
                         <div class="slds-truncate"><system-label label="LBL_RIGHT"></system-label></div>
                     </th>
-                    <th style="width:2rem" scope="col"></th>
+                    <th style="width:3rem" scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -42,8 +42,14 @@
                     <td data-label="Right">
                         <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryrelationship.rhs_sysdictionarydefinition_id)}}&nbsp;/&nbsp;{{dictionarymanager.getDictionaryItemName(dictionaryrelationship.rhs_sysdictionaryitem_id)}}</div>
                     </td>
-                    <td class="slds-align--absolute-center">
-                        <system-utility-icon *ngIf="dictionarymanager.canChange(dictionaryrelationship.scope)" size="xx-small" icon="delete" (click)="deleteDictionaryRelationship($event, dictionaryrelationship.id)"></system-utility-icon>
+                    <td class="">
+                        <!--system-utility-icon *ngIf="dictionarymanager.canChange(dictionaryrelationship.scope)" size="xx-small" icon="delete" (click)="deleteDictionaryRelationship($event, dictionaryrelationship.id)"></system-utility-icon-->
+                        <button class="slds-button slds-button--icon" (click)="editDictionaryRelationship($event, dictionaryrelationship)">
+                            <system-button-icon size="xx-small" [icon]="dictionaryrelationship.status == 'a' ? 'preview' : 'edit'"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon" [disabled]="dictionaryrelationship.status == 'a' || !dictionarymanager.canChange(dictionaryrelationship.scope)" (click)="deleteDictionaryRelationship($event, dictionaryrelationship.id)">
+                            <system-button-icon size="xx-small" icon="delete"></system-button-icon>
+                        </button>
                     </td>
                 </tr>
             </tbody>

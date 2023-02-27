@@ -498,7 +498,14 @@ $routes = [
         'class' => SpiceDictionaryRelationshipsController::class,
         'function' => 'postDictionaryRelationship',
         'description' => 'posts a Relationship',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'delete',
@@ -506,7 +513,14 @@ $routes = [
         'class' => SpiceDictionaryRelationshipsController::class,
         'function' => 'deleteDictionaryRelationship',
         'description' => 'deletes a Relationship',
-        'options' => ['adminOnly' => true]
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
     ],
     [
         'method' => 'post',
@@ -522,8 +536,15 @@ $routes = [
         'class' => SpiceDictionaryRelationshipsController::class,
         'function' => 'deactivate',
         'description' => 'deactivates  relationshipü',
-        'options' => ['adminOnly' => true]
-    ],
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ]
 ];
 
 /**
