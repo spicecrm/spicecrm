@@ -524,7 +524,7 @@ abstract class DBManager
     /**
      * custom function, to generically insert records into db, no warranty
      * it uses insertParams
-     * created by sebastian franz
+     *
      * @param string $table the table name
      * @param array $data key/value pairs
      * @param bool $execute boolean execute the query on true, return the query on false
@@ -545,7 +545,7 @@ abstract class DBManager
 
     /**
      * custom function, to update an existing record in db, no warranty
-     * created by sebastian franz
+     *
      * @param string $table the table name
      * @param array $pks key/value pairs of primary/unique keys
      * @param array $data key/values of fields to update
@@ -567,7 +567,7 @@ abstract class DBManager
 
     /**
      * custom function, a combination of insert or update query...
-     * created by sebastian franz
+     *
      * @param string $table the table name
      * @param array $pks key/value pairs of primary/unique keys
      * @param array $data key/values of fields to update
@@ -578,17 +578,8 @@ abstract class DBManager
      */
     public function upsertQuery($table, array $pks, array $data, bool $execute = true)
     {
-
-        $query = $this->query("SELECT id FROM " . $table . " WHERE id = '" . $pks['id'] . "'", true);
-        while ($row = $this->fetchByAssoc($query)) {
-            $id = $row['id'];
-        }
-
-        if (!empty($id)) {
-            foreach ($data as $col => $val) {
-                $sets[] = "$col = '{$this->quote($val)}'";
-            }
-            $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'", true);
+        if ($this->fetchOne("SELECT id FROM {$table} WHERE id = '{$pks['id']}'")) {
+            $this->updateQuery($table, $pks, $data, $execute);
         } else {
             $this->insertQuery($table, $data, $execute);
         }
