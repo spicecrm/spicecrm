@@ -13,7 +13,7 @@ import {
     DictionaryIndex,
     DictionaryIndexItem,
     DictionaryItem,
-    Relationship,
+    Relationship, RelationshipPolymorph,
     RelationshipRelateField,
     RelationshipType
 } from "../interfaces/dictionarymanager.interfaces";
@@ -89,6 +89,11 @@ export class dictionarymanager implements OnDestroy {
      * the dictionary relationships
      */
     public dictionaryrelationships: Relationship[] = [];
+
+    /**
+     * the dictionary relationships
+     */
+    public dictionaryrelationshippolymorphs: RelationshipPolymorph[] = [];
 
     /**
      * the additonal relationship fields for the n:m relationships
@@ -245,6 +250,7 @@ export class dictionarymanager implements OnDestroy {
                 this.dictionaryitems = res.dictionaryitems;
                 this.dictionaryrelationshiptypes = res.dictionaryrelationshiptypes;
                 this.dictionaryrelationships = res.dictionaryrelationships;
+                this.dictionaryrelationshippolymorphs = res.dictionaryrelationshippolymorphs;
                 this.dictionaryrelationshiprelatefields = res.dictionaryrelationshiprelatefields;
                 this.dictionaryindexes = res.dictionaryindexes;
                 this.dictionaryindexitems = res.dictionaryindexitems;

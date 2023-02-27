@@ -81,7 +81,7 @@ class SpiceDictionaryRelationship
         $relType = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryrelationshiptypes WHERE name='{$this->type}'");
 
         // check if left or right is a template ... if it is do not activate
-        if((new SpiceDictionaryDefinition($this->relationship->lhs_sysdictionarydefinition_id))->type != 'template' && (new SpiceDictionaryDefinition($this->relationship->rhs_sysdictionarydefinition_id))->type != 'template') {
+        if((!$this->relationship->lhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->lhs_sysdictionarydefinition_id))->type != 'template') && (!$this->relationship->rhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->rhs_sysdictionarydefinition_id))->type != 'template')) {
             (new $relType['class'](null))->activate($this);
         }
 

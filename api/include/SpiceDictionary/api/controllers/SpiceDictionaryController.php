@@ -138,6 +138,7 @@ class SpiceDictionaryController
             'dictionaryitems' => $handler->getDictionaryItems(),
             'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
             'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->getRelationships(null, []),
+            'dictionaryrelationshippolymorphs' => SpiceDictionaryRelationships::getInstance()->getPolymorphs(),
             'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
             'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes(null, []),

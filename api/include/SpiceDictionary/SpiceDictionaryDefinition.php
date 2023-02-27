@@ -26,7 +26,7 @@ class SpiceDictionaryDefinition
 
         $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionarydefinitions WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionarydefinitions WHERE deleted = 0 AND id='{$id}'");
         if (!$res) {
-            throw new Exception("dictionary Definiiton with id {$id} not found");
+            throw new Exception("dictionary Definition with id {$id} not found");
         }
         $this->definition = (object)$res;
 
