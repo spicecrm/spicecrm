@@ -30,6 +30,9 @@ import {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerre
 import {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
 import {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
 import {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
+import {DictionaryManagerRelationshipAddOneToManyPolymorph} from "./components/dictionarymanagerrelationshipaddonetomanypolymorph";
+import {DictionaryManagerRelationshipContainerOneToManyPolymorph} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorph";
+import {DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorphaddrelated";
 import {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
 import {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
 import {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
@@ -40,7 +43,6 @@ import {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindex
 import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
 import {DictionaryManagerDeleteFieldsModal} from "./components/dictionarymanagerdeletefieldsmodal";
 import {DictionaryManagerDeleteModal} from "./components/dictionarymanagerdeletemodal";
-
 
 import {DomainManager} from "./components/domainmanager";
 import {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
@@ -151,6 +153,7 @@ import {GitStatusOfRepository} from "./components/gitstatusofrepository";
 import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairall";
 
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -191,6 +194,9 @@ import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairal
         DictionaryManagerRelationshipsDetails,
         DictionaryManagerRelationshipAdd,
         DictionaryManagerRelationshipAddOneToMany,
+        DictionaryManagerRelationshipAddOneToManyPolymorph,
+        DictionaryManagerRelationshipContainerOneToManyPolymorph,
+        DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated,
         DictionaryManagerRelationshipContainerOneToMany,
         DictionaryManagerRelationshipAddManyToMany,
         DictionaryManagerRelationshipContainerManyToMany,

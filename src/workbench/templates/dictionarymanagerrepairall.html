@@ -1,4 +1,4 @@
-<system-modal size="large">
+<system-modal size="large" *ngIf="!loading">
     <system-modal-header (close)="close()"><system-label label="LBL_REPAIR_ALL"/></system-modal-header>
     <system-modal-content margin="none">
         <div style="height: 80vh" class="slds-scrollable--y">
@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="slds-hint-parent" *ngFor="let definition of definitions" [ngClass]="{'slds-theme--info': definition.status == 'p', 'slds-theme--error': definition.status == 'e'}">
+                    <tr class="slds-hint-parent" *ngFor="let definition of filtereddefinitions; trackBy: trackByFn" [ngClass]="{'slds-theme--info': definition.status == 'p', 'slds-theme--error': definition.status == 'e'}">
                         <td>
                             <system-utility-icon size="xx-small" [icon]="getIcon(definition.status)" [colorclass]="iconThemeClass(definition)"></system-utility-icon>
                         </td>
@@ -41,19 +41,44 @@
                 </tbody>
             </table>
         </div>
+        <div *ngIf="displayDetailSetting" class="slds-is-absolute slds-theme--shade slds-size--1-of-2 slds-box--border" style="bottom:5px; left: 5px;">
+            <div class="slds-m-around--small">
+                <div class="slds-m-vertical--x-small slds-text-heading--small"><system-label label="LBL_FILTER"/></div>
+                <div class="slds-grid">
+                    <div class="slds-size--1-of-2 slds-grid slds-grid_vertical">
+                        <system-checkbox [disabled]="actions.fullreset" [(ngModel)]="itemfilters.definitions"><system-label label="LBL_DICTIONARYDEFINITIONS"/></system-checkbox>
+                        <system-checkbox [disabled]="actions.fullreset || actions.vardefrelationshipsbulk" [(ngModel)]="itemfilters.relationships"><system-label label="LBL_DICTIONARYRELATIONSHIPS"/></system-checkbox>
+                    </div>
+                    <div class="slds-size--1-of-2 slds-grid slds-grid_vertical">
+                        <system-checkbox [disabled]="actions.fullreset" [(ngModel)]="itemfilters.dictionary"><system-label label="LBL_DICTIONARY"/></system-checkbox>
+                        <system-checkbox [disabled]="actions.fullreset || actions.vardefrelationshipsbulk" [(ngModel)]="itemfilters.vardefs"><system-label label="LBL_VARDEFS"/></system-checkbox>
+                    </div>
+                </div>
+                <div class="slds-m-vertical--x-small slds-text-heading--small"><system-label label="LBL_SETTINGS"/></div>
+                <div class="slds-grid">
+                    <div class="slds-size--1-of-2 slds-grid slds-grid_vertical">
+                        <system-checkbox [disabled]="!itemfilters.definitions || !itemfilters.relationships || !itemfilters.dictionary || !itemfilters.vardefs" [(ngModel)]="actions.fullreset"><system-label label="LBL_FULLRESET"/></system-checkbox>
+                        <system-checkbox [disabled]="!(itemfilters.relationships && itemfilters.vardefs)" [(ngModel)]="actions.vardefrelationshipsbulk"><system-label label="LBL_VARDEFRELATIONSHIPSBULK"/></system-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
     </system-modal-content>
     <system-modal-footer>
         <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
             <div class="slds-size--1-of-2 slds-grid slds-grid_vertical-align-center">
+                <button class="slds-button slds-button--icon slds-button--icon-border" [disabled]="repairing" (click)="displayDetailSetting = !displayDetailSetting" [ngClass]="{'slds-is-selected': displayDetailSetting}" system-title="LBL_DETAILS">
+                    <system-button-icon icon="settings"/>
+                </button>
                 <system-checkbox class="slds-p-around--xx-small" [disabled]="repairing" [(ngModel)]="executerSQLs"><system-label label="LBL_EXECUTE_SQLS"/></system-checkbox>
-                <button *ngIf="!repairing" class="slds-button slds-button--icon" (click)="start()" system-title="LBL_START">
+                <button *ngIf="!repairing" [disabled]="filtereddefinitions.length == 0" class="slds-button slds-button--icon" (click)="start()" system-title="LBL_START">
                     <system-button-icon icon="play"/>
                 </button>
                 <button *ngIf="repairing" class="slds-button slds-button--icon" [disabled]="stopped" (click)="stop()">
                     <system-button-icon icon="stop"></system-button-icon>
                 </button>
                 <system-progress-bar class="slds-grow slds-m-horizontal--x-small" [progress]="getProgress()" [hideText]="true"></system-progress-bar>
-                <div>{{processedCount}}/{{definitions.length}}</div>
+                <div>{{processedCount}}/{{filtereddefinitions.length}}</div>
             </div>
             <div class="slds-size--1-of-2 slds-grid slds-grid--align-end">
                 <button class="slds-button slds-button--icon-border" *ngIf="canCopySQLs" [disabled]="repairing" (click)="copyAllToClipBoard()"><system-button-icon icon="copy"></system-button-icon></button>

@@ -26,7 +26,25 @@ class SpiceDictionaryRelationshipsController
         // get the body
         $body = $req->getParsedBody();
 
-        SpiceDictionaryRelationships::getInstance()->add($body);
+        SpiceDictionaryRelationships::getInstance()->add($body['relationship'], $body['relationshippolymorphs']);
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * posts a Dictionary Relötionship
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function postDictionaryRelationshipPolymorh(Request $req, Response $res, array $args): Response
+    {
+        // get the body
+        $body = $req->getParsedBody();
+
+        SpiceDictionaryRelationships::getInstance()->addPolymorphs($body);
 
         return $res->withJson(['success' => true]);
     }

@@ -59,14 +59,14 @@ class SpiceDictionaryItems
      * @return array
      * @throws \Exception
      */
-    public function getItems($sysdictionaryDefiniitonId = null, $statusFilter = ['a'], $templatesOnly = false){
+    public function getItems($sysdictionaryDefinitionId = null, $statusFilter = ['a'], $templatesOnly = false){
         $db = DBManagerFactory::getInstance();
 
         // build a where filter clause
         $whereArray = [];
         // adda filter for the id
-        if($sysdictionaryDefiniitonId){
-            $whereArray[] = "sysdictionarydefinition_id='{$sysdictionaryDefiniitonId}'";
+        if($sysdictionaryDefinitionId){
+            $whereArray[] = "sysdictionarydefinition_id='{$sysdictionaryDefinitionId}'";
         }
 
         // add a filter for the status

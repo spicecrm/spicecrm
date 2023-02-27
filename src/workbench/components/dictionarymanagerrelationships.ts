@@ -81,6 +81,28 @@ export class DictionaryManagerRelationships {
      * @param event
      * @param id
      */
+    public editDictionaryRelationship(event: MouseEvent, relationship: Relationship) {
+        event.stopPropagation();
+        /*
+        this.modal.openModal('DictionaryManagerRelationshipsDetails', true, this.injector).subscribe({
+            next: (modalRef) => {
+                modalRef.instance.dictionaryRelationship = relationship;
+            }
+        })
+         */
+
+        let relType = this.dictionarymanager.dictionaryrelationshiptypes.find(rt => rt.name == relationship.relationship_type);
+        this.modal.openModal(relType.component_edit, true, this.injector).subscribe(modalRef => {
+            modalRef.instance.dictionaryRelationship = relationship;
+        });
+    }
+
+    /**
+     * prompts the user and deletes the dictionary definition
+     *
+     * @param event
+     * @param id
+     */
     public deleteDictionaryRelationship(event: MouseEvent, id: string) {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {

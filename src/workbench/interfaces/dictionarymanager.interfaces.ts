@@ -107,6 +107,18 @@ export interface Relationship {
     package?: string;
 }
 
+export interface RelationshipPolymorph {
+    id: string;
+    relationship_id: string;
+    relationship_name?: string;
+    scope: 'c'|'g';
+    status?: 'd'|'a'|'i';
+    lhs_sysdictionarydefinition_id: string;
+    lhs_sysdictionaryitem_id: string;
+    version?: string;
+    package?: string;
+}
+
 /**
  * the relationship relate fields
  */

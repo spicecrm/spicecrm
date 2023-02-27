@@ -48,14 +48,14 @@ class SpiceDictionaryIndexes
      *
      * @return array
      */
-    public function getDictionaryIndexes($sysdictionaryDefiniitonId = null, $statusFilter = ['a'])
+    public function getDictionaryIndexes($sysdictionaryDefinitionId = null, $statusFilter = ['a'])
     {
         $db = DBManagerFactory::getInstance();
 
         // build a where filter clause
         $whereArray = [];
-        if ($sysdictionaryDefiniitonId) {
-            $whereArray[] = "sysdictionarydefinition_id='{$sysdictionaryDefiniitonId}'";
+        if ($sysdictionaryDefinitionId) {
+            $whereArray[] = "sysdictionarydefinition_id='{$sysdictionaryDefinitionId}'";
         }
         if (is_array($statusFilter) && count($statusFilter) > 0) {
             $whereArray[] = "status IN ('" . implode("','", $statusFilter) . "')";

@@ -165,16 +165,61 @@ class SpiceDictionaryRelationships
         return $relationshipsArray;
     }
 
-    public function add(array $relationship){
-        //get teh table
+    /**
+     * gets the polymorph fields
+     *
+     * @return void
+     */
+    public function getPolymorphs($relationship_id = null){
+        $db = DBManagerFactory::getInstance();
+
+        // build a where clause
+        $whereArray = [];
+        if($relationship_id){
+            $whereArray[] = "relationship_id='{$relationship_id}'";
+        }
+        $whereClause = count($whereArray) > 0 ? " WHERE " . implode(" AND ", $whereArray) : '';
+
+        // build the items
+        $relationshipPolymorphsArray = [];
+        $dictionaryrelationshippolymorphs = $db->query("SELECT *, 'g' scope FROM sysdictionaryrelationshippolymorphs {$whereClause}");
+        while($dictionaryrelationshippolymorph = $db->fetchByAssoc($dictionaryrelationshippolymorphs)){
+            $relationshipPolymorphsArray[] = $dictionaryrelationshippolymorph;
+        }
+        $dictionaryrelationshippolymorphs = $db->query("SELECT *, 'c' scope FROM syscustomdictionaryrelationshippolymorphs {$whereClause}");
+        while($dictionaryrelationshippolymorph = $db->fetchByAssoc($dictionaryrelationshippolymorphs)){
+            $relationshipPolymorphsArray[] = $dictionaryrelationshippolymorph;
+        }
+
+        return $relationshipPolymorphsArray;
+    }
+
+    /**
+     * adds/saves a reoplationship
+     *
+     * @param array $relationship
+     * @param $relationshipPolymorphs
+     * @return void
+     * @throws \Exception
+     */
+    public function add(array $relationship, $relationshipPolymorphs = []){
+        $db = DBManagerFactory::getInstance();
+        //get the table and do an upsert
         $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
         unset($relationship['scope']);
-        DBManagerFactory::getInstance()->insertQuery($table, $relationship);
+        $db->upsertQuery($table, $relationship, $relationship, true);
+
+        // handle the polymorph entries
+        foreach($relationshipPolymorphs as $relationshipPolymorph){
+            $table = $relationshipPolymorph['scope'] == 'c' ? 'syscustomdictionaryrelationshippolymorphs' : 'sysdictionaryrelationshippolymorphs';
+            unset($relationshipPolymorph['scope']);
+            $db->upsertQuery($table, $relationshipPolymorph, $relationshipPolymorph, true);
+        }
     }
 
 
     /**
-     * dlegacy support to repair a vardef relationshiü
+     * legacy support to repair a vardef relationship
      *
      * @return void
      */
