@@ -877,13 +877,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'module' => 'HCMTrainings'
         ],
-            'userhcmskilltypes' => [
-            'name' => 'userhcmskilltypes',
-            'vname' => 'LBL_HCMSKILLTYPES',
+            'userhcmskills' => [
+            'name' => 'userhcmskills',
+            'vname' => 'LBL_HCMSKILLS',
             'type' => 'link',
-            'relationship' => 'users_hcmskilltypes',
+            'relationship' => 'users_hcmskills',
             'source' => 'non-db',
-            'module' => 'HCMSkilltypes',
+            'module' => 'HCMSkills',
         ],
         // service orders many to many
         'serviceorders' => [
