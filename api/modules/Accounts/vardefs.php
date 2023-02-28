@@ -538,10 +538,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'name' => 'hcmtrainings',
                 'type' => 'link',
                 'relationship' => 'hcmtrainings_accounts',
-                'module' => 'HCMMeasures',
-                'bean_name' => 'HCMMeasure',
+                'module' => 'HCMTrainings',
+                'bean_name' => 'HCMTraining',
                 'source' => 'non-db',
-                'vname' => 'LBL_HCMMEASURES',
+                'vname' => 'LBL_HCMTRAININGS',
             ],
     ],
     'indices' => [
