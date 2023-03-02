@@ -417,7 +417,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
         ],
         'accountccdetails' => [
             'name' => 'accountccdetails',
-            'vname' => 'LBL_ACOUNTCCDETAILS_LINK',
+            'vname' => 'LBL_ACCOUNTCCDETAILS',
             'type' => 'link',
             'relationship' => 'accounts_accountccdetails',
             'link_type' => 'one',

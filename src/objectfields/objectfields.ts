@@ -127,6 +127,7 @@ import {fieldLinked} from "./components/fieldlinked";
 import {fieldLinkedDetails} from "./components/fieldlinkeddetails";
 import {fieldLinkedParent} from "./components/fieldlinkedparent";
 import {fieldCountries} from "./components/fieldcountries";
+import {fieldToggle} from "./components/fieldtoggle";
 
 /**
  * @ignore
@@ -262,7 +263,8 @@ declare var _: any;
         fieldIndicator,
         fieldEmailRecipientsInput,
         fieldJson,
-        fieldCountries
+        fieldCountries,
+        fieldToggle
     ],
     exports: [
         fieldSet,
