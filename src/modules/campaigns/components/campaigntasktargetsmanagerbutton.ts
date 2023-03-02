@@ -31,10 +31,10 @@ export class CampaignTaskTargetsManagerButton {
     }
 
     /**
-     * disabled if the user does not have acl edit on target lists or on small screen
+     * disabled if the user does not have acl edit on target lists or on small screen or CampaignTask activated true
      */
     get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'target_manager') || this.layout.screenwidth == 'small';
+        return !this.metadata.checkModuleAcl(this.model.module, 'target_manager') || this.layout.screenwidth == 'small' || this.model.data.activated;
     }
 
     /**
