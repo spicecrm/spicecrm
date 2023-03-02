@@ -1389,7 +1389,9 @@ export class metadata {
      * @param route
      */
     public getRouteDetails(route) {
-        return this.routes?.find(routeDetails => {
+        return this.routes?.sort((a, b) => {
+            return a.path.split(':').length > b.path.split(':').length ? 1 : -1;
+        }).find(routeDetails => {
             if (routeDetails.path == route) {
                 return true;
             } else if (route.split("/").length == routeDetails.path.split("/").length) {
