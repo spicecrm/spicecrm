@@ -29,12 +29,14 @@ export class SpiceImporterService {
     public enclosure: string = 'none';
     public separator: string = 'semicolon';
     public fileTooBig: boolean = false;
+    public rejectExistingKey: string = '';
+
     // For backend END //
     public savedImports: any[] = [];
     public fileRows: string = '';
     public fileData;
     public currentImportStep: number = 0;
-    public result: any = {};
+    public result: {list?: {status: 'imported' | 'Duplicate Entry' ,recordId?: string, data: string[]}[]} = {};
     public importStepsText: any[] =
         [
             'LBL_SELECT_UPLOAD_FILE',
@@ -71,7 +73,7 @@ export class SpiceImporterService {
 
     set idField(idField) {
         if (this.fileMapping[idField]) {
-            delete this.fileMapping[idField];
+            //  delete this.fileMapping[idField];
         }
         this.idfield = idField;
     }
