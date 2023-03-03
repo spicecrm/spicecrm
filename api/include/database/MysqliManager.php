@@ -599,7 +599,7 @@ class MysqliManager extends DBManager
                 } elseif($writeEnums && !empty($fieldDef['options'])){
                     $validationId = SpiceDictionaryDomainValidations::getInstance()->domainValidations[$fieldDef['options']];
                     if($validationId){
-                        $enumValues = (new SpiceDictionaryDomainValidation($validationId['id']))->getVlaidationOptions();
+                        $enumValues = (new SpiceDictionaryDomainValidation($validationId['id']))->getValidationOptions();
                     }
                     if(count($enumValues) > 0){
                         $colType = $colBaseType . "('" . implode("','",  $enumValues) . "')";
@@ -625,7 +625,7 @@ class MysqliManager extends DBManager
                 } elseif($writeEnums && !empty($fieldDef['options'])){
                     $validationId = SpiceDictionaryDomainValidations::getInstance()->domainValidations[$fieldDef['options']];
                     if($validationId){
-                        $enumValues = (new SpiceDictionaryDomainValidation($validationId))->getVlaidationOptions();
+                        $enumValues = (new SpiceDictionaryDomainValidation($validationId))->getValidationOptions();
                     }
                     if(count($enumValues) > 0){
                         $colType = $colBaseType . "('" . implode("','", $enumValues) . "')";

@@ -151,6 +151,10 @@ import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrole
 import {GitPullFromRepository} from "./components/gitpullfromrepository";
 import {GitStatusOfRepository} from "./components/gitstatusofrepository";
 import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairall";
+import {DictionaryManagerRelationshipAddEmailAddress} from "./components/dictionarymanagerrelationshipaddemailaddress";
+import {
+    DictionaryManagerRelationshipContainerEmailAddress
+} from "./components/dictionarymanagerrelationshipcontaineremailaddress";
 
 
 
@@ -199,6 +203,8 @@ import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairal
         DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated,
         DictionaryManagerRelationshipContainerOneToMany,
         DictionaryManagerRelationshipAddManyToMany,
+        DictionaryManagerRelationshipAddEmailAddress,
+        DictionaryManagerRelationshipContainerEmailAddress,
         DictionaryManagerRelationshipContainerManyToMany,
         DictionaryManagerRelationshipAddParent,
         DictionaryManagerRelationshipContainerParent,

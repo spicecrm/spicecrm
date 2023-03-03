@@ -427,13 +427,13 @@ LEFT JOIN
         SpiceCache::clear('domaindefinitions');
     }
 
-    public function getDomainFields(){
+    public function getDomainFields($useCache = true){
         $cached = SpiceCache::get('domainfields');
-        if($cached) return $cached;
+        if($useCache && $cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
         $fieldsArray = [];
-        $domainfields = $db->query("SELECT * FROM sysdomainfields WHERE deleted = 0");
+        $domainfields = $db->query("SELECT * FROM sysdomainfields");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             $domainfield['deleted'] = intval($domainfield['deleted']);
             $domainfield['sequence'] = intval($domainfield['sequence']);
@@ -441,7 +441,7 @@ LEFT JOIN
             $domainfield['exclude_from_index'] = intval($domainfield['exclude_from_index']);
             $fieldsArray[] = array_merge($domainfield, ['scope' => 'g']);
         }
-        $domainfields = $db->query("SELECT * FROM syscustomdomainfields WHERE deleted = 0");
+        $domainfields = $db->query("SELECT * FROM syscustomdomainfields");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             $domainfield['deleted'] = intval($domainfield['deleted']);
             $domainfield['sequence'] = intval($domainfield['sequence']);
@@ -475,14 +475,14 @@ LEFT JOIN
         SpiceCache::clear('domainfields');
     }
 
-    public function getDomainFieldValidations(){
+    public function getDomainFieldValidations($useCache = true){
 
         $cached = SpiceCache::get('domainfieldvalidations');
-        if($cached) return $cached;
+        if($useCache && $cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
         $validationsArray = [];
-        $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations WHERE deleted = 0");
+        $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             // temporary workaround to harmonize validation_type
             if($domainfield['validation_type'] == 'options') {
@@ -490,7 +490,7 @@ LEFT JOIN
             }
             $validationsArray[] = array_merge($domainfield, ['scope' => 'g']);
         }
-        $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations WHERE deleted = 0");
+        $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             // temporary workaround to harmonize validation_type
             if($domainfield['validation_type'] == 'options') {
@@ -524,10 +524,10 @@ LEFT JOIN
         SpiceCache::clear('domainfieldvalidations');
     }
 
-    public function getDomainFieldValidationValues(){
+    public function getDomainFieldValidationValues($useCache = true){
 
         $cached = SpiceCache::get('domainfieldvalidationvalues');
-        if($cached) return $cached;
+        if($useCache &&  $cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
         $validationvaluesArray = [];

@@ -72,9 +72,9 @@ class SpiceDictionaryController
         $handler = SpiceDictionaryHandler::getInstance();
         $results = [
             'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
-            'domainfields' => $handler->getDomainFields(),
-            'domainfieldvalidations' => $handler->getDomainFieldValidations(),
-            'domainfieldvalidationvalues' => $handler->getDomainFieldValidationValues()
+            'domainfields' => $handler->getDomainFields(false),
+            'domainfieldvalidations' => $handler->getDomainFieldValidations(false),
+            'domainfieldvalidationvalues' => $handler->getDomainFieldValidationValues(false)
         ];
         return $res->withJson($results);
     }

@@ -316,6 +316,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
          * add the templates
          */
         let s = this.fields.filter(f => !!f.sysdomainfield_id).length;
+        let newItems = [];
         for (let t of this.templates.filter(t => t.selected)) {
             let dictionaryitem: DictionaryItem = {
                 id: this.modelutilities.generateGuid(),
@@ -332,7 +333,8 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             }
             s++;
 
-            this.dictionarymanager.dictionaryitems.push(dictionaryitem);
+            // collect the newItems
+            newItems.push(dictionaryitem)
         }
 
         /**
@@ -362,10 +364,18 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
             newitems[f.fieldname] = itemId;
 
-            this.dictionarymanager.dictionaryitems.push(dictionaryitem);
+            // collect the newItems
+            newItems.push(dictionaryitem)
         }
 
-
+        // add all new items in bulk
+        if(newItems.length > 0){
+            this.backend.postRequest('dictionary/items', {}, {items: newItems}).subscribe({
+                next: () => {
+                    this.dictionarymanager.dictionaryitems = this.dictionarymanager.dictionaryitems.concat(newItems);
+                }
+            })
+        }
 
         /**
          * add the indices

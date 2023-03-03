@@ -56,6 +56,11 @@ export class DictionaryManagerItems {
         return this.dictionarymanager.dictionaryitems.filter(d => (d.id == this.dictionarymanager.currentDictionaryItem || !this.filterterm || d.name.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
 
+    public getTemplateItems(refId){
+        if(!refId) return [];
+        return this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == refId).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+    }
+
     get itemsliststyle() {
         let height = this.detailsExpanded ? 458 : 79;
         return {

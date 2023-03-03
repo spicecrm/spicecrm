@@ -35,7 +35,7 @@
             </div>
         </div>
         <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
-        <system-richtext-editor [(ngModel)]="domaindefinition.description"></system-richtext-editor>
+        <textarea class="slds-textarea" [ngModel]="domaindefinition.description"></textarea>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label> </button>

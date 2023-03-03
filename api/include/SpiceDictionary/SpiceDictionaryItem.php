@@ -102,6 +102,14 @@ class SpiceDictionaryItem
                     (new SpiceDictionaryIndex($index['id']))->activate(true, $dictionaryDefinition);
                 }
             }
+
+            // get the tempate relationships
+            $relationships = SpiceDictionaryRelationships::getInstance()->getRelationships($this->sysdictionary_ref_id);
+            foreach ($relationships as $relationship){
+
+                // activate
+                (new SpiceDictionaryRelationship($relationship['id']))->activate(false, $this->sysdictionary_ref_id, $this->sysdictionarydefinition_id);
+            }
         }
 
         // set the status
@@ -191,6 +199,13 @@ class SpiceDictionaryItem
             $indexes = SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->sysdictionary_ref_id);
             foreach ($indexes as $index){
                 (new SpiceDictionaryIndex($index['id']))->deactivate(true, $dictionaryDefinition);
+            }
+
+            $relationships = SpiceDictionaryRelationships::getInstance()->getRelationships($this->sysdictionary_ref_id);
+            foreach ($relationships as $relationship){
+
+                // activate
+                (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false, $this->sysdictionary_ref_id, $this->sysdictionarydefinition_id);
             }
         }
 
