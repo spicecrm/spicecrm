@@ -97,7 +97,7 @@ class SpiceDictionaryRelationships
             foreach ($relationships as $relationship){
 
                 // activate
-                (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false, $item['id'], $sysdictionaryDefinitonId)->activate(false, $item['id'], $sysdictionaryDefinitonId);
+                (new SpiceDictionaryRelationship($relationship['id']))->deactivate(false, $item['sysdictionary_ref_id'], $sysdictionaryDefinitonId)->activate(false, $item['sysdictionary_ref_id'], $sysdictionaryDefinitonId);
             }
         }
     }

@@ -35,6 +35,26 @@ class SpiceDictionaryItemsController
      * @param $args
      * @return mixed
      */
+    public function postDictionaryItems(Request $req, Response $res, array $args): Response
+    {
+        // get the body
+        $body = $req->getParsedBody();
+
+        foreach ($body['items'] as $item) {
+            SpiceDictionaryItems::getInstance()->addItem($item);
+        }
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * posts a Dictionary Item
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
     public function deleteDictionaryItem(Request $req, Response $res, array $args): Response
     {
         return $res->withJson(['success' => (new SpiceDictionaryItem($args['id']))->delete()]);

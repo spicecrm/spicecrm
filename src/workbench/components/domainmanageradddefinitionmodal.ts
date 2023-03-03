@@ -2,16 +2,18 @@
  * @module WorkbenchModule
  */
 import {
-    Component
+    Component, EventEmitter, Output
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
+import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
 
 /**
  * a modal component to alow the user to add a new Domain Definition. Called from teh Domain Manager
  */
 @Component({
+    selector: 'domain-manager-add-definition-modal',
     templateUrl: '../templates/domainmanageradddefinitionmodal.html',
 })
 export class DomainManagerAddDefinitionModal {
@@ -32,7 +34,12 @@ export class DomainManagerAddDefinitionModal {
         status: 'd'
     };
 
-    constructor(public domainmanager: domainmanager, public metadata: metadata, public modelutilities: modelutilities) {
+    /**
+     * an emitter for the new ID
+     */
+    @Output() public newDefinitionID: EventEmitter<string> = new EventEmitter<string>();
+
+    constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public modelutilities: modelutilities) {
 
     }
 
@@ -59,8 +66,13 @@ export class DomainManagerAddDefinitionModal {
     public save() {
         if(this.canSave) {
             this.domaindefinition.id = this.modelutilities.generateGuid();
-            this.domainmanager.domaindefinitions.push(this.domaindefinition);
-            this.close();
+            this.backend.postRequest(`dictionary/domaindefinition/${this.domaindefinition.id}`, {}, this.domaindefinition).subscribe({
+                next: (res) => {
+                    this.domainmanager.domaindefinitions.push(this.domaindefinition);
+                    this.newDefinitionID.emit(this.domaindefinition.id);
+                    this.close();
+                }
+            })
         }
     }
 }

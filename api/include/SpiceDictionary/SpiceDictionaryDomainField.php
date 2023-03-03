@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use stdClass;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -21,7 +22,7 @@ class SpiceDictionaryDomainField
         $this->id = $id;
 
         // try to load the domainfield
-        $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdomainfields WHERE id='{$id}' AND deleted = 0 UNION SELECT *, 'c' scope  FROM syscustomdomainfields WHERE id='{$id}' AND deleted = 0");
+        $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdomainfields WHERE id='{$id}' UNION SELECT *, 'c' scope  FROM syscustomdomainfields WHERE id='{$id}'");
         if(!$res){
             throw new Exception("Domainfield with ID {$id} is not defined");
         }
@@ -31,7 +32,7 @@ class SpiceDictionaryDomainField
 
     public function getValidationEnumValues(){
         if($this->domainField->sysdomainfieldvalidation_id){
-            return (new SpiceDictionaryDomainValidation($this->domainField->sysdomainfieldvalidation_id))->getVlaidationOptions();
+            return (new SpiceDictionaryDomainValidation($this->domainField->sysdomainfieldvalidation_id))->getValidationOptions();
         }
         return [];
     }
@@ -66,4 +67,54 @@ class SpiceDictionaryDomainField
 
     }
 
+    /**
+     * deletes a domainfield
+     *
+     * @return true
+     * @throws \Exception
+     */
+    public function delete(){
+        // clean up the database
+        $table = $this->domainField->scope == 'c' ? 'syscustomdomainfields' : 'sysdomainfields';
+        SystemDeploymentCR::deleteDBEntry($table, $this->id, $this->domainField->name);
+
+        return true;
+    }
+
+
+    /**
+     * sets the status on the field
+     *
+     * @param $status
+     * @return void
+     * @throws \Exception
+     */
+    private function setStatus($status)
+    {
+        // get the proper table name
+        $table = $this->domainField->scope == 'c' ? 'syscustomdomainfields' : 'sysdomainfields';
+
+        // write the stazus update
+        SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->domainField->name);
+    }
+
+    /**
+     * activates a field
+     *
+     * @return void
+     */
+    public function activate()
+    {
+        $this->setStatus('a');
+    }
+
+    /**
+     * deactivates a field
+     *
+     * @return void
+     */
+    public function deactivate()
+    {
+        $this->setStatus('i');
+    }
 }

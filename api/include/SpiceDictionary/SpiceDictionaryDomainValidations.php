@@ -133,4 +133,21 @@ class SpiceDictionaryDomainValidations
 
         return $sys_app_list_strings;
     }
+
+
+    /**
+     * adds a validation
+     *
+     * @param array $validation
+     * @return void
+     * @throws \Exception
+     */
+    public function addValidation(array $validation)
+    {
+        //get teh table
+        $table = $validation['scope'] == 'c' ? 'syscustomdomainfieldvalidations' : 'sysdomainfieldvalidations';
+        unset($validation['scope']);
+        DBManagerFactory::getInstance()->insertQuery($table, $validation);
+    }
+
 }

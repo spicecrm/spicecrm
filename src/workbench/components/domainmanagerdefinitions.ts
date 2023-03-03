@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, Injector, ViewChild, ViewContainerRef
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -22,6 +22,9 @@ import {domainmanager} from '../services/domainmanager.service';
 })
 export class DomainManagerDefinitions {
 
+    @ViewChild( 'itemscontainer', {read: ViewContainerRef, static: true } ) public itemscontainer: ViewContainerRef;
+
+
     public definitionfilterterm: string;
     public definitionfilterscope: ''|'g'|'c' = '';
     public definitionfilterstatus: ''|'i' | 'd' | 'a' = '';
@@ -37,8 +40,8 @@ export class DomainManagerDefinitions {
      */
     get domaindefinitions() {
         return this.domainmanager.domaindefinitions.filter(d => {
-            // no deleted
-            if (d.deleted) return false;
+            // keep the current definition
+            if(d.id == this.domainmanager.currentDomainDefinition) return true;
             // match name if set
             if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0)) return false;
             // if scope is set apply scope Filter
@@ -68,7 +71,19 @@ export class DomainManagerDefinitions {
      */
     public addDomainDefinition(event: MouseEvent) {
         event.stopPropagation();
-        this.modal.openModal('DomainManagerAddDefinitionModal', true, this.injector);
+        this.modal.openModal('DomainManagerAddDefinitionModal', true, this.injector).subscribe({
+            next: (modalRef) => {
+                modalRef.instance.newDefinitionID.subscribe({
+                    next: (newID) => {
+                        this.setCurrentDomainDefintion(newID);
+                        let totalScrollHeight = this.itemscontainer.element.nativeElement.scrollHeight;
+                        let i = this.domaindefinitions.findIndex(i => i.id == newID);
+                        let scrollTo = totalScrollHeight / this.domaindefinitions.length * i;
+                        this.itemscontainer.element.nativeElement.scrollTo(0, scrollTo);
+                    }
+                })
+            }
+        });
     }
 
     /**
@@ -77,22 +92,67 @@ export class DomainManagerDefinitions {
      * @param event
      * @param id
      */
-    public deleteDomainDefinition(event: MouseEvent, id: string) {
-        event.stopPropagation();
+    public deleteDomainDefinition(id: string) {
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
-                let di = this.domainmanager.domaindefinitions.find(f => f.id == id).deleted = 1;
-
-                for (let f of this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == id)) {
-                    f.deleted = 1;
-                }
-
-                if (this.domainmanager.currentDomainDefinition == id) {
-                    this.domainmanager.currentDomainDefinition == null;
-                    this.domainmanager.currentDomainField == null;
-                }
+                this.backend.deleteRequest(`dictionary/domaindefinition/${id}`).subscribe({
+                    next: (res) => {
+                        let di = this.domainmanager.domaindefinitions.findIndex(f => f.id == id);
+                        this.domainmanager.domaindefinitions.splice(di, 1);
+                        if (this.domainmanager.currentDomainDefinition == id) {
+                            this.domainmanager.currentDomainDefinition == null;
+                            this.domainmanager.currentDomainField == null;
+                        }
+                    }
+                });
             }
         });
+    }
+
+    /**
+     * toggle the status
+     * @param e
+     * @param validationValue
+     */
+    public setStatus(domaindefinition, status) {
+        let loadingModal;
+        switch (status) {
+            case 'a':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.postRequest(`dictionary/domaindefinition/${domaindefinition.id}/activate`).subscribe({
+                    next: () => {
+                        domaindefinition.status = status;
+
+                        // set for all fields
+                        this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == domaindefinition.id).forEach(f => f.status = status);
+
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            case 'i':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.deleteRequest(`dictionary/domaindefinition/${domaindefinition.id}/activate`).subscribe({
+                    next: () => {
+                        domaindefinition.status = status;
+
+                        // set for all fields
+                        this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == domaindefinition.id).forEach(f => f.status = status);
+
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            default:
+                domaindefinition.status = status;
+                break;
+        }
     }
 
 }

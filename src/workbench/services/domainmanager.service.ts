@@ -8,6 +8,12 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
 import {modal} from '../../services/modal.service';
 import {toast} from '../../services/toast.service';
+import {
+    DomainDefinition,
+    DomainField,
+    DomainValidation,
+    DomainValidationValue
+} from "../interfaces/domainmanager.interfaces";
 
 @Injectable()
 export class domainmanager {
@@ -15,22 +21,22 @@ export class domainmanager {
     /**
      * the loaded list of domains
      */
-    public domaindefinitions: any[] = [];
+    public domaindefinitions: DomainDefinition[] = [];
 
     /**
      * the loaded domain fields
      */
-    public domainfields: any[] = [];
+    public domainfields: DomainField[] = [];
 
     /**
      * the loaded domain field validations
      */
-    public domainfieldvalidations: any[] = [];
+    public domainfieldvalidations: DomainValidation[] = [];
 
     /**
      * the loaded domain field validation values
      */
-    public domainfieldvalidationvalues: any[] = [];
+    public domainfieldvalidationvalues: DomainValidationValue[] = [];
 
     /**
      * the currently seleted domain element
@@ -93,6 +99,13 @@ export class domainmanager {
                 awaitLoad.emit(true);
             }
         });
+    }
+
+    /**
+     * returns the current definition
+     */
+    public getCurrentDefinition(){
+        return this.currentDomainDefinition ? this.domaindefinitions.find(d => d.id == this.currentDomainDefinition) : undefined;
     }
 
     /**
@@ -189,6 +202,7 @@ export class domainmanager {
 
     }
 
+    /**
     public generateENUMSFromModules() {
         if (!Array.isArray(this.domainfieldvalidationvalues)) this.domainfieldvalidationvalues = [];
         this.backend.getRequest('dictionary/domains/appliststrings').subscribe(apl => {
@@ -197,7 +211,7 @@ export class domainmanager {
                 for (let field in table) {
                     if (table[field].options && (apl.en_us.global[table[field].options] || apl.en_us.custom[table[field].options]) && table[field].type.includes('enum') && !this.domaindefinitions.find(d => d.name == dtable.toLowerCase() + '_' + field)) {
 
-                        let scope = apl.en_us.global[table[field].options] ? 'g' : 'c';
+                        let scope: 'g'|'c' = apl.en_us.global[table[field].options] ? 'g' : 'c';
 
                         let definitionId = this.modelutilities.generateGuid();
                         this.domaindefinitions.push({
@@ -205,8 +219,7 @@ export class domainmanager {
                             name: dtable.toLowerCase() + '_' + field,
                             scope: scope,
                             fieldtype: table[field].type,
-                            status: 'a',
-                            deleted: 0
+                            status: 'a'
                         });
 
                         let validationid = this.modelutilities.generateGuid();
@@ -216,7 +229,8 @@ export class domainmanager {
                             validation_type: 'enum',
                             scope: scope,
                             status: 'a',
-                            deleted: 0
+                            sort_flag: 'asc',
+                            order_by: 'sequence'
                         });
 
                         this.domainfields.push({
@@ -228,8 +242,9 @@ export class domainmanager {
                             sysdomainfieldvalidation_id: validationid,
                             scope: scope,
                             status: 'a',
-                            exclude_from_index: 0,
-                            deleted: 0
+                            exclude_from_index: false,
+                            required: 0,
+                            sequence: 0
                         });
 
                         let options = this.language.languagedata.applist[table[field].options];
@@ -241,10 +256,10 @@ export class domainmanager {
                                 label: option ? ('LBL_' + table[field].options + '_' + option).toUpperCase() : '',
                                 enumvalue: option,
                                 sequence: i,
-                                comment: '',
+                                description: '',
                                 scope: scope,
                                 status: 'a',
-                                deleted: 0
+                                valuetype: 'string'
                             });
 
                             if (option && !this.language.languagedata.applang[('LBL_' + table[field].options + '_' + option).toUpperCase()]) {
@@ -296,4 +311,5 @@ export class domainmanager {
             }
         });
     }
+     */
 }

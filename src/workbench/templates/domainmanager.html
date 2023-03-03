@@ -22,11 +22,11 @@
         <domain-manager-definitions></domain-manager-definitions>
     </div>
     <div class="slds-size--2-of-3 slds-theme--default slds-border--left" system-to-bottom-noscroll>
-        <div [ngStyle]="listHeight" class="slds-scrollable--y">
+        <div system-to-bottom>
             <domain-manager-fields></domain-manager-fields>
         </div>
-        <div [ngStyle]="detailsHeight" class="slds-scrollable--y">
+        <!--div [ngStyle]="detailsHeight" class="slds-scrollable--y">
             <domain-manager-field-tabs (expanded)="this.expanded = $event"></domain-manager-field-tabs>
-        </div>
+        </div-->
     </div>
 </div>
