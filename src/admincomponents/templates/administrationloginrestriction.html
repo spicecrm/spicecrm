@@ -19,25 +19,17 @@
                     <system-input-number [disabled]="!restrictions.user.enabled" [(ngModel)]="restrictions.user.monitored_period" [onlyField]="true" id="user-monitored-period" [precision]="0" [asNumber]="true"></system-input-number>
                 </div>
             </div>
-            <fieldset class="slds-form-element slds-m-left--medium">
-                <legend class="slds-form-element__legend slds-form-element__label" style="font-weight:normal"><system-label label="LBL_LOCK_TYPE"></system-label></legend>
+            <div class="slds-form-element slds-m-left--medium">
+                <label class="slds-form-element__label"><system-label label="LBL_LOCK_TYPE"/></label>
                 <div class="slds-form-element__control">
-                    <span class="slds-radio">
-                      <input type="radio" id="user-lock-type-time" value="time" [(ngModel)]="restrictions.user.blocking_type" [disabled]="!restrictions.user.enabled" />
-                      <label class="slds-radio__label" for="user-lock-type-time">
-                        <span class="slds-radio_faux"></span>
-                          <span class="slds-form-element__label"><system-label label="LBL_TIME"></system-label></span>
-                      </label>
-                    </span>
-                    <span class="slds-radio">
-                      <input type="radio" id="user-lock-type-perm" value="permanent" [(ngModel)]="restrictions.user.blocking_type" [disabled]="!restrictions.user.enabled" />
-                      <label class="slds-radio__label" for="user-lock-type-perm">
-                        <span class="slds-radio_faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_PERMANENT"></system-label></span>
-                      </label>
-                    </span>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="restrictions.user.blocking_type"  [disabled]="!restrictions.user.enabled">
+                            <option value="time"><system-label label="LBL_TIME"/></option>
+                            <option value="permanent"><system-label label="LBL_PERMANENT"/></option>
+                        </select>
+                    </div>
                 </div>
-            </fieldset>
+            </div>
             <div class="slds-form-element slds-m-left--x-small">
                 <label class="slds-form-element__label" for="user-blocking-duration">
                     <abbr class="slds-required" title="required">* </abbr><system-label label="LBL_BLOCKING_DURATION"></system-label> (<system-label label="LBL_MINUTES" length="short" style="display:inline-block"></system-label>)</label>
