@@ -17,6 +17,9 @@ import {SpiceImporterService} from '../services/spiceimporter.service';
  */
 declare var _: any;
 
+/**
+ * view to import data from csv file
+ */
 @Component({
     templateUrl: '../templates/spiceimporter.html',
     providers: [model, SpiceImporterService]
@@ -24,6 +27,9 @@ declare var _: any;
 export class SpiceImporter implements OnInit {
     @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) public contentcontainer: ViewContainerRef;
 
+    /**
+     * import steps
+     */
     public importSteps: any[] = ['select', 'map', 'fixed', 'check', 'result'];
     public templatename: string;
     public importAction: string = 'new';
@@ -102,6 +108,10 @@ export class SpiceImporter implements OnInit {
         this.requiredModelFields = this.modelFields.filter(field => field.name != 'id' && field.required);
     }
 
+    /**
+     * set the import action
+     * @param action
+     */
     public setImportAction(action) {
         this.importAction = action;
         let index;
@@ -324,7 +334,8 @@ export class SpiceImporter implements OnInit {
             'idField',
             'fixedFields',
             'importDuplicateAction',
-            'selectedMethod'
+            'selectedMethod',
+            'rejectExistingKey'
         );
         objectImport.fixedFieldsValues = this.model.data;
         objectImport.module = this.model.module;

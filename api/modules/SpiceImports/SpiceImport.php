@@ -287,13 +287,25 @@ class SpiceImport extends SpiceBean
 
     function createNewRecord($newBean, $row, $fileHeader, &$error, &$list)
     {
+        $checkExistingKeys = [];
+        $existingId = false;
 
         if ($this->objectimport->idFieldAction == 'have') {
-            $id = $row[array_search($this->objectimport->idFIeld, $fileHeader)];
-            $newBean->retrieve($id);
+            $id = $row[array_search($this->objectimport->idField, $fileHeader)];
+            $checkExistingKeys[] = "{$this->objectimport->idField} = '$id'";
         }
 
-        if (empty($newBean->id)) {
+        if ($this->objectimport->importDuplicateAction == 'reject_existing') {
+            [$headerField, $beanField] = explode('::', $this->objectimport->rejectExistingKey);
+            $keyIndex = array_search($headerField, $fileHeader);
+            $checkExistingKeys[] = "$beanField = '$row[$keyIndex]'";
+        }
+        if (!empty($checkExistingKeys)){
+            $where = implode(' OR ', $checkExistingKeys);
+            $existingId = $this->db->getOne("SELECT id FROM $newBean->_tablename WHERE $where");
+        }
+
+        if (!$existingId) {
 
             foreach ($row as $idx => $col) {
 
@@ -313,9 +325,10 @@ class SpiceImport extends SpiceBean
                 $newBean->{$field['field']} = $this->objectimport->fixedFieldsValues[$field['field']];
 
             $newBeanId = $newBean->save();
+            file_put_contents('import.log', __FUNCTION__.' '.__LINE__.' '.print_r($newBeanId, true)."\n", FILE_APPEND);
             $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);
             $notify = boolval(!$assignedUser ? false : $assignedUser->receive_notifications);
-            $newBean->save($notify);
+            // $newBean->save($notify);
             $list[] = ['status' => 'imported', 'recordId' => $newBeanId, 'data' => [$row[0], $row[1], $row[2], $row[3]]];
 
             if ($this->objectimport->importDuplicateAction == 'log') {
@@ -380,5 +393,11 @@ class SpiceImport extends SpiceBean
             $spiceImportTemplates->save();
         }
     }
+    function displayRejectKey()
+    {
+
+    }
 
 }
+
+
