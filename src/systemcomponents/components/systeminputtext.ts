@@ -72,6 +72,11 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
     @Input() public id: string;
 
     /**
+     * set to true to display the input with an error class
+     */
+    @Input() public haserror: boolean = false;
+
+    /**
      * a string to break the autocomplete
      *
      * @private
