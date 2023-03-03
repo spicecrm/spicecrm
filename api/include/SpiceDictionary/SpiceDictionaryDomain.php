@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -52,7 +53,7 @@ class SpiceDictionaryDomain
     public function getFieldDefinitions(SpiceDictionaryItem $sysdictionaryItem = null, bool $activeOnly = true){
         $fieldDefinitions = [];
         $db = DBManagerFactory::getInstance();
-        $fieldObjects = $db->query("SELECT id FROM sysdomainfields WHERE deleted = 0 AND sysdomaindefinition_id='{$this->id}' UNION SELECT id FROM syscustomdomainfields WHERE deleted = 0 AND sysdomaindefinition_id='{$this->id}'");
+        $fieldObjects = $db->query("SELECT id FROM sysdomainfields WHERE sysdomaindefinition_id='{$this->id}' UNION SELECT id FROM syscustomdomainfields WHERE sysdomaindefinition_id='{$this->id}'");
         while($fieldObject = $db->fetchByAssoc($fieldObjects)){
             $fieldDefinitions[] = (new SpiceDictionaryDomainField($fieldObject['id']))->getDefinition($sysdictionaryItem);
         }
@@ -107,4 +108,80 @@ class SpiceDictionaryDomain
 
         return $alldefinitons;
     }
+
+    /**
+     * returns the definition
+     *
+     * @return object
+     */
+    public function getDefinition()
+    {
+        return $this->domainDefinition;
+    }
+
+
+    /**
+     * deletes the definition
+     *
+     * @param $dropTable
+     * @return true
+     * @throws \Exception
+     */
+    public function delete($dropTable = false)
+    {
+        // get the definitions and delete them
+        $definitions = $this->getFieldDefinitions();
+        foreach ($definitions as $definition) (new SpiceDictionaryDomainField($definition->sysdictionarydomainfield_id))->activate();
+
+        // clean up the database
+        $table = $this->domainDefinition->scope == 'c' ? 'syscustomdomaindefinitions' : 'sysdomaindefinitions';
+        SystemDeploymentCR::deleteDBEntry($table, $this->id, $this->domainDefinition->name);
+
+        return true;
+    }
+
+    /**
+     * sets the status on the field
+     *
+     * @param $status
+     * @return void
+     * @throws \Exception
+     */
+    private function setStatus($status)
+    {
+        // get the proper table name
+        $table = $this->domainDefinition->scope == 'c' ? 'syscustomdomaindefinitions' : 'sysdomaindefinitions';
+
+        // write the stazus update
+        SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->domainDefinition->name);
+    }
+
+    /**
+     * activates a field
+     *
+     * @return void
+     */
+    public function activate()
+    {
+        // get the definitions and delete them
+        $definitions = $this->getFieldDefinitions();
+        foreach ($definitions as $definition) (new SpiceDictionaryDomainField($definition->sysdictionarydomainfield_id))->activate();
+
+        $this->setStatus('a');
+    }
+
+    /**
+     * deactivates a field
+     *
+     * @return void
+     */
+    public function deactivate()
+    {
+        // get the definitions and delete them
+        $definitions = $this->getFieldDefinitions();
+        foreach ($definitions as $definition) (new SpiceDictionaryDomainField($definition->sysdictionarydomainfield_id))->deactivate();
+
+        $this->setStatus('i');
+    }
+
 }

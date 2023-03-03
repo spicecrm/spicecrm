@@ -10,10 +10,10 @@
         </ul>
 
         <div class="slds-tabs_default__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'details'}" role="tabpanel" style="height: calc(100% - 40px)">
-            <domainmanager-field-details [field]="currentField"></domainmanager-field-details>
+            <domain-manager-field-details></domain-manager-field-details>
         </div>
         <div class="slds-tabs_default__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'validations'}" role="tabpanel" style="height: calc(100% - 40px)">
-            <domainmanager-field-validation style="height: 100%" [field]="currentField"></domainmanager-field-validation>
+            <domain-manager-field-validation style="height: 100%"></domain-manager-field-validation>
         </div>
         <div class="slds-is-absolute slds-m-around--x-small" style="top: 0px; right: 0px;" (click)="toggleExpanded($event)">
             <system-utility-icon [icon]="_isexpanded ? 'chevrondown' : 'chevronup'" size="x-small"/>

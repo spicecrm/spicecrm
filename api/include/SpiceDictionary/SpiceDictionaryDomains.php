@@ -60,4 +60,21 @@ class SpiceDictionaryDomains
 
         $this->domaindefinitions = $defArray;
     }
+
+
+    public function addDefinition(array $definition)
+    {
+        //get teh table
+        $table = $definition['scope'] == 'c' ? 'syscustomdomaindefinitions' : 'sysdomaindefinitions';
+        unset($definition['scope']);
+        DBManagerFactory::getInstance()->insertQuery($table, $definition);
+    }
+
+    public function addField(array $definition)
+    {
+        //get teh table
+        $table = $definition['scope'] == 'c' ? 'syscustomdomainfields' : 'sysdomainfields';
+        unset($definition['scope']);
+        DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $definition['id']], $definition);
+    }
 }

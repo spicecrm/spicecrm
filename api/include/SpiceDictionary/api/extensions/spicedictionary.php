@@ -4,9 +4,12 @@
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryController;
 use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryDefinitionsController;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryDomainDefinitionsController;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryDomainFieldsController;
 use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryIndexesController;
 use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryItemsController;
 use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryRelationshipsController;
+use SpiceCRM\includes\SpiceDictionary\api\controllers\SpiceDictionaryDomainValidationsController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
 
@@ -71,7 +74,7 @@ $routes = [
         'class' => SpiceDictionaryController::class,
         'function' => 'repair',
         'description' => 'does a general repair for one item',
-        'options' => ['adminOnly' => true,'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'id' => [
                 'in' => 'path',
@@ -91,7 +94,7 @@ $routes = [
         'class' => SpiceDictionaryController::class,
         'function' => 'repairRelationship',
         'description' => 'does a general repair for one relationship',
-        'options' => ['adminOnly' => true,'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'id' => [
                 'in' => 'path',
@@ -116,7 +119,7 @@ $routes = [
         'class' => SpiceDictionaryController::class,
         'function' => 'repairVardefRelationship',
         'description' => 'does a general repair for one relationship',
-        'options' => ['adminOnly' => true,'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'dictionaryname' => [
                 'in' => 'path',
@@ -144,7 +147,7 @@ $routes = [
         'class' => SpiceDictionaryController::class,
         'function' => 'repairVardef',
         'description' => 'does a general repair for one vardef definition',
-        'options' => ['adminOnly' => true,'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'name' => [
                 'in' => 'path',
@@ -371,6 +374,169 @@ $routes = [
             ]
         ],
     ],
+    // for the domains
+    [
+        'method' => 'post',
+        'route' => '/dictionary/domaindefinition/{id}',
+        'class' => SpiceDictionaryDomainDefinitionsController::class,
+        'function' => 'postDictionaryDomainDefinition',
+        'description' => 'posts a dictionary Domain Definition',
+        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ], [
+        'method' => 'delete',
+        'route' => '/dictionary/domaindefinition/{id}',
+        'class' => SpiceDictionaryDomainDefinitionsController::class,
+        'function' => 'deleteDictionaryDomainDefinition',
+        'description' => 'delets a dictionary Domain Definition',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/domaindefinition/{id}/activate',
+        'class' => SpiceDictionaryDomainDefinitionsController::class,
+        'function' => 'activateDictionaryDomainDefinition',
+        'description' => 'activates a dictionary Definition',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ], [
+        'method' => 'delete',
+        'route' => '/dictionary/domaindefinition/{id}/activate',
+        'class' => SpiceDictionaryDomainDefinitionsController::class,
+        'function' => 'deactivateDictionaryDomainDefinition',
+        'description' => 'deactivates a dictionary Definition',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    // for the domainfieldss
+    [
+        'method' => 'post',
+        'route' => '/dictionary/domainfield/{id}',
+        'class' => SpiceDictionaryDomainFieldsController::class,
+        'function' => 'postDictionaryDomainField',
+        'description' => 'posts a dictionary Domain Definition',
+        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ], [
+        'method' => 'delete',
+        'route' => '/dictionary/domainfield/{id}',
+        'class' => SpiceDictionaryDomainFieldsController::class,
+        'function' => 'deleteDictionaryDomainField',
+        'description' => 'delets a dictionary Domain Definition',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/domainfield/{id}/activate',
+        'class' => SpiceDictionaryDomainFieldsController::class,
+        'function' => 'activateDictionaryDomainField',
+        'description' => 'activates a dictionary DoaminField',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ], [
+        'method' => 'delete',
+        'route' => '/dictionary/domainfield/{id}/activate',
+        'class' => SpiceDictionaryDomainFieldsController::class,
+        'function' => 'deactivateDictionaryDomainField',
+        'description' => 'deactivates a dictionary DoaminField',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    // for the domainvalidations
+    [
+        'method' => 'post',
+        'route' => '/dictionary/domainvalidation/{id}',
+        'class' => SpiceDictionaryDomainValidationsController::class,
+        'function' => 'postDictionaryDomainValidation',
+        'description' => 'posts a dictionary Domain Validation',
+        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ], [
+        'method' => 'post',
+        'route' => '/dictionary/domainvalidation/{id}/values',
+        'class' => SpiceDictionaryDomainValidationsController::class,
+        'function' => 'postDictionaryDomainValidationValues',
+        'description' => 'posts a dictionary Domain Validation',
+        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ], [
+        'method' => 'delete',
+        'route' => '/dictionary/domainvalidation/{id}',
+        'class' => SpiceDictionaryDomainValidationsController::class,
+        'function' => 'deleteDictionaryDomainValidation',
+        'description' => 'delets a dictionary Domain Validation',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    // ---
     [
         'method' => 'get',
         'route' => '/dictionary/spicewords',
@@ -431,7 +597,15 @@ $routes = [
         'route' => '/dictionary/item/{id}',
         'class' => SpiceDictionaryItemsController::class,
         'function' => 'postDictionaryItem',
-        'description' => 'posts a dictionary Index',
+        'description' => 'posts a dictionary Item',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/items',
+        'class' => SpiceDictionaryItemsController::class,
+        'function' => 'postDictionaryItems',
+        'description' => 'posts a group dictionary Items',
         'options' => ['adminOnly' => true]
     ],
     [

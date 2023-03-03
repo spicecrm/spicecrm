@@ -108,7 +108,7 @@ class SpiceDictionaryDefinition
         $repairIndexes = SpiceDictionaryIndexes::getInstance()->mergeIndexes($repairIndexes, $vardefDetails['indices'] ?: []);
 
         // do the reopair
-        $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, $repairIndexes, false);
+        $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, $repairIndexes, true);
 
         // repair the relationships
         if ($relationships) {
@@ -202,7 +202,7 @@ class SpiceDictionaryDefinition
         $table = $this->definition->scope == 'c' ? 'syscustomdictionarydefinitions' : 'sysdictionarydefinitions';
 
         // write the stazus update
-        SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->name);
+        SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->definition->name);
     }
 
     /**
