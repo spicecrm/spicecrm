@@ -15,6 +15,7 @@ import {ActivationStart, Router} from '@angular/router';
 import {configurationService} from '../../services/configuration.service';
 import {Subscription} from "rxjs";
 import {backend} from "../../services/backend.service";
+import {userpreferences} from "../../services/userpreferences.service";
 
 declare var _: any;
 
@@ -50,6 +51,7 @@ export class GlobalHeader implements OnDestroy, AfterViewInit {
                 public router: Router,
                 public toast: toast,
                 public layout: layout,
+                public userPreferences: userpreferences,
                 public navigation: navigation,
                 public backend: backend,
                 public cdRef: ChangeDetectorRef,
