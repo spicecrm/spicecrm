@@ -2,9 +2,7 @@
  * @module SpiceImporterModule
  */
 import {Component, Input} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
 import {SpiceImporterService} from '../services/spiceimporter.service';
 
 @Component({
@@ -17,8 +15,6 @@ export class SpiceImporterUpdate {
     public checkFields: any[] = [];
 
     constructor(
-        public language: language,
-        public metadata: metadata,
         public model: model,
         public spiceImport: SpiceImporterService
     ) {

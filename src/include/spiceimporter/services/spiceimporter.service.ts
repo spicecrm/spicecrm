@@ -36,7 +36,7 @@ export class SpiceImporterService {
     public fileRows: string = '';
     public fileData;
     public currentImportStep: number = 0;
-    public result: {list?: {status: 'imported' | 'Duplicate Entry' ,recordId?: string, data: string[]}[]} = {};
+    public result: {list?: {status: 'imported' | 'Duplicate Entry' | 'Record Exists' | 'updated' | 'No Entries' ,recordId?: string, data: string[]}[]} = {};
     public importStepsText: any[] =
         [
             'LBL_SELECT_UPLOAD_FILE',

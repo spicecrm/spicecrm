@@ -20,7 +20,6 @@ export class SpiceImporterCheck {
     public modelfields: any = [];
 
     constructor(
-        public language: language,
         public metadata: metadata,
         public model: model,
         public spiceImporter: SpiceImporterService,
