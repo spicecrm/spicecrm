@@ -11,6 +11,7 @@ import {fts} from '../../services/fts.service';
 import {configurationService} from '../../services/configuration.service';
 import {broadcast} from '../../services/broadcast.service';
 import {language} from "../../services/language.service";
+import {userpreferences} from "../../services/userpreferences.service";
 
 @Component({
     selector: 'global-header-search',
@@ -21,6 +22,7 @@ export class GlobalHeaderSearch {
 
     @ViewChild('searchfield', {read: ViewContainerRef, static: false}) public searchfield: ViewContainerRef;
 
+    public isFocused = false;
     public showRecent: boolean = false;
     public searchTimeOut: any = undefined;
     public searchTerm: string = '';
@@ -58,16 +60,18 @@ export class GlobalHeaderSearch {
         public configuration: configurationService,
         public elementRef: ElementRef,
         public renderer: Renderer2,
+        public userPreferences: userpreferences,
         public language: language
     ) {
     }
 
     get showModuleSelector() {
-        return window.innerWidth >= 768;
+        return window.innerWidth >= 768 && !this.userPreferences.toUse.globalHeaderCollapsed;
     }
 
     public onFocus() {
         this.showRecent = true;
+        this.isFocused = true;
         this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
@@ -176,5 +180,9 @@ export class GlobalHeaderSearch {
     public selected(event) {
         this.showRecent = false;
         this.clearSearchTerm();
+    }
+
+    public onBlur() {
+        window.setTimeout(() => this.isFocused = false, 200);
     }
 }
