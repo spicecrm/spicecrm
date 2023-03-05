@@ -239,6 +239,9 @@ class CampaignTask extends SpiceBean
     {
         $listIdsString = implode(',', array_map(function ($e) {return "'$e'";}, $listIds));
 
+        // overwrite sql_mode=only_full_group_by on the server
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+
         $query = $this->db->query("
             SELECT related_id, GROUP_CONCAT(prospect_list_id) AS listsIds, st.status, st.date_modified AS status_date_changed FROM prospect_lists_prospects plp
             LEFT JOIN campaigntask_targets_status st on plp.related_id = st.prospect_id and st.campaigntask_id = '$this->id'

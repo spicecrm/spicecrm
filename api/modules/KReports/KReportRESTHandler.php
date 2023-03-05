@@ -11,8 +11,6 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Configurator\Configurator;
-use SpiceCRM\modules\Contacts\Contact;
-use SpiceCRM\modules\KReports\KReport;
 use SpiceCRM\modules\KReports\KReportPluginManager;
 use SpiceCRM\modules\KReports\KReportPresentationManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -1826,7 +1824,7 @@ class KReporterRESTHandler
 
         //get kreports list
         $callGetList = false;
-        $kreport = new KReport();
+        $kreport = BeanFactory::getBean('KReports');
         $order_by = "kreports.name ASC";
 
         if (!empty($params['kreportids'])) {
