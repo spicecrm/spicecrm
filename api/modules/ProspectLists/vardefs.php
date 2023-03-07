@@ -51,7 +51,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'name' => 'name',
             'vname' => 'LBL_NAME',
             'type' => 'varchar',
-            'len' => '50',
+            'len' => '255',
             'importable' => 'required',
             'unified_search' => true,
             'full_text_search' => ['boost' => 3],
