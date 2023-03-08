@@ -402,7 +402,7 @@ LEFT JOIN
     }
 
     public function getDomainDefinitions(){
-        return SpiceDictionaryDomains::getInstance()->domaindefinitions;
+        return SpiceDictionaryDomains::getInstance()->getDomains();
     }
 
     /**

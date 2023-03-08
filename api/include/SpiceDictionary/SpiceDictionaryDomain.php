@@ -21,7 +21,8 @@ class SpiceDictionaryDomain
         $this->id = $id;
 
         // see if we can load the definition
-        $domainDefinition = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdomaindefinitions WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdomaindefinitions WHERE deleted = 0 AND id='{$id}'");
+        //$domainDefinition = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdomaindefinitions WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdomaindefinitions WHERE deleted = 0 AND id='{$id}'");
+        $domainDefinition = SpiceDictionaryDomains::getInstance()->getDomainById($id);
         if(!$domainDefinition){
             throw new Exception("DomainDefinition for id {$id} no found");
         }
@@ -32,9 +33,8 @@ class SpiceDictionaryDomain
 
     public function getFields(SpiceDictionaryItem $sysdictionaryItem = null, bool $activeOnly = true){
         $fieldNames = [];
-        $db = DBManagerFactory::getInstance();
-        $fieldObjects = $db->query("SELECT * FROM sysdomainfields WHERE deleted = 0 AND sysdomaindefinition_id='{$this->id}' UNION SELECT * FROM syscustomdomainfields WHERE deleted = 0 AND sysdomaindefinition_id='{$this->id}'");
-        while($fieldObject = $db->fetchByAssoc($fieldObjects)){
+        $fieldObjects = SpiceDictionaryDomainFields::getInstance()->getDomainFields($this->id);
+        foreach($fieldObjects as $fieldObject){
             $fieldObject = (object) $fieldObject;
             $fieldObject->name = str_replace("{sysdictionaryitems.name}", $sysdictionaryItem->name, $fieldObject->name);
             $fieldNames[] = $fieldObject->name;

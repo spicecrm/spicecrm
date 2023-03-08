@@ -77,7 +77,6 @@ export class DictionaryManagerIndexAdd implements OnInit{
             id: this.modelutilities.generateGuid(),
             name: `idx_` + (tablename ? tablename : '{tablename}') + '_',
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
-            deleted: 0,
             status: 'd',
             scope:  this.dictionarymanager.defaultScope,
             indextype: 'index'
@@ -134,7 +133,7 @@ export class DictionaryManagerIndexAdd implements OnInit{
         if(this.index.name == this.defaultName) return false;
 
         // name needs to be unique
-        if(this.dictionarymanager.dictionaryindexes.filter(i => i.name == this.index.name && i.deleted == 0).length > 0) return false;
+        if(this.dictionarymanager.dictionaryindexes.filter(i => i.name == this.index.name && (this.dictionarymanager.getCurrentDefinition().sysdictionary_type != 'template' || this.dictionarymanager.currentDictionaryDefinition == i.sysdictionarydefinition_id)).length > 0) return false;
 
         // for non-foreign we need to have fields
         if(this.index.indextype != 'foreign' && this.indexDictionaryItems.length == 0) return false;
@@ -162,8 +161,7 @@ export class DictionaryManagerIndexAdd implements OnInit{
                     sysdictionaryitem_id: this.dictionaryItemId,
                     sysdictionaryforeigndefinition_id: this.dictionaryForeignDefinitionId,
                     sysdictionaryforeignitem_id: this.dictionaryForeignItemId,
-                    sequence: 0,
-                    deleted: 0,
+                    sequence: 0
                 });
                 break;
             default:
@@ -175,8 +173,7 @@ export class DictionaryManagerIndexAdd implements OnInit{
                         status: this.index.status,
                         sysdictionaryindex_id: this.index.id,
                         sysdictionaryitem_id: item.id,
-                        sequence: sequence,
-                        deleted: 0,
+                        sequence: sequence
                     });
                     sequence++;
                 }

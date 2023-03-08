@@ -24,7 +24,8 @@ class SpiceDictionaryDefinition
     {
         $this->id = $id;
 
-        $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionarydefinitions WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionarydefinitions WHERE deleted = 0 AND id='{$id}'");
+        // $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionarydefinitions WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionarydefinitions WHERE deleted = 0 AND id='{$id}'");
+        $res = SpiceDictionaryDefinitions::getInstance()->getDefinitionById($id);
         if (!$res) {
             throw new Exception("dictionary Definition with id {$id} not found");
         }
@@ -198,11 +199,8 @@ class SpiceDictionaryDefinition
      */
     private function setStatus($status)
     {
-        // get the proper table name
-        $table = $this->definition->scope == 'c' ? 'syscustomdictionarydefinitions' : 'sysdictionarydefinitions';
-
-        // write the stazus update
-        SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->definition->name);
+        // set the status
+        SpiceDictionaryDefinitions::getInstance()->setStatus($this->id, $status);
     }
 
     /**
@@ -286,9 +284,8 @@ class SpiceDictionaryDefinition
         // drop the table if set by the user
         if ($dropTable) $this->dropTable();
 
-        // clean up the database
-        $table = $this->definition->scope == 'c' ? 'syscustomdictionarydefinitions' : 'sysdictionarydefinitions';
-        SystemDeploymentCR::deleteDBEntry($table, $this->id, $this->name);
+        // remoces teh records form teh definitions store
+        SpiceDictionaryDefinitions::getInstance()->deleteDefinition($this->id);
 
         return true;
     }

@@ -68,7 +68,7 @@ export class DictionaryManagerIndexDetails implements OnChanges {
 
             switch(this.index.indextype){
                 case 'foreign':
-                    let indexitem = this.dictionarymanager.dictionaryindexitems.find(i => i.sysdictionaryindex_id == this.indexid && i.deleted == 0);
+                    let indexitem = this.dictionarymanager.dictionaryindexitems.find(i => i.sysdictionaryindex_id == this.indexid);
                     this.dictionaryItemId = indexitem.sysdictionaryitem_id;
                     this.dictionaryForeignItemId = indexitem.sysdictionaryforeignitem_id;
 
@@ -79,7 +79,7 @@ export class DictionaryManagerIndexDetails implements OnChanges {
                 default:
                     // build the items array
                     this.indexDictionaryItems = [];
-                    let indexitems = this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == this.indexid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+                    let indexitems = this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == this.indexid).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
                     for (let indexitem of indexitems) {
                         let aitemIndex = this.availableDictionaryItems.findIndex(a => a.id == indexitem.sysdictionaryitem_id);
                         this.indexDictionaryItems.push(this.availableDictionaryItems.splice(aitemIndex, 1)[0]);
@@ -113,7 +113,7 @@ export class DictionaryManagerIndexDetails implements OnChanges {
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
 
         // get the current items
-        let indexitems = this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == this.indexid && i.deleted == 0);
+        let indexitems = this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == this.indexid);
 
         // resequence the items
         let sequence = 0;
@@ -132,7 +132,6 @@ export class DictionaryManagerIndexDetails implements OnChanges {
                     sysdictionaryindex_id: this.index.id,
                     sysdictionaryitem_id: indexDictionaryItem.id,
                     sequence: sequence,
-                    deleted: 0,
                 });
                 handledItems.push(newid);
             }
@@ -140,11 +139,13 @@ export class DictionaryManagerIndexDetails implements OnChanges {
         }
 
         // delete all that are no longer found
+        /*
         for (let indexitem of indexitems) {
             if (handledItems.indexOf(indexitem.id) < 0) {
                 indexitem.deleted = 1;
             }
         }
+        */
 
     }
 
