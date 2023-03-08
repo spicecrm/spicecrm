@@ -22,7 +22,8 @@ class SpiceDictionaryDomainField
         $this->id = $id;
 
         // try to load the domainfield
-        $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdomainfields WHERE id='{$id}' UNION SELECT *, 'c' scope  FROM syscustomdomainfields WHERE id='{$id}'");
+        // $res = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdomainfields WHERE id='{$id}' UNION SELECT *, 'c' scope  FROM syscustomdomainfields WHERE id='{$id}'");
+        $res = SpiceDictionaryDomainFields::getInstance()->getDomainField($id);
         if(!$res){
             throw new Exception("Domainfield with ID {$id} is not defined");
         }

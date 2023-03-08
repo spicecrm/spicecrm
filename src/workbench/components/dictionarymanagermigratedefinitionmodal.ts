@@ -80,7 +80,6 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             tablename: '',
             sysdictionary_type: 'module',
             scope: this.dictionarymanager.defaultScope,
-            deleted: 0,
             status: 'd'
         };
 
@@ -327,7 +326,6 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 default_value: '',
                 required: 0,
                 scope: t.scope ? t.scope : this.dictionarydefinition.scope,
-                deleted: 0,
                 status: 'd',
                 sequence: s
             }
@@ -354,7 +352,6 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 default_value: '',
                 required: f.fielddefinition.required ? 1 : 0,
                 scope: f.scope ? f.scope : this.dictionarydefinition.scope,
-                deleted: 0,
                 status: 'd',
                 sequence: s,
                 label: f.fielddefinition.vname,
@@ -391,7 +388,6 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 scope: i.scope,
                 version: i.version,
                 sysdictionarydefinition_id: this.dictionarydefinition.id,
-                deleted: 0,
                 status: 'd'
             };
 
@@ -406,7 +402,6 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                     sysdictionaryindex_id: indexId,
                     sysdictionaryitem_id: newitems[field] ? newitems[field] : dictdefitems.find(d => d.name == field).id,
                     sequence: sequence,
-                    deleted: 0,
                 });
                 sequence++;
             }

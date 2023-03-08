@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryItem
@@ -21,7 +22,12 @@ class SpiceDictionaryItem
     {
         $this->id = $id;
 
-        $this->itemDefinition = (object)DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionaryitems WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionaryitems WHERE deleted = 0 AND id='{$id}'");
+        // $this->itemDefinition = (object)DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionaryitems WHERE deleted = 0 AND id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionaryitems WHERE deleted = 0 AND id='{$id}'");
+        $res = SpiceDictionaryItems::getInstance()->getItem($id);
+        if (!$res) {
+            throw new Exception("dictionary Item with id {$id} not found");
+        }
+        $this->itemDefinition = (object)$res;
 
         $this->name = $this->itemDefinition->name;
         $this->sysdomaindefinition_id = $this->itemDefinition->sysdomaindefinition_id;
@@ -52,7 +58,7 @@ class SpiceDictionaryItem
     }
 
     /**
-     * sets the status on the index
+     * sets the status on the item
      *
      * @param $status
      * @return void
@@ -60,15 +66,12 @@ class SpiceDictionaryItem
      */
     private function setStatus($status)
     {
-        // get the proper table name
-        $table = $this->itemDefinition->scope == 'c' ? 'syscustomdictionaryitems' : 'sysdictionaryitems';
-
-        // write the stazus update
-        SystemDeploymentCR::writeDBEntry($table, $this->id, ['status' => $status], $this->name);
+        SpiceDictionaryItems::getInstance()->setStatus($this->id, $status);
     }
 
     /**
      * activates the item and writes the cached entry
+     *
      * @return void
      */
     public function activate($repair = true)
@@ -114,9 +117,6 @@ class SpiceDictionaryItem
 
         // set the status
         $this->setStatus('a');
-
-        // reset the items cache
-        SpiceDictionaryItems::getInstance()->resetCache();
 
         // return the definitions
         return ['definitions' => $definitions, 'indexes' => $indexes ?: []];

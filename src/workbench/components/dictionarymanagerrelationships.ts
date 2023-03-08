@@ -45,7 +45,7 @@ export class DictionaryManagerRelationships {
     get dictionaryRelationshipsForTemplates(): any[] {
         let relatedRelationships: any[] = [];
 
-        for(let item of this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionary_ref_id && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)){
+        for(let item of this.dictionarymanager.dictionaryitems.filter(d =>  d.sysdictionary_ref_id && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)){
             let relRelationships = this.dictionarymanager.dictionaryrelationships.filter(d => d.deleted == 0 && (d.lhs_sysdictionarydefinition_id == item.sysdictionary_ref_id || d.rhs_sysdictionarydefinition_id == item.sysdictionary_ref_id));
             if(relRelationships.length > 0) {
                 relatedRelationships.push({

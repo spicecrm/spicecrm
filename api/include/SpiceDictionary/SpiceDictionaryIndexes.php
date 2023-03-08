@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 /**
  * manages Indexes
@@ -12,11 +13,56 @@ class SpiceDictionaryIndexes
 {
 
     /**
+     * the main table name
+     */
+    const table = 'sysdictionaryindexes';
+
+    /**
+     * the custom table name
+     */
+    const customtable = 'syscustomdictionaryindexes';
+
+    /**
+     * the cache object name
+     */
+    const cachename = 'dictionaryindexes';
+
+    /**
+     * the main table name
+     */
+    const itemtable = 'sysdictionaryindexitems';
+
+    /**
+     * the custom table name
+     */
+    const customitemtable = 'syscustomdictionaryindexitems';
+
+    /**
+     * the cache object name
+     */
+    const itemcachename = 'dictionaryindexitems';
+
+
+    /**
      * the instance for the singelton
      *
      * @var
      */
     private static $instance;
+
+    /**
+     * holds teh loaded indexes
+     * @var array
+     */
+    public $dictionaryIndexes = [];
+
+    /**
+     * holds all loaded items
+     *
+     * @var array
+     */
+    public $dictionaryIndexItems = [];
+
 
     private function __clone()
     {
@@ -40,7 +86,71 @@ class SpiceDictionaryIndexes
 
     public function __construct()
     {
+        // check if we have a cached value
+        $cached = SpiceCache::get(self::cachename);
+        if($cached) {
+            $this->dictionaryIndexes = $cached;
+        } else {
+            // load the indexes
+            $this->dictionaryIndexes = $this->getDictionaryIndexes(null, []);
+        }
 
+        // check if we have a cached value
+        $cached = SpiceCache::get(self::itemcachename);
+        if($cached) {
+            $this->dictionaryIndexItems = $cached;
+        } else {
+            // load the indexitems
+            $this->dictionaryIndexItems = $this->getDictionaryIndexItems();
+        }
+
+    }
+
+    /**
+     * writes teh cache
+     *
+     * @return void
+     */
+    private function writeCache(){
+        SpiceCache::set(self::cachename,  $this->dictionaryIndexes);
+        SpiceCache::set(self::itemcachename,  $this->dictionaryIndexItems);
+    }
+
+    /**
+     * fetches an index by the ID
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getIndex($id){
+        return $this->dictionaryIndexes[$id];
+    }
+
+    /**
+     * returns all laoded indexes
+     *
+     * @return array
+     */
+    public function getIndexes(){
+        return array_values($this->dictionaryIndexes);
+    }
+
+
+    /**
+     * returns all loaded index items (optionally filtered by an indexid
+     *
+     * @return array
+     */
+    public function getIndexItems($indexId = null){
+        if($indexId){
+            $filtered = [];
+            foreach ($this->dictionaryIndexItems As $dictionaryIndexItem){
+                if($dictionaryIndexItem['sysdictionaryindex_id'] == $indexId) $filtered[] = $dictionaryIndexItem;
+            }
+            return $filtered;
+        }
+
+        return array_values($this->dictionaryIndexItems);
     }
 
     /**
@@ -63,15 +173,13 @@ class SpiceDictionaryIndexes
         $whereClause = count($whereArray) > 0 ? " WHERE " . implode(" AND ", $whereArray) : '';
 
         $indexArray = [];
-        $dictionaryindexes = $db->query("SELECT * FROM sysdictionaryindexes $whereClause");
+        $dictionaryindexes = $db->query("SELECT * FROM ".self::table." $whereClause");
         while ($dictionaryindex = $db->fetchByAssoc($dictionaryindexes)) {
-            $dictionaryindex['deleted'] = intval($dictionaryindex['deleted']);
-            $indexArray[] = array_merge($dictionaryindex, ['scope' => 'g']);
+            $indexArray[$dictionaryindex['id']] = array_merge($dictionaryindex, ['scope' => 'g']);
         }
-        $dictionaryindexes = $db->query("SELECT * FROM syscustomdictionaryindexes $whereClause");
+        $dictionaryindexes = $db->query("SELECT * FROM ".self::customtable." $whereClause");
         while ($dictionaryindex = $db->fetchByAssoc($dictionaryindexes)) {
-            $dictionaryindex['deleted'] = intval($dictionaryindex['deleted']);
-            $indexArray[] = array_merge($dictionaryindex, ['scope' => 'c']);;
+            $indexArray[$dictionaryindex['id']] = array_merge($dictionaryindex, ['scope' => 'c']);;
         }
 
         return $indexArray;
@@ -90,11 +198,11 @@ class SpiceDictionaryIndexes
             switch ($index['scope']) {
                 case 'c':
                     unset($index['scope']);
-                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryindexes", $index['id'], $index, $index['name']);
+                    SystemDeploymentCR::writeDBEntry(self::customtable, $index['id'], $index, $index['name']);
                     break;
                 default:
                     unset($index['scope']);
-                    SystemDeploymentCR::writeDBEntry("sysdictionaryindexes", $index['id'], $index, $index['name']);
+                    SystemDeploymentCR::writeDBEntry(self::table, $index['id'], $index, $index['name']);
                     break;
             }
         }
@@ -110,16 +218,14 @@ class SpiceDictionaryIndexes
     {
         $db = DBManagerFactory::getInstance();
         $indexItemsArray = [];
-        $dictionaryindexitems = $db->query("SELECT * FROM sysdictionaryindexitems WHERE deleted = 0");
+        $dictionaryindexitems = $db->query("SELECT * FROM ".self::itemtable);
         while ($dictionaryindexitem = $db->fetchByAssoc($dictionaryindexitems)) {
-            $dictionaryindexitem['deleted'] = intval($dictionaryindexitem['deleted']);
             $dictionaryindexitem['sequence'] = intval($dictionaryindexitem['sequence']);
             $indexItemsArray[] = array_merge($dictionaryindexitem, ['scope' => 'g']);
         }
-        $dictionaryindexitems = $db->query("SELECT * FROM syscustomdictionaryindexitems WHERE deleted = 0");
+        $dictionaryindexitems = $db->query("SELECT * FROM ".self::customitemtable);
         while ($dictionaryindexitem = $db->fetchByAssoc($dictionaryindexitems)) {
             $dictionaryindexitem['sequence'] = intval($dictionaryindexitem['sequence']);
-            $dictionaryindexitem['deleted'] = intval($dictionaryindexitem['deleted']);
             $indexItemsArray[] = array_merge($dictionaryindexitem, ['scope' => 'c']);;
         }
 
@@ -134,15 +240,38 @@ class SpiceDictionaryIndexes
     public function setDictionaryIndexItems($indexitems)
     {
         foreach ($indexitems as $indexitem) {
-            switch ($indexitem['scope']) {
-                case 'c':
-                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryindexitems", $indexitem['id'], $indexitem, $indexitem['id']);
-                    break;
-                default:
-                    SystemDeploymentCR::writeDBEntry("sysdictionaryindexitems", $indexitem['id'], $indexitem, $indexitem['id']);
-                    break;
-            }
+            SystemDeploymentCR::writeDBEntry($this->getItemDefinitonTable($indexitem['id']), $indexitem['id'], $indexitem, $indexitem['id']);
+            // set the item
+            $this->dictionaryIndexItems[$indexitem['id']] = $indexitem;
         }
+    }
+
+    /**
+     * returns the proper table for an index
+     *
+     * @param $id
+     * @return string
+     */
+    private function getDefinitonTable($id){
+        // get the def
+        $def = $this->dictionaryIndexes[$id];
+
+        // get the proper table name
+        return $def['scope'] == 'c' ? self::customtable : self::table;
+    }
+
+    /**
+     * returns the proper table for an indexitem
+     *
+     * @param $id
+     * @return string
+     */
+    private function getItemDefinitonTable($id){
+        // get the def
+        $def = $this->dictionaryIndexItems[$id];
+
+        // get the proper table name
+        return $def['scope'] == 'c' ? self::customitemtable : self::itemtable;
     }
 
     /**
@@ -155,13 +284,71 @@ class SpiceDictionaryIndexes
      */
     public function addIndex(array $index, array $items)
     {
-        $table = $index['scope'] == 'c' ? 'syscustomdictionaryindexes' : 'sysdictionaryindexes';
+        $table = $index['scope'] == 'c' ? self::customtable : self::table;
         SystemDeploymentCR::writeDBEntry($table, $index['id'], $index, $index['name'], SystemDeploymentCR::ACTION_INSERT);
 
         foreach ($items as $item) {
-            $table = $item['scope'] == 'c' ? 'syscustomdictionaryindexitems' : 'sysdictionaryindexitems';
+            $table = $item['scope'] == 'c' ? self::customitemtable : self::itemtable;
             SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $index['name'], SystemDeploymentCR::ACTION_INSERT);
         }
+
+        // rewrite the cache
+        $this->writeCache();
+
+        return true;
+    }
+
+    /**
+     * sets the status for a given ID
+     *
+     * @param $id
+     * @param $status
+     * @return void
+     */
+    public function setStatus($id, $status){
+        // get the def
+        $def = $this->dictionaryIndexes[$id];
+
+        // write the status update
+        SystemDeploymentCR::writeDBEntry($this->getDefinitonTable($id), $id, ['status' => $status], $def['name']);
+
+        // sets the status
+        $this->dictionaryIndexes[$id]['status'] = $status;
+
+        // rewrite the cache
+        $this->writeCache();
+    }
+
+
+    /**
+     * deletes an index with the given id
+     *
+     * @param $id
+     * @return true
+     * @throws \Exception
+     */
+    public function delete($id){
+        // get the def
+        $def = $this->dictionaryIndexes[$id];
+
+        // get all index Items and remove them
+        $items = $this->getIndexItems($id);
+        foreach($items as $item){
+            SystemDeploymentCR::deleteDBEntry($this->getDefinitonTable($item['id']), $item['id'], $def['name']);
+            // remove from the array
+            unset($this->dictionaryIndexItems[$item['id']]);
+        }
+
+        // write the status update
+        SystemDeploymentCR::deleteDBEntry($this->getDefinitonTable($id), $id, $def['name']);
+
+        // remove from the array
+        unset($this->dictionaryIndexes[$id]);
+
+        // rewrite the cache
+        $this->writeCache();
+
+        // return
         return true;
     }
 

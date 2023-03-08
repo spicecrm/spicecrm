@@ -62,7 +62,7 @@
                         </td>
                         <td *ngIf="validation.validation_type == 'enum'" >
                             <!-- only allow change in Draft mode. Once activated and deactivated the value can no longer be changed to avoid data inconsitencies -->
-                            <input type="text" [disabled]="validationvalue.status != 'd'" [(ngModel)]="validationvalue.enumvalue" class="slds-input"/>
+                            <input type="text" [disabled]="validationvalue.status != 'd'" [(ngModel)]="validationvalue.enumvalue" class="slds-input" [ngClass]="{'slds-has-error': hasDuplicate(validationvalue)}"/>
                         </td>
                         <td *ngIf="view == 'extended'">
                             <select class="slds-select" [(ngModel)]="validationvalue.valuetype">
@@ -99,6 +99,6 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
-        <button class="slds-button slds-button--neutral" (click)="save()"><system-label label="LBL_SAVE"/></button>
+        <button class="slds-button slds-button--neutral" [disabled]="!canSave" (click)="save()"><system-label label="LBL_SAVE"/></button>
     </system-modal-footer>
 </system-modal>

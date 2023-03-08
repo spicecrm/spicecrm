@@ -371,6 +371,7 @@ class SpiceBean
      * @return void
      * @throws Exception
      */
+    /*
     public function __set(string $name, mixed $value): void {
 
         // if we do not have the field defined throw an error if we are in strict mode
@@ -380,6 +381,7 @@ class SpiceBean
 
         $this->_data->{$name} = $value;
     }
+    */
 
     /**
      * generic getter for the bean values
@@ -387,8 +389,21 @@ class SpiceBean
      * @param string $name
      * @return mixed
      */
+    /*
     public function __get(string $name): mixed {
         return $this->_data->{$name};
+    }
+    */
+
+    public function getBeanDataArray(){
+        $data = (array) $this->_data;
+
+        // add standard Fields
+        $data['id'] = $this->id;
+        $data['deleted'] = $this->deleted;
+
+        // return the data
+        return $data;
     }
 
     /**
@@ -2134,20 +2149,6 @@ class SpiceBean
     }
 
     /**
-     * @deprecated
-     *
-     * Converts an array into an acl mapping name value pairs into files
-     *
-     * @param Array $arr
-     */
-    function fromArray($arr)
-    {
-        foreach($arr as $name=>$value)
-        {
-            $this->$name = $value;
-        }
-    }
-    /**
      * Convert row data from DB format to internal format
      * Mostly useful for dates/times
      * @param array $row
@@ -2213,19 +2214,6 @@ class SpiceBean
                 $this->$field = $nullvalue;
             }
         }
-    }
-
-    /**
-     * Decode and decrypt a base 64 encoded string with field type 'encrypt' in this bean using Blowfish.
-     * @param STRING value - an encrypted and base 64 encoded string.
-     * @return string
-     */
-    function decrypt_after_retrieve($value)
-    {
-        if (empty($value))
-            return $value; // no need to decrypt empty
-        require_once("include/utils/encryption_utils.php");
-        return EncryptionUtils::blowfishDecode($this->getEncryptKey(), $value);
     }
 
     /**

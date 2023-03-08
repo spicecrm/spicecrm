@@ -2,12 +2,28 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDefinitions
 {
+    /**
+     * the main table name
+     */
+    const table = 'sysdictionarydefinitions';
+
+    /**
+     * the custom table name
+     */
+    const customtable = 'syscustomdictionarydefinitions';
+
+    /**
+     * the cache object name
+     */
+    const cachename = 'dictionarydefinitions';
+
     /**
      * the instance for the singelton
      *
@@ -39,7 +55,7 @@ class SpiceDictionaryDefinitions
 
     public function __construct()
     {
-        $cached = SpiceCache::get('dictionarydefinitions');
+        $cached = SpiceCache::get(self::cachename);
         if ($cached) {
             $this->dictionaryDefinitions = $cached;
             return;
@@ -47,24 +63,67 @@ class SpiceDictionaryDefinitions
 
         $defArray = [];
         $defTables = [
-            ['name' => 'sysdictionarydefinitions', 'scope' => 'g'],
-            ['name' => 'syscustomdictionarydefinitions', 'scope' => 'c']
+            ['name' => self::table, 'scope' => 'g'],
+            ['name' => self::customtable, 'scope' => 'c']
         ];
         $db = DBManagerFactory::getInstance();
-        $whereClause = '';
 
         foreach ($defTables as $defTable) {
-            $dictionarydefinitions = $db->query("SELECT * FROM {$defTable['name']} WHERE deleted = 0" . $whereClause);
+            $dictionarydefinitions = $db->query("SELECT * FROM {$defTable['name']}");
             while ($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)) {
-                $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
                 $dictionarydefinition['scope'] = $defTable['scope'];
-                $defArray[] = $dictionarydefinition;
+                $defArray[$dictionarydefinition['id']] = $dictionarydefinition;
             }
         }
 
-        SpiceCache::set('dictionarydefinitions', $defArray);
-
         $this->dictionaryDefinitions = $defArray;
+
+        // writes the cache
+        $this->writeCache();
+    }
+
+    private function writeCache(){
+        SpiceCache::set(self::cachename, $this->dictionaryDefinitions);
+    }
+
+    private function getDefinitonTable($id){
+        // get the def
+        $def = $this->dictionaryDefinitions[$id];
+
+        // get the proper table name
+        return $def['scope'] == 'c' ? self::customtable : self::table;
+    }
+
+    /**
+     * gets a definition by Id
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getDefinitionById($id){
+        return $this->dictionaryDefinitions[$id];
+    }
+
+
+    /**
+     * sets the status for a given ID
+     *
+     * @param $id
+     * @param $status
+     * @return void
+     */
+    public function setStatus($id, $status){
+        // get the def
+        $def = $this->dictionaryDefinitions[$id];
+
+        // write the stazus update
+        SystemDeploymentCR::writeDBEntry($this->getDefinitonTable($id), $id, ['status' => $status], $def['name']);
+
+        // sets the status
+        $this->dictionaryDefinitions[$id]['status'] = $status;
+
+        // caches the values
+        $this->writeCache();
     }
 
     /**
@@ -88,12 +147,14 @@ class SpiceDictionaryDefinitions
      */
     public function repairVardefDefinition($name, $keep = false)
     {
-        $vardefDefinitions = SpiceDictionaryVardefs::loadVardefs([$name])[$name];
+        // $vardefDefinitions = SpiceDictionaryVardefs::loadVardefs([$name])[$name];
+        SpiceDictionaryVardefs::loadLegacyFiles();
+        $vardefDefinitions = SpiceDictionaryHandler::getInstance()->dictionary[$name];
         foreach ($vardefDefinitions['fields'] as $fieldName => $definition){
             // write to the cached fields
             $sysDictionaryField = [
                 'id' => SpiceUtils::createGuid(),
-                'sysdictionaryname' => $vardefDefinitions['name'],
+                'sysdictionaryname' => $name,
                 'sysdictionarytablename' => $vardefDefinitions['table'],
                 'fieldname' => $definition['name'],
                 'fieldtype' => $definition['type'],
@@ -130,6 +191,7 @@ class SpiceDictionaryDefinitions
         }
     }
 
+
     /**
      * returns the name for a given id
      *
@@ -144,26 +206,44 @@ class SpiceDictionaryDefinitions
         return null;
     }
 
+    /**
+     * adds a definition
+     *
+     * @param array $definition
+     * @return void
+     * @throws \Exception
+     */
     public function addDefinition(array $definition)
     {
         //get teh table
-        $table = $definition['scope'] == 'c' ? 'syscustomdictionarydefinitions' : 'sysdictionarydefinitions';
+        $table = $definition['scope'] == 'c' ? self::customtable : self::table;
         unset($definition['scope']);
         DBManagerFactory::getInstance()->insertQuery($table, $definition);
+
+        // adds teh definition
+        $this->dictionaryDefinitions[$definition['id']] = $definition;
+
+        // writes the cache
+        $this->writeCache();
     }
 
-    public function deleteDefinition($definitionId, $droptaböe = false)
+    /**
+     * removes the definition
+     *
+     * @param $id
+     * @return void
+     * @throws \Exception
+     */
+    public function deleteDefinition($id)
     {
-        // if we need to drop the table ... do it
-        if ($droptaböe) {
-            (new SpiceDictionaryDefinition($definitionId))->dropTable();
-        }
-
-        // clean up the database
-        $db = DBManagerFactory::getInstance();
-        $db->query("UPDATE sysdictionarydefinitions SET deleted = 0 WHERE id = '$definitionId'");
-        $db->query("UPDATE syscustomdictionarydefinitions SET deleted = 0 WHERE id = '$definitionId'");
-
+        // get the def
+        $def = $this->dictionaryDefinitions[$id];
+        // write the record
+        SystemDeploymentCR::deleteDBEntry($this->getDefinitonTable($id), $id, $def['name']);
+        // remove the definition
+        unset($this->dictionaryDefinitions['id']);
+        // write Cache
+        $this->writeCache();
 
     }
 }

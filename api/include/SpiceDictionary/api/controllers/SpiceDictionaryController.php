@@ -37,11 +37,13 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
@@ -71,60 +73,11 @@ class SpiceDictionaryController
     {
         $handler = SpiceDictionaryHandler::getInstance();
         $results = [
-            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
-            'domainfields' => $handler->getDomainFields(false),
+            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->getDomains(),
+            'domainfields' => SpiceDictionaryDomainFields::getInstance()->getDomainFields(),
             'domainfieldvalidations' => $handler->getDomainFieldValidations(false),
             'domainfieldvalidationvalues' => $handler->getDomainFieldValidationValues(false)
         ];
-        return $res->withJson($results);
-    }
-
-    /**
-     * post the domain changes
-     *
-     * @param $req
-     * @param $res
-     * @param $args
-     * @return mixed
-     */
-    public function postDomains(Request $req, Response $res, array $args): Response
-    {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-
-        // check that we are an admin
-        if(!$current_user->is_admin){
-            throw new UnauthorizedException('Admin Access Only');
-        }
-
-        $handler =  SpiceDictionaryHandler::getInstance();
-
-        // get the body
-        $body = $req->getParsedBody();
-
-        $handler->setDomainDefinitions($body['domaindefinitions']);
-        $handler->setDomainFields($body['domainfields']);
-        $handler->setDomainFieldValidations($body['domainfieldvalidations']);
-        $handler->setDomainFieldValidationValues($body['domainfieldvalidationvalues']);
-
-        if($body['languagelabels']){
-            $handler->postLanguageLabels($body['languagelabels'], $body['languagetranslations']);
-        }
-
-        if($body['languagecustomlabels']){
-            $handler->postLanguageCustomLabels($body['languagecustomlabels'], $body['languagecustomtranslations']);
-        }
-
-        $results = [
-            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
-            'domainfields' => $handler->getDomainFields(),
-            'domainfieldvalidations' => $handler->getDomainFieldValidations(),
-            'domainfieldvalidationvalues' => $handler->getDomainFieldValidationValues()
-        ];
-
-        // remove from the session
-        SpiceCache::clear('domains');
-
-        // return the response
         return $res->withJson($results);
     }
 
@@ -132,17 +85,17 @@ class SpiceDictionaryController
     {
         $handler =  SpiceDictionaryHandler::getInstance();
         $results = [
-            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
-            'domainfields' => $handler->getDomainFields(),
-            'dictionarydefinitions' => $handler->getDictionaryDefinitions(),
-            'dictionaryitems' => $handler->getDictionaryItems(),
+            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->getDomains(),
+            'domainfields' => SpiceDictionaryDomainFields::getInstance()->getDomainFields(),
+            'dictionarydefinitions' => array_values(SpiceDictionaryDefinitions::getInstance()->getDefinitions()),
+            'dictionaryitems' => SpiceDictionaryItems::getInstance()->getDictionaryItems(),
             'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
             'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->getRelationships(null, []),
             'dictionaryrelationshippolymorphs' => SpiceDictionaryRelationships::getInstance()->getPolymorphs(),
             'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
-            'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes(null, []),
-            'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getDictionaryIndexItems(),
+            'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getIndexes(),
+            'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getIndexItems(),
             'settings' => ['migration_enabled' => SpiceConfig::getInstance()->get('systemvardefs.migration_enabled') == 1, ]
         ];
         return $res->withJson($results);
@@ -173,9 +126,9 @@ class SpiceDictionaryController
         SpiceDictionaryIndexes::getInstance()->setDictionaryIndexItems($body['dictionaryindexitems']);
 
         $results = [
-            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->domaindefinitions,
-            'domainfields' => $handler->getDomainFields(),
-            'dictionarydefinitions' => $handler->getDictionaryDefinitions(),
+            'domaindefinitions' => SpiceDictionaryDomains::getInstance()->getDomains(),
+            'domainfields' => SpiceDictionaryDomainFields::getInstance()->getDomainFields(),
+            'dictionarydefinitions' => array_values(SpiceDictionaryDefinitions::getInstance()->getDefinitions()),
             'dictionaryitems' => $handler->getDictionaryItems(),
             'dictionaryrelationshiptypes' => SpiceDictionaryRelationships::getInstance()->relationshiptypes,
             'dictionaryrelationships' => SpiceDictionaryRelationships::getInstance()->relationships,
@@ -392,10 +345,11 @@ class SpiceDictionaryController
         }
 
         // get vardefs
-        $vardefDefinitions = SpiceDictionaryVardefs::loadVardefs();
+        SpiceDictionaryVardefs::loadLegacyFiles();
+        $vardefDefinitions = SpiceDictionaryHandler::getInstance()->dictionary;
         $vardefDictionaryDefinitions = [];
         $vardefDictionaryRelationships = [];
-        foreach($vardefDefinitions as $vardefDefinition){
+        foreach($vardefDefinitions as $vardefName => $vardefDefinition){
             // check if we have relationships
             if($vardefDefinition['relationships']){
                 foreach ($vardefDefinition['relationships'] as $vardefRelationshipName => $vardefRelationship) {
@@ -420,7 +374,7 @@ class SpiceDictionaryController
 
                     // if we are here add it
                     if (!$isDuplicate) {
-                        $vardefRelationship['dictionaryname'] = $vardefDefinition['dictionaryname'];
+                        $vardefRelationship['dictionaryname'] = $vardefName;
                         $vardefRelationship['relationship_name'] = $vardefRelationshipName;
                         $vardefDictionaryRelationships[] = $vardefRelationship;
                     }
@@ -442,7 +396,7 @@ class SpiceDictionaryController
                 // if we are here add it
                 if (!$isDuplicate) {
                     $vardefDictionaryDefinitions[] = [
-                        'dictionaryname' => $vardefDefinition['dictionaryname'],
+                        'dictionaryname' => $vardefName,
                         'table' => $vardefDefinition['table']
                     ];
                 }

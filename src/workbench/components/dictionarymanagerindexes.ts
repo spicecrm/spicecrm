@@ -35,7 +35,7 @@ export class DictionaryManagerIndexes {
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        let objectIndexes =  this.dictionarymanager.dictionaryindexes.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition);
+        let objectIndexes =  this.dictionarymanager.dictionaryindexes.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition);
 
         return objectIndexes.sort((a, b) => a.name.localeCompare(b.name) ? 1 : -1);
     }
@@ -46,8 +46,8 @@ export class DictionaryManagerIndexes {
     get dictionaryIndexesForTemplates(): any[] {
         let relatedindexes: any[] = [];
 
-        for(let item of this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionary_ref_id && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)){
-            let relIndexes = this.dictionarymanager.dictionaryindexes.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == item.sysdictionary_ref_id);
+        for(let item of this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionary_ref_id && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)){
+            let relIndexes = this.dictionarymanager.dictionaryindexes.filter(d => d.sysdictionarydefinition_id == item.sysdictionary_ref_id);
             if(relIndexes.length > 0) {
                 relatedindexes.push({
                     relatedTemplateId: item.sysdictionary_ref_id,
@@ -151,7 +151,7 @@ export class DictionaryManagerIndexes {
     public getIndexFields(indexid: string): string {
         let indexfields = [];
 
-        for (let field of this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == indexid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+        for (let field of this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == indexid).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
             let name = this.dictionarymanager.dictionaryitems.find(di => di.id == field.sysdictionaryitem_id)?.name;
             if (name) indexfields.push(name);
         }

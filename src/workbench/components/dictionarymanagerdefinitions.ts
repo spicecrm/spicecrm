@@ -81,8 +81,6 @@ export class DictionaryManagerDefinitions {
             if(d.id == this.dictionarymanager.currentDictionaryDefinition) return true;
             // no empty name (workaround for now)
             if(!d.name) return false;
-            // no deleted records
-            if(d.deleted != 0) return false;
             // if we have a type filter apply it
             if(this.definitionfiltertype && d.sysdictionary_type != this.definitionfiltertype) return false;
             // if we have a term filter apply it

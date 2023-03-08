@@ -7,6 +7,23 @@ use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 class SpiceDictionaryDomains
 {
+
+    /**
+     * the main table name
+     */
+    const table = 'sysdomaindefinitions';
+
+    /**
+     * the custom table name
+     */
+    const customtable = 'syscustomdomaindefinitions';
+
+    /**
+     * the cache object name
+     */
+    const cachename = 'domaindefinitions';
+
+
     /**
      * the instance for the singelton
      *
@@ -14,7 +31,12 @@ class SpiceDictionaryDomains
      */
     private static $instance;
 
-    public $domaindefinitions;
+    /**
+     * the array with the fields
+     *
+     * @var array
+     */
+    protected $domaindefinitions;
 
     private function __clone()
     {
@@ -38,43 +60,50 @@ class SpiceDictionaryDomains
 
     public function __construct()
     {
-        $cached = SpiceCache::get('domaindefinitions');
-        if($cached) {
+        $cached = SpiceCache::get(self::cachename);
+        if ($cached) {
             $this->domaindefinitions = $cached;
         }
 
         $db = DBManagerFactory::getInstance();
-        $defArray = [];
-        $domaindefinitions = $db->query("SELECT * FROM sysdomaindefinitions WHERE deleted = 0");
-        while($domaindefinition = $db->fetchByAssoc($domaindefinitions)){
-            $domaindefinition['deleted'] = intval($domaindefinition['deleted']);
-            $defArray[] = array_merge($domaindefinition, ['scope' => 'g']);
+        $this->domaindefinitions = [];
+        $domaindefinitions = $db->query("SELECT * FROM " . self::table);
+        while ($domaindefinition = $db->fetchByAssoc($domaindefinitions)) {
+            $this->domaindefinitions[$domaindefinition['id']] = array_merge($domaindefinition, ['scope' => 'g']);
         }
-        $domaindefinitions = $db->query("SELECT * FROM syscustomdomaindefinitions WHERE deleted = 0");
-        while($domaindefinition = $db->fetchByAssoc($domaindefinitions)){
-            $domaindefinition['deleted'] = intval($domaindefinition['deleted']);
-            $defArray[] = array_merge($domaindefinition, ['scope' => 'c']);;
+        $domaindefinitions = $db->query("SELECT * FROM " . self::customtable);
+        while ($domaindefinition = $db->fetchByAssoc($domaindefinitions)) {
+            $this->domaindefinitions[$domaindefinition['id']] = array_merge($domaindefinition, ['scope' => 'c']);;
         }
 
-        SpiceCache::set('domaindefinitions', $defArray);
-
-        $this->domaindefinitions = $defArray;
+        // write Cache
+        $this->writeCache();
     }
 
+    public function writeCache()
+    {
+        SpiceCache::set(self::cachename, $this->domaindefinitions);
+    }
+
+    public function getDomains(){
+        return array_values($this->domaindefinitions);
+    }
+
+    public function getDomainById($id){
+        return $this->domaindefinitions[$id];
+    }
 
     public function addDefinition(array $definition)
     {
         //get teh table
-        $table = $definition['scope'] == 'c' ? 'syscustomdomaindefinitions' : 'sysdomaindefinitions';
+        $table = $definition['scope'] == 'c' ? self::customtable : self::table;
         unset($definition['scope']);
         DBManagerFactory::getInstance()->insertQuery($table, $definition);
-    }
 
-    public function addField(array $definition)
-    {
-        //get teh table
-        $table = $definition['scope'] == 'c' ? 'syscustomdomainfields' : 'sysdomainfields';
-        unset($definition['scope']);
-        DBManagerFactory::getInstance()->upsertQuery($table, ['id' => $definition['id']], $definition);
+        // add to the domains
+        $this->domaindefinitions[$definition['id']] = $definition;
+
+        // write the cache
+        $this->writeCache();
     }
 }

@@ -84,7 +84,6 @@ export class DictionaryManagerFields {
                         sequence: definitions.length + 1,
                         sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
                         sysdictionaryrelationship_id: f.sysdictionaryrelationship_id,
-                        deleted: 0,
                         defined: !!f.sysdictionaryrelationship_id ? true : false,
                         cached: true,
                         database: false
@@ -113,7 +112,6 @@ export class DictionaryManagerFields {
                     status: 'a',
                     sequence: definitions.length + 1,
                     sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
-                    deleted: 0,
                     defined: false,
                     cached: false,
                     database: true
