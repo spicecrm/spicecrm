@@ -216,9 +216,6 @@ class SpiceDictionaryItem
 
         // set the status
         $this->setStatus('i');
-
-        // reset the items cache
-        SpiceDictionaryItems::getInstance()->resetCache();
     }
 
     /**

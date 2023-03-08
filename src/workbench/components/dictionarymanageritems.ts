@@ -107,17 +107,20 @@ export class DictionaryManagerItems {
      * @param event
      * @param id
      */
-    public deleteDictionaryItem(event: MouseEvent, id: string) {
-        event.stopPropagation();
-
+    public deleteDictionaryItem(id: string) {
         this.dictionarymanager.promptDelete('MSG_DELETE_DICTIONARYITEM').subscribe({
             next: (value) => {
                 let params: any = {};
                 if(value == 'drop') params.drop = 1;
+                let delteModal = this.modal.await('LBL_DELETING');
                 this.backend.deleteRequest(`dictionary/item/${id}`, params).subscribe({
                     next: () => {
                         let di = this.dictionarymanager.dictionaryitems.findIndex(f => f.id == id);
                         this.dictionarymanager.dictionaryitems.splice(di, 1);
+                        delteModal.emit(true);
+                    },
+                    error: () => {
+                        delteModal.emit(true);
                     }
                 })
             }

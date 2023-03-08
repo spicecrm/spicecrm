@@ -175,7 +175,7 @@ class SpiceDictionaryItems
      */
     public function resetCache($rebuild = true){
         SpiceCache::clear(self::cachename);
-        if($rebuild) SpiceCache::set(self::cachename, $this->getItems());
+        if($rebuild) SpiceCache::set(self::cachename, $this->getItems(null, []));
     }
 
     public function getDictionaryItems(){

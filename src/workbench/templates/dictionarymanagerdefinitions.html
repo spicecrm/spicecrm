@@ -62,7 +62,7 @@
                     <button class="slds-button slds-button--icon" (click)="editDictionaryDefinition(dictionarydefinition)">
                         <system-button-icon size="xx-small" icon="edit"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon" [disabled]="dictionarydefinition.status == 'a' || !dictionarymanager.canChange(dictionarydefinition.scope)" (click)="delete($event, dictionarydefinition.id)">
+                    <button class="slds-button slds-button--icon" [disabled]="dictionarydefinition.status == 'a' || !dictionarymanager.canChange(dictionarydefinition.scope)" (click)="delete(dictionarydefinition.id)">
                         <system-button-icon size="xx-small" icon="delete"></system-button-icon>
                     </button>
                 </td>
