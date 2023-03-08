@@ -182,7 +182,7 @@ class CampaignTasksController
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
             "planned_activity_date DESC",
-            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type != 'completed'",
+            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
             $getParams['limit'] ?: -1);

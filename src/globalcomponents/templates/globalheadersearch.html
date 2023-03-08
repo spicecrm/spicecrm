@@ -46,7 +46,7 @@
                         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element"
                              role="none">
                             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
-                            <input #searchfield class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" (focus)="onFocus()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
+                            <input #searchfield class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" (focus)="onFocus()" (blur)="onBlur()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
                         </div>
                         <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
                             <global-header-search-recent-items *ngIf="showRecent && searchTerm === ''" (selected)="selected($event)"></global-header-search-recent-items>

@@ -9,9 +9,8 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Campaigns\Campaign;
-use SpiceCRM\modules\ProspectLists\ProspectList;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
 
 require_once('modules/KReports/utils.php');
 
@@ -713,7 +712,7 @@ class KReport extends SpiceBean
             }
         }
 
-        $spiceLanguageHandler = new \SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler();
+        $spiceLanguageHandler = new SpiceLanguagesRESTHandler();
         if (count($results) > 0) {
             foreach ($results as $record) {
                 $getHeader = ($header == '') ? true : false;
@@ -752,8 +751,7 @@ $db = DBManagerFactory::getInstance();
         $results = $this->getSelectionResults([]);
 
         if (count($results > 0)) {
-            require_once('modules/ProspectLists/ProspectList.php');
-            $newProspectList = new ProspectList ();
+            $newProspectList = BeanFactory::getBean('ProspectLists');
 
             $newProspectList->name = $listname;
             $newProspectList->list_type = 'default';
@@ -762,8 +760,7 @@ $db = DBManagerFactory::getInstance();
 
             // add to campaign
             if ($campaign_id != '') {
-                require_once('modules/Campaigns/Campaign.php');
-                $thisCampaign = new Campaign();
+                $thisCampaign = BeanFactory::getBean('Campaigns');
                 $thisCampaign->retrieve($campaign_id);
                 $thisCampaign->load_relationships();
                 $campaignLinkedFields = $thisCampaign->get_linked_fields();
@@ -1639,7 +1636,7 @@ $db = DBManagerFactory::getInstance();
     {
         $db = DBManagerFactory::getInstance();
 
-        $thisReport = new KReport();
+        $thisReport = BeanFactory::getBean('KReports');
 
         $reportsArray = [];
 
