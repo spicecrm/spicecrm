@@ -1,15 +1,35 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectorRef, Component, Input, OnDestroy} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, ViewChild} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
 import {Subscription} from "rxjs";
-import {backend} from "../../services/backend.service";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {GlobalNavigationTabbedMenu} from "./globalnavigationtabbedmenu";
+import {userpreferences} from "../../services/userpreferences.service";
+
+/** @ignore */
+const ANIMATIONS = [
+    trigger('isFocused', [
+        state('expand', style({
+            position: 'absolute',
+            width: 'calc(100vw / 2)',
+            'box-shadow': '#565555 -2px 0px 9px 0px',
+            'z-index': 10
+        })),
+        state('collapse', style({
+            position: 'initial',
+            width: '15rem'
+        })),
+        transition('collapse <=> expand', [animate('200ms')])
+    ])
+];
 
 @Component({
     selector: 'global-navigation-tabbed',
     templateUrl: '../templates/globalnavigationtabbed.html',
+    animations: ANIMATIONS
 })
 export class GlobalNavigationTabbed implements OnDestroy {
     /**
@@ -32,8 +52,11 @@ export class GlobalNavigationTabbed implements OnDestroy {
      */
    @Input() public showProgressBar = false;
 
+    @ViewChild(GlobalNavigationTabbedMenu) private menuContainer: GlobalNavigationTabbedMenu;
+
     constructor(public metadata: metadata,
                public navigation: navigation,
+               public userPreferences: userpreferences,
                public cdRef: ChangeDetectorRef) {
     }
 
@@ -94,5 +117,11 @@ export class GlobalNavigationTabbed implements OnDestroy {
         const activeTab = this.navigation.getTabById(tabId);
         this.setParentTab(activeTab);
         this.setDisplaySubTabs(activeTab);
+    }
+
+    public toggleCollapse() {
+        this.userPreferences.toUse.globalHeaderCollapsed = !this.userPreferences.toUse.globalHeaderCollapsed;
+        this.userPreferences.setPreference('globalHeaderCollapsed', this.userPreferences.toUse.globalHeaderCollapsed);
+        setTimeout(() => this.menuContainer.handleResize(), 200);
     }
 }
