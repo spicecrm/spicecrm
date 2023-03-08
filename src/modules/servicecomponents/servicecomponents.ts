@@ -72,7 +72,7 @@ import {ModuleSpiceTimeline} from "../../include/spicetimeline/spicetimeline";
 import {ServiceDocSignatureButton} from "./components/servicedocsignaturebutton";
 import {ServiceDocSignatureContent} from "./components/servicedocsignaturecontent";
 import {ServiceDocSignatureModal} from "./components/servicedocsignaturemodal";
-import {serviceTreeAddData} from "./components/servicetreeadddata";
+import {ServiceTreeAddData} from "./components/servicetreeadddata";
 
 @NgModule({
     imports: [
@@ -140,7 +140,7 @@ import {serviceTreeAddData} from "./components/servicetreeadddata";
         ServiceDocSignatureButton,
         ServiceDocSignatureContent,
         ServiceDocSignatureModal,
-        serviceTreeAddData
+        ServiceTreeAddData
 
     ]
 })

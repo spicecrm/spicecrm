@@ -14,7 +14,7 @@ import {toast} from "../../../services/toast.service";
     templateUrl: '../templates/servicetreeadddata.html'
 })
 
-export class serviceTreeAddData implements OnInit {
+export class ServiceTreeAddData implements OnInit {
 
     /**
      * holds the add params
