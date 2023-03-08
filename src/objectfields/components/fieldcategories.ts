@@ -283,7 +283,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         // set the name field
         if(this.fieldconfig.setname) fields.name = this.display_value;
         // update if we have any fields to update
-        if(fields.length > 0) this.model.setFields(fields);
+        if(Object.getOwnPropertyNames(fields).length > 0) this.model.setFields(fields);
 
         // close the dropdown
         this.dropDownOpen = false;
