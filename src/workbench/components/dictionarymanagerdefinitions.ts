@@ -192,13 +192,13 @@ export class DictionaryManagerDefinitions {
      * @param event
      * @param id
      */
-    public delete(event: MouseEvent, id: string) {
-        event.stopPropagation();
+    public delete(id: string) {
+
         this.dictionarymanager.promptDelete('MSG_DELETE_DEFINITION').subscribe({
             next: (response) => {
-                let loadingModal = this.modal.await('LBL_DELETING');
                 let params: any = {};
                 if(response == 'drop') params.drop = 1;
+                let deleteModal =  this.modal.await('LBL_DELETING');
                 this.backend.deleteRequest(`dictionary/definition/${id}`, params).subscribe({
                     next: () => {
                         if (this.dictionarymanager.currentDictionaryDefinition == id) {
@@ -213,10 +213,10 @@ export class DictionaryManagerDefinitions {
                         this.dictionarymanager.dictionaryitems.filter(i => i.sysdictionarydefinition_id == id).forEach(i => this.dictionarymanager.dictionaryitems.splice(this.dictionarymanager.dictionaryitems.indexOf(i), 1));
                         this.dictionarymanager.dictionaryindexes.filter(i => i.sysdictionarydefinition_id == id).forEach(i => this.dictionarymanager.dictionaryindexes.splice(this.dictionarymanager.dictionaryindexes.indexOf(i), 1));
 
-                        loadingModal.emit(true);
+                        deleteModal.emit(true);
                     },
                     error: () => {
-                        loadingModal.emit(true);
+                        deleteModal.emit(true);
                     }
                 })
             }

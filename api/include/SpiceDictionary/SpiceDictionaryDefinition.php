@@ -245,16 +245,17 @@ class SpiceDictionaryDefinition
      */
     public function deactivate($drop = false)
     {
-        // get all active items and deactivate them
-        $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
-        foreach ($items as $item) {
-            (new SpiceDictionaryItem($item['id']))->deactivate();
-        }
 
         // get all indexes and deactivate them
         $indexes = SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($this->id, ['a']);
         foreach ($indexes as $index) {
             (new SpiceDictionaryIndex($index['id']))->deactivate(false);
+        }
+
+        // get all active items and deactivate them
+        $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
+        foreach ($items as $item) {
+            (new SpiceDictionaryItem($item['id']))->deactivate();
         }
 
         $this->setStatus('i');

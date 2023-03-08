@@ -4,6 +4,7 @@
 import {
     Component, OnInit
 } from '@angular/core';
+import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -54,7 +55,7 @@ export class DictionaryManagerAddItemModal{
      */
     public currentType: string;
 
-    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public modal: modal, public metadata: metadata, public modelutilities: modelutilities) {
 
         this.dictionaryitem = {
             id: this.modelutilities.generateGuid(),
@@ -171,10 +172,15 @@ export class DictionaryManagerAddItemModal{
             this.dictionaryitem.id = this.modelutilities.generateGuid();
             this.dictionaryitem.sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
 
+            let saveModal = this.modal.await('LBL_SAVING');
             this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, this.dictionaryitem).subscribe({
                 next: (res) => {
                     this.dictionarymanager.dictionaryitems.push(this.dictionaryitem);
+                    saveModal.emit(true);
                     this.close();
+                },
+                error: () => {
+                    saveModal.emit(true);
                 }
             })
         }

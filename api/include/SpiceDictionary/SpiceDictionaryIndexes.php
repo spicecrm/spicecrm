@@ -286,10 +286,12 @@ class SpiceDictionaryIndexes
     {
         $table = $index['scope'] == 'c' ? self::customtable : self::table;
         SystemDeploymentCR::writeDBEntry($table, $index['id'], $index, $index['name'], SystemDeploymentCR::ACTION_INSERT);
+        $this->dictionaryIndexes[$index['id']] = $index;
 
         foreach ($items as $item) {
             $table = $item['scope'] == 'c' ? self::customitemtable : self::itemtable;
             SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $index['name'], SystemDeploymentCR::ACTION_INSERT);
+            $this->dictionaryIndexItems[$item['id']] = $item;
         }
 
         // rewrite the cache
