@@ -54,7 +54,7 @@ export class DictionaryManagerRelationshipAdd {
     public scope: 'c' | 'g';
 
     constructor(public dictionarymanager: dictionarymanager, public modal: modal, public injector: Injector) {
-        this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module' && d.deleted == 0).sort((a, b) => a.name.localeCompare(b.name));
+        this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
         this.scope = this.dictionarymanager.defaultScope;
     }
 

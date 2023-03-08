@@ -47,6 +47,8 @@ class M2MRelationship extends SugarRelationship
      * @return void
      */
     public function activate(SpiceDictionaryRelationship $relationship){
+        $db = DBManagerFactory::getInstance();
+
         $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
         $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
         $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
@@ -78,12 +80,15 @@ class M2MRelationship extends SugarRelationship
             'deleted' => 0
         ];
 
+        // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
+        $db->query("DELETE FROM relationships WHERE relationship_name='{$defs['relationship_name']}'");
+
         // add to the relationships
-        DBManagerFactory::getInstance()->insertQuery('relationships', $defs);
+        $db->insertQuery('relationships', $defs);
 
         // write the lhs link
         if($relationship->relationship->lhs_linkname){
-            DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', [
+            $db->insertQuery('sysdictionaryfields', [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $lhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
@@ -104,7 +109,7 @@ class M2MRelationship extends SugarRelationship
 
         // write the rhs link
         if($relationship->relationship->rhs_linkname){
-            DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', [
+            $db->insertQuery('sysdictionaryfields', [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $rhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,

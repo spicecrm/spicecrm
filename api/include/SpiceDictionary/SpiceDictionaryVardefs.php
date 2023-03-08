@@ -119,9 +119,9 @@ class SpiceDictionaryVardefs  {
             $where = " AND sysd.name IN('".implode("', '", $dictionaryNames)."')";
         }
 
-        $q = "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype, 'g' scope, deleted, status  FROM sysdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? "  AND sysd.sysdictionary_type='".$dictionaryType."'" : ""). $where;
+        $q = "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype, 'g' scope, status  FROM sysdictionarydefinitions sysd WHERE sysd.status = 'a' ".($dictionaryType != 'all' ? "  AND sysd.sysdictionary_type='".$dictionaryType."'" : ""). $where;
         $q.= " UNION ";
-        $q.= "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype, 'c' scope, deleted, status FROM syscustomdictionarydefinitions sysd WHERE sysd.deleted = 0 AND sysd.status = 'a' ".($dictionaryType != 'all' ? " AND sysd.sysdictionary_type='".$dictionaryType."'" : "").$where;
+        $q.= "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype, 'c' scope, status FROM syscustomdictionarydefinitions sysd WHERE sysd.status = 'a' ".($dictionaryType != 'all' ? " AND sysd.sysdictionary_type='".$dictionaryType."'" : "").$where;
 
         return $q;
     }
@@ -574,7 +574,7 @@ class SpiceDictionaryVardefs  {
         return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname,
-        sysdi.name itemname, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted,
+        sysdi.name itemname, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus,
         sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
         LEFT JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmod ON sysmod.sysdictionarydefinition_id = sysd.id
@@ -1343,7 +1343,7 @@ LEFT JOIN (SELECT * from sysdomainfields UNION SELECT * from syscustomdomainfiel
 LEFT JOIN (SELECT * from sysdomainfieldvalidations UNION SELECT * from syscustomdomainfieldvalidations) sysdov ON sysdov.id = sysdof.sysdomainfieldvalidation_id
  
 WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictionaryrelationship_id = '{$relationshipId}' AND relfields.sysdictionarydefinition_id='{$sysdictionarydefinitionId}'
-AND sysdi.deleted = 0 AND sysdi.status = 'a' 
+@152 AND sysdi.status = 'a' 
 ";
 
         if($res = $db->query($q)){

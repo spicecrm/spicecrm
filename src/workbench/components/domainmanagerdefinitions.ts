@@ -52,7 +52,7 @@ export class DomainManagerDefinitions {
             if(this.definitionsfiltertype != '' && d.fieldtype != this.definitionsfiltertype) return false;
             // else return true
             return true;
-        }).sort((a, b) => a.name > b.name ? 1 : -1);
+        }).sort((a, b) => a.name.localeCompare(b.name));
     }
 
 

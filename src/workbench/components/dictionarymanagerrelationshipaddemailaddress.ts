@@ -72,7 +72,7 @@ export class DictionaryManagerRelationshipAddEmailAddress {
     }
 
     get relatedIds(): DictionaryDefinition[] {
-        return this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module' && d.deleted == 0).sort((a, b) => a.name.localeCompare(b.name));
+        return this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
     }
 
 

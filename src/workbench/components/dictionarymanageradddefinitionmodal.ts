@@ -45,7 +45,6 @@ export class DictionaryManagerAddDefinitionModal {
             tablename: '',
             sysdictionary_type: 'module',
             scope: this.dictionarymanager.defaultScope,
-            deleted: 0,
             status: 'd'
         };
     }

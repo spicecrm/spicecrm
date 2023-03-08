@@ -65,7 +65,6 @@ export class DictionaryManagerAddItemModal{
             default_value: '',
             required: 0,
             scope: this.dictionarymanager.currentDictionaryScope,
-            deleted: 0,
             status: 'd',
             sequence: this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length
         };

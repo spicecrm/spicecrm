@@ -62,7 +62,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
         ]);
 
         // load all morphs and create relationships and links
-        $morphs = SpiceDictionaryRelationships::getInstance()->getPolymorphs($relationship->id);
+        $morphs = SpiceDictionaryRelationships::getInstance()->getPolymorphs($relationship->relationship->id);
         foreach ($morphs as $morph){
             // convert to object
             $morph = (object) $morph;
@@ -71,10 +71,12 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
             $lhsDictionaryitem = new SpiceDictionaryItem($morph->lhs_sysdictionaryitem_id);
             $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
 
+            $relationship_name = str_replace('{tablename}', $rhsDictionaryDefinition->tablename,  $morph->relationship_name);
+
             // insert the relationship
             $db->insertQuery('relationships', [
                 'id' => $morph->id,
-                'relationship_name' => $morph->relationship_name,
+                'relationship_name' => $relationship_name,
                 'relationship_type' => $this->type,
                 'lhs_table' => $lhsDictionaryDefinition->tablename,
                 'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
@@ -95,7 +97,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 'fielddefinition' => json_encode([
                     'name' => $relationship->relationship->lhs_linkname,
                     'type' => 'link',
-                    'relationship' => $morph->relationship_name,
+                    'relationship' => $relationship_name,
                     'source' => 'non-db',
                     'vname' => $relationship->relationship->lhs_linklabel
                 ]),
@@ -113,7 +115,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 'fielddefinition' => json_encode([
                     'name' => $relationship->relationship->name .'_' . $lhsDictionaryDefinition->tablename,
                     'type' => 'link',
-                    'relationship' => $morph->relationship_name,
+                    'relationship' => $relationship_name,
                     'source' => 'non-db'
                 ]),
                 'sysdictionaryrelationship_id' => $morph->id,
@@ -131,7 +133,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
      */
     public  function deactivate(SpiceDictionaryRelationship $relationship){
         $relationshipIds = [$relationship->id];
-        $morphs = SpiceDictionaryRelationships::getInstance()->getPolymorphs($relationship->id);
+        $morphs = SpiceDictionaryRelationships::getInstance()->getPolymorphs($relationship->relationship->id);
         foreach ($morphs as $morph){
             $relationshipIds[] = $morph['id'];
         }

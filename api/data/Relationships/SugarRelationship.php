@@ -4,6 +4,7 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 
@@ -48,6 +49,22 @@ abstract class SugarRelationship
      * @return boolean
      */
     public abstract function remove($lhs, $rhs);
+
+    /**
+     * needs to be overwritten to handle activation
+     *
+     * @param SpiceDictionaryRelationship $relationship
+     * @return mixed
+     */
+    public abstract function deactivate(SpiceDictionaryRelationship $relationship);
+
+    /**
+     * needs to be overwritten to handle deactivation
+     *
+     * @param SpiceDictionaryRelationship $relationship
+     * @return mixed
+     */
+    public abstract function activate(SpiceDictionaryRelationship $relationship);
 
     /**
      * @abstract

@@ -21,7 +21,6 @@ export interface DictionaryDefinition {
     sysdictionary_type: string;
     sysdictionary_contenttype?: string;
     description?: string;
-    deleted: number;
     version?: string;
     package?: string;
 }
@@ -53,7 +52,6 @@ export interface DictionaryItem {
     required?: number;
     default_value?: string;
     description?: string;
-    deleted: number;
     version?: string;
     package?: string;
     addFields?: DomainField[];
@@ -156,7 +154,6 @@ export interface DictionaryIndex {
     sysdictionarydefinition_id: string;
     indextype: 'primary'|'index'|'unique'|'foreign';
     description?: string;
-    deleted: number;
     version?: string;
     package?: string;
 }
@@ -173,7 +170,6 @@ export interface DictionaryIndexItem {
     sysdictionaryforeigndefinition_id?: string;
     sysdictionaryforeignitem_id?: string;
     sequence: number;
-    deleted: number;
     version?: string;
     package?: string;
 }

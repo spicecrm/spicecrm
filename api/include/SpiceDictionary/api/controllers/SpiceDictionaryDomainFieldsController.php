@@ -32,6 +32,7 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainField;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
@@ -56,7 +57,7 @@ class SpiceDictionaryDomainFieldsController
         // get the body
         $body = $req->getParsedBody();
 
-        SpiceDictionaryDomains::getInstance()->addField($body);
+        SpiceDictionaryDomainFields::getInstance()->addField($body);
 
         return $res->withJson((new SpiceDictionaryDomainField($args['id']))->getDefinition());
     }

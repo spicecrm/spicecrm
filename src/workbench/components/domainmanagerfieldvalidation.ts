@@ -142,6 +142,39 @@ export class DomainManagerFieldValidation implements OnInit {
         }
     }
 
+    /**
+     * checks a single value if there is a duplicate
+     * @param value
+     */
+    public hasDuplicate(value: DomainValidationValue){
+        return !!this.validationvalues.find(v => v.id != value.id && v.enumvalue == value.enumvalue);
+    }
+
+    /**
+     * checks all validation cvalues for duplicates .. if one is found retunrs that we have some
+     *
+     * @private
+     */
+    get hasDuplicates(){
+        let hasDuplicates = false;
+        for(let v of this.validationvalues){
+            if(this.hasDuplicate(v)) {
+                hasDuplicates = true;
+                break;
+            }
+        };
+        return hasDuplicates;
+    }
+
+    /**
+     * a getter to see if we can save or have diuplciate values
+     */
+    get canSave(){
+        if(this.hasDuplicates) return false;
+
+        return true;
+    }
+
     public save(){
         this.backend.postRequest(`dictionary/domainvalidation/${this.field.sysdomainfieldvalidation_id}/values`, {}, this.validationvalues).subscribe({
             next: (res) => {

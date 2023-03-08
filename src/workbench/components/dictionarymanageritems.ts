@@ -53,7 +53,7 @@ export class DictionaryManagerItems {
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        return this.dictionarymanager.dictionaryitems.filter(d => (d.id == this.dictionarymanager.currentDictionaryItem || !this.filterterm || d.name.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+        return this.dictionarymanager.dictionaryitems.filter(d => (d.id == this.dictionarymanager.currentDictionaryItem || !this.filterterm || d.name.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
 
     public getTemplateItems(refId){
