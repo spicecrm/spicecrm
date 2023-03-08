@@ -6,10 +6,7 @@ import {
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
-import {broadcast} from '../../services/broadcast.service';
 import {modal} from '../../services/modal.service';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
 
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
@@ -69,7 +66,7 @@ export class DictionaryManagerIndexAdd implements OnInit{
      */
     public indexDictionaryItems: DictionaryItem[] = [];
 
-    constructor(public backend: backend, public dictionarymanager: dictionarymanager, public injector: Injector, public modelutilities: modelutilities) {
+    constructor(public backend: backend, public modal: modal, public dictionarymanager: dictionarymanager, public injector: Injector, public modelutilities: modelutilities) {
 
         let tablename = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).tablename;
 
@@ -180,15 +177,17 @@ export class DictionaryManagerIndexAdd implements OnInit{
                 break;
         }
 
+        let saveModal = this.modal.await('LBL_SAVING');
         this.backend.postRequest(`dictionary/index/${this.index.id}`, {}, {index: this.index, items: indexItems}).subscribe({
             next: (res) => {
                 this.dictionarymanager.dictionaryindexes.push({...this.index});
                 indexItems.forEach(i => this.dictionarymanager.dictionaryindexitems.push(i));
-
+                saveModal.emit(true);
                 this.close();
             },
             error: () => {
                 // do some rollback
+                saveModal.emit(true);
             }
         })
     }

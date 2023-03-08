@@ -106,12 +106,17 @@ export class DictionaryManagerAddDefinitionModal {
      */
     public save() {
         if (this.canSave) {
+            let saveModal = this.modal.await('LBL_SAVING');
             this.dictionarydefinition.id = this.modelutilities.generateGuid();
             this.backend.postRequest(`dictionary/definition/${this.dictionarydefinition.id}`, {}, this.dictionarydefinition).subscribe({
                 next: (res) => {
                     this.dictionarymanager.dictionarydefinitions.push(this.dictionarydefinition);
                     this.newDefinitionID.emit(this.dictionarydefinition.id);
+                    saveModal.emit(true);
                     this.close();
+                },
+                error: () => {
+                    saveModal.emit(true);
                 }
             })
         }

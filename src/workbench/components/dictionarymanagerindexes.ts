@@ -128,6 +128,7 @@ export class DictionaryManagerIndexes {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
+                let deleteModal = this.modal.await('LBL_DELETING');
                 this.backend.deleteRequest(`dictionary/index/${id}`).subscribe({
                     next: (res) => {
                         let i = this.dictionarymanager.dictionaryindexes.findIndex(f => f.id == id);
@@ -137,8 +138,12 @@ export class DictionaryManagerIndexes {
                             let index = this.dictionarymanager.dictionaryindexitems.findIndex(ti => ti.id == i.id);
                             this.dictionarymanager.dictionaryindexitems.splice(index, 1);
                         })
+                        deleteModal.emit(true);
+                    },
+                    error: () => {
+                        deleteModal.emit(true);
                     }
-                })
+                });
             }
         });
     }

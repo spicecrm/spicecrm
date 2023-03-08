@@ -47,7 +47,7 @@
                                     <button *ngIf="!dictionaryitem.sysdictionary_ref_id" class="slds-button slds-button--icon" (click)="editDictionaryItem(dictionaryitem)">
                                         <system-button-icon icon="edit"/>
                                     </button>
-                                    <button [disabled]="dictionaryitem.status == 'a'" class="slds-button slds-button--icon"  (click)="deleteDictionaryItem($event, dictionaryitem.id)">
+                                    <button [disabled]="dictionaryitem.status == 'a'" class="slds-button slds-button--icon"  (click)="deleteDictionaryItem(dictionaryitem.id)">
                                         <system-button-icon icon="delete"/>
                                     </button>
                                 </div>
