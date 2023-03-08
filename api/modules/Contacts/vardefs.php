@@ -231,6 +231,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'duplicate_merge' => false,
                 'module' => 'Accounts'
             ],
+            'prospects' => [
+                'name' => 'prospects',
+                'type' => 'link',
+                'relationship' => 'contacts_prospects',
+                'link_type' => 'one',
+                'source' => 'non-db',
+                'vname' => 'LBL_PROSPECT',
+                'duplicate_merge' => 'disabled',
+                'module' => 'Prospects'
+            ],
             'reports_to_link' => [
                 'name' => 'reports_to_link',
                 'type' => 'link',
