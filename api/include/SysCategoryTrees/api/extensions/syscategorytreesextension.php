@@ -34,6 +34,11 @@ $routes = [
                 'in' => 'body',
                 'description' => 'the name of the node',
                 'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'add_params_component' => [
+                'in' => 'body',
+                'description' => 'the name of the selected component',
+                'type' => ValidationMiddleware::TYPE_STRING
             ]
         ]
     ],
