@@ -63,6 +63,7 @@ import {ActionsetManagerAddDialog} from "./components/actionsetmanageradddialog"
 
 import {CategoryTreeManager} from "./components/categorytreemanager";
 import {CategoryTreeManagerNode} from "./components/categorytreemanagernode";
+import {CategoryTreeAddModal} from "./components/categorytreeaddmodal";
 
 import {ComponentsetManager} from "./components/componentsetmanager";
 import {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
@@ -166,6 +167,7 @@ import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmoda
         CategoryTreeManager,
         CategoryTreeManagerNode,
         CategoryTreeManagerLinkModal,
+        CategoryTreeAddModal,
         DomainManager,
         DomainManagerDefinitions,
         DomainManagerFields,
