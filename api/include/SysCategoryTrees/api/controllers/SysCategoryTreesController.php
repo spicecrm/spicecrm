@@ -35,8 +35,10 @@ class SysCategoryTreesController
     {
         $db = DBManagerFactory::getInstance();
         $postbody = $req->getParsedBody();
-        $db->insertQuery('syscategorytrees', ['id' => $args['id'], 'name' => $postbody['name']]);
-        return $res->withJson(['status' => 'success']);
+        $db->insertQuery('syscategorytrees', ['id' => $args['id'], 'name' => $postbody['name'], 'add_params_component' => $postbody['add_params_component']]);
+
+        $result = ['id' => $args['id'], 'name' => $postbody['name']];
+        return $res->withJson(['status' => 'success', 'result' => $result]);
     }
 
     public function getTreeNodes(Request $req, Response $res, $args): Response
