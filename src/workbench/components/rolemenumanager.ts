@@ -1,6 +1,3 @@
-/**
- * a component allowing the management of the domaisn in the dictionary defined in the system
- */
 import {
     ChangeDetectorRef,
     Component,
@@ -18,6 +15,7 @@ import {modal} from "../../services/modal.service";
 import {RoleMenuManagerEditRoleModal} from "./rolemenumanagereditrolemodal";
 import {switchMap} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+
 
 @Component({
     selector: 'role-menu-manager',
@@ -41,6 +39,10 @@ export class RoleMenuManager implements OnInit {
      * loading data
      */
     public isLoading: boolean = false;
+
+    public editableRoleScope: boolean;
+    public filterModules:string[] =[];
+
     @ViewChildren(SystemViewProviderDirective) private viewProviders: QueryList<SystemViewProviderDirective>;
 
     private roleModulesBackup: { [key: symbol]: RoleModuleI } = {};
@@ -58,7 +60,6 @@ export class RoleMenuManager implements OnInit {
      * @param viewProvider
      */
     public saveRoleModule(roleModule: RoleModuleI, viewProvider: SystemViewProviderDirective) {
-
         viewProvider.view.setViewMode();
         delete this.roleModulesBackup[roleModule.id];
         if (!roleModule.id) roleModule.id = this.backend.modelutilities.generateGuid();
@@ -103,7 +104,7 @@ export class RoleMenuManager implements OnInit {
             sequence: this.roleModules.length,
             version: '',
             package: '',
-            scope: 'custom' || 'global',
+            scope: 'custom',
         };
 
         this.roleModules.push(roleModule);
@@ -129,8 +130,14 @@ export class RoleMenuManager implements OnInit {
             next: (res: RoleModuleI[]) => {
                 this.isLoading = false;
                 this.roleModules = res.sort((a, b) => a.sequence - b.sequence);
+                this.filterModules = this.roleModules.map(rm=>rm.module);
             }
         });
+    }
+
+    public handleSelectedItemChange(id) {
+        this.loadRoleModules(id);
+        this.editableRoleScope = this.roles.find(r => r.id == id).scope == 'global';
     }
 
     /**
@@ -183,6 +190,7 @@ export class RoleMenuManager implements OnInit {
         });
     }
 
+
     /**
      * create a new role
      */
@@ -213,7 +221,7 @@ export class RoleMenuManager implements OnInit {
                     systemTreeDefs: {icon: role.scope == 'custom' ? 'people' : 'world'}
                 }));
                 this.selectedRoleId = res[0].id;
-                this.loadRoleModules(res[0].id);
+                this.handleSelectedItemChange(res[0].id);
             }
         });
     }
@@ -252,10 +260,7 @@ export class RoleMenuManager implements OnInit {
                         return clonedEntry;
                     });
                     return this.backend.postRequest(`configuration/configurator/sysuicustomrolemodules`, null, {config: customEntries});
-                }))
-            .subscribe(res => {
-                this.toast.sendToast('LBL_DATA_SAVED', 'success');
-            });
+                }));
     }
 }
 
