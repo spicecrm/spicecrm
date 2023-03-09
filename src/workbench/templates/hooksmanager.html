@@ -1,0 +1,18 @@
+<workbench-header titlelabel="LBL_HOOKS_MANAGER">
+    <workbench-header-controls>
+        <div class="slds-form-element__control slds-p-left--small">
+            <system-input-radio-button-group [(ngModel)]="activeTab" [inputOptions]="hooksManager">
+            </system-input-radio-button-group>
+        </div>
+    </workbench-header-controls>
+</workbench-header>
+
+<div class="slds-tabs_default" style="background-color: transparent">
+
+   <div class="slds-grid" *ngIf="activeTab == 'logic'; else web">
+       <hooks-manager-hooks  class="slds-size--1-of-1"></hooks-manager-hooks>
+   </div>
+    <ng-template #web>
+<!--there will be web hooks manager-->
+    </ng-template>
+</div>
