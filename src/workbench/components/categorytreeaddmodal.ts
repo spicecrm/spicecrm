@@ -9,12 +9,10 @@ import {modelutilities} from "../../services/modelutilities.service";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {broadcast} from "../../services/broadcast.service";
-import {model} from "../../services/model.service";
 
 @Component({
     selector: 'category-tree-add-modal',
     templateUrl: '../templates/categorytreeaddmodal.html',
-    providers: [model]
 })
 
 export class CategoryTreeAddModal implements OnInit {
@@ -35,7 +33,7 @@ export class CategoryTreeAddModal implements OnInit {
     public componentconfig: any = {};
 
     /**
-     * holds components list
+     * holds components
      */
     public components: any[] = [];
 
@@ -45,17 +43,17 @@ export class CategoryTreeAddModal implements OnInit {
     public selectedComponent: string;
 
     /**
-     * holst list of category trees
+     * holds array of category trees
      */
-    public categoryTrees = [];
+    public categoryTrees: any[] = [];
 
     /**
-     * hold id of the newly created category tree
+     * holds id of the newly created category tree
      */
     public newActiveTreeId: string;
 
     /**
-     * emits the action
+     * emits the action CategoryTreeManager
      */
     public action: EventEmitter<any> = new EventEmitter<any>();
 
@@ -66,11 +64,10 @@ export class CategoryTreeAddModal implements OnInit {
         public utils: modelutilities,
         public toast: toast,
         public modal: modal,
-        public broadcast: broadcast,
-        public model: model
+        public broadcast: broadcast
     ) { }
 
-    public ngOnInit() {
+    public ngOnInit():void {
         this.componentconfig = this.metadata.getComponentConfig('CategoryTreeAddModal');
 
         this.getComponentsList();
@@ -79,14 +76,14 @@ export class CategoryTreeAddModal implements OnInit {
     /**
      * retrieves an array of components
      */
-    public getComponentsList() {
+    public getComponentsList():void {
         this.components = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
     }
 
     /**
      * closes the modal window
      */
-    public close(): void {
+    public close() {
         this.self.destroy();
     }
 
@@ -116,9 +113,10 @@ export class CategoryTreeAddModal implements OnInit {
     /**
      * saving category tree
      */
-    public save() {
+    public save(): void {
         const loadingModal = this.modal.await('LBL_SAVING_DATA');
 
+        // sets id of the new active tree
         this.newActiveTreeId = this.utils.generateGuid();
 
         this.backend.postRequest(`configuration/spiceui/core/categorytrees/${this.newActiveTreeId}`, {}, {
@@ -134,11 +132,10 @@ export class CategoryTreeAddModal implements OnInit {
                     name: this.name,
                     add_params_component: this.selectedComponent
                 }
-
                 this.categoryTrees.push(data);
                 this.action.emit('save');
-
                 loadingModal.emit(true);
+
                 this.close();
                 this.toast.sendToast('LBL_CATEGORYTREE_SAVED', 'success')
             },
