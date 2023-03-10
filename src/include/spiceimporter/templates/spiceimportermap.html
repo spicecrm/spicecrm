@@ -91,7 +91,7 @@
                             <div class="slds-select_container">
                                 <select class="slds-select"
                                         [disabled]="spiceImport.idField == row"
-                                        [value]="spiceImport.idField == row ? '' : getMapping(row)"
+                                        [value]="spiceImport.idField == row ? row : getMapping(row)"
                                         (change)="setMapping(row, $event)">
                                     <option value=""></option>
                                     <ng-container *ngFor="let field of modelFields; trackBy: trackByFn">
