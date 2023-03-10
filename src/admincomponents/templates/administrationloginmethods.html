@@ -16,7 +16,7 @@
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select [(ngModel)]="config.requireOn" (ngModelChange)="config.twoFactorAuthMethod = 'one_time_password'" class="slds-select">
+                    <select [(ngModel)]="config.requireOn" (ngModelChange)="handleRequireOnChange()" class="slds-select">
                         <option value="">
                             <system-label label="LBL_NEVER"></system-label>
                         </option>
@@ -36,7 +36,7 @@
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select [(ngModel)]="config.twoFactorAuthMethod" (ngModelChange)="handleMethodChange()" class="slds-select">
+                    <select [(ngModel)]="config.twoFactorAuthMethod" class="slds-select">
                         <option value="one_time_password">
                             <system-label label="LBL_TOTP_AUTHENTICATION"></system-label>
                         </option>
@@ -48,6 +48,14 @@
                         </option>
                     </select>
                 </div>
+            </div>
+        </div>
+        <div *ngIf="config.requireOn == 'device_change'" class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small slds-p-right--xx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_TRUST_DEVICE_DURATION_DAYS"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <system-input-number [max]="365" [min]="1" [(ngModel)]="config.trustDeviceDays"></system-input-number>
             </div>
         </div>
     </div>
@@ -68,7 +76,7 @@
                 </div>
             </div>
         </div>
-        <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
+        <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small slds-p-right--xx-small">
             <label class="slds-form-element__label">
                 <system-label label="LBL_MAILBOX"></system-label>
                 ( <system-label label="LBL_EMAIL"></system-label> )

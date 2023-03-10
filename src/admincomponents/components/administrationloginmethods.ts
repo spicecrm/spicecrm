@@ -5,11 +5,6 @@ import { Component, OnInit } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';
 
-/**
- * @ignore
- */
-declare var _: any;
-
 @Component({
     selector: 'administration-login-methods',
     templateUrl: '../templates/administrationloginmethods.html'
@@ -26,11 +21,18 @@ export class AdministrationLoginMethods implements OnInit {
      */
     public mailboxes: {id: string, name: string}[] = [];
 
-    public config: {twoFactorAuthMethod: 'sms' | 'one_time_password' | 'email', smsMailboxId: string, emailMailboxId: string, requireOn: 'always' | 'device_change' | ''} = {
+    public config: {
+        twoFactorAuthMethod: 'sms' | 'one_time_password' | 'email',
+        trustDeviceDays: number,
+        smsMailboxId: string,
+        emailMailboxId: string,
+        requireOn: 'always' | 'device_change' | ''
+    } = {
         twoFactorAuthMethod: 'one_time_password',
         smsMailboxId: undefined,
         emailMailboxId: undefined,
         requireOn: '',
+        trustDeviceDays: 90,
     };
 
     public configBackup: any;
@@ -53,6 +55,7 @@ export class AdministrationLoginMethods implements OnInit {
             'method': this.config.twoFactorAuthMethod,
             'sms_mailbox_id': this.config.smsMailboxId,
             'email_mailbox_id': this.config.emailMailboxId,
+            'trust_device_days': this.config.trustDeviceDays,
             'require_on': this.config.requireOn,
         };
         this.isLoading = true;
@@ -82,6 +85,7 @@ export class AdministrationLoginMethods implements OnInit {
                 this.config.requireOn = response.require_on ?? '';
                 this.config.smsMailboxId = response.sms_mailbox_id;
                 this.config.emailMailboxId = response.email_mailbox_id;
+                this.config.trustDeviceDays = response.trust_device_days;
                 this.configBackup = JSON.parse( JSON.stringify( this.config ) );
                 this.isLoading = false;
             });
@@ -100,10 +104,10 @@ export class AdministrationLoginMethods implements OnInit {
     }
 
     /**
-     * reset mailboxId and load mailboxes
+     * reset other configs to default values 
      */
-    public handleMethodChange() {
-
-        if (['sms', 'email'].indexOf(this.config.twoFactorAuthMethod) == -1) return;
+    public handleRequireOnChange() {
+        this.config.twoFactorAuthMethod = 'one_time_password';
+        this.config.trustDeviceDays = 90;
     }
 }

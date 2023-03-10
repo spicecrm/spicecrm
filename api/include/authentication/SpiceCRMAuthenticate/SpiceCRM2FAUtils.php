@@ -100,6 +100,7 @@ class SpiceCRM2FAUtils
             'sms_mailbox_id' => $userLogin2FAConfig['sms_mailbox_id'] ?? null,
             'email_mailbox_id' => $userLogin2FAConfig['email_mailbox_id'] ?? null,
             'method' => $userLogin2FAConfig['method'] ?? 'one_time_password',
+            'trust_device_days' => $userLogin2FAConfig['trust_device_days'] ?? 90,
         ];
     }
 
@@ -262,7 +263,7 @@ class SpiceCRM2FAUtils
 
         $ip = SpiceUtils::getClientIP();
         $date = TimeDate::getInstance()->getNow();
-        $expiresInDays = $userLogin2FAConfig['expires_in_days'] ?? 90;
+        $expiresInDays = self::get2FAConfig()->trust_device_days;
         $date->add(new DateInterval("P{$expiresInDays}D"));
         $date = TimeDate::getInstance()->asDbDate($date);
 
