@@ -35,9 +35,8 @@
 ********************************************************************************/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-if(empty(SpiceDictionaryHandler::getInstance()->dictionary['User'])){
-	include('modules/Users/vardefs.php');
-}
+include('modules/Users/vardefs.php');
+
 SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = SpiceDictionaryHandler::getInstance()->dictionary['User'];
 //users of employees modules are not allowed to change the employee/user status.
 //begin bug 48033

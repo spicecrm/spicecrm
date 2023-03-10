@@ -3,10 +3,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { backend } from '../../services/backend.service';
-import { modal } from '../../services/modal.service';
 import { toast } from '../../services/toast.service';
-import { take } from 'rxjs/operators';
-import { language } from '../../services/language.service';
 
 /**
  * @ignore
@@ -24,31 +21,43 @@ export class AdministrationLoginMethods implements OnInit {
      * @private
      */
     public isLoading = true;
+    /**
+     * holds the available mailboxes
+     */
+    public mailboxes: {id: string, name: string}[] = [];
 
-    public config = {
-        totpAuthenticationRequired: false
+    public config: {twoFactorAuthMethod: 'sms' | 'one_time_password' | 'email', smsMailboxId: string, emailMailboxId: string, requireOn: 'always' | 'device_change' | ''} = {
+        twoFactorAuthMethod: 'one_time_password',
+        smsMailboxId: undefined,
+        emailMailboxId: undefined,
+        requireOn: '',
     };
 
     public configBackup: any;
 
-    constructor( public backend: backend, public modal: modal, public toast: toast, public language: language ) { }
-
-    public configIsDirty() {
-        return !_.isEqual( this.config, this.configBackup );
-    }
+    constructor( public backend: backend,
+                 public toast: toast ) { }
 
     public cancel() {
         this.config = JSON.parse(JSON.stringify( this.configBackup ));
     }
 
     public save() {
-        let config = {
-            totp_authentication_required: this.config.totpAuthenticationRequired
+
+        if (['sms', 'email'].indexOf(this.config.twoFactorAuthMethod) > -1 && !this.config[`${this.config.twoFactorAuthMethod}MailboxId`]) {
+            this.toast.sendToast('LBL_MAILBOX_REQUIRED', 'error');
+            return;
+        }
+
+        const config = {
+            'method': this.config.twoFactorAuthMethod,
+            'sms_mailbox_id': this.config.smsMailboxId,
+            'email_mailbox_id': this.config.emailMailboxId,
+            'require_on': this.config.requireOn,
         };
         this.isLoading = true;
-        this.backend.postRequest('configuration/configurator/editor/login_methods', null, { config: config })
-            .pipe(take(1))
-            .subscribe( response => {
+        this.backend.postRequest('configuration/configurator/editor/user_login_2fa', null, { config: config })
+            .subscribe( () => {
                 this.configBackup = JSON.parse(JSON.stringify( this.config ));
                 this.toast.sendToast( 'Login Method Configuration successfully saved.', 'success' );
                 this.isLoading = false;
@@ -57,17 +66,44 @@ export class AdministrationLoginMethods implements OnInit {
 
     public ngOnInit() {
         this.loadConfig();
+        this.loadMailboxes();
     }
 
+    /**
+     * load config
+     */
     public loadConfig() {
+
         this.isLoading = true;
-        this.backend.getRequest('configuration/configurator/editor/login_methods')
-            .pipe(take(1))
+
+        this.backend.getRequest('configuration/configurator/editor/user_login_2fa')
             .subscribe(response => {
-                this.config.totpAuthenticationRequired = response.totp_authentication_required === true || response.totp_authentication_required === 1 || response.totp_authentication_required === '1' || false;
+                this.config.twoFactorAuthMethod = response.method;
+                this.config.requireOn = response.require_on ?? '';
+                this.config.smsMailboxId = response.sms_mailbox_id;
+                this.config.emailMailboxId = response.email_mailbox_id;
                 this.configBackup = JSON.parse( JSON.stringify( this.config ) );
                 this.isLoading = false;
             });
     }
 
+    /**
+     * load mailboxes
+     */
+    public loadMailboxes() {
+        this.isLoading = true;
+        this.backend.getRequest("module/Mailboxes").subscribe(
+            (results: {list: {id: string, name: string}[]}) => {
+                this.mailboxes = results.list.sort((a, b) => a.name.localeCompare(b.name));
+                this.isLoading = false;
+            });
+    }
+
+    /**
+     * reset mailboxId and load mailboxes
+     */
+    public handleMethodChange() {
+
+        if (['sms', 'email'].indexOf(this.config.twoFactorAuthMethod) == -1) return;
+    }
 }

@@ -287,8 +287,8 @@ export class configurationService {
                     this.data.displayloginsidebar = res.displayloginsidebar;
                     this.data.loginSidebarUrl = res.loginSidebarUrl;
                     this.data.allowForgotPass = res.allowForgotPass;
-                    this.data.name = res.name ? res.name : 'SpiceCRM',
-                        this.loaded$.next(true);
+                    this.data.name = res.name ? res.name : 'SpiceCRM';
+                    this.loaded$.next(true);
                 }
                 this.initialized = true;
                 this.reloading = false;

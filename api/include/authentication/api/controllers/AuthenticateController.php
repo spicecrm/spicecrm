@@ -181,8 +181,7 @@ class AuthenticateController
             }
         }
 
-        $auth = new TOTPAuthentication();
-        $secret = $auth->generateSecret();
+        $secret = TOTPAuthentication::generateSecret();
 
         // delete all old not confirmed records
         $db->query("UPDATE users_totp SET deleted = 1 WHERE user_id='{$forUser->id}'AND auth_status='C' AND deleted = 0");
@@ -193,7 +192,7 @@ class AuthenticateController
 
         $hostname = str_replace(' ', '_', $spice_config['system']['name']);
 
-        return $res->withJson(['secret' => $secret, 'name' => "{$forUser->user_name}@{$hostname}"  , 'qrcode' => $auth->getQRCode($forUser->user_name, $hostname, $secret)]);
+        return $res->withJson(['secret' => $secret, 'name' => "{$forUser->user_name}@{$hostname}"  , 'qrcode' => TOTPAuthentication::getQRCode($forUser->user_name, $hostname, $secret)]);
     }
 
     /**
@@ -236,9 +235,8 @@ class AuthenticateController
             throw new NotFoundException('no record to validate');
         }
 
-        $auth = new TOTPAuthentication();
         $validated = false;
-        if($auth->checkCode($record['user_secret'], $args['code'])){
+        if(TOTPAuthentication::checkCode($record['user_secret'], $args['code'])){
             $db->query("UPDATE users_totp SET auth_status='A' WHERE id='{$record['id']}'");
             $validated = true;
         }
