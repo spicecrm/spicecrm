@@ -23,7 +23,7 @@ export class AdministrationLoginMethods implements OnInit {
 
     public config: {
         twoFactorAuthMethod: 'sms' | 'one_time_password' | 'email',
-        trustDeviceDays: number,
+        trustDeviceDays: string,
         smsMailboxId: string,
         emailMailboxId: string,
         requireOn: 'always' | 'device_change' | ''
@@ -32,7 +32,7 @@ export class AdministrationLoginMethods implements OnInit {
         smsMailboxId: undefined,
         emailMailboxId: undefined,
         requireOn: '',
-        trustDeviceDays: 90,
+        trustDeviceDays: '90',
     };
 
     public configBackup: any;
@@ -44,11 +44,22 @@ export class AdministrationLoginMethods implements OnInit {
         this.config = JSON.parse(JSON.stringify( this.configBackup ));
     }
 
+    /**
+     * save the 2FA config
+     */
     public save() {
 
         if (['sms', 'email'].indexOf(this.config.twoFactorAuthMethod) > -1 && !this.config[`${this.config.twoFactorAuthMethod}MailboxId`]) {
             this.toast.sendToast('LBL_MAILBOX_REQUIRED', 'error');
             return;
+        }
+
+        if (Number(this.config.trustDeviceDays) > 365) {
+            this.config.trustDeviceDays = '365'
+        }
+
+        if (Number(this.config.trustDeviceDays) < 1) {
+            this.config.trustDeviceDays = '1'
         }
 
         const config = {
@@ -58,7 +69,9 @@ export class AdministrationLoginMethods implements OnInit {
             'trust_device_days': this.config.trustDeviceDays,
             'require_on': this.config.requireOn,
         };
+
         this.isLoading = true;
+
         this.backend.postRequest('configuration/configurator/editor/user_login_2fa', null, { config: config })
             .subscribe( () => {
                 this.configBackup = JSON.parse(JSON.stringify( this.config ));
@@ -108,6 +121,6 @@ export class AdministrationLoginMethods implements OnInit {
      */
     public handleRequireOnChange() {
         this.config.twoFactorAuthMethod = 'one_time_password';
-        this.config.trustDeviceDays = 90;
+        this.config.trustDeviceDays = '90';
     }
 }
