@@ -176,6 +176,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'vname' => 'LBL_CONTACTS',
             'reportable' => false
         ],
+        'prospects' => [
+            'name' => 'prospects',
+            'type' => 'link',
+            'relationship' => 'leads_prospects',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'vname' => 'LBL_PROSPECT',
+            'duplicate_merge' => 'disabled',
+            'module' => 'Prospects'
+        ],
         /*'acc_name_from_accounts' =>
         array (
           'name' => 'acc_name_from_accounts',
