@@ -68,11 +68,13 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
                     this.response.next(true);
                 } else {
                     this.toast.sendToast('Error generating Code', 'error');
+                    this.response.next(false);
                     this.close();
                 }
             },
             error: () => {
                 this.toast.sendToast('Error generating Code', 'error');
+                this.response.next(false);
                 this.close();
                 loading.emit(true);
             }});
@@ -84,23 +86,24 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
      * @private
      */
     public close() {
-        this.response.next(false);
         this.self.destroy();
     }
 
     public save() {
         this.backend.putRequest(`authentication/totp/validate/${this.code}`, { onBehalfUserId: this.onBehalfUserId })
-            .pipe(take(1))
             .subscribe( {
                 next: res => {
                     if( res.validated ) {
+                        this.response.next(true);
                         this.close();
                     } else {
+                        this.response.next(false);
                         this.toast.sendToast( 'Error validating your code', 'warning', 'the code you entered is not valid, please try again', true );
                     }
                     this.code = '';
                 },
                 error: () => {
+                    this.response.next(false);
                     this.toast.sendToast( 'Error validating your code', 'error', 'there as an internal error validating your request', true );
                     this.code = '';
                 }
