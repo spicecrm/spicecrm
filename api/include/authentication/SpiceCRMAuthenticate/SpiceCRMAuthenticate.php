@@ -20,8 +20,7 @@ class SpiceCRMAuthenticate implements AuthenticatorI
      * @param object $authData
      * @param string $authType
      * @return AuthResponse
-     * @throws SessionExpiredException
-     * @throws UnauthorizedException
+     * @throws SessionExpiredException | Exception | UnauthorizedException
      */
     public function authenticate(object $authData, string $authType): AuthResponse
     {
@@ -36,8 +35,18 @@ class SpiceCRMAuthenticate implements AuthenticatorI
                 throw new UnauthorizedException("Invalid authentication method", 6);
         }
 
-        $username = BeanFactory::getBean('Users', $userId, ['relationships' => false])->user_name;
+        return $this->generateAuthResponse($userId);
+    }
 
+    /**
+     * get the username by id
+     * @param string $userId
+     * @return AuthResponse
+     * @throws UnauthorizedException
+     */
+    public function generateAuthResponse(string $userId): AuthResponse
+    {
+        $username =  BeanFactory::getBean('Users', $userId, ['relationships' => false])->user_name;
         return new AuthResponse($username);
     }
 

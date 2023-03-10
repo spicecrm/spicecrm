@@ -20,6 +20,8 @@ import {TokenObjectI} from "../globalcomponents/interfaces/globalcomponents.inte
 interface loginAuthDataIf {
     userName: string;
     password: string;
+    rememberMe: boolean;
+    code2fa?: string;
 }
 
 @Injectable()
@@ -36,7 +38,8 @@ export class loginService {
      */
     public authData: loginAuthDataIf = {
         userName: '',
-        password: ''
+        password: '',
+        rememberMe: false
     };
 
     /**
@@ -102,6 +105,15 @@ export class loginService {
                 'Authorization',
                 'Basic ' + this.helper.encodeBase64(this.authData.userName + ':' + this.authData.password)
             );
+
+            if (!!this.authData.code2fa){
+                headers = headers.set('code2fa', this.authData.code2fa);
+            }
+
+            if (!!this.session.deviceID){
+                headers = headers.set('device-id', this.session.deviceID);
+            }
+
         } else if (this.tokenObject) {
             headers = headers.set(
                 'OAuth-Token',
@@ -146,7 +158,7 @@ export class loginService {
                     this.session.authData.canchangepassword = response.canchangepassword;
                     this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
 
-                    sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
+                    this.session.storeToken(this.authData.rememberMe);
 
                     sessionStorage[btoa(this.session.authData.sessionId + ':backendurl')] =
                         btoa(this.configurationService.getBackendUrl());
@@ -218,7 +230,7 @@ export class loginService {
                     let response = res;
                     this.session.authData.sessionId = response.id;
 
-                    sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
+                    this.session.storeToken(this.authData.rememberMe);
 
                     // resolve the promise
                     loginSuccess.next(true);
@@ -314,6 +326,7 @@ export class loginService {
     }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 @Injectable()
 export class loginCheck implements CanActivate {
     constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader) {
