@@ -142,7 +142,7 @@ class TOTPAuthentication
      * @throws BadRequestException
      * @throws \Com\Tecnick\Color\Exception
      */
-    public function getQRCode($user, $hostname, $secret){
+    public static function getQRCode($user, $hostname, $secret){
         $barcodeFactory = new Barcode(); // instantiate the barcode class
         try {
             $barcode = $barcodeFactory->getBarcodeObj(
