@@ -55,7 +55,7 @@
                 <system-label label="LBL_TRUST_DEVICE_DURATION_DAYS"></system-label>
             </label>
             <div class="slds-form-element__control">
-                <system-input-number [max]="365" [min]="1" [(ngModel)]="config.trustDeviceDays"></system-input-number>
+                <input type="text" [(ngModel)]="config.trustDeviceDays" class="slds-input slds-text-align--right" size="3" style="width: auto;">
             </div>
         </div>
     </div>
