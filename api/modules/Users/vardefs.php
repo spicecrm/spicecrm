@@ -64,6 +64,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'importable' => 'false',
             'sensitive' => true,
         ],
+        'user_2fa_method' => [
+            'name' => 'user_2fa_method',
+            'vname' => 'LBL_2FA_METHOD',
+            'type' => 'varchar',
+            'len' => '30',
+        ],
         'user_image' => [
             'name' => 'user_image',
             'vname' => 'LBL_USER_IMAGE',

@@ -4,7 +4,7 @@
 namespace SpiceCRM\includes\authentication\TOTPAuthentication;
 
 use Com\Tecnick\Barcode\Barcode;
-use SpiceCRM\includes\authentication\api\controllers\AuthenticateController;
+use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -19,11 +19,14 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 class TOTPAuthentication
 {
     static $PASS_CODE_LENGTH = 6;
-    static $PIN_MODULO;
     static $SECRET_LENGTH = 10;
 
-    public function __construct() {
-        self::$PIN_MODULO = pow(10, self::$PASS_CODE_LENGTH);
+    /**
+     * @return float|int|object
+     */
+    public static function get_PIN_MODULO()
+    {
+        return pow(10, self::$PASS_CODE_LENGTH);
     }
 
     /**
@@ -63,14 +66,16 @@ class TOTPAuthentication
 
     /**
      * checks if a user has a TOTP secret set that is active
-     *
      * @param $userid
+     * @param $code
      * @return bool
+     * @throws Exception
      */
-    public function checkTOTPCode($userid, $code){
+    public static function checkTOTPCode($userid, $code): bool
+    {
         $db = DBManagerFactory::getInstance();
         $record = $db->fetchOne("SELECT user_secret FROM users_totp WHERE user_id='$userid' AND auth_status='A' AND deleted = 0");
-        return $this->checkCode($record['user_secret'], $code);
+        return self::checkCode($record['user_secret'], $code);
     }
 
     /**
@@ -80,11 +85,12 @@ class TOTPAuthentication
      * @param $code
      * @return bool
      */
-    public function checkCode($secret,$code) {
+    public static function checkCode($secret,$code): bool
+    {
         $time = floor(time() / 30);
         for ( $i = -1; $i <= 1; $i++) {
 
-            if ($this->getCode($secret,$time + $i) == $code) {
+            if (self::getCode($secret,$time + $i) == $code) {
                 return true;
             }
         }
@@ -100,7 +106,7 @@ class TOTPAuthentication
      * @param null $time
      * @return string
      */
-    public function getCode($secret,$time = null) {
+    public static function getCode($secret,$time = null) {
 
         if (!$time) {
             $time = floor(time() / 30);
@@ -116,11 +122,11 @@ class TOTPAuthentication
         $offset = $offset & 0xF;
 
         $truncatedHash = self::hashToInt($hash, $offset) & 0x7FFFFFFF;
-        $pinValue = str_pad($truncatedHash % self::$PIN_MODULO,6,"0",STR_PAD_LEFT);;
+        $pinValue = str_pad($truncatedHash % self::get_PIN_MODULO(),6,"0",STR_PAD_LEFT);
         return $pinValue;
     }
 
-    protected  function hashToInt($bytes, $start) {
+    protected static  function hashToInt($bytes, $start) {
         $input = substr($bytes, $start, strlen($bytes) - $start);
         $val2 = unpack("N",substr($input,0,4));
         return $val2[1];
@@ -144,7 +150,7 @@ class TOTPAuthentication
                 sprintf( "otpauth://totp/%s@%s?secret=%s&issuer:Example",$user, $hostname, $secret),
                 200, 200, 'black'
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new BadRequestException( 'Output template function "barcode": '.$e->getMessage());
         }
         $barcode->setBackgroundColor('white'); // background color
@@ -158,7 +164,8 @@ class TOTPAuthentication
      *
      * @return string
      */
-    public function generateSecret() {
+    public static function generateSecret(): string
+    {
         $secret = "";
         for($i = 1;  $i<= self::$SECRET_LENGTH;$i++) {
             $c = rand(0,255);
