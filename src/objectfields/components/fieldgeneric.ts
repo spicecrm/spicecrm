@@ -64,15 +64,6 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
         public router: Router
     ) {
         this.fieldid = this.model.generateGuid();
-        // setTimeout() is a workaround,
-        // because at this time "this" of an extending class/component is not defined yet,
-        // and also all properties of "this" are not yet available.
-        // For example: fieldParent
-        window.setTimeout( () => {
-            this.subscriptions.add(
-                this.view.mode$.subscribe(mode => this.handleViewModeChange(mode))
-            );
-        }, 1 );
     }
 
     /**
@@ -160,6 +151,9 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
         if (this.fielddefs && this.fielddefs.len) {
             this.fieldlength = this.fielddefs.len;
         }
+        this.subscriptions.add(
+            this.view.mode$.subscribe(mode => this.handleViewModeChange(mode))
+        );
     }
 
     public ngAfterViewInit(): void {
