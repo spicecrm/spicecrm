@@ -75,6 +75,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
+        super.ngOnInit();
         // determine the valid types
         this.determineParentTypes();
         // initialize the parenttype
