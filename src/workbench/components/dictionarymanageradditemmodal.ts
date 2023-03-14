@@ -14,7 +14,7 @@ import {DictionaryItem, DictionaryManagerMessage} from "../interfaces/dictionary
 @Component({
     templateUrl: '../templates/dictionarymanageradditemmodal.html',
 })
-export class DictionaryManagerAddItemModal{
+export class DictionaryManagerAddItemModal implements OnInit{
 
     /**
      * reference to the modal self
@@ -57,6 +57,9 @@ export class DictionaryManagerAddItemModal{
 
     constructor(public dictionarymanager: dictionarymanager, public backend: backend, public modal: modal, public metadata: metadata, public modelutilities: modelutilities) {
 
+    }
+
+    public ngOnInit() {
         this.dictionaryitem = {
             id: this.modelutilities.generateGuid(),
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
@@ -71,10 +74,12 @@ export class DictionaryManagerAddItemModal{
         };
 
         for (let domain of this.dictionarymanager.domaindefinitions) {
-            this.domains.push({
-                id: domain.id,
-                name: domain.name
-            });
+            if(domain.name) {
+                this.domains.push({
+                    id: domain.id,
+                    name: domain.name
+                });
+            }
         }
 
         // sort the domain name alphabetically
@@ -98,6 +103,7 @@ export class DictionaryManagerAddItemModal{
 
         // get the current type
         this.currentType = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).sysdictionary_type;
+
     }
 
     /**

@@ -155,6 +155,7 @@ import {DictionaryManagerRelationshipAddEmailAddress} from "./components/diction
 import {
     DictionaryManagerRelationshipContainerEmailAddress
 } from "./components/dictionarymanagerrelationshipcontaineremailaddress";
+import {DictionaryManagerCloneDefinitionModal} from "./components/dictionarymanagerclonedefinitionmodal";
 
 
 
@@ -191,6 +192,7 @@ import {
         DictionaryManagerItemDetails,
         DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
+        DictionaryManagerCloneDefinitionModal,
         DictionaryManagerMigrateDefinitionModal,
         DictionaryManagerEditDefinitionModal,
         DictionaryManagerAddItemModal,

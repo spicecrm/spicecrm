@@ -48,11 +48,27 @@ export class DictionaryManager {
             }
         });
     }
+
     /**
      * calls the backend repair method that delivers the sql string, injects it in the modal
      */
     public repairDBnew() {
         this.modal.openModal('DictionaryManagerRepairAll', true, this.injector);
+    }
+
+    /**
+     * generates the system cached files
+     */
+    public generateSystem(){
+        let genModal = this.modal.await('LBL_GENERATING');
+        this.backend.putRequest('dictionary/generatesystem').subscribe({
+            next: () => {
+                genModal.emit(true);
+            },
+            error: () => {
+                genModal.emit(true);
+            }
+        })
     }
 
     public repairDBCache() {
