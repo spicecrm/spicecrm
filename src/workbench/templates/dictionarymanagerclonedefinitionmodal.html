@@ -1,0 +1,15 @@
+<system-modal>
+    <system-modal-header (close)="close()">Clone Dictionary Definition</system-modal-header>
+    <system-modal-content>
+        <label class="slds-form-element__label"><system-label label="LBL_DEFINITION"/></label>
+        <div class="slds-select_container">
+            <select class="slds-select" [(ngModel)]="definition">
+                <option *ngFor="let d of definitions" [ngValue]="d.id">{{d.name}}</option>
+            </select>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label> </button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label> </button>
+    </system-modal-footer>
+</system-modal>

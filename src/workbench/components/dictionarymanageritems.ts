@@ -80,9 +80,15 @@ export class DictionaryManagerItems {
     /**
      * react to the click to add a new dictionary definition
      */
-    public addDictionaryItem(event: MouseEvent) {
-        event.stopPropagation();
+    public addDictionaryItem() {
         this.modal.openModal('DictionaryManagerAddItemModal', true, this.injector);
+    }
+
+    /**
+     * open the clone modal
+     */
+    public cloneDefinition(){
+        this.modal.openModal('DictionaryManagerCloneDefinitionModal', true, this.injector);
     }
 
     /**
@@ -137,12 +143,21 @@ export class DictionaryManagerItems {
         let previousItem = values.splice(event.previousIndex, 1);
         values.splice(event.currentIndex, 0, previousItem[0]);
 
-        // reindex the array resetting the sequence
-        let i = 0;
-        for (let item of values) {
-            item.sequence = i;
-            i++;
-        }
+        let savingModal = this.modal.await('LBL_SAVING');
+        this.backend.postRequest('dictionary/items/sequence', {}, {items: values.map(v => v.id)}).subscribe({
+            next: () => {
+                // reindex the array resetting the sequence
+                let i = 0;
+                for (let item of values) {
+                    item.sequence = i;
+                    i++;
+                }
+                savingModal.emit(true);
+            },
+            error: () => {
+                savingModal.emit(true);
+            }
+        })
     }
 
     /**

@@ -29,6 +29,11 @@
                             <span class="slds-truncate"><system-label label="LBL_REPAIR_DBCOLUMNS"></system-label></span>
                         </a>
                     </li>
+                    <li class="slds-dropdown__item" role="presentation" (click)="generateSystem()">
+                        <a href="javascript:void(null)" role="menuitem">
+                            <span class="slds-truncate"><system-label label="LBL_GENERATE_SYSTEM"></system-label></span>
+                        </a>
+                    </li>
                     <li *ngIf="dictionarymanager.settings?.migration_enabled" class="slds-dropdown__item" role="presentation" (click)="migrate()">
                         <a href="javascript:void(null)" role="menuitem">
                             <span class="slds-truncate"><system-label label="LBL_MIGRATE"></system-label></span>
