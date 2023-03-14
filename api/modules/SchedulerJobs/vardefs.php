@@ -9,14 +9,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
 		'date_time_start' => [
 			'name' => 'date_time_start',
 			'vname' => 'LBL_DATE_START',
-			'type' => 'datetimecombo',
+			'type' => 'datetime',
 			'required' => true,
 			'reportable' => false
         ],
 		'date_time_end' => [
 			'name' => 'date_time_end',
 			'vname' => 'LBL_DATE_END',
-			'type' => 'datetimecombo',
+			'type' => 'datetime',
 			'reportable' => false,
         ],
         'next_run_date' => [
