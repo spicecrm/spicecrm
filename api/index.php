@@ -71,7 +71,7 @@ try {
     SpiceModules::getInstance()->loadModules();
 
     // load the metadata from the database
-    SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
+    // SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 
     if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);

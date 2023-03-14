@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\SpiceInstaller;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -354,15 +355,6 @@ class SpiceInstaller
     }
 
     /**
-     * @deprecated
-     * @param $postData
-     * @return void
-     */
-    private function generateSugarConfig($postData){
-        return $this->generateSpiceConfig($postData);
-    }
-
-    /**
      * @param $postData
      * @return array
      */
@@ -458,6 +450,30 @@ class SpiceInstaller
             $db->createDBuser($dbconfig['db_name'], $dbconfig['db_host_name'], $postData['databaseuser']['db_user_name'], $postData['databaseuser']['db_password']);
         }
         return $db;
+    }
+
+    /**
+     * creates the system dictionary tables without indexes from teh dump for the system fields
+     *
+     * @param $db
+     * @return void
+     */
+    public function createSystem($db){
+        $dictionary = SpiceDictionary::getInstance()->dictionary;
+        foreach ($dictionary as $dictName => $dictFields){
+            $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], []);
+            $db->query($query);
+        }
+    }
+
+    /**
+     * loads the system data
+     *
+     * @param $db
+     * @return void
+     */
+    public function loadSystemData($db){
+        // ToDo: load from dump or from remote repo
     }
 
     /**
@@ -695,6 +711,7 @@ class SpiceInstaller
 
     /**
      * install the backend with the posted settings
+     *
      * @param $body
      * @return array
      */
@@ -719,10 +736,25 @@ class SpiceInstaller
         $repair = new AdminController();
 
         if (!empty($db)) {
+            // create the system database tables
+            $this->createSystem($db);
+
+            // load the system data
+            $this->loadSystemData($db);
+
+            // run the repair to create tables
             $this->createTables($db);
+
+            // insert defaults
             $this->insertDefaults( $db, $postData );
+
+            // create the admin user
             $this->createCurrentUser($db, $postData);
+
+            // retrive the language
             $this->retrieveCoreandLanguages( $db, $postData['language'] );
+
+            // todo ... check if this then is needed ... I assumee not
             $repair->repairAndRebuildforInstaller();
         } else {
             $errors[] = "empty database instance";

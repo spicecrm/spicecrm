@@ -9,7 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidation;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -1041,8 +1041,8 @@ class MysqliManager extends DBManager
     protected function getEngine($bean)
     {
         $engine = null;
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
+            $engine = SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'];
         }
         return $engine;
     }

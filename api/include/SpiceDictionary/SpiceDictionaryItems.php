@@ -182,14 +182,41 @@ class SpiceDictionaryItems
         return array_values($this->dictionaryItems);
     }
 
+    /**
+     * adds an item
+     *
+     * @param $item
+     * @return void
+     * @throws \Exception
+     */
     public function addItem($item){
         $table = $item['scope'] == 'c' ? self::customtable : self::table;
+        unset($item['scope']);
         SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $item['name'], SystemDeploymentCR::ACTION_INSERT);
 
         // add the item
         $this->dictionaryItems[$item['id']] = $item;
 
-        // write teh cache
+        // write the cache
+        $this->writeCache();
+    }
+
+    /**
+     * update an item
+     *
+     * @param $item
+     * @return void
+     * @throws \Exception
+     */
+    public function setItem($item){
+        $table = $item['scope'] == 'c' ? self::customtable : self::table;
+        unset($item['scope']);
+        SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $item['name'], SystemDeploymentCR::ACTION_UPDATE);
+
+        // add the item
+        $this->dictionaryItems[$item['id']] = $item;
+
+        // write the cache
         $this->writeCache();
     }
 }

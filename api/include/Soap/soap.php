@@ -5,7 +5,6 @@ use SpiceCRM\includes\Soap\SpiceSoap;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 /**
  * generate wssdl with <url>/apoi/soap?wsdl?style=rpc|document&use=encoded|literal
@@ -35,7 +34,7 @@ UploadStream::register();
 SpiceModules::getInstance()->loadModules();
 
 // load the vardefs
-SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
+//SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 
 if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
     session_save_path(SpiceConfig::getInstance()->config['session_dir']);

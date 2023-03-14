@@ -4,6 +4,7 @@
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use stdClass;
 use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
@@ -412,8 +413,18 @@ class SpiceBean
     public function initialize_bean()
     {
         $this->db = DBManagerFactory::getInstance();
-        $dictHandler = SpiceDictionaryHandler::getInstance();
 
+        $dictionaryDefs = SpiceDictionary::getInstance()->getDefs($this->_objectname);
+        $this->field_defs = $dictionaryDefs['fields'];
+        $this->optimistic_lock = $dictionaryDefs['optimistic_locking'];
+
+        if ($this->bean_implements('ACL') && !empty(AuthenticationController::getInstance()->getCurrentUser())) {
+            $this->acl_fields = (isset($dictionaryDefs['acl_fields']) && $dictionaryDefs['acl_fields'] === false) ? false : true;
+        }
+        $this->populateDefaultValues();
+
+        /*
+        $dictHandler = SpiceDictionaryHandler::getInstance();
         if ((false == $this->disable_vardefs && empty($dictHandler->dictionary[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
             VardefManager::loadVardef($this->_module, $this->_objectname);
 
@@ -441,6 +452,7 @@ class SpiceBean
             $this->acl_fields = (isset($dictHandler->dictionary[$this->_objectname]['acl_fields']) && $dictHandler->dictionary[$this->_objectname]['acl_fields'] === false) ? false : true;
         }
         $this->populateDefaultValues();
+        */
     }
 
     /**
@@ -647,7 +659,7 @@ class SpiceBean
             return $this->_tablename;
         }
 
-        return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['table'];
+        return SpiceDictionary::getInstance()->getDefs($this->_objectname)['table'];
     }
 
     /**
@@ -798,8 +810,8 @@ class SpiceBean
             if (file_exists(($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)))) {
                 include($filename);
                 // cn: bug 7679 - dictionary entries defined as $GLOBALS['name'] not found
-                if (empty($dictionary) || !empty(SpiceDictionaryHandler::getInstance()->dictionary[$key])) {
-                    $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+                if (empty($dictionary) || !empty(SpiceDictionary::getInstance()->dictionary[$key])) {
+                    $dictionary = SpiceDictionary::getInstance()->dictionary;
                 }
             } else {
                 LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)));
@@ -1160,8 +1172,8 @@ class SpiceBean
      */
     function is_AuditEnabled()
     {
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'])) {
-            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'];
+        if (isset(SpiceDictionary::getInstance()->getDefs($this->getObjectName())['audited'])) {
+            return SpiceDictionary::getInstance()->getDefs($this->getObjectName())['audited'];
         } else {
             return false;
         }
@@ -1236,8 +1248,8 @@ class SpiceBean
             require($custom);
         }
 
-        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
-        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
+        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
 
         // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
         foreach ($indices as $nr => $properties) {
@@ -1248,10 +1260,10 @@ class SpiceBean
         }
 
         $engine = null;
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'])) {
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'];
-        } else if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['engine'])) {
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['engine'];
+        if (isset(SpiceDictionary::getInstance()->dictionary['audit']['engine'])) {
+            $engine = SpiceDictionary::getInstance()->dictionary['audit']['engine'];
+        } else if (isset(SpiceDictionary::getInstance()->dictionary[$this->getObjectName()]['engine'])) {
+            $engine = SpiceDictionary::getInstance()->dictionary[$this->getObjectName()]['engine'];
         }
 
         $this->db->createTableParams($table_name, $fieldDefs, $indices, $engine);
@@ -1275,8 +1287,8 @@ class SpiceBean
             require($custom);
         }
 
-        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
-        $indices   = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
+        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
+        $indices   = SpiceDictionary::getInstance()->dictionary['audit']['indices'];
 
         // Renaming template indexes to fit the particular audit table (removed the brittle hard coding)
         foreach ($indices as $nr => $properties) {
@@ -1295,7 +1307,7 @@ class SpiceBean
     function drop_tables()
     {
         $key = $this->getObjectName();
-        if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
+        if (!array_key_exists($key, SpiceDictionary::getInstance()->dictionary)) {
             LoggerManager::getLogger()->fatal('dictionary', "drop_tables: Metadata for table " . $this->_tablename . " does not exist");
             echo "meta data absent for table " . $this->_tablename . "<br>\n";
         } else {
