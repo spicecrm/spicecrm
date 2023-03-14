@@ -1,13 +1,13 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    AfterViewInit,
+import {AfterViewInit,
     Component,
     ComponentRef,
     Injector,
     Input,
     OnChanges,
+    OnInit,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
@@ -26,11 +26,16 @@ import moment from "moment";
     selector: 'workflow-panel-task',
     templateUrl: '../templates/workflowpaneltask.html'
 })
-export class WorkflowPanelTask implements OnChanges, AfterViewInit {
+export class WorkflowPanelTask implements OnChanges, AfterViewInit, OnInit {
     /**
      * holds the task data
      */
     @Input() public workflowtask: any = {};
+
+    /**
+     * holds value of workflowtask's field date_due
+     */
+    public dateDue;
 
     /**
      * true if posting data to backend
@@ -61,6 +66,11 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit {
                 public injector: Injector,
                 public modelutilities: modelutilities) {
 
+    }
+
+    public ngOnInit() {
+        // retrieve date_due on load
+        this.dateDue = this.workflowtask.date_due;
     }
 
     /**
