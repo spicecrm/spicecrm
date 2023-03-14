@@ -3,8 +3,13 @@
 
 namespace SpiceCRM\data\Relationships;
 
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 
@@ -24,6 +29,7 @@ define('REL_ONE_ONE', 'one-to-one');
  */
 abstract class SugarRelationship
 {
+    protected $name;
     protected $def;
     protected $lhsLink;
     protected $rhsLink;
@@ -472,6 +478,47 @@ abstract class SugarRelationship
             return true;
         }
         return false;
+    }
+
+    /**
+     * returns the linked firled for a relationship
+     *
+     * @param $module
+     * @return array|false|mixed
+     */
+    public function getLinkFieldForRelationship($module)
+    {
+        $object = BeanFactory::getObjectName($module);
+        $defs = SpiceDictionary::getInstance()->getDefs($object);
+
+        if(!$defs['fields']) {
+            return false;
+        }
+
+        $relLinkFields = array_filter($defs['fields'], function($field){
+            return $field['type'] == 'link' && !empty($field['relationship']);
+        });
+
+        $matches = [];
+        if (!empty($relLinkFields))
+        {
+            foreach($relLinkFields as $rfName => $rfDef)
+            {
+                if ($rfDef['relationship'] == $this->name)
+                {
+                    $matches[] = $rfDef;
+                }
+            }
+        }
+        if (empty($matches))
+            return false;
+        if (sizeof($matches) == 1)
+            $results = $matches[0];
+        else
+            //For relationships where both sides are the same module, more than one link will be returned
+            $results = $matches;
+
+        return $results ;
     }
 
     public function __get($name)

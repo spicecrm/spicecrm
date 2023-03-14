@@ -106,12 +106,14 @@ class SpiceDictionaryItem
                 }
             }
 
-            // get the tempate relationships
-            $relationships = SpiceDictionaryRelationships::getInstance()->getRelationships($this->sysdictionary_ref_id);
-            foreach ($relationships as $relationship){
+            // get the template relationships
+            if($repair) {
+                $relationships = SpiceDictionaryRelationships::getInstance()->getRelationships($this->sysdictionary_ref_id);
+                foreach ($relationships as $relationship) {
 
-                // activate
-                (new SpiceDictionaryRelationship($relationship['id']))->activate(false, $this->sysdictionary_ref_id, $this->sysdictionarydefinition_id);
+                    // activate
+                    (new SpiceDictionaryRelationship($relationship['id']))->activate(false, $this->sysdictionary_ref_id, $this->sysdictionarydefinition_id);
+                }
             }
         }
 

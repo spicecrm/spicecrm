@@ -31,7 +31,7 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
@@ -1509,7 +1509,7 @@ class OCI8Manager extends DBManager
         $lob_fields = [];
         $lob_dataType = [];
         // find the dictionary table
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
                     if ($this->type_map[$vardef['dbtype'] ?:$vardef['type']] == 'clob') {
@@ -1550,7 +1550,7 @@ class OCI8Manager extends DBManager
         $lob_fields = [];
         $lob_dataType = [];
 
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
 
 

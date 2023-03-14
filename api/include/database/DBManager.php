@@ -39,7 +39,7 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -437,11 +437,11 @@ abstract class DBManager
         else
             return false;
 
-        if (!empty($object_name) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$object_name]))
-            $indices = SpiceDictionaryHandler::getInstance()->dictionary[$object_name]['indices'];
+        if (!empty($object_name) && !empty(SpiceDictionary::getInstance()->dictionary[$object_name]))
+            $indices = SpiceDictionary::getInstance()->dictionary[$object_name]['indices'];
 
         if (empty($indices)) {
-            foreach (SpiceDictionaryHandler::getInstance()->dictionary as $current) {
+            foreach (SpiceDictionary::getInstance()->dictionary as $current) {
                 if ($current['table'] == $table) {
                     $indices = $current['indices'];
                     break;
@@ -534,7 +534,7 @@ abstract class DBManager
     public function insertQuery($table, array $data, $execute = true)
     {
         // find the dictionary table
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 return $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
             }
@@ -857,8 +857,8 @@ abstract class DBManager
             return '';
 
         $engine = null;
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine']) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine']))
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine']) && !empty(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine']))
+            $engine = SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'];
 
         return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute, $engine);
     }
@@ -883,8 +883,8 @@ abstract class DBManager
             return '';
 
         $engine = null;
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine']) && !empty(SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'])) {
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary['audit']['engine'];
+        if (isset(SpiceDictionaryr::getInstance()->dictionary['audit']['engine']) && !empty(SpiceDictionary::getInstance()->dictionary['audit']['engine'])) {
+            $engine = SpiceDictionary::getInstance()->dictionary['audit']['engine'];
         }
         return $this->repairTableParams($tablename, $fielddefs, $new_index, $execute, $engine);
     }
@@ -2771,7 +2771,7 @@ abstract class DBManager
         $sql = "INSERT INTO " . $bean->get_audit_table_name();
         //get field defs for the audit table.
         require('metadata/audit_templateMetaData.php');
-        $fieldDefs = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
+        $fieldDefs = SpiceDictionary::getInstance()->dictionary['audit']['fields'];
 
         $values = [];
         $values['id'] = $this->massageValue(SpiceUtils::createGuid(), $fieldDefs['id']);
