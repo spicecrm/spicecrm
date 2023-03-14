@@ -40,6 +40,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
@@ -61,6 +62,20 @@ use SpiceCRM\includes\utils\SpiceUtils;
 class SpiceDictionaryController
 {
 
+    /**
+     * generates the system cache
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function generateSystem(Request $req, Response $res, array $args): Response
+    {
+        SpiceDictionary::getInstance()->generateSystemCache();
+
+        return $res->withJson(['success' => true]);
+    }
     /**
      * retrieves the domain definitions
      *

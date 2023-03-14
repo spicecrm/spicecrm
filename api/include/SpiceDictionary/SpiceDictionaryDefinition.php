@@ -53,6 +53,9 @@ class SpiceDictionaryDefinition
         $definitions = [];
         $indexes = [];
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
+        // sort the array by sequence
+        usort($items, function($a, $b){ return (int) $a['sequence'] > (int)$b['sequence'];});
+
         foreach ($items as $item) {
             // get the definitions and also potential indexes if coming from a template
             $res = (new SpiceDictionaryItem($item['id']))->activate(false);

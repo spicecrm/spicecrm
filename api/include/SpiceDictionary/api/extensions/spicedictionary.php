@@ -31,6 +31,14 @@ $routes = [
         'options' => ['adminOnly' => true],
     ],
     [
+        'method' => 'put',
+        'route' => '/dictionary/generatesystem',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'generateSystem',
+        'description' => 'generates the System cached file',
+        'options' => ['adminOnly' => true],
+    ],
+    [
         'method' => 'get',
         'route' => '/dictionary/repair',
         'class' => SpiceDictionaryController::class,
@@ -531,6 +539,14 @@ $routes = [
         'class' => SpiceDictionaryItemsController::class,
         'function' => 'postDictionaryItems',
         'description' => 'posts a group dictionary Items',
+        'options' => ['adminOnly' => true]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/items/sequence',
+        'class' => SpiceDictionaryItemsController::class,
+        'function' => 'postDictionaryItemsSequence',
+        'description' => 'reshuffles the items',
         'options' => ['adminOnly' => true]
     ],
     [
