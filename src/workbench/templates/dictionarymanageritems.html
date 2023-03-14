@@ -1,8 +1,11 @@
 <div system-to-bottom-noscroll>
     <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
         <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--xx-small slds-theme--shade slds-border--bottom">
-            <system-input-text [(ngModel)]="filterterm" placeholder="LBL_FILTER" autocomplete="off" [showClear]="true"></system-input-text>
-            <button class="slds-button slds-button--neutral" (click)="addDictionaryItem($event)">
+            <system-input-text class="slds-col--bump-right" [(ngModel)]="filterterm" placeholder="LBL_FILTER" autocomplete="off" [showClear]="true"></system-input-text>
+            <button *ngIf="dictionaryitems.length == 0" class="slds-button slds-button--neutral" (click)="cloneDefinition()">
+                <system-label label="LBL_CLONE"/>
+            </button>
+            <button class="slds-button slds-button--neutral" (click)="addDictionaryItem()">
                 <system-label label="LBL_ADD"/>
             </button>
         </div>
@@ -72,7 +75,12 @@
                 </tbody>
             </table>
             <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
-                <system-utility-icon icon="new" size="x-small" (click)="addDictionaryItem($event)" ></system-utility-icon>
+                <button class="slds-button slds-button--icon" (click)="addDictionaryItem()">
+                    <system-button-icon icon="new"/>
+                </button>
+                <button *ngIf="dictionaryitems.length == 0" class="slds-button slds-button--icon" (click)="cloneDefinition()">
+                    <system-button-icon icon="copy"/>
+                </button>
             </div>
         </div>
     </ng-container>
