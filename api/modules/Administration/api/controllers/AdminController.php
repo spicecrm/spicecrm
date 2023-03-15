@@ -513,23 +513,7 @@ class AdminController
         unset($_SESSION['relationships']);
 
         // rebuild relationship cache
-        Relationship::build_relationship_cache();
-    }
-
-    /**
-     * rebuilds the metadata relationships
-     *
-     * TODo: remove this in the next version with the vardef manager
-     */
-    private function rebuildMetadataRelationships()
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $rel_dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
-        foreach ($rel_dictionary as $rel_name => $rel_data) {
-            $table = isset($rel_data ['table']) ? $rel_data ['table'] : "";
-            SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
-        }
+        SpiceDictionaryVardefs::build_relationship_cache();
     }
 
     /**
