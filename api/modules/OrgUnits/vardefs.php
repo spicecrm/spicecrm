@@ -86,6 +86,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_USERS',
         ],
+        'hcmjoboffers' => [
+            'name' => 'hcmjoboffers',
+            'type' => 'link',
+            'relationship' => 'orgunits_hcmjoboffers',
+            'module' => 'HCMJobOffers',
+            'bean_name' => 'HCMJobOffer',
+            'source' => 'non-db',
+            'vname' => 'LBL_HCMJOBOFFERS',
+        ],
+        'hcmjoboffers_id' => [
+            'name' => 'hcmjoboffers_id',
+            'vname' => 'LBL_HCMJOBOFFERS_ID',
+            'type' => 'id',
+        ],
+        'hcmjoboffers_name' => [
+            'name' => 'hcmjoboffers_name',
+            'rname' => 'name',
+            'id_name' => 'hcmjoboffers_id',
+            'vname' => 'LBL_HCMJOBOFFERS',
+            'type' => 'relate',
+            'table' => 'hcmjoboffers',
+            'module' => 'HCMJobOffers',
+            'dbType' => 'varchar',
+            'link' => 'hcmjoboffers',
+            'len' => 255,
+            'source' => 'non-db'
+        ],
         'member_of' => [
             'name' => 'member_of',
             'type' => 'link',
