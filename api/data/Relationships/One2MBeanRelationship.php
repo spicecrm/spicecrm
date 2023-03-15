@@ -180,7 +180,7 @@ class One2MBeanRelationship extends One2MRelationship
         {
             //Need to call save to update the bean as the relationship is saved on the main table
             //We don't want to create a save loop though, so make sure we aren't already in the middle of saving this bean
-            SugarRelationship::addToResaveList($rhs);
+            Relationship::addToResaveList($rhs);
 
             $this->updateLinks($lhs, $lhsLinkName, $rhs, $rhsLinkName);
 
@@ -191,7 +191,7 @@ class One2MBeanRelationship extends One2MRelationship
         //One2MBean relationships require that the RHS bean be saved or else the relationship will not be saved.
         //If we aren't already in a relationship save, intitiate a save now.
         if (empty($GLOBALS['resavingRelatedBeans']))
-            SugarRelationship::resaveRelatedBeans();
+            Relationship::resaveRelatedBeans();
 
         return true;
     }

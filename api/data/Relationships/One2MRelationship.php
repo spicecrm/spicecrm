@@ -4,8 +4,6 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 
 

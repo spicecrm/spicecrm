@@ -3,18 +3,15 @@
 
 namespace SpiceCRM\data\Relationships;
 
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 
 /**
  * Create relationship objects
  * @api
  */
-class SugarRelationshipFactory {
+class RelationshipFactory {
     static $rfInstance;
 
     protected $relationships;
@@ -26,12 +23,12 @@ class SugarRelationshipFactory {
 
     /**
      * @static
-     * @return SugarRelationshipFactory
+     * @return RelationshipFactory
      */
     public static function getInstance()
     {
         if (is_null(self::$rfInstance))
-            self::$rfInstance = new SugarRelationshipFactory();
+            self::$rfInstance = new RelationshipFactory();
         return self::$rfInstance;
     }
 

@@ -9,7 +9,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
-use SpiceCRM\includes\SugarObjects\VardefManager;
+
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
@@ -20,7 +20,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * Represents a many to many relationship that is table based.
  * @api
  */
-class M2MRelationship extends SugarRelationship
+class M2MRelationship extends Relationship
 {
     var $type = "many-to-many";
 

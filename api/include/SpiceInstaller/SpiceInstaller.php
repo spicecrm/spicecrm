@@ -4,14 +4,10 @@
 namespace SpiceCRM\includes\SpiceInstaller;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Relationships\Relationship;
@@ -599,7 +595,7 @@ class SpiceInstaller
 
 
         // repair relationships
-        Relationship::build_relationship_cache();
+        SpiceDictionaryVardefs::build_relationship_cache();
 
     }
 
