@@ -9,7 +9,6 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 
@@ -27,7 +26,7 @@ define('REL_ONE_ONE', 'one-to-one');
  * Links have a context(focus) bean while relationships do not.
  * @api
  */
-abstract class SugarRelationship
+abstract class Relationship
 {
     protected $name;
     protected $def;

@@ -30,7 +30,7 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
+use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -596,9 +596,9 @@ class SpiceDictionaryVardefs  {
     }
 
     public static function loadRelationshipsCacheFromDb($forceReload = false){
-        SugarRelationshipFactory::getInstance();
+        RelationshipFactory::getInstance();
         if($forceReload){
-            SugarRelationshipFactory::getInstance()->loadRelationships($forceReload);
+            RelationshipFactory::getInstance()->loadRelationships($forceReload);
         }
     }
 
@@ -2025,7 +2025,7 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
         $db->transactionStart(); // start to continue
 
         // repair relationships and reset the session variable 'relationships'
-        Relationship::build_relationship_cache();
+        SpiceDictionaryVardefs::build_relationship_cache();
 
         // save full cached vardefs
 //        $cachedVardefs = SpiceDictionaryHandler::getInstance()->dictionary;
@@ -2098,5 +2098,16 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
      */
     public static function getAuditTableName(string $tableName){
         return $tableName.'_audit';
+    }
+
+    /**
+     * rebuild content for relationships table
+     * @return void
+     */
+    public static function build_relationship_cache() {
+        SpiceDictionaryVardefs::deleteAllRelationshipsCacheFromDb();
+        $relationships = SpiceDictionaryVardefs::loadRelationshipsFromDictionary();
+        SpiceDictionaryVardefs::saveRelationshipsCacheToDb($relationships);
+        $_SESSION['relationships'] = $relationships;
     }
 }

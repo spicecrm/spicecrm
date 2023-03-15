@@ -12,9 +12,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceNotes\SpiceNotes;
-use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -22,18 +20,13 @@ use SpiceCRM\includes\SysTrashCan\SysTrashCan;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\EncryptionUtils;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\modules\Relationships\Relationship;
 use SpiceCRM\includes\SugarCleaner;
-use SpiceCRM\data\Relationships\SugarRelationship;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\data\Relationships\Relationship;
 
 
 /* * *******************************************************************************
@@ -765,123 +758,6 @@ class SpiceBean
         return $this->$name;
     }
 
-    /**
-     * Populates the relationship meta for a module.
-     *
-     * It is called during setup/install. It is used statically to create relationship meta data for many-to-many tables.
-     *
-     * @param string $key name of the object.
-     * @param object $db database handle.
-     * @param string $tablename table, meta data is being populated for.
-     * @param array dictionary vardef dictionary for the object.     *
-     * @param string module_dir name of subdirectory where module is installed.
-     * @param boolean $iscustom Optional,set to true if module is installed in a custom directory. Default value is false.
-     * @static
-     *
-     *  Internal function, do not override.
-     */
-    static function createRelationshipMeta($key, $db, $tablename, $dictionary, $module_dir, $iscustom = false)
-    {
-        //forget relationships if tablename is empty. Will be the case with MergeRecords.
-        //avoid unnecessary log line "createRelationshipMeta: Metadata for table  does not exist"
-        if (empty($tablename)) return;
-
-        //load the module dictionary if not supplied.
-        if (empty($dictionary) && !empty($module_dir)) {
-            if ($iscustom) {
-                $filename = 'custom/modules/' . $module_dir . '/Ext/Vardefs/vardefs.ext.php';
-            } else {
-                if ($key == 'User') {
-                    // a very special case for the Employees module
-                    // this must be done because the Employees/vardefs.php does an include_once on
-                    // Users/vardefs.php
-                    $filename = 'modules/Users/vardefs.php';
-                } else {
-                    if (file_exists( "extensions/modules/{$module_dir}/vardefs.php")) {
-                        $filename = "extensions/modules/{$module_dir}/vardefs.php";
-                    } elseif (file_exists( "modules/{$module_dir}/vardefs.php")) {
-                        $filename = "modules/{$module_dir}/vardefs.php";
-                    }
-                }
-            }
-
-            //add custom/modules/[]modulename]/vardefs.php capability
-            //ORIGINAL: if (file_exists($filename)) {
-            if (file_exists(($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)))) {
-                include($filename);
-                // cn: bug 7679 - dictionary entries defined as $GLOBALS['name'] not found
-                if (empty($dictionary) || !empty(SpiceDictionary::getInstance()->dictionary[$key])) {
-                    $dictionary = SpiceDictionary::getInstance()->dictionary;
-                }
-            } else {
-                LoggerManager::getLogger()->debug("createRelationshipMeta: no metadata file found" . ($iscustom ? $filename : SpiceUtils::getCustomFileIfExists($filename)));
-                return;
-            }
-        }
-
-        if (!is_array($dictionary) or !array_key_exists($key, $dictionary)) {
-            LoggerManager::getLogger()->fatal('dictionary', "createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
-            SpiceUtils::displayNotice("meta data absent for table " . $tablename . " keyed to $key ");
-        } else {
-            if (isset($dictionary[$key]['relationships'])) {
-
-                $RelationshipDefs = $dictionary[$key]['relationships'];
-
-                $delimiter = ',';
-                $beanList_ucase = array_change_key_case(SpiceModules::getInstance()->getBeanList(), CASE_UPPER);
-                foreach ($RelationshipDefs as $rel_name => $rel_def) {
-                    if (isset($rel_def['lhs_module']) and !isset($beanList_ucase[strtoupper($rel_def['lhs_module'])])) {
-                        LoggerManager::getLogger()->debug('skipping orphaned relationship record ' . $rel_name . ' lhs module is missing ' . $rel_def['lhs_module']);
-                        continue;
-                    }
-                    if (isset($rel_def['rhs_module']) and !isset($beanList_ucase[strtoupper($rel_def['rhs_module'])])) {
-                        LoggerManager::getLogger()->debug('skipping orphaned relationship record ' . $rel_name . ' rhs module is missing ' . $rel_def['rhs_module']);
-                        continue;
-                    }
-
-
-                    //check whether relationship exists or not first.
-                    if (!class_exists('Relationship')) {
-                        require_once 'modules/Relationships/Relationship.php';
-                    }
-                    if (Relationship::exists($rel_name, $db)) {
-                        LoggerManager::getLogger()->debug('Skipping, reltionship already exists ' . $rel_name);
-                    } else {
-                        /** @var Relationship */
-                        $seed = BeanFactory::getBean('Relationships');
-                        $keys = array_keys($seed->field_defs);
-                        $toInsert = [];
-                        foreach ($keys as $key) {
-                            if ($key == "id") {
-                                $toInsert[$key] = SpiceUtils::createGuid();
-                            } else if ($key == "relationship_name") {
-                                $toInsert[$key] = $rel_name;
-                            } else if (isset($rel_def[$key])) {
-                                $toInsert[$key] = $rel_def[$key];
-                            } else if (isset($seed->field_defs[$key]['default'])) {
-                                $defaultValue = $seed->field_defs[$key]['default'];
-                                if($seed->field_defs[$key]['default'] === false) $defaultValue = 0;
-                                if($seed->field_defs[$key]['default'] === true) $defaultValue = 1;
-                                $toInsert[$key] = $defaultValue;
-                            }
-                        }
-
-
-                        $column_list = implode(",", array_keys($toInsert));
-                        // todo: consider variable type for values! integer shall be passed as such and not as a string
-                        $value_list = "'" . implode("','", array_values($toInsert)) . "'";
-
-                        //create the record. todo add error check.
-                        $insert_string = "INSERT into relationships (" . $column_list . ") values (" . $value_list . ")";
-                        $db->query($insert_string, true);
-                    }
-                }
-            } else {
-                //todo
-                //log informational message stating no relationships meta was set for this bean.
-            }
-        }
-    }
 
     /**
      * Handle the following when a SpiceBean object is cloned
@@ -1456,7 +1332,7 @@ class SpiceBean
 
 
         if (empty($GLOBALS['resavingRelatedBeans'])) {
-            SugarRelationship::resaveRelatedBeans();
+            Relationship::resaveRelatedBeans();
         }
 
         // call fts manager to index the bean
@@ -2435,7 +2311,7 @@ class SpiceBean
             }
             $this->db->query($query, true, "Error marking record deleted: ");
 
-            SugarRelationship::resaveRelatedBeans();
+            Relationship::resaveRelatedBeans();
 
             // Take the item off the recently viewed lists
             $tracker = BeanFactory::getBean('Trackers');

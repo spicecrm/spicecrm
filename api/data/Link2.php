@@ -3,8 +3,8 @@
 
 namespace SpiceCRM\data;
 
-use SpiceCRM\data\Relationships\SugarRelationship;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
+use SpiceCRM\data\Relationships\Relationship;
+use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -80,7 +80,7 @@ class Link2
             $this->name = $linkName;
         }
         //Instantiate the relationship for this link.
-        $this->relationship = SugarRelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
+        $this->relationship = RelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
 
         // Fix to restore functionality from Link.php that needs to be rewritten but for now this will do.
         $this->relationship_fields = (!empty($this->def['rel_fields'])) ? $this->def['rel_fields'] : array();
@@ -244,7 +244,7 @@ class Link2
     }
 
     /**
-     * @return SugarRelationship the relationship object this link references
+     * @return Relationship the relationship object this link references
      */
     public function getRelationshipObject()
     {
