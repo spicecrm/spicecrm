@@ -1,4 +1,4 @@
-<div class="slds-context-bar slds-context-bar_tabs slds-p-left--xx-small">
+<div class="slds-context-bar slds-context-bar_tabs slds-p-left--xx-small" [ngStyle]="contextbarStyle">
     <global-app-launcher class="slds-context-bar__primary"></global-app-launcher>
     <global-navigation-tabbed-menu class="slds-context-bar__secondary" role="navigation"></global-navigation-tabbed-menu>
     <div *ngIf="userPreferences.toUse.globalHeaderCollapsed" class="slds-global-header__item slds-p-horizontal--xx-small slds-grid slds-grid--align-end slds-grid--vertical-align-center">

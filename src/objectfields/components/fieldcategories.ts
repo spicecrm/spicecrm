@@ -236,8 +236,14 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             }
         }
 
+        // get the display name
+        let d = values.length == 0 ? undefined : values.join('/');
+
+        // set the name on the model so we are sure we have it
+        if(d != this.value) this.model.setField(this.fieldname, d, true);
+
         // if we do not have any values
-        return values.length == 0 ? undefined : values.join('/');
+        return d;
     }
 
     public setFavorites(e: MouseEvent){
