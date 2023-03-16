@@ -11,6 +11,7 @@ import {toast} from "../../../services/toast.service";
 declare var moment: any;
 
 @Component({
+    selector: 'campaign-export-modal',
     templateUrl: '../templates/campaignexportmodal.html'
 })
 export class CampaignExportModal {
