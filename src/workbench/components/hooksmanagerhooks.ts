@@ -2,19 +2,17 @@
  * @module WorkbenchModule
  */
 import {
-    ChangeDetectorRef,
-    Component, ComponentRef, EventEmitter, Output
+    Component, ComponentRef,
 } from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {modelutilities} from "../../services/modelutilities.service";
-import {LogicHookI, RoleI} from "../interfaces/systemui.interfaces";
+import {LogicHookI} from "../interfaces/systemui.interfaces";
 import {toast} from "../../services/toast.service";
-import {model} from "../../services/model.service";
 import {modal} from "../../services/modal.service";
-import {RoleMenuManagerEditRoleModal} from "./rolemenumanagereditrolemodal";
 import {HooksManagerHooksEditModal} from "./hooksmanagerhookseditmodal";
+import {HooksManager} from "./hooksmanager";
 
 @Component({
     selector: 'hooks-manager-hooks',
@@ -24,8 +22,8 @@ export class HooksManagerHooks {
 
 
     public loading: boolean = false;
-    public _module: string = '*';
-    public modules: string[];
+    // public _module: string = '*';
+    // public modules: string[];
     public hooks: LogicHookI[] = [];
 
 
@@ -36,9 +34,10 @@ export class HooksManagerHooks {
         public modelutilities: modelutilities,
         public toast: toast,
         public modal: modal,
+        public hooksManager: HooksManager,
     ) {
-        this.modules = this.metadata.getModules();
-        this.modules.sort();
+        // this.modules = this.metadata.getModules();
+        // this.modules.sort();
 
     }
 
@@ -57,31 +56,31 @@ export class HooksManagerHooks {
         });
     }
 
-    /**
-     * get module
-     */
-    get module() {
-        return this._module;
-    }
-
-    /**
-     * set module
-     * @param module
-     */
-    set module(module) {
-        if (module != this._module) {
-            this._module = module;
-        }
-    }
+    // /**
+    //  * get module
+    //  */
+    // get module() {
+    //     return this._module;
+    // }
+    //
+    // /**
+    //  * set module
+    //  * @param module
+    //  */
+    // set module(module) {
+    //     if (module != this._module) {
+    //         this._module = module;
+    //     }
+    // }
 
     /**
      * display hooks depending on the chosen module
      */
     get allModuleHooks() {
-        if (this._module == '*') {
+        if (this.hooksManager._module == '*') {
             return this.hooks;
         }
-        return this.hooks.filter(hook =>hook.module == this.module );
+        return this.hooks.filter(hook =>hook.module == this.hooksManager.module );
     }
 
     /**
@@ -127,7 +126,12 @@ export class HooksManagerHooks {
             }
             modalRef.instance.save$.subscribe({
                 next: (newHook: LogicHookI) => {
-                   this.hooks.splice(index,1,newHook);
+                   if(hook){
+                    this.hooks.splice(index,1,newHook);
+                }
+                   else {
+                       this.hooks.push(newHook);
+                   }
                 }
             })
         });
