@@ -68,6 +68,10 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
      * set the module for the module list service and activate cache
      */
     public initializeModelList() {
+
+        // disable caching of the modellist
+        this.modelList.useCache = false;
+
         // set the module in an embedded mode so not the full list is loaded
         this.modelList.initialize(this.model.module, 'SpiceGoogleMapsRecordContainer');
     }

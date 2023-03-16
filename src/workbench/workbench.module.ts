@@ -68,6 +68,7 @@ import {ActionsetManagerAddDialog} from "./components/actionsetmanageradddialog"
 
 import {CategoryTreeManager} from "./components/categorytreemanager";
 import {CategoryTreeManagerNode} from "./components/categorytreemanagernode";
+import {CategoryTreeAddModal} from "./components/categorytreeaddmodal";
 
 import {ComponentsetManager} from "./components/componentsetmanager";
 import {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
@@ -152,10 +153,11 @@ import {GitPullFromRepository} from "./components/gitpullfromrepository";
 import {GitStatusOfRepository} from "./components/gitstatusofrepository";
 import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairall";
 import {DictionaryManagerRelationshipAddEmailAddress} from "./components/dictionarymanagerrelationshipaddemailaddress";
-import {
-    DictionaryManagerRelationshipContainerEmailAddress
-} from "./components/dictionarymanagerrelationshipcontaineremailaddress";
+import {DictionaryManagerRelationshipContainerEmailAddress} from "./components/dictionarymanagerrelationshipcontaineremailaddress";
 import {DictionaryManagerCloneDefinitionModal} from "./components/dictionarymanagerclonedefinitionmodal";
+import {HooksManager} from "./components/hooksmanager";
+import {HooksManagerHooks} from "./components/hooksmanagerhooks";
+import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmodal";
 
 
 
@@ -174,6 +176,7 @@ import {DictionaryManagerCloneDefinitionModal} from "./components/dictionarymana
         CategoryTreeManager,
         CategoryTreeManagerNode,
         CategoryTreeManagerLinkModal,
+        CategoryTreeAddModal,
         DomainManager,
         DomainManagerDefinitions,
         DomainManagerFields,
@@ -302,7 +305,10 @@ import {DictionaryManagerCloneDefinitionModal} from "./components/dictionarymana
         RoleMenuManager,
         RoleMenuManagerEditRoleModal,
         GitPullFromRepository,
-        GitStatusOfRepository
+        GitStatusOfRepository,
+        HooksManager,
+        HooksManagerHooks,
+        HooksManagerHooksEditModal
     ],
     exports: [
         SortPipe,

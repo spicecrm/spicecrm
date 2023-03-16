@@ -36,10 +36,9 @@
 
 namespace SpiceCRM\modules\Users;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\templates\person\Person;
@@ -47,7 +46,6 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\UserPreferences\UserPreference;
-use DateInterval;
 
 // workaround for spiceinstaller
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -371,7 +369,8 @@ class User extends Person
      * @param string $name Username
      * @param string $password MD5-encoded password
      * @param string $where Limiting query
-     * @return array the matching User of false if not found
+     * @return array | false the matching User of false if not found
+     * @throws Exception
      */
     public static function findUserPassword($name, $password, $where = '')
     {
@@ -380,16 +379,11 @@ class User extends Person
         if (!empty($where)) {
             $query .= " AND $where";
         }
-        $row = $db->fetchOne($query);
-        if (!empty($row)) {
 
-            // check if we have a google authenticator password
-            $totpAuth = new TOTPAuthentication();
-            if(TOTPAuthentication::checkTOTPActive($row['id'])){
-                if($totpAuth->checkTOTPCode($row['id'], $password)){
-                    return $row;
-                }
-            } else if (self::checkPasswordMD5(md5($password), $row['user_hash'])) {
+        $row = $db->fetchOne($query);
+
+        if (!empty($row)) {
+            if (self::checkPasswordMD5(md5($password), $row['user_hash'])) {
                 return $row;
             }
         }
@@ -568,7 +562,7 @@ class User extends Person
 
         try {
             $response = $emailObj->save();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $result['message'] = $e->getMessage();
             return $result;
         }

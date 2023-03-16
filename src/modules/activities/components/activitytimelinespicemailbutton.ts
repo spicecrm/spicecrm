@@ -62,7 +62,7 @@ export class ActivityTimelineSpiceMailButton implements OnInit {
     /**
      * checks if relationship to Email exists
      */
-    public checkEmailRel() {
+    public checkEmailRel(): void {
         let modelfields = this.model._fields;
         Object.entries(modelfields).forEach(([key, value], index) => {
             if (value[`type`] == 'link' && value[`module`] == 'Emails') {
@@ -74,9 +74,11 @@ export class ActivityTimelineSpiceMailButton implements OnInit {
     /**
      * checks if the mailbox uses SpiceMailToken processor
      */
-    public getMailboxToken() {
-        this.backend.getRequest('spicemailtoken/mailboxprocessor').subscribe(result => {
-            if (result) this.tokenconfig = result.tokenConfig;
+    public getMailboxToken(): void {
+        this.backend.getRequest('spicemailtoken/mailboxprocessor').subscribe({
+            next: (result) => {
+                this.tokenconfig = result.tokenConfig;
+            }
         });
     }
 
@@ -86,7 +88,7 @@ export class ActivityTimelineSpiceMailButton implements OnInit {
      * and bean has no relationship with Email
      * button is not displayed
      */
-    public handleVisibility() {
+    public handleVisibility(): object {
         if (!this.tokenconfig || !this.emailbean) {
             return {display: 'none'};
         } else {
@@ -97,19 +99,20 @@ export class ActivityTimelineSpiceMailButton implements OnInit {
     /**
      * retrieves existing or creates a new hashed token
      */
-    public getToken(event) {
+    public getToken(event): void {
         this.tokenLoading = true;
 
         event.preventDefault();
         event.stopPropagation();
-        this.backend.getRequest('spicemailtoken/' + this.model.module + '/' + this.model.id).subscribe(result => {
-            if (result) {
+        this.backend.getRequest('spicemailtoken/' + this.model.module + '/' + this.model.id).subscribe({
+            next: (result) => {
                 this.token = result.tokenEmail;
                 this.clipboard.copy(this.token);
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_COPIED') + ': ' + this.token, 'success');
                 this.tokenLoading = false;
-            } else {
+            }, error: () => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR_COPYING_DATA'), 'error');
+                this.tokenLoading = false;
             }
         });
     }

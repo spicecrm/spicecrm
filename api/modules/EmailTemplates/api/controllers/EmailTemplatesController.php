@@ -55,7 +55,7 @@ class EmailTemplatesController{
 
         return $res->withJson([
             'subject' => $parsedTpl['subject'],
-            'body_html' => DBUtils::fromHtml(wordwrap($parsedTpl['body_html'], true)),
+            'body_html' => $parsedTpl['body_html'],
             'body' => $parsedTpl['body'],
         ]);
     }
@@ -75,7 +75,7 @@ class EmailTemplatesController{
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
         $parsedTpl = $emailTemplate->parse($bean);
 
-        return $res->withJson(['html' => DBUtils::fromHtml(wordwrap($parsedTpl['body_html'], true))]);
+        return $res->withJson(['html' => $parsedTpl['body_html']]);
     }
 
 }

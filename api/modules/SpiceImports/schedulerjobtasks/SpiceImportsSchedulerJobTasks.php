@@ -13,16 +13,18 @@ class SpiceImportsSchedulerJobTasks
      * Process SpiceImports Schedules
      */
     public function processSpiceImports(): bool {
-        echo 'importing';
+        //for testing
+//        echo 'importing';
         /* @var SpiceImport $import */
         $import = BeanFactory::getBean('SpiceImports');
         $importList = $import->get_list("date_entered", "spiceimports.status = 'q'", 0 , 5);
         $success = true;
+       // if(!$importList['list']) echo 'nothing to import';
         /* @var SpiceImport $thisImport */
         foreach($importList['list'] as $thisImport) {
             $thisImport->objectimport = (object)json_decode( $thisImport->data,true );
             $result = $thisImport->process();
-            $success = ( $success and $result['status'] !== 'imported' );
+            $success = ( $success && $result['status'] == 'imported' );
         }
         return $success;
     }

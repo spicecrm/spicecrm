@@ -67,7 +67,7 @@ export class objectmerge {
             const duplicateMergeEnabled = (modelFields[mergeField].duplicate_merge == '1' || modelFields[mergeField].duplicate_merge === true || modelFields[mergeField].duplicate_merge === undefined || modelFields[mergeField].duplicate_merge == 'enabled');
 
             if (duplicateMergeEnabled && modelFields[mergeField].type != 'id'
-                && (modelFields[mergeField].source != 'non-db' || modelFields[mergeField].type == 'linked' || modelFields[mergeField].name.endsWith('_address'))) {
+                && (modelFields[mergeField].source != 'non-db' || modelFields[mergeField].type == 'linked' ||modelFields[mergeField].type == 'linkedparent' || modelFields[mergeField].name.endsWith('_address'))) {
                 this.mergeFields.push(modelFields[mergeField]);
             }
         }
