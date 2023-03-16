@@ -24,6 +24,7 @@ import {SpiceKanbanSumField} from "./components/spicekanbansumfield";
 import {SpiceKanban} from "./components/spicekanban";
 import {SpiceKanbanTile} from "./components/spicekanbantile";
 import {SpiceKanbanManager} from "./components/spicekanbanmanager";
+import {SpiceKanbanManagerList} from "./components/spicekanbanmanagerlist";
 
 @NgModule({
     imports: [
@@ -46,7 +47,8 @@ import {SpiceKanbanManager} from "./components/spicekanbanmanager";
         SpiceKanbanSumField,
         SpiceKanban,
         SpiceKanbanTile,
-        SpiceKanbanManager
+        SpiceKanbanManager,
+        SpiceKanbanManagerList
     ]
 })
 export class ModuleSpicePath {
