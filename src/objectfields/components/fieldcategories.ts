@@ -79,6 +79,12 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      */
     private setFieldName: boolean = false;
 
+    /**
+     * holds eascape key listener
+     * @private
+     */
+    public escKeyListener: any;
+
     constructor(
         public model: model,
         public view: view,
@@ -140,6 +146,13 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * add escape key listener
+     */
+    public ngAfterViewInit() {
+        this.subscribeToESCKeyUp();
+    }
+
     public ngOnDestroy() {
         super.ngOnDestroy();
         if(this.clickListener) this.clickListener();
@@ -166,11 +179,23 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     public openDropDown(){
         if(!this.dropDownOpen){
             this.dropDownOpen = true;
-            this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
+            // this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
         }
     }
 
     /**
+     * actions to perform when ESC key is pressed
+     */
+    public subscribeToESCKeyUp() {
+        this.escKeyListener = this.renderer.listen('document', 'keyup', (event: KeyboardEvent) => {
+            if (event.key != 'Escape') return;
+            this.dropDownOpen = false;
+            this.resetTmpSearchTerm();
+        });
+    }
+
+    /**
+     * @deprecated: use (click) event in template
      * handle the click event on the document
      *
      * @param event
@@ -211,8 +236,14 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             }
         }
 
+        // get the display name
+        let d = values.length == 0 ? undefined : values.join('/');
+
+        // set the name on the model so we are sure we have it
+        if(d != this.value) this.model.setField(this.fieldname, d, true);
+
         // if we do not have any values
-        return values.length == 0 ? undefined : values.join('/');
+        return d;
     }
 
     public setFavorites(e: MouseEvent){
@@ -258,7 +289,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         // set the name field
         if(this.fieldconfig.setname) fields.name = this.display_value;
         // update if we have any fields to update
-        if(fields.length > 0) this.model.setFields(fields);
+        if(Object.getOwnPropertyNames(fields).length > 0) this.model.setFields(fields);
 
         // close the dropdown
         this.dropDownOpen = false;
@@ -275,21 +306,22 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 
     /**
      * clears the categories
-     *
+     * set empty string so that empty value for removed categories can be sent
      * @private
      */
     public clearCategories() {
         let i = 0;
         let fields: any = {};
         while(i < this.categoryFields.length){
-            fields[this.categoryFields[i]] = undefined;
+            fields[this.categoryFields[i]] = '';
             i++
         }
-
         // clear the fieldname
         fields[this.fieldname] = undefined;
 
         this.model.setFields(fields);
+
+        this.resetTmpSearchTerm();
     }
 
     public search(_e) {
@@ -298,6 +330,16 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         this.searchTimeOut = window.setTimeout(() => {
             this.searchterm = this.tempsearchterm
         }, 1000);
+
+        if(this.tempsearchterm != ''){
+            this.openDropDown();
+        }
     }
 
+    /**
+     * set empty string in tempsearchterm
+     */
+    public resetTmpSearchTerm(){
+        this.tempsearchterm = '';
+    }
 }

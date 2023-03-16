@@ -3,11 +3,11 @@
     </workbench-header-controls>
 </workbench-header>
 <div [system-overlay-loading-spinner]="isLoading" class="slds-grid" system-to-bottom-noscroll>
-    <div class="slds-size--1-of-3 slds-scrollable--y">
+    <div class="slds-size--1-of-5 slds-scrollable--y">
         <system-tree [customButtonsContainer]="customButtonsContainer" [sourceList]="roles"
                      [config]="{collapsible: false}"
                      [(selectedItem)]="selectedRoleId"
-                     (selectedItemChange)="loadRoleModules($event)"></system-tree>
+                     (selectedItemChange)="handleSelectedItemChange($event)"></system-tree>
         <ng-template #customButtonsContainer let-itemId>
             <button (click)="editRole(itemId)" class="slds-button slds-button--icon-border">
                 <system-button-icon icon="edit" size="small"></system-button-icon>
@@ -20,34 +20,34 @@
         <div class="slds-align--absolute-center slds-border--top slds-p-around--small slds-theme--shade"
              style="position: sticky; bottom: 0;">
             <button (click)="addRole()" class="slds-button">
-                <system-button-icon icon="new" size="medium"></system-button-icon>
+                <system-button-icon icon="new" size="large"></system-button-icon>
             </button>
         </div>
     </div>
-    <div class="slds-size--2-of-3 slds-theme--default slds-border--left slds-scrollable--y">
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout">
+    <div class="slds-size--4-of-5 slds-scrollable--y ">
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer">
             <thead>
             <tr class="slds-line-height_reset">
-                <th class="" scope="col">
+                <th class="slds-text-align_right" scope="col" style="width:4.25rem">
                     <div class="slds-truncate"></div>
                 </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate">id</div>
-                </th>
+<!--                <th class="" scope="col">-->
+<!--                    <div class="slds-truncate">id</div>-->
+<!--                </th>-->
 <!--                <th class="" scope="col">-->
 <!--                    <div class="slds-truncate">sysuirole_id</div>-->
 <!--                </th>-->
                 <th class="" scope="col">
-                    <div class="slds-truncate">module</div>
+                    <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
                 </th>
 <!--                <th class="" scope="col">-->
 <!--                    <div class="slds-truncate">sequence</div>-->
 <!--                </th>-->
                 <th class="" scope="col">
-                    <div class="slds-truncate">version</div>
+                    <div class="slds-truncate"><system-label label="LBL_VERSION"></system-label></div>
                 </th>
                 <th class="" scope="col">
-                    <div class="slds-truncate">package</div>
+                    <div class="slds-truncate"><system-label label="LBL_PACKAGE"></system-label></div>
                 </th>
                 <th class="slds-cell_action-mode" scope="col">
 
@@ -62,17 +62,17 @@
                 <td>
                     <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
                                          style="cursor:move"></system-utility-icon>
-                    <system-utility-icon *ngIf="viewProvider.view.mode != 'edit' || !!roleModule.id" size="xx-small"
+                    <system-utility-icon *ngIf="viewProvider.view.mode != 'edit' || !!roleModule.id" size="x-small"
                                          [icon]="roleModule.scope == 'global' ? 'world' : 'people'" ></system-utility-icon>
                     <span class="slds-form-element__control">
-                        <system-input-radio-button-group *ngIf="viewProvider.view.mode == 'edit' && !roleModule.id" [(ngModel)]="roleModule.scope" [inputOptions]="[{icon: 'people', value: 'custom'}, {icon: 'world', value: 'global'}]"></system-input-radio-button-group>
+                        <system-input-radio-button-group *ngIf="viewProvider.view.mode == 'edit' && !roleModule.id && !!editableRoleScope" [(ngModel)]="roleModule.scope" [inputOptions]="[{icon: 'people', value: 'custom'}, {icon: 'world', value: 'global'}]"></system-input-radio-button-group>
                     </span>
                 </td>
-                <td>
-                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.id}}</div>
-                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" type="text"
-                           [ngModel]="roleModule.id" [disabled]="true">
-                </td>
+<!--                <td>-->
+<!--                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.id}}</div>-->
+<!--                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" type="text"-->
+<!--                           [ngModel]="roleModule.id" [disabled]="true">-->
+<!--                </td>-->
 <!--                <td>-->
 <!--                    <div *ngIf="viewProvider.view.mode != 'edit'"-->
 <!--                         class="slds-truncate">{{roleModule.sysuirole_id}}</div>-->
@@ -81,7 +81,7 @@
 <!--                </td>-->
                 <td>
                     <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.module}}</div>
-                    <system-input-module *ngIf="viewProvider.view.mode == 'edit'"
+                    <system-input-module *ngIf="viewProvider.view.mode == 'edit'" [filterModules]="filterModules"
                                          [(ngModel)]="roleModule.module"></system-input-module>
                 </td>
 <!--                <td>-->
@@ -100,20 +100,20 @@
                 <td>
                     <div class="slds-truncate slds-cell_action-mode">
                         <div *ngIf="viewProvider.view.mode != 'edit'" role="group"
-                             class="slds-button-group slds-float--right ng-star-inserted">
-                            <button (click)="startEditing(viewProvider, roleModule)"
-                                    class="slds-button slds-button--icon-border">
-                                <system-button-icon icon="edit" size="small"></system-button-icon>
-                                <!--<system-utility-icon  [icon]="roleModule.scope == 'global' ? 'world' : 'people'" size="xx-small"></system-button-icon>
--->
-                            </button>
+                             class="slds-button slds-float--right ng-star-inserted">
+<!--                            <button (click)="startEditing(viewProvider, roleModule)"-->
+<!--                                    class="slds-button slds-button&#45;&#45;icon-border">-->
+<!--                                <system-button-icon icon="edit" size="small"></system-button-icon>-->
+<!--                                &lt;!&ndash;<system-utility-icon  [icon]="roleModule.scope == 'global' ? 'world' : 'people'" size="xx-small"></system-button-icon>-->
+<!--&ndash;&gt;-->
+<!--                            </button>-->
                             <button (click)="deleteRoleModule(roleModule,viewProvider)"
                                     class="slds-button slds-button--icon-border">
                                 <system-button-icon icon="delete" size="small"></system-button-icon>
                             </button>
                         </div>
                         <div *ngIf="viewProvider.view.mode == 'edit'" role="group"
-                             class="slds-button-group slds-float--right ng-star-inserted">
+                             class="slds-button slds-float--right ng-star-inserted">
                             <button (click)="cancelEditing(viewProvider, index)"
                                     class="slds-button slds-button--icon-border">
                                 <system-button-icon icon="close" size="small"></system-button-icon>

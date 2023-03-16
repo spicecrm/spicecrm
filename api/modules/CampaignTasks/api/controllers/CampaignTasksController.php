@@ -182,7 +182,7 @@ class CampaignTasksController
         $campaignLog = BeanFactory::getBean('CampaignLog');
         $list = $campaignLog->get_list(
             "planned_activity_date DESC",
-            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type != 'completed'",
+            "campaigntask_id = '{$args['id']}' AND IFNULL(planned_activity_date, '$now') <= '$now' AND activity_type NOT IN ('completed','converted')",
             $getParams['offset'] ?: 0,
             $getParams['limit'] ?: 10,
             $getParams['limit'] ?: -1);
@@ -326,7 +326,7 @@ class CampaignTasksController
         # reset the current user for the system after parsing
         AuthenticationController::getInstance()->setCurrentUser($current_user);
 
-        return $res->withJson(['html' => DBUtils::fromHtml(wordwrap($parsedTpl['body_html'], true))]);
+        return $res->withJson(['html' => $parsedTpl['body_html'], true]);
     }
 
     /**

@@ -15,11 +15,11 @@ class EmailAddressesCheckECG
         $emailAddressArray = [];
         $domainArray = [];
 
-        $records = $db->query("SELEDCT id, email_address FROM email_addresses WHERE deleted = 0 AND _regulatory_blocked IS NULL LIMIT 1000");
+        $records = $db->query("SELECT id, email_address FROM email_addresses WHERE deleted = 0 LIMIT 0, 5000");
         while($record = $db->fetchByAssoc($records)){
             $email_address_lowercase = strtolower($record['email_address']);
 
-            $emailAddressArray[hash('sha512', $email_address_lowercase)] = $record['id'];
+            $emailAddressArray[hash('sha512', $email_address_lowercase)] = ['id' => $record['id'], 'email_address' => $record['email_address']];
 
             // get the domain
             $email_address_array = explode('@', $email_address_lowercase);
@@ -53,11 +53,21 @@ class EmailAddressesCheckECG
 
         $logEntryHandler = new APILogEntryHandler();
         $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'ecg');
-
+        $logEntryHandler->writeOutogingLogEntry();
         $response = curl_exec($curl);
+        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
 
         // parse response
+        $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        $response_body = substr($response, $header_size);
+        $responce_content = json_decode($response_body);
 
+        $blockedEmailAddresses = [];
+        $blockedDomain = [];
+        foreach ($responce_content->emails as $emailHash){
+            if(isset($emailAddressArray[$emailHash])) $blockedEmailAddresses[] = $emailAddressArray[$emailHash];
+            if(isset($domainArray[$emailHash])) $blockedDomain[] = $domainArray[$emailHash];
+        }
 
         return true;
     }

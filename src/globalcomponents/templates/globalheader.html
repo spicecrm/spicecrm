@@ -2,7 +2,7 @@
     <div *ngIf="session.authData.sessionId && session.authData.loaded === true">
         <global-header-trial-bar *ngIf="isTenant"></global-header-trial-bar>
         <!--system-dynamic-component *ngIf="isTenant" component="SystemTenantHeaderBar"></system-dynamic-component-->
-        <global-header-top></global-header-top>
+        <global-header-top *ngIf="!userPreferences.toUse.globalHeaderCollapsed"></global-header-top>
         <global-navigation-tabbed *ngIf="!issmall && tabbed" [progressWidth]="progressWidth" [showProgressBar]="pendingRequestsTotal > 0"></global-navigation-tabbed>
         <global-navigation *ngIf="!issmall && !tabbed"></global-navigation>
         <!-- for the mobile view a border bar-->

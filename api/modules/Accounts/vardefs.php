@@ -269,6 +269,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_LEADS',
             ],
+        'prospects' => [
+            'name' => 'prospects',
+            'type' => 'link',
+            'relationship' => 'contacts_prospects',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'vname' => 'LBL_PROSPECT',
+            'duplicate_merge' => 'disabled',
+            'module' => 'Prospects'
+            ],
         'campaigns' =>
             [
                 'name' => 'campaigns',
@@ -417,7 +427,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
         ],
         'accountccdetails' => [
             'name' => 'accountccdetails',
-            'vname' => 'LBL_ACOUNTCCDETAILS_LINK',
+            'vname' => 'LBL_ACCOUNTCCDETAILS',
             'type' => 'link',
             'relationship' => 'accounts_accountccdetails',
             'link_type' => 'one',
@@ -533,6 +543,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'bean_name' => 'Letter',
             'vname' => 'LBL_LETTERS',
         ],
+        'hcmtrainings' =>
+            [
+                'name' => 'hcmtrainings',
+                'type' => 'link',
+                'relationship' => 'hcmtrainings_accounts',
+                'module' => 'HCMTrainings',
+                'bean_name' => 'HCMTraining',
+                'source' => 'non-db',
+                'vname' => 'LBL_HCMTRAININGS',
+            ],
     ],
     'indices' => [
         ['name' => 'idx_accnt_id_del', 'type' => 'index', 'fields' => ['id', 'deleted']],

@@ -1,7 +1,19 @@
 /**
  * @module ObjectComponents
  */
-import { AfterViewInit, Component, ComponentRef, ElementRef, Injector, Input, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import {
+    AfterViewInit,
+    Component,
+    ComponentRef,
+    ElementRef,
+    Injector,
+    Input,
+    OnChanges,
+    OnDestroy,
+    Renderer2, SimpleChanges,
+    ViewChild,
+    ViewContainerRef
+} from "@angular/core";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {model} from "../../services/model.service";
 import {language} from "../../services/language.service";
@@ -47,7 +59,7 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
         ])
     ]
 })
-export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
+export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChanges {
 
     /**
      * an object array with base64 files
@@ -139,6 +151,17 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
     public ngAfterViewInit() {
         this.setModelData();
 
+        setTimeout(() => this.loadFiles(), 10);
+
+        // subscribe to the broadcast to get a merge notification or reload the file list
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(message => this.handleMessage(message))
+        );
+
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+
         // default category
         if(this.componentconfig.hasOwnProperty('defaultcategory') && this.componentconfig.defaultcategory){
             this.defaultCategoryId = this.componentconfig.defaultcategory;
@@ -147,14 +170,6 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
         if(!this.defaultCategoryId && !this.selectedCategoryId) {
             this.selectedCategoryId = '*';
         }
-
-        setTimeout(() => this.loadFiles(), 10);
-
-        // subscribe to the broadcast to get a merge notification or reload the file list
-        this.subscriptions.add(
-            this.broadcast.message$.subscribe(message => this.handleMessage(message))
-        );
-
     }
 
     /**
