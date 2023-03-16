@@ -6,6 +6,7 @@ import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
+import {toast} from "../../../services/toast.service";
 
 /**
  * renders a table with potentials for the account and allows allocation of the opportunity to specific potentials
@@ -38,7 +39,7 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
      */
     public isLoading: boolean = true;
 
-    constructor(public language: language, public model: model, public backend: backend) {
+    constructor(public language: language, public model: model, public backend: backend, public toast: toast) {
 
     }
 
@@ -80,8 +81,8 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
         };
 
         // load from backend
-        this.backend.getRequest('module/Accounts/' + this._account_id + '/related/potentials', params).subscribe(
-            accountpotentials => {
+        this.backend.getRequest('module/Accounts/' + this._account_id + '/related/potentials', params).subscribe({
+            next: (accountpotentials) => {
                 this.account_potentials = [];
                 for (let id in accountpotentials) {
                     this.account_potentials.push(this.model.utils.backendModel2spice('Potentials', accountpotentials[id]));
@@ -90,10 +91,11 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
                 }
                 // set to loaded
                 this.isLoading = false;
-            },
-            error => {
+            }, error: () => {
                 this.isLoading = false;
-            });
+                this.toast.sendToast('LBL_ERR_LOADING_REL_ACCOUNTS', "error");
+            }
+        });
     }
 
     /**
