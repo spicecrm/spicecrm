@@ -11,6 +11,7 @@ import {backend} from "../../../services/backend.service";
  * renders a table with potentials for the account and allows allocation of the opportunity to specific potentials
  */
 @Component({
+    selector: 'potentials-opportunity-allocation-tab',
     templateUrl: "../templates/potentialsopportunityallocationtab.html"
 })
 export class PotentialsOpportunityAllocationTab {

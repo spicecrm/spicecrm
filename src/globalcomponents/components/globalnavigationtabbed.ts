@@ -75,6 +75,13 @@ export class GlobalNavigationTabbed implements OnDestroy {
     }
 
     /**
+     * no boirder top when context bar is collapsed
+     */
+    get contextbarStyle(){
+        return this.userPreferences.toUse.globalHeaderCollapsed ? {'border-top': '0px'} : {};
+    }
+
+    /**
      * set the display sub tabs value
      */
    public setDisplaySubTabs(activeTab) {
