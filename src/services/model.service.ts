@@ -1608,6 +1608,9 @@ export class model implements OnDestroy {
                     this.setField(toField, (value === 'true' || value === '1') ? true : ((value === 'false' || value === '0') ? false : null));
                     break;
                 default:
+                    // set nullable in validation rules
+                    if(value == '(NULL)') value = null;
+
                     this.setField(toField, value);
                     break;
             }
