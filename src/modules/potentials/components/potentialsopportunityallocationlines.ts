@@ -3,7 +3,6 @@
  */
 import {Component, Input, OnChanges, SimpleChanges} from "@angular/core";
 import {model} from "../../../services/model.service";
-import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
@@ -32,6 +31,9 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
      */
     public account_potentials: any[];
 
+    /**
+     * holds company code
+     */
     public companyCode: string = '';
 
     /**
@@ -39,8 +41,11 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
      */
     public isLoading: boolean = true;
 
-    constructor(public language: language, public model: model, public backend: backend, public toast: toast) {
-
+    constructor(
+        public language: language,
+        public model: model,
+        public backend: backend,
+        public toast: toast) {
     }
 
     /**
