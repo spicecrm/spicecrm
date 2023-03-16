@@ -343,7 +343,8 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                     'text' => (SpiceUtils::translate($field_defs['vname'], $module) != '') ? SpiceUtils::translate($field_defs['vname'], $module) : $field_defs['name'],
                     'leaf' => true,
                     'options' => $field_defs['options'],
-                    'label' => $field_defs['vname']
+                    'label' => $field_defs['vname'],
+                    'source' => $field_defs['source']
                 ];
             }
         }

@@ -2420,6 +2420,10 @@ class SpiceBean
                                         $tmpBean->$name->delete($tmpBean->id, $related_id);
                                     //add to primary bean
                                     $this->$name->add($related_id);
+
+                                    // re-index the related bean
+                                    $relatedBean = BeanFactory::getBean($relName, $related_id, ['relationships' => false]);
+                                    SpiceFTSHandler::getInstance()->indexBean($relatedBean);
                                 }
                             }
                         }

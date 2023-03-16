@@ -64,6 +64,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'importable' => 'false',
             'sensitive' => true,
         ],
+        'user_2fa_method' => [
+            'name' => 'user_2fa_method',
+            'vname' => 'LBL_2FA_METHOD',
+            'type' => 'varchar',
+            'len' => '30',
+        ],
         'user_image' => [
             'name' => 'user_image',
             'vname' => 'LBL_USER_IMAGE',
@@ -860,6 +866,30 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'relationship' => 'representatives_userabsences',
             'source' => 'non-db',
             'module' => 'UserAbsences'
+        ],
+        'userhcmmeasures' => [
+            'name' => 'userhcmmeasures',
+            'vname' => 'LBL_HCMMEASURES',
+            'type' => 'link',
+            'relationship' => 'users_hcmmeasures',
+            'source' => 'non-db',
+            'module' => 'HCMMeasures'
+        ],
+        'userhcmtrainings' => [
+            'name' => 'userhcmtrainings',
+            'vname' => 'LBL_HCMTRAININGS',
+            'type' => 'link',
+            'relationship' => 'users_hcmtrainings',
+            'source' => 'non-db',
+            'module' => 'HCMTrainings'
+        ],
+            'userhcmskills' => [
+            'name' => 'userhcmskills',
+            'vname' => 'LBL_HCMSKILLS',
+            'type' => 'link',
+            'relationship' => 'users_hcmskills',
+            'source' => 'non-db',
+            'module' => 'HCMSkills',
         ],
         // service orders many to many
         'serviceorders' => [

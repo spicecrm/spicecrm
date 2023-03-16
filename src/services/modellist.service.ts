@@ -648,7 +648,8 @@ export class modellist implements OnDestroy {
      * load the list data from the configuration service
      */
     public loadFromSession(): boolean {
-        this.useCache = true;
+        if (!this.useCache) return false;
+
         let sessionData = JSON.parse(this.configuration.getData('lastlist' + this.module));
         if (!!sessionData && sessionData.buckets?.bucketfield == this.buckets?.bucketfield) {
             this.listData = sessionData.listdata;

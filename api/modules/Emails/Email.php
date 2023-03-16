@@ -572,8 +572,8 @@ class Email extends SpiceBean
         }
         // END
 
-        // check if the string we have is HTML (shoudl start with an <html> tag). if not we add a default style so the UI can display it properly
-        if (!str_starts_with($this->body, '<html')) {
+        // if body does NOT contain html elements, add a default style so the UI can display it properly
+        if (!$this->containsHTMLElem($this->body)) {
             $this->body = '<html><head><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
         }
 
@@ -622,6 +622,24 @@ class Email extends SpiceBean
 
         // return the bean
         return $ret;
+    }
+
+    /**
+     * checks wheter the E-mail body contains HTML Elements
+     * @param string $body (body of the E-Mail)
+     * @param array $htmlElements (collection of html elements)
+     * @return bool
+     */
+    function containsHTMLElem(string $emailBody): bool
+    {
+        // to of HTML elements check if the body contains one of the html elements.
+        $htmlElements = ['<html>','<head>','<style>', '<div>'];
+
+        foreach($htmlElements as $htmlElement) {
+            if (stripos($emailBody, $htmlElement) !== false) return true;
+        }
+
+        return false;
     }
 
     public
