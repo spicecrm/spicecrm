@@ -308,7 +308,7 @@ class SpiceInstaller
 
         $url = $protocol . "://" . $postData['server'] . ":" . $postData['port'] . "/";
 
-        $response = $this->curlCall($this->curl, $url, $postData['sllverify'], $postData['username'], $postData['password']);
+        $response = $this->curlCall($this->curl, $url, $postData['sslverify'], $postData['username'], $postData['password']);
 
         if (!empty($response)) {
             if (version_compare($response->version->number, '7.5', '<') ) {
