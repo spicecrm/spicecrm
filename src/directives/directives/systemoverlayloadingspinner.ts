@@ -1,52 +1,45 @@
 /**
  * @module DirectivesModule
  */
-import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, Renderer2} from '@angular/core';
+import {language} from "../../services/language.service";
 
 /**
  * a directive that displays a loading spinner inside an overlay container over the parent
  */
-@Directive({
-    selector: '[system-overlay-loading-spinner]'
+@Component({
+    selector: '[system-overlay-loading-spinner]',
+    template: `
+        <div *ngIf="isLoading" class="slds-align--absolute-center slds-is-relative" style="position: absolute; height: 100%; width: 100%; z-index: 999; top: 0; left: 0; background-color: rgba(0,0,0,0.25);">
+            <div class="slds-grid slds-grid--vertical slds-grid--vertical-align-center">
+                <div style="width: 48px; border-radius: 50%; box-shadow: 0 0 5px 0 #555; padding: .5rem; background-color: #fff; color: #080707;">
+                    <div class="cssload-container">
+                        <div class="cssload-double-torus" style="width: 32px; height: 32px;"></div>
+                    </div>
+                </div>
+                <button *ngIf="cancellable" (click)="onCancel.emit()" class="slds-button slds-button--brand slds-m-top--x-small">
+                    {{language.getLabel('LBL_CANCEL')}}
+                </button>
+            </div>
+        </div>
+    <ng-content></ng-content>`,
+    host: {
+        class: 'slds-is-relative'
+    }
 })
 export class SystemOverlayLoadingSpinnerDirective {
 
-    public overlayElement: HTMLElement;
+    @Output() public onCancel = new EventEmitter<void>();
 
     constructor(
         public renderer: Renderer2,
+        public language: language,
         public elementRef: ElementRef
     ) {
-        this.defineOverlayElement();
     }
 
-    @Input('system-overlay-loading-spinner') set isLoading(bool) {
-        if (bool) this.renderer.appendChild(this.elementRef.nativeElement, this.overlayElement);
-        else this.renderer.removeChild(this.elementRef.nativeElement, this.overlayElement);
-    }
+    @Input('system-overlay-loading-spinner')
+    public isLoading: boolean = false;
 
-    /**
-     * define an overlay div
-     */
-    public defineOverlayElement() {
-        this.overlayElement = this.renderer.createElement('div');
-        this.renderer.setStyle(this.overlayElement, 'position', 'absolute');
-        this.renderer.addClass(this.overlayElement, 'slds-align--absolute-center');
-        this.renderer.setStyle(this.overlayElement, 'height', '100%');
-        this.renderer.setStyle(this.overlayElement, 'width', '100%');
-        this.renderer.setStyle(this.overlayElement, 'z-index', '999');
-        this.renderer.setStyle(this.overlayElement, 'top', '0');
-        this.renderer.setStyle(this.overlayElement, 'left', '0');
-        this.renderer.setStyle(this.overlayElement, 'background-color', 'rgba(0,0,0,0.25)');
-        this.renderer.setProperty(this.overlayElement, 'innerHTML', `
-            <div style="border-radius: 50%; box-shadow: 0 0 5px 0 #555; padding:.75rem; background-color:#fff; color:#080707">
-                <div class="cssload-container">
-                    <div class="cssload-double-torus"></div>
-                </div>
-            </div>
-        `);
-
-        // set relative position to the reference
-        this.renderer.addClass(this.elementRef.nativeElement, 'slds-is-relative');
-    }
+    @Input() public cancellable: boolean = false;
 }
