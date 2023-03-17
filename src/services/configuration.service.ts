@@ -302,7 +302,7 @@ export class configurationService {
         // emit the key
         this.datachanged$.emit(key);
 
-        if (!updateStore) return;
+        if (!updateStore || !this.keysLoaderTaskID[key]) return;
 
         // update the stored load task data
         this.storeService.readStore('loaddata', 'loadtaskdata', this.keysLoaderTaskID[key]).subscribe({
