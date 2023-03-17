@@ -95,6 +95,18 @@
         </div>
     </fieldset>
     <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+        <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_FTS_GLOBALFILTER"></system-label></legend>
+        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_GLOBALFILTER')"></system-icon-help-text>
+        <div class="slds-form-element__control">
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-gutters_direct-small">
+                <div class="slds-col slds-size--1-of-1 slds-grid slds-grid--vertical-align-center">
+                    <label class="slds-form-element__label"><system-label label="LBL_ GLOBALFILTER"></system-label></label>
+                    <system-input-module-filter class="slds-grow" [(ngModel)]="ftsconfiguration.moduleFtsSettings.globalfilter"></system-input-module-filter>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
         <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_GEO_SEARCH_PARAMETERS"></system-label></legend>
         <div class="slds-form-element__control">
             <system-checkbox [(ngModel)]="ftsconfiguration.moduleFtsSettings.geosearch"><system-label label="LBL_GEO_SEARCH"></system-label></system-checkbox>
