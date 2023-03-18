@@ -182,6 +182,7 @@ class SpiceDictionaryItems
         return array_values($this->dictionaryItems);
     }
 
+
     /**
      * adds an item
      *
@@ -199,6 +200,27 @@ class SpiceDictionaryItems
 
         // write the cache
         $this->writeCache();
+    }
+
+
+    /**
+     * removes the definition
+     *
+     * @param $id
+     * @return void
+     * @throws \Exception
+     */
+    public function deleteItem($id)
+    {
+        // get the def
+        $def = $this->dictionaryItems[$id];
+        // write the record
+        SystemDeploymentCR::deleteDBEntry($this->getItemTable($id), $id, $def['name']);
+        // remove the definition
+        unset($this->dictionaryItems['id']);
+        // write Cache
+        $this->writeCache();
+
     }
 
     /**
