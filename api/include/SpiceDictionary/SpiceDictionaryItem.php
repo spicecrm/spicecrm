@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryItem
@@ -264,12 +265,12 @@ class SpiceDictionaryItem
                 if ($currentFieldDefs[$field]) $dropColumns[] = $field;
             }
             // if there are columsn to be dropped .. drop them
-            if (count($dropColumns) > 0) $db->delete_columns($dictionaryDefinition->tablename, $dropColumns);
+            if (!SpiceConfig::getInstance()->get('systemvardefs.preventdrop') &&  count($dropColumns) > 0) $db->delete_columns($dictionaryDefinition->tablename, $dropColumns);
 
         }
 
-        // determine from which tabel to delete the item
-        $table = $this->itemDefinition->scope == 'c' ? 'syscustomdictionaryitems' : 'sysdictionaryitems';
-        return SystemDeploymentCR::deleteDBEntry($table, $this->id, $this->name);
+        SpiceDictionaryItems::getInstance()->deleteItem($this->id);
+
+        return true;
     }
 }
