@@ -245,6 +245,14 @@ $routes = [
         ]
     ],
     [
+        'method'      => 'get',
+        'route'       => '/configuration/spiceui/core/module/hooks',
+        'class'       => SystemUIController::class,
+        'function'    => 'getAllHooks',
+        'description' => 'selects all global and custom hooks',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ],
+    [
         'method' => 'post',
         'route' => '/configuration/spiceui/core/roles/{roleid}/{userid}/{action}',
         'oldroute' => '/spiceui/core/roles/{roleid}/{userid}/{default}',

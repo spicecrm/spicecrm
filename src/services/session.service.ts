@@ -5,7 +5,6 @@ import {Injectable} from '@angular/core';
 import {HttpHeaders} from "@angular/common/http";
 import {loggerService} from './logger.service';
 import {broadcast} from './broadcast.service';
-import { metadata } from './metadata.service';
 
 declare var moment: any;
 
@@ -59,6 +58,11 @@ export class session {
     };
 
     /**
+     * device id to be used for 2fa
+     */
+    public deviceID;
+
+    /**
      * an object any component can write data into and read data from. Helpful to keep sessiondata
      */
     public sessionData: any = {};
@@ -68,15 +72,44 @@ export class session {
      */
     public developerMode: boolean = false;
 
-
-    // public footercontainer: any = null;
-
-    // add an observable for the auth data
-    // public authDataObs: Subject<authDataIf> = new Subject<authDataIf>();
-    // public authDataObs$: Observable<authDataIf> = this.authDataObs.asObservable();
-
-    constructor( public logger: loggerService, public broadcast: broadcast ) {
+    constructor( public logger: loggerService, public broadcast: broadcast) {
         this.logger.setSession(this);
+        this.generateDeviceID();
+    }
+
+    /**
+     * generate device id for the browser to be used for 2fa
+     */
+    public generateDeviceID() {
+
+        const storageDeviceId = localStorage.getItem('Device-ID');
+
+        if (!storageDeviceId) {
+            this.deviceID = crypto.randomUUID();
+            localStorage.setItem('Device-ID', this.deviceID);
+        } else {
+            this.deviceID = storageDeviceId;
+        }
+    }
+
+    /**
+     * load the tokens from the browser storage
+     */
+    public loadFromStorage() {
+        this.authData.sessionId = sessionStorage.getItem('OAuth-Token') ?? localStorage.getItem('OAuth-Token');
+    }
+
+    /**
+     * handle access token storage
+     * @param rememberMe
+     */
+    public storeToken(rememberMe: boolean) {
+
+        if (!rememberMe) {
+            sessionStorage.setItem('OAuth-Token', this.authData.sessionId);
+        } else {
+            localStorage.setItem('OAuth-Token', this.authData.sessionId);
+        }
     }
 
     /**
@@ -189,6 +222,7 @@ export class session {
 
         this.sessionData = {};
 
+        localStorage.removeItem('OAuth-Token');
         sessionStorage.clear();
     }
 

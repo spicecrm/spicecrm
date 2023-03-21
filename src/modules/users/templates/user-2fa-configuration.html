@@ -1,0 +1,55 @@
+<div class="slds-box slds-m-around--small slds-p-around--none">
+    <system-collapsable-tab [system-overlay-loading-spinner]="isLoading" tabtitle="LBL_2FA_CONFIGURATION" class="slds-m-around--small spice-display-block">
+        <div *ngIf="!view.isEditMode(); else editModel" class="slds-form-element slds-size--1-of-4 slds-m-top--small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_METHOD"></system-label>
+            </label>
+            <field-generic-display [ngSwitch]="!this.system2FAConfig?.require_on ? model.data?.user_2fa_method : this.system2FAConfig?.method" [editable]="!this.system2FAConfig?.require_on">
+                <span *ngSwitchCase="'one_time_password'">
+                    <system-label label="LBL_TOTP_AUTHENTICATION"></system-label>
+                </span>
+                <span *ngSwitchCase="'sms'">
+                    <system-label label="LBL_SMS"></system-label>
+                </span>
+                <span *ngSwitchCase="'email'">
+                    <system-label label="LBL_EMAIL"></system-label>
+                </span>
+                <span *ngSwitchDefault>
+                    <system-label label="LBL_NONE"></system-label>
+                </span>
+                <span *ngIf="!!this.system2FAConfig.require_on" class="slds-m-left--xx-small">
+                    ( <system-label label="LBL_SET_BY_SYSTEM_ADMINISTRATOR"></system-label> )
+                </span>
+            </field-generic-display>
+        </div>
+        <ng-template #editModel>
+            <div class="slds-form-element slds-size--1-of-4 slds-m-top--small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_METHOD"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select [(ngModel)]="model.data.user_2fa_method" (ngModelChange)="handleMethodChange($event)" class="slds-select">
+                            <option value="">
+                                <system-label label="LBL_NONE"></system-label>
+                            </option>
+                            <option *ngFor="let method of methods" [value]="method.value">
+                                <system-label [label]="method.label"></system-label>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-grid slds-p-vertical--large">
+                <button (click)="model.cancelEdit()" class="slds-button slds-button--neutral">
+                    <system-label label="LBL_CANCEL"></system-label>
+                </button>
+                <button (click)="save()" class="slds-button slds-button--brand">
+                    <system-label label="LBL_SAVE"></system-label>
+                </button>
+            </div>
+        </ng-template>
+
+    </system-collapsable-tab>
+</div>

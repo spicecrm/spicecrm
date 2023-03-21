@@ -3,7 +3,7 @@
         <h3 class="slds-text-heading--small slds-truncate slds-m-right--small">
             {{workflowtask.name}}
         </h3>
-        <span class="slds-badge" [ngClass]="badgeClass"><system-display-datetime [date]="workflowtask.date_due"></system-display-datetime></span>
+        <span class="slds-badge" [ngClass]="badgeClass"><system-display-datetime [date]="dateDue"></system-display-datetime></span>
     </div>
     <div *ngIf="workflowtask.description" class="slds-p-around--x-small">
         {{workflowtask.description}}

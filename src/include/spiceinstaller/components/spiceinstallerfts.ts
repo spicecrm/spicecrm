@@ -53,7 +53,7 @@ export class SpiceInstallerFTS {
             username: this.spiceinstaller.elasticUser,
             password: this.spiceinstaller.elasticpassword,
             https: this.spiceinstaller.elastichttps,
-            sllverify: this.spiceinstaller.elasticSSLVerify,
+            sslverify: this.spiceinstaller.elasticSSLVerify,
             loglevel: 1,
             schedulerpackagesize: 2500,
             protocol: this.spiceinstaller.transferProtocol
