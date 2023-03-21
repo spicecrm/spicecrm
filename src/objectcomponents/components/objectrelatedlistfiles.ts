@@ -155,6 +155,10 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         if(this.componentconfig.hasOwnProperty('defaultcategory') && this.componentconfig.defaultcategory){
             this.defaultCategoryId = this.componentconfig.defaultcategory;
         }
+        // in case no defaultCategoryId is set, load all & display all files
+        if(!this.defaultCategoryId && !this.selectedCategoryId) {
+            this.selectedCategoryId = '*';
+        }
 
         setTimeout(() => this.loadFiles(), 10);
 
