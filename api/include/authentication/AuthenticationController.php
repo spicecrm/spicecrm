@@ -11,13 +11,13 @@ use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\authentication\LDAPAuthenticate\LDAPAuthenticate;
 use SpiceCRM\includes\authentication\OAuth2Authenticate\OAuth2Authenticate;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRM2FAUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAccessUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAccessUtils;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAuthenticate;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantPasswordUtils;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
@@ -73,6 +73,11 @@ class AuthenticationController
 
     public $errorReason;
     public $errorCode;
+    /**
+     * holds the device token 
+     * @var string 
+     */
+    public string $deviceID = '';
 
     /**
      * The Singleton's constructor should always be private to prevent direct
@@ -316,7 +321,7 @@ class AuthenticationController
      * @param object $authData
      * @param AuthResponse $authResponse
      * @param string $authType 'token' | 'credentials'
-     * @throws NotFoundException | UnauthorizedException
+     * @throws NotFoundException | UnauthorizedException | \Exception
      */
     private function handleSuccessfulAuthentication(object $authData, AuthResponse $authResponse, string $authType)
     {
@@ -334,8 +339,6 @@ class AuthenticationController
 
         $this->checkPasswordExpire($userObj);
 
-        $this->checkTimeBasedOnetimePassword($userObj);
-
         // retrieve impersonation user
         if (!empty($authData->impersonationUser)) {
             $impersonatingUser = $this->getUserByUsername($authData->impersonationUser);
@@ -343,6 +346,10 @@ class AuthenticationController
         }
 
         $this->setCurrentUser($userObj);
+
+        if ($authType == 'credentials') {
+            SpiceCRM2FAUtils::handle2FAFlow($userObj, $authData);
+        }
 
         global $current_language;
         $current_language = $userObj->getPreference('language');
@@ -380,23 +387,6 @@ class AuthenticationController
 
         if (!$accessUtils::checkIpAddress() && !User::isAdmin_byName($authData->username)) {
             throw (new UnauthorizedException('No access from this IP address. Contact the admin.', 11))->setIPblocked(true);
-        }
-    }
-
-    /**
-     * throw an exception if the time-based one-time password is required and was not activated
-     * @param User $userObj
-     * @return void
-     * @throws UnauthorizedException
-     */
-    private function checkTimeBasedOnetimePassword(User $userObj)
-    {
-        if ( SpiceConfig::getInstance()->config['login_methods']['totp_authentication_required'] and !TOTPAuthentication::checkTOTPActive( $userObj->id )) {
-            $language = $userObj->getPreference('language');
-            $necessaryLabels = LanguageManager::getSpecificLabels( $language ?: SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
-                'LBL_SAVE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'LBL_CODE', 'LBL_CANCEL', 'LBL_CODE'
-            ]);
-            throw ( new UnauthorizedException('TOTP.', 12 ))->setDetails(['labels' => $necessaryLabels]);
         }
     }
 
@@ -581,7 +571,8 @@ class AuthenticationController
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
             'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays,
-            'user' => $moduleHandler->mapBean($currentUser)
+            'user' => $moduleHandler->mapBean($currentUser),
+            'deviceID' => $this->deviceID
         ];
 
         // Is it a portal user? And the GDPR consent for portal users is configured?

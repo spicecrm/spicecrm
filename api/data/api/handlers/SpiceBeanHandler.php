@@ -1104,9 +1104,9 @@ class SpiceBeanHandler
             $auditLog[$auditRecord['transaction_id']]['data'][] = [
                 'field_name' => $auditRecord['field_name'],
                 'data_type' => $auditRecord['data_type'],
-                'before_value_string' => $auditRecord['before_value_string'],
+                'before_value_string' => $this->makeValueReadable($auditRecord['before_value_string']),
                 'before_value_text' => $auditRecord['before_value_text'],
-                'after_value_string' => $auditRecord['after_value_string'],
+                'after_value_string' => $this->makeValueReadable($auditRecord['after_value_string']),
                 'after_value_text' => $auditRecord['after_value_text'],
             ];
         }
@@ -1185,9 +1185,9 @@ class SpiceBeanHandler
                 $auditLog[$auditRecord['transaction_id']]['audit_log'][] = [
                     'field_name' => $auditRecord['field_name'],
                     'data_type' => $auditRecord['data_type'],
-                    'before_value_string' => $auditRecord['before_value_string'],
+                    'before_value_string' => $this->makeValueReadable($auditRecord['field_name'], $auditRecord['before_value_string']),
                     'before_value_text' => $auditRecord['before_value_text'],
-                    'after_value_string' => $auditRecord['after_value_string'],
+                    'after_value_string' => $this->makeValueReadable($auditRecord['field_name'], $auditRecord['after_value_string']),
                     'after_value_text' => $auditRecord['after_value_text'],
                 ];
             } else {
@@ -1197,6 +1197,26 @@ class SpiceBeanHandler
 
         return $params['grouped'] ? array_values($auditLog) : $auditLog;
 
+    }
+
+    /**
+     * Make some field values readable
+     * Do only if config['auditlog']['readable'] is set and true
+     *
+     * @param $value
+     * @return mixed
+     */
+    public function makeValueReadable($field_name, $value) {
+        if(!SpiceConfig::getInstance()->config['auditlog']['readable']) {
+            return $value;
+        }
+
+        switch($field_name){
+            case 'assigned_user_id':
+                $user = BeanFactory::getBean('Users', $value, ['relationships' => false]);
+                return $user->user_name;
+        }
+        return $value;
     }
 
 
