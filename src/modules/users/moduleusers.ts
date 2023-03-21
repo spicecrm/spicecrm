@@ -26,6 +26,7 @@ import {UserDeactivateButton} from "./components/userdeactivatebutton";
 import {UserDeactivateModal} from "./components/userdeactivatemodal";
 import {UserDeactivateSelectUser} from "./components/userdeactivateselectuser";
 import {UserSignature} from "./components/usersignature";
+import {User2FAConfiguration} from "./components/user2faconfiguration";
 
 @NgModule({
     imports: [
@@ -51,7 +52,8 @@ import {UserSignature} from "./components/usersignature";
         UserDeactivateButton,
         UserDeactivateModal,
         UserDeactivateSelectUser,
-        UserSignature
+        UserSignature,
+        User2FAConfiguration
     ]
 })
 export class ModuleUsers {

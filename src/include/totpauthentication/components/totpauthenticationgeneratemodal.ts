@@ -10,6 +10,7 @@ import {language} from "../../../services/language.service";
 import {take} from 'rxjs/operators';
 import { model } from '../../../services/model.service';
 import { session } from '../../../services/session.service';
+import {Subject} from "rxjs";
 
 @Component({
     selector: "totp-authentication-generate-modal",
@@ -48,6 +49,8 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
 
     @Input() public onBehalfUserId: string;
 
+    public response = new Subject<boolean>();
+
     constructor(public language: language, public metadata: metadata, public modal: modal, public backend: backend, public toast: toast, public model: model, public session: session ) {
 
     }
@@ -55,7 +58,6 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
     public ngOnInit() {
         let loading = this.modal.await(this.language.getLabel('MSG_TOTP_GENERATING_CODE'));
         this.backend.postRequest(`authentication/totp/generate`, { onBehalfUserId: this.onBehalfUserId })
-            .pipe(take(1))
             .subscribe({
             next: res => {
                 loading.emit(true);
@@ -63,13 +65,16 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
                     this.QRCode = 'data:image/png;base64,' + res.qrcode;
                     this.secret = res.secret;
                     this.name = res.name;
+                    this.response.next(true);
                 } else {
                     this.toast.sendToast('Error generating Code', 'error');
+                    this.response.next(false);
                     this.close();
                 }
             },
             error: () => {
                 this.toast.sendToast('Error generating Code', 'error');
+                this.response.next(false);
                 this.close();
                 loading.emit(true);
             }});
@@ -86,17 +91,19 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
 
     public save() {
         this.backend.putRequest(`authentication/totp/validate/${this.code}`, { onBehalfUserId: this.onBehalfUserId })
-            .pipe(take(1))
             .subscribe( {
                 next: res => {
                     if( res.validated ) {
+                        this.response.next(true);
                         this.close();
                     } else {
+                        this.response.next(false);
                         this.toast.sendToast( 'Error validating your code', 'warning', 'the code you entered is not valid, please try again', true );
                     }
                     this.code = '';
                 },
                 error: () => {
+                    this.response.next(false);
                     this.toast.sendToast( 'Error validating your code', 'error', 'there as an internal error validating your request', true );
                     this.code = '';
                 }

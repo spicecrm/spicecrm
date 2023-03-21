@@ -21,6 +21,15 @@
                                 <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small" tabindex="2" placeholder="Password" />
                             </div>
                         </div>
+                        <div *ngIf="twoFactorAuthCodeRequired" class="slds-form-element slds-m-vertical--small slds-grid slds-grid--vertical-align-center">
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
+                                <system-utility-icon icon="scan" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
+                                <input [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" placeholder="enter code" />
+                            </div>
+                        </div>
+                        <div class="slds-m-bottom--small">
+                            <system-checkbox-toggle [(ngModel)]="rememberMe" name="remember-me" label="LBL_KEEP_ME_LOGGED_IN"></system-checkbox-toggle>
+                        </div>
                         <button [disabled]="loggingIn" type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
                         <div class="slds-p-top--small">
                             <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event)"></global-login-oauth2>

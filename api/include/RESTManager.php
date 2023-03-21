@@ -311,6 +311,8 @@ class RESTManager
         } elseif ($user && $pass) {
             $authData['username'] = $user;
             $authData['password'] = $pass;
+            $authData['code2fa'] = $headers['code2fa'];
+            $authData['deviceID'] = $headers['device-id'];
         }
 
         return (object) ['authData' => (object) $authData, 'authType' => $authType];

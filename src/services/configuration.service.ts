@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable, EventEmitter} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 
 import {session} from './session.service';
 import {broadcast} from './broadcast.service';
@@ -9,13 +9,9 @@ import {broadcast} from './broadcast.service';
 import {Router} from '@angular/router';
 import {HttpClient} from "@angular/common/http";
 import {Title} from "@angular/platform-browser";
-import {BehaviorSubject, Observable, Subject, throwError} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 import {SpiceInstaller} from "../include/spiceinstaller/components/spiceinstaller";
-
-/**
- * @ignore
- */
-declare var _: any;
+import {StoreService} from "./store.service";
 
 /**
  * holds application configuration
@@ -69,18 +65,15 @@ export class configurationService {
      * emits when a data with a give key is changed
      */
     public datachanged$: EventEmitter<string> = new EventEmitter<string>();
+    public keysLoaderTaskID: { [key: string]: string } = {};
 
-    /**
-     * handler to the indexed DB
-     *
-     * @private
-     */
-    private db: any;
+    private storeDBName: string = 'config';
 
     constructor(public http: HttpClient,
                 public session: session,
                 public broadcast: broadcast,
                 public title: Title,
+                public storeService: StoreService,
                 public router: Router,) {
 
         // add a new behaviour subject
@@ -88,26 +81,27 @@ export class configurationService {
 
         this.getSysinfo();
 
-        // open a DB for the config
-        this.openDB('config').then(
-            db => {
-                this.db = db;
-                // reinitialize from the database
-                this.readStoreAll('appdata').subscribe({
-                    next: (data) => {
-                        for(let d of data){
-                            this.appdata[d.id] = d.data;
-                        }
-                    }
-                })
-            }
-        );
+        this.storeService.initializeStores(this.storeDBName, ['appdata'], 'id')
+            .then(() =>
+                this.storeService.readStoreAll(this.storeDBName, 'appdata')
+            )
+            .then((data: { id: string, data }[]) => {
+                data.forEach(d => this.appdata[d.id] = d.data)
+            });
+
 
         // add a listener to the broadcast to catch the logout
         this.broadcast.message$.subscribe(message => this.handleLogout(message));
 
         // Update Theme when configuration has been loaded.
         // this.loaded$.subscribe(() => this.updateThemeColors());
+    }
+
+    /**
+     * returns the system name
+     */
+    get systemName() {
+        return this.data.name ? this.data.name : 'SpiceCRM';
     }
 
     /**
@@ -121,119 +115,13 @@ export class configurationService {
         }
     }
 
-
-    /**
-     * opens an indexed DB in the browser to store the config data
-     *
-     * @param dbname
-     * @private
-     */
-    private openDB(dbname): Promise<IDBDatabase> {
-        return new Promise<IDBDatabase>((resolve, reject) => {
-            if (!indexedDB) {
-                reject('IndexedDB not available');
-            }
-            const request = indexedDB.open(dbname, 2);
-            let db: IDBDatabase;
-            request.onsuccess = (event: Event) => {
-                db = request.result;
-                resolve(db);
-            };
-            request.onerror = (event: Event) => {
-                reject(`IndexedDB error: ${request.error}`);
-            };
-            request.onupgradeneeded = (event: Event) => {
-                db = request.result;
-                db.createObjectStore("appdata", {keyPath: "id"});
-                resolve(db);
-            };
-        });
-    }
-
-    /**
-     * writes a data set record to the db
-     * @param id
-     * @param data
-     */
-    public writeStore(store, id, data) {
-        // just return if we do not have a db
-        if(!this.db) return;
-
-        // process the write
-        id = id.toLowerCase();
-        this.db.transaction([store], "readwrite").objectStore(store).put({data, id});
-    }
-
-    /**
-     * reads a data set record from the DB
-     * @param id
-     */
-    public readStore(store, id?): Observable<any> {
-        // if we do not have a db return an empty array
-        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
-
-        let retSubject = new Subject<any>();
-        let transaction = this.db.transaction([store], "readwrite");
-        let objectStore = transaction.objectStore(store);
-        let request = objectStore.get(id);
-        request.onerror = (event) => {
-            retSubject.error(false);
-        };
-        request.onsuccess = (event) => {
-            if(event.target.result?.data) {
-                retSubject.next(event.target.result.data);
-                retSubject.complete();
-            } else {
-                retSubject.error(false);
-            }
-        };
-        return retSubject.asObservable();
-    }
-
-    /**
-     * reads all records from the DB in form of an array with the data attribute
-     *
-     * @param id
-     */
-    public readStoreAll(store): Observable<any> {
-        // if we do not have a db return an empty array
-        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
-
-        // process the request
-        let retSubject = new Subject<any>();
-        let transaction = this.db.transaction([store], "readwrite");
-        let objectStore = transaction.objectStore(store);
-        let request = objectStore.getAll()
-        request.onerror = (event) => {
-            retSubject.error(false);
-        };
-        request.onsuccess = (event) => {
-            if(event.target.result && event.target.result.length > 0) {
-                let records = [];
-                for(let r of event.target.result){
-                    records.push(r);
-                }
-                retSubject.next(records);
-                retSubject.complete();
-            } else {
-                retSubject.error(false);
-            }
-        };
-        return retSubject.asObservable();
-    }
-
     /**
      * clears the db
      *
      * @private
      */
-    public clearDB(){
-        // only if we have a database
-        if(!this.db) return;
-
-        // clear the database
-        let transaction = this.db.transaction(["appdata"], "readwrite");
-        transaction.objectStore('appdata').clear();
+    public clearDB() {
+        this.storeService.clearDB(this.storeDBName, ['appdata']);
     }
 
     /**
@@ -264,13 +152,6 @@ export class configurationService {
     }
 
     /**
-     * returns the system name
-     */
-    get systemName() {
-        return this.data.name ? this.data.name : 'SpiceCRM';
-    }
-
-    /**
      * calls sysinfo on the backend and stores the data
      */
     public getSysinfo() {
@@ -287,13 +168,13 @@ export class configurationService {
                     this.data.displayloginsidebar = res.displayloginsidebar;
                     this.data.loginSidebarUrl = res.loginSidebarUrl;
                     this.data.allowForgotPass = res.allowForgotPass;
-                    this.data.name = res.name ? res.name : 'SpiceCRM',
-                        this.loaded$.next(true);
+                    this.data.name = res.name ? res.name : 'SpiceCRM';
+                    this.loaded$.next(true);
                 }
                 this.initialized = true;
                 this.reloading = false;
 
-                if(res.assets){
+                if (res.assets) {
                     this.setAssets(res.assets);
                 }
 
@@ -306,7 +187,7 @@ export class configurationService {
             },
             error: (err: any) => {
                 // if we figure the system is not installed add the route to the routes available so it can also be called and redirect to the installer
-                if(err.status == '503' && err.error.error.errorCode == 'crmNotInstalled') {
+                if (err.status == '503' && err.error.error.errorCode == 'crmNotInstalled') {
                     this.enableinstall = true;
                     this.router.config.unshift({
                         path: 'install',
@@ -324,9 +205,8 @@ export class configurationService {
      *
      * @param asset
      */
-    public getAsset(asset){
-        if(this.assets && this.assets.find(a => a.assetkey == asset)?.assetvalue)
-        {
+    public getAsset(asset) {
+        if (this.assets && this.assets.find(a => a.assetkey == asset)?.assetvalue) {
             return this.assets.find(a => a.assetkey == asset).assetvalue;
         }
         return undefined;
@@ -338,9 +218,9 @@ export class configurationService {
      * @param asset
      * @param value
      */
-    public setAsset(asset, value){
+    public setAsset(asset, value) {
         let index = this.assets.findIndex(a => a.assetkey == asset);
-        if(index >= 0){
+        if (index >= 0) {
             this.assets[index].assetvalue = value;
         } else {
             this.assets.push({assetkey: asset, assetvalue: value});
@@ -354,29 +234,12 @@ export class configurationService {
      * @param assets
      * @param emit
      */
-    public setAssets(assets, emit = false){
+    public setAssets(assets, emit = false) {
         this.assets = assets;
 
         this.setColors();
 
-        if(emit) this.loaded$.next(true);
-    }
-
-    /**
-     * sets the colors
-     *
-     * @private
-     */
-    private setColors(){
-        // chek that we have colors
-        if(!this.getAsset('colors')) return;
-
-        // get the color object
-        let colorObj = JSON.parse(this.getAsset('colors'));
-        for(let assetColor in colorObj){
-            document.documentElement.style.setProperty('--' + assetColor, colorObj[assetColor]);
-        }
-
+        if (emit) this.loaded$.next(true);
     }
 
     /**
@@ -428,16 +291,37 @@ export class configurationService {
      *
      * @param key
      * @param data
+     * @param updateStore
      */
-    public setData(key, data) {
-        // console.log('setData',key,data);
-        this.appdata[key] = data;
+    public setData(key, data, updateStore = true) {
 
+        this.appdata[key] = data;
         // write also to the store
-        this.writeStore('appdata', key, data);
+        this.storeService.writeStore(this.storeDBName, 'appdata', {id: key, data});
 
         // emit the key
         this.datachanged$.emit(key);
+
+        if (!updateStore || !this.keysLoaderTaskID[key]) return;
+
+        // update the stored load task data
+        this.storeService.readStore('loaddata', 'loadtaskdata', this.keysLoaderTaskID[key]).subscribe({
+            next: (storeData) => {
+                storeData[key] = this.appdata[key];
+                this.storeService.writeStore('loaddata', 'loadtaskdata', {id: this.keysLoaderTaskID[key], data: storeData});
+            }
+        });
+    }
+
+    /**
+     * set the app data from the store and save the load task id, which the passed data are related to
+     * @param id
+     * @param key
+     * @param data
+     */
+    public setDataFromStore(id: string, key: string, data) {
+        this.keysLoaderTaskID[key] = id;
+        this.setData(key, data, false);
     }
 
     /**
@@ -520,6 +404,23 @@ export class configurationService {
                 icon.setAttribute('href', './config/favicon');
             }
         }
+    }
+
+    /**
+     * sets the colors
+     *
+     * @private
+     */
+    private setColors() {
+        // chek that we have colors
+        if (!this.getAsset('colors')) return;
+
+        // get the color object
+        let colorObj = JSON.parse(this.getAsset('colors'));
+        for (let assetColor in colorObj) {
+            document.documentElement.style.setProperty('--' + assetColor, colorObj[assetColor]);
+        }
+
     }
 
 }
