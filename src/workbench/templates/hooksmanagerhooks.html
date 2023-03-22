@@ -1,4 +1,4 @@
-<div system-to-bottom>
+<div system-to-bottom-noscroll>
     <div *ngIf="loading" class="slds-align--absolute-center">
         <system-spinner></system-spinner>
     </div>
@@ -18,27 +18,27 @@
 <!--                </div>-->
 <!--            </div>-->
 <!--        </div>-->
-        <div class="slds-size--4-of-4 slds-scrollable--y" >
-            <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-text-align_center slds-table--header-fixed">
+        <div class="slds-size--4-of-4 slds-scrollable--y" system-to-bottom >
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout slds-text-align_center slds-table--header-fixed">
                 <thead>
                 <tr class="">
                     <th class="slds-text-align_left" scope="col" style="width:5rem">
                         <div class="slds-truncate"></div>
                     </th>
-                    <th class="slds-text-align_center" scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small slds-m-vertical--xx-small"><system-label label="LBL_MODULE"></system-label></div>
                     </th>
-                    <th class="slds-text-align_center" scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_EVENT"></system-label></div>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_EVENT"></system-label></div>
                     </th>
-                    <th class="slds-text-align_center" scope="col">
+                    <th class="slds-text-align_center" scope="col" style="width:5rem">
                         <div class="slds-truncate"><system-label label="LBL_INDEX"></system-label></div>
                     </th>
-                    <th class="slds-text-align_center" scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_CLASS"></system-label></div>
+                    <th class="slds-text-align_left" scope="col" style="width:30rem">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_CLASS"></system-label></div>
                     </th>
-                    <th class="slds-text-align_center" scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_METHOD"></system-label></div>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_METHOD"></system-label></div>
                     </th>
                     <th class="slds-text-align_right" scope="col">
                         <div class="slds-truncate"></div>
@@ -61,11 +61,11 @@
                     <td class="slds-text-align_left">
                         <div class="slds-truncate">{{moduleHook.event}}</div>
                     </td>
-                    <td class="slds-text-align_left">
+                    <td class="slds-text-align_center" style="width:5rem">
                         <div class="slds-truncate">{{moduleHook.hook_index}}</div>
                     </td>
                     <td class="slds-text-align_left">
-                        <div class="slds-truncate">{{moduleHook.hook_class}}</div>
+                        <div class="slds-wrap">{{moduleHook.hook_class}}</div>
                     </td>
                     <td class="slds-text-align_left">
                         <div class="slds-truncate">{{moduleHook.hook_method}}</div>
