@@ -16,6 +16,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {ObjectRelatedCardHeader} from "../../../objectcomponents/components/objectrelatedcardheader";
 
 @Component({
+    selector: "potentials-manager",
     templateUrl: "../templates/potentialsmanager.html",
     providers: [relatedmodels],
     animations: [

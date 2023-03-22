@@ -891,6 +891,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'module' => 'HCMSkills',
         ],
+        'parent_id' => [
+            'name' => 'parent_id',
+            'vname' => 'LBL_PARENT_ID',
+            'type' => 'id',
+            'required' => true,
+        ],
+        'parent_type' => [
+            'name' => 'parent_type',
+            'vname' => 'LBL_PARENT_TYPE',
+            'type' => 'parent',
+            'dbType' => 'varchar',
+            'required' => true,
+            'len' => 255,
+        ],
+        'parent_name' => [
+            'name' => 'parent_name',
+            'type_name' => 'parent_type',
+            'id_name' => 'parent_id',
+            'vname' => 'LBL_RELATED_TO',
+            'type' => 'parent',
+            'source' => 'non-db',
+        ],
         // service orders many to many
         'serviceorders' => [
             'name' => 'serviceorders',
@@ -1149,6 +1171,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'rhs_key' => 'shop_id',
             'relationship_type' => 'one-to-many'
         ],
+        'employees_users' => [
+            'lhs_module' => 'Employees',
+            'lhs_table' => 'employees',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Users',
+            'rhs_table' => 'users',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many'
+        ]
     ]
 ];
 
