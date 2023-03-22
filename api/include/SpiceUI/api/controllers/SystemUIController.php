@@ -178,6 +178,24 @@ class SystemUIController{
         }
         return $res->withJson($hooks);
     }
+    /**
+     * get system and custom logic hooks
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getAllWebHooks(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $webhooks = [];
+        $query = $db->query("SELECT * FROM webhooks");
+        while( $row = $db->fetchByAssoc($query) ){
+            $webhooks[] = $row;
+        }
+        return $res->withJson($webhooks);
+    }
 
     /**
      * sets the system user role
