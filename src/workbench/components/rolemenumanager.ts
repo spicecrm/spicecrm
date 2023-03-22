@@ -257,26 +257,31 @@ export class RoleMenuManager implements OnInit {
      */
     public saveSequence() {
 
-            this.roleModules.forEach((entry, index) => {
-                entry.sequence = index;
-            });
+        this.roleModules.forEach((entry, index) => {
+            entry.sequence = index;
+        });
 
-            const globalEntries = this.roleModules.filter(e => e.scope == 'global').map(e => {
-                const clonedEntry = {...e};
-                delete clonedEntry.scope;
-                return clonedEntry;
-            });
+        const backendArray = [];
 
-            this.backend.postRequest(`configuration/configurator/sysuirolemodules`, null, {config: globalEntries})
-                .pipe(
-                    switchMap(() => {
-                        const customEntries = this.roleModules.filter(e => e.scope == 'custom').map(e => {
-                            const clonedEntry = {...e};
-                            delete clonedEntry.scope;
-                            return clonedEntry;
-                        });
-                        return this.backend.postRequest(`configuration/configurator/sysuicustomrolemodules`, null, {config: customEntries});
-                    }));
+        const globalEntries = this.roleModules.filter(e => e.scope == 'global').map(e => {
+            const clonedEntry = {...e};
+            delete clonedEntry.scope;
+            return clonedEntry;
+        });
+
+        if (globalEntries.length > 0) {
+            this.backend.postRequest(`configuration/configurator/sysuirolemodules`, null, {config: globalEntries});
+        }
+
+        const customEntries = this.roleModules.filter(e => e.scope == 'custom').map(e => {
+            const clonedEntry = {...e};
+            delete clonedEntry.scope;
+            return clonedEntry;
+        });
+
+        if (customEntries.length > 0) {
+            this.backend.postRequest(`configuration/configurator/sysuicustomrolemodules`, null, {config: customEntries});
+        }
     }
 }
 
