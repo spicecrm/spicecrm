@@ -204,7 +204,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Task'] = ['table' => 'tasks',
             'type'         => 'link',
             'relationship' => 'meetings_tasks',
             'source'       => 'non-db',
-            'vname'        => 'LBL_MEETINS',
+            'vname'        => 'LBL_MEETINGS',
         ],
         'leads' => [
             'name'         => 'leads',
