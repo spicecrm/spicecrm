@@ -1,16 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
     selector: 'spice-kanban-manager-list',
-    templateUrl: 'spice-kanban-manager-list.component.html'
+    templateUrl: '../templates/spicekanbanmanagerlist.html'
 })
 
-export class SpiceKanbanManagerList implements OnInit {
-    constructor() {
-        // just a comment to avoid errors
-    }
-
-    ngOnInit() {
-        // just a comment to avoid errors
-    }
+export class SpiceKanbanManagerList {
+    public enumValues = Array.from({length: 50}, (_,i) => 'Item ' + i);
 }

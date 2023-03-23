@@ -297,6 +297,8 @@ import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
     ],
     exports: [
         SortPipe,
+        WorkbenchHeader,
+        WorkbenchHeaderControls
     ]
 })
 export class WorkbenchModule {}
