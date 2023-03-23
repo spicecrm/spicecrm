@@ -293,6 +293,8 @@ import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmoda
     ],
     exports: [
         SortPipe,
+        WorkbenchHeader,
+        WorkbenchHeaderControls
     ]
 })
 export class WorkbenchModule {}

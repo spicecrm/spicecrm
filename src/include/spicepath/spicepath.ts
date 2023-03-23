@@ -25,6 +25,7 @@ import {SpiceKanban} from "./components/spicekanban";
 import {SpiceKanbanTile} from "./components/spicekanbantile";
 import {SpiceKanbanManager} from "./components/spicekanbanmanager";
 import {SpiceKanbanManagerList} from "./components/spicekanbanmanagerlist";
+import {WorkbenchModule} from "../../workbench/workbench.module";
 
 @NgModule({
     imports: [
@@ -35,7 +36,8 @@ import {SpiceKanbanManagerList} from "./components/spicekanbanmanagerlist";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
-        DragDropModule
+        DragDropModule,
+        WorkbenchModule
     ],
     declarations: [
         SpicePathTrack,
