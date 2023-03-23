@@ -1,1 +1,22 @@
-Kanban Manager
+<div class="slds-grid slds-grid--vertical">
+    <workbench-header titlelabel="LBL_KANBAN_MANAGER">
+        <workbench-header-controls>
+            <system-input-module></system-input-module>
+            <button class="slds-button slds-button--neutral">
+                <system-label label="LBL_PREVIEW"></system-label>
+            </button>
+            <button class="slds-button slds-button--brand">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </workbench-header-controls>
+    </workbench-header>
+    <div class="slds-grow slds-grid">
+        <div class="slds-size--1-of-5 slds-height_full">
+            <spice-kanban-manager-list></spice-kanban-manager-list>
+        </div>
+        <div class="slds-size--4-of-5 slds-height_full">
+
+        </div>
+
+    </div>
+</div>
