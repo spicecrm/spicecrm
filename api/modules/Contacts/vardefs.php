@@ -318,7 +318,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'documents_contacts',
                 'source' => 'non-db',
-                'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+                'vname' => 'LBL_DOCUMENTS',
             ],
             'leads' => [
                 'name' => 'leads',
