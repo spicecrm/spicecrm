@@ -408,7 +408,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'type' => 'link',
             'relationship' => 'documents_opportunities',
             'source' => 'non-db',
-            'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+            'vname' => 'LBL_DOCUMENTS',
         ],
         //@deprecated project. Use projects
 //        'project' => array(
