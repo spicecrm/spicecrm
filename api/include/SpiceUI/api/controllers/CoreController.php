@@ -49,7 +49,7 @@ class CoreController
 
         $languages = LanguageManager::getLanguages(true);
         $languages['required_labels'] = LanguageManager::getSpecificLabels( SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
-            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD'
+            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE'
         ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
