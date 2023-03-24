@@ -22,7 +22,7 @@ export class GitStatusOfRepository implements OnInit {
 
     public gitStatusRepository() {
         let loadingModal = this.modal.await('LBL_LOADING');
-        this.backend.postRequest(`/admin/repair/status`, null).subscribe((res: any) => {
+        this.backend.postRequest(`admin/repair/status`, null).subscribe((res: any) => {
             this.data = res.output;
             loadingModal.emit(true);
         });
