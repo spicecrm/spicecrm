@@ -160,6 +160,10 @@ export class GlobalLogin {
         return this.configuration.data.loginProgressBar;
     }
 
+    get loginLabels() {
+        return this.configuration.data.languages?.required_labels ?? {};
+    }
+
     /**
      * register to the resize event that handles if the news feed should be shown or not
      */
