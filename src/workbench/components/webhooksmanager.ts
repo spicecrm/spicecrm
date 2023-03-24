@@ -49,7 +49,7 @@ export class WebHooksManager {
      */
     public getWebHooks() {
         this.loading = true;
-        this.backend.getRequest('/configuration/spiceui/core/module/webhooks').subscribe(webhooks => {
+        this.backend.getRequest('configuration/spiceui/core/module/webhooks').subscribe(webhooks => {
             this.webHooks = webhooks;
             this.loading = false;
         });
