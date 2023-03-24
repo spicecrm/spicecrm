@@ -920,7 +920,7 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
 
         // enrich with relationships from sysdictionaryrelationships/ syscustomdictionaryrelationships
         if(self::isDbManaged()){
-            $sysDictRels = SpiceDictionaryHandler::getInstance()->getDictionaryRelationships();
+            $sysDictRels = SpiceDictionaryHandler::getInstance()->getDictionaryRelationships('a');
             foreach($sysDictRels as $relDef){
                 $relKey = $relDef['relationship_name'];
                 $relationships[$relKey] = array_merge(['name' => $relKey], $relDef);
