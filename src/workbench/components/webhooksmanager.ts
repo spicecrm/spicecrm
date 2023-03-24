@@ -62,7 +62,7 @@ export class WebHooksManager {
         if (this.hooksManager._module == '*') {
             return this.webHooks;
         }
-        return this.webHooks.filter(webHook =>webHook.module == this.hooksManager.module );
+        return this.webHooks.filter(webHook =>webHook.module == this.hooksManager._module );
     }
 
     /**
