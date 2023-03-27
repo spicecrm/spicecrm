@@ -164,7 +164,8 @@ export class HooksManagerHooks {
      */
     public toggleValue($e: MouseEvent, hook: LogicHookI) {
         $e.stopPropagation();
-        const message = hook.hook_active == 1 ? 'MSG_DEACTIVATE_RECORD' : 'MSG_ACTIVATE_RECORD'
+        const message = hook.hook_active == 1 ? 'MSG_DEACTIVATE' : 'MSG_ACTIVATE';
+        const toast = hook.hook_active == 1 ? 'LBL_DEACTIVATED' : 'LBL_ACTIVATED';
 
         this.modal.confirm(message, message).subscribe({
             next: (res) => {
@@ -177,7 +178,7 @@ export class HooksManagerHooks {
 
                     this.backend.postRequest(`configuration/configurator/${table}/${hook.id}`, null, {config: data}).subscribe({
                         next: () => {
-                            this.toast.sendToast('LBL_STATUS_CHANGED', 'success');
+                            this.toast.sendToast(toast, 'success');
                         }
                     });
                 }
