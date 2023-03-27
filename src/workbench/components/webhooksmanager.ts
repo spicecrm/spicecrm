@@ -142,7 +142,8 @@ export class WebHooksManager {
      */
     public toggleValue($e: MouseEvent, webHook: WebHookI) {
         $e.stopPropagation();
-        const message = webHook.active == 1 ? 'LBL_DEACTIVATE' : 'LBL_ACTIVATE'
+        const message = webHook.active == 1 ? 'MSG_DEACTIVATE' : 'MSG_ACTIVATE';
+        const toast = webHook.active == 1 ? 'LBL_DEACTIVATED' : 'LBL_ACTIVATED';
 
         this.modal.confirm(message, message).subscribe({
             next: (res) => {
@@ -152,7 +153,7 @@ export class WebHooksManager {
 
                     this.backend.postRequest(`configuration/configurator/${table}/${webHook.id}`, null, {config: webHook}).subscribe({
                         next: () => {
-                            this.toast.sendToast('LBL_STATUS_CHANGED', 'success');
+                            this.toast.sendToast(toast, 'success');
                         }
                     });
                 }
