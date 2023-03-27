@@ -903,7 +903,7 @@ if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
 if (file_exists("extensions/modules/ContactCCDetails")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactccdetails'] = [
         'name' => 'contactccdetails',
-        'vname' => 'LBL_CONTACTCCDETAILS_LINK',
+        'vname' => 'LBL_CONTACTCCDETAILS',
         'type' => 'link',
         'relationship' => 'contacts_contactccdetails',
         'link_type' => 'one',
