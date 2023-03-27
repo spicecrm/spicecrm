@@ -327,7 +327,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'link_type' => 'one',
             'module' => 'Accounts',
             'bean_name' => 'Account',
-            'vname' => 'LBL_ACCOUNTS',
+            'vname' => 'LBL_ACCOUNT',
         ],
         'contacts' => [
             'name' => 'contacts',

@@ -50,7 +50,7 @@ export class HooksManagerHooks {
      */
     public getLogicHooks() {
         this.loading = true;
-        this.backend.getRequest('/configuration/spiceui/core/module/hooks').subscribe(hooks => {
+        this.backend.getRequest('configuration/spiceui/core/module/hooks').subscribe(hooks => {
             this.hooks = hooks;
             this.loading = false;
         });
