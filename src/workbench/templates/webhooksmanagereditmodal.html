@@ -1,9 +1,8 @@
 <system-modal>
     <system-modal-header (close)="close()">
-        <system-label label="LBL_LOGIC_HOOK"></system-label>
+        <system-label label="LBL_WEB_HOOK"></system-label>
     </system-modal-header>
     <system-modal-content>
-
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
@@ -27,7 +26,7 @@
             </div>
             <div class="slds-form-element__control slds-size--4-of-4">
                 <label class="slds-form-element__label">
-                    <system-label label="LBL_SENT_DATA"></system-label>
+                    <system-label label="LBL_DATA_SENT"></system-label>
                 </label>
                 <system-checkbox [(ngModel)]="newWebHook.sent_data"></system-checkbox>
             </div>
@@ -52,13 +51,13 @@
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-4">
                 <label class="slds-form-element__label">
-                    <system-label label="LBL_VERIFYPEER"></system-label>
+                    <system-label label="LBL_VERIFY_PEER"></system-label>
                 </label>
                 <system-checkbox [(ngModel)]="newWebHook.ssl_verifypeer"></system-checkbox>
             </div>
             <div class="slds-form-element__control slds-size--1-of-4">
                 <label class="slds-form-element__label">
-                    <system-label label="LBL_VERIFYHOST"></system-label>
+                    <system-label label="LBL_VERIFY_HOST"></system-label>
                 </label>
                 <system-checkbox [(ngModel)]="newWebHook.ssl_verifyhost"></system-checkbox>
             </div>
