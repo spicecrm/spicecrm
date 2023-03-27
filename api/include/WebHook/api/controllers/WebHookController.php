@@ -37,7 +37,7 @@ class WebHookController{
         ];
         curl_setopt_array($curl, $curlOptions);
         $logEntryHandler = new APILogEntryHandler();
-        $logEntryHandler->generateOutgoingLogEntry($curlOptions, '/system/webhooks');
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, '/system/webhook');
         $logEntryHandler->writeOutogingLogEntry();
         $response = curl_exec($curl);
         $logEntryHandler->updateOutgoingLogEntry($curl, $response);
