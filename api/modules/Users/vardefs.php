@@ -895,14 +895,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'name' => 'parent_id',
             'vname' => 'LBL_PARENT_ID',
             'type' => 'id',
-            'required' => true,
+            'required' => false,
         ],
         'parent_type' => [
             'name' => 'parent_type',
             'vname' => 'LBL_PARENT_TYPE',
             'type' => 'parent',
             'dbType' => 'varchar',
-            'required' => true,
+            'required' => false,
             'len' => 255,
         ],
         'parent_name' => [
