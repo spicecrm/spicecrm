@@ -298,7 +298,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'type' => 'link',
             'module' => 'Projects',
             'relationship' => 'projects_products',
-            'side' => 'left',
             'source' => 'non-db',
         ]
     ],
