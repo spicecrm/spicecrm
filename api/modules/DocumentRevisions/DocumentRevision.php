@@ -73,8 +73,8 @@ class DocumentRevision extends SpiceBean {
                 foreach ($orgBeans as $orgBean){
                     $users = $orgBean->get_linked_beans('users', 'User');
                     foreach ($users as $user){
-                        $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, date_modified, deleted, user_id, document_revision_id,acceptance_status)";
-                        $insert_query .= " SELECT $guidSQL, $current_date, $current_date, '0', '$user->id', '$this->id', '0'";
+                        $insert_query = "INSERT INTO users_documentrevisions (id,date_entered, deleted, user_id, document_revision_id,acceptance_status)";
+                        $insert_query .= " SELECT $guidSQL, $current_date, '0', '$user->id', '$this->id', '0'";
 
                         $this->db->query($insert_query);
                     }
