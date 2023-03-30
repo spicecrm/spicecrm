@@ -77,7 +77,6 @@ export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
             this.model.module = route.params.module;
             this.model.id = route.params.id;
             this.model.getData(true, 'detailview', true, true).subscribe(data => {
-                // this.navigation.setActiveModule(this.moduleName, this.model.id, data.summary_text);
                 this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: this.model.module});
             });
 
