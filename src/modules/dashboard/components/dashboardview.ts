@@ -1,14 +1,15 @@
 /**
  * @module ModuleDashboard
  */
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
 import {view} from "../../../services/view.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'dashboard-view',
@@ -20,13 +21,14 @@ export class DashboardView implements OnInit {
     public panelwidth = 250;
     public showpanel: boolean = false;
 
-    constructor(public navigation: navigation,
+    constructor(public navigationTab: navigationtab,
                 public language: language,
                 public dashboardlayout: dashboardlayout,
                 public userpreferences: userpreferences,
                 public model: model,
                 public view: view,
-                public modellist: modellist) {
+                public modellist: modellist,
+                public metadata: metadata) {
     }
 
     get ismobile() {
@@ -49,7 +51,7 @@ export class DashboardView implements OnInit {
 
     public ngOnInit() {
         this.loadDashboards();
-        this.navigation.setActiveModule('Dashboards');
+        this.navigationTab.setTabInfo({displaymodule: 'Dashboards', displayname: this.metadata.getModuleDefs('Dashboards').module_label});
     }
 
     public loadDashboards() {
