@@ -20,8 +20,6 @@ export class ACLTerritorriesModulessmanager {
     activeType: string = '';
 
     constructor(public backend: backend, public navigation: navigation, public elementRef: ElementRef) {
-        // set theenavigation paradigm
-        // this.navigation.setActiveModule('Tasks');
     }
 
     get contentStyle(){
