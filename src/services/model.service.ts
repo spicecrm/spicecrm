@@ -64,6 +64,11 @@ export interface AddressRefMetadataI {
 @Injectable()
 export class model implements OnDestroy {
     /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     * @private
+     */
+    public httpRequestsRefID: string = _.uniqueId('model_http_ref_');
+    /**
      * @ignore
      */
     public _module: string = "";
@@ -516,7 +521,7 @@ export class model implements OnDestroy {
         // set laoding
         this.isLoading = setLoading;
 
-        this.backend.get(this.module, this.id, trackAction).subscribe({
+        this.backend.get(this.module, this.id, trackAction, this.httpRequestsRefID).subscribe({
             next: (res) => {
 
                 this.isLoading = false;
@@ -1124,7 +1129,7 @@ export class model implements OnDestroy {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId)
+        this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId, this.httpRequestsRefID)
             .subscribe({
                 next: (res) => {
                     this.data = res;
@@ -1191,7 +1196,7 @@ export class model implements OnDestroy {
     public delete(): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe({
+        this.backend.deleteRequest(`module/${this.module}/${this.id}`, null, this.httpRequestsRefID).subscribe({
             next: () => {
                 this.broadcast.broadcastMessage("model.delete", {
                     id: this.id,
@@ -1254,7 +1259,7 @@ export class model implements OnDestroy {
     public getAuditLog(filters: any = {}): Observable<any> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.getRequest(`module/${this.module}/${this.id}/auditlog`, filters).subscribe({
+        this.backend.getRequest(`module/${this.module}/${this.id}/auditlog`, filters, this.httpRequestsRefID).subscribe({
             next: (res) => {
                 responseSubject.next(res);
                 responseSubject.complete();
@@ -1608,6 +1613,9 @@ export class model implements OnDestroy {
                     this.setField(toField, (value === 'true' || value === '1') ? true : ((value === 'false' || value === '0') ? false : null));
                     break;
                 default:
+                    // set nullable in validation rules
+                    if(value == '(NULL)') value = null;
+
                     this.setField(toField, value);
                     break;
             }
@@ -1749,7 +1757,7 @@ export class model implements OnDestroy {
             if (fromModelData) {
                 let _modeldata = this.data;
                 _modeldata.id = this.id;
-                this.backend.checkDuplicates(this.module, _modeldata).subscribe({
+                this.backend.checkDuplicates(this.module, _modeldata, this.httpRequestsRefID).subscribe({
                     next: (res) => {
                         responseSubject.next(res);
                         responseSubject.complete();
@@ -1762,7 +1770,7 @@ export class model implements OnDestroy {
                     }
                 });
             } else {
-                this.backend.getDuplicates(this.module, this.id).subscribe({
+                this.backend.getDuplicates(this.module, this.id, this.httpRequestsRefID).subscribe({
                     next: (res) => {
                         responseSubject.next(res);
                         responseSubject.complete();
@@ -2003,6 +2011,8 @@ export class model implements OnDestroy {
 
         // unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();
+
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 
     public isDirty(): boolean {

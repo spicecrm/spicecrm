@@ -31,8 +31,7 @@ export interface RoleI {
 export interface LogicHookI {
     id: string;
     module: string;
-    // event: string;
-    event: 'select'|'before_relationship_add' | 'after_relationship_add' | 'before_relationship_delete' | 'after_relationship_delete' | 'before_save' | 'after_save' | 'before_retrieve' | 'after_retrieve' | 'before_delete' | 'after_delete' | 'before_restore' | 'after_restore' | 'after_save_completed' | 'before_logout';
+    event: 'before_relationship_add' | 'after_relationship_add' | 'before_relationship_delete' | 'after_relationship_delete' | 'before_save' | 'after_save' | 'before_retrieve' | 'after_retrieve' | 'before_delete' | 'after_delete' | 'before_restore' | 'after_restore' | 'after_save_completed' | 'before_logout';
     hook_index: number;
     hook_include: string;
     hook_class: string;
@@ -41,5 +40,18 @@ export interface LogicHookI {
     description: string;
     version: string;
     package: string;
-    type: string;
+    type: 'custom' | 'global';
+}
+
+export interface WebHookI {
+    id: string;
+    module: string;
+    event: 'create' | 'update' |'delete';
+    url: string;
+    active: 1 | 0;
+    sent_data: 1 | 0;
+    modulefilter_id: string;
+    fieldset_id: string;
+    ssl_verifypeer: 1 | 0;
+    ssl_verifyhost: 1 | 0
 }

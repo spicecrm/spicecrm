@@ -178,7 +178,7 @@ export class userpreferences {
                 // set the preference
                 if (!this.preferences[category]) this.preferences[category] = {};
                 this.preferences[category][name] = value;
-
+                this.configuration.setData('globaluserpreferences', this.preferences);
                 // ToDo: check what this is for
                 if (!this.unchangedPreferences[category]) this.unchangedPreferences[category] = {};
                 this.unchangedPreferences[category][name] = value;
@@ -211,6 +211,9 @@ export class userpreferences {
                     if (savedprefs.hasOwnProperty(prop)) this.preferences[category][prop] = savedprefs[prop];
                     else delete this.preferences[category][prop];
                 }
+
+                this.configuration.setData('globaluserpreferences', this.preferences);
+
                 this.unchangedPreferences[category] = savedprefs;
                 this.completePreferencesWithDefaults();
                 this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone. It might got changed.
