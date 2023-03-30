@@ -154,6 +154,17 @@ class SpiceInstaller
             $requirements['modules_dir'] = true;
         }
 
+        // create the cache directory if it does not exist
+        if (!file_exists('./cache')) {
+            mkdir('./cache', 0775, true);
+        }
+        // check if cache directory exists and is writable
+        if (!is_dir('./cache') && !is_writable('./cache')) {
+            $requirements['cache_dir'] = false;
+        } else {
+            $requirements['cache_dir'] = true;
+        }
+
         // create the custom directory if it does not exist
         if (!file_exists('./custom')) {
             mkdir('./custom', 0775, true);
@@ -297,7 +308,7 @@ class SpiceInstaller
 
         $url = $protocol . "://" . $postData['server'] . ":" . $postData['port'] . "/";
 
-        $response = $this->curlCall($this->curl, $url, $postData['sllverify'], $postData['username'], $postData['password']);
+        $response = $this->curlCall($this->curl, $url, $postData['sslverify'], $postData['username'], $postData['password']);
 
         if (!empty($response)) {
             if (version_compare($response->version->number, '7.5', '<') ) {
