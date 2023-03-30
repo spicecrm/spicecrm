@@ -341,10 +341,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 delete event.sequence;
                 event.existsInRanges = {};
 
-                const eventDaysDiff = Math.ceil(event.end.diff(event.start, 'day', true).toFixed());
 
-                if ((eventDaysDiff == 1 && event.start.date() != event.end.date() && event.end.hour() > 0) || eventDaysDiff > 1) {
-                    this.spreadEventIntoRanges(event, eventDaysDiff);
+                if (event.isMulti) {
+                    this.spreadEventIntoRanges(event);
 
                 } else {
                     const day = this.monthGrid[this.weeksIndices[event.start.week()]][this.daysIndices[`${event.start.month()}${event.start.date()}`]];
@@ -362,15 +361,34 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     /**
+     * get event days difference
+     * @private
+     * @param start
+     * @param end
+     * @param isAllDay
+     */
+    private getDaysDiff(start, end, isAllDay: boolean): number {
+
+        let eventDaysDiff = Math.ceil(end.diff(start, 'day', true).toFixed(1));
+
+        if (!isAllDay && eventDaysDiff > 0 && end.hour() == 0 && end.minute() == 0) {
+            eventDaysDiff--;
+        }
+
+        return eventDaysDiff;
+    }
+
+    /**
      * loop through the event days and push the event to the day.events
      * define the ranges that the event exists in
      * @param event
-     * @param eventDaysDiff
      * @private
      */
-    private spreadEventIntoRanges(event, eventDaysDiff: number) {
+    private spreadEventIntoRanges(event) {
 
-        Array.from({length: eventDaysDiff +1}, (_, i) => moment(event.start).add(i, 'days'))
+        const daysDiff = this.getDaysDiff(event.start, event.end, event.isAllDay);
+
+        Array.from({length: daysDiff +1}, (_, i) => moment(event.start).add(i, 'days'))
             .forEach(eventDay => {
                 const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[`${eventDay.month()}${eventDay.date()}`]];
 
@@ -379,17 +397,17 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 const lastDayOfWeek = this.monthGrid[this.weeksIndices[day.date.week()]][this.monthGrid[this.weeksIndices[day.date.week()]].length - 1].date;
 
                 if (!event.existsInRanges[day.date.week()]) {
-                    event.existsInRanges[day.date.week()] = {from: day.date.format('YYYY-MM-DD 00:00:00')};
+                    event.existsInRanges[day.date.week()] = {from: day.date.format()};
                     if (day.date.isSame(lastDayOfWeek, 'days')) {
-                        event.existsInRanges[day.date.week()].to = lastDayOfWeek.format('YYYY-MM-DD 00:00:00');
+                        event.existsInRanges[day.date.week()].to = lastDayOfWeek.format();
                     }
-                    if (day.date.isSame(event.end, 'days')) {
-                        event.existsInRanges[day.date.week()].to = day.date.format('YYYY-MM-DD 00:00:00');
+                    if (day.date.isSame(event.end, 'days') || daysDiff == 0) {
+                        event.existsInRanges[day.date.week()].to = day.date.format();
                     }
                 } else if (!event.existsInRanges[day.date.week()].to && event.end.isBefore(lastDayOfWeek)) {
-                    event.existsInRanges[day.date.week()].to = event.end.format('YYYY-MM-DD 00:00:00');
+                    event.existsInRanges[day.date.week()].to = event.end.format();
                 } else if (!event.existsInRanges[day.date.week()].to) {
-                    event.existsInRanges[day.date.week()].to = lastDayOfWeek.format('YYYY-MM-DD 00:00:00');
+                    event.existsInRanges[day.date.week()].to = lastDayOfWeek.format();
                 }
 
                 if (isNaN(event.sequence)) {
@@ -534,7 +552,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         }
 
         const startDate = moment(range.from);
-        const length = Math.ceil(moment(range.to).diff(startDate, 'day', true)) + 1;
+        const length = this.getDaysDiff(startDate, moment(range.to), event.isAllDay) + 1;
+
         const sheetContainer = this.sheetContainer.element.nativeElement;
 
         return {
