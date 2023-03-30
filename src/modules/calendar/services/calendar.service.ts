@@ -427,14 +427,14 @@ export class calendar implements OnDestroy {
                                 event.color = this.eventColor;
                                 break;
                             case 'absence':
-                                event.start = moment(event.start).second(1);
-                                event.end = moment(event.end).second(1);
+                                event.start = moment(event.start);
+                                event.end = moment(event.end);
                                 event.isMulti = true;
                                 event.color = this.absenceColor;
                                 break;
                             case 'other':
-                                event.start = moment(event.start).year(start.year()).second(1);
-                                event.end = moment(event.end).year(start.year()).second(1);
+                                event.start = moment(event.start).year(start.year());
+                                event.end = moment(event.end).year(start.year());
                                 event.isMulti = true;
                                 break;
                         }
@@ -1045,9 +1045,11 @@ export class calendar implements OnDestroy {
         this.userPreferences.loadPreferences("Calendar")
             .pipe(take(1))
             .subscribe(calendars => {
-                this.ownerCalendarVisible = calendars.hasOwnProperty('ownerVisible') ? calendars.ownerVisible: true;
-                this.setUserCalendars(calendars.Users, false);
-                this.setOtherCalendars(calendars.Other, false);
+                this.ownerCalendarVisible = calendars?.hasOwnProperty('ownerVisible') ? calendars?.ownerVisible: true;
+                if (calendars) {
+                    this.setUserCalendars(calendars.Users, false);
+                    this.setOtherCalendars(calendars.Other, false);
+                }
                 this.userPreferencesLoaded = true;
             });
 
