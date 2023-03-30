@@ -30,8 +30,9 @@ export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
                 if(!this.moduleName){
                     this.moduleName = route.path.split("/").pop();
                     this.navigationtab.activeRoute.params.module = this.moduleName;
-                    this.navigationtab.setTabInfo({displaymodule: this.moduleName, displayname: this.metadata.getModuleDefs(this.moduleName).module_label});
                 }
+
+                this.navigationtab.setTabInfo({displaymodule: this.moduleName, displayname: this.metadata.getModuleDefs(this.moduleName).module_label});
 
                 if (this.initialized) {
                     this.buildContainer();
