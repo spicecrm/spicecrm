@@ -19,7 +19,7 @@ export class Home {
         // fallback to value set in active role
         if(!this.hasDashboardSet){
             let activeRole = this.metadata.getActiveRole();
-            if(activeRole.default_dashboardset){
+            if(activeRole && activeRole.default_dashboardset && activeRole.default_dashboardset){
                 this.hasDashboardSet = true;
             }
         }
