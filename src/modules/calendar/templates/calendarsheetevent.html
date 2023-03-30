@@ -5,7 +5,6 @@
         <ng-container *ngIf="!event.saving; else saving">
                 <div class="slds-grid slds-grid--align-spread slds-p-horizontal--xx-small" style="height: 100%;">
                     <div class="slds-truncate" style="height: inherit; width: 100%">
-                        {{model.data.name}} {{event.start.format('DD HH')}} - {{event.end.format('DD HH')}}
                         <object-record-fieldset-horizontal-list *ngIf="headerFieldset; else summaryContainer" [ngClass]="textClass" [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>
                         <ng-template #summaryContainer>
                             <span system-model-popover class="slds-text-link--reset" [ngClass]="textClass">{{model.data.summary_text}}</span>
