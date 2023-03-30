@@ -483,7 +483,7 @@ export class FieldsetManager {
 
                                 delete fieldset.items;
                                 delete fieldset.type;
-                                delete fieldset.fid;
+                                delete fieldset.id;
 
 
                                 this.backend.postRequest('configuration/configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, {config: fieldset}).subscribe(
