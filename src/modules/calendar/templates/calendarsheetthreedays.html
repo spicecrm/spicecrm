@@ -30,7 +30,7 @@
                     <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [ngStyle]="event.style" class="spice-calendar-event"></calendar-sheet-microsoft-event>
                 </ng-container>
             </div>
-            <div class="slds-grid">
+            <div class="slds-grid" style="box-shadow: 0 2px var(--color-grey-7);">
                 <div *ngFor="let sheetDay of sheetDays; trackBy: trackByIndexFn" style="width: calc(100% / 3)" [style.min-height.px]="calendar.multiEventHeight" class="slds-border--left">
                     <div *ngFor="let event of sheetDay.events; trackBy: trackByItemFn"  [style.height.px]="calendar.multiEventHeight"></div>
                 </div>
