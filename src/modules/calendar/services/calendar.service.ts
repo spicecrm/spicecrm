@@ -423,13 +423,14 @@ export class calendar implements OnDestroy {
                             case 'event':
                                 event.start = moment.utc(event.start).tz(this.timeZone);
                                 event.end = moment.utc(event.end).tz(this.timeZone);
-                                event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                                event.isMulti = +event.end.diff(event.start, 'days', true) > 0;
                                 event.color = this.eventColor;
                                 break;
                             case 'absence':
                                 event.start = moment(event.start);
                                 event.end = moment(event.end);
                                 event.isMulti = true;
+                                event.isAllDay = true;
                                 event.color = this.absenceColor;
                                 break;
                             case 'other':
@@ -517,7 +518,7 @@ export class calendar implements OnDestroy {
                             event.end = moment(moment(event.end.dateTime ?? event.end.date)
                                 .format(!event.end.dateTime && !!event.end.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
 
-                            event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                            event.isMulti = +event.end.diff(event.start, 'days', true) > 0;
                             event.color = this.groupwareColor;
                             event.type = 'google';
 
@@ -568,7 +569,7 @@ export class calendar implements OnDestroy {
                             event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:ss'));
                             event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:ss'));
 
-                            event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                            event.isMulti = +event.end.diff(event.start, 'days', true) > 0;
                             event.color = this.groupwareColor;
                             event.type = 'microsoft';
 
@@ -956,7 +957,7 @@ export class calendar implements OnDestroy {
                                 type: 'event',
                                 start: data.date_start,
                                 end: data.date_end,
-                                isMulti: +data.date_end.diff(data.date_start, 'days') > 0,
+                                isMulti: +data.date_end.diff(data.date_start, 'days', true) > 0,
                                 data: data
                             });
                         }
@@ -995,7 +996,7 @@ export class calendar implements OnDestroy {
         if (event) {
             event.start = data.date_start;
             event.end = data.date_end;
-            event.isMulti = +data.date_end.diff(data.date_start, 'days') > 0;
+            event.isMulti = +data.date_end.diff(data.date_start, 'days', true) > 0;
             return true;
         } else {
             return false;
