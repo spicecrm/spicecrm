@@ -183,7 +183,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'name' => 'sysservicecategory',
             'vname' => 'LBL_SYSSERVICECATEGORY',
             'type' => 'categories',
-            'required' => true,
+            'required' => false,
             'source' => 'non-db'
         ],
         'sysservicecategory_id1' => [

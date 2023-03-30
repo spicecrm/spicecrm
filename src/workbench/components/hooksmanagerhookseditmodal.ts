@@ -2,24 +2,23 @@
  * @module WorkbenchModule
  */
 import {
-
-    Component, ComponentRef, EventEmitter, Input, OnChanges, OnInit
+    Component, ComponentRef, OnInit
 } from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {modelutilities} from "../../services/modelutilities.service";
-import {LogicHookI, RoleI} from "../interfaces/systemui.interfaces";
+import {LogicHookI} from "../interfaces/systemui.interfaces";
 import {toast} from "../../services/toast.service";
 import {Subject} from "rxjs";
-import {model} from "../../services/model.service";
+
 
 @Component({
     selector: 'hooks-manager-hooks-edit-modal',
     templateUrl: '../templates/hooksmanagerhookseditmodal.html',
 
 })
-export class HooksManagerHooksEditModal implements OnInit{
+export class HooksManagerHooksEditModal implements OnInit {
 
     public self: ComponentRef<HooksManagerHooksEditModal>;
 
@@ -35,28 +34,29 @@ export class HooksManagerHooksEditModal implements OnInit{
         public metadata: metadata,
         public modelutilities: modelutilities,
         public toast: toast,
-
     ) {
 
     }
 
     ngOnInit() {
-        this.classMethod = `${this.newLogicHook.hook_class}->${this.newLogicHook.hook_method}`;
+        if (!!this.newLogicHook.hook_class && !!this.newLogicHook.hook_method) {
+            this.classMethod = `${this.newLogicHook.hook_class}->${this.newLogicHook.hook_method}`;
+        }
     }
 
     public newLogicHook: LogicHookI = {
-            id: '',
-            module: '',
-            type: '',
-            event: 'select',
-            hook_include: '',
-            hook_index: 0,
-            hook_class: '',
-            hook_method: '',
-            hook_active: 1,
-            description: '',
-            version: '',
-            package: '',
+        id: '',
+        module: '',
+        type: 'custom',
+        event: 'before_relationship_add',
+        hook_include: '',
+        hook_index: 0,
+        hook_class: '',
+        hook_method: '',
+        hook_active: 1,
+        description: '',
+        version: '',
+        package: '',
     };
     public save$ = new Subject<LogicHookI>();
     public radioOptions = [
@@ -71,6 +71,13 @@ export class HooksManagerHooksEditModal implements OnInit{
         this.self.destroy();
     }
 
+    public canSave() {
+        if (!this.newLogicHook.module || !this.newLogicHook.event || !this.newLogicHook.package || !this.newLogicHook.version || !this.classMethod) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * save hook
      * split the class and method for separate saving
@@ -81,23 +88,26 @@ export class HooksManagerHooksEditModal implements OnInit{
         if (!this.newLogicHook.id) {
             this.newLogicHook.id = this.modelutilities.generateGuid();
         }
-        if(!this.newLogicHook.type){
+        if (!this.newLogicHook.type) {
             this.newLogicHook.type = 'custom';
         }
         const table = this.newLogicHook.type == 'custom' ? 'syscustomhooks' : 'syshooks';
 
         [this.newLogicHook.hook_class, this.newLogicHook.hook_method] = this.classMethod.split('->');
+        if (!this.newLogicHook.hook_method) {
+            this.toast.sendToast('LBL_METHOD_EMPTY', 'warning');
+        } else {
+            const data = {...this.newLogicHook};
+            delete data.type;
 
-        const data = {...this.newLogicHook};
-        delete data.type;
-
-        this.backend.postRequest(`configuration/configurator/${table}/${this.newLogicHook.id}`, null, {config: data}).subscribe({
-            next: () => {
-                this.save$.next(this.newLogicHook);
-                this.save$.complete();
-                this.toast.sendToast('LBL_DATA_SAVED', 'success');
-            }
-        });
-        this.self.destroy();
+            this.backend.postRequest(`configuration/configurator/${table}/${this.newLogicHook.id}`, null, {config: data}).subscribe({
+                next: () => {
+                    this.save$.next(this.newLogicHook);
+                    this.save$.complete();
+                    this.toast.sendToast('LBL_DATA_SAVED', 'success');
+                }
+            });
+            this.self.destroy();
+        }
     }
 }
