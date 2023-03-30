@@ -490,3 +490,6 @@ input[type="submit"] {
     transition: width .5s linear;
 }
 
+.slds-grow {
+    min-height: 0;
+}
