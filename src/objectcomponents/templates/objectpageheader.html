@@ -8,11 +8,12 @@
                         <system-label-modulename *ngIf="!canGoToModule" [module]="moduleName"></system-label-modulename>
                         <a *ngIf="canGoToModule" href="javascript:void(0);" (click)="goToModule()"><system-label-modulename [module]="moduleName"></system-label-modulename></a>
                     </p>
-                    <div>
+                    <div class="slds-grid slds-grid--vertical-align-center">
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
                             <ng-container *ngIf="!fieldset">{{model.data.summary_text}}</ng-container>
                             <object-record-fieldset-horizontal-list *ngIf="fieldset" [fieldset]="fieldset" [system-view-provider]="{displayLabels: false}"></object-record-fieldset-horizontal-list>
                         </h1>
+                        <object-page-header-tags></object-page-header-tags>
                     </div>
                 </div>
             </div>
@@ -24,5 +25,4 @@
             <object-action-container [actionset]="actionSet"></object-action-container>
         </div>
     </div>
-    <object-page-header-tags></object-page-header-tags>
 </div>

@@ -6,6 +6,7 @@ import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
 import {Subscription} from "rxjs";
+import {toast} from "../../../services/toast.service";
 
 /**
  * renders the standard view for a report which is a simple column based view
@@ -16,6 +17,10 @@ import {Subscription} from "rxjs";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('reporter_presentation_pivot_http_ref_');
 
     /**
      * array for pivot total count
@@ -61,12 +66,19 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
 
     constructor(public model: model,
                 public backend: backend,
+                public toast: toast,
                 public cdRef: ChangeDetectorRef,
                 public reporterconfig: reporterconfig) {
         // subscribe to the refresh .. happen when e.g. the filters are applied and the report items should reload themselves
         this.subscriptions.add(
-            this.reporterconfig.refresh$.subscribe(() => {
-                this.getPresentation();
+            this.reporterconfig.refresh$.subscribe({
+                next: bool => {
+                    if (bool) {
+                        this.getPresentation();
+                    } else {
+                        this.handleCancel();
+                    }
+                }
             })
         );
     }
@@ -90,6 +102,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
      */
     public ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 
     /**
@@ -144,6 +157,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
      */
     public getPresentation() {
         this.isLoading = true;
+        this.reporterconfig.isLoading.presentation = true;
         this.cdRef.detectChanges();
 
         // build where condition
@@ -159,19 +173,29 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
             });
         }
 
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
+
         this.backend.getRequest('module/KReports/' + this.model.id + '/presentation', {
             whereConditions: JSON.stringify(whereConditions),
             parentbeanId: this.model.getField('parentBeanId'),
             parentbeanModule: this.model.getField('parentBeanModule')
-        }).subscribe((presData: any) => {
+        }).subscribe({
+            next: (presData: any) => {
 
-            this.presData = presData;
-            // build the pivot
-            this.buildPivot();
-            this.setTotalCountArray();
-            this.setHeaderTableSet();
-            this.setPivotNameField();
-            this.cdRef.detectChanges();
+                this.presData = presData;
+                // build the pivot
+                this.buildPivot();
+                this.setTotalCountArray();
+                this.setHeaderTableSet();
+                this.setPivotNameField();
+                this.cdRef.detectChanges();
+            },
+            error: () => {
+                this.toast.sendToast('ERR_LOADING_RECORD', 'error');
+                this.isLoading = false;
+                this.reporterconfig.isLoading.presentation = false;
+                this.cdRef.detectChanges();
+            }
         });
     }
 
@@ -239,6 +263,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
         }
 
         this.isLoading = false;
+        this.reporterconfig.isLoading.presentation = false;
         this.cdRef.detectChanges();
     }
 
@@ -316,5 +341,15 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
             }
         }
         return valueArray;
+    }
+
+    /**
+     * handle cancelling the get request
+     */
+    handleCancel() {
+        this.isLoading = false;
+        this.reporterconfig.isLoading.presentation = false;
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
+        this.cdRef.detectChanges();
     }
 }

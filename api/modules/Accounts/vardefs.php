@@ -202,7 +202,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'type' => 'link',
                 'relationship' => 'documents_accounts',
                 'source' => 'non-db',
-                'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+                'vname' => 'LBL_DOCUMENTS',
             ],
 // CR1000426 cleanup backend, module Bugs removed
 //        'bugs' => array(

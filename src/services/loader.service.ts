@@ -3,12 +3,13 @@
  */
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Subject, Observable, of, throwError} from 'rxjs';
+import {Subject, Observable} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {language} from './language.service';
 import {broadcast} from './broadcast.service';
+import {StoreService} from "./store.service";
 
 @Injectable()
 export class loader {
@@ -22,8 +23,6 @@ export class loader {
     public progress = 0;
     public activeLoader: string = '';
     public loadPhase: string = 'system';
-
-    private db: any;
 
     public loadElements: any = {
         system: [
@@ -41,19 +40,19 @@ export class loader {
         secondary: []
     };
 
+    private storeDBName = 'loaddata';
+
     constructor(
         public http: HttpClient,
         public broadcast: broadcast,
         public configuration: configurationService,
         public session: session,
-        public language: language
+        public language: language,
+        private storeService: StoreService
     ) {
         this.loaderHandler.subscribe(val => this.handleLoaderHandler());
-        this.openDB('loaddata').then(
-            db => {
-                this.db = db;
-            }
-        );
+
+        this.storeService.initializeStores(this.storeDBName, ['loadtaskdata', 'loadtasks'], 'id');
 
         // subscribe to the broadcast to catch the logout
         this.broadcast.message$.subscribe(message => this.handleLogout(message));
@@ -64,16 +63,13 @@ export class loader {
      */
     public getLoadTasks(): Observable<boolean> {
         let retSubject = new Subject<boolean>();
-        this.readStoreAll('loadtasks').subscribe({
-            next: (records) => {
-                this.processLoadTasks(records, false);
-                // resolve the subject to start the loader
-                retSubject.next(true);
-                retSubject.complete();
-            },
-            error: () => {
-                this.getLoadTasksFromBackend(retSubject);
-            }
+        this.storeService.readStoreAll(this.storeDBName, 'loadtasks').then(records => {
+            this.processLoadTasks(records, false);
+            // resolve the subject to start the loader
+            retSubject.next(true);
+            retSubject.complete();
+        }).catch(() => {
+            this.getLoadTasksFromBackend(retSubject);
         })
 
         return retSubject.asObservable();
@@ -104,7 +100,7 @@ export class loader {
             this.loadElements[loadtask.phase].push(loadtask);
 
             // write to the store
-            if(store) this.writeStore('loadtasks', loadtask.id, loadtask);
+            if(store) this.storeService.writeStore(this.storeDBName, 'loadtasks', {id: loadtask.id, data: loadtask});
         }
 
         // sort the loader arrays
@@ -119,118 +115,12 @@ export class loader {
     }
 
     /**
-     * opens an indexed DB in the browser to store the config data
-     *
-     * @param dbname
-     * @private
-     */
-    private openDB(dbname): Promise<IDBDatabase> {
-        return new Promise<IDBDatabase>((resolve, reject) => {
-            if (!indexedDB) {
-                reject('IndexedDB not available');
-            }
-            const request = indexedDB.open(dbname, 2);
-            let db: IDBDatabase;
-            request.onsuccess = (event: Event) => {
-                db = request.result;
-                resolve(db);
-            };
-            request.onerror = (event: Event) => {
-                reject(`IndexedDB error: ${request.error}`);
-            };
-            request.onupgradeneeded = (event: Event) => {
-                db = request.result;
-                db.createObjectStore("loadtaskdata", {keyPath: "id"});
-                db.createObjectStore("loadtasks", {keyPath: "id"});
-                resolve(db);
-            };
-        });
-    }
-
-    /**
-     * writes a data set record to the db
-     * @param id
-     * @param data
-     */
-    public writeStore(store, id, data) {
-        // just return if we do not have a db
-        if(!this.db) return;
-
-        // process the write
-        this.db.transaction([store], "readwrite").objectStore(store).add({data, id});
-    }
-
-    /**
-     * reads a data set record from the DB
-     * @param id
-     */
-    public readStore(store, id?): Observable<any> {
-        // if we do not have a db return an empty array
-        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
-
-        let retSubject = new Subject<any>();
-        let transaction = this.db.transaction([store], "readwrite");
-        let objectStore = transaction.objectStore(store);
-        let request = objectStore.get(id);
-        request.onerror = (event) => {
-            retSubject.error(false);
-        };
-        request.onsuccess = (event) => {
-            if(event.target.result?.data) {
-                retSubject.next(event.target.result.data);
-                retSubject.complete();
-            } else {
-                retSubject.error(false);
-            }
-        };
-        return retSubject.asObservable();
-    }
-
-    /**
-     * reads all records from the DB in form of an array with the data attribute
-     *
-     * @param id
-     */
-    public readStoreAll(store): Observable<any> {
-        // if we do not have a db return an empty array
-        if(!this.db) return throwError(() => new Error('no indexedDB Support'));
-
-        // process the request
-        let retSubject = new Subject<any>();
-        let transaction = this.db.transaction([store], "readwrite");
-        let objectStore = transaction.objectStore(store);
-        let request = objectStore.getAll()
-        request.onerror = (event) => {
-            retSubject.error(false);
-        };
-        request.onsuccess = (event) => {
-            if(event.target.result && event.target.result.length > 0) {
-                let records = [];
-                for(let r of event.target.result){
-                    records.push(r.data);
-                }
-                retSubject.next(records);
-                retSubject.complete();
-            } else {
-                retSubject.error(false);
-            }
-        };
-        return retSubject.asObservable();
-    }
-
-    /**
      * clears the db
      *
      * @private
      */
     public clearDB(){
-        // only if we have a database
-        if(!this.db) return;
-
-        // clear the database
-        let transaction = this.db.transaction(["loadtaskdata", "loadtasks"], "readwrite");
-        transaction.objectStore('loadtasks').clear();
-        transaction.objectStore('loadtaskdata').clear();
+        this.storeService.clearDB(this.storeDBName, ["loadtaskdata", "loadtasks"]);
     }
 
 
@@ -388,9 +278,9 @@ export class loader {
     }
 
     public handleRouteElement(loadElement) {
-        this.readStore('loadtaskdata', loadElement.id).subscribe({
+        this.storeService.readStore(this.storeDBName, 'loadtaskdata', loadElement.id).subscribe({
             next: (data) => {
-                this.processLoadElementData(data);
+                this.processLoadElementData(loadElement.id, data);
                 this.broadcast.broadcastMessage('loader.completed', loadElement.name);
                 this.loaderHandler.next(loadElement.name);
             },
@@ -414,10 +304,10 @@ export class loader {
         ).subscribe({
             next: (loadElementResults: any) => {
                 // write to the database
-                this.writeStore('loadtaskdata', loadElement.id, loadElementResults);
+                this.storeService.writeStore(this.storeDBName, 'loadtaskdata', {id: loadElement.id, data: loadElementResults});
 
                 // process the load Element Results
-                this.processLoadElementData(loadElementResults);
+                this.processLoadElementData(loadElement.id, loadElementResults);
 
                 this.broadcast.broadcastMessage('loader.completed', loadElement.name);
 
@@ -429,12 +319,13 @@ export class loader {
     /**
      * processes the loaded Data
      *
+     * @param taskId
      * @param loadElementResults
      * @private
      */
-    private processLoadElementData(loadElementResults) {
+    private processLoadElementData(taskId: string, loadElementResults) {
         for (let loadElementResultKey in loadElementResults) {
-            this.configuration.setData(loadElementResultKey, loadElementResults[loadElementResultKey]);
+            this.configuration.setDataFromStore(taskId, loadElementResultKey, loadElementResults[loadElementResultKey]);
         }
     }
 

@@ -1,7 +1,19 @@
 /**
  * @module ObjectComponents
  */
-import { AfterViewInit, Component, ComponentRef, ElementRef, Injector, Input, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import {
+    AfterViewInit,
+    Component,
+    ComponentRef,
+    ElementRef,
+    Injector,
+    Input,
+    OnChanges,
+    OnDestroy,
+    Renderer2, SimpleChanges,
+    ViewChild,
+    ViewContainerRef
+} from "@angular/core";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {model} from "../../services/model.service";
 import {language} from "../../services/language.service";
@@ -47,7 +59,7 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
         ])
     ]
 })
-export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
+export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChanges {
 
     /**
      * an object array with base64 files
@@ -155,6 +167,18 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
             this.broadcast.message$.subscribe(message => this.handleMessage(message))
         );
 
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+
+        // default category
+        if(this.componentconfig.hasOwnProperty('defaultcategory') && this.componentconfig.defaultcategory){
+            this.defaultCategoryId = this.componentconfig.defaultcategory;
+        }
+        // in case no defaultCategoryId is set, load all & display all files
+        if(!this.defaultCategoryId && !this.selectedCategoryId) {
+            this.selectedCategoryId = '*';
+        }
     }
 
     /**
@@ -381,7 +405,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy {
         switch (action) {
             case 'category':
                 this.selectedCategoryId = value;
-                this.filteredFiles = value == '*' ? this.modelattachments.files : this.modelattachments.files
+                this.filteredFiles = (value == '*' || !value) ? this.modelattachments.files : this.modelattachments.files
                     .filter(file => !!file.category_ids && file.category_ids.includes(value));
                 break;
             case 'input':
