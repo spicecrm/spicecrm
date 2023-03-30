@@ -277,7 +277,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         const scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
         const multiEventsContainerWidth = (sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount;
-        const weekStartDate = moment(moment(this.setdate).day(this.calendar.weekStartDay).hour(this.calendar.startHour).format('YYYY-MM-DD HH:00:00'));
+        const weekStartDate = moment(moment(this.setdate).day(this.calendar.weekStartDay).hour(0).format('YYYY-MM-DD HH:00:00'));
         const weekEndDate = moment(moment(weekStartDate).add(moment.duration(this.calendar.weekDaysCount, 'd')).hour(this.calendar.endHour));
         const eventStart = event.start.isBefore(weekStartDate) ? weekStartDate : event.start;
         const eventEnd = event.end.isAfter(weekEndDate) ? weekEndDate : event.end;
@@ -379,7 +379,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
 
         for (let event of this.allMultiEvents) {
             for (let day of this.sheetDays) {
-                for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
+                for (let eventDay = moment(event.start); eventDay.diff(event.end, 'days') <= -1; eventDay.add(1, 'days')) {
                     if (eventDay.date() == day.date.date() && !day.events.some(itemsEvent => itemsEvent.id == event.id)) {
                         day.events.push(event);
                     }
@@ -397,6 +397,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                 return 0;
             });
         });
+
         this.allMultiEvents.forEach(event => {
             let itemIdx = null;
             this.sheetDays.forEach(day => {
