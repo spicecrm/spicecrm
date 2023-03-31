@@ -139,7 +139,7 @@ class LDAPAuthenticate implements AuthenticatorI
                 $this->baseDn = $authSys['base_dn'];
                 $this->loginAttr = $authSys['login_attr'];
                 $this->bindAttr = $authSys['bind_attr'];
-                $this->loginFilter = $authSys['loginFilter'];
+                $this->loginFilter = $authSys['login_filter'];
                 $this->ldapAuthentication = $authSys['ldap_authentication'];
                 $this->groups = $authSys['ldap_groups'];
                 $this->autoCreateUser = $authSys['auto_create_users'];
@@ -258,7 +258,12 @@ class LDAPAuthenticate implements AuthenticatorI
 
         // lunch the search in Active Directory
         try {
-            $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
+            $defaultFilter = [
+                $this->loginAttr => $name
+            ];
+            $filter = $this->buildLdapSearchFilter($defaultFilter);
+//            $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
+            $result = ldap_search($this->ldapConn, $this->baseDn, $filter, array_merge(['dn'], [$this->bindAttr]));
         } catch (Exception $e) {
             $error = $this->logLdapError();
             // throw new Exception("unable to query ldap: " . $error);
@@ -311,6 +316,43 @@ class LDAPAuthenticate implements AuthenticatorI
             }
         }
         return true;
+    }
+
+    /**
+     * build the filter string for ldap_search
+     * the filter will contain (&(filter1string)(filter2string))
+     * each main key withing the json string will be a content definition in brackets
+     * @param array $loginAttributeFilter
+     * @return string
+     */
+    private function buildLdapSearchFilter(array $defaultFilter){
+        // load this one anyway
+        $filterArray = $defaultFilter;
+
+        // check on additional filters
+        if(!empty($this->loginFilter) && $login_filter = json_decode($this->loginFilter, true)){
+            foreach($login_filter as $filterKey => $filterValues){
+                $filterValuesStringParts = [];
+                if(is_array($filterValues)){
+                    foreach($filterValues as $filterValuesIdx){
+                        foreach($filterValuesIdx as $filterValueKey => $filterValueKeyValue){
+                            $filterValuesStringParts[] = $filterValueKey."=".$filterValueKeyValue;
+                        }
+                    }
+                }
+                if(!empty($filterValuesStringParts)){
+                    $filterArray[$filterKey] = implode(",", $filterValuesStringParts);
+                }
+            }
+        }
+
+        // create full filter string
+        $filter = "(&";
+        foreach($filterArray as $filterArrayKey => $filterArrayValue){
+            $filter.="(".$filterArrayKey."=".$filterArrayValue.")";
+        }
+        $filter.= ")";
+        return $filter;
     }
 
     /**
