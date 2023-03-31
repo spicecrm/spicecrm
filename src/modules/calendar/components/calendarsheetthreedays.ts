@@ -81,7 +81,7 @@ export class CalendarSheetThreeDays extends CalendarSheetWeek implements OnInit 
      * set the event style
      * @param event
      */
-    public setEventStyle(event) {
+    public setSingleEventStyle(event) {
         const day = this.sheetDays.find(day => day.day == event.start.day()) || 0;
         const startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
         const endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
