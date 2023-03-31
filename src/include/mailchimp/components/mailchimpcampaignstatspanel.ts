@@ -31,7 +31,7 @@ export class MailChimpCampaignStatsPanel implements OnInit {
 
     public reloadData() {
         this.isLoading = true;
-        this.backend.getRequest(`/channels/emarketing/mailchimp/${this.model.module}/${this.model.id}/analytics`)
+        this.backend.getRequest(`channels/emarketing/mailchimp/${this.model.module}/${this.model.id}/analytics`)
             .subscribe(response => {
                 this.res = response;
                 this.isLoading = false;
@@ -39,7 +39,7 @@ export class MailChimpCampaignStatsPanel implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.backend.getRequest(`/channels/emarketing/mailchimp/${this.model.module}/${this.model.id}/analytics`)
+        this.backend.getRequest(`channels/emarketing/mailchimp/${this.model.module}/${this.model.id}/analytics`)
             .subscribe(response => {
                 this.res = response;
                 this.isLoading = false;
