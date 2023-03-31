@@ -18,6 +18,11 @@ class SpiceImport extends SpiceBean
 
     const IMPORT_TASKS_DIRECTORY = 'importtasks';
 
+    /**
+     * @param $params
+     * @return array
+     * @throws BadRequestException
+     */
     public static function getFilePreview($params)
     {
         $delimiter = ($params['separator'] == 'comma') ? ',' : ';';
@@ -72,6 +77,10 @@ class SpiceImport extends SpiceBean
         return $attachments;
     }
 
+    /**
+     * @param $filemd5
+     * @return string[]
+     */
     public function deleteImportFile($filemd5)
     {
         if (!unlink("upload://" . $filemd5)) {
@@ -81,7 +90,13 @@ class SpiceImport extends SpiceBean
         }
     }
 
-    function mark_deleted($id)
+    /**
+     * overrides parent class
+     * @param $id
+     * @return bool
+     * @throws \Exception
+     */
+    public function mark_deleted($id)
     {
         $db = DBManagerFactory::getInstance();
 
@@ -119,7 +134,12 @@ class SpiceImport extends SpiceBean
         return $imports;
     }
 
-    function saveFromImport($data)
+    /**
+     * @param $data
+     * @return array|string[]
+     * @throws \Exception
+     */
+    public function saveFromImport($data)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -274,7 +294,7 @@ class SpiceImport extends SpiceBean
 
         } else {
 
-            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (UUID(), '" . $this->id . "', 'Cant open file', 'upload://" . $this->objectimport->fileId . "')";
+            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES ('".$this->db->getGuidSQL()."', '" . $this->id . "', 'Cant open file', 'upload://" . $this->objectimport->fileId . "')";
             $this->db->query($sql);
             $this->status = 'e';
             $this->save();
@@ -284,8 +304,16 @@ class SpiceImport extends SpiceBean
         return ['status' => 'imported', 'list' => $list, 'import_id' => $this->id];
     }
 
-
-    function createNewRecord($newBean, $row, $fileHeader, &$error, &$list)
+    /**
+     * creates a new record from import row
+     * @param $newBean
+     * @param $row
+     * @param $fileHeader
+     * @param $error
+     * @param $list
+     * @return void
+     */
+    public function createNewRecord($newBean, $row, $fileHeader, &$error, &$list)
     {
         $checkExistingKeys = [];
         $existingId = false;
@@ -325,7 +353,7 @@ class SpiceImport extends SpiceBean
                 $newBean->{$field['field']} = $this->objectimport->fixedFieldsValues[$field['field']];
 
             $newBeanId = $newBean->save();
-            file_put_contents('import.log', __FUNCTION__.' '.__LINE__.' '.print_r($newBeanId, true)."\n", FILE_APPEND);
+            // file_put_contents('import.log', __FUNCTION__.' '.__LINE__.' '.print_r($newBeanId, true)."\n", FILE_APPEND);
             $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);
             $notify = boolval(!$assignedUser ? false : $assignedUser->receive_notifications);
             // $newBean->save($notify);
@@ -351,7 +379,17 @@ class SpiceImport extends SpiceBean
         }
     }
 
-    function updateExistingRecord($fileHeader, $newBean, $row, $retrieve, &$error, &$list)
+    /***
+     * updates an existing record from import row
+     * @param $fileHeader
+     * @param $newBean
+     * @param $row
+     * @param $retrieve
+     * @param $error
+     * @param $list
+     * @return void
+     */
+    public function updateExistingRecord($fileHeader, $newBean, $row, $retrieve, &$error, &$list)
     {
         $newBean->retrieve_by_string_fields($retrieve);
 
@@ -364,14 +402,15 @@ class SpiceImport extends SpiceBean
             foreach ($this->objectimport->fixedFields as $field)
                 $newBean->{$field['field']} = $this->objectimport->fixedFieldsValues[$field['field']];
 
-            $newBeanId = $newBean->save();
-            $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);
+//            $newBeanId = $newBean->save();
+            $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id, ['relationships' => false]);
             $notify = boolval(!$assignedUser ? false : $assignedUser->receive_notifications);
-            $newBean->save($notify);
+            $newBeanId = $newBean->save($notify);
+//            $newBean->save($notify);
             LoggerManager::getLogger()->debug('SpiceImports saved id ' . $newBeanId);
             $list[] = ['status' => 'updated', 'recordId' => $newBeanId, 'data' => [$row[0], $row[1], $row[2], $row[3]]];
         } else {
-            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (UUID(), '" . $this->id . "', 'No Entries', '" . implode('";"', $row) . "')";
+            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES ('".$this->db->getGuidSQL()."', '" . $this->id . "', 'No Entries', '" . implode('";"', $row) . "')";
             $error = true;
             $list[] = ['status' => 'No Entries', 'data' => [$row[0], $row[1], $row[2], $row[3]]];
             $this->db->query($sql);
@@ -379,7 +418,12 @@ class SpiceImport extends SpiceBean
 
     }
 
-    function saveTemplate()
+    /**
+     * saves an import template
+     * @return void
+     * @throws \Exception
+     */
+    public function saveTemplate()
     {
         $spiceImportTemplates = BeanFactory::newBean("SpiceImportTemplates");
         if ($spiceImportTemplates) {
@@ -393,10 +437,7 @@ class SpiceImport extends SpiceBean
             $spiceImportTemplates->save();
         }
     }
-    function displayRejectKey()
-    {
 
-    }
 
 }
 
