@@ -1,3 +1,8 @@
-<ul class="slds-has-dividers_around-space">
-    <li *ngFor="let enumValue of enumValues" class="slds-item">{{enumValue}}</li>
+<ul class="slds-has-dividers_around-space dragboundary" cdkDropList [cdkDropListData]="enumValues"
+    (cdkDropListDropped)="drop($event)">
+    <li *ngFor="let enumValue of enumValues;  let index = index" class="slds-item" cdkDrag
+        cdkDragBoundary=".dragboundary">
+        <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
+                             style="cursor:move"></system-utility-icon>
+        {{enumValue}}</li>
 </ul>
