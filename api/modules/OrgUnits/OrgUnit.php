@@ -117,7 +117,7 @@ class OrgUnit extends SpiceBean
             foreach ($relatedUsers as $relatedUser) {
                 $holdRelatedUserIds[] = $relatedUser->id;
             }
-            if ($memberOrgUnits !== 0){
+            if ($memberOrgUnits !== null){
                 $this->recurringMember($orgUnitBean, $documentRevision, $guidSQL, $current_date, $memberOrgUnits);
             }
             array_unique($holdRelatedUserIds);
