@@ -42,7 +42,7 @@
 
             <div *ngIf="!_.isEmpty(questionset.questions); else noQuestionsTemplate">
 
-                <p *ngIf="hideFinishedQuestions && allQuestionsFinished" class="slds-text-align_center">Alle Fragen sind beantwortet – und ausgeblendet.</p>
+                <p *ngIf="hideFinishedQuestions && allQuestionsFinished" class="slds-text-align_center"><system-label label="LBL_ALL_QUESTIONS_ANSWERED_AND_HIDDEN"></system-label></p>
 
                 <ng-container *ngIf="questionset.questiontype === 'ratinggroup'">
                     <questionset-render-rating [questionsetId]="questionset.id" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-rating>
@@ -84,7 +84,7 @@
                                 </div>
                                 <div *ngSwitchCase="'multi'">
                                     <question-render-multi [questionId]="question.id" [previousQuestion]="i === 0 ? null:qp.questionsArray[questionsetId][i-1]"
-                                                            [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"></question-render-multi>
+                                                           [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"></question-render-multi>
                                 </div>
                             </ng-container>
                         </div>
