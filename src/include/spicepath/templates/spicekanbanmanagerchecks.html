@@ -1,3 +1,36 @@
-<system-collapsable-tab [collapsible]="true" [expanded]="false" tabtitle="LBL_KANBAN_CHECKS">
+<system-collapsable-tab [collapsible]="true" tabtitle="LBL_KANBAN_CHECKS"> <!-- [expanded]="true" -->
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_1-of-3 slds-p-around--x-small slds-border_right">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <ul class="slds-has-dividers_around-space dragboundary" cdkDropList [cdkDropListData]="checkLabels" (cdkDropListDropped)="dropCheckLabels($event)">
+                        <li *ngFor="let checkLabel of checkLabels; let index = index" class="slds-item" cdkDrag cdkDragBoundary=".dragboundary">
+                            <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                            {{checkLabel}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
+        <div class="slds-col slds-size_2-of-3 slds-p-around--medium">
+            <div class="slds-form-element slds-size_1-of-3">
+                <div class="slds-form-element__control">
+                    <label class="slds-form-element__label"><system-label label="LBL_CHECK_LABEL"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="checkLabel">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-top--small">
+                <div class="slds-form-element__control">
+                    <label class="slds-form-element__label"><system-label label="LBL_CHECK_METHOD"></system-label></label>
+                    <system-input-backend-method [(ngModel)]="checkMethod"></system-input-backend-method>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-align--absolute-center slds-p-around--small">
+        <system-utility-icon icon="new" size="x-small"  (click)="addCheckLabel($event)"></system-utility-icon>
+    </div>
 </system-collapsable-tab>
