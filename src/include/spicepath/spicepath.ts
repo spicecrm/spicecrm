@@ -26,6 +26,8 @@ import {SpiceKanbanTile} from "./components/spicekanbantile";
 import {SpiceKanbanManager} from "./components/spicekanbanmanager";
 import {SpiceKanbanManagerList} from "./components/spicekanbanmanagerlist";
 import {WorkbenchModule} from "../../workbench/workbench.module";
+import {SpiceKanbanManagerDetails} from "./components/spicekanbanmanagerdetails";
+import {SpiceKanbanManagerChecks} from "./components/spicekanbanmanagerchecks";
 
 @NgModule({
     imports: [
@@ -50,7 +52,9 @@ import {WorkbenchModule} from "../../workbench/workbench.module";
         SpiceKanban,
         SpiceKanbanTile,
         SpiceKanbanManager,
-        SpiceKanbanManagerList
+        SpiceKanbanManagerList,
+        SpiceKanbanManagerDetails,
+        SpiceKanbanManagerChecks
     ]
 })
 export class ModuleSpicePath {
