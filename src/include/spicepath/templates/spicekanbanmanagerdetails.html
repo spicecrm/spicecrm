@@ -1,6 +1,6 @@
 <system-collapsable-tab [collapsible]="true" tabtitle="LBL_DETAILS">
     <div class="slds-grid slds-wrap">
-        <div class="slds-col slds-size_1-of-3 slds-p-around--xx-small">
+        <div class="slds-col slds-size_1-of-3 slds-p-around--x-small">
             <div class="slds-form-element">
                 <label class="slds-form-element__label"><system-label label="LBL_STAGE_LABEL"></system-label></label>
                 <system-icon-help-text [helpText]="language.getLabel('LBL_STAGE_LABEL_HELP', '', 'long')"></system-icon-help-text>
@@ -9,7 +9,7 @@
                 </div>
             </div>
         </div>
-        <div class="slds-col slds-size_1-of-3 slds-p-around--xx-small">
+        <div class="slds-col slds-size_1-of-3 slds-p-around--x-small">
             <div class="slds-form-element">
                 <label class="slds-form-element__label"><system-label label="LBL_STAGE_ADD_DATA"></system-label></label>
                 <system-icon-help-text [helpText]="language.getLabel('LBL_STAGE_ADD_DATA_HELP', '', 'long')"></system-icon-help-text>
@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div class="slds-col slds-size_1-of-3 slds-p-around--xx-small">
+        <div class="slds-col slds-size_1-of-3 slds-p-around--x-small">
             <div class="slds-form-element">
                 <label class="slds-form-element__label"><system-label label="LBL_STAGE_COMPONENTSET"></system-label></label>
                 <system-icon-help-text [helpText]="language.getLabel('LBL_STAGE_ADD_COMP_HELP', '', 'long')"></system-icon-help-text>
@@ -30,14 +30,14 @@
     </div>
 
     <div class="slds-grid slds-wrap slds-p-around--x-small">
-        <div class="slds-col slds-p-left--xx-small">
+        <div class="slds-col">
             <div class="slds-form-element">
                 <label class="slds-form-element__label"><system-label label="LBL_ADD_SPICETEXT"></system-label></label>
                 <button class="slds-button" (click)="addSpiceText($event)"><system-button-icon icon="new"></system-button-icon></button>
             </div>
         </div>
         <div class="slds-tabs_scoped">
-            <div class="slds-col slds-p-left--xx-small">
+            <div class="slds-col">
                 <ul class="slds-tabs_scoped__nav" role="tablist">
                     <li *ngFor="let lang of systemLanguages" class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': lang.language_code == activeTab}" (click)="switchTab(lang.language_code)" role="presentation">
                         <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" [attr.aria-selected]="lang.language_code === activeTab" >{{lang.language_code}}</a>
