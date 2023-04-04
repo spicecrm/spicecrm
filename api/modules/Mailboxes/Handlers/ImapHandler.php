@@ -500,7 +500,7 @@ class ImapHandler extends TransportHandler
 
         $message = (new Swift_Message($email->name))
             ->setEncoder(new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'))
-            ->setFrom([$this->mailbox->imap_pop3_username => $this->mailbox->imap_pop3_display_name])
+            ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
             ->setBody($email->body, 'text/html')
         ;
 

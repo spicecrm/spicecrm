@@ -20,7 +20,7 @@ export class MailboxesmanagerTestModal implements OnInit {
     /**
      * set to true when the test succeeds
      */
-    public validConnection: boolean = false;
+    public validConnection: boolean;
 
     /**
      * event emiter when the modal closes with the test status
@@ -47,6 +47,10 @@ export class MailboxesmanagerTestModal implements OnInit {
      * differemntiates the header label and the defualt value
      */
     public testtype: 'email' | 'sms' = 'email';
+    /**
+     * holds the error message to display
+     */
+    public errorMessage: string;
 
     constructor(
         public backend: backend,
@@ -77,22 +81,25 @@ export class MailboxesmanagerTestModal implements OnInit {
         this.testing = true;
         this.testemailaddress = this.testemailaddress.trim();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
-        this.backend.postRequest("module/Mailboxes/test", {}, {data: modelData, test_email: this.testemailaddress}).subscribe(
-            (response: any) => {
-                if (response.result === true) {
-                    this.validConnection = true;
-                } else {
-                    this.validConnection = false;
-                }
+        this.backend.postRequest("module/Mailboxes/test", {}, {data: modelData, test_email: this.testemailaddress}).subscribe({
+            next: (response: any) => {
+                    if (response.result === true) {
+                        this.validConnection = true;
+                    } else {
+                        this.validConnection = false;
+                        this.errorMessage = response.errors;
+                    }
 
-                this.tested = true;
-                this.testing = false;
-            },
-            (err: any) => {
-                this.tested = false;
-                this.testing = false;
-                this.validConnection = null;
-            });
+                    this.tested = true;
+                    this.testing = false;
+                },
+        error: (err: any) => {
+            this.tested = false;
+            this.testing = false;
+            this.validConnection = undefined;
+            this.errorMessage = err.error?.error?.message ?? err.error?.message;
+        }
+        });
     }
 
     /**
