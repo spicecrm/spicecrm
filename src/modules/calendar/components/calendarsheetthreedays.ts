@@ -81,7 +81,7 @@ export class CalendarSheetThreeDays extends CalendarSheetWeek implements OnInit 
      * set the event style
      * @param event
      */
-    public setEventStyle(event) {
+    public setSingleEventStyle(event) {
         const day = this.sheetDays.find(day => day.day == event.start.day()) || 0;
         const startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
         const endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
@@ -110,7 +110,7 @@ export class CalendarSheetThreeDays extends CalendarSheetWeek implements OnInit 
         const scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
         const multiEventsContainerWidth = (sheetWidth - this.sheetTimeWidth) / 3;
-        const weekStartDate = moment(moment(this.setdate).hour(this.calendar.startHour).format('YYYY-MM-DD HH:00:00'));
+        const weekStartDate = moment(moment(this.setdate).hour(0).format('YYYY-MM-DD HH:00:00'));
         const weekEndDate = moment(moment(weekStartDate).add(moment.duration(3, 'd')).hour(this.calendar.endHour));
         const eventStart = event.start.isBefore(weekStartDate) ? weekStartDate : event.start;
         const eventEnd = event.end.isAfter(weekEndDate) ? weekEndDate : event.end;

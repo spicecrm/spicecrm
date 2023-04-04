@@ -80,7 +80,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['SpiceImport'] = [
             'type' => 'enum',
             'options' => 'spiceimports_status_dom',
             'len' => 1,
-            'vname' => 'LBL_STATUS'
+            'vname' => 'LBL_STATUS',
+            'comment' => 'possible values c|q|e'
+        ],
+        'statusdisplay' => [
+            'name' => 'statusdisplay',
+            'vname' => 'LBL_STATUSDISPLAY',
+            'type' => 'varchar',
+            'len' => 100,
+            'source' => 'non-db',
+            'reportable' => false,
+            'comment' => 'field for Imports frontend display. Reflects status according to status and action'
         ],
         'data' => [
             'name' => 'data',
