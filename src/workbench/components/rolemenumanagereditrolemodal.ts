@@ -8,6 +8,7 @@ import {RoleI} from "../interfaces/systemui.interfaces";
 import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {Subject} from "rxjs";
+import {modal} from "../../services/modal.service";
 
 
 /**
@@ -49,7 +50,7 @@ export class RoleMenuManagerEditRoleModal {
         {label: 'global', value: 'global'},
     ];
 
-    constructor(public metadata: metadata, public modelutilities: modelutilities, public backend: backend, public toast: toast) {
+    constructor(public metadata: metadata, public modelutilities: modelutilities, public backend: backend, public toast: toast, public modal: modal) {
 
     }
 
@@ -60,6 +61,12 @@ export class RoleMenuManagerEditRoleModal {
         this.self.destroy();
     }
 
+    public canSave(){
+        if(!this.newRole.name || !this.newRole.label || !this.newRole.identifier){
+            return false;
+        }
+        return true;
+    }
     /**
      * remove the frontend fields before posting to backend
      */
@@ -75,12 +82,13 @@ export class RoleMenuManagerEditRoleModal {
         delete data.scope_icon;
         delete data.systemTreeDefs;
 
-
+        let loadingModal = this.modal.await('LBL_LOADING');
         this.backend.postRequest(`configuration/configurator/${table}/${this.newRole.id}`, null, {config: data}).subscribe({
             next: () => {
                 this.newRole.scope_icon = this.newRole.scope == 'custom' ? 'people' : 'world';
                 this.save$.next(this.newRole);
                 this.save$.complete();
+                loadingModal.emit(true);
                 this.toast.sendToast('LBL_DATA_SAVED', 'success');
             }
         });
