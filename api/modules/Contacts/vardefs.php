@@ -271,7 +271,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'contact_calls_parent',
                 'source' => 'non-db',
-                'vname' => 'LBL_CALLS',
+                'vname' => 'LBL_CALLS_AS_PARENT',
             ],
             'callattempts_parent' => [
                 'name' => 'callattempts_parent',
@@ -340,7 +340,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'contact_meetings_parent',
                 'source' => 'non-db',
-                'vname' => 'LBL_MEETINGS',
+                'vname' => 'LBL_MEETINGS_AS_PARENT',
             ],
             'notes' => [
                 'name' => 'notes',
@@ -376,7 +376,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'contact_tasks_parent',
                 'source' => 'non-db',
-                'vname' => 'LBL_TASKS',
+                'vname' => 'LBL_TASKS_AS_PARENT',
                 'reportable' => false
             ],
             'notes_parent' => [
@@ -384,7 +384,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'contact_notes_parent',
                 'source' => 'non-db',
-                'vname' => 'LBL_TASKS',
+                'vname' => 'LBL_NOTES_AS_PARENT',
                 'reportable' => false
             ],
             'user_sync' => [
