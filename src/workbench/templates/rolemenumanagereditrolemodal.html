@@ -29,16 +29,13 @@
                 </label>
                 <system-input-label [(ngModel)]="newRole.label"></system-input-label>
             </div>
-
-
-
         </div>
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
                     <system-label label="LBL_IDENTIFIER"></system-label>
                 </label>
-                <system-input-text [(ngModel)]="newRole.identifier"></system-input-text>
+                <system-input-text [(ngModel)]="newRole.identifier" maxlength="3"></system-input-text>
             </div>
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label">
@@ -55,16 +52,16 @@
         </div>
         <div class="slds-grid slds-m-top--medium">
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <system-checkbox [(ngModel)]="newRole.systemdefault"><system-label label="LBL_SYSTEM_DEFAULT"></system-label></system-checkbox>
+                <system-checkbox [(ngModel)]="newRole.systemdefault" [asinteger]="true"><system-label label="LBL_SYSTEM_DEFAULT"></system-label></system-checkbox>
             </div>
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <system-checkbox [(ngModel)]="newRole.portaldefault"> <system-label label="LBL_PORTAL_DEFAULT"></system-label></system-checkbox>
+                <system-checkbox [(ngModel)]="newRole.portaldefault" [asinteger]="true"> <system-label label="LBL_PORTAL_DEFAULT"></system-label></system-checkbox>
             </div>
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <system-checkbox [(ngModel)]="newRole.showsearch"><system-label label="LBL_SHOW_SEARCH"></system-label></system-checkbox>
+                <system-checkbox [(ngModel)]="newRole.showsearch" [asinteger]="true"><system-label label="LBL_SHOW_SEARCH"></system-label></system-checkbox>
             </div>
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <system-checkbox [(ngModel)]="newRole.showfavorites"><system-label label="LBL_SHOW_FAVORITES"></system-label></system-checkbox>
+                <system-checkbox [(ngModel)]="newRole.showfavorites" [asinteger]="true"><system-label label="LBL_SHOW_FAVORITES"></system-label></system-checkbox>
             </div>
         </div>
         <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small">
@@ -103,13 +100,12 @@
                 <system-input-text [(ngModel)]="newRole.default_dashboardset"></system-input-text>
             </div>
         </div>
-
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">
             <system-label label="LBL_CLOSE"></system-label>
         </button>
-        <button class="slds-button slds-button--brand" (click)="saveRole()">
+        <button class="slds-button slds-button--brand" [disabled]="!canSave()" (click)="saveRole()">
             <system-label label="LBL_SAVE"></system-label>
         </button>
     </system-modal-footer>
