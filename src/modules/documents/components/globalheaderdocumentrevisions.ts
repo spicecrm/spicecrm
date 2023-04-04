@@ -7,6 +7,7 @@ import {modal} from "../../../services/modal.service";
 import {subscription} from "../../../services/subscription.service";
 import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
+import {session} from "../../../services/session.service";
 
 /**
  * display notifications on the global header
@@ -29,6 +30,7 @@ export class GlobalHeaderDocumentRevisions implements OnInit {
                 public cdRef: ChangeDetectorRef,
                 public renderer: Renderer2,
                 public backend: backend,
+                public session: session,
                 public injector: Injector) {
     }
 
@@ -41,7 +43,7 @@ export class GlobalHeaderDocumentRevisions implements OnInit {
 
     public loadRelated(){
 
-        this.backend.getRequest(`module/documentrevisions/${this.model.data.assigned_user_id}/relateduserrevisions`).subscribe(
+        this.backend.getRequest(`module/documentrevisions/${this.session.authData.userId}/relateduserrevisions`).subscribe(
             res => {
                 this.relatedRevisions = res;
             })

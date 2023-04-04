@@ -33,7 +33,7 @@ class DocumentRevisionsController extends SpiceBean
 
         $userid = $req->getParsedBody();
 
-        $insert_query = "UPDATE users_documentrevisions SET acceptance_status = 1 WHERE users_documentrevisions.document_revision_id = '{$args['id']}' AND users_documentrevisions.user_id = '{$userid['userid']}' ";
+        $insert_query = "UPDATE users_documentrevisions SET acceptance_status = 1 WHERE users_documentrevisions.document_revision_id = {$args['id']} AND users_documentrevisions.user_id = {$userid['userid']} ";
         DBManagerFactory::getInstance()->query($insert_query);
 
         return $res->withJson(['success' => true]);

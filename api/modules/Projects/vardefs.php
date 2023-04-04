@@ -294,6 +294,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
             'relationship' => 'project_primary_contact',
             'source' => 'non-db',
         ],
+        'products' => [
+            'name' => 'products',
+            'vname' => 'LBL_PRODUCTS',
+            'type' => 'link',
+            'module' => 'Products',
+            'relationship' => 'projects_products',
+            'source' => 'non-db'
+        ]
     ],
 
     'relationships' => [
@@ -466,17 +474,6 @@ if(file_exists('extensions/modules/ProjectWBSs')) {
         'relationship' => 'projects_projectwbss',
         'source'=>'non-db',
         'module' => 'ProjectWBSs'
-    ];
-}
-if(file_exists('extensions/modules/Products')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['products'] = [
-        'name' => 'products',
-        'vname' => 'LBL_PRODUCTS',
-        'type' => 'link',
-        'module' => 'Products',
-        'relationship' => 'projects_products',
-        'side' => 'right',
-        'source' => 'non-db',
     ];
 }
 
