@@ -15,6 +15,8 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 
 import {reporterconfig} from '../services/reporterconfig';
+import {toast} from "../../../services/toast.service";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'reporter-presentation-dashlet',
@@ -52,7 +54,7 @@ export class ReporterPresentationDashlet implements AfterViewInit {
      */
     @Output() public noAccess: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(public model: model, public metadata: metadata, public elementRef: ElementRef) {
+    constructor(public model: model, public metadata: metadata, public elementRef: ElementRef, public toast: toast, public language: language) {
     }
 
     public ngAfterViewInit() {
@@ -63,19 +65,21 @@ export class ReporterPresentationDashlet implements AfterViewInit {
                 this.model['parentBeanId'] = this.parentId;
                 this.model['parentBeanModule'] = this.parentModule;
             }
-            this.model.getData().subscribe(
-                data => {
+            this.model.getData().subscribe( {
+                next: (data) => {
                     // emit the title
                     this.dashletTitle.emit(this.model.getField('name'));
 
                     // render the report
                     this.renderPresentation();
-                },
-                err => {
+                }, error: (err) => {
                     if (err.status == '403' || err.status == '404') {
                         this.noAccess.emit(true);
+                    } else {
+                        this.toast.sendToast(this.language.getLabel("LBL_ERROR_LOADING_DATA"), "error");
                     }
-                });
+                }
+            });
         }
     }
 
