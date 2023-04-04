@@ -55,11 +55,12 @@ export class WebHooksManagerEditModal {
         event: 'create',
         url: '',
         active: 1,
-        sent_data: 0,
+        send_data: false,
         modulefilter_id: '',
         fieldset_id: '',
-        ssl_verifypeer: 1,
-        ssl_verifyhost: 1
+        ssl_verifypeer: true,
+        ssl_verifyhost: true,
+        custom_headers: ''
     };
     public save$ = new Subject<WebHookI>();
 
