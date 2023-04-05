@@ -12,6 +12,7 @@ import {modelutilities} from "../../services/modelutilities.service";
 import {WebHookI} from "../interfaces/systemui.interfaces";
 import {toast} from "../../services/toast.service";
 import {Subject} from "rxjs";
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'web-hooks-manager-edit-modal',
@@ -45,6 +46,7 @@ export class WebHooksManagerEditModal {
         public metadata: metadata,
         public modelutilities: modelutilities,
         public toast: toast,
+        public modal: modal,
     ) {
 
     }
@@ -55,11 +57,12 @@ export class WebHooksManagerEditModal {
         event: 'create',
         url: '',
         active: 1,
-        sent_data: 0,
+        send_data: false,
         modulefilter_id: '',
         fieldset_id: '',
-        ssl_verifypeer: 1,
-        ssl_verifyhost: 1
+        ssl_verifypeer: true,
+        ssl_verifyhost: true,
+        custom_headers : '',
     };
     public save$ = new Subject<WebHookI>();
 
@@ -84,12 +87,13 @@ export class WebHooksManagerEditModal {
                 this.newWebHook.id = this.modelutilities.generateGuid();
             }
 
-            const table = 'webhooks';
-
+            const table = 'syswebhooks';
+            let loadingModal = this.modal.await('LBL_LOADING');
             this.backend.postRequest(`configuration/configurator/${table}/${this.newWebHook.id}`, null, {config: this.newWebHook}).subscribe({
                 next: () => {
                     this.save$.next(this.newWebHook);
                     this.save$.complete();
+                    loadingModal.emit(true);
                     this.toast.sendToast('LBL_DATA_SAVED', 'success');
                 }
             });
