@@ -1,0 +1,15 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">{{modalTitle}}</system-modal-header>
+    <system-modal-content margin="none">
+        <system-componentset [componentset]="componentset"></system-componentset>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-end">
+            <div class="slds-button-group" role="group">
+                <button class="slds-button slds-button--neutral" (click)="close()">
+                    <system-label label="LBL_CANCEL"></system-label>
+                </button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>
