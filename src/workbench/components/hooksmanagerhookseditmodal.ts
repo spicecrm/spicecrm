@@ -11,6 +11,7 @@ import {modelutilities} from "../../services/modelutilities.service";
 import {LogicHookI} from "../interfaces/systemui.interfaces";
 import {toast} from "../../services/toast.service";
 import {Subject} from "rxjs";
+import {modal} from "../../services/modal.service";
 
 
 @Component({
@@ -34,6 +35,7 @@ export class HooksManagerHooksEditModal implements OnInit {
         public metadata: metadata,
         public modelutilities: modelutilities,
         public toast: toast,
+        public modal:modal,
     ) {
 
     }
@@ -99,11 +101,12 @@ export class HooksManagerHooksEditModal implements OnInit {
         } else {
             const data = {...this.newLogicHook};
             delete data.type;
-
+            let loadingModal = this.modal.await('LBL_LOADING');
             this.backend.postRequest(`configuration/configurator/${table}/${this.newLogicHook.id}`, null, {config: data}).subscribe({
                 next: () => {
                     this.save$.next(this.newLogicHook);
                     this.save$.complete();
+                    loadingModal.emit(true);
                     this.toast.sendToast('LBL_DATA_SAVED', 'success');
                 }
             });
