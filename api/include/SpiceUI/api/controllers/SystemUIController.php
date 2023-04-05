@@ -190,7 +190,7 @@ class SystemUIController{
     {
         $db = DBManagerFactory::getInstance();
         $webhooks = [];
-        $query = $db->query("SELECT * FROM webhooks");
+        $query = $db->query("SELECT * FROM syswebhooks");
         while( $row = $db->fetchByAssoc($query) ){
             $webhooks[] = $row;
         }
