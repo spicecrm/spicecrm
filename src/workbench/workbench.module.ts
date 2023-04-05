@@ -151,6 +151,7 @@ import {HooksManagerHooks} from "./components/hooksmanagerhooks";
 import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmodal";
 import {WebHooksManager} from "./components/webhooksmanager";
 import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
+import {WebHooksManagerResultModal} from "./components/webhooksmanagerresultmodal";
 
 
 
@@ -293,7 +294,8 @@ import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
         HooksManagerHooks,
         HooksManagerHooksEditModal,
         WebHooksManager,
-        WebHooksManagerEditModal
+        WebHooksManagerEditModal,
+        WebHooksManagerResultModal
     ],
     exports: [
         SortPipe,
