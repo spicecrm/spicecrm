@@ -184,12 +184,31 @@ class SpiceUIConfLoader
             throw new Exception($errormsg);
         }
 
-        $tables = array_keys($response);
+        // gather tables and all the record IDs
+        foreach ($response as $conftable => $conf){
+            foreach($conf as $recordId => $recordData){
+                $tables[$conftable][] = $recordId;
+            }
+        }
+        // skip Tables
+        $skipTables = ['nodata', 'sysfts', 'sysnumberranges', 'sysnumberrangeallocation'];
 
-        foreach ($tables as $conftable){
-            $delWhere = ['package' => $package];
-            if(!$db->deleteQuery($conftable, $delWhere)){
-                LoggerManager::getLogger()->fatal('error deleting package {$package}  '.$db->lastError());
+        foreach ($tables as $conftable => $recordIds){
+            if(in_array($conftable, $skipTables)){
+                continue;
+            }
+            try {
+                $delWhere = ['package' => $package];
+                $db->deleteQuery($conftable, $delWhere);
+            } catch (Exception $e){
+                // just go on -  the table just has no package column
+            }
+
+            foreach($recordIds as $recordId){
+                $delWhere = ['id' => $recordId];
+                if (!$db->deleteQuery($conftable, $delWhere)) {
+                    LoggerManager::getLogger()->fatal('error deleting package {$package}  ' . $db->lastError());
+                }
             }
         }
     }
