@@ -556,13 +556,13 @@ export class language {
         for (let language of this.languagedata.languages.available) {
 
             if (systemonly && (!language.system_language || language.system_language == 0)) continue;
-
             languages.push({
                 language: language.language_code,
                 text: language.language_name,
                 system_language: language.system_language,
                 communication_language: language.communication_language,
-                default_language: language.language_code == this.languagedata.languages.default
+                default_language: language.language_code == this.languagedata.languages.default,
+                display_label: this.getLabel('LANG_' + language.language_code.toUpperCase())
             });
         }
         return languages;
