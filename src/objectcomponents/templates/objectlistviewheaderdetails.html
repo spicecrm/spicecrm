@@ -4,7 +4,7 @@
             <system-display-number class="slds-p-right--xxx-small" [number]="modellist.listData.list.length" [noDigits]="true"></system-display-number>
             <system-label label="LBL_OF"></system-label>
             <system-display-number class="slds-p-horizontal--xxx-small" [number]="modellist.listData.totalcount" [noDigits]="true"></system-display-number>
-            <system-label label="LBL_ITEMS"></system-label>
+            <system-label *ngIf="layout.screenwidth != 'small'" label="LBL_ITEMS"></system-label>
         </span>
     </li>
     <li *ngIf="modellist.getSelectedCount() > 0" class="slds-item slds-show--medium">
