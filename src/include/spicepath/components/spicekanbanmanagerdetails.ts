@@ -47,22 +47,19 @@ export class SpiceKanbanManagerDetails implements OnInit {
 
     public ngOnInit() {
 
-        // get all languages of the system
-        this.systemLanguages = this.language.languagedata.languages.available;
-
-        // set active user language in the tab
-        this.activeTab = this.language.languagedata.language;
+        // get languages
+        this.systemLanguages = this.language.getAvialableLanguages();
+        this.activeTab = this.language.currentlanguage;
     }
 
     /**
-     * connects label with spice text
+     * opens modal
      */
-    public addSpiceText(e) {
-        console.log(e);
-        console.log('clicked');
-        // what happens now?
-        // open a modal ? the label is already copied & displayed
-        // for this label, you can add a spice text in each language
+    public addSystextId() {
+        // what happens now? Open a modal
+        // you add an entry in the spicetext table
+        // fields: name, description, parent_type, parent_id, text_id, text_languag,
+
     }
 
     /**
