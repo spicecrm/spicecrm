@@ -4,6 +4,7 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {language} from '../../services/language.service';
 import {userpreferences} from "../../services/userpreferences.service";
+import {layout} from "../../services/layout.service";
 
 /* @ignore */
 declare var moment: any;
@@ -52,7 +53,9 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     public curDate: any = new moment();
     public secondDate: any = new moment();
 
-    constructor(public language: language, public userPreferences: userpreferences) {
+    constructor(public language: language,
+                public layout: layout,
+                public userPreferences: userpreferences) {
         let preferences = this.userPreferences.unchangedPreferences.global;
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
     }
