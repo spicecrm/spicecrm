@@ -1,5 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ComponentRef, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
+import {modal} from "../../../services/modal.service";
+import {toast} from "../../../services/toast.service";
+import {SystemTextConfiguratorModal} from "./systemtextconfiguratormodal";
 
 @Component({
     selector: 'spice-kanban-manager-details',
@@ -39,13 +42,32 @@ export class SpiceKanbanManagerDetails implements OnInit {
      */
     public activeTab: string = '';
 
-    constructor(
-        public language: language,
-    ) {
+    /**
+     * public
+     */
+    public loading: boolean = false;
 
-    }
+    /**
+     * whether the systext is set for this domain
+     */
+    public hasSysText: boolean = false;
+
+    /**
+     * holds text_id value, max. 36 characters & must be unique
+     * i.e. pg-000-001
+     */
+    public textId: string;
+
+    constructor (
+        public language: language,
+        public modal: modal,
+        public toast: toast
+    ) { }
 
     public ngOnInit() {
+        // commented out for later use
+        // this.textId = this.kanbanservice.spicebeanguide.text_id;
+
 
         // get languages
         this.systemLanguages = this.language.getAvialableLanguages();
@@ -54,12 +76,16 @@ export class SpiceKanbanManagerDetails implements OnInit {
 
     /**
      * opens modal
+     * returns text_id from the backend
      */
-    public addSystextId() {
-        // what happens now? Open a modal
-        // you add an entry in the spicetext table
-        // fields: name, description, parent_type, parent_id, text_id, text_languag,
+    public addSysTextId() {
+        this.loading = true;
 
+        this.modal.openModal('SystemTextConfiguratorModal', true).subscribe( (modalRef: ComponentRef<SystemTextConfiguratorModal>) => {
+            modalRef.instance.answer.subscribe(textId => {
+                this.textId = textId;
+            })
+        });
     }
 
     /**
