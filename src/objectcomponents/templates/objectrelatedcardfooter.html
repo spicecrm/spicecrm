@@ -1,6 +1,6 @@
 <footer class="slds-card__footer">
     <div class="slds-grid slds-grid_vertical-align-center">
-        <div class="slds-size--1-of-3 slds-text-align--left">
+        <div class="slds-size--1-of-3 slds-text-align--left" style="min-width: 140px">
             <div *ngIf="relatedmodels.count > relatedmodels.loaditems && canViewAll" class="slds-grid slds-grid--vertical-align-center">
                 <button [disabled]="previousDisabled || paginating" class="slds-button slds-button_icon" (click)="firstPage()">
                     <system-button-icon icon="jump_to_left"></system-button-icon>
@@ -22,13 +22,15 @@
                 </button>
             </div>
         </div>
-        <div class="slds-size--1-of-3 slds-text-align_center">
-            <a *ngIf="canViewAll" href="javascript:void(0);" (click)="showAll()"><system-label label="LBL_VIEWALL"></system-label></a>
-        </div>
-        <div class="slds-size--1-of-3 slds-text-align--right">
-            <button [disabled]="paginating" class="slds-button slds-button_icon" (click)="reload()">
-                <system-button-icon icon="refresh"></system-button-icon>
-            </button>
+        <div class="slds-grid slds-grow">
+            <div class="slds-grow slds-text-align_center" style="min-width: 75px">
+                <a *ngIf="canViewAll" href="javascript:void(0);" (click)="showAll()"><system-label label="LBL_VIEWALL"></system-label></a>
+            </div>
+            <div class="slds-text-align--right slds-grow">
+                <button [disabled]="paginating" class="slds-button slds-button_icon" (click)="reload()">
+                    <system-button-icon icon="refresh"></system-button-icon>
+                </button>
+            </div>
         </div>
     </div>
 </footer>
