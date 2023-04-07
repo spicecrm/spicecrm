@@ -36,15 +36,24 @@ class SpiceUISysTextIdsController {
         // id of the entry in the systextids table
         $sysTextId =  SpiceUtils::createGuid();
 
-        // inserting data to systextids table
-        $sysTextIdsQuery = "INSERT into systextids (id, text_id, name, label) values ('$sysTextId','{$body['textId']}', '{$body['name']}', '{$body['label']}')";
-        $db->query($sysTextIdsQuery);
+        // prepare data & inserting it to systextids table
+        $sysTextData = [
+            'id' => $sysTextId,
+            'text_id' => $body['textId'],
+            'name' => $body['name'],
+            'label' => $body['label']
+        ];
+        $sysTextQuer = $db->insertQuery('systextids', $sysTextData, true);
 
         // if successful add the module and text_id
-        if($sysTextIdsQuery) {
+        if($sysTextQuer) {
             $sysTextModulesId =  SpiceUtils::createGuid();
-            $sysTextModulesQuery = "INSERT into systextids_modules (id, text_id, module) values ('$sysTextModulesId','{$body['textId']}', '{$body['module']}')";
-            $db->query($sysTextModulesQuery);
+            $sysTextData = [
+                'id' => $sysTextModulesId,
+                'text_id' => $body['textId'],
+                'module' => $body['module']
+            ];
+            $db->insertQuery('systextids_modules', $sysTextData, true);
         }
 
         return $res->withJson(['success' => true, 'textId' => $body['textId']]);
