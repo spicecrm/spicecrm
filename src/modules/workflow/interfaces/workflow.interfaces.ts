@@ -100,3 +100,14 @@ export interface BpmnEventI {
     }
 
 }
+
+export interface WorkflowTaskTypeCloseWorkflowsI {
+    /**
+     * comma separated string with the workflow definition ids to be closed
+     */
+    workflowDefinitionIds: string;
+    /**
+     * close all other workflows flag
+     */
+    closeAll: boolean;
+}
