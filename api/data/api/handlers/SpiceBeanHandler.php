@@ -1787,7 +1787,7 @@ class SpiceBeanHandler
 
                     foreach ($linkedEmailAddresses as $linkedEmailAddress) {
 
-                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || $existingEmailAddress->email_address == $emailAddressData['email_address']) {
+                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || ($existingEmailAddress->email_address == $emailAddressData['email_address'] && $existingEmailAddress->primary_address == $emailAddressData['primary_address'])){
                             continue;
                         }
 
