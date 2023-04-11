@@ -34,7 +34,6 @@ class ConfigTransferController
         'sysauthconfig', # auth client config
         'sysnumberranges',
         'sysnumberrangeallocation',
-        'syssalesdocnumberranges',
         'syssalesdocnumberranges'
     ];
 
