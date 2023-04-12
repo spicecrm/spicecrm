@@ -208,6 +208,12 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
     }
 
     /**
+     * opens the report
+     */
+    public openReport() {
+        this.model.goDetail();
+    }
+    /**
      * handle cancelling the get request
      */
     public handleCancel() {
