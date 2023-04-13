@@ -173,16 +173,16 @@ class SpiceConfig
     }
 
     /**
+     * returns the spicecrm version nummer stored in package.json located in the root folder of the instance
      * @return mixed|string
      */
     public static function getSystemVersion(){
-        $match = '';
-        $versionPattern = '/\d{4}\.\d{2}\.\d{3}/';
-        $text = file_get_contents('../gulpfile_globals.js', true);
-        if(preg_match($versionPattern, $text, $matches)){
-            $match = $matches[0];
+        if($text = file_get_contents('../package.json')){
+            if($package = json_decode($text)){
+                return $package->version;
+            }
         }
-        return $match;
+        return '';
     }
 
     /**
