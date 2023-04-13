@@ -385,7 +385,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 
         'proposals' => [
             'name' => 'proposals',
-            'vname' => 'LBL_PROPOSALS_LINK',
+            'vname' => 'LBL_PROPOSALS',
             'type' => 'link',
             'relationship' => 'accounts_proposals_rel',
             'link_type' => 'one',
@@ -813,7 +813,7 @@ if (file_exists("extensions/modules/ServiceLocations")) { // CR1000239
 if (file_exists("extensions/modules/ProductVariants")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['manufactures'] = [
         'name' => 'manufactures',
-        'vname' => 'LBL_PRODUCTVARIANT',
+        'vname' => 'LBL_PRODUCTVARIANTS_MANUFACTURER',
         'type' => 'link',
         'module' => 'ProductVariants',
         'relationship' => 'productvariant_manufacturer',
@@ -821,7 +821,7 @@ if (file_exists("extensions/modules/ProductVariants")) {
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['resells'] = [
         'name' => 'resells',
-        'vname' => 'LBL_PRODUCTVARIANT',
+        'vname' => 'LBL_PRODUCTVARIANTS_RESELLER',
         'type' => 'link',
         'module' => 'ProductVariants',
         'relationship' => 'productvariants_resellers',
