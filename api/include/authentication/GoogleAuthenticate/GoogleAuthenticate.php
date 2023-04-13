@@ -12,6 +12,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Users\User;
+use SpiceCRM\extensions\modules\GoogleCalendar\GSuiteUserConfig;
 
 class GoogleAuthenticate implements AuthenticatorI
 {
@@ -109,20 +110,28 @@ class GoogleAuthenticate implements AuthenticatorI
 
         return $result;
     }
+
     /**
      * requests the token
-     *
-     * @return mixed
+     * @param $userid
+     * @return mixed|void
+     * @throws Exception
      */
     function getTokenByUserId($userid)
     {
-        $userObj = BeanFactory::getBean('Users', $userid);
+        $userObj = BeanFactory::getBean('Users', $userid, ['relationships' => false]);
+
+        // instantiate to check if gsuite config exists for the user
+        $userConf = new GSuiteUserConfig($userid);
+        $gsuiteUserConfig = $userConf->exists();
 
         // subscription renewal is possible only for active users, check if user still active
-        if($userObj->status == "Active") {
-            return $this->getTokenByUserName($userObj->user_name);
+        if ($gsuiteUserConfig) {
+            if ($userObj->status == "Active") {
+                return $this->getTokenByUserName($userObj->user_name);
+            }
+            LoggerManager::getLogger()->error('googleauth', "Trying to get token of an inactive user with user id: {$userid} and user_name: {$userObj->user_name}");
         }
-        LoggerManager::getLogger()->error('googleauth', "Trying to get token of an inactive user with user id: {$userid} and user_name: {$userObj->user_name}");
     }
 
     /**
