@@ -67,7 +67,12 @@ module.exports = {
                 extractComments: false,
                 terserOptions: {
                     mangle: true,
-                    keep_classnames: true
+                    keep_classnames: true,
+                    compress: {
+                        global_defs: {
+                            ngDevMode: false
+                        }
+                    }
                 },
             }),
             // add spice header
