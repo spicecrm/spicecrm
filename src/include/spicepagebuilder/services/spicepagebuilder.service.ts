@@ -14,6 +14,7 @@ import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomp
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {helper} from "../../../services/helper.service";
+import {configurationService} from "../../../services/configuration.service";
 
 /** @ignore */
 declare var _;
@@ -193,6 +194,7 @@ export class SpicePageBuilderService {
     constructor(public modal: modal,
                 private toast: toast,
                 private helper: helper,
+                private configurationService: configurationService,
                 private cdRef: ChangeDetectorRef,
                 private backend: backend) {
         this.contentListId = _.uniqueId('panel-drop-list-');
@@ -225,15 +227,17 @@ export class SpicePageBuilderService {
                     response.complete();
                 }
 
+                const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
+
                 if (image.upload) {
                     this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                         uploadComponentRef.instance.answer.subscribe(uploadimage => {
-                            response.next(!uploadimage ? undefined : 'https://cdn.spicecrm.io/' + uploadimage);
+                            response.next(!uploadimage ? undefined : mediaFileConfig.public_url + uploadimage);
                             response.complete();
                         });
                     });
                 } else {
-                    response.next(!image.id ? undefined : 'https://cdn.spicecrm.io/' + image.id);
+                    response.next(!image.id ? undefined : mediaFileConfig.public_url + image.id);
                     response.complete();
                 }
             });
