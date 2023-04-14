@@ -123,7 +123,7 @@ export class SpiceImporter implements OnInit {
                 }
             }
         }
-        this.modelFields.sort((a, b) => a.name.localeCompare(b.name));
+        // this.modelFields.sort((a, b) => a.name.localeCompare(b.name));
         this.requiredModelFields = this.modelFields.filter(field => field.name != 'id' && field.required);
     }
 
