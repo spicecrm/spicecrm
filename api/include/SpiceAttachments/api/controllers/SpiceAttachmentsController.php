@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceAttachments\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
@@ -11,8 +12,6 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
 class SpiceAttachmentsController
 {
-    const UPLOAD_DESTINATION = 'upload://';
-
     /**
      * returns the list of attachments
      *
@@ -165,14 +164,16 @@ class SpiceAttachmentsController
             throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
         }
 
+        $prefix = StreamFactory::getPathPrefix('upload');
+
         if (!empty($seed->{$args['fieldprefix'] . '_md5'})) {
-            if (file_exists(self::UPLOAD_DESTINATION . $seed->{$args['fieldprefix'] . '_md5'})) {
-                $file = base64_encode(file_get_contents(self::UPLOAD_DESTINATION . $seed->{$args['fieldprefix'] . '_md5'}));
+            if (file_exists($prefix . $seed->{$args['fieldprefix'] . '_md5'})) {
+                $file = base64_encode(file_get_contents($prefix . $seed->{$args['fieldprefix'] . '_md5'}));
             } else {
                 throw new NotFoundException('attachment not found');
             }
-        } else if (file_exists(self::UPLOAD_DESTINATION . $args['beanId'])) {
-            $file = base64_encode(file_get_contents(self::UPLOAD_DESTINATION . $args['beanId']));
+        } else if (file_exists($prefix . $args['beanId'])) {
+            $file = base64_encode(file_get_contents($prefix . $args['beanId']));
         } else {
             throw new NotFoundException('attachment not found');
         }
