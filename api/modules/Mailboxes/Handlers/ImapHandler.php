@@ -4,6 +4,7 @@
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Swift_Attachment;
@@ -545,7 +546,7 @@ class ImapHandler extends TransportHandler
         if ($email->id) {
             foreach ($email->attachments as $att) {
                 $message->attach(
-                    Swift_Attachment::fromPath('upload://' . $att->filemd5)->setFilename($att->filename)
+                    Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($att->filename)
                 );
             }
 

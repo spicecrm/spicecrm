@@ -20,38 +20,16 @@ use Slim\Interfaces\RouteInterface;
 
 class RouteCollectorProxy implements RouteCollectorProxyInterface
 {
-    /**
-     * @var ResponseFactoryInterface
-     */
-    protected $responseFactory;
+    protected ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @var CallableResolverInterface
-     */
-    protected $callableResolver;
+    protected CallableResolverInterface $callableResolver;
 
-    /**
-     * @var ContainerInterface|null
-     */
-    protected $container;
+    protected ?ContainerInterface $container = null;
 
-    /**
-     * @var RouteCollectorInterface
-     */
-    protected $routeCollector;
+    protected RouteCollectorInterface $routeCollector;
 
-    /**
-     * @var string
-     */
-    protected $groupPattern;
+    protected string $groupPattern;
 
-    /**
-     * @param ResponseFactoryInterface     $responseFactory
-     * @param CallableResolverInterface    $callableResolver
-     * @param RouteCollectorInterface|null $routeCollector
-     * @param ContainerInterface|null      $container
-     * @param string                       $groupPattern
-     */
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         CallableResolverInterface $callableResolver,
