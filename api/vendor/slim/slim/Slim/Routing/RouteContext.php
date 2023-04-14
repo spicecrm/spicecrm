@@ -25,10 +25,6 @@ final class RouteContext
 
     public const BASE_PATH = '__basePath__';
 
-    /**
-     * @param ServerRequestInterface $serverRequest
-     * @return RouteContext
-     */
     public static function fromRequest(ServerRequestInterface $serverRequest): self
     {
         $route = $serverRequest->getAttribute(self::ROUTE);
@@ -47,32 +43,14 @@ final class RouteContext
         return new self($route, $routeParser, $routingResults, $basePath);
     }
 
-    /**
-     * @var RouteInterface|null
-     */
-    private $route;
+    private ?RouteInterface $route;
 
-    /**
-     * @var RouteParserInterface
-     */
-    private $routeParser;
+    private RouteParserInterface $routeParser;
 
-    /**
-     * @var RoutingResults
-     */
-    private $routingResults;
+    private RoutingResults $routingResults;
 
-    /**
-     * @var string|null
-     */
-    private $basePath;
+    private ?string $basePath;
 
-    /**
-     * @param RouteInterface|null  $route
-     * @param RouteParserInterface $routeParser
-     * @param RoutingResults       $routingResults
-     * @param string|null          $basePath
-     */
     private function __construct(
         ?RouteInterface $route,
         RouteParserInterface $routeParser,
@@ -85,33 +63,21 @@ final class RouteContext
         $this->basePath = $basePath;
     }
 
-    /**
-     * @return RouteInterface|null
-     */
     public function getRoute(): ?RouteInterface
     {
         return $this->route;
     }
 
-    /**
-     * @return RouteParserInterface
-     */
     public function getRouteParser(): RouteParserInterface
     {
         return $this->routeParser;
     }
 
-    /**
-     * @return RoutingResults
-     */
     public function getRoutingResults(): RoutingResults
     {
         return $this->routingResults;
     }
 
-    /**
-     * @return string
-     */
     public function getBasePath(): string
     {
         if ($this->basePath === null) {

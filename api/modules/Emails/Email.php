@@ -15,6 +15,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
@@ -1308,7 +1309,7 @@ class Email extends SpiceBean
     {
         $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
         $documentFactory = new Pear\DocumentFactory();
-        $msg = $messageFactory->parseMessage($documentFactory->createFromFile('upload://' . $fileId));
+        $msg = $messageFactory->parseMessage($documentFactory->createFromFile(StreamFactory::getPathPrefix('upload') . $fileId));
         $this->convertMessageToBean($msg);
 
         // set the parent
@@ -1335,7 +1336,7 @@ class Email extends SpiceBean
         $contents = [];
 
         // parse the ressource
-        $res = mailparse_msg_parse_file('upload://' . $fileId);
+        $res = mailparse_msg_parse_file(StreamFactory::getPathPrefix('upload') . $fileId);
         $struct = mailparse_msg_get_structure($res);
 
         // get all parts

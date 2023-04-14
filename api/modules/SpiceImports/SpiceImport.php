@@ -6,6 +6,7 @@ namespace SpiceCRM\modules\SpiceImports;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -44,7 +45,7 @@ class SpiceImport extends SpiceBean
         $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 50);
 
 
-        if (($handle = fopen("upload://" . $params['file_md5'], "r")) !== FALSE) {
+        if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $params['file_md5'], "r")) !== FALSE) {
             $fileHeader = fgetcsv($handle, 0, $delimiter, $enclosure);
             $fileHeader = array_map(function ($item) {
                 return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
@@ -83,7 +84,7 @@ class SpiceImport extends SpiceBean
      */
     public function deleteImportFile($filemd5)
     {
-        if (!unlink("upload://" . $filemd5)) {
+        if (!unlink(StreamFactory::getPathPrefix('upload') . $filemd5)) {
             return ['status' => 'File cant be deleted'];
         } else {
             return ['status' => 'succeed'];
@@ -169,7 +170,7 @@ class SpiceImport extends SpiceBean
      * @return $end
      */
     public function getPointerForEndPosition(){
-        $handle = fopen("upload://" . $this->objectimport->fileId, "r");
+        $handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r");
         fseek($handle,0,SEEK_END);
         $end = ftell($handle);
         fclose($handle);
@@ -183,7 +184,7 @@ class SpiceImport extends SpiceBean
      * @return array|string[]
      */
     public function getFileHeader($delimiter, $enclosure){
-        if (($handle = fopen("upload://" . $this->objectimport->fileId, "r")) !== FALSE) {
+        if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r")) !== FALSE) {
             $fileHeader = fgetcsv($handle, 1000, $delimiter, $enclosure);
             $fileHeader = array_map(function ($item) {
                 return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
@@ -228,7 +229,7 @@ class SpiceImport extends SpiceBean
         $fileHeader = $this->getFileHeader($delimiter,$enclosure);
         //set limit for rows amount to process in one batch
         $limit = $maxRows;
-        if (($handle = fopen("upload://" . $this->objectimport->fileId, "r")) !== FALSE) {
+        if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r")) !== FALSE) {
 
                 // find if the pointer has been set otherwise set it to 0
                 if(!isset($this->objectimport->pointer)) $this->objectimport->pointer = 0;
