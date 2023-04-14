@@ -1781,7 +1781,7 @@ class SpiceBeanHandler
                 // if the existing email address id is the same but the email address was changed create a new one
                 // copy the old additional relationship values
                 // delete the link to the old one
-                if ($existingEmailAddress) {
+                if ($existingEmailAddress && $existingEmailAddress->id) {
 
                     $linkedEmailAddresses = $bean->get_linked_beans($linkName);
 
