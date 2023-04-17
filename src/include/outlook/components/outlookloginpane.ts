@@ -55,9 +55,9 @@ export class OutlookLoginPane {
         public configuration: configurationService,
         public session: session
     ) {
-        if (sessionStorage['OAuth-Token'] && sessionStorage['OAuth-Token'].length > 0) {
+        if (!!this.session.authData.sessionId) {
             let headers = new HttpHeaders();
-            headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
+            headers = headers.set('OAuth-Token', this.session.authData.sessionId);
 
             this.http.get(this.configuration.getBackendUrl() + '/authentication/login', {
                 headers

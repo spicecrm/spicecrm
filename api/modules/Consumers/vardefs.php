@@ -189,6 +189,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
                 ]
             ]
         ],
+        'contactsonlineprofiles' => [
+            'name' => 'contactsonlineprofiles',
+            'type' => 'link',
+            'relationship' => 'consumer_contactonlineprofiles',
+            'module' => 'ContactsOnlineProfiles',
+            'source' => 'non-db',
+            'vname' => 'LBL_CONTACTS_ONLINE_PROFILES',
+        ],
         'ext_id' => [
             'name' => 'ext_id',
             'vname' => 'LBL_EXT_ID',

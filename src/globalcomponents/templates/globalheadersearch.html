@@ -1,7 +1,7 @@
 <div class="slds-global-header__item_search" style="min-width: 15rem">
     <div class="slds-form-element">
         <div class="slds-form-element__control">
-            <div class="slds-combobox-group">
+            <div class="" [ngClass]="{'slds-combobox-group': showModuleSelector}">
                 <div *ngIf="showModuleSelector" class="slds-combobox_object-switcher slds-combobox-addon_start">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
@@ -41,12 +41,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="slds-combobox_container slds-combobox-addon_end" [ngClass]="{'slds-combobox-addon_start': !showModuleSelector}">
+                <div class="slds-combobox_container" [ngClass]="{'slds-combobox-addon_end': showModuleSelector}">
                     <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox" [ngClass]="{'slds-is-open': showRecent}">
                         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element"
                              role="none">
                             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
-                            <input #searchfield class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" (focus)="onFocus()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
+                            <input #searchfield class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" (focus)="onFocus()" (blur)="onBlur()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
                         </div>
                         <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
                             <global-header-search-recent-items *ngIf="showRecent && searchTerm === ''" (selected)="selected($event)"></global-header-search-recent-items>

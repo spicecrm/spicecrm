@@ -1,15 +1,16 @@
 /**
  * @module ModuleReports
  */
-import {
-    Component
-} from '@angular/core';
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
+import {reporterconfig} from "../services/reporterconfig";
+import {Subject} from "rxjs";
 
 @Component({
     selector: 'reporter-presentation-container',
-    templateUrl: '../templates/reporterpresentationcontainer.html'
+    templateUrl: '../templates/reporterpresentationcontainer.html',
+    providers: [reporterconfig]
 })
 export class ReporterPresentationContainer {
 
@@ -28,7 +29,14 @@ export class ReporterPresentationContainer {
      */
     public isHidden: boolean = false;
 
-    constructor(public model: model, public language: language) {
+    /**
+     * emits info whether reload button was clicked
+     */
+    public refreshReport: Subject<boolean> = new Subject<boolean>();
+
+    constructor(public model: model,
+                public language: language,
+                public reporterconfig: reporterconfig) {
     }
 
     /**
@@ -44,5 +52,12 @@ export class ReporterPresentationContainer {
      */
     public noAccess(event) {
         this.isHidden = event;
+    }
+
+    /**
+     * reloading ReporterPresentationDashlet
+     */
+    public execute() {
+        this.refreshReport.next(true);
     }
 }

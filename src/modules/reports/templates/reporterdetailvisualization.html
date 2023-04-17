@@ -1,9 +1,9 @@
 <div *ngIf="displayEmbedded" class="slds-grid slds-grid--align-spread slds-p-horizontal--xx-small slds-p-vertical--x-small">
-    <div class="slds-text-heading_small">{{model.data.name}}</div>
+    <div class="slds-text-heading_small slds-text-link_faux" (click)="openReport()">{{model.data.name}}</div>
     <button class="slds-button slds-button--icon" (click)="reload()">
         <system-button-icon icon="refresh"></system-button-icon>
     </button>
 </div>
-<div class="slds-is-relative slds-size--1-of-1" [ngStyle]="visualizationStyle" [system-overlay-loading-spinner]="loading">
+<div class="slds-is-relative slds-size--1-of-1" [ngStyle]="visualizationStyle" [cancellable]="true" (onCancel)="handleCancel()" [system-overlay-loading-spinner]="loading">
     <div #vizcontainer></div>
 </div>

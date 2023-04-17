@@ -49,11 +49,13 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     get parentIdField() {
-        return this.fieldconfig.parentIdField ? this.fieldconfig.parentIdField : 'parent_id';
+        let fielddefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        return this.fieldconfig.parentIdField ? this.fieldconfig.parentIdField : (fielddefs?.id_name ? fielddefs.id_name : 'parent_id');
     }
 
     get parentTypeField() {
-        return this.fieldconfig.parentTypeField ? this.fieldconfig.parentTypeField : 'parent_type';
+        let fielddefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        return this.fieldconfig.parentTypeField ? this.fieldconfig.parentTypeField : (fielddefs?.type_name ? fielddefs.type_name : 'parent_type');
     }
 
     get parentName() {
@@ -73,6 +75,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
+        super.ngOnInit();
         // determine the valid types
         this.determineParentTypes();
         // initialize the parenttype

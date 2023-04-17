@@ -63,6 +63,7 @@ import {ActionsetManagerAddDialog} from "./components/actionsetmanageradddialog"
 
 import {CategoryTreeManager} from "./components/categorytreemanager";
 import {CategoryTreeManagerNode} from "./components/categorytreemanagernode";
+import {CategoryTreeAddModal} from "./components/categorytreeaddmodal";
 
 import {ComponentsetManager} from "./components/componentsetmanager";
 import {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
@@ -145,6 +146,13 @@ import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
 import {GitPullFromRepository} from "./components/gitpullfromrepository";
 import {GitStatusOfRepository} from "./components/gitstatusofrepository";
+import {HooksManager} from "./components/hooksmanager";
+import {HooksManagerHooks} from "./components/hooksmanagerhooks";
+import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmodal";
+import {WebHooksManager} from "./components/webhooksmanager";
+import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
+import {WebHooksManagerResultModal} from "./components/webhooksmanagerresultmodal";
+
 
 
 @NgModule({
@@ -162,6 +170,7 @@ import {GitStatusOfRepository} from "./components/gitstatusofrepository";
         CategoryTreeManager,
         CategoryTreeManagerNode,
         CategoryTreeManagerLinkModal,
+        CategoryTreeAddModal,
         DomainManager,
         DomainManagerDefinitions,
         DomainManagerFields,
@@ -280,7 +289,13 @@ import {GitStatusOfRepository} from "./components/gitstatusofrepository";
         RoleMenuManager,
         RoleMenuManagerEditRoleModal,
         GitPullFromRepository,
-        GitStatusOfRepository
+        GitStatusOfRepository,
+        HooksManager,
+        HooksManagerHooks,
+        HooksManagerHooksEditModal,
+        WebHooksManager,
+        WebHooksManagerEditModal,
+        WebHooksManagerResultModal
     ],
     exports: [
         SortPipe,

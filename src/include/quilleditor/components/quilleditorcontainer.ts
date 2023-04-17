@@ -30,6 +30,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {QuillModulesI} from "../interfaces/quilleditor.interfaces";
 import {modal} from "../../../services/modal.service";
 import {libloader} from "../../../services/libloader.service";
+import {configurationService} from "../../../services/configuration.service";
 
 /** @ignore */
 declare var Quill: any;
@@ -116,6 +117,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
         public modal: modal,
         public libLoader: libloader,
         public cdRef: ChangeDetectorRef,
+        public configurationService: configurationService,
         public zone: NgZone
     ) {
         this.textarea = document.createElement('textarea');
@@ -310,18 +312,19 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
 
                 const range = this.quillEditor.getSelection();
                 const index = range ? range.index : 0;
+                const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
 
                 if (image.upload) {
                     this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                         uploadComponentRef.instance.answer.subscribe(uploadimage => {
                             if (uploadimage) {
-                                this.quillEditor.insertEmbed(index, 'image', 'https://cdn.spicecrm.io/' + uploadimage);
+                                this.quillEditor.insertEmbed(index, 'image', mediaFileConfig.public_url + uploadimage);
                             }
                         });
                     });
                 } else {
                     if (image.id) {
-                        this.quillEditor.insertEmbed(index, 'image', 'https://cdn.spicecrm.io/' + image.id);
+                        this.quillEditor.insertEmbed(index, 'image', mediaFileConfig.public_url + image.id);
                     }
                 }
             });

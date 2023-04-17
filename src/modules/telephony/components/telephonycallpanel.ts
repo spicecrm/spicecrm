@@ -104,7 +104,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      */
     public handleBroadcast(event) {
         // check that we have a related id and that we also have the proper eventes and model in scope
-        if (this.calldata.relatedid && event.messagetype == 'model.save' && event.messagedata.module == this.calldata.relatedmodule && event.messagedata.id == this.calldata.relatedid) {
+        if (this.calldata.relatedid && (event.messagetype == 'model.save' || event.messagetype == 'model.loaded') && event.messagedata.module == this.calldata.relatedmodule && event.messagedata.id == this.calldata.relatedid) {
             this.calldata.relateddata = event.messagedata.data;
             this.setReletadeData();
         }

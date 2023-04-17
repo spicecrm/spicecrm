@@ -44,7 +44,7 @@ export class ProspectListsToEvalancheModal{
             let body = {
                 prospects: this.difference
             };
-            this.backend.postRequest(`/channels/emarketing/evalanche/${this.model.module}/${this.model.id}/sync`, {}, body).subscribe(result => {
+            this.backend.postRequest(`channels/emarketing/evalanche/${this.model.module}/${this.model.id}/sync`, {}, body).subscribe(result => {
                 if (result) {
                     loadingRef.instance.self.destroy();
                     this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);

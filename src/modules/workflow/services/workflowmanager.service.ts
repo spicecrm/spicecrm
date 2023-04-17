@@ -37,6 +37,13 @@ export class WorkflowManagerService {
     }
 
     /**
+     * @return any data object of the definition
+     */
+    get currentDefinition() {
+        return this.model.data;
+    }
+
+    /**
      * set model tasks
      * @param tasks
      */

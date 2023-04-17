@@ -15,6 +15,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
@@ -1283,6 +1284,17 @@ class Email extends SpiceBean
     }
 
     /**
+     * @param $body
+     * @return mixed|string
+     */
+    public function setBodyEncodingToUTF8($body){
+        if (!mb_check_encoding($body, 'UTF-8')) {
+            $body = utf8_encode($body);
+        }
+        return $body;
+    }
+
+    /**
      * convertMsgToEmail
      *
      * Converts a file in Outlook .msg format into an Email Bean.
@@ -1297,7 +1309,8 @@ class Email extends SpiceBean
     {
         $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
         $documentFactory = new Pear\DocumentFactory();
-        $this->convertMessageToBean($messageFactory->parseMessage($documentFactory->createFromFile('upload://' . $fileId)));
+        $msg = $messageFactory->parseMessage($documentFactory->createFromFile(StreamFactory::getPathPrefix('upload') . $fileId));
+        $this->convertMessageToBean($msg);
 
         // set the parent
         $this->parent_id = $beanId;
@@ -1323,7 +1336,7 @@ class Email extends SpiceBean
         $contents = [];
 
         // parse the ressource
-        $res = mailparse_msg_parse_file('upload://' . $fileId);
+        $res = mailparse_msg_parse_file(StreamFactory::getPathPrefix('upload') . $fileId);
         $struct = mailparse_msg_get_structure($res);
 
         // get all parts
@@ -1358,6 +1371,13 @@ class Email extends SpiceBean
 
         // get the main parts for the email
         $this->name = $bodyParts[0]['headers']['subject'];
+        // handle a subject like Subject: =?iso-8859-1?B?V0c6IFRFU1QgRUtGQi00MDkgxNzW5Pb8?=
+        $subjectParts = explode("?", $bodyParts[0]['headers']['subject']);
+        if(count($subjectParts) > 1) {
+            if ($base64Subject = base64_decode($subjectParts[3])) {
+                $this->name = $this->setBodyEncodingToUTF8($base64Subject);
+            }
+        }
 
         // get the proper date sent
         $date = new DateTime($bodyParts[0]['headers']['date']);
@@ -1440,10 +1460,10 @@ class Email extends SpiceBean
         $this->name = $message->properties['subject'];
         try {
             set_time_limit(60);
-            $this->body = utf8_encode($message->getBodyHTML());
+            $this->body = $this->setBodyEncodingToUTF8($message->getBodyHTML());
         } catch (Exception $e) {
             try {
-                $this->body = $message->getBody();
+                $this->body = $this->setBodyEncodingToUTF8($message->getBody());
             } catch (Exception $e) {
                 // Apparently there is no email body whatsoever.
                 $this->body = '';

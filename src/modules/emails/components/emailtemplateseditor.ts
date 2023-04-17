@@ -65,6 +65,12 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     public subscription: Subscription = new Subscription();
 
+    /*
+     * Hold the characteristic where the module name for bean preview comes from
+     * Either directly from the componentconfig or dynamically from a field located in the model.
+     */
+    public useDynamicModule: boolean = false;
+
     constructor(public model: model,
                 public cdRef: ChangeDetectorRef,
                 public modal: modal,
@@ -91,6 +97,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * set the body fields name and set the iframe initial height
      */
     public ngOnInit() {
+        this.setUseDynamicModule();
         this.setBodyFieldsName();
         this.setIframeHeight();
     }
@@ -131,6 +138,10 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
         if (!!this.componentconfig.subjectField) this.fieldsNames.subjectField = this.componentconfig.subjectField;
         if (!!this.componentconfig.mailboxField) this.fieldsNames.mailboxField = this.componentconfig.mailboxField;
         if (!!this.componentconfig.previewForBean) this.fieldsNames.previewForBean = this.componentconfig.previewForBean;
+
+        if(this.useDynamicModule && this.model.getField(this.componentconfig.previewForBeanField)) {
+            this.setActivePreviewForBean(this.model.getField(this.componentconfig.previewForBeanField));
+        }
     }
 
     /**
@@ -143,6 +154,15 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
                 this.setActiveEditor(value)
             })
         );
+
+        if(this.useDynamicModule){
+            this.subscription.add(
+                this.model.observeFieldChanges(this.componentconfig.previewForBeanField).subscribe(value => {
+                    this.setActivePreviewForBean(value);
+                })
+            );
+        }
+
         this.subscription.add(
             this.model.data$.subscribe(() => this.cdRef.detectChanges())
         );
@@ -158,6 +178,33 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     public setActiveEditor(editorType: 'richText' | 'pageBuilder' | 'html') {
         this.activeEditor = editorType;
+        this.cdRef.detectChanges();
+    }
+
+    /**
+     * check the condition to set useDynamicModule
+     */
+    public setUseDynamicModule() {
+        if(!this.componentconfig.previewForBean && this.componentconfig.previewForBeanField){
+            this.useDynamicModule = true;
+        }
+    }
+
+    /**
+     * template editor can be used in generic modules where previewForBean
+     * will be dynamically set in the parent. MAke sure we retrieve current value from the proper field
+     */
+    public setPreviewForBean(value) {
+        this.fieldsNames.previewForBean = value;
+    }
+
+    /**
+     * set the active previewForBean
+     * @private
+     * @param value
+     */
+    public setActivePreviewForBean(value) {
+        this.setPreviewForBean(value);
         this.cdRef.detectChanges();
     }
 

@@ -1,6 +1,6 @@
 <div class="slds-p-around--medium" [system-overlay-loading-spinner]="isLoading">
     <div class="slds-grid slds-grid--align-spread">
-        <div class="slds-text-heading_small"><system-label label="LBL_LOGIN_METHODS"></system-label></div>
+        <div class="slds-text-heading_small"><system-label label="LBL_2FA_CONFIGURATION"></system-label></div>
         <div class="slds-p-bottom--x-small" style="white-space:nowrap">
             <button class="slds-button slds-button--icon slds-button_neutral slds-button--icon-border" [disabled]="isLoading" (click)="cancel()">
                 <system-button-icon icon="close"></system-button-icon>
@@ -9,9 +9,88 @@
             </button>
         </div>
     </div>
-
-    <div class="slds-grid slds-grid--vertical-align-start">
-        <div><system-checkbox [(ngModel)]="config.totpAuthenticationRequired"><system-label label="LBL_TOTP_AUTHENTICATION_REQUIRED"></system-label></system-checkbox></div>
+    <div class="slds-grid slds-m-bottom--small">
+        <div class="slds-form-element slds-size--1-of-3 slds-p-right--xx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_REQUIRE_ON"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [(ngModel)]="config.requireOn" (ngModelChange)="handleRequireOnChange()" class="slds-select">
+                        <option value="">
+                            <system-label label="LBL_NEVER"></system-label>
+                        </option>
+                        <option value="always">
+                            <system-label label="LBL_ALWAYS"></system-label>
+                        </option>
+                        <option value="device_change">
+                            <system-label label="LBL_DEVICE_CHANGE"></system-label>
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!!config.requireOn" class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small slds-p-right--xx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_METHOD"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [(ngModel)]="config.twoFactorAuthMethod" class="slds-select">
+                        <option value="one_time_password">
+                            <system-label label="LBL_TOTP_AUTHENTICATION"></system-label>
+                        </option>
+                        <option value="sms">
+                            <system-label label="LBL_SMS"></system-label>
+                        </option>
+                        <option value="email">
+                            <system-label label="LBL_EMAIL"></system-label>
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="config.requireOn == 'device_change'" class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small slds-p-right--xx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_TRUST_DEVICE_DURATION_DAYS"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input type="text" [(ngModel)]="config.trustDeviceDays" class="slds-input slds-text-align--right" size="3" style="width: auto;">
+            </div>
+        </div>
     </div>
-
+    <div class="slds-grid">
+        <div class="slds-form-element slds-size--1-of-3 slds-p-right--xx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_MAILBOX"></system-label>
+                ( <system-label label="LBL_SMS"></system-label> )
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [(ngModel)]="config.smsMailboxId" [disabled]="isLoading" class="slds-select">
+                        <option value=""></option>
+                        <option *ngFor="let item of mailboxes" [value]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small slds-p-right--xx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_MAILBOX"></system-label>
+                ( <system-label label="LBL_EMAIL"></system-label> )
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [(ngModel)]="config.emailMailboxId" [disabled]="isLoading" class="slds-select">
+                        <option value=""></option>
+                        <option *ngFor="let item of mailboxes" [value]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
