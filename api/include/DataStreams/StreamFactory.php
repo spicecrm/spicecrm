@@ -30,11 +30,11 @@ class StreamFactory extends SpiceSingleton
     {
         $db = DBManagerFactory::getInstance();
 
-        $query = $db->query("SELECT * FROM sysdatastreams");
-
-        while ($stream = $db->fetchByAssoc($query)) {
-            if (empty($stream['name']) || empty($stream['class_namespace'])) continue;
-            self::$streams[$stream['name']] = $stream;
+        if($query = $db->query("SELECT * FROM sysdatastreams")){
+            while ($stream = $db->fetchByAssoc($query)) {
+                if (empty($stream['name']) || empty($stream['class_namespace'])) continue;
+                self::$streams[$stream['name']] = $stream;
+            }
         }
 
         if (empty(self::$streams['upload'])) {
