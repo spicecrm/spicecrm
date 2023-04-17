@@ -65,3 +65,13 @@ export interface ServicePlannerDirectionResultI {
         hours: number
     };
 }
+
+/**
+ * ServiceQueue definition
+ */
+export interface ServiceQueueI {
+    /** id of the record */
+    id: string;
+    /** name of the record */
+    name: string;
+}
