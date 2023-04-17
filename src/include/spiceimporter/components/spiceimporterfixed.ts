@@ -2,9 +2,7 @@
  * @module SpiceImporterModule
  */
 import {Component, Input} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
 
 import {SpiceImporterService} from '../services/spiceimporter.service';
@@ -30,12 +28,10 @@ export class SpiceImporterFixed {
 
     constructor(
         public spiceImport: SpiceImporterService,
-        public language: language,
-        public metadata: metadata,
         public model: model,
         public view: view
     ) {
-        // set the vie to editable and edit mode
+        // set the view to editable and edit mode
         this.view.isEditable = true;
         this.view.setEditMode();
         this.view.displayLabels = false;

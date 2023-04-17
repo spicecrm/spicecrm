@@ -327,7 +327,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'link_type' => 'one',
             'module' => 'Accounts',
             'bean_name' => 'Account',
-            'vname' => 'LBL_ACCOUNTS',
+            'vname' => 'LBL_ACCOUNT',
         ],
         'contacts' => [
             'name' => 'contacts',
@@ -408,7 +408,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'type' => 'link',
             'relationship' => 'documents_opportunities',
             'source' => 'non-db',
-            'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+            'vname' => 'LBL_DOCUMENTS',
         ],
         //@deprecated project. Use projects
 //        'project' => array(
@@ -431,27 +431,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'relationship' => 'opportunity_leads',
             'source' => 'non-db',
             'vname' => 'LBL_LEADS',
-        ],
-        'campaigns' => [
-            'name' => 'campaigns',
-            'type' => 'link',
-            'relationship' => 'opportunities_campaign',
-            'module' => 'CampaignLog',
-            'bean_name' => 'CampaignLog',
-            'source' => 'non-db',
-            'vname' => 'LBL_CAMPAIGNS',
-            'reportable' => false
-        ],
-        'campaign_link' => [
-            'name' => 'campaign_link',
-            'type' => 'link',
-            'relationship' => 'opportunities_campaign',
-            'vname' => 'LBL_CAMPAIGNS',
-            'link_type' => 'one',
-            'module' => 'Campaigns',
-            'bean_name' => 'Campaign',
-            'source' => 'non-db',
-            'reportable' => false
         ],
         'currencies' => [
             'name' => 'currencies',

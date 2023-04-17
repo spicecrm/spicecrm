@@ -21,6 +21,10 @@ declare var _: any;
 
 @Injectable()
 export class modellist implements OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = _.uniqueId('model_list_http_ref_');
 
     /**
      * the module the list is for
@@ -362,6 +366,10 @@ export class modellist implements OnDestroy {
      */
     public ngOnDestroy() {
         this.serviceSubscriptions.unsubscribe();
+        this.backend.cancelPendingRequests([
+            this.httpRequestsRefID,
+            this.httpRequestsRefID + '_get_list_data'
+        ]);
     }
 
     /**
@@ -648,7 +656,8 @@ export class modellist implements OnDestroy {
      * load the list data from the configuration service
      */
     public loadFromSession(): boolean {
-        this.useCache = true;
+        if (!this.useCache) return false;
+
         let sessionData = JSON.parse(this.configuration.getData('lastlist' + this.module));
         if (!!sessionData && sessionData.buckets?.bucketfield == this.buckets?.bucketfield) {
             this.listData = sessionData.listdata;
@@ -701,8 +710,7 @@ export class modellist implements OnDestroy {
         this.backend.postRequest(
             "configuration/spiceui/core/modules/" + this.module + "/listtypes",
             {},
-            JSON.stringify(listParams)
-        ).subscribe((listTypeData: ListTypeI) => {
+            JSON.stringify(listParams), this.httpRequestsRefID).subscribe((listTypeData: ListTypeI) => {
             this.addCustomListType(listTypeData);
 
             this.setListType(listTypeData.id);
@@ -785,7 +793,7 @@ export class modellist implements OnDestroy {
 
 
         // post to the backend
-        this.backend.postRequest(`configuration/spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
+        this.backend.postRequest(`configuration/spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams, this.httpRequestsRefID).subscribe(listdata => {
             this.metadata.getModuleListTypes(this.module).some(item => {
                 if (item.id == this.currentList.id) {
 
@@ -831,8 +839,8 @@ export class modellist implements OnDestroy {
             id = this.currentList.id;
         }
 
-        this.backend.deleteRequest("configuration/spiceui/core/modules/" + this.module + "/listtypes/" + id).subscribe(
-            res => {
+        this.backend.deleteRequest("configuration/spiceui/core/modules/" + this.module + "/listtypes/" + id, null, this.httpRequestsRefID).subscribe({
+            next: res => {
 
                 // remove the deleted listtype from the current list
                 this.metadata.deleteModuleListType(this.module, id);
@@ -840,9 +848,10 @@ export class modellist implements OnDestroy {
                 // set the new default listtype
                 this.setListType('all');
             },
-            error => {
+            error: error => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
-            });
+            }
+        });
     }
 
     /**
@@ -856,7 +865,14 @@ export class modellist implements OnDestroy {
      * reloads the last loaded list
      */
     public reLoadList(quiet: boolean = false) {
-        return this.getListData(quiet);
+        if (this.isLoading) {
+            const requestID = this.httpRequestsRefID + '_get_list_data';
+            this.backend.cancelPendingRequests([requestID]);
+            this.isLoading = false;
+            return of(false);
+        } else {
+            return this.getListData(quiet);
+        }
     }
 
     /**
@@ -1140,8 +1156,12 @@ export class modellist implements OnDestroy {
             relatefilter: this.relatefilter?.active ? this.relatefilter : null
         };
 
-        this.backend.getList(this.module, this.sortArray, params).subscribe(
-            (res: any) => {
+        const requestID = this.httpRequestsRefID + '_get_list_data';
+
+        this.backend.cancelPendingRequests([requestID]);
+
+        this.backend.getList(this.module, this.sortArray, params, requestID).subscribe({
+            next: (res: any) => {
                 // set the listdata
                 this.listData = res;
 
@@ -1164,7 +1184,7 @@ export class modellist implements OnDestroy {
                 retSub.complete();
                 this.listDataChanged$.next(true);
             },
-            error => {
+            error: error => {
                 this.toast.sendToast('error loading list');
 
                 // indicate that we are no longer loading
@@ -1173,7 +1193,8 @@ export class modellist implements OnDestroy {
                 retSub.error(error);
                 retSub.complete();
             }
-        );
+
+        });
 
         return retSub.asObservable();
     }
@@ -1205,8 +1226,8 @@ export class modellist implements OnDestroy {
             searchgeo: this.searchGeo,
             aggregates: aggregates,
             buckets: this.buckets,
-            relatefilter: this.relatefilter?.active ? this.relatefilter : null
-        })
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null},
+            this.httpRequestsRefID)
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
                 this.lastLoad = new moment();
@@ -1243,8 +1264,9 @@ export class modellist implements OnDestroy {
                 bucketfield: this.buckets.bucketfield,
                 bucketitems: [bucket]
             },
-            relatefilter: this.relatefilter?.active ? this.relatefilter : null
-        })
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null},
+            this.httpRequestsRefID
+        )
             .subscribe((res: any) => {
                 bucket.items = res.buckets.bucketitems[0].items;
                 this.listData.list = this.listData.list.concat(res.list);
@@ -1270,7 +1292,7 @@ export class modellist implements OnDestroy {
             this.backend.getLinkToDownload(`module/${this.module}/export`, 'POST', {}, {
                 ids: selectedIds,
                 fields: fields
-            }, {}).subscribe(
+            }, {}, this.httpRequestsRefID).subscribe(
                 (downloadurl) => {
                     retSub.next(downloadurl);
                     retSub.complete();
@@ -1291,7 +1313,9 @@ export class modellist implements OnDestroy {
                     searchterm: this.searchTerm,
                     searchgeo: this.searchGeo,
                     aggregates: aggregates,
-                }
+                },
+                null,
+                this.httpRequestsRefID
             ).subscribe(
                 (res) => {
                     retSub.next(res);

@@ -30,6 +30,10 @@ import {Subscription} from "rxjs";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit, OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('reporter_presentation_http_ref_');
 
     /**
      * holds the presentation params decoded as set in the report
@@ -93,8 +97,14 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                 public cdRef: ChangeDetectorRef,
                 public toast: toast) {
         this.subscriptions.add(
-            this.reporterconfig.refresh$.subscribe(event => {
-                this.getPresentation();
+            this.reporterconfig.refresh$.subscribe({
+                next: event => {
+                    if (event) {
+                        this.getPresentation();
+                    } else {
+                        this.handleCancel();
+                    }
+                }
             })
         );
     }
@@ -154,6 +164,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
      */
     public ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 
     /**
@@ -161,6 +172,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
      */
     public getPresentation() {
         this.isLoading = true;
+        this.reporterconfig.isLoading.presentation = true;
         this.cdRef.detectChanges();
 
         // build where conditions
@@ -192,29 +204,40 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             }]);
         }
 
-        this.backend.postRequest(`module/KReports/${this.model.id}/presentation/dynamicoptions`, {}, body).subscribe((presData: any) => {
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
 
-            this.presData = [];
-            this.cdRef.detectChanges();
+        this.backend.postRequest(`module/KReports/${this.model.id}/presentation/dynamicoptions`, {}, body, this.httpRequestsRefID).subscribe({
+            next: (presData: any) => {
 
-            if (!presData) return;
+                this.presData = [];
+                this.cdRef.detectChanges();
 
-            // get field width if not previous set
-            if (this.totalWidth == 0) {
-                for (let field of presData.reportmetadata.fields) {
-                    this.fieldsData[field.fieldid] = field;
-                    this.fieldsDisplayClasses[field.fieldid] = this.generateFieldDisplayClass(field);
-                    this.totalWidth += field.width;
+                if (!presData) return;
+
+                // get field width if not previous set
+                if (this.totalWidth == 0) {
+                    for (let field of presData.reportmetadata.fields) {
+                        this.fieldsData[field.fieldid] = field;
+                        this.fieldsDisplayClasses[field.fieldid] = this.generateFieldDisplayClass(field);
+                        this.totalWidth += field.width;
+                    }
                 }
+
+                this.presData = presData;
+
+                this.setDisplayFields();
+                this.processPresData();
+
+                this.isLoading = false;
+                this.reporterconfig.isLoading.presentation = false;
+                this.cdRef.detectChanges();
+            },
+            error: () => {
+                this.toast.sendToast('ERR_LOADING_RECORD', 'error');
+                this.isLoading = false;
+                this.reporterconfig.isLoading.presentation = false;
+                this.cdRef.detectChanges();
             }
-
-            this.presData = presData;
-
-            this.setDisplayFields();
-            this.processPresData();
-
-            this.isLoading = false;
-            this.cdRef.detectChanges();
         });
     }
 
@@ -396,5 +419,15 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                 }
             });
         });
+    }
+
+    /**
+     * handle canceling the get request
+     */
+    public handleCancel() {
+        this.isLoading = false;
+        this.reporterconfig.isLoading.presentation = false;
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
+        this.cdRef.detectChanges();
     }
 }

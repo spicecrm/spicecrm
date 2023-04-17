@@ -11,7 +11,6 @@ use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 
 class SystemUIController{
 
-
     #$uiRestHandler = new SpiceUIRESTHandler();
 
     /***
@@ -157,6 +156,45 @@ class SystemUIController{
             $roleModules[] = $row;
         }
         return $res->withJson($roleModules);
+    }
+
+    /**
+     * get system and custom logic hooks
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getAllHooks(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $hooks = [];
+        $query = $db->query("SELECT *, 'global' scope FROM syshooks UNION SELECT *, 'custom' scope FROM syscustomhooks");
+        while( $row = $db->fetchByAssoc($query) ){
+            $row['type'] = $row ['scope'];
+            unset($row['scope']);
+            $hooks[] = $row;
+        }
+        return $res->withJson($hooks);
+    }
+    /**
+     * get system and custom logic hooks
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getAllWebHooks(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $webhooks = [];
+        $query = $db->query("SELECT * FROM syswebhooks");
+        while( $row = $db->fetchByAssoc($query) ){
+            $webhooks[] = $row;
+        }
+        return $res->withJson($webhooks);
     }
 
     /**

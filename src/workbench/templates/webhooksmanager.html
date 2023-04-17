@@ -1,0 +1,76 @@
+<div system-to-bottom-noscroll>
+    <div *ngIf="loading" class="slds-align--absolute-center slds-height_full">
+        <system-spinner></system-spinner>
+    </div>
+    <div class="slds-tabs_default" style="background-color: transparent">
+        <div class="slds-size--4-of-4 slds-scrollable--y" system-to-bottom>
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout slds-text-align_center slds-table--header-fixed">
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="slds-text-align_left" scope="col" style="width:4.25rem">
+                        <div class="slds-truncate "></div>
+                    </th>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small slds-m-vertical--xx-small"><system-label label="LBL_MODULE"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_EVENT"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_URL"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_center" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_SEND_DATA"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_right" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"></div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let webHook of allWebHooks" class="slds-hint-parent" >
+                    <td class="slds-text-align_left" style="width:4.25rem">
+                        <system-utility-icon
+                                [colorclass]="getStatusColor(webHook)" (click)="toggleValue($event, webHook)"
+                                class="slds-p-right--xx-small slds-button slds-button--icon slds-col_bump-left"
+                                size="xx-small" icon="light_bulb"></system-utility-icon>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div class="slds-truncate">{{webHook.module}}</div>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div class="slds-truncate">{{webHook.event}}</div>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div class="slds-truncate">{{webHook.url}}</div>
+                    </td>
+                    <td class="slds-text-align_center">
+<!--                        <div class="slds-truncate">{{webHook.send_data}}</div>-->
+                            <system-checkbox [ngModel]="webHook.send_data" [asinteger]="true" [disabled]="true"></system-checkbox>
+                    </td>
+                    <td class="slds-text-align_right">
+                        <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border" (click)="callWebHooks(webHook)">
+                            <system-button-icon icon="broadcast"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border"
+                              (click)="editWebHook(webHook.id)"  >
+                            <system-button-icon icon="edit"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border"
+                              (click)="deleteWebHook(webHook.id)"  >
+                            <system-button-icon icon="clear"></system-button-icon>
+                        </button>
+                        <button (click)="searchWithModal(webHook)" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon icon="search"></system-button-icon></button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="slds-p-around--x-small">
+                <button class="slds-align--absolute-center slds-button slds-button--icon"
+                    (click)="addWebHook()">
+                    <system-button-icon icon="add" size="medium" style="border-radius: 50%;"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

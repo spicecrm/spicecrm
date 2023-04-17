@@ -210,12 +210,14 @@ $routes = [
     ]
 ];
 
+$config = SpiceConfig::getInstance()->config;
+
 $RESTManager->registerExtension('userpassword', '2.0', [
-    'oneupper' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['oneupper'],
-    'onelower' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onelower'],
-    'onenumber' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onenumber'],
-    'onespecial' => (boolean)SpiceConfig::getInstance()->config['passwordsetting']['onespecial'],
-    'minpwdlength' => SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'],
+    'oneupper' => (boolean)$config['passwordsetting']['oneupper'],
+    'onelower' => (boolean)$config['passwordsetting']['onelower'],
+    'onenumber' => (boolean)$config['passwordsetting']['onenumber'],
+    'onespecial' => (boolean)$config['passwordsetting']['onespecial'],
+    'minpwdlength' => $config['passwordsetting']['minpwdlength'],
     'regex' => '^' . SpiceCRMPasswordUtils::getPwdCheckRegex() . '$'
 ],
     $routes

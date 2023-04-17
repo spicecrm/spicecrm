@@ -69,7 +69,7 @@ export class GitPullFromRepository {
                 delete this.loginDetails.username;
                 delete this.loginDetails.password;
                 delete this.loginDetails.loginOption;
-                this.backend.postRequest(`/admin/repair/pull`, null, loginDetails).subscribe((res: any) => {
+                this.backend.postRequest(`admin/repair/pull`, null, loginDetails).subscribe((res: any) => {
                     this.data = res.output;
                     loadingModal.emit(true);
                     this.toast.sendToast('LBL_DATA_SAVED', 'success');
@@ -80,7 +80,7 @@ export class GitPullFromRepository {
         } else if (this.loginDetails.loginOption == 'username') {
             if (this.usernameCondition && this.passwordCondition) {
                 let loadingModal = this.modal.await('LBL_LOADING');
-                this.backend.postRequest(`/admin/repair/pull`, null, loginDetails).subscribe((res: any) => {
+                this.backend.postRequest(`admin/repair/pull`, null, loginDetails).subscribe((res: any) => {
                     this.data = res.output;
                     loadingModal.emit(true);
                     this.toast.sendToast('LBL_DATA_SAVED', 'success');
