@@ -225,7 +225,7 @@ class CampaignTask extends SpiceBean
             'searchterm' => $searchTerm,
             'records' => $limit,
             'start' => $offset,
-            'sort' => !$sort ? [] : ['sortfield' => $sort->sortfield, 'sortdirection' => $sort->sortdirection]
+            'sort' => !$sort || !$sort->sortfield ? [] : ['sortfield' => $sort->sortfield, 'sortdirection' => $sort->sortdirection]
         ];
     }
 
@@ -238,6 +238,9 @@ class CampaignTask extends SpiceBean
     private function getListsTargets(array $listIds, ?string $status): array
     {
         $listIdsString = implode(',', array_map(function ($e) {return "'$e'";}, $listIds));
+
+        // overwrite sql_mode=only_full_group_by on the server
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
         $query = $this->db->query("
             SELECT related_id, GROUP_CONCAT(prospect_list_id) AS listsIds, st.status, st.date_modified AS status_date_changed FROM prospect_lists_prospects plp

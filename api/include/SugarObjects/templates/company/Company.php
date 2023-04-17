@@ -149,7 +149,7 @@ class Company extends Basic
      */
     private function fillInEmail1Field()
     {
-        $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}' AND ear.primary_address=1 AND ear.deleted = 1 AND ear.email_address_id = ea.id AND ea.deleted = 0");
+        $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}' AND ear.primary_address=1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
         if($emailAddress){
             $this->email1 = $emailAddress['email_address'];
         }

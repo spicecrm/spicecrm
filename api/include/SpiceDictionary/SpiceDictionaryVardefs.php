@@ -920,7 +920,7 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
 
         // enrich with relationships from sysdictionaryrelationships/ syscustomdictionaryrelationships
         if(self::isDbManaged()){
-            $sysDictRels = SpiceDictionaryHandler::getInstance()->getDictionaryRelationships();
+            $sysDictRels = SpiceDictionaryHandler::getInstance()->getDictionaryRelationships('a');
             foreach($sysDictRels as $relDef){
                 $relKey = $relDef['relationship_name'];
                 $relationships[$relKey] = array_merge(['name' => $relKey], $relDef);
@@ -1093,10 +1093,10 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
      * @return array
      */
     public static function loadRelationshipsForModuleFromCache($module){
-        $cachedValue = SpiceCache::get('relationships');
+        $cachedValue = SpiceCache::get('relationships'.$module);
         if(!$cachedValue) {
             $cachedValue = self::getRelationshipsCacheFromDb($module);
-            SpiceCache::set('relationships',$cachedValue );
+            SpiceCache::set('relationships'.$module, $cachedValue );
         }
         return $cachedValue;
     }
@@ -1199,6 +1199,7 @@ WHERE rels.rhs_sysdictionarydefinition_id = '{$dict['id']}' AND rels.status='a' 
             while ($row = DBManagerFactory::getInstance()->fetchByAssoc($res)) {
                 $dict['fields'][$row['rhs_linkname']] = [
                     'name' => $row['rhs_linkname'],
+                    'vname' => $row['rhs_linklabel'],
                     'type' => 'link',
                     'module' => $row['module'],
                     'relationship' => $row['relationship_name'],

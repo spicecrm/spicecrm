@@ -202,7 +202,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'type' => 'link',
                 'relationship' => 'documents_accounts',
                 'source' => 'non-db',
-                'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+                'vname' => 'LBL_DOCUMENTS',
             ],
 // CR1000426 cleanup backend, module Bugs removed
 //        'bugs' => array(
@@ -269,6 +269,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_LEADS',
             ],
+        'prospects' => [
+            'name' => 'prospects',
+            'type' => 'link',
+            'relationship' => 'contacts_prospects',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'vname' => 'LBL_PROSPECT',
+            'duplicate_merge' => 'disabled',
+            'module' => 'Prospects'
+            ],
         'campaigns' =>
             [
                 'name' => 'campaigns',
@@ -293,7 +303,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'name' => 'created_by_link',
                 'type' => 'link',
                 'relationship' => 'accounts_created_by',
-                'vname' => 'LBL_CREATED_BY_USER',
+                'vname' => 'LBL_CREATED_BY',
                 'link_type' => 'one',
                 'module' => 'Users',
                 'bean_name' => 'User',
@@ -304,7 +314,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'name' => 'modified_user_link',
                 'type' => 'link',
                 'relationship' => 'accounts_modified_user',
-                'vname' => 'LBL_MODIFIED_BY_USER',
+                'vname' => 'LBL_MODIFIED_BY',
                 'link_type' => 'one',
                 'module' => 'Users',
                 'bean_name' => 'User',
@@ -375,7 +385,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 
         'proposals' => [
             'name' => 'proposals',
-            'vname' => 'LBL_PROPOSALS_LINK',
+            'vname' => 'LBL_PROPOSALS',
             'type' => 'link',
             'relationship' => 'accounts_proposals_rel',
             'link_type' => 'one',
@@ -417,7 +427,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
         ],
         'accountccdetails' => [
             'name' => 'accountccdetails',
-            'vname' => 'LBL_ACOUNTCCDETAILS_LINK',
+            'vname' => 'LBL_ACCOUNTCCDETAILS',
             'type' => 'link',
             'relationship' => 'accounts_accountccdetails',
             'link_type' => 'one',
@@ -451,7 +461,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 'module' => 'EventBlueprints',
                 'bean_name' => 'EventBlueprint',
                 'source' => 'non-db',
-                'vname' => 'LBL_EVENT_LOCATION',
+                'vname' => 'LBL_EVENTBLUEPRINT_LOCATION',
             ],
         'events' => [
             'name' => 'events',
@@ -533,6 +543,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'bean_name' => 'Letter',
             'vname' => 'LBL_LETTERS',
         ],
+        'hcmtrainings' =>
+            [
+                'name' => 'hcmtrainings',
+                'type' => 'link',
+                'relationship' => 'hcmtrainings_accounts',
+                'module' => 'HCMTrainings',
+                'bean_name' => 'HCMTraining',
+                'source' => 'non-db',
+                'vname' => 'LBL_HCMTRAININGS',
+            ],
     ],
     'indices' => [
         ['name' => 'idx_accnt_id_del', 'type' => 'index', 'fields' => ['id', 'deleted']],
@@ -745,7 +765,7 @@ if (file_exists("extensions/modules/ServiceOrders")) {
         'type' => 'link',
         'relationship' => 'serviceorders_accounts_add',
         'source' => 'non-db',
-        'vname' => 'LBL_SERVICEORDERS_ADD',
+        'vname' => 'LBL_SERVICEORDERS',
         'module' => 'ServiceOrders',
         'default' => false
     ];
@@ -793,7 +813,7 @@ if (file_exists("extensions/modules/ServiceLocations")) { // CR1000239
 if (file_exists("extensions/modules/ProductVariants")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['manufactures'] = [
         'name' => 'manufactures',
-        'vname' => 'LBL_PRODUCTVARIANT',
+        'vname' => 'LBL_PRODUCTVARIANTS_MANUFACTURER',
         'type' => 'link',
         'module' => 'ProductVariants',
         'relationship' => 'productvariant_manufacturer',
@@ -801,7 +821,7 @@ if (file_exists("extensions/modules/ProductVariants")) {
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['resells'] = [
         'name' => 'resells',
-        'vname' => 'LBL_PRODUCTVARIANT',
+        'vname' => 'LBL_PRODUCTVARIANTS_RESELLER',
         'type' => 'link',
         'module' => 'ProductVariants',
         'relationship' => 'productvariants_resellers',

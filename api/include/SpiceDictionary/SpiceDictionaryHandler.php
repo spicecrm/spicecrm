@@ -225,10 +225,11 @@ class SpiceDictionaryHandler extends SpiceSingleton
 
     /**
      * retrieves the dictionary relationships located in sysdictionaryrelationships, syscustomdictionaryrelationships
-     *
+     * this method is used for the dictionary manager itself and for the logic retrieving active relationships
+     * @param string $status default value is all. Possible is all| a
      * @return array
      */
-    public function getDictionaryRelationships(){
+    public function getDictionaryRelationships(string $status = 'all'){
         $db = DBManagerFactory::getInstance();
         $relOriginTables = ['sysdictionaryrelationships' => 'g', 'syscustomdictionaryrelationships' => 'c'];
         $relArray = [];
@@ -285,8 +286,14 @@ LEFT JOIN
         (SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM sysdictionaryitems UNION 
  SELECT id sysdictionaryitem_id, name sysdictionaryitem_name FROM syscustomdictionaryitems) joinitemsright ON joinitemsright.sysdictionaryitem_id = rels.join_rhs_sysdictionaryitem_id
   
- WHERE rels.deleted = 0
-        AND rels.`status` ='a'";
+ WHERE rels.deleted = 0";
+
+            // add status limitation
+            $statusWhere = '';
+            if($status === 'a'){
+                $statusWhere =  " AND rels.status ='{$status}}'";
+            }
+            $q.= $statusWhere;
 
             $dictionaryrelationships = $db->query($q);
             // store Ids to get unique entries
