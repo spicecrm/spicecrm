@@ -21,10 +21,13 @@ export class ServiceSelectQueueButton {
         public modal: modal,
         public injector: Injector
     ) {
+        this.model.mode$.subscribe(mode => {
+            this.canChange();
+        });
 
     }
 
-    get canChange() {
+    public canChange() {
         if (!this.model.checkAccess('edit')) return false;
 
         let resolveDate = this.model.getField('resolve_date');
@@ -35,7 +38,7 @@ export class ServiceSelectQueueButton {
         return this.model.isEditing ? false : true;
     }
 
-    public showModal() {
+    public execute() {
         if (this.canChange) {
             this.modal.openModal('ServiceSelectQueueModal', true, this.injector);
         }
