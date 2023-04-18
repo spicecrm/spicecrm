@@ -9,7 +9,9 @@ import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {Subject, of, Observable} from 'rxjs';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class recent {
     // public items: any[] = [];
     public moduleItems: any = {};

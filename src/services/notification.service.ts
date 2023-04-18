@@ -19,7 +19,9 @@ declare var moment: any;
 /**
  * this service handles loading and managing the user notifications
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class notification {
     /**
      * holds the unread notifications count

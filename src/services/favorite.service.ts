@@ -12,7 +12,9 @@ import {Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class favorite {
 
     public isEnabled: boolean = false;

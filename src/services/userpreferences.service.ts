@@ -21,7 +21,9 @@ declare var moment: any;
  */
 declare var _: any;
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class userpreferences {
 
     public preferences: any = {
