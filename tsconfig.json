@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "emitDecoratorMetadata": false,
-    "target": "es2020",
+    "target": "es2022",
     "module": "esnext",
     "types": ["node"],
     "typeRoots": [
@@ -20,19 +20,13 @@
       "dom"
     ]
   },
-  "exclude": [
-    "node_modules",
-    "vendor"
-  ],
   "include": [
     "src/**/*",
-    "environments/environment.ts",
-    "environments/environment.prod.ts"
+    "environments/environment.ts"
   ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "enableIvy": true,
     "allowEmptyCodegenFiles": true
   }
 }
