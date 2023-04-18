@@ -33,6 +33,7 @@ class StreamFactory extends SpiceSingleton
         if($query = $db->query("SELECT * FROM sysdatastreams")){
             while ($stream = $db->fetchByAssoc($query)) {
                 if (empty($stream['name']) || empty($stream['class_namespace'])) continue;
+                $stream['config'] = json_decode($stream['config']);
                 self::$streams[$stream['name']] = $stream;
             }
         }
@@ -57,7 +58,7 @@ class StreamFactory extends SpiceSingleton
 
         self::register($name);
 
-        return self::$streams[$name]['name'] . "://";
+        return self::$streams[$name]['name'] . "://" . self::$streams[$name]['config']->path;
     }
 
     /**
@@ -78,8 +79,6 @@ class StreamFactory extends SpiceSingleton
             return;
         }
 
-        $config = json_decode(self::$streams[$name]['config']);
-
-        $classInstance->register($name, $config);
+        $classInstance->register($name, self::$streams[$name]['config']->class_config);
     }
 }
