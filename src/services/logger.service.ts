@@ -12,7 +12,9 @@ const noop = (): any => undefined;
 /**
  * general service for logging
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class loggerService {
 
     public sessionService: session;

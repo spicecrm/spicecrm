@@ -33,7 +33,9 @@ interface authDataIf {
 /**
  * the session service holds relevant session data and also acts as a session data storage container
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class session {
 
     public authData: authDataIf = {

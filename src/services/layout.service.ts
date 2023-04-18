@@ -6,7 +6,9 @@ import {Injectable, EventEmitter} from '@angular/core';
 /**
  * a helper service that supprts managing the layout dimensions. This is added where the mediaqueries are not suffieit because e.g. components are rendered differently depending on teh sreensize
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class layout {
     /**
      * holds the height of the header. The header can change with the layout changes and since the component is fixed other components need to adopt accordingly
