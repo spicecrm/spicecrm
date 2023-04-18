@@ -14,6 +14,11 @@ import {ServiceSelectQueueModal} from "./serviceselectqueuemodal";
     templateUrl: '../templates/serviceselectqueuebutton.html'
 })
 export class ServiceSelectQueueButton {
+    /**
+     * holds the action config
+     */
+    public actionconfig: any = {};
+
     constructor(
         public model: model,
         public metadata: metadata,
@@ -25,6 +30,11 @@ export class ServiceSelectQueueButton {
             this.canChange();
         });
 
+    }
+
+
+    get buttonLabel() {
+        return this.actionconfig.label ? this.actionconfig.label : 'LBL_FORWARD';
     }
 
     public canChange() {
