@@ -47,9 +47,8 @@ class MediaFile extends SpiceBean {
         $cdnPathPrefix = StreamFactory::getPathPrefix('cdn');
 
         if ($cdnPathPrefix) {
-            $path = SpiceConfig::getInstance()->config['mediafiles']['cdn_path'] ?? '';
             $content = file_get_contents( self::getMediaPath( $this->id ));
-            file_put_contents("{$cdnPathPrefix}{$path}{$this->id}", $content);
+            file_put_contents("{$cdnPathPrefix}{$this->id}", $content);
         }
 
         return $returnOfSave;
