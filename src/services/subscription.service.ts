@@ -17,7 +17,9 @@ import {model} from "./model.service";
 /**
  * this service handles loading and managing the user subscriptions
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class subscription {
     /**
      * holds the notifications
