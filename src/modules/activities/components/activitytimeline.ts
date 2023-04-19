@@ -18,6 +18,7 @@ import {Router} from "@angular/router";
 declare var moment;
 
 @Component({
+    selector: 'activity-timeline',
     templateUrl: '../templates/activitytimeline.html',
     providers: [activitiytimeline]
 })

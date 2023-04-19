@@ -8,6 +8,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class MediaFile extends SpiceBean {
 
@@ -405,7 +406,7 @@ class MediaFile extends SpiceBean {
                 $error = true;
             }
         }
-        if ( $error ) sugar_die( 'Error with media file directory/directories. Please refer to spicecrm.log (and error.log) for details.' );
+        if ( $error ) SpiceUtils::sugarDie( 'Error with media file directory/directories. Please refer to spicecrm.log (and error.log) for details.' );
     }
 
     public function fill_in_additional_detail_fields() {

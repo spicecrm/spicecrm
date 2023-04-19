@@ -18,7 +18,7 @@ export class PaginationControlsComponent implements OnChanges {
     @Input() public canSwitch = true;
     public offset = 0;
     public max_page = 0;
-
+    public range = '0 - 0';
     public get page() {
         return this._page;
     }
@@ -34,7 +34,12 @@ export class PaginationControlsComponent implements OnChanges {
         // defaults...
         if( this.total_records > 0 ) {
             this.max_page = Math.ceil(this.total_records / this.limit);
-        } else this.max_page = 0;
+        } else {
+            this.max_page = 0;
+        }
+
+        const loadedCount = this._page * this.limit;
+        this.range = `${loadedCount - this.limit} - ${loadedCount > this.total_records ? this.total_records : loadedCount}`;
     }
 
     public pageUp() {

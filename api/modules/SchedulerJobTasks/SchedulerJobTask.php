@@ -131,9 +131,9 @@ class SchedulerJobTask extends Basic
         $return = $fallbackTask->run($this->run_by_job_id);
 
         if (!$return['success']) {
-            LoggerManager::getLogger()->fatal("SchedulerJobTask {$fallbackTask->id} ({$fallbackTask->name}) failed");
+            LoggerManager::getLogger()->fatal('scheduler',"SchedulerJobTask {$fallbackTask->id} ({$fallbackTask->name}) failed");
         } else {
-            LoggerManager::getLogger()->info("SchedulerJobTask {$fallbackTask->id} ({$fallbackTask->name}) successfully executed");
+            LoggerManager::getLogger()->info('scheduler', "SchedulerJobTask {$fallbackTask->id} ({$fallbackTask->name}) successfully executed");
         }
     }
 
@@ -220,7 +220,7 @@ class SchedulerJobTask extends Basic
      */
     private function executeMethod($classMethod)
     {
-        LoggerManager::getLogger()->info("-----> SchedulerJobTask starting Job with execution method: $this->method");
+        LoggerManager::getLogger()->info('scheduler', "-----> SchedulerJobTask starting Job with execution method: $this->method");
 //        if (!$classMethod->class) {
 //            include_once 'modules/SchedulerJobs/_AddJobsHere.php';
 //            return call_user_func_array($classMethod->method, [$this->method_params]);
@@ -229,7 +229,7 @@ class SchedulerJobTask extends Basic
                 return call_user_func_array([$classMethod->class, $classMethod->method], [$this->method_params]);
 
             } catch (Exception $exception) {
-                LoggerManager::getLogger()->fatal("SchedulerJobTask {$this->id} ({$this->name}) Exception: {$exception->getMessage()} Stack Trace: {$exception->getTraceAsString()}");
+                LoggerManager::getLogger()->fatal('scheduler',"SchedulerJobTask {$this->id} ({$this->name}) Exception: {$exception->getMessage()} Stack Trace: {$exception->getTraceAsString()}");
                 return ['success' => false, 'message' => "Exception: " . $exception->getMessage()];
             }
 //        }

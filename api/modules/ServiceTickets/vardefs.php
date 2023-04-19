@@ -179,28 +179,39 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'type' => 'date'
         ],
         //categories
+        'sysservicecategory' => [
+            'name' => 'sysservicecategory',
+            'vname' => 'LBL_SYSSERVICECATEGORY',
+            'type' => 'categories',
+            'required' => false,
+            'source' => 'non-db'
+        ],
         'sysservicecategory_id1' => [
             'name' => 'sysservicecategory_id1',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID1',
-            'type' => 'varchar',
+            'type' => 'category',
+            'dbType' => 'varchar',
             'len' => 36
         ],
         'sysservicecategory_id2' => [
             'name' => 'sysservicecategory_id2',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID2',
-            'type' => 'varchar',
+            'type' => 'category',
+            'dbType' => 'varchar',
             'len' => 36
         ],
         'sysservicecategory_id3' => [
             'name' => 'sysservicecategory_id3',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID3',
-            'type' => 'varchar',
+            'type' => 'category',
+            'dbType' => 'varchar',
             'len' => 36
         ],
         'sysservicecategory_id4' => [
             'name' => 'sysservicecategory_id4',
             'vname' => 'LBL_SYSSERVICECATEGORY_ID4',
-            'type' => 'varchar',
+            'type' => 'category',
+            'dbType' => 'varchar',
             'len' => 36
         ],
         'add_params' => [
@@ -288,6 +299,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket'] = [
             'link_type' => 'one',
             'side' => 'right',
             'source' => 'non-db',
+        ],
+        // emails
+        'emails_as_parent' => [
+            'name' => 'emails_as_parent',
+            'vname' => 'LBL_EMAILS_AS_PARENT',
+            'type' => 'link',
+            'relationship' => 'servicetickets_emails',
+            'module' => 'Emails',
+            'bean_name' => 'Email',
+            'source' => 'non-db'
         ],
     ],
     'relationships' => [

@@ -54,7 +54,7 @@
         </h3>
         <div class="slds-section__content">
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
-                <div class="slds-p-around--x-small">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
                     <div class="slds-form-element">
                         <label class="slds-form-element__label"><system-label label="LBL_DEVELOPER_MODE"></system-label></label>
                         <div class="slds-form-element__control">
@@ -68,22 +68,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">
+                <div class="slds-form-element__control slds-size--1-of-2 slds-truncate slds-p-around--x-small">
                     <system-label label="LBL_STACKTRACE"></system-label>
                     <div class="slds-p-vertical--xx-small">
                         <system-checkbox [(ngModel)]="settings.advanced.stack_trace_errors"></system-checkbox>
                     </div>
                 </div>
-                <div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">
+                <!--div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">
                     <system-label label="LBL_LOG_SLOW_QUERIES"></system-label>
                     <div class="slds-p-vertical--xx-small">
                         <system-checkbox [(ngModel)]="settings.advanced.dump_slow_queries"></system-checkbox>
                     </div>
-                </div>
-                <div class="slds-form-element__control slds-size--1-of-2 slds-p-around--x-small">
-                    <system-label label="LBL_SLOW_QUERYTIME_TRESHHOLD"></system-label>
-                    <system-input-integer [(ngModel)]="settings.advanced.slow_query_time_msec"></system-input-integer>
-                </div>
+                </div-->
+
             </div>
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
                 <div class="slds-form-element__control slds-size--1-of-2 slds-p-around--x-small">
@@ -93,6 +90,76 @@
                 <div class="slds-form-element__control slds-size--1-of-2 slds-p-around--x-small">
                     <system-label label="LBL_EXPORT_LINES"></system-label>
                     <system-input-integer [disabled]="true" [(ngModel)]="settings.advanced.maximum_export_lines"></system-input-integer>
+                </div>
+            </div>
+        </div>
+    </div><div class="slds-section slds-is-open">
+        <h3 class="slds-section__title">
+            <button aria-expanded="true" class="slds-button slds-section__title-action">
+                <span class="slds-truncate"><system-label label="LBL_CACHE"></system-label></span>
+            </button>
+        </h3>
+        <div class="slds-section__content">
+            <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_CACHE_TYPE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="settings.cache.class">
+                                    <option value="SpiceCacheFile">File</option>
+                                    <option value="SpiceCacheRedis">Redis</option>
+                                    <option value="SpiceCacheMemcached">Memcached</option>
+                                    <option value="SpiceCacheMemory">Memoryt</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-2 slds-truncate slds-p-around--x-small">
+                    <system-label label="LBL_DISABLE_EXTERNAL_CACHE"></system-label>
+                    <div class="slds-p-vertical--xx-small">
+                        <system-checkbox [(ngModel)]="settings.cache.external_cache_disabled"><system-label label="LBL_CACHE_DISABLED"></system-label></system-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="settings.cache.class == 'SpiceCacheFile'" class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <system-label label="LBL_FILE_LOCTATION"></system-label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="settings.cache.file_location">
+                                <option value="cache">./cache</option>
+                                <option value="systemdir">System Temp Dir</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <div class="slds-grid slds-grid_vertical">
+                        <system-label label="LBL_FILE_NAME"></system-label>
+                        <system-checkbox class="slds-p-vertical--xx-small" [(ngModel)]="settings.cache.file_transparentnames"><system-label label="LBL_TRANSPARENT_FILENAMES"></system-label></system-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="settings.cache.class == 'SpiceCacheRedis'" class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <system-label label="LBL_REDIS_HOST"></system-label>
+                    <system-input-text autocomplete="off" [(ngModel)]="settings.cache.redis_host"></system-input-text>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <system-label label="LBL_REDIS_PORT"></system-label>
+                    <system-input-integer autocomplete="off" [(ngModel)]="settings.cache.redis_port"></system-input-integer>
+                </div>
+            </div>
+            <div *ngIf="settings.cache.class == 'SpiceCacheMemcached'" class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <system-label label="LBL_MEMCACHED_HOST"></system-label>
+                    <system-input-text autocomplete="off" [(ngModel)]="settings.cache.memcached_host"></system-input-text>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <system-label label="LBL_MEMCACHED_PORT"></system-label>
+                    <system-input-integer autocomplete="off" [(ngModel)]="settings.cache.memcached_port"></system-input-integer>
                 </div>
             </div>
         </div>
@@ -110,10 +177,10 @@
                         <system-label label="LBL_LOGFILE_NAME"></system-label>
                         <div class="slds-grid slds-p-around--x-small">
                             <div class="slds-form-element__control slds-size--5-of-6 slds-p-right--x-small">
-                                <system-input-text autocomplete="off" [(ngModel)]="settings.logger.file.name"></system-input-text>
+                                <system-input-text autocomplete="off" [(ngModel)]="settings.logger.file_name"></system-input-text>
                             </div>
                             <div class="slds-form-element__control slds-size--1-of-6 slds-p-left--x-small">
-                                <system-input-text autocomplete="off" [(ngModel)]="settings.logger.file.ext"></system-input-text>
+                                <system-input-text autocomplete="off" [(ngModel)]="settings.logger.file_ext"></system-input-text>
                             </div>
                         </div>
                     </div>
@@ -127,8 +194,12 @@
                         </div>
                         <div class="slds-form-element__control slds-size--1-of-2 slds-p-around--x-small">
                             <system-label label="LBL_LOGFILE_MAX_NUMBER"></system-label>
-                            <system-input-integer autocomplete="off" [(ngModel)]="settings.logger.file.maxLogs"></system-input-integer>
+                            <system-input-integer autocomplete="off" [(ngModel)]="settings.logger.file_maxlogs"></system-input-integer>
                         </div>
+                    </div>
+                    <div class="slds-form-element__control slds-size--1-of-1 slds-p-around--x-small">
+                        <system-label label="LBL_SLOW_QUERYTIME_TRESHHOLD"></system-label>
+                        <system-input-integer [(ngModel)]="settings.advanced.slow_query_time_msec"></system-input-integer>
                     </div>
                 </div>
                 <div class="slds-size--1-of-2 slds-grid slds-grid--vertical">
@@ -141,6 +212,9 @@
                             <system-checkbox-group-checkbox value="warn" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_WARN"></system-label></system-checkbox-group-checkbox>
                             <system-checkbox-group-checkbox value="security" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SECURITY"></system-label></system-checkbox-group-checkbox>
                             <system-checkbox-group-checkbox value="fatal" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_FATAL"></system-label></system-checkbox-group-checkbox>
+                            <system-checkbox-group-checkbox value="sql" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SQL"></system-label></system-checkbox-group-checkbox>
+                            <system-checkbox-group-checkbox value="slowsql" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SLOWSQL"></system-label></system-checkbox-group-checkbox>
+                            <system-checkbox-group-checkbox value="developer" class="slds-size--1-of-2 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_DEVELOPER"></system-label></system-checkbox-group-checkbox>
                         </system-checkbox-group>
                     </div>
                 </div>

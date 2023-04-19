@@ -12,7 +12,7 @@ $routes = [
         'class'       => PackageController::class,
         'function'    => 'getRepositories',
         'description' => 'get the links to available repositories to retrieve packages from',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
     ],
     [
         'method'      => 'get',
@@ -20,7 +20,7 @@ $routes = [
         'class'       => PackageController::class,
         'function'    => 'getPackages',
         'description' => 'get all packages',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true]
+        'options'     => ['adminOnly' => true, 'validate' => true]
     ],
     [
         'method'      => 'get',
@@ -28,7 +28,7 @@ $routes = [
         'class'       => PackageController::class,
         'function'    => 'getPackages',
         'description' => 'get all packages for selected repository',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'repository' => [
                 'in' => 'path',
@@ -46,7 +46,7 @@ $routes = [
         'class'       => PackageController::class,
         'function'    => 'loadPackage',
         'description' => 'load a specific package from a specific repository',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'package' => [
                 'in' => 'path',
@@ -71,7 +71,7 @@ $routes = [
         'class'       => PackageController::class,
         'function'    => 'deletePackage',
         'description' => 'unload a specific package',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'package' => [
                 'in' => 'path',
@@ -89,7 +89,7 @@ $routes = [
         'class'       => PackageController::class,
         'function'    => 'loadLanguage',
         'description' => 'load a specific language into current configuration from a specific repository',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'language' => [
                 'in' => 'path',
@@ -114,7 +114,7 @@ $routes = [
         'class'       => PackageController::class,
         'function'    => 'deleteLanguage',
         'description' => 'remove a specific language and its translations from current configuration',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'language' => [
                 'in' => 'path',

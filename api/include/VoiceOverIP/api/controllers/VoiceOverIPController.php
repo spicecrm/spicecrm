@@ -43,9 +43,8 @@ class VoiceOverIPController
     {
         $postBody = $req->getParsedBody();
 
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $current_user->setPreference($this->preferenceName, $postBody, 0, $this->preferenceCategory);
-        $current_user->savePreferencesToDB();
+        $voiceOverIP = new VoiceOverIP();
+        $voiceOverIP->setPreferences($postBody);
 
         return $res->withJson(['status' => 'success']);
     }

@@ -46,7 +46,7 @@ export class FieldsetManagerCopyDialog implements OnInit{
         if(this.fieldset) {
             this.currentName = this.metaFieldSets[this.fieldset].name;
             this.currentModule = this.metaFieldSets[this.fieldset].module;
-            if(this.edit_mode == "global"){
+            if(this.edit_mode == "all"){
                 this.currentType = this.metaFieldSets[this.fieldset].type;
             }else{
                 this.currentType = "custom";

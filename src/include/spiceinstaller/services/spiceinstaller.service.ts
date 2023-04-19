@@ -83,6 +83,12 @@ export class spiceinstaller
     public port: string = '9200';
     public prefix: string = '';
     public transferProtocol: string = 'http';
+    public elasticUser: string = '';
+    public elasticpassword: string = '';
+    public elastichttps: boolean = false;
+    public elasticSSLVerify: boolean = false;
+
+
 
     /**
      * credentials

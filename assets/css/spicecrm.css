@@ -49,6 +49,7 @@
     --sds-c-button-text-color-hover: #ffffff;
     --sds-c-toast-text-color: #ffffff;
     --sds-c-icon-color-foreground: #ffffff;
+    --slds-c-slider-track-color-background: #CA1B21;
 }
 
 html {
@@ -198,9 +199,9 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     top: .5rem;
 }
 
-/* responsive tables */
-/* reduce padding */
+/* mobile view */
 @media (max-width: 48em) {
+    /* responsive tables reduce padding */
     .slds-max-medium-table--stacked-horizontal tr > td:first-child,
     .slds-max-medium-table_stacked-horizontal tr > td:first-child,
     .slds-max-medium-table--stacked-horizontal td,
@@ -208,6 +209,18 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     .slds-max-medium-table--stacked-horizontal tr > td:last-child,
     .slds-max-medium-table_stacked-horizontal tr > td:last-child {
         padding: .5em;
+    }
+
+    .spice-dropdown-mobile {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 1px !important;
+        right: 1px !important;
+        top: unset !important;
+        min-width: 300px !important;
+        max-width: calc(100vw - 2px) !important;
+        z-index: 999999 !important;
+        box-shadow: 0 -5px 10px 0 #999 !important;
     }
 }
 
@@ -473,4 +486,33 @@ input[type="submit"] {
 }
 .slds-progress_vertical .slds-progress__item.slds-has-error:before, .slds-progress_vertical .slds-progress__item.slds-is-active:before, .slds-progress_vertical .slds-progress__item.slds-is-completed:after, .slds-progress_vertical .slds-progress__item.slds-is-completed:before {
     background-color: var(--brand-primary,#CA1B21);
+}
+
+.slds-context-bar-progress-bar {
+    height: 3px;
+    background: #aaa;
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100vw;
+}
+
+.slds-context-bar-progress-bar div {
+    background: var(--brand-primary,#CA1B21);
+    transition: width .5s linear;
+}
+
+.spice-overlay-spinner-container {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.25);
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    margin: auto;
 }

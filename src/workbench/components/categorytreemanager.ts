@@ -1,9 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import {
-    Component,
-} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
@@ -12,6 +10,7 @@ import {toast} from "../../services/toast.service";
 import {configurationService} from "../../services/configuration.service";
 
 import {modal} from '../../services/modal.service';
+import {CategoryTreeAddModal} from "./categorytreeaddmodal";
 
 declare var _: any;
 declare var moment: any;
@@ -69,33 +68,35 @@ export class CategoryTreeManager {
         public config: configurationService,
         public utils: modelutilities,
         public toast: toast,
-        public modal: modal
+        public modal: modal,
+        public injector: Injector
     ) {
         this.loadTrees();
     }
 
     /**
      * adds a tree
-     *
-     * @private
      */
     public addTree() {
-        this.modal.prompt("input", 'MSG_ENTER_TREE_NAME', 'MSG_ENTER_TREE_NAME').subscribe(
-            name => {
-                if (name) {
-                    let newId = this.utils.generateGuid();
-                    this.backend.postRequest(`configuration/spiceui/core/categorytrees/${newId}`, {}, {name}).subscribe(
-                        res => {
-                            this.categoryTrees.push({
-                                id: newId,
-                                name: name
-                            });
-                            this.activeTree = newId;
-                        }
-                    )
+        this.modal.openModal('CategoryTreeAddModal', true, this.injector).subscribe(selectModal => {
+            selectModal.instance.categoryTrees = this.categoryTrees;
+
+            selectModal.instance.action.subscribe(action => {
+                if (action == 'save') {
+                    this.activeTree = selectModal.instance.newActiveTreeId;
                 }
-            }
-        )
+            });
+        });
+    }
+
+    /**
+     * opens a modal to allow linking the tree and storing the values in table syscategorytreelinks
+     */
+    public linkTree() {
+        this.modal.openModal('CategoryTreeManagerLinkModal',true, this.injector).subscribe(selectModal => {
+            selectModal.instance.activeTreeId = this.activeTree;
+        });
+
     }
 
     /**
