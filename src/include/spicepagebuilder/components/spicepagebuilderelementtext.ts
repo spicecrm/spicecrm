@@ -20,7 +20,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
     /**
      * containers to be rendered
      */
-    @Input() public element: TextI;
+    @Input() public declare element: TextI;
     /**
      * list of the editable attributes
      */
