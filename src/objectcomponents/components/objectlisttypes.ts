@@ -26,7 +26,7 @@ export class ObjectListTypes {
      * disable if there can onlybe one list selected
      */
     get disabled() {
-        return this.modellist.isLoading || (this.modellist.standardLists.length + this.listTypes.length <= 1);
+        return (this.modellist.standardLists.length + this.listTypes.length <= 1);
     }
 
     /**

@@ -11,7 +11,7 @@
             <th *ngFor="let item of listfields" class="slds-is-sortable slds-resizable" [ngStyle]="getColumnStyle(item)" scope="col">
                 <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
                     <span class="slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
-                    <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
+                    <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  size="xx-small" [colorclass]="getSortIcon(item) == 'sort' ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
                 </a>
             </th>
         </ng-container>

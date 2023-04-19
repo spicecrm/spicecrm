@@ -316,7 +316,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'relationship' => 'events_campaigns',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'editor_type' => [
             'name' => 'editor_type',

@@ -221,6 +221,46 @@ $routes = [
         ]
     ],
     [
+        'method' => 'get',
+        'route' => '/configuration/spiceui/core/roles',
+        'class' => SystemUIController::class,
+        'function' => 'getSystemRoles',
+        'description' => 'get all system roles',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/configuration/spiceui/core/rolemodules/{role_id}',
+        'class' => SystemUIController::class,
+        'function' => 'getRoleModules',
+        'description' => 'get all role corresponding modules',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'role_id' => [
+                'in' => 'path',
+                'description' => 'the id of the role',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '24f0fdda-79f0-4054-acb9-c8cce36e5fdc',
+            ],
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/configuration/spiceui/core/module/hooks',
+        'class'       => SystemUIController::class,
+        'function'    => 'getAllHooks',
+        'description' => 'selects all global and custom hooks',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/configuration/spiceui/core/module/webhooks',
+        'class'       => SystemUIController::class,
+        'function'    => 'getAllWebHooks',
+        'description' => 'selects all global and custom hooks',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ],
+    [
         'method' => 'post',
         'route' => '/configuration/spiceui/core/roles/{roleid}/{userid}/{action}',
         'oldroute' => '/spiceui/core/roles/{roleid}/{userid}/{default}',

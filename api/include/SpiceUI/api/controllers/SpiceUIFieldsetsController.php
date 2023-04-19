@@ -7,6 +7,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHelper;
 use stdClass;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -17,6 +18,10 @@ class SpiceUIFieldsetsController
 
     static function getFieldSets()
     {
+        // check if cached
+        $cached = SpiceCache::get('spiceFieldSets');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
@@ -25,7 +30,7 @@ class SpiceUIFieldsetsController
 
             if (!isset($retArray[$fieldset['fid']])) {
                 $retArray[$fieldset['fid']] = [
-                    'fid' => $fieldset['fid'],
+                    'id' => $fieldset['fid'],
                     'name' => $fieldset['name'],
                     'package' => $fieldset['fieldsetpackage'],
                     'module' => $fieldset['module'] ?: '*',
@@ -57,6 +62,7 @@ class SpiceUIFieldsetsController
 
             if (!isset($retArray[$fieldset['fid']])) {
                 $retArray[$fieldset['fid']] = [
+                    'id' => $fieldset['fid'],
                     'name' => $fieldset['name'],
                     'package' => $fieldset['fieldsetpackage'],
                     'module' => $fieldset['module'] ?: '*',
@@ -82,6 +88,9 @@ class SpiceUIFieldsetsController
                     'sequence' => $fieldset['sequence']
                 ];
         }
+
+        // set the Cache
+        SpiceCache::set('spiceFieldSets', $retArray);
 
         return $retArray;
     }
@@ -139,6 +148,9 @@ class SpiceUIFieldsetsController
 
             self::handleFieldsetItems($fieldsetId, $fieldsetData);
         }
+
+        // clear the Cache
+        SpiceCache::clear('spiceFieldSets');
 
         return $res->withJson(true);
     }
@@ -205,6 +217,9 @@ class SpiceUIFieldsetsController
 
             self::insertFieldsetItem($fieldsetItem, $fieldsetId, $fieldsetData, $fieldsetItemTable);
         }
+
+        // clear the Cache
+        SpiceCache::clear('spiceFieldSets');
     }
 
     /**

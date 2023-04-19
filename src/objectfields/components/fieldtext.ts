@@ -34,6 +34,11 @@ export class fieldText extends fieldGeneric implements OnInit {
     public fieldlength = 0;
 
     /**
+     * determines if html content shall be removed
+     */
+    public striphtml = false;
+
+    /**
      * reference to the text area
      */
     @ViewChild('textField', {read: ViewContainerRef, static: false}) public textField: ViewContainerRef;
@@ -52,6 +57,17 @@ export class fieldText extends fieldGeneric implements OnInit {
         }
 
         this.getFieldLength();
+        this.setStripHtml();
+    }
+
+    /**
+     * determines if the html Tags shall be removed
+     *
+     */
+    public setStripHtml() {
+        if(this.fieldconfig.striphtml){
+            this.striphtml = this.fieldconfig.striphtml;
+        }
     }
 
     /**

@@ -29,6 +29,7 @@
 
 namespace SpiceCRM\includes\SysModuleFilters;
 
+use Cassandra\Time;
 use DateTimeZone;
 use Exception;
 use SpiceCRM\data\BeanFactory;
@@ -217,17 +218,20 @@ class SysModuleFilters
             $filterCondition = '(' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
+                $userIds = "'" . join("','", $userIds) . "'";
                 $filterCondition = "({$tablename}.assigned_user_id IN ({$userIds}) AND ($filterCondition))";
             }
 
             if ($group->groupscope == 'ownorgunit') {
                 $orgunitIds = array_merge([$current_user->orgunit_id], $absence->getSubstituteOrgUnitIDs());
+                $orgunitIds = "'" . join("','", $orgunitIds) . "'";
                 $filterCondition = "({$tablename}.assigned_orgunit_id IN ({$orgunitIds}) AND ($filterCondition))";
             }
 
             // added an option for the creator
             if ($group->groupscope == 'creator') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
+                $userIds = "'" . join("','", $userIds) . "'";
                 $filterCondition = "({$tablename}.created_by IN ({$userIds}) AND ($filterCondition))";
             }
         }
@@ -717,6 +721,7 @@ class SysModuleFilters
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
             case 'inlessthanndays':
+            case 'inlessthandays':
                 $date = new DateTime(null, new DateTimeZone('UTC'));
                 $date->add(new DateInterval("P{$condition->filtervalue}D"));
                 return ['range' => [$condition->field => ["lte" => $date->format('Y-m-d') . ' 23:59:59']]];
@@ -818,6 +823,10 @@ class SysModuleFilters
 
     private function checkBeanForFilterMatchCondition($condition, $bean)
     {
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+        $timeZone = $currentUser->getPreference('timezone');
+        $date = new DateTime('now', new DateTimeZone($timeZone));
+
         switch ($condition->operator) {
             case 'empty':
                 return empty($bean->{$condition->field});
@@ -892,24 +901,64 @@ class SysModuleFilters
                 $year = date_format($date, 'Y');
                 return substr($bean->{$condition->field}, 0, 4) == $year;
             case 'inndays':
-                // todo implement inndays
-                return false;
+                $date->add(new DateInterval("P{$condition->filtervalue}D"));
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $beanFieldValue = (TimeDate::getInstance()->fromDbDate($bean->{$condition->field}))->format(TimeDate::DB_DATETIME_FORMAT);
+                return $beanFieldValue >= $from && $beanFieldValue <= $to;
             case 'thisday':
-                // todo implement thisday
-                return false;
+                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
+                return $beanFieldValue->format('d') == $date->format('d') && $beanFieldValue->format('m') == $date->format('m');
             case 'inlessthanndays':
-                // todo implement inlessthanndays
-                return false;
+                $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
+                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $date->sub(new DateInterval("P{$condition->filtervalue}D"));
+                return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) <= $date->format(TimeDate::DB_DATE_FORMAT) . ' 23:59:59';
             case 'inlastndays':
-                // todo implement inlastndays
-                return false;
             case 'lastndays':
-                // todo implement
-                return false;
+                $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
+                $date->sub(new DateInterval("P{$condition->filtervalue}D"));
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) >= $to;
             case 'lastnmonths':
-                // todo implement
+                $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
+                $date->sub(new DateInterval("P{$condition->filtervalue}M"));
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) >= $to;
+            case 'between':
+                return $bean->{$condition->field} >= $condition->filtervalue && $bean->{$condition->field} <= $condition->filtervalueto;
+            case 'betweend':
+                $beanFieldValue = (TimeDate::getInstance()->fromDbDate($bean->{$condition->field}))->format(TimeDate::DB_DATETIME_FORMAT);
+                $start =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $condition->filtervalue . ' 00:00:00', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $end =  date_create_from_format(TimeDate::DB_DATETIME_FORMAT, $condition->filtervalueto . ' 23:59:59', new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return $beanFieldValue >= $start && $beanFieldValue <= $end;
+            case 'ndaysago':
+                $beanFieldValue = (TimeDate::getInstance()->fromDbDate($bean->{$condition->field}))->format(TimeDate::DB_DATETIME_FORMAT);
+                $date->sub(new DateInterval("P{$condition->filtervalue}D"));
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return $beanFieldValue >= $from && $beanFieldValue <= $to;
+            case 'inlessthandays':
+                $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
+                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $date->sub(new DateInterval("P{$condition->filtervalue}D"));
+                return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) <= $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59";
+            case 'inmorethanndays':
+                $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
+                $date = new DateTime(null, new DateTimeZone('UTC'));
+                $date->add(new DateInterval("P{$condition->filtervalue}D"));
+                return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) >= $date->format(TimeDate::DB_DATE_FORMAT) . " 23:59:59";
+            case 'untilyesterday':
+                $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
+                $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) < $from;
+            case 'fromtomorrow':
+                $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
+                $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) > $to;
+            default:
                 return false;
         }
     }
-
 }

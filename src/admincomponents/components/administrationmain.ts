@@ -41,7 +41,6 @@ export class AdministrationMain implements AfterViewInit {
         public navigation: navigation,
         public navigationtab: navigationtab,
     ) {
-        // this.navigation.setActiveModule('Administration');
         this.navigationtab.setTabInfo({
             displayname: this.language.getLabel('LBL_ADMINISTRATION'),
             displayicon: 'settings'
@@ -56,6 +55,16 @@ export class AdministrationMain implements AfterViewInit {
             this.openContent(admincomponent);
         });
 
+    }
+
+    /**
+     * returns the width for the menu bar
+     */
+    get menuWidth(){
+        return {
+            'width': this.administration.minimized ? '40px' : '220px',
+            'min-width': this.administration.minimized ? '40px' : '220px',
+        }
     }
 
     /**

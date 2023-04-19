@@ -105,6 +105,8 @@ import {GlobalSubscriptionsManager} from "./components/globalsubscriptionsmanage
 import {GlobalLoginOAuth2} from "./components/globalloginoauth2";
 import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
 import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
+import {GlobalHeaderDocumentRevisions} from "../modules/documents/components/globalheaderdocumentrevisions";
+import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/components/globalheaderdocumentrevisionsmodal";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -206,7 +208,9 @@ import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
         GlobalCountdown,
         GlobalSubscriptionsManager,
         GlobalLoginOAuth2,
-        GlobalLoginOAuth2Button
+        GlobalLoginOAuth2Button,
+        GlobalHeaderDocumentRevisions,
+        GlobalHeaderDocumentRevisionsModal
     ],
     exports: [
         GlobalCopyright,
@@ -217,7 +221,8 @@ import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
         GlobalDockedComposer,
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
-        GlobalHeaderSearchResultsItem
+        GlobalHeaderSearchResultsItem,
+        GlobalHeaderDocumentRevisionsModal
     ]
 })
 export class GlobalComponents {

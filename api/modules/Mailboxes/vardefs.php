@@ -110,7 +110,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'relationship' => 'mailboxes_emails_rel',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'module' => 'Emails',
             'bean_name' => 'Email',
         ],
@@ -141,7 +141,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'relationship' => 'campaigns_mailboxes_rel',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         //link to the users
         'users' => [

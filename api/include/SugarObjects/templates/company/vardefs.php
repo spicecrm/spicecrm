@@ -1,6 +1,5 @@
 <?php
-
-/* * *** SPICE-SUGAR-HEADER-SPACEHOLDER **** */
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 /** @var string $module */
 /** @var string $object_name */
@@ -191,7 +190,7 @@ $vardefs = [
         ],
         'billing_address_georesult' => [
             'name' => 'billing_address_georesult',
-            'vname' => 'LBL_BILLING_ADDRESS_GEORESULT',
+            'vname' => 'LBL_BILLING_ADDRESS_GEOCOORDINATES',
             'type' => 'text'
         ],
         'rating' => [
@@ -375,7 +374,7 @@ $vardefs = [
         ],
         'shipping_address_georesult' => [
             'name' => 'shipping_address_georesult',
-            'vname' => 'LBL_BILLING_ADDRESS_GEORESULT',
+            'vname' => 'LBL_SHIPPING_ADDRESS_GEOCOORDINATES',
             'type' => 'text'
         ],
         'email1' => [
@@ -405,7 +404,7 @@ $vardefs = [
                 'relationship' => strtolower($object_name) . '_email_addresses_primary',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
         'email_addresses' =>
             [

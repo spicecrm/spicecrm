@@ -134,7 +134,7 @@ export class ObjectRelatedlistTable implements OnInit {
         if (this.relatedmodels.sortfield == (field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field)) {
             return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowdown' : 'arrowup';
         }
-        return '';
+        return 'sort';
     }
 
     public getIdOfRow(index, item) {

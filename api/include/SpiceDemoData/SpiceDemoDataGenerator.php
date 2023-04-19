@@ -265,6 +265,125 @@ class SpiceDemoDataGenerator
 
 
     /**
+     * generate some Calls
+     */
+    public function generateCalls(){
+        $db = DBManagerFactory::getInstance();
+
+        $calls = $this->makeCalls();
+        foreach($calls as $call){
+            $seed = BeanFactory::getBean('Calls');
+            foreach($seed->field_defs as $fieldName => $fieldData){
+                if(isset($call[$fieldName])){
+                    $seed->{$fieldName} = $call[$fieldName];
+                }
+            }
+            if(!empty($seed->id)){
+                $seed->new_with_id = true;
+            }
+
+            // populate some default values
+            $this->popuplateDefaults($seed);
+
+
+            // save the bean
+            $seed->name = $call['name'];
+            $seed->save();
+
+            // relate to random account
+            if($seed->load_relationship('accounts')){
+                $account = $db->fetchByAssoc($db->limitQuery("SELECT id, name FROM accounts WHERE deleted=0 ORDER BY RAND()", 0, 1));
+                $seed->accounts->add($account['id']);
+            }
+            if($seed->load_relationship('contacts')){
+                $contact = $db->fetchByAssoc($db->limitQuery("SELECT id, first_name, last_name FROM contacts WHERE deleted=0 ORDER BY RAND()", 0, 1));
+                $seed->contacts->add($contact['id']);;
+            }
+        }
+    }
+
+    /**
+     * generate data for calls
+     * @return mixed
+     */
+    private function makeCalls(){
+        $calls = [];
+        $appListStrings = SpiceUtils::returnAppListStringsLanguage('en_us');
+        for($i=0; $i < 20; $i++){
+            $randomDate = date('Y-m-d H:i:s', strtotime( '+'.mt_rand(20,120).' days'.'+'.mt_rand(0,24).'hours'));
+            $call = [
+                'name' => ['Meeting', 'Discuss request', 'Purchase order', 'Marketing meeting'][rand(0,3)],
+                'date_start' => $randomDate,
+                'date_end'=> date('Y-m-d H:i:s', strtotime($randomDate .'+ 15 minutes')),
+                'status' => array_rand($appListStrings['call_status_dom']),
+                'direction' => array_rand($appListStrings['call_direction_dom']),
+
+            ];
+            $calls[] = $call;
+        }
+        return $calls;
+    }
+
+    /**
+     * generate some meetings
+     */
+    public function generateMeetings(){
+        $db = DBManagerFactory::getInstance();
+
+        $meetings = $this->makeMeetings();
+        foreach($meetings as $meeting){
+            $seed = BeanFactory::getBean('Meetings');
+            foreach($seed->field_defs as $fieldName => $fieldData){
+                if(isset($meeting[$fieldName])){
+                    $seed->{$fieldName} = $meeting[$fieldName];
+                }
+            }
+            if(!empty($seed->id)){
+                $seed->new_with_id = true;
+            }
+
+            // populate some default values
+            $this->popuplateDefaults($seed);
+
+
+            // save the bean
+            $seed->name = $meeting['name'];
+            $seed->save();
+
+            // relate to random account
+            if($seed->load_relationship('accounts')){
+                $account = $db->fetchByAssoc($db->limitQuery("SELECT id, name FROM accounts WHERE deleted=0 ORDER BY RAND()", 0, 1));
+                $seed->accounts->add($account['id']);
+            }
+            if($seed->load_relationship('contacts')){
+                $contact = $db->fetchByAssoc($db->limitQuery("SELECT id, first_name, last_name FROM contacts WHERE deleted=0 ORDER BY RAND()", 0, 1));
+                $seed->contacts->add($contact['id']);;
+            }
+        }
+    }
+
+    /**
+     * generate data for meetings
+     * @return mixed
+     */
+    private function makeMeetings(){
+        $meetings = [];
+        $appListStrings = SpiceUtils::returnAppListStringsLanguage('en_us');
+        for($i=0; $i < 20; $i++){
+            $randomDate = date('Y-m-d H:i:s', strtotime( '+'.mt_rand(20,120).' days'.'+'.mt_rand(0,24).'hours'));
+            $meeting = [
+                'name' => ['Contract negotiations', 'CRM Setup', 'Purchase offer agreement', 'Sales meeting'][rand(0,3)],
+                'location' => 'Vienna',
+                'date_start' => $randomDate,
+                'date_end'=> date('Y-m-d H:i:s', strtotime($randomDate .'+ 1 hour')),
+                'status' => array_rand($appListStrings['meeting_status_dom']),
+            ];
+            $meetings[] = $meeting;
+        }
+        return $meetings;
+    }
+
+    /**
      * populate default bean properties
      * @param $seed
      */

@@ -1,6 +1,19 @@
-<div class="slds-context-bar slds-context-bar_tabs">
+<div class="slds-context-bar slds-context-bar_tabs slds-p-left--xx-small" [ngStyle]="contextbarStyle">
     <global-app-launcher class="slds-context-bar__primary"></global-app-launcher>
     <global-navigation-tabbed-menu class="slds-context-bar__secondary" role="navigation"></global-navigation-tabbed-menu>
+    <button (click)="toggleCollapse()" class="slds-button slds-button--icon slds-m-right--xx-small">
+        <system-button-icon [icon]="userPreferences.toUse.globalHeaderCollapsed ? 'chevrondown' : 'chevronup'"></system-button-icon>
+    </button>
+    <div *ngIf="userPreferences.toUse.globalHeaderCollapsed" class="slds-global-header__item slds-p-horizontal--xx-small slds-grid slds-grid--align-end slds-grid--vertical-align-center">
+        <div class="slds-global-header__item slds-is-relative slds-height_full slds-p-top--xxx-small slds-p-horizontal--none" style="min-width: 15rem;">
+            <global-header-search #searchContainer [@isFocused]="searchContainer.isFocused ? 'expand' : 'collapse'" style="right: 0; z-index: 1;" class="spice-display-block"></global-header-search>
+        </div>
+        <global-header-tools></global-header-tools>
+        <global-user></global-user>
+    </div>
+    <div *ngIf="showProgressBar" class="slds-context-bar-progress-bar">
+        <div [style.width.%]="progressWidth" class="slds-height_full"></div>
+    </div>
 </div>
 <div *ngIf="displaySubTabs" class="slds-tabs_default slds-sub-tabs">
     <global-navigation-tabbed-subtabs [parenttab]="parentTab"></global-navigation-tabbed-subtabs>

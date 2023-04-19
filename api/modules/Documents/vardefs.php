@@ -110,6 +110,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
             'options' => 'document_status_dom',
             'reportable' => false,
         ],
+        'acceptance_required' => [
+            'name' => 'acceptance_required',
+            'vname' => 'LBL_ACCEPTANCE_REQUIRED',
+            'type' => 'bool',
+            ],
         'status' => [
             'name' => 'status',
             'vname' => 'LBL_STATUS',
@@ -138,6 +143,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Document'] = [
             'module' => 'DocumentRevisions',
             'side' => 'left',
             'vname' => 'LBL_REVISIONS',
+        ],
+        'orgunits' => [
+            'name' => 'orgunits',
+            'type' => 'link',
+            'relationship' => 'documents_orgunits',
+            'source' => 'non-db',
+            'module' => 'OrgUnits',
+            'vname' => 'LBL_ORGUNITS',
         ],
         'contracts' => [
             'name' => 'contracts',

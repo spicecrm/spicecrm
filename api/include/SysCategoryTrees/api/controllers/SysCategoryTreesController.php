@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SysCategoryTrees\api\controllers;
 
 use Psr\Http\Message\RequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\TimeDate;
@@ -34,12 +35,18 @@ class SysCategoryTreesController
     {
         $db = DBManagerFactory::getInstance();
         $postbody = $req->getParsedBody();
-        $db->insertQuery('syscategorytrees', ['id' => $args['id'], 'name' => $postbody['name']]);
-        return $res->withJson(['status' => 'success']);
+        $db->insertQuery('syscategorytrees', ['id' => $args['id'], 'name' => $postbody['name'], 'add_params_component' => $postbody['add_params_component']]);
+
+        $result = ['id' => $args['id'], 'name' => $postbody['name']];
+        return $res->withJson(['status' => 'success', 'result' => $result]);
     }
 
     public function getTreeNodes(Request $req, Response $res, $args): Response
     {
+        // check if we have it cached
+        $cached = SpiceCache::get('categorytreenodes'.md5($args['id']));
+        if($cached) return $res->withJson($cached);
+
         $db = DBManagerFactory::getInstance();
 
         $params = $req->getQueryParams();
@@ -61,6 +68,10 @@ class SysCategoryTreesController
 
             $return[] = $row;
         }
+
+        // set the cached values
+        SpiceCache::set('categorytreenodes'.md5($args['id']), $return);
+
         return $res->withJson($return);
     }
 
@@ -83,7 +94,63 @@ class SysCategoryTreesController
             // run the query
             $db->upsertQuery('syscategorytreenodes', ['id' => $node['id']], $node, true);
         }
+
+        // clear the cached values
+        SpiceCache::clear('categorytreenodes'.md5($args['id']));
+
         return $res->withJson(['status' => 'success']);
     }
+
+    /**
+     * set tree links
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function setTreeLinks(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $body = $req->getParsedBody();
+
+        $delWhere = ['syscategorytree_id' => $args['id']];
+        $db->deleteQuery('syscategorytreelinks', $delWhere);
+
+        foreach ($body as $link) {
+
+
+            // run the query
+            $db->upsertQuery('syscategorytreelinks', ['id' => $args['id']], $link, true);
+        }
+
+
+        return $res->withJson(['status' => 'success']);
+    }
+
+    public function getTreeLinks(Request $req, Response $res, $args): Response
+    {
+
+        $treeLinkArray = $this->getTreeLinksCategory($args['id']);
+        return $res->withJson($treeLinkArray);
+    }
+
+
+    public function getTreeLinksCategory($id) {
+        $db = DBManagerFactory::getInstance();
+
+        $sql = $db->query("SELECT * FROM syscategorytreelinks WHERE syscategorytree_id = '{$id}'");
+        $response = [];
+
+        while ( $row = $db->fetchByAssoc($sql)) {
+            $response[] = $row;
+        }
+
+        return $response;
+
+    }
+
+
 
 }

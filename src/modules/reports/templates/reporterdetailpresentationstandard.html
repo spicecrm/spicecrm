@@ -1,5 +1,5 @@
 <div class="slds-height_full slds-grid slds-grid--vertical">
-    <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0" [system-overlay-loading-spinner]="isLoading">
+    <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0" (onCancel)="handleCancel()" [cancellable]="true" [system-overlay-loading-spinner]="isLoading">
         <table class="slds-table slds-table_bordered slds-table--fixed-layout slds-table--header-fixed">
             <thead>
                 <tr class="slds-text-title--caps">

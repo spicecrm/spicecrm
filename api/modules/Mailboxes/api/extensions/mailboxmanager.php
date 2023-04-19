@@ -71,7 +71,7 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_ENUM,
                 'description' => 'Mailbox type',
                 'options'     => [
-                    'inbound', 'outbound', 'outboundsingle', 'outboundmass', 'inbound_sms',
+                    'inbound', 'outbound', 'outboundsingle', 'outboundmass', 'inbound_sms', 'outboundsms',
                     'outboundsingle_sms', 'outboundmass_sms',
                 ],
             ],

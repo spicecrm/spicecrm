@@ -561,9 +561,21 @@ class SpiceAttachments
                 if (!empty($module['module'])) {
                     $seed = BeanFactory::getBean($module['module']);
                     if ($seed) {
-                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type = '{$module['module']}' AND id IN (SELECT id FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0 AND NOT EXISTS (SELECT id FROM {$seed->_tablename} s where s.deleted = 0 and a.bean_id = s.id))");
+                        $idsObject  = $db->query("SELECT id FROM spiceattachments a WHERE a.bean_type='{$module['module']}' AND a.deleted = 0 AND NOT EXISTS (SELECT id FROM {$seed->_tablename} s where s.deleted = 0 and a.bean_id = s.id)");
+                        $ids = [];
+                        while($id = $db->fetchByAssoc($idsObject)){
+                            $ids[] = $id['id'];
+                        }
+                        // check that we have ids
+                        if(count($ids) == 0) continue;
+
+                        // build the ids
+                        $ids = implode("','", $ids);
+
+                        // set to deleted
+                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type = '{$module['module']}' AND id IN ('{$ids}')");
                     } else {
-                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type='{$module['module']}' AND a.deleted = 0");
+                        $db->query("UPDATE spiceattachments SET deleted = 1 WHERE bean_type='{$module['module']}' AND deleted = 0");
                     }
                 } else {
                     $db->query("DELETE FROM spiceattachments WHERE bean_type='' AND deleted = 0");
@@ -572,5 +584,31 @@ class SpiceAttachments
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * merges SpiceAttachments with the Master Bean merged
+     * @param string $mergeBeanType (_module)
+     * @param string $mergeBeanId (id of the Master Bean - bean to be kept)
+     * @param string $delBeanId (id of the deleted Bean)
+     * @return void
+     * @throws Exception
+     */
+    public static function mergeSpiceAttachments(string $mergeBeanType, string $masterBeanId, string $delBeanId): void {
+        // get SpiceAttachment to be merged
+        $db = DBManagerFactory::getInstance();
+
+        $spiceAttachmentIds = $db->query("SELECT id FROM spiceattachments WHERE bean_type = '$mergeBeanType' and bean_id = '$delBeanId'");
+
+        while($spiceAttachmentId = $db->fetchByAssoc($spiceAttachmentIds) ) {
+            if (isset($spiceAttachmentId['id'])) {
+                $db = DBManagerFactory::getInstance();
+
+                // overwrite bean_id with the ID of the merged Bean
+                $sql = "UPDATE spiceattachments SET bean_id='{$masterBeanId}' WHERE  id='{$spiceAttachmentId['id']}'";
+                $db->query($sql);
+            }
+        }
     }
 }

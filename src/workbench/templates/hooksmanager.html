@@ -1,0 +1,33 @@
+<workbench-header titlelabel="LBL_HOOKS_MANAGER">
+    <workbench-header-controls>
+        <div class="slds-form-element__control slds-grid slds-p-left--small">
+            <div class="slds-p-right--small">
+                <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-size--4-of-4">
+                    <label for="moduleselect" class="slds-form-element__label">
+                        <system-label label="LBL_MODULE"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select id="moduleselect" class="slds-select" [(ngModel)]="module">
+                                <option value="*">*</option>
+                                <option *ngFor="let thismodule of modules" [value]="thismodule">{{thismodule}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--            <system-input-radio-button-group [(ngModel)]="activeTab" [inputOptions]="hooksManager">-->
+<!--            </system-input-radio-button-group>-->
+        </div>
+    </workbench-header-controls>
+</workbench-header>
+
+<div class="slds-tabs_default" style="background-color: transparent">
+
+    <div class="slds-grid"  [ngClass]="activeTab == 'logic' ? 'slds-show' : 'slds-hide'">
+        <hooks-manager-hooks class="slds-size--1-of-1"></hooks-manager-hooks>
+    </div>
+<!--    <div [ngClass]="activeTab == 'web' ? 'slds-show' : 'slds-hide'">-->
+<!--        <web-hooks-manager class="slds-size&#45;&#45;1-of-1"></web-hooks-manager>-->
+<!--    </div>-->
+</div>

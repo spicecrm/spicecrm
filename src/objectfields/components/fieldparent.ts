@@ -49,11 +49,13 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     get parentIdField() {
-        return this.fieldconfig.parentIdField ? this.fieldconfig.parentIdField : 'parent_id';
+        let fielddefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        return this.fieldconfig.parentIdField ? this.fieldconfig.parentIdField : (fielddefs?.id_name ? fielddefs.id_name : 'parent_id');
     }
 
     get parentTypeField() {
-        return this.fieldconfig.parentTypeField ? this.fieldconfig.parentTypeField : 'parent_type';
+        let fielddefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        return this.fieldconfig.parentTypeField ? this.fieldconfig.parentTypeField : (fielddefs?.type_name ? fielddefs.type_name : 'parent_type');
     }
 
     get parentName() {
@@ -73,6 +75,7 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
+        super.ngOnInit();
         // determine the valid types
         this.determineParentTypes();
         // initialize the parenttype
@@ -80,6 +83,19 @@ export class fieldParent extends fieldGeneric implements OnInit {
             this.model.setField(this.parentTypeField, this.parentTypes[0]);
         }
 
+    }
+
+    /**
+     * gets a style for the dropdown that sets it to the middle and to the full width of the dropdown box
+     */
+    get dropdownStyle(){
+        let rect = this.elementRef.nativeElement.getBoundingClientRect();
+        return {
+            'max-width': 'initial',
+            'left': 'initial',
+            'width': (rect.width - 5) + 'px',
+            'right': '-' + (rect.width / 2  - 5) + 'px'
+        }
     }
 
     /**
@@ -108,8 +124,9 @@ export class fieldParent extends fieldGeneric implements OnInit {
             parenttypes = this.field_defs.parent_modules;
         }
 
-        parenttypes.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
-
+        if (!this.fieldconfig.sortbyparenttypes){
+            parenttypes.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+        }
         this.parentTypes = parenttypes;
     }
 

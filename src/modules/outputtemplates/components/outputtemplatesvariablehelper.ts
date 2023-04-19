@@ -146,6 +146,13 @@ export class OutputTemplatesVariableHelper implements OnInit {
                     displayName: this.language.getModuleName( this.templateModel.getFieldValue('module_name'), true )
                 });
             }
+            if ( this.templateModel.getFieldValue('for_bean')) {
+                this.offeredModules.push({
+                    name: this.templateModel.getFieldValue('for_bean'),
+                    templateObjectName: 'bean.'+this.templateModel.getFieldValue('for_bean'),
+                    displayName: this.language.getModuleName( this.templateModel.getFieldValue('for_bean'), true )
+                });
+            }
         }
         this.language.sortObjects( this.offeredModules, 'displayName');
         // Load the system template functions from the backend.
