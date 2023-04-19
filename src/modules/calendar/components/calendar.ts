@@ -14,7 +14,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {calendar} from '../services/calendar.service';
 import {Subscription} from "rxjs";
 import {CalendarHeader} from "./calendarheader";
@@ -86,7 +86,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
     public self: any = {};
 
     constructor(public language: language,
-                public navigation: navigation,
+                public navigationTab: navigationtab,
                 public elementRef: ElementRef,
                 public renderer: Renderer2,
                 public modal: modal,
@@ -96,7 +96,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
                 public injector: Injector,
                 public calendar: calendar) {
 
-        this.navigation.setActiveModule('Calendar');
+        this.navigationTab.setTabInfo({displaymodule: 'Calendar', displayname: this.metadata.getModuleDefs('Calendar').module_label});
     }
 
     /**

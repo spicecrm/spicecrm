@@ -108,28 +108,28 @@ class SpiceFTSAggregates
                 case 'datem':
                     $aggParams = ['date_histogram' => [
                         'field' => $aggregateIndexFieldData['indexfieldname'] . '.agg',
-                        "interval" => "month",
+                        "calendar_interval" => "month",
                         "format" => 'MM/yyyy'
                     ]];
                     break;
                 case 'datew':
                     $aggParams = ['date_histogram' => [
                         'field' => $aggregateIndexFieldData['indexfieldname'] . '.agg',
-                        "interval" => "week",
+                        "calendar_interval" => "week",
                         "format" => 'w/yyyy'
                     ]];
                     break;
                 case 'dateq':
                     $aggParams = ['date_histogram' => [
                         'field' => $aggregateIndexFieldData['indexfieldname'] . '.agg',
-                        "interval" => "quarter",
+                        "calendar_interval" => "quarter",
                         "format" => 'MM/yyyy'
                     ]];
                     break;
                 case 'datey':
                     $aggParams = ['date_histogram' => [
                         'field' => $aggregateIndexFieldData['indexfieldname'] . '.agg',
-                        "interval" => "year",
+                        "calendar_interval" => "year",
                         "format" => 'yyyy'
                     ]];
                     break;

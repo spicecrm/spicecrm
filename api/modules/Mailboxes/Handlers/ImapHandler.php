@@ -474,11 +474,11 @@ class ImapHandler extends TransportHandler
             $response['result'] = true;
         } catch (Swift_TransportException $e) {
             $response['errors'] = $e->getMessage();
-            LoggerManager::getLogger()->info($e->getMessage());
+            LoggerManager::getLogger()->debug('imap', $e->getMessage());
             $response['result'] = false;
         } catch (Exception $e) {
             $response['errors'] = $e->getMessage();
-            LoggerManager::getLogger()->info($e->getMessage());
+            LoggerManager::getLogger()->debug('imap', $e->getMessage());
             $response['result'] = false;
         }
 
@@ -702,5 +702,14 @@ class ImapHandler extends TransportHandler
                 (id, email_address_id, bean_id, bean_module)
                 VALUES ('" . SpiceUtils::createGuid() . "', '" . $this->id . "', '" . $beanId . "', '" . $module . "')";
         $this->db->query($query);
+    }
+
+    /**
+     * gets username configured in mailbox settings
+     * @return string|null
+     */
+    public function getUsername(): ?string {
+        $username = $this->mailbox->imap_pop3_username;
+        return $username;
     }
 }

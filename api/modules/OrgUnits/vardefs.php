@@ -86,6 +86,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_USERS',
         ],
+        'hcmjoboffers' => [
+            'name' => 'hcmjoboffers',
+            'type' => 'link',
+            'relationship' => 'orgunits_hcmjoboffers',
+            'module' => 'HCMJobOffers',
+            'bean_name' => 'HCMJobOffer',
+            'source' => 'non-db',
+            'vname' => 'LBL_HCMJOBOFFERS',
+        ],
+        'hcmjoboffers_id' => [
+            'name' => 'hcmjoboffers_id',
+            'vname' => 'LBL_HCMJOBOFFERS_ID',
+            'type' => 'id',
+        ],
+        'hcmjoboffers_name' => [
+            'name' => 'hcmjoboffers_name',
+            'rname' => 'name',
+            'id_name' => 'hcmjoboffers_id',
+            'vname' => 'LBL_HCMJOBOFFERS',
+            'type' => 'relate',
+            'table' => 'hcmjoboffers',
+            'module' => 'HCMJobOffers',
+            'dbType' => 'varchar',
+            'link' => 'hcmjoboffers',
+            'len' => 255,
+            'source' => 'non-db'
+        ],
         'member_of' => [
             'name' => 'member_of',
             'type' => 'link',
@@ -105,7 +132,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'bean_name' => 'SpiceACLProfile',
             'source' => 'non-db',
             'vname' => 'LBL_SPICEACLPROFILES'
-        ]
+        ],
+        'documents' => [
+            'name' => 'documents',
+            'type' => 'link',
+            'relationship' => 'documents_orgunits',
+            'source' => 'non-db',
+            'module' => 'Documents',
+            'vname' => 'LBL_DOCUMENTS',
+        ],
     ],
     'relationships' => [
         'member_orgunits' => [
@@ -126,4 +161,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
     ]
 ];
 
+if (file_exists("extensions/modules/ServiceQueues")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit']['fields']['servicequeues'] = [
+        'name' => 'servicequeues',
+        'type' => 'link',
+        'relationship' => 'servicequeues_orgunits',
+        'module' => 'ServiceQueues',
+        'bean_name' => 'ServiceQueue',
+        'source' => 'non-db',
+        'vname' => 'LBL_SERVICE_QUEUES',
+    ];
+}
 VardefManager::createVardef('OrgUnits', 'OrgUnit', ['default', 'assignable']);

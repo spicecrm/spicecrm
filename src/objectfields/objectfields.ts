@@ -81,6 +81,7 @@ import {FieldMessagesComponent} from "./components/fieldmessages";
 import {FieldModuleLookupComponent} from "./components/fieldmodulelookup";
 import {FieldSignatureComponent} from "./components/fieldsignature";
 import {fieldCategories} from "./components/fieldcategories";
+import {fieldCategory} from "./components/fieldcategory";
 import {fieldCategoriesTree} from "./components/fieldcategoriestree";
 import {fieldServiceCategories,} from "./components/fieldservicecategories";
 import {fieldServiceCategoryTree} from "./components/fieldservicecategorytree";
@@ -126,6 +127,7 @@ import {fieldLinked} from "./components/fieldlinked";
 import {fieldLinkedDetails} from "./components/fieldlinkeddetails";
 import {fieldLinkedParent} from "./components/fieldlinkedparent";
 import {fieldCountries} from "./components/fieldcountries";
+import {fieldToggle} from "./components/fieldtoggle";
 
 /**
  * @ignore
@@ -218,6 +220,7 @@ declare var _: any;
         FieldModuleLookupComponent,
         FieldSignatureComponent,
         fieldCategories,
+        fieldCategory,
         fieldCategoriesTree,
         fieldServiceCategories,
         fieldServiceCategoryTree,
@@ -260,7 +263,8 @@ declare var _: any;
         fieldIndicator,
         fieldEmailRecipientsInput,
         fieldJson,
-        fieldCountries
+        fieldCountries,
+        fieldToggle
     ],
     exports: [
         fieldSet,

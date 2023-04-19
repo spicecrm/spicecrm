@@ -15,6 +15,7 @@ import {DirectivesModule} from "../directives/directives";
 // Pipes...
 import {SystemModuleCustomPipe} from "./pipes/systemmodulecustompipe";
 import {SystemModuleGlobalPipe} from "./pipes/systemmoduleglobalpipe";
+import {SystemStripHtmlTagsPipe} from "./pipes/systemstriphtmltagspipe";
 
 // COMPONENTs...
 import {PaginationControlsComponent, PaginationPipe} from "./components/pagination";
@@ -109,10 +110,14 @@ import {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal"
 import {SystemRoleSelector} from "./components/systemroleselector";
 import {SystemSection} from "./components/systemsection";
 import {SystemSelect} from "./components/systemselect";
+import {SystemSelectIcon, } from "./components/systemselecticon";
+import {SystemSelectIconItem} from "./components/systemselecticonitem";
+import {SystemSelectUOM} from "./components/systemselectuom";
 import {SystemSpinner} from "./components/systemspinner";
 import {SystemSplitView} from "./components/systemsplitview";
 import {SystemStencil} from "./components/systemstencil";
 import {SystemTableStencils} from "./components/systemtablestencils";
+import {SystemSearchresultStencil} from "./components/systemsearchresultstencil";
 import {SystemTinyMCEModal} from "./components/systemtinymcemodal";
 import {SystemTinyMCE} from "./components/systemtinymce";
 import {SystemToastContainer} from "./components/systemtoastcontainer";
@@ -140,7 +145,7 @@ import {SystemFilterBuilderFilterExpressionValue} from "./components/systemfilte
 import {SystemFilterBuilderFilterExpressionValues} from "./components/systemfilterbuilderfilterexpressionvalues";
 import {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
-import {SystemSelectUOM} from "./components/systemselectuom";
+
 import {SystemInputMedia} from './components/systeminputmedia';
 import {SystemInputTimezone} from './components/systeminputtimezone';
 import {SystemInputBase64} from './components/systeminputbase64';
@@ -286,9 +291,13 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemRoleSelector,
         SystemSection,
         SystemSelect,
+        SystemSelectIcon,
+        SystemSelectIconItem,
+        SystemSelectUOM,
         SystemSpinner,
         SystemSplitView,
         SystemStencil,
+        SystemSearchresultStencil,
         SystemTableStencils,
         SystemTinyMCE,
         SystemTinyMCEModal,
@@ -301,10 +310,8 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemViewContainer,
         SystemIconHelpText,
         SystemMultipleSelect,
-        SystemSelectUOM,
         SystemModuleTree,
         SystemModuleTreeItem,
-        SystemSelectUOM,
         SystemInputMedia,
         SystemInputTimezone,
         SystemTrendIndicator,
@@ -324,11 +331,13 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemInputFileContent,
         SystemWrappedText,
         SystemRichTextEditorContent,
-        SystemHtmlEditor
+        SystemHtmlEditor,
+        SystemStripHtmlTagsPipe
     ],
     exports: [
         PaginationControlsComponent,
         PaginationPipe,
+        SystemStripHtmlTagsPipe,
         SpeechRecognition,
         SystemActionIcon,
         SystemButtonCustomIcon,
@@ -416,7 +425,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemSpinner,
         SystemSplitView,
         SystemStencil,
-        SystemStencil,
+        SystemSearchresultStencil,
         SystemTableStencils,
         SystemTinyMCE,
         SystemToastContainer,
@@ -457,7 +466,9 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemInputColor,
         SystemLabelEditorModal,
         SystemHtmlEditor,
-        SystemCardStencil
+        SystemCardStencil,
+        SystemSelectIcon,
+        SystemSelectIconItem
     ]
 })
 export class SystemComponents {}

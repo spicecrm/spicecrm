@@ -1,0 +1,46 @@
+<workbench-header titlelabel="LBL_PULL_FROM_GIT_REPOSITORY">
+    <workbench-header-controls>
+        <button class="slds-button slds-button_brand" (click)="pullFromRepository(loginDetails)"><system-label label="LBL_GIT_PULL"></system-label></button>
+    </workbench-header-controls>
+</workbench-header>
+<div class="slds-form-element__control slds-p-around--small">
+    <h3 class="slds-text-heading--small slds-p-around--small">
+        Login Options
+    </h3>
+    <div class="slds-form-element__control slds-p-left--small">
+        <system-input-radio-button-group [(ngModel)]="loginDetails.loginOption" [inputOptions]="loginFormChosen">
+        </system-input-radio-button-group>
+    </div>
+</div>
+<div class="slds-grid slds-grid--vertical-align-center slds-p-around--small"
+     *ngIf="loginDetails.loginOption == 'token'; else username">
+    <div class="slds-form-element__control slds-size--2-of-4 slds-p-around--small">
+        <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+            <system-label label="LBL_AUTH_TOKEN"></system-label>
+        </label>
+        <system-input-password [(ngModel)]="loginDetails.token"></system-input-password>
+    </div>
+</div>
+<ng-template #username>
+    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--small">
+        <div class="slds-form-element__control slds-size--1-of-4 slds-p-around--small">
+            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                <system-label label="LBL_USER_NAME"></system-label>
+            </label>
+            <system-input-text [(ngModel)]="loginDetails.username"></system-input-text>
+        </div>
+        <div class="slds-form-element__control slds-size--1-of-4 slds-p-around--small">
+            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                <system-label label="LBL_PASSWORD"></system-label>
+            </label>
+            <system-input-password [(ngModel)]="loginDetails.password"></system-input-password>
+        </div>
+    </div>
+</ng-template>
+<div class="slds-form-element__control slds-p-around--small slds-scrollable--y slds-m-left_small" *ngFor="let d of data">{{d}}
+
+        </div>
+
+
+
+

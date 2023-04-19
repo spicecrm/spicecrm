@@ -34,6 +34,11 @@ $routes = [
                 'in' => 'body',
                 'description' => 'the name of the node',
                 'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'add_params_component' => [
+                'in' => 'body',
+                'description' => 'the name of the selected component',
+                'type' => ValidationMiddleware::TYPE_STRING
             ]
         ]
     ],
@@ -71,7 +76,37 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_GUID
             ]
         ]
-    ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/configuration/spiceui/core/categorytrees/{id}/links',
+        'class' => SysCategoryTreesController::class,
+        'function' => 'getTreeLinks',
+        'description' => 'gets linked data for a category Tree',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the tree',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/configuration/spiceui/core/categorytrees/{id}/links',
+        'class' => SysCategoryTreesController::class,
+        'function' => 'setTreeLinks',
+        'description' => 'adds or updates a tree links',
+        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'the id of the tree',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
 ];
 
 /**

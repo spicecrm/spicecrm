@@ -3,6 +3,7 @@
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use stdClass;
 
@@ -10,6 +11,11 @@ class SpiceUIRepositoryController
 {
     static function getModuleRepository()
     {
+
+        // check if cached
+        $cached = SpiceCache::get('spiceRepositoryModules');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
@@ -23,11 +29,18 @@ class SpiceUIRepositoryController
             ];
         }
 
+        // set the Cache
+        SpiceCache::set('spiceRepositoryModules', $retArray);
+
         return $retArray;
     }
 
     static function getComponents()
     {
+        // check if cached
+        $cached = SpiceCache::get('spiceRepositoryComponents');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
@@ -43,11 +56,18 @@ class SpiceUIRepositoryController
             ];
         }
 
+        // set the Cache
+        SpiceCache::set('spiceRepositoryComponents', $retArray);
+
         return $retArray;
     }
 
     static function getComponentDefaultConfigs()
     {
+        // check if cached
+        $cached = SpiceCache::get('spiceRepositoryComponentDefaultConfigs');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
@@ -61,11 +81,18 @@ class SpiceUIRepositoryController
             $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
         }
 
+        // set the Cache
+        SpiceCache::set('spiceRepositoryComponentDefaultConfigs', $retArray);
+
         return $retArray;
     }
 
     static function getComponentModuleConfigs()
     {
+        // check if cached
+        $cached = SpiceCache::get('spiceRepositoryComponentModuleConfigs');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
@@ -79,6 +106,9 @@ class SpiceUIRepositoryController
             $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
         }
 
+        // set the Cache
+        SpiceCache::set('spiceRepositoryComponentModuleConfigs', $retArray);
+
         return $retArray;
     }
 
@@ -89,6 +119,9 @@ class SpiceUIRepositoryController
      */
     static function getLibraries()
     {
+        // check if cached
+        $cached = SpiceCache::get('spiceUILibraries');
+        if($cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
 
@@ -111,6 +144,9 @@ class SpiceUIRepositoryController
 
             $return[$row['name']][] = ['loaded' => false, 'src' => $row['src']];
         }
+
+        // set the Cache
+        SpiceCache::set('spiceUILibraries', $return);
 
         return $return;
     }

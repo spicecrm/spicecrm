@@ -12,6 +12,7 @@ import {modal} from "../../../services/modal.service";
 import {firstValueFrom} from "rxjs";
 import {session} from "../../../services/session.service";
 import {MSGraphMappingModal} from "./msgraphmappingmodal";
+import {userpreferences} from "../../../services/userpreferences.service";
 
 /**
  * @ignore
@@ -55,11 +56,6 @@ export class ExchangeUserSettings implements OnInit {
      */
     public userconfig: {[key: symbol]: any} = {};
     /**
-     * used to call the proper service route
-     * @private
-     */
-    private serviceName: 'msgraph' | 'spicecrmexchange' = 'spicecrmexchange';
-    /**
      * loading backend data
      */
     public isLoading: string;
@@ -70,15 +66,20 @@ export class ExchangeUserSettings implements OnInit {
                 public session: session,
                 public modal: modal,
                 public backend: backend,
+                public userPreferences: userpreferences,
                 public configuration: configurationService) {
-        if (this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
-            this.serviceName = 'msgraph';
-        }
-        const configName = this.serviceName == 'msgraph' ? 'msgraphconfig' : 'ewsconfig';
-        let ewsconfig = this.configuration.getCapabilityConfig(configName);
-        if (ewsconfig && ewsconfig.subscriptiontimeout) {
-            this.subscriptiontimeout = parseInt(ewsconfig.subscriptiontimeout, 10);
-        }
+
+        this.setSubscriptionTime();
+    }
+
+    set activeAPI(val: 'msgraph' | 'spicecrmexchange') {
+        this.userPreferences.setPreference('microsoftActiveService', val).subscribe(() => {
+            this.getConfig();
+        });
+    }
+
+    get activeAPI(): 'msgraph' | 'spicecrmexchange' {
+        return this.userPreferences.preferences.global.microsoftActiveService ?? 'msgraph';
     }
 
     /**
@@ -88,11 +89,25 @@ export class ExchangeUserSettings implements OnInit {
         this.getConfig();
     }
 
+    private setSubscriptionTime() {
+        const configName = this.activeAPI == 'msgraph' ? 'msgraphconfig' : 'ewsconfig';
+        let ewsconfig = this.configuration.getCapabilityConfig(configName);
+        if (ewsconfig && ewsconfig.subscriptiontimeout) {
+            this.subscriptiontimeout = parseInt(ewsconfig.subscriptiontimeout, 10);
+        }
+    }
+
     /**
      * loads the config from the backend
      */
     public getConfig() {
-        this.backend.getRequest(`${this.serviceName}/config/${this.model.id}`).subscribe(response => {
+
+        const loadingModal = this.modal.await('LBL_LOADING');
+
+        this.backend.getRequest(`${this.activeAPI}/config/${this.model.id}`).subscribe(response => {
+            loadingModal.next(true);
+            loadingModal.complete();
+
             this.modules = response.modules;
             this.modules.forEach(m => m.moduleName = this.metadata.getModuleById(m.sysmodule_id))
             this.userconfig = response.userconfig;
@@ -137,7 +152,7 @@ export class ExchangeUserSettings implements OnInit {
         if (value) {
 
             if (moduleData.moduleName == 'Tasks') {
-                const lists: { value: string, display: string}[] = await firstValueFrom(this.backend.getRequest(`${this.serviceName}/config/${this.model.id}/todoLists`)).catch(() => undefined);
+                const lists: { value: string, display: string}[] = await firstValueFrom(this.backend.getRequest(`${this.activeAPI}/config/${this.model.id}/todoLists`)).catch(() => undefined);
                 if (!lists) {
                     this.toast.sendToast('todo lists could not be retrieved', 'error');
                     checkbox.writeValue(false);
@@ -154,14 +169,14 @@ export class ExchangeUserSettings implements OnInit {
 
             this.isLoading = moduleData.moduleName;
 
-            this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`, null, {syncConfig}).subscribe({
+            this.backend.postRequest(`${this.activeAPI}/config/${this.model.id}/${sysmoduleid}`, null, {syncConfig}).subscribe({
                 next: res => {
                     this.isLoading = undefined;
                     this.userconfig = res.userconfig;
                     this.subscriptions = res.subscriptions;
 
                     // set the user config
-                    this.configuration.setData('exchangeuserconfig', this.userconfig);
+                    this.configuration.setData('microsoftserviceuserconfig', this.userconfig);
                     this.toast.sendToast('LBL_ACTIVATED', 'success');
 
                 },
@@ -174,14 +189,14 @@ export class ExchangeUserSettings implements OnInit {
         } else {
             this.isLoading = moduleData.moduleName;
 
-            this.backend.deleteRequest(`${this.serviceName}/config/${this.model.id}/${sysmoduleid}`).subscribe({
+            this.backend.deleteRequest(`${this.activeAPI}/config/${this.model.id}/${sysmoduleid}`).subscribe({
                 next: res => {
                     this.isLoading = undefined;
                     this.userconfig = res.userconfig;
                     this.subscriptions = res.subscriptions;
 
                     // set the user config
-                    this.configuration.setData('exchangeuserconfig', this.userconfig);
+                    this.configuration.setData('microsoftserviceuserconfig', this.userconfig);
                     this.toast.sendToast('LBL_DEACTIVATED', 'success');
                 },
                 error: err => {
@@ -199,7 +214,7 @@ export class ExchangeUserSettings implements OnInit {
      */
     public refreshSubscription(subscription: any) {
         this.isLoading = subscription.subscriptionid;
-        this.backend.postRequest(`${this.serviceName}/config/${this.model.id}/${subscription.folder_id}/refreshSubscription/${subscription.subscriptionid}`).subscribe({
+        this.backend.postRequest(`${this.activeAPI}/config/${this.model.id}/${subscription.folder_id}/refreshSubscription/${subscription.subscriptionid}`).subscribe({
             next: res => {
                 this.isLoading = undefined;
                 this.subscriptions = res.subscriptions;

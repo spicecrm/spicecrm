@@ -70,6 +70,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         let emailTemplates = this.configuration.getData('EmailTemplates');
         if (emailTemplates) {
             this.availableTemplates = emailTemplates.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
+            this.availableTemplates.sort((a, b) =>  a.name.localeCompare(b.name));
             this.isLoaded = true;
         } else {
             let params = {
@@ -84,12 +85,11 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
 
                     // set the templates internally
                     this.availableTemplates = data.list.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
-
+                    this.availableTemplates.sort((a, b) =>  a.name.localeCompare(b.name));
                     this.isLoaded = true;
                 }
             );
         }
-
     }
 
     /**
@@ -127,6 +127,8 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                     modalRef.instance.self.destroy();
                 });
             });
+        } else {
+            this.model.setField(this.bodyField, '');
         }
     }
 }

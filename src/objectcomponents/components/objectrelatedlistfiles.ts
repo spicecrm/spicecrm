@@ -1,7 +1,19 @@
 /**
  * @module ObjectComponents
  */
-import { AfterViewInit, Component, ComponentRef, ElementRef, Injector, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import {
+    AfterViewInit,
+    Component,
+    ComponentRef,
+    ElementRef,
+    Injector,
+    Input,
+    OnChanges,
+    OnDestroy,
+    Renderer2, SimpleChanges,
+    ViewChild,
+    ViewContainerRef
+} from "@angular/core";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {model} from "../../services/model.service";
 import {language} from "../../services/language.service";
@@ -47,7 +59,7 @@ import {AgreementsAddRevisionModal} from "../../modules/agreements/components/ag
         ])
     ]
 })
-export class ObjectRelatedlistFiles implements AfterViewInit {
+export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChanges {
 
     /**
      * an object array with base64 files
@@ -79,6 +91,18 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @private
      */
     public selectedCategoryId: string = '';
+
+    /**
+     * holds the default category value
+     * @private
+     */
+    public defaultCategoryId: string = '';
+
+    /**
+     * subscribe to the broadcast to catch when files list shall be reloaded
+     */
+    public broadcastSubscription: any = {};
+
     /**
      * holds the filter term for files
      * @private
@@ -116,6 +140,9 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
                 public modal: modal,
                 public injector: Injector
     ) {
+        this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
+            this.handleMessage(message);
+        });
     }
 
     /**
@@ -123,13 +150,35 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      */
     public ngAfterViewInit() {
         this.setModelData();
+
+        // default category
+        if(this.componentconfig.hasOwnProperty('defaultcategory') && this.componentconfig.defaultcategory){
+            this.defaultCategoryId = this.componentconfig.defaultcategory;
+        }
+        // in case no defaultCategoryId is set, load all & display all files
+        if(!this.defaultCategoryId && !this.selectedCategoryId) {
+            this.selectedCategoryId = '*';
+        }
+
         setTimeout(() => this.loadFiles(), 10);
 
-        // subscribe to the braidcast to get a merge notification
+        // subscribe to the broadcast to get a merge notification or reload the file list
         this.subscriptions.add(
             this.broadcast.message$.subscribe(message => this.handleMessage(message))
         );
 
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+
+        // default category
+        if(this.componentconfig.hasOwnProperty('defaultcategory') && this.componentconfig.defaultcategory){
+            this.defaultCategoryId = this.componentconfig.defaultcategory;
+        }
+        // in case no defaultCategoryId is set, load all & display all files
+        if(!this.defaultCategoryId && !this.selectedCategoryId) {
+            this.selectedCategoryId = '*';
+        }
     }
 
     /**
@@ -137,7 +186,13 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
       * @private
      */
     public loadCategories() {
-        if (!!this.configurationService.getData('spiceattachments_categories')) {
+        // handle default / selected category
+        if(!this.selectedCategoryId && this.defaultCategoryId) {
+            this.selectedCategoryId = this.defaultCategoryId;
+        }
+
+        // categories
+        if (this.configurationService.getData('spiceattachments_categories')) {
             return this.categories = this.configurationService.getData('spiceattachments_categories');
         }
         this.backend.getRequest('common/spiceattachments/categories/' + this.model.module).subscribe(res => {
@@ -157,6 +212,16 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
         if(message.messagetype == 'model.merge' && message.messagedata.module == this.model.module && message.messagedata.id == this.model.id){
             this.loadFiles();
         }
+
+        // reload file list
+        switch (message.messagetype) {
+            case 'attachments.loaded':
+                if(message.messagedata.reload) {
+                    this.setFilteredFiles('category', this.selectedCategoryId);
+                }
+                break;
+        }
+
     }
 
     /**
@@ -170,6 +235,8 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
         this.modelattachments.getAttachments().subscribe(res => {
             this.filteredFiles = res;
             this.loadCategories();
+            // reload container
+            this.setFilteredFiles('category', this.selectedCategoryId);
         });
     }
 
@@ -278,7 +345,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
             }
         }
 
-        this.modelattachments.uploadAttachmentsBase64(files).subscribe({
+        // handle default / selected category
+        if(!this.selectedCategoryId && this.defaultCategoryId) {
+            this.selectedCategoryId = this.defaultCategoryId;
+        }
+
+        this.modelattachments.uploadAttachmentsBase64(files, (this.selectedCategoryId == '*' ? this.defaultCategoryId : this.selectedCategoryId)).subscribe({
             next: (res) => {
                 if (this.componentconfig.revComponent) {
                     this.openRevisionModal(files);
@@ -333,7 +405,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
         switch (action) {
             case 'category':
                 this.selectedCategoryId = value;
-                this.filteredFiles = value == '*' ? this.modelattachments.files : this.modelattachments.files
+                this.filteredFiles = (value == '*' || !value) ? this.modelattachments.files : this.modelattachments.files
                     .filter(file => !!file.category_ids && file.category_ids.includes(value));
                 break;
             case 'input':
@@ -357,4 +429,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
         }
         this.componentconfig.bigThumbnail = !this.componentconfig.bigThumbnail;
     }
+
+    /**
+     * make sure on destroy to unsubscribe from the broadcast
+     */
+    public ngOnDestroy() {
+        this.broadcastSubscription.unsubscribe();
+    }
+
 }

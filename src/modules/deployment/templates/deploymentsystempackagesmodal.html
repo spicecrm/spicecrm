@@ -1,0 +1,31 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()"><system-label label="LBL_PACKAGES"></system-label></system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-size--1-of-1 slds-table--fixed-layout">
+            <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-cell-shrink" scope="col"></th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let deploymentPackage of packages" class="slds-hint-parent">
+                <td>
+                    <system-checkbox [(ngModel)]="deploymentPackage.selected" (ngModelChange)="setDisabled()"></system-checkbox>
+                </td>
+                <td>
+                    <div class="slds-truncate">
+                        {{deploymentPackage.name}}
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button (click)="close()" class="slds-button slds-button--neutral"><system-label label="LBL_CANCEL"></system-label></button>
+        <button [disabled]="disabled" (click)="import()" class="slds-button slds-button--brand"><system-label label="LBL_IMPORT"></system-label></button>
+    </system-modal-footer>
+</system-modal>

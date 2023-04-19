@@ -5,27 +5,17 @@
  */
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpEventType, HttpHeaders, HttpParams} from "@angular/common/http";
-import {DomSanitizer} from '@angular/platform-browser';
-import {Subject, Observable, BehaviorSubject} from 'rxjs';
-import {Router} from '@angular/router';
+import {Subject, Observable, BehaviorSubject, Subscription} from 'rxjs';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
-import {metadata} from './metadata.service';
-import {toast} from './toast.service';
 import {modelutilities} from './modelutilities.service';
 import {modal} from './modal.service';
-import {language} from './language.service';
 import {broadcast} from "./broadcast.service";
-
-
-/**
- * @ignore
- */
-declare var moment: any;
+import {map, tap} from "rxjs/operators";
 
 /**
- * a generic interface for Route Paramaters to be sent with a request
+ * a generic interface for Route Parameters to be sent with a request
  */
 interface backendRequestParams {
     route: string;
@@ -36,11 +26,20 @@ interface backendRequestParams {
 }
 
 /**
- * The backend serviceprodivdes a set of methoids to communicate with the spicecrm backend
+ * The backend service prodivdes a set of methods to communicate with the backend
  *
  */
 @Injectable()
 export class backend {
+
+    /**
+     * holds the pending requests count
+     */
+    public pendingRequestsCount = 0;
+    /**
+     * subject to emit the pending requests count
+     */
+    public pendingCountChange$ = new Subject<number>();
     /**
      *
      */
@@ -82,22 +81,17 @@ export class backend {
      * @ignore
      */
     constructor(
-        public toast: toast,
         public http: HttpClient,
         public broadcast: broadcast,
-        public sanitizer: DomSanitizer,
         public configurationService: configurationService,
         public session: session,
-        public metadata: metadata,
-        public router: Router,
         public modelutilities: modelutilities,
         public modalservice: modal,
-        public language: language,
     ) {
     }
 
     /**
-     * @ignore
+     * @return HttpHeaders from session
      */
     public getHeaders(): HttpHeaders {
         let headers = this.session.getSessionHeader();
@@ -106,7 +100,8 @@ export class backend {
     }
 
     /**
-     * @ignore
+     * prepare request params
+     * @param params
      */
     public prepareParams(params: object): HttpParams {
         let output = new HttpParams();
@@ -133,38 +128,65 @@ export class backend {
      * generic request function for a GET request to the backend
      *
      * @param route  the route to be called on the backend e.g. 'modules/Accounts'
-     * @param params an object with additonal params to be sent to the backend with the get request
-     *
-     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     * @param params an object with additional params to be sent to the backend with the get request
+     * @param refID
+     * @return an Observable that is resolved with the JSON decoded response from the request. If an error occurs the error is returns as error from the Observable
      */
-    public getRequest(route: string = "", params: any = {}, responseSubject?: Subject<any>): Observable<any> {
-        // if we do not have a responsesubject passed in create a new one
-        if (!responseSubject) {
-            responseSubject = new Subject<any>();
-        }
+    public getRequest(route: string = "", params: any = {}, refID?: string): Observable<any> {
+
+        const responseSubject = new Subject<any>();
 
         // if requests shoud be staged do not even attempt to process currently
         if (this.stageRequests) {
             this.stageRequest('GET', route, {getParams: params}, responseSubject);
         } else {
-            this.http.get(
-                this.configurationService.getBackendUrl() + "/" + encodeURI(route),
 
+            this.increasePendingCount();
+
+            const subscription = this.http.get(
+                this.configurationService.getBackendUrl() + "/" + encodeURI(route),
                 {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     responseSubject.next(res.body);
                     responseSubject.complete();
                 },
-                err => {
+                error: err => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     if (this.handleError(err, route, 'GET', {getParams: params}, responseSubject) == false) {
                         responseSubject.error(err);
                     }
                 }
-            );
+
+            });
+
+            if (refID) {
+                this.pendingRequests[refID] = subscription;
+            }
         }
         return responseSubject.asObservable();
     }
+
+    /**
+     * cancel pending requests
+     * @param refIds
+     */
+    public cancelPendingRequests(refIds: string[]) {
+
+        refIds.forEach(id => {
+            if (!this.pendingRequests[id]) return;
+            this.decreasePendingCount();
+            this.pendingRequests[id].unsubscribe();
+            delete this.pendingRequests[id];
+        });
+    }
+
+    public pendingRequests: {[key: string]: Subscription} = {};
 
     /**
      * generic request function for a GET request that is sent and retruens the raw not parsed response. Add headers for the authentication etc.
@@ -183,6 +205,8 @@ export class backend {
             headers2 = headers2.set(prop, headers[prop]);
         }
 
+        this.increasePendingCount();
+
         return this.http.get(
             this.configurationService.getBackendUrl() + "/" + route,
             {
@@ -190,7 +214,10 @@ export class backend {
                 params: this.prepareParams(params),
                 responseType: 'blob',
             }
-        );
+        ).pipe(tap({
+            next: () => this.decreasePendingCount(),
+            error: () => this.decreasePendingCount()
+        }));
     }
 
     /**
@@ -199,19 +226,19 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
-     *
-     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     * @param refID
+     * @return an Observable that is resolved with the JSON decoded response from the request. If an error occurs the error is returns as error from the Observable
      */
-    public postRequest(route: string = "", params: any = {}, body: any = {}, responseSubject?: Subject<any>): Observable<any> {
-        if (!responseSubject) {
-            responseSubject = new Subject<any>();
-        }
+    public postRequest(route: string = "", params: any = {}, body: any = {}, refID?: string): Observable<any> {
+
+        const responseSubject = new Subject<any>();
 
         // if requests shoud be staged do not even attempt to process currently
         if (this.stageRequests) {
             this.stageRequest('GET', route, {getParams: params, body: body}, responseSubject);
         } else {
+
+            this.increasePendingCount();
 
             let headers = this.getHeaders();
             if (body) {
@@ -220,21 +247,31 @@ export class backend {
                 headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
             }
 
-            this.http.post(
+            const subscription = this.http.post(
                 this.configurationService.getBackendUrl() + "/" + encodeURI(route),
                 body,
                 {headers: headers, observe: "response", params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     responseSubject.next(res.body);
                     responseSubject.complete();
                 },
-                err => {
+                error: err => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     if (!this.handleError(err, route, 'POST', {getParams: params, body: body}, responseSubject)) {
                         responseSubject.error(err);
                     }
                 }
-            );
+            });
+
+            if (refID) {
+                this.pendingRequests[refID] = subscription;
+            }
         }
         return responseSubject.asObservable();
     }
@@ -243,16 +280,15 @@ export class backend {
      * generic request function for a PATCH request to the backend
      *
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
-     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param params an object with additional params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
      *
-     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     * @param refID
+     * @return an Observable that is resolved with the JSON decoded response from the request. If an error occurs the error is returns as error from the Observable
      */
-    public patchRequest(route: string = "", params: any = {}, body: any = {}, responseSubject?: Subject<any>): Observable<any> {
-        if (!responseSubject) {
-            responseSubject = new Subject<any>();
-        }
+    public patchRequest(route: string = "", params: any = {}, body: any = {}, refID?: string): Observable<any> {
+
+        const responseSubject = new Subject<any>();
 
         // if requests shoud be staged do not even attempt to process currently
         if (this.stageRequests) {
@@ -266,21 +302,34 @@ export class backend {
                 headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
             }
 
-            this.http.patch(
+            this.increasePendingCount();
+
+            const subscription = this.http.patch(
                 this.configurationService.getBackendUrl() + "/" + encodeURI(route),
                 body,
                 {headers: headers, observe: "response", params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     responseSubject.next(res.body);
                     responseSubject.complete();
                 },
-                err => {
+                error: err => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     if (!this.handleError(err, route, 'POST', {getParams: params, body: body}, responseSubject)) {
                         responseSubject.error(err);
                     }
                 }
-            );
+
+            });
+
+            if (refID) {
+                this.pendingRequests[refID] = subscription;
+            }
         }
         return responseSubject.asObservable();
     }
@@ -291,17 +340,15 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
      * @param progress: A subject where the upload progress will be reported.
-     *
+     * @param refID
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, progress: BehaviorSubject<number> = null, responseSubject?: Subject<any>): Observable<any> {
-        if (!responseSubject) {
-            responseSubject = new Subject<any>();
-        }
+    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, progress: BehaviorSubject<number> = null, refID?: string): Observable<any> {
 
-        // if requests shoud be staged do not even attempt to process currently
+        const responseSubject = new Subject<any>();
+
+        // if requests should be staged do not even attempt to process currently
         if (this.stageRequests) {
             this.stageRequest('POSTWITHPROGRESS', route, {
                 getParams: params,
@@ -309,6 +356,7 @@ export class backend {
                 progress: progress
             }, responseSubject);
         } else {
+
 
             let headers = this.getHeaders();
             if (body) {
@@ -319,31 +367,43 @@ export class backend {
 
             let reportProgress = progress !== null;
             if (reportProgress) progress.next(0);
-            this.http.post(this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, {
+
+            this.increasePendingCount();
+
+            const subscription = this.http.post(this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, {
                 headers: headers,
                 observe: 'events',
                 params: this.prepareParams(params),
                 reportProgress: !!progress
-            }).subscribe(
-                event => {
-                    if (event.type === HttpEventType.UploadProgress) {
-                        progress.next(100 * event.loaded / event.total);
-                    } else if (event.type === HttpEventType.Response) {
-                        responseSubject.next(event.body);
-                        responseSubject.complete();
-                    }
-                },
-                err => {
-                    if (!this.handleError(err, route, 'POSTWITHPROGRESS', {
-                        getParams: params,
-                        body: body,
-                        progress: progress
-                    }, responseSubject)) {
+            }).subscribe({
+                next:
+                    event => {
+                        if (event.type === HttpEventType.UploadProgress) {
+                            progress.next(100 * event.loaded / event.total);
+                        } else if (event.type === HttpEventType.Response) {
+                            this.decreasePendingCount();
+                            delete this.pendingRequests[refID];
+
+                            responseSubject.next(event.body);
+                            responseSubject.complete();
+                        }
+                    },
+                error: err => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
+                    if (!this.handleError(err, route, 'POSTWITHPROGRESS', {getParams: params, body: body, progress: progress}, responseSubject)) {
                         responseSubject.error(err);
                     }
                 }
-            );
+
+            });
+
+            if (refID) {
+                this.pendingRequests[refID] = subscription;
+            }
         }
+
         return responseSubject.asObservable();
     }
 
@@ -357,37 +417,40 @@ export class backend {
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
      *
+     * @param refID
      * @return an Observable for the request. If the response is successful the observable will return an objecturl to the dowlnoaded file in the browser
      */
-    public getDownloadPostRequestFile(route: string = "", params: any = {}, body: any = {}): Observable<any> {
+    public getDownloadPostRequestFile(route: string = "", params: any = {}, body: any = {}, refID?: string): Observable<any> {
         let responseSubject = new Subject<any>();
 
         let headers = this.getHeaders();
         headers = headers.set("Accept", "*/*");
 
-        this.http.post(
+        const subscription = this.http.post(
             this.configurationService.getBackendUrl() + "/" + route,
             body,
             {headers: headers, observe: "response", params: this.prepareParams(params), responseType: "blob"}
-        ).subscribe(
-            (response: any) => {
-                // let blob = new Blob([response], {type: "octet/stream"});
-                // let objectUrl = URL.createObjectURL(new Blob([blob], {type: "octet/stream"}));
-                // let objectUrl = URL.createObjectURL(response.blob());
+        ).subscribe({
+            next: (response: any) => {
+                delete this.pendingRequests[refID];
                 let objectUrl = window.URL.createObjectURL(response.body);
-                // responseSubject.next(this.sanitizer.bypassSecurityTrustUrl(objectUrl));
                 responseSubject.next(objectUrl);
                 responseSubject.complete();
             },
-            err => {
-                this.handleError(err, route, 'POST', {getParams: params, body: body});
-                let blobReader = new FileReader();
-                blobReader.readAsText(err.error);
-                blobReader.onloadend = (e) => {
-                    responseSubject.error(JSON.parse(blobReader.result.toString()));
-                };
-            }
-        );
+            error: err => {
+                delete this.pendingRequests[refID];
+            this.handleError(err, route, 'POST', {getParams: params, body: body});
+            let blobReader = new FileReader();
+            blobReader.readAsText(err.error);
+            blobReader.onloadend = (e) => {
+                responseSubject.error(JSON.parse(blobReader.result.toString()));
+            };
+        }
+        });
+
+        if (refID) {
+            this.pendingRequests[refID] = subscription;
+        }
 
         return responseSubject.asObservable();
     }
@@ -395,30 +458,26 @@ export class backend {
     // todo test it
     /**
      *
-     * a generic post request function that expects a binary resonse from a download.
+     * a generic post request function that expects a binary response from a download.
      *
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param method the method to be used GET or POST
-     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param params an object with additional params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param headers an object with additonal heders that will be parsed as headers obejt and sent with the
-     *
-     * @return an Observable for the request. If the response is successful the observable will return an objecturl to the dowlnoaded file in the browser
+     * @param headers an object with additional headers that will be parsed as headers object and sent with the
+     * @param refID
+     * @return an Observable for the request. If the response is successful the observable will return an object to the downloaded file in the browser
      */
-    public getLinkToDownload(
-        route: string,
-        method: 'GET' | 'POST' = 'GET',
-        params = null,
-        body = null,
-        headers = null,
-    ): Observable<any> {
+    public getLinkToDownload(route: string, method: 'GET' | 'POST' = 'GET', params = null, body = null, headers = null, refID?: string): Observable<any> {
         let sub = new Subject<any>();
 
         let _headers = this.getHeaders();
         _headers = _headers.set("Accept", "*/*");
         // todo: add given headers here...
 
-        this.http.request(
+        this.increasePendingCount();
+
+        const subscription = this.http.request(
             method,
             this.configurationService.getBackendUrl() + "/" + route,
             {
@@ -427,8 +486,13 @@ export class backend {
                 observe: "response",
                 params: this.prepareParams(params),
                 responseType: "blob",
-            }).subscribe(
-            (response: any) => {
+            }).subscribe({
+            next: (response: any) => {
+
+                this.decreasePendingCount();
+                delete this.pendingRequests[refID];
+
+
                 if (response.status == 200) {
                     // let objectUrl = URL.createObjectURL(response.blob());
                     let objectUrl = window.URL.createObjectURL(response.body);
@@ -438,11 +502,18 @@ export class backend {
                     sub.error(response.statusText);
                 }
             },
-            (err) => {
+            error: (err) => {
+                this.decreasePendingCount();
+                delete this.pendingRequests[refID];
+
                 this.handleError(err, route, method, {getParams: params, body: body});
                 sub.error(err);
             }
-        );
+        });
+
+        if (refID) {
+            this.pendingRequests[refID] = subscription;
+        }
 
         return sub.asObservable();
     }
@@ -454,13 +525,10 @@ export class backend {
      * @param request_params an object of type [[backendRequestParams]]
      * @param file_name
      *
-     * @return an Observable that is reolved when the file has been tranferred and the download is triggered
+     * @param file_type
+     * @return an Observable that is resolved when the file has been transferred and the download is triggered
      */
-    public downloadFile(
-        request_params: backendRequestParams,
-        file_name: string = null,
-        file_type: string = null
-    ): Observable<void> {
+    public downloadFile(request_params: backendRequestParams, file_name: string = null, file_type: string = null): Observable<void> {
         let sub = new Subject<void>();
 
         this.getLinkToDownload(
@@ -469,10 +537,9 @@ export class backend {
             request_params.params,
             request_params.body,
             request_params.headers
-        ).subscribe(
-            (res) => {
+        ).subscribe({
+            next: (res) => {
                 let downloadUrl = res;
-                // window.open(downloadUrl);
                 let a = document.createElement("a");
                 document.body.appendChild(a);
                 a.href = downloadUrl;
@@ -484,8 +551,8 @@ export class backend {
                 sub.next();
                 sub.complete();
             },
-            error => sub.error(error)
-        );
+            error: error => sub.error(error)
+        });
 
         return sub.asObservable();
     }
@@ -496,34 +563,44 @@ export class backend {
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
      * @param params an object with additonal params to be sent to the backend with the get request
      * @param body an object being sent as body/payload with the request
-     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
-     *
+     * @param refID
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public putRequest(route: string = "", params: any = {}, body: any = {}, responseSubject?: Subject<any>): Observable<any> {
-        if (!responseSubject) {
-            responseSubject = new Subject<any>();
-        }
+    public putRequest(route: string = "", params: any = {}, body: any = {}, refID?: string): Observable<any> {
+
+        const responseSubject = new Subject<any>();
 
         // if requests shoud be staged do not even attempt to process currently
         if (this.stageRequests) {
             this.stageRequest('PUT', route, {getParams: params, body: body}, responseSubject);
         } else {
-            this.http.put(
+            this.increasePendingCount();
+
+            const subscription = this.http.put(
                 this.configurationService.getBackendUrl() + "/" + route,
                 body,
                 {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     responseSubject.next(res.body);
                     responseSubject.complete();
                 },
-                (err) => {
-                    if(!this.handleError(err, route, 'PUT', {getParams: params, body: body},responseSubject)) {
+                error: (err) => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
+                    if (!this.handleError(err, route, 'PUT', {getParams: params, body: body}, responseSubject)) {
                         responseSubject.error(err);
                     }
                 }
-            );
+            });
+
+            if (refID) {
+                this.pendingRequests[refID] = subscription;
+            }
         }
         return responseSubject.asObservable();
     }
@@ -532,32 +609,42 @@ export class backend {
      * generic request function for a DELETE request to the backend
      *
      * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
-     * @param params an object with additonal params to be sent to the backend with the get request
-     *
-     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     * @param params an object with additional params to be sent to the backend with the get request
+     * @param refID
+     * @return an Observable that is resolved with the JSON decoded response from the request. If an error occurs the error is returns as error from the Observable
      */
-    public deleteRequest(route: string = "", params: any = {}, responseSubject?: Subject<any>): Observable<any> {
-        if (!responseSubject) {
-            responseSubject = new Subject<any>();
-        }
+    public deleteRequest(route: string = "", params: any = {}, refID?: string): Observable<any> {
+
+        const responseSubject = new Subject<any>();
 
         // if requests shoud be staged do not even attempt to process currently
         if (this.stageRequests) {
             this.stageRequest('DELETE', route, {getParams: params}, responseSubject);
         } else {
-            this.http.delete(
+            this.increasePendingCount();
+            const subscription = this.http.delete(
                 this.configurationService.getBackendUrl() + "/" + route,
                 {headers: this.getHeaders(), params: this.prepareParams(params)}
-            ).subscribe(
-                (res) => {
+            ).subscribe({
+                next: (res) => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     responseSubject.next(res ? res : true);
                     responseSubject.complete();
                 },
-                (err) => {
+                error: (err) => {
+                    this.decreasePendingCount();
+                    delete this.pendingRequests[refID];
+
                     this.handleError(err, route, 'DELETE', {getParams: params}, responseSubject);
                     responseSubject.error(err);
                 }
-            );
+            });
+
+            if (refID) {
+                this.pendingRequests[refID] = subscription;
+            }
         }
         return responseSubject.asObservable();
     }
@@ -569,7 +656,7 @@ export class backend {
      * @param route the route that has been called
      * @param method the method of the all (e.g. POST, GET, ...
      * @param data the data passed in
-     * @param httpErrorReport a boolean flag that specifies if the error shoudl be logged on the backend. Defaults to true.
+     * @param responseSubject
      */
     public handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
         switch (err.status) {
@@ -637,11 +724,12 @@ export class backend {
      * @param route
      * @param data
      * @param responseSubject
+     * @param refID
      * @private
      */
-    public stageRequest(method, route, data, responseSubject) {
+    public stageRequest(method, route, data, responseSubject, refID?: string) {
         this.stagedRequests.push({
-            method, route, data, responseSubject
+            method, route, data, responseSubject, refID
         });
     }
 
@@ -654,22 +742,40 @@ export class backend {
         for (let stagedRequest of this.stagedRequests) {
             switch (stagedRequest.method) {
                 case 'GET':
-                    this.getRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.responseSubject);
+                    this.getRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.refID).subscribe({
+                        next: res => stagedRequest.responseSubject.next(res),
+                        error: err => stagedRequest.responseSubject.error(err),
+                    });
                     break;
                 case 'POST':
-                    this.postRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.responseSubject);
+                    this.postRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.refID).subscribe({
+                        next: res => stagedRequest.responseSubject.next(res),
+                        error: err => stagedRequest.responseSubject.error(err),
+                    });
                     break;
                 case 'PATCH':
-                    this.patchRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.responseSubject);
+                    this.patchRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.refID).subscribe({
+                        next: res => stagedRequest.responseSubject.next(res),
+                        error: err => stagedRequest.responseSubject.error(err),
+                    });
                     break;
                 case 'POSTWITHPROGRESS':
-                    this.postRequestWithProgress(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.data.progress, stagedRequest.responseSubject);
+                    this.postRequestWithProgress(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.data.progress, stagedRequest.refID).subscribe({
+                        next: res => stagedRequest.responseSubject.next(res),
+                        error: err => stagedRequest.responseSubject.error(err),
+                    });
                     break;
                 case 'PUT':
-                    this.putRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.responseSubject);
+                    this.putRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.refID).subscribe({
+                        next: res => stagedRequest.responseSubject.next(res),
+                        error: err => stagedRequest.responseSubject.error(err),
+                    });
                     break;
                 case 'DELETE':
-                    this.deleteRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.responseSubject);
+                    this.deleteRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.refID).subscribe({
+                        next: res => stagedRequest.responseSubject.next(res),
+                        error: err => stagedRequest.responseSubject.error(err),
+                    });
                     break;
             }
         }
@@ -679,7 +785,7 @@ export class backend {
     }
 
     /**
-     * a helper method that will log failed requests to the backend and then allows deeperr analysis of errors that occured based on server side logs
+     * a helper method that will log failed requests to the backend and then allows deeper analysis of errors that occurred based on server side logs
      *
      * @param err the error that occured
      * @param route the route that has been called
@@ -712,88 +818,96 @@ export class backend {
      */
     public errorsToBackend() {
         if (this.httpErrorsToReport.length) {
-            this.postRequest('system/httperrors', null, {errors: this.httpErrorsToReport}).subscribe(
-                () => {
-                    this.httpErrorsToReport.length = 0;
-                    this.httpErrorReporting = false;
-                },
-                (e) => {
+            this.postRequest('system/httperrors', null, {errors: this.httpErrorsToReport}).subscribe({
+                next:
+                    () => {
+                        this.httpErrorsToReport.length = 0;
+                        this.httpErrorReporting = false;
+                    },
+                error: (e) => {
                     this.httpErrorReporting = true;
                     window.setTimeout(() => this.errorsToBackend(), this.httpErrorReportingRetryTime);
                 }
-            );
+
+            });
         }
     }
 
-    /*
-     * Model functions
+    /**
+     * increase pending requests count and set total
+     * @private
      */
-    public get(module: string, id: string, trackAction: string = ''): Observable<any> {
-        let responseSubject = new Subject<any>();
+    private increasePendingCount() {
+        this.pendingRequestsCount++;
+        this.pendingCountChange$.next(this.pendingRequestsCount);
+    }
+
+    /**
+     * decrease pending requests count and rest total
+     * @private
+     */
+    private decreasePendingCount() {
+        this.pendingRequestsCount--;
+        this.pendingCountChange$.next(this.pendingRequestsCount);
+    }
+
+    /**
+     * get request for the module api which process the backend data before passing them in the response
+     * @param module
+     * @param id
+     * @param trackAction
+     * @param refID
+     */
+    public get(module: string, id: string, trackAction: string = '', refID?: string): Observable<any> {
 
         let params: any = {};
         if (trackAction) {
             params.trackaction = trackAction;
         }
-        this.getRequest("module/" + module + "/" + id, params).subscribe(
-            (response: any) => {
-                for (let fieldName in response) {
-                    response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
-                }
 
-                responseSubject.next(response);
-                responseSubject.complete();
-            }, error => {
-                responseSubject.error(error);
-                responseSubject.complete();
-            }
-        );
-        return responseSubject.asObservable();
+        return this.getRequest("module/" + module + "/" + id, params)
+            .pipe(
+                map(response => {
+                    for (let fieldName in response) {
+                        response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
+                    }
+                    return response;
+                }));
     }
 
     /**
-     * checks the backend for potential duplicates for the record with the given module and id. This requires that the reccord exists on teh database and is properly indexed
+     * checks the backend for potential duplicates for the record with the given module and id. This requires that the record exists on teh database and is properly indexed
      *
-     * @param module the modul the reocrd shodul be checked for, e.g. 'Contacts'
+     * @param module the modul the record should be checked for, e.g. 'Contacts'
      * @param id the id of the record to be checked for
+     * @param refID
      */
-    public getDuplicates(module: string, id: string): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
+    public getDuplicates(module: string, id: string, refID?: string): Observable<any[]> {
 
-        this.getRequest("module/" + module + "/" + id + "/duplicates")
-            .subscribe((response: any) => {
-                responseSubject.next(response);
-                responseSubject.complete();
-            });
-        return responseSubject.asObservable();
+        return this.getRequest("module/" + module + "/" + id + "/duplicates", null,refID);
     }
 
     /**
-     * checks with the backend if for the given module and mopdeldata instance any duplicates exist. This is used when new records are created or changed and during the process a record duplicate check shoudl be triggered, the data is yet not stored ont eh backend
+     * checks with the backend if for the given module and model data instance any duplicates exist. This is used when new records are created or changed and during the process a record duplicate check should be triggered, the data is yet not stored ont eh backend
      *
      * @param module the module of the record e.g. 'Accounts'
-     * @param modeldata a json object with the values of the model. this is the typical model.data instance
+     * @param modelData a json object with the values of the model. this is the typical model.data instance
+     * @param refID
      */
-    public checkDuplicates(module: string, modeldata: any): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
+    public checkDuplicates(module: string, modelData: any, refID?: string): Observable<any[]> {
 
-        this.postRequest("module/" + module + "/duplicates", {}, modeldata)
-            .subscribe((response: any) => {
-                responseSubject.next(response);
-                responseSubject.complete();
-            });
-        return responseSubject.asObservable();
+        return this.postRequest("module/" + module + "/duplicates", {}, modelData, refID);
     }
 
     /**
-     *
+     * get a list of items for the given module from the backend
      * @param {string} module
-     * @param sortfields
+     * @param sortFields
      * @param params
+     * @param refID
      * @returns {<Array<any>>}
      */
-    public getList(module: string, sortfields: any[] = [], params: any = {}): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
+    public getList(module: string, sortFields: any[] = [], params: any = {}, refID?: string): Observable<{aggregations, buckets, source, totalcount, list: any[]}> {
 
         let start: number = params.start ? params.start : 0;
         let limit: number = params.limit ? params.limit : 25;
@@ -806,13 +920,12 @@ export class backend {
             reqparams.listid = params.listid;
         }
 
-        if (sortfields.length > 0) {
-            reqparams.sortfields = sortfields;
+        if (sortFields.length > 0) {
+            reqparams.sortfields = sortFields;
         }
 
-        // todo: break out Options String
-        this.getRequest("module/" + module, reqparams).subscribe(
-            (response: any) => {
+        return this.getRequest("module/" + module, reqparams, refID).pipe(
+            map((response: {aggregations, buckets, source, totalcount, list: any[]}) => {
                 try {
                     for (let itemIndex in response.list) {
                         for (let fieldName in response.list[itemIndex]) {
@@ -823,34 +936,29 @@ export class backend {
                             );
                         }
                     }
+                    return response;
                 } catch (e) {
-                    responseSubject.next([]);
-                    responseSubject.complete();
+                    return {
+                        aggregations: [], buckets: [], source: [], totalcount: [], list: []};
                 }
-                responseSubject.next(response);
-                responseSubject.complete();
-            },
-            error => {
-                responseSubject.error(error);
-                responseSubject.complete();
-            }
+            })
         );
-        return responseSubject.asObservable();
     }
 
-    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null, templateId: string = null): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
-        this.postRequestWithProgress("module/" + module + "/" + id, {templateId: templateId}, this.modelutilities.spiceModel2backend(module, cdata), progress)
-            .subscribe(
-                (response: any) => {
-                    responseSubject.next(this.modelutilities.backendModel2spice(module, response));
-                    responseSubject.complete();
-                },
-                (error: any) => {
-                    responseSubject.error(error);
-                    responseSubject.complete();
-                });
-        return responseSubject.asObservable();
+    /**
+     * post request for the module api which prepare the frontend data before sending them to the backend
+     * @param module
+     * @param id
+     * @param cdata
+     * @param progress
+     * @param templateId
+     * @param refID
+     */
+    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null, templateId: string = null, refID?: string): Observable<any[]> {
+        return this.postRequestWithProgress("module/" + module + "/" + id, {templateId: templateId}, this.modelutilities.spiceModel2backend(module, cdata), progress, refID)
+            .pipe(
+                map(response => this.modelutilities.backendModel2spice(module, response))
+            );
     }
 
     /*

@@ -70,7 +70,8 @@ class LogViewer {
         $whereClauseParts = [];
         if ( isset( $queryParams['end'][0] )) $whereClauseParts[] = "l.date_entered <= '{$db->quote($queryParams['end'])}'";
         if ( isset( $queryParams['user_id'][0])) $whereClauseParts[] = "l.created_by = '".$db->quote($queryParams['user_id'])."'";
-        if ( count( $loglevels )) $whereClauseParts[] = "',".$db->quote( implode(',', $loglevels )).",' like CONCAT('%,',l.log_level,',%')";
+        if ( isset( $queryParams['loglevel'][0])) $whereClauseParts[] = "l.log_level = '".$db->quote($queryParams['loglevel'])."'";;
+        if ( isset( $queryParams['subloglevel'][0])) $whereClauseParts[] = "l.log_sublevel = '".$db->quote($queryParams['subloglevel'])."'";;
         if ( isset( $queryParams['pid'][0])) $whereClauseParts[] = "l.pid = ".( $queryParams['pid']*1 );
         if ( isset( $queryParams['text'][0])) $whereClauseParts[] = "l.description like '%".$db->quote($queryParams['text'])."%'";
         if ( isset( $queryParams['transaction_id'][0])) $whereClauseParts[] = "l.transaction_id = '".$db->quote($queryParams['transaction_id'])."'";
@@ -78,7 +79,14 @@ class LogViewer {
         if ( isset( $queryParams['limit'][0] )) $limit = ( @$queryParams['limit'] * 1 );
         else $limit = 250;
 
-        $sql = 'SELECT u.id as user_id, l.date_entered, l.id, l.pid, l.log_level, l.transaction_id, SUBSTR( l.description, 1, '.$this->maxLength.' ) AS description, l.created_by, u.user_name, if ( LENGTH( l.description ) <> LENGTH( SUBSTR( l.description, 1, '.$this->maxLength.' )), 1, 0 ) AS descriptionTruncated FROM syslogs l LEFT JOIN users u ON u.id = l.created_by '.$whereClause.' ORDER BY l.date_entered DESC';
+        switch($db->dbType) {
+            case 'oci8':
+                $sql = 'SELECT u.id as user_id, l.date_entered, l.id, l.pid, l.log_level, l.log_sublevel, l.transaction_id, SUBSTR( l.description, 1, ' . $this->maxLength . ' ) AS description, l.created_by, u.user_name, CASE WHEN  LENGTH(l.description) > 500 THEN 1 ELSE 0 END descriptionTruncated FROM syslogs l LEFT JOIN users u ON u.id = l.created_by ' . $whereClause . ' ORDER BY l.date_entered DESC';
+                break;
+            default:
+                $sql = 'SELECT u.id as user_id, l.date_entered, l.id, l.pid, l.log_level, l.log_sublevel, l.transaction_id, SUBSTR( l.description, 1, ' . $this->maxLength . ' ) AS description, l.created_by, u.user_name, if ( LENGTH( l.description ) <> LENGTH( SUBSTR( l.description, 1, ' . $this->maxLength . ' )), 1, 0 ) AS descriptionTruncated FROM syslogs l LEFT JOIN users u ON u.id = l.created_by ' . $whereClause . ' ORDER BY l.date_entered DESC';
+                break;
+        }
         $sqlResult = $db->limitQuery( $sql, 0, $limit );
 
         while ( $row = $db->fetchByAssoc( $sqlResult )) {
@@ -87,7 +95,7 @@ class LogViewer {
             $response['entries'][] = $row;
         }
 
-        $response['totalCount'] = $db->getOne('SELECT COUNT(*) FROM syslogs AS l LEFT JOIN users AS u ON l.created_by = u.id '.$whereClause ) * 1;
+        $response['totalCount'] = $db->getOne('SELECT COUNT(*) FROM syslogs l LEFT JOIN users u ON l.created_by = u.id '.$whereClause ) * 1;
 
         return $response;
     }

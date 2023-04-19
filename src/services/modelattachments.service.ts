@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable} from "@angular/core";
+import {EventEmitter, Injectable, OnDestroy} from "@angular/core";
 import {Subject, Observable, BehaviorSubject} from "rxjs";
 
 import {configurationService} from "./configuration.service";
@@ -21,7 +21,11 @@ declare var moment: any;
  * handles the model attachments. Can be instantiated in the contect of a model with an id and allows the dsplay as well as manipulation of attachments
  */
 @Injectable()
-export class modelattachments {
+export class modelattachments implements OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('model_attachments_http_ref_');
     /**
      * the module of the parent object this is linked to
      */
@@ -73,28 +77,31 @@ export class modelattachments {
      */
     public getCount(categoryId?: string): Observable<any> {
         let retSubject = new Subject();
-        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/count`, {categoryId}).subscribe(
-            response => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/count`, {categoryId}, this.httpRequestsRefID).subscribe({
+            next: response => {
                 // set the count
                 this.count = response.count;
 
                 retSubject.next(this.count);
                 retSubject.complete();
             },
-            error => {
+            error: () => {
                 retSubject.complete();
-            });
+            }
+        });
         return retSubject.asObservable();
     }
 
     /**
-     * broadcasts the number of open workflows found
+     * broadcasts the total number of files found
+     * sends a reload information
      */
     public broadcastAttachmentCount() {
         this.broadcast.broadcastMessage('attachments.loaded', {
             module: this.module,
             id: this.id,
-            attachmentcount: this.count
+            attachmentcount: this.count,
+            reload: true
         });
     }
 
@@ -106,8 +113,8 @@ export class modelattachments {
 
         this.files = [];
         this.loading = true;
-        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}`, {categoryId}).subscribe(
-            response => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}`, {categoryId}, this.httpRequestsRefID).subscribe({
+            next: response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
@@ -133,14 +140,15 @@ export class modelattachments {
                 // emit on the service
                 this.loaded$.next(true);
             },
-            error => {
+            error: error => {
                 this.loading = false;
 
                 // close the subject
                 retSubject.error(error);
                 retSubject.complete();
             }
-        );
+
+        });
 
         return retSubject.asObservable();
     }
@@ -153,8 +161,8 @@ export class modelattachments {
      */
     public cloneAttachments(parentModel: model, categoryId?: string): Observable<any> {
         let retSubject = new Subject();
-        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`, {}, {categoryId}).subscribe(
-            response => {
+        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`, {}, {categoryId}, this.httpRequestsRefID).subscribe({
+            next: response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
@@ -172,14 +180,15 @@ export class modelattachments {
                 retSubject.next(this.files);
                 retSubject.complete();
             },
-            error => {
+            error: error => {
                 this.loading = false;
 
                 // close the subject
                 retSubject.error(error);
                 retSubject.complete();
             }
-        );
+
+        });
         return retSubject.asObservable();
     }
 
@@ -330,7 +339,7 @@ export class modelattachments {
             url += `/module/${this.module}/${this.id}`;
         }
 
-        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription).subscribe(retVal => {
+        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription, this.httpRequestsRefID).subscribe(retVal => {
                 newfile.id = retVal[0].id;
                 newfile.thumbnail = retVal[0].thumbnail;
                 newfile.filemd5 = retVal[0].filemd5;
@@ -402,7 +411,7 @@ export class modelattachments {
             url += `/module/${this.module}/${this.id}`;
         }
 
-        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription).subscribe(retVal => {
+        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription, this.httpRequestsRefID).subscribe(retVal => {
                 newfile.id = retVal[0].id;
                 newfile.thumbnail = retVal[0].thumbnail;
                 newfile.filemd5 = retVal[0].filemd5;
@@ -446,7 +455,7 @@ export class modelattachments {
      * @param id
      */
     public deleteAttachment(id) {
-        this.backend.deleteRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`)
+        this.backend.deleteRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID)
             .subscribe(res => {
                 let index = this.files.findIndex(f => f.id == id);
                 this.files.splice(index, 1);
@@ -467,7 +476,7 @@ export class modelattachments {
      * @param name
      */
     public downloadAttachment(id, name?) {
-        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
@@ -488,7 +497,7 @@ export class modelattachments {
      * @param name
      */
     public downloadAttachmentForField(module, id, field, name?) {
-        this.backend.getRequest(`common/spiceattachments/module/${module}/${id}/byfield/${field}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${module}/${id}/byfield/${field}`, null, this.httpRequestsRefID).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
@@ -509,15 +518,17 @@ export class modelattachments {
     public getAttachment(id): Observable<any> {
         let retSubject = new Subject();
 
-        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(
-            fileData => {
-                retSubject.next(fileData.file);
-                retSubject.complete();
-            },
-            err => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID).subscribe({
+            next:
+                fileData => {
+                    retSubject.next(fileData.file);
+                    retSubject.complete();
+                },
+            error: err => {
                 retSubject.error(err);
                 retSubject.complete();
-            });
+            }
+        });
 
         return retSubject.asObservable();
     }
@@ -557,11 +568,14 @@ export class modelattachments {
      * @param name
      */
     public openAttachment(id, name?) {
-        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             window.open(blobUrl, "_blank");
         });
     }
 
+    public ngOnDestroy() {
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
+    }
 }

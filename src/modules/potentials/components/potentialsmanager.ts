@@ -16,6 +16,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {ObjectRelatedCardHeader} from "../../../objectcomponents/components/objectrelatedcardheader";
 
 @Component({
+    selector: "potentials-manager",
     templateUrl: "../templates/potentialsmanager.html",
     providers: [relatedmodels],
     animations: [
@@ -84,6 +85,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
     set companyCode(companyCode) {
         this._companyCode = companyCode;
         this.relatedmodels.fieldfilters = {companycode_id: this._companyCode};
+        this.loaded = false;
         this.loadRelated();
 
         // load the revenues
@@ -92,8 +94,11 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
 
 
     public ngOnInit() {
-        // parent constructor
-        super.ngOnInit();
+        // loads the config
+        this.loadConfig();
+
+        // Initialize the related Model Service
+        this.initializeRelatedModelService();
 
         // load more items
         this.relatedmodels.loaditems = 50;

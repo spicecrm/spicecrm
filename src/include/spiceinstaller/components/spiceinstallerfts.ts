@@ -50,6 +50,10 @@ export class SpiceInstallerFTS {
             server: this.spiceinstaller.server,
             port: this.spiceinstaller.port,
             prefix: this.spiceinstaller.prefix,
+            username: this.spiceinstaller.elasticUser,
+            password: this.spiceinstaller.elasticpassword,
+            https: this.spiceinstaller.elastichttps,
+            sslverify: this.spiceinstaller.elasticSSLVerify,
             loglevel: 1,
             schedulerpackagesize: 2500,
             protocol: this.spiceinstaller.transferProtocol

@@ -70,6 +70,12 @@ export class UserPreferences implements OnDestroy {
     public defaultDashboardPlaceHolder = {};
 
     /**
+     * holds an empty  dashboardset to help set empty value for default dashboardset
+     * @private
+     */
+    public defaultDashboardSetPlaceHolder = {};
+
+    /**
      * holds the dashboard sets
      * @private
      */
@@ -84,6 +90,11 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     public homeDashboardData: any = {};
+    /**
+     * holds the home dashboard data
+     * @private
+     */
+    public homeDashboardSetData: any = {};
     /**
      * holds a list of available dashboards
      * @private
@@ -160,6 +171,7 @@ export class UserPreferences implements OnDestroy {
         }
 
         this.loadDasboardPlaceHolder();
+        this.loadDashboardSetPlaceHolder();
         this.loadDashboardsLists();
         this.loadPreferences();
 
@@ -179,6 +191,18 @@ export class UserPreferences implements OnDestroy {
     }
 
     /**
+     * load dashboardset place Holder
+     * to enable us set empty value for the home dashboardset preference
+     * @private
+     */
+    public loadDashboardSetPlaceHolder() {
+        this.defaultDashboardSetPlaceHolder = {
+            id: '',
+            name: this.language.getLabel('LBL_ROLE_DEFAULT_DASHBOARDSET')
+        };
+    }
+
+    /**
      * load user preferences
      * @private
      */
@@ -189,7 +213,7 @@ export class UserPreferences implements OnDestroy {
                 this.isLoading = false;
                 this.preferences = _.pick(this.preferencesService.unchangedPreferences.global, this.names);
 
-                this.setDashboardSetData(this.preferences.home_dashboardset);
+                this.setHomeDashboardSetData(this.preferences.home_dashboardset);
                 this.setHomeDashboardData(this.preferences.home_dashboard);
             });
             this.preferencesService.getPreferences(this.loadedSubscription);
@@ -199,7 +223,7 @@ export class UserPreferences implements OnDestroy {
                     this.isLoading = false;
                     this.preferences = prefs;
 
-                    this.setDashboardSetData(prefs.home_dashboardset);
+                    this.setHomeDashboardSetData(this.preferences.home_dashboardset);
                     this.setHomeDashboardData(this.preferences.home_dashboard);
                 },
                 error => {
@@ -222,8 +246,9 @@ export class UserPreferences implements OnDestroy {
             });
         this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboardSets: any) => {
-                this.dashboardSets = dashboardSets.list;
-                this.setDashboardSetData(this.preferences.home_dashboardset);
+                // inject empty record for "default dashboard", add the rest
+                this.dashboardSets = [].concat(this.dashboardSets, this.defaultDashboardSetPlaceHolder, dashboardSets.list);
+                this.setHomeDashboardSetData(this.preferences.home_dashboardset);
             });
     }
 
@@ -232,10 +257,10 @@ export class UserPreferences implements OnDestroy {
      * @param value
      * @private
      */
-    public setDashboardSetData(value) {
-        this.preferences.home_dashboardset = value;
-        this.dashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
-    }
+    // public setDashboardSetData(value) {
+    //     this.preferences.home_dashboardset = value;
+    //     this.dashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
+    // }
 
     /**
      * set the home dashboard data
@@ -244,6 +269,15 @@ export class UserPreferences implements OnDestroy {
      */
     public setHomeDashboardData(value) {
         this.homeDashboardData = this.dashboards.find(dashboard => dashboard.id == value);
+    }
+
+    /**
+     * set the home dashboardset data
+     * @param value
+     * @private
+     */
+    public setHomeDashboardSetData(value) {
+        this.homeDashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
     }
 
     /**

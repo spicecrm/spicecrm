@@ -226,9 +226,11 @@ export class modelutilities {
                 return (val1 >= val2);
             case "greater":
                 return (val1 > val2);
-            case "lesserequal":
+            case "lessequal":
+            case "lesserequal": // lesserequal is grammatically incorrect, we keep it for BWC in potential customizations. Please use lessequal.
                 return (val1 <= val2);
-            case "lesser":
+            case "less":
+            case "lesser": // lesser is grammatically incorrect, we keep it for BWC in potential customizations. Please use less.
                 return (val1 < val2);
             case "unequal":
                 return (val1 != val2);

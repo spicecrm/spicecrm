@@ -15,13 +15,28 @@ $routes = [
         'options' => ['adminOnly' => true]
     ],
     [
+        'method' => 'post',
+        'route' => '/admin/repair/pull',
+        'class' => AdminController::class,
+        'function' => 'pullFromRepository',
+        'description' => 'pulls from Repository',
+        'options' => ['adminOnly' => true]
+    ],    [
+        'method' => 'post',
+        'route' => '/admin/repair/status',
+        'class' => AdminController::class,
+        'function' => 'showStatusRepository',
+        'description' => 'status of git Repository',
+        'options' => ['adminOnly' => true]
+    ],
+    [
         'method' => 'get',
         'route' => '/configuration/systemstats',
         'oldroute' => '/admin/systemstats',
         'class' => AdminController::class,
         'function' => 'systemstats',
         'description' => 'get some system statistics',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -31,7 +46,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'getGeneralSettings',
         'description' => 'get some system config variables',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -41,7 +56,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'writeGeneralSettings',
         'description' => 'save some system config variables',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'system' => [
                 'in' => 'body',
@@ -60,6 +75,11 @@ $routes = [
                 'description' => 'the logger settings',
                 'type' => ValidationMiddleware::TYPE_ARRAY,
                 'example' => '{"level":"error"}'
+            ],
+            'cache' => [
+                'in' => 'body',
+                'description' => 'the cache settings',
+                'type' => ValidationMiddleware::TYPE_ARRAY
             ],
             'currencies' => [
                 'in' => 'body',

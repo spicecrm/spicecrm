@@ -162,42 +162,6 @@ class MailboxesRESTHandler {
         return $result;
     }
 
-    public function handleSendgridEvents($params) {
-        $data = file_get_contents("php://input");
-        $events = json_decode($data, true);
-
-        foreach ($events as $event) {
-            try {
-                $email = Email::findByMessageId($event['smtp-id']);
-                $email->status = $event['event'];
-                $email->save();
-            } catch (Exception $e) {
-                LoggerManager::getLogger()->info($e->getMessage());
-            }
-
-            /*switch ($event['event']) {
-                case 'delivered':
-                    break;
-                case 'processed':
-                    break;
-                case 'dropped':
-                    break;
-                case 'bounce':
-                    break;
-                case 'deferred':
-                    break;
-                case 'open':
-                    break;
-                case 'click':
-                    break;
-                case 'unsubscribe':
-                    break;
-                case 'spamreport':
-                    break;
-            }*/
-        }
-    }
-
     public function setDefaultMailbox($params) {
         try {
             $mailbox = BeanFactory::getBean('Mailboxes', $params['mailbox_id']);

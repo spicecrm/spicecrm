@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable, EventEmitter} from '@angular/core';
+import {Injectable, EventEmitter,} from '@angular/core';
 
 /**
  * @ignore
@@ -26,6 +26,10 @@ export type activityTimelineOwnerfilter = '' | 'assigned' | 'created';
 
 @Injectable()
 export class activitiytimeline {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = _.uniqueId('activity_timeline_http_ref_');
 
     /**
      * a model object of the parent record the activities are linked to
@@ -177,6 +181,8 @@ export class activitiytimeline {
         for (let subscription of this.serviceSubscriptions) {
             subscription.unsubscribe();
         }
+
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 
     /**
@@ -257,9 +263,9 @@ export class activitiytimeline {
      * the initial load
      *
      * @param module the module to load the data for
+     * @param silent
      */
-    public getTimeLineData(module: activityTimeLineModules, silent: boolean = false
-    ) {
+    public getTimeLineData(module: activityTimeLineModules, silent: boolean = false) {
 
         if (!silent) {
             this.activities[module].loading = true;
@@ -274,27 +280,9 @@ export class activitiytimeline {
         };
 
 
-        this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, body).subscribe(
-            (response: any) => {
-                if (response) {
-                    this.resetListData(module);
-                    for (let item of response.items) {
-                        item.data = this.modelutilities.backendModel2spice(item.module, item.data);
-                    }
-                    this.activities[module].list = response.items;
-                    this.activities[module].totalcount = parseInt(response.totalcount, 10);
-                    this.activities[module].aggregates = response.aggregates ? response.aggregates : [];
-                }
-                this.activities[module].loading = false;
-            },
-            error => {
-                this.activities[module].loading = false;
-            }
-        );
-        /*
-        if (this.usefts) {
-            this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params)
-                .subscribe((response: any) => {
+        this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, body, this.httpRequestsRefID).subscribe({
+            next:
+                (response: any) => {
                     if (response) {
                         this.resetListData(module);
                         for (let item of response.items) {
@@ -305,25 +293,12 @@ export class activitiytimeline {
                         this.activities[module].aggregates = response.aggregates ? response.aggregates : [];
                     }
                     this.activities[module].loading = false;
-                });
-        } else {
-            this.backend.getRequest('module/' + module + '/' + this.parent.module + '/' + this.parent.id, params)
-                .subscribe((response: any) => {
-                    if (response) {
-                        this.resetListData(module);
-                        for (let item of response.items) {
-                            item.data = this.modelutilities.backendModel2spice(item.module, item.data);
-                        }
-                        this.activities[module].list = response.items;
-                        this.activities[module].totalcount = parseInt(response.count, 10);
-                        this.activities[module].aggregates = [];
+                },
+            error: error => {
+                this.activities[module].loading = false;
+            }
 
-
-                    }
-                    this.activities[module].loading = false;
-                });
-        }
-         */
+        });
     }
 
     /**
@@ -352,8 +327,8 @@ export class activitiytimeline {
         this.activities[module].loadingmore = true;
 
         // run the request and resolve the
-        this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params).subscribe(
-            (response: any) => {
+        this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params, this.httpRequestsRefID).subscribe({
+            next: (response: any) => {
                 for (let item of response.items) {
                     // transform the data
                     item.data = this.modelutilities.backendModel2spice(item.module, item.data);
@@ -367,45 +342,16 @@ export class activitiytimeline {
                 retSubject.next(true);
                 retSubject.complete();
             },
-            error => {
+            error: error => {
                 this.activities[module].loadingmore = false;
 
                 retSubject.error(error);
                 retSubject.complete();
             }
-        );
+
+        });
 
         return retSubject.asObservable();
-
-        /*
-        if (this.usefts) {
-            this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params)
-                .subscribe((response: any) => {
-                    for (let item of response.items) {
-                        // transform the data
-                        item.data = this.modelutilities.backendModel2spice(item.module, item.data);
-
-                        // add it
-                        this.activities[module].list.push(item);
-                    }
-
-                    this.activities[module].loading = false;
-                });
-        } else {
-            this.backend.getRequest('module/' + module + '/' + this.parent.module + '/' + this.parent.id, params)
-                .subscribe((response: any) => {
-                    for (let item of response.items) {
-                        // transform the data
-                        item.data = this.modelutilities.backendModel2spice(item.module, item.data);
-
-                        // add it
-                        this.activities[module].list.push(item);
-                    }
-
-                    this.activities[module].loading = false;
-                });
-        }
-         */
     }
 
     /**

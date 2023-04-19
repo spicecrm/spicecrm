@@ -19,6 +19,7 @@ export class ValidationRulesActions implements OnInit {
     readonly action_options = [
         'set_value',
         'set_value_from_field',
+        'set_value_from_user',
         'set_model_state',
         'set_stati',
         'set_message',

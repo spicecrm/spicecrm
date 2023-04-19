@@ -7,6 +7,10 @@ use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
+/**
+ * generate wssdl with <url>/apoi/soap?wsdl?style=rpc|document&use=encoded|literal
+ */
+
 // ensure error reporting and display_errors is set properly
 error_reporting(E_ERROR);
 ini_set('display_errors', 0);
@@ -31,7 +35,7 @@ UploadStream::register();
 SpiceModules::getInstance()->loadModules();
 
 // load the vardefs
-SpiceDictionaryHandler::loadCachedVardefs();
+SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 
 if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
     session_save_path(SpiceConfig::getInstance()->config['session_dir']);

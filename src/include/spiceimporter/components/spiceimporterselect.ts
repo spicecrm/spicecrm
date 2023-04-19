@@ -35,6 +35,9 @@ export class SpiceImporterSelect {
      */
     public file = null;
 
+    public selectedClassMethods: string[] = [];
+
+    public selectedClass: {id: string, name: string};
     /**
      * holds enclosure options
      * @private
@@ -183,6 +186,16 @@ export class SpiceImporterSelect {
             this.isLoading = false;
             this.toast.sendToast(this.language.getLabel('ERR_CANT_READ_FILE_DATA'), 'error', '', false);
             file.remove();
+        });
+    }
+
+
+    /**
+     * checks whether the class is valid and if public methods exist
+     */
+    public getClassMethods(className: string) {
+        this.backend.getRequest('system/checkclass/' + btoa(className)).subscribe(res => {
+            this.selectedClassMethods = res.methods;
         });
     }
 }
