@@ -11,7 +11,9 @@ import {language} from "./language.service";
 /**
  * handles the modals in the system
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class modal {
 
     /**

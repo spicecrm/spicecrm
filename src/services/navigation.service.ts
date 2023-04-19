@@ -95,7 +95,9 @@ export interface objectTabInfo {
     displayicon?: string;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class navigation {
 
     /**
@@ -926,7 +928,9 @@ export class navigation {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class canNavigateAway implements CanActivate {
     constructor(public navigation: navigation, public modal: modal, public language: language) {
     }

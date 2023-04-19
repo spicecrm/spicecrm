@@ -20,7 +20,7 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
     /**
      * containers to be rendered
      */
-    @Input() public element: ButtonI;
+    @Input() public declare element: ButtonI;
     /**
      * list of the editable attributes
      */
