@@ -11,7 +11,9 @@ interface broadcastMessage {
     messagedata: any;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class broadcast {
 
     /**

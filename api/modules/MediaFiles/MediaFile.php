@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\MediaFiles;
 
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -43,16 +44,11 @@ class MediaFile extends SpiceBean {
 
         $returnOfSave = parent::save( $check_notify, $fts_index_bean );
 
-        if ( isset( SpiceConfig::getInstance()->config['mediafiles']['cdnurl'][0])) {
-            $chf = curl_init();
-            curl_setopt($chf, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($chf, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($chf, CURLOPT_POSTFIELDS, $this->getBase64());
-            curl_setopt($chf, CURLOPT_URL, SpiceConfig::getInstance()->config['mediafiles']['cdnurl']."/{$this->id}");
-            curl_setopt($chf, CURLOPT_USERPWD, SpiceConfig::getInstance()->config['mediafiles']['cdnuser'] . ":" . SpiceConfig::getInstance()->config['mediafiles']['cdnsecret']);
-            curl_setopt($chf, CURLOPT_POST, 1);
-            $result = curl_exec($chf);
-            curl_close($chf);
+        $cdnPathPrefix = StreamFactory::getPathPrefix('cdn');
+
+        if ($cdnPathPrefix) {
+            $content = file_get_contents( self::getMediaPath( $this->id ));
+            file_put_contents("{$cdnPathPrefix}{$this->id}", $content);
         }
 
         return $returnOfSave;

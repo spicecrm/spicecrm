@@ -24,7 +24,9 @@ interface loginAuthDataIf {
     code2fa?: string;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class loginService {
 
     /**
@@ -327,7 +329,9 @@ export class loginService {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class loginCheck implements CanActivate {
     constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader) {
     }
