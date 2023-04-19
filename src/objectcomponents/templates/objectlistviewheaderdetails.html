@@ -1,16 +1,14 @@
 <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
-    <li class="slds-item">
+    <li class="slds-item" [title]="language.getLabel('LBL_SORTEDBY') + ' ' + modellist.getSortFields() + '\n' + language.getLabel('LBL_LASTUPDATE') + ' ' + modellist.getLastLoadTime()">
         <span>
             <system-display-number class="slds-p-right--xxx-small" [number]="modellist.listData.list.length" [noDigits]="true"></system-display-number>
             <system-label label="LBL_OF"></system-label>
             <system-display-number class="slds-p-horizontal--xxx-small" [number]="modellist.listData.totalcount" [noDigits]="true"></system-display-number>
-            <system-label label="LBL_ITEMS"></system-label>
+            <system-label *ngIf="layout.screenwidth != 'small'" label="LBL_ITEMS"></system-label>
         </span>
     </li>
     <li *ngIf="modellist.getSelectedCount() > 0" class="slds-item slds-show--medium">
         <span>{{modellist.getSelectedCount()}} <system-label label="LBL_SELECTED"></system-label></span>
     </li>
-    <li *ngIf="modellist.isSorted" class="slds-item"><span><system-label label="LBL_SORTEDBY"></system-label> {{modellist.getSortFields()}}</span></li>
-    <li class="slds-item slds-show--medium"><span><system-label label="LBL_LASTUPDATE"></system-label> {{modellist.getLastLoadTime()}}</span></li>
     <li class="slds-item"><system-utility-icon [icon]="modellist.listData.source == 'db' ? 'database' : 'feed'" [title]="modellist.listData.source == 'db' ? 'Database' : 'Search Engine'" size="xx-small"></system-utility-icon></li>
 </ul>

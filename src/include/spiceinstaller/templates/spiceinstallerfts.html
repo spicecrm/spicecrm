@@ -1,10 +1,8 @@
 <div class="slds-p-horizontal_medium" [system-overlay-loading-spinner]="loading">
-
     <h2 class="slds-text-heading--medium slds-m-bottom_medium">
         FTS Configuration
     </h2>
-
-    <div class="slds-form-element slds-p-vertical--small">
+    <!--div class="slds-form-element slds-p-vertical--small">
         <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Transfer Protocol</label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
@@ -12,6 +10,16 @@
                     <option *ngFor="let protocol of protocolOptions" value="{{protocol.type}}">{{protocol.name}}</option>
                 </select>
             </div>
+        </div>
+    </div-->
+    <div class="slds-form-element slds-p-vertical--small">
+        <div class="slds-form-element__control">
+            <system-checkbox [(ngModel)]="spiceinstaller.elastichttps">use https</system-checkbox>
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-vertical--small">
+        <div class="slds-form-element__control">
+            <system-checkbox [disabled] [(ngModel)]="spiceinstaller.elasticSSLVerify">SSL verify</system-checkbox>
         </div>
     </div>
     <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !serverCondition}">
@@ -35,10 +43,20 @@
             <div *ngIf="!prefixCondition" class="slds-form-element__help">Input required.</div>
         </div>
     </div>
-
+    <div class="slds-form-element slds-p-vertical--small">
+        <label class="slds-form-element__label">User</label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="spiceinstaller.elasticUser" system-trim-input/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-vertical--small">
+        <label class="slds-form-element__label">Password</label>
+        <div class="slds-form-element__control">
+            <input type="password" class="slds-input" [(ngModel)]="spiceinstaller.elasticpassword" system-trim-input/>
+        </div>
+    </div>
     <div class="slds-p-vertical--small slds-text-align--right">
         <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="spiceinstaller.jumpSubject.next({ from: this.selfStep, to: this.selfStep.prev })">back</button>
         <button class="slds-button slds-button--brand" (click)="checkFTS()">next</button>
     </div>
-
 </div>

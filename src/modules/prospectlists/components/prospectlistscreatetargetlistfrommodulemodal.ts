@@ -107,19 +107,18 @@ export class ProspectListsCreateTargetListFromModuleModal {
                     data: modules,
                     parentBeanId: this.parentBeanId,
                     parentModule: this.parentModule
-                }).subscribe(res => {
-                if (res) {
-
+                }).subscribe({
+                next: (res) => {
                     // if goto is set navigate to the prospectlist
-                    if(goto){
+                    if (goto) {
                         this.router.navigate(["/module/ProspectLists/" + res.prospectlistid]);
                     } else {
                         this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
                     }
-
-                    loadingModal.emit();
+                    loadingModal.emit(true);
                     loadingModal.complete();
-                } else {
+                }, error: () => {
+                    loadingModal.emit(true);
                     this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                 }
             });

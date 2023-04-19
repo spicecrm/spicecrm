@@ -1,3 +1,13 @@
+<div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center">
+    <system-label label="LBL_MODULE"></system-label>
+    <system-input-module class="slds-select" [(ngModel)]="filtermodule" [displayEmptyOption]="true"></system-input-module>
+
+    <system-label label="LBL_STATUS"></system-label>
+    <select [(ngModel)]="filterstatus" class="slds-select">
+        <option value=""></option>
+        <option *ngFor="let option of filterstatusoptions" [value]="option.value"><system-label [label]="option.label"></system-label></option>
+    </select>
+</div>
 <div #listcontainer (scroll)="onScroll($event)" class="slds-scrollable--y" [ngStyle]="listStyle()">
     <div *ngIf="!spiceimportsservice.isloading && items?.length == 0" class="slds-text-align_center slds-p-vertical--medium">
         <span><system-label label="LBL_NO_ENTRIES"></system-label></span>

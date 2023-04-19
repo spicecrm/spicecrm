@@ -2,21 +2,16 @@
     <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click " [ngClass]="{'slds-is-open': isOpen}" role="combobox">
         <div *ngIf="label" class="slds-form-element__control">
             <div class="slds-pill_container">
-              <span class="slds-pill slds-size--1-of-1 slds-p-horizontal--xx-small">
+              <span class="slds-pill slds-size--1-of-1 slds-p-horizontal--xx-small" [ngClass]="{'slds-theme--shade': _disabled}">
                 <span class="slds-pill__label"><system-label [label]="label"></system-label>&nbsp;({{label}})</span>
-                <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearField()">
+                <button *ngIf="!_disabled" class="slds-button slds-button--icon slds-pill__remove" (click)="clearField()">
                   <system-button-icon [icon]="'close'"></system-button-icon>
                 </button>
               </span>
             </div>
         </div>
-        <!--div *ngIf="!label" class="slds-form-element__control slds-grid slds-box--border">
-            <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="searchterm" (keyup)="keyup($event)" (blur)="onBlur()" [placeholder]="language.getLabel('LBL_SEARCH')" role="combobox"/>
-            </div>
-        </div-->
         <div *ngIf="!label" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-            <input type="search" class="slds-input slds-combobox__input" [(ngModel)]="searchterm" (keyup)="keyup($event)" (blur)="onBlur()" [placeholder]="language.getLabel('LBL_SEARCH')" role="combobox"/>
+            <input [disabled]="_disabled" type="search" class="slds-input slds-combobox__input" [(ngModel)]="searchterm" (keyup)="keyup($event)" (blur)="onBlur()" system-placeholder="LBL_SEARCH" role="combobox"/>
         </div>
         <div class="slds-dropdown slds-dropdown_fluid slds-dropdown--length-7" role="listbox">
             <ul class="slds-listbox slds-listbox_vertical" role="presentation">

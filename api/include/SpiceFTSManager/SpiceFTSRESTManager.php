@@ -28,7 +28,7 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SpiceFTSManager;
 
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -68,13 +68,15 @@ class SpiceFTSRESTManager
 
         $this->checkAdmin();
 
+        // delete all indices
+        SpiceFTSHandler::getInstance()->elasticHandler->deleteAllIndexes();
+
         $modules = $db->query("SELECT module FROM sysfts");
         while($module = $db->fetchByAssoc($modules)){
             // check if we can create a bean for the module
             $seed = BeanFactory::getBean($module['module']);
             if(!$seed) continue;
 
-            SpiceFTSHandler::getInstance()->elasticHandler->deleteIndex($module['module']);
             $beanHandler = new SpiceFTSBeanHandler($module['module']);
             SpiceFTSHandler::getInstance()->elasticHandler->putMapping($module['module'], $beanHandler->mapModule());
             SpiceFTSHandler::getInstance()->resetIndexModule($module['module']);
@@ -84,6 +86,7 @@ class SpiceFTSRESTManager
         return ['status' => 'success'];
 
     }
+
 
     function setCronJob()
     {

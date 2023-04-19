@@ -146,7 +146,9 @@ export class fieldHtml extends fieldGeneric implements OnInit {
         this.setStylesheetsToUse();
         this.setHtmlValue();
         if (!!this.fieldconfig?.useSignature) {
-            await this.loadMailboxSignature();
+            if(this.model.getField('mailbox_id')) {
+                await this.loadMailboxSignature();
+            }
             this.loadUserSignature();
         }
         this.modelChangesSubscriber();
@@ -195,7 +197,7 @@ export class fieldHtml extends fieldGeneric implements OnInit {
      * push the signature option
      * @private
      */
-    public loadMailboxSignature(): Promise<any> | void {
+    public loadMailboxSignature() {
 
         if (!this.isEditMode()) return;
 
@@ -204,16 +206,15 @@ export class fieldHtml extends fieldGeneric implements OnInit {
 
         const signatureContent: string = this.configurationService.getData('mailbox_signature_' + mailboxId);
         if (!signatureContent) {
-            return this.backend.get('Mailboxes', mailboxId)
-                .toPromise()
-                .then((data: any) => {
+            return this.backend.get('Mailboxes', mailboxId).subscribe({
+                next: (data: any) => {
                     if (!data.email_signature) return;
                     this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
-
                     this.addSignature(mailboxId, data.email_signature, 'LBL_MAILBOX');
                     this.selectedSignatureId = mailboxId;
                     this.renderSelectedSignature();
-                });
+                }
+            });
         } else {
             this.addSignature(mailboxId, signatureContent, 'LBL_MAILBOX');
             this.selectedSignatureId = mailboxId;
@@ -246,10 +247,12 @@ export class fieldHtml extends fieldGeneric implements OnInit {
         if (!userSignatures) return;
         const noMailboxSignature = this.signatures.length == 0;
         this.addSignature('user', userSignatures, 'LBL_MY_SIGNATURE');
-        if (noMailboxSignature) {
+
+        // CRMDB-970 - disable loading user's signature on first load
+        /* if (noMailboxSignature) {
             this.selectedSignatureId = 'user';
             this.renderSelectedSignature();
-        }
+        }*/
     }
 
     /**
@@ -315,14 +318,14 @@ export class fieldHtml extends fieldGeneric implements OnInit {
     }
 
     public modelChangesSubscriber() {
-        this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe(value => {
+        this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe({next: (value) => {
             this.setHtmlValue();
-        }));
-        this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe(mailboxId => {
+        }}));
+        this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe({next: (mailboxId) => {
             if (this.fieldconfig?.useSignature && !!mailboxId && !this.signatures.some(s => s.id == mailboxId)) {
                 this.loadMailboxSignature();
             }
-        }));
+        }}));
     }
 
     public setHtmlValue() {
@@ -345,15 +348,16 @@ export class fieldHtml extends fieldGeneric implements OnInit {
             [this.fieldname]: content
         };
         this.backend.save(this.model.module, this.model.id, toSave)
-            .subscribe(
-                (res: any) => {
+            .subscribe({
+                next: (res: any) => {
                     this.model.endEdit();
                     this.model.setField('date_modified', res.date_modified, true);
                     this.value = res[this.fieldname];
                     this.model.startEdit();
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
-                },
-                error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
-            );
+                }, error: (error) => {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
+                }
+            });
     }
 }

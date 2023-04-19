@@ -2,9 +2,7 @@
  * @module SpiceImporterModule
  */
 import {Component, Input} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
 
 import {SpiceImporterService} from '../services/spiceimporter.service';
 
@@ -22,7 +20,9 @@ export class SpiceImporterMap {
     @Input('modelfields') public modelFields: any[] = undefined;
     @Input('requiredmodelfields') public requiredModelFields: any[] = undefined;
 
-    constructor(public spiceImport: SpiceImporterService, public language: language, public metadata: metadata, public model: model) {
+    constructor(
+        public spiceImport: SpiceImporterService,
+        public model: model) {
     }
 
     get idFieldAction() {

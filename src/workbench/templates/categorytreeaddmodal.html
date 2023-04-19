@@ -1,0 +1,34 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="MSG_ENTER_TREE_NAME"></system-label>
+    </system-modal-header>
+    <system-modal-content margin="medium">
+        <div class="slds-grid slds-grid--vertical slds-p-top--medium slds-p-bottom--medium">
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+                    <system-input-text [(ngModel)]="name"></system-input-text>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_SELECT_COMPONENT"></system-label></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [disabled]="components.length == 0" [(ngModel)]="value">
+                            <option value=""></option>
+                            <option *ngFor="let component of components" [value]="component.component">{{component.component}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-text-align--right slds-p-vertical--x-small">
+            <button type="button" class="slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button [disabled]="disabled" type="button" class="slds-button slds-button--brand" (click)="save()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

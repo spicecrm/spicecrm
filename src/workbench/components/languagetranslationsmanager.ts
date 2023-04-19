@@ -77,8 +77,8 @@ export class LanguageTranslationsManager {
         }
 
         // build from and to
-        let from = this.language.currentlanguage.substr(0, 2);
-        let to = this.selectedLanguage.substr(0, 2);
+        let from = this.language.currentlanguage.substring(0, 2);
+        let to = this.selectedLanguage.substring(0, 2);
 
         // translate
         this.backend.postRequest(`syslanguage/labels/translate/${from}/${to}`, {}, {labels: labels}).subscribe({

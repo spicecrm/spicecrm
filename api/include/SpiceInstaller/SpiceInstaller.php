@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
@@ -55,42 +27,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 require_once('modules/TableDictionary.php');
 
 
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- *
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 class SpiceInstaller
 {
 
@@ -113,7 +50,7 @@ class SpiceInstaller
      * @param bool $ssl
      * @return mixed
      */
-    private function curlCall($curl, $url, $ssl = false)
+    private function curlCall($curl, $url, $ssl = false, $username = null, $password = null)
     {
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -123,6 +60,11 @@ class SpiceInstaller
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $ssl);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, $ssl);
         curl_setopt($curl, CURLOPT_ENCODING, "UTF-8");
+
+
+        if($username && $password) {
+            curl_setopt($curl, CURLOPT_USERPWD, "{$username}:{$password}");
+        }
 
         $response = curl_exec($curl);
         if (empty($response)) {
@@ -210,6 +152,17 @@ class SpiceInstaller
             $requirements['modules_dir'] = false;
         } else {
             $requirements['modules_dir'] = true;
+        }
+
+        // create the cache directory if it does not exist
+        if (!file_exists('./cache')) {
+            mkdir('./cache', 0775, true);
+        }
+        // check if cache directory exists and is writable
+        if (!is_dir('./cache') && !is_writable('./cache')) {
+            $requirements['cache_dir'] = false;
+        } else {
+            $requirements['cache_dir'] = true;
         }
 
         // create the custom directory if it does not exist
@@ -350,15 +303,18 @@ class SpiceInstaller
     {
         $errors = [];
         $postData = $body->getParsedBody();
-        $url = $postData['protocol'] . "://" . $postData['server'] . ":" . $postData['port'] . "/";
 
-        $response = $this->curlCall($this->curl, $url);
+        $protocol = $postData['https'] ? 'https' : 'http';
+
+        $url = $protocol . "://" . $postData['server'] . ":" . $postData['port'] . "/";
+
+        $response = $this->curlCall($this->curl, $url, $postData['sslverify'], $postData['username'], $postData['password']);
 
         if (!empty($response)) {
-            if (version_compare($response->version->number, '7.5', '<')) {
+            if (version_compare($response->version->number, '7.5', '<') ) {
                 $errors = ['version not supported'];
             } else {
-                $ftsconfig = ['protocol' => $postData['protocol'], 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
+                $ftsconfig = ['https' => $postData['https'], 'username' => $postData['username'], 'password' => $postData['password'], 'protocol' => $protocol, 'server' => $postData['server'], 'port' => $postData['port'], 'prefix' => $postData['prefix']];
             }
         } else {
             $errors = ['invalid url', $response];
@@ -409,10 +365,19 @@ class SpiceInstaller
     }
 
     /**
+     * @deprecated
+     * @param $postData
+     * @return void
+     */
+    private function generateSugarConfig($postData){
+        return $this->generateSpiceConfig($postData);
+    }
+
+    /**
      * @param $postData
      * @return array
      */
-    private function generateSugarConfig($postData)
+    private function generateSpiceConfig($postData)
     {
         return [
             'dbconfig' => $postData['database'],
@@ -456,8 +421,8 @@ class SpiceInstaller
      */
     private function writeConfig($spice_config)
     {
-        SpiceFileUtils::spiceFilePutContents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$sugar_config=');
-        SpiceFileUtils::spiceWriteArrayToFile("sugar_config", $spice_config, 'config.php');
+        SpiceFileUtils::spiceFilePutContents('config.php', '<?php' . PHP_EOL . ' // created: ' . date("Y-m-d h:i:s") . PHP_EOL . '$spice_config=');
+        SpiceFileUtils::spiceWriteArrayToFile("spice_config", $spice_config, 'config.php');
         return true;
     }
 
@@ -496,7 +461,7 @@ class SpiceInstaller
 
         }
 
-        $this->dbManagerFactory::$config = ['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']];
+        $this->dbManagerFactory::setDBConfigInstaller(['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']]);
 
         $db = $this->dbManagerFactory->getInstance();
 
@@ -645,7 +610,8 @@ class SpiceInstaller
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'send_from_assigning_user', '0')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('tracker', 'Tracker', '1')");
 
-        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', '".$db->quote( $postData['system_name'] ?: 'SpiceCRM' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'name', '".$db->quote( $postData['systemname'] ?: 'SpiceCRM' )."')");
+        $db->query("INSERT INTO config (category, name, value) VALUES ( 'system', 'version', '".SpiceConfig::getSystemVersion()."')");
 
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'timezone', '".$db->quote( $postData['preferences']['timezone'] ?: '' )."')");
         $db->query("INSERT INTO config (category, name, value) VALUES ( 'default_preferences', 'datef', '".$db->quote( $postData['preferences']['datef'] ?: '' )."')");
@@ -750,8 +716,8 @@ class SpiceInstaller
         $errors = [];
         $postData = $body->getParsedBody();
 
-        //generate a new sugar_config
-        $spice_config = $this->generateSugarConfig($postData);
+        //generate a new spice_config
+        $spice_config = $this->generateSpiceConfig($postData);
 
         //assign to global instance
         SpiceConfig::getInstance()->config = $spice_config;

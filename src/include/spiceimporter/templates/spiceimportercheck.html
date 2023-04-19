@@ -23,6 +23,41 @@
                         <span class="slds-form-element__label"><system-label label="LBL_LOG_DUPLICATES"></system-label></span>
                       </label>
                     </span>
+                    <span class="slds-radio">
+                      <input type="radio" id="importduplicateactionreject" name="duplicateoptions" value="reject_existing"
+                             [(ngModel)]="importDuplicateAction">
+                      <label class="slds-radio__label" for="importduplicateactionreject">
+                        <span class="slds-radio--faux"></span>
+                        <span class="slds-form-element__label"><system-label label="LBL_REJECT_EXISTING"></system-label></span>
+                      </label>
+                    </span>
+                    <div *ngIf="spiceImporter.importDuplicateAction == 'reject_existing'" class="slds-grid">
+                        <div class="slds-form-element  slds-m-vertical--small">
+                            <label class="slds-form-element__label" for="idFieldSelectId"><system-label label="LBL_SELECT_CSV_ID_FIELD"></system-label></label>
+
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" id="idFieldSelectId" [(ngModel)]="csvRejectExistingKey" (ngModelChange)="setCSVRejectExistingKey($event)">
+                                        <option value=""></option>
+                                        <option *ngFor="let field of spiceImporter.fileHeader; " [value]="field">{{ field }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="showModuleFieldDropdown" class="slds-form-element  slds-m-vertical--small slds-m-left--x-small">
+                            <label class="slds-form-element__label" for="idFieldSelectId"><system-label label="LBL_SELECT_KEY"></system-label></label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="moduleRejectExistingKey" (ngModelChange)="setModuleRejectExistingKey($event)">
+                                        <option value=""></option>
+                                        <option *ngFor="let field of modelfields | keyvalue" value = "{{field.value.name}}">
+                                            <system-label-fieldname [field]="field.value.name"></system-label-fieldname>
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

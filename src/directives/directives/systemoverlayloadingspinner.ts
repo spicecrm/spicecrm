@@ -1,52 +1,116 @@
 /**
  * @module DirectivesModule
  */
-import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
+import {
+    ApplicationRef,
+    ComponentRef,
+    createComponent,
+    Directive,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+    Renderer2
+} from '@angular/core';
+import {SystemSpinner} from "../../systemcomponents/components/systemspinner";
 
 /**
  * a directive that displays a loading spinner inside an overlay container over the parent
  */
 @Directive({
-    selector: '[system-overlay-loading-spinner]'
+    selector: '[system-overlay-loading-spinner]',
+    host: {
+        class: 'slds-is-relative'
+    }
 })
 export class SystemOverlayLoadingSpinnerDirective {
-
-    public overlayElement: HTMLElement;
+    /**
+     * emit the on cancel click event
+     */
+    @Output() public onCancel = new EventEmitter<void>();
+    /**
+     * holds the system spinner component reference
+     */
+    private spinnerRef: ComponentRef<SystemSpinner>;
+    /**
+     * container for the system spinner
+     * @private
+     */
+    private spinnerContainer = document.createElement('div');
+    /**
+     * holds the cancellable value until the system spinner is rendered
+     * @private
+     */
+    private cancellable: boolean = false;
 
     constructor(
         public renderer: Renderer2,
+        private appRef: ApplicationRef,
         public elementRef: ElementRef
     ) {
-        this.defineOverlayElement();
-    }
-
-    @Input('system-overlay-loading-spinner') set isLoading(bool) {
-        if (bool) this.renderer.appendChild(this.elementRef.nativeElement, this.overlayElement);
-        else this.renderer.removeChild(this.elementRef.nativeElement, this.overlayElement);
     }
 
     /**
-     * define an overlay div
+     * on loading change render/destroy the spinner
+     * @param val
      */
-    public defineOverlayElement() {
-        this.overlayElement = this.renderer.createElement('div');
-        this.renderer.setStyle(this.overlayElement, 'position', 'absolute');
-        this.renderer.addClass(this.overlayElement, 'slds-align--absolute-center');
-        this.renderer.setStyle(this.overlayElement, 'height', '100%');
-        this.renderer.setStyle(this.overlayElement, 'width', '100%');
-        this.renderer.setStyle(this.overlayElement, 'z-index', '999');
-        this.renderer.setStyle(this.overlayElement, 'top', '0');
-        this.renderer.setStyle(this.overlayElement, 'left', '0');
-        this.renderer.setStyle(this.overlayElement, 'background-color', 'rgba(0,0,0,0.25)');
-        this.renderer.setProperty(this.overlayElement, 'innerHTML', `
-            <div style="border-radius: 50%; box-shadow: 0 0 5px 0 #555; padding:.75rem; background-color:#fff; color:#080707">
-                <div class="cssload-container">
-                    <div class="cssload-double-torus"></div>
-                </div>
-            </div>
-        `);
+    @Input('system-overlay-loading-spinner')
+    set isLoadingChange(val) {
+        if (val) {
+            this.renderSpinner();
+        } else {
+            this.destroySpinner();
+        }
+    }
 
-        // set relative position to the reference
-        this.renderer.addClass(this.elementRef.nativeElement, 'slds-is-relative');
+    /**
+     * set cancellable on the system spinner
+     * @param val
+     */
+    @Input('cancellable')
+    set cancellableChange(val) {
+
+        this.cancellable = val;
+
+        if (!this.spinnerRef) return;
+
+        this.spinnerRef.instance.cancellable = val;
+    }
+
+    /**
+     * destroy the spinner component
+     * @private
+     */
+    private destroySpinner() {
+        if (!this.spinnerRef) return;
+        this.spinnerRef.instance.onCancel$.unsubscribe();
+        this.spinnerRef.destroy();
+        this.spinnerRef = undefined;
+        this.renderer.removeChild(this.elementRef.nativeElement, this.spinnerContainer);
+    }
+
+    /**
+     * use the system spinner as overlay
+     * @private
+     */
+    private renderSpinner() {
+
+        if (this.spinnerRef) return;
+
+        this.renderer.appendChild(this.elementRef.nativeElement, this.spinnerContainer);
+
+        // create spinner component without appending it to the dom
+        this.spinnerRef = createComponent(SystemSpinner, {
+            environmentInjector: this.appRef.injector,
+            hostElement: this.spinnerContainer
+        });
+
+        this.spinnerRef.instance.asOverlay = true;
+        this.spinnerRef.instance.cancellable = this.cancellable;
+        this.spinnerRef.instance.onCancel$.subscribe(() => this.onCancel.emit());
+
+        // attach the spinner component to the application view to enable change detection
+        this.appRef.attachView(this.spinnerRef.hostView);
+        this.spinnerRef.changeDetectorRef.detectChanges();
     }
 }

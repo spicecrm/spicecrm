@@ -12,7 +12,7 @@
                         </ng-template>
                         <object-record-fieldset-horizontal-list *ngIf="subFieldset && !event.isMulti" [ngClass]="textClass" [fieldset]="subFieldset"></object-record-fieldset-horizontal-list>
                     </div>
-                    <object-action-menu [buttonsize]="'xx-small'" class="slds-p-top--xx-small"></object-action-menu>
+                    <object-action-menu [buttonsize]="'xx-small'" class="slds-p-top--xxx-small"></object-action-menu>
                 </div>
                 <div *ngIf="!event.isMulti && calendar.sheetType != 'Month'&& canEdit" draggable="false" class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;" (mousedown)="onMouseDown($event)">
                     <system-utility-icon colorclass="slds-icon-text-white" icon="threedots" size="x-small"></system-utility-icon>

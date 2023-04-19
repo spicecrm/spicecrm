@@ -1,4 +1,5 @@
 <div *ngIf="isSortable" class="slds-grid slds-grid--vertical-align-center slds-p-horizontal--xx-small">
-    <system-utility-icon [icon]="sortIcon" size="xx-small"></system-utility-icon>
+    <system-utility-icon *ngIf="!sortIcon" icon="sort" size="xx-small" colorclass="slds-icon-text-light"></system-utility-icon>
+    <system-utility-icon *ngIf="sortIcon" [icon]="sortIcon" size="xx-small"></system-utility-icon>
     <div *ngIf="sortindex > 0" class="slds-align--absolute-center slds-theme--info" style="height: 18px; width: 18px; border-radius: 9px">{{sortindex}}</div>
 </div>

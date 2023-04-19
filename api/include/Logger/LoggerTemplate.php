@@ -49,7 +49,8 @@ interface LoggerTemplate
      * @param array $logparams
      */
     public function log(
-        $method,
+        $level,
+        $sublevel,
         $message,
         $logparams = []
         );

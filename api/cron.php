@@ -16,18 +16,16 @@ register_shutdown_function(function () {
 });
 
 require_once 'vendor/autoload.php';
-require_once('include/utils.php');
-require_once('sugar_version.php');
 
 global $overCLI;
 $overCLI = substr(php_sapi_name(), 0, 3) == 'cli';
 
 if (!$overCLI) {
-    sugar_die("CLI only.");
+    SpiceUtils::sugarDie("CLI only.");
 }
 
 if (!SpiceConfig::getInstance()->configExists()) {
-    sugar_die("No system config found.");
+    SpiceUtils::sugarDie("No system config found.");
 }
 
 DBManagerFactory::setDBConfig();
@@ -44,7 +42,7 @@ SpiceDictionaryHandler::loadMetaDataFiles();
 UploadStream::register();
 SpiceModules::getInstance()->loadModules();
 //SpiceDictionaryHandler::loadMetaDataDefinitions();
-SpiceDictionaryHandler::loadCachedVardefs();
+SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 //$system_config = (new Administration())->retrieveSettings();
 
 /**

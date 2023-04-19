@@ -1,0 +1,6 @@
+<system-spinner *ngIf="tokenLoading" size="12"></system-spinner>
+<div *ngIf="!tokenLoading" [ngStyle]="handleVisibility()" (click)="getToken($event)">
+    <system-utility-icon icon="number_input" size="x-small">
+        <system-label label="LBL_COPY"></system-label>
+    </system-utility-icon>
+</div>

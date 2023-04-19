@@ -9,12 +9,15 @@ import {
     EventEmitter,
     ViewChild,
     ViewContainerRef,
-    ElementRef
+    ElementRef, OnInit
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 
 import {reporterconfig} from '../services/reporterconfig';
+import {toast} from "../../../services/toast.service";
+import {language} from "../../../services/language.service";
+import {Subject} from "rxjs";
 
 @Component({
     selector: 'reporter-presentation-dashlet',
@@ -24,7 +27,7 @@ import {reporterconfig} from '../services/reporterconfig';
         ':host {width:100%; height: 100%;}'
     ]
 })
-export class ReporterPresentationDashlet implements AfterViewInit {
+export class ReporterPresentationDashlet implements AfterViewInit, OnInit {
     /**
      * rewference to the contaioner that will hold the presentation component
      */
@@ -40,6 +43,11 @@ export class ReporterPresentationDashlet implements AfterViewInit {
     @Input() public componentconfig: any = {};
 
     /**
+     * observable listening whether reload button was clicked on parent
+     */
+    @Input() refreshReport: Subject<boolean> = new Subject<boolean>();
+
+    /**
      * emites the title after the report is loaded
      */
     @Output() public dashletTitle: EventEmitter<string> = new EventEmitter<string>();
@@ -52,7 +60,12 @@ export class ReporterPresentationDashlet implements AfterViewInit {
      */
     @Output() public noAccess: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(public model: model, public metadata: metadata, public elementRef: ElementRef) {
+    constructor(public model: model,
+                public metadata: metadata,
+                public elementRef: ElementRef,
+                public toast: toast,
+                public language: language,
+                public reporterconfig: reporterconfig) {
     }
 
     public ngAfterViewInit() {
@@ -63,21 +76,34 @@ export class ReporterPresentationDashlet implements AfterViewInit {
                 this.model['parentBeanId'] = this.parentId;
                 this.model['parentBeanModule'] = this.parentModule;
             }
-            this.model.getData().subscribe(
-                data => {
+            this.model.getData().subscribe( {
+                next: (data) => {
                     // emit the title
                     this.dashletTitle.emit(this.model.getField('name'));
 
                     // render the report
                     this.renderPresentation();
-                },
-                err => {
+                }, error: (err) => {
                     if (err.status == '403' || err.status == '404') {
                         this.noAccess.emit(true);
+                    } else {
+                        this.toast.sendToast(this.language.getLabel("LBL_ERROR_LOADING_DATA"), "error");
                     }
-                });
+                }
+            });
         }
     }
+
+    public ngOnInit() {
+
+        // subscribe to reload button on the parent
+        this.refreshReport.subscribe(response => {
+            if (response) {
+                this.reporterconfig.refresh();
+            }
+        });
+    }
+
 
     /**
      * calculates the offset of the header and sets the proper style so the presentation conatiner has a defined height to fit in

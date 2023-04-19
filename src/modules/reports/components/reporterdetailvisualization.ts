@@ -16,6 +16,7 @@ import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {reporterconfig} from '../services/reporterconfig';
 import {Subscription} from "rxjs";
+import {toast} from "../../../services/toast.service";
 
 /**
  * handle rendering the appropriate visualization component for the report
@@ -26,6 +27,10 @@ import {Subscription} from "rxjs";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('reporter_visualization_http_ref_');
     /**
      * the reference to the comtainer for the visualization item
      */
@@ -70,11 +75,18 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
     constructor(public reporterconfig: reporterconfig,
                 public metadata: metadata,
                 public model: model,
+                public toast: toast,
                 public backend: backend,
                 public cdRef: ChangeDetectorRef) {
         this.subscriptions.add(
-            this.reporterconfig.refresh$.subscribe(event => {
-                this.getVisualization();
+            this.reporterconfig.refresh$.subscribe({
+                next: event => {
+                    if (event) {
+                        this.getVisualization();
+                    } else {
+                        this.handleCancel();
+                    }
+                }
             })
         );
     }
@@ -91,6 +103,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
      */
     public ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 
     /**
@@ -111,6 +124,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
     public getVisualization() {
 
         this.loading = true;
+        this.reporterconfig.isLoading.visualization = true;
         this.cdRef.detectChanges();
 
         let params: any = {};
@@ -133,11 +147,22 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
         }
         params.whereConditions = JSON.stringify(whereConditions);
 
-        this.backend.getRequest('module/KReports/' + this.model.id + '/visualization', params).subscribe(vizData => {
-            this.vizData = vizData;
-            this.loading = false;
-            this.cdRef.detectChanges();
-            this.renderVisualization();
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
+
+        this.backend.getRequest('module/KReports/' + this.model.id + '/visualization', params, this.httpRequestsRefID).subscribe({
+            next: vizData => {
+                this.vizData = vizData;
+                this.loading = false;
+                this.reporterconfig.isLoading.visualization = false;
+                this.cdRef.detectChanges();
+                this.renderVisualization();
+            },
+            error: () => {
+                this.toast.sendToast('ERR_LOADING_RECORD', 'error');
+                this.loading = false;
+                this.reporterconfig.isLoading.visualization = false;
+                this.cdRef.detectChanges();
+            }
         });
     }
 
@@ -180,5 +205,21 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
                 });
             }
         }
+    }
+
+    /**
+     * opens the report
+     */
+    public openReport() {
+        this.model.goDetail();
+    }
+    /**
+     * handle cancelling the get request
+     */
+    public handleCancel() {
+        this.loading = false;
+        this.reporterconfig.isLoading.visualization = false;
+        this.cdRef.detectChanges();
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 }

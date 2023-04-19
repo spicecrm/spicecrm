@@ -1,40 +1,5 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- *
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\database;
 
@@ -44,6 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
  * Description: This file handles the Data base functionality for the application.
@@ -129,7 +95,7 @@ class MysqliManager extends DBManager
         'short'    => 'smallint',
         'varchar'  => 'varchar',
         'text'     => 'text',
-        'json'     => 'longtext',
+        'json'     => 'longtext', // @deprecated sind 2023.01.001 - will be moved to column type json
         'shorttext'=> 'text',
         'longtext' => 'longtext',
         'date'     => 'date',
@@ -154,7 +120,6 @@ class MysqliManager extends DBManager
         'encrypt'  => 'varchar',
         'file'     => 'varchar',
         'decimal_tpl' => 'decimal(%d, %d)',
-
     ];
 
     protected $capabilities = [
@@ -220,7 +185,7 @@ class MysqliManager extends DBManager
             static $queryMD5 = [];
 
             parent::countQuery();
-            LoggerManager::getLogger()->info('Query:' . $sql);
+            // if($this->enablelog) LoggerManager::getLogger()->sql('Query:' . $sql);
             $this->checkConnection();
             $this->query_time = microtime(true);
             $this->lastsql = $sql;
@@ -231,7 +196,7 @@ class MysqliManager extends DBManager
                 $queryMD5[$md5] = true;
 
             $this->query_time = microtime(true) - $this->query_time;
-            LoggerManager::getLogger()->info('Query Execution Time:' . $this->query_time);
+            if($this->enablelog) LoggerManager::getLogger()->sql('', ['Query Execution Time' => $this->query_time, "Query" => $sql]);
 
             if (isset($GLOBALS['totalquerytime'])) $GLOBALS['totalquerytime'] += $this->query_time;
 
@@ -255,6 +220,7 @@ class MysqliManager extends DBManager
                 $this->checkError($msg . ' Query Failed: ' . $sql, $dieOnError);
             }
         } catch (Exception $e) {
+            LoggerManager::getLogger()->fatal('sql', ['error' => $e->getMessage(), "query" => $this->lastsql]);
             throw $e;
         }
 
@@ -274,6 +240,60 @@ class MysqliManager extends DBManager
         $result = $suppress ? @mysqli_query($this->database, $sql) : mysqli_query($this->database, $sql);
         return $result;
     }
+
+
+    /**
+     * runs a query as a prepared statement
+     * this is experimental at this stage
+     *
+     * @param string $stm
+     * @param array $params
+     * @return array
+     */
+    public function queryPrepared(string $stm, array $params = []){
+        $results = [];
+
+        if(function_exists('mysqli_execute_query')){
+            $result = @mysqli_execute_query($this->database, $stm, $params);
+        } else {
+            $stmt = @mysqli_prepare($this->database, $stm);
+            if (count($params) > 0) $stmt->bind_param($this->getTypeString($params), ...$params);
+            //if(count($params) > 0) call_user_func_array(array($stmt, 'bind_param'),  $params);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        }
+        while ($row = $result->fetch_assoc()) {
+            $results[] = $row;
+        }
+        $stmt->close();
+        return $results;
+    }
+
+    /**
+     * private function to determine the types for the paramaters passed in as needed by bind_params
+     * @param $values
+     * @return string
+     */
+    private function getTypeString($values){
+        $typeString = '';
+
+        foreach ($values as $value){
+            switch (gettype($value)){
+                case 'integer':
+                    $typeString .= 'i';
+                    break;
+                case 'double':
+                    $typeString .= 'd';
+                    break;
+                default:
+                    $typeString .= 's';
+                    break;
+            }
+        }
+
+        return $typeString;
+    }
+
 
     /**
      * Returns the number of rows affected by the last query
@@ -307,7 +327,7 @@ class MysqliManager extends DBManager
      */
     public function disconnect()
     {
-        LoggerManager::getLogger()->debug('Calling MySQLi::disconnect()');
+        LoggerManager::getLogger()->debug('sql', 'Calling MySQLi::disconnect()');
         if (!empty($this->database)) {
             $this->freeResult();
             mysqli_close($this->database);
@@ -400,9 +420,9 @@ class MysqliManager extends DBManager
                 LoggerManager::getLogger()->fatal("Could not connect to DB server " . $dbhost . " as " . $configOptions['db_user_name'] . ". port " . $dbport . ": " . mysqli_connect_error());
                 if ($dieOnError) {
                     if (isset($GLOBALS['app_strings']['ERR_NO_DB'])) {
-                        sugar_die($GLOBALS['app_strings']['ERR_NO_DB']);
+                        SpiceUtils::sugarDie($GLOBALS['app_strings']['ERR_NO_DB']);
                     } else {
-                        sugar_die("Could not connect to the database. Please refer to spicecrm.log for details.");
+                        SpiceUtils::sugarDie("Could not connect to the database. Please refer to spicecrm.log for details.");
                     }
                 } else {
                     return false;
@@ -414,9 +434,9 @@ class MysqliManager extends DBManager
             LoggerManager::getLogger()->fatal("Unable to select database {$configOptions['db_name']}: " . mysqli_connect_error());
             if ($dieOnError) {
                 if (isset($GLOBALS['app_strings']['ERR_NO_DB'])) {
-                    sugar_die($GLOBALS['app_strings']['ERR_NO_DB']);
+                    SpiceUtils::sugarDie($GLOBALS['app_strings']['ERR_NO_DB']);
                 } else {
-                    sugar_die("Could not connect to the database. Please refer to spicecrm.log for details.");
+                    SpiceUtils::sugarDie("Could not connect to the database. Please refer to spicecrm.log for details.");
                 }
             } else {
                 return false;
@@ -439,7 +459,7 @@ class MysqliManager extends DBManager
 	    mysqli_query($this->database,$names);
 
 		if($this->checkError('Could Not Connect', $dieOnError))
-		    LoggerManager::getLogger()->info("connected to db");
+		    LoggerManager::getLogger()->debug('sql', "connected to db");
 
 		$this->connectOptions = $configOptions;
 		return true;
@@ -641,7 +661,7 @@ class MysqliManager extends DBManager
         $count = (int)$count;
         if ($start < 0)
             $start = 0;
-        LoggerManager::getLogger()->debug('Limit Query:' . $sql. ' Start: '.$start.' count:'.$count);
+        LoggerManager::getLogger()->debug('sql', 'Limit Query:' . $sql. ' Start: '.$start.' count:'.$count);
 
         $sql = "$sql LIMIT $start,$count";
         $this->lastsql = $sql;
@@ -785,9 +805,8 @@ class MysqliManager extends DBManager
      */
     public function tableExists($tableName)
     {
-        $this->log->info("tableExists: $tableName");
 
-        if ($this->getDatabase()) {
+       if ($this->getDatabase()) {
             $result = $this->query("SHOW TABLES LIKE ".$this->quoted($tableName));
             if(empty($result)) return false;
             $row = $this->fetchByAssoc($result);
@@ -1143,7 +1162,7 @@ class MysqliManager extends DBManager
                     if ($this->full_text_indexing_installed())
                         $columns[] = " FULLTEXT ($fields)";
                     else
-                        LoggerManager::getLogger()->debug('MYISAM engine is not available/enabled, full-text indexes will be skipped. Skipping:',$name);
+                        LoggerManager::getLogger()->debug('sql', 'MYISAM engine is not available/enabled, full-text indexes will be skipped. Skipping:',$name);
                     break;
             }
         }
@@ -1534,18 +1553,12 @@ class MysqliManager extends DBManager
                 || $fieldDef['dbType'] == 'longtext'
                 || $fieldDef['dbType'] == 'longblob' ))
             unset($fieldDef['default']);
-        if ($fieldDef['dbType'] == 'uint')
-            $fieldDef['len'] = '10';
-        if ($fieldDef['dbType'] == 'ulong')
-            $fieldDef['len'] = '20';
         if ($fieldDef['dbType'] == 'bool')
             $fieldDef['type'] = 'tinyint';
         if ($fieldDef['dbType'] == 'bool' && empty($fieldDef['default']) )
             $fieldDef['default'] = '0';
         if (($fieldDef['dbType'] == 'varchar' || $fieldDef['dbType'] == 'enum') && empty($fieldDef['len']) )
             $fieldDef['len'] = '255';
-        if ($fieldDef['dbType'] == 'uint')
-            $fieldDef['len'] = '10';
         if ($fieldDef['dbType'] == 'int' && empty($fieldDef['len']) )
             $fieldDef['len'] = '11';
 
@@ -1620,6 +1633,12 @@ class MysqliManager extends DBManager
                         elseif($fielddef2['len'] >  19){
                             $fieldtype =  'bigint';
                         }
+                        break;
+                    case 'uint':
+                        $fieldtype =  'uint';
+                        break;
+                    case 'ulong':
+                        $fieldtype =  'ulong';
                         break;
                 }
                 break;

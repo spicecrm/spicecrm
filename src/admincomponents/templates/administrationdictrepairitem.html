@@ -1,8 +1,13 @@
-<div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-p-vertical--xx-small slds-border--bottom">
-    <system-utility-icon icon="custom_apps" size="x-small"></system-utility-icon>
-    <system-label class="slds-p-horizontal--x-small" label="LBL_REPAIR_DATABASE"></system-label>
-    <system-label class="slds-grow" label="LBL_REPAIR_DATABASE" length="long"></system-label>
-    <button class="slds-button slds-button--neutral slds-button--small" (click)="executeDB()">
-        <system-label label="LBL_EXECUTE"></system-label>
-    </button>
+<div class="slds-box slds-box_xx-small slds-m-bottom--xx-small">
+    <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-text-heading--small">
+            <system-label class="slds-p-horizontal--x-small" [label]="itemlabel"></system-label>
+        </div>
+        <button class="slds-button slds-button--icon slds-button--icon-border" (click)="execute.emit(true)">
+            <system-button-icon icon="custom_apps"></system-button-icon>
+        </button>
+    </div>
+    <div class="slds-p-around--x-small">
+        <system-label class="slds-grow" [label]="itemlabel" length="long"></system-label>
+    </div>
 </div>

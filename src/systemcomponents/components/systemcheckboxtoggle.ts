@@ -21,6 +21,10 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 })
 export class SystemCheckboxToggle implements ControlValueAccessor {
     /**
+     * holds the checkbox name
+     */
+    @Input() public name;
+    /**
      * holds the checkbox label
      */
     @Input() public label = '';

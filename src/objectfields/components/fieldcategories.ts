@@ -56,6 +56,35 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      */
     public searchTimeOut: any = undefined;
 
+    /**
+     * holds the tree id .. here for legacy purposes
+     *
+     * @private
+     */
+    private treeid: string;
+
+    /**
+     * holds the category fields
+     *
+     * @private
+     */
+    private categoryFields: string[] = [];
+
+    /**
+     * set to true to set the displayname to the field we have in focus
+     * this is only valid if we get this from treeallocation and not if the config comes from the fieldconfig
+     * Legacy Support - to be removed in future releases when we discontinue the legacy support
+     *
+     * @private
+     */
+    private setFieldName: boolean = false;
+
+    /**
+     * holds eascape key listener
+     * @private
+     */
+    public escKeyListener: any;
+
     constructor(
         public model: model,
         public view: view,
@@ -76,20 +105,52 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         // get the categories
         let categories = this.config.getData('categories');
 
-        if (!categories || !categories[this.fieldconfig.treeid]) {
+        // first try to determine by module
+        let moduleDefs = this.metadata.getModuleDefs(this.model.module);
+
+        if(moduleDefs.categorytrees){
+            let r = moduleDefs.categorytrees.find(t => t.module_field == this.fieldname);
+            if(r) {
+                this.treeid = r.syscategorytree_id;
+                if(r.module_field_c1) this.categoryFields.push(r.module_field_c1);
+                if(r.module_field_c2) this.categoryFields.push(r.module_field_c2);
+                if(r.module_field_c3) this.categoryFields.push(r.module_field_c3);
+                if(r.module_field_c4) this.categoryFields.push(r.module_field_c4);
+
+                // in case we have this kind of setup set the fieldname
+                this.setFieldName = true;
+            }
+        }
+
+        if(!this.treeid) {
+            this.treeid = this.fieldconfig.treeid;
+            if(this.fieldconfig.category1) this.categoryFields.push(this.fieldconfig.category1);
+            if(this.fieldconfig.category2) this.categoryFields.push(this.fieldconfig.category2);
+            if(this.fieldconfig.category3) this.categoryFields.push(this.fieldconfig.category3);
+            if(this.fieldconfig.category4) this.categoryFields.push(this.fieldconfig.category4);
+        }
+
+        if (this.treeid && (!categories || !categories[this.treeid])) {
             if (!categories) categories = {};
             // set this in any case so we don't load multiple times
-            categories[this.fieldconfig.treeid] = [];
+            categories[this.treeid] = [];
             this.config.setData('categories', categories);
 
             // load all categories which are needed to display the choosen categories...
-            this.backend.getRequest(`configuration/spiceui/core/categorytrees/${this.fieldconfig.treeid}/categorytreenodes`).subscribe(
+            this.backend.getRequest(`configuration/spiceui/core/categorytrees/${this.treeid}/categorytreenodes`).subscribe(
                 (res: any) => {
-                    categories[this.fieldconfig.treeid] = res;
+                    categories[this.treeid] = res;
                     this.config.setData('categories', categories);
                 }
             );
         }
+    }
+
+    /**
+     * add escape key listener
+     */
+    public ngAfterViewInit() {
+        this.subscribeToESCKeyUp();
     }
 
     public ngOnDestroy() {
@@ -99,7 +160,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 
     get categories(){
         let categories = this.config.getData('categories');
-        return categories ? categories[this.fieldconfig.treeid] : [];
+        return categories ? categories[this.treeid] : [];
     }
 
     /**
@@ -118,11 +179,23 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     public openDropDown(){
         if(!this.dropDownOpen){
             this.dropDownOpen = true;
-            this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
+            // this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
         }
     }
 
     /**
+     * actions to perform when ESC key is pressed
+     */
+    public subscribeToESCKeyUp() {
+        this.escKeyListener = this.renderer.listen('document', 'keyup', (event: KeyboardEvent) => {
+            if (event.key != 'Escape') return;
+            this.dropDownOpen = false;
+            this.resetTmpSearchTerm();
+        });
+    }
+
+    /**
+     * @deprecated: use (click) event in template
      * handle the click event on the document
      *
      * @param event
@@ -139,9 +212,9 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     get display_value() {
         let values = [];
         let lastId;
-        let i = 1;
-        while(i <= 4 && this.fieldconfig['category'+i]){
-            let levelvalue = this.model.getField(this.fieldconfig['category'+i]);
+        let i = 0;
+        while(i < this.categoryFields.length){
+            let levelvalue = this.model.getField(this.categoryFields[i]);
 
             // if we do not have a value break
             if(!levelvalue) break;
@@ -163,8 +236,14 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             }
         }
 
+        // get the display name
+        let d = values.length == 0 ? undefined : values.join('/');
+
+        // set the name on the model so we are sure we have it
+        if(d != this.value) this.model.setField(this.fieldname, d, true);
+
         // if we do not have any values
-        return values.length == 0 ? undefined : values.join('/');
+        return d;
     }
 
     public setFavorites(e: MouseEvent){
@@ -182,32 +261,35 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      */
     public chooseCategories(selected) {
         let fields: any = {};
-        let i = 1
+        let i = 0
         let categories = selected.levels
-        while(i <= 4) {
-            if(this.fieldconfig['category'+i] && categories[i-1]){
-                fields[this.fieldconfig['category'+i]] = this.categories.find(c => c.id == categories[i-1]).node_key;
+        while(i < this.categoryFields.length) {
+            if(categories[i]){
+                fields[this.categoryFields[i]] = this.categories.find(c => c.id == categories[i]).node_key;
             } else {
-                // reset level value in case new selection does not cover this level
-                if(this.fieldconfig['category'+i]){
-                    fields[this.fieldconfig['category'+i]] = '';
-                }
+                fields[this.categoryFields[i]] = undefined;
             }
             i++;
         }
+
+
 
         // set the adddata
         if(this.fieldconfig.addparams && selected.category?.add_params){
             fields[this.fieldconfig.addparams] = selected.category.add_params
         }
 
-        // set the fields
-        this.model.setFields(fields);
+        // set the fields silent
+        this.model.setFields(fields, true);
 
+        // rebuild the fields value to set the field name
+        fields = [];
+        // set the name displayvalue to the field
+        if(this.setFieldName) fields[this.fieldname] = this.display_value;
         // set the name field
-        if(this.fieldconfig.setname) {
-            this.model.setField('name', this.display_value);
-        }
+        if(this.fieldconfig.setname) fields.name = this.display_value;
+        // update if we have any fields to update
+        if(Object.getOwnPropertyNames(fields).length > 0) this.model.setFields(fields);
 
         // close the dropdown
         this.dropDownOpen = false;
@@ -224,19 +306,22 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 
     /**
      * clears the categories
-     *
+     * set empty string so that empty value for removed categories can be sent
      * @private
      */
     public clearCategories() {
-        let i = 1;
+        let i = 0;
         let fields: any = {};
-        while(i <= 4){
-            if(this.fieldconfig['category'+i]){
-                fields[this.fieldconfig['category'+i]] = undefined;
-            }
+        while(i < this.categoryFields.length){
+            fields[this.categoryFields[i]] = '';
             i++
         }
+        // clear the fieldname
+        fields[this.fieldname] = undefined;
+
         this.model.setFields(fields);
+
+        this.resetTmpSearchTerm();
     }
 
     public search(_e) {
@@ -245,6 +330,16 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         this.searchTimeOut = window.setTimeout(() => {
             this.searchterm = this.tempsearchterm
         }, 1000);
+
+        if(this.tempsearchterm != ''){
+            this.openDropDown();
+        }
     }
 
+    /**
+     * set empty string in tempsearchterm
+     */
+    public resetTmpSearchTerm(){
+        this.tempsearchterm = '';
+    }
 }

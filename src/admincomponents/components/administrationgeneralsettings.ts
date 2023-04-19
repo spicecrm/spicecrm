@@ -31,15 +31,21 @@ export class AdministrationGeneralSettings implements OnInit {
             slow_query_time_msec: 0,
             upload_maxsize: 0
         },
+        cache: {
+            class: 'SpiceCacheFile',
+            external_cache_disabled: false,
+            redis_host: 'localhost',
+            redis_port: 6379,
+            memcached_host: 'localhost',
+            memcached_port: 11211
+        },
         logger: {
             level: '',
-            file: {
-                name: 'spicecrm',
-                ext: '',
-                maxLogs: 10,
-                maxSize: '10MB',
-                suffix: ''
-            }
+            file_name: 'spicecrm',
+            file_ext: '',
+            file_maxlogs: 10,
+            file_maxsize: '10MB',
+            file_suffix: ''
         }
     };
 
@@ -75,9 +81,6 @@ export class AdministrationGeneralSettings implements OnInit {
     public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             this.backend.getRequest('configuration/settings').subscribe(data => {
-                if (!data.logger.file) {
-                    data.logger.file = {};
-                }
 
                 this.settings = data;
 
@@ -129,7 +132,7 @@ export class AdministrationGeneralSettings implements OnInit {
      * getter to strip the MB from the max size
      */
     get loggerMaxSize(){
-        return (this.settings.logger.file.maxSize ?? '').replace('MB', '');
+        return (this.settings.logger.file_maxsize ?? '').replace('MB', '');
     }
 
     /**
@@ -138,6 +141,6 @@ export class AdministrationGeneralSettings implements OnInit {
      * @param maxSize
      */
     set loggerMaxSize(maxSize){
-        this.settings.logger.file.maxSize = maxSize + 'MB';
+        this.settings.logger.file_maxsize = maxSize + 'MB';
     }
 }

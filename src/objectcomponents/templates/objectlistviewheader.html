@@ -1,32 +1,32 @@
 <div class="slds-page-header slds-page-header--object-home" role="banner">
-    <div class="slds-grid slds-p-bottom--xx-small">
-        <div class="slds-grid slds-grid--vertical-align-center slds-no-space">
-            <system-icon [module]="model.module"></system-icon>
-            <object-list-types></object-list-types>
-        </div>
-        <div class="slds-form-element slds-p-right--small" style="width: 400px" [ngClass]="{'slds-has-error': searchTermError}">
-            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left-right">
-                <system-utility-icon icon="search" size="x-small" addclasses="slds-icon slds-input__icon slds-input__icon_left"></system-utility-icon>
-                <input system-autofocus style="max-width: 400px;" class="slds-input slds-lookup__search-input" type="search" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', model.module)" [(ngModel)]="searchTerm" (keyup.enter)="reloadList()"/>
-                <button [disabled]="!searchTerm" (click)="clearSearchTerm()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
-                    <system-button-icon icon="clear"></system-button-icon>
-                </button>
+    <div class="slds-grid slds-grid--align-spread slds-p-bottom--xx-small slds-wrap">
+        <div class="slds-grid slds-grid--vertical-align-center slds-grow">
+            <div class="slds-grid slds-grid--vertical-align-center slds-no-space">
+                <system-icon [module]="model.module"></system-icon>
+                <object-list-types></object-list-types>
+            </div>
+            <div class="slds-form-element slds-grow" [ngClass]="{'slds-has-error': searchTermError}">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left-right">
+                    <system-utility-icon icon="search" size="x-small" addclasses="slds-icon slds-input__icon slds-input__icon_left"></system-utility-icon>
+                    <input system-autofocus class="slds-input slds-lookup__search-input" type="search" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', model.module)" [(ngModel)]="searchTerm" (keyup.enter)="reloadList()"/>
+                    <button [disabled]="!searchTerm" (click)="clearSearchTerm()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+                        <system-button-icon icon="clear"></system-button-icon>
+                    </button>
+                </div>
             </div>
         </div>
-        <object-action-container class="slds-col--bump-left" [actionset]="actionSet"></object-action-container>
-    </div>
-    <div class="slds-grid slds-grid_vertical-align-center">
-        <div class="slds-col slds-align-bottom">
+        <div [class.slds-m-top--x-small]="layout.screenwidth == 'small'" class="slds-grid slds-grid--vertical-align-center slds-grow slds-grid--align-end slds-p-left--small">
             <object-listview-header-details></object-listview-header-details>
-        </div>
-        <div class="slds-col slds-no-flex slds-grid slds-align-bottom">
-            <object-listview-settings class="slds-show--medium"></object-listview-settings>
-            <object-listview-header-list-selector></object-listview-header-list-selector>
-            <button class="slds-button slds-button--neutral slds-button--icon-border slds-m-horizontal--xxx-small" system-title="LBL_RELOAD" (click)="modellist.reLoadList()" [disabled]="modellist.isLoading">
-                <system-button-icon [icon]="'refresh'"></system-button-icon>
-            </button>
-            <object-listview-aggregates-button class="slds-show--medium"></object-listview-aggregates-button>
-            <object-listview-filter-button class="slds-show--medium"></object-listview-filter-button>
+            <div class="slds-col slds-no-flex slds-grid slds-align-bottom slds-p-left--small">
+                <object-listview-settings class="slds-show--medium"></object-listview-settings>
+                <object-listview-header-list-selector></object-listview-header-list-selector>
+                <button class="slds-button slds-button--neutral slds-button--icon-border slds-m-horizontal--xxx-small" system-title="LBL_RELOAD" (click)="modellist.reLoadList()">
+                    <system-button-icon [icon]="modellist.isLoading ? 'close' : 'refresh'"></system-button-icon>
+                </button>
+                <object-listview-aggregates-button class="slds-show--medium"></object-listview-aggregates-button>
+                <object-listview-filter-button class="slds-show--medium"></object-listview-filter-button>
+            </div>
+            <object-action-container [actionset]="actionSet" class="slds-m-left--xx-small"></object-action-container>
         </div>
     </div>
 </div>

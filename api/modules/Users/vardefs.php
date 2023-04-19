@@ -64,6 +64,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'importable' => 'false',
             'sensitive' => true,
         ],
+        'user_2fa_method' => [
+            'name' => 'user_2fa_method',
+            'vname' => 'LBL_2FA_METHOD',
+            'type' => 'varchar',
+            'len' => '30',
+        ],
         'user_image' => [
             'name' => 'user_image',
             'vname' => 'LBL_USER_IMAGE',
@@ -579,7 +585,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'link' => 'reports_to_link',
             'reportable' => false,
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'side' => 'right',
         ],
         'reports_to_link' => [
@@ -702,7 +708,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'relationship' => 'users_email_addresses_primary',
             'source' => 'non-db',
             'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'required' => false,
         ],
         'email_signature' => [
@@ -861,6 +867,52 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'module' => 'UserAbsences'
         ],
+        'userhcmmeasures' => [
+            'name' => 'userhcmmeasures',
+            'vname' => 'LBL_HCMMEASURES',
+            'type' => 'link',
+            'relationship' => 'users_hcmmeasures',
+            'source' => 'non-db',
+            'module' => 'HCMMeasures'
+        ],
+        'userhcmtrainings' => [
+            'name' => 'userhcmtrainings',
+            'vname' => 'LBL_HCMTRAININGS',
+            'type' => 'link',
+            'relationship' => 'users_hcmtrainings',
+            'source' => 'non-db',
+            'module' => 'HCMTrainings'
+        ],
+            'userhcmskills' => [
+            'name' => 'userhcmskills',
+            'vname' => 'LBL_HCMSKILLS',
+            'type' => 'link',
+            'relationship' => 'users_hcmskills',
+            'source' => 'non-db',
+            'module' => 'HCMSkills',
+        ],
+        'parent_id' => [
+            'name' => 'parent_id',
+            'vname' => 'LBL_PARENT_ID',
+            'type' => 'id',
+            'required' => false,
+        ],
+        'parent_type' => [
+            'name' => 'parent_type',
+            'vname' => 'LBL_PARENT_TYPE',
+            'type' => 'parent',
+            'dbType' => 'varchar',
+            'required' => false,
+            'len' => 255,
+        ],
+        'parent_name' => [
+            'name' => 'parent_name',
+            'type_name' => 'parent_type',
+            'id_name' => 'parent_id',
+            'vname' => 'LBL_RELATED_TO',
+            'type' => 'parent',
+            'source' => 'non-db',
+        ],
         // service orders many to many
         'serviceorders' => [
             'name' => 'serviceorders',
@@ -996,7 +1048,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'relationship' => 'orgunits_users',
             'module' => 'OrgUnits',
             'source' => 'non-db'
-        ]
+        ],
+        'documentrevisions' => [
+            'name' => 'documentrevisions',
+            'type' => 'link',
+            'relationship' => 'users_documentrevisions',
+            'source' => 'non-db',
+            'module' => 'DocumentRevisions',
+            'vname' => 'LBL_DOCUMENTREVISIONS',
+        ],
     ],
     'indices' => [
         [
@@ -1111,6 +1171,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'rhs_key' => 'shop_id',
             'relationship_type' => 'one-to-many'
         ],
+        'employees_users' => [
+            'lhs_module' => 'Employees',
+            'lhs_table' => 'employees',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Users',
+            'rhs_table' => 'users',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many'
+        ]
     ]
 ];
 

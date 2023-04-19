@@ -32,8 +32,10 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\Loaders\SpiceUIWordsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -111,7 +113,7 @@ class SpiceDictionaryController
         ];
 
         // remove from the session
-        unset($_SESSION['systemvardefs']['domains']);
+        SpiceCache::clear('domains');
 
         // return the response
         return $res->withJson($results);
@@ -129,7 +131,8 @@ class SpiceDictionaryController
             'dictionaryrelationshiprelatefields' => $handler->getDictionaryRelateFields(),
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
             'dictionaryindexes' => $handler->getDictionaryIndexes(),
-            'dictionaryindexitems' => $handler->getDictionaryIndexItems()
+            'dictionaryindexitems' => $handler->getDictionaryIndexItems(),
+            'settings' => ['migration_enabled' => SpiceConfig::getInstance()->get('systemvardefs.migration_enabled') == 1]
         ];
         return $res->withJson($results);
     }
@@ -251,6 +254,69 @@ class SpiceDictionaryController
             }
         }
         return $res->withJson($retArray);
+    }
+
+
+    /**
+     * list all defined dictionaryfeirlds entries
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getDictionaryFields(Request $req, Response $res, array $args): Response{
+        $db = DBManagerFactory::getInstance();
+        $rawArray = [];
+        $retArray = [];
+
+        $fields = $db->query("SELECT * FROM sysdictionaryfields");
+        while($field = $db->fetchByAssoc($fields)){
+            $rawArray[$field['sysdictionarytablename']][] = $field;
+        }
+
+        // mingle the data
+        $definitions = array_keys($rawArray);
+        foreach ($definitions as $definition) {
+            $definitionFields = $rawArray[$definition];
+
+            $defArray = [
+                'sysdictionarytablename' => $definition,
+                'sysdictionarydefinition_id' => $definitionFields[0]['sysdictionarydefinition_id'],
+                'sysdictionaryname' => $definitionFields[0]['sysdictionaryname'],
+                'sysdictionarytableaudited' => $definitionFields[0]['sysdictionarytableaudited'],
+                'sysdictionarytablecontenttype' => $definitionFields[0]['sysdictionarytablecontenttype'],
+                'fields' => []
+            ];
+
+            foreach ($definitionFields as $definitionField){
+                $defArray['fields'][] = [
+                    'id' => $definitionField['id'],
+                    'fieldtype' => $definitionField['fieldtype'],
+                    'fieldname' => $definitionField['fieldname'],
+                    'fielddefinition' => json_decode(html_entity_decode($definitionField['fielddefinition'], true)),
+                    'sysdomainfield_id' => $definitionField['sysdomainfield_id']
+                ];
+            }
+
+            $retArray[] = $defArray;
+        }
+
+        return $res->withJson($retArray);
+    }
+
+
+    /**
+     * loads the vardefs including legacy files and returns them
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getDictionaryVardefs(Request $req, Response $res, array $args): Response{
+        return $res->withJson(SpiceDictionaryVardefs::loadVardefs([$args['dictionaryname']]));
     }
 
 

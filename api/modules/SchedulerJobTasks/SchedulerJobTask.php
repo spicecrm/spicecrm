@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SchedulerJobTasks;
 
@@ -159,9 +131,9 @@ class SchedulerJobTask extends Basic
         $return = $fallbackTask->run($this->run_by_job_id);
 
         if (!$return['success']) {
-            LoggerManager::getLogger()->fatal("SchedulerJobTask {$fallbackTask->id} ({$fallbackTask->name}) failed");
+            LoggerManager::getLogger()->fatal('scheduler',"SchedulerJobTask {$fallbackTask->id} ({$fallbackTask->name}) failed");
         } else {
-            LoggerManager::getLogger()->info("SchedulerJobTask {$fallbackTask->id} ({$fallbackTask->name}) successfully executed");
+            LoggerManager::getLogger()->info('scheduler', "SchedulerJobTask {$fallbackTask->id} ({$fallbackTask->name}) successfully executed");
         }
     }
 
@@ -248,7 +220,7 @@ class SchedulerJobTask extends Basic
      */
     private function executeMethod($classMethod)
     {
-        LoggerManager::getLogger()->info("-----> SchedulerJobTask starting Job with execution method: $this->method");
+        LoggerManager::getLogger()->info('scheduler', "-----> SchedulerJobTask starting Job with execution method: $this->method");
 //        if (!$classMethod->class) {
 //            include_once 'modules/SchedulerJobs/_AddJobsHere.php';
 //            return call_user_func_array($classMethod->method, [$this->method_params]);
@@ -257,7 +229,7 @@ class SchedulerJobTask extends Basic
                 return call_user_func_array([$classMethod->class, $classMethod->method], [$this->method_params]);
 
             } catch (Exception $exception) {
-                LoggerManager::getLogger()->fatal("SchedulerJobTask {$this->id} ({$this->name}) Exception: {$exception->getMessage()} Stack Trace: {$exception->getTraceAsString()}");
+                LoggerManager::getLogger()->fatal('scheduler',"SchedulerJobTask {$this->id} ({$this->name}) Exception: {$exception->getMessage()} Stack Trace: {$exception->getTraceAsString()}");
                 return ['success' => false, 'message' => "Exception: " . $exception->getMessage()];
             }
 //        }

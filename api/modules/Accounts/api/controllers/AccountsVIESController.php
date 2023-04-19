@@ -1,6 +1,7 @@
 <?php
 namespace SpiceCRM\modules\Accounts\api\controllers;
 
+use SimpleXMLElement;
 use Psr\Http\Message\RequestInterface;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -48,23 +49,21 @@ class AccountsVIESController{
         curl_close($ch);
 
         if ($response !== false) {
-            // converting
-            $response1 = str_replace("<soap:Body>", "", $response);
-            $response2 = str_replace("</soap:Body>", "", $response1);
-
             // convertingc to XML
-            $result = simplexml_load_string($response2);
-
+            $patterns = array ('/(<\/env:.[^>]*>)/', '(<env:.[^>]*>)', '/(<\/SOAP-ENV:.[^>]*>)/', '(<SOAP-ENV:.[^>]*>)', '/ns2:/');
+            $replace = array("", "", "", "", "");
+            $response = preg_replace($patterns, $replace, $response);
+            $result = new SimpleXMLElement($response);
             $responseArray = [
                 'status' => 'success',
                 'data' => [
-                    'countrycode' => (string)$result->checkVatResponse->countryCode,
-                    'vatnumber' => (string)$result->checkVatResponse->vatNumber,
-                    'vatid' => (string)$result->checkVatResponse->countryCode . (string)$result->checkVatResponse->vatNumber,
-                    'valid' => filter_var((string)$result->checkVatResponse->valid, FILTER_VALIDATE_BOOLEAN),
-                    'name' => (string)$result->checkVatResponse->name,
-                    'address' => (string)$result->checkVatResponse->address,
-                    'requestdate' => substr((string)$result->checkVatResponse->requestDate, 0, 10)
+                    'countrycode' => (string)$result->countryCode,
+                    'vatnumber' => (string)$result->vatNumber,
+                    'vatid' => (string)$result->countryCode . (string)$result->vatNumber,
+                    'valid' => filter_var((string)$result->valid, FILTER_VALIDATE_BOOLEAN),
+                    'name' => (string)$result->name,
+                    'address' => (string)$result->address,
+                    'requestdate' => substr((string)$result->requestDate, 0, 10)
                 ]
             ];
         } else {

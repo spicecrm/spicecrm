@@ -19,6 +19,7 @@ import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
 import {SocketEventI} from "./interfaces.service";
 import {filter, map} from "rxjs/operators";
+import {userpreferences} from "./userpreferences.service";
 
 /**
  * @ignore
@@ -62,6 +63,11 @@ export interface AddressRefMetadataI {
  */
 @Injectable()
 export class model implements OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     * @private
+     */
+    public httpRequestsRefID: string = _.uniqueId('model_http_ref_');
     /**
      * @ignore
      */
@@ -278,7 +284,8 @@ export class model implements OnDestroy {
         public navigation: navigation,
         public configuration: configurationService,
         public injector: Injector,
-        public socket: socket
+        public socket: socket,
+        public userpreferences: userpreferences
     ) {
 
         this.data$ = new BehaviorSubject(this.data);
@@ -514,7 +521,7 @@ export class model implements OnDestroy {
         // set laoding
         this.isLoading = setLoading;
 
-        this.backend.get(this.module, this.id, trackAction).subscribe({
+        this.backend.get(this.module, this.id, trackAction, this.httpRequestsRefID).subscribe({
             next: (res) => {
 
                 this.isLoading = false;
@@ -721,6 +728,12 @@ export class model implements OnDestroy {
             let checksum: number = 0;
             let is_valid: boolean = true;
 
+            // make sure we have an array of events to filter properly on events
+            let onEventCheck = validation.onevents instanceof Array;
+            if(!onEventCheck){
+                validation.onevents = validation.onevents.split(',');
+            }
+
             if (validation.onevents instanceof Array && !validation.onevents.includes(event)) {
                 continue;
             }
@@ -804,6 +817,13 @@ export class model implements OnDestroy {
                 return true;
             case "set_value_from_field":
                 this.data[action.fieldname] = this.data[params];
+                return true;
+            case "set_value_from_user":
+                if(this.session.authData.user[params]){
+                    this.data[action.fieldname] = this.session.authData.user[params];
+                } else if(this.userpreferences.toUse[params]){
+                    this.data[action.fieldname] = this.userpreferences.toUse[params];
+                }
                 return true;
             case "set_message":
                 if (params instanceof Object) {
@@ -971,15 +991,16 @@ export class model implements OnDestroy {
     public setField(field, value, silent: boolean = false) {
         if (!field) return false;
 
+        const previousValue = this.data[field];
         this.data[field] = value;
 
         this.evaluateValidationRules(field, "change");
 
-        if (this.data[field] !== value) {
+        if (previousValue !== value && !silent) {
             this.field$.next({field, value});
         }
 
-        if (silent !== true) {
+        if (!silent) {
             this.data$.next(this.data);
         }
 
@@ -1108,7 +1129,7 @@ export class model implements OnDestroy {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId)
+        this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId, this.httpRequestsRefID)
             .subscribe({
                 next: (res) => {
                     this.data = res;
@@ -1175,7 +1196,7 @@ export class model implements OnDestroy {
     public delete(): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe({
+        this.backend.deleteRequest(`module/${this.module}/${this.id}`, null, this.httpRequestsRefID).subscribe({
             next: () => {
                 this.broadcast.broadcastMessage("model.delete", {
                     id: this.id,
@@ -1238,7 +1259,7 @@ export class model implements OnDestroy {
     public getAuditLog(filters: any = {}): Observable<any> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.getRequest(`module/${this.module}/${this.id}/auditlog`, filters).subscribe({
+        this.backend.getRequest(`module/${this.module}/${this.id}/auditlog`, filters, this.httpRequestsRefID).subscribe({
             next: (res) => {
                 responseSubject.next(res);
                 responseSubject.complete();
@@ -1592,6 +1613,9 @@ export class model implements OnDestroy {
                     this.setField(toField, (value === 'true' || value === '1') ? true : ((value === 'false' || value === '0') ? false : null));
                     break;
                 default:
+                    // set nullable in validation rules
+                    if(value == '(NULL)') value = null;
+
                     this.setField(toField, value);
                     break;
             }
@@ -1629,11 +1653,6 @@ export class model implements OnDestroy {
                 if (!copyRule.params?.number || !copyRule.params?.unit) return fromFieldDate;
 
                 return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
-            case "currentYear":
-                date = new moment.utc().tz(timeZone);
-                let year = date.year();
-                return year;
-
         }
         return "";
     }
@@ -1738,7 +1757,7 @@ export class model implements OnDestroy {
             if (fromModelData) {
                 let _modeldata = this.data;
                 _modeldata.id = this.id;
-                this.backend.checkDuplicates(this.module, _modeldata).subscribe({
+                this.backend.checkDuplicates(this.module, _modeldata, this.httpRequestsRefID).subscribe({
                     next: (res) => {
                         responseSubject.next(res);
                         responseSubject.complete();
@@ -1751,7 +1770,7 @@ export class model implements OnDestroy {
                     }
                 });
             } else {
-                this.backend.getDuplicates(this.module, this.id).subscribe({
+                this.backend.getDuplicates(this.module, this.id, this.httpRequestsRefID).subscribe({
                     next: (res) => {
                         responseSubject.next(res);
                         responseSubject.complete();
@@ -1992,6 +2011,8 @@ export class model implements OnDestroy {
 
         // unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();
+
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 
     public isDirty(): boolean {

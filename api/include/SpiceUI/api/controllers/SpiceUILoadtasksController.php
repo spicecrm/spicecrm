@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use stdClass;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -11,6 +12,10 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 class SpiceUILoadtasksController
 {
     public function getLoadTasks(Request $req, Response $res, array $args): Response {
+        // check if cached
+        $cached = SpiceCache::get('spiceUILoadTasks');
+        if($cached) return $res->withJson($cached);
+
         $db = DBManagerFactory::getInstance();
         $tasksArray = [];
         $routes = $db->query("SELECT * FROM sysuiloadtasks UNION SELECT * FROM sysuicustomloadtasks");
@@ -19,6 +24,10 @@ class SpiceUILoadtasksController
             $tasksArray[] = $route;
 
         }
+
+        // set the Cache
+        SpiceCache::set('spiceUILoadTasks', $tasksArray);
+
         return $res->withJson($tasksArray);
     }
 

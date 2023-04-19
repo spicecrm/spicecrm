@@ -30,11 +30,15 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
-use Sugar_Smarty;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 
+/**
+ * @deprecated
+ */
 class SpiceFTSCreator {
 
     public $ftsmodules = [];
@@ -76,9 +80,10 @@ class SpiceFTSCreator {
         }
         return $ftsmodules;
     }
+
     public function createFtsFieldsForModule($module){
         $ftsfields = [];
-        $labels = return_module_language(SpiceConfig::getInstance()->config['default_language'], $module);
+        $labels = LanguageManager::loadDatabaseLanguage(SpiceLanguageManager::getInstance()->getSystemDefaultLanguage());
         //get listview defs
         global $listViewDefs;
         $useVardefs = false;
@@ -103,7 +108,7 @@ class SpiceFTSCreator {
                         'id' => $id,
                         'fieldid' => $fieldid,
                         'fieldname' => $field['name'],
-                        'name' => (empty($labels[$field['vname']]) ? ucfirst($field['name']) : $labels[$field['vname']]),
+                        'name' => (empty($labels[$field['vname']]['default']) ? ucfirst($field['name']) : $labels[$field['vname']]['default']),
                         'indexfieldname' => $field['name'],
                         'displaypath' => $module,
                         'path' => 'root:'.$module.'::field:'.$field['name'],

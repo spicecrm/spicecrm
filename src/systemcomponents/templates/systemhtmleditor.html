@@ -206,8 +206,8 @@
             <ng-content></ng-content>
         </ul>
     </div>
-    <div class="slds-rich-text-editor__textarea slds-grid slds-grow" style="min-height: 0">
-        <div class="slds-rich-text-area__content slds-text-color_weak slds-grow slds-height_full">
+    <div class="slds-rich-text-editor__textarea slds-grid slds-grow" style="min-height: 0;">
+        <div class="slds-rich-text-area__content slds-text-color_weak slds-grow slds-height_full" style="min-height: 100%;">
             <div #htmleditor tabindex="0" [attr.contenteditable]="isActive" style="height: 100%; cursor: text;" (click)="exec()" (keyup)="exec()"  (paste)="onPaste($event)" (input)="onContentChange(htmleditor.innerHTML)"></div>
         </div>
     </div>

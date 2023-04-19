@@ -5,9 +5,9 @@
             <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
                 <h2>
                     <a *ngIf="!componentconfig.alwaysExpanded" href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"></system-label> ({{modelattachments.files.length}})</span>
+                        <span class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"></system-label> ({{this.filteredFiles.length}}/{{modelattachments.files.length}})</span>
                     </a>
-                    <span *ngIf="componentconfig.alwaysExpanded" class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"></system-label> ({{modelattachments.files.length}})</span>
+                    <span *ngIf="componentconfig.alwaysExpanded" class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_FILES'"></system-label> ({{this.filteredFiles.length}}/{{modelattachments.files.length}})</span>
                 </h2>
                 <system-utility-icon *ngIf="modelattachments.files.length > 0 && !componentconfig.alwaysExpanded" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>

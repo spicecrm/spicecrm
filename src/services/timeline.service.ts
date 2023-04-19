@@ -342,7 +342,7 @@ export class timeline {
 
                 let origin = this.parent.data;
 
-                if (records.length !== 0 && origin.date_entered.format('YYYY-MM') !== records.slice(-1)[0].date.substr(0, 7)) {
+                if (records.length !== 0 && origin.date_entered.format('YYYY-MM') !== records.slice(-1)[0].date.substring(0, 7)) {
                     origin.divider = origin.date_entered.format('YYYY-MM');
                 }
                 records.push(origin);

@@ -4,6 +4,7 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {configurationService} from '../../../services/configuration.service';
 import {backend} from '../../../services/backend.service';
+import {Subject} from "rxjs";
 
 
 /**
@@ -21,9 +22,17 @@ export class reporterconfig {
     public operatorAssignments: any = {};
 
     /**
+     * holds the loading boolean for the details view
+     */
+    public isLoading = {
+        presentation: false,
+        visualization: false,
+    };
+
+    /**
      * emits when the report shoudl refresh
      */
-    public refresh$: EventEmitter<any> = new EventEmitter<any>()
+    public refresh$: Subject<boolean> = new Subject<boolean>();
 
     /**
      * loads the operators and stores them in the config .. if they are loaded they are retirved from the config
@@ -66,7 +75,11 @@ export class reporterconfig {
      * trigger a refresh
      */
     public refresh() {
-        this.refresh$.emit(true);
+        this.refresh$.next(true);
+    }
+
+    public cancelRequests() {
+        this.refresh$.next(false);
     }
 
     public resetUserFilters() {

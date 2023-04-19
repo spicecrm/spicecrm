@@ -84,6 +84,31 @@ class SpiceUIConfLoader
         'sysuirolemodules',
         'sysuiroles',
         'sysuiroutes',
+        'sysexchangemappingsegments',
+        'sysexchangemappingsegmentitems',
+        'sysexchangemappingmodules',
+        'sysmsgraphmappingsegments',
+        'sysmsgraphmappingsegmentitems',
+        'sysmsgraphmappingmodules',
+    ];
+
+    /**
+     * specific records from tables without package column shall be inserted, NOT updated, NOT deleted
+     * @var string[]
+     */
+    private $insertOnlyTables = [
+        'nodata',
+        'sysfts',
+        'sysnumberranges',
+        'sysnumberrangeallocation',
+        'syssalesdocnumberranges',
+        'syssalesdoctypes',
+        'syssalesdoctypesflow',
+        'syssalesdoctypesitemtypes',
+        'syscategorytrees',
+        'syscategorytreelinks',
+        'schedulerjobtasks',
+        'schedulerjobs'
     ];
 
     /**
@@ -184,12 +209,29 @@ class SpiceUIConfLoader
             throw new Exception($errormsg);
         }
 
-        $tables = array_keys($response);
+        // gather tables and all the record IDs
+        foreach ($response as $conftable => $conf){
+            foreach($conf as $recordId => $recordData){
+                $tables[$conftable][] = $recordId;
+            }
+        }
 
-        foreach ($tables as $conftable){
-            $delWhere = ['package' => $package];
-            if(!$db->deleteQuery($conftable, $delWhere)){
-                LoggerManager::getLogger()->fatal('error deleting package {$package}  '.$db->lastError());
+        foreach ($tables as $conftable => $recordIds){
+            if(in_array($conftable, $this->insertOnlyTables)){
+                continue;
+            }
+            try {
+                $delWhere = ['package' => $package];
+                $db->deleteQuery($conftable, $delWhere);
+            } catch (Exception $e){
+                // just go on -  the table just has no package column
+            }
+
+            foreach($recordIds as $recordId){
+                $delWhere = ['id' => $recordId];
+                if (!$db->deleteQuery($conftable, $delWhere)) {
+                    LoggerManager::getLogger()->fatal('error deleting package {$package}  ' . $db->lastError());
+                }
             }
         }
     }
@@ -336,11 +378,28 @@ class SpiceUIConfLoader
                     foreach ($decodeData as $key => $value) {
                         $decodeData[$key] = (is_null($value) || $value === "" ? NULL :  $value);
                     }
+
+                    // set the flag to check on insert
+                    $skipInsert = false;
+
                     //delete before insert
-                    $delWhere = ['id' => $decodeData['id']];
-                    if(!$db->deleteQuery($tb, $delWhere)){
-                        LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
+                    if(!in_array($tb, $this->insertOnlyTables)){
+                        $delWhere = ['id' => $decodeData['id']];
+                        if(!$db->deleteQuery($tb, $delWhere)){
+                            LoggerManager::getLogger()->fatal("error deleting $tb entry {$decodeData['id']} ".$db->lastError());
+                        }
+                    } else{
+                        // check if record is present
+                        if($dbResRow = $db->getOne("select * from $tb where id='{$decodeData['id']}'")){
+                            $skipInsert = true;
+                        }
                     }
+
+                    // skip insert if this is a record we should keep
+                    if($skipInsert) {
+                        continue;
+                    }
+
                     //run insert
 //                if($tb == 'email_templates'){
 //                    file_put_contents('spicecrm.log', 'dict email_templates '.print_r(SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'], true)."\n", FILE_APPEND);

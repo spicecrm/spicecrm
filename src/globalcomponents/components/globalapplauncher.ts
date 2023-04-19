@@ -2,12 +2,13 @@
  * @module GlobalComponents
  */
 import {
-    Component, HostListener
+    Component, HostListener, Input
 } from '@angular/core';
 import {Router} from "@angular/router";
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modal} from '../../services/modal.service';
+import {userpreferences} from "../../services/userpreferences.service";
 
 /**
  * renders the app launcher icon and the name of the curent active role. If pressed the app launcher dialog is rendered as modal
@@ -29,7 +30,11 @@ export class GlobalAppLauncher {
         this.showAppLauncher();
     }
 
-    constructor(public metadata: metadata,public modal: modal,public language: language,public router: Router) {
+    constructor(public metadata: metadata,
+                public modal: modal,
+                public language: language,
+                public userPreferences: userpreferences,
+                public router: Router) {
 
     }
 

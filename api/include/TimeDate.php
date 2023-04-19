@@ -40,7 +40,7 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
@@ -355,19 +355,10 @@ class TimeDate
             }
         }
 
-        $cacheKey= $this->get_date_time_format_cache_key($user);
-        $cachedValue = SugarCache::sugar_cache_retrieve($cacheKey);
 
-        if(!empty($cachedValue) )
-        {
-            return $cachedValue;
-        }
-        else
-        {
-            $value = $this->merge_date_time($this->get_date_format($user), $this->get_time_format($user));
-            SugarCache::sugar_cache_put($cacheKey,$value,0);
-            return $value;
-        }
+        $value = $this->merge_date_time($this->get_date_format($user), $this->get_time_format($user));
+        return $value;
+
     }
 
     /**
@@ -706,12 +697,7 @@ class TimeDate
      */
     public function nowDb()
     {
-        if(!$this->allow_cache) {
-            $nowGMT = $this->getNow();
-        } else {
-            $nowGMT = $this->now;
-        }
-        return $this->asDb($nowGMT);
+        return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format(self::DB_DATETIME_FORMAT);
     }
 
     /**
@@ -720,12 +706,7 @@ class TimeDate
      */
     public function nowDbDate()
     {
-        if(!$this->allow_cache) {
-            $nowGMT = $this->getNow();
-        } else {
-            $nowGMT = $this->now;
-        }
-        return $this->asDbDate($nowGMT, true);
+        return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format(self::DB_DATE_FORMAT);
     }
 
     /**

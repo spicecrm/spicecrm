@@ -10,13 +10,14 @@
                         (click)="expand(item, $event)">
                     <system-button-icon [icon]="item.systemTreeDefs.expanded ? 'chevrondown' : 'chevronright'" size="xx-small"></system-button-icon>
                 </button>
-                <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || 'record'" size="xx-small"
+                <system-utility-icon *ngIf="!config.collapsible" [icon]="config.icon || item.systemTreeDefs.icon || 'record'" size="small"
                                      [addclasses]="'slds-p-around--xxx-small slds-m-right--xx-small'"></system-utility-icon>
             </div>
             <div class="slds-truncate">
                 <span class="slds-tree__item-label slds-truncate">{{item.name}}</span>
             </div>
         </div>
+        <ng-container *ngTemplateOutlet="customButtonsContainer; context: {$implicit: item.id}"></ng-container>
         <div *ngIf="config.canadd && item.systemTreeDefs.isSelected" class="slds-m-right--xx-small">
             <button class="slds-button slds-button_icon slds-m-top--none" (click)="addItem(item.id, item.name)">
                 <system-button-icon icon="add" size="xx-small"></system-button-icon>

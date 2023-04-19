@@ -16,6 +16,13 @@ export class Home {
     public hasDashboardSet: boolean = false;
     constructor(public broadcast: broadcast, public navigation: navigation, public metadata: metadata, public userpreferences: userpreferences) {
         this.userpreferences.loadPreferences().subscribe(res => this.hasDashboardSet = res.home_dashboardset && res.home_dashboardset.length > 0);
+        // fallback to value set in active role
+        if(!this.hasDashboardSet){
+            let activeRole = this.metadata.getActiveRole();
+            if(activeRole && activeRole.default_dashboardset && activeRole.default_dashboardset){
+                this.hasDashboardSet = true;
+            }
+        }
         // set the navigation paradigm
         this.navigation.setActiveModule('Home');
     }

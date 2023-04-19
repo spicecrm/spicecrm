@@ -109,6 +109,24 @@
                 </div>
             </div>
         </div>
+        <div [class.slds-hide]="!spiceImport.fileId" class="slds-grid slds-p-around--xx-small">
+            <div class="slds-form-element slds-p-horizontal--xx-small slds-size--1-of-1">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_METHOD"></system-label>
+                </label>
+                <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
+                    <system-select [selectList]="spiceImport.availableClasses" [(ngModel)]="selectedClass"
+                                   (ngModelChange)="getClassMethods($event.name)" class="slds-grow"></system-select>
+                    <div class="slds-col slds-size--1-of-3 slds-select_container">
+                        <select class="slds-select" [disabled]="spiceImport.availableClasses.length == 0"
+                                [(ngModel)]="spiceImport.selectedMethod">
+                            <option *ngFor="let o of selectedClassMethods"
+                                    [value]="selectedClass.name + '->' + o">{{o}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div [system-overlay-loading-spinner]="isLoading" class="slds-size--3-of-4 slds-height_full">
         <table *ngIf="spiceImport.fileHeader.length > 0"

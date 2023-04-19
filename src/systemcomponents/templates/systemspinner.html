@@ -1,4 +1,4 @@
-<div class="slds-grid slds-grid--vertical">
+<div *ngIf="!asOverlay; else overlayContainer" class="slds-grid slds-grid--vertical">
     <div class="cssload-container">
         <div class="cssload-double-torus" [ngStyle]="spinnerStyle"></div>
     </div>
@@ -6,3 +6,16 @@
         <system-label [label]="message"></system-label>
     </div>
 </div>
+
+<ng-template #overlayContainer>
+    <div class="slds-grid slds-grid--vertical slds-grid--vertical-align-center">
+        <div style="width: 48px; border-radius: 50%; box-shadow: 0 0 5px 0 #555; padding: .5rem; background-color: #fff; color: #080707;">
+            <div class="cssload-container">
+                <div class="cssload-double-torus" style="width: 32px; height: 32px;"></div>
+            </div>
+        </div>
+        <button *ngIf="cancellable" (click)="onCancel()" class="slds-button slds-button--brand slds-m-top--x-small">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+    </div>
+</ng-template>

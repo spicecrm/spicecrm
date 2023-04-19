@@ -28,7 +28,13 @@ class ConfigTransferController
         'sysnumberranges', # number ranges
         'syslogusers', # log configuration for specific users
         'sysuicustomcalendaritems',
-        'sysapilogconfig'
+        'sysapilogconfig',
+        'sysobjectemailtokens', # unique SpiceMailToken per user & module
+        'sysuiassets', # CI config
+        'sysauthconfig', # auth client config
+        'sysnumberranges',
+        'sysnumberrangeallocation',
+        'syssalesdocnumberranges'
     ];
 
     static private $dataFormat = 2;

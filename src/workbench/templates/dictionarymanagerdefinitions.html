@@ -1,13 +1,23 @@
 <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center">
-    <system-utility-icon icon="filterList" size="x-small"></system-utility-icon>
-    <system-input-text placeholder="LBL_SEARCH" class="slds-grow slds-p-horizontal--xx-small" [(ngModel)]="definitionfilterterm"></system-input-text>
-    <div class="slds-select_container">
+    <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="definitionfilterterm"></system-input-text>
+    <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterscope">
+        <system-select-icon-item></system-select-icon-item>
+        <system-select-icon-item value="g" icon="world"></system-select-icon-item>
+        <system-select-icon-item value="c" icon="people"></system-select-icon-item>
+    </system-select-icon>
+    <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterstatus">
+        <system-select-icon-item></system-select-icon-item>
+        <system-select-icon-item value="d" icon="light_bulb" colorclass="slds-icon-text-warning"></system-select-icon-item>
+        <system-select-icon-item value="a" icon="light_bulb" colorclass="slds-icon-text-success"></system-select-icon-item>
+        <system-select-icon-item value="i" icon="light_bulb" colorclass="slds-icon-text-light"></system-select-icon-item>
+    </system-select-icon>
+    <div class="slds-select_container slds-p-left--xx-small">
         <select class="slds-select" [(ngModel)]="definitionfiltertype">
-            <option value="">-</option>
-            <option value="module">module</option>
-            <option value="metadata">metadata</option>
-            <option value="template">template</option>
-            <option value="template">relationship</option>
+            <option value=""><system-label label="LBL_ALL"></system-label></option>
+            <option value="module"><system-label label="LBL_MODULE"></system-label></option>
+            <option value="metadata"><system-label label="LBL_METADATA"></system-label></option>
+            <option value="template"><system-label label="LBL_TEMPLATE"></system-label></option>
+            <option value="relationship"><system-label label="LBL_RELATIONSHIP"></system-label></option>
         </select>
     </div>
 </div>

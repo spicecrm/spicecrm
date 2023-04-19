@@ -105,7 +105,7 @@ export class ObjectListViewHeaderListSelector implements OnInit {
      * simple getter if the button shoudl be disabled
      */
     get disabled() {
-        return !(this.componentconfig.lists.length > 1) || this.modellist.isLoading;
+        return this.componentconfig.lists.length <= 1;
     }
 
     /**

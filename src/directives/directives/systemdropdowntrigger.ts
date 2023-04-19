@@ -2,21 +2,21 @@
  * @module DirectivesModule
  */
 import {
-    AfterViewChecked,
     ChangeDetectorRef,
     Directive,
     ElementRef,
     HostBinding,
     HostListener,
     Input,
-    OnDestroy,
+    OnDestroy, OnInit,
     Renderer2
 } from '@angular/core';
 import {footer} from "../../services/footer.service";
+import {layout} from "../../services/layout.service";
 
 /**
  * This directive can be added to an element to handle show/hide the dropdown element
- * it also move the dropdown element to the footer and re position it to prevent any overflow.
+ * it also moves the dropdown element to the footer and re position it to prevent any overflow.
  *
  * <div system-dropdown-trigger>
  *      <button>dropdown button</button>
@@ -28,7 +28,7 @@ import {footer} from "../../services/footer.service";
 @Directive({
     selector: '[system-dropdown-trigger]'
 })
-export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewChecked {
+export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
 
     @HostBinding('class.slds-is-open') public dropDownOpen: boolean = false;
     public hasTriggerButton = false;
@@ -37,6 +37,11 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     public triggerClickListener: any;
     public previousTriggerRect: any;
     public dropdownElement: HTMLElement;
+    /**
+     * if true apply the sticky bottom class for the dropdown container
+     * @private
+     */
+    @Input() private stickyOnMobile: boolean = false;
     /*
     * @input dropdowntrigger: boolean = false
     */
@@ -46,6 +51,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
         public renderer: Renderer2,
         public elementRef: ElementRef,
         public footer: footer,
+        public layout: layout,
         public cdRef: ChangeDetectorRef
     ) {
 
@@ -58,19 +64,26 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
         return this.hasTriggerButton ? this.triggerElementButton.nativeElement : this.elementRef.nativeElement;
     }
 
-    /*
-    * re position the dropdown if any scroll or resize event has been detected
-    */
-    public ngAfterViewChecked() {
-        if (this.dropDownOpen && this.dropdownElement) {
-            this.setDropdownElementPosition();
-        }
+    /**
+     * set dropdown element
+     */
+    public ngOnInit() {
+        this.setDropdownElement();
     }
 
     public ngOnDestroy() {
+        this.removeScrollListener();
         this.restoreDropdownFromFooter();
         if (this.clickListener) this.clickListener();
         if (this.triggerClickListener) this.triggerClickListener();
+    }
+
+    /**
+     * remove scroll listener
+     * @private
+     */
+    private removeScrollListener() {
+        window.removeEventListener("scroll", this.scrollHandlerFn, {capture: true});
     }
 
     /**
@@ -82,30 +95,45 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
      * remove dropdown from footer if it is closed
      * remove global click listener
      */
-    public toggleDropdown( event) {
+    public toggleDropdown(event) {
 
-        if ( event ) event.stopPropagation();
-        if (this.dropdowntriggerdisabled) return false;
+        if (!this.dropdownElement) {
+            this.setDropdownElement();
+        }
+
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        if (this.dropdowntriggerdisabled || !this.dropdownElement) return false;
 
         this.dropDownOpen = !this.dropDownOpen;
 
-        if ( this.dropDownOpen ) {
-            this.setDropdownElement();
-            if( this.dropdownElement ) {
-                this.moveDropdownToFooter();
-                this.setDropdownElementPosition();
-            }
-        }
-
         if (this.dropDownOpen) {
-            if (event) event.preventDefault();
-            this.clickListener = this.renderer.listen("document", "click", (event2) => this.onClick(event2));
+            this.moveDropdownToFooter();
+            this.setDropdownElementPosition();
+
+            this.scrollHandlerFn = () => requestAnimationFrame(
+                () => this.setDropdownElementPosition()
+            );
+
+            this.clickListener = this.renderer.listen("document", "click", (e) => this.onClick(e));
+            // use window scroll listener with capture to catch any scroll event in the app
+            window.addEventListener("scroll", this.scrollHandlerFn, {capture: true});
+
         } else {
+            this.removeScrollListener();
             this.restoreDropdownFromFooter();
             this.clickListener();
         }
-
     }
+
+    /**
+     * holds the scroll handler
+     * @private
+     */
+    private scrollHandlerFn: () => void;
 
     /**
      * open the dropdown on the host click if the trigger button was not defined
@@ -142,12 +170,11 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * @set dropdownElement from origin children
     */
     public setDropdownElement() {
-        if (!this.dropdownElement) {
-            for (let child of this.elementRef.nativeElement.children) {
-                if (child.classList.contains('slds-dropdown')) {
-                    this.dropdownElement = child;
-                    break;
-                }
+        if (this.dropdownElement) return;
+        for (let child of this.elementRef.nativeElement.children) {
+            if (child.classList.contains('slds-dropdown')) {
+                this.dropdownElement = child;
+                break;
             }
         }
     }
@@ -156,6 +183,13 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     * set the dropdown element position
     */
     public setDropdownElementPosition() {
+
+        if (this.stickyOnMobile && this.layout.screenwidth == 'small') {
+            this.renderer.addClass(this.dropdownElement, 'spice-dropdown-mobile');
+            return;
+        }
+
+        this.renderer.removeClass(this.dropdownElement, 'spice-dropdown-mobile');
 
         let triggerRect = this.triggerElement.getBoundingClientRect();
 
@@ -218,6 +252,7 @@ export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewCheck
     public onClick(event): void {
         if (!this.elementRef.nativeElement.contains(event.target)) {
             this.dropDownOpen = false;
+            this.removeScrollListener();
             this.restoreDropdownFromFooter();
             this.clickListener();
             // make sure we detect changes in case we are on a push strategy

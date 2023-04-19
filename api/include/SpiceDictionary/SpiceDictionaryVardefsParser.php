@@ -38,7 +38,7 @@ class SpiceDictionaryVardefsParser
         $field = [];
         $field['name'] = self::parseFieldName($row);
         $field['reportable'] = true;
-        $field['duplicate_merge'] = true;
+        $field['duplicate_merge'] = $row['duplicate_merge'];
         $field['sysdomainfield_id'] = $row['sysdomainfield_id'];
         $field['vname'] = (!empty($row['label']) ? $row['label'] : $row['itemlabel']);
         if(!empty($row['itemlabelinputhelper'])){

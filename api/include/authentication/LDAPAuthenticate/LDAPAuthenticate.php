@@ -139,7 +139,7 @@ class LDAPAuthenticate implements AuthenticatorI
                 $this->baseDn = $authSys['base_dn'];
                 $this->loginAttr = $authSys['login_attr'];
                 $this->bindAttr = $authSys['bind_attr'];
-                $this->loginFilter = $authSys['loginFilter'];
+                $this->loginFilter = $authSys['login_filter'];
                 $this->ldapAuthentication = $authSys['ldap_authentication'];
                 $this->groups = $authSys['ldap_groups'];
                 $this->autoCreateUser = $authSys['auto_create_users'];
@@ -218,7 +218,7 @@ class LDAPAuthenticate implements AuthenticatorI
         $ldapConn = ldap_connect($this->server, $this->port);
         if ($this->ldapConn === false) {
             $message = 'Unable to ldap_connect. check syntax of server and port (' . $this->server . ':' . $this->port . '). ldap server has not been contacted in this stage.';
-            LoggerManager::getLogger()->fatal($message);
+            LoggerManager::getLogger()->fatal('ldap', $message);
             return false;
         }
         ldap_set_option($this->ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -258,7 +258,12 @@ class LDAPAuthenticate implements AuthenticatorI
 
         // lunch the search in Active Directory
         try {
-            $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
+            $defaultFilter = [
+                $this->loginAttr => $name
+            ];
+            $filter = $this->buildLdapSearchFilter($defaultFilter);
+//            $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
+            $result = ldap_search($this->ldapConn, $this->baseDn, $filter, array_merge(['dn'], [$this->bindAttr]));
         } catch (Exception $e) {
             $error = $this->logLdapError();
             // throw new Exception("unable to query ldap: " . $error);
@@ -311,6 +316,43 @@ class LDAPAuthenticate implements AuthenticatorI
             }
         }
         return true;
+    }
+
+    /**
+     * build the filter string for ldap_search
+     * the filter will contain (&(filter1string)(filter2string))
+     * each main key withing the json string will be a content definition in brackets
+     * @param array $loginAttributeFilter
+     * @return string
+     */
+    private function buildLdapSearchFilter(array $defaultFilter){
+        // load this one anyway
+        $filterArray = $defaultFilter;
+
+        // check on additional filters
+        if(!empty($this->loginFilter) && $login_filter = json_decode($this->loginFilter, true)){
+            foreach($login_filter as $filterKey => $filterValues){
+                $filterValuesStringParts = [];
+                if(is_array($filterValues)){
+                    foreach($filterValues as $filterValuesIdx){
+                        foreach($filterValuesIdx as $filterValueKey => $filterValueKeyValue){
+                            $filterValuesStringParts[] = $filterValueKey."=".$filterValueKeyValue;
+                        }
+                    }
+                }
+                if(!empty($filterValuesStringParts)){
+                    $filterArray[$filterKey] = implode(",", $filterValuesStringParts);
+                }
+            }
+        }
+
+        // create full filter string
+        $filter = "(&";
+        foreach($filterArray as $filterArrayKey => $filterArrayValue){
+            $filter.="(".$filterArrayKey."=".$filterArrayValue.")";
+        }
+        $filter.= ")";
+        return $filter;
     }
 
     /**
@@ -405,32 +447,41 @@ class LDAPAuthenticate implements AuthenticatorI
      */
     private function maintainAclProfiles($userObj)
     {
+        // current allocated profiles to user
         $userAclProfiles = SpiceACLProfile::getProfilesForUserRows($userObj->id);
+        $userAclProfileIds = [];
         foreach ($userAclProfiles as $userAclProfile) {
             $userAclProfileIds[] = $userAclProfile['id'];
         }
+
+        // user LDAP memberships to $this->ldapGroupMemberships
         if ($this->ldapGroupMemberships === null) {
             $this->loadGroupMemberShips();
         }
-        $db = DBManagerFactory::getInstance();
 
-        //first check for missing profiles
-        $query = $db->query("SELECT * FROM spiceaclprofiles_ldap_groups where deleted=0");
+        // collect profiles mapped to LDAP memeberships
+        $db = DBManagerFactory::getInstance();
+        $requiredSpiceAclProfileIds = [];
+        $query = $db->query("SELECT * FROM spiceaclprofiles_ldap_groups where deleted=0 AND ldap_group_name IN('".implode("', '", $this->ldapGroupMemberships)."')");
         while ($row = $db->fetchByAssoc($query)) {
             $requiredSpiceAclProfileIds[] = $row['spiceaclprofile_id'];
-            if (!in_array($row['spiceaclprofile_id'], $userAclProfileIds)) {
-                //required profile is not in spiceaclprofile, lets add it
-                LoggerManager::getLogger()->info("ldap maintainAclProfiles: adding acl profile " . $row['spiceaclprofile_id'] . " for user " . $userObj->id);
-                $q = "insert into spiceaclprofiles_users(id,user_id, spiceaclprofile_id) values('" . SpiceUtils::createGuid() . "','" . $userObj->id . "', '" . $row['spiceaclprofile_id'] . "')";
+        }
+
+        // INSERT missing profiles
+        foreach ($requiredSpiceAclProfileIds as $requiredProfileId) {
+            if(!in_array($requiredProfileId, $userAclProfileIds)){
+                LoggerManager::getLogger()->debug('ldap', "ldap maintainAclProfiles: adding acl profile " . $row['spiceaclprofile_id'] . " for user " . $userObj->id);
+                $q = "insert into spiceaclprofiles_users(id,user_id, spiceaclprofile_id) values('" . SpiceUtils::createGuid() . "','" . $userObj->id . "', '" . $requiredProfileId . "')";
                 $db->query($q);
             }
         }
 
-        //now check if user has too many aclprofiles
-        foreach ($userAclProfiles as $existingSpiceAclProfile) {
-            if (!in_array($existingSpiceAclProfile['id'], $requiredSpiceAclProfileIds)) {
-                LoggerManager::getLogger()->info("ldap maintainAclProfiles: removing acl profile " . $existingSpiceAclProfile['id'] . " from user " . $userObj->id);
-                $db->query("DELETE FROM spiceaclprofiles_users WHERE spiceaclprofile_id = '" . $existingSpiceAclProfile['id'] . "' and user_id = '" . $userObj->id . "'");
+        // REMOVE unnecessary profiles
+        foreach ($userAclProfileIds as $userAclProfileId) {
+            if (!in_array($userAclProfileId, $requiredSpiceAclProfileIds)) {
+                LoggerManager::getLogger()->info("ldap maintainAclProfiles: removing acl profile " . $userAclProfileId . " from user " . $userObj->id);
+                $d = "DELETE FROM spiceaclprofiles_users WHERE spiceaclprofile_id = '" . $userAclProfileId . "' and user_id = '" . $userObj->id . "'";
+                $db->query($d);
             }
         }
 
@@ -598,7 +649,7 @@ class LDAPAuthenticate implements AuthenticatorI
             }
             return $rows;
         } catch (\Exception $e) {
-            LoggerManager::getLogger()->info("unable to query ldap_settings, table not existing?");
+            LoggerManager::getLogger()->fatal('ldap', "unable to query ldap_settings, table not existing?");
             return [];
         }
 

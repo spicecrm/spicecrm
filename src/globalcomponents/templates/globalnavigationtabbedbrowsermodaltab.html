@@ -3,6 +3,6 @@
         <system-utility-icon *ngIf="tab.displayicon" [icon]="tab.displayicon" [title]="modelCount() + ' ' + language.getLabel('LBL_MODELS')" size="x-small" class="slds-p-right--x-small"></system-utility-icon>
         <system-icon *ngIf="tab.displaymodule" [module]="tab.displaymodule" size="x-small" divClass="slds-p-right--x-small"></system-icon>
     </div>
-    <div class="slds-truncate slds-text-link_faux" (click)="activateTab()">{{tab.displayname}}</div>
+    <div class="slds-truncate slds-text-link_faux" (click)="activateTab()"><system-label label="{{tab.displayname}}"></system-label></div>
     <system-utility-icon class="slds-p-left--x-small" size="x-small" icon="warning" *ngIf="navigation.anyDirtyModel(tab.id)" addclasses="slds-icon-text-error"></system-utility-icon>
 </div>

@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
@@ -50,8 +22,10 @@ class ElasticHandler
     var $server = '127.0.0.1';
     var $port = '9200';
     var $protocol = 'http';
-    var $ssl_verifyhost = 2;
-    var $ssl_verifypeer = 1;
+    var $username = '';
+    var $password = '';
+    var $ssl_verifyhost = 0;
+    var $ssl_verifypeer = 0;
 
     var $version = '7';
 
@@ -82,11 +56,12 @@ class ElasticHandler
         if (isset(SpiceConfig::getInstance()->config['fts']['protocol'])) {
             $this->protocol = SpiceConfig::getInstance()->config['fts']['protocol'];
         }
-        if (isset(SpiceConfig::getInstance()->config['fts']['ssl_verifyhost'])) {
-            $this->ssl_verifyhost = SpiceConfig::getInstance()->config['fts']['ssl_verifyhost'];
-        }
-        if (isset(SpiceConfig::getInstance()->config['fts']['ssl_verifypeer'])) {
-            $this->ssl_verifypeer = SpiceConfig::getInstance()->config['fts']['ssl_verifypeer'];
+
+        if(SpiceConfig::getInstance()->config['fts']['https']) $this->protocol = 'https';
+
+        if(SpiceConfig::getInstance()->config['fts']['ssl_verify']){
+            $this->ssl_verifyhost = 1;
+            $this->ssl_verifypeer = 1;
         }
 
         if (isset(SpiceConfig::getInstance()->config['fts']['number_of_shards'])) {
@@ -96,6 +71,8 @@ class ElasticHandler
             $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_replicas'];
         }
 
+        $this->username = SpiceConfig::getInstance()->config['fts']['username'];
+        $this->password = SpiceConfig::getInstance()->config['fts']['password'];
 
         // get the elastic version - only themajor number is important
         //$version = $this->getVersion();
@@ -140,7 +117,7 @@ class ElasticHandler
      */
     function getHitModule($hit)
     {
-        if ($hit['_type'] != '_doc') {
+        if ($hit['_type'] && $hit['_type'] != '_doc') {
             return $hit['_type'];
         } else {
             return $hit['_source']['_module'];
@@ -246,6 +223,15 @@ class ElasticHandler
         }
 
         return $indexes;
+    }
+
+    public function deleteAllIndexes()
+    {
+        $response = json_decode($this->query('GET', $this->indexPrefix . '*/_stats'), true);
+        foreach($response['indices'] as $index => $data){
+            $response = $this->query('DELETE', $index);
+        }
+        return true;
     }
 
     /**
@@ -484,6 +470,45 @@ class ElasticHandler
         return $response;
     }
 
+    private function buildUrl($url = '', $params = []){
+        // build the basic URL
+        $cURL = $this->protocol . '://' . $this->server . ':' . $this->port;
+
+        // add the add url
+        if (!empty($url)) $cURL .= '/' . $url;
+
+        // build with params
+        if (!empty($params)) {
+            if (substr($cURL, -1) != '?')
+                $cURL .= '?';
+            $cURL .= http_build_query($params);
+        }
+
+        return $cURL;
+    }
+
+    private function buildOptions($method, $data, $contenttype = 'application/json'){
+        $curlOptions = [
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
+            CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
+            CURLOPT_HEADER => 1,
+            CURLOPT_HTTPHEADER => [
+                "Content-Type: $contenttype",
+                'Content-Length: ' . strlen($data)
+            ]
+        ];
+
+        // if we have auth data add it to the request
+        if($this->username && $this->password){
+            $curlOptions[CURLOPT_USERPWD] = "{$this->username}:{$this->password}";
+        }
+
+        return $curlOptions;
+    }
+
     /**
      * exeutes the query on the elastic index
      *
@@ -498,29 +523,9 @@ class ElasticHandler
 
         $data_string = !empty($body) ? json_encode($body) : '';
 
-        $cURL = $this->protocol . '://' . $this->server . ':' . $this->port . '/';
-        if (!empty($url)) $cURL .= $url;
+        $ch = curl_init( $this->buildUrl($url, $params));
 
-        if (!empty($params)) {
-            if (substr($cURL, -1) != '?')
-                $cURL .= '?';
-            $cURL .= http_build_query($params);
-        }
-
-        $ch = curl_init($cURL);
-
-        $curlOptions = [
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => $data_string,
-            CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
-            CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
-            CURLOPT_HEADER => 1,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string)
-            ]
-        ];
+        $curlOptions = $this->buildOptions($method, $data_string);
         curl_setopt_array($ch, $curlOptions);
 
         $logEntryHandler = new APILogEntryHandler();
@@ -555,28 +560,8 @@ class ElasticHandler
     {
         $body = implode("\n", $lines) . "\n";
 
-        $cURL = $this->protocol . '://' . $this->server . ':' . $this->port . '/_bulk';
-
-        // check if we have params for the synchronous processing
-        if (!empty($params)) {
-            if (substr($cURL, -1) != '?')
-                $cURL .= '?';
-            $cURL .= http_build_query($params);
-        }
-
-        $ch = curl_init($cURL);
-        $curlOptions = [
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => $body,
-            CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
-            CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
-            CURLOPT_HEADER => 1,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/x-ndjson',
-                'Content-Length: ' . strlen($body)
-            ]
-        ];
+        $ch = curl_init( $this->buildUrl('_bulk', $params));
+        $curlOptions = $this->buildOptions('POST', $body, 'application/x-ndjson');
         curl_setopt_array($ch, $curlOptions);
 
         $logEntryHandler = new APILogEntryHandler();

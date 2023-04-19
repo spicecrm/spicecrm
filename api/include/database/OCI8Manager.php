@@ -167,6 +167,7 @@ class OCI8Manager extends DBManager
         'encrypt' => 'varchar2(255)',
         'file' => 'varchar2(255)',
         'decimal_tpl' => 'number(%d, %d)',
+        'json' => 'json'
     ];
 
     /**
@@ -380,12 +381,12 @@ class OCI8Manager extends DBManager
 
     public function fromConvert($string, $type)
     {
-        // YYYY-MM-DD HH:MM:SS
-        $tmp = explode(' ', $string);
         switch ($type) {
             case 'date':
+                $tmp = explode(' ', $string);
                 return $tmp[0];
             case 'time':
+                $tmp = explode(' ', $string);
                 return $tmp[1];
         }
 
@@ -414,7 +415,7 @@ class OCI8Manager extends DBManager
         $this->query_time = microtime(true);
         $this->lastQuery = $sql;
 
-        $this->log->info('EXECUTING Query: ' . $sql);
+        if($this->enablelog) $this->log->sql('EXECUTING Query: ' . $sql);
 
         $stmt = $suppress ? @oci_parse($this->database, $sql) : oci_parse($this->database, $sql);
         $exec_result = $suppress ? @oci_execute($stmt, $this->transactional ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS) : oci_execute($stmt, $this->transactional ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS);
@@ -424,7 +425,7 @@ class OCI8Manager extends DBManager
         // write a global querytime
         $GLOBALS['totalquerytime'] += $this->query_time;
         if ($this->query_time > 1000)
-            LoggerManager::getLogger()->fatal('SLOW QUERY ' . $sql);
+            LoggerManager::getLogger()->slowsql('SLOW QUERY ' . $sql);
 
         if (!$exec_result) {
             if (!empty($stmt)) {
@@ -831,8 +832,9 @@ class OCI8Manager extends DBManager
             $new_row = [];
 
             foreach ($row as $k => $v) {
+                // if we have an object it is an OCIlob
                 if (is_object($v)) {
-                    $v = $v->read($v->size());
+                    $v = $v->load();
                 }
                 $new_row[strtolower($k)] = $v;
             }
@@ -871,9 +873,9 @@ class OCI8Manager extends DBManager
             if (!$this->database) {
                 if ($dieOnError) {
                     if (isset($GLOBALS['app_strings']['ERR_NO_DB'])) {
-                        sugar_die($GLOBALS['app_strings']['ERR_NO_DB']);
+                        SpiceUtils::sugarDie($GLOBALS['app_strings']['ERR_NO_DB']);
                     } else {
-                        sugar_die("Could not connect to the database. Please refer to sugarcrm.log for details.");
+                        SpiceUtils::sugarDie("Could not connect to the database. Please refer to sugarcrm.log for details.");
                     }
                 } else {
                     return false;
@@ -1634,20 +1636,20 @@ class OCI8Manager extends DBManager
             return false;
         }
 
-        if (count($lob_fields) > 0) {
+        if (is_array($lob_fields) && count($lob_fields) > 0) {
             // perform the sql and return the wanted column into an oracle variable represented by ":" in order to use it later on
             $sql .= " RETURNING " . implode(",", array_keys($lob_fields)) . ' INTO ' . implode(",", array_values($lob_fields));
         }
 
-        $this->log->info("Oracle Execute: $sql");
+        if($this->enablelog) $this->log->sql("Oracle Execute: $sql");
         $stmt = oci_parse($this->database, $sql);
         if ($this->checkError("Update parse failed: $sql", false)) {
-            $this->log->info("Oracle Execute ERROR RAISED !!!");
+            if($this->enablelog) $this->log->sql("Oracle Execute ERROR RAISED !!!");
             return false;
         }
 
         $lobs = [];
-        if (count($lob_fields) > 0) {
+        if (is_array($lob_fields) && count($lob_fields) > 0) {
             foreach ($lob_fields as $field => $descriptor) {
                 if (isset($lob_dataType[$field])) {
                     $newlob = oci_new_descriptor($this->database, OCI_DTYPE_LOB);
@@ -1673,9 +1675,9 @@ class OCI8Manager extends DBManager
                     // save the actual value stored inside the orcale variable reference by reassigning it
                     // because we returned the values before into heap, we can now overwrite them and did a backdoor to the 1k signs cap
                     if ($lob->save($lob_data[$field])) {
-                        $this->log->info("saved LOB content of " . $field . " directly: " . $lob_data[$field]);
+                        if($this->enablelog) $this->log->sql('oci8lob', "saved LOB content of " . $field . " directly: " . $lob_data[$field]);
                     } else {
-                        $this->log->info("not saved LOB content of " . $field . " directly: " . $lob_data[$field]);
+                        if($this->enablelog) $this->log->sql('oci8lob', "not saved LOB content of " . $field . " directly: " . $lob_data[$field]);
                     }
                 }
             }
@@ -1685,7 +1687,6 @@ class OCI8Manager extends DBManager
                 $result = true;
             }
             $this->checkError();
-            $this->log->info("Oracle Execute COMMITTED");
         }
 
         // free all the lobs.

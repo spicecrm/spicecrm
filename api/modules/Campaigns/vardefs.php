@@ -362,7 +362,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'relationship' => 'campaigns_mailboxes_rel',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'event_id' => [
             'name' => 'event_id',
@@ -394,7 +394,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'relationship' => 'events_campaigns',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'campaigntasks' => [
             'name' => 'campaigntasks',

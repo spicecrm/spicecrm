@@ -2,7 +2,7 @@
     <system-icon [module]="model.module" [size]="'small'"></system-icon>
     <div class="slds-media__body">
         <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
-            <h3 [system-model-popover]="enableLink" class="slds-truncate slds-text-heading--small slds-m-bottom--small">
+            <h3 class="slds-truncate slds-text-heading--small slds-m-bottom--small">
                 <span>{{model.data.summary_text}}</span>
             </h3>
             <button *ngIf="enableButtonLink" (click)="navigateDetails()" class="slds-button slds-button--icon-border">

@@ -1,1 +1,1 @@
-<span><system-label label="LBL_REFRESH"></system-label></span>
+<span><system-label [label]="reporterconfig.isLoading.visualization || reporterconfig.isLoading.presentation ? 'LBL_CANCEL' : 'LBL_REFRESH'"></system-label></span>

@@ -2,7 +2,9 @@
  * @module GlobalComponents
  */
 import {
-    Component,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component, OnDestroy,
     ViewChild, ViewContainerRef
 } from '@angular/core';
 import {toast} from '../../services/toast.service';
@@ -11,6 +13,9 @@ import {navigation} from '../../services/navigation.service';
 import {layout} from '../../services/layout.service';
 import {ActivationStart, Router} from '@angular/router';
 import {configurationService} from '../../services/configuration.service';
+import {Subscription} from "rxjs";
+import {backend} from "../../services/backend.service";
+import {userpreferences} from "../../services/userpreferences.service";
 
 declare var _: any;
 
@@ -22,14 +27,35 @@ declare var _: any;
     selector: 'global-header',
     templateUrl: '../templates/globalheader.html'
 })
-export class GlobalHeader {
+export class GlobalHeader implements OnDestroy, AfterViewInit {
+
+    /**
+     * holds the rxjs subscriptions to unsubscribe
+     */
+    public subscriptions: Subscription = new Subscription();
+    /**
+     * holds the pending requests total count
+     */
+    public pendingRequestsTotal = 0;
+    /**
+     * holds the progress bar width in percent
+     */
+    public progressWidth = 0;
 
     /**
      * reference to the header to get the height
      */
     @ViewChild('header', {read: ViewContainerRef, static: false})public header: ViewContainerRef;
 
-    constructor(public session: session,public router: Router,public toast: toast,public layout: layout,public navigation: navigation,public configurationService: configurationService) {
+    constructor(public session: session,
+                public router: Router,
+                public toast: toast,
+                public layout: layout,
+                public userPreferences: userpreferences,
+                public navigation: navigation,
+                public backend: backend,
+                public cdRef: ChangeDetectorRef,
+                public configurationService: configurationService) {
 
         // ToDo: check what this is doing here
         this.router.events.subscribe((val: any) => {
@@ -81,5 +107,33 @@ export class GlobalHeader {
         return !_.isEmpty(this.configurationService.getData('tenantconfig'));
 
     }
+
+    public ngAfterViewInit() {
+        this.subscribeToBackendPendingRequests();
+    }
+
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * subscribe to backend pending requests to set the
+     * @private
+     */
+    private subscribeToBackendPendingRequests() {
+        this.subscriptions.add(this.backend.pendingCountChange$.subscribe(count => {
+
+            if (count > this.pendingRequestsTotal) {
+                this.pendingRequestsTotal = count;
+            } else if (count == 0) {
+                this.pendingRequestsTotal = 0;
+            }
+
+            this.progressWidth = count == 0 ? 100 : (100 / this.pendingRequestsTotal) * (this.pendingRequestsTotal - this.backend.pendingRequestsCount);
+
+            this.cdRef.detectChanges();
+        }));
+    }
+
 }
 

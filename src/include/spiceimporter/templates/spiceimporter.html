@@ -49,21 +49,26 @@
             <span class="slds-progress-bar__value" [ngStyle]="getProgressBarWidth()"></span>
         </div>
     </div>
-    <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()">
+    <!-- show next button -->
+    <button *ngIf="this.spiceImporter.currentImportStep < 3 && !spiceImporter.processByMethod"
+            class="slds-button slds-button--neutral" (click)="nextStep()">
         <system-label label="LBL_NEXT"></system-label>
     </button>
-    <button *ngIf="showImport()" [disabled]="processing"
+    <!--    show import button -->
+    <button *ngIf="this.spiceImporter.currentImportStep == 3 || spiceImporter.processByMethod" [disabled]="processing"
             class="slds-button slds-button--brand slds-grid slds-grid_vertical-align-center"
-            (click)="nextStep()">
+            (click)="import()">
         <span *ngIf="!processing" class="slds-p-right--xx-small">
             {{spiceImporter.importAction == 'new' ?
-            language.getLabel('LBL_IMPORT'):
+            language.getLabel('LBL_IMPORT') :
             language.getLabel('LBL_UPDATE') }}
+
         </span>
         <span *ngIf="processing" class="slds-p-right--xx-small">
             {{spiceImporter.importAction == 'new' ?
-            language.getLabel('LBL_IMPORTING'):
+            language.getLabel('LBL_IMPORTING') :
             language.getLabel('LBL_UPDATING') }}
+
         </span>
 
         <system-spinner *ngIf="processing" inverse="true" [size]="16"></system-spinner>

@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceFTSManager;
 
@@ -35,7 +7,9 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
@@ -463,7 +437,7 @@ class SpiceFTSHandler
             if (file_exists($metadataFile))
                 require_once($metadataFile);
 
-            $modLang = return_module_language($current_language, $module['module'], true);
+            $modLang = LanguageManager::loadDatabaseLanguage($current_language);
 
 
             $totalWidth = 0;
@@ -472,7 +446,7 @@ class SpiceFTSHandler
                     $viewDefs[$module['module']][] = [
                         'name' => $fieldName,
                         'width' => str_replace('%', '', $fieldData['width']),
-                        'label' => $modLang[$fieldData['label']] ?: $appLang[$fieldData['label']] ?: $fieldData['label'],
+                        'label' => $modLang[$fieldData['label']]['default'] ?: $appLang[$fieldData['label']] ?: $fieldData['label'],
                         'link' => ($fieldData['link'] && empty($fieldData['customCode'])) ? true : false,
                         'linkid' => $fieldData['id'],
                         'linkmodule' => $fieldData['module']
@@ -862,6 +836,10 @@ class SpiceFTSHandler
         // add ACL Check filters
         if (!$current_user->is_admin && SpiceACL::getInstance() && method_exists(SpiceACL::getInstance(), 'getFTSQuery')) {
             $aclFilters = SpiceACL::getInstance()->getFTSQuery($module);
+            // enrich aclFilters with specific bean access logic
+            if(method_exists($seed, 'ACLAccessFTSQuery')){
+                $seed->ACLAccessFTSQuery($aclFilters);
+            }
             if (count($aclFilters) > 0) {
                 // do not write empty entries
                 if (isset($aclFilters['should']) && count($aclFilters['should']) >= 1) {
@@ -874,7 +852,6 @@ class SpiceFTSHandler
                 if (isset($aclFilters['must']) && count($aclFilters['must']) >= 1) {
                     $queryParam['query']['bool']['filter']['bool']['must'] = $aclFilters['must'];
                 }
-
             }
         }
 
@@ -922,10 +899,6 @@ class SpiceFTSHandler
         if ($aggs !== false) {
             $queryParam['aggs'] = $aggs;
         }
-
-        // make the search
-        LoggerManager::getLogger()->debug(json_encode($queryParam));
-
 
         /* ToDo: experimental to think about scoring based on age of record
         $queryParam['query'] = [
@@ -989,6 +962,12 @@ class SpiceFTSHandler
         // add ACL Check filters
         if (!$current_user->is_admin && SpiceACL::getInstance() && method_exists(SpiceACL::getInstance(), 'getFTSQuery')) {
             $aclFilters = SpiceACL::getInstance()->getFTSQuery($module);
+            // enrich aclFilters with specific bean access logic
+            if($seed = BeanFactory::newBean($module)){
+                if(method_exists($seed, 'ACLAccessFTSQuery')){
+                    $seed->ACLAccessFTSQuery($aclFilters);
+                }
+            }
             if (count($aclFilters) > 0) {
                 // do not write empty entries
                 if (isset($aclFilters['should']) && count($aclFilters['should']) >= 1) {
@@ -1054,8 +1033,8 @@ class SpiceFTSHandler
                     switch ($indexProperty['duplicatequery']) {
                         case 'term':
                             $searchParts[] = [
-                                "match" => [
-                                    $indexProperty['indexfieldname'] . '.raw' => $queryField
+                                "terms" => [
+                                    $indexProperty['indexfieldname']. '.raw' => is_array($queryField) ? $queryField : [$queryField]
                                 ]
                             ];
                             break;
@@ -1106,6 +1085,10 @@ class SpiceFTSHandler
         // add ACL Check filters
         if (!$current_user->is_admin && SpiceACL::getInstance() && method_exists(SpiceACL::getInstance(), 'getFTSQuery')) {
             $aclFilters = SpiceACL::getInstance()->getFTSQuery($bean->_module);
+            // enrich aclFilters with specific bean access logic
+            if(method_exists($bean, 'ACLAccessFTSQuery')){
+                $bean->ACLAccessFTSQuery($aclFilters);
+            }
             if (count($aclFilters) > 0) {
                 // do not write empty entries
                 if (isset($aclFilters['should']) && count($aclFilters['should']) > 1) {
@@ -1150,7 +1133,6 @@ class SpiceFTSHandler
         */
 
         // make the search
-        LoggerManager::getLogger()->debug(json_encode($queryParam));
         $searchresults = $this->elasticHandler->searchModule($bean->_module, $queryParam, 100, 0);
 
         $duplicateIds = [];
@@ -1207,6 +1189,11 @@ class SpiceFTSHandler
 
             // check if we have an owner set as parameter
             $addFilters = [];
+
+            if ($params['addFilter']) {
+                $addFilters[] = $params['addFilter'];
+            }
+
             if ($params['owner'] == 1) {
                 $addFilters[] = [
                     'bool' => [
@@ -1287,7 +1274,7 @@ class SpiceFTSHandler
 
                     $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs);
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
-                        $seed = BeanFactory::getBean($module, $hit['_id']);
+                        $seed = BeanFactory::getBean($module, $hit['_id'], ['forceRetrieve' => true]);
 
                         // if we do not find the record .. do not return it
                         if (!$seed) continue;
@@ -1338,7 +1325,8 @@ class SpiceFTSHandler
                 }
 
                 foreach ($searchresults[$module]['hits'] as $index => &$hit) {
-                    $seed = BeanFactory::getBean($module, $hit['_id']);
+                    // force retrieval since we might have the record without relationships cached
+                    $seed = BeanFactory::getBean($module, $hit['_id'], ['forceRetrieve' => true]);
 
                     // if we do not find the record .. do not return it
                     if (!$seed) {

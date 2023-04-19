@@ -10,6 +10,7 @@ import {session} from './session.service';
 import {broadcast} from './broadcast.service';
 import {metadata} from './metadata.service';
 import {Observable} from 'rxjs';
+import {StoreService} from "./store.service";
 
 /**
  * @ignore
@@ -41,26 +42,18 @@ export class language {
      */
     public inlineEditEnabled: boolean = false;
 
-    /**
-     * the indexed db to proxy the language
-     *
-     * @private
-     */
-    private db: any;
+    public storeDBName: string = 'language';
 
     constructor(
         public http: HttpClient,
         public configurationService: configurationService,
         public session: session,
         public broadcast: broadcast,
+        public storeService: StoreService,
         public metadata: metadata
     ) {
-        // open the database
-        this.openDB('language').then(
-            db => {
-                this.db = db;
-            }
-        );
+
+        this.storeService.initializeStores(this.storeDBName, ["languages", "applang", "applist"], 'language_code');
 
         // subscribe to the broadcast to catch the logout
         this.broadcast.message$.subscribe(message => this.handleLogout(message));
@@ -77,15 +70,12 @@ export class language {
 
         this._currentlanguage = language;
 
-        this.readStoreAll('languages').subscribe({
-            next: languages => {
+        this.storeService.readStoreAll(this.storeDBName, 'languages').then(languages => {
 
-                languages.forEach(l => {
-                    l.isCurrent = language == l.language_code;
-                    this.updateStore('languages', l);
-                });
-            },
-            error: () => false
+            languages.forEach(l => {
+                l.isCurrent = language == l.language_code;
+                this.storeService.writeStore(this.storeDBName, 'languages', {language_code: l.language_code, data: l});
+            });
         });
     }
 
@@ -108,135 +98,12 @@ export class language {
     }
 
     /**
-     * opens an indexed DB in the browser to store the config data
-     *
-     * @param dbname
-     * @private
-     */
-    private openDB(dbname): Promise<IDBDatabase> {
-        return new Promise<IDBDatabase>((resolve, reject) => {
-            if (!indexedDB) {
-                reject('IndexedDB not available');
-            }
-            const request = indexedDB.open(dbname, 1);
-            let db: IDBDatabase;
-            request.onsuccess = (event: Event) => {
-                db = request.result;
-                resolve(db);
-            };
-            request.onerror = (event: Event) => {
-                reject(`IndexedDB error: ${request.error}`);
-            };
-            request.onupgradeneeded = (event: Event) => {
-                db = request.result;
-                db.createObjectStore("languages", {keyPath: "language_code"});
-                db.createObjectStore("applang", {keyPath: "language_code"});
-                db.createObjectStore("applist", {keyPath: "language_code"});
-                resolve(db);
-            };
-        });
-    }
-
-    /**
-     * writes a data set record to the db
-     * @param store
-     * @param data
-     */
-    public writeStore(store, data) {
-        // check that we have a db
-        if (!this.db) return;
-
-        this.db.transaction([store], "readwrite").objectStore(store).add(data);
-    }
-
-    /**
-     * update a data set record in the db
-     * @param store
-     * @param data
-     */
-    public updateStore(store: string, data) {
-        // check that we have a db
-        if (!this.db) return;
-
-        this.db.transaction([store], "readwrite").objectStore(store).put(data);
-    }
-
-    /**
-     * reads a data set record from the DB
-     * @param store
-     * @param id
-     */
-    public readStore(store, id?): Observable<any> {
-        // if we do not have a db return an empty array
-        if (!this.db) return throwError(() => new Error('no indexedDB Support'));
-
-        // process normally
-        let retSubject = new Subject<any>();
-        try {
-            let transaction = this.db.transaction([store], "readwrite");
-            let objectStore = transaction.objectStore(store);
-            let request = objectStore.get(id);
-            request.onerror = (event) => {
-                retSubject.error(false);
-            };
-            request.onsuccess = (event) => {
-                if (event.target.result?.data) {
-                    retSubject.next(event.target.result.data);
-                    retSubject.complete();
-                } else {
-                    retSubject.error(`Table ${store} with id ${id} has no data`);
-                }
-            };
-        } catch(e){
-            retSubject.error(false);
-        }
-        return retSubject.asObservable();
-    }
-
-
-    /**
-     * reads all records from the DB in form of an array with the data attribute
-     *
-     * @param store
-     */
-    public readStoreAll(store): Observable<any> {
-        // if we do not have a db return an empty array
-        if (!this.db) return throwError(() => new Error('no indexedDB Support'));
-
-        // process normally
-        let retSubject = new Subject<any>();
-        let transaction = this.db.transaction([store], "readwrite");
-        let objectStore = transaction.objectStore(store);
-        let request = objectStore.getAll()
-        request.onerror = (event) => {
-            retSubject.error(false);
-        };
-        request.onsuccess = (event) => {
-            if (event.target.result && event.target.result.length > 0) {
-                retSubject.next(event.target.result);
-                retSubject.complete();
-            } else {
-                retSubject.error(false);
-            }
-        };
-        return retSubject.asObservable();
-    }
-
-
-    /**
      * clears the db
      *
      * @private
      */
     public clearDB() {
-        // only if we do have a db
-        if (!this.db) return;
-
-        // process the cleanup
-        let transaction = this.db.transaction(["languages", "applang", "applist"], "readwrite");
-        transaction.objectStore('languages').clear();
-        transaction.objectStore('applang').clear();
-        transaction.objectStore('applist').clear();
+        this.storeService.clearDB(this.storeDBName, ["languages", "applang", "applist"]);
     }
 
     /**
@@ -246,37 +113,36 @@ export class language {
      */
     public getLanguage(loadhandler: Subject<string>) {
 
-        this.readStoreAll('languages').subscribe({
-            next: (languages) => {
+        this.storeService.readStoreAll(this.storeDBName, 'languages').
+            then((languages) => {
 
                 this.languagedata.languages = {available: languages};
 
                 this._currentlanguage = languages.find(l => l.isCurrent)?.language_code;
 
-                this.readStore('applang', this.currentlanguage).subscribe({
+                this.storeService.readStore(this.storeDBName, 'applang', this.currentlanguage).subscribe({
                     next: applang => this.languagedata.applang = applang,
                     error: () => false
                 });
-                this.readStore('applist', this.currentlanguage).subscribe({
+                this.storeService.readStore(this.storeDBName, 'applist', this.currentlanguage).subscribe({
                     next: applist => this.languagedata.applist = applist,
                     error: () => false
                 });
 
                 loadhandler.next('getLanguage');
-            },
-            error: () => {
+            }).
+            catch(() => {
                 this.loadLanguage().subscribe(() => {
 
                     // write to the database
                     this.languagedata.languages.available.forEach(language => {
                         language.isCurrent = language.language_code == this.currentlanguage;
-                        this.writeStore('languages', language);
+                        this.storeService.writeStore(this.storeDBName, 'languages', {language_code: language.language_code, data: language});
                     });
 
                     loadhandler.next('getLanguage');
                 });
-            }
-        });
+            });
     }
 
     /**
@@ -288,10 +154,10 @@ export class language {
         this.currentlanguage = language;
 
         // attempts to read from the store. if fails load from backend
-        this.readStore('applang', language).subscribe({
+        this.storeService.readStore(this.storeDBName, 'applang', language).subscribe({
             next: (applang) => {
                 this.languagedata.applang = applang;
-                this.readStore('applist', language).subscribe({
+                this.storeService.readStore(this.storeService, 'applist', language).subscribe({
                     next: (applist) => {
                         this.languagedata.applist = applist;
 
@@ -348,8 +214,8 @@ export class language {
                     }
 
                     // write to the store
-                    this.writeStore('applang', {language_code: this.currentlanguage, data: this.languagedata.applang});
-                    this.writeStore('applist', {language_code: this.currentlanguage, data: this.languagedata.applist});
+                    this.storeService.writeStore(this.storeDBName, 'applang', {language_code: this.currentlanguage, data: this.languagedata.applang});
+                    this.storeService.writeStore(this.storeDBName, 'applist', {language_code: this.currentlanguage, data: this.languagedata.applist});
 
                     // emit that the language has changed
                     this.currentlanguage$.emit(this.currentlanguage);
@@ -727,7 +593,7 @@ export class language {
 
         if (!langfound) {
             this.languagedata.languages.available.push(languagedata);
-            this.writeStore('languages', languagedata);
+            this.storeService.writeStore(this.storeDBName, 'languages', {language_code: languagedata.language_code, data: languagedata});
         }
     }
 

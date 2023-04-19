@@ -13,6 +13,7 @@
                 </div>
             </div>
             <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="isDirty" (click)="addTree()"><system-button-icon icon="add"></system-button-icon></button>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="!activeTree" (click)="linkTree()"><system-button-icon icon="link"></system-button-icon></button>
             <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="!isDirty" (click)="revertChanges()"><system-button-icon icon="undo"></system-button-icon></button>
             <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="!isDirty" (click)="save()"><system-button-icon icon="save"></system-button-icon></button>
         </div>

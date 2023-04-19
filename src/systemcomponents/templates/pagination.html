@@ -5,7 +5,7 @@
             <button class="slds-button slds-button_icon slds-button--icon-small " [disabled]="!canSwitch || page < 2" (click)="page = 1"><system-button-custom-icon [icon]="'chevrondoubleleft'" title="go to first page"></system-button-custom-icon></button>
             <button class="slds-button slds-button_icon slds-button--icon-small " [disabled]="!canSwitch || page <= 1" (click)="pageDown()" title="go to previous page"><system-button-icon [icon]="'chevronleft'"></system-button-icon></button>
         </span>
-        <span><ng-container *ngIf="page">{{page}}&nbsp;<system-label label="LBL_OF"></system-label>&nbsp;</ng-container>{{max_page}} <system-label label="LBL_PAGES"></system-label> (showing up to {{limit}} <system-label label="LBL_OF"></system-label> {{total_records}} <system-label label="LBL_RECORDS"></system-label>)</span>
+        <span><ng-container *ngIf="page">{{page}}&nbsp;<system-label label="LBL_OF"></system-label>&nbsp;</ng-container>{{max_page}} <system-label label="LBL_PAGES"></system-label> ({{range}} <system-label label="LBL_OF"></system-label> {{total_records}} <system-label label="LBL_RECORDS"></system-label>)</span>
         <span class="slds-m-left--x-small">
             <button class="slds-button slds-button_icon slds-button--icon-small " [disabled]="!canSwitch || page >= max_page" (click)="pageUp()" title="go to next page"><system-button-icon [icon]="'chevronright'"></system-button-icon></button>
             <button class="slds-button slds-button_icon slds-button--icon-small " [disabled]="!canSwitch || page >= max_page-1" (click)="page = max_page"><system-button-custom-icon [icon]="'chevrondoubleright'" title="go to last page"></system-button-custom-icon></button>

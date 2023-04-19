@@ -1,8 +1,18 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges,
+    TemplateRef,
+    ViewContainerRef
+} from "@angular/core";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {SystemTreeConfigI, SystemTreeItemI} from "../interfaces/systemcomponents.interfaces";
 
 /* @ignore */
 declare var _: any;
@@ -26,7 +36,9 @@ export class SystemTree implements OnChanges {
     *   }
     * ]
     */
-    @Input() public sourceList: any[] = [];
+    @Input() public sourceList: SystemTreeItemI[] = [];
+
+    @Input() public customButtonsContainer: TemplateRef<any>;
     /*
     * @input selectedItem: string
     */
@@ -64,14 +76,14 @@ export class SystemTree implements OnChanges {
     public tree: any[] = [];
     public dragPosition: any;
     public isDragging: boolean = false;
-    public treeConfig: any = {
+    public treeConfig: SystemTreeConfigI = {
         draggable: false,
         canadd: false,
         expandall: false,
         collapsible: true,
     };
 
-    get config() {
+    get config(): SystemTreeConfigI {
         return this.treeConfig;
     }
 
@@ -86,11 +98,11 @@ export class SystemTree implements OnChanges {
     * @set treeConfig from the input config
     */
     @Input()
-    set config(obj) {
+    set config(obj: SystemTreeConfigI) {
         this.treeConfig.draggable = obj.draggable || false;
         this.treeConfig.canadd = obj.canadd || false;
         this.treeConfig.expandall = obj.expandall || false;
-        this.treeConfig.collapsible = obj.collapsible || true;
+        this.treeConfig.collapsible = obj.hasOwnProperty('collapsible') ? obj.collapsible : true;
     }
 
     /*
@@ -100,7 +112,7 @@ export class SystemTree implements OnChanges {
     */
     public ngOnChanges(changes: SimpleChanges) {
         if (changes.sourceList) this.buildTree();
-        if (changes.selectedItem) this.handleClick(this.selectedItem);
+        if (changes.selectedItem) this.handleClick(this.selectedItem, true);
     }
 
     /*
@@ -160,7 +172,7 @@ export class SystemTree implements OnChanges {
                     item.systemTreeDefs = {};
                 }
                 item.systemTreeDefs.expanded = this.config.collapsible ? this.config.expandall ? true : !!item.systemTreeDefs.expanded : false;
-                item.systemTreeDefs.clickable = item.hasOwnProperty('clickable') ? item.clickable : true;
+                item.systemTreeDefs.clickable = item.systemTreeDefs.hasOwnProperty('clickable') ? item.systemTreeDefs.clickable : true;
                 item.systemTreeDefs.level = level;
                 item.systemTreeDefs.isSelected = this.selectedItem == item.id;
                 this.tree.push(item);
@@ -296,12 +308,12 @@ export class SystemTree implements OnChanges {
     * @handle? expand
     * @emit id by @output selectedItemChange
     */
-    public handleClick(id) {
+    public handleClick(id, silent?: boolean) {
         this.tree.some(item => {
             if (item.id == id) {
                 if (item.systemTreeDefs && item.systemTreeDefs.clickable) {
                     item.systemTreeDefs.isSelected = true;
-                    this.selectedItemChange.emit(id);
+                    if (!silent) this.selectedItemChange.emit(id);
                     this.selectedItem = id;
                 } else {
                     this.handleExpand(id);

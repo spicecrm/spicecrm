@@ -64,6 +64,10 @@ export class GlobalNavigationTabbedMenu implements OnDestroy {
         );
     }
 
+    ngAfterViewInit() {
+        setTimeout(() => this.handleResize());
+    }
+
     /**
      * unsubscribe from all subscriptions we might have
      */
@@ -99,10 +103,10 @@ export class GlobalNavigationTabbedMenu implements OnDestroy {
    public handleResize() {
 
         // caluclate the width of the various items
-        let left = this.elementRef.nativeElement.getBoundingClientRect().left;
+        const containerWidth = this.elementRef.nativeElement.getBoundingClientRect().width;
         let menuWidth = this.menuModules.tabWidth;
         let browserWidth = this.menuBrowser.tabWidth;
-        let totalWidth = window.innerWidth - left - menuWidth - browserWidth;
+        let totalWidth = containerWidth - menuWidth - browserWidth;
 
         // get the width of the more item
         this.menuMore.elementRef.nativeElement.classList.remove('slds-hide');

@@ -27,7 +27,7 @@ declare var moment: any;
 })
 export class CRMLogViewerList implements OnInit {
 
-    @Input() public filter = { loglevels: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
+    @Input() public filter = { loglevel: '', subloglevel: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
     @Input() public period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
     @Input('load') public load$: EventEmitter<null>;
     @Input() public valuesNotClickable = false;
@@ -81,7 +81,8 @@ export class CRMLogViewerList implements OnInit {
          * Build the query parameters for the request
          */
         let queryParams = {
-            loglevels: this.filter.loglevels ? this.filter.loglevels : undefined,
+            loglevel: this.filter.loglevel ? this.filter.loglevel : undefined,
+            subloglevel: this.filter.subloglevel ? this.filter.subloglevel : undefined,
             pid: this.filter.pid ? this.filter.pid : undefined,
             user_id: this.filter.user_id ? this.filter.user_id : undefined,
             text: this.filter.text ? this.filter.text : undefined,
@@ -94,7 +95,7 @@ export class CRMLogViewerList implements OnInit {
         this.backend.getRequest( 'admin/crmlog/entries', queryParams ).subscribe(
             response => {
                 this.entries = response.entries;
-                this.countEntries$.next( this.entries.length );
+                this.countEntries$.next( response.totalCount );
                 this.isLoading = false;
                 this.isInitialLoaded = true;
             },

@@ -73,7 +73,7 @@ class PackageController {
         $content = json_decode($getJSONcontent);
         if ($confloader->release === true) {
             $content->versions = [];
-            $content->versions[0]->version = $GLOBALS['sugar_version'];
+            $content->versions[0]->version = SpiceConfig::getInstance()->getVersion();
         }
         $content->loaded = $confloader->getCurrentConf();
         $content->opencrs = $confloader->loader->hasOpenChangeRequest();

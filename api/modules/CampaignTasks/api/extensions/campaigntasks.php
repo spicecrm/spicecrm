@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\CampaignTasks\api\controllers\CampaignTasksController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -141,22 +113,6 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/CampaignTasks/{id}/export',
-        'oldroute'    => '/module/CampaignTasks/{campaignid}/export',
-        'class'       => CampaignTasksController::class,
-        'function'    => 'exportCampaignTask',
-        'description' => 'Export Campaign Task',
-        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
-        'parameters'  => [
-            'id'    => [
-                'in'          => 'path',
-                'description' => 'Campaign Task id',
-                'type'        => ValidationMiddleware::TYPE_GUID,
-            ],
-        ],
-    ],
-    [
-        'method'      => 'post',
         'route'       => '/module/CampaignTasks/{id}/sendtestmail',
         'oldroute'    => '/module/CampaignTasks/{campaigntaskid}/sendtestmail',
         'class'       => CampaignTasksController::class,
@@ -226,6 +182,96 @@ $routes = [
         'function'    => 'getExportReports',
         'description' => 'get all reports based on CampaignTasks module',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/CampaignTasks/{id}/targets',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'getTargets',
+        'description' => 'get all targets for a comaping task',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+            ],
+            'searchTerm'    => [
+                'in'          => 'query',
+                'description' => 'query search term',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+            'offset'    => [
+                'in'          => 'query',
+                'description' => 'query offset',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+            ],
+            'limit'    => [
+                'in'          => 'query',
+                'description' => 'query limit',
+                'type'        => ValidationMiddleware::TYPE_NUMERIC,
+            ],
+            'prospectListIds'    => [
+                'in'          => 'query',
+                'description' => 'query list ids',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+            ],
+            'status'    => [
+                'in'          => 'query',
+                'description' => 'query status filter',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+            'modules'    => [
+                'in'          => 'query',
+                'description' => 'query modules filter',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+            'sort'    => [
+                'in'          => 'query',
+                'description' => 'query sort field',
+                'type'        => ValidationMiddleware::TYPE_OBJECT,
+            ]
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/CampaignTasks/{id}/targets/status/{status}',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'setTargetsStatus',
+        'description' => 'set targets status',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+            ],
+            'targets'    => [
+                'in'          => 'body',
+                'description' => 'targets to set status',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+            ],
+            'status'    => [
+                'in'          => 'path',
+                'description' => 'targets status',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/CampaignTasks/{id}/targets/list/inclusion',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'createInclusionList',
+        'description' => 'create campaign task inclusion list',
+        'options'     => ['validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+            ]
+        ]
     ],
 ];
 

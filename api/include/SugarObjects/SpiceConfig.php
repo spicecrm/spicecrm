@@ -38,7 +38,7 @@ namespace SpiceCRM\includes\SugarObjects;
 
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\SugarArray;
 
 /**
@@ -101,7 +101,7 @@ class SpiceConfig
      */
     protected function loadConfigFiles()
     {
-        $sugar_config = [];
+        $spice_config = [];
         if (is_file('config.php')) {
             include('config.php'); // provides \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config
         } else {
@@ -113,8 +113,13 @@ class SpiceConfig
             include('config_override.php');
         }
 
+        // BWC with sugar_config
+        if(isset($sugar_config) && is_array($sugar_config)){
+            $spice_config = array_merge($spice_config, $sugar_config);
+        }
+
         // set the config
-        $this->config = $sugar_config;
+        $this->config = $spice_config;
 
         // set the session Dir
         if (!empty($this->config['session_dir'])) {
@@ -127,13 +132,13 @@ class SpiceConfig
      * @return bool
      * @throws Exception
      */
-    private function loadConfigFromDB()
+    private function loadConfigFromDB($forceReload = false)
     {
         // check that a config exists
         if (!$this->configExists()) return false;
 
-        $dbconfig = SugarCache::sugar_cache_retrieve('dbconfig');
-        if(!$dbconfig) {
+        $dbconfig = SpiceCache::get('dbconfig');
+        if($forceReload || !$dbconfig) {
             $dbconfig = [];
             // load the config
             $db = DBManagerFactory::getInstance();
@@ -144,7 +149,7 @@ class SpiceConfig
                 }
             }
 
-            SugarCache::sugar_cache_put('dbconfig', $dbconfig);
+            SpiceCache::set('dbconfig', $dbconfig);
         }
 
         // merge the configs
@@ -152,6 +157,46 @@ class SpiceConfig
 
         return true;
     }
+
+    /**
+     * @return array|mixed
+     */
+    public static function loadConfigFromSpiceJson(){
+        $configJsonPath = './api/spiceconfigurations/spiceconfigurations.json';
+        if(is_file($configJsonPath)){
+            $json = file_get_contents($configJsonPath);
+            if($spiceconfigurations = json_decode($json, true)){
+                return $spiceconfigurations;
+            }
+        }
+        return [];
+    }
+
+    /**
+     * returns the spicecrm version nummer stored in package.json located in the root folder of the instance
+     * @return mixed|string
+     */
+    public static function getSystemVersion(){
+        if($text = file_get_contents('../package.json')){
+            if($package = json_decode($text)){
+                return $package->version;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * handle BWC for version property
+     * new is system.version
+     * @return void
+     */
+    public function getVersion(){
+        if(empty($this->config['system']['version'] && !empty($this->config['version']))){
+            $this->config['system']['version'] = $this->config['version'];
+        }
+        return $this->config['system']['version'];
+    }
+
 
     /**
      * db values will all be strings....
@@ -181,9 +226,9 @@ class SpiceConfig
     /**
      * reloads the complete config
      */
-    function reloadConfig(){
+    function reloadConfig($force = false){
         $this->loadConfigFiles();
-        $this->loadConfigFromDB();
+        $this->loadConfigFromDB($force);
         self::$instance->mappingBWC();
     }
 

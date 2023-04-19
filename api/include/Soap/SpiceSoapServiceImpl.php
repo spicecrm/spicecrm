@@ -1,42 +1,9 @@
 <?php
 
 namespace SpiceCRM\includes\Soap;
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- *
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
-
+use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -45,6 +12,7 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\includes\utils\SpiceFileUtils;
 
 class SpiceSoapServiceImpl
 {
@@ -68,10 +36,8 @@ class SpiceSoapServiceImpl
      */
     static function set_relationship($session, $module_name, $module_id, $link_field_name, $related_ids, $name_value_list, $delete)
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->set_relationship');
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_relationship');
             return;
         } // if
 
@@ -96,7 +62,6 @@ class SpiceSoapServiceImpl
         } else {
             $failed++;
         } // else
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_relationship');
 	return ['created'=>$count , 'failed'=>$failed, 'deleted' => $deletedCount];
     }
 
@@ -118,10 +83,8 @@ class SpiceSoapServiceImpl
      */
     static function set_relationships($session, $module_names, $module_ids, $link_field_names, $related_ids, $name_value_lists, $delete_array)
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->set_relationships');
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_relationships');
             return;
         } // if
 
@@ -129,7 +92,6 @@ class SpiceSoapServiceImpl
             (sizeof($module_names) != (sizeof($module_ids) || sizeof($link_field_names) || sizeof($related_ids)))) {
             $error->set_error('invalid_data_format');
             self::$helperObject->setFaultObject($error);
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_relationships');
             return;
         } // if
 
@@ -157,7 +119,6 @@ class SpiceSoapServiceImpl
             } // else
             $counter++;
         } // foreach
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_relationships');
 	return ['created'=>$count , 'failed'=>$failed, 'deleted' => $deletedCount];
     } // fn
 
@@ -173,17 +134,12 @@ class SpiceSoapServiceImpl
      */
     static function set_entries($session, $module_name, $name_value_lists)
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->set_entries');
-        if (self::$helperObject->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->set_entries - input data is ' . var_export($name_value_lists, true));
-        } // if
+
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'write', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entries');
             return;
         } // if
 
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entries');
         return self::$helperObject->new_handle_set_entries($module_name, $name_value_lists, FALSE);
     }
 
@@ -198,19 +154,16 @@ class SpiceSoapServiceImpl
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->logout');
         $error = new SoapError();
         $logicHook = LogicHook::getInstance();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
             if($current_user) $logicHook->call_custom_logic('Users', $current_user,'after_logout');
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->logout');
             return;
         } // if
 
         if($current_user) $current_user->call_custom_logic('before_logout');
         session_destroy();
         if($current_user)  $logicHook->call_custom_logic('Users', $current_user, 'after_logout');
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->logout');
     } // fn
 
 
@@ -226,13 +179,10 @@ class SpiceSoapServiceImpl
      */
     static function get_module_fields($session, $module_name, $fields = [])
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_module_fields for ' . $module_name);
-        global $beanList, $beanFiles;
         $error = new SoapError();
-	$module_fields = [];
+	    $module_fields = [];
 
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->error('End: SugarWebServiceImpl->get_module_fields FAILED on checkSessionAndModuleAccess for ' . $module_name);
             return;
         } // if
 
@@ -240,12 +190,11 @@ class SpiceSoapServiceImpl
         $seed = BeanFactory::getBean($module_name);
         if ($seed->ACLAccess('ListView', true) || $seed->ACLAccess('DetailView', true) || $seed->ACLAccess('EditView', true)) {
             $return = self::$helperObject->get_return_module_fields($seed, $module_name, $fields);
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_module_fields SUCCESS for ' . $module_name);
             return $return;
         }
         $error->set_error('no_access');
         self::$helperObject->setFaultObject($error);
-        LoggerManager::getLogger()->error('End: SugarWebServiceImpl->get_module_fields FAILED NO ACCESS to ListView, DetailView or EditView for ' . $module_name);
+        LoggerManager::getLogger()->error('End: SpiceSoapServiceImpl->get_module_fields FAILED NO ACCESS to ListView, DetailView or EditView for ' . $module_name);
     }
 
     /**
@@ -261,22 +210,17 @@ class SpiceSoapServiceImpl
      */
     static function get_entries_count($session, $module_name, $query, $deleted)
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_entries_count');
 
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'list', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entries_count');
             return;
         } // if
 
-        global $beanList, $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-
 
         $seed = BeanFactory::getBean($module_name);
 
         if (!self::$helperObject->checkQuery($error, $query)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entries_count');
             return;
         } // if
 
@@ -284,7 +228,7 @@ class SpiceSoapServiceImpl
             return;
         }
 
-        $sql = 'SELECT COUNT(*) result_count FROM ' . $seed->table_name . ' ';
+        $sql = 'SELECT COUNT(*) result_count FROM ' . $seed->_tablename . ' ';
 
 
         // build WHERE clauses, if any
@@ -293,7 +237,7 @@ class SpiceSoapServiceImpl
             $where_clauses[] = $query;
         }
         if ($deleted == 0) {
-            $where_clauses[] = $seed->table_name . '.deleted = 0';
+            $where_clauses[] = $seed->_tablename . '.deleted = 0';
         }
 
         // if WHERE clauses exist, add them to query
@@ -304,10 +248,9 @@ class SpiceSoapServiceImpl
         $res = DBManagerFactory::getInstance()->query($sql);
         $row = DBManagerFactory::getInstance()->fetchByAssoc($res);
 
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entries_count');
-	return [
-            'result_count' => $row['result_count'],
-    ];
+        return [
+                'result_count' => $row['result_count'],
+        ];
     }
 
     /**
@@ -326,9 +269,7 @@ class SpiceSoapServiceImpl
      */
     static function get_entry($session, $module_name, $id, $select_fields = [], $link_name_to_fields_array  = [],$track_view = FALSE)
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_entry');
         return self::get_entries($session, $module_name, [$id], $select_fields, $link_name_to_fields_array, $track_view);
-        LoggerManager::getLogger()->info('end: SugarWebServiceImpl->get_entry');
     }
 
 
@@ -348,8 +289,6 @@ class SpiceSoapServiceImpl
      */
     static function get_entries($session, $module_name, $ids, $select_fields, $link_name_to_fields_array, $track_view = FALSE)
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_entries');
-        global $beanList, $beanFiles;
         $error = new SoapError();
 
         $linkoutput_list = [];
@@ -360,7 +299,6 @@ class SpiceSoapServiceImpl
             $using_cp = true;
         }
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('No Access: SugarWebServiceImpl->get_entries');
             return;
         } // if
 
@@ -391,13 +329,8 @@ class SpiceSoapServiceImpl
                 $linkoutput_list[] = self::$helperObject->get_return_value_for_link_fields($seed, $module_name, $link_name_to_fields_array);
             }
 
-            LoggerManager::getLogger()->info('Should we track view: ' . $track_view);
-            if ($track_view) {
-                self::$helperObject->trackView($seed, 'detailview');
-            }
         }
 
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entries');
         return ['entry_list'=>$output_list, 'relationship_list' => $linkoutput_list];
     }
 
@@ -413,16 +346,10 @@ class SpiceSoapServiceImpl
      */
     static function set_entry($session, $module_name, $name_value_list, $track_view = FALSE)
     {
-        global $beanList, $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->set_entry');
-        if (self::$helperObject->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->set_entry - input data is ' . var_export($name_value_list, true));
-        } // if
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'write', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entry');
             return;
         } // if
 
@@ -442,7 +369,7 @@ class SpiceSoapServiceImpl
             if ($module_name == 'Users' && !empty($seed->id) && ($seed->id != $current_user->id) && $name == 'user_hash') {
                 continue;
             }
-            if (!empty($seed->field_name_map[$name]['sensitive'])) {
+            if (!empty($seed->field_defs[$name]['sensitive'])) {
                 continue;
             }
 
@@ -458,7 +385,6 @@ class SpiceSoapServiceImpl
             }
         }
         if (!self::$helperObject->checkACLAccess($seed, 'Save', $error, 'no_access') || ($seed->deleted == 1 && !self::$helperObject->checkACLAccess($seed, 'Delete', $error, 'no_access'))) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entry');
             return;
         } // if
 
@@ -470,11 +396,6 @@ class SpiceSoapServiceImpl
             $seed->mark_deleted($seed->id);
         }
 
-        if ($track_view) {
-            self::$helperObject->trackView($seed, 'editview');
-        }
-
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->set_entry');
         return ['id'=>$seed->id, 'entry_list' => $return_entry_list];
     } // fn
 
@@ -495,23 +416,21 @@ class SpiceSoapServiceImpl
      */
     static function login($user_auth, $application = '', $name_value_list = [])
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->login');
-        global $system_config;
+
         $error = new SoapError();
 
         try {
-            AuthenticationController::getInstance()->authenticate($user_auth['user_name'], $user_auth['password']);
+
+            $authParams = (object) ['authData' => (object) ['username' => $user_auth['user_name'], 'password' => $user_auth['password']], 'authType' => 'credentials'];
+
+            AuthenticationController::getInstance()->authenticate($authParams);
         } catch (\SpiceCRM\includes\ErrorHandlers\UnauthorizedException $e) {
             $error->set_error($e->getMessage());
-            LoggerManager::getLogger()->fatal('Lockout reached for user ' . $user_auth['user_name']);
+            LoggerManager::getLogger()->fatal('soap','Lockout reached for user ' . $user_auth['user_name']);
             // LogicHook::getInstance()->call_custom_logic('Users', 'login_failed');
             self::$helperObject->setFaultObject($error);
             return;
         }
-
-        $system_config = BeanFactory::getBean('Administration');
-        $system_config->retrieveSettings('system');
-
 
         session_start();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
@@ -519,14 +438,13 @@ class SpiceSoapServiceImpl
         self::$helperObject->login_success($name_value_list);
         $current_user->loadPreferences();
         $_SESSION['is_valid_session'] = true;
-        $_SESSION['ip_address'] = query_client_ip();
+        $_SESSION['ip_address'] = SpiceUtils::getClientIP();
         $_SESSION['user_id'] = $current_user->id;
         $_SESSION['type'] = 'user';
         // $_SESSION['avail_modules'] = self::$helperObject->get_user_module_list($current_user);
         $_SESSION['authenticated_user_id'] = $current_user->id;
         $_SESSION['unique_key'] = SpiceConfig::getInstance()->config['unique_key'];
         $current_user->call_custom_logic('after_login');
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->login - succesful login');
         $nameValueArray = [];
         global $current_language;
         $nameValueArray['user_id'] = self::$helperObject->get_name_value('user_id', $current_user->id);
@@ -534,7 +452,7 @@ class SpiceSoapServiceImpl
         $nameValueArray['user_language'] = self::$helperObject->get_name_value('user_language', $current_language);
         $cur_id = $current_user->getPreference('currency');
         $nameValueArray['user_currency_id'] = self::$helperObject->get_name_value('user_currency_id', $cur_id);
-        $nameValueArray['user_is_admin'] = self::$helperObject->get_name_value('user_is_admin', is_admin($current_user));
+        $nameValueArray['user_is_admin'] = self::$helperObject->get_name_value('user_is_admin', SpiceUtils::isAdmin($current_user));
         $nameValueArray['user_default_team_id'] = self::$helperObject->get_name_value('user_default_team_id', $current_user->default_team);
         $nameValueArray['user_default_dateformat'] = self::$helperObject->get_name_value('user_default_dateformat', $current_user->getPreference('datef'));
         $nameValueArray['user_default_timeformat'] = self::$helperObject->get_name_value('user_default_timeformat', $current_user->getPreference('timef'));
@@ -578,32 +496,24 @@ class SpiceSoapServiceImpl
     static function get_entry_list($session, $module_name, $query = '', $order_by = '', $offset = 0, $select_fields = [], $link_name_to_fields_array = [], $max_results = 0, $deleted = 0)
     {
 
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_entry_list');
         $error = new SoapError();
-        $using_cp = false;
-        if ($module_name == 'CampaignProspects') {
-            $module_name = 'Prospects';
-            $using_cp = true;
-        }
+//        $using_cp = false;
+//        if ($module_name == 'CampaignProspects') {
+//            $module_name = 'Prospects';
+//            $using_cp = true;
+//        }
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->error('End: SugarWebServiceImpl->get_entry_list - FAILED on checkSessionAndModuleAccess');
+            LoggerManager::getLogger()->error('End: SpiceSoapServiceImpl->get_entry_list - FAILED on checkSessionAndModuleAccess');
             return;
         } // if
 
         if (!self::$helperObject->checkQuery($error, $query, $order_by)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entry_list');
             return;
-        } // if
-
-        // If the maximum number of entries per page was specified, override the configuration value.
-        if ($max_results > 0) {
-
-            SpiceConfig::getInstance()->config['list_max_entries_per_page'] = $max_results;
         } // if
 
         $seed = BeanFactory::getBean($module_name);
         if (!self::$helperObject->checkACLAccess($seed, 'list', $error, 'no_access')) {
-            LoggerManager::getLogger()->error('End: SugarWebServiceImpl->get_entry_list - FAILED on checkACLAccess');
+            LoggerManager::getLogger()->error('End: SpiceSoapServiceImpl->get_entry_list - FAILED on checkACLAccess');
             return;
         } // if
 
@@ -616,11 +526,11 @@ class SpiceSoapServiceImpl
         if ($deleted) {
             $deleted = -1;
         }
-        if ($using_cp) {
-            $response = $seed->retrieveTargetList($query, $select_fields, $offset, -1, -1, $deleted);
-        } else {
+//        if ($using_cp) {
+//            $response = $seed->retrieveTargetList($query, $select_fields, $offset, -1, -1, $deleted);
+//        } else {
             $response = self::$helperObject->get_data_list($seed, $order_by, $query, $offset, -1, -1, $deleted, false);
-        } // else
+//        } // else
         $list = $response['list'];
 
         $output_list = [];
@@ -660,7 +570,6 @@ class SpiceSoapServiceImpl
         if (!empty(SpiceConfig::getInstance()->config['disable_count_query']))
             $totalRecordCount = -1;
 
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_entry_list - SUCCESS');
         return ['result_count'=>sizeof($output_list), 'total_count' => $totalRecordCount, 'next_offset'=>$next_offset, 'entry_list'=>$output_list, 'relationship_list' => $returnRelationshipList];
     } // fn
 
@@ -682,170 +591,30 @@ class SpiceSoapServiceImpl
      */
     static function search_by_module($session, $search_string, $modules, $offset, $max_results, $assigned_user_id = '', $select_fields = [], $unified_search_only = TRUE, $favorites = FALSE)
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->search_by_module');
-        global $beanList, $beanFiles;
-        global $current_language;
 
         $error = new SoapError();
         $output_list = [];
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
             $error->set_error('invalid_login');
-            LoggerManager::getLogger()->error('End: SugarWebServiceImpl->search_by_module - FAILED on checkSessionAndModuleAccess');
+            LoggerManager::getLogger()->error('End: SpiceSoapServiceImpl->search_by_module - FAILED on checkSessionAndModuleAccess');
             return;
         }
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        if ($max_results > 0) {
-            SpiceConfig::getInstance()->config['list_max_entries_per_page'] = $max_results;
+
+        // handle where clause
+        $addwhere = '';
+        if($assigned_user_id) {
+            $addwhere = " AND assigned_user_id='$assigned_user_id' ";
         }
 
-        require_once('include/utils/UnifiedSearchAdvanced.php');
-        require_once 'include/utils.php';
-        $usa = new UnifiedSearchAdvanced();
-        if (!file_exists($cachefile = sugar_cached('modules/unified_search_modules.php'))) {
-            $usa->buildCache();
+        $records = [];
+        foreach($modules as $module){
+            $handler = new SpiceBeanHandler();
+            $data = $handler->get_bean_list($module, ['start' => $offset, 'limit' => $max_results, 'searchterm' => $search_string], $addwhere);
+            $records = array_merge($records, $data['list']);
+            $output_list[] = ['name' => $module, 'records' => $records];
         }
 
-        include $cachefile;
-        $modules_to_search = [];
-        $unified_search_modules['Users'] =   ['fields' => []];
-
-        //If we are ignoring the unified search flag within the vardef we need to re-create the search fields.  This allows us to search
-        //against a specific module even though it is not enabled for the unified search within the application.
-        if (!$unified_search_only) {
-            foreach ($modules as $singleModule) {
-                if (!isset($unified_search_modules[$singleModule])) {
-                    $newSearchFields = ['fields' => self::$helperObject->generateUnifiedSearchFields($singleModule)];
-                    $unified_search_modules[$singleModule] = $newSearchFields;
-                }
-            }
-        }
-
-
-        foreach ($unified_search_modules as $module => $data) {
-            if (in_array($module, $modules)) {
-                $modules_to_search[$module] = $beanList[$module];
-            } // if
-        } // foreach
-
-        LoggerManager::getLogger()->info('SugarWebServiceImpl->search_by_module - search string = ' . $search_string);
-
-        if (!empty($search_string) && isset($search_string)) {
-            $search_string = trim(DBManagerFactory::getInstance()->quote(securexss(from_html(clean_string($search_string, 'UNIFIED_SEARCH')))));
-            foreach ($modules_to_search as $name => $beanName) {
-                $where_clauses_array = [];
-                $unifiedSearchFields = [];
-                foreach ($unified_search_modules[$name]['fields'] as $field => $def) {
-                    $unifiedSearchFields[$name] [$field] = $def;
-                    $unifiedSearchFields[$name] [$field]['value'] = $search_string;
-                }
-
-                require_once $beanFiles[$beanName];
-                $seed = new $beanName();
-                require_once 'include/SearchForm/SearchForm2.php';
-                if ($beanName == "User") {
-                    if (!self::$helperObject->check_modules_access($current_user, $seed->module_dir, 'read')) {
-                        continue;
-                    } // if
-                    if (!$seed->ACLAccess('ListView')) {
-                        continue;
-                    } // if
-                }
-
-                if ($beanName != "User") {
-                    $searchForm = new SearchForm ($seed, $name);
-
-                    $searchForm->setup([$name => []],$unifiedSearchFields , '' , 'saved_views' /* hack to avoid setup doing further unwanted processing */ ) ;
-                    $where_clauses = $searchForm->generateSearchWhere();
-                    require_once 'include/SearchForm/SearchForm2.php';
-                    $searchForm = new SearchForm ($seed, $name);
-
-                    $searchForm->setup([$name => []],$unifiedSearchFields , '' , 'saved_views' /* hack to avoid setup doing further unwanted processing */ ) ;
-                    $where_clauses = $searchForm->generateSearchWhere();
-                    $emailQuery = false;
-
-                    $where = '';
-                    if (count($where_clauses) > 0) {
-                        $where = '(' . implode(' ) OR ( ', $where_clauses) . ')';
-                    }
-
-                    $mod_strings = return_module_language($current_language, $seed->module_dir);
-
-                    if (count($select_fields) > 0)
-                        $filterFields = $select_fields;
-                    else {
-                        $filterFields[] = 'id';
-                    }
-
-                    //Pull in any db fields used for the unified search query so the correct joins will be added
-                    $selectOnlyQueryFields = [];
-                    foreach ($unifiedSearchFields[$name] as $field => $def) {
-                        if (isset($def['db_field']) && !in_array($field, $filterFields)) {
-                            $filterFields[] = $field;
-                            $selectOnlyQueryFields[] = $field;
-                        }
-                    }
-
-                    //Add the assigned user filter if applicable
-                    if (!empty($assigned_user_id) && isset($seed->field_defs['assigned_user_id'])) {
-                        $ownerWhere = $seed->getOwnerWhere($assigned_user_id);
-                        $where = "($where) AND $ownerWhere";
-                    }
-
-                    if ($beanName == "Employee") {
-                        $where = "($where) AND users.deleted = 0 AND users.is_group = 0 AND users.employee_status = 'Active'";
-                    }
-
-                    $list_params = [];
-
-                    $ret_array = $seed->create_new_list_query('', $where, $filterFields, $list_params, 0, '', true, $seed, true);
-                    if(empty($params) or !is_array($params)) $params = [];
-                    if (!isset($params['custom_select'])) $params['custom_select'] = '';
-                    if (!isset($params['custom_from'])) $params['custom_from'] = '';
-                    if (!isset($params['custom_where'])) $params['custom_where'] = '';
-                    if (!isset($params['custom_order_by'])) $params['custom_order_by'] = '';
-                    $main_query = $ret_array['select'] . $params['custom_select'] . $ret_array['from'] . $params['custom_from'] . $ret_array['where'] . $params['custom_where'] . $ret_array['order_by'] . $params['custom_order_by'];
-                } else {
-                    if ($beanName == "User") {
-                        $filterFields = ['id', 'user_name', 'first_name', 'last_name', 'email_address'];
-                        $main_query = "select users.id, ea.email_address, users.user_name, first_name, last_name from users ";
-                        $main_query = $main_query . " LEFT JOIN email_addr_bean_rel eabl ON eabl.bean_module = '{$seed->module_dir}'
-    LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
-                        $main_query = $main_query . "where ((users.first_name like '{$search_string}') or (users.last_name like '{$search_string}') or (users.user_name like '{$search_string}') or (ea.email_address like '{$search_string}')) and users.deleted = 0 and users.is_group = 0 and users.employee_status = 'Active'";
-                    } // if
-                } // else
-
-                LoggerManager::getLogger()->info('SugarWebServiceImpl->search_by_module - query = ' . $main_query);
-                if ($max_results < -1) {
-                    $result = $seed->db->query($main_query);
-                } else {
-                    if ($max_results == -1) {
-                        $limit = SpiceConfig::getInstance()->config['list_max_entries_per_page'];
-                    } else {
-                        $limit = $max_results;
-                    }
-                    $result = $seed->db->limitQuery($main_query, $offset, $limit + 1);
-                }
-
-                $rowArray = [];
-                while ($row = $seed->db->fetchByAssoc($result)) {
-                    $nameValueArray = [];
-                    foreach ($filterFields as $field) {
-                        if (in_array($field, $selectOnlyQueryFields))
-                            continue;
-                        $nameValue = [];
-                        if (isset($row[$field])) {
-                            $nameValueArray[$field] = self::$helperObject->get_name_value($field, $row[$field]);
-                        } // if
-                    } // foreach
-                    $rowArray[] = $nameValueArray;
-                } // while
-                $output_list[] = ['name' => $name, 'records' => $rowArray];
-            } // foreach
-
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->search_by_module');
-            return ['entry_list'=>$output_list];
-        } // if
-        return ['entry_list'=>$output_list];
+        return ['entry_list' => $output_list];
     }
 
     /**
@@ -869,25 +638,20 @@ class SpiceSoapServiceImpl
      */
     static function get_relationships($session, $module_name, $module_id, $link_field_name, $related_module_query, $related_fields, $related_module_link_name_to_fields_array, $deleted, $order_by = '', $offset = 0, $limit = false)
     {
-        LoggerManager::getLogger()->info('Begin: SugarWebServiceImpl->get_relationships');
-        self::$helperObject = new SugarWebServiceUtilv4_1();
-        global $beanList, $beanFiles;
+        self::$helperObject = new SpiceSoapServiceUtil();
         $error = new SoapError();
 
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_relationships');
             return;
         } // if
 
         $mod = BeanFactory::getBean($module_name, $module_id);
 
         if (!self::$helperObject->checkQuery($error, $related_module_query, $order_by)) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_relationships');
             return;
         } // if
 
         if (!self::$helperObject->checkACLAccess($mod, 'DetailView', $error, 'no_access')) {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_relationships');
             return;
         } // if
 
@@ -897,9 +661,6 @@ class SpiceSoapServiceImpl
         // get all the related modules data.
         $result = self::$helperObject->getRelationshipResults($mod, $link_field_name, $related_fields, $related_module_query, $order_by, $offset, $limit);
 
-        if (self::$helperObject->isLogLevelDebug()) {
-            LoggerManager::getLogger()->debug('SoapHelperWebServices->get_relationships - return data for getRelationshipResults is ' . var_export($result, true));
-        } // if
         if ($result) {
 
             $list = $result['rows'];
@@ -929,7 +690,6 @@ class SpiceSoapServiceImpl
 
         } // if
 
-        LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_relationships');
         return ['entry_list'=>$output_list, 'relationship_list' => $linkoutput_list];
     }
 
@@ -959,7 +719,7 @@ class SpiceSoapServiceImpl
      * @return Array records that match search criteria
      */
     static function get_modified_relationships($session, $module_name, $related_module, $from_date, $to_date, $offset, $max_results, $deleted=0, $module_user_id = '', $select_fields = [], $relationship_name = '', $deletion_date = ''){
-        global $beanList, $beanFiles;
+//        global $beanList, $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $error = new SoapError();
         $output_list = [];
@@ -976,18 +736,17 @@ class SpiceSoapServiceImpl
             return ['result_count'=>0, 'next_offset'=>0, 'field_list'=>$select_fields, 'entry_list'=>[], 'error'=>$error->get_soap_array()];
         }
 
-        self::$helperObject = new SugarWebServiceUtilv4_1();
+        self::$helperObject = new SpiceSoapServiceUtil();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error))
         {
-            LoggerManager::getLogger()->info('End: SugarWebServiceImpl->get_modified_relationships');
             return;
         } // if
 
-        if(empty($beanList[$module_name]) || empty($beanList[$related_module]))
-        {
-            $error->set_error('no_module');
-            return ['result_count'=>0, 'next_offset'=>0, 'field_list'=>$select_fields, 'entry_list'=>[], 'error'=>$error->get_soap_array()];
-        }
+//        if(empty($beanList[$module_name]) || empty($beanList[$related_module]))
+//        {
+//            $error->set_error('no_module');
+//            return ['result_count'=>0, 'next_offset'=>0, 'field_list'=>$select_fields, 'entry_list'=>[], 'error'=>$error->get_soap_array()];
+//        }
 
         if(!self::$helperObject->check_modules_access($current_user, $module_name, 'read') || !self::$helperObject->check_modules_access($current_user, $related_module, 'read')){
             $error->set_error('no_access');
@@ -1094,13 +853,8 @@ class SpiceSoapServiceImpl
         }
 
 
-        $class_name = $beanList[$module_1];
-        require_once($beanFiles[$class_name]);
-        $mod = new $class_name();
-
-        $mod2_name = $beanList[$module_2];
-        require_once($beanFiles[$mod2_name]);
-        $mod2 = new $mod2_name();
+        $mod = BeanFactory::getBean($module_1);
+        $mod2 = BeanFactory::getBean($module_2);
         $table_alias = 'rt';
         if ($has_join == false) {
             $table_alias = 'm1';
@@ -1123,20 +877,20 @@ class SpiceSoapServiceImpl
                     }
                     if ($alias == "email1") {
                         // special case for primary emails
-                        $field_select .= "(SELECT email_addresses.email_address FROM {$mod->table_name}
-                    	LEFT JOIN  email_addr_bean_rel ON {$mod->table_name}.id = email_addr_bean_rel.bean_id
-                    		AND email_addr_bean_rel.bean_module='{$mod->module_dir}'
+                        $field_select .= "(SELECT email_addresses.email_address FROM {$mod->_tablename}
+                    	LEFT JOIN  email_addr_bean_rel ON {$mod->_tablename}.id = email_addr_bean_rel.bean_id
+                    		AND email_addr_bean_rel.bean_module='{$mod->_module}'
                     		AND email_addr_bean_rel.deleted=0 AND email_addr_bean_rel.primary_address=1
-                    	LEFT JOIN email_addresses ON email_addresses.id = email_addr_bean_rel.email_address_id Where {$mod->table_name}.id = m1.ID) email1";
+                    	LEFT JOIN email_addresses ON email_addresses.id = email_addr_bean_rel.email_address_id Where {$mod->_tablename}.id = m1.ID) email1";
                     } elseif ($alias == "email2") {
                         // special case for non-primary emails
                         // FIXME: This is not a DB-safe code. Does not work on SQL Server & Oracle.
                         // Using dirty hack here.
-                        $field_select .= "(SELECT email_addresses.email_address FROM {$mod->table_name}
-                    	LEFT JOIN  email_addr_bean_rel on {$mod->table_name}.id = email_addr_bean_rel.bean_id
-                    		AND email_addr_bean_rel.bean_module='{$mod->module_dir}' AND email_addr_bean_rel.deleted=0
+                        $field_select .= "(SELECT email_addresses.email_address FROM {$mod->_tablename}
+                    	LEFT JOIN  email_addr_bean_rel on {$mod->_tablename}.id = email_addr_bean_rel.bean_id
+                    		AND email_addr_bean_rel.bean_module='{$mod->_module}' AND email_addr_bean_rel.deleted=0
                     		AND email_addr_bean_rel.primary_address!=1
-                    	LEFT JOIN email_addresses ON email_addresses.id = email_addr_bean_rel.email_address_id Where {$mod->table_name}.id = m1.ID limit 1) email2";
+                    	LEFT JOIN email_addresses ON email_addresses.id = email_addr_bean_rel.email_address_id Where {$mod->_tablename}.id = m1.ID limit 1) email2";
                     } else {
                         if (strpos($field, ".") == false) {
                             // no dot - field for m1
@@ -1163,10 +917,10 @@ class SpiceSoapServiceImpl
         }
 
         if ($has_join == false) {
-            $query .= " inner join $mod->table_name m2 on $table_alias.$mod2_key = m2.id AND m2.id = '$current_user->id'";
+            $query .= " inner join $mod->_tablename m2 on $table_alias.$mod2_key = m2.id AND m2.id = '$current_user->id'";
         } else {
-            $query .= " inner join $mod->table_name m1 on rt.$mod_key = m1.id ";
-            $query .= " inner join $mod2->table_name m2 on rt.$mod2_key = m2.id AND m2.id = '$current_user->id'";
+            $query .= " inner join $mod->_tablename m1 on rt.$mod_key = m1.id ";
+            $query .= " inner join $mod2->_tablename m2 on rt.$mod2_key = m2.id AND m2.id = '$current_user->id'";
         }
 
         if (!empty($relationship_query)) {

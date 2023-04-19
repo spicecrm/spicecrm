@@ -202,7 +202,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'name' => 'created_by_link',
             'type' => 'link',
             'relationship' => 'emails_created_by',
-            'vname' => 'LBL_CREATED_BY_USER',
+            'vname' => 'LBL_CREATED_BY',
             'link_type' => 'one',
             'module' => 'Users',
             'bean_name' => 'User',
@@ -212,7 +212,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'name' => 'modified_user_link',
             'type' => 'link',
             'relationship' => 'emails_modified_user',
-            'vname' => 'LBL_MODIFIED_BY_USER',
+            'vname' => 'LBL_MODIFIED_BY',
             'link_type' => 'one',
             'module' => 'Users',
             'bean_name' => 'User',
@@ -396,7 +396,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'relationship' => 'mailboxes_emails_rel',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
             'module' => 'Mailboxes',
             'bean_name' => 'Mailbox',
         ],
@@ -546,6 +546,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'relationship_role_column' => 'bean_module',
             'relationship_role_column_value' => 'Contacts',
         ],
+        'emails_consumers_rel' => [
+            'lhs_module' => 'Emails',
+            'lhs_table' => 'emails',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Consumers',
+            'rhs_table' => 'consumers',
+            'rhs_key' => 'id',
+            'relationship_type' => 'many-to-many',
+            'join_table' => 'emails_beans',
+            'join_key_lhs' => 'email_id',
+            'join_key_rhs' => 'bean_id',
+            'relationship_role_column' => 'bean_module',
+            'relationship_role_column_value' => 'Consumers',
+        ],
         'emails_accounts_rel' => [
             'lhs_module' => 'Emails',
             'lhs_table' => 'emails',
@@ -664,12 +678,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['emailtempl
 
 SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['emailtemplates_link'] = [
     'name' => 'emailtemplates_link',
+    'vname' => 'LBL_EMAILTEMPLATES',
     'type' => 'link',
     'relationship' => 'emailtemplates_emails',
     'link_type' => 'one',
     'side' => 'right',
     'source' => 'non-db',
-    'vname' => 'LBL_EMAILTEMPLATES_EMAILS_LINK',
 ];
 
 #create index
@@ -682,7 +696,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email']['indices']['emailtemp
 if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['servicetickets'] = [
         'name' => 'servicetickets',
-        'vname' => 'LBL_EMAILS_SERVICETICKETS_REL',
+        'vname' => 'LBL_SERVICETICKETS',
         'type' => 'link',
         'relationship' => 'emails_servicetickets_rel',
         'module' => 'ServiceTickets',
@@ -693,7 +707,7 @@ if (file_exists('modules/ServiceTickets/ServiceTicket.php')) {
 if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['serviceorders'] = [
         'name' => 'serviceorders',
-        'vname' => 'LBL_EMAILS_SERVICEORDERS_REL',
+        'vname' => 'LBL_SERVICEORDERS',
         'type' => 'link',
         'relationship' => 'emails_serviceorders_rel',
         'module' => 'ServiceOrders',

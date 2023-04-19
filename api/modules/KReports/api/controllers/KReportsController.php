@@ -4,11 +4,11 @@
 namespace SpiceCRM\modules\KReports\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\modules\KReports\KReport;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 
@@ -34,7 +34,7 @@ class KReportsController
      * @return Response
      */
     public function getSnapshots(Request $req, Response $res, array $args): Response{
-        $thisReport = new KReport();
+        $thisReport = BeanFactory::getBean('KReports');
         $thisReport->retrieve($args['id']);
         $requestParams = $req->getQueryParams();
         return $res->withJson($thisReport->getSnapshots($requestParams['withoutActual']));
@@ -47,7 +47,7 @@ class KReportsController
      * @return Response
      */
     public function deleteSnapshot(Request $req, Response $res, array $args): Response{
-        $thisReport = new KReport();
+        $thisReport = BeanFactory::getBean('KReports');
         $thisReport->retrieve($args['id']);
         $response = $thisReport->deleteSnapshot($args['snapshotid']);
         return $res->withJson($response);

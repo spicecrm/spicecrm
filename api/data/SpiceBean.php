@@ -1,40 +1,5 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- *
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data;
 
@@ -42,8 +7,10 @@ use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceNotes\SpiceNotes;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotifications;
 use SpiceCRM\includes\SpiceNotifications\SpiceNotificationsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -60,7 +27,7 @@ use SpiceCRM\data\Relationships\SugarRelationshipFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -377,41 +344,17 @@ class SpiceBean
      */
     public function initialize_bean()
     {
-//        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        static $loaded_defs = [];
         $this->db = DBManagerFactory::getInstance();
         $dictHandler = SpiceDictionaryHandler::getInstance();
-//        if (empty($this->module_name))
-//            $this->module_name = $this->_module;
-        if ((false == $this->disable_vardefs && empty($loaded_defs[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
+
+        if ((false == $this->disable_vardefs && empty($dictHandler->dictionary[$this->_objectname])) || !empty($GLOBALS['reload_vardefs'])) {
             VardefManager::loadVardef($this->_module, $this->_objectname);
 
             // logic hook to create vardefs .. if any additonal fields are required
-
             // ToDo - check why we need this here
             $this->call_custom_logic('create_vardefs');
 
-            // build $this->column_fields from the field_defs if they exist
-//            if (!empty($dictHandler->dictionary[$this->_objectname]['fields'])) {
-//                foreach ($dictHandler->dictionary[$this->_objectname]['fields'] as $key => $value_array) {
-//                    $column_fields[] = $key;
-//                    if (!empty($value_array['required']) && !empty($value_array['name'])) {
-//                        $this->required_fields[$value_array['name']] = 1;
-//                    }
-//                }
-//                $this->column_fields = $column_fields;
-//            }
-
-            //load up field_arrays from CacheHandler;
-//            if (empty($this->list_fields))
-//                $this->list_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'list_fields');
-//            if (empty($this->column_fields))
-//                $this->column_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'column_fields');
-//            if (empty($this->required_fields))
-//                $this->required_fields = $this->_loadCachedArray($this->_module, $this->_objectname, 'required_fields');
-
             if (isset($dictHandler->dictionary[$this->_objectname]) && !$this->disable_vardefs) {
-//                $this->field_name_map = $dictHandler->dictionary[$this->_objectname]['fields'];
                 $this->field_defs = $dictHandler->dictionary[$this->_objectname]['fields'];
 
                 if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
@@ -420,8 +363,7 @@ class SpiceBean
             }
 
         } else {
-//            $this->field_name_map = &$loaded_defs[$this->_objectname]['field_name_map'];
-            $this->field_defs = &$loaded_defs[$this->_objectname]['field_defs'];
+            $this->field_defs = &$dictHandler->dictionary[$this->_objectname]['fields'];
 
             if (!empty($dictHandler->dictionary[$this->_objectname]['optimistic_locking'])) {
                 $this->optimistic_lock = true;
@@ -489,57 +431,6 @@ class SpiceBean
         return $ret;
     }
 
-
-    /**
-     * This function is designed to cache references to field arrays that were previously stored in the
-     * bean files and have since been moved to separate files. Was previously in include/CacheHandler.php
-     *
-     * @param $module_dir string the module directory
-     * @param $module string the name of the module
-     * @param $key string the type of field array we are referencing, i.e. list_fields, column_fields, required_fields
-     * *@deprecated
-     */
-    private function _loadCachedArray(
-        $module_dir, $module, $key
-    )
-    {
-        static $moduleDefs = [];
-
-        $fileName = 'field_arrays.php';
-
-        $cache_key = "load_cached_array.$module_dir.$module.$key";
-        $result = SugarCache::sugar_cache_retrieve($cache_key);
-        if (!empty($result)) {
-            // Use SugarCache::EXTERNAL_CACHE_NULL_VALUE to store null values in the cache.
-            if ($result == SugarCache::EXTERNAL_CACHE_NULL_VALUE) {
-                return null;
-            }
-
-            return $result;
-        }
-
-        if (file_exists('modules/' . $module_dir . '/' . $fileName)) {
-            // If the data was not loaded, try loading again....
-            if (!isset($moduleDefs[$module])) {
-                include('modules/' . $module_dir . '/' . $fileName);
-                $moduleDefs[$module] = $fields_array;
-            }
-            // Now that we have tried loading, make sure it was loaded
-            if (empty($moduleDefs[$module]) || empty($moduleDefs[$module][$module][$key])) {
-                // It was not loaded....  Fail.  Cache null to prevent future repeats of this calculation
-                SugarCache::sugar_cache_put($cache_key, SugarCache::EXTERNAL_CACHE_NULL_VALUE);
-                return null;
-            }
-
-            // It has been loaded, cache the result.
-            SugarCache::sugar_cache_put($cache_key, $moduleDefs[$module][$module][$key]);
-            return $moduleDefs[$module][$module][$key];
-        }
-
-        // It was not loaded....  Fail.  Cache null to prevent future repeats of this calculation
-        SugarCache::sugar_cache_put($cache_key, SugarCache::EXTERNAL_CACHE_NULL_VALUE);
-        return null;
-    }
 
     function bean_implements($interface)
     {
@@ -850,7 +741,7 @@ class SpiceBean
         }
 
         if (!is_array($dictionary) or !array_key_exists($key, $dictionary)) {
-            LoggerManager::getLogger()->fatal("createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
+            LoggerManager::getLogger()->fatal('dictionary', "createRelationshipMeta: Metadata for table " . $tablename . " does not exist");
             SpiceUtils::displayNotice("meta data absent for table " . $tablename . " keyed to $key ");
         } else {
             if (isset($dictionary[$key]['relationships'])) {
@@ -1029,7 +920,7 @@ class SpiceBean
                 return true;
             }
         }
-        LoggerManager::getLogger()->info("SpiceBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
+        LoggerManager::getLogger()->developer('relationships', "SpiceBean.load_relationships, Error Loading relationship (passed link name = " . $rel_name . ") in module " . $this->_module);
 
         return false;
     }
@@ -1338,7 +1229,7 @@ class SpiceBean
     {
         $key = $this->getObjectName();
         if (!array_key_exists($key, SpiceDictionaryHandler::getInstance()->dictionary)) {
-            LoggerManager::getLogger()->fatal("drop_tables: Metadata for table " . $this->_tablename . " does not exist");
+            LoggerManager::getLogger()->fatal('dictionary', "drop_tables: Metadata for table " . $this->_tablename . " does not exist");
             echo "meta data absent for table " . $this->_tablename . "<br>\n";
         } else {
             if (empty($this->_tablename))
@@ -2551,7 +2442,14 @@ class SpiceBean
         $tmpBeans = [];
         foreach ($duplicates as $beanId) {
             $tmpBeans[$beanId] = BeanFactory::getBean($this->_module, $beanId);
+
+            // merge SpiceAttachments & SpiceNotes for duplicate
+                // $this->id == ID of Master Bean (Bean to be kept)
+                // $beanId == ID of the Bean to be deleted
+            SpiceAttachments::mergeSpiceAttachments($this->_module, $this->id, $beanId);
+            SpiceNotes::mergeSpiceNotes($this->_module, $this->id, $beanId);
         }
+
         // overwrite fields
         foreach ($overwriteFieldsWithId as $fieldname => $beanId) {
             $this->{$fieldname} = $tmpBeans[$beanId]->{$fieldname};
@@ -2566,19 +2464,17 @@ class SpiceBean
         foreach ($tmpBeans as $beanId => $tmpBean) {
             //handle related beans
             foreach ($linked_fields as $name => $properties) {
-                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link' || $properties['name'] == 'assigned_user_link')
+                if ($properties['name'] == 'modified_user_link' || $properties['name'] == 'created_by_link')
                     continue;
 
                 if (isset($properties['duplicate_merge'])) {
-                    if ($properties['duplicate_merge'] == 'disabled' or
-                        $properties['duplicate_merge'] == 'false' or
-                        $properties['duplicate_merge'] === false
-
-                    ) {
+                    if (
+                        $properties['duplicate_merge'] === 'disabled' or
+                        $properties['duplicate_merge'] === 0 or
+                        $properties['duplicate_merge'] === false) {
                         continue;
                     }
                 }
-
 
                 if ($tmpBean->load_relationship($name)) {
                     //check to see if loaded relationship is with email address
@@ -2596,6 +2492,10 @@ class SpiceBean
                                         $tmpBean->$name->delete($tmpBean->id, $related_id);
                                     //add to primary bean
                                     $this->$name->add($related_id);
+
+                                    // re-index the related bean
+                                    $relatedBean = BeanFactory::getBean($relName, $related_id, ['relationships' => false]);
+                                    SpiceFTSHandler::getInstance()->indexBean($relatedBean);
                                 }
                             }
                         }
@@ -2722,7 +2622,7 @@ class SpiceBean
             if ($this->load_relationship($name)) {
                 $this->$name->delete($id);
             } else {
-                LoggerManager::getLogger()->fatal("error loading relationship $name");
+                LoggerManager::getLogger()->fatal('relationships', "error loading relationship $name in " . __FILE__);
             }
         }
     }
@@ -2777,7 +2677,7 @@ class SpiceBean
      * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
      * @return object Instance of this bean with fetched data.
      */
-    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true)
+    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true, $relationships = true)
     {
         $where_clause = $this->get_where($fields_array, $deleted);
         $query = "SELECT $this->_tablename.id" . " FROM $this->_tablename ";
@@ -2797,7 +2697,7 @@ class SpiceBean
         }
         // Removed getRowCount-if-clause earlier and insert duplicates_found here as it seems that we have found something
         // if we didn't return null in the previous clause.
-        return $this->retrieve($row['id'], $encode, $deleted);
+        return $this->retrieve($row['id'], $encode, $deleted, $relationships);
     }
 
     /**
@@ -3062,10 +2962,6 @@ class SpiceBean
         foreach ($this->field_defs as $field) {
             if (isset($this->{$field['name']})) {
                 switch ($field['type']) {
-                    case 'enum':
-                        if (!isset($GLOBALS['app_list_strings'][$field['options']][$this->{$field['name']}]))
-                            $invalidFields[$field['name']][] = 'Invalid enum value (allowed: \'' . implode('\'|\'', $GLOBALS['app_list_strings'][$field['options']]) . '\').';
-                        break;
                     case 'varchar':
                     case 'text':
                         if (isset($field['len']) and strlen($this->{$field['name']}) > $field['len'])
@@ -3078,14 +2974,6 @@ class SpiceBean
             }
         }
         return $invalidFields ? $invalidFields : true;
-    }
-
-    protected static function logDeprecated()
-    {
-        LoggerManager::getLogger()->deprecated(
-            get_class() . " Deprecated. " .
-            LoggerManager::formatBackTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4))
-        );
     }
 
     /**

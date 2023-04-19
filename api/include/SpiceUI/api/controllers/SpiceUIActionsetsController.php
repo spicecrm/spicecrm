@@ -4,9 +4,10 @@ namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHelper;
 use stdClass;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -18,6 +19,10 @@ class SpiceUIActionsetsController
 
     static function getActionSets()
     {
+        // check if cached
+        $cached = SpiceCache::get('spiceUIActionsets');
+        if($cached) return $cached;
+
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
@@ -81,6 +86,9 @@ class SpiceUIActionsetsController
             }
         }
 
+        // set the Cache
+        SpiceCache::set('spiceUIActionsets', $retArray);
+
         return $retArray;
     }
 
@@ -141,6 +149,10 @@ class SpiceUIActionsetsController
 
             self::setActionSetItems($actionsetData);
         }
+
+        // set the Cache
+        SpiceCache::clear('spiceUIActionsets');
+
 
         return $res->withJson(true);
     }
@@ -217,6 +229,7 @@ class SpiceUIActionsetsController
 
             self::insertActionsetItem($actionsetItem, $actionsetId, $actionsetData, $actionsetItemTable);
         }
+
     }
 
     /**

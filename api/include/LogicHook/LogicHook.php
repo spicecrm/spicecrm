@@ -69,6 +69,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Exceptions\MissingEwsCredentialsException;
 use SpiceCRM\extensions\includes\SpiceCRMExchange\Exceptions\EwsConnectionException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class LogicHook
@@ -212,7 +213,7 @@ class LogicHook
      */
 	public function call_custom_logic(string $moduleDir, $bean, string $event, $arguments = null): void {
         if (LoggerManager::getLogger()) {
-            LoggerManager::getLogger()->debug("Hook called: $moduleDir::$event");
+            LoggerManager::getLogger()->debug('hook', "Hook called: $moduleDir::$event");
         }
 
         $allHooks = [];

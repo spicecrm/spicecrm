@@ -3,6 +3,8 @@
  */
 import {Injectable} from '@angular/core';
 import {language} from "../../../services/language.service";
+import {model} from "../../../services/model.service";
+import {backend} from "../../../services/backend.service";
 
 
 /* @ignore */
@@ -27,12 +29,14 @@ export class SpiceImporterService {
     public enclosure: string = 'none';
     public separator: string = 'semicolon';
     public fileTooBig: boolean = false;
+    public rejectExistingKey: string = '';
+
     // For backend END //
     public savedImports: any[] = [];
     public fileRows: string = '';
     public fileData;
     public currentImportStep: number = 0;
-    public result: any = {};
+    public result: {list?: {status: 'imported' | 'Duplicate Entry' | 'Record Exists' | 'updated' | 'No Entries' ,recordId?: string, data: string[]}[]} = {};
     public importStepsText: any[] =
         [
             'LBL_SELECT_UPLOAD_FILE',
@@ -42,7 +46,22 @@ export class SpiceImporterService {
             'LBL_RESULTS'
         ];
 
-    constructor(public language: language) {}
+    public processByMethod = false;
+    public availableClasses: {id: string, name: string}[] = [];
+
+    constructor(public language: language, private model: model, private backend: backend) {
+    }
+
+    public _selectedMethod: string;
+
+    set selectedMethod(val: string) {
+        this._selectedMethod = val;
+        this.processByMethod = !!val;
+    }
+
+    get selectedMethod(): string {
+        return this._selectedMethod;
+    }
 
     get stepLongText() {
         return this.language.getLabel(this.importStepsText[this.currentImportStep], '', 'long');
@@ -54,7 +73,7 @@ export class SpiceImporterService {
 
     set idField(idField) {
         if (this.fileMapping[idField]) {
-            delete this.fileMapping[idField];
+            //  delete this.fileMapping[idField];
         }
         this.idfield = idField;
     }
@@ -141,4 +160,9 @@ export class SpiceImporterService {
         });
     }
 
+    public loadModuleAvailableMethods() {
+        this.backend.getRequest(`SpiceImports/${this.model.module}/methods`).subscribe((res: string[]) => {
+            this.availableClasses = res.map(c =>  ({id: c, name: c}));
+        });
+    }
 }

@@ -194,8 +194,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
                 config = config.trim();
                 if (config.includes(":")) {
                     this.sumfields.push({
-                        name: config.substr(0, config.indexOf(':')),
-                        function: config.substr(config.indexOf(':') + 1),
+                        name: config.substring(0, config.indexOf(':')),
+                        function: config.substring(config.indexOf(':') + 1),
                     });
                 } else {
                     this.sumfields.push({

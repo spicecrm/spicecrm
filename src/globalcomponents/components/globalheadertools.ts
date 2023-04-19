@@ -1,12 +1,10 @@
 /**
  * @module GlobalComponents
  */
-import {Component, AfterViewInit, ViewContainerRef, ViewChild, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {session} from '../../services/session.service';
+import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
 import {broadcast} from '../../services/broadcast.service';
+import {userpreferences} from "../../services/userpreferences.service";
 
 
 /**
@@ -16,14 +14,16 @@ import {broadcast} from '../../services/broadcast.service';
     selector: 'global-header-tools',
     templateUrl: '../templates/globalheadertools.html'
 })
-export class GlobalHeaderTools implements OnInit{
+export class GlobalHeaderTools implements OnInit {
 
     /**
-     * the componentset to be rendered
+     * the array with the list of components to be rendered
      */
-    public componentset: string;
+    public components: any[] = [];
 
-    constructor(public session: session, public metadata: metadata, public router: Router, public language: language, public broadcast: broadcast) {
+    constructor(public metadata: metadata,
+                public userPreferences: userpreferences,
+                public broadcast: broadcast) {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -44,8 +44,9 @@ export class GlobalHeaderTools implements OnInit{
     }
 
     public buildTools() {
-        let componentconfig = this.metadata.getComponentConfig('GlobalHeaderTools');
-        this.componentset = componentconfig.componentset;
+        let config = this.metadata.getComponentConfig('GlobalHeaderTools');
+        if (!config.componentset) return;
+        this.components = this.metadata.getComponentSetObjects(config.componentset);
     }
 
 }

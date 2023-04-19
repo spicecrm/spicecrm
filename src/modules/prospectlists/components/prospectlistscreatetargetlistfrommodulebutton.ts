@@ -63,10 +63,11 @@ export class ProspectListsCreateTargetListFromModuleButton implements OnInit {
      * loading module list related to the bean
      */
     public execute() {
-        let loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest('module/ProspectLists/getrelated/' + this.model.module + '/' + this.model.id, {modules: this.actionconfig.modules}).subscribe(result => {
-            loadingModal.emit(true);
-            if (result) {
+        const loadingModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        this.backend.getRequest('module/ProspectLists/getrelated/' + this.model.module + '/' + this.model.id, {modules: this.actionconfig.modules}).subscribe({
+            next: (result) => {
+                // wait for the backend call to emit spiner
+                loadingModal.emit(true);
                 this.beans = result;
                 this.modal.openModal('ProspectListsCreateTargetListFromModuleModal', true, this.injector).subscribe(modalRef => {
                         modalRef.instance.result = this.beans;
@@ -74,7 +75,8 @@ export class ProspectListsCreateTargetListFromModuleButton implements OnInit {
                         modalRef.instance.parentModule = this.model.module;
                     }
                 );
-            } else {
+            }, error: () => {
+                loadingModal.emit(true);
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR_LOADING_DATA'), 'error');
             }
         });

@@ -75,6 +75,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
                 bean_id: this.model.id,
                 bean_module: this.model.module,
                 email_address: this.lead.getField('email1'),
+                email_address_caps: this.lead.getField('email1').toUpperCase(),
                 email_address_id: '',
                 primary_address: '1'
             }]}

@@ -88,6 +88,10 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     public groupwareEvents: any[] = [];
     /**
+     * holds the second day date for the single events that end on the next day
+     */
+    public nextDaySingleEvents = {ownerEvents: {}, userEvents: {}, groupwareEvents: {}};
+    /**
      * subscription to handle unsubscribe
      */
     public subscription: Subscription = new Subscription();
@@ -110,13 +114,6 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     get offset() {
         return moment.tz(this.calendar.timeZone).format('z Z');
-    }
-
-    /**
-     * @return allEvents: [ownerEvents, userEvents, groupwareEvents]
-     */
-    get allEvents() {
-        return this.calendar.arrangeEvents(this.ownerEvents.concat(this.userEvents, this.groupwareEvents));
     }
 
     /**
@@ -226,9 +223,15 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
      * set all events style
      */
-    public setEventsStyle() {
-        this.allEvents.forEach(event =>
-            this.setEventStyle(event)
+    public setSingleEventsStyle() {
+        this.calendar.arrangeEvents(this.ownerEvents.concat(
+            this.userEvents,
+            this.groupwareEvents,
+            Object.values(this.nextDaySingleEvents.ownerEvents),
+            Object.values(this.nextDaySingleEvents.userEvents),
+            Object.values(this.nextDaySingleEvents.groupwareEvents),
+        )).forEach(event =>
+            this.setSingleEventStyle(event)
         );
         this.cdRef.detectChanges();
     }
@@ -237,7 +240,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * @param event: object
      * @return style: object
      */
-    public setEventStyle(event) {
+    public setSingleEventStyle(event) {
         const startday = this.calendar.weekStartDay == 1 && event.start.day() == 0 ? 6 : event.start.day() - this.calendar.weekStartDay;
         const startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
         const endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
@@ -273,11 +276,11 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * @return style: object
      */
     public setMultiEventStyle(event): any {
-        let eventI = null;
+        let eventI = event.sequence -1;
         const scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
         const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
         const multiEventsContainerWidth = (sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount;
-        const weekStartDate = moment(moment(this.setdate).day(this.calendar.weekStartDay).hour(this.calendar.startHour).format('YYYY-MM-DD HH:00:00'));
+        const weekStartDate = moment(moment(this.setdate).day(this.calendar.weekStartDay).hour(0).format('YYYY-MM-DD HH:00:00'));
         const weekEndDate = moment(moment(weekStartDate).add(moment.duration(this.calendar.weekDaysCount, 'd')).hour(this.calendar.endHour));
         const eventStart = event.start.isBefore(weekStartDate) ? weekStartDate : event.start;
         const eventEnd = event.end.isAfter(weekEndDate) ? weekEndDate : event.end;
@@ -287,12 +290,6 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         const eventLength = Math.abs(eventEnd.diff(eventStart, 'days')) + (eventEnd.hour() > eventStart.hour() || eventEnd.minute() > eventStart.minute() ? 1 : 0);
         const width = (eventLength > max ? max : eventLength) * multiEventsContainerWidth;
 
-        this.sheetDays.some(day => {
-            if (day.events.indexOf(event) > -1) {
-                eventI = day.events.indexOf(event);
-                return true;
-            }
-        });
         event.style = {
             width: width + "px",
             left: left + "px",
@@ -352,7 +349,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
             this.calendar.layoutChange$.subscribe(() => {
                 this.buildSheetDays();
                 this.arrangeMultiEvents();
-                this.setEventsStyle();
+                this.setSingleEventsStyle();
                 this.setMultiEventsStyle();
             })
         );
@@ -365,9 +362,28 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
             })
         );
         this.resizeListener = this.renderer.listen('window', 'resize', () => {
-            this.setEventsStyle();
+            this.setSingleEventsStyle();
             this.setMultiEventsStyle();
         });
+    }
+
+
+    /**
+     * get event days difference
+     * @private
+     * @param start
+     * @param end
+     * @param isAllDay
+     */
+    private getDaysDiff(start, end, isAllDay: boolean): number {
+
+        let eventDaysDiff = Math.ceil(end.diff(start, 'day', true).toFixed(1));
+
+        if (!isAllDay && eventDaysDiff > 0 && end.hour() == 0 && end.minute() == 0) {
+            eventDaysDiff--;
+        }
+
+        return eventDaysDiff;
     }
 
     /**
@@ -375,65 +391,73 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     public arrangeMultiEvents() {
 
+
+        const daysIndices = {};
+        this.sheetDays.forEach(d => daysIndices[d.date.date()] = d.index);
+
+        const multiEvents = this.allMultiEvents.sort((a, b) => a.start.isBefore(b.start) ? -1 : 1)
+            .sort((a, b) => a.end.diff(a.start, 'day') > b.end.diff(b.start, 'day') && a.start.isSameOrBefore(b.start, 'day') ? -1 : 1);
+
         this.sheetDays.forEach(day => day.events = []);
 
-        for (let event of this.allMultiEvents) {
+        multiEvents.forEach(event => {
+
+            delete event.sequence;
+
+            const daysDiff = this.getDaysDiff(event.start, event.end, event.isAllDay);
+            Array.from({length: daysDiff +1}, (_, i) => moment(event.start).add(i, 'days'))
+                .forEach(eventDay => {
+                    const day = this.sheetDays[daysIndices[eventDay.date()]];
+
+                    if (!day) return;
+
+                    if (isNaN(event.sequence)) {
+                        event.sequence = day.events.sort((a, b) => a.sequence > b.sequence ? 1 : -1).reduce((acc, e) => acc +1 == e.sequence ? acc + 1 : acc, 0) + 1;
+                    }
+
+                    day.events.push(event);
+                });
             for (let day of this.sheetDays) {
-                for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
+                for (let eventDay = moment(event.start); eventDay.diff(event.end, 'days') <= -1; eventDay.add(1, 'days')) {
                     if (eventDay.date() == day.date.date() && !day.events.some(itemsEvent => itemsEvent.id == event.id)) {
                         day.events.push(event);
                     }
                 }
             }
-        }
-        this.sheetDays.forEach(day => {
-            day.events = day.events.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
-            day.events.sort((a, b) => {
-                if (a.start.isBefore(b.start)) {
-                    return -1;
-                } else if (a.start.diff(a.end, 'days') < b.start.diff(b.end, 'days')) {
-                    return -1;
-                }
-                return 0;
-            });
-        });
-        this.allMultiEvents.forEach(event => {
-            let itemIdx = null;
-            this.sheetDays.forEach(day => {
-                day.events.forEach((item, idx) => {
-                    if (item.id == event.id) {
-                        if (itemIdx != null && event.end.diff(event.start, 'days') > 0) {
-                            day.events.splice(idx, 1);
-                            day.events.splice(itemIdx, 0, event);
-                        } else {
-                            itemIdx = idx;
-                        }
-                    }
-                });
-            });
         });
 
         this.cdRef.detectChanges();
     }
 
     /**
-     * correct the start and end hours for the event preview
-     * @return events
+     * generate the next day single events to for display style
+     * @param key
+     * @private
      */
-    public correctHours(events) {
-        events.map(event => {
-            if (!event.isMulti) {
-                let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
-                let startInRange = event.start.hour() < this.calendar.endHour && event.end.hour() > this.calendar.endHour;
-                if (endInRange) {
-                    event.start = event.start.hour(this.calendar.startHour).minute(0);
-                }
-                if (startInRange) {
-                    event.end = event.end.hour(this.calendar.endHour).minute(59);
-                }
+    private generateNextDaySingleEvents(key: string) {
+        this[key].forEach(event => {
+
+            if (event.isMulti || event.start.date() == event.end.date()) return;
+
+            // set the next day end before correction
+            const nextDayEnd = moment(event.end);
+
+            // if the event starts before the first displayed day correct the date
+            if (event.start.isBefore(this.sheetDays[0].date, 'day')) {
+                event.start.date(this.sheetDays[0].date.date()).hour(this.calendar.startHour).minute(0);
+            } else {
+                // update the event end hour to the end of the day only if the event starts after the beginning of the first day
+                event.end.date(event.start.date()).hour(this.calendar.endHour + 1).minute(0);
+
             }
+
+            this.nextDaySingleEvents[key][event.id + '_next'] = {
+                id: event.id + '_next',
+                start: moment(event.start).add(1, 'day').hour(this.calendar.startHour).minute(0),
+                end: nextDayEnd,
+            };
+
         });
-        return events;
     }
 
     /**
@@ -442,19 +466,19 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     public getOwnerEvents() {
         this.ownerEvents = [];
         this.ownerMultiEvents = [];
+        this.nextDaySingleEvents.ownerEvents = [];
         this.arrangeMultiEvents();
 
-        if (!this.calendar.ownerCalendarVisible) return this.setEventsStyle();
+        if (!this.calendar.ownerCalendarVisible) return this.setSingleEventsStyle();
 
         this.calendar.loadEvents(this.startDate, this.endDate)
             .subscribe(events => {
                 if (events.length > 0) {
-                    events = this.correctHours(events);
-                    events = this.filterEvents(events);
                     this.ownerEvents = events.filter(event => !event.isMulti);
                     this.ownerMultiEvents = events.filter(event => event.isMulti);
+                    this.generateNextDaySingleEvents('ownerEvents');
                     this.arrangeMultiEvents();
-                    this.setEventsStyle();
+                    this.setSingleEventsStyle();
                     this.setMultiEventsStyle();
                 }
             });
@@ -465,21 +489,21 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     public getGroupwareEvents() {
         this.groupwareEvents = [];
+        this.nextDaySingleEvents.groupwareEvents = [];
         this.groupwareMultiEvents = [];
         this.arrangeMultiEvents();
         if (!this.groupwareVisible || this.calendar.isMobileView) {
-            return this.setEventsStyle();
+            return this.setSingleEventsStyle();
         }
 
         this.calendar.loadGroupwareEvents(this.startDate, this.endDate)
             .subscribe(events => {
                 if (events.length > 0) {
-                    events = this.correctHours(events);
-                    events = this.filterEvents(events);
                     this.groupwareEvents = events.filter(event => !event.isMulti);
                     this.groupwareMultiEvents = events.filter(event => event.isMulti);
+                    this.generateNextDaySingleEvents('groupwareEvents');
                     this.arrangeMultiEvents();
-                    this.setEventsStyle();
+                    this.setSingleEventsStyle();
                     this.setMultiEventsStyle();
                 }
             });
@@ -489,31 +513,35 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * load other user events from service and rearrange the multi events
      */
     public getUserEvents(calendar) {
+
         this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
+        this.nextDaySingleEvents.userEvents = {};
+        this.generateNextDaySingleEvents('userEvents');
+
         this.userMultiEvents = this.userMultiEvents.filter(event => event.data.assigned_user_id != calendar.id &&
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
+
         this.arrangeMultiEvents();
 
         if (this.calendar.isMobileView || !calendar.visible) {
-            return this.setEventsStyle();
+            return this.setSingleEventsStyle();
         }
 
         this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
             .subscribe(events => {
                 if (events.length > 0) {
-                    events = this.correctHours(events);
-                    events = this.filterEvents(events);
                     events.forEach(event => {
                         if (!event.isMulti) {
                             this.userEvents.push(event);
                         } else {
                             this.userMultiEvents.push(event);
-                            this.arrangeMultiEvents();
                         }
                     });
-                    this.setEventsStyle();
+                    this.generateNextDaySingleEvents('userEvents');
+                    this.arrangeMultiEvents();
+                    this.setSingleEventsStyle();
                     this.setMultiEventsStyle();
                 }
             });
@@ -524,38 +552,30 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     public getUsersEvents() {
         this.userEvents = [];
+        this.nextDaySingleEvents.userEvents = {};
         this.userMultiEvents = [];
         this.arrangeMultiEvents();
         if (this.calendar.isMobileView) {
-            return this.setEventsStyle();
+            return this.setSingleEventsStyle();
         }
 
         this.calendar.loadUsersEvents(this.startDate, this.endDate)
             .subscribe(events => {
                 if (events.length > 0) {
-                    events = this.correctHours(events);
-                    events = this.filterEvents(events);
                     events.forEach(event => {
                         if (!event.isMulti) {
                             this.userEvents.push(event);
                         } else {
                             this.userMultiEvents.push(event);
-                            this.arrangeMultiEvents();
                         }
                     });
-                    this.setEventsStyle();
+                    this.generateNextDaySingleEvents('userEvents');
+                    this.arrangeMultiEvents();
+                    this.setSingleEventsStyle();
                     this.setMultiEventsStyle();
                 }
             });
 
-    }
-
-    /**
-     * filter the out of range events or the absence events
-     * @return events
-     */
-    public filterEvents(events) {
-        return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour || ('absence' == event.type));
     }
 
     /**

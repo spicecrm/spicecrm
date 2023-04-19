@@ -1,0 +1,292 @@
+<system-modal size="large" *ngIf="!loading">
+    <system-modal-header (close)="close()">Migrate Dictionary Definition</system-modal-header>
+    <system-modal-content margin="none">
+        <div *ngIf="view=='tables'" style="height: 80vh">
+            <table class="slds-table slds-table--header-fixed">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col" style="width: 2rem;"></th>
+                        <th scope="col"> <div class="slds-truncate slds-m-around--xx-small">Dictionaryname</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-m-around--xx-small">Tablename</div></th>
+                        <th scope="col" style="width: 4rem;"> <div class="slds-truncate slds-m-around--xx-small">audited</div></th>
+                        <th scope="col" style="width: 4rem;"> <div class="slds-truncate slds-m-around--xx-small">defined</div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let table of _tables">
+                        <td><system-input-radio name="migratedid" [value]="table.sysdictionarytablename" [(ngModel)]="selectedtable"></system-input-radio></td>
+                        <td><div class="slds-truncate">{{table.sysdictionaryname}}</div></td>
+                        <td><div class="slds-truncate">{{table.sysdictionarytablename}}</div></td>
+                        <td><system-checkbox disabled [ngModel]="table.sysdictionarytableaudited == '1'"></system-checkbox></td>
+                        <td><system-checkbox disabled [ngModel]="!!table.sysdictionarydefinition_id"></system-checkbox></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="view=='details'" class="slds-p-around--x-small">
+            <div class="slds-grid">
+                <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+                    <system-input-text disabled [(ngModel)]="dictionarydefinition.name"></system-input-text>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_TABLE"></system-label></label>
+                    <system-input-text disabled [(ngModel)]="dictionarydefinition.tablename"></system-input-text>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-left--xxx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="dictionarydefinition.scope">
+                            <option *ngIf="dictionarymanager.changescope == 'all'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                            <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+                    <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_type">
+                            <option value="module">module</option>
+                            <option value="metadata">metadata</option>
+                            <option value="template">template</option>
+                            <option value="template">relationship</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="slds-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+                    <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                    <system-input-text [(ngModel)]="dictionarydefinition.package"></system-input-text>
+                </div>
+                <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
+                    <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                    <system-input-text [(ngModel)]="dictionarydefinition.version"></system-input-text>
+                </div>
+            </div>
+            <div *ngIf="dictionarydefinition.sysdictionary_type == 'metadata'" class="slds-grid">
+                <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+                    <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_CONTENT_TYPE"></system-label></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_contenttype">
+                            <option value="config">config</option>
+                            <option value="custom_config">custom config</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
+            <system-input-text maxlength="150" [ngModel]="dictionarydefinition.description"></system-input-text>
+        </div>
+        <div *ngIf="view=='fields'"  style="height: 80vh">
+            <table class="slds-table slds-table--header-fixed">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col" style="width: 2rem;"><system-checkbox class="slds-m-around--x-small" [(ngModel)]="allSelected"></system-checkbox></th>
+                        <th scope="col"> <div class="slds-truncate slds-m-around--xx-small">name</div></th>
+                        <th scope="col" style="width: 2rem;"><div class="slds-truncateslds-m-around--xx-small">defined</div></th>
+                        <th scope="col"> <div class="slds-truncateslds-m-around--xx-small">type</div></th>
+                        <th scope="col" style="width: 2rem;"><div class="slds-truncateslds-m-around--xx-small">non DB</div></th>
+                        <th scope="col"> <div class="slds-truncateslds-m-around--xx-small">scope</div></th>
+                        <th scope="col"> <div class="slds-truncateslds-m-around--xx-small">label</div></th>
+                        <th scope="col"> <div class="slds-truncateslds-m-around--xx-small">required</div></th>
+                        <th scope="col"> <div class="slds-truncateslds-m-around--xx-small">domain</div></th>
+                        <th scope="col" style="width: 2rem;"><button class="slds-button slds-button--icon slds-m-around--x-small" (click)="toggleAllDetails()"><system-button-icon [icon]="allExpanded ? 'chevronup' :'chevrondown'"></system-button-icon></button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let field of _fields">
+                        <tr>
+                            <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.selected"></system-checkbox></td>
+                            <td><div class="slds-truncate">{{field.fieldname}}</div></td>
+                            <td><system-checkbox disabled [ngModel]="!!field.sysdomainfield_id"></system-checkbox></td>
+                            <td><div class="slds-truncate">{{field.fieldtype}}<span *ngIf="field.fielddefinition.len">({{field.fielddefinition.len}})</span></div></td>
+                            <td><system-checkbox disabled [ngModel]="field.fielddefinition.source && field.fielddefinition.source == 'non-db'"></system-checkbox></td>
+                            <td>
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.scope">
+                                        <option *ngIf="dictionarymanager.changescope == 'all' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td><system-input-label [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.vname"></system-input-label></td>
+                            <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.required"></system-checkbox></td>
+                            <td>
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.sysdomaindefinition_id">
+                                        <option *ngFor="let domain of domains" [value]="domain.id">{{domain.name}}</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td><button class="slds-button slds-button--icon" (click)="field.showdetails = !field.showdetails"><system-button-icon [icon]="field.showdetails ? 'chevronup' :'chevrondown'"></system-button-icon></button></td>
+                        </tr>
+                        <ng-container *ngIf="field.showdetails">
+                            <tr>
+                                <td></td>
+                                <td colspan="2">
+                                    package / version
+                                </td>
+                                <td colspan="3">
+                                    <system-input-text [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.package"></system-input-text>
+                                </td>
+                                <td colspan="3">
+                                    <system-input-text [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.version"></system-input-text>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="2">
+                                    Comment
+                                </td>
+                                <td colspan="6">
+                                    <system-input-text [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.comment"></system-input-text>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="2">
+                                    audited
+                                </td>
+                                <td colspan="6">
+                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.audited"></system-checkbox>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="2">
+                                    reportable
+                                </td>
+                                <td colspan="6">
+                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.reportable"></system-checkbox>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="2">
+                                    duplicate merge
+                                </td>
+                                <td colspan="6">
+                                    <system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.duplicate_merge"></system-checkbox>
+                                </td>
+                            </tr>
+                            <tr *ngFor="let k of getFieldDefinitions(field.fielddefinition)">
+                                <td></td>
+                                <td colspan="2">
+                                    {{k.key}}
+                                </td>
+                                <td colspan="6">
+                                    {{k.value}}
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="view=='indices'"  style="height: 80vh">
+            <table class="slds-table slds-table--header-fixed">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col" style="width: 2rem;"></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">name</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">type</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">scope</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">package</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">version</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">fields</div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let index of indices">
+                        <td><system-checkbox [disabled]="!canAddIndex(index.fields)" [(ngModel)]="index.selected"></system-checkbox></td>
+                        <td><system-input-text [(ngModel)]="index.name"></system-input-text></td>
+                        <td>
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="index.type">
+                                    <option value="primary">primary</option>
+                                    <option value="index">index</option>
+                                    <option value="unique">unique</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="index.scope">
+                                    <option *ngIf="dictionarymanager.changescope == 'all' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                                    <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                                </select>
+                            </div>
+                        </td>
+                        <td><system-input-text [(ngModel)]="index.package"></system-input-text></td>
+                        <td><system-input-text [(ngModel)]="index.version"></system-input-text></td>
+                        <td>{{index.fields.join(', ')}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="view=='templates'"  style="height: 80vh">
+            <table class="slds-table slds-table--header-fixed">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col" style="width: 2rem;"></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">name</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">template</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">scope</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">package</div></th>
+                        <th scope="col"> <div class="slds-truncate slds-p-around--xx-small">version</div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let template of templates">
+                        <td><system-checkbox [disabled]="!template.sysdictionary_ref_id" [(ngModel)]="template.selected"></system-checkbox></td>
+                        <td><system-input-text disabled [(ngModel)]="template.name"></system-input-text></td>
+                        <td>
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="template.sysdictionary_ref_id">
+                                    <option *ngFor="let t of definedtemplates" [ngValue]="t.id">{{t.name}}</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="template.scope">
+                                    <option *ngIf="dictionarymanager.changescope == 'all' && dictionarydefinition.scope == 'g'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
+                                    <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                                </select>
+                            </div>
+                        </td>
+                        <td><system-input-text [(ngModel)]="template.package"></system-input-text></td>
+                        <td><system-input-text [(ngModel)]="template.version"></system-input-text></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div class="slds-col--bump-right slds-grid slds-grid--vertical-align-center">
+                <system-input-text class="slds-m-horizontal--xx-small" [showClear]="true" *ngIf="view=='tables'" [(ngModel)]="filterterm"></system-input-text>
+                <system-checkbox class="slds-m-horizontal--xx-small" *ngIf="view=='fields' || view=='tables'" [(ngModel)]="filterundefined">undefined onyl</system-checkbox>
+            </div>
+            <button *ngIf="view=='tables'" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goDetails()">
+                <system-label label="LBL_NEXT"></system-label>
+            </button>
+            <button *ngIf="view=='details'" [disabled]="!detailsComplete" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goFields(true)">
+                <system-label label="LBL_NEXT"></system-label>
+            </button>
+            <button *ngIf="view=='indices' || view=='templates'" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goFields()">
+                <system-label label="LBL_FIELDS"></system-label>
+            </button>
+            <button *ngIf="view=='fields' || view=='templates'" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goIndices()">
+                <system-label label="LBL_INDICES"></system-label>
+            </button>
+            <button *ngIf="view=='fields' || view=='indices'" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goTemplates()">
+                <system-label label="LBL_TEMPLATES"></system-label>
+            </button>
+            <button *ngIf="view=='indices' || view == 'fields' || view=='templates'"  [disabled]="!canAdd" (click)="add()" class="slds-button slds-button--brand slds-m-horizontal--xx-small">
+                <system-label label="LBL_ADD"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

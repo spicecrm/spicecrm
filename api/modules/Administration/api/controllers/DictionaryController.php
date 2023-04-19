@@ -9,7 +9,7 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -343,7 +343,8 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
                     'text' => (SpiceUtils::translate($field_defs['vname'], $module) != '') ? SpiceUtils::translate($field_defs['vname'], $module) : $field_defs['name'],
                     'leaf' => true,
                     'options' => $field_defs['options'],
-                    'label' => $field_defs['vname']
+                    'label' => $field_defs['vname'],
+                    'source' => $field_defs['source']
                 ];
             }
         }
@@ -384,7 +385,7 @@ VALUES ('$dictItemId', '{$dictField[0]['name']}' ,'{$dictField[0]['sysdictionary
             $msg = DBManagerFactory::getInstance()->lastDbError();
         }
         //@todo: update relationship cache
-        return $res->withJson(['success' => $success, 'msg' => $msg]);
+        return $res->withJson(['success' => $success, 'msg' => $msg, 'sql' => $sql]);
     }
 
 

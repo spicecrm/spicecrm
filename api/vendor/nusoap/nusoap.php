@@ -150,8 +150,8 @@ class nusoap_base
      * @var      string
      * @access   public
      */
-    var $soap_defencoding = 'ISO-8859-1';
-    //var $soap_defencoding = 'UTF-8';
+    // var $soap_defencoding = 'ISO-8859-1';
+    var $soap_defencoding = 'UTF-8';
 
     /**
      * namespaces in an array of prefix => uri
@@ -4612,23 +4612,7 @@ class nusoap_server extends nusoap_base
         if (false == $namespace) {
         }
         if (false == $soapaction) {
-            if (isset($_SERVER)) {
-                $SERVER_NAME = $_SERVER['SERVER_NAME'];
-                $SCRIPT_NAME = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
-                $HTTPS = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : (isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : 'off');
-            } elseif (isset($HTTP_SERVER_VARS)) {
-                $SERVER_NAME = $HTTP_SERVER_VARS['SERVER_NAME'];
-                $SCRIPT_NAME = isset($HTTP_SERVER_VARS['PHP_SELF']) ? $HTTP_SERVER_VARS['PHP_SELF'] : $HTTP_SERVER_VARS['SCRIPT_NAME'];
-                $HTTPS = isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : 'off';
-            } else {
-                $this->setError("Neither _SERVER nor HTTP_SERVER_VARS is available");
-            }
-            if ($HTTPS == '1' || $HTTPS == 'on') {
-                $SCHEME = 'https';
-            } else {
-                $SCHEME = 'http';
-            }
-            $soapaction = "$SCHEME://$SERVER_NAME$SCRIPT_NAME/$name";
+            $soapaction = "{$this->wsdl->endpoint}/$name";
         }
         if (false == $style) {
             $style = "rpc";

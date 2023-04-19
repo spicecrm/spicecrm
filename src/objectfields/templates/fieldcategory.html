@@ -1,0 +1,7 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="false">
+    <div *ngIf="categories.length > 0; else nocategories" [title]="display_value">{{display_value}}</div>
+    <ng-template #nocategories>
+        <system-stencil></system-stencil>
+    </ng-template>
+</field-generic-display>

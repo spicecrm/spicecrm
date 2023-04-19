@@ -1,35 +1,60 @@
 <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse slds-border--right">
-    <div class="slds-p-horizontal--xx-small slds-p-vertical--small slds-border--bottom slds-grid slds-grid--vertical-align-center">
-        <div class="slds-p-horizontal--x-small">
-            <button class="slds-button slds-button_icon"  (click)="administration.navigateHome()" tabindex="-1">
-                <system-button-icon icon="home"></system-button-icon>
-            </button>
-        </div>
-        <div class="slds-grow slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right slds-m-vertical--xx-small">
-            <input type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="administration.itemfilter" />
-            <system-utility-icon *ngIf="administration.itemfilter == ''" [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
-            <div *ngIf="administration.itemfilter != ''" class="slds-input__icon-group slds-input__icon-group_right" style="margin-top: initial;">
-                <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon"  (click)="administration.itemfilter = ''" tabindex="-1">
-                    <system-button-icon [icon]="'clear'"></system-button-icon>
+    <ng-container *ngIf="!administration.minimized">
+        <div class="slds-p-horizontal--xx-small slds-p-vertical--small slds-border--bottom slds-grid slds-grid--vertical-align-center">
+            <div class="slds-p-horizontal--xx-small">
+                <button class="slds-button slds-button_icon"  (click)="administration.navigateHome()" tabindex="-1">
+                    <system-button-icon icon="home"></system-button-icon>
+                </button>
+            </div>
+            <div class="slds-grow slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right slds-m-vertical--xx-small">
+                <input type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="administration.itemfilter" />
+                <system-utility-icon *ngIf="administration.itemfilter == ''" [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
+                <div *ngIf="administration.itemfilter != ''" class="slds-input__icon-group slds-input__icon-group_right" style="margin-top: initial;">
+                    <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon"  (click)="administration.itemfilter = ''" tabindex="-1">
+                        <system-button-icon [icon]="'clear'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="slds-p-horizontal--xx-small">
+                <button class="slds-button slds-button_icon" [disabled]="!administration.opened_block" (click)="administration.toggleMinimized()" tabindex="-1">
+                    <system-button-icon icon="left"></system-button-icon>
                 </button>
             </div>
         </div>
-    </div>
-    <div system-to-bottom>
-        <div class="slds-p-bottom--medium">
-            <ng-container  *ngFor="let adminNavigationBlock of administration.navigationGroups; trackBy: trackbyfn" >
-                <h2 class="slds-text-title--caps slds-p-around--medium"><system-label [label]="adminNavigationBlock.label"></system-label></h2>
-                <ul>
-                    <li *ngFor="let item of adminNavigationBlock.groupcomponents; trackBy: trackbyfn" [title]="language.getLabel(item.admin_label, '', 'long')">
-                        <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-p-vertical--xxx-small slds-text-link--reset" (click)="openContent(item.id)" [ngClass]="{'slds-theme_inverse': item.id == administration.opened_itemid}">
-                            <div class="slds-grid slds-grid--vertical-align-center slds-truncate">
-                                <system-icon [icon]="item.icon?item.icon:'empty'" size="x-small"></system-icon>
-                                <system-label [label]="item.admin_label"></system-label>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </ng-container>
+        <div system-to-bottom>
+            <div class="slds-p-bottom--medium">
+                <ng-container  *ngFor="let adminNavigationBlock of administration.navigationGroups; trackBy: trackbyfn" >
+                    <h2 class="slds-text-title--caps slds-p-around--medium"><system-label [label]="adminNavigationBlock.label"></system-label></h2>
+                    <ul>
+                        <li *ngFor="let item of adminNavigationBlock.groupcomponents; trackBy: trackbyfn" [title]="language.getLabel(item.admin_label, '', 'long')">
+                            <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-p-vertical--xxx-small slds-text-link--reset" (click)="openContent(item.id)" [ngClass]="{'slds-theme_inverse': item.id == administration.opened_itemid}">
+                                <div class="slds-grid slds-grid--vertical-align-center slds-truncate">
+                                    <system-icon [icon]="item.icon?item.icon:'empty'" size="x-small"></system-icon>
+                                    <system-label [label]="item.admin_label"></system-label>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </ng-container>
+            </div>
         </div>
-    </div>
+    </ng-container>
+    <ng-container *ngIf="administration.minimized">
+        <div class="slds-p-horizontal--xx-small slds-p-vertical--xx-small slds-border--bottom slds-grid slds-grid--vertical">
+            <button class="slds-button slds-button_icon"  (click)="administration.toggleMinimized()" tabindex="-1">
+                <system-button-icon icon="right"></system-button-icon>
+            </button>
+        </div>
+        <div system-to-bottom>
+            <div class="slds-p-bottom--medium slds-grid slds-grid--vertical">
+                <ng-container  *ngFor="let adminNavigationBlock of administration.navigationGroups; trackBy: trackbyfn" >
+                    <ng-container *ngIf="adminNavigationBlock.id == administration.opened_block.id">
+                        <div class="slds-align-bottom slds-p-vertical--xx-small" *ngFor="let item of adminNavigationBlock.groupcomponents; trackBy: trackbyfn" [system-title]="item.admin_label"  (click)="openContent(item.id)">
+                            <system-icon [icon]="item.icon?item.icon:'empty'" size="x-small"></system-icon>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
 </div>

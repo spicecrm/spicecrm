@@ -176,6 +176,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
             'vname' => 'LBL_CONTACTS',
             'reportable' => false
         ],
+        'prospects' => [
+            'name' => 'prospects',
+            'type' => 'link',
+            'relationship' => 'leads_prospects',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'vname' => 'LBL_PROSPECT',
+            'duplicate_merge' => 'disabled',
+            'module' => 'Prospects'
+        ],
         /*'acc_name_from_accounts' =>
         array (
           'name' => 'acc_name_from_accounts',
@@ -212,7 +222,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'link_type' => 'one',
                 'source' => 'non-db',
                 'vname' => 'LBL_ACCOUNTS',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
         'account_description' =>
             [
@@ -383,7 +393,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'link_type' => 'relationship_info',
                 'source' => 'non-db',
                 'importable' => 'false',
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
         'm_accept_status_fields' =>
             [
@@ -397,7 +407,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'source' => 'non-db',
                 'importable' => 'false',
                 'hideacl' => true,
-                'duplicate_merge' => 'disabled',
+                'duplicate_merge' => false,
             ],
         'accept_status_id' =>
             [
@@ -535,6 +545,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Lead'] = ['table' => 'leads',
                 'relationship' => 'emails_leads_rel',
                 'source' => 'non-db',
                 'unified_search' => true,
+                'module' => 'Emails',
+                'bean_name' => 'Email',
                 'vname' => 'LBL_EMAILS',
             ],
         'campaigns' =>

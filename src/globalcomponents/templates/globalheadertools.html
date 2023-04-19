@@ -1,1 +1,5 @@
-<system-componentset class="slds-grid slds-grid--vertical-align-center" [componentset]="componentset"></system-componentset>
+<div class="slds-grid slds-grid--vertical-align-center">
+    <ng-container *ngFor="let component of components">
+        <system-dynamic-component *ngIf="!userPreferences.toUse.globalHeaderCollapsed || !component.componentconfig?.hideInCollapsedHeader" [component]="component.component" [componentconfig]="component.componentconfig"></system-dynamic-component>
+    </ng-container>
+</div>

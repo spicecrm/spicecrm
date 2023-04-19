@@ -5,8 +5,11 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div *ngIf="!truncated; else truncateddisplay" style="white-space: pre-line;">{{value}}</div>
     <ng-template #truncateddisplay>
-        <div [title]="value" style="max-width: 200px; text-overflow: ellipsis" class="slds-truncate">
+        <div *ngIf="!striphtml" [title]="value" style="max-width: 200px; text-overflow: ellipsis" class="slds-truncate">
             {{value}}
+        </div>
+        <div *ngIf="striphtml" [title]="value|systemstriphtmltagspipe" style="max-width: 200px; text-overflow: ellipsis" class="slds-truncate">
+            {{value|systemstriphtmltagspipe}}
         </div>
     </ng-template>
 </field-generic-display>

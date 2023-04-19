@@ -6,9 +6,9 @@
             </button>
             <system-icon [module]="model.module" [title]="language.getModuleName(model.module, true)" size="small" divClass="slds-icon_container slds-timeline__icon"></system-icon>
         </div>
-        <div class="slds-media__body">
-            <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
-                <div class="slds-grow slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [system-view-provider]="{displayLabels: false}">
+        <div class="slds-media__body slds-truncate">
+            <div class="slds-grid slds-grid_align-spread slds-timeline__trigger slds-truncate">
+                <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container--75 slds-size--6-of-7 slds-no-space slds-text-title_bold"  [system-view-provider]="{displayLabels: false}">
                     <h3 class="slds-truncate slds-grid slds-grid--vertical-align-center">
                         <div *ngIf="displayattachments" class="slds-p-horizontal--xx-small">
                             <system-dynamic-component *ngIf="displayattachments" component="SpiceAttachmentsCount" ></system-dynamic-component>

@@ -482,7 +482,8 @@ export class SystemInputMedia implements OnDestroy {
      */
     public getFileformatFromMimetype(fileOrMimetype: File | string): string {
         if ( fileOrMimetype === null ) return '';
-        const mimetype = ( typeof fileOrMimetype === 'object' ? fileOrMimetype.type : fileOrMimetype );
+        // @ts-ignore
+        const mimetype = ( typeof fileOrMimetype === 'object' ? fileOrMimetype?.type : fileOrMimetype );
         if ( typeof mimetype === 'string' && /^image\/\w+/.test(mimetype)) return mimetype.split('/').pop();
         return '';
     }

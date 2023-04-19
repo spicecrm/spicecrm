@@ -1,0 +1,22 @@
+<div class="slds-combobox_container">
+    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" system-dropdown-trigger-simple>
+        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+            <button type="button" class="slds-input_faux slds-combobox__input">
+                <span *ngIf="!selectedItem" class="slds-truncate">-</span>
+                <system-utility-icon [ngClass]="{'slds-hidden': !selectedItem.value}" *ngIf="selectedItem" [icon]="selectedItem.icon" [colorclass]="selectedItem.colorclass" size="x-small"></system-utility-icon>
+            </button>
+            <system-utility-icon addclasses="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right" icon="down" size="x-small"></system-utility-icon>
+        </div>
+        <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" style="min-width: auto" role="listbox">
+            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                <li *ngFor="let s of selectList" role="presentation" class="slds-listbox__item" (click)="itemClicked(s.value, $event)">
+                    <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                        <span class="slds-media__figure slds-listbox__option-icon">
+                            <system-utility-icon [ngClass]="{'slds-hidden': !s.value}" [icon]="s.icon" [colorclass]="s.colorclass" size="x-small"></system-utility-icon>
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -421,22 +421,29 @@ export class calendar implements OnDestroy {
 
                         switch (event.type) {
                             case 'event':
-                                event.start = moment.utc(event.start).tz(this.timeZone);
-                                event.end = moment.utc(event.end).tz(this.timeZone);
-                                event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                                event.start = moment.utc(event.start).tz(this.timeZone).second(0);
+                                event.end = moment.utc(event.end).tz(this.timeZone).second(0);
+                                event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
                                 event.color = this.eventColor;
                                 break;
                             case 'absence':
-                                event.start = moment(event.start).second(1);
-                                event.end = moment(event.end).second(1);
+                                event.start = moment(event.start).second(0);
+                                event.end = moment(event.end).second(0);
                                 event.isMulti = true;
+                                event.isAllDay = true;
                                 event.color = this.absenceColor;
                                 break;
                             case 'other':
-                                event.start = moment(event.start).year(start.year()).second(1);
-                                event.end = moment(event.end).year(start.year()).second(1);
+                                event.start = moment(event.start).year(start.year()).second(0);
+                                event.end = moment(event.end).year(start.year()).second(0);
                                 event.isMulti = true;
                                 break;
+                        }
+
+                        const inRange = event.start.date() != event.end.date() || ((event.start.hour() >= this.startHour && event.start.hour() <= this.endHour) || (event.end.hour() >= this.startHour && event.end.hour() <= this.endHour));
+
+                        if (['Day', 'Three_Days', 'Week'].some(t => t == this.sheetType) && !inRange) {
+                            continue;
                         }
 
                         if (event.module == 'UserAbsences') {
@@ -449,6 +456,7 @@ export class calendar implements OnDestroy {
                                 continue;
                             }
                         }
+
                         this.calendars[userId].push(event);
                     }
                     this.isLoading = false;
@@ -463,8 +471,8 @@ export class calendar implements OnDestroy {
             for (let event of this.calendars[userId]) {
                 if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
                 if (event.start < end && event.end > start) {
-                    event.start = moment(event.start).tz(this.timeZone);
-                    event.end = moment(event.end).tz(this.timeZone);
+                    event.start = moment(event.start).tz(this.timeZone).second(0);
+                    event.end = moment(event.end).tz(this.timeZone).second(0);
                     filteredEntries.push(event);
                 }
             }
@@ -513,11 +521,11 @@ export class calendar implements OnDestroy {
                             if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
 
                             event.start = moment(moment(event.start.dateTime ?? event.start.date)
-                                .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
+                                .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:00'));
                             event.end = moment(moment(event.end.dateTime ?? event.end.date)
-                                .format(!event.end.dateTime && !!event.end.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'));
+                                .format(!event.end.dateTime && !!event.end.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:00'));
 
-                            event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                            event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
                             event.color = this.groupwareColor;
                             event.type = 'google';
 
@@ -565,10 +573,10 @@ export class calendar implements OnDestroy {
                         for (let event of res.events) {
                             if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
 
-                            event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:ss'));
-                            event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:ss'));
+                            event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
+                            event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
 
-                            event.isMulti = +event.end.diff(event.start, 'days') > 0;
+                            event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
                             event.color = this.groupwareColor;
                             event.type = 'microsoft';
 
@@ -719,11 +727,7 @@ export class calendar implements OnDestroy {
      * @return events
      */
     public arrangeEvents(events) {
-        events = events.map(event => {
-            event.start = moment(event.start).second(0);
-            event.end = moment(event.end).second(0);
-            return event;
-        });
+
         // sort the events
         events.sort((a, b) => {
             if (a.start < b.start) {
@@ -956,7 +960,7 @@ export class calendar implements OnDestroy {
                                 type: 'event',
                                 start: data.date_start,
                                 end: data.date_end,
-                                isMulti: +data.date_end.diff(data.date_start, 'days') > 0,
+                                isMulti: +data.date_end.diff(data.date_start, 'days', true) >= 1,
                                 data: data
                             });
                         }
@@ -995,7 +999,7 @@ export class calendar implements OnDestroy {
         if (event) {
             event.start = data.date_start;
             event.end = data.date_end;
-            event.isMulti = +data.date_end.diff(data.date_start, 'days') > 0;
+            event.isMulti = +data.date_end.diff(data.date_start, 'days', true) >= 1;
             return true;
         } else {
             return false;
@@ -1045,9 +1049,11 @@ export class calendar implements OnDestroy {
         this.userPreferences.loadPreferences("Calendar")
             .pipe(take(1))
             .subscribe(calendars => {
-                this.ownerCalendarVisible = calendars.hasOwnProperty('ownerVisible') ? calendars.ownerVisible: true;
-                this.setUserCalendars(calendars.Users, false);
-                this.setOtherCalendars(calendars.Other, false);
+                this.ownerCalendarVisible = calendars?.hasOwnProperty('ownerVisible') ? calendars?.ownerVisible: true;
+                if (calendars) {
+                    this.setUserCalendars(calendars.Users, false);
+                    this.setOtherCalendars(calendars.Other, false);
+                }
                 this.userPreferencesLoaded = true;
             });
 

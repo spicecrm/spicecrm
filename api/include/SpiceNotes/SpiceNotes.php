@@ -146,4 +146,29 @@ class SpiceNotes {
 		$db->query("UPDATE spicenotes SET deleted = 1 WHERE id='{$noteId}'" . (!$current_user->is_admin ? " AND user_id='".$current_user->id."'":""));
 		return ['status' => 'success'];
 	}
+
+    /**
+     * merges SpiceNotes with the Master Bean merged
+     * @param string $mergeBeanType (_module)
+     * @param string $masterBeanId (id of the Master Bean - bean to be kept)
+     * @param string $delBeanId (id of the deleted Bean)
+     * @return void
+     * @throws Exception
+     */
+    public static function mergeSpiceNotes(string $mergeBeanType, string $masterBeanId, string $delBeanId): void {
+        // get SpiceNote to be merged
+        $db = DBManagerFactory::getInstance();
+
+        $spiceNoteIds = $db->query("SELECT id FROM spicenotes WHERE bean_type = '$mergeBeanType' and bean_id = '$delBeanId'");
+        while($spiceNoteId = $db->fetchByAssoc($spiceNoteIds) ) {
+            if (isset($spiceNoteId['id'])) {
+                $db = DBManagerFactory::getInstance();
+
+                // overwrite bean_id with the ID of the merged Bean
+                $sql = "UPDATE spicenotes SET bean_id='{$masterBeanId}' WHERE  id='{$spiceNoteId['id']}'";
+                $db->query($sql);
+            }
+        }
+    }
+
 }

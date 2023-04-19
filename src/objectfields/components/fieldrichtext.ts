@@ -32,11 +32,6 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      */
     public signatures: { label: string, content: string, id: string }[] = [];
     /**
-     * holds the spice page builder html code
-     * @private
-     */
-    public parsedHtml: SafeHtml = '';
-    /**
      * holds the sanitized value for the iframe
      * @private
      */
@@ -94,13 +89,17 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         return {height: this.fieldconfig.height ? this.fieldconfig.height : '500px'};
     }
 
+    private _styleTag = '';
+
     /**
      * returns the style for the given stylesheet
      * used in the iframe display
      */
     get styleTag() {
-        return (this.stylesheetId) ? '<style>' + this.metadata.getHtmlStylesheetCode(this.stylesheetId) + '</style>' : '';
+        return this._styleTag;
     }
+
+
 
     /**
      * getter for the stylesheet id from the fiels
@@ -136,7 +135,6 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      */
     set value(val) {
         this.model.setField(this.fieldname, val);
-        this.setHtmlValue();
     }
 
     /**
@@ -316,7 +314,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
                 this.fullValue = this.value;
             } else {
                 // added <base target="_blank"> so all links open in new window
-                this.fullValue = `<html><head><base target="_blank">${this.styleTag}</head><body class="spice">${this.value}</body></html>`;
+                this.fullValue = `<html><head><base target="_blank"><style>${this.styleTag}</style></head><body class="spice">${this.value}</body></html>`;
             }
         }
 
@@ -329,8 +327,8 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     }
 
     public modelChangesSubscriber() {
-        this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe(value => {
-            this.setHtmlValue();
+        this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe({
+            next: () => this.setHtmlValue()
         }));
         this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe(mailboxId => {
             if (this.fieldconfig?.useSignature && !!mailboxId && this.model.getField('signature') == 'mailbox') {
@@ -339,17 +337,26 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         }));
     }
 
+    /**
+     * search the html content for style and split, then set this.value
+     */
     public setHtmlValue() {
-        let regexp = /<code>[\s\S]*?<\/code>/g;
-        let match = regexp.exec(this.value);
-        while (match != null) {
-            this.value = this.value
-                .replace(match, this.encodeHtml(match))
-                .replace('&lt;code&gt;', '<code>')
-                .replace('&lt;/code&gt;', '</code>');
-            match = regexp.exec(this.value);
+
+        if (!this.value?.includes('</html>')) {
+            return this.setSanitizedValue();
         }
-        this.parsedHtml = this.sanitized.bypassSecurityTrustHtml(this.value);
+
+        let styleContent = !!this.stylesheetId ? this.metadata.getHtmlStylesheetCode(this.stylesheetId) : '';
+
+        const element = document.createElement('div');
+        element.innerHTML = this.value;
+        const styleTag = element.getElementsByTagName('style')[0];
+        styleContent += styleTag?.innerHTML ?? '';
+        styleTag?.remove();
+
+        this.model.setField(this.fieldname, element.innerHTML, true);
+        this._styleTag = styleContent;
+
         this.setSanitizedValue();
     }
 
@@ -359,13 +366,14 @@ export class fieldRichText extends fieldGeneric implements OnInit {
             [this.fieldname]: content
         };
         this.backend.save(this.model.module, this.model.id, toSave)
-            .subscribe(
-                (res: any) => {
+            .subscribe({
+                next: (res: any) => {
                     this.model.setField('date_modified', res.date_modified, true);
                     this.value = res[this.fieldname];
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
-                },
-                error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
-            );
+                }, error: (error) => {
+                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
+                }
+            });
     }
 }

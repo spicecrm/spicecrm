@@ -73,6 +73,20 @@
     </div>
 </div>
 <div class="slds-grid">
+    <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_DUPLICATE_MERGE"></system-label></label>
+        <div class="slds-form-element__control">
+            <system-checkbox [(ngModel)]="relationship.lhs_duplicatemerge" [asinteger]="true"></system-checkbox>
+        </div>
+    </div>
+    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_DUPLICATE_MERGE"></system-label></label>
+        <div class="slds-form-element__control">
+            <system-checkbox [(ngModel)]="relationship.rhs_duplicatemerge" [asinteger]="true"></system-checkbox>
+        </div>
+    </div>
+</div>
+<div class="slds-grid">
     <div class="slds-size--1-of-2"></div>
     <div class="slds-size--1-of-2">
         <label class="slds-form-element__label"><system-label label="LBL_RHS_RELATENAME"></system-label></label>

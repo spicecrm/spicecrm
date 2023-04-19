@@ -1,41 +1,6 @@
 <?php
 namespace SpiceCRM\includes\Soap;
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- *
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -48,7 +13,7 @@ class SpiceSoap {
 
     protected $soap_version = '1.1';
     protected $namespace = 'http://www.spicecrm.com/spicecrm';
-    protected $implementationClass = 'SugarWebServiceImpl';
+    protected $implementationClass = 'SpiceWebServiceImpl';
     protected $registryClass = "";
     protected $soapURL = "";
 
@@ -70,13 +35,12 @@ class SpiceSoap {
      */
     public function __construct($url)
     {
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->__construct');
+        LoggerManager::getLogger()->debug('Begin: NusoapSoap->__construct');
         $this->server = new soap_server();
         $this->soapURL = $url;
-        $this->server->configureWSDL('sugarsoap', $this->getNameSpace(), $url);
+        $this->server->configureWSDL('spicesoap', $this->getNameSpace(), $url);
         if (!isset($GLOBALS['HTTP_RAW_POST_DATA'])) $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents('php://input');
         $this->setObservers();
-        LoggerManager::getLogger()->info('End: NusoapSoap->__construct');
         // set a global transaction id
         $GLOBALS['transactionID'] = SpiceUtils::createGuid();
     }
@@ -158,7 +122,7 @@ class SpiceSoap {
         if ($this->in_service) {
             $out = ob_get_contents();
             ob_end_clean();
-            LoggerManager::getLogger()->info('NusoapSoap->shutdown: service died unexpectedly');
+            LoggerManager::getLogger()->fatal('soap', 'NusoapSoap->shutdown: service died unexpectedly');
             $this->server->fault(-1, "Unknown error in SOAP call: service died unexpectedly", '', $out);
             $this->server->send_response();
             $this->generateLogEntry();
@@ -174,7 +138,6 @@ class SpiceSoap {
     public function serve()
     {
         $this->startingTime = $GLOBALS['soapstart'] ?: microtime(true);
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->serve');
         ob_clean();
         $this->in_service = true;
         register_shutdown_function([$this, "shutdown"]);
@@ -186,7 +149,6 @@ class SpiceSoap {
         $this->in_service = false;
         ob_end_flush();
         flush();
-        LoggerManager::getLogger()->info('End: NusoapSoap->serve');
     }
 
     /**
@@ -195,12 +157,10 @@ class SpiceSoap {
      * @param array $excludeFunctions - All the functions you don't want to register
      */
     public function register($excludeFunctions = []){
-        LoggerManager::getLogger()->info('Begin: SugarSoapService2->register');
         $this->excludeFunctions = $excludeFunctions;
         $registryObject = new $this->registryClass($this);
         $registryObject->register();
         $this->excludeFunctions = [];
-        LoggerManager::getLogger()->info('End: SugarSoapService2->register');
     }
 
     /**
@@ -252,12 +212,10 @@ class SpiceSoap {
      */
     function registerImplClass($implementationClass)
     {
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->registerImplClass');
         if (empty($implementationClass)) {
             $implementationClass = $this->implementationClass;
         } // if
         $this->server->register_class($implementationClass);
-        LoggerManager::getLogger()->info('End: NusoapSoap->registerImplClass');
     }
 
     /**
@@ -268,9 +226,7 @@ class SpiceSoap {
      */
     function registerClass($registryClass)
     {
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->registerClass');
         $this->registryClass = $registryClass;
-        LoggerManager::getLogger()->info('End: NusoapSoap->registerClass');
     }
 
     /**
@@ -281,9 +237,7 @@ class SpiceSoap {
      */
     public function error($errorObject)
     {
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->error');
         $this->server->fault($errorObject->getFaultCode(), $errorObject->getName(), '', $errorObject->getDescription());
-        LoggerManager::getLogger()->info('Begin: NusoapSoap->error');
     }
 
     private function generateLogEntry()

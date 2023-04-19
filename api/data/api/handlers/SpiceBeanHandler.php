@@ -1,36 +1,9 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data\api\handlers;
 
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -69,7 +42,6 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\ConflictException;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\modules\Trackers\TrackerManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use stdClass;
 use SpiceCRM\modules\UserPreferences\UserPreference;
@@ -109,12 +81,18 @@ class SpiceBeanHandler
         $tracker->save();
     }
 
+    /**
+     * @deprecated
+     * @param $modules
+     * @param $lang
+     * @return array
+     */
     public function get_mod_language($modules, $lang)
     {
         $modLang = [];
 
-        foreach ($modules as $module)
-            $modLang[$module] = return_module_language($lang, $module, true);
+//        foreach ($modules as $module)
+//            $modLang[$module] = return_module_language($lang, $module, true);
 
         return $modLang;
     }
@@ -875,8 +853,7 @@ class SpiceBeanHandler
 
         foreach ($results['hits']['hits'] as &$hit) {
             if(!$seed = BeanFactory::getBean($elastichandler->getHitModule($hit), $hit['_id'])){
-                LoggerManager::getLogger()->fatal(__CLASS__. 'on line '.__LINE__.': no '.$elastichandler->getHitModule($hit).' found with id='.$hit['_id'].'. Check if bean is indexed properly');
-                LoggerManager::getLogger()->fatal($hit);
+                LoggerManager::getLogger()->fatal('elastic', ['message' => __CLASS__. 'on line '.__LINE__.': no '.$elastichandler->getHitModule($hit).' found with id='.$hit['_id'].'. Check if bean is indexed properly', 'data' => $hit]);
                 continue;
             }
 
@@ -1127,9 +1104,9 @@ class SpiceBeanHandler
             $auditLog[$auditRecord['transaction_id']]['data'][] = [
                 'field_name' => $auditRecord['field_name'],
                 'data_type' => $auditRecord['data_type'],
-                'before_value_string' => $auditRecord['before_value_string'],
+                'before_value_string' => $this->makeValueReadable($auditRecord['before_value_string']),
                 'before_value_text' => $auditRecord['before_value_text'],
-                'after_value_string' => $auditRecord['after_value_string'],
+                'after_value_string' => $this->makeValueReadable($auditRecord['after_value_string']),
                 'after_value_text' => $auditRecord['after_value_text'],
             ];
         }
@@ -1176,7 +1153,7 @@ class SpiceBeanHandler
         }
 
 
-        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' $excludedFieldsSQL";
+        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE al.parent_id = '$beanId' $excludedFieldsSQL";
         if ($params['user']) {
             $query .= " AND au.user_name like '%{$params['user']}%'";
         }
@@ -1208,9 +1185,9 @@ class SpiceBeanHandler
                 $auditLog[$auditRecord['transaction_id']]['audit_log'][] = [
                     'field_name' => $auditRecord['field_name'],
                     'data_type' => $auditRecord['data_type'],
-                    'before_value_string' => $auditRecord['before_value_string'],
+                    'before_value_string' => $this->makeValueReadable($auditRecord['field_name'], $auditRecord['before_value_string']),
                     'before_value_text' => $auditRecord['before_value_text'],
-                    'after_value_string' => $auditRecord['after_value_string'],
+                    'after_value_string' => $this->makeValueReadable($auditRecord['field_name'], $auditRecord['after_value_string']),
                     'after_value_text' => $auditRecord['after_value_text'],
                 ];
             } else {
@@ -1220,6 +1197,26 @@ class SpiceBeanHandler
 
         return $params['grouped'] ? array_values($auditLog) : $auditLog;
 
+    }
+
+    /**
+     * Make some field values readable
+     * Do only if config['auditlog']['readable'] is set and true
+     *
+     * @param $value
+     * @return mixed
+     */
+    public function makeValueReadable($field_name, $value) {
+        if(!SpiceConfig::getInstance()->config['auditlog']['readable']) {
+            return $value;
+        }
+
+        switch($field_name){
+            case 'assigned_user_id':
+                $user = BeanFactory::getBean('Users', $value, ['relationships' => false]);
+                return $user->user_name;
+        }
+        return $value;
     }
 
 
@@ -1283,7 +1280,7 @@ class SpiceBeanHandler
         if ($thisBean->load_relationship($linkName)) {
             $relModule = $thisBean->{$linkName}->getRelatedModuleName();
         } else {
-            LoggerManager::getLogger()->fatal("Error trying to load relationship using link name = " . $linkName . " in bean " . $beanModule);
+            LoggerManager::getLogger()->fatal('relationships', "Error trying to load relationship using link name = " . $linkName . " in bean " . $beanModule);
         }
 
         if (isset($thisBean->field_defs[$linkName]['sequence_field'])) {
@@ -1382,7 +1379,10 @@ class SpiceBeanHandler
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if ($thisBean === false) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
 
-        $thisBean->load_relationship($linkName);
+        if(!$thisBean->load_relationship($linkName)){
+            throw (new ForbiddenException('could not load relationship  ' . $linkName . ' for bean '.$beanModule.'.'))->setErrorCode('noRelationshipLoaded');
+        }
+
         $relModule = $thisBean->{$linkName}->getRelatedModuleName();
 
         if (!SpiceACL::getInstance()->checkAccess($relModule, 'list', true))
@@ -1655,12 +1655,16 @@ class SpiceBeanHandler
                         foreach ($beans as $thisBeanId => $beanData) {
                             $seed = BeanFactory::getBean($relModule, $thisBeanId);
 
+                            // cache for later use when retrieving related data
+                            $new_with_id = false;
+
                             if (empty($beanData['deleted'])) {
                                 // if it does not exist create new bean
                                 if (!$seed) {
                                     $seed = BeanFactory::getBean($relModule);
                                     $seed->id = $thisBeanId;
                                     $seed->new_with_id = true;
+                                    $new_with_id = true;
                                 }
 
                                 // populate and save and add
@@ -1678,8 +1682,12 @@ class SpiceBeanHandler
                                     }
                                 }
                                 // save if we had changes
-                                if ($changed)
+                                if ($changed) {
                                     $seed->save();
+                                }
+
+                                // retrieve relationship fields
+                                if($new_with_id) $seed->fill_in_relationship_fields();
 
                                 // CR1000357: added $additional_values parameter
                                 $thisBean->$fieldId->add($seed, $additional_values);
@@ -1779,7 +1787,7 @@ class SpiceBeanHandler
 
                     foreach ($linkedEmailAddresses as $linkedEmailAddress) {
 
-                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || $existingEmailAddress->email_address == $emailAddressData['email_address']) {
+                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || ($existingEmailAddress->email_address == $emailAddressData['email_address'] && $existingEmailAddress->primary_address == $emailAddressData['primary_address'])){
                             continue;
                         }
 
@@ -2196,7 +2204,7 @@ class SpiceBeanHandler
     {
 
         // see if we have a language passed in .. if not use the default
-        if (empty($language)) $language = SpiceConfig::getInstance()->config['default_language'];
+        if (empty($language)) $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
 
         $dynamicDomains = $this->get_dynamic_domains($modules, $language);
         $appListStrings = SpiceUtils::returnAppListStringsLanguage($language);

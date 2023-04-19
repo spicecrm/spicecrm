@@ -37,6 +37,7 @@
 namespace SpiceCRM\includes\SugarObjects;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 /**
  * Language files management
@@ -58,18 +59,24 @@ class LanguageManager
 	        'default' => ''
         ];
 
-	    $languages = $db->query("SELECT * FROM syslangs " . ($sysonly ? "WHERE system_language = 1" : ""). " ORDER BY sort_sequence, language_name");
-	    while($language = $db->fetchByAssoc($languages)){
-            $retArray['available'][] = [
-                'language_code' => $language['language_code'],
-                'language_name' => $language['language_name'],
-                'system_language' => $language['system_language'],
-                'communication_language' => $language['communication_language']
-            ];
+        $ret = SpiceCache::get('languages');
+        if(!$ret) {
+            $languages = $db->query("SELECT * FROM syslangs " . ($sysonly ? "WHERE system_language = 1" : "") . " ORDER BY sort_sequence, language_name");
+            while ($language = $db->fetchByAssoc($languages)) {
+                $retArray['available'][] = [
+                    'language_code' => $language['language_code'],
+                    'language_name' => $language['language_name'],
+                    'system_language' => $language['system_language'],
+                    'communication_language' => $language['communication_language']
+                ];
 
-            if($language['is_default']) {
-                $retArray['default'] = $language['language_code'];
+                if ($language['is_default']) {
+                    $retArray['default'] = $language['language_code'];
+                }
             }
+            SpiceCache::set('languages', $retArray);
+        } else {
+            return $ret;
         }
 
         return $retArray;
@@ -95,8 +102,9 @@ class LanguageManager
      */
 	public static function loadDatabaseLanguage($syslang, $forceReload = false){
         // return session content if not loaded
-        if(!empty($_SESSION['languages'][$syslang]) && !$forceReload){
-            return $_SESSION['languages'][$syslang];
+        $cached = SpiceCache::get("language{$syslang}");
+        if($cached){
+            return $cached;
         }
 
         // get the content
@@ -152,14 +160,10 @@ class LanguageManager
             }
         }
 
-        /*
-        no exception handling wanted...
-        elseif(\SpiceCRM\includes\database\DBManagerFactory::getInstance()->last_error){
-            throw new Exception(\SpiceCRM\includes\database\DBManagerFactory::getInstance()->last_error);
-        }
-        */
 
-        $_SESSION['languages'][$syslang] = $retArray;
+        // cache the results
+        SpiceCache::set("language{$syslang}", $retArray);
+
         return $retArray;
     }
 
@@ -172,8 +176,11 @@ class LanguageManager
      */
     public static function getLabelTranslation(string $label, string $syslang) : array {
         $labelArr = [];
-        if(empty($labelArr) && isset($_SESSION['languages'][$syslang][$label])){
-            $labelArr = $_SESSION['languages'][$syslang][$label];
+
+        $cached = SpiceCache::get("language{$syslang}");
+
+        if(empty($labelArr) && $cached && isset($cached[$label])){
+            $labelArr = $cached[$label];
         }
         if(empty($labelArr)){
             $labelArr = self::getSpecificLabels($syslang, [$label]);

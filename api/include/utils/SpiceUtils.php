@@ -9,13 +9,15 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Localization\Localization;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\SugarCache\SugarCache;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 /**
  * Class SpiceUtils
@@ -24,6 +26,37 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
  */
 class SpiceUtils
 {
+    /**
+     * get the execution class and method and return an object
+     * @return null|object
+     */
+    public static function loadExecutionClassMethod($method)
+    {
+        $isFunction = strpos(html_entity_decode($method), 'function::') === 0;
+        $separator = $isFunction ? '::' : '->';
+        $methodArray = explode($separator, html_entity_decode($method));
+        $className = $methodArray[0];
+        $methodName = $methodArray[1];
+
+        if ($isFunction) {
+            if (!is_callable($methodName)) {
+                return null;
+            }
+            return (object)['class' => null, 'method' => $methodName];
+        }
+
+        if (!class_exists($className)) {
+            return null;
+        }
+
+        $classInstance = new $className();
+
+        if (!is_callable([$classInstance, $methodName])) {
+            return null;
+        }
+
+        return (object)['class' => $classInstance, 'method' => $methodName];
+    }
     /**
      * catches the request_uri and php_self and checks if one of them matches the allowed backend paths
      * @return mixed|string|null
@@ -118,6 +151,7 @@ class SpiceUtils
      * @param DateTime $date
      * @param string $language
      * @return string
+     * @deprecated since release 2023.01.001
      */
     public static function getShortWeekdayName(DateTime $date, string $language = 'de_DE'): string {
         // todo move that array once it grows.
@@ -166,6 +200,7 @@ class SpiceUtils
      *
      * @param $value
      * @throws Exception
+     * @deprecated since release 2023.01.001
      */
     public static function exampleValidationRule($value) {
         if (strlen($value) % 2) {
@@ -180,12 +215,7 @@ class SpiceUtils
      * @return bool
      */
     public static function isValidModule(string $moduleName): bool {
-        $controller = new SpiceUIModulesController();
-        $moduleList = $controller->geUnfilteredModules();
-        if (array_key_exists($moduleName, $moduleList)) {
-            return true;
-        }
-        return false;
+        return SpiceModules::getInstance()->moduleExists($moduleName);
     }
 
     /**
@@ -194,10 +224,9 @@ class SpiceUtils
      * @param bool $exit
      */
     public static function spiceCleanup(bool $exit = false) {
-        // todo check if there's even a database
         if (SpiceConfig::getInstance()->configExists()) { // workaround for installer for now. variable is set in SpiceInstallerController ... find a better way
             $db = DBManagerFactory::getInstance();
-            $db->disconnect();
+            if($db) $db->disconnect();
         }
         if ($exit) {
             exit;
@@ -232,6 +261,7 @@ class SpiceUtils
      *
      * @param $user
      * @return bool
+     * @deprecated since release 2023.01.001
      */
     public static function isAdminForAnyModule($user): bool {
         if (!isset($user)) {
@@ -271,7 +301,6 @@ class SpiceUtils
 
         $returnValue = '';
 
-        global $app_strings, $app_list_strings;
         if (!isset( $app_list_strings )) {
             $app_list_strings = self::returnAppListStringsLanguage($current_language);
         }
@@ -380,6 +409,7 @@ class SpiceUtils
      * @param $errstr
      * @param $errfile
      * @param $errline
+     * @deprecated since relese 2023.01.001
      */
     public static function StackTraceErrorHandler($errno, $errstr, $errfile, $errline) {
         $error_msg = " $errstr occurred in <b>$errfile</b> on line $errline [" . date("Y-m-d H:i:s") . ']';
@@ -432,6 +462,7 @@ class SpiceUtils
 
     /**
      * @param false $textOnly
+     * @deprecated since release 2023.01.001
      */
     public static function displayStackTrace(bool $textOnly = false): void {
         $stack = debug_backtrace();
@@ -617,6 +648,14 @@ class SpiceUtils
     }
 
     /**
+     * @return bool
+     */
+    public static function stackTrace(): bool {
+        return isset(SpiceConfig::getInstance()->config['stack_trace_errors'])
+            && SpiceConfig::getInstance()->config['stack_trace_errors'] === true;
+    }
+
+    /**
      * @param $string
      * @return array|false|string[]
      */
@@ -648,6 +687,7 @@ class SpiceUtils
     }
 
     /**
+     * @deprecated since release 2023.01.001 function cmp_beans removed
      * @param $beans
      * @param $field_name
      * @return mixed
@@ -821,7 +861,7 @@ class SpiceUtils
      * @return String representation of amount with formatting applied
      */
     public static function currencyFormatNumber($amount, $params = []): string {
-        global $locale;
+        $locale = new Localization();
         if (isset($params['round']) && is_int($params['round'])) {
             $real_round = $params['round'];
         } else {
@@ -839,7 +879,7 @@ class SpiceUtils
         if ($showCurrencySymbol && !isset($params['currency_symbol'])) {
             $params["currency_symbol"] = true;
         }
-        return format_number($amount, $real_round, $real_decimals, $params);
+        return self::formatNumber($amount, $real_round, $real_decimals, $params);
 
     }
 
@@ -883,7 +923,7 @@ class SpiceUtils
      * @see include/Localization/Localization.php
      */
     public static function formatNumber($amount, $round = null, $decimals = null, $params = []): string {
-        global $app_strings,  $locale;
+        $locale = new Localization();
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         static $current_users_currency = null;
         static $last_override_currency = null;
@@ -971,7 +1011,7 @@ class SpiceUtils
         }
 
         if (!empty($params['percentage']) && $params['percentage']) {
-            $amount .= $app_strings['LBL_PERCENTAGE_SYMBOL'];
+            $amount .= '%';
         }
         return $amount;
 
@@ -986,7 +1026,7 @@ class SpiceUtils
      */
     public static function formatPlaceSymbol($amount, $symbol, $symbol_space, $symbol_position = 'left'): string {
         if ($symbol != '') {
-            //get symbol_position from sugar_config
+            //get symbol_position from spice_config
             if (isset(SpiceConfig::getInstance()->config['default_currency_symbol_position'])) {
                 $symbol_position = SpiceConfig::getInstance()->config['default_currency_symbol_position'];
             }
@@ -1063,13 +1103,13 @@ class SpiceUtils
         $cache_key = 'app_strings.' . $language;
 
         // Check for cached value
-        $cache_entry = SugarCache::sugar_cache_retrieve($cache_key);
+        $cache_entry = SpiceCache::get($cache_key);
         if (!empty($cache_entry)) {
             return $cache_entry;
         }
 
         $temp_app_strings = $app_strings;
-        $default_language = SpiceConfig::getInstance()->config['default_language'];
+        $default_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
 
         $langs = [];
         if ($language != 'en_us') {
@@ -1087,30 +1127,30 @@ class SpiceUtils
             $app_strings = [];
             if (file_exists("include/language/$lang.lang.php")) {
                 include("include/language/$lang.lang.php");
-                LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
+                LoggerManager::getLogger()->info('language', "Found language file: $lang.lang.php");
             }
             if (file_exists("include/language/$lang.lang.override.php")) {
                 include("include/language/$lang.lang.override.php");
-                LoggerManager::getLogger()->info("Found override language file: $lang.lang.override.php");
+                LoggerManager::getLogger()->info('language', "Found override language file: $lang.lang.override.php");
             }
             if (file_exists("include/language/$lang.lang.php.override")) {
                 include("include/language/$lang.lang.php.override");
-                LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
+                LoggerManager::getLogger()->info('language', "Found override language file: $lang.lang.php.override");
             }
             if (file_exists("custom/application/Ext/Language/$lang.lang.ext.php")) {
                 include("custom/application/Ext/Language/$lang.lang.ext.php");
-                LoggerManager::getLogger()->info("Found extended language file: $lang.lang.ext.php");
+                LoggerManager::getLogger()->info('language', "Found extended language file: $lang.lang.ext.php");
             }
             if (file_exists("custom/include/language/$lang.lang.php")) {
                 include("custom/include/language/$lang.lang.php");
-                LoggerManager::getLogger()->info("Found custom language file: $lang.lang.php");
+                LoggerManager::getLogger()->info('language', "Found custom language file: $lang.lang.php");
             }
             // BEGIN syslanguages
             if (file_exists("custom/application/Ext/Language/$lang.override.ext.php")) {
                 global $extlabels;
                 include("custom/application/Ext/Language/$lang.override.ext.php");
                 $app_strings = array_merge($app_strings, $extlabels);
-                LoggerManager::getLogger()->info("Found extended language file: $lang.override.ext.php");
+                LoggerManager::getLogger()->info('language', "Found extended language file: $lang.override.ext.php");
             }
             //END syslanguages
             $app_strings_array[] = $app_strings;
@@ -1160,8 +1200,8 @@ class SpiceUtils
         $return_value = $app_strings;
         $app_strings = $temp_app_strings;
 
-        SugarCache::sugar_cache_put($cache_key, $return_value);
-echo print_r($return_value, true);
+        SpiceCache::set($cache_key, $return_value);
+
         return $return_value;
     }
 
@@ -1171,6 +1211,7 @@ echo print_r($return_value, true);
      * @param file string the language that you want include,
      * @param app_list_strings array the golbal strings
      * @return array
+     * @deprecated since release 2023.01.001
      */ //jchi 25347
     public static function mergeCustomAppListStrings($file, $app_list_strings) {
         $app_list_strings_original = $app_list_strings;
@@ -1211,13 +1252,13 @@ echo print_r($return_value, true);
 
         // Check for cached value
         if ($scope == 'all') {
-            $cache_entry = SugarCache::sugar_cache_retrieve($cache_key);
+            $cache_entry = SpiceCache::get($cache_key);
             if (!empty($cache_entry)) {
                 return $cache_entry;
             }
         }
 
-        $default_language = SpiceConfig::getInstance()->config['default_language'];
+        $default_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
         $temp_app_list_strings = $app_list_strings;
 
         $langs = [];
@@ -1323,9 +1364,9 @@ echo print_r($return_value, true);
         $return_value = $app_list_strings;
         $app_list_strings = $temp_app_list_strings;
 
-        if ($scope != 'all') {
-            SugarCache::sugar_cache_put($cache_key, $return_value);
-        }
+        //if ($scope != 'all') {
+            SpiceCache::set($cache_key, $return_value);
+        //}
 
         return $return_value;
     }
@@ -1371,7 +1412,11 @@ echo print_r($return_value, true);
         return $string;
     }
 
-
+    /**
+     * @deprecated since release 2023.01.001
+     * @param $str
+     * @return array|string|string[]
+     */
     public static function br2nl($str) {
         $regex = "#<[^>]+br.+?>#i";
         preg_match_all($regex, $str, $matches);
@@ -1403,5 +1448,15 @@ echo print_r($return_value, true);
             $countryFields[] = $field['name'];
         }
         return $countryFields;
+    }
+
+    /**
+     * Call this method instead of die().
+     * We print the error message and then die with an appropriate
+     * exit code.
+     */
+    public static function sugarDie($error_message, $exit_code = 1) {
+        self::spiceCleanup();
+        throw new \Exception( $error_message , 500) ;
     }
 }

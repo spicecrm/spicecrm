@@ -3,6 +3,7 @@
  */
 import {Injectable, OnDestroy} from "@angular/core";
 import {backend} from '../../services/backend.service';
+import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
@@ -31,7 +32,7 @@ export class dictionarymanager implements OnDestroy {
      * todo: determine what we do with these fields
      *
      */
-    // public reservedwords = ['ALL', 'ALTER', 'AND', 'ANY', 'ARRAY', 'AS', 'ASC', 'AT', 'AUTHID', 'AVG', 'BEGIN', 'BETWEEN', 'BINARY_INTEGER', 'BODY', 'BOOLEAN', 'BULK', 'BY', 'CHAR', 'CHAR_BASE', 'CHECK', 'CLOSE', 'CLUSTER', 'COALESCE', 'COLLECT', 'COMMENT', 'COMMIT', 'COMPRESS', 'CONNECT', 'CONSTANT', 'CREATE', 'CURRENT', 'CURRVAL', 'CURSOR', 'DAY', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELETE', 'DESC', 'DISTINCT', 'DO', 'DROP', 'ELSE', 'ELSIF', 'END', 'EXCEPTION', 'EXCLUSIVE', 'EXECUTE', 'EXISTS', 'EXIT', 'EXTENDS', 'EXTRACT', 'FALSE', 'FETCH', 'FLOAT', 'FOR', 'FORALL', 'FROM', 'FUNCTION', 'GOTO', 'GROUP', 'HAVING', 'HEAP', 'HOUR', 'IF', 'IMMEDIATE', 'IN', 'INDEX', 'INDICATOR', 'INSERT', 'INTEGER', 'INTERFACE', 'INTERSECT', 'INTERVAL', 'INTO', 'IS', 'ISOLATION', 'JAVA', 'LEVEL', 'LIKE', 'LIMITED', 'LOCK', 'LONG', 'LOOP', 'MAX', 'MIN', 'MINUS', 'MINUTE', 'MLSLABEL', 'MOD', 'MODE', 'MONTH', 'NATURAL', 'NATURALN', 'NEW', 'NEXTVAL', 'NOCOPY', 'NOT', 'NOWAIT', 'NULL', 'NULLIF', 'NUMBER', 'NUMBER_BASE', 'OCIROWID', 'OF', 'ON', 'OPAQUE', 'OPEN', 'OPERATOR', 'OPTION', 'OR', 'ORDER', 'ORGANIZATION', 'OTHERS', 'OUT', 'PARTITION', 'PCTFREE', 'PLS_INTEGER', 'POSITIVE', 'POSITIVEN', 'PRAGMA', 'PRIOR', 'PRIVATE', 'PROCEDURE', 'PUBLIC', 'RAISE', 'RANGE', 'RAW', 'REAL', 'RECORD', 'REF', 'RELEASE', 'RETURN', 'REVERSE', 'ROLLBACK', 'ROW', 'ROWID', 'ROWNUM', 'ROWTYPE', 'SAVEPOINT', 'SECOND', 'SELECT', 'SEPERATE', 'SET', 'SHARE', 'SMALLINT', 'SPACE', 'SQL', 'SQLCODE', 'SQLERRM', 'START', 'STDDEV', 'SUBTYPE', 'SUCCESSFUL', 'SUM', 'SYNONYM', 'SYSDATE', 'TABLE', 'THEN', 'TIME', 'TIMESTAMP', 'TIMEZONE_ABBR', 'TIMEZONE_HOUR', 'TIMEZONE_MINUTE', 'TIMEZONE_REGION', 'TO', 'TRIGGER', 'TRUE', 'TYPE', 'UI', 'UNION', 'UNIQUE', 'UPDATE', 'USE', 'USER', 'VALIDATE', 'VALUES', 'VARCHAR', 'VARCHAR2', 'VARIANCE', 'VIEW', 'WHEN', 'WHENEVER', 'WHERE', 'WHILE', 'WITH', 'WORK', 'WRITE', 'YEAR', 'ZONE'];
+        // public reservedwords = ['ALL', 'ALTER', 'AND', 'ANY', 'ARRAY', 'AS', 'ASC', 'AT', 'AUTHID', 'AVG', 'BEGIN', 'BETWEEN', 'BINARY_INTEGER', 'BODY', 'BOOLEAN', 'BULK', 'BY', 'CHAR', 'CHAR_BASE', 'CHECK', 'CLOSE', 'CLUSTER', 'COALESCE', 'COLLECT', 'COMMENT', 'COMMIT', 'COMPRESS', 'CONNECT', 'CONSTANT', 'CREATE', 'CURRENT', 'CURRVAL', 'CURSOR', 'DAY', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELETE', 'DESC', 'DISTINCT', 'DO', 'DROP', 'ELSE', 'ELSIF', 'END', 'EXCEPTION', 'EXCLUSIVE', 'EXECUTE', 'EXISTS', 'EXIT', 'EXTENDS', 'EXTRACT', 'FALSE', 'FETCH', 'FLOAT', 'FOR', 'FORALL', 'FROM', 'FUNCTION', 'GOTO', 'GROUP', 'HAVING', 'HEAP', 'HOUR', 'IF', 'IMMEDIATE', 'IN', 'INDEX', 'INDICATOR', 'INSERT', 'INTEGER', 'INTERFACE', 'INTERSECT', 'INTERVAL', 'INTO', 'IS', 'ISOLATION', 'JAVA', 'LEVEL', 'LIKE', 'LIMITED', 'LOCK', 'LONG', 'LOOP', 'MAX', 'MIN', 'MINUS', 'MINUTE', 'MLSLABEL', 'MOD', 'MODE', 'MONTH', 'NATURAL', 'NATURALN', 'NEW', 'NEXTVAL', 'NOCOPY', 'NOT', 'NOWAIT', 'NULL', 'NULLIF', 'NUMBER', 'NUMBER_BASE', 'OCIROWID', 'OF', 'ON', 'OPAQUE', 'OPEN', 'OPERATOR', 'OPTION', 'OR', 'ORDER', 'ORGANIZATION', 'OTHERS', 'OUT', 'PARTITION', 'PCTFREE', 'PLS_INTEGER', 'POSITIVE', 'POSITIVEN', 'PRAGMA', 'PRIOR', 'PRIVATE', 'PROCEDURE', 'PUBLIC', 'RAISE', 'RANGE', 'RAW', 'REAL', 'RECORD', 'REF', 'RELEASE', 'RETURN', 'REVERSE', 'ROLLBACK', 'ROW', 'ROWID', 'ROWNUM', 'ROWTYPE', 'SAVEPOINT', 'SECOND', 'SELECT', 'SEPERATE', 'SET', 'SHARE', 'SMALLINT', 'SPACE', 'SQL', 'SQLCODE', 'SQLERRM', 'START', 'STDDEV', 'SUBTYPE', 'SUCCESSFUL', 'SUM', 'SYNONYM', 'SYSDATE', 'TABLE', 'THEN', 'TIME', 'TIMESTAMP', 'TIMEZONE_ABBR', 'TIMEZONE_HOUR', 'TIMEZONE_MINUTE', 'TIMEZONE_REGION', 'TO', 'TRIGGER', 'TRUE', 'TYPE', 'UI', 'UNION', 'UNIQUE', 'UPDATE', 'USE', 'USER', 'VALIDATE', 'VALUES', 'VARCHAR', 'VARCHAR2', 'VARIANCE', 'VIEW', 'WHEN', 'WHENEVER', 'WHERE', 'WHILE', 'WITH', 'WORK', 'WRITE', 'YEAR', 'ZONE'];
     public reservedwords = [];
 
     /**
@@ -44,7 +45,7 @@ export class dictionarymanager implements OnDestroy {
     /**
      * sets the allowed change scope
      */
-    public changescope: 'global' | 'custom' | 'none' = this.configurationService.getCapabilityConfig('core').edit_mode;
+    public changescope: 'all' | 'custom' | 'none' = this.configurationService.getCapabilityConfig('core').edit_mode;
 
     /**
      * the loaded list of domains
@@ -121,17 +122,23 @@ export class dictionarymanager implements OnDestroy {
      */
     public loaded: string;
 
+    /**
+     * settings loaded from teh backedn
+     */
+    public settings: any;
+
     constructor(public backend: backend,
                 public metadata: metadata,
                 public language: language,
                 public modelutilities: modelutilities,
                 public navigation: navigation,
                 public toast: toast,
+                public modal: modal,
                 public configurationService: configurationService) {
         this.loadDictionaryDefinitions();
         this.loadWords();
 
-        this.navigation.addModelEditing('dictmgr' , 'Administration', this, 'dictionary manager');
+        this.navigation.addModelEditing('dictmgr', 'Administration', this, 'dictionary manager');
     }
 
     public ngOnDestroy() {
@@ -175,32 +182,42 @@ export class dictionarymanager implements OnDestroy {
      * load the domains
      */
     public loadDictionaryDefinitions() {
-        this.backend.getRequest('dictionary/definitions').subscribe(res => {
+        let awaitModal = this.modal.await('LBL_LOADING');
+        this.backend.getRequest('dictionary/definitions').subscribe({
+            next: (res) => {
 
-            this.domaindefinitions = res.domaindefinitions;
-            this.domainfields = res.domainfields;
-            this.dictionarydefinitions = res.dictionarydefinitions;
-            this.dictionaryitems = res.dictionaryitems;
-            this.dictionaryrelationships = res.dictionaryrelationships;
-            this.dictionaryrelationshiprelatefields = res.dictionaryrelationshiprelatefields;
-            this.dictionaryindexes = res.dictionaryindexes;
-            this.dictionaryindexitems = res.dictionaryindexitems;
+                this.domaindefinitions = res.domaindefinitions;
+                this.domainfields = res.domainfields;
+                this.dictionarydefinitions = res.dictionarydefinitions;
+                this.dictionaryitems = res.dictionaryitems;
+                this.dictionaryrelationships = res.dictionaryrelationships;
+                this.dictionaryrelationshiprelatefields = res.dictionaryrelationshiprelatefields;
+                this.dictionaryindexes = res.dictionaryindexes;
+                this.dictionaryindexitems = res.dictionaryindexitems;
 
-            this.loaded = JSON.stringify(res);
+                // add the settings if we have them
+                this.settings = res.settings;
+
+                this.loaded = JSON.stringify(res);
+                awaitModal.emit(true);
+            },
+            error: () =>{
+                awaitModal.emit(true);
+            }
         });
     }
 
     /**
      * returns the reserved words for all database types
      */
-    public loadWords(){
-        if(!this.configurationService.getData('spicewords')) {
+    public loadWords() {
+        if (!this.configurationService.getData('spicewords')) {
             this.backend.getRequest('dictionary/spicewords').subscribe(res => {
                 this.reservedwords = res.reservedwords;
                 this.keywords = res.keywords;
                 this.configurationService.setData('spicewords', res);
             });
-        } else{
+        } else {
             this.reservedwords = this.configurationService.getData('spicewords').reservedwords;
             this.keywords = this.configurationService.getData('spicewords').keywords;
         }
@@ -214,7 +231,7 @@ export class dictionarymanager implements OnDestroy {
     public canChange(scope: string) {
 
         // if we have all ... we can change
-        if (this.changescope == 'global') return true;
+        if (this.changescope == 'all') return true;
 
         // if we have custom we can only change custom
         if (this.changescope == 'custom' && scope == 'c') {
@@ -230,7 +247,7 @@ export class dictionarymanager implements OnDestroy {
      * returns the default scope for the new entries
      */
     get defaultScope() {
-        return this.changescope == 'global' ? 'g' : 'c';
+        return this.changescope == 'all' ? 'g' : 'c';
     }
 
     /**
@@ -281,8 +298,6 @@ export class dictionarymanager implements OnDestroy {
     }
 
 
-
-
     /**
      * returns all items (recurisively for a given id
      *
@@ -291,10 +306,10 @@ export class dictionarymanager implements OnDestroy {
     public getDictionaryDefinitionItems(refid) {
         let itemsArray: any[] = [];
 
-        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0 ).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
             if (item.sysdictionary_ref_id && item.sysdictionary_ref_id != refid) {
                 itemsArray = itemsArray.concat(this.getDictionaryDefinitionItems(item.sysdictionary_ref_id));
-            } else if(!item.sysdictionary_ref_id) {
+            } else if (!item.sysdictionary_ref_id) {
                 itemsArray.push(item);
             }
         }
@@ -350,7 +365,7 @@ export class dictionarymanager implements OnDestroy {
      *
      * @param definition
      */
-    public repairDictionary(definition){
+    public repairDictionary(definition) {
         let body = {dictionaries: [definition.name]};
         this.backend.postRequest('admin/repair/dictionary', {}, body).subscribe(result => {
             if (result.success) {

@@ -15,7 +15,7 @@ class DateValidator extends Validator
 {
     public function validate(): bool {
         $date = DateTime::createFromFormat("Y-m-d", $this->paramValue);
-        if (parent::isRequired() && ($date === false || array_sum($date::getLastErrors()))) {
+        if (parent::isRequired() && !$date) {
             throw new ValidationException(
                 "Invalid date format",
                 null,

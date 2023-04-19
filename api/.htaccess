@@ -1,3 +1,11 @@
+# hide heasders
+<IfModule mod_headers.c>
+  Header unset X-Powered-By
+  Header always unset X-Powered-By
+</IfModule>
+# Remove server signature
+ServerSignature Off
+
 RewriteEngine On
 
 # Some hosts may require you to use the `RewriteBase` directive.
@@ -29,5 +37,14 @@ RewriteRule ^ include/SpiceInstaller/install.php [QSA,L]
 # the default rewrite
 RewriteRule ^ index.php [QSA,L]
 
+#deny any unauthorized file access
+<Files *.*>
+    Order Deny,Allow
+    Deny from all
+</Files>
+<FilesMatch "index.php|install.php|soap.php">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
 
 

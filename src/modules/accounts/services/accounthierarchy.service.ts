@@ -1,14 +1,18 @@
 /**
  * @module ModuleAccounts
  */
-import {Injectable} from "@angular/core";
+import {Injectable, OnDestroy} from "@angular/core";
 import {backend} from "../../../services/backend.service";
 
 import {Subject, Observable} from "rxjs";
 
 
 @Injectable()
-export class accountHierarchy {
+export class accountHierarchy implements OnDestroy {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('account_hierarchy_http_ref_');
 
     public parentId: string = "";
     public requestedFields: Array<any> = [];
@@ -27,7 +31,7 @@ export class accountHierarchy {
             addfields.push(field.field);
         }
 
-        this.backend.getRequest(`module/Accounts/${parent_id}/hierarchy/${JSON.stringify(addfields)}`).subscribe(members => {
+        this.backend.getRequest(`module/Accounts/${parent_id}/hierarchy/${JSON.stringify(addfields)}`, null, this.httpRequestsRefID).subscribe(members => {
             for (let member of members) {
                 this.members.push({
                     parent_id: parent_id,
@@ -106,5 +110,9 @@ export class accountHierarchy {
                 }
             }
         }
+    }
+
+    public ngOnDestroy() {
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 }

@@ -15,7 +15,7 @@ class DatetimeValidator extends Validator
 {
     public function validate(): bool {
         $dateTime = DateTime::createFromFormat("Y-m-d H:i:s", $this->paramValue);
-        if (parent::isRequired() && ($dateTime === false || array_sum($dateTime::getLastErrors()))) {
+        if (parent::isRequired() && !$dateTime) {
             throw new ValidationException(
                 "Invalid date time format",
                 null,

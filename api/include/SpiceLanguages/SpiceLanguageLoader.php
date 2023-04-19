@@ -35,12 +35,10 @@
  */
 
 namespace SpiceCRM\includes\SpiceLanguages;
-use Exception;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\includes\SpiceUI\SpiceUILoader;
 
 class SpiceLanguageLoader{
@@ -97,12 +95,15 @@ class SpiceLanguageLoader{
         $syslangs = [];
         $success = false;
 
-        if($checkopen && $this->loader->hasOpenChangeRequest())
-            throw new Exception("Open Change Requests found! Action aborted. They would be erased...");
+        if($checkopen && $this->loader->hasOpenChangeRequest()){
+//            throw new Exception("Open Change Requests found! Action aborted. They would be erased...");
+            throw (new Exception("Open Change Requests found! Action aborted. They would be erased...", 'packageLoadFailed'));
+
+        }
 
         if(!$response = $this->loader->callMethod("GET", $route)){
-            //die("REST Call error somewhere... Action aborted");
-            throw new Exception("REST Call error somewhere... Action aborted");
+//            throw new Exception("REST Call error somewhere... Action aborted");
+            throw (new Exception("Failed to load language package. No response from reference entity", 'packageLoadFailed'));
         }
 
         // reponse looks like
@@ -169,8 +170,8 @@ class SpiceLanguageLoader{
 
         //if no inserts where created => abort
         if(count($inserts) < 1){
-            //die("No inserts found. Action aborted.");
-            throw new Exception("REST Call error somewhere... Action aborted");
+//            throw new Exception("REST Call error somewhere... Action aborted");
+            throw (new Exception("Failed to load language package", 'packageLoadFailed'))->setDetails($errors);
         }
 
         if(count($errors) > 1){
@@ -199,7 +200,7 @@ class SpiceLanguageLoader{
                         'language_code' => $languages[$i],
                         'language_name' => (!empty($appForLang['language_pack_name']) ? $appForLang['language_pack_name'] : $languages[$i]),
                         'sort_sequence' => $i+1,
-                        'is_default' => ($languages[$i] == SpiceConfig::getInstance()->config['default_language'] ? 1 : 0),
+                        'is_default' => ($languages[$i] == SpiceLanguageManager::getInstance()->getSystemDefaultLanguage() ? 1 : 0),
                         'system_language' => 1,
                         'communication_language' => 1
                     ];

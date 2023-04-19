@@ -6,6 +6,8 @@ import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
 import {navigationtab} from '../../services/navigationtab.service';
 import {broadcast} from '../../services/broadcast.service';
+import {language} from '../../services/language.service';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-listview-container',
@@ -16,19 +18,30 @@ export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
     public moduleName: any = '';
     public initialized: boolean = false;
     public componentRefs: any = [];
-    public componentSubscriptions: any[] = [];
+    public componentSubscriptions: Subscription = new Subscription();
 
-    constructor(public metadata: metadata, public broadcast: broadcast, public navigation: navigation, public navigationtab: navigationtab) {
+    constructor(public metadata: metadata, public broadcast: broadcast, public navigation: navigation, public navigationtab: navigationtab, private language: language) {
         // subscribe to route params.module changes
-        this.navigationtab.activeRoute$.subscribe(route=>{
-            this.moduleName = route.params.module;
-            if (this.initialized) {
-                this.buildContainer();
-            }
-        });
+        this.componentSubscriptions.add(
+            this.navigationtab.activeRoute$.subscribe(route=>{
+                this.moduleName = route.params.module;
+
+                // fallback in case we have a specific route then we assume the end of the route is the module
+                if(!this.moduleName){
+                    this.moduleName = route.path.split("/").pop();
+                    this.navigationtab.activeRoute.params.module = this.moduleName;
+                }
+
+                this.navigationtab.setTabInfo({displaymodule: this.moduleName, displayname: this.metadata.getModuleDefs(this.moduleName).module_label});
+
+                if (this.initialized) {
+                    this.buildContainer();
+                }
+            })
+        );
 
         // subscribe to applauncher.setrole
-        this.componentSubscriptions.push(this.broadcast.message$.subscribe(message => {
+        this.componentSubscriptions.add(this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         }));
     }
@@ -45,9 +58,7 @@ export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
         }
 
         // unsubscribe from Observables
-        for (let componentSubscription of this.componentSubscriptions) {
-            componentSubscription.unsubscribe();
-        }
+        this.componentSubscriptions.unsubscribe()
     }
 
     /*

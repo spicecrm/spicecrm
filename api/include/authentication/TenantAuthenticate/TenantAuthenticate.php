@@ -1,72 +1,29 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\authentication\TenantAuthenticate;
 
 use Exception;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\ErrorHandlers\SessionExpiredException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\modules\Users\User;
 
 class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
 {
     /**
-     * @param object $authData
-     * @param string $authType
+     * generate authentication response
+     * @param string $userId
      * @return AuthResponse
-     * @throws UnauthorizedException| SessionExpiredException | Exception
+     * @throws UnauthorizedException
      */
-    public function authenticate(object $authData, string $authType): AuthResponse
+    public function generateAuthResponse(string $userId): AuthResponse
     {
-        switch ($authType) {
-            case 'token':
-                $userId = $this->handleToken($authData->token->access_token);
-                break;
-            case 'credentials':
-                $userId = $this->handleCredentials($authData->username, $authData->password, $authData->impersonationUser);
-                break;
-            default:
-                throw new UnauthorizedException("Invalid authentication method", 6);
-        }
-
         $authUser = DBManagerFactory::getInstance()->fetchOne("SELECT tenant_id, username from tenant_auth_users WHERE id ='$userId'");
 
-        return new AuthResponse($authUser['username'], ['tenantId' => $authUser['tenant_id']]);
-    }
+        return new AuthResponse($authUser['username'], ['tenantId' => $authUser['tenant_id']]);    }
 
     /**
      * @param string $username
@@ -97,12 +54,7 @@ class TenantAuthenticate extends SpiceCRMAuthenticate implements AuthenticatorI
 
         if (empty($row)) return null;
 
-        // check if we have a Google authenticator password
-        $totpAuth = new TOTPAuthentication();
-
-        if (TOTPAuthentication::checkTOTPActive($row['id']) && $totpAuth->checkTOTPCode($row['id'], $password)) {
-            return $row;
-        } else if (User::checkPasswordMD5(md5($password), $row['user_hash'])) {
+        if (User::checkPasswordMD5(md5($password), $row['user_hash'])) {
             return $row;
         } else {
             return null;

@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\RESTManager;
@@ -44,7 +16,7 @@ $routes = [
         'class' => DictionaryManagerController::class,
         'function' => 'getDictionaryFields',
         'description' => 'get the columns name for the table from the database',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => false, 'validate' => true],
         'parameters' => [
             'table' => [
                 'in' => 'path',
@@ -61,7 +33,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'getNodes',
         'description' => 'builds an array with all the field nodes for specified module',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => false, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -78,7 +50,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'getFields',
         'description' => 'builds an array with all the fields defined for specified module',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => false, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -96,7 +68,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'getModuleRelationshipFields',
         'description' => 'get module relationship fields',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'options' => ['adminOnly' => false, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -121,7 +93,7 @@ $routes = [
         'class' => DictionaryController::class,
         'function' => 'getAuditFields',
         'description' => 'get module relationship fields',
-        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+        'options' => ['adminOnly' => false, 'validate' => false],
     ],
     [
         'method' => 'get',
@@ -129,7 +101,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'getDBColumns',
         'description' => 'get all columns from the module-table in the database allowed as admin',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'module' => [
                 'in' => 'path',
@@ -147,7 +119,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'buildSQLArray',
         'description' => 'building the query for a relationship repair',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -157,7 +129,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairAndRebuild',
         'description' => 'repairs and rebuilds the database',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
+        'options' => ['adminOnly' => true, 'validate' => true, 'excludeBodyValidation' => true],
         'parameters' => [
             'selectedqueries' => [
                 'in' => 'body',
@@ -177,7 +149,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairLanguage',
         'description' => 'clears language cache and repairs the language extensions',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -187,7 +159,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairCache',
         'description' => 'clears the vardef cache, executes rebuilding of vardefs extensions and',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -197,7 +169,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairDBColumns',
         'description' => 'delete all the given columns in the database ',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => [
             'dbcolumns' => [
                 'in' => 'body',
@@ -220,7 +192,7 @@ $routes = [
         'class' => AdminController::class,
         'function' => 'repairAndReloadCore',
         'description' => 'repairs the database and loads the core package',
-        'options' => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options' => ['adminOnly' => true, 'validate' => true],
         'parameters' => []
     ],
     [
@@ -229,7 +201,7 @@ $routes = [
         'class'       => AdminController::class,
         'function'    => 'getDatabaseCharsetInfo',
         'description' => 'returns information on the charset and collation of a database and its tables',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [],
     ],
     [
@@ -238,7 +210,7 @@ $routes = [
         'class'       => AdminController::class,
         'function'    => 'convertDatabase',
         'description' => 'converts the DB charset and collation',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'charset' => [
                 'in'          => 'body',
@@ -258,7 +230,7 @@ $routes = [
         'class'       => AdminController::class,
         'function'    => 'convertTables',
         'description' => 'converts the charset of the given tables',
-        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => true],
+        'options'     => ['adminOnly' => true, 'validate' => true],
         'parameters'  => [
             'tables' => [
                 'in'          => 'body',

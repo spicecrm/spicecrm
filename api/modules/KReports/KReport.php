@@ -9,8 +9,8 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\modules\Campaigns\Campaign;
-use SpiceCRM\modules\ProspectLists\ProspectList;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler;
 
 require_once('modules/KReports/utils.php');
 
@@ -518,8 +518,7 @@ class KReport extends SpiceBean
 
     function getXtypeRenderer($fieldType, $fieldID = '')
     {
-        global $mod_strings;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // check if we have a custom SQL function -- then reset the value .. we do  not know how to format
         if($this->kQueryArray->queryArray['root']['kQuery']){
@@ -634,6 +633,9 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
     function createCSV($dynamicolsOverride = '', $parentbean = null)
     {
+        global $app_list_strings, $current_language;
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($current_language);
+
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $this->tocsv = true;
 
@@ -710,7 +712,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
             }
         }
 
-        $spiceLanguageHandler = new \SpiceCRM\includes\SpiceLanguages\SpiceLanguagesRESTHandler();
+        $spiceLanguageHandler = new SpiceLanguagesRESTHandler();
         if (count($results) > 0) {
             foreach ($results as $record) {
                 $getHeader = ($header == '') ? true : false;
@@ -749,8 +751,7 @@ $db = DBManagerFactory::getInstance();
         $results = $this->getSelectionResults([]);
 
         if (count($results > 0)) {
-            require_once('modules/ProspectLists/ProspectList.php');
-            $newProspectList = new ProspectList ();
+            $newProspectList = BeanFactory::getBean('ProspectLists');
 
             $newProspectList->name = $listname;
             $newProspectList->list_type = 'default';
@@ -759,8 +760,7 @@ $db = DBManagerFactory::getInstance();
 
             // add to campaign
             if ($campaign_id != '') {
-                require_once('modules/Campaigns/Campaign.php');
-                $thisCampaign = new Campaign();
+                $thisCampaign = BeanFactory::getBean('Campaigns');
                 $thisCampaign->retrieve($campaign_id);
                 $thisCampaign->load_relationships();
                 $campaignLinkedFields = $thisCampaign->get_linked_fields();
@@ -1206,8 +1206,7 @@ $db = DBManagerFactory::getInstance();
     function getSnapshots($withoutActual = false)
     {
         // 2012-11-21 change so a label can be used
-        global $mod_strings;
-        $mod_strings = return_module_language($_SESSION['authenticated_user_language'], 'KReports');
+        $mod_strings = LanguageManager::loadDatabaseLanguage($_SESSION['authenticated_user_language']);
 
         $retArray = [];
 
@@ -1217,7 +1216,7 @@ $db = DBManagerFactory::getInstance();
 
         // 2012-11-21 change so a label can be used
         if ($withoutActual == 'true')
-            $retArray [] = ['snapshot' => '0', 'description' => $mod_strings['LBL_CURRENT_SNAPSHOT']];
+            $retArray [] = ['snapshot' => '0', 'description' => $mod_strings['LBL_CURRENT_SNAPSHOT']['default']];
 
         while ($thisSnapshot = $this->db->fetchByAssoc($snapShotsResults)) {
             $retArray [] = ['snapshot' => $thisSnapshot ['id'], 'description' => $thisSnapshot ['snapshotdate']];
@@ -1281,7 +1280,7 @@ $db = DBManagerFactory::getInstance();
     // for the GeoCoding
     function massGeoCode()
     {
-        global $app_list_strings, $mod_strings;
+        global $app_list_strings;
 
         require_once('modules/KReports/BingMaps/BingMaps.php');
 
@@ -1352,7 +1351,7 @@ $db = DBManagerFactory::getInstance();
 
     function getGeoCodes()
     {
-        global $app_list_strings, $mod_strings;
+        global $app_list_strings;
 
         $mapDetails = json_decode(html_entity_decode($this->mapoptions, ENT_QUOTES, 'UTF-8'));
         // $jsonerror = json_last_error();
@@ -1637,7 +1636,7 @@ $db = DBManagerFactory::getInstance();
     {
         $db = DBManagerFactory::getInstance();
 
-        $thisReport = new KReport();
+        $thisReport = BeanFactory::getBean('KReports');
 
         $reportsArray = [];
 

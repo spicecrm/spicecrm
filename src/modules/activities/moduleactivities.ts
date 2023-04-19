@@ -57,6 +57,9 @@ import {ActivityTimelineSummaryAggregates} from './components/activitytimelinesu
 
 import {fieldActivityDate} from './fields/fieldactivitydate';
 
+import {ActivityTimelineSpiceMailButton} from "./components/activitytimelinespicemailbutton";
+import {ClipboardModule} from "@angular/cdk/clipboard";
+
 @NgModule({
     imports: [
         CommonModule,
@@ -65,7 +68,8 @@ import {fieldActivityDate} from './fields/fieldactivitydate';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule
+        DirectivesModule,
+        ClipboardModule
     ],
     declarations: [
         TasksManagerView,
@@ -107,6 +111,7 @@ import {fieldActivityDate} from './fields/fieldactivitydate';
         ActivityTimelineSummaryItemView,
         ActivityTimelineSummaryButton,
         ActivityTimelineSummaryAggregates,
+        ActivityTimelineSpiceMailButton,
         fieldActivityDate
     ],
     exports: [

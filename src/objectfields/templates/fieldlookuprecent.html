@@ -1,9 +1,17 @@
-<div class="slds-lookup__item--label slds-text-body--small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+<div class="slds-lookup__item--label slds-text-body--small slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-border--bottom">
     {{language.getModuleCombinedLabel('LBL_RECENTLYVIEWED', module)}}
     <button *ngIf="module == 'Users'" system-title="LBL_SET_CURRENT_USER" class="slds-button slds-button--icon" size="xx-small" (mousedown)="setCurrentUser($event)"><system-button-icon icon="user"></system-button-icon></button>
+</div>
+<div *ngIf="!loading &&  recentItems.length == 0" class="slds-align--absolute-center slds-p-around--small">
+    <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
 </div>
 <ul class="slds-lookup__list" role="listbox">
     <li *ngFor="let recentItem of recentItems" role="presentation" (mousedown)="setParent($event, recentItem)">
         <field-lookup-recent-item [item]="recentItem"></field-lookup-recent-item>
     </li>
+    <ng-container *ngIf="loading">
+        <li style="opacity: 1"><system-searchresult-stencil></system-searchresult-stencil></li>
+        <li style="opacity: 0.6"><system-searchresult-stencil></system-searchresult-stencil></li>
+        <li style="opacity: 0.2"><system-searchresult-stencil></system-searchresult-stencil></li>
+    </ng-container>
 </ul>

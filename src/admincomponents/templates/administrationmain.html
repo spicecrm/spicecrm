@@ -1,5 +1,5 @@
 <div system-to-bottom-noscroll class="slds-grid" [system-overlay-loading-spinner]="administration.loading">
-    <div class="slds-large-size--1-of-8 slds-medium-size--1-of-6" style="min-width: 220px;">
+    <div [ngStyle]="menuWidth">
         <administration-menu></administration-menu>
     </div>
     <div class="slds-grow" system-to-bottom>

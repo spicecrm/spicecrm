@@ -18,7 +18,7 @@ import {language} from '../../../services/language.service';
 import {SystemLoadingModal} from "../../../systemcomponents/components/systemloadingmodal";
 
 @Component({
-    selector: 'lead-convert-opportunity-modal',
+    selector: 'lead-convert-consumer-modal',
     templateUrl: '../templates/leadconvertconsumermodal.html',
     providers: [model, view]
 })
@@ -55,6 +55,7 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
                     bean_id: this.model.id,
                     bean_module: this.model.module,
                     email_address: this.lead.getField('email1'),
+                    email_address_caps: this.lead.getField('email1').toUpperCase(),
                     email_address_id: '',
                     primary_address: '1'
                 }]}

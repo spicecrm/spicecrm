@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SpiceACL;
 
@@ -41,6 +13,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 class SpiceACL
 {
 
+    private $aclActions = [];
 
     var $useraclobjects = [];
 
@@ -49,14 +22,17 @@ class SpiceACL
      *
      * @var array
      */
-    var $moduleActions = [];
+    var $standardActions;
+    var $moduleActions;
 
     var $aclObject = null;
     var $territory = null;
 
     private static $instance;
 
-    private function __construct() {}
+    private function __construct() {
+
+    }
     private function __clone() {}
     private function __wakeup() {}
     /**
@@ -344,6 +320,28 @@ class SpiceACL
     }
 
     /**
+     * loads all standard and module actions into the singelton
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function loadActions(){
+
+        $db = DBManagerFactory::getInstance();
+
+        $standardActions = $db->query("SELECT action FROM spiceaclstandardactions");
+        while($s = $db->fetchByAssoc(($standardActions))){
+            $this->standardActions[] = $s['action'];
+        }
+
+        $moduleActions = $db->query("SELECT sysmodule_id, action FROM spiceaclmoduleactions");
+        while($m = $db->fetchByAssoc(($moduleActions))){
+            $this->moduleActions[$m['sysmodule_id']][] = $m['action'];
+        }
+
+    }
+
+    /**
      * returns an array with all access right per module
      *
      * @param $module
@@ -352,15 +350,16 @@ class SpiceACL
      */
     function getModuleAccess($module)
     {
-        $db = DBManagerFactory::getInstance();
+        // load the actins if not loaded
+        if(!$this->standardActions) $this->loadActions();
 
-        $aclArray = [];
+        // get the moduleid and the combined actions
+        $moduleId = SpiceModules::getInstance()->getModuleId($module);
+        $aclActions = array_values(array_merge($this->standardActions, isset($this->moduleActions[$moduleId]) ? $this->moduleActions[$moduleId] : []));
 
-        $aclActionsObject = $db->query("SELECT action FROM spiceaclstandardactions UNION SELECT action FROM spiceaclmoduleactions, sysmodules WHERE spiceaclmoduleactions.sysmodule_id = sysmodules.id AND sysmodules.module = '$module' UNION SELECT action FROM spiceaclmoduleactions, syscustommodules WHERE spiceaclmoduleactions.sysmodule_id = syscustommodules.id AND syscustommodules.module = '$module'");
-
-        while ($aclAction = $db->fetchByAssoc($aclActionsObject)) {
+        foreach($aclActions as $aclAction) {
             // $aclArray[$aclAction] = $seed->ACLAccess($aclAction);
-            $aclArray[$aclAction['action']] = $this->checkAccess($module, $aclAction['action'], true);
+            $aclArray[$aclAction] = $this->checkAccess($module, $aclAction, true);
         }
         return $aclArray;
     }

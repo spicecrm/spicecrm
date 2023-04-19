@@ -34,21 +34,21 @@ export class CampaignSendTestMailButton {
         let loading = this.modal.await('LBL_SENDING');
         if (!this.sending) {
             this.sending = true;
-            this.backend.postRequest(`module/CampaignTasks/${this.model.id}/sendtestmail`).subscribe(
-                (results: any) => {
+            this.backend.postRequest(`module/CampaignTasks/${this.model.id}/sendtestmail`).subscribe({
+                next: (results: any) => {
                     this.sending = false;
                     loading.emit(true);
-                    if(results.status == 'success') {
-                        this.toast.sendToast('Mails sent');
+                    if (results.status == 'success') {
+                        this.toast.sendToast(this.language.getLabel('LBL_TEST_MAILS_SENT'), 'success');
                     } else {
-                        this.toast.sendToast(results.msg, 'error');
+                        this.toast.sendToast(this.language.getLabel('LBL_NO_TEST_TARGETS'), 'error');
                     }
-                },
-                error => {
+                }, error: (error) => {
                     loading.emit(true);
                     this.sending = false;
-                    this.toast.sendToast('ERROR');
-                });
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                }
+            });
         }
     }
 

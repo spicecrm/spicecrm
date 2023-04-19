@@ -160,7 +160,7 @@ class SpiceFTSActivityHandler
                 'year' => [
                     'date_histogram' => [
                         'field' => '_activitydate',
-                        'interval' => '1y',
+                        'calendar_interval' => '1y',
                         'format' => 'yyyy'
                     ]
                 ]
@@ -346,7 +346,7 @@ class SpiceFTSActivityHandler
 
         // set a size
         // ToDo: make this configurable
-        // Make this configurable using another was than sugar_config and/or add aggs to group by id in results
+        // Make this configurable using another was than spice_config and/or add aggs to group by id in results
         $query['size'] = (!empty(SpiceConfig::getInstance()->config['fts']['calendareventssize']) ? SpiceConfig::getInstance()->config['fts']['calendareventssize'] : 100);
 
         $elastichandler = new ElasticHandler();

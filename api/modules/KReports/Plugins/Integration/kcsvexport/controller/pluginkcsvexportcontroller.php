@@ -28,7 +28,6 @@ class pluginkcsvexportcontroller {
             ini_set('max_execution_time', SpiceConfig::getInstance()->config['KReports']['csvmaxruntime']);
 
 
-        require_once('modules/KReports/KReport.php');
         $thisReport = BeanFactory::getBean('KReports', $requestParams['record']);
 
 

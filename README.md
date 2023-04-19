@@ -5,7 +5,7 @@ Welcome to the [SpiceCRM](https://www.spicecrm.com)
 ![SpiceUI](https://www.spicecrm.com/wp-content/uploads/2020/12/allformfactors-1.png)
 
 * Built from scratch as new flexible UI that can be used with the SpiceCRM backend
-* written in Angular (current Release 14.2.0)
+* written in Angular (current Release 15.2.2)
 * based on the lightning design system
 
 SpiceCRM is available as public core release and as licensed more release. You can learn about the differences between core and more release at [www.spicecrm.com](https://www.spicecrm.com/editions/)
@@ -14,8 +14,11 @@ SpiceCRM is available as public core release and as licensed more release. You c
 
 you will need a classic Web server to run SpiceCRM.
 * WebServers supported: apache, IIS - url rewrite needs to be enabled
-* ElasticSearch shall be installed (supported > 7.5 and < 8)
+** caution: apache debian/ubuntu higher than 2.4.54 is not compatible
+* ElasticSearch shall be installed (supported > 7.5). 
+** ElasticSearch 8.x supported since 2023.01.001.
 * Compatible database types: MySQL, Oracle, MSSQL
+** MySQL 8 supported since 2023.01.001
 * PHP: Version 7.4 to 8.* are supported. 8.x is recommended. PHP extensions check is performed during installation process.
 
 ## Installation
@@ -23,7 +26,8 @@ you will need a classic Web server to run SpiceCRM.
 1. Clone the project or download the files as ZIP files
 2. Launch installer by calling installation folder path in your webbrowser and follow the installation procedure.
 
-You can also find a more detailed installation guide [here](https://www.spicecrm.com/wp-content/uploads/2022/11/SpiceCRM-Installation-Guide_202202001.pdf)
+You can also find a more detailed installation guide [here](You can also find a more detailed installation guide [here](https://www.spicecrm.com/wp-content/uploads/2022/11/SpiceCRM-Installation-Guide_202301001.pdf)
+)
 
 ## Support
 

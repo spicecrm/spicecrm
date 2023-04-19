@@ -95,7 +95,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'table' => 'users',
             'id_name' => 'modified_user_id',
             'module' => 'Users',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'created_by' => [
             'name' => 'created_by',
@@ -116,7 +116,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'table' => 'users',
             'id_name' => 'created_by',
             'module' => 'Users',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'deleted' => [
             'name' => 'deleted',

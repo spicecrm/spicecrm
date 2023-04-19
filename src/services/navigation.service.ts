@@ -166,7 +166,8 @@ export class navigation {
         id: 'main',
         active: true,
         pinned: false,
-        enablesubtabs: false
+        enablesubtabs: false,
+        url: 'module/Home'
     };
 
     /**
@@ -391,7 +392,8 @@ export class navigation {
                     id: 'main',
                     pinned: false,
                     active: true,
-                    enablesubtabs: false
+                    enablesubtabs: false,
+                    url: 'module/Home'
                 };
 
                 // unsubscribe from all subscriptions
@@ -631,11 +633,12 @@ export class navigation {
     /**
      * matches two route params ignoring the tabid if the match is different
      *
-     * @param objectparams
+     * @param objecttab
      * @param routeparams
      */
     public matchRouteParams(objecttab: objectTab, routeparams: any): boolean {
-        if (_.isEqual(objecttab.params, routeparams)) return true;
+        // check if we have params and if then if the params match
+        if (objecttab.path.split(':').length == 1 || _.isEqual(objecttab.params, routeparams)) return true;
 
         // if not check if the object has a tabid and that matches the objecttab
         if (routeparams.tabid && routeparams.tabid == objecttab.id) {
@@ -660,7 +663,7 @@ export class navigation {
         // get the route data replacing the tab and tabid if this is passed in as part of the route
         let routeData = this.metadata.getRouteDetails(routeConfig.path.replace('tab/:tabid/', ''));
 
-        if (routeData?.target == 'M' || this.navigationparadigm == 'simple') {
+        if (routeData?.target == 'M' || routeParams.module == 'Home') {
             // if we just navigate to the maintab .. no checks
             if (this.maintab.path == routeConfig.path && _.isEqual(this.maintab.params, routeParams)) {
                 this.activeTab = 'main';
@@ -702,7 +705,7 @@ export class navigation {
 
             // chdeck if we should open in a subtab and the parenttab exists
             let parentTab: objectTab;
-            if (this.navigationparadigm == 'subtabbed' && routeParams.tabid) {
+            if (routeParams.tabid) {
                 parentTab = this.objectTabs.find(tab => tab.id == routeParams.tabid);
             }
 
@@ -780,9 +783,8 @@ export class navigation {
     /**
      * set the tab info
      *
-     * @param tabid
-     * @param displayname
-     * @param displaymodule
+     * @param tabid string
+     * @param tabinfo object
      */
     public settabinfo(tabid: string, tabinfo: objectTabInfo) {
         if (tabid == 'main') {
@@ -835,7 +837,8 @@ export class navigation {
     /**
      * closes a tab
      *
-     * * @param tabid
+     * * @param tabid string
+     * @param force bool
      */
     public closeObjectTab(tabid, force: boolean = false) {
         // not for the main tab
@@ -869,9 +872,12 @@ export class navigation {
                 if (this.objectTabs[index].parentid) {
                     this.setActiveTab(this.objectTabs[index].parentid);
                     // this.router.navigate([this.objectTabs.find(tab => tab.id == this.objectTabs[index].parentid).url]);
+                } else if(index != 0) {
+                    // tab to the left of the closed tab is set active
+                    const leftIndex = index - 1;
+                    this.setActiveTab(this.objectTabs[leftIndex].id);
                 } else {
                     this.setActiveTab('main');
-                    // this.router.navigate([this.maintab.url]);
                 }
             }
 

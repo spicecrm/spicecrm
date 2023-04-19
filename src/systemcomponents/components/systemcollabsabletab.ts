@@ -49,6 +49,11 @@ export class SystemCollabsableTab {
     @Input() public expanded: boolean = true;
 
     /**
+     * an ipnput to control the margin
+     */
+    @Input() public margin: 'default'|'none' = "default";
+
+    /**
      * @deprecated: replaced by tabtitle since title is reserved and will render a title for the dom element
      */
     @Input() public title: string = '';

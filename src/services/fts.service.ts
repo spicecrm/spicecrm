@@ -32,6 +32,10 @@ interface ftsSearchParameters {
 
 @Injectable()
 export class fts {
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = window._.uniqueId('fts_http_ref_');
 
     public hits: any[] = [];
     public found: number = 0;
@@ -103,11 +107,15 @@ export class fts {
 
         this.resetData();
 
+        const requestID = this.httpRequestsRefID + '_search';
+
+        this.backend.cancelPendingRequests([requestID]);
+
         this.runningsearch = this.backend.postRequest('search', {}, {
             size,
             searchterm,
             modules: this.loadedSearchModules.join(',')
-        }).subscribe((response) => {
+        }, requestID).subscribe((response) => {
             this.hits = response.hits.hits;
             this.found = response.hits.total;
             this.runningsearch = undefined;
@@ -143,6 +151,10 @@ export class fts {
             this.runningmodulesearch.unsubscribe();
         }
 
+        const requestID = this.httpRequestsRefID + '_search_by_modules';
+
+        this.backend.cancelPendingRequests([requestID]);
+        
         this.runningmodulesearch = this.backend.postRequest('search', {}, {
             modules: parameters.modules.length > 0 ? parameters.modules.join(',') : '',
             searchterm: parameters.searchterm,
@@ -153,7 +165,7 @@ export class fts {
             sort: this.searchSort,
             modulefilter: parameters.modulefilter,
             buckets: parameters.buckets
-        }).subscribe(response => {
+        }, requestID).subscribe(response => {
             // var response = res.json();
             this.moduleSearchresults = [];
 
@@ -212,7 +224,7 @@ export class fts {
             owner,
             aggregates,
             sort: this.searchSort,
-        }).subscribe(response => {
+        }, this.httpRequestsRefID).subscribe(response => {
             retSubject.next(response);
             retSubject.complete();
         });
@@ -253,7 +265,7 @@ export class fts {
             start: this.moduleSearchresults[0].data.hits.length,
             modulefilter: this.modulefilter,
             buckets: buckets
-        }).subscribe(response => {
+        }, this.httpRequestsRefID).subscribe(response => {
             // var response = res.json();
             for (let module of this.lastSearchParams.modules) {
                 for (let hit of response[module].hits) {
@@ -271,16 +283,6 @@ export class fts {
     public getSearchModules() {
         this.searchModules = this.metadata.getGlobalSearchModules().sort((a,b) => this.language.getModuleName(a).localeCompare(this.language.getModuleName(b)));
 
-        /*
-        this.backend.getRequest('fts/searchmodules')
-            .subscribe((response: any) => {
-                for (let module of response.modules) {
-                    if (this.metadata.checkModuleAcl(module, 'list')) {
-                        this.searchModules.push(module);
-                    }
-                }
-            });
-         */
     }
 
     public resetData() {

@@ -1,0 +1,82 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_LOGIC_HOOK"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_SCOPE"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <system-input-radio-button-group [(ngModel)]="newLogicHook.type" [inputOptions]="radioOptions"
+                                                     [disabled]="!!newLogicHook.id"></system-input-radio-button-group>
+                </div>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_MODULE"></system-label>
+                </label>
+                <system-input-module [(ngModel)]="newLogicHook.module"></system-input-module>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_EVENT"></system-label>
+                </label>
+                <select id="eventselect" class="slds-select" [(ngModel)]="newLogicHook.event">
+                    <option value="select">select</option>
+                    <option  *ngFor="let thisevent of events" [value]="thisevent">{{thisevent}}</option>
+                </select>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_INDEX"></system-label>
+                </label>
+                <system-input-text [(ngModel)]="newLogicHook.hook_index"></system-input-text>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--4-of-4">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_CLASS"></system-label>
+                </label>
+                <system-input-backend-method [(ngModel)]="classMethod"></system-input-backend-method>
+            </div>
+
+        </div>
+        <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_DESCRIPTION"></system-label>
+            </label>
+            <textarea
+                    class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid"
+                    [(ngModel)]="newLogicHook.description"
+                    style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_VERSION"></system-label>
+                </label>
+                <system-input-text [(ngModel)]="newLogicHook.version"></system-input-text>
+            </div>
+            <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_PACKAGE"></system-label>
+                </label>
+                <system-input-text [(ngModel)]="newLogicHook.package"></system-input-text>
+            </div>
+
+        </div>
+
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CLOSE"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand"  (click)="saveHook()" [disabled]="!canSave()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>

@@ -12,7 +12,8 @@ import {modal} from "../../services/modal.service";
 import {userpreferences} from '../../services/userpreferences.service';
 import {toast} from '../../services/toast.service';
 import {socket} from '../../services/socket.service';
-import { language } from '../../services/language.service';
+import {language} from '../../services/language.service';
+import {loader} from '../../services/loader.service';
 
 declare var _: any;
 
@@ -41,7 +42,8 @@ export class GlobaUserPanel {
        public userprefs: userpreferences,
        public toast: toast,
        public socket: socket,
-       public language: language
+       public language: language,
+       public loader: loader
     ) {
 
     }
@@ -128,7 +130,7 @@ export class GlobaUserPanel {
      * returns if the logged in user is an admin
      */
     get displayDeveloperMode(){
-        return this.session.authData.admin && (this.config.data.systemparameters.developermode != '0' && this.config.data.systemparameters.developermode !== false);
+        return this.session.authData.admin;
     }
 
     /**
@@ -182,6 +184,37 @@ export class GlobaUserPanel {
         } else {
             return '';
         }
+    }
+
+    /**
+     * clears the cache
+     */
+    public clearCache(){
+        this.modal.confirm('MSG_RESET_CACHE', 'MSG_RESET_CACHE').subscribe({
+            next: (res) => {
+                if (res) {
+                    let loadingModal = this.modal.await('LBL_LOADING');
+                    this.backend.deleteRequest('system/cache').subscribe(result => {
+                        loadingModal.emit(true);
+                        if(result) {
+                            this.modal.openModal('GlobalHeaderReloadModal', false).subscribe(modalref => {
+                                this.loader.load().subscribe((val) => {
+                                    if (val === true) {
+                                        this.toast.sendToast("LBL_DATA_RELOADED");
+                                        modalref.instance.self.destroy();
+                                    } else {
+                                        this.toast.sendToast('error', 'error', 'Reload failed');
+                                        modalref.instance.self.destroy();
+                                    }
+                                });
+                            })
+                        } else {
+                            this.toast.sendToast('LBL_ERROR', 'error');
+                        }
+                    });
+                }
+            }
+        })
     }
 
     /**

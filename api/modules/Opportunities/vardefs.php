@@ -98,7 +98,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Campaigns',
             //'dbType' => 'char',
             'reportable' => false,
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'campaign_name' => [
             'name' => 'campaign_name',
@@ -161,7 +161,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'dbType' => 'double',
             'comment' => 'Unconverted amount of the opportunity',
             'importable' => 'required',
-            'duplicate_merge' => '1',
+            'duplicate_merge' => true,
             'required' => true,
             'options' => 'numeric_range_search_dom',
             'enable_range_search' => true,
@@ -172,7 +172,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'type' => 'currency',
             'dbType' => 'double',
             'disable_num_format' => true,
-            'duplicate_merge' => '0',
+            'duplicate_merge' => false,
             'audited' => true,
             'comment' => 'Formatted amount of the opportunity',
         ],
@@ -182,7 +182,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'type' => 'currency',
             'dbType' => 'double',
             'disable_num_format' => true,
-            'duplicate_merge' => '0',
+            'duplicate_merge' => false,
             'audited' => true,
             'comment' => 'Original amount as per default currency of the opportunity',
         ],
@@ -236,7 +236,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Currencies',
             'source' => 'non-db',
             'function' => ['name' => 'getCurrencyNameDropDown', 'returns' => 'html'],
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'currency_symbol' => [
             'name' => 'currency_symbol',
@@ -249,7 +249,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'module' => 'Currencies',
             'source' => 'non-db',
             'function' => ['name' => 'getCurrencySymbolDropDown', 'returns' => 'html'],
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'date_closed' => [
             'name' => 'date_closed',
@@ -408,7 +408,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'type' => 'link',
             'relationship' => 'documents_opportunities',
             'source' => 'non-db',
-            'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+            'vname' => 'LBL_DOCUMENTS',
         ],
         //@deprecated project. Use projects
 //        'project' => array(
@@ -431,27 +431,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'relationship' => 'opportunity_leads',
             'source' => 'non-db',
             'vname' => 'LBL_LEADS',
-        ],
-        'campaigns' => [
-            'name' => 'campaigns',
-            'type' => 'link',
-            'relationship' => 'opportunities_campaign',
-            'module' => 'CampaignLog',
-            'bean_name' => 'CampaignLog',
-            'source' => 'non-db',
-            'vname' => 'LBL_CAMPAIGNS',
-            'reportable' => false
-        ],
-        'campaign_link' => [
-            'name' => 'campaign_link',
-            'type' => 'link',
-            'relationship' => 'opportunities_campaign',
-            'vname' => 'LBL_CAMPAIGNS',
-            'link_type' => 'one',
-            'module' => 'Campaigns',
-            'bean_name' => 'Campaign',
-            'source' => 'non-db',
-            'reportable' => false
         ],
         'currencies' => [
             'name' => 'currencies',

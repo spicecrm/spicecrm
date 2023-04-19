@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -247,6 +219,46 @@ $routes = [
                 'example' => '24f0fdda-79f0-4054-acb9-c8cce36e5fdc',
             ]
         ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/configuration/spiceui/core/roles',
+        'class' => SystemUIController::class,
+        'function' => 'getSystemRoles',
+        'description' => 'get all system roles',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/configuration/spiceui/core/rolemodules/{role_id}',
+        'class' => SystemUIController::class,
+        'function' => 'getRoleModules',
+        'description' => 'get all role corresponding modules',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'role_id' => [
+                'in' => 'path',
+                'description' => 'the id of the role',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'example' => '24f0fdda-79f0-4054-acb9-c8cce36e5fdc',
+            ],
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/configuration/spiceui/core/module/hooks',
+        'class'       => SystemUIController::class,
+        'function'    => 'getAllHooks',
+        'description' => 'selects all global and custom hooks',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/configuration/spiceui/core/module/webhooks',
+        'class'       => SystemUIController::class,
+        'function'    => 'getAllWebHooks',
+        'description' => 'selects all global and custom hooks',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
     ],
     [
         'method' => 'post',

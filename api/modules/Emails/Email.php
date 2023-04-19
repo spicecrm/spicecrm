@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Emails;
 
@@ -595,8 +567,8 @@ class Email extends SpiceBean
         }
         // END
 
-        // check if the string we have is HTML (shoudl start with an <html> tag). if not we add a default style so the UI can display it properly
-        if (!str_starts_with($this->body, '<html')) {
+        // if body does NOT contain html elements, add a default style so the UI can display it properly
+        if (!$this->containsHTMLElem($this->body)) {
             $this->body = '<html><head><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
         }
 
@@ -645,6 +617,24 @@ class Email extends SpiceBean
 
         // return the bean
         return $ret;
+    }
+
+    /**
+     * checks wheter the E-mail body contains HTML Elements
+     * @param string $body (body of the E-Mail)
+     * @param array $htmlElements (collection of html elements)
+     * @return bool
+     */
+    function containsHTMLElem(string $emailBody): bool
+    {
+        // to of HTML elements check if the body contains one of the html elements.
+        $htmlElements = ['<html>','<head>','<style>', '<div>'];
+
+        foreach($htmlElements as $htmlElement) {
+            if (stripos($emailBody, $htmlElement) !== false) return true;
+        }
+
+        return false;
     }
 
     public
@@ -1293,6 +1283,17 @@ class Email extends SpiceBean
     }
 
     /**
+     * @param $body
+     * @return mixed|string
+     */
+    public function setBodyEncodingToUTF8($body){
+        if (!mb_check_encoding($body, 'UTF-8')) {
+            $body = utf8_encode($body);
+        }
+        return $body;
+    }
+
+    /**
      * convertMsgToEmail
      *
      * Converts a file in Outlook .msg format into an Email Bean.
@@ -1307,7 +1308,8 @@ class Email extends SpiceBean
     {
         $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
         $documentFactory = new Pear\DocumentFactory();
-        $this->convertMessageToBean($messageFactory->parseMessage($documentFactory->createFromFile('upload://' . $fileId)));
+        $msg = $messageFactory->parseMessage($documentFactory->createFromFile('upload://' . $fileId));
+        $this->convertMessageToBean($msg);
 
         // set the parent
         $this->parent_id = $beanId;
@@ -1368,6 +1370,13 @@ class Email extends SpiceBean
 
         // get the main parts for the email
         $this->name = $bodyParts[0]['headers']['subject'];
+        // handle a subject like Subject: =?iso-8859-1?B?V0c6IFRFU1QgRUtGQi00MDkgxNzW5Pb8?=
+        $subjectParts = explode("?", $bodyParts[0]['headers']['subject']);
+        if(count($subjectParts) > 1) {
+            if ($base64Subject = base64_decode($subjectParts[3])) {
+                $this->name = $this->setBodyEncodingToUTF8($base64Subject);
+            }
+        }
 
         // get the proper date sent
         $date = new DateTime($bodyParts[0]['headers']['date']);
@@ -1450,10 +1459,10 @@ class Email extends SpiceBean
         $this->name = $message->properties['subject'];
         try {
             set_time_limit(60);
-            $this->body = utf8_encode($message->getBodyHTML());
+            $this->body = $this->setBodyEncodingToUTF8($message->getBodyHTML());
         } catch (Exception $e) {
             try {
-                $this->body = $message->getBody();
+                $this->body = $this->setBodyEncodingToUTF8($message->getBody());
             } catch (Exception $e) {
                 // Apparently there is no email body whatsoever.
                 $this->body = '';

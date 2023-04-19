@@ -826,7 +826,7 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
 
             for (let i = 1; i <= left.length; i++) {
                 if (i % 3 === 0) {
-                    leftList.unshift(left.substr(left.length - i, 3))
+                    leftList.unshift(left.substring(left.length - i, 3))
                 }
             }
 

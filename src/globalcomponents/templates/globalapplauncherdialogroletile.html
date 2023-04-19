@@ -1,4 +1,4 @@
-<div class="slds-app-launcher__tile slds-text-link_reset slds-is-relative">
+<div class="slds-app-launcher__tile slds-text-link_reset slds-is-relative" [style.box-shadow]="metadata.role != role.id ? null : '0 0 2px 2px var(--brand-primary-active)'">
     <div class="slds-app-launcher__tile-figure">
         <span class="slds-avatar slds-avatar--large slds-align--absolute-center {{role.icon}}">{{identifier}}</span>
     </div>

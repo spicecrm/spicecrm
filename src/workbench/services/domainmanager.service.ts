@@ -55,7 +55,7 @@ export class domainmanager {
     /**
      * the dbtypes
      */
-    public dbtypes = ['non-db','varchar', 'char', 'text', 'mediumtext', 'longtext', 'date', 'datetime', 'int', 'bigint', 'double', 'bool'];
+    public dbtypes = ['non-db','varchar', 'char', 'text', 'shorttext', 'mediumtext', 'longtext', 'date', 'datetime', 'int', 'tinyint', 'bigint', 'double', 'bool', 'float', 'json'];
 
     /**
      * holds the fieldtypes
@@ -87,7 +87,7 @@ export class domainmanager {
     }
 
     /**
-     * fina  validatzion by ID and return the record
+     * fina  validation by ID and return the record
      * @param validationid
      */
     public getValidationById(validationid) {
@@ -97,10 +97,11 @@ export class domainmanager {
 
     /**
      * returns validation values filtered by validationid
-     *
+     * catch the case when no domainfieldvalidationvalues cached yet and we have a string instead od an array
      * @param validationid
      */
     public getValidationValuesdById(validationid) {
+        if (!Array.isArray(this.domainfieldvalidationvalues)) this.domainfieldvalidationvalues = [];
         let validationValues = this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid && v.scope == 'c');
         let globalValidationValues = this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid && v.scope != 'c');
         for (let globalValidationValue of globalValidationValues) {
@@ -174,6 +175,7 @@ export class domainmanager {
     }
 
     public generateENUMSFromModules() {
+        if (!Array.isArray(this.domainfieldvalidationvalues)) this.domainfieldvalidationvalues = [];
         this.backend.getRequest('dictionary/domains/appliststrings').subscribe(apl => {
             for (let dtable in this.metadata.fieldDefs) {
                 let table = this.metadata.fieldDefs[dtable];

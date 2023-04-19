@@ -27,6 +27,8 @@ export class fieldLookupRecent implements OnChanges {
     @Output() public selectedObject: EventEmitter<any> = new EventEmitter<any>();
     public recentItems: any[] = [];
 
+    public loading: boolean = false;
+
     constructor(public model: model, public recent: recent, public language: language, public session: session, ) {
 
     }
@@ -65,9 +67,11 @@ export class fieldLookupRecent implements OnChanges {
      * get the recent items filtered by the module
      */
     public getRecent() {
+        this.loading = true;
         this.recentItems = [];
         let recent = this.recent.getModuleRecent(this.module).subscribe(recentItems => {
             this.recentItems = recentItems;
+            this.loading = false;
         });
     }
 }

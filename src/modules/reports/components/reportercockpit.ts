@@ -119,10 +119,12 @@ export class ReporterCockpit implements OnInit, OnDestroy {
     public setBuckets(categories) {
         this.modellist.buckets = {
             bucketfield: 'category_name',
+            buckettotal: [],
             bucketitems: categories.map(category => ({
                 bucket: category.name,
                 values: {},
-                items: 0
+                items: 0,
+                hidden: false
             }))
         };
     }

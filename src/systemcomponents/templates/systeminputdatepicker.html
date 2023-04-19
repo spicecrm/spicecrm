@@ -20,7 +20,7 @@
     <table aria-labelledby="month" aria-multiselectable="true" class="slds-datepicker__month" role="grid">
         <thead>
         <tr>
-            <th scope="col"></th>
+            <th *ngIf="layout.screenwidth != 'small'" scope="col"></th>
             <th *ngFor="let weekday of weekdays; let index = index" scope="col">
                 <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
             </th>
@@ -28,7 +28,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let week of currentGrid">
-            <td role="gridcell" class="slds-theme--shade">
+            <td *ngIf="layout.screenwidth != 'small'" role="gridcell" class="slds-theme--shade">
                 <abbr class="slds-p-horizontal--xx-small" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
                     {{week?.number}}
                 </abbr>
@@ -52,7 +52,7 @@
             </td>
         </tr>
         <tr *ngFor="let week of secondGrid">
-            <td role="gridcell" class="slds-theme--shade">
+            <td *ngIf="layout.screenwidth != 'small'" role="gridcell" class="slds-theme--shade">
                 <abbr class="slds-p-horizontal--xx-small" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
                     {{week?.number}}
                 </abbr>

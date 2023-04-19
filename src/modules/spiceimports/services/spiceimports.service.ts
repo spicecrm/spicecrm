@@ -3,6 +3,7 @@
  */
 import {EventEmitter, Injectable} from "@angular/core";
 import {backend} from '../../../services/backend.service';
+import {modellist} from "../../../services/modellist.service";
 
 @Injectable()
 
@@ -15,10 +16,10 @@ export class spiceimportsservice {
     activeLogName: string;
     loadLimit = 25;
     activeimportdata$: EventEmitter<any> = new EventEmitter<any>();
-    items: Array<any> = [];
-    activeItemLogs: Array<any> = undefined;
+    items: any[] = [];
+    activeItemLogs: any[] = undefined;
 
-    constructor(public backend: backend ) {
+    constructor(public backend: backend) {
     }
 
     get activeImportData() {
@@ -58,8 +59,9 @@ export class spiceimportsservice {
 
     loadMoreData() {
 
-        if (this.isloading || !this.canLoadMore)
+        if (this.isloading || !this.canLoadMore) {
             return false;
+        }
 
         this.isloading = true;
 
@@ -69,8 +71,9 @@ export class spiceimportsservice {
             .subscribe(res => {
                 this.parseItemsStatus(res.list);
                 this.items = this.items.concat(res.list);
-                if (res.list.length < this.loadLimit)
+                if (res.list.length < this.loadLimit) {
                     this.canLoadMore = false;
+                }
 
                 this.isloading = false;
             });
@@ -79,8 +82,9 @@ export class spiceimportsservice {
     deleteImport() {
         this.items.every(item => {
             let itemIndex = this.items.indexOf(item);
-            if (item.id == this.activeImportData.id)
+            if (item.id == this.activeImportData.id) {
                 this.items.splice(itemIndex, 1)
+            }
             return true;
         });
     }
@@ -91,22 +95,26 @@ export class spiceimportsservice {
 
             switch (item.status) {
                 case 'c':
-                    if (data.importAction == 'new')
-                        item.status ='LBL_IMPORTED';
-                    else
-                        item.status ='LBL_UPDATED';
+                    if (data.importAction == 'new') {
+                        item.statusdisplay ='LBL_IMPORTED';
+                    }
+                    else {
+                        item.statusdisplay ='LBL_UPDATED';
+                    }
                     break;
                 case 'e':
-                    if (data.importAction == 'new')
-                        item.status ='LBL_IMPORTED';
-                    else
-                        item.status ='LBL_UPDATE_FAILED';
+                    if (data.importAction == 'new') {
+                        item.statusdisplay ='LBL_IMPORTED';
+                    }
+                    else {
+                        item.statusdisplay ='LBL_UPDATE_FAILED';
+                    }
                     break;
                 case 'q':
-                    item.status ='LBL_SCHEDULED';
+                    item.statusdisplay ='LBL_SCHEDULED';
                     break;
                 default:
-                    item.status ='LBL_SCHEDULED';
+                    item.statusdisplay ='LBL_SCHEDULED';
                     break;
             }
             return item;

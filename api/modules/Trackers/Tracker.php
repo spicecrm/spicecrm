@@ -42,7 +42,7 @@ class Tracker extends SpiceBean
 {
     /*
      * Return the most recently viewed items for this user.
-     * The number of items to return is specified in sugar_config['history_max_viewed']
+     * The number of items to return is specified in spice_config['history_max_viewed']
      * @param uid user_id
      * @param mixed module_name Optional - return only items from this module, a string of the module or array of modules
      * @return array list

@@ -1,33 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
@@ -36,8 +8,10 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -74,6 +48,9 @@ class CoreController
     public function getSysinfo(Request $req, Response $res, array $args): Response {
 
         $languages = LanguageManager::getLanguages(true);
+        $languages['required_labels'] = LanguageManager::getSpecificLabels( SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
+            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE'
+        ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
         $aclcontroller = 'spiceacl';
@@ -84,7 +61,7 @@ class CoreController
         $uiRestHandler = new SpiceUIRESTHandler();
 
         $payload = [
-            'version' => '2.0',
+            'version' => SpiceConfig::getSystemVersion(),
             'systemsettings' => [
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
                 'enableSettingUserPrefsByAdmin' => isset(SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin']) ? (boolean)@SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin'] : false,
@@ -101,7 +78,7 @@ class CoreController
             'socket_frontend' => SpiceConfig::getInstance()->config['core']['socket_frontend'],
             'loginSidebarUrl' => isset (SpiceConfig::getInstance()->config['uiLoginSidebarUrl'][0]) ? SpiceConfig::getInstance()->config['uiLoginSidebarUrl'] : false,
             'displayloginsidebar' => SpiceConfig::getInstance()->config['uiDisplayLoginSidebar'] ?: false,
-            'allowForgotPass' => isset (SpiceConfig::getInstance()->config['uiAllowForgotPass'][0]) ? SpiceConfig::getInstance()->config['uiAllowForgotPass'] : false,
+            'allowForgotPass' => (boolean)( SpiceConfig::getInstance()->config['uiAllowForgotPass'] ),
             'ChangeRequestRequired' => isset(SpiceConfig::getInstance()->config['change_request_required']) ? (boolean)SpiceConfig::getInstance()->config['change_request_required'] : false,
             'sessionMaxLifetime' => (int)ini_get('session.gc_maxlifetime'),
             'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
@@ -214,6 +191,10 @@ class CoreController
             $language = LanguageManager::getDefaultLanguage();
         }
 
+        // see if we have cached the language
+        $cached = SpiceCache::get("cachedlanguage{$language}");
+        if($cached) return $res->withJson($cached);
+
         // get the app List Strings
         $appStrings = SpiceUtils::returnAppListStringsLanguage($language);
 
@@ -235,6 +216,9 @@ class CoreController
             'applang' => $syslanguages,
             'applist' => $appStrings
         ];
+
+        // cache the values
+        SpiceCache::set("cachedlanguage{$language}", $responseArray);
 
         return $res->withJson($responseArray);
     }

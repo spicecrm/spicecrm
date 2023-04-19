@@ -80,21 +80,23 @@ export class AdministrationLoginRestriction implements OnInit {
         this.isLoading = true;
         this.backend.getRequest('configuration/configurator/editor/login_attempt_restriction')
             .pipe(take(1))
-            .subscribe(response => {
-                this.restrictions.ip.enabled = response.ip_enabled === '1' || false;
-                this.restrictions.ip.number_attempts = response.ip_number_attempts*1 || 0,
-                this.restrictions.ip.monitored_period = response.ip_monitored_period*1 || 0,
-                this.restrictions.user.enabled = response.user_enabled === '1' || false;
-                this.restrictions.user.number_attempts = response.user_number_attempts*1 || 0,
-                this.restrictions.user.monitored_period = response.user_monitored_period*1 || 0,
-                this.restrictions.user.blocking_duration = response.user_blocking_duration*1 || 0;
-                this.restrictions.user.blocking_type = this.restrictions.user.blocking_duration ? 'time':'permanent';
-                this.restrictionsBackup = JSON.parse( JSON.stringify( this.restrictions ) );
-                this.isLoading = false;
-            },
-                error => {
-                this.toast.sendToast('Error loading Login Restriction Config.','error');
-                this.isLoading = false;
+            .subscribe({
+                next: response => {
+                    this.restrictions.ip.enabled = response.ip_enabled === '1' || false;
+                    this.restrictions.ip.number_attempts = response.ip_number_attempts*1 || 0,
+                    this.restrictions.ip.monitored_period = response.ip_monitored_period*1 || 0,
+                    this.restrictions.user.enabled = response.user_enabled === '1' || false;
+                    this.restrictions.user.number_attempts = response.user_number_attempts*1 || 0,
+                    this.restrictions.user.monitored_period = response.user_monitored_period*1 || 0,
+                    this.restrictions.user.blocking_duration = response.user_blocking_duration*1 || 0;
+                    this.restrictions.user.blocking_type = this.restrictions.user.blocking_duration ? 'time':'permanent';
+                    this.restrictionsBackup = JSON.parse( JSON.stringify( this.restrictions ) );
+                    this.isLoading = false;
+                },
+                error: error => {
+                    this.toast.sendToast('Error loading Login Restriction Config.','error');
+                    this.isLoading = false;
+                }
             });
     }
 

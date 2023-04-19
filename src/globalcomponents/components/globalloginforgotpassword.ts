@@ -13,11 +13,11 @@ import {HttpClient} from "@angular/common/http";
 })
 export class GlobalLoginForgotPassword {
     /**
-     * the users email address
+     * the users email address or name
      *
      * @private
      */
-   public email: string = '';
+   public emailOrUsername: string = '';
 
     /**
      * the token the user sends
@@ -128,14 +128,15 @@ export class GlobalLoginForgotPassword {
      *
      * @private
      */
-   public emailValidation = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
+   // public emailValidation = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
 
 
     /**
      * returns
      */
-    get emailValid() {
-        return this.email && this.email.length > 0 && this.emailValidation.test(this.email);
+    get emailOrUsernameValid() {
+        // return this.emailOrUsername && this.emailOrUsername.length > 0 && this.emailValidation.test(this.emailOrUsername);
+        return this.emailOrUsername && this.emailOrUsername.length > 0;
     }
 
     /**
@@ -144,7 +145,7 @@ export class GlobalLoginForgotPassword {
      * @private
      */
    public sendEmail() {
-        if (this.emailValid) {
+        if (this.emailOrUsernameValid) {
             // clear an error toast if we have one
             if(this.activeToast){
                 this.toast.clearToast(this.activeToast);
@@ -152,14 +153,14 @@ export class GlobalLoginForgotPassword {
 
             // set to sending and send the request
             this.sending = true;
-            this.http.get(this.configuration.getBackendUrl() + `/authentication/passwordtoken/email/${this.email}`).subscribe(
+            this.http.get(this.configuration.getBackendUrl() + `/authentication/passwordtoken/email/${this.emailOrUsername}`).subscribe(
                 (res: any) => {
                     this.display = 'token';
                     this.toast.sendToast('Successfully sent, check your inbox to get the token code', 'success');
                     this.sending = false;
                 },
                 (err: any) => {
-                    this.activeToast = this.toast.sendToast('there was an error sending the token', 'error', 'Please verify that the mail is correect or contact a system administrator');
+                    this.activeToast = this.toast.sendToast('There was an error sending the token.', 'error', 'Please verify that the mail address or user name is correct - or contact a system administrator.');
                     this.sending = false;
                 }
             );

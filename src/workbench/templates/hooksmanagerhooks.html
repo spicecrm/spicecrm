@@ -1,0 +1,94 @@
+<div system-to-bottom-noscroll>
+    <div *ngIf="loading" class="slds-align--absolute-center slds-height_full">
+        <system-spinner></system-spinner>
+    </div>
+    <div class="slds-tabs_default" style="background-color: transparent">
+<!--        <div class="slds-p-around&#45;&#45;x-small slds-border&#45;&#45;bottom slds-size&#45;&#45;1-of-4 ">-->
+<!--            <div class="slds-form-element slds-grid slds-grid&#45;&#45;vertical-align-center">-->
+<!--                <label for="moduleselect" class="slds-form-element__label">-->
+<!--                    <system-label label="LBL_MODULE"></system-label>-->
+<!--                </label>-->
+<!--                <div class="slds-form-element__control slds-col">-->
+<!--                    <div class="slds-select_container">-->
+<!--                        <select id="moduleselect" class="slds-select" [(ngModel)]="module">-->
+<!--                            <option value="*">*</option>-->
+<!--                            <option *ngFor="let thismodule of modules" [value]="thismodule">{{thismodule}}</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="slds-size--4-of-4 slds-scrollable--y" system-to-bottom >
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout slds-text-align_center slds-table--header-fixed">
+                <thead>
+                <tr class="">
+                    <th class="slds-text-align_left" scope="col" style="width:5rem">
+                        <div class="slds-truncate"></div>
+                    </th>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small slds-m-vertical--xx-small"><system-label label="LBL_MODULE"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_EVENT"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_center" scope="col" style="width:5rem">
+                        <div class="slds-truncate"><system-label label="LBL_INDEX"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_left" scope="col" style="width:30rem">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_CLASS"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_left" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_METHOD"></system-label></div>
+                    </th>
+                    <th class="slds-text-align_right" scope="col">
+                        <div class="slds-truncate"></div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let moduleHook of allModuleHooks" class="slds-hint-parent" >
+                    <td class="slds-text-align_left" scope="col" style="width:5rem">
+                        <system-utility-icon  size="x-small" class="slds-p-right--small"
+                                             [icon]="moduleHook.type == 'global' ? 'world' : 'people'"></system-utility-icon>
+                        <system-utility-icon
+                                [colorclass]="getStatusColor(moduleHook)" (click)="toggleValue($event, moduleHook)"
+                                class="slds-p-right--xx-small slds-button slds-button--icon slds-col_bump-left"
+                                size="xx-small" icon="light_bulb"></system-utility-icon>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div class="slds-truncate">{{moduleHook.module}}</div>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div class="slds-truncate">{{moduleHook.event}}</div>
+                    </td>
+                    <td class="slds-text-align_center" style="width:5rem">
+                        <div class="slds-truncate">{{moduleHook.hook_index}}</div>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div class="slds-wrap">{{moduleHook.hook_class}}</div>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div class="slds-truncate">{{moduleHook.hook_method}}</div>
+                    </td>
+                    <td  class="slds-text-align_right">
+                        <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border"
+                                (click)="editHook(moduleHook.id)">
+                            <system-button-icon icon="edit"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border"
+                                (click)="deleteHook(moduleHook.id)">
+                            <system-button-icon icon="clear"></system-button-icon>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="slds-p-around--x-small">
+                <button (click)="addLogicHook()" class="slds-align--absolute-center slds-button slds-button--icon"
+                        style="border-radius: 50%;">
+                    <system-button-icon icon="add" size="medium"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

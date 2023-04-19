@@ -72,6 +72,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     }
 
     public _activeDashboardId: string = '';
+    public _activeDashboardSetId: string = '';
 
     /**
      * @return active dashboard id
@@ -87,6 +88,21 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     set activeDashboardId(value: string) {
         this._activeDashboardId = value;
         this.renderView();
+    }
+
+    /**
+     * @return active dashboard id
+     */
+    get activeDashboardSetId(): string {
+        return this._activeDashboardSetId;
+    }
+    /**
+     * set active dashboard id
+     * @param value
+     */
+    set activeDashboardSetId(value: string) {
+        this._activeDashboardSetId = value;
+        // this.renderView();
     }
 
     /**
@@ -153,9 +169,13 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         let activeRole = this.metadata.getActiveRole();
         this.activeDashboardId = homeDashboard || activeRole.default_dashboard || '';
 
+        let homeDashboardSet = this.userpreferences.toUse.home_dashboardset || undefined;
+        this.activeDashboardSetId = homeDashboardSet || activeRole.default_dashboardset || '';
+
         // set it to the component
         if (this.dashboardContainerComponentRef) {
             this.dashboardContainerComponentRef.instance.dashboardid = this.activeDashboardId;
+            // this.dashboardContainerComponentRef.instance.dashboardsetid = this.activeDashboardSetId;
         }
     }
 
@@ -189,7 +209,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
      * @return Observable<dashboards[]>
      */
     public loadDashboardSetDashboards() {
-        let dashboardSetId = this.userpreferences.toUse.home_dashboardset;
+        let dashboardSetId = this.userpreferences.toUse.home_dashboardset || this.activeDashboardSetId;
         let config = this.metadata.getComponentConfig('HomeDashboardSetContainer', 'Home');
         let params = {
             limit: -99,

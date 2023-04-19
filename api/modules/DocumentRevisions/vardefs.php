@@ -137,7 +137,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
             'relationship' => 'document_revisions',
             'link_type' => 'one',
             'source' => 'non-db',
-            'duplicate_merge' => 'disabled',
+            'duplicate_merge' => false,
         ],
         'latest_revision' => [
             'name' => 'latest_revision',
@@ -145,7 +145,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['DocumentRevision'] = [
             'type' => 'varchar',
             'len' => '255',
             'source' => 'non-db',
-        ]
+        ],
+        'users' => [
+            'name' => 'users',
+            'type' => 'link',
+            'relationship' => 'users_documentrevisions',
+            'source' => 'non-db',
+            'module' => 'Users',
+            'vname' => 'LBL_USERS',
+        ],
     ],
     'relationships' => [
         'revisions_created_by' => [

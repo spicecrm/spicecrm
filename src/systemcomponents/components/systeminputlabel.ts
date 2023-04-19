@@ -3,7 +3,7 @@
  */
 import {
     Component,
-    forwardRef,
+    forwardRef, Input,
     OnDestroy,
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
@@ -24,6 +24,19 @@ import {modal} from "../../services/modal.service";
     ]
 })
 export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
+
+    /**
+     * to disable the checkbox
+     */
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
+
     // for the value accessor
     public onChange: (value: string) => void;
     public onTouched: () => void;

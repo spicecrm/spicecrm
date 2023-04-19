@@ -1,6 +1,6 @@
 <div class="slds-is-fixed slds-box--border slds-dropdown slds-dropdown--right slds-m-right--small slds-m-top--medium">
     <div class="slds-grid slds-p-around--small slds-grid--vertical-align-center">
-        <global-user-panel-icon></global-user-panel-icon>
+        <global-user-panel-icon/>
         <div class="slds-m-left--small">
             <h1 class="slds-text-heading--medium" [title]="userName">{{displayName}}</h1>
         </div>
@@ -17,22 +17,25 @@
     </div>
     <!--div class="OptionsSeparator"><system-label label="LBL_OPTIONS"></system-label></div-->
     <div class="slds-p-around--small slds-form--stacked">
-        <system-language-selector (selected)="close()"></system-language-selector>
+        <system-language-selector (selected)="close()"/>
         <div class="slds-form-element">
-            <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"></system-label></label>
-            <system-input-timezone [(ngModel)]="currentTz" denyEmpty="true"></system-input-timezone>
+            <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"/></label>
+            <system-input-timezone [(ngModel)]="currentTz" denyEmpty="true"/>
         </div>
-        <div *ngIf="displayDeveloperMode" class="slds-p-top--small">
+        <div *ngIf="displayDeveloperMode" class="slds-p-top--small slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
             <system-checkbox [disabled]="!canSetDeveloperMode" [(ngModel)]="developermode"><system-label label="LBL_DEVELOPER_MODE"></system-label></system-checkbox>
+            <button  class="slds-button slds-button--neutral" (click)="clearCache()"><system-label label="LBL_RESET_AND_RELOAD"/></button>
         </div>
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">
         <div class="slds-grid slds-grid--vertical-align-center">
-            <system-utility-icon class="slds-p-right--xx-small" *ngIf="socket.connected" size="xx-small" icon="omni_channel"></system-utility-icon>
-            <system-label label="LBL_LOGGED_ON_SYSTEM"></system-label>: {{systemName}}
+            <system-utility-icon class="slds-p-right--xx-small" *ngIf="socket.connected" size="xx-small" icon="omni_channel"/>
+            <system-label label="LBL_LOGGED_ON_SYSTEM"/>: {{systemName}}
         </div>
         <div class="slds-col--bump-left">
-            <system-utility-icon icon="logout" size="x-small" system-title="LBL_LOGOFF" (click)="logoff()"></system-utility-icon>
+            <button class="slds-button slds-button--icon" system-title="LBL_LOGOFF" (click)="logoff()">
+                <system-button-icon icon="logout"/>
+            </button>
         </div>
     </div>
 </div>

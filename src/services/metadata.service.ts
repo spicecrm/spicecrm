@@ -1389,7 +1389,9 @@ export class metadata {
      * @param route
      */
     public getRouteDetails(route) {
-        return this.routes?.find(routeDetails => {
+        return this.routes?.sort((a, b) => {
+            return a.path.split(':').length > b.path.split(':').length ? 1 : -1;
+        }).find(routeDetails => {
             if (routeDetails.path == route) {
                 return true;
             } else if (route.split("/").length == routeDetails.path.split("/").length) {
@@ -1399,7 +1401,7 @@ export class metadata {
 
                 let i = 0;
                 while (i < routeArray.length && matched) {
-                    if (matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
+                    if (matchArray[i].substring(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
                         matched = false;
                     }
                     i++;
@@ -1427,7 +1429,7 @@ export class metadata {
 
                 let i = 0;
                 while (i < routeArray.length && matched) {
-                    if (matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
+                    if (matchArray[i].substring(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
                         matched = false;
                     }
                     i++;

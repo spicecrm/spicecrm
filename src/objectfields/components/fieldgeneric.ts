@@ -64,10 +64,6 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
         public router: Router
     ) {
         this.fieldid = this.model.generateGuid();
-
-        this.subscriptions.add(
-            this.view.mode$.subscribe(mode => this.handleViewModeChange(mode))
-        );
     }
 
     /**
@@ -155,6 +151,9 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
         if (this.fielddefs && this.fielddefs.len) {
             this.fieldlength = this.fielddefs.len;
         }
+        this.subscriptions.add(
+            this.view.mode$.subscribe(mode => this.handleViewModeChange(mode))
+        );
     }
 
     public ngAfterViewInit(): void {

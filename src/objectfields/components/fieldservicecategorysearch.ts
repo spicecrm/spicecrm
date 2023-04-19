@@ -29,7 +29,7 @@ export class fieldServiceCategorySearch
         {
             this.backend.getRequest('configuration/spiceui/core/servicecategories/tree').subscribe(
                 (res:any) => {
-                    //console.log(res);
+                    // console.log(res);
                     this.config.setData('service_category_tree', res);
                     this.flatteningOutCategoryTree(res);
                 }
@@ -42,7 +42,7 @@ export class fieldServiceCategorySearch
 
     get results()
     {
-        return this.categories.filter((e) => {return e.display_name.includes(this.search)});
+        return this.categories.filter((e) => {return e.display_name.toLowerCase().includes(this.search.toLowerCase())});
     }
 
     flatteningOutCategoryTree(tree)
@@ -52,7 +52,7 @@ export class fieldServiceCategorySearch
             cat.parents = [];
             this.loopThroughTree(cat);
         }
-        //console.log(this.categories);
+        // console.log(this.categories);
     }
 
     public loopThroughTree(cat)

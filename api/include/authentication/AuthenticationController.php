@@ -1,40 +1,5 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- *
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\authentication;
 
@@ -46,13 +11,13 @@ use SpiceCRM\includes\authentication\interfaces\AuthenticatorI;
 use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\authentication\LDAPAuthenticate\LDAPAuthenticate;
 use SpiceCRM\includes\authentication\OAuth2Authenticate\OAuth2Authenticate;
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRM2FAUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAccessUtils;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAccessUtils;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantAuthenticate;
 use SpiceCRM\includes\authentication\TenantAuthenticate\TenantPasswordUtils;
-use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
@@ -60,6 +25,7 @@ use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -107,6 +73,11 @@ class AuthenticationController
 
     public $errorReason;
     public $errorCode;
+    /**
+     * holds the device token 
+     * @var string 
+     */
+    public string $deviceID = '';
 
     /**
      * The Singleton's constructor should always be private to prevent direct
@@ -190,14 +161,16 @@ class AuthenticationController
      * @throws BadRequestException | Exception | UnauthorizedException
      * @throws \Exception
      */
-    public function authenticate()
+    public function authenticate($authParams = null)
     {
-        $authParams = RESTManager::getInstance()->parseAuthParams();
+        if(!$authParams) {
+            $authParams = RESTManager::getInstance()->parseAuthParams();
+        }
 
         if ($authParams->authType == 'none') return;
 
         try {
-            $authenticator = $this->getAuthenticator();
+            $authenticator = $this->getAuthenticator($authParams->authData);
 
             $authResponse = $authenticator->authenticate($authParams->authData, $authParams->authType);
             $this->handleSuccessfulAuthentication($authParams->authData, $authResponse, $authParams->authType);
@@ -233,13 +206,15 @@ class AuthenticationController
      * default type is SpiceCRM
      * @return string
      */
-    private function getAuthenticatorType(): string
+    private function getAuthenticatorType($authData = null): string
     {
         $type = 'SpiceCRM';
 
         if (LDAPAuthenticate::isLdapEnabled()) $type = 'LDAP';
 
-        $tokenIssuer = RESTManager::getInstance()->parseAuthParams()->authData->tokenIssuer;
+        // if we do not have the audata get it from teh REST Call
+        if(!$authData) $authData = RESTManager::getInstance()->parseAuthParams()->authData;
+        $tokenIssuer = $authData->tokenIssuer;
 
         if (!empty($tokenIssuer)) $type = $tokenIssuer;
 
@@ -346,7 +321,7 @@ class AuthenticationController
      * @param object $authData
      * @param AuthResponse $authResponse
      * @param string $authType 'token' | 'credentials'
-     * @throws NotFoundException | UnauthorizedException
+     * @throws NotFoundException | UnauthorizedException | \Exception
      */
     private function handleSuccessfulAuthentication(object $authData, AuthResponse $authResponse, string $authType)
     {
@@ -364,8 +339,6 @@ class AuthenticationController
 
         $this->checkPasswordExpire($userObj);
 
-        $this->checkTimeBasedOnetimePassword($userObj);
-
         // retrieve impersonation user
         if (!empty($authData->impersonationUser)) {
             $impersonatingUser = $this->getUserByUsername($authData->impersonationUser);
@@ -373,6 +346,10 @@ class AuthenticationController
         }
 
         $this->setCurrentUser($userObj);
+
+        if ($authType == 'credentials') {
+            SpiceCRM2FAUtils::handle2FAFlow($userObj, $authData);
+        }
 
         global $current_language;
         $current_language = $userObj->getPreference('language');
@@ -414,22 +391,6 @@ class AuthenticationController
     }
 
     /**
-     * throw an exception if the time-based one-time password is required and was not activated
-     * @param User $userObj
-     * @return void
-     * @throws UnauthorizedException
-     */
-    private function checkTimeBasedOnetimePassword(User $userObj)
-    {
-        if ( SpiceConfig::getInstance()->config['login_methods']['totp_authentication_required'] and !TOTPAuthentication::checkTOTPActive( $userObj->id )) {
-            $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
-                'LBL_SAVE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'LBL_CODE', 'LBL_CANCEL', 'LBL_CODE'
-            ]);
-            throw ( new UnauthorizedException('TOTP.', 12 ))->setDetails(['labels' => $necessaryLabels]);
-        }
-    }
-
-    /**
      * throw an exception if the password expired
      * @param User $userObj
      * @return void
@@ -438,7 +399,8 @@ class AuthenticationController
     private function checkPasswordExpire(User $userObj)
     {
         if (( $userObj->system_generated_password || $userObj->hasExpiredPassword() ) && !$userObj->is_api_user && !$userObj->external_auth_only) {
-            $necessaryLabels = LanguageManager::getSpecificLabels( SpiceConfig::getInstance()->config['default_language'] ?: 'en_us', [
+            $userLanguage = $userObj->getPreference('language');
+            $necessaryLabels = LanguageManager::getSpecificLabels( $userLanguage ?: SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
                 'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
                 'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
                 'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY'
@@ -470,9 +432,9 @@ class AuthenticationController
      * @return SpiceCRMAuthenticate | GoogleAuthenticate | OAuth2Authenticate | TenantAuthenticate
      * @throws \Exception
      */
-    public function getAuthenticator()
+    public function getAuthenticator($authData = null)
     {
-        $type = $this->getAuthenticatorType();
+        $type = $this->getAuthenticatorType($authData);
 
         return $this->getAuthenticatorObject($type);
     }
@@ -609,7 +571,8 @@ class AuthenticationController
             'obtainGDPRconsent' => false,
             'canchangepassword' => AuthenticationController::getInstance()->getCanChangePassword(),
             'expiringPasswordValidityDays' => AuthenticationController::getInstance()->expiringPasswordValidityDays,
-            'user' => $moduleHandler->mapBean($currentUser)
+            'user' => $moduleHandler->mapBean($currentUser),
+            'deviceID' => $this->deviceID
         ];
 
         // Is it a portal user? And the GDPR consent for portal users is configured?

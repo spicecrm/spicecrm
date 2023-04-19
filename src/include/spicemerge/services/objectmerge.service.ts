@@ -52,18 +52,25 @@ export class objectmerge {
 
     /**
      * retrieves and filters the merge fields
+     * check if duplicate_merge flag is set
+     * retrieve field with type linked
      *
-     * @private
+     * @public
      */
     public getMergeFields() {
         this.mergeFields = [];
         let modelFields = this.metadata.getModuleFields(this.masterModule);
+
         for (let mergeField in modelFields) {
-            if (modelFields.hasOwnProperty(mergeField) && modelFields[mergeField].duplicate_merge !== 'disabled' && modelFields[mergeField].source != 'non-db' && modelFields[mergeField].type != 'id') {
+
+            // check if duplicate_merge is set in field def
+            const duplicateMergeEnabled = (modelFields[mergeField].duplicate_merge == '1' || modelFields[mergeField].duplicate_merge === true || modelFields[mergeField].duplicate_merge === undefined || modelFields[mergeField].duplicate_merge == 'enabled');
+
+            if (duplicateMergeEnabled && modelFields[mergeField].type != 'id'
+                && (modelFields[mergeField].source != 'non-db' || modelFields[mergeField].type == 'linked' ||modelFields[mergeField].type == 'linkedparent' || modelFields[mergeField].name.endsWith('_address'))) {
                 this.mergeFields.push(modelFields[mergeField]);
             }
         }
-
     }
 
     /**

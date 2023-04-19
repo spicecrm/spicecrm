@@ -7,11 +7,11 @@
     </button>
 </div>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
-    <system-richtext-editor *ngIf="!fieldconfig.asiframe" [readOnly]="true" [ngModel]="value" [css]="this.metadata.getHtmlStylesheetCode(this.stylesheetId)" [stylesheetId]="stylesheetId" [innerheight]="fieldconfig.innerheight"></system-richtext-editor>
+    <system-richtext-editor *ngIf="!fieldconfig.asiframe" [readOnly]="true" [ngModel]="value" [css]="styleTag" [stylesheetId]="stylesheetId" [innerheight]="fieldconfig.innerheight"></system-richtext-editor>
     <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [css]="this.metadata.getHtmlStylesheetCode(this.stylesheetId)" [stylesheetId]="stylesheetId" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
+    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [css]="styleTag" [stylesheetId]="stylesheetId" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
         <li *ngIf="fieldconfig?.useSignature" id="signatureIcon">
             <div  class="slds-dropdown-trigger slds-dropdown-trigger_click" system-dropdown-trigger>
             <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" aria-expanded="true">

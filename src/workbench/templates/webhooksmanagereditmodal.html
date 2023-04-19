@@ -1,0 +1,76 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_WEB_HOOK"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_MODULE"></system-label>
+                </label>
+                <system-input-module [(ngModel)]="newWebHook.module"></system-input-module>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_EVENT"></system-label>
+                </label>
+                <select id="eventselect" class="slds-select" [(ngModel)]="newWebHook.event">
+                    <option  *ngFor="let thisevent of events" [value]="thisevent">{{thisevent}}</option>
+                </select>
+            </div>
+            <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                    <system-label label="LBL_URL"></system-label>
+                </label>
+                <system-input-text [(ngModel)]="newWebHook.url"></system-input-text>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_MODULE_FILTER"></system-label>
+                </label>
+                <system-input-module-filter class="slds-grow" [(ngModel)]="newWebHook.modulefilter_id"></system-input-module-filter>
+            </div>
+            <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label slds-p-bottom--xxx-small">
+                    <system-label label="LBL_FIELDSET"></system-label>
+                </label>
+                <system-input-fieldset class="slds-grow" [(ngModel)]="newWebHook.fieldset_id"></system-input-fieldset>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-top--x-small">
+            <div class="slds-form-element__control slds-size--1-of-4">
+                <system-checkbox [(ngModel)]="newWebHook.send_data" [asinteger]="true"><system-label label="LBL_SEND_DATA"></system-label></system-checkbox>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4">
+                <system-checkbox [(ngModel)]="newWebHook.ssl_verifypeer" [asinteger]="true"><system-label label="LBL_VERIFY_PEER"></system-label></system-checkbox>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4">
+                <system-checkbox [(ngModel)]="newWebHook.ssl_verifyhost" [asinteger]="true"><system-label label="LBL_VERIFY_HOST"></system-label></system-checkbox>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_DATA"></system-label>
+                </label>
+                <textarea [(ngModel)]="newWebHook.custom_headers"
+                        class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid"
+
+                        style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="callWebHooks()" [disabled]="!canSave()">
+            <system-button-icon icon="broadcast" class="slds-m-right--small"></system-button-icon><system-label label="LBL_TEST"></system-label>
+        </button>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CLOSE"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" (click)="saveHook()" [disabled]="!canSave()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>

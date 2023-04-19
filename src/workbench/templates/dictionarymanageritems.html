@@ -1,10 +1,12 @@
 <div system-to-bottom-noscroll>
     <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
-        <div style="height: calc(100% - 300px);" class="slds-scrollable--y">
+        <div style="height: calc(100% - 500px);" class="slds-scrollable--y">
             <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
                 <thead>
                     <tr class="slds-line-height_reset">
-                        <th style="width:2.5rem" scope="col"></th>
+                        <th style="width:2.5rem" scope="col" class="slds-text-align--right">
+                            <system-utility-icon *ngIf="hasDraftItems" (click)="activateAll($event)" class="slds-p-right--xx-small" icon="light_bulb" colorclass="slds-icon-text-warning" size="xx-small"></system-utility-icon>
+                        </th>
                         <th class="" scope="col">
                             <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                         </th>

@@ -14,7 +14,7 @@
  * @type {*|Gulp}
  */
 
-require('./gulpfile_globals.js');
+require('../gulpfile_globals.js');
 
 var gulp = require('gulp');
 var request = require('request');

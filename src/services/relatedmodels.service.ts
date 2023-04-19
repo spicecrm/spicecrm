@@ -10,7 +10,8 @@ import {modelutilities} from "./modelutilities.service";
 import {Observable, of, Subject} from "rxjs";
 import {toast} from "./toast.service";
 import {language} from './language.service';
-import {tap} from "rxjs/operators";
+
+declare var _;
 
 /**
  * @ignore
@@ -31,6 +32,10 @@ export class relatedmodels implements OnDestroy {
      * the id of the parent records
      */
     public id = '';
+    /**
+     * reference id will be sent with each backend request to enable canceling the pending requests
+     */
+    public httpRequestsRefID: string = _.uniqueId('related_models_http_ref_');
 
     /**
      * the related Model
@@ -157,6 +162,7 @@ export class relatedmodels implements OnDestroy {
             subscription.unsubscribe();
         }
         this.serviceSubscriptions = [];
+        this.backend.cancelPendingRequests([this.httpRequestsRefID]);
     }
 
     /**
@@ -296,47 +302,48 @@ export class relatedmodels implements OnDestroy {
 
         // get the data
         let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`);
-        this.backend.getRequest(url, params).subscribe(
-            (response: any) => {
 
-                // reset the list .. to make sure nobody added in the meantime ... the new data is the truth
-                this.items = [];
+        this.backend.getRequest(url, params, this.httpRequestsRefID).subscribe({
+            next: (response: any) => {
 
-                // get the count
-                this.count = parseInt(response.count, 10);
+                    // reset the list .. to make sure nobody added in the meantime ... the new data is the truth
+                    this.items = [];
 
-                // count .. this is not an array but an object
-                for (let key in response.list) {
-                    if (response.list.hasOwnProperty(key)) {
-                        response.list[key].relid = key;
+                    // get the count
+                    this.count = parseInt(response.count, 10);
 
-                        response.list[key] = this.modelutilities.backendModel2spice(this.relatedModule, response.list[key]);
+                    // count .. this is not an array but an object
+                    for (let key in response.list) {
+                        if (response.list.hasOwnProperty(key)) {
+                            response.list[key].relid = key;
 
-                        this.items.push(response.list[key]);
+                            response.list[key] = this.modelutilities.backendModel2spice(this.relatedModule, response.list[key]);
+
+                            this.items.push(response.list[key]);
+                        }
                     }
-                }
 
-                // set loaded
-                this.isloading = false;
+                    // set loaded
+                    this.isloading = false;
 
-                // sort
-                this.sortItems();
+                    // sort
+                    this.sortItems();
 
-                // set the load time
-                this.lastLoad = new moment();
+                    // set the load time
+                    this.lastLoad = new moment();
 
-                // emit that a change has happened
-                // this.items$.emit(this.items);
+                    // emit that a change has happened
+                    // this.items$.emit(this.items);
 
-                // complete the Observable
-                responseSubject.next(true);
-                responseSubject.complete();
-            },
-            () => {
-                // set loaded
-                this.isloading = false;
-            }
-        );
+                    // complete the Observable
+                    responseSubject.next(true);
+                    responseSubject.complete();
+                },
+        error: () => {
+            // set loaded
+            this.isloading = false;
+        }
+    });
 
         return responseSubject.asObservable();
     }
@@ -385,7 +392,7 @@ export class relatedmodels implements OnDestroy {
         let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`);
 
         // get the data
-        this.backend.getRequest(url, params).subscribe(
+        this.backend.getRequest(url, params, this.httpRequestsRefID).subscribe(
             (response: any) => {
 
                 // get the count
@@ -475,28 +482,29 @@ export class relatedmodels implements OnDestroy {
         for (let item of items) {
             relatedIds.push(item.id);
         }
-        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(
-            () => {
-                for (let item of items) {
-                    let itemfound = false;
-                    this.items.some(curitem => {
-                        if (curitem.id == item.id) {
-                            itemfound = true;
-                            return true;
+        this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds, this.httpRequestsRefID).subscribe({
+            next: () => {
+                    for (let item of items) {
+                        let itemfound = false;
+                        this.items.some(curitem => {
+                            if (curitem.id == item.id) {
+                                itemfound = true;
+                                return true;
+                            }
+                        });
+                        if (!itemfound) {
+                            this.items.push(item);
+                            this.count++;
                         }
-                    });
-                    if (!itemfound) {
-                        this.items.push(item);
-                        this.count++;
                     }
-                }
-                retSubject.next(true);
-                retSubject.complete();
-            },
-            () => {
-                retSubject.error('error adding items');
-            }
-        );
+                    retSubject.next(true);
+                    retSubject.complete();
+                },
+        error: () => {
+            retSubject.error('error adding items');
+        }
+
+    });
         return retSubject.asObservable();
     }
 
@@ -510,14 +518,16 @@ export class relatedmodels implements OnDestroy {
     public setItem(item): Observable<any> {
         if (!this.isonlyfiltered) {
             let retSubject = new Subject<any>();
-            this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(() => {
+            this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item), this.httpRequestsRefID).subscribe({
+                next: () => {
                     retSubject.next(true);
                     retSubject.complete();
                 },
-                error => {
+                error: error => {
                     retSubject.error(error);
                     retSubject.complete();
-                });
+                }
+            });
             return retSubject.asObservable();
         } else {
             this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_SET'), 'error');
@@ -538,14 +548,16 @@ export class relatedmodels implements OnDestroy {
 
             beans = beans.map(item => this.modelutilities.spiceModel2backend(this.relatedModule, item));
 
-            this.backend.putRequest(`module/${this.module}/${this.id}/related/beans/${this._linkName}`, [], {beans}).subscribe(() => {
+            this.backend.putRequest(`module/${this.module}/${this.id}/related/beans/${this._linkName}`, [], {beans}, this.httpRequestsRefID).subscribe({
+                next: () => {
                     retSubject.next(true);
                     retSubject.complete();
                 },
-                error => {
+                error: error => {
                     retSubject.error(error);
                     retSubject.complete();
-                });
+                }
+            });
             return retSubject.asObservable();
         } else {
 
@@ -556,7 +568,6 @@ export class relatedmodels implements OnDestroy {
 
     /**
      * removes the relationship for an items
-     *
      * @param id the related id
      */
     public deleteItem(id) {
@@ -566,7 +577,7 @@ export class relatedmodels implements OnDestroy {
             let params = {
                 relatedids: relatedids
             };
-            this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(() => {
+            this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params, this.httpRequestsRefID).subscribe(() => {
                 this.items.some((item, index) => {
                     if (item.id == id) {
                         this.items.splice(index, 1);

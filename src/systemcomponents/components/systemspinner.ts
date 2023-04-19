@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, HostBinding, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 
 /**
  * a loading spinner that can be rendered while a component is loading
@@ -12,6 +12,12 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class SystemSpinner implements OnInit {
 
+    @HostBinding('class.spice-overlay-spinner-container')
+    public asOverlay: boolean = false;
+    /**
+     * cancel event emitter
+     */
+    @Output() public onCancel$ = new EventEmitter<void>();
     /**
      * the size of the spinner in pixel
      */
@@ -36,6 +42,10 @@ export class SystemSpinner implements OnInit {
      * @ignore
      */
     public spinnerStyle: any = {};
+    /**
+     * display the cancel button
+     */
+    public cancellable: boolean = false;
 
     public ngOnInit() {
         let            styleObj = {};
@@ -56,5 +66,12 @@ export class SystemSpinner implements OnInit {
             this.spinnerStyle['border-bottom-color'] = '#fff';
         }
         return styleObj;
+    }
+
+    /**
+     * emit the cancel button click to the overlay host directive
+     */
+    public onCancel() {
+        this.onCancel$.emit();
     }
 }
