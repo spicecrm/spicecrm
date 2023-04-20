@@ -116,7 +116,7 @@ class SpiceReminders
                 'item_id' => $lastNRow['bean_id'],
                 'module_name' => $lastNRow['bean'],
                 'item_summary' => $summary,
-                'item_summary_short' => substr($summary, 0, 15),
+                'item_summary_short' => mb_substr($summary, 0, 15),
                 'reminder_date' => $lastNRow['reminder_date'],
                 'data' => $moduleHandler->mapBean($thisBean, false)
             ];
