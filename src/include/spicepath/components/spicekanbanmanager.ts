@@ -1,10 +1,12 @@
 import {Component, Injector} from '@angular/core';
 
 import {modal} from '../../../services/modal.service';
+import {KanbanManagerService} from "../services/kanbanmanager.service";
 
 @Component({
     selector: 'spice-kanban-manager',
-    templateUrl: '../templates/spicekanbanmanager.html'
+    templateUrl: '../templates/spicekanbanmanager.html',
+    providers: [KanbanManagerService]
 })
 
 export class SpiceKanbanManager {
@@ -14,7 +16,8 @@ export class SpiceKanbanManager {
 
     constructor(
         public modal: modal,
-        public injector: Injector
+        public injector: Injector,
+        public kanbanManagerService: KanbanManagerService
     ) {
     }
 
