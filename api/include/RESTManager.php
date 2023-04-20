@@ -451,8 +451,8 @@ class RESTManager
     private function initExtensions() {
         // check if we have extension in the local path
         $checkRootPaths = ['include', 'modules',
-                            'extensions/include', 'extensions/modules',
-                            'custom/modules', 'custom/include'];
+            'extensions/include', 'extensions/modules',
+            'custom/modules', 'custom/include'];
         foreach ($checkRootPaths as $checkRootPath) {
             $KRestDirHandle = opendir("./$checkRootPath");
             if ($KRestDirHandle) {
@@ -500,8 +500,8 @@ class RESTManager
             if (isset($route['method']) && isset($route['route']) && isset($route['class'])
                 && isset($route['function'])) {
 
-                if (isset($route['options']['noAuth']) && $route['options']['noAuth'] == false
-                    && $authController->isAuthenticated()===false) {
+                # prevent access to routes that require authentication when the user is not authenticated
+                if (!$authController->isAuthenticated() && (!isset($route['options']['noAuth']) || $route['options']['noAuth'] !== true)) {
                     continue;
                 }
 
@@ -511,20 +511,20 @@ class RESTManager
 
                 $routeObject = $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
 
-                if (isset($route['options']['adminOnly']) && $route['options']['adminOnly'] == true) {
+                if (isset($route['options']['adminOnly']) && $route['options']['adminOnly'] === true) {
                     $routeObject->add(AdminOnlyAccessMiddleware::class);
                 }
 
                 // add validation for API only
-                if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] == true) {
+                if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] === true) {
                     $routeObject->add(ApiOnlyAccessMiddleware::class);
                 }
 
-                if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] == true) {
+                if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] === true) {
                     $routeObject->add(ModuleRouteMiddleware::class);
                 }
 
-                if (isset($route['options']['validate']) && $route['options']['validate'] == true) {
+                if (isset($route['options']['validate']) && $route['options']['validate'] === true) {
                     $routeObject->add(ValidationMiddleware::class);
                 }
 
