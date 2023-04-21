@@ -40,6 +40,29 @@ class EmailTrackingActionsController
         return $res->withJson(true);
     }
 
+    /**
+     * handles logging of email opening
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     */
+    public function handleUnsubscribe(Request $req, Response $res, array $args): Response
+    {
+        $decrypted = EmailTracking::decodeTrackingID($args['key']);
+
+        if (!$decrypted) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+        $this->logTrackingAction($data, 'unsubscribe');
+
+        return $res->withJson(true);
+    }
+
     /** handles logging of a clicked link
      * @param Request $req
      * @param Response $res
