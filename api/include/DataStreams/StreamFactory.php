@@ -30,7 +30,7 @@ class StreamFactory extends SpiceSingleton
     {
         $db = DBManagerFactory::getInstance();
 
-        if($query = $db->query("SELECT * FROM sysdatastreams")){
+        if($db->tableExists('sysdatastreams') && $query = $db->query("SELECT * FROM sysdatastreams")){
             while ($stream = $db->fetchByAssoc($query)) {
                 if (empty($stream['name']) || empty($stream['class_namespace'])) continue;
                 $stream['config'] = json_decode($stream['config']);
