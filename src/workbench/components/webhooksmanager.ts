@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, ComponentRef,
+    Component, ComponentRef, EventEmitter, OnDestroy, OnInit, Output, SkipSelf,
 } from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
@@ -14,18 +14,23 @@ import {HooksManager} from "./hooksmanager";
 import {WebHookI} from "../interfaces/systemui.interfaces";
 
 import {WebHooksManagerEditModal} from "./webhooksmanagereditmodal";
+import {model} from "../../services/model.service";
+import {relatedmodels} from "../../services/relatedmodels.service";
+import {Subscription} from "rxjs";
 
 
 @Component({
     selector: 'web-hooks-manager',
     templateUrl: '../templates/webhooksmanager.html',
+    providers:[model, relatedmodels],
 })
-export class WebHooksManager {
+export class WebHooksManager implements OnInit, OnDestroy{
 
 
     public loading: boolean = false;
     public webHooks: WebHookI[] = [];
-
+    public subscriptions: Subscription = new Subscription();
+    @Output() public webhook: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
         public backend: backend,
@@ -35,9 +40,10 @@ export class WebHooksManager {
         public toast: toast,
         public modal: modal,
         public hooksManager: HooksManager,
+        public model: model,
+        public relatedmodels: relatedmodels
 
     ) {
-
     }
 
     public ngOnInit() {
@@ -149,7 +155,7 @@ export class WebHooksManager {
             next: (res) => {
                 if (res) {
                     webHook.active = webHook.active == 1 ? 0 : 1;
-                    const table = 'webhooks';
+                    const table = 'syswebhooks';
 
                     this.backend.postRequest(`configuration/configurator/${table}/${webHook.id}`, null, {config: webHook}).subscribe({
                         next: () => {
@@ -161,12 +167,42 @@ export class WebHooksManager {
         })
     }
 
+    public openResultModal(webhook:any){
+        this.webhook.emit(webhook);
+        this.modal.openModal('WebHooksManagerResultModal').subscribe();
+    }
     public callWebHooks(webHook: WebHookI){
-        this.backend.postRequest(`system/webhook`, null, webHook).subscribe((res: any) => {
-            // this.data = res.output;
-            // loadingModal.emit(true);
-            this.toast.sendToast('LBL_DATA_SAVED', 'success');
+
+        // this.backend.postRequest(`system/webhook`, null, webHook).subscribe((res: any) => {
+        //     // this.data = res.result;
+        //     // loadingModal.emit(true);
+        // });
+    }
+
+    public searchWithModal(webHook:WebHookI) {
+        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+            selectModal.instance.module = webHook.module;
+            selectModal.instance.multiselect = true;
+
+            selectModal.instance.selectedItems.subscribe(items => {
+                this.addSelectedItems(items);
+            });
         });
+    }
+
+    /*
+    * @unsubscribe subscriptions
+    */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    /*
+    * @call relatedmodels.addItems
+    * @pass event: any[]
+    */
+    public addSelectedItems(event) {
+        this.relatedmodels.addItems(event);
     }
 
 }

@@ -409,7 +409,7 @@ class SpiceBean
     {
         // added check on new_with_id for BW compatibility
         // return ($this->_bean_action == self::BEAN_ACTION_CREATE);
-        return ($this->_bean_action == self::BEAN_ACTION_CREATE || $this->new_with_id);
+        return ($this->_bean_action == self::BEAN_ACTION_CREATE || empty($this->id) || $this->new_with_id);
     }
 
     /**
