@@ -63,4 +63,18 @@ class EmailTracking
         return '<img src="' . self::getTrackingPixelSrc($trackingData) . '" height="1" width="1">';
     }
 
+    /**
+     * generates the tracking pixel image
+     *
+     * @param $trackingData
+     * @return string
+     */
+    static function getUnsubscribeURL($email){
+        $url = SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl');
+        if($url){
+            return str_replace('{refid}', self::encodeTrackingID('Emails:' . $email->id), $url);
+        }
+        return false;
+    }
+
 }

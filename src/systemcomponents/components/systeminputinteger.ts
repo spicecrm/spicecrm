@@ -30,6 +30,11 @@ export class SystemInputInteger implements ControlValueAccessor {
 
     public _value: string;
 
+    /**
+     * optionally set disabled
+     * @private
+     */
+    @Input() public disabled: boolean = false;
 
     constructor() {
 
