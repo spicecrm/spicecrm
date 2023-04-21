@@ -598,7 +598,7 @@ class SpiceDictionaryVardefs  {
         $query =  "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname,
-        sysdi.name itemname, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted,
+        sysdi.name itemname, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required itemrequired, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus, sysdi.deleted itemdeleted,
         sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
         LEFT JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmod ON sysmod.sysdictionarydefinition_id = sysd.id
