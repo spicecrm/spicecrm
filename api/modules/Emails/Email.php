@@ -24,6 +24,8 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\EmailTrackingActions\api\controllers\EmailTrackingActionsController;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\TrackingLinks\TrackingLink;
 use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
@@ -713,15 +715,10 @@ class Email extends SpiceBean
      * @param $trackingurl of the mailbox
      * generate a tracking pixel with blowfish hash and adds it to the email body
      */
-    private function generateTrackingPixel($trackingurl)
+    private function generateTrackingPixel()
     {
-        $key = '2fs5uhnjcnpxcpg9';
-        $method = 'blowfish';
         $data = $this->_module . ':' . $this->id;
-        $encrypted = openssl_encrypt($data, $method, $key);
-
-        $this->body .= '<img src="' . $trackingurl . 'count/' . base64_encode($encrypted) . '" height="1" width="1">';
-
+        $this->body .= '<img src="' . EmailTracking::getTrackingPixelSrc($data) . '" height="1" width="1">';
     }
 
     /**
@@ -796,8 +793,8 @@ class Email extends SpiceBean
             }
         }
 
-        if ($mailbox->track_mailbox && !empty($mailbox->tracking_url)) {
-            $this->generateTrackingPixel($mailbox->tracking_url);
+        if ($mailbox->track_mailbox) {
+            $this->generateTrackingPixel();
             $this->findTrackingLinks($mailbox->tracking_url);
             $this->findMarketingActions($mailbox->tracking_url);
         }

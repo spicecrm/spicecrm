@@ -45,7 +45,7 @@ export class dictionarymanager implements OnDestroy {
     /**
      * sets the allowed change scope
      */
-    public changescope: 'all' | 'custom' | 'none' = this.configurationService.getCapabilityConfig('core').edit_mode;
+    public changescope: 'all' | 'custom' | 'none' = 'none';
 
     /**
      * the loaded list of domains
@@ -137,6 +137,9 @@ export class dictionarymanager implements OnDestroy {
                 public configurationService: configurationService) {
         this.loadDictionaryDefinitions();
         this.loadWords();
+
+        // set teh change scope
+        this.changescope = this.configurationService.getCapabilityConfig('core').edit_mode;
 
         this.navigation.addModelEditing('dictmgr', 'Administration', this, 'dictionary manager');
     }
