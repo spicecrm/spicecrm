@@ -502,7 +502,7 @@ class ImapHandler extends TransportHandler
         $message = (new Swift_Message($email->name))
             ->setEncoder(new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'))
             ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
-            ->setBody($email->body, 'text/html')
+            ->setBody($this->trackedBody($email), 'text/html')
         ;
 
         if ($this->mailbox->catch_all_address == '') {
