@@ -13,6 +13,7 @@ import {view} from "../../../services/view.service";
  * a separet modal to display the steps for th elad comversion as well as the progress
  */
 @Component({
+    selector: 'lead-select-type-modal',
     templateUrl: '../templates/leadselecttypemodal.html',
     providers: [view]
 })
