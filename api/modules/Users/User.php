@@ -359,9 +359,9 @@ class User extends Person
             return false;
         if (substr($user_hash, 0, 1) != '$' && strlen($user_hash) == 32) {
             // Old way - just md5 password
-            return strtolower($password_md5) == $user_hash;
+            return hash_equals($user_hash, strtolower($password_md5));
         }
-        return crypt(strtolower($password_md5), $user_hash) == $user_hash;
+        return hash_equals($user_hash, crypt(strtolower($password_md5), $user_hash));
     }
 
     /**

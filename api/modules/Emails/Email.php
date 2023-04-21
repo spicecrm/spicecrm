@@ -15,6 +15,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
@@ -23,6 +24,8 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\EmailTrackingActions\api\controllers\EmailTrackingActionsController;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\TrackingLinks\TrackingLink;
 use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
@@ -712,15 +715,10 @@ class Email extends SpiceBean
      * @param $trackingurl of the mailbox
      * generate a tracking pixel with blowfish hash and adds it to the email body
      */
-    private function generateTrackingPixel($trackingurl)
+    private function generateTrackingPixel()
     {
-        $key = '2fs5uhnjcnpxcpg9';
-        $method = 'blowfish';
         $data = $this->_module . ':' . $this->id;
-        $encrypted = openssl_encrypt($data, $method, $key);
-
-        $this->body .= '<img src="' . $trackingurl . 'count/' . base64_encode($encrypted) . '" height="1" width="1">';
-
+        $this->body .= '<img src="' . EmailTracking::getTrackingPixelSrc($data) . '" height="1" width="1">';
     }
 
     /**
@@ -795,8 +793,8 @@ class Email extends SpiceBean
             }
         }
 
-        if ($mailbox->track_mailbox && !empty($mailbox->tracking_url)) {
-            $this->generateTrackingPixel($mailbox->tracking_url);
+        if ($mailbox->track_mailbox) {
+            // $this->generateTrackingPixel();
             $this->findTrackingLinks($mailbox->tracking_url);
             $this->findMarketingActions($mailbox->tracking_url);
         }
@@ -1283,6 +1281,17 @@ class Email extends SpiceBean
     }
 
     /**
+     * @param $body
+     * @return mixed|string
+     */
+    public function setBodyEncodingToUTF8($body){
+        if (!mb_check_encoding($body, 'UTF-8')) {
+            $body = utf8_encode($body);
+        }
+        return $body;
+    }
+
+    /**
      * convertMsgToEmail
      *
      * Converts a file in Outlook .msg format into an Email Bean.
@@ -1297,7 +1306,8 @@ class Email extends SpiceBean
     {
         $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
         $documentFactory = new Pear\DocumentFactory();
-        $this->convertMessageToBean($messageFactory->parseMessage($documentFactory->createFromFile('upload://' . $fileId)));
+        $msg = $messageFactory->parseMessage($documentFactory->createFromFile(StreamFactory::getPathPrefix('upload') . $fileId));
+        $this->convertMessageToBean($msg);
 
         // set the parent
         $this->parent_id = $beanId;
@@ -1323,7 +1333,7 @@ class Email extends SpiceBean
         $contents = [];
 
         // parse the ressource
-        $res = mailparse_msg_parse_file('upload://' . $fileId);
+        $res = mailparse_msg_parse_file(StreamFactory::getPathPrefix('upload') . $fileId);
         $struct = mailparse_msg_get_structure($res);
 
         // get all parts
@@ -1358,6 +1368,13 @@ class Email extends SpiceBean
 
         // get the main parts for the email
         $this->name = $bodyParts[0]['headers']['subject'];
+        // handle a subject like Subject: =?iso-8859-1?B?V0c6IFRFU1QgRUtGQi00MDkgxNzW5Pb8?=
+        $subjectParts = explode("?", $bodyParts[0]['headers']['subject']);
+        if(count($subjectParts) > 1) {
+            if ($base64Subject = base64_decode($subjectParts[3])) {
+                $this->name = $this->setBodyEncodingToUTF8($base64Subject);
+            }
+        }
 
         // get the proper date sent
         $date = new DateTime($bodyParts[0]['headers']['date']);
@@ -1440,10 +1457,10 @@ class Email extends SpiceBean
         $this->name = $message->properties['subject'];
         try {
             set_time_limit(60);
-            $this->body = utf8_encode($message->getBodyHTML());
+            $this->body = $this->setBodyEncodingToUTF8($message->getBodyHTML());
         } catch (Exception $e) {
             try {
-                $this->body = $message->getBody();
+                $this->body = $this->setBodyEncodingToUTF8($message->getBody());
             } catch (Exception $e) {
                 // Apparently there is no email body whatsoever.
                 $this->body = '';

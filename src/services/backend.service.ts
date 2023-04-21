@@ -29,7 +29,9 @@ interface backendRequestParams {
  * The backend service prodivdes a set of methods to communicate with the backend
  *
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class backend {
 
     /**
