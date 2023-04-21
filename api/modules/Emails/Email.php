@@ -644,8 +644,7 @@ class Email extends SpiceBean
         return false;
     }
 
-    public
-    function mapToRestArray($beanDataArray)
+    public    function mapToRestArray($beanDataArray)
     {
 
         $q = "SELECT eam.id, eam.email_address_id, ea.email_address, eam.address_type, eam.parent_type, eam.parent_id, eam.deleted
