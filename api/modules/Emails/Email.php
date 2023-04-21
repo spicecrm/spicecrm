@@ -794,7 +794,7 @@ class Email extends SpiceBean
         }
 
         if ($mailbox->track_mailbox) {
-            $this->generateTrackingPixel();
+            // $this->generateTrackingPixel();
             $this->findTrackingLinks($mailbox->tracking_url);
             $this->findMarketingActions($mailbox->tracking_url);
         }
