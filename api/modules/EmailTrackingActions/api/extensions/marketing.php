@@ -24,7 +24,24 @@ $routes = [
         'parameters' => [
             'key' => [
                 'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_BASE64,
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => '',
+                'example' => '',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/email/u/{key}',
+        'class'       => EmailTrackingActionsController::class,
+        'function'    => 'handleUnsubscribe',
+        'description' => '',
+        'options'     => ['noAuth' => true],
+        'parameters' => [
+            'key' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
                 'description' => '',
                 'example' => '',
                 'required' => true
