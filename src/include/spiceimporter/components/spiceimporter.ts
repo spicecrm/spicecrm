@@ -21,6 +21,7 @@ declare var _: any;
  * view to import data from csv file
  */
 @Component({
+    selector: 'spice-importer',
     templateUrl: '../templates/spiceimporter.html',
     providers: [model, SpiceImporterService]
 })
