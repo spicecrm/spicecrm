@@ -23,7 +23,9 @@ import {ComponentType} from "@angular/cdk/overlay";
 
 declare var _;
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class metadata {
     // modules: Array<any> = [];
     public role: string = "";
@@ -1743,7 +1745,9 @@ export class metadata {
 
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class aclCheck implements CanActivate {
     constructor(public metadata: metadata, public router: Router, public session: session, public configurationService: configurationService) {
     }
@@ -1778,7 +1782,9 @@ export class aclCheck implements CanActivate {
 
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class noBack implements CanDeactivate<any> {
 
     public navigatingBack: boolean = false;

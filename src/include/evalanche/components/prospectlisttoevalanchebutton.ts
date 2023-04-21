@@ -33,7 +33,7 @@ export class ProspectListsToEvalancheButton {
     public execute() {
         let loading = this.modal.await(this.language.getLabel('LBL_LOADING'));
 
-        this.backend.postRequest(`/channels/emarketing/evalanche/${this.model.module}/${this.model.id}/stats`).subscribe(result => {
+        this.backend.postRequest(`channels/emarketing/evalanche/${this.model.module}/${this.model.id}/stats`).subscribe(result => {
             loading.emit(true);
             if(result) {
                 this.spice = result.spice;

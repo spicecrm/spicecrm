@@ -7,6 +7,7 @@ use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\TimeDate;
 use Exception;
 use SpiceCRM\includes\Logger\SpiceLogger;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\MailboxLogTrait;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
@@ -93,6 +94,20 @@ abstract class TransportHandler
      * @return mixed
      */
     abstract protected function composeEmail($email);
+
+    /**
+     * returns the biody with a tracking pixel if the mailbox sets it
+     *
+     * @param $email
+     * @return mixed|string
+     */
+    protected function trackedBody($email){
+        $body = $email->body;
+        if($this->mailbox->track_mailbox){
+            $body .= EmailTracking::getTrackingPixel('Emails:' . $email->id);
+        }
+        return $body;
+    }
 
     /**
      * Handles the sending of a message that is already in a format needed by a given transport handler.

@@ -4,6 +4,7 @@
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Swift_Attachment;
@@ -500,8 +501,8 @@ class ImapHandler extends TransportHandler
 
         $message = (new Swift_Message($email->name))
             ->setEncoder(new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'))
-            ->setFrom([$this->mailbox->imap_pop3_username => $this->mailbox->imap_pop3_display_name])
-            ->setBody($email->body, 'text/html')
+            ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
+            ->setBody($this->trackedBody($email), 'text/html')
         ;
 
         if ($this->mailbox->catch_all_address == '') {
@@ -545,7 +546,7 @@ class ImapHandler extends TransportHandler
         if ($email->id) {
             foreach ($email->attachments as $att) {
                 $message->attach(
-                    Swift_Attachment::fromPath('upload://' . $att->filemd5)->setFilename($att->filename)
+                    Swift_Attachment::fromPath(StreamFactory::getPathPrefix('upload') . $att->filemd5)->setFilename($att->filename)
                 );
             }
 

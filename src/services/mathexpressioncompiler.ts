@@ -10,7 +10,9 @@ import {
  * a service which provides a compiler to evaluate mathematical expressions
  * author: Sebastian Franz
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class MathExpressionCompilerService {
 
     /**

@@ -1,0 +1,16 @@
+<system-collapsable-tab [collapsible]="false" title="LBL_CLOSE_WORKFLOWS" >
+    <div class="slds-p-around--x-small">
+        <system-checkbox [(ngModel)]="closeAll">
+            <system-label label="LBL_CLOSE_ALL"></system-label>
+        </system-checkbox>
+    </div>
+    <div *ngIf="!config.closeAll" class="slds-p-around--x-small">
+        <system-checkbox-group [(ngModel)]="ids">
+            <ng-container *ngFor="let def of workflowManagerService.currentModule.workflowDefinitions">
+                <system-checkbox-group-checkbox *ngIf="def.id != workflowManagerService.currentDefinition.id" [value]="def.id">
+                    <span>{{def.name}}</span>
+                </system-checkbox-group-checkbox>
+            </ng-container>
+        </system-checkbox-group>
+    </div>
+</system-collapsable-tab>

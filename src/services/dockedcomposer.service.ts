@@ -9,7 +9,9 @@ import {model} from "./model.service";
 /**
  * holds all current composers
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class dockedComposer {
     /**
      * the regular composers

@@ -25,6 +25,7 @@ import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
 import { model } from '../../services/model.service';
 import { helper } from '../../services/helper.service';
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: "system-html-editor",
@@ -96,6 +97,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                 public elementRef: ElementRef,
                 public language: language,
                 public viewContainerRef: ViewContainerRef,
+                public configurationService: configurationService,
                 @Optional() public model: model,
                 public helper: helper ) {
     }
@@ -277,9 +279,10 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                         this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                             uploadComponentRef.instance.answer.subscribe(uploadimage => {
                                 if (uploadimage) {
+                                    const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
                                     this.focusEditor();
                                     this.editorService.restoreSelection();
-                                    this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage, this.htmlEditor.element.nativeElement);
+                                    this.editorService.insertImage(mediaFileConfig.public_url + uploadimage, this.htmlEditor.element.nativeElement);
                                     this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
                                 }
                                 this.modalOpen = false;
@@ -287,9 +290,10 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                         });
                     } else {
                         if (image.id) {
+                            const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
                             this.focusEditor();
                             this.editorService.restoreSelection();
-                            this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id, this.htmlEditor.element.nativeElement);
+                            this.editorService.insertImage(mediaFileConfig.public_url + image.id, this.htmlEditor.element.nativeElement);
                             this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
                         }
                         this.modalOpen = false;

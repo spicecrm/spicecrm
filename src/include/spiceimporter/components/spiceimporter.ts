@@ -21,6 +21,7 @@ declare var _: any;
  * view to import data from csv file
  */
 @Component({
+    selector: 'spice-importer',
     templateUrl: '../templates/spiceimporter.html',
     providers: [model, SpiceImporterService]
 })
@@ -123,7 +124,7 @@ export class SpiceImporter implements OnInit {
                 }
             }
         }
-
+        // this.modelFields.sort((a, b) => a.name.localeCompare(b.name));
         this.requiredModelFields = this.modelFields.filter(field => field.name != 'id' && field.required);
     }
 

@@ -113,7 +113,7 @@ export class GlobalHeaderDocumentRevisionsModal implements OnInit {
     acceptance(id) {
         this.relatedRevisions.splice(this.relatedRevisions.findIndex(item => item.id === id), 1)
         let body = {userid: this.session.authData.userId};
-        this.backend.postRequest(`/module/documentrevisions/${id}/revisionaccepted`, '', body)
+        this.backend.postRequest(`module/documentrevisions/${id}/revisionaccepted`, '', body)
         this.toast.sendToast('revision accepted');
     }
 
