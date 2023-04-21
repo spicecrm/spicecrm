@@ -1,0 +1,39 @@
+<?php
+
+use SpiceCRM\modules\EmailTrackingActions\api\controllers\EmailTrackingActionsController;
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\RESTManager;
+
+/**
+ * Rest Manager Instance
+ */
+
+$RESTManager = RESTManager::getInstance();
+
+/**
+ * Routes array
+ */
+$routes = [
+    [
+        'method'      => 'get',
+        'route'       => '/email/o/{key}',
+        'class'       => EmailTrackingActionsController::class,
+        'function'    => 'handleTrackingPixel',
+        'description' => '',
+        'options'     => ['noAuth' => true],
+        'parameters' => [
+            'key' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_BASE64,
+                'description' => '',
+                'example' => '',
+                'required' => true
+            ]
+        ]
+    ]
+];
+
+
+
+
+$RESTManager->registerExtension('marketing', '1.0', [], $routes);
