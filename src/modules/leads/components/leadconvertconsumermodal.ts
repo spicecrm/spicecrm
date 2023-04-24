@@ -1,15 +1,7 @@
 /**
  * @module ModuleLeads
  */
-import {
-    Component,
-    Output,
-    EventEmitter,
-    OnInit,
-    ViewContainerRef,
-    ViewChild,
-    AfterViewInit, SkipSelf
-} from '@angular/core';
+import {Component, Output, EventEmitter, OnInit, SkipSelf} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -22,7 +14,7 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
     templateUrl: '../templates/leadconvertconsumermodal.html',
     providers: [model, view]
 })
-export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
+export class LeadConvertConsumerModal implements OnInit {
 
     /**
      * reference to the modal itself
@@ -60,9 +52,8 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
                     primary_address: '1'
                 }]}
         );
-    }
 
-    public ngAfterViewInit() {
+        // render component config
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
         this.componentSet = componentconfig.componentset;
     }
