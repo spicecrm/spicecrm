@@ -39,6 +39,11 @@ export class SpiceImporter implements OnInit {
     public requiredModelFields: any[] = undefined;
     public showNonDbFields = false;
 
+    /**
+     * holds references of self to destroy the component
+     * */
+    public self: any = {};
+
     constructor(public spiceImporter: SpiceImporterService,
                 public language: language,
                 public metadata: metadata,
@@ -162,6 +167,8 @@ export class SpiceImporter implements OnInit {
      * go to the module
      */
     public gotoModule() {
+        this.self.destroy();
+        this.navigationtab.closeTab();
         this.router.navigate(['/module/' + this.model.module]);
     }
 
@@ -352,6 +359,7 @@ export class SpiceImporter implements OnInit {
             switch (res.status) {
                 case 'imported':
                     this.spiceImporter.result = res;
+                    this.toast.sendToast(this.language.getLabel('LBL_SUCCESS'), 'success');
                     break;
                 case 'scheduled':
                     this.gotoModule();
