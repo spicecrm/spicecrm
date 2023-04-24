@@ -165,7 +165,7 @@ export class GlobalHeaderSearch {
     public searchTermsValid(searchTerm) {
         let config = this.configuration.getCapabilityConfig('search');
         let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
-        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
+        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 50;
         let items = searchTerm.split(' ');
         return items.filter(i => i.length < minNgram || i.length > maxNgram).length == 0;
     }
