@@ -62,6 +62,7 @@ export class LeadConvertConsumerModal implements OnInit {
      * close the modal
      */
     public close() {
+        this.model.cancelEdit();
         this.self.destroy();
     }
 
@@ -71,13 +72,13 @@ export class LeadConvertConsumerModal implements OnInit {
     public convert() {
         if (!this.model.validate()) return;
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            loadingModalRef.instance.messagelabel = 'creating Consumer';
+            loadingModalRef.instance.messagelabel = 'LBL_CREATING_CONSUMER';
             this.model.save().subscribe(consumer => {
-                loadingModalRef.instance.messagelabel = 'updating Lead';
+                loadingModalRef.instance.messagelabel = 'LBL_UPDATING_LEAD';
                 this.lead.setField('status', 'Converted');
                 this.lead.setField('consumer_id', this.model.id);
                 this.lead.save().subscribe(leaddata => {
-                    this.lead.setData(leaddata);
+                    this.lead.setData(this.lead.data, false);
                     loadingModalRef.instance.self.destroy();
                     this.close();
                 });
