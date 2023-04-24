@@ -145,7 +145,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgChart'] = [
             'lhs_table' => 'orgunits',
             'lhs_key' => 'id',
             'rhs_module' => 'OrgCharts',
-            'rhs_table' => 'OrgCharts',
+            'rhs_table' => 'orgcharts',
             'rhs_key' => 'orgunit_id',
             'relationship_type' => 'one-to-many'
         ]
