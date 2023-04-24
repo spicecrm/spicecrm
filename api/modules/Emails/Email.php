@@ -93,7 +93,6 @@ class Email extends SpiceBean
      */
     public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $timedate = TimeDate::getInstance();
 
         if ($this->isDuplicate) {
@@ -148,6 +147,11 @@ class Email extends SpiceBean
             //Bug 39503 - SpiceBean is not setting date_sent when seconds missing
             if (empty($this->date_sent)) {
                 $this->date_sent = $timedate->now();
+            }
+
+            // check assigned user
+            if(empty($this->assigned_user_id)){
+                $this->assigned_user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
             }
 
             // save without indexing
