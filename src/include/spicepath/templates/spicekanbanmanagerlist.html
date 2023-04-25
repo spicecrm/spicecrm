@@ -1,9 +1,8 @@
 <div>
     <h2><system-label label="LBL_ACTIVE"></system-label></h2>
 <ul class="slds-has-dividers_around-space" cdkDropList #activeStagesList="cdkDropList" [cdkDropListData]="activeStages"  [cdkDropListConnectedTo]="[notInKanbanList]"
-    (cdkDropListDropped)="drop($event)">
-    <li *ngFor="let activeStage of activeStages;  let index = index" class="slds-item" cdkDrag
-         >
+    (cdkDropListDropped)="drop($event)" style="min-height: 10vh">
+    <li *ngFor="let activeStage of activeStages;  let index = index" class="slds-item" cdkDrag>
         <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
                              style="cursor:move"></system-utility-icon>
         {{activeStage.stage}}</li>
@@ -11,7 +10,7 @@
 
     <h2><system-label label="LBL_INACTIVE"></system-label></h2>
 <ul class="slds-has-dividers_around-space" cdkDropList #notInKanbanList = "cdkDropList" [cdkDropListData]="notInKanban" [cdkDropListConnectedTo]="[activeStagesList]"
-    (cdkDropListDropped)="drop($event)">
+    (cdkDropListDropped)="drop($event)" style="min-height: 10vh">
     <li *ngFor="let nik of notInKanban;  let index = index" class="slds-item" cdkDrag>
         <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
                              style="cursor:move"></system-utility-icon>

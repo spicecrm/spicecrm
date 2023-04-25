@@ -46,6 +46,13 @@ export class SpiceKanbanManagerList implements OnDestroy {
      * saving the new sequence of beanguidestages
      */
     public saveSequence() {
+        this.activeStages.forEach((entry) => {
+            entry.not_in_kanban = 0;
+        });
+        this.notInKanban.forEach((entry) => {
+            entry.not_in_kanban = 1;
+        });
+        this.spiceBeanGuideStages = this.activeStages.concat(this.notInKanban);
 
         this.spiceBeanGuideStages.forEach((entry, index) => {
             entry.stage_sequence = index;
