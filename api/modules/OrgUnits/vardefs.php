@@ -86,6 +86,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_USERS',
         ],
+        'employees' => [
+            'name' => 'employees',
+            'type' => 'link',
+            'relationship' => 'orgunits_employees',
+            'module' => 'Employees',
+            'bean_name' => 'User',
+            'source' => 'non-db',
+            'vname' => 'LBL_EMPLYOEES',
+        ],
         'hcmjoboffers' => [
             'name' => 'hcmjoboffers',
             'type' => 'link',
@@ -151,6 +160,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
         'orgunits_users' => [
             'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
             'rhs_module' => 'Users', 'rhs_table' => 'users', 'rhs_key' => 'orgunit_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'orgunits_employees' => [
+            'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
+            'rhs_module' => 'Employees', 'rhs_table' => 'employees', 'rhs_key' => 'orgunit_id',
             'relationship_type' => 'one-to-many'
         ],
     ],
