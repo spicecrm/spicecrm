@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, EventEmitter, forwardRef, Input, OnInit, Output
+    Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output
 } from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
@@ -36,9 +36,7 @@ export class SystemInputInteger implements ControlValueAccessor {
      */
     @Input() public disabled: boolean = false;
 
-    constructor() {
-
-    }
+    constructor( private elementRef: ElementRef ) { }
 
     get value() {
         return this._value;
@@ -78,6 +76,10 @@ export class SystemInputInteger implements ControlValueAccessor {
      */
     public writeValue(value: any): void {
         this._value = value;
+    }
+
+    public emitBlur() {
+        this.elementRef.nativeElement.dispatchEvent(new Event('blur',{bubbles: true}));
     }
 
 }
