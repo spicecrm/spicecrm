@@ -94,7 +94,7 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null )
+    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [])
     {
         $this->additionalValues = $additionalValues;
         $this->lang = $lang;
@@ -105,8 +105,14 @@ class Compiler
         #$html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
         $dom->loadHTML('<?xml encoding="utf-8"?>' . html_entity_decode($txt, ENT_QUOTES));
 
+        // handle the beans array
+        $beans = ['bean' => $bean];
+        foreach($additionalBeans as $beanName => $beanObject){
+            $beans[$beanName] = $beanObject;
+        }
+
         $dummy = $dom->getElementsByTagName('html');
-        foreach( $this->parseDom( $dummy[0], ['bean' => $bean] ) as $newElement ){
+        foreach( $this->parseDom( $dummy[0], $beans ) as $newElement ){
             $this->root->appendChild($newElement);
         };
 

@@ -63,7 +63,7 @@ class EmailTemplate extends SpiceBean {
 	}
 
 
-    function parse( $bean, $additionalValues = null ){
+    function parse( $bean, $additionalValues = null, $additionalBeans = [] ){
         global $app_list_strings, $current_language;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
@@ -73,7 +73,7 @@ class EmailTemplate extends SpiceBean {
             'body' => $this->parseHTMLTextField('body', $bean, $additionalValues ),
             'body_html' => preg_replace(
                 '#^<html>#', '<html><head><style>'.$this->getStyle().'</style></head>',
-                $this->parseHTMLTextField('body_html', $bean, $additionalValues )
+                $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans )
             )
         ];
         $retArray['subject'] = preg_replace('#\s+#', ' ', $retArray['subject'] ); // multiple white spaces -> one
@@ -81,11 +81,11 @@ class EmailTemplate extends SpiceBean {
         return $retArray;
     }
 
-    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null )
+    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans )
     {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
-        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues );
+        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues, $additionalBeans );
         return html_entity_decode($html);
     }
 
