@@ -38,6 +38,40 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'source' => 'non-db',
             'module' => 'HCMTrainings'
         ],
+        'orgunit_id' => [
+            'vname' => 'LBL_ORGUNIT_ID',
+            'name' => 'orgunit_id',
+            'type' => 'varchar',
+            'len' => 36
+        ],
+        'orgunit_name' => [
+            'name' => 'orgunit_name',
+            'rname' => 'name',
+            'id_name' => 'orgunit_id',
+            'link' => 'orgunits',
+            'vname' => 'LBL_ORGUNIT',
+            'type' => 'relate',
+            'table' => 'orgunits',
+            'module' => 'OrgUnits',
+            'source' => 'non-db',
+        ],
+        'orgunit' => [
+            'name' => 'orgunit',
+            'id_name' => 'orgunit_id',
+            'link' => 'orgunits',
+            'vname' => 'LBL_ORGUNIT',
+            'type' => 'linked',
+            'module' => 'OrgUnits',
+            'source' => 'non-db'
+        ],
+        'orgunits' => [
+            'name' => 'orgunits',
+            'type' => 'link',
+            'vname' => 'LBL_ORGUNITS',
+            'relationship' => 'orgunits_employees',
+            'module' => 'OrgUnits',
+            'source' => 'non-db'
+        ],
     ],
     'indices' => [],
     'relationships' => [],
