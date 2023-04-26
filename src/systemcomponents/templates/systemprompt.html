@@ -25,8 +25,8 @@
                             </ng-container>
                         </ng-container>
                     </div>
-                    <ng-container *ngIf="options">
-                        <div *ngIf="!optionsAsRadio; else radioGroupContainer" class="slds-select_container">
+                    <ng-container *ngIf="options && optionsAs !== 'button'">
+                        <div *ngIf="optionsAs !== 'radio'; else radioGroupContainer" class="slds-select_container">
                             <select #selectField class="slds-select" [(ngModel)]="value" tabindex="1">
                                 <option *ngFor="let option of options" [value]="option.value">
                                     {{option.display}}
@@ -34,7 +34,7 @@
                             </select>
                         </div>
                         <ng-template #radioGroupContainer>
-                            <system-input-radio *ngFor="let option of options" [name]="radioGroupName" [value]="option.value" [(ngModel)]="value" (dblclick)="clickOK()" style="display: block">
+                            <system-input-radio *ngFor="let option of options" [name]="radioGroupName" [value]="option.value" [(ngModel)]="value" style="display: block">
                                 {{option.display}}
                             </system-input-radio>
                         </ng-template>
@@ -43,10 +43,16 @@
             </div>
         </div>
         <footer class="slds-modal__footer">
-            <button *ngIf="type !== 'info'" #cancelButton class="slds-button slds-button--neutral" (click)="clickCancel()"><system-label label="LBL_CANCEL"></system-label></button>
-            <button #okButton [disabled]="!canSubmit" class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
+            <ng-container *ngIf="optionsAs !== 'button'; else optionButtonContainer">
+                <button *ngIf="type !== 'info'" #cancelButton class="slds-button slds-button--neutral" (click)="clickCancel()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button #okButton [disabled]="!canSubmit" class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
+            </ng-container>
+            <ng-template #optionButtonContainer>
+                <button *ngFor="let option of options" class="slds-button slds-button--brand" (click)="clickButtonGroup(option.value)">
+                    <system-label [label]="option.display"></system-label>
+                </button>
+            </ng-template>
         </footer>
     </div>
 </section>
-
 

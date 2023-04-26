@@ -1,6 +1,10 @@
 <system-modal>
-    <system-modal-header (close)="close()">Close Ticket</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_CLOSE_TICKET_SLA_DEVIATION"></system-label></system-modal-header>
     <system-modal-content>
+        <div class="slds-grid slds-m-around--medium">
+            <system-icon addclasses="slds-icon slds-icon-text-warning" divClass="slds-float--left" icon="warning" sprite="utility" size="small"></system-icon>
+            <span class="slds-p-left--small"><system-label label="LBL_CLOSE_TICKET_SLA_DEVIATION" length="long"></system-label></span>
+        </div>
         <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
     </system-modal-content>
     <system-modal-footer>
