@@ -632,16 +632,16 @@ abstract class DBManager
             //custom fields handle there save seperatley
             if (!empty($field_map) && !empty($field_map[$field]['custom_type'])) continue;
 
-            if (isset($data[$field])) {
-                // clean the incoming value..
-                $val = DBUtils::fromHtml($data[$field]);
-            } else {
-                if (isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
-                    $val = $fieldDef['default'];
-                } else {
-                    $val = null;
-                }
-            }
+			if(isset($data[$field])) {
+				// clean the incoming value..
+				$val = $data[$field];
+			} else {
+				if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
+					$val = $fieldDef['default'];
+				} else {
+					$val = null;
+				}
+			}
 
             //handle auto increment values here - we may have to do something like nextval for oracle
             if (!empty($fieldDef['auto_increment'])) {
@@ -1512,10 +1512,17 @@ abstract class DBManager
      * @return string
      * @internal
      */
-    protected function quoteInternal($string)
-    {
-        return DBUtils::fromHtml($string);
-    }
+	protected function quoteInternal($string): string
+	{
+        if (!is_string($string)) {
+
+            if(is_null($string)) return '';
+
+            if(is_object($string)) $string = json_encode($string);
+        }
+
+		return $string;
+	}
 
     /**
      * Return string properly quoted with ''
@@ -1931,11 +1938,11 @@ abstract class DBManager
             // no need to clear deleted since we only update not deleted records anyway
             if ($fieldDef['name'] == 'deleted' && empty($bean->deleted)) continue;
 
-            if (isset($bean->$field)) {
-                $val = DBUtils::fromHtml($bean->$field);
-            } else {
-                continue;
-            }
+    		if(isset($bean->$field)) {
+    			$val = $bean->$field;
+    		} else {
+    			continue;
+    		}
 
             if (!empty($fieldDef['type']) && $fieldDef['type'] == 'bool') {
                 $val = $bean->getFieldValue($field);
