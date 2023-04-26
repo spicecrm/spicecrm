@@ -176,8 +176,6 @@ class MysqliManager extends DBManager
 
     public function query($sql, $dieOnError = false, $msg = '', $suppress = false, $keepResult = false)
     {
-        mysqli_report(MYSQLI_REPORT_ALL);
-
         try {
             if (is_array($sql)) {
                 return $this->queryArray($sql, $dieOnError, $msg, $suppress);
