@@ -2118,7 +2118,7 @@ class SpiceBeanHandler
                     }
                     break;
                 default:
-                    $beanDataArray[$fieldId] = is_string($thisBean->$fieldId) ? html_entity_decode($thisBean->$fieldId, ENT_QUOTES) : $thisBean->$fieldId;
+                    $beanDataArray[$fieldId] = $thisBean->$fieldId;
                     break;
             }
         }
