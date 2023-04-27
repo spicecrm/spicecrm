@@ -114,7 +114,7 @@ class SpiceCacheFile extends SpiceCacheAbstract
         )
     {
         // load up the external cache file
-        $c = $direct ? $this->_cacheDirectory . $key : $this->getCachedFileName($key);
+        $c = $direct ? $this->_cacheDirectory . DIRECTORY_SEPARATOR . $key : $this->getCachedFileName($key);
         if (file_exists($c)) {
             return unserialize(file_get_contents($c));
         }
@@ -148,6 +148,10 @@ class SpiceCacheFile extends SpiceCacheAbstract
         $cacheFiles = glob($pattern);
         foreach($cacheFiles as $cacheFile){
             $fileStats = stat($cacheFile);
+            // clean $cacheFile path
+            if(substr($cacheFile, 0, 1) == DIRECTORY_SEPARATOR) {
+                $cacheFile = substr($cacheFile, 1);
+            }
             $stats[] = [
                 'key' => str_replace($this->_cacheDirectory, '', $cacheFile),
                 'size' => $fileStats[7],
