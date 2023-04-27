@@ -72,9 +72,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'module' => 'OrgUnits',
             'source' => 'non-db'
         ],
+        'userabsences' => [
+            'name' => 'userabsences',
+            'vname' => 'LBL_USER_ABSENCES',
+            'rel_fields' => ['user_id' => ['type' => 'id']],
+            'type' => 'link',
+            'relationship' => 'employees_userabsences',
+            'source' => 'non-db',
+            'module' => 'UserAbsences'
+        ],
     ],
     'indices' => [],
-    'relationships' => [],
+    'relationships' => [
+        'employees_userabsences' => [
+            'lhs_module' => 'Employees',
+            'lhs_table' => 'employees',
+            'lhs_key' => 'id',
+            'rhs_module' => 'UserAbsences',
+            'rhs_table' => 'userabsences',
+            'rhs_key' => 'user_id',
+            'relationship_type' => 'one-to-many'
+        ],
+    ],
 ];
 
 VardefManager::createVardef('Employees', 'Employee', ['default', 'assignable', 'person']);
