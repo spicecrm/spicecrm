@@ -144,7 +144,7 @@ class SpiceCacheFile extends SpiceCacheAbstract
      */
     public function __getKeys(){
         $stats = [];
-        $pattern = $this->_cacheDirectory . 'spicecrmcache_' . $this->_keyPrefix . '*';
+        $pattern = $this->_cacheDirectory . DIRECTORY_SEPARATOR . 'spicecrmcache*';
         $cacheFiles = glob($pattern);
         foreach($cacheFiles as $cacheFile){
             $fileStats = stat($cacheFile);
