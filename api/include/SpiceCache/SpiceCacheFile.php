@@ -153,7 +153,7 @@ class SpiceCacheFile extends SpiceCacheAbstract
                 $cacheFile = substr($cacheFile, 1);
             }
             $stats[] = [
-                'key' => str_replace($this->_cacheDirectory, '', $cacheFile),
+                'key' => str_replace($this->_cacheDirectory. DIRECTORY_SEPARATOR, '', $cacheFile),
                 'size' => $fileStats[7],
                 'date' => date_create()->setTimestamp($fileStats[10])->format(TimeDate::DB_DATETIME_FORMAT)
             ];
