@@ -153,7 +153,9 @@ class SpiceConfig
         }
 
         // merge the configs
-        $this->config = array_merge($this->config, $dbconfig);
+        foreach ( $dbconfig as $catName => $category )
+            foreach ( $category as $varName => $var )
+                $this->config[$catName][$varName] = $var;
 
         return true;
     }
