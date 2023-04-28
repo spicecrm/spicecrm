@@ -60,7 +60,7 @@
     min-width: unset !important;
 }
 .slds-color-picker__selector.slds-popover{
-    width: 12rem;
+    width: 13.375rem;
 }
 .slds-color-picker__selector .slds-popover__footer{
     background-color: unset ;
