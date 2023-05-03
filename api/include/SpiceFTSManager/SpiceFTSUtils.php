@@ -293,8 +293,8 @@ class SpiceFTSUtils
 
     static function getActivityModules($scope = 'Activities')
     {
-        // check if we have cached values
-        $cached = SpiceCache::get('ftsActivityModules');
+        // check if we have cached values with Activities scope
+        $cached = SpiceCache::get('ftsActivityModules'.$scope);
         if($cached) return $cached;
 
         // build the data
@@ -314,8 +314,8 @@ class SpiceFTSUtils
             }
         }
 
-        // set the cache
-        SpiceCache::set('ftsActivityModules',$modules);
+        // set the cache with Activities scope
+        SpiceCache::set('ftsActivityModules'.$scope, $modules);
 
         return $modules;
     }
