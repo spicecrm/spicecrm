@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SysModuleLists;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSingleton;
 
@@ -24,7 +25,10 @@ class SysModuleListManager extends SpiceSingleton
     {
         $db = DBManagerFactory::getInstance();
 
-        $moduleLists = $db->query("SELECT * FROM sysmodulelists WHERE created_by_id = '1' OR global = 1");
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // retrieve module lists for current user or when list is global
+        $moduleLists = $db->query("SELECT * FROM sysmodulelists WHERE created_by_id = '$current_user->id' OR global = 1");
         while($m = $db->fetchByAssoc($moduleLists)){
             $this->moduleLists[$m['module']][$m['id']] = $m;
         }
