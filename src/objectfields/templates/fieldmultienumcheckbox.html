@@ -1,5 +1,1 @@
-<input [disabled]="disabled" type="checkbox" [id]="fieldid + option.value" [(ngModel)]="checked"  />
-<label class="slds-checkbox__label" [attr.for]="fieldid + option.value">
-    <span class="slds-checkbox--faux"></span>
-    <span class="slds-form-element__label">{{option.display}}</span>
-</label>
+<system-checkbox [disabled]="disabled" [(ngModel)]="checked">{{option.display}}</system-checkbox>
