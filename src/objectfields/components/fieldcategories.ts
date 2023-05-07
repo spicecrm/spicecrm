@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -84,6 +84,8 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      * @private
      */
     public escKeyListener: any;
+
+    @ViewChild('focusEl') focusElement: ElementRef;
 
     constructor(
         public model: model,
@@ -322,6 +324,16 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         this.model.setFields(fields);
 
         this.resetTmpSearchTerm();
+    }
+
+    /**
+     * focus on input field
+     */
+    public focusInputField() {
+        setTimeout(() => {
+            const element = this.renderer.selectRootElement(this.focusElement.nativeElement);
+            element.focus();
+        }, 200);
     }
 
     public search(_e) {
