@@ -148,15 +148,10 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         }
     }
 
-    /**
-     * add escape key listener
-     */
-    public ngAfterViewInit() {
-        this.subscribeToESCKeyUp();
-    }
-
     public ngOnDestroy() {
         super.ngOnDestroy();
+        // kill the listeners
+        if(this.escKeyListener) this.escKeyListener();
         if(this.clickListener) this.clickListener();
     }
 
@@ -181,6 +176,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     public openDropDown(){
         if(!this.dropDownOpen){
             this.dropDownOpen = true;
+            this.subscribeToESCKeyUp();
             // this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
         }
     }
@@ -302,7 +298,8 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 
 
 
-        // kill the listener for the open dropdown
+        // kill the listeners for the open dropdown
+        if(this.escKeyListener) this.escKeyListener();
         if(this.clickListener) this.clickListener();
     }
 
