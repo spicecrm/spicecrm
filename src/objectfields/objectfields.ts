@@ -86,6 +86,8 @@ import {fieldCategoriesTree} from "./components/fieldcategoriestree";
 import {fieldServiceCategories,} from "./components/fieldservicecategories";
 import {fieldServiceCategoryTree} from "./components/fieldservicecategorytree";
 import {fieldServiceCategorySearch} from "./components/fieldservicecategorysearch";
+import {fieldStatusNetwork} from "./components/fieldstatusnetwork";
+import {fieldStatusNetworkItem} from "./components/fieldstatusnetworkitem";
 import {fieldWorklog} from "./components/fieldworklog";
 import {FieldModelInfoComponent} from "./components/fieldmodelinfo";
 import {FieldEnumModulesComponent} from "./components/fieldenummodules";
@@ -128,6 +130,7 @@ import {fieldLinkedDetails} from "./components/fieldlinkeddetails";
 import {fieldLinkedParent} from "./components/fieldlinkedparent";
 import {fieldCountries} from "./components/fieldcountries";
 import {fieldToggle} from "./components/fieldtoggle";
+
 
 /**
  * @ignore
@@ -225,6 +228,8 @@ declare var _: any;
         fieldServiceCategories,
         fieldServiceCategoryTree,
         fieldServiceCategorySearch,
+        fieldStatusNetwork,
+        fieldStatusNetworkItem,
         fieldWorklog,
         FieldModelInfoComponent,
         FieldEnumModulesComponent,
@@ -284,7 +289,8 @@ declare var _: any;
         fieldTags,
         fieldCategories,
         fieldCategoriesTree,
-        fieldEmailRecipientsInput
+        fieldEmailRecipientsInput,
+        fieldMultienumCheckBox
     ]
 })
 export class ObjectFields {}

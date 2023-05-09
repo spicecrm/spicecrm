@@ -17,6 +17,7 @@ import {modal} from '../../services/modal.service';
 import {view} from "../../services/view.service";
 
 @Component({
+    selector: 'fieldset-manager',
     templateUrl: '../templates/fieldsetmanager.html',
     providers: [view]
 })
