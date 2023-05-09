@@ -70,7 +70,12 @@ class AdminController
             $remoteUrl = str_replace('//', '//' . $password . '@', $output);
         } else
             $remoteUrl = str_replace('//', '//' . $username . ':' . $password . '@', $output);
-        exec("git pull $remoteUrl[0]", $gitPullLog);
+
+        $currentBranch = null;
+        exec("git branch --show-current", $currentBranch);
+
+        exec("git pull $remoteUrl[0] $currentBranch[0]", $gitPullLog);
+
 
         // error handling if this fails
         if(empty($gitPullLog)){
