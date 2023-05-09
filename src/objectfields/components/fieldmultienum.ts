@@ -48,6 +48,15 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
             let val = this.language.getFieldDisplayOptionValue(this.model.module, this.fieldname, value);
             if (val) retArray.push(val);
         }
+        if (this.fieldconfig.sortdirection) {
+            switch (this.fieldconfig.sortdirection.toLowerCase()) {
+                case 'desc':
+                    retArray.sort((a,b) => a.toLowerCase() < b.toLowerCase() ? 1 : -1);
+                    break;
+                case 'asc':
+                    retArray.sort((a,b) => a.toLowerCase() > b.toLowerCase() ? 1 : -1);
+            }
+        }
 
         return retArray.join(', ');
     }

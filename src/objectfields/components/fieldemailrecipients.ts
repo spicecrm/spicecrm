@@ -59,7 +59,6 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
                 public elementRef: ElementRef,
                 public zone: NgZone) {
         super(model, view, language, metadata, router);
-        this.subscribeToDataChanges();
     }
 
     /**
@@ -67,6 +66,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      */
     public ngOnInit() {
         super.ngOnInit();
+        this.subscribeToDataChanges();
         this.setInitialFieldValue();
     }
 
@@ -76,16 +76,11 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     public subscribeToDataChanges() {
 
         this.subscriptions.add(
-            this.model.data$.subscribe(data => {
+            this.model.observeFieldChanges(this.fieldname).subscribe(() => {
 
-                if (!data.recipient_addresses || !Array.isArray(data.recipient_addresses)) return;
+                if (!this.fieldname || !Array.isArray(this.model.getField('recipient_addresses'))) return;
 
-                if (JSON.stringify(this.value) != JSON.stringify(data.recipient_addresses)) {
-                    this.value = data.recipient_addresses;
-                }
-                if (JSON.stringify(this.displayValue) != JSON.stringify(this.value)) {
-                    this.setDisplayValue();
-                }
+                this.setDisplayValue();
             })
         );
     }
@@ -139,17 +134,27 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      * set the display value
      */
     public setDisplayValue() {
-        this.displayValue = this.model.getField('recipient_addresses')
-            .filter(address => {
-                if(address.address_type == 'cc') {
-                    this.showCCField = true;
-                }
-                if(address.address_type == 'bcc') {
-                    this.showBCCField = true;
-                }
-                return this.fieldconfig.addresstype == 'to' ? ['to', 'cc', 'bcc'].indexOf(address.address_type) > -1 : address.address_type == (this.fieldconfig.addresstype || 'from');
 
-            });
+        const addresses = this.model.getField('recipient_addresses');
+
+        addresses.forEach(address => {
+            if (address.address_type == 'cc') {
+                this.showCCField = true;
+            }
+            if (address.address_type == 'bcc') {
+                this.showBCCField = true;
+            }
+        });
+
+        const configAddressType = this.fieldconfig.addresstype ?? 'from';
+
+        this.displayValue = addresses.filter(address => {
+            if (configAddressType == 'to') {
+                return address.address_type in {to: true, cc: true, bcc: true};
+            } else {
+                return address.address_type == configAddressType;
+            }
+        });
     }
 
     /**
