@@ -107,8 +107,11 @@ class SpiceUIConfLoader
         'syssalesdoctypesitemtypes',
         'syscategorytrees',
         'syscategorytreelinks',
+        'syststatusnetwork',
         'schedulerjobtasks',
-        'schedulerjobs'
+        'schedulerjobs',
+        'sysuihtmlstylesheets',
+        'sysuihtmlformats'
     ];
 
     /**
