@@ -48,6 +48,15 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
             let val = this.language.getFieldDisplayOptionValue(this.model.module, this.fieldname, value);
             if (val) retArray.push(val);
         }
+        if (this.fieldconfig.sortdirection) {
+            switch (this.fieldconfig.sortdirection.toLowerCase()) {
+                case 'desc':
+                    retArray.sort((a,b) => a.toLowerCase() < b.toLowerCase() ? 1 : -1);
+                    break;
+                case 'asc':
+                    retArray.sort((a,b) => a.toLowerCase() > b.toLowerCase() ? 1 : -1);
+            }
+        }
 
         return retArray.join(', ');
     }
@@ -56,7 +65,7 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         try {
             let value = this.model.getFieldValue(this.fieldname);
             // delete leading and trailing ^ if there is any
-            if(value.substring(0, 1) == '^') value = value.substring(1, value.length - 2);
+            if(value.substring(0, 1) == '^') value = value.substring(1, value.length - 1);
             return value.split('^,^');
         } catch (e) {
             return [];
@@ -64,36 +73,66 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
     }
 
     public buildOptions() {
-        // reset the options
-        this.options = [];
+
+        let retArray = [];
 
         // get the langiage options
         let options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
 
-        let countEntries = 0;
-        for (let item in options) {
-            countEntries++;
-        }
-
-        // build the rows
-        let entriesPerRow = countEntries / this.columns;
-        let row = 0;
-        let rowArray = [];
         for (let optionVal in options) {
-            rowArray.push({
+            retArray.push({
                 id: this.model.generateGuid(),
                 value: optionVal,
                 display: options[optionVal]
             });
+        }
+        this.options = retArray;
+        if (this.fieldconfig.sortdirection) {
+            switch (this.fieldconfig.sortdirection.toLowerCase()) {
+                case 'desc':
+                    this.options.sort((a,b) => a.display.toLowerCase() < b.display.toLowerCase() ? 1 : -1);
+                    break;
+                case 'asc':
+                    this.options.sort((a,b) => a.display.toLowerCase() > b.display.toLowerCase() ? 1 : -1);
+            }
+        }
+        let countEntries = 0;
+        for (let item in this.options) {
+            countEntries++;
+        }
 
-            if (rowArray.length >= entriesPerRow) {
+        // reset the options
+        this.options = [];
+        // build the rows
+        let entriesPerRow = Math.round(countEntries / this.columns);
+        let row = 0;
+        let rowArray = [];
+
+        for(let item of retArray){
+            rowArray.push(item);
+
+            // if () this.options.push(rowArray);
+            if (rowArray.length >= entriesPerRow && row != this.columns -1) {
                 this.options.push(rowArray);
+                row++;
                 rowArray = [];
             }
         }
+        // for (let optionVal in this.options) {
+        //     rowArray.push({
+        //         id: this.model.generateGuid(),
+        //         value: optionVal,
+        //         display: this.options[optionVal]
+        //     });
+        //
+        //     if (rowArray.length >= entriesPerRow) {
+        //         this.options.push(rowArray);
+        //         rowArray = [];
+        //     }
+        // }
 
         // push what is left
-        if (rowArray.length > 0) this.options.push(rowArray);
+        if (row==this.columns||rowArray.length > 0) this.options.push(rowArray);
 
     }
 }
