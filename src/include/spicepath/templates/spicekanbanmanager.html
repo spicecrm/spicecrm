@@ -28,6 +28,9 @@
         <spice-kanban-manager-preview></spice-kanban-manager-preview>
     </div>
     <div class="slds-grow slds-grid">
+        <div class="slds-size--1-of-5 slds-height_full slds-scrollable--y">
+            <spice-kanban-manager-list></spice-kanban-manager-list>
+        </div>
         <ng-container *ngIf="!!kanbanManagerService.selectedBeanGuide; else noSelection">
             <div class="slds-size--1-of-5 slds-height_full slds-scrollable--y">
                 <spice-kanban-manager-list></spice-kanban-manager-list>

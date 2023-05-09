@@ -1,8 +1,9 @@
 import {Component, OnDestroy} from '@angular/core';
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {backend} from "../../../services/backend.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {Subscription} from "rxjs";
+import {SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
 
 @Component({
     selector: 'spice-kanban-manager-list',
@@ -10,7 +11,10 @@ import {Subscription} from "rxjs";
 })
 
 export class SpiceKanbanManagerList implements OnDestroy {
-    public enumValues = Array.from({length: 50}, (_, i) => 'Item ' + i);
+    // public enumValues = Array.from({length: 50}, (_, i) => 'Item ' + i);
+    public spiceBeanGuideStages:SpiceBeanGuideStagesI[] = [];
+    public notInKanban:SpiceBeanGuideStagesI[] = [];
+    public activeStages:SpiceBeanGuideStagesI[] = [];
     private subscription: Subscription = new Subscription();
 
     constructor(public backend: backend,
@@ -23,7 +27,17 @@ export class SpiceKanbanManagerList implements OnDestroy {
      * drag and drop for beanguidestages
      */
     public drop(event: CdkDragDrop<any[]>) {
-        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        if(event.previousContainer === event.container){
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        }
+        else {
+            transferArrayItem(
+                event.previousContainer.data,
+                event.container.data,
+                event.previousIndex,
+                event.currentIndex,
+            );
+        }
 
         this.saveSequence();
     }
@@ -33,11 +47,11 @@ export class SpiceKanbanManagerList implements OnDestroy {
      */
     public saveSequence() {
 
-        this.enumValues.forEach((entry, index) => {
-            // entry.stage_sequence = index;
+        this.spiceBeanGuideStages.forEach((entry, index) => {
+            entry.stage_sequence = index;
         });
 
-        this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null);
+        this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config:this.spiceBeanGuideStages});
 
     }
 
@@ -47,6 +61,11 @@ export class SpiceKanbanManagerList implements OnDestroy {
 
     private loadItems() {
         // todo: load beanguidestages from backend
+       this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages =>{
+           this.spiceBeanGuideStages = stages;
+           this.activeStages = this.spiceBeanGuideStages.filter(dis=>dis.not_in_kanban == 0);
+           this.notInKanban = this.spiceBeanGuideStages.filter(dis=>dis.not_in_kanban == 1);
+       })
     }
 
     private subscribeToSelectionChange() {
