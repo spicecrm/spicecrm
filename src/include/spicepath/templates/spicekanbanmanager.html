@@ -3,16 +3,16 @@
         <workbench-header-controls>
             <div class="slds-grid">
                 <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
-                <system-input-module></system-input-module>
+                <system-input-module [disabled]="beanGuides.length == 0" [(ngModel)]="moduleName">{{moduleName}}</system-input-module>
                 <div class="slds-form-element__control slds-m-left--xx-small" style="min-width:250px;">
                     <div class="slds-select_container">
-                        <select class="slds-select" [disabled]="true">
-                            <option value="*">*</option>
-                            <option value='test'>test</option>
+                        <select class="slds-select" [(ngModel)]="kanBanName">
+                            <option></option>
+                            <option *ngFor="let name of getBeanGuidesNames(moduleName)">{{name.name}}</option>
                         </select>
                     </div>
                 </div>
-                <button (click)="openAddModal()" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small">
+                <button [disabled]="moduleName == ''" (click)="openAddModal()" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small">
                     <system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon>
                 </button>
                 <button (click)="togglePreview()" class="slds-button slds-button--neutral">

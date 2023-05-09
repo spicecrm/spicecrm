@@ -1,12 +1,25 @@
 import {Injectable} from '@angular/core';
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
+
+import {backend} from "../../../services/backend.service";
+
+
+export interface IBeanGuides {
+    id: string;
+    module: string;
+    status_field: string;
+    build_language?: string;
+    name: string;
+}
 
 @Injectable()
 export class KanbanManagerService {
-    /**
-     * holds the bean guides
-     */
-    public beanGuides = [];
+
+    public constructor(
+        public backend: backend,
+    ) {}
+
+
     /**
      * holds the selected bean guide
      */
@@ -23,6 +36,11 @@ export class KanbanManagerService {
     }
 
     public selectedBeanGuide$: Subject<any> = new Subject<any>();
+
+
+    public getBeanGuides(): Observable<IBeanGuides[]> {
+        return this.backend.getRequest(`configuration/configurator/entries/spicebeanguides`);
+    }
 
 
 }
