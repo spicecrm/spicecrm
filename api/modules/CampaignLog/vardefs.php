@@ -313,21 +313,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'comment' => 'Module name of the bean that is the original reason for the campaign log entry'
         ],
         'targeted_prospects' => [
-            'name' => 'prospects',
+            'name' => 'targeted_prospects',
             'vname' => 'LBL_PROSPECTS',
             'type' => 'link',
             'relationship' => 'prospect_campaign_log',
             'source' => 'non-db',
         ],
         'targeted_consumers' => [
-            'name' => 'consumers',
+            'name' => 'targeted_consumers',
             'type' => 'link',
             'vname' => 'LBL_CONSUMERS',
             'relationship' => 'consumer_campaign_log',
             'source' => 'non-db',
         ],
         'targeted_accounts' => [
-            'name' => 'accounts',
+            'name' => 'targeted_accounts',
             'vname' => 'LBL_ACCOUNTS',
             'type' => 'link',
             'relationship' => 'account_campaign_log',
