@@ -281,9 +281,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'relationship' => 'campaignlog_contact',
             'source'=>'non-db',
         ],
-        'consumer'=> [
-            'name' => 'consumer',
-            'vname' => 'LBL_CONSUMER',
+        'created_consumer'=> [
+            'name' => 'created_consumer',
+            'vname' => 'LBL_CREATED_CONSUMER',
             'type' => 'link',
             'relationship' => 'campaignlog_consumer',
             'source'=>'non-db',
