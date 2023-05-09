@@ -60,8 +60,9 @@ class EmailTracking
      * @return string
      */
     static function getTrackingPixel($trackingData){
-        return '<img src="' . self::getTrackingPixelSrc($trackingData) . '" height="1" width="1">';
+        return '<img style="visibility: hidden" src="' . self::getTrackingPixelSrc($trackingData) . '" alt="emailrefid_' . self::encodeTrackingID($trackingData) . '_" height="1" width="1">';
     }
+
 
     /**
      * generates the tracking pixel image
