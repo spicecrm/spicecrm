@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\TimeDate;
 use Exception;
@@ -106,6 +107,13 @@ abstract class TransportHandler
         if($this->mailbox->track_mailbox){
             $body .= EmailTracking::getTrackingPixel('Emails:' . $email->id);
         }
+
+        if($this->mailbox->unsubscribe_header) {
+            $trackData = EmailTracking::encodeTrackingID("Emails:{$email->id}");
+            $unsubUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl'));
+            $body .= "<a href=\"{$unsubUrl}\">unsubscribe</a>";
+        }
+
         return $body;
     }
 
