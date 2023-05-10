@@ -50,7 +50,4 @@ $routes = [
     ]
 ];
 
-
-
-
 $RESTManager->registerExtension('marketing', '1.0', [], $routes);
