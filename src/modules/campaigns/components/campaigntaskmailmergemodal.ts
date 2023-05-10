@@ -187,7 +187,7 @@ export class CampaignTaskMailMergeModal implements OnInit {
 
         // generate a blob file from the content
         // base64 decode in case wehave a PDF
-        let blob = this.datatoBlob(atob(this.pdf));
+        let blob = this.datatoBlob(atob(this.pdf),'application/pdf');
         let blobUrl = URL.createObjectURL(blob);
 
         // set as href and set the type
