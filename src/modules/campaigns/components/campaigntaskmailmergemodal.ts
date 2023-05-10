@@ -139,7 +139,7 @@ export class CampaignTaskMailMergeModal implements OnInit {
                 this.pdf = res.content;
                 // send the inactiveCount to be displayed in front-end
                 this.inactiveCount = res.inactiveCount;
-                let blob = this.datatoBlob(atob(res.content));
+                let blob = this.datatoBlob(atob(res.content),'application/pdf');
                 this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                 this.loading = false;
             }, error: () => {
