@@ -226,7 +226,7 @@ export class ServiceDocSignatureModal {
 
                 this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
                     pdf => {
-                        let blob = this.datatoBlob( atob( pdf.content ) );
+                        let blob = this.datatoBlob(atob(pdf.content), 'application/pdf');
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
                         this.contentForHandBack = pdf.content;
                         this.loading_output = false;
