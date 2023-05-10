@@ -65,7 +65,7 @@ class EmailTrackingActionsController
         // load the unsub landingpage content
         $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'));
         $res->getBody()->write($landingPage->content);
-        return $res->withStatus(200);
+        return $res->withHeader('Content-Type', 'text/html');
     }
 
     /** handles logging of a clicked link
