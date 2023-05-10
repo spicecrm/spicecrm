@@ -61,7 +61,7 @@ class EmailTrackingActionsController
 
         $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
 
-        if($chunks[0] !== 'Emails'){
+        if($chunks[0][0] !== 'Emails'){
             throw new BadRequestException('invalid entry');
         }
 
@@ -69,7 +69,7 @@ class EmailTrackingActionsController
         $this->logTrackingAction($data, 'unsubscribe');
 
         // get the email seed
-        $seed = BeanFactory::getBean($chunks[0], $chunks[1]);
+        $seed = BeanFactory::getBean($chunks[0][0], $chunks[0][1]);
 
         // load the unsub landingpage content
         /** @var LandingPage $landingPage */
