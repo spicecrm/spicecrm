@@ -50,7 +50,7 @@ class AdminController
         $postBody = $req->getParsedBody();
 
         // extract username and password or token from the body
-        $username = str_replace('@','%',$postBody['username']);
+        $username = str_replace('@','%40',$postBody['username']);
         if (empty($postBody['password'])){
             $password = $postBody['token'];
         } else
