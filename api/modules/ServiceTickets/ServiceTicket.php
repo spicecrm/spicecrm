@@ -63,9 +63,10 @@ class ServiceTicket extends SpiceBean
     {
         $bean = parent::retrieve($id, $encode, $deleted, $relationships);
 
-        if (!empty($this->contact_id)) {
-            if($contact = BeanFactory::getBean('Contacts', $this->contact_id)){
-                $this->email1 = $contact->email1;
+        // try to retrieve the parent and set the email if we have one
+        if (!empty($this->parent_id)) {
+            if($parent = BeanFactory::getBean($this->parent_type, $this->parent_id)){
+                $this->email1 = $parent->email1;
             }
         }
 
