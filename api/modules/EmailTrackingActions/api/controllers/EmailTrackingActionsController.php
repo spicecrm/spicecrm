@@ -62,7 +62,10 @@ class EmailTrackingActionsController
         $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
         $this->logTrackingAction($data, 'unsubscribe');
 
-        return $res->withJson(true);
+        // load the unsub landingpage content
+        $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'));
+        $res->getBody()->write($landingPage->content);
+        return $res->withStatus(200);
     }
 
     /** handles logging of a clicked link
