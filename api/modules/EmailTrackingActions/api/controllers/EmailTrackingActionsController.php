@@ -37,7 +37,9 @@ class EmailTrackingActionsController
         $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
         $this->logTrackingAction($data, 'opened');
 
-        return $res->withJson(true);
+        // return an image - 1x1 transparent pixel
+        $res->getBody()->write(base64_decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="));
+        return $res->withHeader('Content-Type', 'image/png');
     }
 
     /**
@@ -250,8 +252,6 @@ class EmailTrackingActionsController
                     break;
             }
         }
-
-
     }
 
     /**
