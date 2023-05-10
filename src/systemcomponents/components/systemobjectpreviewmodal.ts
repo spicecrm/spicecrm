@@ -9,6 +9,7 @@ import {language} from '../../services/language.service';
  * a modal that renders and provides a preview for an object
  */
 @Component({
+    selector: 'system-object-preview-modal',
     templateUrl: '../templates/systemobjectpreviewmodal.html'
 })
 export class SystemObjectPreviewModal {
