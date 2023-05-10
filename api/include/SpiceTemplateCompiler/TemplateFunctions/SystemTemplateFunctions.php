@@ -161,8 +161,8 @@ class SystemTemplateFunctions {
      * @param $format
      * @return string
      */
-    static function remoteIP( $compiler, $bean, $format = null ) {
-        return $_SERVER['remote_address'];
+    static function remoteIP( $compiler, $bean ) {
+        return $_SERVER['REMOTE_ADDR'];
     }
 
     /*
