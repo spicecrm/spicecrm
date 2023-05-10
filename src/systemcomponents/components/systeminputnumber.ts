@@ -190,7 +190,8 @@ export class SystemInputNumber implements ControlValueAccessor {
             numberValue = undefined;
             this.resetDecimalCounter();
         } else {
-            numberValue = (Math.floor(numberValue * Math.pow(10, defSigDigits)) / Math.pow(10, defSigDigits));
+            // parseFloat of numberValue is enough
+            // numberValue = (Math.floor(numberValue * Math.pow(10, defSigDigits)) / Math.pow(10, defSigDigits));
         }
 
         numberValue = numberValue && numberValue > this.max ? this.max : numberValue;
@@ -207,7 +208,9 @@ export class SystemInputNumber implements ControlValueAccessor {
         let defSigDigits = this.precision === undefined ? pref.default_currency_significant_digits : this.precision;
         let numberValue: any = this.textValue.split(pref.num_grp_sep).join('');
         numberValue = numberValue.split(pref.dec_sep).join('.');
-        numberValue = isNaN(parseFloat(numberValue)) ? undefined : (Math.floor(numberValue * Math.pow(10, defSigDigits)) / Math.pow(10, defSigDigits));
+        // just parseFloat to avoid rounding down decimals when using Math.floor
+//        numberValue = isNaN(parseFloat(numberValue)) ? undefined : (Math.floor(numberValue * Math.pow(10, defSigDigits)) / Math.pow(10, defSigDigits));
+        numberValue = isNaN(parseFloat(numberValue)) ? undefined : parseFloat(numberValue);
         return numberValue;
     }
 
