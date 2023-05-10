@@ -6,6 +6,7 @@ namespace SpiceCRM\modules\EmailTrackingActions\api\controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\extensions\modules\LandingPages\LandingPage;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
@@ -59,12 +60,23 @@ class EmailTrackingActionsController
         }
 
         $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+
+        if($chunks[0] !== 'Emails'){
+            throw new BadRequestException('invalid entry');
+        }
+
         $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
         $this->logTrackingAction($data, 'unsubscribe');
 
+        // get the email seed
+        $seed = BeanFactory::getBean($chunks[0], $chunks[1]);
+
         // load the unsub landingpage content
+        /** @var LandingPage $landingPage */
         $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('emailtracking.unsubscribelandingpage'));
-        $res->getBody()->write($landingPage->content);
+        $lpContent = $landingPage->parse($seed);
+
+        $res->getBody()->write($lpContent['content']);
         return $res->withHeader('Content-Type', 'text/html');
     }
 
