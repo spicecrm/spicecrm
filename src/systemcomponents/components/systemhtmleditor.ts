@@ -63,7 +63,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     @Input() public useMedialFile: boolean = false;
 
     public get useTemplateVariableHelper() {
-        return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
+        return ( this.model?.module === 'LandingPages' ||this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
     }
 
     // for the value accessor

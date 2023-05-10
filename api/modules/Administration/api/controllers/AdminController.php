@@ -50,7 +50,7 @@ class AdminController
         $postBody = $req->getParsedBody();
 
         // extract username and password or token from the body
-        $username = str_replace('@','%',$postBody['username']);
+        $username = str_replace('@','%40',$postBody['username']);
         if (empty($postBody['password'])){
             $password = $postBody['token'];
         } else
@@ -70,7 +70,12 @@ class AdminController
             $remoteUrl = str_replace('//', '//' . $password . '@', $output);
         } else
             $remoteUrl = str_replace('//', '//' . $username . ':' . $password . '@', $output);
-        exec("git pull $remoteUrl[0]", $gitPullLog);
+
+        $currentBranch = null;
+        exec("git branch --show-current", $currentBranch);
+
+        exec("git pull $remoteUrl[0] $currentBranch[0]", $gitPullLog);
+
 
         // error handling if this fails
         if(empty($gitPullLog)){
