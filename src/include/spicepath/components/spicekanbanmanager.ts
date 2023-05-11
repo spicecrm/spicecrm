@@ -60,4 +60,11 @@ export class SpiceKanbanManager implements OnInit{
     public togglePreview () {
         this.preview = !this.preview;
     }
+
+    public openEditModal(selectedBeanGuide) {
+        this.modal.openModal('SpiceKanbanManagerAddModal', true, this.injector).subscribe((modalRef)  => {
+            modalRef.instance.selectedBeanGuide = selectedBeanGuide;
+            modalRef.instance.moduleName = selectedBeanGuide.module;
+        });
+    }
 }
