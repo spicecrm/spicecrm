@@ -1,7 +1,7 @@
 import {Component, OnDestroy} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {backend} from "../../../services/backend.service";
-import {IBeanGuides, KanbanManagerService} from "../services/kanbanmanager.service";
+import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {Subscription} from "rxjs";
 import {SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
 
