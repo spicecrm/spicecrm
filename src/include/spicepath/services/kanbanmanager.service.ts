@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 
 import {backend} from "../../../services/backend.service";
+import {SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
 
 
 export interface IBeanGuides {
@@ -15,9 +16,11 @@ export interface IBeanGuides {
 @Injectable()
 export class KanbanManagerService {
 
-    public constructor(
-        public backend: backend,
-    ) {}
+    public stages:SpiceBeanGuideStagesI[] = [];
+
+    public constructor(public backend: backend) {
+        this.loadItems();
+    }
 
 
     /**
@@ -42,5 +45,25 @@ export class KanbanManagerService {
         return this.backend.getRequest(`configuration/configurator/entries/spicebeanguides`);
     }
 
+    /**
+     * load spice bean guide items from backend
+     */
+    public loadItems() {
+        this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages =>{
+            this.stages = stages;
+        })
+    }
 
+    /**
+     * saving the new sequence of beanguidestages
+     */
+    public saveSequence() {
+
+        this.stages.forEach((entry, index) => {
+            entry.stage_sequence = index;
+        });
+
+        this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config:this.stages});
+
+    }
 }
