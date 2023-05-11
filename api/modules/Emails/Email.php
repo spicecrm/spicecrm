@@ -200,8 +200,6 @@ class Email extends SpiceBean
 
             return $result;
         }
-
-        $this->updateParentNotificationStatus();
     }
 
     /**
@@ -249,27 +247,6 @@ class Email extends SpiceBean
     {
         $this->attachments = json_decode(json_encode($attachments));
         $this->attachments_count = count($this->attachments);
-    }
-
-    /**
-     * check if parent has a determineNotificationStatus method
-     * if method exists, and current status is different to has_notification, update the field on parent and call save.
-     */
-    private function updateParentNotificationStatus()
-    {
-        if (!$this->parent_type || !$this->parent_id) {
-            return;
-        }
-
-        $parentObj = BeanFactory::getBean($this->parent_type, $this->parent_id);
-        if ($parentObj->id && method_exists($parentObj, "determineNotificationStatus")) {
-            $parentNotificationStatus = $parentObj->determineNotificationStatus();
-
-            if ($parentNotificationStatus !== $parentObj->has_notification) {
-                $parentObj->has_notification = $parentNotificationStatus;
-                $parentObj->save();
-            }
-        }
     }
 
 
