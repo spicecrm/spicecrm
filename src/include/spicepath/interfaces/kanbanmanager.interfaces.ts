@@ -12,3 +12,11 @@ export interface SpiceBeanGuideStagesI {
     not_in_kanban: number;
     spicebeanguide_status: string;
 }
+
+export interface SpiceBeanGuidesI {
+    id: string;
+    module: string;
+    status_field: string;
+    build_language?: string;
+    name: string;
+}
