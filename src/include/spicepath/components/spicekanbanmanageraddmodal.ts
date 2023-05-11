@@ -5,6 +5,7 @@ import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
 import {toast} from "../../../services/toast.service";
 import {modelutilities} from '../../../services/modelutilities.service';
+import {SpiceBeanGuidesI} from "../interfaces/kanbanmanager.interfaces";
 
 
 @Component({
@@ -38,6 +39,11 @@ export class SpiceKanbanManagerAddModal {
      * Kan Ban name field
      */
     public kanbanName: string = '';
+
+    /**
+     * Selected bean guide
+     */
+    public selectedBeanGuide: SpiceBeanGuidesI;
 
     constructor(
         public modal: modal,
@@ -98,12 +104,30 @@ export class SpiceKanbanManagerAddModal {
     }
 
     /**
+     * Edit Kan Ban in table spicebeanguides
+     */
+    public editKanban() {
+        let spinner = this.modal.await('LBL_SAVING');
+
+        this.backend.postRequest(`configuration/configurator/spicebeanguides`, null, {config: [this.selectedBeanGuide]}).subscribe({
+            next: () => {
+                spinner.emit(true);
+                this.toast.sendToast('LBL_SPICEBEANGUIDE_SAVED', "success");
+                this.close();
+            },
+            error: (err) => {
+                spinner.emit(true);
+                this.toast.sendToast('LBL_ERROR_SAVING_SPICEBEANGUIDE', "error", err);
+            }
+        });
+    }
+
+
+    /**
      * closes the modal
      */
     public close() {
         this.self.destroy();
     }
-
-
 }
 

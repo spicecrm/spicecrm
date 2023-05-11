@@ -6,7 +6,7 @@
                 <system-input-module [disabled]="beanGuides.length == 0" [(ngModel)]="moduleName">{{moduleName}}</system-input-module>
                 <div class="slds-form-element__control slds-m-left--xx-small" style="min-width:250px;">
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="kanbanManagerService.selectedBeanGuide">
+                        <select class="slds-select" [disabled]="beanGuides.length == 0" [(ngModel)]="kanbanManagerService.selectedBeanGuide">
                             <option></option>
                             <option *ngFor="let beanGuide of moduleBeanGuides" [ngValue]="beanGuide">{{beanGuide.name}}</option>
                         </select>
@@ -15,7 +15,10 @@
                 <button [disabled]="moduleName == ''" (click)="openAddModal()" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small">
                     <system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon>
                 </button>
-                <button (click)="togglePreview()" class="slds-button slds-button--neutral">
+                <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="openEditModal(kanbanManagerService.selectedBeanGuide)" class="slds-button slds-button--neutral">
+                    <system-label label="LBL_EDIT"></system-label>
+                </button>
+                <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="togglePreview()" class="slds-button slds-button--neutral">
                     <system-label label="LBL_PREVIEW"></system-label>
                 </button>
                 <button class="slds-button slds-button--brand">
