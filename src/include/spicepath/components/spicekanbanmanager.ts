@@ -3,7 +3,10 @@ import {Component, Injector, OnInit} from '@angular/core';
 import {modal} from '../../../services/modal.service';
 import {metadata} from '../../../services/metadata.service';
 
-import {KanbanManagerService, IBeanGuides} from "../services/kanbanmanager.service";
+import {SpiceBeanGuidesI} from "../interfaces/kanbanmanager.interfaces";
+
+import {KanbanManagerService} from "../services/kanbanmanager.service";
+
 
 @Component({
     selector: 'spice-kanban-manager',
@@ -20,9 +23,9 @@ export class SpiceKanbanManager implements OnInit{
      */
     public _moduleName: string = '';
 
-    public beanGuides: IBeanGuides[] = [];
+    public beanGuides: SpiceBeanGuidesI[] = [];
 
-    public moduleBeanGuides: IBeanGuides[] = [];
+    public moduleBeanGuides: SpiceBeanGuidesI[] = [];
 
     public preview: boolean = false;
 
