@@ -1,16 +1,22 @@
 <system-modal size="prompt">
-    <system-modal-header (click)="close()"><system-label label="LBL_ADD_KANBAN"></system-label></system-modal-header>
+    <system-modal-header (click)="close()"><system-label [label]="selectedBeanGuide ? 'LBL_EDIT_KANBAN' : 'LBL_ADD_KANBAN'"></system-label></system-modal-header>
     <system-modal-content margin="none">
         <div class="slds-p-bottom--large">
             <div class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label"><system-label label="LBL_KANBAN_NAME"></system-label></label>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" placeholder="name" [(ngModel)]="kanbanName" />
+                    <input *ngIf="!selectedBeanGuide" type="text" class="slds-input" placeholder="name" [(ngModel)]="kanbanName"/>
+                    <input *ngIf="selectedBeanGuide" type="text" class="slds-input" [(ngModel)]="selectedBeanGuide.name"/>
                 </div>
             </div>
             <div class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label"><system-label label="LBL_MODEL_FIELD"></system-label></label>
-                <div class="slds-form-element__control">
+                <div *ngIf="selectedBeanGuide" class="slds-form-element__control">
+                    <select class="slds-select" [(ngModel)]="selectedBeanGuide.status_field">
+                        <option *ngFor="let fieldname of getFieldNames()">{{fieldname}}</option>
+                    </select>
+                </div>
+                <div *ngIf="!selectedBeanGuide" class="slds-form-element__control">
                     <select class="slds-select" [(ngModel)]="fieldName">
                         <option *ngFor="let fieldname of getFieldNames()">{{fieldname}}</option>
                     </select>
@@ -20,6 +26,7 @@
     </system-modal-content>
     <system-modal-footer>
         <button (click)="close()" class="slds-button slds-button--neutral"><system-label label="LBL_CANCEL"></system-label></button>
-        <button (click)="addKanban()" class="slds-button slds-button--brand"><system-label label="LBL_ADD"></system-label></button>
+        <button *ngIf="!selectedBeanGuide" (click)="addKanban()" class="slds-button slds-button--brand"><system-label label="LBL_ADD"></system-label></button>
+        <button *ngIf="selectedBeanGuide" (click)="editKanban()" class="slds-button slds-button--brand"><system-label label="LBL_EDIT"></system-label></button>
     </system-modal-footer>
 </system-modal>
