@@ -166,16 +166,13 @@ class ServiceTicket extends SpiceBean
             $this->resolve_date = '';
         }
 
-        // determine the notification status
-        $this->has_notification = $this->determineNotificationStatus();
-
-        $dummy = parent::save($check_notify);
+        $saveResponse = parent::save($check_notify);
 
         if (!empty(json_decode($this->questionnaire_answers, true))) {
             QuestionAnsweringHandler::saveAnswers_byParent(json_decode($this->questionnaire_answers, true)['answers'], 'ServiceTickets', $this->id, true);
         }
 
-        return $dummy;
+        return $saveResponse;
 
     }
 
@@ -193,17 +190,6 @@ class ServiceTicket extends SpiceBean
             }
             $sla->setSLADatesforTicket($this, $slaTime);
         }
-    }
-
-    /**
-     * check if there are unread emails resp also to be extended to serviceticketnotes
-     */
-    public function determineNotificationStatus()
-    {
-        return 0;
-        $unreadEmailCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM emails WHERE parent_id = '{$this->id}' and status = 'unread' AND deleted = 0"));
-        $unreadNoteCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM serviceticketnotes WHERE serviceticket_id = '{$this->id}' and servicenote_status = 'unread' AND deleted = 0"));
-        return $unreadEmailCount['total'] > 0 || $unreadNoteCount['total'] > 0 ? 1 : 0;
     }
 
     /**
