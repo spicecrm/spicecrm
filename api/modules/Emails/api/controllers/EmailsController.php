@@ -289,9 +289,11 @@ class EmailsController
                 $count = $seed->db->fetchOne("SELECT count(id) unreadcount FROM emails WHERE status='unread' AND deleted = 0 AND parent_id='{$email->parent_id}' AND parent_type='{$email->parent_type}'");
                 if($count['unreadcount'] > 0 && $seed->has_notification == 0) {
                     $seed->has_notification = 1;
+                    $seed->systemUpdate = true;
                     $seed->save();
                 } elseif ($count['unreadcount'] == 0 && $seed->has_notification == 1) {
                     $seed->has_notification = 0;
+                    $seed->systemUpdate = true;
                     $seed->save();
                 }
             }
