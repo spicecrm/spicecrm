@@ -18,12 +18,13 @@ export class SpiceKanbanManager implements OnInit{
     /**
      * module name
      */
-    public moduleName: string = '';
+    public _moduleName: string = '';
 
     public beanGuides: IBeanGuides[] = [];
 
+    public moduleBeanGuides: IBeanGuides[] = [];
+
     public preview: boolean = false;
-    public kanBanName: string = '';
 
     constructor(
         public modal: modal,
@@ -31,6 +32,15 @@ export class SpiceKanbanManager implements OnInit{
         public metadata: metadata,
         public kanbanManagerService: KanbanManagerService
     ) {
+    }
+
+    get moduleName() {
+        return this._moduleName;
+    }
+
+    set moduleName(val: string) {
+        this._moduleName = val;
+        this.moduleBeanGuides = this.beanGuides.filter(res => res.module == val);
     }
 
     public ngOnInit() {
@@ -47,11 +57,4 @@ export class SpiceKanbanManager implements OnInit{
     public togglePreview () {
         this.preview = !this.preview;
     }
-
-
-    public getBeanGuidesNames(module) {
-        return this.beanGuides.filter(res => res.module == module);
-    }
-
-
 }
