@@ -1653,7 +1653,7 @@ class SpiceFTSHandler
             while ($indexBean = $db->fetchByAssoc($indexBeans)) {
                 if ($toConsole) {
                     if ($counterIndexed + $counterDeleted > 0) echo str_repeat(chr(8), $numRowsLength); // delete previous counter output
-                    echo sprintf("%${numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
+                    echo sprintf("%{$numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
                 }
                 if ($indexBean['deleted'] == 0) {
                     $seed->retrieve($indexBean['id']);
@@ -1745,7 +1745,7 @@ class SpiceFTSHandler
             while ($indexBean = $db->fetchByAssoc($indexBeans)) {
                 if ($toConsole) {
                     if ($counterIndexed + $counterDeleted > 0) echo str_repeat(chr(8), $numRowsLength); // delete previous counter output
-                    echo sprintf("%${numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
+                    echo sprintf("%{$numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
                 }
                 if ($indexBean['deleted'] == 0) {
 
