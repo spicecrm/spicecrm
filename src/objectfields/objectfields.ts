@@ -130,6 +130,7 @@ import {fieldLinkedDetails} from "./components/fieldlinkeddetails";
 import {fieldLinkedParent} from "./components/fieldlinkedparent";
 import {fieldCountries} from "./components/fieldcountries";
 import {fieldToggle} from "./components/fieldtoggle";
+import {fieldNotificationIndicator} from "./components/fieldnotificationindicator";
 
 
 /**
@@ -269,7 +270,8 @@ declare var _: any;
         fieldEmailRecipientsInput,
         fieldJson,
         fieldCountries,
-        fieldToggle
+        fieldToggle,
+        fieldNotificationIndicator
     ],
     exports: [
         fieldSet,
