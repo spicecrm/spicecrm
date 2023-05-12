@@ -1,1 +1,16 @@
-preview
+<div class="slds-m-top--small slds-m-horizontal--small">
+    <div class="slds-tabs--path" role="application">
+        <ul class="slds-tabs--path__nav" role="tablist">
+            <ng-container *ngFor="let stage of active">
+                <li class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                    <a class="slds-tabs--path__link" aria-selected="false" role="tab" href="javascript:void(0);" aria-live="assertive">
+                        <span class="slds-tabs--path__stage">
+                      <system-utility-icon icon="check" size="x-small"></system-utility-icon>
+                    </span>
+                        <span class="slds-tabs--path__title"><system-label [label]="stage.stage_label"></system-label>(0)</span>
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+</div>
