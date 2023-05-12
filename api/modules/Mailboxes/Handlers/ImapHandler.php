@@ -167,7 +167,7 @@ class ImapHandler extends TransportHandler
             $items = imap_search($stream, 'ALL');
         }
 
-        $this->log(Mailbox::LOG_DEBUG, count($items) . ' emails in mailbox since '
+        $this->log(Mailbox::LOG_DEBUG, is_array($items) ? count($items) : 0 . ' emails in mailbox since '
             . date('d-M-Y', strtotime($dateSince)));
 
         $new_mail_count = 0;
