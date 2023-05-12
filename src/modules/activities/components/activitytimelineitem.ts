@@ -17,6 +17,7 @@ import {session} from '../../../services/session.service';
 import {metadata} from '../../../services/metadata.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {language} from "../../../services/language.service";
+import {backend} from "../../../services/backend.service";
 import {activitiytimeline} from "../../../services/activitiytimeline.service";
 import {Subscription} from "rxjs";
 
@@ -87,6 +88,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
         public userpreferences: userpreferences,
         public session: session,
         public language: language,
+        public backend: backend,
         @Optional() public activitiytimeline: activitiytimeline,
         public cdref: ChangeDetectorRef
     ) {
@@ -274,6 +276,16 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
         // if expanded and not laoded yet load the atachments
         if (this.isopen && this.componentconfig.displayattachments && !this.modelattachments.loaded) {
             this.modelattachments.getAttachments();
+        }
+
+        // special handling for email to set to read if an unread email is opened
+        if(this.model.module == 'Emails' && this.model.getField('status') == 'unread'){
+            this.model.setField('status', 'read');
+            this.backend.postRequest(`module/Emails/${this.model.id}/status`, {}, {status: 'read'}).subscribe({
+                error:() => {
+                    this.model.setField('status', 'unread');
+                }
+            });
         }
     }
 }

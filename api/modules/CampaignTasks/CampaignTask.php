@@ -225,6 +225,7 @@ class CampaignTask extends SpiceBean
             'searchterm' => $searchTerm,
             'records' => $limit,
             'start' => $offset,
+            'useGlobalFilter' => false,
             'sort' => !$sort || !$sort->sortfield ? [] : ['sortfield' => $sort->sortfield, 'sortdirection' => $sort->sortdirection]
         ];
     }

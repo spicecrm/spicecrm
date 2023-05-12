@@ -71,14 +71,30 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
     }
 
     /**
+     * overwrite getter to write directly to recipient addresses
+     */
+    get value() {
+        return this.model.getField('recipient_addresses');
+    }
+
+    /**
+     * overwrite setter to write directly to recipient addresses
+     *
+     * @param val the new value
+     */
+    set value(val) {
+        this.model.setField('recipient_addresses', val);
+    }
+
+    /**
      * subscribe to model data change and set the value and the display value
      */
     public subscribeToDataChanges() {
 
         this.subscriptions.add(
-            this.model.observeFieldChanges(this.fieldname).subscribe(() => {
+            this.model.observeFieldChanges('recipient_addresses').subscribe(() => {
 
-                if (!this.fieldname || !Array.isArray(this.model.getField('recipient_addresses'))) return;
+                if (!Array.isArray(this.model.getField('recipient_addresses'))) return;
 
                 this.setDisplayValue();
             })
@@ -90,8 +106,8 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
      */
     public setInitialFieldValue() {
 
-        if (!this.model.getField('recipient_addresses')) {
-            this.model.setField('recipient_addresses', []);
+        if (!this.value) {
+            this.value = [];
         }
 
         this.setDisplayValue();
