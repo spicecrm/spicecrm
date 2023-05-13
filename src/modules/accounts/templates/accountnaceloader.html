@@ -1,0 +1,33 @@
+<div class="slds-grid slds-grid_vertical-align-center slds-p-around--small slds-border--bottom">
+  <system-icon sprite="custom" icon="custom32"></system-icon>
+  <h2 class="slds-text-heading_medium"><system-label label="LBL_LOAD_NACE_CODES"></system-label></h2>
+  <div class="slds-col--bump-left slds-grid slds-grid--vertical-align-center">
+    <system-label label="LBL_LEVELS"></system-label>
+    <div class="slds-select_container slds-m-horizontal--x-small">
+      <select class="slds-select" [(ngModel)]="levels">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+      </select>
+    </div>
+    <system-label label="LBL_TREENAME"></system-label>
+    <system-input-text class="slds-m-horizontal--x-small" [(ngModel)]="treename"></system-input-text>
+    <button class="slds-button slds-button--brand" [disabled]="parsedCodes.length == 0 || !treename" (click)="save()"><system-label label="LBL_GENERATE"></system-label></button>
+  </div>
+</div>
+<div class="slds-theme--default slds-grid" system-to-bottom-noscroll>
+  <div class="slds-size--1-of-2">
+    <div class="slds-form-element">
+      <div class="slds-form-element__control" system-to-bottom>
+        <textarea class="slds-textarea" style="height: calc(100% - 5px)" [(ngModel)]="nacecoedsraw"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="slds-size--1-of-2 slds-p-horizontal--xx-small" system-to-bottom>
+    <div *ngFor="let parsedCode of parsedCodes" class="slds-grid">
+      <div class="slds-size--1-of-4">{{parsedCode.nace}}</div>
+      <div class="slds-size--3-of-4">{{parsedCode.label}}</div>
+    </div>
+  </div>
+</div>
