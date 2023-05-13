@@ -209,6 +209,11 @@ export class loginService {
                 'Authorization',
                 'Basic ' + this.helper.encodeBase64(this.session.authData.userName + ':' + password)
             );
+
+            if (!!this.authData.code2fa){
+                headers = headers.set('code2fa', this.authData.code2fa);
+            }
+
         } else if (tokenObject) {
 
             headers = headers.set(

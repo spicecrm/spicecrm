@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -84,6 +85,7 @@ class ConfiguratorController{
         }
 
         // clear the config cache and reload from DB
+        SpiceCache::deleteByKey('dbconfig');
         SpiceConfig::getInstance()->reloadConfig(true);
 
         return $res->withJson($postBody);
