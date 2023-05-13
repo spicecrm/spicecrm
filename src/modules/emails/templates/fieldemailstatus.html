@@ -1,4 +1,13 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display  [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
-    <system-utility-icon [title]="value" size="x-small" [icon]="statusicon"></system-utility-icon>
+    <ng-container *ngIf="direction == 'out'; else inbound">
+        <system-utility-icon [title]="value" size="x-small" [icon]="statusicon"></system-utility-icon>
+        <system-utility-icon class="slds-p-horizontal--xx-small" [title]="direction" size="xx-small" colorclass="slds-icon-text-light" icon="forward"></system-utility-icon>
+        <system-utility-icon size="x-small" icon="user" colorclass="slds-icon-text-light"></system-utility-icon>
+    </ng-container>
+    <ng-template #inbound>
+        <system-utility-icon size="x-small" icon="user" colorclass="slds-icon-text-light"></system-utility-icon>
+        <system-utility-icon class="slds-p-horizontal--xx-small" [title]="direction" size="xx-small" colorclass="slds-icon-text-light" icon="forward"></system-utility-icon>
+        <system-utility-icon [title]="value" size="x-small" [icon]="statusicon"></system-utility-icon>
+    </ng-template>
 </field-generic-display>
