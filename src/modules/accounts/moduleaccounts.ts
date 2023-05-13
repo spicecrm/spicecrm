@@ -28,6 +28,7 @@ import {AccountsContactsManagerList} from "./components/accountscontactsmanagerl
 import {AccountHierarchy} from "./components/accounthierarchy";
 import {AccountHierarchyNode} from "./components/accounthierarchynode";
 import {AccountVATIDField} from "./components/accountvatidfield";
+import {AccountNACELoader} from "./components/accountnaceloader";
 
 @NgModule({
     imports: [
@@ -53,6 +54,7 @@ import {AccountVATIDField} from "./components/accountvatidfield";
         AccountHierarchy,
         AccountHierarchyNode,
         AccountVATIDField,
+        AccountNACELoader
     ],
     providers: [
         ACManagerService
