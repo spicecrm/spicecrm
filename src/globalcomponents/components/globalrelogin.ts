@@ -2,11 +2,13 @@
  * @module GlobalComponents
  */
 import {
-    Component, EventEmitter, Output
+    Component, EventEmitter, Output, ViewChild, ViewContainerRef
 } from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {session} from '../../services/session.service';
 import {TokenObjectI} from "../interfaces/globalcomponents.interfaces";
+import {configurationService} from "../../services/configuration.service";
+import {toast} from "../../services/toast.service";
 
 /**
  * a modal to prompt the user for the password to relogin
@@ -18,7 +20,12 @@ import {TokenObjectI} from "../interfaces/globalcomponents.interfaces";
     templateUrl: '../templates/globalrelogin.html',
 })
 export class GlobalReLogin {
-
+    /**
+     * identifies the focus element. If the field is set to edit mode a specific field can be set to be focused
+     *
+     * in case there are e.g. multiple inut elements define the most important one in the template
+     */
+    @ViewChild('twofactorinput', {read: ViewContainerRef, static: false}) public twofactorinput: ViewContainerRef;
     /**
      * reference to the modal itself
      *
@@ -46,8 +53,23 @@ export class GlobalReLogin {
      * @private
      */
    public loggingIn: boolean = false;
+    /**
+     * two-factor authentication active boolean
+     */
+    public twoFactorAuthCodeRequired: boolean = false;
+    /**
+     * input the two factory authentication token
+     */
+    public code2fa: string;
 
-    constructor(public login: loginService,public session: session) {
+    constructor(public login: loginService,
+                private toast: toast,
+                public session: session,
+                private configuration: configurationService) {
+    }
+
+    get loginLabels() {
+        return this.configuration.data.languages?.required_labels ?? {};
     }
 
     public tokenLogin(token: {issuer: string, tokenObject: TokenObjectI}) {
@@ -57,7 +79,7 @@ export class GlobalReLogin {
                 this.loggedin.emit(true);
                 this.close();
             },
-            error: error => {
+            error: () => {
                 this.loggingIn = false;
             }
         });
@@ -65,15 +87,27 @@ export class GlobalReLogin {
 
    public relogin() {
         this.loggingIn = true;
-        this.login.relogin(this.password, null).subscribe(
-            res => {
-                this.loggedin.emit(true);
-                this.close();
-            },
-            error => {
-                this.loggingIn = false;
-            }
-        );
+       this.login.authData.code2fa = this.code2fa;
+        this.login.relogin(this.password, null).subscribe({
+            next: res => {
+                    this.loggedin.emit(true);
+                    this.close();
+                },
+            error: error => {
+                if (error.errorCode == 4) {
+                    this.toast.sendToast(error.message, "success");
+                    this.twoFactorAuthCodeRequired = true;
+                    setTimeout(() => {
+                        if (this.twofactorinput) {
+                            this.twofactorinput.element.nativeElement.focus();
+                        }
+                    });
+
+                }
+           this.loggingIn = false;
+       }
+
+   });
     }
 
     /**
