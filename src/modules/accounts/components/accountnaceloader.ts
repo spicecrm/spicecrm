@@ -6,12 +6,13 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {isNaN} from "underscore";
+import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'account-nace-loadser',
     templateUrl: '../templates/accountnaceloader.html'
 })
-export class AccountNACELoader {
+export class AccountNACELoader  implements OnInit{
 
     public nacecoedsraw: string;
 
@@ -20,8 +21,33 @@ export class AccountNACELoader {
     public labelprefix: string = "LBL_NACE_";
 
     constructor(public language: language,
+                public modal: modal,
                 public backend: backend) {
 
+    }
+
+    /**
+     * loads aa  stored file fromt eh server
+     */
+    ngOnInit() {
+        this.backend.getRequest('common/nace').subscribe({
+            next: (files) => {
+                if(files && files.length > 0){
+
+                    let options = files.map(f => { return {value: f, display: f}});
+
+                    this.modal.prompt('input', null, 'select codes file', 'shade', null, options).subscribe({
+                        next: (file) => {
+                            this.backend.getRequest('common/nace/'+file).subscribe({
+                              next: (res) => {
+                                  this.nacecoedsraw = res.content;
+                              }
+                            })
+                        }
+                    })
+                }
+            }
+        })
     }
 
     get parsedCodes(){

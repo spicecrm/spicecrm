@@ -44,6 +44,22 @@ $RESTManager->registerExtension('accountnace', '1.0');
  */
 $routes = [
     [
+        'method'      => 'get',
+        'route'       => '/common/nace',
+        'class'       => AccountsNACEController::class,
+        'function'    => 'getNACECodeFiles',
+        'description' => 'get stroped NACE Codes Files',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => false]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/common/nace/{filename}',
+        'class'       => AccountsNACEController::class,
+        'function'    => 'getNACECodeFile',
+        'description' => 'loads a single file',
+        'options'     => ['noAuth' => false, 'adminOnly' => true, 'validate' => false]
+    ],
+    [
         'method'      => 'post',
         'route'       => '/common/nace',
         'class'       => AccountsNACEController::class,
