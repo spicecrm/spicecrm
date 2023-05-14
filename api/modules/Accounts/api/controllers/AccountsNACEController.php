@@ -21,6 +21,38 @@ class AccountsNACEController{
      * @param $args
      * @return mixed
      */
+    public function getNACECodeFiles(Request $req, SpiceResponse $res, array $args): SpiceResponse
+    {
+        $files = scandir('modules/Accounts/siccodefiles');
+
+        foreach($files as $index => $file){
+            if($file == '.' || $file == '..') unset($files[$index]);
+        }
+
+        // return
+        return $res->withJson(array_values($files));
+    }
+
+    /**
+     * get the response of an url
+     * @param $req RequestInterface
+     * @param $res SpiceResponse
+     * @param $args
+     * @return mixed
+     */
+    public function getNACECodeFile(Request $req, SpiceResponse $res, array $args): SpiceResponse
+    {
+        // return
+        return $res->withJson(['content' => file_get_contents("modules/Accounts/siccodefiles/{$args['filename']}")]);
+    }
+
+    /**
+     * get the response of an url
+     * @param $req RequestInterface
+     * @param $res SpiceResponse
+     * @param $args
+     * @return mixed
+     */
     public function postNACECodes(Request $req, SpiceResponse $res, array $args): SpiceResponse
     {
         $body = $req->getParsedBody();
