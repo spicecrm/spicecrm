@@ -135,9 +135,20 @@ export class HeroldAddAccountModal implements OnInit{
             billing_address_latitude: company.geoLat,
             billing_address_longitude: company.geoLong,
             website: company.mainWebsite,
-            email1: company.mainEmail,
             vat_nr: company.vatNumber,
             employees: company.employeeCount
+        }
+
+        // add an email if we have one
+        if(company.mainEmail){
+            presets.email1 = company.mainEmail,
+            this.model.addRelatedRecords('email_addresses', [{
+                id: this.model.utils.generateGuid(),
+                email_address:company.mainEmail,
+                invalid_email: 0,
+                primary_address: 1
+            }])
+            presets.email_addresses = {...this.model.data.email_addresses};
         }
 
         // check if we have a phone number
