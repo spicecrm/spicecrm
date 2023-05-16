@@ -13,6 +13,7 @@ import {language} from "../../../services/language.service";
 import {map, take} from "rxjs/operators";
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
 import {configurationService} from "../../../services/configuration.service";
+import {metadata} from "../../../services/metadata.service";
 
 
 /**
@@ -189,6 +190,7 @@ export class calendar implements OnDestroy {
                 public language: language,
                 public configuration: configurationService,
                 public modelutilities: modelutilities,
+                public metadata: metadata,
                 public cdRef: ChangeDetectorRef,
                 public userPreferences: userpreferences) {
         this.loadCalendarModules();
@@ -1057,11 +1059,13 @@ export class calendar implements OnDestroy {
                 this.userPreferencesLoaded = true;
             });
 
-        if (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess)) {
+        const groupwareDisabled = this.metadata.getComponentConfig('Calendar').groupwareDisabled;
+
+        if (!groupwareDisabled && (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess))) {
             this.activeGroupware = 'google';
         }
 
-        if (this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
+        if (!groupwareDisabled && this.configuration.getCapabilityConfig('msgraphconfig').isActive) {
             this.activeGroupware = 'microsoft';
         }
     }
