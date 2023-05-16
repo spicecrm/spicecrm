@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Injectable} from "@angular/core";
+import {ChangeDetectorRef, EventEmitter, Injectable} from "@angular/core";
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {modal} from "../../../services/modal.service";
@@ -36,7 +36,7 @@ export class SpicePageBuilderService {
     /**
      * hold a response subject to emit the data to the page builder modal listener
      */
-    public response = new BehaviorSubject<any>(null);
+    public response = new EventEmitter<any>();
     /**
      * hold the unique dom id for the panel drop list
      */
@@ -56,7 +56,7 @@ export class SpicePageBuilderService {
     /**
      * page structure object
      */
-    public page: TagElementI = {
+    public _page: TagElementI = {
         tagName: 'mjml',
         attributes: {},
         children: [
@@ -200,6 +200,15 @@ export class SpicePageBuilderService {
         this.contentListId = _.uniqueId('panel-drop-list-');
     }
 
+    set page(value) {
+        this.emitData();
+        this._page = value;
+    }
+
+    get page() {
+        return this._page;
+    }
+
     /**
      * add drop list to group
      * @param dropList
@@ -251,7 +260,6 @@ export class SpicePageBuilderService {
      */
     public emitData(isNull?: boolean) {
         this.response.next(!isNull ? this.page : null);
-        this.response.complete();
     }
 
     /**
