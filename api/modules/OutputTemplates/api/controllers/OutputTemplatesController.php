@@ -14,9 +14,29 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 
 class OutputTemplatesController
 {
+    /**
+     * live compile html content
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function liveCompileHtml(Request $req, Response $res, array $args): Response
+    {
+        $params = $req->getParsedBody();
+        /** @var OutputTemplate $outputTemplate */
+        $outputTemplate = BeanFactory::getBean("OutputTemplates", $args['id']);
+        $field = $params['field'] ?? 'body';
+        $outputTemplate->$field = $params['html'];
+        $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
+
+        return $res->withJson(['html' => $outputTemplate->parse($bean, $field)]);
+    }
+
     public function compile(Request $req, Response $res, array $args): Response {
         $bean = BeanFactory::getBean('OutputTemplates', $args['id']);
         $bean->bean_id = $args['bean_id'];
