@@ -27,8 +27,7 @@ export class GlobalSearchModuleItem implements OnInit {
 
     public ngOnInit() {
         // backwards compatibility with elasic 6 and still supporting elastic 7
-        this.model.module = this.listitem._type == '_doc' ?  this.listitem._source._module : this.listitem._type;
-
+        this.model.module = this.listitem._source._module;
         this.model.id = this.listitem._id;
         this.model.setData(this.listitem._source);
         this.model.acl = this.listitem.acl;
