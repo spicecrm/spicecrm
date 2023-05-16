@@ -13,7 +13,7 @@ import {
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {TagElementI} from "../interfaces/spicepagebuilder.interfaces";
-import {model} from "../../../services/model.service";
+import {toast} from "../../../services/toast.service";
 
 /**
  * render spice page builder panel and renderer
@@ -42,13 +42,24 @@ export class SpicePageBuilder implements AfterViewInit {
      */
     public dropListGroupDefined: boolean = false;
 
-    constructor(public spicePageBuilderService: SpicePageBuilderService, public cdRef: ChangeDetectorRef, private model: model) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService,
+                private toast: toast,
+                public cdRef: ChangeDetectorRef) {
         this.pageBuilderChange$ = this.spicePageBuilderService.response;
     }
 
     @Input()
     set pageContent(val) {
-        this.spicePageBuilderService._page = val;
+
+        if (window._.isEmpty(val)) return;
+
+        const pageContent = JSON.parse(JSON.stringify(val));
+
+        if (pageContent?.children?.length) {
+            this.spicePageBuilderService._page = val;
+        } else {
+            this.toast.sendToast('ERR_LOADING_RECORD', 'error');
+        }
     }
 
     /**
