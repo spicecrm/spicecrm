@@ -16,6 +16,7 @@ export class ObjectActionNewrelatedButton implements OnInit {
 
     public disabled: boolean = true;
 
+    public actionconfig: {required_model_state?: string};
     /**
      * if set to true didpslay teh button as icon
      */
@@ -27,7 +28,7 @@ export class ObjectActionNewrelatedButton implements OnInit {
 
     public ngOnInit() {
         this.model.module = this.relatedmodels.relatedModule;
-        if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create")) {
+        if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create") && (!this.actionconfig?.required_model_state || this.model.checkModelState(this.actionconfig.required_model_state))) {
             this.disabled = false;
         }
     }
