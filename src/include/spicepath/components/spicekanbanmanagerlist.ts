@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, Output} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {backend} from "../../../services/backend.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
@@ -17,6 +17,8 @@ export class SpiceKanbanManagerList implements OnDestroy {
 
     // public enumValues = Array.from({length: 50}, (_, i) => 'Item ' + i);
     private subscription: Subscription = new Subscription();
+
+    @Output() public selectedStage: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public backend: backend,
                 public kanbanManagerService: KanbanManagerService) {
@@ -61,5 +63,9 @@ export class SpiceKanbanManagerList implements OnDestroy {
             .filter(dis=>dis.not_in_kanban == 0 && dis.spicebeanguide_id == this.kanbanManagerService.selectedBeanGuide.id);
         this.notInKanban = this.kanbanManagerService.stages
             .filter(dis=>dis.not_in_kanban == 1 && dis.spicebeanguide_id == this.kanbanManagerService.selectedBeanGuide.id);
+    }
+
+    public openDetails(selectedStage){
+        this.selectedStage.emit(selectedStage)
     }
 }
