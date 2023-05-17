@@ -1,4 +1,4 @@
-import {Component, ComponentRef, OnInit} from '@angular/core';
+import {Component, ComponentRef, Input, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
@@ -11,6 +11,7 @@ import {SystemTextConfiguratorModal} from "./systemtextconfiguratormodal";
 
 export class SpiceKanbanManagerDetails implements OnInit {
 
+    @Input() public selectedStage: any;
     /**
      * holds label from sysdomainfieldvalidationvalues table
      */
