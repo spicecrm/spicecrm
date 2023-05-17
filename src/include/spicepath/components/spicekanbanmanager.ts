@@ -1,4 +1,4 @@
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component, ComponentRef, Injector, OnInit} from '@angular/core';
 
 import {modal} from '../../../services/modal.service';
 import {metadata} from '../../../services/metadata.service';
@@ -6,6 +6,8 @@ import {metadata} from '../../../services/metadata.service';
 import {SpiceBeanGuidesI} from "../interfaces/kanbanmanager.interfaces";
 
 import {KanbanManagerService} from "../services/kanbanmanager.service";
+import {SpiceKanbanManagerAddModal} from "./spicekanbanmanageraddmodal";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 
 @Component({
@@ -33,6 +35,7 @@ export class SpiceKanbanManager implements OnInit{
         public modal: modal,
         public injector: Injector,
         public metadata: metadata,
+        public modelUtilities: modelutilities,
         public kanbanManagerService: KanbanManagerService
     ) {
     }
@@ -54,7 +57,14 @@ export class SpiceKanbanManager implements OnInit{
 
 
     openAddModal() {
-        this.modal.openModal('SpiceKanbanManagerAddModal', true, this.injector).subscribe(modalRef  => modalRef.instance.moduleName = this.moduleName);
+        this.modal.openModal('SpiceKanbanManagerAddModal', true, this.injector).subscribe((modalRef: ComponentRef<SpiceKanbanManagerAddModal>)  => {
+            modalRef.instance.selectedBeanGuide  = {
+                id: this.modelUtilities.generateGuid(),
+                module: this.moduleName,
+                status_field: '',
+                name: ''
+            }
+        });
     }
 
     public togglePreview () {
@@ -64,7 +74,7 @@ export class SpiceKanbanManager implements OnInit{
     public openEditModal(selectedBeanGuide) {
         this.modal.openModal('SpiceKanbanManagerAddModal', true, this.injector).subscribe((modalRef)  => {
             modalRef.instance.selectedBeanGuide = selectedBeanGuide;
-            modalRef.instance.moduleName = selectedBeanGuide.module;
+            modalRef.instance.isEditing = true;
         });
     }
 }
