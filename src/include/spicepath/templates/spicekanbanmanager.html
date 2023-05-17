@@ -33,16 +33,16 @@
     <div class="slds-grow slds-grid">
         <ng-container *ngIf="!!kanbanManagerService.selectedBeanGuide; else noSelection">
             <div class="slds-size--1-of-5 slds-height_full slds-scrollable--y">
-                <spice-kanban-manager-list></spice-kanban-manager-list>
+                <spice-kanban-manager-list (selectedStage)="selectedStage = $event"></spice-kanban-manager-list>
             </div>
             <div class="slds-size--4-of-5 slds-height_full slds-scrollable--y slds-p-around--xx-small">
-                <spice-kanban-manager-details></spice-kanban-manager-details>
+                <spice-kanban-manager-details [selectedStage]="selectedStage"></spice-kanban-manager-details>
                 <spice-kanban-manager-checks></spice-kanban-manager-checks>
             </div>
         </ng-container>
         <ng-template #noSelection>
-            <div>
-                <system-illustration-no-records></system-illustration-no-records>
+            <div class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
+                <system-illustration-no-records><system-label label="LBL_MAKE_SELECTION"></system-label> </system-illustration-no-records>
             </div>
         </ng-template>
     </div>

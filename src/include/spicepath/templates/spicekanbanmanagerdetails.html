@@ -1,3 +1,4 @@
+<div *ngIf="selectedStage">
 <div *ngIf="!domainLabel; else showDetails">
     <div>
         <label class="slds-form-element__label"><system-label label="LBL_SELECT_STATUS"></system-label></label>
@@ -57,3 +58,4 @@
         </div>
     </system-collapsable-tab>
 </ng-template>
+</div>
