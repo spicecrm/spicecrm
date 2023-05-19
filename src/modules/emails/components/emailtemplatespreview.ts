@@ -80,11 +80,6 @@ export class EmailTemplatesPreview implements AfterViewInit {
      * @private
      */
     @Input() public previewForBean: string;
-    /**
-     * holds the iframe height from parent
-     * @private
-     */
-    @Input() public iframeHeight: number = 250;
 
     constructor(public language: language,
                 public backend: backend,
@@ -170,26 +165,30 @@ export class EmailTemplatesPreview implements AfterViewInit {
      * parse the body by the spice template compiler
      * @private
      */
-    public compileBody() {
+    public async compileBody() {
+
         if (!this.model.id) return;
+
         const loadingModal = this.modal.await('LBL_PARSING_HTML');
-        const body = {html: this.model.getField(this.bodyHtmlField)};
+        const body = {html: this.model.getField(this.bodyHtmlField), field: this.bodyHtmlField};
         this.backend.postRequest(`module/${this.model.module}/${this.model.id}/livecompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
-            .subscribe((data: any) => {
-                if (!data || !data.html) {
-                    loadingModal.emit(false);
-                    return loadingModal.unsubscribe();
-                }
-                this.parsedHtml = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/html;charset=UTF-8,' + encodeURIComponent(data.html));
-                this.cdRef.detectChanges();
-                loadingModal.emit(true);
-                loadingModal.unsubscribe();
-            },
-                () => {
-                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
-                    loadingModal.emit(false);
+            .subscribe({
+                next: (data: any) => {
+                    if (!data || !data.html) {
+                        loadingModal.emit(false);
+                        return loadingModal.unsubscribe();
+                    }
+                    this.parsedHtml = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/html;charset=UTF-8,' + encodeURIComponent(data.html));
+                    this.cdRef.detectChanges();
+                    loadingModal.emit(true);
                     loadingModal.unsubscribe();
-                });
+                },
+            error: () => {
+            this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+            loadingModal.emit(false);
+            loadingModal.unsubscribe();
+        }
+            });
     }
 
     /**

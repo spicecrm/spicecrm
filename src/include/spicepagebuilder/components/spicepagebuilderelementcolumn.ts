@@ -126,6 +126,9 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
         } else {
             moveItemInArray(this.column.children, event.previousIndex, event.currentIndex);
         }
+
+        this.spicePageBuilderService.emitData();
+
         this.dragEntered = false;
     }
 
