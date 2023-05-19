@@ -299,6 +299,7 @@ import {WebHooksManagerResultModal} from "./components/webhooksmanagerresultmoda
     ],
     exports: [
         SortPipe,
+        WorkbenchConfigLabel,
     ]
 })
 export class WorkbenchModule {}
