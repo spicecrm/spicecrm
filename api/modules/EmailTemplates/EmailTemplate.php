@@ -70,7 +70,7 @@ class EmailTemplate extends SpiceBean {
 
         $retArray = [
             'subject' => $this->parsePlainTextField('subject', $bean, $additionalValues ),
-            'body' => $this->parseHTMLTextField('body', $bean, $additionalValues ),
+            'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans ),
             'body_html' => preg_replace(
                 '#^<html>#', '<html><head><style>'.$this->getStyle().'</style></head>',
                 $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans )
@@ -81,7 +81,7 @@ class EmailTemplate extends SpiceBean {
         return $retArray;
     }
 
-    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans )
+    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [] )
     {
         $templateCompiler = new Compiler($this);
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );

@@ -103,5 +103,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
         } else {
             moveItemInArray(this.body.children, event.previousIndex, event.currentIndex);
         }
+
+        this.spicePageBuilderService.emitData();
     }
 }

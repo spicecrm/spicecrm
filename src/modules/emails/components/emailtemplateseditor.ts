@@ -15,8 +15,6 @@ import {Subscription} from "rxjs";
 import {view} from "../../../services/view.service";
 import {modal} from "../../../services/modal.service";
 
-/** @ignore */
-declare var _;
 
 /**
  * renders a tabbed view for email template body
@@ -24,17 +22,14 @@ declare var _;
 @Component({
     selector: 'email-templates-editor',
     templateUrl: "../templates/emailtemplateseditor.html",
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [view]
 })
 export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     /**
      * holds the component config load from parent
      */
     public componentconfig;
-    /**
-     * the currently selected tab
-     */
-    public selectedTab: 'editor' | 'preview' = 'editor';
     /**
      * holds the fields names to be used from the component config
      */
@@ -51,19 +46,20 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
         previewForBean?: string
 
     } = {bodyHtmlField: 'body_html', bodySPBField: 'body_spb'};
+
     /**
-     * holds the active editor
+     * holds expanded side
      */
-    public activeEditor: 'richText' | 'pageBuilder' | 'html';
-    /**
-     * holds the iframe height from parent
-     * @private
-     */
-    public iframeHeight: number = 250;
+    public expanded: 'left' | 'right';
+
     /**
      * holds the component config load from parent
      */
     public subscription: Subscription = new Subscription();
+    /**
+     * true if the fullscreen enabled
+     */
+    public isFullscreen: boolean = false;
 
     /*
      * Hold the characteristic where the module name for bean preview comes from
@@ -79,6 +75,13 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
+     * holds the active editor
+     */
+    get activeEditor(): 'richText' | 'pageBuilder' | 'html' {
+        return this.model.data.editor_type;
+    }
+
+    /**
      * @return matchedModelState: boolean
      */
     get isHidden() {
@@ -89,7 +92,6 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * set active editor and subscribe to model data changes
      */
     public ngAfterViewInit() {
-        this.setActiveEditor(this.model.getField('editor_type'));
         this.subscribeToModelChanges();
     }
 
@@ -97,9 +99,11 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * set the body fields name and set the iframe initial height
      */
     public ngOnInit() {
+        this.view.isEditable = true;
+        this.view.linkedToModel = true;
+
         this.setUseDynamicModule();
         this.setBodyFieldsName();
-        this.setIframeHeight();
     }
 
     /**
@@ -113,19 +117,12 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * sets the edit mode on the view and the model into editmode itself
      */
     public setEditMode() {
+
+        if (!this.model.checkAccess('edit') && !this.model.checkAccess('create')) return;
+
         this.model.startEdit();
         this.view.setEditMode();
         this.cdRef.detectChanges();
-    }
-
-    /**
-     * set the iframe initial height
-     * @private
-     */
-    public setIframeHeight() {
-        const height = parseInt(this.componentconfig.previewInitialHeight, 10);
-        if (!height || isNaN(height)) return;
-        this.iframeHeight = height;
     }
 
     /**
@@ -149,11 +146,6 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * @private
      */
     public subscribeToModelChanges() {
-        this.subscription.add(
-            this.model.observeFieldChanges('editor_type').subscribe(value => {
-                this.setActiveEditor(value)
-            })
-        );
 
         if(this.useDynamicModule){
             this.subscription.add(
@@ -169,16 +161,6 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
         this.subscription.add(
             this.view.mode$.subscribe(() => this.cdRef.detectChanges())
         );
-    }
-
-    /**
-     * set the active editor
-     * @private
-     * @param editorType
-     */
-    public setActiveEditor(editorType: 'richText' | 'pageBuilder' | 'html') {
-        this.activeEditor = editorType;
-        this.cdRef.detectChanges();
     }
 
     /**
@@ -209,16 +191,6 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * set the selected type
-     * @param value
-     * @private
-     */
-    public setSelectedTab(value: 'editor' | 'preview') {
-        if (value == 'preview' && !this.model.getField(this.fieldsNames.bodyHtmlField)) return;
-        this.selectedTab = value;
-    }
-
-    /**
      * open lookup modal to select an email template to be copied to the body
      */
     public copyFromTemplate() {
@@ -230,14 +202,33 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
                     if (!items.length) return;
                     this.model.setFields({
                         [this.fieldsNames.bodyHtmlField]: items[0].body_html,
-                        [this.fieldsNames.bodySPBField]: items[0].body_spb
+                        [this.fieldsNames.bodySPBField]: items[0].body_spb,
+                        editor_type: items[0].editor_type
                     });
                 });
             });
     }
 
     public updateModelEditor(type) {
-        this.setActiveEditor(type);
         this.model.setField('editor_type', type);
+        this.cdRef.detectChanges();
+    }
+
+    /**
+     * set expanded side
+     * @param side
+     */
+    public expand(side: 'left' | 'right') {
+        if (!!this.expanded && this.expanded != side) {
+            this.expanded = undefined;
+        } else this.expanded = side;
+    }
+
+    /**
+     * toggle the fullscreen mode
+     */
+    public toggleFullscreen() {
+        this.isFullscreen = !this.isFullscreen;
+        this.cdRef.detectChanges();
     }
 }
