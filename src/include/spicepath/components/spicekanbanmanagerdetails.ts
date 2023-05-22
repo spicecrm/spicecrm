@@ -3,6 +3,7 @@ import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {SystemTextConfiguratorModal} from "./systemtextconfiguratormodal";
+import {SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
 
 @Component({
     selector: 'spice-kanban-manager-details',
@@ -15,7 +16,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
     /**
      * holds label from sysdomainfieldvalidationvalues table
      */
-    public domainLabel: string = 'LBL_LABEL';
+    public domainLabel: string = '';
 
     /**
      * holds value for the field stage_add_data
@@ -73,6 +74,12 @@ export class SpiceKanbanManagerDetails implements OnInit {
         // get languages
         this.systemLanguages = this.language.getAvialableLanguages();
         this.activeTab = this.language.currentlanguage;
+
+        this.setDomainLabel();
+    }
+
+    private setDomainLabel() {
+        this.domainLabel = this.selectedStage?.stage_label;
     }
 
     /**
