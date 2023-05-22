@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div *ngIf="!selectedItem" class="slds-input-has-icon slds-input-has-icon--right slds-grow" (click)="searchWithModal()">
-                            <input [disabled]="!previewForBean"  type="text" class="slds-lookup__search-input slds-input--bare" [placeholder]="placeholder"  role="combobox">
+                            <input [disabled]="!previewForBean"  type="text" class="slds-lookup__search-input slds-input--bare slds-input" [placeholder]="placeholder"  role="combobox">
                             <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" [disabled]="!previewForBean">
                                 <system-button-icon icon="search"></system-button-icon>
                             </button>
@@ -45,17 +45,19 @@
         </div>
     </div>
 </div>
-<div class="slds-m-top--small slds-border--top slds-border--right slds-border--left slds-border--bottom slds-grid slds-p-around--xx-small slds-grid slds-grid--align-center" [style.min-height.px]="iframeHeight">
-    <div *ngIf="parsedHtml" [style.width.px]="viewType.width">
+<div class="slds-m-top--small slds-border--top slds-border--right slds-border--left slds-border--bottom slds-grid slds-p-around--xx-small slds-grid slds-grid--align-center slds-grow" style="min-height: 0">
+    <div *ngIf="parsedHtml" [style.width.px]="viewType.width" class="slds-grid slds-grid--vertical slds-height_full">
         <div class="slds-size--1-of-1 slds-grid slds-grid--vertical-align-center slds-is-relative slds-m-vertical--xx-small" style="height: 16px; border-left: 1px solid #aaa; border-right: 1px solid #aaa;">
             <div style="height: 1px; width: 100%; background: #aaa"></div>
             <span class="slds-theme--default slds-p-horizontal--xx-small slds-is-absolute" style="left: 50%; transform: translateX(-50%);">
                 {{viewType.width}}px
             </span>
         </div>
-        <iframe [src]="parsedHtml" [style.height.px]="iframeHeight" style="border: 0; resize: vertical" class="slds-size--1-of-1" sandbox></iframe>
+        <iframe [src]="parsedHtml" style="border: 0; min-height: 250px" class="slds-grow" sandbox></iframe>
     </div>
     <div *ngIf="!selectedItem" class="slds-align--absolute-center slds-height_full">
-        <system-label label="MSG_NO_RECORD_SELECTED"></system-label>
+        <system-illustration-no-data>
+            <system-label label="MSG_NO_RECORD_SELECTED"></system-label>
+        </system-illustration-no-data>
     </div>
 </div>

@@ -63,6 +63,7 @@ export class SpicePageBuilderElement implements OnInit {
     public handleEditResponse(res) {
         this.element.attributes = res.attributes;
         this.generateStyle();
+        this.spicePageBuilderService.emitData();
         this.cdRef.detectChanges();
     }
 
