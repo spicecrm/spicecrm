@@ -45,6 +45,13 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
     }
 
     /**
+     * return the page builder json field name
+     */
+    get bodySPBFieldName(): string {
+        return this.fieldconfig.bodySPBField ?? 'body_spb';
+    }
+
+    /**
      * set iframe height
      */
     public ngOnInit() {
@@ -98,43 +105,6 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
     }
 
     /**
-     * open page builder modal
-     * @private
-     */
-    public openPageBuilder() {
-        const bodySPBFieldName = this.fieldconfig.bodySPBField || 'body_spb';
-        this.modal.openModal('SpicePageBuilder', true, this.injector).subscribe(modalRef => {
-            if (!!this.value) {
-                const pageContent = JSON.parse(JSON.stringify(this.model.getField(bodySPBFieldName)));
-
-                if (pageContent?.children?.length) {
-                    modalRef.instance.spicePageBuilderService.page = pageContent;
-                } else {
-                    this.toast.sendToast('ERR_LOADING_RECORD', 'error');
-                }
-            }
-            modalRef.instance.spicePageBuilderService.response.subscribe(res => {
-                if (!res) return;
-                this.model.setField(bodySPBFieldName, res);
-                const loadingModal = this.modal.await('LBL_PARSING_HTML');
-
-                this.backend.postRequest('common/mjml/json2html', {}, {json: this.model.getField(bodySPBFieldName)}).subscribe(res => {
-                    if (!res || !res.html) {
-                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
-                        loadingModal.emit(true);
-                        return loadingModal.complete();
-                    }
-                    this.parsedHtml = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/html;charset=UTF-8,' + encodeURIComponent(res.html));
-                    this.value = res.html;
-                    loadingModal.emit(true);
-                    loadingModal.complete();
-                });
-                modalRef.instance.self.destroy();
-            });
-        });
-    }
-
-    /**
      * set the iframe initial height
      * @private
      */
@@ -142,5 +112,18 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
         const height = parseInt(this.fieldconfig.initialHeight, 10);
         if (!height || isNaN(height)) return;
         this.iframeHeight = height;
+    }
+
+    /**
+     * set the page builder field value
+     * @param val
+     */
+    public onPageBuilderChange(val) {
+
+        this.model.setField(this.bodySPBFieldName, val);
+
+        this.backend.postRequest('common/mjml/json2html', {}, {json: val}).subscribe({
+            next: res => this.model.setField(this.fieldname, res.html)
+        });
     }
 }
