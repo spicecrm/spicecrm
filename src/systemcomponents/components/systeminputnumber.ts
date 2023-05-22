@@ -379,7 +379,7 @@ export class SystemInputNumber implements ControlValueAccessor {
      * only necessary separators are enabled: an integer won't need the decimal separator
      */
     public defineInputPattern(){
-        let pattern = "^[0-9";
+        let pattern = "^[-+]?[-0-9";
         pattern+= this.userpreferences.toUse.num_grp_sep;
         if(!this.isInteger()){
             pattern+= this.userpreferences.toUse.dec_sep;
