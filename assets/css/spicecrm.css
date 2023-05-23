@@ -415,7 +415,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background:#0070d2;
     top: -20px;
     position: absolute;
-    width: 100px;
+    width: 120px;
     height: 20px;
     left: calc(50% - 50px);
     color: #fff;
