@@ -123,7 +123,10 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
         this.model.setField(this.bodySPBFieldName, val);
 
         this.backend.postRequest('common/mjml/json2html', {}, {json: val}).subscribe({
-            next: res => this.model.setField(this.fieldname, res.html)
+            next: res => {
+                if (!res.html) this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                this.model.setField(this.fieldname, res.html);
+            }
         });
     }
 }
