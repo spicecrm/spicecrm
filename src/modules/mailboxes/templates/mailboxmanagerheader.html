@@ -3,7 +3,7 @@
         <div class="slds-form-element__control slds-p-right--xx-small">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="mailbox" style="min-width: 250px;" [disabled]="mailboxesEmails.mailboxes.length==0 || isFetching">
-                    <option *ngFor="let mailbox of mailboxesEmails.mailboxes" value="{{mailbox.id}}">
+                    <option *ngFor="let mailbox of mailboxesEmails.mailboxes" value="{{mailbox.id}}" [selected]="mailboxesEmails.mailboxes.length==1">
                         {{mailbox.name}}
                     </option>
                 </select>
