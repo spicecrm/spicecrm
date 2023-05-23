@@ -9,14 +9,14 @@
                     <system-label label="LBL_SECTION"></system-label>
                 </h2>
             </div>
-            <button (click)="saveAsCustom()" class="slds-button slds-button--icon">
-                <system-utility-icon icon="save" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+            <button (click)="saveAsCustom()" system-title="LBL_SAVE" class="slds-button slds-button--icon">
+                <system-button-icon icon="save" [inverse]="true"></system-button-icon>
             </button>
-            <button cdkDragHandle class="slds-button slds-button--icon slds-m-left--none">
-                <system-utility-icon icon="move" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+            <button cdkDragHandle system-title="LBL_MOVE" class="slds-button slds-button--icon slds-m-left--none">
+                <system-button-icon icon="move" [inverse]="true"></system-button-icon>
             </button>
-            <button (click)="delete$.emit()" class="slds-button slds-button--icon slds-m-right--xx-small slds-m-left--none">
-                <system-utility-icon icon="close" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+            <button (click)="delete$.emit()" system-title="LBL_DELETE" class="slds-button slds-button--icon slds-m-right--xx-small slds-m-left--none">
+                <system-button-icon icon="delete" [inverse]="true"></system-button-icon>
             </button>
         </div>
     </div>
