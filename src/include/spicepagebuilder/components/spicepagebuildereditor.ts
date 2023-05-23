@@ -3,7 +3,7 @@
  */
 import {ChangeDetectionStrategy, Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {ButtonI, DividerI, HTMLCodeI, ImageI, SpacerI, TextI} from "../interfaces/spicepagebuilder.interfaces";
+import {ButtonI, DividerI, HTMLCodeI, ImageI, RSSI, SpacerI, TextI} from "../interfaces/spicepagebuilder.interfaces";
 
 /**
  * render a set of tools and configurations to be used for building pages
@@ -17,7 +17,7 @@ export class SpicePageBuilderEditor {
     /**
      * hold the element to be edited
      */
-    public element: TextI | ImageI | ButtonI | DividerI | SpacerI | HTMLCodeI;
+    public element: TextI | ImageI | ButtonI | DividerI | SpacerI | HTMLCodeI | RSSI | any;
     /**
      * emit the changes to the element
      */

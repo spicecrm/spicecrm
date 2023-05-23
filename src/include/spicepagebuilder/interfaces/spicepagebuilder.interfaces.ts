@@ -126,6 +126,39 @@ export interface ButtonI extends ContentElementI {
     };
 }
 /**
+ * button element to be rendered in the view
+ */
+export interface RSSI extends ContentElementI {
+    content: string;
+    href: string,
+    count: string,
+    children: [{tagName: 'column', children: HTMLCodeI[]}],
+    attributes: {
+        'count': string,
+        'href': string,
+        'background-color'?: string,
+        'color'?: string,
+        'border'?: string,
+        'border-top'?: string,
+        'border-right'?: string,
+        'border-bottom'?: string,
+        'border-left'?: string,
+        'border-radius'?: string,
+        'height'?: string,
+        'padding'?: string,
+        'text-align'?: string,
+        'css-class'?: string,
+        'font-size'?: string,
+        'font-style'?: string,
+        'font-weight'?: string,
+        'letter-spacing'?: string,
+        'line-height'?: string,
+        'text-decoration'?: string,
+        'text-transform'?: string,
+        'width'?: string
+    };
+}
+/**
  * image element to be rendered in the view
  */
 export interface ImageI extends ContentElementI {
@@ -195,6 +228,9 @@ export interface PanelElementI extends ContentElementI {
     icon: string;
     label: string;
     content?: string;
+    count?: string,
+    href?: string,
+    children?: ContentElementI|SectionI|ColumnI[]
 }
 /**
  * spacer element to be rendered in the view
