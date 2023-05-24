@@ -132,7 +132,7 @@ export interface RSSI extends ContentElementI {
     content: string;
     href: string,
     count: string,
-    children: [{tagName: 'column', children: HTMLCodeI[]}],
+    children: [{tagName: 'column', children: SectionI[]}],
     attributes: {
         'count': string,
         'href': string,
