@@ -393,7 +393,7 @@ class SpiceUIConfLoader
                         }
                     } else{
                         // check if record is present
-                        if($dbResRow = $db->getOne("select * from $tb where id='{$decodeData['id']}'")){
+                        if($dbResRow = $db->getOne("select id from $tb where id='{$decodeData['id']}'")){
                             $skipInsert = true;
                         }
                     }
