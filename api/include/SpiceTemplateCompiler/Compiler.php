@@ -7,6 +7,7 @@ use DateInterval;
 use DateTime;
 use DateTimeZone;
 use DOMDocument;
+use DOMXPath;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -241,6 +242,12 @@ class Compiler
                         } else {
                             throw new BadRequestException("{$this->module_name}: Recursion with embedded template detected/prevented.");
                         }
+                        # handle rss rendering
+                    } else if ($node->tagName !== 'td' && in_array('rss-container', explode(' ', $node->getAttribute('class') ?? ''))) {
+
+                        $node = $this->parseRSSFeed($node);
+
+                        $elements[] = $this->createNewElement($node, $beans);
                     } else {
                         $elements[] = $this->createNewElement($node, $beans);
                     }
@@ -250,6 +257,105 @@ class Compiler
             }
         }
         return $elements;
+    }
+
+    /**
+     * parse rss content from the url in the item template
+     * @param \DOMElement $node
+     * @return \DOMElement
+     */
+    private function parseRSSFeed(\DOMElement $node)
+    {
+        $finder = new DomXPath($node->ownerDocument);
+
+        # read the rss data required for the fetch
+        $data = $finder->query("//*[@data-spice-rss]", $node);
+        $url = $data[0]->getAttribute('data-spice-rss');
+        $limit = $data[0]->getAttribute('data-spice-rss-count') ?? 3;
+
+        $xml = simplexml_load_file($url);
+
+        if (!$xml) return $node;
+
+        # get the templates elements of the rss item
+        $itemsTemplates = $finder->query("//*[contains(@class, 'rss-item')]", $node);
+        $parent = $itemsTemplates[0]->parentNode;
+
+        $currentIndex = 0;
+
+        foreach ($xml->channel->item as $xmlItem) {
+
+            if ($currentIndex == $limit) break;
+
+            # remove and reinsert the template item to prevent reference conflicting
+            $parent->removeChild($itemsTemplates[$currentIndex]);
+
+            $this->setRSSItemHeader($finder, $itemsTemplates[$currentIndex], $xmlItem->title, $xmlItem->link);
+
+            $this->setRSSItemDate($finder, $itemsTemplates[$currentIndex], $xmlItem->pubDate);
+
+            $this->setRSSItemDescription($finder, $itemsTemplates[$currentIndex], $xmlItem->description);
+
+            $parent->appendChild($itemsTemplates[$currentIndex]);
+
+            $currentIndex++;
+        }
+
+        return $node;
+    }
+
+    /**
+     * replace rss item description placeholder with the content
+     * @param DOMXPath $finder
+     * @param \DOMElement $item
+     * @param string $title
+     * @param string $link
+     * @return void
+     */
+    private function setRSSItemHeader(DOMXPath $finder, \DOMElement $item, string $title, string $link)
+    {
+        $itemHeader = $finder->query("//*[contains(@class, 'rss-header')]", $item)[0];
+
+        foreach ($itemHeader->getElementsByTagName('a') as $childNode) {
+            $childNode->nodeValue = $title;
+            $childNode->setAttribute('href', $link);
+        }
+    }
+
+    /**
+     * replace rss item description placeholder with the content
+     * @param DOMXPath $finder
+     * @param \DOMElement $item
+     * @param string $description
+     * @return void
+     */
+    private function setRSSItemDescription(DOMXPath $finder, \DOMElement $item, string $description)
+    {
+        $description = implode(' ', array_slice(explode(' ', $description), 0, 20));
+        $itemDescription = $finder->query("//*[contains(@class, 'rss-description')]", $item)[0];
+
+        foreach ($itemDescription->childNodes as $childNode) {
+            if (get_class($childNode) != 'DOMElement') continue;
+            $childNode->nodeValue = $description;
+        }
+    }
+
+    /**
+     * replace rss item date placeholder with the content
+     * @param DOMXPath $finder
+     * @param \DOMElement $item
+     * @param string $date
+     * @return void
+     */
+    private function setRSSItemDate(DOMXPath $finder, \DOMElement $item, string $date)
+    {
+        $pubDate = date('d.m.Y H:i',strtotime($date));
+        $itemDate = $finder->query("//*[contains(@class, 'rss-date')]", $item)[0];
+
+        foreach ($itemDate->childNodes as $childNode) {
+            if (get_class($childNode) != 'DOMElement') continue;
+            $childNode->nodeValue = $pubDate;
+        }
     }
 
     /**

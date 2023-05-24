@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, EventEmitter, Injectable} from "@angular/core";
 import {CdkDropList} from "@angular/cdk/drag-drop";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {modal} from "../../../services/modal.service";
 import {
     ColumnI,
@@ -143,6 +143,70 @@ export class SpicePageBuilderService {
             content: 'Write code here...',
             icon: 'insert_tag_field',
             attributes: {}
+        },
+        {
+            tagName: 'rss',
+            label: 'LBL_RSS_FEED',
+            icon: 'news',
+            content: 'Enter RSS name here...',
+            href: '#',
+            count: '3',
+            attributes: {
+                'font-size': '16px',
+                'css-class': 'rss-container'
+            },
+            children: [
+                {
+                    tagName: 'column',
+                    attributes: {
+                        'width': '100%',
+                        'padding': '0 0 5px 0',
+                        'css-class': 'rss-item'
+                    },
+                    children: [
+                        {
+                            tagName: 'button',
+                            content: 'RSS-ITEM-HEADER-PLACEHOLDER',
+                            attributes: {
+                                'css-class': 'rss-header',
+                                'align': 'left',
+                                'inner-padding': '0',
+                                'background-color': '#ffffff',
+                                'color': '#000000',
+                                'href': 'RSS_ITEM_HEADER_HREF_PLACEHOLDER',
+                                'font-size': '22px',
+                                'line-height': '22px',
+                                'font-weight': '500',
+                                'text-align': 'left',
+                                'padding': '4px',
+                                'container-background-color': '#ffffff'
+                            }
+                        },
+                        {
+                            tagName: 'text',
+                            content: 'RSS-ITEM-DATE-PLACEHOLDER',
+                            attributes: {
+                                'css-class': 'rss-date',
+                                'font-size': '10px',
+                                'line-height': '14px',
+                                'padding': '4px',
+                                'container-background-color': '#ffffff'
+                            }
+                        },
+                        {
+                            tagName: 'text',
+                            content: 'RSS-ITEM-DESCRIPTION-PLACEHOLDER',
+                            attributes: {
+                                'css-class': 'rss-description',
+                                'font-size': '14px',
+                                'line-height': '14px',
+                                'padding': '4px',
+                                'container-background-color': '#ffffff'
+                            }
+                        },
+                    ]
+                }
+            ]
         }
 
     ];
