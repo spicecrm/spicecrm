@@ -56,7 +56,7 @@ class Prospect extends Person {
 
 	function fill_in_additional_detail_fields()
 	{
-		parent::fill_in_additional_list_fields();
+		parent::fill_in_additional_detail_fields();
 		$this->_create_proper_name_field();
    	}
 
