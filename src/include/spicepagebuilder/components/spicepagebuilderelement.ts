@@ -87,6 +87,10 @@ export class SpicePageBuilderElement implements OnInit {
      * set the current editing element
      */
     public edit() {
+
+        this.spicePageBuilderService.isMouseIn = undefined;
+        this.cdRef.detectChanges();
+
         this.modal.openModal('SpicePageBuilderEditor', true, this.injector).subscribe(modalRef => {
             modalRef.instance.element = JSON.parse(JSON.stringify(this.element));
             modalRef.instance.response.subscribe(res => {
