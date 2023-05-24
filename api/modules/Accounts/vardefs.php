@@ -730,6 +730,27 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'comment' => 'allows to display items on salesdocs via a n:m relationship using the salesdocs table'
     ];
 }
+
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['procurementdocs'] = [
+        'name' => 'procurementdocs',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCS',
+        'relationship' => 'procurementdocs_accountsop',
+        'module' => 'ProcurementDocs',
+        'source' => 'non-db',
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['procurementdocitems'] = [
+        'name' => 'procurementdocitems',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCITEMS',
+        'relationship' => 'procurementdocitems_accountsro',
+        'module' => 'ProcurementDocItems',
+        'source' => 'non-db',
+        'comment' => 'allows to display items on procurementdocs via a n:m relationship using the procurementdocs table'
+    ];
+}
+
 if (file_exists("modules/Addresses")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['addresses'] = [
         'name' => 'addresses',

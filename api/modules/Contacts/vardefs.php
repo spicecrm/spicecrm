@@ -890,6 +890,18 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'source' => 'non-db',
     ];
 }
+
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['procurementdocro'] = [
+        'name' => 'procurementdocro',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCSRO',
+        'relationship' => 'procurementdocs_contactsro',
+        'module' => 'ProcurementDocs',
+        'source' => 'non-db'
+    ];
+}
+
 if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactsonlineprofiles'] = [
         'name' => 'contactsonlineprofiles',
