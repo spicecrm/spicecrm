@@ -62,6 +62,7 @@ class ProductGroupsController
         // process the seed list
         $seedList = $seed->get_full_list('name', $whereClause);
         foreach ($seedList as $seeditem){
+            $seeditem->retrieveViewDetails();
             $list[] = $moduleHandler->mapBeanToArray('ProductGroups', $seeditem);
         }
 
