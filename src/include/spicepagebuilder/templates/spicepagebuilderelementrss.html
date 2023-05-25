@@ -67,6 +67,14 @@
                                 <input type="text" [(ngModel)]="count" max="100" min="1" class="slds-input">Min 1 - Max 100
                             </div>
                         </div>
+                        <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_DATE_VISIBILITY"></system-label>
+                            </label>
+                            <div class="slds-form-element__control">
+                                <system-input-radio-button-group [(ngModel)]="element.showDate" [inputOptions]="dateHiddenOptions"></system-input-radio-button-group>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
