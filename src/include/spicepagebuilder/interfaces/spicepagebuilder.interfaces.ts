@@ -132,6 +132,7 @@ export interface RSSI extends ContentElementI {
     content: string;
     href: string,
     count: string,
+    showDate: '1' | '0',
     children: [{tagName: 'column', children: SectionI[]}],
     attributes: {
         'count': string,
@@ -230,6 +231,7 @@ export interface PanelElementI extends ContentElementI {
     content?: string;
     count?: string,
     href?: string,
+    showDate?: '0' | '1',
     children?: ContentElementI|SectionI|ColumnI[]
 }
 /**
