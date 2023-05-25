@@ -20,7 +20,6 @@ class WebHook
 
     public final function __construct()
     {
-        // toDo .. load all webhooks from cache .. db
         $db = DBManagerFactory::getInstance();
         $hooks = $db->query("SELECT * FROM syswebhooks");
         while($hook = $db->fetchByAssoc($hooks)) $this->webhooks[]=$hook;
@@ -49,8 +48,9 @@ class WebHook
 
     public function callWebhook($event, $bean){
         // search in $this->webhooks for hook for module and event
-        $event = array_search('event',$this->webhooks);
+
         $hook = reset($this->webhooks);
+        $event = array_search($hook['event'],$this->webhooks);
 
         // if successful
         $this->makeCall($hook, $bean);
@@ -58,23 +58,24 @@ class WebHook
 
    public function makeCall($hook, $bean)
    {
+       // todo queue webhook calls
 
        $body = [
            'id' => $bean->id,
            'module' => $bean->_module,
-           'event' => $hook['event']
+           'event' => $hook['webHook']['event'],
        ];
 
-       if($hook['send_data']){
+       if($hook['webHook']['send_data']){
            $body['data'] = (new SpiceBeanHandler())->mapBean($bean);
        }
 
        $curl = curl_init();
        $curlOptions = [
-           CURLOPT_SSL_VERIFYPEER => $hook['ssl_verifypeer'],
-           CURLOPT_SSL_VERIFYHOST => $hook['ssl_verifyhost'],
+           CURLOPT_SSL_VERIFYPEER => $hook['webHook']['ssl_verifypeer'],
+           CURLOPT_SSL_VERIFYHOST => $hook['webHook']['ssl_verifyhost'],
            CURLOPT_RETURNTRANSFER => true,
-           CURLOPT_URL            => $hook['url'],
+           CURLOPT_URL            => $hook['webHook']['url'],
            CURLOPT_POST           => true,
            CURLOPT_POSTFIELDS     => json_encode($body),
            CURLOPT_HEADER         => 1,
@@ -94,9 +95,9 @@ class WebHook
        curl_close($curl);
 
        if ($info['http_code'] < 300 && $info['http_code'] >= 200) {
-           return true;
+           return ['success' => true, 'output' => $info['http_code']];
        }
 //        throw new Exception($response, $info['http_code']);
-       return false;
+       return ['success' => false, 'output' => $info['http_code']];
    }
 }
