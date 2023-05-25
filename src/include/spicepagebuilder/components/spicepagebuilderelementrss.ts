@@ -7,6 +7,7 @@ import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, RSSI} from "../interfaces/spicepagebuilder.interfaces";
 import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
 /**
  * Parse and renders renderer container
@@ -76,8 +77,22 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
             {name: 'width', type: 'text'},
             {name: 'height', type: 'text'},
             {name: 'padding', type: 'sides'},
+            {name: 'fluid-on-mobile', type: 'text'},
         ]
     }
+    /**
+     * date hidden radio button options
+     */
+    public dateHiddenOptions: InputRadioOptionI[] = [
+        {
+            label: 'LBL_HIDDEN',
+            value: '0',
+        },
+        {
+            label: 'LBL_VISIBLE',
+            value: '1',
+        }
+    ];
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -104,6 +119,7 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
         this.element.content = res.content;
         this.element.href = res.href;
         this.element.count = res.count;
+        this.element.showDate = res.showDate;
         this.element.children = res.children;
         super.handleEditResponse(res);
     }
