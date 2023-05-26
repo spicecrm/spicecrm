@@ -20,7 +20,7 @@ export interface RoleI {
     showfavorites: boolean;
     description: string;
     default_dashboard: string;
-    default_dashboardset: string,
+    default_dashboardset: string;
     version: string;
     package: string;
     scope: 'custom' | 'global';
@@ -54,5 +54,5 @@ export interface WebHookI {
     fieldset_id: string;
     ssl_verifypeer: boolean;
     ssl_verifyhost:boolean;
-    custom_headers: string
+    // custom_headers: object
 }
