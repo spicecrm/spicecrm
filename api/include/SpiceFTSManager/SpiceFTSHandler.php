@@ -153,7 +153,7 @@ class SpiceFTSHandler
 
         // use FTS
         if ($useFts) {
-            $result = $this->getGlobalSearchResults($postBody['modules'], $postBody['searchterm'], json_decode($postBody['searchtags']), $postBody, $postBody['aggregates'], $postBody['sort'], [],$postBody['useGlobalFilter']);
+            $result = $this->getGlobalSearchResults($postBody['modules'], $postBody['searchterm'], json_decode($postBody['searchtags']), $postBody, $postBody['aggregates'], $postBody['sort'], [],$postBody['useGlobalFilter'] ?? true);
         } else {
             // else go for a DB query and guess global modules
 
