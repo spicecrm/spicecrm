@@ -739,6 +739,17 @@ export class navigation {
     }
 
     /**
+     * adds an object tab
+     *
+     * @param tabDetails
+     */
+    public addObjectTab(tabDetails: objectTab){
+        this.objectTabs.unshift(tabDetails);
+        // set the current tab as active tab
+        this.activeTab = tabDetails.id;
+    }
+
+    /**
      * sets the tab with the passed in ID as active tab
      *
      * @param tabid
