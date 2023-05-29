@@ -84,6 +84,11 @@ export interface objectTab {
      */
     enablesubtabs: boolean;
 
+    /**
+     * additional tabdata
+     */
+    tabdata?: object;
+
 }
 
 /**
