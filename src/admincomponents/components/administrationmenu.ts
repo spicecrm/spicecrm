@@ -2,7 +2,8 @@
  * @module AdminComponentsModule
  */
 import {
-    Component,
+    AfterViewInit,
+    Component, OnInit,
     Output
 } from '@angular/core';
 import {language} from '../../services/language.service';
@@ -13,7 +14,7 @@ import {administration} from "../services/administration.service";
     selector: 'administration-menu',
     templateUrl: '../templates/administrationmenu.html'
 })
-export class AdministrationMenu {
+export class AdministrationMenu implements AfterViewInit{
 
     constructor(
         public language: language,
@@ -21,6 +22,17 @@ export class AdministrationMenu {
         public administration: administration
     ) {
 
+    }
+
+    public ngAfterViewInit() {
+        // check if we have tabdata .. if yes load the proper component when the admin actions are loaded
+        if(this.navigationtab.tabdata && this.navigationtab.tabdata.itemid){
+            this.administration.loaded$.subscribe({
+                next: (loaded) => {
+                    if(loaded) this.openContent(this.navigationtab.tabdata.itemid, false);
+                }
+            })
+        }
     }
 
     /**
@@ -38,7 +50,7 @@ export class AdministrationMenu {
      *
      * @param item
      */
-    public openContent(itemid) {
+    public openContent(itemid, settabdata = true) {
         // already loaded?
         if (this.administration.opened_itemid == itemid) {
             return true;
@@ -50,6 +62,10 @@ export class AdministrationMenu {
 
         // start the navigation
         this.administration.navigateto(itemid);
+
+        if(settabdata) {
+            this.navigationtab.tabdata = {itemid: itemid};
+        }
     }
 
 }
