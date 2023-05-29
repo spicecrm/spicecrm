@@ -3,7 +3,7 @@
  */
 import {Injectable, EventEmitter} from "@angular/core";
 import {BehaviorSubject} from "rxjs";
-import {objectTabInfo, routeObject} from "./navigation.service";
+import {navigation, objectTab, objectTabInfo, routeObject} from "./navigation.service";
 
 declare var _: any;
 
@@ -27,6 +27,11 @@ export class navigationtab {
     public tabid: string;
 
     /**
+     * tabdata passed in from the objecttab
+     */
+    public objecttab: objectTab;
+
+    /**
      * an event emitter for the display name of the tab
      */
     public tabinfo$: EventEmitter<objectTabInfo> = new EventEmitter<objectTabInfo>();
@@ -36,7 +41,7 @@ export class navigationtab {
      */
     public close$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor() {
+    constructor(public navigation: navigation) {
         this.activeRoute$ = new BehaviorSubject(this.activeRoute);
     }
 
@@ -47,6 +52,15 @@ export class navigationtab {
      */
     public setTabInfo(tabinfo: objectTabInfo) {
         this.tabinfo$.emit(tabinfo);
+    }
+
+    get tabdata(): any{
+        return this.objecttab?.tabdata;
+    }
+
+    set tabdata(tabdata){
+        this.objecttab.tabdata = tabdata;
+        this.navigation.setSessionData();
     }
 
     /**
