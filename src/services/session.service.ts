@@ -4,6 +4,7 @@
 import {Injectable} from '@angular/core';
 import {HttpHeaders} from "@angular/common/http";
 import {loggerService} from './logger.service';
+import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
 
 declare var moment: any;
@@ -74,7 +75,8 @@ export class session {
      */
     public developerMode: boolean = false;
 
-    constructor( public logger: loggerService, public broadcast: broadcast) {
+
+    constructor( public logger: loggerService, public broadcast: broadcast, public helper: helper) {
         this.logger.setSession(this);
         this.generateDeviceID();
     }
@@ -87,7 +89,7 @@ export class session {
         const storageDeviceId = localStorage.getItem('Device-ID');
 
         if (!storageDeviceId) {
-            this.deviceID = crypto.randomUUID();
+            this.deviceID = this.helper.generateGuid(); // crypto.randomUUID();
             localStorage.setItem('Device-ID', this.deviceID);
         } else {
             this.deviceID = storageDeviceId;
