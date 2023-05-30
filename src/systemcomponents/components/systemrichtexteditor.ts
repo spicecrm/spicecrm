@@ -229,14 +229,16 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @private
      */
     private loadCustomStyleDefinitions() {
-        this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
-            this.customStyleDefinitions.push({
-                display: format.name,
-                id: format.id,
-                classes: format.classes ? format.classes.trim().split(/\s+/) : [],
-                element: format.block ? format.block : ( format.inline ? format.inline : '' )
-            })
-        });
+        if(this.stylesheetId){
+            this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
+                this.customStyleDefinitions.push({
+                    display: format.name,
+                    id: format.id,
+                    classes: format.classes ? format.classes.trim().split(/\s+/) : [],
+                    element: format.block ? format.block : ( format.inline ? format.inline : '' )
+                })
+            });
+        }
     }
 
     /**
