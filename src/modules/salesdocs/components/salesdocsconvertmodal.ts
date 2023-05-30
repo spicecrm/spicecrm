@@ -65,12 +65,12 @@ export class SalesDocsConvertModal {
         }
 
         // build the tab url
-        let taburl = `module/${this.model.module}/new/${this.model.id}`;
+        let taburl = `module/${this.model.module}/create/${this.model.id}`;
         if(this.navigationtab) taburl = `tab/${this.navigationtab.tabid}/${taburl}`;
 
         // open a new tab
         this.navigation.addObjectTab({
-            path: (this.navigationtab ? 'tab/:tabid/' : '') + 'module/:module/new/:id',
+            path: (this.navigationtab ? 'tab/:tabid/' : '') + 'module/:module/create/:id',
             parentid: this.navigationtab?.tabid,
             params: {module: this.model.module, id: this.model.id, tabid: this.navigationtab?.tabid},
             id: this.model.utils.generateGuid(),

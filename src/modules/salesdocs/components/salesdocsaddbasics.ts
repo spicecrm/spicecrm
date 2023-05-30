@@ -55,13 +55,13 @@ export class SalesDocsAddBasics {
         this.self.destroy();
         // open a new tab
         this.navigation.addObjectTab({
-            path: 'module/:module/new/:id',
+            path: 'module/:module/create/:id',
             params: {module: this.model.module, id: this.model.id},
             id: this.model.utils.generateGuid(),
             active: true,
             pinned: false,
             enablesubtabs: false,
-            url: `module/${this.model.module}/new/${this.model.id}`,
+            url: `module/${this.model.module}/create/${this.model.id}`,
             tabdata: {
                 module: this.model.module,
                 id: this.model.id,
