@@ -7,6 +7,7 @@ import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {ObjectActionNewButton} from "../../../objectcomponents/components/objectactionnewbutton";
+import {navigation} from "../../../services/navigation.service";
 
 declare var _: any;
 
@@ -18,7 +19,7 @@ export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit 
 
     public actionconfig: any = {};
 
-    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model, public modal: modal, public injector: Injector) {
+    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model, public modal: modal, public injector: Injector, public navigation: navigation) {
         super(language, metadata, model, parentmodel);
 
         this.model.module = 'SalesDocs';
@@ -39,7 +40,8 @@ export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit 
             this.model.setField('salesdoctype', this.actionconfig.defaultsalesdoctype);
         }
 
-        this.modal.openModal(this.actionconfig.modalcomponent ? this.actionconfig.modalcomponent : 'SalesDocsAddBasics', true, this.injector);
+
+         this.modal.openModal(this.actionconfig.modalcomponent ? this.actionconfig.modalcomponent : 'SalesDocsAddBasics', true, this.injector);
     }
 
 }
