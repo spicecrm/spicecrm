@@ -1,0 +1,10 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()"><system-label label="LBL_PROCUREMENTDOC"></system-label></system-modal-header>
+    <system-modal-content>
+        <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!canContinue" (click)="next()"><system-label label="LBL_CONTINUE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

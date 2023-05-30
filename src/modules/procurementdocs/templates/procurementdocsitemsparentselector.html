@@ -1,0 +1,4 @@
+<select [disabled]="isParent" class="slds-select " [(ngModel)]="item.parentitem_id">
+    <option value="">--</option>
+    <option *ngFor="let parentitem of items|procurementdocsitemsparentpipe:item" [value]="parentitem.id">{{parentitem.itemnr}}</option>
+</select>
