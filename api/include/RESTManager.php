@@ -61,6 +61,7 @@ use SpiceCRM\includes\utils\RESTRateLimiter;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\Contacts\Contact;
 use Throwable;
+use SpiceCRM\includes\Middleware\ipClientsMiddleware;
 
 class RESTManager
 {
@@ -518,6 +519,11 @@ class RESTManager
                 // add validation for API only
                 if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] === true) {
                     $routeObject->add(ApiOnlyAccessMiddleware::class);
+                }
+
+                // add validation for specific IP addresses only
+                if ( isset( $route['options']['ipClients'] ) and ( is_string( $route['options']['ipClients'] ) or is_array( $route['options']['ipClients'] ) or $route['options']['ipClients'] === true )) {
+                    $routeObject->add(ipClientsMiddleware::class);
                 }
 
                 if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] === true) {
