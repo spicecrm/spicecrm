@@ -1,9 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {
-    Component, Injector
-} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
@@ -12,7 +10,7 @@ import {model} from "../../../services/model.service";
 import {configurationService} from '../../../services/configuration.service';
 
 /**
- * renders a modal that allws picking the basic paramaters for the procurementdoc when adding a new procurement document
+ * renders a modal that allows picking the basic parameters for the procurementdoc when adding a new procurement document
  */
 @Component({
     selector: 'procurement-docs-add-basic',
@@ -31,7 +29,14 @@ export class ProcurementDocsAddBasics {
      */
     public fieldset: string = '';
 
-    constructor(public metadata: metadata, public language: language, public view: view, public modal: modal, public injector: Injector, public model: model, public configuration: configurationService ) {
+    constructor(public metadata: metadata,
+                public language: language,
+                public view: view,
+                public modal: modal,
+                public injector: Injector,
+                public model: model,
+                public configuration: configurationService) {
+
         // set the basics for the view
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -52,21 +57,17 @@ export class ProcurementDocsAddBasics {
      */
     public next() {
         this.self.destroy();
-        // this.modal.openModal('ProcurementDocsAddMain', true, this.injector);
         this.modal.openModal("ObjectEditModal", true, this.injector).subscribe(editModalRef => {
             editModalRef.instance.model.isNew = true;
-            // Field "procurementdocparty" in table "procurementdoctypes" is either "B" (for Business) or "C" (for Customer).
-            // The field "procurementdocparty" in the module ProcurementDocs wants "I" (for Individual) instead of "C". Here is the mapping:
-            let procurementdocType = this.model.getField('procurementdoctype');
-            let typeData = this.configuration.getData('procurementdoctypes').find( typeRecord => typeRecord.name === procurementdocType );
-            editModalRef.instance.model.setField('procurementdocparty', typeData.procurementdocparty ? typeData.procurementdocparty : 'C');
+            // Field "procurementdocparty" in table "procurementdoctypes" is always "B" (for Business)
+            editModalRef.instance.model.setField('procurementdocparty', 'B');
         });
     }
 
     /**
      * only allow to continue when the procurementdocztype is set
      */
-    get canContinue() {
+    get canContinue(): string {
         return this.model.getField('procurementdoctype');
     }
 }

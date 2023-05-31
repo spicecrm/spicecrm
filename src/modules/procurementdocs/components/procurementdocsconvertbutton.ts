@@ -1,7 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {Component, OnInit, Injector, SkipSelf, OnDestroy} from "@angular/core";
+import {Component, Injector, OnDestroy} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
@@ -23,12 +23,14 @@ export class ProcurementDocsConvertButton implements OnDestroy {
 
     /**
      * component subscriptions
-     *
-     * @private
      */
     public subscriptions: Subscription = new Subscription();
 
-    constructor(public metadata: metadata, public model: model, public modal: modal, public configuration: configurationService, public injector: Injector) {
+    constructor(public metadata: metadata,
+                public model: model,
+                public modal: modal,
+                public configuration: configurationService,
+                public injector: Injector) {
 
         this.subscriptions.add(
             this.model.data$.subscribe(data => {
@@ -46,10 +48,9 @@ export class ProcurementDocsConvertButton implements OnDestroy {
 
     /**
      * determine the state of the button on model changes
-     * @private
      */
     public determineState(): void {
-        // check that uiser can create a procurementdoc
+        // check that user can create a procurementdoc
         if (!this.metadata.checkModuleAcl('ProcurementDocs', 'create')) {
             this.disabled = true;
             return;
@@ -63,7 +64,7 @@ export class ProcurementDocsConvertButton implements OnDestroy {
             return;
         }
 
-        // otherwise we are good to go
+        // otherwise, we are good to go
         this.disabled = false;
     }
 

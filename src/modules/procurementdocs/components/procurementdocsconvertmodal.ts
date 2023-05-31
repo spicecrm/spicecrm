@@ -1,7 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {Component, OnInit, SkipSelf} from "@angular/core";
+import {Component, SkipSelf} from "@angular/core";
 import {backend} from "../../../services/backend.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
@@ -16,23 +16,31 @@ declare var _: any;
 export class ProcurementDocsConvertModal {
 
     /**
-     * referenec to self added from teh modal service
-     * @private
+     * reference to self added from teh modal service
      */
     public self: any;
 
     /**
-     * the targetdata loaded from the backend that is supposed to be created as new procurementdoc
+     * the target data loaded from the backend that is supposed to be created as new procurementdoc
      */
     public targetData: any;
 
-    constructor(public model: model, @SkipSelf() public parent: model, public modal: modal, public backend: backend) {
+    constructor(public model: model,
+                @SkipSelf() public parent: model,
+                public modal: modal,
+                public backend: backend) {
     }
 
+    /**
+     * closes the modal
+     */
     public close() {
         this.self.destroy();
     }
 
+    /**
+     * converts a ProcurementDoc
+     */
     public convert() {
         this.model.module = 'ProcurementDocs';
         let newdata = {};
