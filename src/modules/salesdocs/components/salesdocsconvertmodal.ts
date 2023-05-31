@@ -1,10 +1,12 @@
 /**
  * @module ModuleSalesDocs
  */
-import {Component, OnInit, SkipSelf} from "@angular/core";
+import {Component, OnInit, Optional, SkipSelf} from "@angular/core";
 import {backend} from "../../../services/backend.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
+import {navigation} from "../../../services/navigation.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 declare var _: any;
 
@@ -25,7 +27,7 @@ export class SalesDocsConvertModal {
      */
     public targetData: any;
 
-    constructor(public model: model, @SkipSelf() public parent: model, public modal: modal, public backend: backend) {
+    constructor(public model: model, @SkipSelf() public parent: model, public modal: modal, public backend: backend, public navigation: navigation, @Optional() public navigationtab: navigationtab,) {
     }
 
     public close() {
@@ -34,13 +36,18 @@ export class SalesDocsConvertModal {
 
     public convert() {
         this.model.module = 'SalesDocs';
+        this.model.id = this.model.utils.generateGuid();
+        this.model.initialize();
+
         let newdata = {};
         for(let field in this.targetData.SalesDoc){
             if(!_.isEmpty(this.targetData.SalesDoc[field])){
                 newdata[field] = this.targetData.SalesDoc[field];
             }
         }
-        this.model.addModel(null, null, newdata);
+
+        // this.model.addModel(null, null, newdata);
+        this.model.setFields(newdata);
 
         // add the items to the model
         this.model.data.salesdocitems = {
@@ -56,6 +63,27 @@ export class SalesDocsConvertModal {
                 itemnr = itemnr + 10;
             }
         }
+
+        // build the tab url
+        let taburl = `module/${this.model.module}/create/${this.model.id}`;
+        if(this.navigationtab) taburl = `tab/${this.navigationtab.tabid}/${taburl}`;
+
+        // open a new tab
+        this.navigation.addObjectTab({
+            path: (this.navigationtab ? 'tab/:tabid/' : '') + 'module/:module/create/:id',
+            parentid: this.navigationtab?.tabid,
+            params: {module: this.model.module, id: this.model.id, tabid: this.navigationtab?.tabid},
+            id: this.model.utils.generateGuid(),
+            active: true,
+            pinned: false,
+            enablesubtabs: false,
+            url: taburl,
+            tabdata: {
+                module: this.model.module,
+                id: this.model.id,
+                data: this.model.data
+            }
+        })
 
         this.close();
     }

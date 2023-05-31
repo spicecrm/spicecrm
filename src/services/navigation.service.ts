@@ -84,6 +84,11 @@ export interface objectTab {
      */
     enablesubtabs: boolean;
 
+    /**
+     * additional tabdata
+     */
+    tabdata?: object;
+
 }
 
 /**
@@ -731,6 +736,17 @@ export class navigation {
             this.objectTabsChange$.emit(true);
         }
 
+    }
+
+    /**
+     * adds an object tab
+     *
+     * @param tabDetails
+     */
+    public addObjectTab(tabDetails: objectTab){
+        this.objectTabs.unshift(tabDetails);
+        // set the current tab as active tab
+        this.activeTab = tabDetails.id;
     }
 
     /**

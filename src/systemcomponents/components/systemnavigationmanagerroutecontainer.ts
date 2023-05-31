@@ -95,6 +95,11 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
         // set the parent tab id on the navigation tab
         this.setParentTabId();
 
+        // set the tabdata if we find it
+        if(this.object) {
+            this.navigationtab.objecttab = this.object;
+        }
+
         // subscribe to the tabid change
         this.subscriptions.add(
             this.navigation.activeTab$.subscribe(activetab => {
