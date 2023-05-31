@@ -67,7 +67,6 @@ export class ProcurementDocsFlowModal implements OnInit {
      */
     public loadDocumentFlow() {
         this.backend.getRequest(`module/ProcurementDocs/${this.model.id}/flow`).subscribe(res => {
-            console.log(res);
             this.successors = res.successors;
             this.procurementdocs = res.procurementdocs;
             this.buildTable();
