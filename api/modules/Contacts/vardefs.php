@@ -892,11 +892,11 @@ if (file_exists("extensions/modules/SalesDocs")) {
 }
 
 if (file_exists("extensions/modules/ProcurementDocs")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['procurementdocro'] = [
-        'name' => 'procurementdocro',
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['procurementdoc'] = [
+        'name' => 'procurementdoc',
         'type' => 'link',
-        'vname' => 'LBL_PROCUREMENTDOCSRO',
-        'relationship' => 'procurementdocs_contactsro',
+        'vname' => 'LBL_PROCUREMENTDOCS',
+        'relationship' => 'procurementdocs_contacts',
         'module' => 'ProcurementDocs',
         'source' => 'non-db'
     ];
