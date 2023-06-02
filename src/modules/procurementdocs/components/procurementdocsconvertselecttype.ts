@@ -1,7 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {Component, OnInit, SkipSelf, Injector} from "@angular/core";
+import {Component, Injector} from "@angular/core";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";

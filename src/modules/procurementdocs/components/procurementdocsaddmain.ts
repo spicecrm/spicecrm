@@ -1,9 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {
-    Component
-} from '@angular/core';
+import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";

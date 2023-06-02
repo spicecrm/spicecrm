@@ -1,11 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {
-    Component,
-    ElementRef, EventEmitter,
-    Input, OnDestroy, OnInit, Output
-} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {view} from '../../../services/view.service';

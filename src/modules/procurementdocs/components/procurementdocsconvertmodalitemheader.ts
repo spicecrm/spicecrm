@@ -1,7 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {Component, Input, SkipSelf, OnInit} from "@angular/core";
+import {Component, Input, SkipSelf} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 

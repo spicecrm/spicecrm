@@ -1,15 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {
-    AfterViewInit,
-    Component,
-    Input,
-    ViewChild,
-    ViewContainerRef,
-    EventEmitter,
-    Output
-} from '@angular/core';
+import {AfterViewInit, Component, Input, ViewChild, ViewContainerRef, EventEmitter, Output} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';

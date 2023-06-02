@@ -1,15 +1,7 @@
 /**
  * @module ModuleProcurementDocs
  */
-import {
-    AfterViewInit,
-    Component,
-    Input,
-    ViewChild,
-    ViewContainerRef,
-    EventEmitter,
-    Output
-} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 
 
 import {modelutilities} from '../../../services/modelutilities.service';
