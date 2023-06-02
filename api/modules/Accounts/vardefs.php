@@ -736,7 +736,7 @@ if (file_exists("extensions/modules/ProcurementDocs")) {
         'name' => 'procurementdocs',
         'type' => 'link',
         'vname' => 'LBL_PROCUREMENTDOCS',
-        'relationship' => 'procurementdocs_accountsop',
+        'relationship' => 'procurementdocs_accounts',
         'module' => 'ProcurementDocs',
         'source' => 'non-db',
     ];
@@ -744,7 +744,7 @@ if (file_exists("extensions/modules/ProcurementDocs")) {
         'name' => 'procurementdocitems',
         'type' => 'link',
         'vname' => 'LBL_PROCUREMENTDOCITEMS',
-        'relationship' => 'procurementdocitems_accountsro',
+        'relationship' => 'procurementdocitems_accounts',
         'module' => 'ProcurementDocItems',
         'source' => 'non-db',
         'comment' => 'allows to display items on procurementdocs via a n:m relationship using the procurementdocs table'
