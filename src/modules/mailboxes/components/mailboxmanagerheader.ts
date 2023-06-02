@@ -130,10 +130,6 @@ export class MailboxManagerHeader implements OnInit {
         }
     }
 
-    get selected() {
-        return this.mailboxesEmails.mailboxes.length==1
-    }
-
     /**
      * initialize
      */
