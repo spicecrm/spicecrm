@@ -187,24 +187,14 @@ export class procurementdocrecord implements OnDestroy {
         // only if we are editing
         if(!this.procurementdoc.isEditing) return of(true);
 
-        // first Receiving Account
+        // get vendor Account
         let rpModule = 'Accounts';
-        let rpId = this.procurementdoc.getField('account_rp_id');
+        let rpId = this.procurementdoc.getField('account_id');
 
-        // try Ordering Account
-        if (!rpId) {
-            rpId = this.procurementdoc.getField('account_op_id');
-        }
-
-        // try the receiving contact
+        // try the vendor Contact
         if (!rpId) {
             rpModule = 'Contacts';
-            rpId = this.procurementdoc.getField('contact_rp_id');
-        }
-
-        // try the ordering contact
-        if (!rpId) {
-            rpId = this.procurementdoc.getField('contact_op_id');
+            rpId = this.procurementdoc.getField('contact_id');
         }
 
         // if we have no id return false
