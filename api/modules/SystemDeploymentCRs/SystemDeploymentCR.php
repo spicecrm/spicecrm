@@ -56,7 +56,7 @@ class SystemDeploymentCR
 
         if (!$query) return;
 
-        self::registerChange($tableName, $id, self::ACTION_DELETE, $name);
+        self::registerChange($tableName, $id, SystemDeploymentCR::ACTION_DELETE, $name);
     }
 
     /**
@@ -75,12 +75,12 @@ class SystemDeploymentCR
 
         if (!$forceAction) {
             $tableRecordExists = (bool)$db->getOne("SELECT id FROM $tableName WHERE id = '$id'");
-            $action = $tableRecordExists ? self::ACTION_UPDATE : self::ACTION_INSERT;
+            $action = $tableRecordExists ? SystemDeploymentCR::ACTION_UPDATE : SystemDeploymentCR::ACTION_INSERT;
         } else {
             $action = $forceAction;
         }
 
-        if ($action == self::ACTION_INSERT) {
+        if ($action == SystemDeploymentCR::ACTION_INSERT) {
             $db->insertQuery($tableName, $data);
         } else {
             $db->updateQuery($tableName, ['id' => $id], $data);
