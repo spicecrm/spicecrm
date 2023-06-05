@@ -137,6 +137,7 @@ export class ReportsDesignerConditionGroup {
             path: path,
             displaypath: this.reportsDesignerService.getCurrentPath(),
             name: field.name,
+            label: field.label,
             type: field.type,
             operator: 'ignore',
             jointype: 'required',
