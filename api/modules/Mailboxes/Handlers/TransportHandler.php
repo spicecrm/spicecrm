@@ -114,7 +114,8 @@ abstract class TransportHandler
             $body .= "<a href=\"{$unsubUrl}\">unsubscribe</a>";
         }
 
-        return $body;
+        # prevent misinterpretation of the style tag css class selectors
+        return str_replace(["\n.", "\r."], ["\n .", "\r ."], $body);
     }
 
     /**
