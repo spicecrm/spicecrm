@@ -154,5 +154,6 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      */
     public onContentDelete(element) {
         this.column.children = this.column.children.filter(item => item != element);
+        this.spicePageBuilderService.emitData();
     }
 }
