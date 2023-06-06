@@ -95,7 +95,7 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [])
+    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null)
     {
         $this->additionalValues = $additionalValues;
         $this->lang = $lang;
@@ -117,7 +117,40 @@ class Compiler
             $this->root->appendChild($newElement);
         };
 
+        $this->addStyleTag($additionalStyleId);
+
         return $this->doc->saveHTML();
+    }
+
+    /**
+     * add style tag to the dom
+     * @param string|null $additionalStyleId
+     * @return void
+     * @throws \Exception
+     */
+    private function addStyleTag(?string $additionalStyleId): void
+    {
+        if (!$additionalStyleId) return;
+
+        $head = $this->root->getElementsByTagName('head')[0];
+
+        if (!$head) {
+            $head = $this->doc->createElement('head');
+            $this->doc->appendChild($head);
+        }
+
+        $db = DBManagerFactory::getInstance();
+
+        $content = (string) $db->getOne("SELECT csscode FROM sysuihtmlstylesheets WHERE id='$additionalStyleId'");
+
+        if (empty($content)) return;
+
+        $styleElement = $this->doc->createElement('style', html_entity_decode($content, ENT_QUOTES));
+        $typeAttr = $this->doc->createAttribute('type');
+        $typeAttr->value = 'text/css';
+        $styleElement->appendChild($typeAttr);
+
+        $head->appendChild($styleElement);
     }
 
     private function parseDom($thisNode, $beans = []){
