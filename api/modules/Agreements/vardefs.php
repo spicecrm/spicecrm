@@ -155,4 +155,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
     ]
 ];
 
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Agreement']['relationships']['procurementdocs'] = [
+        'name' => 'procurementdocs',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCS',
+        'relationship' => 'procurementdocs_agreements_parent',
+        'module' => 'ProcurementDocs',
+        'source' => 'non-db',
+    ];
+}
+
 VardefManager::createVardef('Agreements', 'Agreement', ['default', 'assignable']);
