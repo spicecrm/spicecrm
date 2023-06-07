@@ -50,6 +50,10 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class Compiler
 {
+    /**
+     * @var bool if true keep the comment tags
+     */
+    public $keepComments = true;
     public $additionalValues;
     public $doc;
     public $root;
@@ -186,7 +190,10 @@ class Compiler
                     }
                     break;
                 case 'DOMComment':
-                    // no takeover of comments
+                    if ($this->keepComments) {
+                        $comment = $this->doc->createComment($node->data);
+                        $elements[] = $comment;
+                    }
                     break;
                 case 'DOMElement':
 //                    $newElement = $this->doc->createElement($node->tagName);
