@@ -715,5 +715,13 @@ if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
         'source' => 'non-db'
     ];
 }
-
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Email']['relationships']['procurementdocs'] = [
+        'name'         => 'procurementdocs',
+        'type'         => 'link',
+        'relationship' => 'procurementdocs_emails',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_PROCUREMENTDOCS',
+    ];
+}
 VardefManager::createVardef('Emails', 'Email', ['default', 'assignable']);
