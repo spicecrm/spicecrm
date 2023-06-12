@@ -10,6 +10,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -84,24 +85,44 @@ class EmailAddress extends SpiceBean
      * @param $ignoreInvalidEmailAddresses bool
      * @return int|string
      * @throws Exception
+     * @throws \Exception
      * @see SpiceBean::save
      */
     public function save($check_notify = false, $fts_index_bean = true, bool $ignoreInvalidEmailAddresses = true)
     {
-        $this->email_address = $this->cleanAddress($this->email_address);
-        $this->email_address_caps = $this->cleanAddress($this->email_address_caps);
-        if (!$ignoreInvalidEmailAddresses && !$this->isValidEmailAddress($this->email_address)) {
-            throw new Exception("Invalid Email Address: {$this->email_address}", 422);
+        if (!$this->isValidEmailAddress($this->email_address)) {
+            if (!$ignoreInvalidEmailAddresses) {
+                throw new Exception("Invalid Email Address: {$this->email_address}", 422);
+            } else {
+                $this->invalid_email = 1;
+            }
         }
+
         return parent::save($check_notify, $fts_index_bean);
     }
 
     /**
      * check if the email addresses is valid
      */
-    public static function isValidEmailAddress($text)
+    public static function isValidEmailAddress($text): bool
     {
-        return filter_var($text, FILTER_VALIDATE_EMAIL);
+        $split = explode('@', $text);
+
+        if (count($split) !== 2) return false;
+
+        return self::validateEmailAddressLocalPart($split[0]) && self::validateEmailAddressDomain($split[1]);
+    }
+
+    /**
+     * validate email address local part
+     * @param string $localPart
+     * @return bool
+     */
+    public static function validateEmailAddressLocalPart(string $localPart): bool
+    {
+        $options = SpiceConfig::getInstance()->config['international_email_addresses'] ? FILTER_FLAG_EMAIL_UNICODE : 0;
+
+        return (bool) filter_var("$localPart@any.com", FILTER_VALIDATE_EMAIL, $options);
     }
 
     /**
@@ -322,27 +343,18 @@ class EmailAddress extends SpiceBean
      */
     public function splitEmailAddress($addressString): array
     {
-        $email = $this->cleanAddress($addressString);
-
-        if (!preg_match(self::VALIDATE_REGEX, $email)) {
-            $email = ''; // remove bad email addresses
-        }
-        $name = trim(str_replace([$email, '<', '>', '"', "'"], '', $addressString));
-        return ["name" => $name, "email" => strtolower($email)];
+        [$nameOrEmailAddress, $emailAddress] = explode(' <', trim($addressString, '> '));
+        return ["name" => $nameOrEmailAddress, "email" => !empty($emailAddress) ? strtolower($emailAddress) : $nameOrEmailAddress];
     }
 
     /**
-     * Normalizes an RFC-clean email address, returns a string that is the email address only
-     * @param string $text Dirty email address in the following form: "name" <email@example.com>
-     * @return string clean email address
+     * validate email address domain
+     * @param string $domain
+     * @return bool
      */
-    public static function cleanAddress(?string $text): ?string
+    public static function validateEmailAddressDomain(string $domain): bool
     {
-        if(empty($text)) return $text;
-
-        $text = DBUtils::fromHtml($text);
-        preg_match_all(self::VALIDATE_REGEX, $text, $matches);
-        return $matches[0][0];
+        return checkdnsrr($domain);
     }
 
     /**
