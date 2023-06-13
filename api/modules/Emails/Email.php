@@ -1285,8 +1285,15 @@ class Email extends SpiceBean
     {
         $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
         $documentFactory = new Pear\DocumentFactory();
-        $msg = $messageFactory->parseMessage($documentFactory->createFromFile(StreamFactory::getPathPrefix('upload') . $fileId));
+        $content = file_get_contents(StreamFactory::getPathPrefix('upload') . $fileId);
+        $path = join(DIRECTORY_SEPARATOR, [sys_get_temp_dir(), $fileId]);
+
+        file_put_contents($path, $content);
+
+        $msg = $messageFactory->parseMessage($documentFactory->createFromFile($path));
         $this->convertMessageToBean($msg);
+
+        unlink($path);
 
         // set the parent
         $this->parent_id = $beanId;
