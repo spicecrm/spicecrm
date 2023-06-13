@@ -192,7 +192,8 @@ class AdminController
                 'log_memory_usage' => SpiceConfig::getInstance()->config['log_memory_usage'],
                 'slow_query_time_msec' => SpiceConfig::getInstance()->config['slow_query_time_msec'],
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
-                'upload_dir' => SpiceConfig::getInstance()->config['upload_dir']
+                'upload_dir' => SpiceConfig::getInstance()->config['upload_dir'],
+                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'],
             ],
             'cache' => [
                 'class' => SpiceConfig::getInstance()->config['cache']['class'] ?? 'SpiceCacheFile',

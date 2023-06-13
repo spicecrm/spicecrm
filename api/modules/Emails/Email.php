@@ -282,7 +282,6 @@ class Email extends SpiceBean
             if (empty($addresses)) continue;
 
             foreach ($addresses as $address) {
-                $address = EmailAddress::cleanAddress($address);
                 $existingIndex = array_search($address, array_column($this->recipient_addresses, 'email_address'));
 
                 if (empty($address) || ($existingIndex !== false && $this->recipient_addresses[$existingIndex]['address_type'] == $type)) {
@@ -1044,7 +1043,7 @@ class Email extends SpiceBean
         if (!$address) return null;
         $this->recipient_addresses[] = [
             'address_type' => $type,
-            'email_address' => EmailAddress::cleanAddress($address)
+            'email_address' => $address
         ];
     }
 
