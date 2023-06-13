@@ -282,7 +282,6 @@ class Email extends SpiceBean
             if (empty($addresses)) continue;
 
             foreach ($addresses as $address) {
-                $address = EmailAddress::cleanAddress($address);
                 $existingIndex = array_search($address, array_column($this->recipient_addresses, 'email_address'));
 
                 if (empty($address) || ($existingIndex !== false && $this->recipient_addresses[$existingIndex]['address_type'] == $type)) {
@@ -1044,7 +1043,7 @@ class Email extends SpiceBean
         if (!$address) return null;
         $this->recipient_addresses[] = [
             'address_type' => $type,
-            'email_address' => EmailAddress::cleanAddress($address)
+            'email_address' => $address
         ];
     }
 
@@ -1286,8 +1285,15 @@ class Email extends SpiceBean
     {
         $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
         $documentFactory = new Pear\DocumentFactory();
-        $msg = $messageFactory->parseMessage($documentFactory->createFromFile(StreamFactory::getPathPrefix('upload') . $fileId));
+        $content = file_get_contents(StreamFactory::getPathPrefix('upload') . $fileId);
+        $path = join(DIRECTORY_SEPARATOR, [sys_get_temp_dir(), $fileId]);
+
+        file_put_contents($path, $content);
+
+        $msg = $messageFactory->parseMessage($documentFactory->createFromFile($path));
         $this->convertMessageToBean($msg);
+
+        unlink($path);
 
         // set the parent
         $this->parent_id = $beanId;
