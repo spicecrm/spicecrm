@@ -651,6 +651,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'name' => 'idx_email_external_id_mailbox',
             'type' => 'index',
             'fields' => ['external_id', 'mailbox_id']
+        ],
+        [
+            'name' => 'idx_email_mailboxid_status_deleted',
+            'type' => 'index',
+            'fields' => ['mailbox_id', 'status', 'deleted']
         ]
     ], // end indices
 ];

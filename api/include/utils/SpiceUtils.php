@@ -660,14 +660,20 @@ class SpiceUtils
      * @return array|false|string[]
      */
     public static function unencodeMultienum($string) {
+
         if (is_array($string)) {
             return $string;
         }
+
+        if (empty($string)) {
+            return [];
+        }
+
         if (substr($string, 0, 1) == "^" && substr($string, -1) == "^") {
             $string = substr(substr($string, 1), 0, strlen($string) - 2);
         }
 
-        return !is_null($string)? explode('^,^', $string): [];
+        return explode('^,^', $string);
     }
 
     /**

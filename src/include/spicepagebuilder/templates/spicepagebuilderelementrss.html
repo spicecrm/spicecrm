@@ -67,21 +67,31 @@
                                 <input type="text" [(ngModel)]="count" max="100" min="1" class="slds-input">Min 1 - Max 100
                             </div>
                         </div>
+                        <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_DATE_VISIBILITY"></system-label>
+                            </label>
+                            <div class="slds-form-element__control">
+                                <system-input-radio-button-group [(ngModel)]="element.showDate" [inputOptions]="dateHiddenOptions"></system-input-radio-button-group>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </system-section>
-        <ng-container *ngFor="let item of element.children[0].children">
-            <system-section [titlelabel]="item.attributes['css-class']" [alwaysExpanded]="true" class="spice-collapsible-tab-grow slds-m-bottom--small">
-                <div class="slds-size--1-of-1 slds-grid slds-wrap">
-                    <ng-container *ngFor="let styleAttribute of childrenAttributesList[item.content]" [ngSwitch]="styleAttribute.type">
-                        <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
-                        <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
-                        <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
-                        <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
-                    </ng-container>
-                </div>
-            </system-section>
+        <ng-container *ngFor="let column of element.children[0].children[0].children">
+            <ng-container *ngFor="let item of column.children">
+                <system-section [titlelabel]="item.attributes['css-class']" [alwaysExpanded]="true" class="spice-collapsible-tab-grow slds-m-bottom--small">
+                    <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                        <ng-container *ngFor="let styleAttribute of childrenAttributesList[item.attributes['css-class']]" [ngSwitch]="styleAttribute.type">
+                            <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                            <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                            <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
+                            <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
+                        </ng-container>
+                    </div>
+                </system-section>
+            </ng-container>
         </ng-container>
     </div>
     <div>

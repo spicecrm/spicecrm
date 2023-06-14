@@ -7,7 +7,7 @@ import {Title} from "@angular/platform-browser";
 import {Observable, Subject, of, BehaviorSubject, Subscription} from "rxjs";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
-import {Router, ActivatedRouteSnapshot, CanActivate, Params, Route, UrlSegment} from "@angular/router";
+import { Router, ActivatedRouteSnapshot, Params, Route, UrlSegment } from "@angular/router";
 import {modal} from "./modal.service";
 import {language} from "./language.service";
 import {metadata} from "./metadata.service";
@@ -83,6 +83,11 @@ export interface objectTab {
      * if subtabs are enabled on the tab
      */
     enablesubtabs: boolean;
+
+    /**
+     * additional tabdata
+     */
+    tabdata?: object;
 
 }
 
@@ -734,6 +739,17 @@ export class navigation {
     }
 
     /**
+     * adds an object tab
+     *
+     * @param tabDetails
+     */
+    public addObjectTab(tabDetails: objectTab){
+        this.objectTabs.unshift(tabDetails);
+        // set the current tab as active tab
+        this.activeTab = tabDetails.id;
+    }
+
+    /**
      * sets the tab with the passed in ID as active tab
      *
      * @param tabid
@@ -932,7 +948,7 @@ export class navigation {
 @Injectable({
     providedIn: 'root'
 })
-export class canNavigateAway implements CanActivate {
+export class canNavigateAway  {
     constructor(public navigation: navigation, public modal: modal, public language: language) {
     }
 
