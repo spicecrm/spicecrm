@@ -77,6 +77,7 @@ import {SystemInputRadioButtonGroup} from "./components/systeminputradiobuttongr
 import {SystemInputRelate} from "./components/systeminputrelate";
 import {SystemInputState} from "./components/systeminputstate";
 import {SystemInputTags} from "./components/systeminputtags";
+import {SystemInputTaxCode} from "./components/systeminputtaxcode";
 import {SystemInputTime} from "./components/systeminputtime";
 import {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
 import {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
@@ -172,6 +173,7 @@ import {SystemInputColor} from "./components/systeminputcolor";
 import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcontent";
 import {SystemHtmlEditor} from "./components/systemhtmleditor";
 
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -224,6 +226,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemIllustrationNoTask,
         SystemIllustrationPageNotAvailable,
         SystemImagePreviewModal,
+        SystemInputTaxCode,
         SystemInputText,
         SystemInputInteger,
         SystemInputEnum,
@@ -468,7 +471,8 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemHtmlEditor,
         SystemCardStencil,
         SystemSelectIcon,
-        SystemSelectIconItem
+        SystemSelectIconItem,
+        SystemInputTaxCode
     ]
 })
 export class SystemComponents {}
