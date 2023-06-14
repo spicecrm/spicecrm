@@ -23,21 +23,19 @@ export interface BodyI extends TagElementI {
  */
 export interface SectionI extends TagElementI {
     attributes: {
-        'background-color'?: string,
-        'background-repeat'?: string,
-        'background-size'?: string,
-        'background-url'?: string,
-        'border'?: string,
-        'border-top'?: string,
-        'border-right'?: string,
-        'border-bottom'?: string,
-        'border-left'?: string,
-        'border-radius'?: string,
-        'padding'?: string,
-        'css-class'?: string,
-        'direction'?: string,
-        'full-width'?: string,
-        'text-align'?: string
+        'background-color'?: string;
+        'color'?: string;
+        'padding'?: string;
+        'css-class'?: string;
+        'border'?: string;
+        'border-top'?: string;
+        'border-right'?: string;
+        'border-bottom'?: string;
+        'border-left'?: string;
+        'background-position'?: string;
+        'background-repeat'?: string;
+        'background-size'?: string;
+        'background-url'?: string;
     };
 }
 /**
@@ -132,7 +130,8 @@ export interface RSSI extends ContentElementI {
     content: string;
     href: string,
     count: string,
-    children: [{tagName: 'column', children: HTMLCodeI[]}],
+    showDate: '1' | '0',
+    children: [{tagName: 'column', children: SectionI[]}],
     attributes: {
         'count': string,
         'href': string,
@@ -230,6 +229,7 @@ export interface PanelElementI extends ContentElementI {
     content?: string;
     count?: string,
     href?: string,
+    showDate?: '0' | '1',
     children?: ContentElementI|SectionI|ColumnI[]
 }
 /**

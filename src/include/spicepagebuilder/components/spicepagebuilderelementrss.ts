@@ -7,6 +7,7 @@ import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, RSSI} from "../interfaces/spicepagebuilder.interfaces";
 import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
 /**
  * Parse and renders renderer container
@@ -48,7 +49,7 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
      * style attributes list for the item children
      */
     public childrenAttributesList: {[key: string]: AttributeObjectI[]} = {
-        'RSS-ITEM-HEADER-PLACEHOLDER': [
+        'rss-header': [
             {name: 'align', type: 'text'},
             {name: 'inner-padding', type: 'sides'},
             {name: 'background-color', type: 'color'},
@@ -59,19 +60,39 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
             {name: 'padding', type: 'sides'},
             {name: 'container-background-color', type: 'color'},
         ],
-        'RSS-ITEM-DATE-PLACEHOLDER': [
+        'rss-date': [
             {name: 'font-size', type: 'textSuffix'},
             {name: 'line-height', type: 'textSuffix'},
             {name: 'padding', type: 'sides'},
             {name: 'container-background-color', type: 'color'},
         ],
-        'RSS-ITEM-DESCRIPTION-PLACEHOLDER': [
+        'rss-description': [
             {name: 'font-size', type: 'textSuffix'},
             {name: 'line-height', type: 'textSuffix'},
             {name: 'padding', type: 'sides'},
             {name: 'container-background-color', type: 'color'},
+        ],
+        'rss-image': [
+            {name: 'align', type: 'text'},
+            {name: 'width', type: 'text'},
+            {name: 'height', type: 'text'},
+            {name: 'padding', type: 'sides'},
+            {name: 'fluid-on-mobile', type: 'text'},
         ]
     }
+    /**
+     * date hidden radio button options
+     */
+    public dateHiddenOptions: InputRadioOptionI[] = [
+        {
+            label: 'LBL_HIDDEN',
+            value: '0',
+        },
+        {
+            label: 'LBL_VISIBLE',
+            value: '1',
+        }
+    ];
 
     constructor(public domSanitizer: DomSanitizer,
                 public modal: modal,
@@ -98,6 +119,7 @@ export class SpicePageBuilderElementRSS extends SpicePageBuilderElement {
         this.element.content = res.content;
         this.element.href = res.href;
         this.element.count = res.count;
+        this.element.showDate = res.showDate;
         this.element.children = res.children;
         super.handleEditResponse(res);
     }

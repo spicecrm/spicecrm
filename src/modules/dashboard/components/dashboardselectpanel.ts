@@ -3,12 +3,9 @@
  */
 import {
     Component,
-    ComponentFactoryResolver,
-    ComponentRef,
     EventEmitter,
-    Injector,
     Output,
-    ReflectiveInjector, ViewContainerRef
+    ViewContainerRef
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -28,7 +25,7 @@ export class DashboardSelectPanel {
     @Output() public hide: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() public dashboardSelect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(public vcr: ViewContainerRef,public metadata: metadata, public userpreferences: userpreferences, public language: language, public model: model, public modellist: modellist, public dashboardlayout: dashboardlayout, public cfr: ComponentFactoryResolver) {
+    constructor(public vcr: ViewContainerRef,public metadata: metadata, public userpreferences: userpreferences, public language: language, public model: model, public modellist: modellist, public dashboardlayout: dashboardlayout) {
 
     }
 

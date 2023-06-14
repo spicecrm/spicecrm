@@ -74,10 +74,29 @@ export class session {
      */
     public developerMode: boolean = false;
 
+
     constructor( public logger: loggerService, public broadcast: broadcast) {
         this.logger.setSession(this);
         this.generateDeviceID();
     }
+
+    /*
+     * for the GUID Generation
+     */
+    public getRand() {
+        return Math.random();
+    }
+
+    public S4() {
+        /* tslint:disable:no-bitwise */
+        return (((1 + this.getRand()) * 0x10000) | 0).toString(16).substring(1);
+        /* tslint:enable:no-bitwise */
+    }
+
+    public generateGuid() {
+        return (this.S4() + this.S4() + "-" + this.S4() + "-" + this.S4() + "-" + this.S4() + "-" + this.S4() + this.S4() + this.S4());
+    }
+
 
     /**
      * generate device id for the browser to be used for 2fa
@@ -87,7 +106,7 @@ export class session {
         const storageDeviceId = localStorage.getItem('Device-ID');
 
         if (!storageDeviceId) {
-            this.deviceID = crypto.randomUUID();
+            this.deviceID = this.generateGuid(); // crypto.randomUUID();
             localStorage.setItem('Device-ID', this.deviceID);
         } else {
             this.deviceID = storageDeviceId;
