@@ -65,10 +65,10 @@ class ElasticHandler
         }
 
         if (isset(SpiceConfig::getInstance()->config['fts']['number_of_shards'])) {
-            $this->standardSettings['index']['number_of_shards'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_shards'];
+            $this->standardSettings['index']['number_of_shards'] = SpiceConfig::getInstance()->config['fts']['number_of_shards'];
         }
         if (isset(SpiceConfig::getInstance()->config['fts']['number_of_replicas'])) {
-            $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_replicas'];
+            $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['number_of_replicas'];
         }
 
         $this->username = SpiceConfig::getInstance()->config['fts']['username'];
