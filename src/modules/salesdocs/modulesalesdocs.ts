@@ -60,6 +60,8 @@ import {SalesDocsConvertModal} from './components/salesdocsconvertmodal';
 import {SalesDocsFlowButton} from './components/salesdocsflowbutton';
 import {SalesDocsFlowTableRow} from './components/salesdocsflowtablerow';
 import {SalesDocsFlowModal} from './components/salesdocsflowmodal';
+import {fieldSalesdocItemAmount} from "./fields/fieldsalesdocitemamount";
+import {SalesDocsItemCalculate} from "./components/salesdocsitemcalculate";
 
 @NgModule({
     imports: [
@@ -81,11 +83,13 @@ import {SalesDocsFlowModal} from './components/salesdocsflowmodal';
         SalesDocsItemsAddProductGroup,
         SalesDocsItemsAddProductVariant,
         SalesDocsItemsAddText,
+        SalesDocsItemCalculate,
         SalesDocsItemsParentSelector,
         SalesDocsItemsParentPipe,
         fieldSalesdocTypes,
         fieldSalesdocItemTypes,
         fieldSalesdocTaxCategories,
+        fieldSalesdocItemAmount,
         SalesDocsItemsDeletedPipe,
         SalesdocsNewButton,
         SalesDocsAddBasics,
