@@ -1,0 +1,57 @@
+<system-modal>
+    <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+    <system-modal-content margin="none">
+        <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table--fixed-layout">
+            <thead>
+                <tr style="line-height: 32px;">
+                    <th style="width: 30%" scope="col">
+                        <div class="slds-p-vertical--xx-small slds-truncate"><system-label label="LBL_ELEMENT"/></div>
+                    </th>
+                    <th style="width: 15%" scope="col">
+                        <div class="slds-p-vertical--xx-small slds-text-align--right slds-truncate"><system-label label="LBL_VALUE"/></div>
+                    </th>
+                    <th style="width: 15%" scope="col">
+                        <div class="slds-p-vertical--xx-small slds-text-align--right slds-truncate"><system-label label="LBL_VALUE"/></div>
+                    </th>
+                    <th style="width: 15%" scope="col">
+                        <div class="slds-p-vertical--xx-small slds-text-align--right slds-truncate"><system-label label="LBL_AMOUNT_PER_UNIT"/></div>
+                    </th>
+                    <th style="width: 15%" scope="col">
+                        <div class="slds-p-vertical--xx-small slds-text-align--right slds-truncate"><system-label label="LBL_TOTAL"/></div>
+                    </th>
+                    <th style="width: 15%" scope="col">
+                        <div class="slds-p-vertical--xx-small slds-text-align--right slds-truncate"><system-label label="LBL_TAX_CATEGORY"/></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let schemelement of schemaelements" >
+                <tr class="slds-hint-parent" *ngIf="!schemelement.hidden" style="line-height: 32px;" [ngStyle]="schemelement.displaystyles">
+                    <td>
+                        <div class="slds-truncate"><system-label [label]="schemelement.elementname ?? schemelement.conditionname"/></div>
+                    </td>
+                    <td class="slds-text-align--right">
+                        <div class="slds-truncate"><system-display-number [number]="getElementValue(schemelement.id)"/></div>
+                    </td>
+                    <td>
+                        <system-input-number [asNumber]="true" precision="2" *ngIf="schemelement.editable == 1" [disabled]="!isEditing" [ngModel]="getElementValue(schemelement.id, true)" (ngModelChange)="setElementOverrideValue(schemelement.id, $event)"/>
+                    </td>
+                    <td class="slds-text-align--right">
+                        <system-display-number [number]="getElementAmount(schemelement.id)" currency_id="-99"/>
+                    </td>
+                    <td class="slds-text-align--right">
+                        <system-display-number [number]="getElementAmount(schemelement.id, true)" currency_id="-99"/>
+                    </td>
+                    <td>
+                        <system-input-taxcode *ngIf="schemelement.valuetype == 'T'" disabled [ngModel]="getElementTaxCategory(schemelement.id)"/>
+                    </td>
+                </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_OK"/></button>
+    </system-modal-footer>
+</system-modal>

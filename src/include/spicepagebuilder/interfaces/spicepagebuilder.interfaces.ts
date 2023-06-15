@@ -23,21 +23,19 @@ export interface BodyI extends TagElementI {
  */
 export interface SectionI extends TagElementI {
     attributes: {
-        'background-color'?: string,
-        'background-repeat'?: string,
-        'background-size'?: string,
-        'background-url'?: string,
-        'border'?: string,
-        'border-top'?: string,
-        'border-right'?: string,
-        'border-bottom'?: string,
-        'border-left'?: string,
-        'border-radius'?: string,
-        'padding'?: string,
-        'css-class'?: string,
-        'direction'?: string,
-        'full-width'?: string,
-        'text-align'?: string
+        'background-color'?: string;
+        'color'?: string;
+        'padding'?: string;
+        'css-class'?: string;
+        'border'?: string;
+        'border-top'?: string;
+        'border-right'?: string;
+        'border-bottom'?: string;
+        'border-left'?: string;
+        'background-position'?: string;
+        'background-repeat'?: string;
+        'background-size'?: string;
+        'background-url'?: string;
     };
 }
 /**

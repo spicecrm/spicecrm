@@ -1,0 +1,4 @@
+<td><system-checkbox [(ngModel)]="selected"></system-checkbox></td>
+<td *ngFor="let fieldsetItem of fieldsetItems">
+    <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+</td>
