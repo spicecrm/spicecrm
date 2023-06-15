@@ -1,0 +1,18 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div>{{value}}</div>
+        <div>
+            <system-utility-icon *ngIf="hasHeroldData" icon="success" colorclass="slds-icon-text-success" size="x-small"></system-utility-icon>
+        </div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+    <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+        <input disabled [placeholder]="displayLabel ? '' : language.getFieldDisplayName(model.module, fieldname)" type="text" class="slds-input slds-grow" [ngModel]="value" />
+        <button *ngIf="!value" class="slds-button slds-button--neutral slds-m-left--xx-small" (click)="completeAccount()">
+            <system-label label="LBL_FIND"/>
+        </button>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
