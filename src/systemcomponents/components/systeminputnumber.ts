@@ -44,7 +44,7 @@ export class SystemInputNumber implements ControlValueAccessor {
         this.precision = precision;
         this.textValue = typeof (this.textValue) != 'number' ? this.getValSanitized(this.textValue) : this.textValue;
     }
-    public precision: number;
+    public precision: number = 0;
 
     /**
      * Display only the html input field, not the surrounding html
