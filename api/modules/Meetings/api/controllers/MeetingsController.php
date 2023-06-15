@@ -4,7 +4,7 @@ namespace SpiceCRM\modules\Meetings\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\extensions\includes\MicrosoftGraph\ModuleHandlers\MSGraphMeetingHandler;
+use SpiceCRM\extensions\includes\MicrosoftGraph\ModuleHandlers\MSGraphEventHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -45,7 +45,7 @@ class MeetingsController
             $user = BeanFactory::getBean('Users', $bean->assigned_user_id);
             $participant = BeanFactory::getBean('Users', $args['userid']);
 
-            $graphHandler = new MSGraphMeetingHandler($user, $bean);
+            $graphHandler = new MSGraphEventHandler($user, $bean);
             $graphHandler->updateGraphAttendeeStatus($participant, $args['value']);
         }
 
