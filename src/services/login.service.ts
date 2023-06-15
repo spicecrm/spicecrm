@@ -3,7 +3,7 @@
  */
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from '@angular/core';
-import {CanActivate, Router} from '@angular/router';
+import { Router } from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {configurationService} from './configuration.service';
 import {loader} from './loader.service';
@@ -337,7 +337,7 @@ export class loginService {
 @Injectable({
     providedIn: 'root'
 })
-export class loginCheck implements CanActivate {
+export class loginCheck  {
     constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader) {
     }
 
