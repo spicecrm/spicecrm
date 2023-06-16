@@ -33,6 +33,8 @@ export class SpiceKanbanManager implements OnInit{
 
     public selectedStage: any;
 
+    public activeStages: any;
+
     constructor(
         public modal: modal,
         public injector: Injector,
