@@ -65,7 +65,11 @@ export class SpiceKanbanManager implements OnInit{
                 module: this.moduleName,
                 status_field: '',
                 name: ''
-            }
+            };
+            modalRef.instance.emitSelectedBeanGuide.subscribe(selected => {
+                this.beanGuides.push(selected);
+                this.moduleName = selected.module;
+            })
         });
     }
 
