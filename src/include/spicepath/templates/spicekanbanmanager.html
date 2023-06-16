@@ -28,12 +28,12 @@
         </workbench-header-controls>
     </workbench-header>
     <div *ngIf="preview" class="slds-m-around_large">
-        <spice-kanban-manager-preview></spice-kanban-manager-preview>
+        <spice-kanban-manager-preview [active]="activeStages"></spice-kanban-manager-preview>
     </div>
     <div class="slds-grow slds-grid">
         <ng-container *ngIf="!!kanbanManagerService.selectedBeanGuide; else noSelection">
             <div class="slds-size--1-of-5 slds-height_full slds-scrollable--y slds-border--right">
-                <spice-kanban-manager-list (selectedStage)="selectedStage = $event"></spice-kanban-manager-list>
+                <spice-kanban-manager-list (emitActiveStages)="activeStages = $event" (selectedStage)="selectedStage = $event"></spice-kanban-manager-list>
             </div>
             <div class="slds-size--4-of-5 slds-height_full slds-scrollable--y slds-p-around--xx-small">
                 <spice-kanban-manager-details [selectedStage]="selectedStage"></spice-kanban-manager-details>
