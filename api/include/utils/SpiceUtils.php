@@ -867,6 +867,8 @@ class SpiceUtils
      * @return String representation of amount with formatting applied
      */
     public static function currencyFormatNumber($amount, $params = []): string {
+        if(is_null($amount) || $amount === '') return '';
+
         $locale = new Localization();
         if (isset($params['round']) && is_int($params['round'])) {
             $real_round = $params['round'];
