@@ -883,6 +883,7 @@ export class metadata {
      */
     public addModuleListType(module: string, listTypeData: any) {
         this.moduleDefs[module].listtypes.push(listTypeData);
+        this.configuration.setData('moduledefs', this.moduleDefs);
     }
 
     /**
@@ -899,6 +900,7 @@ export class metadata {
                         listtype[key] = listTypeData[key];
                     }
                 }
+                this.configuration.setData('moduledefs', this.moduleDefs);
                 return true;
             }
         });
@@ -915,6 +917,7 @@ export class metadata {
         if (typeIndex >= 0) {
             this.moduleDefs[module].listtypes.splice(typeIndex, 1);
         }
+        this.configuration.setData('moduledefs', this.moduleDefs);
         return this.moduleDefs[module].listtypes;
     }
 
