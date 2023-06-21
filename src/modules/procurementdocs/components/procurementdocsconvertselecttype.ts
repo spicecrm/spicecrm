@@ -6,6 +6,7 @@ import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {configurationService} from "../../../services/configuration.service";
+import {toast} from "../../../services/toast.service";
 
 /**
  * renders a modal window to select the type to convert a procurementdocument to
@@ -31,7 +32,7 @@ export class ProcurementDocsConvertSelectType {
 
     public selectedType: string;
 
-    constructor(public model: model, public modal: modal, public configuration: configurationService, public backend: backend, public injector: Injector) {
+    constructor(public model: model, public modal: modal, public configuration: configurationService, public backend: backend, public injector: Injector, public toast: toast) {
         this.determineTargets();
     }
 
@@ -70,16 +71,17 @@ export class ProcurementDocsConvertSelectType {
      */
     public convert() {
         let loadmodal = this.modal.await('loading');
-        this.backend.getRequest(`module/ProcurementDocs/${this.model.id}/convert/${this.selectedType}`).subscribe(
-            targetData => {
+        this.backend.getRequest(`module/ProcurementDocs/${this.model.id}/convert/${this.selectedType}`).subscribe( {
+            next: (targetData) => {
                 loadmodal.emit(true);
                 this.modal.openModal('ProcurementDocsConvertModal', true, this.injector).subscribe(modalref => {
                     modalref.instance.targetData = targetData;
                 });
                 this.close();
-            },
-            err => {
-                loadmodal.emit(true);
+            }, error: () => {
+                    loadmodal.emit(true);
+                    this.toast.sendToast('LBL_ERROR', 'error');
+                }
             });
     }
 
