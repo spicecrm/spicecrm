@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, Output} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, Output} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {backend} from "../../../services/backend.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
@@ -6,11 +6,12 @@ import {Subscription} from "rxjs";
 import {SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'spice-kanban-manager-list',
     templateUrl: '../templates/spicekanbanmanagerlist.html'
 })
 
-export class SpiceKanbanManagerList implements OnDestroy {
+export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
 
     public notInKanban:SpiceBeanGuideStagesI[] = [];
     public activeStages:SpiceBeanGuideStagesI[] = [];
@@ -19,11 +20,17 @@ export class SpiceKanbanManagerList implements OnDestroy {
     private subscription: Subscription = new Subscription();
 
     @Output() public selectedStage: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public emitActiveStages: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public backend: backend,
                 public kanbanManagerService: KanbanManagerService) {
-        this.setItems();
-        this.subscribeToSelectionChange();
+    }
+
+    public ngAfterViewInit() {
+        setTimeout(() => {
+            this.setItems();
+            this.subscribeToSelectionChange();
+        }, 0);
     }
 
     /**
@@ -41,6 +48,7 @@ export class SpiceKanbanManagerList implements OnDestroy {
                 event.currentIndex,
             );
         }
+        this.emitActiveStages.emit(this.activeStages);
     }
 
     public ngOnDestroy(): void {
@@ -57,12 +65,14 @@ export class SpiceKanbanManagerList implements OnDestroy {
 
     private setItems() {
 
-        if (!this.kanbanManagerService.selectedBeanGuide) return;
+        if (!this.kanbanManagerService.selectedBeanGuide) return this.emitActiveStages.emit([]);
 
         this.activeStages = this.kanbanManagerService.stages
             .filter(dis=>dis.not_in_kanban == 0 && dis.spicebeanguide_id == this.kanbanManagerService.selectedBeanGuide.id);
         this.notInKanban = this.kanbanManagerService.stages
             .filter(dis=>dis.not_in_kanban == 1 && dis.spicebeanguide_id == this.kanbanManagerService.selectedBeanGuide.id);
+
+        this.emitActiveStages.emit(this.activeStages);
     }
 
     public openDetails(selectedStage){

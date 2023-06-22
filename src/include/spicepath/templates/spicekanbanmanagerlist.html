@@ -1,29 +1,29 @@
-<div>
-    <h2>
+<div class="slds-tabs_default" style="background-color: transparent">
+    <h2 class="slds-p-top--x-small slds-p-horizontal--small">
         <system-label label="LBL_ACTIVE"></system-label>
     </h2>
-    <ul class="slds-has-dividers_around-space" cdkDropList #activeStagesList="cdkDropList"
+    <ul class="slds-has-dividers_around-space slds-p-around--x-small" cdkDropList #activeStagesList="cdkDropList"
         [cdkDropListData]="activeStages" [cdkDropListConnectedTo]="[notInKanbanList]"
-        (cdkDropListDropped)="drop($event)" style="min-height: 10vh">
-        <li *ngFor="let activeStage of activeStages;  let index = index" class="slds-item" cdkDrag>
-            <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
-                                 style="cursor:move"></system-utility-icon>
-            <a href="javascript:void(0);" class="slds-text-link_reset"
-               (click)="openDetails(activeStage)">{{activeStage.stage}}</a>
+        (cdkDropListDropped)="drop($event)">
+        <li *ngFor="let activeStage of activeStages;  let index = index" class="slds-item slds-text-link_reset" cdkDrag (click)="openDetails(activeStage)" [cdkDragDisabled]="activeStages.length == 1">
+            <system-utility-icon  class="slds-p-right--xx-small slds-p-around--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
+                                  style="cursor:move"></system-utility-icon>
+            <a href="javascript:void(0);" class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small slds-theme--shade"
+               >{{activeStage.stage}}</a>
         </li>
     </ul>
 
-    <h2>
+    <h2 class="slds-p-top--x-small slds-p-horizontal--small">
         <system-label label="LBL_INACTIVE"></system-label>
     </h2>
-    <ul class="slds-has-dividers_around-space" cdkDropList #notInKanbanList="cdkDropList"
+    <ul class="slds-has-dividers_around-space slds-p-around--x-small" cdkDropList #notInKanbanList="cdkDropList"
         [cdkDropListData]="notInKanban" [cdkDropListConnectedTo]="[activeStagesList]"
-        (cdkDropListDropped)="drop($event)" style="min-height: 10vh">
-        <li *ngFor="let nik of notInKanban;  let index = index" class="slds-item" cdkDrag>
+        (cdkDropListDropped)="drop($event)">
+        <li *ngFor="let nik of notInKanban;  let index = index" class="slds-item slds-text-link_reset" cdkDrag (click)="openDetails(nik)"[cdkDragDisabled]="notInKanban.length == 1">
 
-            <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
+            <system-utility-icon class="slds-p-right--xx-small slds-p-around--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
                                  style="cursor:move"></system-utility-icon>
-            <a href="javascript:void(0);" class="slds-text-link_reset" (click)="openDetails(nik)">{{nik.stage}}</a>
+            <a href="javascript:void(0);" class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small">{{nik.stage}}</a>
         </li>
 
     </ul>
