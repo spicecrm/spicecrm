@@ -33,6 +33,8 @@ export class SpiceKanbanManager implements OnInit{
 
     public selectedStage: any;
 
+    public activeStages: any;
+
     constructor(
         public modal: modal,
         public injector: Injector,
@@ -65,7 +67,11 @@ export class SpiceKanbanManager implements OnInit{
                 module: this.moduleName,
                 status_field: '',
                 name: ''
-            }
+            };
+            modalRef.instance.emitSelectedBeanGuide.subscribe(selected => {
+                this.beanGuides.push(selected);
+                this.moduleName = selected.module;
+            })
         });
     }
 
