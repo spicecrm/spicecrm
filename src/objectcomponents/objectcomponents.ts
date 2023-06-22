@@ -208,6 +208,8 @@ import {ObjectTimelineStencil} from "./components/objecttimelinestencil";
 import {ObjectPopoverBodyItem} from "./components/objectpopoverbodyitem";
 import {ObjectPopoverHeader} from "./components/objectpopoverheader";
 import {ObjectSelectBeanListModal} from "./components/objectselectbeanlistmodal";
+import {ObjectActionHelpTextButton} from "./components/objectactionhelptextbutton";
+import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
 
 
 /**
@@ -391,7 +393,9 @@ import {ObjectSelectBeanListModal} from "./components/objectselectbeanlistmodal"
         ObjectActionDeactivateBeansModal,
         ObjectChecklists,
         ObjectPopoverBodyItem,
-        ObjectPopoverHeader
+        ObjectPopoverHeader,
+        ObjectActionHelpTextButton,
+        ObjectHelpTextModal
     ],
     exports: [
         ObjectListViewHeader,
