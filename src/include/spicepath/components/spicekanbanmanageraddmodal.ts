@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Output, EventEmitter} from '@angular/core';
 
 import {modal} from '../../../services/modal.service';
 import {metadata} from '../../../services/metadata.service';
@@ -24,6 +24,11 @@ export class SpiceKanbanManagerAddModal {
      */
     public selectedBeanGuide: SpiceBeanGuidesI;
 
+    /**
+     * emit selected bean guide
+     */
+    @Output() emitSelectedBeanGuide = new EventEmitter<SpiceBeanGuidesI>();
+
     public isEditing: boolean = false;
 
     constructor(
@@ -44,6 +49,10 @@ export class SpiceKanbanManagerAddModal {
             next: () => {
                 spinner.emit(true);
                 this.toast.sendToast('LBL_SPICEBEANGUIDE_SAVED', "success");
+
+                // emit selected bean guide
+                this.emitSelectedBeanGuide.emit(this.selectedBeanGuide);
+
                 this.close();
             },
             error: (err) => {

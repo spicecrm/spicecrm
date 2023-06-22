@@ -13,21 +13,21 @@ import {SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
 export class SpiceKanbanManagerDetails implements OnInit {
 
     @Input() public selectedStage: any;
-    /**
-     * holds label from sysdomainfieldvalidationvalues table
-     */
-    public domainLabel: string = '';
+    // /**
+    //  * holds label from sysdomainfieldvalidationvalues table
+    //  */
+    // public domainLabel: string = '';
 
-    /**
-     * holds value for the field stage_add_data
-     * i.e. {probability: 60}
-     */
-    public stageAddData: string = '{probability: 60}';
-
-    /**
-     * holds component id of the stage description
-     */
-    public stageComponentset: string = '11111111-4ee2-ee9e-8b5d-5d08b77e1285';
+    // /**
+    //  * holds value for the field stage_add_data
+    //  * i.e. {probability: 60}
+    //  */
+    // public stageAddData: string = '{probability: 60}';
+    //
+    // /**
+    //  * holds component id of the stage description
+    //  */
+    // public stageComponentset: string = '11111111-4ee2-ee9e-8b5d-5d08b77e1285';
 
     /**
      * system languages array
@@ -75,12 +75,12 @@ export class SpiceKanbanManagerDetails implements OnInit {
         this.systemLanguages = this.language.getAvialableLanguages();
         this.activeTab = this.language.currentlanguage;
 
-        this.setDomainLabel();
+        // this.setDomainLabel();
     }
 
-    private setDomainLabel() {
-        this.domainLabel = this.selectedStage?.stage_label;
-    }
+    // private setDomainLabel() {
+    //     this.domainLabel = this.selectedStage?.stage_label;
+    // }
 
     /**
      * opens modal
