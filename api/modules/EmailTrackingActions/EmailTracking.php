@@ -30,12 +30,8 @@ class EmailTracking
      * @return false|string
      */
     static function decodeTrackingID($trackingData){
-        $key = SpiceConfig::getInstance()->get('emailtracking.blwofishkey');
-        if($key) {
-            return openssl_decrypt(base64_decode(urldecode($trackingData)), 'blowfish', $key);
-        } else {
-            return base64_decode(urldecode($trackingData));
-        }
+        $key = SpiceConfig::getInstance()->get('emailtracking.blwofishkey') ?? "2fs5uhnjcnpxcpg9";
+        return openssl_decrypt(base64_decode(urldecode($trackingData)), 'blowfish', $key);
     }
 
 
@@ -46,7 +42,7 @@ class EmailTracking
      * @return array|mixed|string|string[]|null
      */
     static function getTrackingPixelSrc($trackingData){
-        $url = SpiceConfig::getInstance()->get('emailtracking.trackingurl');
+        $url = SpiceConfig::getInstance()->get('emailtracking.tracking_pixel_url');
         if($url){
             $url = str_replace('{refid}', self::encodeTrackingID($trackingData), $url);
         }
