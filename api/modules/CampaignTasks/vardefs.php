@@ -293,11 +293,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'relationship' => 'campaigntask_emailtrackingactions',
             'source' => 'non-db'
         ],
-        'trackinglinks' => [
-            'name' => 'trackinglinks',
+        'emailtrackinglinks' => [
+            'name' => 'emailtrackinglinks',
             'type' => 'link',
-            'module' => 'TrackingLinks',
-            'relationship' => 'campaigntask_trackinglinks',
+            'module' => 'EmailTrackingLinks',
+            'relationship' => 'campaigntask_emailtrackinglinks',
             'source' => 'non-db'
         ],
         'module_filter' => [
