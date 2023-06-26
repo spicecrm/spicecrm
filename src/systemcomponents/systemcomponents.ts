@@ -39,6 +39,7 @@ import {SystemComponentMissing} from "./components/systemcomponentmissing";
 import {SystemComponentSet} from "./components/systemcomponentset";
 import {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import {SystemCustomIcon} from "./components/systemcustomicon";
+import {SystemDisplayCurrencySymbol} from "./components/systemdisplaycurrencysymbol";
 import {SystemDisplayDatetime} from "./components/systemdisplaydatetime";
 import {SystemDisplayNumber} from "./components/systemdisplaynumber";
 import {SystemDynamicComponent} from "./components/systemdynamiccomponent";
@@ -174,6 +175,7 @@ import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcont
 import {SystemHtmlEditor} from "./components/systemhtmleditor";
 
 
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -210,6 +212,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemComponentSet,
         SystemConfirmDialog,
         SystemCustomIcon,
+        SystemDisplayCurrencySymbol,
         SystemDisplayDatetime,
         SystemDisplayNumber,
         SystemDynamicComponent,
@@ -472,7 +475,8 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemCardStencil,
         SystemSelectIcon,
         SystemSelectIconItem,
-        SystemInputTaxCode
+        SystemInputTaxCode,
+        SystemDisplayCurrencySymbol
     ]
 })
 export class SystemComponents {}
