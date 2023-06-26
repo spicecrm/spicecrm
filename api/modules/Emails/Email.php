@@ -20,14 +20,14 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
-use SpiceCRM\modules\EmailTrackingActions\api\controllers\EmailTrackingActionsController;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\Mailbox;
-use SpiceCRM\modules\TrackingLinks\TrackingLink;
+use SpiceCRM\modules\EmailTrackingLinks\EmailTrackingLink;
 use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
 
 class Email extends SpiceBean
@@ -701,20 +701,37 @@ class Email extends SpiceBean
     }
 
     /**
-     * searches for links with the data-trackingid attribute, replaces it with the encoded and encrypted data
-     * @param $mailboxTrackingUrl
+     * search for trackable links and replace them with encrypted crm web hook urls
+     * @throws Exception
      */
-    private function findTrackingLinks($mailboxTrackingUrl)
+    private function replaceEmailTrackingLinks()
     {
+        $handlingLink = SpiceConfig::getInstance()->get('emailtracking.tracking_clicks_url');
+
+        if (!$handlingLink) return;
+
         $dom = new DOMDocument();
         $dom->loadHTML($this->body);
+
+        /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
-            $trackingId = $node->getAttribute('data-trackingid');
-            if (!empty($trackingId)) {
-                $this->assignBeanToEmail($trackingId, 'TrackingLinks');
-                $trackingLink = TrackingLink::transformTrackingLinks($this->id, $trackingId, $mailboxTrackingUrl);
-                $node->setAttribute('href', $trackingLink);
+
+            if (!$node->hasAttribute('data-trackinglink')) continue;
+
+            $trackingId = $node->getAttribute('data-trackinglink');
+
+            if (empty($trackingId)) {
+                $trackingId = EmailTrackingLink::getTrackingLinkId(
+                    $node->getAttribute('href'),
+                    $node->getAttribute('text'),
+                    $this->id,
+                    'Emails'
+                );
             }
+
+            $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($this->id, $trackingId, $handlingLink);
+            $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
+            $node->setAttribute('href', $trackingLink);
         }
         $this->body = $dom->saveHTML();
     }
@@ -729,7 +746,7 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
-                $key = '2fs5uhnjcnpxcpg9';
+                $key = SpiceConfig::getInstance()->get('emailtracking.blwofishkey') ?? "2fs5uhnjcnpxcpg9";
                 $method = 'blowfish';
                 $data = 'Emails:'.$this->id.':MarketingActions:'.$marketingaction;
                 $link = openssl_encrypt($data, $method, $key);
@@ -772,9 +789,9 @@ class Email extends SpiceBean
             }
         }
 
+        $this->replaceEmailTrackingLinks();
+
         if ($mailbox->track_mailbox) {
-            // $this->generateTrackingPixel();
-            $this->findTrackingLinks($mailbox->tracking_url);
             $this->findMarketingActions($mailbox->tracking_url);
         }
 
