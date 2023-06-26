@@ -265,6 +265,9 @@ export class salesdocrecord implements OnDestroy {
             } else {
                 ce.elementamount = ce.elementoverridevalue ?? ce.elementvalue ?? 0;
             }
+
+            // mathematical round the value
+            ce.elementamount = Math.round(ce.elementamount * 100) / 100;
         }
     }
 

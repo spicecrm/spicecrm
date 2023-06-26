@@ -236,17 +236,26 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
         // check if we shoudl calculate
         let itemTypeDetails = this.configuration.getData('salesdocitemtypes').find(it => it.name == itemType);
         if (itemTypeDetails.pricecalculationschema_id) {
-            itemData.salesdocitempricecalculationschema_id = itemTypeDetails.pricecalculationschema_id;
-            this.calculateItem(itemTypeDetails.pricecalculationschema_id, itemData).subscribe({
-                next: () => {
-                    this.model.data.salesdocitems.beans[itemData.id] = itemData;
-                    this.buildItems();
-                },
-                error: () => {
-                    this.model.data.salesdocitems.beans[itemData.id] = itemData;
-                    this.buildItems();
-                }
-            })
+            // if we have the pricing data already the add dialog did the pricing (hopefully) and we do not need to do anything more
+            if(!!itemData.salesdocitempricedetermination && !!itemData.salesdocitempricecalculationschema_id){
+                // update the relevant fields
+                this.salesdocrecord.getItemFieldsByElements(itemData.salesdocitempricecalculationschema_id, 1, itemData.salesdocitempricedetermination, itemData);
+                this.model.data.salesdocitems.beans[itemData.id] = itemData;
+                this.buildItems()
+            } else {
+                // otherwise run the price determination here and now
+                itemData.salesdocitempricecalculationschema_id = itemTypeDetails.pricecalculationschema_id;
+                this.calculateItem(itemTypeDetails.pricecalculationschema_id, itemData).subscribe({
+                    next: () => {
+                        this.model.data.salesdocitems.beans[itemData.id] = itemData;
+                        this.buildItems();
+                    },
+                    error: () => {
+                        this.model.data.salesdocitems.beans[itemData.id] = itemData;
+                        this.buildItems();
+                    }
+                })
+            }
 
         } else {
             this.model.data.salesdocitems.beans[itemData.id] = itemData;
