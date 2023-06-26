@@ -12,12 +12,38 @@ use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 
 class EmailTrackingActionsController
 {
+    /** handles tracking url logging and redirect
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+
+     */
+    public function handleTrackingLink(Request $req, Response $res, array $args): Response
+    {
+        $decrypted = EmailTracking::decodeTrackingID($args['key']);
+
+        if (!$decrypted) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+        $trackingLink = BeanFactory::getBean('EmailTrackingLinks', $data['EmailTrackingLinks']);
+        $this->logTrackingAction($data, 'clicked');
+
+        return $res->withHeader('Location', $trackingLink->url)
+            ->withStatus(302);
+    }
+
     /**
      * handles logging of email opening
      * @param Request $req
@@ -78,29 +104,6 @@ class EmailTrackingActionsController
 
         $res->getBody()->write($lpContent['content']);
         return $res->withHeader('Content-Type', 'text/html');
-    }
-
-    /** handles logging of a clicked link
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     * @throws BadRequestException
-     */
-    public function handleTrackingUrl(Request $req, Response $res, array $args): Response
-    {
-        $decrypted = $this->decryptBlowfish(base64_decode($args['key']));
-
-        if (!$decrypted) {
-            throw new BadRequestException('Failed to decrypt key');
-        }
-
-        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
-        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
-
-        $this->logTrackingAction($data, 'clicked');
-
-        return $res->withJson(true);
     }
 
     /**
@@ -251,9 +254,11 @@ class EmailTrackingActionsController
             $trackedAction->parent_type = 'Emails';
             $trackedAction->parent_id = $data['Emails'];
             $trackedAction->action = $action;
+            $trackedAction->user_agent = $_SERVER['HTTP_USER_AGENT'];
+            $trackedAction->ip_address = SpiceUtils::getClientIP();
             //check if the link is here
-            if(array_key_exists('TrackingLinks', $data) && !empty($data['TrackingLinks'])) {
-                $trackedAction->trackinglink_id = $data['TrackingLinks'];
+            if(array_key_exists('EmailTrackingLinks', $data) && !empty($data['EmailTrackingLinks'])) {
+                $trackedAction->emailtrackinglink_id = $data['EmailTrackingLinks'];
             }
 
             $trackedAction->save();
