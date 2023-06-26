@@ -252,6 +252,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             return {
                 name: tag,
                 attributes: {
+                    'data-trackinglink': true,
+                    'data-marketingaction': true,
                     'data-spicefor': true,
                     'data-spiceif': true,
                     'data-spicefor-first': true,
