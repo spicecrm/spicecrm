@@ -1,10 +1,4 @@
 <div *ngIf="selectedStage">
-<!--<div *ngIf="!domainLabel; else showDetails">-->
-<!--    <div>-->
-<!--        <label class="slds-form-element__label"><system-label label="LBL_SELECT_STATUS"></system-label></label>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<ng-template #showDetails>-->
     <system-collapsable-tab [collapsible]="true" tabtitle="LBL_DETAILS">
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
@@ -56,5 +50,7 @@
         </div>
     </system-collapsable-tab>
     <spice-kanban-manager-checks [selectedStage]="selectedStage"></spice-kanban-manager-checks>
-<!--</ng-template>-->
+</div>
+<div *ngIf="!selectedStage">
+    <label class="slds-form-element__label"><system-label label="LBL_SELECT_STATUS"></system-label></label>
 </div>
