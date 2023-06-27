@@ -40,11 +40,10 @@ class MeetingsController
         if($bean = BeanFactory::getBean('Meetings', $args['id'], ['encode' => false])){
             SpiceFTSHandler::getInstance()->indexBean($bean);
 
-        if (SpiceConfig::getInstance()->config['MicrosoftService']['client_id']) {
-            /** @var User $user */
-            $user = BeanFactory::getBean('Users', $bean->assigned_user_id);
+        /** @var User $user */
+        $user = BeanFactory::getBean('Users', $bean->assigned_user_id);
+        if ($user->getPreference('microsoftActiveService', 'global') == 'msgraph' && SpiceConfig::getInstance()->config['MicrosoftService']['client_id']) {
             $participant = BeanFactory::getBean('Users', $args['userid']);
-
             $graphHandler = new MSGraphEventHandler($user, $bean);
             $graphHandler->updateGraphAttendeeStatus($participant, $args['value']);
         }
