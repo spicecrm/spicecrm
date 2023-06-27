@@ -36,6 +36,8 @@ import {ServiceTicketNewButton} from "./components/serviceticketnewbutton";
 import {ServiceTicketNewModal} from "./components/serviceticketnewmodal";
 import {ServiceTicketCloseButton} from "./components/serviceticketclosebutton";
 import {ServiceTicketCloseModal} from "./components/serviceticketclosemodal";
+import {ServiceTicketAssignToButton} from "./components/serviceticketassigntobutton";
+import {ServiceTicketAssignToModal} from "./components/serviceticketassigntomodal";
 import {ServiceTicketView} from "./components/serviceticketview";
 import {ServiceTicketDetail} from "./components/serviceticketdetail";
 import {ServiceTicketContactDetail} from "./components/serviceticketcontactdetail";
@@ -110,6 +112,8 @@ import {ServiceTreeAddData} from "./components/servicetreeadddata";
         ServiceTicketNewModal,
         ServiceTicketCloseButton,
         ServiceTicketCloseModal,
+        ServiceTicketAssignToButton,
+        ServiceTicketAssignToModal,
         ServiceTicketView,
         ServiceTicketDetail,
         ServiceTicketContactDetail,
