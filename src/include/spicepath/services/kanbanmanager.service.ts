@@ -2,16 +2,25 @@ import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 
 import {backend} from "../../../services/backend.service";
-import {SpiceBeanGuidesI, SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
+import {
+    SpiceBeanGuideChecksI,
+    SpiceBeanGuidesI,
+    SpiceBeanGuideStagesI
+} from "../interfaces/kanbanmanager.interfaces";
 
 
 @Injectable()
 export class KanbanManagerService {
 
-    public stages:SpiceBeanGuideStagesI[] = [];
+    public stages: SpiceBeanGuideStagesI[] = [];
+
+    public checks: SpiceBeanGuideChecksI[] = [];
+
+    public minimized: boolean = false;
 
     public constructor(public backend: backend) {
         this.loadItems();
+        this.loadChecks();
     }
 
 
@@ -41,8 +50,17 @@ export class KanbanManagerService {
      * load spice bean guide items from backend
      */
     public loadItems() {
-        this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages =>{
+        this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages => {
             this.stages = stages;
+        })
+    }
+
+    /**
+     * load checks from backend
+     */
+    public loadChecks() {
+        this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages_checks`).subscribe(checks => {
+            this.checks = checks;
         })
     }
 
@@ -55,7 +73,14 @@ export class KanbanManagerService {
             entry.stage_sequence = index;
         });
 
-        this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config:this.stages});
+        this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: this.stages});
 
+    }
+
+    /**
+     * toggles the minimized flag
+     */
+    public toggleMinimized() {
+        this.minimized = !this.minimized;
     }
 }

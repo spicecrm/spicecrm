@@ -20,3 +20,15 @@ export interface SpiceBeanGuidesI {
     build_language?: string;
     name: string;
 }
+
+export interface SpiceBeanGuideChecksI {
+    id: string;
+    spicebeanguide_id: string;
+    stage_id: string;
+    check_sequence: number;
+    check_include: string;
+    check_class: string;
+    check_method: string;
+    check_label: string;
+}
+
