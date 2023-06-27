@@ -21,7 +21,7 @@
                 <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="togglePreview()" class="slds-button slds-button--neutral">
                     <system-label label="LBL_PREVIEW"></system-label>
                 </button>
-                <button class="slds-button slds-button--brand">
+                <button class="slds-button slds-button--brand slds-size">
                     <system-label label="LBL_SAVE"></system-label>
                 </button>
             </div>
@@ -32,10 +32,10 @@
     </div>
     <div class="slds-grow slds-grid">
         <ng-container *ngIf="!!kanbanManagerService.selectedBeanGuide; else noSelection">
-            <div class="slds-size--1-of-5 slds-height_full slds-scrollable--y slds-border--right">
+            <div [ngClass]="{'slds-size--1-of-5': !kanbanManagerService.minimized}" [ngStyle]="{'min-width': kanbanManagerService.minimized ? '10px' : null }" class="slds-size--1-of-5 slds-height_full slds-scrollable--y slds-border--right" >
                 <spice-kanban-manager-list (emitActiveStages)="activeStages = $event" (selectedStage)="selectedStage = $event"></spice-kanban-manager-list>
             </div>
-            <div class="slds-size--4-of-5 slds-height_full slds-scrollable--y slds-p-around--xx-small">
+            <div [ngClass]="{'slds-size--4-of-5': !kanbanManagerService.minimized, 'slds-size--11-of-12' : kanbanManagerService.minimized}" class=" slds-height_full slds-scrollable--y slds-p-around--xx-small">
                 <spice-kanban-manager-details [selectedStage]="selectedStage"></spice-kanban-manager-details>
             </div>
         </ng-container>

@@ -16,10 +16,10 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
     public notInKanban:SpiceBeanGuideStagesI[] = [];
     public activeStages:SpiceBeanGuideStagesI[] = [];
 
-    // public enumValues = Array.from({length: 50}, (_, i) => 'Item ' + i);
+    public selected: string;
     private subscription: Subscription = new Subscription();
 
-    @Output() public selectedStage: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public selectedStage: EventEmitter<SpiceBeanGuideStagesI> = new EventEmitter<SpiceBeanGuideStagesI>();
     @Output() public emitActiveStages: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public backend: backend,
@@ -76,6 +76,7 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
     }
 
     public openDetails(selectedStage){
+        this.selected = selectedStage.id;
         this.selectedStage.emit(selectedStage)
     }
 }
