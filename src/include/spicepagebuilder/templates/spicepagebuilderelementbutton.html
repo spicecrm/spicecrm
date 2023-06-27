@@ -74,6 +74,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="slds-grid">
+                        <div class="slds-form-element slds-col slds-grow-none">
+                            <label class="slds-form-element__label"><system-label label="LBL_CLICKS_TRACKABLE"></system-label></label>
+                            <system-input-radio-button-group [ngModel]="element.trackByMethod" (ngModelChange)="setTrackByMethod($event)" [inputOptions]="[{value: 'id', label: 'LBL_BY_ID'}, {value: undefined, icon: 'topic2', label: 'LBL_NONE'}, {value: 'url', icon: 'link', label: 'LBL_BY_URL'}]" class="spice-display-block"></system-input-radio-button-group>
+                        </div>
+                    </div>
                 </div>
             </div>
         </system-section>
