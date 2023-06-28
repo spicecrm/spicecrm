@@ -49,6 +49,9 @@ export class SpiceKanbanManagerAddModal {
      * Save Kan Ban in table spicebeanguides and Kan Ban Stages in spicebeanguidestages
      */
     public save() {
+
+        this.selectedBeanGuide.systextid = this.selectedBeanGuide.systextid + this.sysTextIDName;
+
         let spinner = this.modal.await('LBL_SAVING');
 
         this.backend.postRequest(`configuration/configurator/spicebeanguides`, null, {config: [this.selectedBeanGuide]}).subscribe({
@@ -76,7 +79,7 @@ export class SpiceKanbanManagerAddModal {
                     spicebeanguide_id: this.selectedBeanGuide.id,
                     stage: res.enumvalue,
                     stage_sequence: res.sequence,
-                    stage_label: res.label
+                    stage_label: res.label,
                 }
             });
 
@@ -94,6 +97,19 @@ export class SpiceKanbanManagerAddModal {
         }
     }
 
+    /**
+     * cleanup field name
+     */
+    get sysTextIDName() {
+        return this.selectedBeanGuide.name.trim().toLowerCase().replace(/\s/g, "_");
+    }
+
+    /**
+     * check if you can save
+     */
+    get canSave() {
+        return this.selectedBeanGuide.name.length != 0 && this.selectedBeanGuide.status_field != '';
+    }
 
     /**
      * closes the modal
@@ -101,5 +117,6 @@ export class SpiceKanbanManagerAddModal {
     public close() {
         this.self.destroy();
     }
+
 }
 
