@@ -67,7 +67,8 @@ export class SpiceKanbanManager implements OnInit{
                 id: this.modelUtilities.generateGuid(),
                 module: this.moduleName,
                 status_field: '',
-                name: ''
+                name: '',
+                systextid: `kanban_${this.moduleName.toLowerCase()}_`
             };
             modalRef.instance.emitSelectedBeanGuide.subscribe(selected => {
                 this.beanGuides.push(selected);

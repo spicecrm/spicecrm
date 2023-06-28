@@ -14,10 +14,16 @@
                     <system-input-module-field [disabled]="isEditing" [module]="selectedBeanGuide.module" [(ngModel)]="selectedBeanGuide.status_field"></system-input-module-field>
                 </div>
             </div>
+            <div *ngIf="!isEditing" class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label"><system-label label="LBL_SYSTEXTID_FIELD"></system-label></label>
+                <div class="slds-form-element__control">
+                    <span>{{selectedBeanGuide.systextid + sysTextIDName}}</span>
+                </div>
+            </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
         <button (click)="close()" class="slds-button slds-button--neutral"><system-label label="LBL_CANCEL"></system-label></button>
-        <button (click)="save()" class="slds-button slds-button--brand"><system-label label="LBL_SAVE"></system-label></button>
+        <button (click)="save()" [disabled]="!canSave" class="slds-button slds-button--brand"><system-label label="LBL_SAVE"></system-label></button>
     </system-modal-footer>
 </system-modal>
