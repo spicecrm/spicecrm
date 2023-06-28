@@ -60,6 +60,7 @@ export class SpiceKanbanManager implements OnInit{
     }
 
 
+
     openAddModal() {
         this.modal.openModal('SpiceKanbanManagerAddModal', true, this.injector).subscribe((modalRef: ComponentRef<SpiceKanbanManagerAddModal>)  => {
             modalRef.instance.selectedBeanGuide  = {
@@ -71,7 +72,9 @@ export class SpiceKanbanManager implements OnInit{
             modalRef.instance.emitSelectedBeanGuide.subscribe(selected => {
                 this.beanGuides.push(selected);
                 this.moduleName = selected.module;
-            })
+
+                this.kanbanManagerService.loadItems();
+            });
         });
     }
 
@@ -84,5 +87,6 @@ export class SpiceKanbanManager implements OnInit{
             modalRef.instance.selectedBeanGuide = selectedBeanGuide;
             modalRef.instance.isEditing = true;
         });
+
     }
 }
