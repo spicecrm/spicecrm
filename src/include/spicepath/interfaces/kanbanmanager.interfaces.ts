@@ -19,6 +19,7 @@ export interface SpiceBeanGuidesI {
     status_field: string;
     build_language?: string;
     name: string;
+    systextid: string;
 }
 
 export interface SpiceBeanGuideChecksI {
