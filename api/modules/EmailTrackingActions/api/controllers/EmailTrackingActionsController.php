@@ -251,8 +251,8 @@ class EmailTrackingActionsController
         $trackedAction = BeanFactory::getBean('EmailTrackingActions');
         if (!$trackedAction->retrieve_by_string_fields(['parent_type' => 'Emails', 'parent_id' => $data['Emails'], 'action' => $action], true, false)) {
             $trackedAction = BeanFactory::newBean('EmailTrackingActions');
-            $trackedAction->parent_type = 'Emails';
-            $trackedAction->parent_id = $data['Emails'];
+            $trackedAction->parent_type = $data['ParentType'];
+            $trackedAction->parent_id = $data['ParentId'];
             $trackedAction->action = $action;
             $trackedAction->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $trackedAction->ip_address = SpiceUtils::getClientIP();
