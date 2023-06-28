@@ -52,11 +52,12 @@ class AccountVATIDsController
 
         if ($response !== false) {
             // converting
-            $response1 = str_replace("<soap:Body>", "", $response);
-            $response2 = str_replace("</soap:Body>", "", $response1);
+            $response1 = str_replace("<env:Body>", "", $response);
+            $response2 = str_replace("</env:Body>", "", $response1);
+            $response3 = str_replace("ns2:", "", $response2);
 
             // convertingc to XML
-            $result = simplexml_load_string($response2);
+            $result = simplexml_load_string($response3);
 
             $responseArray = [
                 'status' => 'success',
