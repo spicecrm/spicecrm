@@ -99,17 +99,18 @@ abstract class TransportHandler
     /**
      * returns the biody with a tracking pixel if the mailbox sets it
      *
-     * @param $email
+     * @param Email $email
      * @return mixed|string
      */
     protected function trackedBody($email){
         $body = $email->body;
+        [$parentType, $parentId] = $email->getTrackingParentData();
         if($this->mailbox->track_mailbox){
-            $body .= EmailTracking::getTrackingPixel('Emails:' . $email->id);
+            $body .= EmailTracking::getTrackingPixel("ParentType:$parentType:ParentId:$parentId");
         }
 
         if($this->mailbox->unsubscribe_header) {
-            $trackData = EmailTracking::encodeTrackingID("Emails:{$email->id}");
+            $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
             $unsubUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl'));
             $body .= "<a href=\"{$unsubUrl}\">unsubscribe</a>";
         }
