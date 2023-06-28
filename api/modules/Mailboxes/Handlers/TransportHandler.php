@@ -106,13 +106,14 @@ abstract class TransportHandler
         $body = $email->body;
         [$parentType, $parentId] = $email->getTrackingParentData();
         if($this->mailbox->track_mailbox){
-            $body .= EmailTracking::getTrackingPixel("ParentType:$parentType:ParentId:$parentId");
+            $pixel = EmailTracking::getTrackingPixel("ParentType:$parentType:ParentId:$parentId");
+            $body = EmailTracking::attachElementToBody($pixel, $body);
         }
 
         if($this->mailbox->unsubscribe_header) {
             $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
             $unsubUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl'));
-            $body .= "<a href=\"{$unsubUrl}\">unsubscribe</a>";
+            $body = EmailTracking::attachElementToBody("<a href=\"{$unsubUrl}\">unsubscribe</a>", $body);
         }
 
         # prevent misinterpretation of the style tag css class selectors
