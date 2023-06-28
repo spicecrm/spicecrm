@@ -16,11 +16,15 @@ export class KanbanManagerService {
 
     public checks: SpiceBeanGuideChecksI[] = [];
 
+    public domainFieldValidations: any = [];
+    public domainFieldValidationsValues: any = [];
+
     public minimized: boolean = false;
 
     public constructor(public backend: backend) {
         this.loadItems();
         this.loadChecks();
+        this.loadValidations();
     }
 
 
@@ -44,6 +48,16 @@ export class KanbanManagerService {
 
     public getBeanGuides(): Observable<SpiceBeanGuidesI[]> {
         return this.backend.getRequest(`configuration/configurator/entries/spicebeanguides`);
+    }
+
+    public loadValidations() {
+        this.backend.getRequest(`configuration/configurator/entries/sysdomainfieldvalidations`).subscribe(validations => {
+            this.domainFieldValidations = validations;
+        })
+
+        this.backend.getRequest(`configuration/configurator/entries/sysdomainfieldvalidationvalues`).subscribe(validationsValues => {
+            this.domainFieldValidationsValues = validationsValues;
+        })
     }
 
     /**
