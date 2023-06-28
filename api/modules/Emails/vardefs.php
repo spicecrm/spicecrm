@@ -475,6 +475,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'len' => 36,
             'comment' => 'Reference Email ID to trace reply forward emails',
         ],
+        'runtime_tracking_parent_type' => [
+            'name' => 'runtime_tracking_parent_type',
+            'vname' => 'LBL_RUNTIME_TRACKING_PARENT_TYPE',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'comment' => 'Runtime field to hold the reference type for the email tracking action e.g. CampaignLog',
+        ],
+        'runtime_tracking_parent_id' => [
+            'name' => 'runtime_tracking_parent_id',
+            'vname' => 'LBL_RUNTIME_TRACKING_PARENT_ID',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'comment' => 'Runtime field to hold the reference type for the email tracking action e.g. CampaignLog',
+        ],
         'emailtrackingactions' => [
             'name' => 'emailtrackingactions',
             'type' => 'link',
@@ -487,6 +501,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'type' => 'link',
             'module' => 'EmailTrackingLinks',
             'relationship' => 'emails_emailtrackinglinks',
+            'source' => 'non-db'
+        ],
+        'campaign_log' => [
+            'name' => 'campaign_log',
+            'vname' => 'LBL_CAMPAIGNLOG',
+            'type' => 'link',
+            'module' => 'CampaignLog',
+            'relationship' => 'campaignlog_sent_emails',
             'source' => 'non-db'
         ]
         /* end relationship collections */
