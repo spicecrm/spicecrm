@@ -17,7 +17,7 @@ class EmailTrackingLink extends SpiceBean
      */
     static function transformEmailTrackingLinks($parentType, $parentId, $trackingId, string $handlingLink)
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blwofishkey') ?? "2fs5uhnjcnpxcpg9";
+        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
         $method = 'blowfish';
         $data = "ParentType:$parentType:ParentId:$parentId:EmailTrackingLinks:$trackingId";
 
