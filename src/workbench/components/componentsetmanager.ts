@@ -17,6 +17,7 @@ import {modal} from '../../services/modal.service';
 import {ComponentsetManagerAddDialog} from './componentsetmanageradddialog';
 import {view} from '../../services/view.service';
 import {configurationService} from '../../services/configuration.service';
+import {WorkbenchService} from "../services/workbench.service";
 
 @Component({
     templateUrl: '../templates/componentsetmanager.html',
@@ -52,6 +53,7 @@ export class ComponentsetManager {
                 public toast: toast,
                 public modalservice: modal,
                 public view: view,
+                public workbenchService: WorkbenchService,
                 public configurationService: configurationService
     ) {
 
@@ -212,6 +214,7 @@ export class ComponentsetManager {
         this.selectedId = '';
         this.selectedComponent = {};
         this.currentComponentSet = '';
+        this.workbenchService.activeModule = this.currentModule;
     }
 
     public selectComponentSet() {

@@ -17,17 +17,29 @@ class SpiceBeanGuidesController
 
         $retArray = [];
 
-        $objects = $db->query("SELECT module, status_field FROM spicebeanguides");
+        $objects = $db->query("SELECT id, name, module, status_field FROM spicebeanguides");
         while($object = $db->fetchByAssoc($objects)){
             // ToDo .. add ACL Check
-            $retArray[$object['module']] = ['stages' => $restHandler->getStages($object['module']), 'statusfield' => $object['status_field']];
+            $retArray[$object['module']][] = [
+                'id' => $object['id'],
+                'name' => $object['name'],
+                'type' => 'global',
+                'stages' => $restHandler->getStages($object['module']),
+                'statusfield' => $object['status_field']
+            ];
         }
 
         //CR1000278 overwrite from custom
-        $objects = $db->query("SELECT module, status_field FROM spicebeancustomguides");
+        $objects = $db->query("SELECT id, name, module, status_field FROM spicebeancustomguides");
         while ($object = $db->fetchByAssoc($objects)) {
             // ToDo .. add ACL Check
-            $retArray[$object['module']] = ['stages' => $restHandler->getStages($object['module']), 'statusfield' => $object['status_field']];
+            $retArray[$object['module']][] = [
+                'id' => $object['id'],
+                'name' => $object['name'],
+                'type' => 'custom',
+                'stages' => $restHandler->getStages($object['module']),
+                'statusfield' => $object['status_field']
+            ];
         }
 
         return $retArray;
