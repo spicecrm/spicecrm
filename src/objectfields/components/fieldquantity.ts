@@ -13,6 +13,7 @@ import {configurationService} from "../../services/configuration.service";
 import {fieldFloat} from "./fieldfloat";
 
 @Component({
+    selector: 'field-quantity',
     templateUrl: '../templates/fieldquantity.html'
 })
 export class fieldQuantity extends fieldFloat implements OnInit {
