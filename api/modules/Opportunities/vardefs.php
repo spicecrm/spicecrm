@@ -621,7 +621,8 @@ if(file_exists('extensions/modules/PartnerAgreements')) {
             'relationship' => 'opportunities_travels',
             'source' => 'non-db',
             'vname' => 'LBL_OPPORTUNITIES',
-            'module' => 'Opportunities'
+            'module' => 'Opportunities',
+            'default' => false
         ];
     }
 }

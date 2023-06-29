@@ -557,7 +557,8 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
             'relationship' => 'projects_travels',
             'source' => 'non-db',
             'vname' => 'LBL_PROJECTS',
-            'module' => 'Projects'
+            'module' => 'Projects',
+            'default' => false
         ];
     }
 }
