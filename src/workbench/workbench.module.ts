@@ -151,6 +151,8 @@ import {HooksManagerHooks} from "./components/hooksmanagerhooks";
 import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmodal";
 import {WebHooksManager} from "./components/webhooksmanager";
 import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
+import {WorkbenchConfigOptionKanban} from "./components/workbenchconfigoptionkanban";
+import {WorkbenchService} from "./services/workbench.service";
 
 
 
@@ -293,7 +295,8 @@ import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
         HooksManagerHooks,
         HooksManagerHooksEditModal,
         WebHooksManager,
-        WebHooksManagerEditModal
+        WebHooksManagerEditModal,
+        WorkbenchConfigOptionKanban
     ],
     exports: [
         SortPipe,

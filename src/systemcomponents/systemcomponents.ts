@@ -468,7 +468,9 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemHtmlEditor,
         SystemCardStencil,
         SystemSelectIcon,
-        SystemSelectIconItem
+        SystemSelectIconItem,
+        SystemModuleCustomPipe,
+        SystemModuleGlobalPipe
     ]
 })
 export class SystemComponents {}

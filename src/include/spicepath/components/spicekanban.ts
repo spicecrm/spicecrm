@@ -90,7 +90,10 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
     constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency) {
 
+        const kanbanId = this.componentconfig.kanban;
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
+        this.componentconfig.kanban = kanbanId;
+
         this.currencies = this.currency.getCurrencies();
         this.loadSortFields();
 
@@ -163,8 +166,20 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public ngOnInit() {
 
+        const kanbans = this.configuration.getData('spicebeanguides')[this.modellist.module];
+
+        if (kanbans.length == 0) {
+            return;
+        }
+
+        if (!this.componentconfig.kanban) {
+            this.confdata = kanbans[0];
+        } else {
+            this.confdata = kanbans.find(k => k.id == this.componentconfig.kanban);
+        }
+
         this.loadStatusNetwork();
-        this.confdata = this.configuration.getData('spicebeanguides')[this.modellist.module];
+
         let stages = this.confdata.stages;
 
         let bucketitems = [];
