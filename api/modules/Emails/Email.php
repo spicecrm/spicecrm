@@ -61,12 +61,12 @@ class Email extends SpiceBean
      * holds the tracking parent type during the runtime to be used for email tracking actions
      * @var string|null
      */
-    private ?string $runtime_tracking_parent_type;
+    private ?string $runtime_tracking_parent_type = null;
     /**
      * holds the tracking parent id during the runtime to be used for email tracking actions
      * @var string|null
      */
-    private ?string $runtime_tracking_parent_id;
+    private ?string $runtime_tracking_parent_id = null;
     /**
      * sole constructor
      */
