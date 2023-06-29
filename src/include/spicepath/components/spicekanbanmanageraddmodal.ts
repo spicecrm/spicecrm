@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter} from '@angular/core';
+import {Component, Output, EventEmitter, OnInit} from '@angular/core';
 
 import {modal} from '../../../services/modal.service';
 import {metadata} from '../../../services/metadata.service';
@@ -15,7 +15,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
     templateUrl: '../templates/spicekanbanmanageraddmodal.html'
 })
 
-export class SpiceKanbanManagerAddModal {
+export class SpiceKanbanManagerAddModal implements OnInit{
 
     /**
      * reference to the modal to close it
@@ -32,6 +32,11 @@ export class SpiceKanbanManagerAddModal {
      */
     @Output() emitSelectedBeanGuide = new EventEmitter<SpiceBeanGuidesI>();
 
+    /**
+     * the available enum fields
+     */
+    public enumFields: any[] = [];
+
     public isEditing: boolean = false;
 
     constructor(
@@ -43,6 +48,24 @@ export class SpiceKanbanManagerAddModal {
         public modelUtilities: modelutilities,
         public kanbanManagerService: KanbanManagerService
     ) {
+    }
+
+    public ngOnInit() {
+        this.getEnumFields();
+    }
+
+    /**
+     * Get enum fields
+     */
+    public getEnumFields() {
+        let fields = this.metadata.getModuleFields(this.selectedBeanGuide.module);
+
+        for (let field in fields) {
+            let value = fields[field]
+            if(value.type == 'enum'){
+                this.enumFields.push(field);
+            }
+        }
     }
 
     /**
