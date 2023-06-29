@@ -15,11 +15,11 @@ class EmailTrackingLink extends SpiceBean
     /**
      * transforms the basic link into a blowfish encrypted tracked link
      */
-    static function transformEmailTrackingLinks($emailId, $trackingId, string $handlingLink)
+    static function transformEmailTrackingLinks($parentType, $parentId, $trackingId, string $handlingLink)
     {
-        $key = SpiceConfig::getInstance()->get('emailtracking.blwofishkey') ?? "2fs5uhnjcnpxcpg9";
+        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
         $method = 'blowfish';
-        $data = 'Emails:'.$emailId.':EmailTrackingLinks:'.$trackingId;
+        $data = "ParentType:$parentType:ParentId:$parentId:EmailTrackingLinks:$trackingId";
 
         $link = openssl_encrypt($data, $method, $key);
         return str_replace('{refid}', base64_encode($link), $handlingLink);
@@ -41,6 +41,8 @@ class EmailTrackingLink extends SpiceBean
      */
     public static function getTrackingLinkId(string $href, ?string $text, string $parentId, string $parentType): string
     {
+        $href = trim($href, '/ ');
+
         /** @var EmailTrackingLink $newTrackingLink */
         $newTrackingLink = BeanFactory::getBean('EmailTrackingLinks');
         $newTrackingLink->retrieve_by_string_fields(['url' => $href]);
@@ -49,8 +51,8 @@ class EmailTrackingLink extends SpiceBean
             return $newTrackingLink->id;
         }
 
-        $newTrackingLink->name = $text;
-        $newTrackingLink->url = trim($href, '/ ');
+        $newTrackingLink->name = $text ?: $href;
+        $newTrackingLink->url = $href;
         $newTrackingLink->parent_type = $parentType;
         $newTrackingLink->parent_id = $parentId;
         $newTrackingLink->save();
