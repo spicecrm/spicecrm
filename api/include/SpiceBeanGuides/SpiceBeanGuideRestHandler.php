@@ -86,6 +86,7 @@ $db = DBManagerFactory::getInstance();
                 $stages[$stage['stage']]['stage_label'] = html_entity_decode($stage['stage_label']);
                 $stages[$stage['stage']]['pastactive'] = $stagePassed;
                 $stages[$stage['stage']]['statusfield'] = $object['status_field'];
+                $stages[$stage['stage']]['not_in_kanban'] = $stage['not_in_kanban'];
 
                 // perform checks
                 $stages[$stage['stage']]['checks'] = [];

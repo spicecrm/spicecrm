@@ -13,9 +13,9 @@ export class SpiceKanbanStagePipe {
     constructor(public configuration: configurationService, public modellist: modellist) {
     }
 
-    public transform(values, stage) {
+    public transform(values, stage, stages: any[]) {
         let retValues = [];
-        let stageData = this.getStageData(stage);
+        let stageData = this.getStageData(stage, stages);
         for (let value of values) {
             if (value[stageData.statusfield] && value[stageData.statusfield] == stage) {
                 retValues.push(value);
@@ -25,13 +25,9 @@ export class SpiceKanbanStagePipe {
     }
 
 
-    get stages() {
-        return this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.modellist.module].stages : [];
-    }
-
-    public getStageData(stage): any {
+    public getStageData(stage, stages): any {
         let stagedata = [];
-        this.stages.some(thisStage => {
+        stages.some(thisStage => {
             if (stage == thisStage.stage) {
                 stagedata = thisStage.stagedata;
                 return;
