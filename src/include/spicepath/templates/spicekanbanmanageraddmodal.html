@@ -10,9 +10,9 @@
             </div>
             <div class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label"><system-label label="LBL_MODEL_FIELD"></system-label></label>
-                <div class="slds-form-element__control">
-                    <system-input-module-field [disabled]="isEditing" [module]="selectedBeanGuide.module" [(ngModel)]="selectedBeanGuide.status_field"></system-input-module-field>
-                </div>
+                <select class="slds-select" [disabled]="isEditing || enumFields.length == 0" [(ngModel)]="selectedBeanGuide.status_field">
+                    <option *ngFor="let thisfield of enumFields" [value]="thisfield"><system-label-fieldname [module]="selectedBeanGuide.module" [field]="thisfield"></system-label-fieldname></option>
+                </select>
             </div>
             <div *ngIf="!isEditing" class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label"><system-label label="LBL_SYSTEXTID_FIELD"></system-label></label>
