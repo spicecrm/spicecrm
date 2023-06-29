@@ -613,4 +613,15 @@ if(file_exists('extensions/modules/PartnerAgreements')) {
         'bean_name' => 'PartnerAgreement',
         'source' => 'non-db',
     ];
+
+    if (file_exists('extensions/modules/Travels')) {
+        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['travels'] = [
+            'name' => 'travels',
+            'type' => 'link',
+            'relationship' => 'opportunities_travels',
+            'source' => 'non-db',
+            'vname' => 'LBL_OPPORTUNITIES',
+            'module' => 'Opportunities'
+        ];
+    }
 }
