@@ -156,7 +156,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
 ];
 
 if (file_exists("extensions/modules/ProcurementDocs")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Agreement']['relationships']['procurementdocs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Agreement']['fields']['procurementdocs'] = [
         'name' => 'procurementdocs',
         'type' => 'link',
         'vname' => 'LBL_PROCUREMENTDOCS',

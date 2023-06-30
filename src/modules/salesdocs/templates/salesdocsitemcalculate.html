@@ -30,11 +30,19 @@
                     <td>
                         <div class="slds-truncate"><system-label [label]="schemelement.elementname ?? schemelement.conditionname"/></div>
                     </td>
-                    <td class="slds-text-align--right">
-                        <div class="slds-truncate"><system-display-number [number]="getElementValue(schemelement.id)"/></div>
+                    <td class="slds-text-align--right" [ngSwitch]="schemelement.valuetype">
+                        <ng-container *ngIf="getElementValue(schemelement.id)">
+                            <div *ngSwitchCase="'P'" class="slds-truncate"><system-display-number [number]="getElementValue(schemelement.id)"/>%</div>
+                            <div *ngSwitchCase="'T'" class="slds-truncate"><system-display-number [number]="getElementValue(schemelement.id)"/>%</div>
+                            <div *ngSwitchDefault class="slds-truncate"><system-display-number currency_id="-99" [number]="getElementValue(schemelement.id)"/></div>
+                        </ng-container>
                     </td>
                     <td>
-                        <system-input-number [asNumber]="true" precision="2" *ngIf="schemelement.editable == 1" [disabled]="!isEditing" [ngModel]="getElementValue(schemelement.id, true)" (ngModelChange)="setElementOverrideValue(schemelement.id, $event)"/>
+                        <div class="slds-grid slds-grid--vertical-align-center" *ngIf="schemelement.editable == 1">
+                            <div style="width: 1rem" class="slds-p-right--xx-small"><system-display-currency-symbol currencyid="-99" *ngIf="schemelement.valuetype == 'A'"/></div>
+                            <system-input-number class="slds-grow" [asNumber]="true" precision="2"  [disabled]="!isEditing" [ngModel]="getElementValue(schemelement.id, true)" (ngModelChange)="setElementOverrideValue(schemelement.id, $event)"/>
+                            <div class="slds-p-left--xx-small" style="width: 1rem"><span *ngIf="schemelement.valuetype == 'P'">%</span></div>
+                        </div>
                     </td>
                     <td class="slds-text-align--right">
                         <system-display-number [number]="getElementAmount(schemelement.id)" currency_id="-99"/>

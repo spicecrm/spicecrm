@@ -391,7 +391,7 @@ class CampaignTask extends SpiceBean
                 $campaignLog->activity_type = 'inactive';
                 $campaignLog->save();
             } else if($seed) {
-                $email = $this->sendEmail($seed, true, ['CampaignLog' => $campaignLog]);
+                $email = $this->sendEmail($seed, true, false, ['CampaignLog' => $campaignLog]);
                 if($email == false){
                     $campaignLog->activity_type = 'noemail';
                     $campaignLog->save();
@@ -459,6 +459,7 @@ class CampaignTask extends SpiceBean
             $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
             $email->to_be_sent = true;
+            $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
             $email->save();
         } else {
             $email->sendEmail();
