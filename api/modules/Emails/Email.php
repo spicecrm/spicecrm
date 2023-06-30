@@ -57,7 +57,16 @@ class Email extends SpiceBean
 
     const TYPE_INBOUND = 'inbound';
     const TYPE_OUTBOUND = 'out';
-
+    /**
+     * holds the tracking parent type during the runtime to be used for email tracking actions
+     * @var string|null
+     */
+    private ?string $runtime_tracking_parent_type = null;
+    /**
+     * holds the tracking parent id during the runtime to be used for email tracking actions
+     * @var string|null
+     */
+    private ?string $runtime_tracking_parent_id = null;
     /**
      * sole constructor
      */
@@ -70,6 +79,29 @@ class Email extends SpiceBean
         if ($this->load_relationship('mailboxes')) {
             $mailbox = $this->mailboxes->getBeans()[$this->mailbox_id];
         }
+    }
+
+    /**
+     * register the tracking parent data on runtime to be used for generating the email tracking actions link
+     * @param string $parentType
+     * @param string $parentId
+     * @return void
+     */
+    public function registerTrackingParentData(string $parentType, string $parentId)
+    {
+        $this->runtime_tracking_parent_type = $parentType;
+        $this->runtime_tracking_parent_id = $parentId;
+    }
+
+    /**
+     * @return array {parentType: string, parentId: string}
+     */
+    public function getTrackingParentData(): array
+    {
+        return [
+            $this->runtime_tracking_parent_type ?: 'Emails',
+            $this->runtime_tracking_parent_id ?: $this->id
+        ];
     }
 
     /**
@@ -713,6 +745,8 @@ class Email extends SpiceBean
         $dom = new DOMDocument();
         $dom->loadHTML($this->body);
 
+        [$parentType, $parentId] = $this->getTrackingParentData();
+
         /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('a') as $node) {
 
@@ -729,7 +763,7 @@ class Email extends SpiceBean
                 );
             }
 
-            $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($this->id, $trackingId, $handlingLink);
+            $trackingLink = EmailTrackingLink::transformEmailTrackingLinks($parentType, $parentId, $trackingId, $handlingLink);
             $this->assignBeanToEmail($trackingId, 'EmailTrackingLinks');
             $node->setAttribute('href', $trackingLink);
         }
@@ -746,9 +780,10 @@ class Email extends SpiceBean
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
-                $key = SpiceConfig::getInstance()->get('emailtracking.blwofishkey') ?? "2fs5uhnjcnpxcpg9";
+                $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
                 $method = 'blowfish';
-                $data = 'Emails:'.$this->id.':MarketingActions:'.$marketingaction;
+                [$parentType, $parentId] = $this->getTrackingParentData();
+                $data = "ParentType:$parentType:ParentId:$parentId:MarketingActions:$marketingaction";
                 $link = openssl_encrypt($data, $method, $key);
                 $href = $mailboxTrackingUrl. 'action/' . base64_encode($link);
                 $node->setAttribute('href', $href);

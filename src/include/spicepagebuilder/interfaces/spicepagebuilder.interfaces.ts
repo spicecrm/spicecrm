@@ -93,6 +93,8 @@ export interface DividerI extends ContentElementI {
  */
 export interface ButtonI extends ContentElementI {
     content: string;
+    trackingLink?: string,
+    trackByMethod?: 'url' | 'id',
     attributes: {
         'href': string,
         'align': string,
@@ -198,6 +200,7 @@ export interface SpacerI extends ContentElementI {
  */
 export interface TextI extends ContentElementI {
     content: string;
+    editorType: 'richText' | 'html';
     attributes: {
         'color'?: string,
         'container-background-color'?: string,

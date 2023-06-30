@@ -488,6 +488,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'module' => 'EmailTrackingLinks',
             'relationship' => 'emails_emailtrackinglinks',
             'source' => 'non-db'
+        ],
+        'campaign_log' => [
+            'name' => 'campaign_log',
+            'vname' => 'LBL_CAMPAIGNLOG',
+            'type' => 'link',
+            'module' => 'CampaignLog',
+            'relationship' => 'campaignlog_sent_emails',
+            'source' => 'non-db'
         ]
         /* end relationship collections */
 
