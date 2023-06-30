@@ -20,9 +20,9 @@ $routes = [
         'method' => 'post',
         'route' => '/system/webhook',
         'class' => WebHookController::class,
-        'function' => 'callWebHooks',
+        'function' => 'mapWebHooks',
         'description' => '',
-        'options' => ['noAuth' => true, 'adminOnly' => false, 'validation' => true],
+        'options' => ['adminOnly' => true, 'validation' => false],
         'parameters' => []
     ],
 

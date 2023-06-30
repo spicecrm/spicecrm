@@ -41,11 +41,17 @@
 
 .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused){
     border: none !important;
-    height: 100vh !important;
 }
 .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused{
     border: none !important;
-    height: 100vh !important;
+}
+
+.ck-editor__main, .ck-editor {
+    height: 100% !important;
+}
+
+.ck-editor__top {
+    height: 0 !important;
 }
 
 .selected {
@@ -60,7 +66,7 @@
     min-width: unset !important;
 }
 .slds-color-picker__selector.slds-popover{
-    width: 12rem;
+    width: 13.375rem;
 }
 .slds-color-picker__selector .slds-popover__footer{
     background-color: unset ;

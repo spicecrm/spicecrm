@@ -67,7 +67,6 @@ export class SalesDocsFlowModal implements OnInit {
      */
     public loadDocumentFlow() {
         this.backend.getRequest(`module/SalesDocs/${this.model.id}/flow`).subscribe(res => {
-            console.log(res);
             this.successors = res.successors;
             this.salesdocs = res.salesdocs;
             this.buildTable();

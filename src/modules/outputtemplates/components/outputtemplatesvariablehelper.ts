@@ -131,7 +131,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
                 });
             }
         }
-        if ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' ) {
+        if ( this.model?.module === 'LandingPages' || this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' ) {
             this.hasTemplate = true;
             this.templateModel = this.model;
             this.offeredModules.push({

@@ -10,7 +10,7 @@ import {result} from "underscore";
 
 /**
  * @deprecated
- * will be removed
+ * will be removed in 2023.02.001
  */
 @Component({
     selector: 'administration-dict-repair',

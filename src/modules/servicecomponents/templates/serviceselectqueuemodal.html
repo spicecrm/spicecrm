@@ -7,16 +7,22 @@
             <system-spinner></system-spinner>
         </div>
         <ng-template #queuelist>
-            <fieldset class="slds-form-element">
-                <div class="slds-grid slds-grid--vertical">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_AVAILABLE_QUEUES"></system-label></legend>
-                <system-input-radio *ngFor="let queue of queues" [value]="queue.id" name="queue" [(ngModel)]="selectedqueueid">{{queue.name}}</system-input-radio>
+            <div class=" slds-scrollable--y">
+                <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center slds-border--bottom">
+                    <system-utility-icon icon="filterList" size="x-small"></system-utility-icon>
+                    <system-input-text placeholder="LBL_SEARCH" class="slds-grow slds-p-horizontal--xx-small" [(ngModel)]="searchTerm"></system-input-text>
                 </div>
-            </fieldset>
-            <div *ngIf="displaynote" class="slds-form-element slds-p-top--small">
-                <label class="slds-form-element__label"><system-label label="LBL_NOTE"></system-label></label>
-                <div class="slds-form-element__control">
-                    <textarea class="slds-textarea" [(ngModel)]="note"></textarea>
+                <fieldset class="slds-form-element">
+                    <div class="slds-grid slds-grid--vertical">
+                        <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_AVAILABLE_QUEUES"></system-label></legend>
+                        <system-input-radio *ngFor="let queue of queueList; trackBy: trackByFn" [disabled]="(queue.id === parentqueue_id ? true : false)" [value]="queue.id" name="queue" [(ngModel)]="selectedqueueid">{{queue.name}}</system-input-radio>
+                    </div>
+                </fieldset>
+                <div *ngIf="displaynote" class="slds-form-element slds-p-top--small">
+                    <label class="slds-form-element__label"><system-label label="LBL_NOTE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <textarea class="slds-textarea" [(ngModel)]="note"></textarea>
+                    </div>
                 </div>
             </div>
         </ng-template>

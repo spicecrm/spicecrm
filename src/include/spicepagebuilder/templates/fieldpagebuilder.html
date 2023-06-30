@@ -1,28 +1,9 @@
-<div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-    <div>
-        <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-    </div>
-    <button *ngIf="!isEditMode() && isEditable()" class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button" (click)="setEditMode()">
-        <system-button-icon [icon]="'edit'"></system-button-icon>
-    </button>
-</div>
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
-    <div (dblclick)="setEditMode()" class="slds-size--1-of-1" [style.min-height.px]="iframeHeight">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div class="slds-size--1-of-1" [style.min-height.px]="iframeHeight">
         <iframe *ngIf="parsedHtml" [src]="parsedHtml" [style.height.px]="iframeHeight" style="border: 0; resize: vertical" class="slds-size--1-of-1" sandbox></iframe>
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <div class="slds-size--1-of-1 spice-hover-display-children">
-        <div class="slds-size--1-of-1" [style.min-height.px]="iframeHeight">
-            <iframe *ngIf="parsedHtml" [src]="parsedHtml" [style.height.px]="iframeHeight" style="border: 0; resize: vertical" class="slds-size--1-of-1" sandbox></iframe>
-        </div>
-        <div class="spice-hover-child slds-grid" style="position: absolute; top:0;right:0;bottom:0;left:0; background: #656565; opacity: .8; border-radius: 5px;">
-            <div class="slds-align--absolute-center slds-p-around--x-small" style="border: 1px solid #ddd; border-radius: 5px;">
-                <button class="slds-button slds-button--icon-border-filled spice-hover-button" (click)="openPageBuilder()">
-                    <system-button-icon [icon]="'edit'"></system-button-icon>
-                </button>
-            </div>
-        </div>
-    </div>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-height_full" [ngClass]="getFieldClass()">
+    <spice-page-builder [pageContent]="model.data[bodySPBFieldName]" (pageBuilderChange$)="onPageBuilderChange($event)" class="spice-display-block slds-height_full"></spice-page-builder>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

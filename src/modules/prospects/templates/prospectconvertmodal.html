@@ -47,10 +47,8 @@
             <button *ngIf="currentConvertStep == 2" class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_CONVERT"></system-label></button>
         </div>
         <div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
-            <ng-container *ngIf="!model.isLoading">
-                <prospect-convert-account *ngIf="personModuleName == 'Contacts'" [hidden]="currentConvertStep !== 1" (account)="setAccount($event)" ></prospect-convert-account>
-                <prospect-convert-contact [module]="personModuleName" [hidden]="currentConvertStep !== 2" (contact)="setContact($event)"></prospect-convert-contact>
-            </ng-container>
+            <prospect-convert-account *ngIf="personModuleName == 'Contacts'" [hidden]="currentConvertStep !== 1" (account)="setAccount($event)" ></prospect-convert-account>
+            <prospect-convert-contact [module]="personModuleName" [hidden]="currentConvertStep !== 2" (contact)="setContact($event)"></prospect-convert-contact>
         </div>
 
     </system-modal-content>

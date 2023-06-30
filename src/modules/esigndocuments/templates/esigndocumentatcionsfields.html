@@ -1,0 +1,16 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<div *ngIf="!isEditMode()">
+    <field-generic-display [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()"
+                           [fieldid]="fieldid">
+        <button (click)="openParticipantsModel(value)" class="slds-button slds-button_icon slds-button_icon-border"
+                style="height: 24px; width: 24px;" [title]="language.getLabel('LBL_PARTICIPANTS')">
+            <system-button-icon icon="people"></system-button-icon>
+        </button>
+
+        <button [disabled]="!isCompleted" (click)="previewFile($event, value)"
+                class="slds-button slds-button_icon slds-button_icon-border ng-star-inserted"
+                style="height: 24px; width: 24px;" [title]="language.getLabel('LBL_COMPLETED')">
+            <system-button-icon icon="check"></system-button-icon>
+        </button>
+    </field-generic-display>
+</div>

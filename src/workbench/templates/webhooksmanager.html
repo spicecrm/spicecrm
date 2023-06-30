@@ -19,8 +19,8 @@
                     <th class="slds-text-align_left" scope="col">
                         <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_URL"></system-label></div>
                     </th>
-                    <th class="slds-text-align_left" scope="col">
-                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_DATA_SENT"></system-label></div>
+                    <th class="slds-text-align_center" scope="col">
+                        <div class="slds-truncate slds-m-left--x-small"><system-label label="LBL_SEND_DATA"></system-label></div>
                     </th>
                     <th class="slds-text-align_right" scope="col">
                         <div class="slds-truncate slds-m-left--x-small"></div>
@@ -44,12 +44,13 @@
                     <td class="slds-text-align_left">
                         <div class="slds-truncate">{{webHook.url}}</div>
                     </td>
-                    <td class="slds-text-align_left">
-                        <div class="slds-truncate">{{webHook.sent_data}}</div>
+                    <td class="slds-text-align_center">
+<!--                        <div class="slds-truncate">{{webHook.send_data}}</div>-->
+                            <system-checkbox [ngModel]="webHook.send_data" [asinteger]="true" [disabled]="true"></system-checkbox>
                     </td>
                     <td class="slds-text-align_right">
-                        <button class="slds-button slds-button--neutral slds-button--icon slds-p-around--x-small" (click)="callWebHooks(webHook)">
-                            <system-label label="LBL_TEST"></system-label>
+                        <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border" (click)="searchWithModal(webHook)">
+                            <system-button-icon icon="broadcast"></system-button-icon>
                         </button>
                         <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border"
                               (click)="editWebHook(webHook.id)"  >
@@ -65,8 +66,8 @@
             </table>
             <div class="slds-p-around--x-small">
                 <button class="slds-align--absolute-center slds-button slds-button--icon"
-                    (click)="addWebHook()"    style="border-radius: 50%;">
-                    <system-button-icon icon="add" size="medium"></system-button-icon>
+                    (click)="addWebHook()">
+                    <system-button-icon icon="add" size="medium" style="border-radius: 50%;"></system-button-icon>
                 </button>
             </div>
         </div>

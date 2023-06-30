@@ -222,8 +222,8 @@ class MarketingAutomationController
             $trackedAction->parent_id = $data['Emails'];
             $trackedAction->action = $action;
             //check if the link is here
-            if(array_key_exists('TrackingLinks', $data) && !empty($data['TrackingLinks'])) {
-                $trackedAction->trackinglink_id = $data['TrackingLinks'];
+            if(array_key_exists('EmailTrackingLinks', $data) && !empty($data['EmailTrackingLinks'])) {
+                $trackedAction->emailtrackinglink_id = $data['EmailTrackingLinks'];
             }
 
             $trackedAction->save();

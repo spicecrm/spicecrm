@@ -1,5 +1,5 @@
 <div class="slds-form-element">
     <div class="slds-form-element__control">
-        <input type="number" class="slds-input slds-text-align--right" [(ngModel)]="value" />
+        <input type="number" class="slds-input slds-text-align--right" [(ngModel)]="value" [disabled]="disabled" (blur)="emitBlur()"/>
     </div>
 </div>

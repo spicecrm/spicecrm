@@ -432,27 +432,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'source' => 'non-db',
             'vname' => 'LBL_LEADS',
         ],
-        'campaigns' => [
-            'name' => 'campaigns',
-            'type' => 'link',
-            'relationship' => 'opportunities_campaign',
-            'module' => 'CampaignLog',
-            'bean_name' => 'CampaignLog',
-            'source' => 'non-db',
-            'vname' => 'LBL_CAMPAIGNS',
-            'reportable' => false
-        ],
-        'campaign_link' => [
-            'name' => 'campaign_link',
-            'type' => 'link',
-            'relationship' => 'opportunities_campaign',
-            'vname' => 'LBL_CAMPAIGNS',
-            'link_type' => 'one',
-            'module' => 'Campaigns',
-            'bean_name' => 'Campaign',
-            'source' => 'non-db',
-            'reportable' => false
-        ],
         'currencies' => [
             'name' => 'currencies',
             'type' => 'link',
@@ -634,4 +613,16 @@ if(file_exists('extensions/modules/PartnerAgreements')) {
         'bean_name' => 'PartnerAgreement',
         'source' => 'non-db',
     ];
+
+    if (file_exists('extensions/modules/Travels')) {
+        SpiceDictionaryHandler::getInstance()->dictionary['Opportunity']['fields']['travels'] = [
+            'name' => 'travels',
+            'type' => 'link',
+            'relationship' => 'opportunities_travels',
+            'source' => 'non-db',
+            'vname' => 'LBL_OPPORTUNITIES',
+            'module' => 'Opportunities',
+            'default' => false
+        ];
+    }
 }

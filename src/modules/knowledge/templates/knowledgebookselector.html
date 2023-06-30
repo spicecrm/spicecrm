@@ -8,6 +8,9 @@
                     </span>
                     <span class="slds-pill__label slds-p-left--xx-small">{{selectedBook.name}}</span>
                     <span>
+                        <button class="slds-button slds-button--icon" (click)="printBook(selectedBook)">
+                            <system-button-icon icon="print"></system-button-icon>
+                        </button>
                         <button *ngIf="editable" class="slds-button slds-button--icon" (click)="editBook(selectedBook)">
                             <system-button-icon icon="edit"></system-button-icon>
                         </button>

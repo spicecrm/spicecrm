@@ -30,6 +30,24 @@ export class fieldSalesdocTaxCategories extends fieldGeneric {
         this.getOptions();
     }
 
+    /**
+     * checks if the field is editbale
+     *
+     * @param field optional the fieldname
+     */
+    public isEditable(field: string = this.fieldname): boolean {
+        if(!!this.model.getField('salesdocitempricecalculationschema_id')) return false;
+
+        return (this.model.checkAccess('edit') || this.model.checkAccess('create')) && this.getStati(field).editable && !this.getStati(field).readonly && !this.getStati(field).disabled && !this.getStati(field).hidden;
+    }
+
+    /**
+     * a simple helper to check if we are in the edit mode or in display mode
+     */
+    public isEditMode() {
+        return  this.view.isEditMode() && this.isEditable();
+    }
+
     public getValue(): string {
         try {
             if (!this.value) return '';
@@ -37,7 +55,7 @@ export class fieldSalesdocTaxCategories extends fieldGeneric {
             // find the option and try to translate the table
             let thisOption = this.options.find(itemtype => itemtype.taxcategoryid == this.value);
             if (thisOption) {
-                return thisOption.taxcategoryname;
+                return  `${thisOption.taxcategoryname} (${thisOption.taxcategoryid})`;
             } else {
                 return this.value;
             }

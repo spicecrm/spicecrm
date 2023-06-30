@@ -250,4 +250,98 @@ export class salesdocrecord implements OnDestroy {
         return retSubject.asObservable();
     }
 
+    /**
+     * recalculates an elements schema
+     *
+     * @param elements
+     */
+    public recalculate(schemaelements, conditionelements){
+        for(let element of schemaelements){
+            let ce = conditionelements.find(c => c.id == element.id);
+            if(element.elementcalculation){
+                 ce.elementamount = this.evaluateFormula(element.elementcalculation,schemaelements, conditionelements);
+            } else if(element.elementbase && (element.valuetype == 'P' || element.valuetype == 'T')) {
+                switch(element.elementbasetype) {
+                    case 'I':
+                        ce.elementamount =  100 * this.evaluateFormula(element.elementbase, schemaelements, conditionelements) / (100 + parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0));
+                        break;
+                    default:
+                        ce.elementamount = parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0) * this.evaluateFormula(element.elementbase, schemaelements, conditionelements) / 100;
+                        break;
+                }
+            } else {
+                ce.elementamount = ce.elementoverridevalue ?? ce.elementvalue ?? 0;
+            }
+
+            // mathematical round the value
+            ce.elementamount = Math.round(ce.elementamount * 100) / 100;
+        }
+    }
+
+    /**
+     * evaluates a formula in the calculation schema
+     *
+     * @param elementcalculation
+     * @param elements
+     * @private
+     */
+    private evaluateFormula(elementcalculation, elements, conditionelements): number{
+        let reg = new RegExp(/{(.*?)}/g);
+        let matches = elementcalculation.matchAll(reg)
+        for(let match of matches){
+            let value = this.getElementValueByIndex(match['1'], elements, conditionelements);
+            elementcalculation = elementcalculation.replaceAll(match['0'], value);
+        }
+        try{
+            return parseFloat(eval(elementcalculation));
+        } catch(e){
+            return 0;
+        }
+    }
+
+    /**
+     * gets a value for a index determining it by index or type
+     *
+     * @param index
+     * @param elements
+     * @private
+     */
+    private getElementValueByIndex(index, elements, conditionelements){
+        for (let element of elements){
+            if(element.elementindex == index || element.elementtype == index){
+                return parseFloat(conditionelements.find(c => c.id == element.id).elementamount ?? 0);
+            }
+        }
+        return 0;
+    }
+
+    public getItemFieldsByElements(pricecalculationschema_id, quantity, elements, updateFields: any){
+
+        // get the schema elements
+        let schemaelements = this.configuration.getData('pricingschemaelements');
+        schemaelements = schemaelements.filter(e => e.syspricecalculationschema_id == pricecalculationschema_id);
+        schemaelements.sort((a, b) => a.elementindex > b.elementindex ? 1 : -1);
+
+        for(let element of schemaelements) {
+            // get the condiiton element
+            let ce = elements.find(e => e.id == element.id);
+
+            // if we have no recoird continue
+            if(!ce) continue;
+
+            switch (element.elementtype) {
+                case 'NET':
+                    updateFields.amount_net_per_uom = ce.elementamount;
+                    updateFields.amount_net = ce.elementamount * quantity;
+                    break;
+                case 'GROSS':
+                    updateFields.amount_gross = ce.elementamount * quantity;
+                    break;
+                case 'VAT':
+                    updateFields.tax_amount = ce.elementamount * quantity;
+                    updateFields.tax_category = ce.tax_category;
+                    break;
+            }
+        }
+    }
 }

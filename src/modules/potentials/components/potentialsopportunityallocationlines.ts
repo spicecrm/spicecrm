@@ -98,7 +98,9 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
                 this.isLoading = false;
             }, error: () => {
                 this.isLoading = false;
-                this.toast.sendToast('LBL_ERR_LOADING_REL_ACCOUNTS', "error");
+                // @todo: see why this function is triggered in lead convert logic.
+                // Shall not be since no related potentials can be loaded on account creation
+                // this.toast.sendToast('LBL_ERR_LOADING_REL_ACCOUNTS', "error");
             }
         });
     }

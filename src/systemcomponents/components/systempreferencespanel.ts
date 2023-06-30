@@ -270,17 +270,19 @@ export class SystemPreferencesPanel implements OnChanges, OnInit {
      * @private
      */
     private createNameFormats(): void {
-        const formats = ['s f l', 'f l', 's l', 'l, s f', 'l, f', 's l, f', 'l s f', 'l f s'];
+        const formats = ['s f l', 'f l', 's l', 'l, s f', 'l, f', 's l, f', 'l s f', 'l f s', 's d f l a'];
         const labels = {
             t: 'LBL_LOCALE_NAME_EXAMPLE_TITLE',
             f: 'LBL_LOCALE_NAME_EXAMPLE_FIRST',
             l: 'LBL_LOCALE_NAME_EXAMPLE_LAST',
             s: 'LBL_LOCALE_NAME_EXAMPLE_SALUTATION',
+            d: 'LBL_LOCALE_NAME_EXAMPLE_DEGREE_BEFORE',
+            a: 'LBL_LOCALE_NAME_EXAMPLE_DEGREE_AFTER',
         };
         this.nameFormats = formats.map(format => {
             return {
                 name: format,
-                example: format.replace(/t|f|l|s/g, key => this.language.getLabel(labels[key]))
+                example: format.replace(/t|f|l|s|d|a/g, key => this.language.getLabel(labels[key]))
             };
         });
     }

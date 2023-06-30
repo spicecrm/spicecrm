@@ -81,6 +81,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
      */
     public onSectionDelete(section) {
         this.body.children = this.body.children.filter(item => item != section);
+        this.spicePageBuilderService.emitData();
     }
 
     /**
@@ -103,5 +104,7 @@ export class SpicePageBuilderElementBody implements OnInit, AfterViewInit {
         } else {
             moveItemInArray(this.body.children, event.previousIndex, event.currentIndex);
         }
+
+        this.spicePageBuilderService.emitData();
     }
 }
