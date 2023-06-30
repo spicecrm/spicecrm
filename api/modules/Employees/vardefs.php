@@ -75,11 +75,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
         'userabsences' => [
             'name' => 'userabsences',
             'vname' => 'LBL_USER_ABSENCES',
-            'rel_fields' => ['user_id' => ['type' => 'id']],
             'type' => 'link',
             'relationship' => 'employees_userabsences',
             'source' => 'non-db',
             'module' => 'UserAbsences'
+        ],
+        'travels' => [
+            'name' => 'travels',
+            'vname' => 'LBL_TRAVELS',
+            'type' => 'link',
+            'relationship' => 'employee_travels',
+            'source' => 'non-db',
+            'module' => 'Employees',
         ],
     ],
     'indices' => [],
@@ -90,7 +97,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
             'lhs_key' => 'id',
             'rhs_module' => 'UserAbsences',
             'rhs_table' => 'userabsences',
-            'rhs_key' => 'user_id',
+            'rhs_key' => 'employee_id',
             'relationship_type' => 'one-to-many'
         ],
     ],

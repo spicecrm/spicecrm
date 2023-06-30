@@ -97,13 +97,27 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'source' => 'non-db',
             'module' => 'EmailTrackingLinks'
         ],
-
-
+        'campaign_log' => [
+            'name' => 'campaign_log',
+            'type' => 'link',
+            'relationship' => 'campaign_log_emailtrackingactions',
+            'source' => 'non-db',
+            'module' => 'CampaignLog'
+        ],
     ],
     'relationships' => [
         'campaigntask_emailtrackingactions' => [
             'lhs_module' => 'CampaignTasks',
             'lhs_table' => 'campaigntasks',
+            'lhs_key' => 'id',
+            'rhs_module' => 'EmailTrackingActions',
+            'rhs_table' => 'emailtrackingactions',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'campaign_log_emailtrackingactions' => [
+            'lhs_module' => 'CampaignLog',
+            'lhs_table' => 'campaign_log',
             'lhs_key' => 'id',
             'rhs_module' => 'EmailTrackingActions',
             'rhs_table' => 'emailtrackingactions',
