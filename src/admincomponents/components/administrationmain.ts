@@ -43,7 +43,6 @@ export class AdministrationMain implements AfterViewInit {
         public injector: Injector,
         public navigationtab: navigationtab,
     ) {
-        // this.navigation.setActiveModule('Administration');
         this.navigationtab.setTabInfo({
             displayname: this.language.getLabel('LBL_ADMINISTRATION'),
             displayicon: 'settings'

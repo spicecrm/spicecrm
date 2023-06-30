@@ -24,7 +24,7 @@
         </div>
         <div *ngIf="displayDeveloperMode" class="slds-p-top--small slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
             <system-checkbox [disabled]="!canSetDeveloperMode" [(ngModel)]="developermode"><system-label label="LBL_DEVELOPER_MODE"></system-label></system-checkbox>
-            <button  class="slds-button slds-button--neutral" (click)="clearCache()"><system-label label="LBL_RESET_AND_RELOAD"/></button>
+            <button  class="slds-button slds-button--neutral slds-truncate" (click)="clearCache()"><system-label label="LBL_RESET_AND_RELOAD"/></button>
         </div>
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">

@@ -314,7 +314,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
                 this.fullValue = this.value;
             } else {
                 // added <base target="_blank"> so all links open in new window
-                this.fullValue = `<html><head><base target="_blank"><style>${this.styleTag}</style></head><body class="spice">${this.value}</body></html>`;
+                this.fullValue = `<html><head><base target="_blank"><style>${this.styleTag}</style></head><body class="spice">${this.value.replace(/\r?\n|\r/g, '<br>')}</body></html>`;
             }
         }
 

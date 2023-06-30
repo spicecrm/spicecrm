@@ -14,13 +14,13 @@ export interface RoleI {
     name: string;
     label: string;
     icon: string;
-    systemdefault: 1 | 0;
-    portaldefault: 1 | 0;
-    showsearch: 1 | 0;
-    showfavorites: 1 | 0;
+    systemdefault: boolean;
+    portaldefault: boolean;
+    showsearch: boolean;
+    showfavorites: boolean;
     description: string;
     default_dashboard: string;
-    default_dashboardset: string,
+    default_dashboardset: string;
     version: string;
     package: string;
     scope: 'custom' | 'global';
@@ -49,9 +49,10 @@ export interface WebHookI {
     event: 'create' | 'update' |'delete';
     url: string;
     active: 1 | 0;
-    sent_data: 1 | 0;
+    send_data: boolean;
     modulefilter_id: string;
     fieldset_id: string;
-    ssl_verifypeer: 1 | 0;
-    ssl_verifyhost: 1 | 0
+    ssl_verifypeer: boolean;
+    ssl_verifyhost:boolean;
+    // custom_headers: object
 }

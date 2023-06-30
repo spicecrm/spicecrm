@@ -20,6 +20,7 @@ import {configurationService} from '../../services/configuration.service';
 import {WorkbenchService} from "../services/workbench.service";
 
 @Component({
+    selector: 'componentset-manager',
     templateUrl: '../templates/componentsetmanager.html',
     providers: [view]
 })

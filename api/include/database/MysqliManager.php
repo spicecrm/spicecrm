@@ -95,7 +95,7 @@ class MysqliManager extends DBManager
         'short'    => 'smallint',
         'varchar'  => 'varchar',
         'text'     => 'text',
-        'json'     => 'longtext',
+        'json'     => 'longtext', // @deprecated sind 2023.01.001 - will be moved to column type json
         'shorttext'=> 'text',
         'longtext' => 'longtext',
         'date'     => 'date',
@@ -120,8 +120,6 @@ class MysqliManager extends DBManager
         'encrypt'  => 'varchar',
         'file'     => 'varchar',
         'decimal_tpl' => 'decimal(%d, %d)',
-        'json' => 'json'
-
     ];
 
     protected $capabilities = [
@@ -178,7 +176,6 @@ class MysqliManager extends DBManager
 
     public function query($sql, $dieOnError = false, $msg = '', $suppress = false, $keepResult = false)
     {
-
         try {
             if (is_array($sql)) {
                 return $this->queryArray($sql, $dieOnError, $msg, $suppress);
@@ -222,8 +219,10 @@ class MysqliManager extends DBManager
                 $this->checkError($msg . ' Query Failed: ' . $sql, $dieOnError);
             }
         } catch (Exception $e) {
+
             LoggerManager::getLogger()->fatal('sql', ['error' => $e->getMessage(), "query" => $this->lastsql]);
-            throw $e;
+
+            if ($dieOnError) throw $e;
         }
 
         return $result;
@@ -1555,18 +1554,12 @@ class MysqliManager extends DBManager
                 || $fieldDef['dbType'] == 'longtext'
                 || $fieldDef['dbType'] == 'longblob' ))
             unset($fieldDef['default']);
-        if ($fieldDef['dbType'] == 'uint')
-            $fieldDef['len'] = '10';
-        if ($fieldDef['dbType'] == 'ulong')
-            $fieldDef['len'] = '20';
         if ($fieldDef['dbType'] == 'bool')
             $fieldDef['type'] = 'tinyint';
         if ($fieldDef['dbType'] == 'bool' && empty($fieldDef['default']) )
             $fieldDef['default'] = '0';
         if (($fieldDef['dbType'] == 'varchar' || $fieldDef['dbType'] == 'enum') && empty($fieldDef['len']) )
             $fieldDef['len'] = '255';
-        if ($fieldDef['dbType'] == 'uint')
-            $fieldDef['len'] = '10';
         if ($fieldDef['dbType'] == 'int' && empty($fieldDef['len']) )
             $fieldDef['len'] = '11';
 
@@ -1641,6 +1634,12 @@ class MysqliManager extends DBManager
                         elseif($fielddef2['len'] >  19){
                             $fieldtype =  'bigint';
                         }
+                        break;
+                    case 'uint':
+                        $fieldtype =  'uint';
+                        break;
+                    case 'ulong':
+                        $fieldtype =  'ulong';
                         break;
                 }
                 break;

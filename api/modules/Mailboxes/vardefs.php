@@ -103,6 +103,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'len' => 255,
             'comment' => 'tracking url of the Mailbox',
         ],
+        'unsubscribe_header' => [
+            'name' => 'unsubscribe_header',
+            'vname' => 'LBL_UNSUBSCRIBE_HEADER',
+            'type' => 'bool',
+            'default' => false,
+            'comment' => 'Flag to add an unsubscribe Header',
+        ],
         'emails' => [
             'name' => 'emails',
             'vname' => 'LBL_EMAILS_LINK',
