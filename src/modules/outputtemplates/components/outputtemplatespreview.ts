@@ -186,7 +186,7 @@ export class OutputTemplatesPreview {
             case 'pdf':
                 this.backend.postRequest(`module/OutputTemplates/previewpdf`, {}, postBody).subscribe(
                     pdf => {
-                        let blob = this.datatoBlob(atob(pdf.content));
+                        let blob = this.datatoBlob(atob(pdf.content),'application/pdf');
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                         this.loading_output = false;
                         this.cdRef.detectChanges();

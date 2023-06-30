@@ -14,7 +14,9 @@ import {NotificationI} from "./interfaces.service";
 
 declare var moment: any;
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class assistant {
 
     /**

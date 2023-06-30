@@ -677,6 +677,43 @@ class SpiceBeanHandler
     }
 
     /**
+     * find bean by string fields
+     * @throws NotFoundException | ForbiddenException | BadRequestException
+     */
+    public function find_bean_by_string_fields($beanModule, $retrieveFields): array
+    {
+        // acl check if user can get the detail
+        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
+            throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
+
+        $thisBean = BeanFactory::newBean($beanModule);
+
+        # check if all the provided fields are module fields
+        foreach ($retrieveFields as $field => $val) {
+            if (!isset($thisBean->field_defs[$field])) {
+                throw new BadRequestException("Module has no $field property");
+            }
+        }
+
+        $thisBean->retrieve_by_string_fields($retrieveFields);
+
+        if (empty($thisBean->id)) throw (new NotFoundException('Record not found.'));
+
+        if (!$thisBean->ACLAccess('view')) {
+            throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
+        }
+
+        // load the view details
+        $thisBean->retrieveViewDetails();
+
+        if ($retrieveFields['trackaction']) {
+            $this->_trackAction($retrieveFields['trackaction'], $beanModule, $thisBean);
+        }
+
+        return $this->mapBeanToArray($beanModule, $thisBean);
+    }
+
+    /**
      * retrieves a bean based on an external id passed in
      *
      * @param $beanModule
@@ -1781,13 +1818,13 @@ class SpiceBeanHandler
                 // if the existing email address id is the same but the email address was changed create a new one
                 // copy the old additional relationship values
                 // delete the link to the old one
-                if ($existingEmailAddress) {
+                if ($existingEmailAddress && $existingEmailAddress->id) {
 
                     $linkedEmailAddresses = $bean->get_linked_beans($linkName);
 
                     foreach ($linkedEmailAddresses as $linkedEmailAddress) {
 
-                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || $existingEmailAddress->email_address == $emailAddressData['email_address']) {
+                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || ($existingEmailAddress->email_address == $emailAddressData['email_address'] && $existingEmailAddress->primary_address == $emailAddressData['primary_address'])){
                             continue;
                         }
 
@@ -2118,7 +2155,7 @@ class SpiceBeanHandler
                     }
                     break;
                 default:
-                    $beanDataArray[$fieldId] = is_string($thisBean->$fieldId) ? html_entity_decode($thisBean->$fieldId, ENT_QUOTES) : $thisBean->$fieldId;
+                    $beanDataArray[$fieldId] = $thisBean->$fieldId;
                     break;
             }
         }

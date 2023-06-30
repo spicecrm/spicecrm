@@ -8,6 +8,7 @@ import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {configurationService} from '../../services/configuration.service';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {layout} from "../../services/layout.service";
 
 /**
  * renders the default header for a listview of a module
@@ -52,6 +53,7 @@ export class ObjectListViewHeader {
         public metadata: metadata,
         public configuration: configurationService,
         public modellist: modellist,
+        public layout: layout,
         public language: language,
         public model: model
     ) {

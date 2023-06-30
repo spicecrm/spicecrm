@@ -17,6 +17,7 @@ import {modal} from '../../services/modal.service';
 import {view} from "../../services/view.service";
 
 @Component({
+    selector: 'fieldset-manager',
     templateUrl: '../templates/fieldsetmanager.html',
     providers: [view]
 })
@@ -483,7 +484,6 @@ export class FieldsetManager {
 
                                 delete fieldset.items;
                                 delete fieldset.type;
-                                delete fieldset.id;
 
 
                                 this.backend.postRequest('configuration/configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, {config: fieldset}).subscribe(

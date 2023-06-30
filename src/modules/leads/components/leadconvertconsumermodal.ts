@@ -1,15 +1,7 @@
 /**
  * @module ModuleLeads
  */
-import {
-    Component,
-    Output,
-    EventEmitter,
-    OnInit,
-    ViewContainerRef,
-    ViewChild,
-    AfterViewInit, SkipSelf
-} from '@angular/core';
+import {Component, Output, EventEmitter, OnInit, SkipSelf} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -18,11 +10,11 @@ import {language} from '../../../services/language.service';
 import {SystemLoadingModal} from "../../../systemcomponents/components/systemloadingmodal";
 
 @Component({
-    selector: 'lead-convert-opportunity-modal',
+    selector: 'lead-convert-consumer-modal',
     templateUrl: '../templates/leadconvertconsumermodal.html',
     providers: [model, view]
 })
-export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
+export class LeadConvertConsumerModal implements OnInit {
 
     /**
      * reference to the modal itself
@@ -55,13 +47,13 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
                     bean_id: this.model.id,
                     bean_module: this.model.module,
                     email_address: this.lead.getField('email1'),
+                    email_address_caps: this.lead.getField('email1').toUpperCase(),
                     email_address_id: '',
                     primary_address: '1'
                 }]}
         );
-    }
 
-    public ngAfterViewInit() {
+        // render component config
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
         this.componentSet = componentconfig.componentset;
     }
@@ -70,6 +62,7 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
      * close the modal
      */
     public close() {
+        this.model.cancelEdit();
         this.self.destroy();
     }
 
@@ -79,13 +72,13 @@ export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
     public convert() {
         if (!this.model.validate()) return;
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            loadingModalRef.instance.messagelabel = 'creating Consumer';
+            loadingModalRef.instance.messagelabel = 'LBL_CREATING_CONSUMER';
             this.model.save().subscribe(consumer => {
-                loadingModalRef.instance.messagelabel = 'updating Lead';
+                loadingModalRef.instance.messagelabel = 'LBL_UPDATING_LEAD';
                 this.lead.setField('status', 'Converted');
                 this.lead.setField('consumer_id', this.model.id);
                 this.lead.save().subscribe(leaddata => {
-                    this.lead.setData(leaddata);
+                    this.lead.setData(this.lead.data, false);
                     loadingModalRef.instance.self.destroy();
                     this.close();
                 });

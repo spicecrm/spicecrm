@@ -1,9 +1,9 @@
 <?php
 
 namespace SpiceCRM\includes\WebHook\api\controllers;
-use Exception;
-use SpiceCRM\includes\Logger\APILogEntryHandler;
-use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\WebHook\WebHook;
 
 class WebHookController{
 
@@ -13,42 +13,32 @@ class WebHookController{
      * @param $args
      * @return mixed
      */
-    public function callWebHooks($req, $res, $args)
+    public function mapWebHooks($req, $res, $args)
     {
-        $body = $req->getParsedBody();
+        $parsedBody = $req->getParsedBody();
 
-        $url = $body['url'];
-        $ssl_verifypeer = $body['ssl_verifypeer'];
-        $ssl_verifyhost = $body['ssl_verifyhost'];
-        $payload = json_encode($body);
+        $module = $parsedBody['webHook']['module'];
+        $dataId = $parsedBody['id'];
+        /*
+        $url = $parsedBody['url'];
+        $ssl_verifypeer = ($parsedBody['ssl_verifypeer'] == 1) ? true : false;
+        $ssl_verifyhost = ($parsedBody['ssl_verifyhost'] == 1) ? true : false;
+        $customHeader = $parsedBody['custom_headers'];
 
-        $curl = curl_init();
-        $curlOptions = [
-            CURLOPT_SSL_VERIFYPEER => $ssl_verifypeer,
-            CURLOPT_SSL_VERIFYHOST => $ssl_verifyhost,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_URL            => $url,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $payload,
-            CURLOPT_HEADER         => 1,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type:application/json',
-            ],
+
+        $body = [
+            'id' =>$parsedBody['id'],
+            'module' =>$parsedBody['module'],
+            'event' => $parsedBody['event'],
+            'sent_data' =>$parsedBody['sent_data'],
+            'modulefilter_id' =>$parsedBody['modulefilter_id'],
+            'fieldset_id' =>$parsedBody['fieldset_id'],
+
         ];
-        curl_setopt_array($curl, $curlOptions);
-        $logEntryHandler = new APILogEntryHandler();
-        $logEntryHandler->generateOutgoingLogEntry($curlOptions, '/system/webhook');
-        $logEntryHandler->writeOutogingLogEntry();
-        $response = curl_exec($curl);
-        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
-        $errors = curl_error($curl);
-        $info = curl_getinfo($curl);
-        curl_close($curl);
+        $payload = json_encode($body);
+        */
+       $seed = BeanFactory::getBean($module, $dataId);
 
-        if ($info['http_code'] < 300 && $info['http_code'] >= 200) {
-            return $res->withJson(['success' => true]);
-        }
-//        throw new Exception($response, $info['http_code']);
-            return $res->withJson(['success' => false]);
+       return $res->withJson(['result' => WebHook::getInstance()->makeCall($parsedBody, $seed)]);
     }
 }
