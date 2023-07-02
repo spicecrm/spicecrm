@@ -2154,6 +2154,11 @@ class SpiceBeanHandler
                         //
                     }
                     break;
+                case 'quantity':
+                case 'double':
+                case 'currency':
+                    $beanDataArray[$fieldId] = (double) $thisBean->$fieldId;
+                    break;
                 default:
                     $beanDataArray[$fieldId] = $thisBean->$fieldId;
                     break;
