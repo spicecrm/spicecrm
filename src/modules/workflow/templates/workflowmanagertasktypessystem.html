@@ -1,5 +1,5 @@
 <workflow-manager-task-next-tasks *ngIf="!workflowManagerService.displayDiagram"></workflow-manager-task-next-tasks>
-<system-collapsable-tab [collapsible]="false" tabtitle="LBL_ACTIONS" class="slds-m-top--large">
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_ACTIONS" tabhelptext="LBL_HELP_WORKFLOWTASK_ACTIONS" class="slds-m-top--large">
     <div class="slds-p-vertical--x-small">
         <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
             <thead>
@@ -43,7 +43,7 @@
         </table>
     </div>
 </system-collapsable-tab>
-<system-collapsable-tab [collapsible]="false" tabtitle="LBL_SYSTEM_ACTION" class="slds-m-top--large">
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_SYSTEM_ACTION" tabhelptext="LBL_HELP_WORKFLOWTASK_SYSTEM_ACTIONS" class="slds-m-top--large">
     <div class="slds-p-vertical--x-small">
         <div>
             <label class="slds-truncate">
