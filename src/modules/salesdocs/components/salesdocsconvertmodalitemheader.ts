@@ -26,4 +26,14 @@ export class SalesDocsConvertModalItemHeader {
         let componentconfig = this.metadata.getComponentConfig('SalesDocsConvertModalItem', 'SalesDocItems');
         this.fieldsetItems = this.metadata.getFieldSetFields(componentconfig.fieldset);
     }
+
+    public getHeaderStyle(fieldsetItemId){
+        let fieldsetItem = this.fieldsetItems.find(i => i.id == fieldsetItemId);
+        if(fieldsetItem.fieldconfig?.width && fieldsetItem.fieldconfig?.widthdimension){
+            return {
+                width: `${fieldsetItem.fieldconfig?.width}${fieldsetItem.fieldconfig?.widthdimension}`
+            }
+        }
+        return {};
+    }
 }
