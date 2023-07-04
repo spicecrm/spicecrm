@@ -1,11 +1,17 @@
 <div class="slds-form-element slds-truncate slds-size--1-of-1" [class.slds-has-error]="emailAddress.invalid_email == 1">
     <div class="slds-form-element__control">
-        <input *ngIf="!emailAddress.hasFocus; else hasFocusContainer" type="text" class="slds-input" [(ngModel)]="emailAddressText">
+        <input *ngIf="!emailAddress.hasFocus; else hasFocusContainer" type="text" class="slds-input" [(ngModel)]="emailAddressText" (blur)="validateDomain()">
         <ng-template #hasFocusContainer>
-            <input type="text" class="slds-input" [(ngModel)]="emailAddressText" system-autofocus>
+            <input type="text" class="slds-input" [(ngModel)]="emailAddressText" (blur)="validateDomain()" system-autofocus>
         </ng-template>
     </div>
-    <div *ngIf="emailAddress.invalid_email == 1" class="slds-form-element__help">
+    <div *ngIf="emailAddress.invalid_email == 1 && !invalid_domain" class="slds-form-element__help">
         <system-label label="LBL_INPUT_INVALID"></system-label>
+    </div>
+    <div *ngIf="invalid_domain && !checkingDomain" class="slds-form-element__help">
+        <system-label label="LBL_DOMAIN_INVALID"></system-label>
+    </div>
+    <div *ngIf="checkingDomain" class="slds-form-element__help slds-grid">
+        <system-spinner size="14" class="slds-m-right--xx-small slds-p-top--xxx-small"></system-spinner><system-label label="LBL_CHECKING_DOMAIN"></system-label>
     </div>
 </div>

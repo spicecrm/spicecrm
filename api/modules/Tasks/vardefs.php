@@ -365,5 +365,14 @@ if (file_exists("extensions/modules/ServiceOrders")) {
         'vname'        => 'LBL_SERVICEORDER',
     ];
 }
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Task']['relationships']['procurementdocs'] = [
+        'name'         => 'procurementdocs',
+        'type'         => 'link',
+        'relationship' => 'procurementdocs_tasks',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_PROCUREMENTDOCS',
+    ];
+}
 
 VardefManager::createVardef('Tasks', 'Task', ['default', 'assignable']);

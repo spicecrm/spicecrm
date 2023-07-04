@@ -69,6 +69,11 @@ export class SystemCollabsableTab {
      */
     @Input() public tabtitle: string = '';
 
+    /**
+     * a help text for the title.
+     */
+    @Input() public tabhelptext: string = '';
+
     constructor(public language: language) {
     }
 
@@ -86,5 +91,9 @@ export class SystemCollabsableTab {
      */
     get _title() {
         return this.tabtitle ? this.tabtitle : this.title ? this.title : false;
+    }
+
+    get _helpText() {
+        return this.tabhelptext ? this.language.getLabel(this.tabhelptext) : false;
     }
 }

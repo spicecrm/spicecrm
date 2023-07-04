@@ -217,7 +217,10 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
 
         // check that we have values to recalculate otherwise set totals to 0
         if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
-            if (this.item.gross_priced) {
+
+            if(this.item.salesdocitempricecalculationschema_id){
+                this.salesdocrecord.getItemFieldsByElements(this.item.salesdocitempricecalculationschema_id, this.item.quantity, this.item.salesdocitempricedetermination, this.item);
+            } else if (this.item.gross_priced) {
                 this.item.amount_gross = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);
 
                 let taxpercentage = this.getTaxPercentage(this.item.tax_category);

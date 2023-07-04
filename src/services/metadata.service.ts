@@ -10,7 +10,7 @@ import {
     ViewContainerRef
 } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {CanActivate, CanDeactivate, Router} from "@angular/router";
+import { Router } from "@angular/router";
 import {LocationStrategy} from "@angular/common";
 import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
@@ -883,6 +883,7 @@ export class metadata {
      */
     public addModuleListType(module: string, listTypeData: any) {
         this.moduleDefs[module].listtypes.push(listTypeData);
+        this.configuration.setData('moduledefs', this.moduleDefs);
     }
 
     /**
@@ -899,6 +900,7 @@ export class metadata {
                         listtype[key] = listTypeData[key];
                     }
                 }
+                this.configuration.setData('moduledefs', this.moduleDefs);
                 return true;
             }
         });
@@ -915,6 +917,7 @@ export class metadata {
         if (typeIndex >= 0) {
             this.moduleDefs[module].listtypes.splice(typeIndex, 1);
         }
+        this.configuration.setData('moduledefs', this.moduleDefs);
         return this.moduleDefs[module].listtypes;
     }
 
@@ -1748,7 +1751,7 @@ export class metadata {
 @Injectable({
     providedIn: 'root'
 })
-export class aclCheck implements CanActivate {
+export class aclCheck  {
     constructor(public metadata: metadata, public router: Router, public session: session, public configurationService: configurationService) {
     }
 
@@ -1785,7 +1788,7 @@ export class aclCheck implements CanActivate {
 @Injectable({
     providedIn: 'root'
 })
-export class noBack implements CanDeactivate<any> {
+export class noBack  {
 
     public navigatingBack: boolean = false;
 
