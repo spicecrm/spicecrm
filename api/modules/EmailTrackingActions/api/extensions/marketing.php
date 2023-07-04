@@ -47,6 +47,23 @@ $routes = [
                 'required' => true
             ]
         ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/email/t/{key}',
+        'class'       => EmailTrackingActionsController::class,
+        'function'    => 'handleTrackingLink',
+        'description' => '',
+        'options'     => ['noAuth' => true],
+        'parameters' => [
+            'key' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => '',
+                'example' => '',
+                'required' => true
+            ]
+        ]
     ]
 ];
 

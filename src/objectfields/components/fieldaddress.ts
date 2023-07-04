@@ -229,7 +229,9 @@ export class fieldAddress extends fieldGeneric {
             let translatedElement = this[addresselement.slice(1, -1)];
             formattedaddress = formattedaddress.replace(addresselement, translatedElement ? translatedElement : '');
         }
-        return formattedaddress;
+
+        // replace any standalone commas as separators in an address
+        return formattedaddress.replace(new RegExp(/^([\s,]*)|(,[\s,]*,)|$([\s,]*)/gm), '').trim();
     }
 
     /**

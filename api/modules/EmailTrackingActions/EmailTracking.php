@@ -6,6 +6,22 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class EmailTracking
 {
+
+    /**
+     * attach an element to the email body
+     * @param string $element
+     * @param string $body
+     * @return string
+     */
+    public static function attachElementToBody(string $element, string $body): string
+    {
+        if (strpos($body, '</body>')) {
+            return str_replace('</body>', "$element</body>", $body);
+        } else {
+            return $body . $element;
+        }
+    }
+
     /**
      * encodes the tracking ID
      *
@@ -13,7 +29,7 @@ class EmailTracking
      * @return string
      */
     static function encodeTrackingID($trackingData){
-        $key = SpiceConfig::getInstance()->get('emailtracking.blwofishkey');
+        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
         $data = $trackingData;
         if($key){
             return urlencode(base64_encode(openssl_encrypt($data, 'blowfish', $key)));
@@ -30,12 +46,8 @@ class EmailTracking
      * @return false|string
      */
     static function decodeTrackingID($trackingData){
-        $key = SpiceConfig::getInstance()->get('emailtracking.blwofishkey');
-        if($key) {
-            return openssl_decrypt(base64_decode(urldecode($trackingData)), 'blowfish', $key);
-        } else {
-            return base64_decode(urldecode($trackingData));
-        }
+        $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
+        return openssl_decrypt(base64_decode(urldecode($trackingData)), 'blowfish', $key);
     }
 
 
@@ -46,7 +58,7 @@ class EmailTracking
      * @return array|mixed|string|string[]|null
      */
     static function getTrackingPixelSrc($trackingData){
-        $url = SpiceConfig::getInstance()->get('emailtracking.trackingurl');
+        $url = SpiceConfig::getInstance()->get('emailtracking.tracking_pixel_url');
         if($url){
             $url = str_replace('{refid}', self::encodeTrackingID($trackingData), $url);
         }
