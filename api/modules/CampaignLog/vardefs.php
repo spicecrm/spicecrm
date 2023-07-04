@@ -340,6 +340,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'relationship' => 'account_campaign_log',
             'source' => 'non-db',
         ],
+        'targeted_contacts' => [
+            'name' => 'targeted_contacts',
+            'vname' => 'LBL_CONTACTS',
+            'type' => 'link',
+            'relationship' => 'contact_campaign_log',
+            'source' => 'non-db',
+        ],
+        'emailtrackingactions' => [
+            'name' => 'emailtrackingactions',
+            'vname' => 'LBL_EMAILTRACKINGACTIONS',
+            'type' => 'link',
+            'module' => 'EmailTrackingActions',
+            'relationship' => 'campaign_log_emailtrackingactions',
+            'source' => 'non-db'
+        ],
     ],
 	'indices' => [
 		[

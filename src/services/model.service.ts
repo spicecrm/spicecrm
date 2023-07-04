@@ -699,6 +699,8 @@ export class model implements OnDestroy {
 
         // loop through validations...
         for (let validation of validations) {
+            if(!validation.active) continue ;
+
             let checksum: number = 0;
             let is_valid: boolean = true;
 

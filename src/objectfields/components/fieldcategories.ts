@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -86,6 +86,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     public escKeyListener: any;
 
     @ViewChild('focusEl') focusElement: ElementRef;
+    @ViewChild('categoryTree') categoryTree: ElementRef;
 
     constructor(
         public model: model,
@@ -331,6 +332,18 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
             const element = this.renderer.selectRootElement(this.focusElement.nativeElement);
             element.focus();
         }, 200);
+    }
+
+    /**
+     * Listen event if click outside of element
+     * @param targetElement
+     */
+    @HostListener('document:click', ['$event.target'])
+    public onPageClick(targetElement) {
+        const clickedInside = this.elementRef.nativeElement.contains(targetElement);
+        if (!clickedInside) {
+            this.dropDownOpen = false;
+        }
     }
 
     public search(_e) {

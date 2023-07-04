@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, EventEmitter, Injectable} from "@angular/core";
+import {ChangeDetectorRef, EventEmitter, Injectable, Injector} from "@angular/core";
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {Observable, Subject} from "rxjs";
 import {modal} from "../../../services/modal.service";
@@ -67,6 +67,29 @@ export class SpicePageBuilderService {
                     'width': '550px'
                 },
                 children: []
+            },
+            // todo complete the feature of custom attributes after the bug fix in mjml api
+            // https://github.com/mjmlio/mjml/issues/2697
+            {
+                tagName: 'head',
+                children: [
+                    {
+                        tagName: 'html-attributes',
+                        children: [
+                            {
+                                tagName: 'selector',
+                                attributes: {path: '.spice-trackable-link a'},
+                                children: [
+                                    {
+                                        tagName: 'html-attribute',
+                                        attributes: {name: 'data-trackinglink'},
+                                        content: ''
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                ]
             }
         ]
     };
@@ -258,7 +281,7 @@ export class SpicePageBuilderService {
     public readonly panelDefaultSection: SectionI = {
         tagName: 'section',
         children: [],
-        attributes: {}
+        attributes: {padding: '0'}
     };
     /**
      * holds the panel default column
@@ -300,6 +323,7 @@ export class SpicePageBuilderService {
     constructor(public modal: modal,
                 private toast: toast,
                 private helper: helper,
+                private injector: Injector,
                 private configurationService: configurationService,
                 private cdRef: ChangeDetectorRef,
                 private backend: backend) {
@@ -451,5 +475,27 @@ export class SpicePageBuilderService {
             next: () => this.toast.sendToast('LBL_DATA_SAVED', 'success'),
             error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
         });
+    }
+
+    /**
+     * set the current editing element
+     */
+    public openEditModal(element: ContentElementI | SectionI) {
+
+        this.isMouseIn = undefined;
+        this.cdRef.detectChanges();
+        const subject = new Subject();
+
+        this.modal.openModal('SpicePageBuilderEditor', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.element = JSON.parse(JSON.stringify(element));
+            modalRef.instance.response.subscribe(res => {
+                subject.next(res);
+                if (!!res) {
+                    subject.complete();
+                }
+            });
+        });
+
+        return subject.asObservable();
     }
 }

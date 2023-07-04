@@ -12,8 +12,16 @@
         <div class="slds-form-element" *ngFor="let bucketItem of aggregateBuckets">
             <object-listview-aggregate-item  [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
         </div>
-        <div *ngIf="otherDocCount > 0">
-            <p class="slds-text-body--small slds-text-color--weak">{{otherDocCount}} <system-label label="LBL_ARE_NOT_INCLUDED"></system-label>...</p>
+        <div *ngIf="aggregateBucketCount > aggregateDefaultItems || otherDocCount > 0" class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-p-top--xx-small">
+            <div>
+                <a *ngIf="aggregateBucketCount > aggregateDefaultItems" class="slds-text-body--small" href="javascript:void(0);" (click)="showall = !showall">
+                    <system-label [label]="showall ? 'LBL_LESS': 'LBL_MORE'"></system-label>
+                    <span *ngIf="!showall"> (+{{aggregateBucketCount - 5}})</span>
+                </a>
+            </div>
+            <div>
+                <p *ngIf="otherDocCount > 0" class="slds-text-body--small slds-text-color--weak">{{otherDocCount}} <system-label label="LBL_ARE_NOT_INCLUDED"></system-label>...</p>
+            </div>
         </div>
     </ng-container>
 </div>
