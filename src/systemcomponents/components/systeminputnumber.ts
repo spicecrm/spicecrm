@@ -129,7 +129,7 @@ export class SystemInputNumber implements ControlValueAccessor {
     }
 
     public writeValue(value: any): void {
-        this.textValue = typeof (value) != 'number' ? this.getValSanitized(value) : this.getValAsText(value);
+        this.textValue = typeof (value) != 'number' && !this.asNumber ? this.getValSanitized(value) : this.getValAsText(value);
         this.lastTextValue = this.textValue;
     }
 
