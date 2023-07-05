@@ -476,7 +476,9 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemSelectIcon,
         SystemSelectIconItem,
         SystemInputTaxCode,
-        SystemDisplayCurrencySymbol
+        SystemDisplayCurrencySymbol,
+        SystemModuleCustomPipe,
+        SystemModuleGlobalPipe
     ]
 })
 export class SystemComponents {}
