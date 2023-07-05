@@ -1,5 +1,5 @@
 <workflow-manager-task-next-tasks *ngIf="!workflowManagerService.displayDiagram"></workflow-manager-task-next-tasks>
-<system-collapsable-tab [collapsible]="false" tabtitle="LBL_CONDITION" >
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_WORKFLOWTASK_CONDITION" [tabhelptext] ="language.getLabel('LBL_HELP_WORKFLOWTASK_CONDITION')">
     <div class="slds-p-around--x-small">
         <div class="slds-expression">
             <ul>
@@ -8,7 +8,7 @@
         </div>
     </div>
 </system-collapsable-tab>
-<system-collapsable-tab [collapsible]="false" tabtitle="LBL_SYSTEM_CONDITION" >
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_SYSTEM_CONDITION" tabhelptext ="{{language.getLabel('LBL_HELP_WORKFLOWTASK_SYSTEM_CONDITION')}}">
     <div class="slds-p-around--x-small">
         <div>
             <label class="slds-truncate">
@@ -19,6 +19,7 @@
         <div>
             <label class="slds-truncate">
                 <system-label label="LBL_PARAMS"></system-label>
+                <system-icon-help-text [helpText]="language.getLabel('LBL_HELP_WORKFLOWTASK_PARAMETERS')"></system-icon-help-text>
             </label>
             <div class="slds-form-element__control">
                 <textarea [(ngModel)]="model.data.type_config.sysparams" class="slds-textarea"></textarea>

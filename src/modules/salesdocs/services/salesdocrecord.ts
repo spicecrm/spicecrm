@@ -263,7 +263,7 @@ export class salesdocrecord implements OnDestroy {
             } else if(element.elementbase && (element.valuetype == 'P' || element.valuetype == 'T')) {
                 switch(element.elementbasetype) {
                     case 'I':
-                        ce.elementamount =  100 * this.evaluateFormula(element.elementbase, schemaelements, conditionelements) / (100 + parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0));
+                        ce.elementamount =  this.evaluateFormula(element.elementbase, schemaelements, conditionelements) * ( 1 - 100 / (100 + parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0)));
                         break;
                     default:
                         ce.elementamount = parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0) * this.evaluateFormula(element.elementbase, schemaelements, conditionelements) / 100;
