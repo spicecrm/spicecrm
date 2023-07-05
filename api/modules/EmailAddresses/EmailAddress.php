@@ -301,6 +301,10 @@ class EmailAddress extends SpiceBean
 
         $emailAddressBean->invalid_email = $invalid;
         $emailAddressBean->save();
+
+        # reset primary address flag if invalid true
+        if ($invalid != 1) return;
+
         $db = DBManagerFactory::getInstance();
         $db->updateQuery('email_addr_bean_rel', ['email_address_id' => $emailAddressBean->id], ['primary_address' => 0]);
     }
