@@ -1,4 +1,4 @@
 <th style="width: 2rem"></th>
-<th *ngFor="let fieldsetItem of fieldsetItems">
+<th *ngFor="let fieldsetItem of fieldsetItems" [ngStyle]="getHeaderStyle(fieldsetItem.id)">
    <system-label-fieldname module="SalesDocItems" [field]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig"></system-label-fieldname>
 </th>
