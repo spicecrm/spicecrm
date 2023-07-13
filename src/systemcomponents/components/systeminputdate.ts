@@ -84,6 +84,16 @@ export class SystemInputDate implements ControlValueAccessor {
         }
     }
 
+    /**
+     * sets  minimum for the datepicker
+     */
+    @Input() public minDate;
+
+    /**
+     * set a maximum for the datepicker
+     */
+    @Input() public maxDate;
+
     @Input() public id: string;
 
     @Input() public showClear = false;
@@ -115,7 +125,7 @@ export class SystemInputDate implements ControlValueAccessor {
     }
 
     get isValid() {
-        return this._date.valid;
+        return this._date.valid && (!this._date.moment || !this.minDate || this._date.moment.isSameOrAfter(this.minDate)) && (!this._date.moment || !this.maxDate || this._date.moment.isSameOrBefore(this.maxDate));
     }
 
     get display() {
