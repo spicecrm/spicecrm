@@ -502,41 +502,55 @@ class ImapHandler extends TransportHandler
         $message = (new Swift_Message($email->name))
             ->setEncoder(new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'))
             ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
-            ->setBody($this->trackedBody($email), 'text/html')
-        ;
+            ->setBody($this->trackedBody($email), 'text/html');
 
-        if ($this->mailbox->catch_all_address == '') {
-            $toAddressess = [];
-            foreach ($email->to() as $address) {
-                array_push($toAddressess, $address['email']);
+        $toAddresses = [];
+        $intendedRecipients = [];
+        foreach ( $email->to() as $recipient ) {
+            if ( $this->whiteListing() ) {
+                if ( !$this->isWhiteListed( $recipient['email'] )) $intendedRecipients[] = $recipient['email'];
+                else $toAddresses[] = $recipient['email'];
             }
-            $message->setTo($toAddressess);
-        } else { // send everything to the catch all address
-            $message->setTo([$this->mailbox->catch_all_address]);
-
-            // add a message for whom this was intended for
-            $intendedReciepients = [];
-            foreach ($email->to() as $recipient) {
-                $intendedReciepients[] = $recipient['email'];
+            else {
+                if ( $this->mailbox->hasCatchAllAddress() ) $intendedRecipients[] = $recipient['email'];
+                else $toAddresses[] = $recipient['email'];
             }
-            $email->name .= ' [intended for ' . join(', ', $intendedReciepients) . ']';
-            $message->setSubject($email->name);
         }
 
-        if (!empty($email->cc_addrs)) {
-            $ccAddressess = [];
-            foreach ($email->cc() as $address) {
-                array_push($ccAddressess, $address['email']);
+        if ( count( $intendedRecipients )) {
+            if ( $this->mailbox->hasCatchAllAddress() ) {
+                $toAddresses[] = $this->mailbox->catch_all_address;
+                // add a message for whom this was intended for
+                $email->name .= ' [to '.$this->mailbox->catch_all_address.' intended for ' . join(', ', $intendedRecipients) . ']';
+            } else {
+                throw ( new \SpiceCRM\includes\ErrorHandlers\Exception('Email intercepted.'))->setErrorCode('emailIntercepted');
             }
-            $message->setCc($ccAddressess);
+        }
+
+        $message->setTo( $toAddresses );
+
+        if (!empty($email->cc_addrs)) {
+            $ccAddresses = [];
+            foreach ($email->cc() as $recipient) {
+                if ( ( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
+                    or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
+                ) {
+                    $ccAddresses[] = $recipient['email'];
+                }
+            }
+            if ( count( $ccAddresses )) $message->setCc($ccAddresses);
         }
 
         if (!empty($email->bcc_addrs)) {
-            $bccAddressess = [];
-            foreach ($email->bcc() as $address) {
-                array_push($bccAddressess, $address['email']);
+            $bccAddresses = [];
+            foreach ($email->bcc() as $recipient ) {
+                if ( ( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
+                     or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
+                ) {
+                    $bccAddresses[] = $recipient['email'];
+                }
             }
-            $message->setBcc($bccAddressess);
+            if ( count( $bccAddresses )) $message->setBcc( $bccAddresses );
         }
 
         if ($this->mailbox->reply_to != '') {
