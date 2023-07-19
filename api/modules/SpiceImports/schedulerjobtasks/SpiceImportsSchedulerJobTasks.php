@@ -17,7 +17,7 @@ class SpiceImportsSchedulerJobTasks
 //        echo 'importing';
         /* @var SpiceImport $import */
         $import = BeanFactory::getBean('SpiceImports');
-        $importList = $import->get_list("date_entered", "spiceimports.status = 'q'", 0 , 5);
+        $importList = $import->get_list("date_entered", "spiceimports.status = 'q' and spiceimports.deleted = '0'", 0 , 5);
         $success = true;
        // if(!$importList['list']) echo 'nothing to import';
         /* @var SpiceImport $thisImport */
