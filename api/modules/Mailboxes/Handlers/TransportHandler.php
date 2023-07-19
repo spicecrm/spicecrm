@@ -63,7 +63,7 @@ abstract class TransportHandler
 
         if ($this->mailbox->active == false) {
             return [
-                'result'  => 'false',
+                'result'  => false,
                 'message' => 'Message not sent. Mailbox inactive.',
             ];
         }
@@ -79,13 +79,12 @@ abstract class TransportHandler
         if ($this->mailbox->stylesheet != '') {
             $email->addStylesheet($this->mailbox->stylesheet);
         }
-
-        $messageId = $this->composeEmail($email);
+        $message = $this->composeEmail($email);
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
 
-        return $this->dispatch($messageId);
+        return $this->dispatch( $message );
     }
 
     /**
@@ -170,5 +169,30 @@ abstract class TransportHandler
         if (!($object instanceof TextMessage)) {
             throw new Exception('TextMessage is not of TextMessage class.');
         }
+    }
+
+    /**
+     * Is a White List defined?
+     * @return boolean
+     */
+    public function whiteListing(): bool
+    {
+        return isset( trim( $this->mailbox->whitelist )[0] );
+    }
+
+    /**
+     * Can handle *one* address (as string) or a *list* of addresses (as array).
+     * @param $addressOrAddresses
+     * @return boolean
+     */
+    protected function isWhiteListed( string $destinationAddress ): bool
+    {
+        # Parse the (comma separated) content of the field "whitelist" and build an array
+        $whiteAddresses = empty( $this->mailbox->whitelist ) ? [] : explode(',', $this->mailbox->whitelist );
+        # Check, if the destination address is one of the addresses in the array (ignoring space characters) and return true;
+        foreach ( $whiteAddresses as $address ) {
+            if ( str_replace(' ', '', $address ) === str_replace( ' ', '', $destinationAddress )) return true;
+        }
+        return false;
     }
 }
