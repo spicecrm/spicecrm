@@ -3,10 +3,12 @@
 
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\TimeDate;
 use Exception;
 use SpiceCRM\includes\Logger\SpiceLogger;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\MailboxLogTrait;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
@@ -93,6 +95,30 @@ abstract class TransportHandler
      * @return mixed
      */
     abstract protected function composeEmail($email);
+
+    /**
+     * returns the biody with a tracking pixel if the mailbox sets it
+     *
+     * @param Email $email
+     * @return mixed|string
+     */
+    protected function trackedBody($email){
+        $body = $email->body;
+        [$parentType, $parentId] = $email->getTrackingParentData();
+        if($this->mailbox->track_mailbox){
+            $pixel = EmailTracking::getTrackingPixel("ParentType:$parentType:ParentId:$parentId");
+            $body = EmailTracking::attachElementToBody($pixel, $body);
+        }
+
+        if($this->mailbox->unsubscribe_header) {
+            $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
+            $unsubUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl'));
+            $body = EmailTracking::attachElementToBody("<a href=\"{$unsubUrl}\">unsubscribe</a>", $body);
+        }
+
+        # prevent misinterpretation of the style tag css class selectors
+        return str_replace(["\n.", "\r."], ["\n .", "\r ."], $body);
+    }
 
     /**
      * Handles the sending of a message that is already in a format needed by a given transport handler.

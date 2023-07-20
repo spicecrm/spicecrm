@@ -48,12 +48,18 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * an array of options .. if sent rather than an input in the type input a select option is rendered
      */
-    @Input() public options: {value: string, display: string}[];
+    @Input() public options: {value: string|boolean, display: string}[];
 
     /**
      * if true display the input options as radio group
+     * @deprecated Use optionsAs = 'radio' instead.
      */
     @Input() public optionsAsRadio: boolean = false;
+
+    /**
+     * if true display the input options as button group
+     */
+    @Input() public optionsAs: 'radio'|'button'|'select';
 
     /**
      * the observabkle for the answer
@@ -106,6 +112,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     }
     public ngOnInit() {
         if ( !this.theme ) this.theme = 'shade';
+        if ( this.optionsAsRadio === true ) this.optionsAs = 'radio';
     }
 
     public ngAfterViewInit() {
@@ -158,8 +165,14 @@ export class SystemPrompt implements OnInit, AfterViewInit {
      * when ESC button is pressed
      */
     public onModalEscX() {
-        if ( this.type === 'info' ) return false; // No ESC-Key allowed when type is 'info'
+        if ( this.type === 'info' || this.optionsAs === 'button' ) return false; // No ESC-Key allowed when type is 'info'
         else this.clickCancel();
+    }
+
+    public clickButtonGroup( value: any ) {
+        this.answerSubject.next( value );
+        this.answerSubject.complete();
+        this.self.destroy();
     }
 
 }

@@ -32,7 +32,8 @@
     "tecnickcom/tc-lib-barcode": "^1.17",
     "mtdowling/cron-expression": "^1.2",
     "sendinblue/api-v3-sdk": "7.x.x",
-    "sendgrid/sendgrid": "^8.0"
+    "sendgrid/sendgrid": "^8.0",
+    "google/cloud-storage": "^1.30"
   },
   "minimum-stability": "rc",
   "description": ""

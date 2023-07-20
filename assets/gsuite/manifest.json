@@ -12,13 +12,19 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": [
+  "host_permissions": [
     "https://mail.google.com/",
     "https://inbox.google.com/",
     "https://mail-attachment.googleusercontent.com/"
   ],
+  "permissions": [
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "icons": {
     "48": "icon48.png"
   },
-  "manifest_version": 2
+  "manifest_version": 3
 }
