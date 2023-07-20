@@ -24,7 +24,7 @@ export class SpicePageBuilderElementCode extends SpicePageBuilderElement impleme
     /**
      * containers to be rendered
      */
-    @Input() public element: HTMLCodeI;
+    @Input() public declare element: HTMLCodeI;
     /**
      * list of the editable attributes
      */

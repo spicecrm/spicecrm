@@ -7,15 +7,15 @@ require_once 'vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
 use DI\Container;
+use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
-use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\includes\database\DBManagerFactory;
 
 register_shutdown_function([SpiceUtils::class, 'spiceCleanup']);
 
@@ -64,8 +64,8 @@ try {
     // authenticate
     AuthenticationController::getInstance()->authenticate();
 
-    // register the upload stream handler
-    UploadStream::register();
+    // load the data streams
+    StreamFactory::initialize();
 
     // load the modules first
     SpiceModules::getInstance()->loadModules();

@@ -10,14 +10,14 @@
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': dropDownOpen}">
                 <div *ngIf="!display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-                    <input class="slds-input slds-combobox__input" (focus)="openDropDown()" (click)="openDropDown()" [disabled]="categories.length == 0" placeholder="{{language.getLabel('LBL_SEARCH')}}" [(ngModel)]="tempsearchterm" (keyup)="search($event)"/>
+                    <input class="slds-input slds-combobox__input" #focusEl (focus)="openDropDown()" (click)="openDropDown()" [disabled]="categories.length == 0" placeholder="{{language.getLabel('LBL_SEARCH')}}" [(ngModel)]="tempsearchterm" (keyup)="search($event)"/>
                     <button *ngIf="hasFavorites" class="slds-button slds-button--icon slds-input__icon slds-input__icon_right" (click)="setFavorites($event)">
                         <system-button-icon [addclasses]="searchfavorites ? '' : 'slds-icon-text-light'" icon="favorite"></system-button-icon>
                     </button>
                 </div>
                 <div *ngIf="display_value" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
                     <div class="slds-pill_container">
-                          <span class="slds-pill slds-size--1-of-1">
+                          <span class="slds-pill slds-size--1-of-1" (dblclick)="clearCategories();focusInputField();">
                             <span class="slds-pill__label">{{display_value}}</span>
                             <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearCategories()">
                               <system-button-icon [icon]="'close'"></system-button-icon>

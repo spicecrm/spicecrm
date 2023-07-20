@@ -3,6 +3,7 @@
 namespace SpiceCRM\modules\Administration\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\modules\Relationships\Relationship;
@@ -19,7 +20,6 @@ use SpiceCRM\includes\utils\FileUtils;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\modules\Configurator\Configurator;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
@@ -50,7 +50,7 @@ class AdminController
         $postBody = $req->getParsedBody();
 
         // extract username and password or token from the body
-        $username = str_replace('@','%',$postBody['username']);
+        $username = str_replace('@','%40',$postBody['username']);
         if (empty($postBody['password'])){
             $password = $postBody['token'];
         } else
@@ -70,7 +70,12 @@ class AdminController
             $remoteUrl = str_replace('//', '//' . $password . '@', $output);
         } else
             $remoteUrl = str_replace('//', '//' . $username . ':' . $password . '@', $output);
-        exec("git pull $remoteUrl[0]", $gitPullLog);
+
+        $currentBranch = null;
+        exec("git branch --show-current", $currentBranch);
+
+        exec("git pull $remoteUrl[0] $currentBranch[0]", $gitPullLog);
+
 
         // error handling if this fails
         if(empty($gitPullLog)){
@@ -128,7 +133,7 @@ class AdminController
         // get the fts stats
         $statsArray['elastic'] = SpiceFTSHandler::getInstance()->getStats();
 
-        $statsArray['uploadfiles'] = $this->getDirectorySize(UploadStream::getDir());
+        $statsArray['uploadfiles'] = $this->getDirectorySize(StreamFactory::getPathPrefix('upload'));
 
         $params = $req->getQueryParams();
         if ($params['summary']) {
@@ -187,7 +192,8 @@ class AdminController
                 'log_memory_usage' => SpiceConfig::getInstance()->config['log_memory_usage'],
                 'slow_query_time_msec' => SpiceConfig::getInstance()->config['slow_query_time_msec'],
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
-                'upload_dir' => SpiceConfig::getInstance()->config['upload_dir']
+                'upload_dir' => SpiceConfig::getInstance()->config['upload_dir'],
+                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'],
             ],
             'cache' => [
                 'class' => SpiceConfig::getInstance()->config['cache']['class'] ?? 'SpiceCacheFile',

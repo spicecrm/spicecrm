@@ -1,0 +1,33 @@
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <system-icon [module]="model.module"></system-icon>
+                <div class="slds-media__body">
+                    <p class="slds-text-title--caps slds-line-height--reset">
+                        <system-label-modulename [module]="model.module"></system-label-modulename>
+                    </p>
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                            <span *ngIf="model.data.summary_text">{{model.data.summary_text}}</span>
+                            <span *ngIf="!model.data.summary_text"><system-label label="LBL_NEW"/></span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-m-horizontal--x-small slds-show--medium slds-align--absolute-center">
+            <object-action-container [actionset]="componentconfig.actionset" (actionemitter)="handleAction($event)"></object-action-container>
+        </div>
+    </div>
+</div>
+<div class="slds-grid" system-to-bottom [system-overlay-loading-spinner]="model.isSaving">
+    <div class="slds-grid--vertical slds-grow">
+        <object-edit-modal-dialog-container [componentSet]="componentconfig.componentset"></object-edit-modal-dialog-container>
+    </div>
+    <div *ngIf="showDuplicates" class="slds-size--1-of-3 slds-border--left">
+        <object-edit-modal-dialog-duplicates-panel (close)="showDuplicates = false"></object-edit-modal-dialog-duplicates-panel>
+    </div>
+</div>
+
+

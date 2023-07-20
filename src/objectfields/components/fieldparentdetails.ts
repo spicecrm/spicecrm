@@ -60,4 +60,18 @@ export class fieldParentDetails extends fieldGeneric implements OnInit {
     public getParentDefinition() {
         this.parentDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
     }
+
+    /**
+     * set the css class to render the container border
+     * default is slds-box--border
+     */
+    public getClass(){
+        let classList: string[] = [];
+        if ( this.fieldconfig.cssclass ) {
+            classList.push(this.fieldconfig.cssclass);
+        } else {
+            classList.push("slds-box--border");
+        }
+        return classList;
+    }
 }

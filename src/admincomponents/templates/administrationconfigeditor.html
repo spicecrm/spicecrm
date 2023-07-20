@@ -20,8 +20,8 @@
         <tbody>
             <tr style="height: 41px; vertical-align: middle" class="slds-align-middle"  *ngFor="let item of items">
                 <td>
-                    <span *ngIf="item.label"><system-label [label]="item.label"></system-label></span>
-                    <span *ngIf="!item.label">{{item.name}}</span>
+                    <div *ngIf="item.label"><workbench-config-label [option]="item.label" [description]="language.getLabel('LBL_TECHNICAL_NAME', '') + ': '+ item.name + '\n' + language.getLabel(item.label, '', 'long')"></workbench-config-label></div>
+                    <div *ngIf="!item.label">{{item.name}}</div>
                 </td>
                 <td>
                     <ng-container [ngSwitch]="item.type">

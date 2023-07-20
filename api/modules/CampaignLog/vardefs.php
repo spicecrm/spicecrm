@@ -312,6 +312,42 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'len' => 100,
             'comment' => 'Module name of the bean that is the original reason for the campaign log entry'
         ],
+        'targeted_prospects' => [
+            'name' => 'targeted_prospects',
+            'vname' => 'LBL_PROSPECTS',
+            'type' => 'link',
+            'relationship' => 'prospect_campaign_log',
+            'source' => 'non-db',
+        ],
+        'targeted_consumers' => [
+            'name' => 'targeted_consumers',
+            'type' => 'link',
+            'vname' => 'LBL_CONSUMERS',
+            'relationship' => 'consumer_campaign_log',
+            'source' => 'non-db',
+        ],
+        'targeted_accounts' => [
+            'name' => 'targeted_accounts',
+            'vname' => 'LBL_ACCOUNTS',
+            'type' => 'link',
+            'relationship' => 'account_campaign_log',
+            'source' => 'non-db',
+        ],
+        'targeted_contacts' => [
+            'name' => 'targeted_contacts',
+            'vname' => 'LBL_CONTACTS',
+            'type' => 'link',
+            'relationship' => 'contact_campaign_log',
+            'source' => 'non-db',
+        ],
+        'emailtrackingactions' => [
+            'name' => 'emailtrackingactions',
+            'vname' => 'LBL_EMAILTRACKINGACTIONS',
+            'type' => 'link',
+            'module' => 'EmailTrackingActions',
+            'relationship' => 'campaign_log_emailtrackingactions',
+            'source' => 'non-db'
+        ],
     ],
 	'indices' => [
 		[
