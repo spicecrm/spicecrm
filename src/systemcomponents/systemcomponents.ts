@@ -173,6 +173,9 @@ import {SystemIframeModal} from "./components/systemiframemodal";
 import {SystemInputColor} from "./components/systeminputcolor";
 import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcontent";
 import {SystemHtmlEditor} from "./components/systemhtmleditor";
+import {SystemInputDashboardset} from "./components/systeminputdashboardset";
+import {SystemInputDashboard} from "./components/systeminputdashboard";
+
 
 
 
@@ -338,7 +341,9 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemWrappedText,
         SystemRichTextEditorContent,
         SystemHtmlEditor,
-        SystemStripHtmlTagsPipe
+        SystemStripHtmlTagsPipe,
+        SystemInputDashboardset,
+        SystemInputDashboard
     ],
     exports: [
         PaginationControlsComponent,
@@ -476,7 +481,9 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemSelectIcon,
         SystemSelectIconItem,
         SystemInputTaxCode,
-        SystemDisplayCurrencySymbol
+        SystemDisplayCurrencySymbol,
+        SystemInputDashboardset,
+        SystemInputDashboard
     ]
 })
 export class SystemComponents {}
