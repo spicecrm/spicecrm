@@ -17,7 +17,9 @@ import {model} from "./model.service";
 declare var moment: any;
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class reminder {
 
     /**

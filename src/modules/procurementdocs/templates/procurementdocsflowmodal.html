@@ -1,0 +1,21 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()"><system-label label="LBL_PROCUREMENTDOCSFLOW"></system-label></system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-tree slds-table_tree" role="treegrid">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col" *ngFor="let field of fields">
+                        <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr procurement-docs-flow-table-row *ngFor="let row of rows" [ngClass]="{'slds-theme--warning': row.model.id == model.id}" [fields]="fields" [attr.aria-level]="row.level" [data]="row.model"></tr>
+            </tbody>
+        </table>
+
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+    </system-modal-footer>
+</system-modal>

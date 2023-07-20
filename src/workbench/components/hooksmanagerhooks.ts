@@ -126,12 +126,12 @@ export class HooksManagerHooks {
             }
             modalRef.instance.save$.subscribe({
                 next: (newHook: LogicHookI) => {
-                    if(hook){
-                        this.hooks.splice(index,1,newHook);
-                    }
-                    else {
-                        this.hooks.push(newHook);
-                    }
+                   if(hook){
+                    this.hooks.splice(index,1,newHook);
+                }
+                   else {
+                       this.hooks.push(newHook);
+                   }
                 }
             })
         });
@@ -141,7 +141,7 @@ export class HooksManagerHooks {
      * add logic hook
      */
     public addLogicHook(){
-        this.openEditHookModal();
+      this.openEditHookModal();
     }
 
     /**

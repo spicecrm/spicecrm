@@ -16,7 +16,9 @@ import {StoreService} from "./store.service";
 /**
  * holds application configuration
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class configurationService {
 
     /**

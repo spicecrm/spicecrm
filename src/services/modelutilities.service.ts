@@ -16,7 +16,9 @@ declare var moment: any;
 declare var _: any;
 moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class modelutilities {
 
     constructor(

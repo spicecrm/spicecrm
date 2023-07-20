@@ -15,8 +15,9 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
-import {Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {broadcast} from "../../../services/broadcast.service";
+import {salesdocrecord} from "../services/salesdocrecord";
 
 declare var moment: any;
 
@@ -58,6 +59,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
         public configuration: configurationService,
         public metadata: metadata,
         public broadcast: broadcast,
+        private salesdocrecord: salesdocrecord
     ) {
         // build in any case if the items had already been passed in
         this.buildItems();
@@ -230,9 +232,71 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
             };
         }
 
-        this.model.data.salesdocitems.beans[itemData.id] = itemData;
 
-        this.buildItems();
+        // check if we shoudl calculate
+        let itemTypeDetails = this.configuration.getData('salesdocitemtypes').find(it => it.name == itemType);
+        if (itemTypeDetails.pricecalculationschema_id) {
+            // if we have the pricing data already the add dialog did the pricing (hopefully) and we do not need to do anything more
+            if(!!itemData.salesdocitempricedetermination && !!itemData.salesdocitempricecalculationschema_id){
+                // update the relevant fields
+                this.salesdocrecord.getItemFieldsByElements(itemData.salesdocitempricecalculationschema_id, 1, itemData.salesdocitempricedetermination, itemData);
+                this.model.data.salesdocitems.beans[itemData.id] = itemData;
+                this.buildItems()
+            } else {
+                // otherwise run the price determination here and now
+                itemData.salesdocitempricecalculationschema_id = itemTypeDetails.pricecalculationschema_id;
+                this.calculateItem(itemTypeDetails.pricecalculationschema_id, itemData).subscribe({
+                    next: () => {
+                        this.model.data.salesdocitems.beans[itemData.id] = itemData;
+                        this.buildItems();
+                    },
+                    error: () => {
+                        this.model.data.salesdocitems.beans[itemData.id] = itemData;
+                        this.buildItems();
+                    }
+                })
+            }
 
+        } else {
+            this.model.data.salesdocitems.beans[itemData.id] = itemData;
+            this.buildItems();
+        }
+
+    }
+
+    /**
+     * caclulate the item on the backend
+     *
+     * @param itemData
+     * @private
+     */
+    private calculateItem(pricecalculationschema_id, itemData) {
+        let retSubject = new Subject();
+        let postData = {
+            salesdoc: this.model.utils.spiceModel2backend('SalesDocs', this.model.data),
+            items: [this.model.utils.spiceModel2backend('SalesDocItems', itemData)]
+        }
+        let calcAwait = this.modal.await('LBL_CALCULATING');
+        this.backend.postRequest(`module/SalesDocs/${this.model.id}/calculateitems`, {}, postData).subscribe({
+            next: (calcdata) => {
+                // set the itemdata
+                itemData.salesdocitempricedetermination = calcdata[itemData.id];
+
+                // update the relevant fields
+                this.salesdocrecord.getItemFieldsByElements(pricecalculationschema_id, this.model.getField('quantity'), itemData.salesdocitempricedetermination, itemData);
+
+                // retutn the subject so the item gets added
+                retSubject.next(true);
+                retSubject.complete();
+
+                calcAwait.emit(true);
+            },
+            error: () => {
+                calcAwait.emit(true);
+                retSubject.error(false);
+            }
+        })
+
+        return retSubject.asObservable();
     }
 }

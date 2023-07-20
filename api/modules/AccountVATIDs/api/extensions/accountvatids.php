@@ -17,16 +17,16 @@ $RESTManager->registerExtension('accountvatids', '1.0');
 $routes = [
     [
         'method'      => 'get',
-        'route'       => '/module/Account/{id}/vatids/{vatid}',
+        'route'       => '/module/Account/{vatid}/vatids',
         'oldroute'    => '/module/AccountVATIDs/{vatid}',
         'class'       => AccountVATIDsController::class,
         'function'    => 'getSoapBody',
         'description' => 'gets the soap body of an curled url',
         'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters'  => [
-            'id'      => [
+            'vatid'      => [
                 'in'                => 'path',
-                'description'       => 'ID',
+                'description'       => 'VATID',
                 'type'              => ValidationMiddleware::TYPE_STRING,
             ],
         ],

@@ -76,6 +76,21 @@ $routes = [
                 'required' => true
             ]
         ],
+    ],
+    [
+        'method' => 'post',
+        'route' => '/module/EmailAddresses/validate',
+        'class' => EmailAddressesController::class,
+        'function' => 'validateEmailAddressDomain',
+        'description' => 'validate email address domain',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'text' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true
+            ]
+        ],
     ]
 ];
 
