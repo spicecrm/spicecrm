@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
 use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Swift_Attachment;
@@ -471,7 +472,7 @@ class ImapHandler extends TransportHandler
         try {
             $this->transport_handler->getTransport()->start();
 
-            $response = $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail));
+            $response = $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail),true);
             $response['result'] = true;
         } catch (Swift_TransportException $e) {
             $response['errors'] = $e->getMessage();
@@ -495,7 +496,7 @@ class ImapHandler extends TransportHandler
      * @return Swift_Message
      * @throws Exception
      */
-    protected function composeEmail($email)
+    protected function composeEmail($email, $noSecurityCheck = false )
     {
         $this->checkEmailClass($email);
 
@@ -507,6 +508,10 @@ class ImapHandler extends TransportHandler
         $toAddresses = [];
         $intendedRecipients = [];
         foreach ( $email->to() as $recipient ) {
+            if ( $noSecurityCheck ) {
+                $toAddresses[] = $recipient['email'];
+                continue;
+            }
             if ( $this->whiteListing() ) {
                 if ( !$this->isWhiteListed( $recipient['email'] )) $intendedRecipients[] = $recipient['email'];
                 else $toAddresses[] = $recipient['email'];
@@ -523,7 +528,7 @@ class ImapHandler extends TransportHandler
                 // add a message for whom this was intended for
                 $email->name .= ' [to '.$this->mailbox->catch_all_address.' intended for ' . join(', ', $intendedRecipients) . ']';
             } else {
-                throw ( new \SpiceCRM\includes\ErrorHandlers\Exception('Email intercepted.'))->setErrorCode('emailIntercepted');
+                throw ( new MessageInterceptedException('Email intercepted.'))->setErrorCode('emailIntercepted');
             }
         }
 
@@ -532,8 +537,9 @@ class ImapHandler extends TransportHandler
         if (!empty($email->cc_addrs)) {
             $ccAddresses = [];
             foreach ($email->cc() as $recipient) {
-                if ( ( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
-                    or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
+                if ( $noSecurityCheck
+                     or ( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
+                     or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
                 ) {
                     $ccAddresses[] = $recipient['email'];
                 }
@@ -544,7 +550,8 @@ class ImapHandler extends TransportHandler
         if (!empty($email->bcc_addrs)) {
             $bccAddresses = [];
             foreach ($email->bcc() as $recipient ) {
-                if ( ( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
+                if ( $noSecurityCheck
+                     or( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
                      or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
                 ) {
                     $bccAddresses[] = $recipient['email'];

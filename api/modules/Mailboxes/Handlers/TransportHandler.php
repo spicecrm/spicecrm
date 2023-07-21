@@ -57,7 +57,7 @@ abstract class TransportHandler
      */
     abstract public function testConnection($testEmail);
 
-    public function sendMail($email)
+    public function sendMail($email, $noSecurityCheck = false )
     {
         $timedate = TimeDate::getInstance();
 
@@ -79,7 +79,7 @@ abstract class TransportHandler
         if ($this->mailbox->stylesheet != '') {
             $email->addStylesheet($this->mailbox->stylesheet);
         }
-        $message = $this->composeEmail($email);
+        $message = $this->composeEmail($email, $noSecurityCheck );
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
