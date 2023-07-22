@@ -342,7 +342,7 @@ class KReportQuery
                             // Workaround for BWC (deprecated path) on user relationship
                             // root:Opportunities::relate:Opportunities:assigned_user_id::field:user_name (will error the query)
                             // root:Opportunities::link:Opportunities:assigned_user_link::field:user_name (shall be used)
-                            if(in_array($rightArray[2], ['assigned_user_id', 'created_by', 'modified_by_id'])){
+                            if(in_array($rightArray[2], ['assigned_user_id', 'created_by', 'modified_user_id'])){
                                 $this->joinSegments[$thisPath]['object'] = BeanFactory::getBean('Users');
                                 // join on the id = relate id .. on _cstm if custom field .. on main if regular
                                 $this->fromString .= ' ' . $thisPathDetails['jointype'] . ' ' . $this->joinSegments[$thisPath]['object']->_tablename . ' AS ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id=' . ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name']]['source'] == 'custom_fields' ? $this->joinSegments[$leftPath]['customjoin'] : $this->joinSegments[$leftPath]['alias']) . '.' . $this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['name'] . ' ';
