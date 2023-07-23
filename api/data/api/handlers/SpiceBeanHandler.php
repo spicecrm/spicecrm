@@ -2139,12 +2139,6 @@ class SpiceBeanHandler
                     }
                     break;
                 case 'link':
-                    // in case we already have the related beans. Could have been retrieved using retrieveListDetails for a dashlet
-                    if($thisBean->{$fieldId} && is_object($thisBean->{$fieldId}) && $thisBean->{$fieldId}->beans && is_array($thisBean->{$fieldId}->beans)){
-                        foreach ($thisBean->{$fieldId}->beans as $relatedBean) {
-                            $beanDataArray[$fieldId]['beans']->{$relatedBean->id} = $this->mapBeanToArray($relatedBean->_module, $relatedBean);
-                        }
-                    }
                     if (($resolvelinks && $fieldData['default'] === true && $fieldData['module']) || $fieldData['name'] == 'email_addresses') {
                         $beanDataArray[$fieldId]['beans'] = new stdClass();
                         $thisBean->load_relationship($fieldId);
