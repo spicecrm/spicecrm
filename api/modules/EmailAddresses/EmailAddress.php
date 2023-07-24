@@ -288,16 +288,25 @@ class EmailAddress extends SpiceBean
     /**
      * mark email address as invalid and remove from primary
      * @param $emailAddress
+     * @param bool $invalid
+     * @throws \Exception
      */
-    public function markEmailAddressInvalid($emailAddress)
+    public static function setEmailAddressInvalid($emailAddress, bool $invalid): void
     {
         $emailAddressBean = BeanFactory::getBean('EmailAddresses');
         $emailAddressBean->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddress)]);
-        if (!empty($emailAddressBean->id)) {
-            $emailAddressBean->invalid_email = 1;
-            $emailAddressBean->save();
-            $this->db->updateQuery('email_addr_bean_rel', ['email_address_id' => $emailAddressBean->id], ['primary_address' => 0]);
-        }
+        $invalid = $invalid ? 1 : 0;
+
+        if (empty($emailAddressBean->id) || $emailAddressBean->invalid_email == $invalid) return;
+
+        $emailAddressBean->invalid_email = $invalid;
+        $emailAddressBean->save();
+
+        # reset primary address flag if invalid true
+        if ($invalid != 1) return;
+
+        $db = DBManagerFactory::getInstance();
+        $db->updateQuery('email_addr_bean_rel', ['email_address_id' => $emailAddressBean->id], ['primary_address' => 0]);
     }
 
     /**

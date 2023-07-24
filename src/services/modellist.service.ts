@@ -108,6 +108,12 @@ export class modellist implements OnDestroy {
     public isLoading: boolean = false;
 
     /**
+     * a helper to either enable/disable cancellation of pending requests
+     * aim: more flexibility on first load
+     */
+    public cancelPendingRequests: boolean = true;
+
+    /**
      * the search term
      */
     public searchTerm: string = '';
@@ -867,7 +873,7 @@ export class modellist implements OnDestroy {
     public reLoadList(quiet: boolean = false) {
         if (this.isLoading) {
             const requestID = this.httpRequestsRefID + '_get_list_data';
-            this.backend.cancelPendingRequests([requestID]);
+            if(this.cancelPendingRequests) this.backend.cancelPendingRequests([requestID]);
             this.isLoading = false;
             return of(false);
         } else {
@@ -1158,7 +1164,8 @@ export class modellist implements OnDestroy {
 
         const requestID = this.httpRequestsRefID + '_get_list_data';
 
-        this.backend.cancelPendingRequests([requestID]);
+        // cancel pending requests only if allowed
+        if(this.cancelPendingRequests) this.backend.cancelPendingRequests([requestID]);
 
         this.backend.getList(this.module, this.sortArray, params, requestID).subscribe({
             next: (res: any) => {

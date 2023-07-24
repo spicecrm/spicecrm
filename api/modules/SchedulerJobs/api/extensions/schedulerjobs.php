@@ -42,6 +42,24 @@ $routes = [
                 'description' => 'limit for the retrieve query',
                 'required' => true
             ],
+            'failedOnly' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'description' => 'show failed only ',
+                'required' => false
+            ],
+            'fromDateTime' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_DATE,
+                'description' => 'from date to filter',
+                'required' => false
+            ],
+            'sortDirection' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'sort direction',
+                'required' => false
+            ],
         ]
     ],
     [
