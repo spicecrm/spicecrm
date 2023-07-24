@@ -126,6 +126,9 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
         } else {
             moveItemInArray(this.column.children, event.previousIndex, event.currentIndex);
         }
+
+        this.spicePageBuilderService.emitData();
+
         this.dragEntered = false;
     }
 
@@ -151,5 +154,6 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
      */
     public onContentDelete(element) {
         this.column.children = this.column.children.filter(item => item != element);
+        this.spicePageBuilderService.emitData();
     }
 }

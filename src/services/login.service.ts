@@ -3,7 +3,7 @@
  */
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from '@angular/core';
-import {CanActivate, Router} from '@angular/router';
+import { Router } from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {configurationService} from './configuration.service';
 import {loader} from './loader.service';
@@ -24,7 +24,9 @@ interface loginAuthDataIf {
     code2fa?: string;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class loginService {
 
     /**
@@ -207,6 +209,11 @@ export class loginService {
                 'Authorization',
                 'Basic ' + this.helper.encodeBase64(this.session.authData.userName + ':' + password)
             );
+
+            if (!!this.authData.code2fa){
+                headers = headers.set('code2fa', this.authData.code2fa);
+            }
+
         } else if (tokenObject) {
 
             headers = headers.set(
@@ -327,8 +334,10 @@ export class loginService {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
-export class loginCheck implements CanActivate {
+@Injectable({
+    providedIn: 'root'
+})
+export class loginCheck  {
     constructor(public login: loginService, public session: session, public modal: modal, public router: Router, public loader: loader) {
     }
 

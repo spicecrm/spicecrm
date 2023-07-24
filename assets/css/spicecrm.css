@@ -415,7 +415,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background:#0070d2;
     top: -20px;
     position: absolute;
-    width: 100px;
+    width: 120px;
     height: 20px;
     left: calc(50% - 50px);
     color: #fff;
@@ -515,4 +515,17 @@ input[type="submit"] {
     align-content: center;
     align-items: center;
     margin: auto;
+}
+
+.spice-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    z-index: 999999;
+}
+
+.child-height-full > * {
+    height: 100%;
 }

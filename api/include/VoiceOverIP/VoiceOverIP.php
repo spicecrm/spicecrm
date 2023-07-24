@@ -2,10 +2,12 @@
 
 namespace SpiceCRM\includes\VoiceOverIP;
 
+use Cassandra\Time;
 use Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSocket\SpiceSocket;
+use SpiceCRM\includes\TimeDate;
 
 class VoiceOverIP
 {
@@ -75,13 +77,14 @@ class VoiceOverIP
     protected function writeCall($call)
     {
         $db = DBManagerFactory::getInstance();
+        $nowGmt = TimeDate::getInstance()->nowDb();
 
         $record = $db->fetchByAssoc($db->query("SELECT id FROM voipcalls WHERE id = '{$call->id}'"));
         if ($record) {
-            $db->query("UPDATE voipcalls SET callstate = '{$call->state}' WHERE id = '{$call->id}'");
+            $db->query("UPDATE voipcalls SET callstate = '{$call->state}', date_modified = '{$nowGmt}' WHERE id = '{$call->id}'");
         } else {
-            $db->query("INSERT INTO voipcalls (id, channel, calldirection, callstate, callednumber, callernumber) 
-VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{$call->callednumber}','{$call->callernumber}')");
+            $db->query("INSERT INTO voipcalls (id, channel, calldirection, callstate, callednumber, callernumber, date_entered, date_modified) 
+VALUES('{$call->id}','{$call->channel}','{$call->direction}','{$call->state}','{$call->callednumber}','{$call->callernumber}', '{$nowGmt}', '{$nowGmt}')");
         }
     }
 

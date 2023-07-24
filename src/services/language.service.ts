@@ -20,7 +20,9 @@ declare var _: any;
 /**
  * the language service is the central service that handles the translation and interporetaiton of language ´labels
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class language {
     /**
      * interla object that holds all language labels retrieved from the backend in the current language
