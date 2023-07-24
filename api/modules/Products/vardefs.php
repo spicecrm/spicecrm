@@ -63,7 +63,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'name' => 'taxcategory',
             'vname' => 'LBL_TAXCATEGORY',
             'type' => 'enum',
-            'length' => 1,
+            'len' => 1,
             'options' => 'product_tax_categories_dom',
             'comment' => 'the tax category for the tax determination'
         ],

@@ -35,6 +35,7 @@ export class ObjectRepositoryManagerFilter {
 
 // tslint:disable-next-line:max-classes-per-file
 @Component({
+    selector: 'objectrepository-manager',
     templateUrl: '../templates/objectrepositorymanager.html',
     providers: [view]
 })

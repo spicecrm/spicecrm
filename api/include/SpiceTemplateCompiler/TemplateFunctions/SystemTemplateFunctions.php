@@ -152,6 +152,19 @@ class SystemTemplateFunctions {
         return $now->format( $format );
     }
 
+
+    /**
+     * returns the remote IP address
+     *
+     * @param $compiler
+     * @param $bean
+     * @param $format
+     * @return string
+     */
+    static function remoteIP( $compiler, $bean ) {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
     /*
     static function shorturl( $longUrl ) {
         return SpiceUtils::createShortUrl( $longUrl );

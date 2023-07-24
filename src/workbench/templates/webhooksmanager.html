@@ -49,7 +49,7 @@
                             <system-checkbox [ngModel]="webHook.send_data" [asinteger]="true" [disabled]="true"></system-checkbox>
                     </td>
                     <td class="slds-text-align_right">
-                        <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border" (click)="callWebHooks(webHook)">
+                        <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border" (click)="searchWithModal(webHook)">
                             <system-button-icon icon="broadcast"></system-button-icon>
                         </button>
                         <button class="slds-button slds-button--icon slds-col_bump-left --slds-c-button-color-border"
@@ -60,7 +60,6 @@
                               (click)="deleteWebHook(webHook.id)"  >
                             <system-button-icon icon="clear"></system-button-icon>
                         </button>
-                        <button (click)="searchWithModal(webHook)" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon icon="search"></system-button-icon></button>
                     </td>
                 </tr>
                 </tbody>

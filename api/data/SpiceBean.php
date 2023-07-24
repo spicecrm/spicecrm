@@ -322,6 +322,15 @@ class SpiceBean
      */
     var $newFromTemplate = '';
 
+
+    /**
+     * set to true before saving to enforce a reload on the frontend when a socket message is retrieved
+     * this will change the message type that is sent via the socket and bypass the session check
+     *
+     * @var bool
+     */
+    public $systemUpdate = false;
+
     /**
      * Constructor for the bean, it performs following tasks:
      *
@@ -409,7 +418,7 @@ class SpiceBean
     {
         // added check on new_with_id for BW compatibility
         // return ($this->_bean_action == self::BEAN_ACTION_CREATE);
-        return ($this->_bean_action == self::BEAN_ACTION_CREATE || $this->new_with_id);
+        return ($this->_bean_action == self::BEAN_ACTION_CREATE || empty($this->id) || $this->new_with_id);
     }
 
     /**
@@ -1389,12 +1398,13 @@ class SpiceBean
         //Now that the record has been saved, we don't want to insert again on further saves
         $this->new_with_id = false;
         $this->in_save = false;
-        //unset current bean_action
-        $this->set_bean_action(null);
 
         AddressReferences::getInstance()->updateReferencedBeansAddress($this);
 
         $this->call_custom_logic('after_save', '');
+
+        //unset current bean_action
+        $this->set_bean_action(null);
 
         return $this->id;
     }

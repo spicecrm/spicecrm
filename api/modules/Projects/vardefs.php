@@ -549,4 +549,16 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
         'rhs_key' => 'projectsettlementprofile_id',
         'relationship_type' => 'one-to-many'
     ];
+
+    if (file_exists('extensions/modules/Travels')) {
+        SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['travels'] = [
+            'name' => 'travels',
+            'type' => 'link',
+            'relationship' => 'projects_travels',
+            'source' => 'non-db',
+            'vname' => 'LBL_PROJECTS',
+            'module' => 'Projects',
+            'default' => false
+        ];
+    }
 }

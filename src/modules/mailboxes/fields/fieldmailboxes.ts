@@ -88,10 +88,6 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
 
                     this.options = results.sort((a, b) => a.display.localeCompare(b.display));
 
-                    if (this.options.length > 0 && !this.value) {
-                        this.model.setField(this.fieldname, this.options[0].value);
-                    }
-
                     // cache the options
                     this.configuration.setData(`mailboxes${this.scope}`, this.options);
 
@@ -122,7 +118,15 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
         if (!!this.value || !!this.fieldconfig.disableCache) return;
 
         const fromPreferences = this.userpreferences.getPreference(`defaultmailbox_${this.scope}`);
-        if (fromPreferences) this.model.setField(this.fieldname, fromPreferences);
+        if (fromPreferences && this.isEditMode()) this.model.setField(this.fieldname, fromPreferences);
+
+        this.subscriptions.add(
+            this.model.mode$.subscribe(mode => {
+                if (mode != 'edit' || !!this.value) return;
+                const fromPreferences = this.userpreferences.getPreference(`defaultmailbox_${this.scope}`);
+                if (fromPreferences) this.model.setField(this.fieldname, fromPreferences);
+            })
+        );
     }
 
     /**

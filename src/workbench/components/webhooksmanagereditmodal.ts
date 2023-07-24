@@ -11,12 +11,17 @@ import {metadata} from "../../services/metadata.service";
 import {modelutilities} from "../../services/modelutilities.service";
 import {WebHookI} from "../interfaces/systemui.interfaces";
 import {toast} from "../../services/toast.service";
-import {Subject} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {modal} from "../../services/modal.service";
+import {relatedmodels} from "../../services/relatedmodels.service";
+import {model} from "../../services/model.service";
+import {WebHooksManager} from "./webhooksmanager";
+import {HooksManager} from "./hooksmanager";
 
 @Component({
     selector: 'web-hooks-manager-edit-modal',
     templateUrl: '../templates/webhooksmanagereditmodal.html',
+    providers:[WebHooksManager, HooksManager],
 
 })
 export class WebHooksManagerEditModal {
@@ -25,8 +30,6 @@ export class WebHooksManagerEditModal {
 
     public hooks: WebHookI[] = [];
     public events: string[] = ['create', 'update', 'delete'];
-    public data: any;
-
 
     /**
      * conditions for login details
@@ -47,6 +50,7 @@ export class WebHooksManagerEditModal {
         public modelutilities: modelutilities,
         public toast: toast,
         public modal: modal,
+        public WebHooksManager: WebHooksManager,
     ) {
 
     }
@@ -62,7 +66,7 @@ export class WebHooksManagerEditModal {
         fieldset_id: '',
         ssl_verifypeer: true,
         ssl_verifyhost: true,
-        custom_headers : '',
+        // custom_headers : {},
     };
     public save$ = new Subject<WebHookI>();
 
@@ -99,11 +103,4 @@ export class WebHooksManagerEditModal {
             });
             this.self.destroy();
         }
-    public callWebHooks(){
-        this.backend.postRequest(`system/webhook`, null, this.newWebHook).subscribe((res: any) => {
-            this.data = res.output;
-            // loadingModal.emit(true);
-            this.toast.sendToast('LBL_DATA_SAVED', 'success');
-        });
-    }
 }

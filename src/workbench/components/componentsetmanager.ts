@@ -19,6 +19,7 @@ import {view} from '../../services/view.service';
 import {configurationService} from '../../services/configuration.service';
 
 @Component({
+    selector: 'componentset-manager',
     templateUrl: '../templates/componentsetmanager.html',
     providers: [view]
 })

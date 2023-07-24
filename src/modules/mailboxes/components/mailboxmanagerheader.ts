@@ -93,6 +93,7 @@ export class MailboxManagerHeader implements OnInit {
         return this.mailboxesEmails.emailopenness == "" ? 'all' : this.mailboxesEmails.emailopenness;
     }
 
+
     /**
      * a setter for the openness that also triggers the relaod
      *
@@ -133,6 +134,9 @@ export class MailboxManagerHeader implements OnInit {
      * initialize
      */
     public ngOnInit() {
+
+        this.loadOneMailbox();
+
         if (this.navigationtab.activeRoute.params.id) {
             // catch an event from mailboxesEmails service once the mailboxes are actually loaded
             this.mailboxesEmails.mailboxesLoaded$.subscribe(
@@ -143,6 +147,21 @@ export class MailboxManagerHeader implements OnInit {
                 }
             );
         }
+    }
+
+    /**
+     * If we have one mailbox load mailbox in view
+     */
+    public loadOneMailbox() {
+        this.mailboxesEmails.mailboxesLoaded$.subscribe(
+            (loaded) => {
+                if (loaded === true) {
+                    if(this.mailboxesEmails.mailboxes.length == 1){
+                        this.mailbox = this.mailboxesEmails.mailboxes[0].id;
+                    }
+                }
+            }
+        );
     }
 
     /**
