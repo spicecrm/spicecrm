@@ -66,12 +66,6 @@ export class SystemInputDate implements ControlValueAccessor {
     @Input() public isDirty = false;
 
     /**
-     * emits if the date is valid or not
-     */
-    @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-
-    /**
      * an attribute that can be set and does not require the value true passed in
      *
      * @param value
@@ -116,6 +110,17 @@ export class SystemInputDate implements ControlValueAccessor {
         }
     }
 
+    /**
+     * set to false to hide error message on the input
+     * the valid emitted can enable e.g. field to handle the message
+     */
+    @Input() displayError: boolean = true;
+
+    /**
+     * emits the validity status
+     */
+    @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor(public elementref: ElementRef,
                 public renderer: Renderer2,
                 public userpreferences: userpreferences,
@@ -157,8 +162,9 @@ export class SystemInputDate implements ControlValueAccessor {
             this.clear();
         }
 
-        // emit if the date is valid
-        this.valid.emit(this._date.valid);
+        // emit the validity
+        this.valid.emit(this.isValid);
+
     }
 
     get canclear() {
@@ -249,6 +255,8 @@ export class SystemInputDate implements ControlValueAccessor {
                 this.onChange(this._date.moment);
             }
         }
+
+        this.valid.emit(this.isValid);
     }
 
     public openCalendar() {
