@@ -190,7 +190,7 @@ class SpiceBeanHandler
                 $thisBean->retrieveListDetails();
 
                 // map and add to the array
-                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, false);
+                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, (isset($searchParams['resolvelinks']) ? $searchParams['resolvelinks'] : false ));
             }
             $retArray['aggregations'] = $result['aggregations'];
             $retArray['buckets'] = $result['buckets'];
