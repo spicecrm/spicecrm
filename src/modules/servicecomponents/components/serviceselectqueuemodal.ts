@@ -7,7 +7,7 @@ import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
 import {ServiceQueueI} from "../interfaces/servicecomponents.interfaces";
-import {firstValueFrom} from "rxjs";
+import {firstValueFrom, Subscription} from "rxjs";
 import {modal} from "../../../services/modal.service";
 
 @Component({
@@ -68,6 +68,11 @@ export class ServiceSelectQueueModal {
      */
     public searchTerm: string = '';
 
+    /**
+     * holds component subscriptions
+     */
+    public subscriptions: Subscription = new Subscription();
+
     constructor(
         @SkipSelf() public model: model,
         public serviceticketnote: model,
@@ -84,12 +89,13 @@ export class ServiceSelectQueueModal {
         this.modellist.loadlimit = -99;
         this.modellist.useCache = true;
         this.modellist.searchTerm = this.searchTerm;
-        this.modellist.getListData().subscribe( data => {
-            if ( data ) {
-                this.queues = this.modellist.listData.list;
-            }
-            this.loading = false;
-        });
+        this.subscriptions.add(
+            this.modellist.getListData().subscribe( data => {
+                if ( data ) {
+                    this.queues = this.modellist.listData.list;
+                }
+                this.loading = false;
+            }));
     }
 
     /**
@@ -104,6 +110,7 @@ export class ServiceSelectQueueModal {
      */
     public cancel() {
         this.selectedqueue.emit(false);
+        this.subscriptions.unsubscribe();
         this.self.destroy();
     }
 
@@ -141,6 +148,8 @@ export class ServiceSelectQueueModal {
 
         loadingModal.next(true);
         loadingModal.complete();
+
+        this.subscriptions.unsubscribe();
 
         this.self.destroy();
     }

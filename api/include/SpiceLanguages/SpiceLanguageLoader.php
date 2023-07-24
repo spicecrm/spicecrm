@@ -92,6 +92,7 @@ class SpiceLanguageLoader{
         $db = DBManagerFactory::getInstance();
         $inserts = [];
         $errors = [];
+        $warnings = [];
         $syslangs = [];
         $success = false;
 
@@ -126,17 +127,28 @@ class SpiceLanguageLoader{
 
         // get labels that are already loaded
         $labelIDs = [];
-        $qL = "SELECT id FROM $tb_labels";
+        $labelNames = [];
+        $qL = "SELECT id, name FROM $tb_labels";
         if($resL = $db->query($qL)){
             while($rowL = $db->fetchByAssoc($resL)){
                 $labelIDs[] = $rowL['id'];
+                $labelNames[] = $rowL['name'];
             }
         }
 
         foreach($response as $index => $content) {
+            $doUpdate = false;
             $decodeData = json_decode($content, true);
             //insert command label
             if(!in_array($decodeData['id'], $labelIDs)) {
+                // catch if we have the label under another ID
+                if(in_array($decodeData['name'], $labelNames)){
+                    // update what we have to avoid duplicate entry error on label name
+                    $doUpdate = true;
+                    // update custom translation if any
+                    $doUpdateActions = $this->remapLanguageLabelIdOnCustomTranslation( $decodeData);
+                }
+
                 $labelIDs[] = $decodeData['id'];
                 //run insert
                 $entryL = [
@@ -144,12 +156,30 @@ class SpiceLanguageLoader{
                     'name' => $decodeData['name'],
                 ];
 
-                if($dbRes = $db->insertQuery($tb_labels, $entryL)){
-                    $inserts[] = $dbRes;
-                } else{
-                    $errors[] = $db->lastError();
+                if(!$doUpdate){
+                    if($dbRes = $db->insertQuery($tb_labels, $entryL)){
+                        $inserts[] = $dbRes;
+                    } else{
+                        $errors[] = $db->lastError();
+                    }
+                } else {
+                    // update the ID of the label
+                    if($dbRes = $db->updateQuery($tb_labels, ['name' =>  $decodeData['name']], $entryL)){
+                        $inserts[] = $dbRes;
+                        // update the custom translation records
+                        if(!empty($doUpdateActions)){
+                            if($db->query($doUpdateActions['updateCustomTranslation'])){
+                                $warning[] = $doUpdateActions['warning'];
+                            } else {
+                                $errors[] = $db->lastError();
+                            }
+                        }
+                    } else{
+                        $errors[] = $db->lastError();
+                    }
                 }
             }
+
             //insert command translation
             $entryT = [
                 'id' => $decodeData['translation_id'],
@@ -170,7 +200,6 @@ class SpiceLanguageLoader{
 
         //if no inserts where created => abort
         if(count($inserts) < 1){
-//            throw new Exception("REST Call error somewhere... Action aborted");
             throw (new Exception("Failed to load language package", 'packageLoadFailed'))->setDetails($errors);
         }
 
@@ -213,7 +242,45 @@ class SpiceLanguageLoader{
                 }
             }
         }
-        return ["success" => $success, "queries" => count($inserts), "languages" => $syslangs,  "errors" => $errors];
+        return ["success" => $success, "queries" => count($inserts), "languages" => $syslangs,  "errors" => $errors, "warnings" => $warnings];
+    }
+
+    /**
+     * replace the old syslanguagelabel_id in a specific custom translation
+     * @param $decodeData
+     * @param $warnings
+     * @return void
+     * @throws \Exception
+     */
+    public function getLanguageLabelIdOnCustomTranslation($decodeData, &$warnings){
+        $handler = new SpiceLanguagesRESTHandler();
+        return $handler->getLabelIdByName($decodeData['name'], 'global');
+    }
+
+    /**
+     * replace the old syslanguagelabel_id in a specific custom translation
+     * @param $decodeData
+     * @param $warnings
+     * @return void
+     * @throws \Exception
+     */
+    public function remapLanguageLabelIdOnCustomTranslation($decodeData){
+        $db = DBManagerFactory::getInstance();
+        $handler = new SpiceLanguagesRESTHandler();
+        $oldId = $handler->getLabelIdByName($decodeData['name'], 'global');
+        if($oldId){
+            $customTranslation = $handler->retrieveLabelDataByName($decodeData['name'], $decodeData['syslanguage']);
+            if(!empty($customTranslation['custom_translations'])){
+                $warning = "ID for label ".$decodeData['name']. ' changed from ' .$customTranslation['custom_translations'][0]['syslanguagelabel_id'].' to '.$decodeData['id'].'. Label ID has been re-mapped in your custom translations. Please, check your corresponding custom translations.';
+                // update the label ID in the custom translation entry
+                $customRecordPk = ['id' => $customTranslation['custom_translations'][0]['id']];
+                $updateCustomRecord = $customTranslation['custom_translations'][0];
+                $updateCustomRecord['syslanguagelabel_id'] = $decodeData['id'];
+                $q = $db->updateQuery('syslanguagecustomtranslations', $customRecordPk, $updateCustomRecord, false);
+                return ['updateCustomTranslation' => $q, 'warning' => $warning];
+            }
+        }
+        return [];
     }
 
 }

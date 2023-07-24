@@ -1,0 +1,37 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div class="slds-grid slds-grid--align-end slds-grid--vertical-align-center">
+        <system-display-number [number]="value" [currency_id]="currencyId" [precision]="precision"></system-display-number>
+        <button *ngIf="isCalculated" class="slds-m-horizontal--xx-small slds-button slds-button--icon" (click)="openCalculation()" system-title="LBL_CALCULATE">
+            <system-button-icon icon="freeze_column"/>
+        </button>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-end slds-grid--vertical-align-center">
+        <div *ngIf="currencyidfield && !isCalculated" class="slds-form-element slds-p-right--x-small" [ngClass]="{'slds-size--1-of-4':!fieldconfig.currencyReadonly}">
+            <div *ngIf="fieldconfig.currencyReadonly" class="slds-height_full slds-align--absolute-center slds-p-around--none" style="border-color:transparent">
+                    {{getCurrencySymbol()}}&nbsp;
+            </div>
+            <div *ngIf="!fieldconfig.currencyReadonly" class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="currencyId">
+                        <option *ngFor="let currency of currencies" [value]="currency.id">{{currency.iso}}
+                            ({{currency.symbol}})
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!isCalculated" class="slds-form-element slds-grow">
+            <system-input-number [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
+        </div>
+        <div *ngIf="isCalculated" class="slds-form-element">
+            <system-display-number [number]="value" [currency_id]="currencyId" [precision]="precision"></system-display-number>
+        </div>
+        <button *ngIf="isCalculated" class="slds-m-horizontal--xx-small slds-button slds-button--icon slds-button--icon-border" (click)="openCalculation()" system-title="LBL_CALCULATE">
+            <system-button-icon icon="freeze_column"/>
+        </button>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

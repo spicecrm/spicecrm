@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, ComponentRef, EventEmitter, OnDestroy, OnInit, Output, SkipSelf,
+    Component, ComponentRef, EventEmitter, Input, OnDestroy, OnInit, Output, SkipSelf,
 } from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
@@ -22,15 +22,12 @@ import {Subscription} from "rxjs";
 @Component({
     selector: 'web-hooks-manager',
     templateUrl: '../templates/webhooksmanager.html',
-    providers:[model, relatedmodels],
 })
-export class WebHooksManager implements OnInit, OnDestroy{
-
+export class WebHooksManager {
 
     public loading: boolean = false;
     public webHooks: WebHookI[] = [];
     public subscriptions: Subscription = new Subscription();
-    @Output() public webhook: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
         public backend: backend,
@@ -40,9 +37,6 @@ export class WebHooksManager implements OnInit, OnDestroy{
         public toast: toast,
         public modal: modal,
         public hooksManager: HooksManager,
-        public model: model,
-        public relatedmodels: relatedmodels
-
     ) {
     }
 
@@ -55,7 +49,7 @@ export class WebHooksManager implements OnInit, OnDestroy{
      */
     public getWebHooks() {
         this.loading = true;
-        this.backend.getRequest('configuration/spiceui/core/module/webhooks').subscribe(webhooks => {
+        this.backend.getRequest('configuration/spiceui/core/module/syswebhooks').subscribe(webhooks => {
             this.webHooks = webhooks;
             this.loading = false;
         });
@@ -68,7 +62,7 @@ export class WebHooksManager implements OnInit, OnDestroy{
         if (this.hooksManager._module == '*') {
             return this.webHooks;
         }
-        return this.webHooks.filter(webHook =>webHook.module == this.hooksManager._module );
+        return this.webHooks.filter(webHook => webHook.module == this.hooksManager._module);
     }
 
     /**
@@ -81,7 +75,7 @@ export class WebHooksManager implements OnInit, OnDestroy{
                 if (res) {
                     const webHook = this.webHooks.find(h => h.id == id);
 
-                    this.backend.deleteRequest(`configuration/configurator/webhooks/${webHook.id}`).subscribe(() => {
+                    this.backend.deleteRequest(`configuration/configurator/syswebhooks/${webHook.id}`).subscribe(() => {
                         this.toast.sendToast('MSG_SUCCESSFULLY_DELETED', 'success')
                     });
                     this.webHooks = this.webHooks.filter(id => id.id != webHook.id);
@@ -94,7 +88,7 @@ export class WebHooksManager implements OnInit, OnDestroy{
      * edit web hook
      * @param id
      */
-    public editWebHook(id: string){
+    public editWebHook(id: string) {
         const webHook = this.webHooks.find(h => h.id == id);
         this.openEditWebHookModal(webHook);
 
@@ -105,7 +99,7 @@ export class WebHooksManager implements OnInit, OnDestroy{
      * @param hook
      * @private
      */
-    private openEditWebHookModal(webHook?:WebHookI){
+    private openEditWebHookModal(webHook?: WebHookI) {
         this.modal.openModal('WebHooksManagerEditModal').subscribe((modalRef: ComponentRef<WebHooksManagerEditModal>) => {
             const index = this.webHooks.indexOf(webHook);
             if (webHook) {
@@ -113,10 +107,9 @@ export class WebHooksManager implements OnInit, OnDestroy{
             }
             modalRef.instance.save$.subscribe({
                 next: (newWebHook: WebHookI) => {
-                    if(webHook) {
+                    if (webHook) {
                         this.webHooks.splice(index, 1, newWebHook);
-                    }
-                    else {
+                    } else {
                         this.webHooks.push(newWebHook);
                     }
                 }
@@ -127,10 +120,14 @@ export class WebHooksManager implements OnInit, OnDestroy{
     /**
      * add web hook
      */
-    public addWebHook(){
+    public addWebHook() {
         this.openEditWebHookModal();
     }
 
+    /**
+     * get color status for active status bulb
+     * @param webHook
+     */
 
     public getStatusColor(webHook: WebHookI) {
         if (webHook.active == 1) {
@@ -148,7 +145,8 @@ export class WebHooksManager implements OnInit, OnDestroy{
      */
     public toggleValue($e: MouseEvent, webHook: WebHookI) {
         $e.stopPropagation();
-        const message = webHook.active == 1 ? 'LBL_DEACTIVATE' : 'LBL_ACTIVATE'
+        const message = webHook.active == 1 ? 'MSG_DEACTIVATE' : 'MSG_ACTIVATE';
+        const toast = webHook.active == 1 ? 'LBL_DEACTIVATED' : 'LBL_ACTIVATED';
 
         this.modal.confirm(message, message).subscribe({
             next: (res) => {
@@ -158,7 +156,7 @@ export class WebHooksManager implements OnInit, OnDestroy{
 
                     this.backend.postRequest(`configuration/configurator/${table}/${webHook.id}`, null, {config: webHook}).subscribe({
                         next: () => {
-                            this.toast.sendToast('LBL_STATUS_CHANGED', 'success');
+                            this.toast.sendToast(toast, 'success');
                         }
                     });
                 }
@@ -166,26 +164,43 @@ export class WebHooksManager implements OnInit, OnDestroy{
         })
     }
 
-    public openResultModal(webhook:any){
-        this.webhook.emit(webhook);
-        this.modal.openModal('WebHooksManagerResultModal').subscribe();
+    /**
+     * call webhook
+     * @param webhook
+     */
+    public callWebHooks(webhook: WebHookI) {
+        let loadingModal = this.modal.await('LBL_SENDING');
+        this.backend.postRequest(`system/webhook`, null, webhook).subscribe((res: any) => {
+            let headerText = res.result.success == true ? 'MSG_SUCCESSFULLY_EXECUTED' : 'LBL_ERROR';
+            let text = 'Status Code: ' + res.result.output.toString();
+            loadingModal.emit(true);
+            this.modal.info(text, headerText);
+        });
     }
-    public callWebHooks(webHook: WebHookI){
 
-        // this.backend.postRequest(`system/webhook`, null, webHook).subscribe((res: any) => {
-        //     // this.data = res.result;
-        //     // loadingModal.emit(true);
-        // });
-    }
-
-    public searchWithModal(webHook:WebHookI) {
+    /**
+     * search for entry in Module to send
+     * @param webHook
+     */
+    public searchWithModal(webHook) {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
             selectModal.instance.module = webHook.module;
-            selectModal.instance.multiselect = true;
+            selectModal.instance.multiselect = false;
 
             selectModal.instance.selectedItems.subscribe(items => {
-                this.addSelectedItems(items);
-            });
+                if (items.length) {
+                    webHook = {
+                        webHook: webHook,
+                        id: items[0].id,
+                    }
+                    // this.selectedItem = {
+                    //     id: items[0].id,
+                    //     module: items[0].module,
+                    //     data: items[0]
+                    // };
+                    this.callWebHooks(webHook);
+                }
+            })
         });
     }
 
@@ -194,14 +209,6 @@ export class WebHooksManager implements OnInit, OnDestroy{
     */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
-    }
-
-    /*
-    * @call relatedmodels.addItems
-    * @pass event: any[]
-    */
-    public addSelectedItems(event) {
-        this.relatedmodels.addItems(event);
     }
 
 }

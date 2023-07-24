@@ -7,7 +7,7 @@ import {Title} from "@angular/platform-browser";
 import {Observable, Subject, of, BehaviorSubject, Subscription} from "rxjs";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
-import {Router, ActivatedRouteSnapshot, CanActivate, Params, Route, UrlSegment} from "@angular/router";
+import { Router, ActivatedRouteSnapshot, Params, Route, UrlSegment } from "@angular/router";
 import {modal} from "./modal.service";
 import {language} from "./language.service";
 import {metadata} from "./metadata.service";
@@ -84,6 +84,11 @@ export interface objectTab {
      */
     enablesubtabs: boolean;
 
+    /**
+     * additional tabdata
+     */
+    tabdata?: object;
+
 }
 
 /**
@@ -95,7 +100,9 @@ export interface objectTabInfo {
     displayicon?: string;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class navigation {
 
     /**
@@ -449,7 +456,8 @@ export class navigation {
     public handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'update':
-                if (event.data.sessionId != Md5.hashStr(this.session.authData.sessionId) && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
+            case 'systemupdate':
+                if ((event.type == 'systemupdate' || event.data.sessionId != Md5.hashStr(this.session.authData.sessionId)) && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
                     this.backend.get(event.data.module, event.data.id).subscribe(modelData => {
                         let models = this.modelregister.filter(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing);
                         for (let model of models) {
@@ -731,6 +739,17 @@ export class navigation {
     }
 
     /**
+     * adds an object tab
+     *
+     * @param tabDetails
+     */
+    public addObjectTab(tabDetails: objectTab){
+        this.objectTabs.unshift(tabDetails);
+        // set the current tab as active tab
+        this.activeTab = tabDetails.id;
+    }
+
+    /**
      * sets the tab with the passed in ID as active tab
      *
      * @param tabid
@@ -926,8 +945,10 @@ export class navigation {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
-export class canNavigateAway implements CanActivate {
+@Injectable({
+    providedIn: 'root'
+})
+export class canNavigateAway  {
     constructor(public navigation: navigation, public modal: modal, public language: language) {
     }
 

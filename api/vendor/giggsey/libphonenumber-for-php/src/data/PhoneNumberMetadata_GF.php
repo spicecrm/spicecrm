@@ -14,7 +14,7 @@
 return array (
   'generalDesc' => 
   array (
-    'NationalNumberPattern' => '(?:[56]94|80\\d|976)\\d{6}',
+    'NationalNumberPattern' => '[56]94\\d{6}|(?:80|9\\d)\\d{7}',
     'PossibleLength' => 
     array (
       0 => 9,
@@ -25,7 +25,7 @@ return array (
   ),
   'fixedLine' => 
   array (
-    'NationalNumberPattern' => '594(?:[023]\\d|1[01]|4[03-9]|5[6-9]|6[0-3]|80|9[0-8])\\d{4}',
+    'NationalNumberPattern' => '594(?:[0239]\\d|1[0-2]|4[03-9]|5[6-9]|6[0-3]|80)\\d{4}',
     'ExampleNumber' => '594101234',
     'PossibleLength' => 
     array (
@@ -36,7 +36,7 @@ return array (
   ),
   'mobile' => 
   array (
-    'NationalNumberPattern' => '694(?:[0-249]\\d|3[0-48])\\d{4}',
+    'NationalNumberPattern' => '694(?:[0-249]\\d|3[0-8])\\d{4}',
     'ExampleNumber' => '694201234',
     'PossibleLength' => 
     array (
@@ -88,7 +88,7 @@ return array (
   ),
   'voip' => 
   array (
-    'NationalNumberPattern' => '976\\d{6}',
+    'NationalNumberPattern' => '9(?:(?:396|76\\d)\\d|476[01])\\d{4}',
     'ExampleNumber' => '976012345',
     'PossibleLength' => 
     array (
@@ -151,7 +151,7 @@ return array (
       'format' => '$1 $2 $3 $4',
       'leadingDigitsPatterns' => 
       array (
-        0 => '[569]',
+        0 => '[56]|9[47]',
       ),
       'nationalPrefixFormattingRule' => '0$1',
       'domesticCarrierCodeFormattingRule' => '',
@@ -163,7 +163,7 @@ return array (
       'format' => '$1 $2 $3 $4',
       'leadingDigitsPatterns' => 
       array (
-        0 => '8',
+        0 => '[89]',
       ),
       'nationalPrefixFormattingRule' => '0$1',
       'domesticCarrierCodeFormattingRule' => '',
@@ -174,6 +174,5 @@ return array (
   array (
   ),
   'mainCountryForCode' => false,
-  'leadingZeroPossible' => false,
   'mobileNumberPortableRegion' => true,
 );

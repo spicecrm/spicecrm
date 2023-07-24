@@ -1,0 +1,10 @@
+<td colspan="2" class="slds-border--top slds-theme--shade">
+    <button [disabled]="!editing" class="slds-button slds-button_neutral" (click)="addItem.emit(true)">
+        <div class="slds-grid">
+            <span><system-label label="LBL_ADD"></system-label></span>
+        </div>
+    </button>
+</td>
+<td *ngFor="let fieldsetItem of fieldsetItems" class="slds-border--top slds-theme--shade">
+    <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+</td>

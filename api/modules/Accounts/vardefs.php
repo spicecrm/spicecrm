@@ -1,38 +1,39 @@
 <?php
 /*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ *
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
@@ -45,81 +46,97 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
     'duplicate_merge' => true,
     'comment' => 'Accounts are organizations or entities that are the target of selling, support, and marketing activities, or have already purchased products or services',
     'fields' => [
-        'parent_id' =>
-            [
-                'name' => 'parent_id',
-                'vname' => 'LBL_PARENT_ACCOUNT_ID',
-                'type' => 'id',
-                'required' => false,
-                'reportable' => false,
-                'audited' => true,
-                'comment' => 'Account ID of the parent of this account',
-            ],
-
-        'sic_code' =>
-            [
-                'name' => 'sic_code',
-                'vname' => 'LBL_SIC_CODE',
-                'type' => 'varchar',
-                'len' => 10,
-                'comment' => 'SIC code of the account',
-            ],
-
-
-        'parent_name' =>
-            [
-                'name' => 'parent_name',
-                'rname' => 'name',
-                'id_name' => 'parent_id',
-                'vname' => 'LBL_MEMBER_OF',
-                'type' => 'relate',
-                'isnull' => 'true',
-                'module' => 'Accounts',
-                'table' => 'accounts',
-                'source' => 'non-db',
-                'len' => 36,
-                'link' => 'member_of',
-                'unified_search' => false,
-                'importable' => 'true',
-            ],
-
-
-        'members' =>
-            [
-                'name' => 'members',
-                'type' => 'link',
-                'relationship' => 'member_accounts',
-                'module' => 'Accounts',
-                'bean_name' => 'Account',
-                'source' => 'non-db',
-                'vname' => 'LBL_MEMBERS',
-            ],
-        'member_of' =>
-            [
-                'name' => 'member_of',
-                'type' => 'link',
-                'relationship' => 'member_accounts',
-                'module' => 'Accounts',
-                'bean_name' => 'Account',
-                'link_type' => 'one',
-                'source' => 'non-db',
-                'vname' => 'LBL_MEMBER_OF',
-                'side' => 'right',
-            ],
-        'email_opt_out' =>
-            [
-                'name' => 'email_opt_out',
-                'vname' => 'LBL_EMAIL_OPT_OUT',
-                'source' => 'non-db',
-                'type' => 'bool',
-            ],
-        'invalid_email' =>
-            [
-                'name' => 'invalid_email',
-                'vname' => 'LBL_INVALID_EMAIL',
-                'source' => 'non-db',
-                'type' => 'bool',
-            ],
+        'parent_id' => [
+            'name' => 'parent_id',
+            'vname' => 'LBL_PARENT_ACCOUNT_ID',
+            'type' => 'id',
+            'required' => false,
+            'reportable' => false,
+            'audited' => true,
+            'comment' => 'Account ID of the parent of this account',
+        ],
+        'sic_code' => [
+            'name' => 'sic_code',
+            'vname' => 'LBL_SIC_CODE',
+            'type' => 'categories',
+            'required' => false,
+            'source' => 'non-db'
+        ],
+        'sic_code_1' => [
+            'name' => 'sic_code_1',
+            'vname' => 'LBL_SIC_CODE_1',
+            'type' => 'category',
+            'dbType' => 'varchar',
+            'len' => 36
+        ],
+        'sic_code_2' => [
+            'name' => 'sic_code_2',
+            'vname' => 'LBL_SIC_CODE_2',
+            'type' => 'category',
+            'dbType' => 'varchar',
+            'len' => 36
+        ],
+        'sic_code_3' => [
+            'name' => 'sic_code_3',
+            'vname' => 'LBL_SIC_CODE_3',
+            'type' => 'category',
+            'dbType' => 'varchar',
+            'len' => 36
+        ],
+        'sic_code_4' => [
+            'name' => 'sic_code_4',
+            'vname' => 'LBL_SIC_CODE_4',
+            'type' => 'category',
+            'dbType' => 'varchar',
+            'len' => 36
+        ],
+        'parent_name' => [
+            'name' => 'parent_name',
+            'rname' => 'name',
+            'id_name' => 'parent_id',
+            'vname' => 'LBL_MEMBER_OF',
+            'type' => 'relate',
+            'isnull' => 'true',
+            'module' => 'Accounts',
+            'table' => 'accounts',
+            'source' => 'non-db',
+            'len' => 36,
+            'link' => 'member_of',
+            'unified_search' => false,
+            'importable' => 'true',
+        ],
+        'members' => [
+            'name' => 'members',
+            'type' => 'link',
+            'relationship' => 'member_accounts',
+            'module' => 'Accounts',
+            'bean_name' => 'Account',
+            'source' => 'non-db',
+            'vname' => 'LBL_MEMBERS',
+        ],
+        'member_of' => [
+            'name' => 'member_of',
+            'type' => 'link',
+            'relationship' => 'member_accounts',
+            'module' => 'Accounts',
+            'bean_name' => 'Account',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'vname' => 'LBL_MEMBER_OF',
+            'side' => 'right',
+        ],
+        'email_opt_out' => [
+            'name' => 'email_opt_out',
+            'vname' => 'LBL_EMAIL_OPT_OUT',
+            'source' => 'non-db',
+            'type' => 'bool',
+        ],
+        'invalid_email' => [
+            'name' => 'invalid_email',
+            'vname' => 'LBL_INVALID_EMAIL',
+            'source' => 'non-db',
+            'type' => 'bool',
+        ],
 // CR1000426 cleanup backend, module Cases removed
 //        'cases' =>
 //            array(
@@ -145,65 +162,58 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'vname' => 'LBL_ANY_EMAIL',
             'importable' => 'false',
         ],
-        'tasks' =>
-            [
-                'name' => 'tasks',
-                'type' => 'link',
-                'relationship' => 'account_tasks',
-                'module' => 'Tasks',
-                'bean_name' => 'Task',
-                'source' => 'non-db',
-                'vname' => 'LBL_TASKS',
-            ],
-        'notes' =>
-            [
-                'name' => 'notes',
-                'type' => 'link',
-                'relationship' => 'account_notes',
-                'module' => 'Notes',
-                'bean_name' => 'Note',
-                'source' => 'non-db',
-                'vname' => 'LBL_NOTES',
-            ],
-        'meetings' =>
-            [
-                'name' => 'meetings',
-                'type' => 'link',
-                'relationship' => 'account_meetings',
-                'module' => 'Meetings',
-                'bean_name' => 'Meeting',
-                'source' => 'non-db',
-                'vname' => 'LBL_MEETINGS',
-            ],
-        'calls' =>
-            [
-                'name' => 'calls',
-                'type' => 'link',
-                'relationship' => 'account_calls',
-                'module' => 'Calls',
-                'bean_name' => 'Call',
-                'source' => 'non-db',
-                'vname' => 'LBL_CALLS',
-            ],
-
-        'emails' =>
-            [
-                'name' => 'emails',
-                'type' => 'link',
-                'relationship' => 'emails_accounts_rel', /* reldef in emails */
-                'module' => 'Emails',
-                'bean_name' => 'Email',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAILS',
-            ],
-        'documents' =>
-            [
-                'name' => 'documents',
-                'type' => 'link',
-                'relationship' => 'documents_accounts',
-                'source' => 'non-db',
-                'vname' => 'LBL_DOCUMENTS',
-            ],
+        'tasks' => [
+            'name' => 'tasks',
+            'type' => 'link',
+            'relationship' => 'account_tasks',
+            'module' => 'Tasks',
+            'bean_name' => 'Task',
+            'source' => 'non-db',
+            'vname' => 'LBL_TASKS',
+        ],
+        'notes' => [
+            'name' => 'notes',
+            'type' => 'link',
+            'relationship' => 'account_notes',
+            'module' => 'Notes',
+            'bean_name' => 'Note',
+            'source' => 'non-db',
+            'vname' => 'LBL_NOTES',
+        ],
+        'meetings' => [
+            'name' => 'meetings',
+            'type' => 'link',
+            'relationship' => 'account_meetings',
+            'module' => 'Meetings',
+            'bean_name' => 'Meeting',
+            'source' => 'non-db',
+            'vname' => 'LBL_MEETINGS',
+        ],
+        'calls' => [
+            'name' => 'calls',
+            'type' => 'link',
+            'relationship' => 'account_calls',
+            'module' => 'Calls',
+            'bean_name' => 'Call',
+            'source' => 'non-db',
+            'vname' => 'LBL_CALLS',
+        ],
+        'emails' => [
+            'name' => 'emails',
+            'type' => 'link',
+            'relationship' => 'emails_accounts_rel', /* reldef in emails */
+            'module' => 'Emails',
+            'bean_name' => 'Email',
+            'source' => 'non-db',
+            'vname' => 'LBL_EMAILS',
+        ],
+        'documents' => [
+            'name' => 'documents',
+            'type' => 'link',
+            'relationship' => 'documents_accounts',
+            'source' => 'non-db',
+            'vname' => 'LBL_DOCUMENTS',
+        ],
 // CR1000426 cleanup backend, module Bugs removed
 //        'bugs' => array(
 //            'name' => 'bugs',
@@ -237,38 +247,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
                 ]
             ]
         ],
-        'opportunities' =>
-            [
-                'name' => 'opportunities',
-                'type' => 'link',
-                'relationship' => 'accounts_opportunities',
-                'module' => 'Opportunities',
-                'bean_name' => 'Opportunity',
-                'source' => 'non-db',
-                'vname' => 'LBL_OPPORTUNITY',
-            ],
-
-
-        'projects' =>
-            [
-                'name' => 'projects',
-                'type' => 'link',
-                'relationship' => 'projects_accounts',
-                'module' => 'Projects',
-                'bean_name' => 'Project',
-                'source' => 'non-db',
-                'vname' => 'LBL_PROJECTS',
-            ],
-        'leads' =>
-            [
-                'name' => 'leads',
-                'type' => 'link',
-                'relationship' => 'account_leads',
-                'module' => 'Leads',
-                'bean_name' => 'Lead',
-                'source' => 'non-db',
-                'vname' => 'LBL_LEADS',
-            ],
+        'opportunities' => [
+            'name' => 'opportunities',
+            'type' => 'link',
+            'relationship' => 'accounts_opportunities',
+            'module' => 'Opportunities',
+            'bean_name' => 'Opportunity',
+            'source' => 'non-db',
+            'vname' => 'LBL_OPPORTUNITY',
+        ],
+        'projects' => [
+            'name' => 'projects',
+            'type' => 'link',
+            'relationship' => 'projects_accounts',
+            'module' => 'Projects',
+            'bean_name' => 'Project',
+            'source' => 'non-db',
+            'vname' => 'LBL_PROJECTS',
+        ],
+        'leads' => [
+            'name' => 'leads',
+            'type' => 'link',
+            'relationship' => 'account_leads',
+            'module' => 'Leads',
+            'bean_name' => 'Lead',
+            'source' => 'non-db',
+            'vname' => 'LBL_LEADS',
+        ],
         'prospects' => [
             'name' => 'prospects',
             'type' => 'link',
@@ -278,111 +283,97 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'vname' => 'LBL_PROSPECT',
             'duplicate_merge' => 'disabled',
             'module' => 'Prospects'
-            ],
-        'campaigns' =>
-            [
-                'name' => 'campaigns',
-                'type' => 'link',
-                'relationship' => 'account_campaign_log',
-                'module' => 'CampaignLog',
-                'bean_name' => 'CampaignLog',
-                'source' => 'non-db',
-                'vname' => 'LBL_CAMPAIGNLOG',
-            ],
-        'campaign_accounts' =>
-            [
-                'name' => 'campaign_accounts',
-                'type' => 'link',
-                'vname' => 'LBL_CAMPAIGNS',
-                'relationship' => 'campaign_accounts',
-                'source' => 'non-db',
-            ],
-
-        'created_by_link' =>
-            [
-                'name' => 'created_by_link',
-                'type' => 'link',
-                'relationship' => 'accounts_created_by',
-                'vname' => 'LBL_CREATED_BY',
-                'link_type' => 'one',
-                'module' => 'Users',
-                'bean_name' => 'User',
-                'source' => 'non-db',
-            ],
-        'modified_user_link' =>
-            [
-                'name' => 'modified_user_link',
-                'type' => 'link',
-                'relationship' => 'accounts_modified_user',
-                'vname' => 'LBL_MODIFIED_BY',
-                'link_type' => 'one',
-                'module' => 'Users',
-                'bean_name' => 'User',
-                'source' => 'non-db',
-            ],
-        'assigned_user_link' =>
-            [
-                'name' => 'assigned_user_link',
-                'type' => 'link',
-                'relationship' => 'accounts_assigned_user',
-                'vname' => 'LBL_ASSIGNED_TO',
-                'link_type' => 'one',
-                'module' => 'Users',
-                'bean_name' => 'User',
-                'source' => 'non-db',
-                'duplicate_merge' => true,
-                'rname' => 'user_name',
-                'id_name' => 'assigned_user_id',
-                'table' => 'users',
-            ],
-
-
-        'campaign_id' =>
-            [
-                'name' => 'campaign_id',
-                'comment' => 'Campaign that generated Account',
-                'vname' => 'LBL_CAMPAIGN_ID',
-                'rname' => 'id',
-                'id_name' => 'campaign_id',
-                'type' => 'id',
-                'table' => 'campaigns',
-                'isnull' => 'true',
-                'module' => 'Campaigns',
-                'reportable' => false,
-                'duplicate_merge' => false,
-            ],
-
-        'campaign_name' =>
-            [
-                'name' => 'campaign_name',
-                'rname' => 'name',
-                'vname' => 'LBL_CAMPAIGN',
-                'type' => 'relate',
-                'reportable' => false,
-                'source' => 'non-db',
-                'table' => 'campaigns',
-                'id_name' => 'campaign_id',
-                'link' => 'campaign_accounts',
-                'module' => 'Campaigns',
-                'duplicate_merge' => false,
-                'comment' => 'The first campaign name for Account (Meta-data only)',
-            ],
-
-        'prospect_lists' =>
-            [
-                'name' => 'prospect_lists',
-                'type' => 'link',
-                'relationship' => 'prospect_list_accounts',
-                'module' => 'ProspectLists',
-                'source' => 'non-db',
-                'vname' => 'LBL_PROSPECT_LIST',
-                'rel_fields' => [
-                    'quantity' => [
-                        'map' => 'prospectlists_accounts_quantity'
-                    ]
+        ],
+        'campaigns' => [
+            'name' => 'campaigns',
+            'type' => 'link',
+            'relationship' => 'account_campaign_log',
+            'module' => 'CampaignLog',
+            'bean_name' => 'CampaignLog',
+            'source' => 'non-db',
+            'vname' => 'LBL_CAMPAIGNLOG',
+        ],
+        'campaign_accounts' => [
+            'name' => 'campaign_accounts',
+            'type' => 'link',
+            'vname' => 'LBL_CAMPAIGNS',
+            'relationship' => 'campaign_accounts',
+            'source' => 'non-db',
+        ],
+        'created_by_link' => [
+            'name' => 'created_by_link',
+            'type' => 'link',
+            'relationship' => 'accounts_created_by',
+            'vname' => 'LBL_CREATED_BY',
+            'link_type' => 'one',
+            'module' => 'Users',
+            'bean_name' => 'User',
+            'source' => 'non-db',
+        ],
+        'modified_user_link' => [
+            'name' => 'modified_user_link',
+            'type' => 'link',
+            'relationship' => 'accounts_modified_user',
+            'vname' => 'LBL_MODIFIED_BY',
+            'link_type' => 'one',
+            'module' => 'Users',
+            'bean_name' => 'User',
+            'source' => 'non-db',
+        ],
+        'assigned_user_link' => [
+            'name' => 'assigned_user_link',
+            'type' => 'link',
+            'relationship' => 'accounts_assigned_user',
+            'vname' => 'LBL_ASSIGNED_TO',
+            'link_type' => 'one',
+            'module' => 'Users',
+            'bean_name' => 'User',
+            'source' => 'non-db',
+            'duplicate_merge' => true,
+            'rname' => 'user_name',
+            'id_name' => 'assigned_user_id',
+            'table' => 'users',
+        ],
+        'campaign_id' => [
+            'name' => 'campaign_id',
+            'comment' => 'Campaign that generated Account',
+            'vname' => 'LBL_CAMPAIGN_ID',
+            'rname' => 'id',
+            'id_name' => 'campaign_id',
+            'type' => 'id',
+            'table' => 'campaigns',
+            'isnull' => 'true',
+            'module' => 'Campaigns',
+            'reportable' => false,
+            'duplicate_merge' => false,
+        ],
+        'campaign_name' => [
+            'name' => 'campaign_name',
+            'rname' => 'name',
+            'vname' => 'LBL_CAMPAIGN',
+            'type' => 'relate',
+            'reportable' => false,
+            'source' => 'non-db',
+            'table' => 'campaigns',
+            'id_name' => 'campaign_id',
+            'link' => 'campaign_accounts',
+            'module' => 'Campaigns',
+            'duplicate_merge' => false,
+            'comment' => 'The first campaign name for Account (Meta-data only)',
+        ],
+        'prospect_lists' => [
+            'name' => 'prospect_lists',
+            'type' => 'link',
+            'relationship' => 'prospect_list_accounts',
+            'module' => 'ProspectLists',
+            'source' => 'non-db',
+            'vname' => 'LBL_PROSPECT_LIST',
+            'rel_fields' => [
+                'quantity' => [
+                    'map' => 'prospectlists_accounts_quantity'
                 ]
-            ],
-
+            ]
+        ],
         'proposals' => [
             'name' => 'proposals',
             'vname' => 'LBL_PROPOSALS',
@@ -739,6 +730,27 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'comment' => 'allows to display items on salesdocs via a n:m relationship using the salesdocs table'
     ];
 }
+
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['procurementdocs'] = [
+        'name' => 'procurementdocs',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCS',
+        'relationship' => 'procurementdocs_accounts',
+        'module' => 'ProcurementDocs',
+        'source' => 'non-db',
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['procurementdocitems'] = [
+        'name' => 'procurementdocitems',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCITEMS',
+        'relationship' => 'procurementdocitems_accounts',
+        'module' => 'ProcurementDocItems',
+        'source' => 'non-db',
+        'comment' => 'allows to display items on procurementdocs via a n:m relationship using the procurementdocs table'
+    ];
+}
+
 if (file_exists("modules/Addresses")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['addresses'] = [
         'name' => 'addresses',

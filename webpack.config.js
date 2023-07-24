@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const fs = require('fs');
 
-require('./gulpfile_globals.js');
+const releaseNumber = require('./package.json').version;
 const moment = require("moment");
 const now = Date.now();
 const buildDate = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -16,7 +16,7 @@ const copyright = `© 2015 -  ${moment().format('YYYY')} aac services k.s. All r
 fs.writeFileSync('environments/environment.prod.ts', `
 export const environment = {
     production: true,
-    buildNumber: "${global.build.releaseNumber}.${now}",
+    buildNumber: "${releaseNumber}.${now}",
     copyright: "${copyright}"
     }
 `);
@@ -31,7 +31,7 @@ const generateOptions = (file) => ({
     hash: true,
     minify: false,
     aacServices: copyright,
-    buildNumber: `${global.build.releaseNumber}.${now}`,
+    buildNumber: `${releaseNumber}.${now}`,
     chunksSortMode: (a) => a === 'scripts' ? -1 : 1
 });
 
@@ -80,9 +80,9 @@ module.exports = {
                 banner: () => {
                     return `
                     aacService \n
-                    release: ${global.build.releaseNumber} \n
+                    release: ${releaseNumber} \n
                     date: ${buildDate} \n
-                    build: ${global.build.releaseNumber}.${now}
+                    build: ${releaseNumber}.${now}
                     `;
                 },
             }),

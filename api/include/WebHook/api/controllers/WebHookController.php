@@ -16,6 +16,9 @@ class WebHookController{
     public function mapWebHooks($req, $res, $args)
     {
         $parsedBody = $req->getParsedBody();
+
+        $module = $parsedBody['webHook']['module'];
+        $dataId = $parsedBody['id'];
         /*
         $url = $parsedBody['url'];
         $ssl_verifypeer = ($parsedBody['ssl_verifypeer'] == 1) ? true : false;
@@ -34,7 +37,7 @@ class WebHookController{
         ];
         $payload = json_encode($body);
         */
-       $seed = BeanFactory::getBean('Accounts', '90615060-c0f0-5f41-937d-63f8cad03ffb');
+       $seed = BeanFactory::getBean($module, $dataId);
 
        return $res->withJson(['result' => WebHook::getInstance()->makeCall($parsedBody, $seed)]);
     }

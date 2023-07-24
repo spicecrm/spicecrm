@@ -15,7 +15,7 @@ declare var _: any;
 export class QuestionsManagerEditRatingGroup extends QuestionsManagerEditBasic implements OnInit {
 
     @Input() public questionset: any = {};
-    @Input() public categorypool;
+    @Input() declare public categorypool;
 
     public entries: any[] = [];
     public options: any[] = [];

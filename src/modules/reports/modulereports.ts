@@ -58,6 +58,7 @@ import {ReporterIntegrationCSVexportButton} from "./components/reporterintegrati
 
 import {ReporterIntegrationToolsButton} from "./components/reporterintegrationtoolsbutton";
 import {ReporterNewButton} from "./components/reporternewbutton";
+import {ReporterFieldCategoryTree} from "./components/reporterfieldcategorytree";
 
 /**
  * @ignore
@@ -112,6 +113,7 @@ declare var moment: any;
         ReporterFieldDate,
         ReporterFieldDateTime,
         ReporterFieldColor,
+        ReporterFieldCategoryTree,
         ReporterIntegrationExportButton,
         ReporterIntegrationExportMask,
         ReporterIntegrationTargetlistexportButton,

@@ -1,0 +1,22 @@
+<section role="dialog" tabindex="-1"  class="slds-modal slds-modal_large slds-fade-in-open">
+    <div class="slds-modal__container">
+        <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" (click)="close()">
+                <system-button-icon size="large" icon="close"></system-button-icon>
+            </button>
+            <h2 class="slds-text-heading_medium slds-hyphenate"><system-label label="LBL_ADD"></system-label> <system-label label="LBL_PRODUCTVARIANT"></system-label></h2>
+        </header>
+        <div class="slds-modal__content" style="height:80%;">
+            <div #productselector></div>
+            <!--product-browser (selectionchanged)="productSelected($event)"></product-browser-->
+        </div>
+        <footer class="slds-modal__footer">
+            <select class="slds-select " [(ngModel)]="parentitem_id">
+                <option value="">--</option>
+                <option *ngFor="let parentitem of items" [value]="parentitem.id">{{parentitem.itemnr}}</option>
+            </select>
+            <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        </footer>
+    </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
