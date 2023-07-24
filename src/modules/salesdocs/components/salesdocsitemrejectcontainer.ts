@@ -32,6 +32,12 @@ export class SalesDocsItemRejectContainer implements OnInit {
     public ngOnInit(): void {
         this.model.module = 'SalesDocItems';
         this.model.id = this.item.id;
+
+        // set explicit to edit in cancel modal
+        // ToDo: make proper ACL action on sales docs that allows the cancellation and then triggers this here
+        this.item.acl.edit = true;
+
+        // set the data
         this.model.setData(this.item);
 
         let componentconfig = this.metadata.getComponentConfig('SalesDocsItemRejectContainer', this.model.module);
