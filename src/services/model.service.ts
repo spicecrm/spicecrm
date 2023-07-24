@@ -1156,7 +1156,7 @@ export class model implements OnDestroy {
                             break;
                         default:
                             if (notify) {
-                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
+                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message );
                             }
                             responseSubject.error(error);
                             responseSubject.complete();
