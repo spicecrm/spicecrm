@@ -1,10 +1,22 @@
 /**
  * @module SystemComponents
  */
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output
+} from '@angular/core';
 import {language} from '../../services/language.service';
 import {userpreferences} from "../../services/userpreferences.service";
 import {layout} from "../../services/layout.service";
+import {backend} from "../../services/backend.service";
+import {configurationService} from "../../services/configuration.service";
+import {config} from "rxjs";
 
 /* @ignore */
 declare var moment: any;
@@ -50,6 +62,20 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
      * an array with the ensbled weekdays, 0 equals sunday
      */
     @Input() public enabledDays: number[] = [0, 1, 2, 3, 4, 5, 6];
+    /**
+     * an optional holiday calendar that displays holidays
+     */
+    @Input() public holidayCalendarId: string;
+    /**
+     * set to true by default to disable picking of holidays
+     */
+    @Input() public holidaysDisabled: boolean = true;
+
+    /**
+     * holds holidays loaded
+     */
+    private holidays: any[] = [];
+
     /*
     * @output datePicked: moment
     */
@@ -59,7 +85,10 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
 
     constructor(public language: language,
                 public layout: layout,
-                public userPreferences: userpreferences) {
+                public userPreferences: userpreferences,
+                public backend: backend,
+                public config: configurationService,
+                public cdRef: ChangeDetectorRef) {
         let preferences = this.userPreferences.unchangedPreferences.global;
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
     }
@@ -118,12 +147,36 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     }
 
     public ngOnInit() {
+        // load the holidays
+        this.loadHolidays();
+
+        // initialize the grid
         this.initializeGrid();
     }
 
     public ngOnChanges() {
         this.initializeGrid();
     }
+
+    public loadHolidays(){
+        if(this.holidayCalendarId){
+            let cachedHolidays = this.config.getData('holidays');
+            if(cachedHolidays && cachedHolidays[this.holidayCalendarId]){
+                this.holidays = cachedHolidays[this.holidayCalendarId]
+            } else {
+                this.backend.getRequest(`module/SystemHolidayCalendars/${this.holidayCalendarId}/holidays`).subscribe({
+                    next: (holidays) => {
+                        if(!cachedHolidays) cachedHolidays = [];
+                        cachedHolidays[this.holidayCalendarId] = holidays;
+                        this.config.setData('holidays', cachedHolidays)
+                        this.holidays = holidays;
+                        this.cdRef.detectChanges();
+                    }
+                })
+            }
+        }
+    }
+
 
     /*
     * @initialize grid
@@ -194,6 +247,11 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
             return true;
         }
 
+        // check if this is a holiday and holidays are disabled
+        if(this.holidaysDisabled && this.isHoliday(date)){
+            return true;
+        }
+
         return this.enabledDays.indexOf(parseInt(date.format('d'), 10)) < 0;
     }
 
@@ -204,14 +262,28 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
      * @param date
      */
     public getDayStyle(date){
-        console.log('date style');
-        if(this.disabled(date)){
-            return {
-                cursor: 'not-allowed'
-            }
+        // cursor style
+        let style: any = {
+            cursor: this.disabled(date) ? 'default' : 'pointer'
+        }
+         // holiday style
+        if(this.isHoliday(date)){
+            style.border = '1px solid';
+            style['border-radius'] = '2px';
+
         }
 
-        return {};
+        // return the style
+        return style;
+    }
+
+    /**
+     * checks if the date is a holiday
+     * @param date
+     */
+    public isHoliday(date){
+        let df = date.format('YYYY-MM-DD');
+        return !!this.holidays.find(h => h.holiday_date == df)
     }
 
     /*
