@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="slds-form-element slds-col--bump-left">
-            <button [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="copy()" >
+            <button [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="openCopyModal()" >
                 <span><system-label label="LBL_COPY"></system-label></span>
             </button>
             <button [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addFieldset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>

@@ -414,7 +414,6 @@ $vardefs = [
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAIL_ADDRESSES',
                 'reportable' => false,
-                'unified_search' => true,
                 'default' => true,
                 'module' => 'EmailAddresses',
                 'side' => 'left',
