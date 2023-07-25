@@ -29,12 +29,12 @@
         <tbody>
         <tr *ngFor="let week of currentGrid">
             <td *ngIf="layout.screenwidth != 'small'" role="gridcell" class="slds-theme--shade">
-                <abbr class="slds-p-horizontal--xx-small" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
+                <abbr class="slds-p-horizontal--xx-small" style="cursor: default" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
                     {{week?.number}}
                 </abbr>
             </td>
-            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day)" [ngClass]="{'slds-disabled-text': disabled(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
-                <span class="slds-day">{{day.date()}}</span>
+            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day, $event)" [ngClass]="{'slds-disabled-text': disabled(day) || notCurrentMonth(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
+                <span class="slds-day" [style.cursor]="disabled(day) ? 'not-allowed' : 'pointer'">{{day.date()}}</span>
             </td>
         </tr>
         </tbody>
@@ -52,13 +52,13 @@
             </td>
         </tr>
         <tr *ngFor="let week of secondGrid">
-            <td *ngIf="layout.screenwidth != 'small'" role="gridcell" class="slds-theme--shade">
-                <abbr class="slds-p-horizontal--xx-small" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
+            <td  *ngIf="layout.screenwidth != 'small'" role="gridcell" class="slds-theme--shade">
+                <abbr class="slds-p-horizontal--xx-small" style="cursor: default" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
                     {{week?.number}}
                 </abbr>
             </td>
-            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day)" [ngClass]="{'slds-disabled-text': disabled(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
-                <span class="slds-day">{{day?.date()}}</span>
+            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day, $event)" [ngClass]="{'slds-disabled-text': disabled(day) || notCurrentMonth(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
+                <span class="slds-day" [style.cursor]="disabled(day) ? 'not-allowed' : 'pointer'">{{day?.date()}}</span>
             </td>
         </tr>
         </tbody>

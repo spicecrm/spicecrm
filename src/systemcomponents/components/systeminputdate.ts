@@ -44,7 +44,12 @@ export class SystemInputDate implements ControlValueAccessor {
     // for the value accessor
     public onChange: (value: string) => void;
     public onTouched: () => void;
-    public showCalendarButton: boolean = true;
+
+    /**
+     * set to false to not display the calendar button at the bottom
+     */
+    @Input() public showCalendarButton: boolean = true;
+
     public _date: any = {
         display: '',
         moment: null,
@@ -109,6 +114,11 @@ export class SystemInputDate implements ControlValueAccessor {
             this.hideErrorMessage = true;
         }
     }
+
+    /**
+     * an array with the ensbled weekdays, 0 equals sunday
+     */
+    @Input() public enabledDays: number[] = [0, 1, 2, 3, 4, 5, 6];
 
     /**
      * set to false to hide error message on the input

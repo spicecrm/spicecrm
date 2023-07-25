@@ -46,6 +46,10 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @input showTodayButton: boolean
     */
     @Input() public showTodayButton: boolean = true;
+    /**
+     * an array with the ensbled weekdays, 0 equals sunday
+     */
+    @Input() public enabledDays: number[] = [0, 1, 2, 3, 4, 5, 6];
     /*
     * @output datePicked: moment
     */
@@ -165,6 +169,11 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         return moment.weekdays(dayIndex + this.weekStartDay);
     }
 
+    public notCurrentMonth(date) {
+        if (!date) return false;
+        return (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month')));
+    }
+
     /*
     * @check is disabled
     * @param date: moment
@@ -172,13 +181,37 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     */
     public disabled(date) {
         if (!date) return false;
-        if (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month'))) return true;
+        // if (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month'))) return true;
 
+        // check mindate if set
         let thedate = new moment(date.format());
         if (this.minDate && thedate.isBefore(this.minDate, 'day')) {
             return true;
         }
-        return !!(this.maxDate && thedate.isAfter(this.maxDate, 'day'));
+
+        // check mindate if set
+        if (this.maxDate && thedate.isAfter(this.maxDate, 'day')) {
+            return true;
+        }
+
+        return this.enabledDays.indexOf(parseInt(date.format('d'), 10)) < 0;
+    }
+
+    /**
+     * gets addtional styles for the date
+     *  - cursor not allowed if date is disabled
+     *
+     * @param date
+     */
+    public getDayStyle(date){
+        console.log('date style');
+        if(this.disabled(date)){
+            return {
+                cursor: 'not-allowed'
+            }
+        }
+
+        return {};
     }
 
     /*
@@ -240,18 +273,15 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @param date
     * @emit newDate: moment by datePicked
     */
-    public pickDate(date) {
-        if (!date) return;
-        let newDate = new moment(date.format());
-
-        if (this.minDate && newDate.isBefore(this.minDate)) {
-            return false;
+    public pickDate(date, e: MouseEvent) {
+        if(this.disabled(date)) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            // emit the date
+            let newDate = new moment(date.format());
+            this.datePicked.emit(newDate);
         }
-        if (this.maxDate && newDate.isAfter(this.maxDate)) {
-            return false;
-        }
-
-        this.datePicked.emit(newDate);
     }
 
     /*
