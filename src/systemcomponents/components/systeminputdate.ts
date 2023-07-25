@@ -187,7 +187,7 @@ export class SystemInputDate implements OnInit, ControlValueAccessor {
     public isHoliday(date){
         if(!date) return false;
         let df = date.format('YYYY-MM-DD');
-        return !!this.holidays.find(h => h.holiday_date == df)
+        return !!this.holidays.find(h => h.holiday_date.substr(0, 10) == df)
     }
 
     public isEnabledDay(date){
