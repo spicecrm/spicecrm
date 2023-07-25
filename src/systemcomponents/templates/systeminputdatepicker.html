@@ -34,7 +34,7 @@
                 </abbr>
             </td>
             <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day, $event)" [ngClass]="{'slds-disabled-text': disabled(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
-                <span [class]="notCurrentMonth(day) ? 'slds-day_adjacent-month' : 'slds-day'" [ngStyle]="getDayStyle(day)">{{day.date()}}</span>
+                <span [class]="notCurrentMonth(day) && !disabled(day) ? 'slds-day_adjacent-month' : 'slds-day'" [ngStyle]="getDayStyle(day)">{{day.date()}}</span>
             </td>
         </tr>
         </tbody>
@@ -58,7 +58,7 @@
                 </abbr>
             </td>
             <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day, $event)" [ngClass]="{'slds-disabled-text': disabled(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
-                <span [class]="notCurrentMonth(day) ? 'slds-day_adjacent-month' : 'slds-day'" [ngStyle]="getDayStyle(day)">{{day.date()}}</span>
+                <span [class]="notCurrentMonth(day) && !disabled(day) ? 'slds-day_adjacent-month' : 'slds-day'" [ngStyle]="getDayStyle(day)">{{day.date()}}</span>
             </td>
         </tr>
         </tbody>

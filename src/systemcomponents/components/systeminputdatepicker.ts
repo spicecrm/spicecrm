@@ -283,7 +283,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
      */
     public isHoliday(date){
         let df = date.format('YYYY-MM-DD');
-        return !!this.holidays.find(h => h.holiday_date == df)
+        return !!this.holidays.find(h => h.holiday_date.substr(0, 10) == df)
     }
 
     /*
