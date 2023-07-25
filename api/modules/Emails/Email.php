@@ -155,7 +155,7 @@ class Email extends SpiceBean
             }
 
             $this->from_addr_name = $this->cleanEmails($this->from_addr_name);
-            if (empty($this->from_addr) && isset($mailbox)) {
+            if (empty($this->from_addr) && !empty($mailbox)) {
                 $this->from_addr = $mailbox->getEmailAddress();
             } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
                 $this->from_addr = $this->from_addr_name;
@@ -1274,7 +1274,7 @@ class Email extends SpiceBean
     public function getMailbox()
     {
         $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
-
+        if ( $mailbox === false ) throw new \SpiceCRM\includes\ErrorHandlers\Exception('Error loading Mailbox (ID: '.$this->mailbox_id.').');
         return $mailbox;
     }
 
