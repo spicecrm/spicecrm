@@ -16,6 +16,7 @@ import {configurationService} from '../../services/configuration.service';
 import {modal} from '../../services/modal.service';
 import {view} from "../../services/view.service";
 import {FieldsetManagerCopyDialog} from "./fieldsetmanagercopydialog";
+import {subscription} from "../../services/subscription.service";
 
 @Component({
     selector: 'fieldset-manager',
@@ -422,11 +423,12 @@ export class FieldsetManager {
     /**
      * open copy modal
      */
-    public async openCopyModal() {
+    public async openCopyModal(subFieldset?) {
 
+        const fieldset = subFieldset ? subFieldset.item.fieldset : this.currentFieldSet;
         const copyModal: ComponentRef<FieldsetManagerCopyDialog> = await firstValueFrom(this.modalservice.openModal('FieldsetManagerCopyDialog'));
 
-        copyModal.instance.fieldset = this.metadata.getFieldset(this.currentFieldSet);
+        copyModal.instance.fieldset = this.metadata.getFieldset(fieldset);
         copyModal.instance.edit_mode = this.edit_mode;
 
         copyModal.instance.response.subscribe({
@@ -436,11 +438,11 @@ export class FieldsetManager {
 
                 const isLoading = this.modal.await('LBL_PROCESSING');
 
-                const existing = this.checkExisting(copyDialogRes.module, copyDialogRes.type, copyDialogRes.name);
+                const existing = await this.checkExisting(copyDialogRes.module, copyDialogRes.type, copyDialogRes.name);
 
                 if (!existing) {
                     copyModal.instance.close();
-                   this.copyFieldset(copyDialogRes, isLoading);
+                   this.copyFieldset(copyDialogRes, isLoading, subFieldset);
 
                 } else {
                     isLoading.next(true);
@@ -459,26 +461,31 @@ export class FieldsetManager {
      * @param name
      * @private
      */
-    private async checkExisting(module: string, type: 'custom' | 'global', name: string) {
+    private checkExisting(module: string, type: 'custom' | 'global', name: string) {
         const checkParams = {module, type, name};
-        return await firstValueFrom(this.backend.getRequest('configuration/spiceui/core/fieldsetalreadyexists', checkParams));
+        return firstValueFrom(this.backend.getRequest('configuration/spiceui/core/fieldsetalreadyexists', checkParams));
     }
 
     /**
      * copy fieldset
      * @param copyDialogRes
      * @param isLoading
+     * @param subFieldset
      * @private
      */
-    private copyFieldset(copyDialogRes, isLoading) {
+    private copyFieldset(copyDialogRes, isLoading, subFieldset?) {
 
         const newFieldsetId = this.modelutilities.generateGuid();
 
-        const postData = {
-            add: {[newFieldsetId]: this.copyFieldsetToMetadata(newFieldsetId, copyDialogRes)}
-        };
+        // set the new parent fieldset for the sub fieldset
+        if (subFieldset) {
+            subFieldset.item.fieldset = newFieldsetId;
+        }
 
-        this.backend.postRequest('configuration/spiceui/core/fieldsets', {}, postData).subscribe({
+        const fieldsetData = {[newFieldsetId]: this.copyFieldsetToMetadata(newFieldsetId, copyDialogRes)};
+        const postData = { add: fieldsetData};
+
+        this.backend.postRequest('configuration/spiceui/core/fieldsets', {}, { add: fieldsetData}).subscribe({
             next: () => {
                 isLoading.next(true);
                 isLoading.complete();
@@ -486,15 +493,18 @@ export class FieldsetManager {
                 this.toast.sendToast('LBL_DATA_SAVED', 'success');
 
                 // reset the view data
-                this.currentModule = copyDialogRes.module;
-                this.currentFieldSet = newFieldsetId;
-                this.currentFieldSetName = copyDialogRes.name;
+                if (!subFieldset) {
+                    this.currentModule = copyDialogRes.module;
+                    this.currentFieldSet = newFieldsetId;
+                    this.currentFieldSetName = copyDialogRes.name;
+                }
+
                 this.loadCurrentFieldset();
             },
             error: () => {
                 isLoading.next(false);
                 isLoading.complete();
-                this.broadcast.broadcastMessage('metadata.updatefieldsets', {delete: postData.add});
+                this.broadcast.broadcastMessage('metadata.updatefieldsets', {delete: fieldsetData});
                 this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
             }
         });
