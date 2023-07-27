@@ -528,7 +528,7 @@ class ImapHandler extends TransportHandler
                 // add a message for whom this was intended for
                 $email->name .= ' [to '.$this->mailbox->catch_all_address.' intended for ' . join(', ', $intendedRecipients) . ']';
             } else {
-                throw ( new MessageInterceptedException('Email intercepted.'))->setErrorCode('emailIntercepted');
+                throw ( new MessageInterceptedException('Email intercepted.'))->setErrorCode('emailIntercepted')->setLbl('LBL_EMAIL_INTERCEPTED');
             }
         }
 
