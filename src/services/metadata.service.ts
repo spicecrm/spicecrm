@@ -511,11 +511,11 @@ export class metadata {
         };
     }
 
-    public addFieldsetToFieldset(id, parent, itemid) {
+    public addFieldsetToFieldset(id, parent, itemid, config: any = {}) {
         this.fieldSets[parent].items.push({
             id: id,
             fieldset: itemid,
-            fieldconfig: {},
+            fieldconfig: config,
             sequence: 0
         });
 
@@ -526,11 +526,11 @@ export class metadata {
         }
     }
 
-    public addFieldToFieldset(id, parent, field) {
+    public addFieldToFieldset(id, parent, field, config: any = {}) {
         this.fieldSets[parent].items.push({
             id: id,
             field: field,
-            fieldconfig: {},
+            fieldconfig: config,
             sequence: 0
         });
 
