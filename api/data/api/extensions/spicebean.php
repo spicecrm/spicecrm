@@ -136,6 +136,12 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'required'    => false,
                 'description' => 'encoded fields - DEPRECATED and to be removed',
+            ],
+            'resolvelinks' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => false,
+                'description' => 'telling to resolve the links in that particular request',
             ]
         ]
     ],

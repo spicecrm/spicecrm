@@ -8,10 +8,10 @@ use DateTime;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -21,6 +21,7 @@ use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\Users\User;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * user password management
@@ -90,20 +91,24 @@ class SpiceCRMPasswordUtils
 
         $userObj = false;
         $db = DBManagerFactory::getInstance();
-        $expirationTime = 5;
-        if (isset(SpiceConfig::getInstance()->config['passwordsetting']['linkexpirationtime'])) {
-            $expirationTime = SpiceConfig::getInstance()->config['passwordsetting']['linkexpirationtime'];
-        }
 
-        $now = new DateTime();
-        $now->setTimestamp(time() - ($expirationTime * 60));
-        $userId = $db->fetchOne(sprintf("SELECT user_id FROM users_password_tokens WHERE id = '%s' AND date_generated >= '" . $now->format($timedate->get_db_date_time_format()) . "'", $db->quote($token)));
+        if (isset(SpiceConfig::getInstance()->config['passwordsetting']['linkexpirationtime'])) {
+            $expirationTime = SpiceConfig::getInstance()->config['passwordsetting']['linkexpirationtime']*1;
+        } else $expirationTime = 5;
+
+        # After that, $expirationTime might be 0. This means "off".
+        if ( $expirationTime ) {
+            $now = new DateTime();
+            $now->setTimestamp(time() - ($expirationTime * 60));
+            $sqlExpirationTime = "AND date_generated >= '" . $now->format( $timedate->get_db_date_time_format() )."'";
+        } else $sqlExpirationTime = '';
+
+        $userId = $db->fetchOne(sprintf("SELECT user_id FROM users_password_tokens WHERE id = '%s' " . $sqlExpirationTime, $db->quote($token)));
         if ($userId) {
             /** @var User $userObj */
             $userObj = BeanFactory::getBean("Users", $userId['user_id']);
         }
         return $userObj;
-
     }
 
     /**
@@ -117,7 +122,7 @@ class SpiceCRMPasswordUtils
     {
         $userObj = $this->getUserByToken($token);
         if (!$userObj) {
-            throw new ForbiddenException("Invalid Token");
+            throw new BadRequestException("Invalid Token");
         }
 
         $userObj->setNewPassword($password);
@@ -266,4 +271,40 @@ class SpiceCRMPasswordUtils
             $pwdCheck .= '.+';
         return $pwdCheck;
     }
+
+    /**
+     * @param $lang
+     * @return string
+     */
+    public static function getPwdGuideline( $lang )
+    {
+        global $app_strings;
+        $app_strings = SpiceUtils::returnApplicationLanguage($lang);
+
+        $guideline = '';
+
+        if (SpiceConfig::getInstance()->config['passwordsetting']['oneupper']) {
+            $guideline .= $app_strings['MSG_PASSWORD_ONEUPPER'] . ', ';
+        }
+        if (SpiceConfig::getInstance()->config['passwordsetting']['onelower']) {
+            $guideline .= $app_strings['MSG_PASSWORD_ONELOWER'] . ', ';
+        }
+        if (SpiceConfig::getInstance()->config['passwordsetting']['onenumber']) {
+            $guideline .= $app_strings['MSG_PASSWORD_ONENUMBER'] . ', ';
+        }
+        if (SpiceConfig::getInstance()->config['passwordsetting']['onespecial']) {
+            $guideline .= $app_strings['MSG_PASSWORD_ONESPECIAL'] . ', ';
+        }
+        if (SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength']) {
+            $guideline .= SpiceConfig::getInstance()->config['passwordsetting']['minpwdlength'];
+            $guideline .= ' ' . $app_strings['LBL_CHARACTERS'] . ', ';
+        }
+        $guideline = substr($guideline, 0, -2);
+        $guideline = ucfirst($guideline);
+
+        $guideline = $app_strings['LBL_AT_LEAST'] . ': ' . $guideline . '.';
+
+        return $guideline;
+    }
+
 }
