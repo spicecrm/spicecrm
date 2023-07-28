@@ -366,7 +366,7 @@ if (file_exists("extensions/modules/ServiceOrders")) {
     ];
 }
 if (file_exists("extensions/modules/ProcurementDocs")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Task']['relationships']['procurementdocs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Task']['fields']['procurementdocs'] = [
         'name'         => 'procurementdocs',
         'type'         => 'link',
         'relationship' => 'procurementdocs_tasks',

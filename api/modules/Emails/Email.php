@@ -16,6 +16,8 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
@@ -75,10 +77,6 @@ class Email extends SpiceBean
         parent::__construct();
 
         $this->emailAddress = BeanFactory::getBean('EmailAddresses');
-
-        if ($this->load_relationship('mailboxes')) {
-            $mailbox = $this->mailboxes->getBeans()[$this->mailbox_id];
-        }
     }
 
     /**
@@ -131,9 +129,14 @@ class Email extends SpiceBean
             LoggerManager::getLogger()->debug("EMAIL - tried to save a duplicate Email record");
         } else {
 
-            if (!empty($this->mailbox_id)) {
-                $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
-                if ($mailbox) // check on object (mainly for spicecrm installation process)
+            if ( empty( $this->mailbox_id )) {
+                if ( $this->to_be_sent ) {
+                    $mailbox = Mailbox::getDefaultMailbox();
+                    $this->mailbox_id = $mailbox->id;
+                }
+            } else {
+                $mailbox = $this->getMailbox();
+                if ( $mailbox ) // check on object (mainly for spicecrm installation process)
                     $mailbox->initTransportHandler();
             }
 
@@ -209,7 +212,11 @@ class Email extends SpiceBean
                 $this->loadAttachments();
                 $result = $this->sendEmail();
                 $this->to_be_sent = false;
-            } catch (Exception $e) {
+            }
+            catch ( MessageInterceptedException $e ) {
+                throw $e;
+            }
+            catch (Exception $e) {
                 $result = [
                     'result' => false,
                     'message' => 'Mail not sent: ' . $e->getMessage(),

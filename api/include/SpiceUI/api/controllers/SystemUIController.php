@@ -159,6 +159,40 @@ class SystemUIController{
     }
 
     /**
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getDashboardSets(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $dashboardSets = [];
+        $query = $db->query("SELECT * FROM dashboardsets");
+        while( $row = $db->fetchByAssoc($query) ){
+            $dashboardSets[] = $row;
+        }
+        return $res->withJson($dashboardSets);
+    }
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function getDashboards(Request $req, Response $res, $args): Response
+    {
+        $db = DBManagerFactory::getInstance();
+        $dashboards = [];
+        $query = $db->query("SELECT * FROM dashboards");
+        while( $row = $db->fetchByAssoc($query) ){
+            $dashboards[] = $row;
+        }
+        return $res->withJson($dashboards);
+    }
+    /**
      * get system and custom logic hooks
      * @param Request $req
      * @param Response $res
