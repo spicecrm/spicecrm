@@ -332,6 +332,7 @@ export class ComponentsetManager {
 
             this.backend.postRequest('configuration/spiceui/core/componentsets', {}, postData).subscribe((res: any) => {
                 this.broadcast.broadcastMessage('metadata.updatecomponentsets', postData);
+                this.configurationService.reloadTaskData('componentsets');
                 this.toast.sendToast('changes saved');
             });
 
