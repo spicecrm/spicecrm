@@ -22,7 +22,7 @@ export class ModuleConfigAddDialog implements OnInit {
     @Input() public mode: string = "";
     @Input() public currentComponent: any;
     @Input() public currentRole: string = "";
-    @Input() public currentType: string = "";
+    @Input() public currentType: string = "custom";
     @Input() public currentModule: string = "";
     @Input() public allowGlobal: boolean = false;
 
@@ -90,11 +90,10 @@ export class ModuleConfigAddDialog implements OnInit {
     public ngOnInit() {
         if (!this.allowGlobal) {
             this.types.pop();
-            this.currentType = 'custom';
         }
 
         this.moduleSelectList= [{id: "*", name: "*"}];
-        if (this.mode == "add" && "*" == this.currentModule) {
+        if (this.mode in {add:true, copy: true} && "*" == this.currentModule) {
             this.moduleSelectedItem = {id: "*", name: "*"};
         }
         let modules = this.metadata.getModules();
@@ -102,41 +101,10 @@ export class ModuleConfigAddDialog implements OnInit {
         for(let module of modules){
             this.moduleSelectList.push({id: module, name: module});
 
-            if (this.mode == "add" && module == this.currentModule) {
+            if (this.mode in {add:true, copy: true} && module == this.currentModule) {
                 this.moduleSelectedItem = {id: module, name: module};
             }
         }
-
-        /*
-        // get all modules
-        this.backend.getRequest('configuration/configurator/entries/sysmodules').subscribe(data => {
-            this.moduleSelectList.push({id: "*", name: "*"});
-            if (this.mode == "add" && "*" == this.currentModule) {
-                this.moduleSelectedItem = {id: "*", name: "*"};
-            }
-            for (let module of data) {
-                this.moduleSelectList.push({id: module.id, name: module.module, group: "global"});
-
-                if (this.mode == "add" && module.module == this.currentModule) {
-                    this.moduleSelectedItem = {id: module.id, name: module.module, group: "global"};
-                }
-            }
-            this.sortArray(this.moduleSelectList);
-            this.moduleSelectList = Object.assign([], this.moduleSelectList);
-        });
-        this.backend.getRequest('configuration/configurator/entries/syscustommodules').subscribe(data => {
-
-            for (let module of data) {
-                this.moduleSelectList.push({id: module.id, name: module.module, group: "custom"});
-
-                if (this.mode == "add" && module.module == this.currentModule) {
-                    this.moduleSelectedItem = {id: module.id, name: module.module, group: "custom"};
-                }
-            }
-            this.sortArray(this.moduleSelectList);
-            this.moduleSelectList = Object.assign([], this.moduleSelectList);
-        });
-        */
 
         this.roleSelectList = [{id: "*", name: "*", group: "global"}];
         this.roleSelectedItem = {id: "*", name: "*", group: "global"};
@@ -148,42 +116,6 @@ export class ModuleConfigAddDialog implements OnInit {
                 this.roleSelectedItem = {id: role.id, name: role.name, group: "global"};
             }
         }
-
-
-
-        /*
-        // get all roles
-        this.backend.getRequest('configuration/configurator/entries/sysuiroles').subscribe(data => {
-
-            this.roleSelectList.push({id: "*", name: "*"});
-            for (let role of data) {
-                this.roleSelectList.push({id: role.id, name: role.name, group: "global"});
-
-                if (this.mode == "copy" && role.id == this.currentRole) {
-                    this.roleSelectedItem = {id: role.id, name: role.name, group: "global"};
-                }
-                if (this.currentRole == "*") {
-                    this.roleSelectedItem = {id: "*", name: "*"};
-                }
-            }
-            this.sortArray(this.roleSelectList);
-            this.roleSelectList = Object.assign([], this.roleSelectList);
-        });
-        this.backend.getRequest('configuration/configurator/entries/sysuicustomroles').subscribe(data => {
-            for (let role of data) {
-                this.roleSelectList.push({id: role.id, name: role.name, group: "custom"});
-
-                if (this.mode == "copy" && role.id == this.currentRole) {
-                    this.roleSelectedItem = {id: role.id, name: role.name, group: "custom"};
-                }
-                if (this.currentRole == "*") {
-                    this.roleSelectedItem = {id: "*", name: "*"};
-                }
-            }
-            this.sortArray(this.roleSelectList);
-            this.roleSelectList = Object.assign([], this.roleSelectList);
-        });
-        */
 
         let components = this.configuration.getData('components');
         for(let component in components){
@@ -199,46 +131,6 @@ export class ModuleConfigAddDialog implements OnInit {
             this.compDisabled = true;
             this.compSelectedItem = {id: this.currentComponent.id, name: this.currentComponent.component};
         }
-
-        /*
-        // get all objectrepositories
-        this.backend.getRequest('configuration/configurator/entries/sysuiobjectrepository').subscribe(data => {
-
-            for (let comp of data) {
-                this.compSelectList.push({
-                    id: comp.id,
-                    name: comp.object,
-                    deprecated: comp.deprecated,
-                    group: "global"
-                });
-
-                if (this.mode == "copy") {
-                    this.compDisabled = true;
-                    this.compSelectedItem = {id: this.currentComponent.id, name: this.currentComponent.component};
-                }
-            }
-            this.sortArray(this.compSelectList);
-            this.compSelectList = Object.assign([], this.compSelectList);
-        });
-        this.backend.getRequest('configuration/configurator/entries/sysuicustomobjectrepository').subscribe(data => {
-            for (let comp of data) {
-                this.compSelectList.push({
-                    id: comp.id,
-                    name: comp.object,
-                    deprecated: comp.deprecated,
-                    group: "custom"
-                });
-
-                if (this.mode == "copy") {
-                    this.compDisabled = true;
-                    this.compSelectedItem = {id: this.currentComponent.id, name: this.currentComponent.component};
-                }
-            }
-            this.sortArray(this.compSelectList);
-            this.compSelectList = Object.assign([], this.compSelectList);
-        });
-        */
-
     }
 
 
@@ -334,11 +226,14 @@ export class ModuleConfigAddDialog implements OnInit {
         saveComp.type = this.currentType;
 
         let path = "";
+        let loadTaskKey: string;
         if (saveComp.module == "*") {
             path = "componentdefaultalreadyexists";
+            loadTaskKey = 'componentdefaultconfigs';
             delete saveComp.module;
         } else {
             path = "componentmodulealreadyexists";
+            loadTaskKey = 'componentmoduleconfigs';
         }
 
         // check if component exists
