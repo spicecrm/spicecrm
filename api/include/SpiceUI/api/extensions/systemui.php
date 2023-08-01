@@ -77,6 +77,22 @@ $routes = [
         ]
     ],
     [
+        'method' => 'get',
+        'route' => '/system/spiceui/core/loadtaskitem/{name}',
+        'class' => SpiceUILoadtasksController::class,
+        'function' => 'executeLoadTaskItemByName',
+        'description' => 'executes the loaded task item by name',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'name' => [
+                'in' => 'path',
+                'description' => 'the name of the loadtask item',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'moduledefs',
+            ]
+        ]
+    ],
+    [
         'method' => 'post',
         'route' => '/configuration/spiceui/core/modules/{module}/listtypes',
         'oldroute' => '/spiceui/core/modules/{module}/listtypes',
