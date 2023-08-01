@@ -43,7 +43,7 @@ export class FieldsetManagerCopyDialog implements OnInit{
     }
 
     ngOnInit(){
-        this.currentName = this.fieldset.name;
+        this.currentName = this.fieldset.name + ' (custom)';
         this.currentModule = this.fieldset.module;
         if(this.edit_mode == "all"){
             this.currentType = this.fieldset.type;
