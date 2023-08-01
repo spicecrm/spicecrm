@@ -415,7 +415,7 @@ export class ActionsetManager {
             modal.instance.actionsetModule = this.currentModule;
             modal.instance.mode = "copy";
             modal.instance.edit_mode = this.edit_mode;
-            modal.instance.actionsetName = (' ' + this.currentActionSet.name).slice(1);
+            modal.instance.actionsetName = this.currentActionSet.name + ' (custom)';
 
             modal.instance.closedialog.subscribe(added => {
                 if (added) {
