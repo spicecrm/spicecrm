@@ -132,6 +132,10 @@ class AdminController
         $statsArray['database'] = $dbStats['tables'];
         // get the fts stats
         $statsArray['elastic'] = SpiceFTSHandler::getInstance()->getStats();
+        $streamFact = StreamFactory::getInstance()->getStreams();
+
+        // don't allow retrieving statistics from cloud due to timeout issue
+        if($streamFact['upload']['config']) return $res->withJson($statsArray);
 
         $statsArray['uploadfiles'] = $this->getDirectorySize(StreamFactory::getPathPrefix('upload'));
 
