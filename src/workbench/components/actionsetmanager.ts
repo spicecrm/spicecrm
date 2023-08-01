@@ -398,6 +398,7 @@ export class ActionsetManager {
                     loadingModalRef.instance.self.destroy();
                     this.toast.sendToast('changes saved');
                     this.loadCurrentActionset(this.currentActionSet.id);
+                    this.configurationService.reloadTaskData('actionsets');
                 } else {
                     loadingModalRef.instance.self.destroy();
                     this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
@@ -444,6 +445,7 @@ export class ActionsetManager {
                     this.currentActionSet.actions = actions;
                     // this.currentActionSet.package = this.currentActionSet.package;
                     this.currentActionSet.isnew = true;
+                    this.configurationService.reloadTaskData('actionsets');
                     this.view.setEditMode();
                 }
             });
