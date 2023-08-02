@@ -81,4 +81,17 @@ class StreamFactory extends SpiceSingleton
 
         $classInstance->register($name, self::$streams[$name]['config']->class_config);
     }
+
+    /**
+     * returns the streams array
+     * @return array
+     */
+    public function getStreams()
+    {
+        if (self::$streams)
+            return self::$streams;
+        else {
+            return [];
+        }
+    }
 }
