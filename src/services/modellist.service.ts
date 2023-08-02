@@ -740,7 +740,7 @@ export class modellist implements OnDestroy {
             list.listcomponent = component;
         });
         this.determineListFields();
-        this.userpreferences.setPreference('defaultlisttype', component, false, this.module);
+        this.userpreferences.setPreference('defaultlisttype', component, true, this.module);
         this.emitListTypeComponentChange();
     }
 
