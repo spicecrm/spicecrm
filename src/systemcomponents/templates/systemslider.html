@@ -1,8 +1,15 @@
 <div class="slds-form-element">
     <div class="slds-form-element__control">
-        <div class="slds-slider">
-            <input type="range" [min]="min" [step]="step" [max]="max" class="slds-slider__range" [(ngModel)]="value" [disabled]="disabled">
-            <span *ngIf="displayValue" class="slds-slider__value" aria-hidden="true">{{value}}</span>
+        <div class="slds-slider slds-grid">
+            <div class="slds-align--absolute-center slds-grow slds-is-relative">
+                <input type="range" [min]="min" [step]="step" [max]="max" class="slds-slider__range" [(ngModel)]="value" [disabled]="disabled">
+                <div style="width: 100%; top: calc(50% - 2px); position: absolute; padding-left: 16px; pointer-events: none;" class="slds-grid slds-grid--align-end">
+                    <div [style.width.%]="100 - value" style="background: #f3f3f3; height: 4px;"></div>
+                </div>
+            </div>
+            <ng-container *ngIf="displayValue">
+                <span class="slds-slider__value" aria-hidden="true">{{value}}</span>
+            </ng-container>
         </div>
     </div>
 </div>
