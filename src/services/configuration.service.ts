@@ -425,4 +425,11 @@ export class configurationService {
 
     }
 
+    /**
+     * broadcast reload task data to loader service to reload task item data from backend and cache it
+     * @param key
+     */
+    public reloadTaskData(key: string) {
+        this.broadcast.message$.emit({messagetype: 'configuration.reloadtaskdata', messagedata: key})
+    }
 }
