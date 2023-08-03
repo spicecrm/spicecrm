@@ -47,10 +47,10 @@ export class ObjectListViewAggregateItem {
     }
 
     /**
-     * returns if the modellist is loading and thus disabled the checkboxes
+     * disables the checkbox when the list is loading or another aggregate has been changed
      */
-    get loading() {
-        return this.modellist.isLoading;
+    get disabled(){
+        return this.modellist.isLoading|| !this.modellist.canChangeAggegate(this.aggregatename);
     }
 
     /**
@@ -62,10 +62,10 @@ export class ObjectListViewAggregateItem {
         this.isChecked = value;
         if (value) {
             this.modellist.setAggregate(this.aggregatename, this.bucketitem.aggdata);
-            this.modellist.reLoadList();
+            this.modellist.scheduleReloadList();
         } else {
             const removed = this.modellist.removeAggregate(this.aggregatename, this.bucketitem.aggdata);
-            if (removed) this.modellist.reLoadList();
+            if (removed) this.modellist.scheduleReloadList();
         }
     }
 
