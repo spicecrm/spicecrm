@@ -334,6 +334,16 @@ class UploadStream extends StreamWrapperAbstract implements StreamWrapperRegiste
     {
         return @stat(self::path($path));
     }
+
+    public function getStats(string $name, ?object $config = null, $path){
+        $size = 0;
+        $count = 0;
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(self::getDir())) as $file) {
+            $size += $file->getSize();
+            $count++;
+        }
+        return ['size' => $size, 'count' => $count];
+    }
 }
 
 
