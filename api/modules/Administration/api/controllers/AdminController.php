@@ -137,7 +137,7 @@ class AdminController
         // don't allow retrieving statistics from cloud due to timeout issue
         if($streamFact['upload']['config']) return $res->withJson($statsArray);
 
-        $statsArray['uploadfiles'] = $this->getDirectorySize(StreamFactory::getPathPrefix('upload'));
+        $statsArray['uploadfiles'] = StreamFactory::getStats('upload');
 
         $params = $req->getQueryParams();
         if ($params['summary']) {
@@ -149,21 +149,6 @@ class AdminController
             ]);
         }
         return $res->withJson($statsArray);
-    }
-
-    /**
-     * @param $directory
-     * @return array
-     */
-    private function getDirectorySize($directory)
-    {
-        $size = 0;
-        $count = 0;
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory)) as $file) {
-            $size += $file->getSize();
-            $count++;
-        }
-        return ['size' => $size, 'count' => $count];
     }
 
     /**
