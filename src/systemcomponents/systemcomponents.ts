@@ -175,6 +175,9 @@ import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcont
 import {SystemHtmlEditor} from "./components/systemhtmleditor";
 import {SystemInputDashboardset} from "./components/systeminputdashboardset";
 import {SystemInputDashboard} from "./components/systeminputdashboard";
+import {SystemSplitContainer} from "./components/systemsplitcontainer";
+import {SystemSplitContainerRight} from "./components/systemsplitcontainerright";
+import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
 
 
 
@@ -343,7 +346,10 @@ import {SystemInputDashboard} from "./components/systeminputdashboard";
         SystemHtmlEditor,
         SystemStripHtmlTagsPipe,
         SystemInputDashboardset,
-        SystemInputDashboard
+        SystemInputDashboard,
+        SystemSplitContainer,
+        SystemSplitContainerLeft,
+        SystemSplitContainerRight
     ],
     exports: [
         PaginationControlsComponent,
@@ -483,7 +489,10 @@ import {SystemInputDashboard} from "./components/systeminputdashboard";
         SystemInputTaxCode,
         SystemDisplayCurrencySymbol,
         SystemInputDashboardset,
-        SystemInputDashboard
+        SystemInputDashboard,
+        SystemSplitContainer,
+        SystemSplitContainerLeft,
+        SystemSplitContainerRight
     ]
 })
 export class SystemComponents {}

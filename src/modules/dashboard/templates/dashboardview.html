@@ -3,7 +3,7 @@
         <dashboard-select-panel (hide)="showpanel = false" (dashboardSelect)="loadDashboard($event)"></dashboard-select-panel>
     </div>
     <div class="slds-theme--default" [ngStyle]="dashboardstyle">
-        <dashboard-container-header [showdashboardselector]="ismobile" (showselect)="showpanel = true;"></dashboard-container-header>
+        <dashboard-container-header [showdashboardselector]="!showpanel" (showselect)="showpanel = true;"></dashboard-container-header>
         <dashboard-container-body *ngIf="dashboardlayout.dashboardId"></dashboard-container-body>
         <div system-to-bottom *ngIf="!dashboardlayout.dashboardId" class="slds-align--absolute-center">
             <span class="slds-text-heading--small">Please Select a Dashboard</span>
