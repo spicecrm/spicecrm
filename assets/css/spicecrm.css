@@ -529,3 +529,17 @@ input[type="submit"] {
 .child-height-full > * {
     height: 100%;
 }
+
+.spice-split-container-splitter {
+    left: -8px;
+    box-shadow: 0 0 2px;
+    padding: 0 2px 2px 2px;
+    border-radius: 0 0 2px 2px;
+}
+
+
+.spice-split-container-splitter button {
+    border: 0 !important;
+    width: 12px !important;
+    margin: 0 !important;
+}
