@@ -229,7 +229,7 @@ export class FolderViewTree implements OnInit {
         if ( !this.modellist.checkAggregate('folder_id', aggdata )) {
             this.modellist.removeAggregatesOfField('folder_id');
             this.modellist.setAggregate('folder_id', aggdata );
-            this.modellist.reLoadList();
+            this.modellist.scheduleReloadList();
         }
     }
 

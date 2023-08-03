@@ -139,6 +139,21 @@ export class modellist implements OnDestroy {
     public selectedAggregates: string[] = [];
 
     /**
+     * a timeout to handle aggregate changes
+     *
+     * @private
+     */
+    private reloadTimeOut: any = undefined;
+
+    /**
+     * holds changed aggergates to allow multiple changes at once
+     */
+    public changedAggregates: any = {
+        added: [],
+        deleted:[]
+    }
+
+    /**
      * search geo data
      */
     public searchGeo: geoSearch;
@@ -868,6 +883,31 @@ export class modellist implements OnDestroy {
     }
 
     /**
+     * schedules  reload if no further changes are set
+     */
+    public scheduleReloadList(){
+        // cancel any ongoing search
+        if (this.reloadTimeOut) {
+            window.clearTimeout(this.reloadTimeOut);
+            this.reloadTimeOut = undefined;
+        }
+
+        this.reloadTimeOut = window.setTimeout(() => {
+            this.exceuteReload();
+        }, 1000);
+    }
+
+    /**
+     * checks if we have changes and if then execcutes the reload
+     * @private
+     */
+    private exceuteReload(){
+        if(this.changedAggregates.added.length > 0 || this.changedAggregates.deleted.length > 0){
+            this.reLoadList();
+        }
+    }
+
+    /**
      * reloads the last loaded list
      */
     public reLoadList(quiet: boolean = false) {
@@ -877,6 +917,11 @@ export class modellist implements OnDestroy {
             this.isLoading = false;
             return of(false);
         } else {
+            // reset the changed data
+            this.changedAggregates.added = [];
+            this.changedAggregates.deleted = [];
+
+            // execute the load
             return this.getListData(quiet);
         }
     }
@@ -974,6 +1019,14 @@ export class modellist implements OnDestroy {
      */
     public setAggregate(aggregate, aggdata) {
         this.selectedAggregates.push(aggregate + '::' + aggdata);
+
+        // handle also that we record the changes
+        let delIndex = this.changedAggregates.deleted.indexOf(aggregate + '::' + aggdata);
+        if(delIndex >= 0){
+            this.changedAggregates.deleted.splice(delIndex, 1);
+        } else {
+            this.changedAggregates.added.push(aggregate + '::' + aggdata);
+        }
     }
 
     /**
@@ -1007,6 +1060,30 @@ export class modellist implements OnDestroy {
             return false;
         }
         this.selectedAggregates.splice(index, 1);
+
+        // record the changes
+        let addIndex = this.changedAggregates.added.indexOf(aggregate + '::' + aggdata);
+        if(addIndex >= 0){
+            this.changedAggregates.added.splice(addIndex, 1);
+        } else {
+            this.changedAggregates.deleted.push(aggregate + '::' + aggdata);
+        }
+
+        // return true
+        return true;
+    }
+
+    /**
+     * checks if an aggregate can be changed or changed reords for another aggregate are existing
+     *
+     * @param aggregate
+     */
+    public canChangeAggegate(aggregate){
+        if(this.changedAggregates.added.length == 0 && this.changedAggregates.deleted.length == 0) return true;
+
+        if(this.changedAggregates.added.filter(a => a.indexOf(aggregate + '::') != 0).length > 0) return false;
+        if(this.changedAggregates.deleted.filter(a => a.indexOf(aggregate + '::') != 0).length > 0) return false;
+
         return true;
     }
 
