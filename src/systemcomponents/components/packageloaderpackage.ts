@@ -82,7 +82,7 @@ export class PackageLoaderPackage implements OnInit {
         this.backend.getRequest('configuration/packages/package/' + packagename + this.repositoryaddurl).subscribe(
             response => {
                 this.loading = 'configuration';
-                this.loader.reloadPrimary().subscribe(status => {
+                this.loader.load().subscribe(status => {
                     this.package.installed = true;
                     this.broadcast.broadcastMessage('loader.reloaded');
                     this.loading = '';
@@ -124,7 +124,7 @@ export class PackageLoaderPackage implements OnInit {
         this.backend.deleteRequest('configuration/packages/package/' + packagename).subscribe(response => {
             this.loading = 'configuration';
             this.package.installed = false;
-            this.loader.reloadPrimary().subscribe(status => {
+            this.loader.load().subscribe(status => {
                 this.broadcast.broadcastMessage('loader.reloaded');
                 this.loading = '';
             });

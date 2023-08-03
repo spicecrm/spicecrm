@@ -57,7 +57,7 @@ abstract class TransportHandler
      */
     abstract public function testConnection($testEmail);
 
-    public function sendMail($email)
+    public function sendMail($email, $noSecurityCheck = false )
     {
         $timedate = TimeDate::getInstance();
 
@@ -79,7 +79,7 @@ abstract class TransportHandler
         if ($this->mailbox->stylesheet != '') {
             $email->addStylesheet($this->mailbox->stylesheet);
         }
-        $message = $this->composeEmail($email);
+        $message = $this->composeEmail($email, $noSecurityCheck );
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
@@ -189,9 +189,9 @@ abstract class TransportHandler
     {
         # Parse the (comma separated) content of the field "whitelist" and build an array
         $whiteAddresses = empty( $this->mailbox->whitelist ) ? [] : explode(',', $this->mailbox->whitelist );
-        # Check, if the destination address is one of the addresses in the array (ignoring space characters) and return true;
+        # Check, if the destination address is one of the addresses in the array (ignoring space characters in case it is a phone number) and return true;
         foreach ( $whiteAddresses as $address ) {
-            if ( str_replace(' ', '', $address ) === str_replace( ' ', '', $destinationAddress )) return true;
+            if ( mb_strtolower( str_replace(' ', '', $address )) === mb_strtolower( str_replace( ' ', '', $destinationAddress ))) return true;
         }
         return false;
     }

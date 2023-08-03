@@ -16,6 +16,8 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
@@ -153,7 +155,7 @@ class Email extends SpiceBean
             }
 
             $this->from_addr_name = $this->cleanEmails($this->from_addr_name);
-            if (empty($this->from_addr) && isset($mailbox)) {
+            if (empty($this->from_addr) && !empty($mailbox)) {
                 $this->from_addr = $mailbox->getEmailAddress();
             } elseif (empty($this->from_addr) && !empty($this->from_addr_name)) {
                 $this->from_addr = $this->from_addr_name;
@@ -210,7 +212,11 @@ class Email extends SpiceBean
                 $this->loadAttachments();
                 $result = $this->sendEmail();
                 $this->to_be_sent = false;
-            } catch (Exception $e) {
+            }
+            catch ( MessageInterceptedException $e ) {
+                throw $e;
+            }
+            catch (Exception $e) {
                 $result = [
                     'result' => false,
                     'message' => 'Mail not sent: ' . $e->getMessage(),
@@ -1268,7 +1274,7 @@ class Email extends SpiceBean
     public function getMailbox()
     {
         $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
-
+        if ( $mailbox === false ) throw new \SpiceCRM\includes\ErrorHandlers\Exception('Error loading Mailbox (ID: '.$this->mailbox_id.').');
         return $mailbox;
     }
 

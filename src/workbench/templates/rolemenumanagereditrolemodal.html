@@ -3,101 +3,113 @@
         <system-label label="LBL_ROLE"></system-label>
     </system-modal-header>
     <system-modal-content>
-        <div class="slds-form-element__control">
-            <label class="slds-form-element__label">
-                <system-label label="LBL_SCOPE"></system-label>
-            </label>
-            <system-input-radio-button-group [(ngModel)]="newRole.scope" [inputOptions]="radioOptions"
-                                             [disabled]="!!newRole.id"></system-input-radio-button-group>
-        </div>
-        <div class="slds-grid">
-<!--            <div class="slds-form-element__control slds-size&#45;&#45;1-of-4 slds-p-right&#45;&#45;xxx-small">-->
-<!--                <label class="slds-form-element__label">-->
-<!--                    <system-label label="LBL_ID"></system-label>-->
-<!--                </label>-->
-<!--                <system-input-text [(ngModel)]="newRole.id" [disabled]="true"></system-input-text>-->
-<!--            </div>-->
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
-                    <system-label label="LBL_NAME"></system-label>
-                </label>
-                <system-input-text [(ngModel)]="newRole.name"></system-input-text>
-            </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
-                    <system-label label="LBL_LABEL"></system-label>
-                </label>
-                <system-input-label [(ngModel)]="newRole.label"></system-input-label>
-            </div>
-        </div>
-        <div class="slds-grid">
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
-                    <system-label label="LBL_IDENTIFIER"></system-label>
-                </label>
-                <system-input-text [(ngModel)]="newRole.identifier" maxlength="3"></system-input-text>
-            </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+        <div class="slds-height_full">
+            <div class="slds-form-element__control">
                 <label class="slds-form-element__label">
-                    <system-label label="LBL_ICON"></system-label>
+                    <system-label label="LBL_SCOPE"></system-label>
                 </label>
-                <system-input-text [(ngModel)]="newRole.icon"></system-input-text>
+                <system-input-radio-button-group [(ngModel)]="newRole.scope" [inputOptions]="radioOptions"
+                                                 [disabled]="!!newRole.id"></system-input-radio-button-group>
             </div>
-<!--            <div class="slds-form-element__control slds-size&#45;&#45;1-of-4 slds-p-right&#45;&#45;xxx-small">-->
-<!--                <label class="slds-form-element__label">-->
-<!--                    <system-label label="LBL_DESCRIPTION"></system-label>-->
-<!--                </label>-->
-<!--                <system-input-text [(ngModel)]="newRole.description"></system-input-text>-->
-<!--            </div>-->
-        </div>
-        <div class="slds-grid slds-m-top--medium">
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <system-checkbox [(ngModel)]="newRole.systemdefault" [asinteger]="true"><system-label label="LBL_SYSTEM_DEFAULT"></system-label></system-checkbox>
+            <div class="slds-grid">
+                <!--            <div class="slds-form-element__control slds-size&#45;&#45;1-of-4 slds-p-right&#45;&#45;xxx-small">-->
+                <!--                <label class="slds-form-element__label">-->
+                <!--                    <system-label label="LBL_ID"></system-label>-->
+                <!--                </label>-->
+                <!--                <system-input-text [(ngModel)]="newRole.id" [disabled]="true"></system-input-text>-->
+                <!--            </div>-->
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                        <system-label label="LBL_NAME"></system-label>
+                    </label>
+                    <system-input-text [(ngModel)]="newRole.name"></system-input-text>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label">
+                        <abbr class="slds-required">* </abbr>
+                        <system-label label="LBL_LABEL"></system-label>
+                    </label>
+                    <system-input-label [(ngModel)]="newRole.label"></system-input-label>
+                </div>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <system-checkbox [(ngModel)]="newRole.portaldefault" [asinteger]="true"> <system-label label="LBL_PORTAL_DEFAULT"></system-label></system-checkbox>
+            <div class="slds-grid">
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                        <system-label label="LBL_IDENTIFIER"></system-label>
+                    </label>
+                    <system-input-text [(ngModel)]="newRole.identifier" maxlength="3"></system-input-text>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_ICON"></system-label>
+                    </label>
+                    <system-input-text [(ngModel)]="newRole.icon"></system-input-text>
+                </div>
+                <!--            <div class="slds-form-element__control slds-size&#45;&#45;1-of-4 slds-p-right&#45;&#45;xxx-small">-->
+                <!--                <label class="slds-form-element__label">-->
+                <!--                    <system-label label="LBL_DESCRIPTION"></system-label>-->
+                <!--                </label>-->
+                <!--                <system-input-text [(ngModel)]="newRole.description"></system-input-text>-->
+                <!--            </div>-->
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <system-checkbox [(ngModel)]="newRole.showsearch" [asinteger]="true"><system-label label="LBL_SHOW_SEARCH"></system-label></system-checkbox>
+            <div class="slds-grid slds-m-top--medium">
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <system-checkbox [(ngModel)]="newRole.systemdefault" [asinteger]="true">
+                        <system-label label="LBL_SYSTEM_DEFAULT"></system-label>
+                    </system-checkbox>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <system-checkbox [(ngModel)]="newRole.portaldefault" [asinteger]="true">
+                        <system-label label="LBL_PORTAL_DEFAULT"></system-label>
+                    </system-checkbox>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <system-checkbox [(ngModel)]="newRole.showsearch" [asinteger]="true">
+                        <system-label label="LBL_SHOW_SEARCH"></system-label>
+                    </system-checkbox>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <system-checkbox [(ngModel)]="newRole.showfavorites" [asinteger]="true">
+                        <system-label label="LBL_SHOW_FAVORITES"></system-label>
+                    </system-checkbox>
+                </div>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <system-checkbox [(ngModel)]="newRole.showfavorites" [asinteger]="true"><system-label label="LBL_SHOW_FAVORITES"></system-label></system-checkbox>
-            </div>
-        </div>
-        <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small">
-            <label class="slds-form-element__label">
-                <system-label label="LBL_DESCRIPTION"></system-label>
-            </label>
-            <textarea
-                    class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid"
-                    [(ngModel)]="newRole.description"
-                    style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
-            <!--               <system-input-text [(ngModel)]="newRole.description"></system-input-text>-->
-        </div>
-        <div class="slds-grid">
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+            <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label">
-                    <system-label label="LBL_VERSION"></system-label>
+                    <system-label label="LBL_DESCRIPTION"></system-label>
                 </label>
-                <system-input-text [(ngModel)]="newRole.version"></system-input-text>
+                <textarea
+                        class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid"
+                        [(ngModel)]="newRole.description"
+                        style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label">
-                    <system-label label="LBL_PACKAGE"></system-label>
-                </label>
-                <system-input-text [(ngModel)]="newRole.package"></system-input-text>
+            <div class="slds-grid">
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_DEFAULT_DASHBOARD"></system-label>
+                    </label>
+                    <system-input-dashboard [(ngModel)]="newRole.default_dashboard"></system-input-dashboard>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small" >
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_DEFAULT_DASHBOARD_SET"></system-label>
+                    </label>
+                    <system-input-dashboardset [(ngModel)]="newRole.default_dashboardset"></system-input-dashboardset>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label">
-                    <system-label label="LBL_DEFAULT_DASHBOARD"></system-label>
-                </label>
-                <system-input-text [(ngModel)]="newRole.default_dashboard"></system-input-text>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label">
-                    <system-label label="LBL_DEFAULT_DASHBOARD_SET"></system-label>
-                </label>
-                <system-input-text [(ngModel)]="newRole.default_dashboardset"></system-input-text>
+            <div class="slds-grid">
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_VERSION"></system-label>
+                    </label>
+                    <system-input-text [(ngModel)]="newRole.version"></system-input-text>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_PACKAGE"></system-label>
+                    </label>
+                    <system-input-text [(ngModel)]="newRole.package"></system-input-text>
+                </div>
             </div>
         </div>
     </system-modal-content>

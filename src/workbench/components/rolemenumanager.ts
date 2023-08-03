@@ -15,6 +15,7 @@ import {modal} from "../../services/modal.service";
 import {RoleMenuManagerEditRoleModal} from "./rolemenumanagereditrolemodal";
 import {switchMap} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {configurationService} from "../../services/configuration.service";
 
 
 
@@ -52,6 +53,7 @@ export class RoleMenuManager implements OnInit {
                 private modal: modal,
                 private toast: toast,
                 private cdRef: ChangeDetectorRef,
+                private configurationService: configurationService,
                 public injector: Injector) {
     }
 
@@ -74,6 +76,7 @@ export class RoleMenuManager implements OnInit {
 
         this.backend.postRequest(`configuration/configurator/${table}/${roleModule.id}`, null, {config: data}).subscribe({
             next: () => {
+                this.configurationService.reloadTaskData('rolemodules');
                 this.toast.sendToast('LBL_DATA_SAVED', 'success');
             }
         });
@@ -88,7 +91,8 @@ export class RoleMenuManager implements OnInit {
         viewProvider.view.setViewMode();
         const table = roleModule.scope == 'custom' ? 'sysuicustomrolemodules' : 'sysuirolemodules';
         this.backend.deleteRequest(`configuration/configurator/${table}/${roleModule.id}`).subscribe(() => {
-            this.toast.sendToast('MSG_SUCCESSFULLY_DELETED', 'success')
+            this.configurationService.reloadTaskData('rolemodules');
+            this.toast.sendToast('MSG_SUCCESSFULLY_DELETED', 'success');
         });
         this.roleModules = this.roleModules.filter(id => id.id != roleModule.id);
         this.saveSequence();
@@ -174,7 +178,9 @@ export class RoleMenuManager implements OnInit {
         const table = role.scope == 'global' ? 'sysuiroles' : 'sysuicustomroles';
 
         this.backend.deleteRequest(`configuration/configurator/${table}/${role.id}`).subscribe(() => {
-            this.toast.sendToast('MSG_SUCCESSFULLY_DELETED', 'success')
+            this.configurationService.reloadTaskData('roles');
+            this.configurationService.reloadTaskData('sysroles');
+            this.toast.sendToast('MSG_SUCCESSFULLY_DELETED', 'success');
         });
         this.roles = this.roles.filter(id => id.id != role.id);
     }
@@ -270,7 +276,9 @@ export class RoleMenuManager implements OnInit {
         });
 
         if (globalEntries.length > 0) {
-            this.backend.postRequest(`configuration/configurator/sysuirolemodules`, null, {config: globalEntries});
+            this.backend.postRequest(`configuration/configurator/sysuirolemodules`, null, {config: globalEntries}).subscribe(() => {
+                this.configurationService.reloadTaskData('rolemodules');
+            });
         }
 
         const customEntries = this.roleModules.filter(e => e.scope == 'custom').map(e => {
@@ -280,7 +288,9 @@ export class RoleMenuManager implements OnInit {
         });
 
         if (customEntries.length > 0) {
-            this.backend.postRequest(`configuration/configurator/sysuicustomrolemodules`, null, {config: customEntries});
+            this.backend.postRequest(`configuration/configurator/sysuicustomrolemodules`, null, {config: customEntries}).subscribe(() => {
+                this.configurationService.reloadTaskData('rolemodules');
+            });
         }
     }
 }

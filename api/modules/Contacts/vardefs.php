@@ -95,7 +95,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'dbType' => 'varchar',
                 'len' => '255',
                 'source' => 'non-db',
-                'unified_search' => true,
+                'unified_search' => false,
             ],
             'account_id' => [
                 'name' => 'account_id',
