@@ -2687,7 +2687,7 @@ class SpiceBean
      * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
      * @return object Instance of this bean with fetched data.
      */
-    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true, $relationships = true)
+    function retrieve_by_string_fields($fields_array, $encode = false, $deleted = true, $relationships = true)
     {
         $where_clause = $this->get_where($fields_array, $deleted);
         $query = "SELECT $this->_tablename.id" . " FROM $this->_tablename ";
