@@ -40,6 +40,8 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\interfaces\StreamWrapperRegisterI;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceFileUtils;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 /**
  * @internal
