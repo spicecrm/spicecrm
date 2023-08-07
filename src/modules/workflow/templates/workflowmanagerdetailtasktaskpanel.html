@@ -6,10 +6,10 @@
     <field-label fieldname="description"></field-label>
     <field-container field="description" [fieldconfig]="{minheight: '150px'}"></field-container>
 </div>
-<div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread">
-    <system-checkbox [(ngModel)]="model.data.ishidden"><system-label label="LBL_HIDDEN"></system-label><system-icon-help-text [helpText]="language.getLabel('LBL_HELP_WORKFLOWTASK_ISHIDDEN')"></system-icon-help-text></system-checkbox>
-    <system-checkbox [(ngModel)]="model.data.allowcomment"><system-label label="LBL_ALLOW_COMMENT"></system-label><system-icon-help-text [helpText]="language.getLabel('LBL_HELP_WORKFLOWTASK_ALLOWCOMMENT')"></system-icon-help-text></system-checkbox>
-    <system-checkbox [(ngModel)]="model.data.prevclosedreq"><system-label label="LBL_PREVIOUS_CLOSED_REQUIRED"></system-label><system-icon-help-text [helpText]="language.getLabel('LBL_HELP_WORKFLOWTASK_PREVIOUS_CLOSED_REQUIRED')"></system-icon-help-text></system-checkbox>
+<div class="slds-p-vertical--x-small slds-grid">
+    <system-checkbox [(ngModel)]="model.data.ishidden" class="slds-m-right--xx-large"><system-label label="LBL_HIDDEN"></system-label><system-icon-help-text [helpText]="language.getLabel('LBL_HELP_WORKFLOWTASK_ISHIDDEN')"></system-icon-help-text></system-checkbox>
+    <system-checkbox [(ngModel)]="model.data.allowcomment" class="slds-m-right--xx-large"><system-label label="LBL_ALLOW_COMMENT"></system-label><system-icon-help-text [helpText]="language.getLabel('LBL_HELP_WORKFLOWTASK_ALLOWCOMMENT')"></system-icon-help-text></system-checkbox>
+    <system-checkbox [(ngModel)]="model.data.prevclosedreq" class="slds-m-right--xx-large"><system-label label="LBL_PREVIOUS_CLOSED_REQUIRED"></system-label><system-icon-help-text [helpText]="language.getLabel('LBL_HELP_WORKFLOWTASK_PREVIOUS_CLOSED_REQUIRED')"></system-icon-help-text></system-checkbox>
 </div>
 <system-collapsable-tab *ngIf="hasTiming" [collapsible]="false" tabtitle="LBL_TASKTIMING" tabhelptext="LBL_HELP_WORKFLOWTASK_TIMING">
     <div class="slds-grid slds-gutters_direct-xx-small">

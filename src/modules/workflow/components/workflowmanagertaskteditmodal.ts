@@ -63,6 +63,10 @@ export class WorkflowManagerTaskEditModal {
 
     get tasktypehelptext(){
         let workflowtype = this.workflowManagerService.types.find(t => t.id == this.task.tasktype)?.type ?? '';
+        if(workflowtype == 'regular'){
+            workflowtype = this.workflowManagerService.types.find(t => t.id == this.task.tasktype)?.name ?? '';
+            workflowtype = workflowtype.replace(' ', '');
+        }
         return this.language.getLabel('LBL_HELP_WORKFLOWTASKTYPE_' + workflowtype.toUpperCase());
     }
 
