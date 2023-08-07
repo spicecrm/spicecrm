@@ -554,28 +554,22 @@ class Compiler
         switch ($conditionparts[1]) {
             case '>':
                 return $value > trim($conditionparts[2], "'");
-                break;
             case '>=':
                 return $value >= trim($conditionparts[2], "'");
-                break;
             case '<':
                 return$value < trim($conditionparts[2], "'");
-                break;
             case '<=':
                 return $value <= trim($conditionparts[2], "'");
-                break;
             case '===':
                 return $value === trim($conditionparts[2], "'");
-                break;
             case '==':
                 return $value == trim($conditionparts[2], "'");
-                break;
             case '!=':
                 return $value != trim($conditionparts[2], "'");
-                break;
             case 'in':
                 return in_array( $value, explode( ",", trim($conditionparts[2], "'")));
-                break;
+            case 'notin':
+                return !in_array( $value, explode( ",", trim($conditionparts[2], "'")));
         }
         return false;
 
