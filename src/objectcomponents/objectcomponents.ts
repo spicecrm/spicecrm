@@ -210,6 +210,8 @@ import {ObjectPopoverHeader} from "./components/objectpopoverheader";
 import {ObjectSelectBeanListModal} from "./components/objectselectbeanlistmodal";
 import {ObjectActionHelpTextButton} from "./components/objectactionhelptextbutton";
 import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
+import {ObjectStatusNetworkModal} from "./components/objectstatusnetworkmodal";
+import {ObjectStatusNetworkOpenModalButton} from "./components/objectstatusnetworkopenmodalbutton";
 
 
 /**
@@ -395,7 +397,9 @@ import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
         ObjectPopoverBodyItem,
         ObjectPopoverHeader,
         ObjectActionHelpTextButton,
-        ObjectHelpTextModal
+        ObjectHelpTextModal,
+        ObjectStatusNetworkModal,
+        ObjectStatusNetworkOpenModalButton
     ],
     exports: [
         ObjectListViewHeader,
