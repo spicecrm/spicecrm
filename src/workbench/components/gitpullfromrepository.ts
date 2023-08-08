@@ -3,7 +3,7 @@ import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 
-//test 5
+//test 6
 
 @Component({
     selector: 'git-pull-from-repository',
