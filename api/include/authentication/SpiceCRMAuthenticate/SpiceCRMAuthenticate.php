@@ -10,6 +10,8 @@ use SpiceCRM\includes\authentication\interfaces\AuthResponse;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\SessionExpiredException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Users\User;
@@ -53,14 +55,17 @@ class SpiceCRMAuthenticate implements AuthenticatorI
     /**
      * handle token
      * @throws SessionExpiredException
+     * @throws Exception
      */
     public function handleToken(string $token): string
     {
         session_id($token);
         session_start();
+        $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
+        $label = LanguageManager::getLabelTranslation('ERR_SESSION_EXPIRED', $language);
 
         if (!isset($_SESSION['authenticated_user_id'])) {
-            throw new SessionExpiredException("Session Expired", 0);
+            throw new SessionExpiredException($label['default'] ?: "Session Expired", 0);
         }
 
         return $_SESSION['authenticated_user_id'];
