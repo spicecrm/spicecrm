@@ -48,6 +48,17 @@ export class SpiceImporterSelect {
         {label: '"', value: 'double'},
     ];
 
+
+    /**
+     * holds delimiter options
+     * @private
+     */
+    public delimiterOptions = [
+        {label: ';', value: 'semicolon'},
+        {label: ',', value: 'comma'},
+        {label: 'nl', value: 'endofline'}
+    ];
+
     constructor(
         public spiceImport: SpiceImporterService,
         public toast: toast,
