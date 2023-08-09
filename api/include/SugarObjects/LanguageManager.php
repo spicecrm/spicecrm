@@ -183,7 +183,7 @@ class LanguageManager
             $labelArr = $cached[$label];
         }
         if(empty($labelArr)){
-            $labelArr = self::getSpecificLabels($syslang, [$label]);
+            $labelArr = self::getSpecificLabels($syslang, [$label])[$label];
         }
         if(empty($labelArr)) {
             $labelArr = [];
