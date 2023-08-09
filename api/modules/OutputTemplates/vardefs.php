@@ -27,6 +27,26 @@ SpiceDictionaryHandler::getInstance()->dictionary['OutputTemplate'] = [
             'comment' => 'The html template body itself',
             'stylesheet_id_field' => 'stylesheet_id',
         ],
+        'header_spb' => [
+            'name' => 'header_spb',
+            'vname' => 'LBL_HEADER_SPB',
+            'type' => 'json',
+            'dbType' => 'longtext',
+            'comment' => 'save the json structure of the page builder'
+        ],
+        'footer_spb' => [
+            'name' => 'footer_spb',
+            'vname' => 'LBL_FOOTER_SPB',
+            'type' => 'json',
+            'dbType' => 'longtext',
+            'comment' => 'save the json structure of the page builder'
+        ],
+        'editor_type' => [
+            'name' => 'editor_type',
+            'vname' => 'LBL_VIA_SPICE_PAGE_BUILDER',
+            'type' => 'enum',
+            'comment' => 'options: richText, pageBuilder, html'
+        ],
         'footer' => [
             'name' => 'footer',
             'vname' => 'LBL_FOOTER',

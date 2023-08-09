@@ -308,6 +308,8 @@ export class ObjectRepositoryManager {
                                 this.objrepoList[i] = this.currentObjRepo;
                             }
                         }
+                        this.configurationService.reloadTaskData('components');
+
                         loadingModalRef.instance.self.destroy();
                         this.toast.sendToast('changes saved');
                     }
@@ -339,6 +341,7 @@ export class ObjectRepositoryManager {
                         this.backend.postRequest('configuration/configurator/' + table + '/' + this.newRepo.id, null, { config: this.newRepo }).subscribe(
                             (success) => {
                                 this.objrepoList.push(this.newRepo);
+                                this.configurationService.reloadTaskData('components');
                                 this.currentObjRepo = this.newRepo;
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
@@ -407,6 +410,7 @@ export class ObjectRepositoryManager {
                                 this.currentModule = this.newModule;
                                 this.moduleReposSelect = Object.assign([], this.moduleReposSelect);
                                 this.moduleReposSelectedItem = moduleRepoSelect;
+                                this.configurationService.reloadTaskData('modules');
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
                             }

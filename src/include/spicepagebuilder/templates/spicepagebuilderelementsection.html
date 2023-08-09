@@ -1,4 +1,4 @@
-<div [class.slds-is-hovered]="['section','content'].indexOf(spicePageBuilderService.isMouseIn) > -1" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1" class="spice-drop-zone">
+<div *ngIf="!isEditMode; else editContainer" [class.slds-is-hovered]="['section','content'].indexOf(spicePageBuilderService.isMouseIn) > -1" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1" class="spice-drop-zone">
     <div class="spice-drop-zone-label spice-drop-zone-label-bottom">
         <div class="slds-media slds-media_center">
             <div class="slds-media__figure">
@@ -9,18 +9,39 @@
                     <system-label label="LBL_SECTION"></system-label>
                 </h2>
             </div>
-            <button (click)="saveAsCustom()" class="slds-button slds-button--icon">
-                <system-utility-icon icon="save" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+            <button (click)="saveAsCustom()" system-title="LBL_SAVE" class="slds-button slds-button--icon">
+                <system-button-icon icon="save" [inverse]="true"></system-button-icon>
             </button>
-            <button cdkDragHandle class="slds-button slds-button--icon slds-m-left--none">
-                <system-utility-icon icon="move" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+            <button cdkDragHandle system-title="LBL_MOVE" class="slds-button slds-button--icon slds-m-left--none">
+                <system-button-icon icon="move" [inverse]="true"></system-button-icon>
             </button>
-            <button (click)="delete$.emit()" class="slds-button slds-button--icon slds-m-right--xx-small slds-m-left--none">
-                <system-utility-icon icon="close" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+            <button (click)="edit()" system-title="LBL_EDIT" class="slds-button slds-button--icon slds-m-left--none">
+                <system-button-icon icon="edit" [inverse]="true"></system-button-icon>
+            </button>
+            <button (click)="delete$.emit()" system-title="LBL_DELETE" class="slds-button slds-button--icon slds-m-right--xx-small slds-m-left--none">
+                <system-button-icon icon="delete" [inverse]="true"></system-button-icon>
             </button>
         </div>
     </div>
-    <article class="spice-drop-zone-content slds-grid">
+    <article [ngStyle]="style" class="spice-drop-zone-content slds-grid">
         <spice-page-builder-element-column *ngFor="let column of section.children; trackBy: trackByFn" [column]="column" [style.width.%]="100 / section.children.length" class="spice-display-block slds-grow slds-height_full"></spice-page-builder-element-column>
     </article>
 </div>
+
+<ng-template #editContainer>
+    <div style="height: 100%">
+        <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
+                <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                    <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
+                        <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="section.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="section.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="section.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
+                        <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="section.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
+                    </ng-container>
+                </div>
+            </div>
+        </system-section>
+    </div>
+
+</ng-template>

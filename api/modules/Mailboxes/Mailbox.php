@@ -494,4 +494,9 @@ class Mailbox extends SpiceBean {
 
         return true;
     }
+
+    public function hasCatchAllAddress(): bool
+    {
+        return !empty( trim( $this->catch_all_address ));
+    }
 }

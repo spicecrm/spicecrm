@@ -10,7 +10,7 @@
                 </h2>
             </div>
             <button (click)="spicePageBuilderService.saveCustomElement(element, 'item')" class="slds-button slds-button--icon slds-m-right--xx-small">
-                <system-utility-icon icon="save" size="x-small" colorclass="slds-icon-text-error"></system-utility-icon>
+                <system-button-icon icon="save" [inverse]="true"></system-button-icon>
             </button>
         </div>
     </div>
@@ -24,11 +24,11 @@
             <button cdkDragHandle class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_MOVE">
                 <system-button-icon icon="move" addclasses="slds-icon"></system-button-icon>
             </button>
-            <button (click)="edit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
+            <button (click)="edit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_EDIT">
                 <system-button-icon icon="edit" addclasses="slds-icon"></system-button-icon>
             </button>
-            <button (click)="delete$.emit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
-                <system-button-icon icon="close" addclasses="slds-icon"></system-button-icon>
+            <button (click)="delete$.emit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_DELETE">
+                <system-button-icon icon="delete" addclasses="slds-icon"></system-button-icon>
             </button>
         </div>
     </div>
@@ -37,8 +37,9 @@
 <ng-template #editContainer>
     <div style="height: 50%">
         <system-section titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-            <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
-                <system-richtext-editor [(ngModel)]="element.content" class="slds-size--1-of-1 spice-page-builder-text-editor"></system-richtext-editor>
+            <div [ngSwitch]="element.editorType" class="slds-grid slds-size--1-of-1 slds-scrollable--y slds-height_full slds-p-around--xx-small" style="min-height: 0">
+                <system-html-editor *ngSwitchCase="'html'" [(ngModel)]="element.content" class="slds-size--1-of-1 spice-page-builder-text-editor"></system-html-editor>
+                <system-richtext-editor *ngSwitchDefault [(ngModel)]="element.content" class="slds-size--1-of-1 spice-page-builder-text-editor"></system-richtext-editor>
             </div>
         </system-section>
     </div>
@@ -46,6 +47,10 @@
         <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
                 <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                    <div class="slds-form-element slds-grid slds-size--1-of-1">
+                        <label class="slds-form-element__label"><system-label label="LBL_EDIT_WITH"></system-label></label>
+                        <system-input-radio-button-group [(ngModel)]="element.editorType" [inputOptions]="[{value: 'richText', label: 'LBL_RICH_TEXT_EDITOR'}, {value: 'html', label: 'LBL_HTML'}]" class="spice-display-block"></system-input-radio-button-group>
+                    </div>
                     <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
                         <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
                         <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>

@@ -270,6 +270,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'relationship' => 'campaignlog_contact',
             'source'=>'non-db',
         ],
+        'consumer'=> [
+            'name' => 'consumer',
+            'vname' => 'LBL_CONSUMER',
+            'type' => 'link',
+            'relationship' => 'campaignlog_consumer',
+            'source'=>'non-db',
+        ],
         'created_lead'=> [
             'name' => 'created_lead',
             'vname' => 'LBL_CREATED_LEAD',
@@ -333,6 +340,21 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'relationship' => 'account_campaign_log',
             'source' => 'non-db',
         ],
+        'targeted_contacts' => [
+            'name' => 'targeted_contacts',
+            'vname' => 'LBL_CONTACTS',
+            'type' => 'link',
+            'relationship' => 'contact_campaign_log',
+            'source' => 'non-db',
+        ],
+        'emailtrackingactions' => [
+            'name' => 'emailtrackingactions',
+            'vname' => 'LBL_EMAILTRACKINGACTIONS',
+            'type' => 'link',
+            'module' => 'EmailTrackingActions',
+            'relationship' => 'campaign_log_emailtrackingactions',
+            'source' => 'non-db'
+        ],
     ],
 	'indices' => [
 		[
@@ -384,20 +406,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'relationship_role_column' => 'source_type',
             'relationship_role_column_value' => 'EventRegistrations',
         ],
-        'campaignlog_contact' => ['lhs_module'=> 'CampaignLog',
-								        'lhs_table'=> 'campaign_log',
-								        'lhs_key' => 'related_id',
-								        'rhs_module'=> 'Contacts',
-								        'rhs_table'=> 'contacts',
-								        'rhs_key' => 'id',
-								        'relationship_type'=>'one-to-many'],
-        'campaignlog_lead' => ['lhs_module'=> 'CampaignLog',
-							        'lhs_table'=> 'campaign_log',
-							        'lhs_key' => 'related_id',
-							        'rhs_module'=> 'Leads',
-							        'rhs_table'=> 'leads',
-							        'rhs_key' => 'id',
-							        'relationship_type'=>'one-to-many'],
+        'campaignlog_consumer' => [
+            'lhs_module'=> 'CampaignLog',
+            'lhs_table'=> 'campaign_log',
+            'lhs_key' => 'related_id',
+            'rhs_module'=> 'Consumers',
+            'rhs_table'=> 'consumers',
+            'rhs_key' => 'id',
+            'relationship_type'=>'one-to-many'
+        ],
+        'campaignlog_contact' => [
+            'lhs_module'=> 'CampaignLog',
+            'lhs_table'=> 'campaign_log',
+            'lhs_key' => 'related_id',
+            'rhs_module'=> 'Contacts',
+            'rhs_table'=> 'contacts',
+            'rhs_key' => 'id',
+            'relationship_type'=>'one-to-many'
+        ],
+        'campaignlog_lead' => [
+            'lhs_module'=> 'CampaignLog',
+            'lhs_table'=> 'campaign_log',
+            'lhs_key' => 'related_id',
+            'rhs_module'=> 'Leads',
+            'rhs_table'=> 'leads',
+            'rhs_key' => 'id',
+            'relationship_type'=>'one-to-many'
+        ],
         'campaignlog_created_opportunities' => [
             'lhs_module'=> 'CampaignLog',
             'lhs_table'=> 'campaign_log',

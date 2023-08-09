@@ -91,6 +91,11 @@ class UsersPreferencesController
         if (!is_array($namesArray))
             $namesArray = [$names];
 
+        # reset the session preferences to reload from the database when calling getPreference
+        if ($_SESSION[$user->user_name . '_PREFERENCES']) {
+            unset($_SESSION[$user->user_name . '_PREFERENCES'][$category]);
+        }
+
         foreach ($namesArray as $name)
             $prefArray[$name] = $userPreference->getPreference($name, $category);
 

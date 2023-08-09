@@ -17,7 +17,7 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'authResetPasswordByToken',
         'description' => '',
-        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'options' => ['noAuth' => true, 'adminOnly' => false, 'validate' => true ],
         'parameters' => [
             'token' => [
                 'in' => 'path',

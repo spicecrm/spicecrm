@@ -9,6 +9,7 @@ import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {Subject} from "rxjs";
 import {modal} from "../../services/modal.service";
+import {configurationService} from "../../services/configuration.service";
 
 
 /**
@@ -50,7 +51,12 @@ export class RoleMenuManagerEditRoleModal {
         {label: 'global', value: 'global'},
     ];
 
-    constructor(public metadata: metadata, public modelutilities: modelutilities, public backend: backend, public toast: toast, public modal: modal) {
+    constructor(public metadata: metadata,
+                public modelutilities: modelutilities,
+                public backend: backend,
+                public toast: toast,
+                private configurationService: configurationService,
+                public modal: modal) {
 
     }
 
@@ -89,6 +95,8 @@ export class RoleMenuManagerEditRoleModal {
                 this.save$.next(this.newRole);
                 this.save$.complete();
                 loadingModal.emit(true);
+                this.configurationService.reloadTaskData('roles');
+                this.configurationService.reloadTaskData('sysroles');
                 this.toast.sendToast('LBL_DATA_SAVED', 'success');
             }
         });

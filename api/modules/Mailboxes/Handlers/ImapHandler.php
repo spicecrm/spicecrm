@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
 use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Swift_Attachment;
@@ -471,7 +472,7 @@ class ImapHandler extends TransportHandler
         try {
             $this->transport_handler->getTransport()->start();
 
-            $response = $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail));
+            $response = $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail),true);
             $response['result'] = true;
         } catch (Swift_TransportException $e) {
             $response['errors'] = $e->getMessage();
@@ -495,48 +496,68 @@ class ImapHandler extends TransportHandler
      * @return Swift_Message
      * @throws Exception
      */
-    protected function composeEmail($email)
+    protected function composeEmail($email, $noSecurityCheck = false )
     {
         $this->checkEmailClass($email);
 
         $message = (new Swift_Message($email->name))
             ->setEncoder(new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'))
             ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
-            ->setBody($this->trackedBody($email), 'text/html')
-        ;
+            ->setBody($this->trackedBody($email), 'text/html');
 
-        if ($this->mailbox->catch_all_address == '') {
-            $toAddressess = [];
-            foreach ($email->to() as $address) {
-                array_push($toAddressess, $address['email']);
+        $toAddresses = [];
+        $intendedRecipients = [];
+        foreach ( $email->to() as $recipient ) {
+            if ( $noSecurityCheck ) {
+                $toAddresses[] = $recipient['email'];
+                continue;
             }
-            $message->setTo($toAddressess);
-        } else { // send everything to the catch all address
-            $message->setTo([$this->mailbox->catch_all_address]);
-
-            // add a message for whom this was intended for
-            $intendedReciepients = [];
-            foreach ($email->to() as $recipient) {
-                $intendedReciepients[] = $recipient['email'];
+            if ( $this->whiteListing() ) {
+                if ( !$this->isWhiteListed( $recipient['email'] )) $intendedRecipients[] = $recipient['email'];
+                else $toAddresses[] = $recipient['email'];
             }
-            $email->name .= ' [intended for ' . join(', ', $intendedReciepients) . ']';
-            $message->setSubject($email->name);
+            else {
+                if ( $this->mailbox->hasCatchAllAddress() ) $intendedRecipients[] = $recipient['email'];
+                else $toAddresses[] = $recipient['email'];
+            }
         }
 
-        if (!empty($email->cc_addrs)) {
-            $ccAddressess = [];
-            foreach ($email->cc() as $address) {
-                array_push($ccAddressess, $address['email']);
+        if ( count( $intendedRecipients )) {
+            if ( $this->mailbox->hasCatchAllAddress() ) {
+                $toAddresses[] = $this->mailbox->catch_all_address;
+                // add a message for whom this was intended for
+                $email->name .= ' [to '.$this->mailbox->catch_all_address.' intended for ' . join(', ', $intendedRecipients) . ']';
+            } else {
+                throw ( new MessageInterceptedException('Email intercepted.'))->setErrorCode('emailIntercepted')->setLbl('LBL_EMAIL_INTERCEPTED');
             }
-            $message->setCc($ccAddressess);
+        }
+
+        $message->setTo( $toAddresses );
+
+        if (!empty($email->cc_addrs)) {
+            $ccAddresses = [];
+            foreach ($email->cc() as $recipient) {
+                if ( $noSecurityCheck
+                     or ( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
+                     or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
+                ) {
+                    $ccAddresses[] = $recipient['email'];
+                }
+            }
+            if ( count( $ccAddresses )) $message->setCc($ccAddresses);
         }
 
         if (!empty($email->bcc_addrs)) {
-            $bccAddressess = [];
-            foreach ($email->bcc() as $address) {
-                array_push($bccAddressess, $address['email']);
+            $bccAddresses = [];
+            foreach ($email->bcc() as $recipient ) {
+                if ( $noSecurityCheck
+                     or( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
+                     or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
+                ) {
+                    $bccAddresses[] = $recipient['email'];
+                }
             }
-            $message->setBcc($bccAddressess);
+            if ( count( $bccAddresses )) $message->setBcc( $bccAddresses );
         }
 
         if ($this->mailbox->reply_to != '') {
