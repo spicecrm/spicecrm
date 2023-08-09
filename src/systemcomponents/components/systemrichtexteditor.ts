@@ -84,7 +84,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     @Input() private stylesheetId: string;
 
     public get useTemplateVariableHelper() {
-        return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
+        return this.model?.module in {OutputTemplates: true, EmailTemplates: true, CampaignTasks: true,LandingPages: true,}
     }
 
     // for the value accessor
@@ -229,14 +229,16 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @private
      */
     private loadCustomStyleDefinitions() {
-        this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
-            this.customStyleDefinitions.push({
-                display: format.name,
-                id: format.id,
-                classes: format.classes ? format.classes.trim().split(/\s+/) : [],
-                element: format.block ? format.block : ( format.inline ? format.inline : '' )
-            })
-        });
+        if(this.stylesheetId){
+            this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
+                this.customStyleDefinitions.push({
+                    display: format.name,
+                    id: format.id,
+                    classes: format.classes ? format.classes.trim().split(/\s+/) : [],
+                    element: format.block ? format.block : ( format.inline ? format.inline : '' )
+                })
+            });
+        }
     }
 
     /**
@@ -250,6 +252,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             return {
                 name: tag,
                 attributes: {
+                    'data-trackinglink': true,
+                    'data-marketingaction': true,
                     'data-spicefor': true,
                     'data-spiceif': true,
                     'data-spicefor-first': true,

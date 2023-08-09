@@ -699,6 +699,8 @@ export class model implements OnDestroy {
 
         // loop through validations...
         for (let validation of validations) {
+            if(!validation.active) continue ;
+
             let checksum: number = 0;
             let is_valid: boolean = true;
 
@@ -1154,7 +1156,7 @@ export class model implements OnDestroy {
                             break;
                         default:
                             if (notify) {
-                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
+                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message );
                             }
                             responseSubject.error(error);
                             responseSubject.complete();
@@ -1968,6 +1970,21 @@ export class model implements OnDestroy {
                 }
             }
         }
+
+        return true;
+    }
+
+    /**
+     * rollback removed related records
+     */
+    public rollbackRemovedRelatedRecords(relation_link_name: string, records: any[]): boolean {
+        if (!this.isFieldARelationLink(relation_link_name) || !this.data[relation_link_name].beans_relations_to_delete) {
+            return false;
+        }
+
+        records.forEach(id => {
+            delete this.data[relation_link_name].beans_relations_to_delete[id];
+        });
 
         return true;
     }

@@ -6,6 +6,8 @@ import {Component, EventEmitter, Output} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
+import { toast } from '../../../services/toast.service';
+import { language } from '../../../services/language.service';
 
 /**
  * this renders a button as part of an actionset to send an email
@@ -29,6 +31,8 @@ export class EmailSendButton {
         public model: model,
         public metadata: metadata,
         public modal: modal,
+        public toast: toast,
+        public language: language
     ) {
 
     }
@@ -63,17 +67,18 @@ export class EmailSendButton {
                 cc_addrs: this.model.getField('cc_addrs_names')
             });
 
-            this.model.save().subscribe(
-                success => {
+            this.model.save().subscribe( {
+                next: () => {
                     modalRef.instance.self.destroy();
                     // emit that the email has been sent
-                    this.actionemitter.emit('emailsent');
+                    this.actionemitter.emit( 'emailsent' );
                 },
-                error => {
+                error: err => {
                     modalRef.instance.self.destroy();
+                    this.toast.sendToast( this.language.getLabel( 'LBL_ERROR_SENDING_EMAIL' ), 'error', err.error.error.lbl ? this.language.getLabel( err.error.error.lbl ) : err.error.error.message );
                     this.sending = false;
                 }
-            );
+            });
         });
     }
 }

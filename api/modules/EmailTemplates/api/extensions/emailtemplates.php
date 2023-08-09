@@ -85,6 +85,13 @@ $routes = [
                 'description' => 'html string',
                 'example' => '',
                 'required' => true
+            ],
+            'field' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'html field',
+                'example' => '',
+                'required' => false
             ]
         ]
     ],

@@ -415,7 +415,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background:#0070d2;
     top: -20px;
     position: absolute;
-    width: 100px;
+    width: 120px;
     height: 20px;
     left: calc(50% - 50px);
     color: #fff;
@@ -528,4 +528,18 @@ input[type="submit"] {
 
 .child-height-full > * {
     height: 100%;
+}
+
+.spice-split-container-splitter {
+    left: -8px;
+    box-shadow: 0 0 2px;
+    padding: 0 2px 2px 2px;
+    border-radius: 0 0 2px 2px;
+}
+
+
+.spice-split-container-splitter button {
+    border: 0 !important;
+    width: 12px !important;
+    margin: 0 !important;
 }

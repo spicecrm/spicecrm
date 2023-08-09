@@ -3,8 +3,8 @@
         <div class="slds-grid slds-grid_align-spread slds-grid--vertical-align-center slds-p-horizontal--small slds-p-vertical--x-small">
             <h2 id="entity-header" class="slds-text-heading--small"><system-label-modulename module="Dashboards"></system-label-modulename></h2>
             <dashboard-select-panel-add-button *ngIf="canAdd" (dashboardAdded)="setDashboard($event)"></dashboard-select-panel-add-button>
-            <button class="slds-hide--large slds-button slds-button_icon" (click)="hidepanel()">
-                <system-button-icon [icon]="'close'"></system-button-icon>
+            <button class="slds-button slds-button_icon" (click)="hidepanel()">
+                <system-button-icon [icon]="'arrow_left'"></system-button-icon>
             </button>
         </div>
         <div class="slds-form-element slds-p-horizontal--small slds-p-vertical--x-small">

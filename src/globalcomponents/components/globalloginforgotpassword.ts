@@ -171,7 +171,7 @@ export class GlobalLoginForgotPassword {
      * checks if we have a valid token and a valid password
      */
     get canSendToken() {
-        return this.token.length == this.tokenLength && !this.pwderror && !this.pwdreperror;
+        return this.token.length == this.tokenLength && this.password && !this.pwderror && !this.pwdreperror;
     }
 
     /**

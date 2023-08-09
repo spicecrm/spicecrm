@@ -25,6 +25,17 @@
                 <system-input-text [(ngModel)]="newWebHook.url"></system-input-text>
             </div>
         </div>
+        <div class="slds-grid slds-m-top--x-small slds-p-around--small">
+            <div class="slds-form-element__control slds-size--1-of-4">
+                <system-checkbox [(ngModel)]="newWebHook.send_data" [asinteger]="true"><system-label label="LBL_SEND_DATA"></system-label></system-checkbox>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4">
+                <system-checkbox [(ngModel)]="newWebHook.ssl_verifypeer" [asinteger]="true"><system-label label="LBL_VERIFY_PEER"></system-label></system-checkbox>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4">
+                <system-checkbox [(ngModel)]="newWebHook.ssl_verifyhost" [asinteger]="true"><system-label label="LBL_VERIFY_HOST"></system-label></system-checkbox>
+            </div>
+        </div>
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--2-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label">
@@ -39,31 +50,20 @@
                 <system-input-fieldset class="slds-grow" [(ngModel)]="newWebHook.fieldset_id"></system-input-fieldset>
             </div>
         </div>
-        <div class="slds-grid slds-m-top--x-small">
-            <div class="slds-form-element__control slds-size--1-of-4">
-                <system-checkbox [(ngModel)]="newWebHook.send_data" [asinteger]="true"><system-label label="LBL_SEND_DATA"></system-label></system-checkbox>
-            </div>
-            <div class="slds-form-element__control slds-size--1-of-4">
-                <system-checkbox [(ngModel)]="newWebHook.ssl_verifypeer" [asinteger]="true"><system-label label="LBL_VERIFY_PEER"></system-label></system-checkbox>
-            </div>
-            <div class="slds-form-element__control slds-size--1-of-4">
-                <system-checkbox [(ngModel)]="newWebHook.ssl_verifyhost" [asinteger]="true"><system-label label="LBL_VERIFY_HOST"></system-label></system-checkbox>
-            </div>
-        </div>
-        <div class="slds-grid">
-            <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label">
-                    <system-label label="LBL_DATA"></system-label>
-                </label>
-                <textarea [(ngModel)]="newWebHook.custom_headers"
-                        class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid"
+<!--        <div class="slds-grid">-->
+<!--            <div class="slds-form-element__control slds-size&#45;&#45;4-of-4 slds-p-right&#45;&#45;xxx-small">-->
+<!--                <label class="slds-form-element__label">-->
+<!--                    <system-label label="LBL_DATA"></system-label>-->
+<!--                </label>-->
+<!--                <textarea [(ngModel)]="newWebHook.custom_headers"-->
+<!--                        class="slds-textarea slds-scrollable&#45;&#45;y slds-m-vertical&#45;&#45;xx-small ng-untouched ng-pristine ng-valid"-->
 
-                        style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
-            </div>
-        </div>
+<!--                        style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>-->
+<!--            </div>-->
+<!--        </div>-->
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="callWebHooks()" [disabled]="!canSave()">
+        <button class="slds-button slds-button--neutral" (click)="WebHooksManager.searchWithModal(newWebHook)" [disabled]="!canSave()">
             <system-button-icon icon="broadcast" class="slds-m-right--small"></system-button-icon><system-label label="LBL_TEST"></system-label>
         </button>
         <button class="slds-button slds-button--neutral" (click)="close()">
