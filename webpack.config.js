@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const fs = require('fs');
-
+// test git pull8
 const releaseNumber = require('./package.json').version;
 const moment = require("moment");
 const now = Date.now();
