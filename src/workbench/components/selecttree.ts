@@ -204,7 +204,7 @@ export class SelectTreeComponent {
     public save() {
         this.backend.postRequest('configuration/spiceui/core/selecttree/tree', null, this.category_tree).subscribe(
             (success) => {
-
+                this.config.reloadTaskData('select_tree');
                 this.toast.sendToast('changes saved');
             },
             (error) => {

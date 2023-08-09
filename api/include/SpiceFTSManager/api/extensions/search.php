@@ -39,6 +39,11 @@ $routes = [
                 'in' => 'body',
                 'description' => 'the number of records to return',
                 'type' => ValidationMiddleware::TYPE_STRING,
+            ],
+            'useGlobalFilter' => [
+                'in' => 'body',
+                'description' => 'enable/disable global filter',
+                'type' => ValidationMiddleware::TYPE_STRING,
             ]
         ]
     ],

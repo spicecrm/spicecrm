@@ -81,4 +81,24 @@ class StreamFactory extends SpiceSingleton
 
         $classInstance->register($name, self::$streams[$name]['config']->class_config);
     }
+
+    /**
+     * returns stats for the stream based on specific implementations for the streamhandler
+     *
+     * @param string $name
+     * @return int[]|void
+     */
+    public static function getStats(string $name){
+        $className = self::$streams[$name]['class_namespace'];
+
+        $classInstance = new $className();
+
+        if (!method_exists($classInstance, 'register')) {
+            LoggerManager::getLogger()->error("Class: $className must have ( register ) method. Checkout StreamWrapperI for more details.");
+            return;
+        }
+
+        return method_exists($classInstance, 'getStats') ? $classInstance->getStats($name, self::$streams[$name]['config']->class_config, self::$streams[$name]['config']->path) : ['size' => 0, 'count' => 0];
+    }
+
 }

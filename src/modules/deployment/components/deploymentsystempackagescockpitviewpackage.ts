@@ -94,7 +94,7 @@ export class DeploymentSystemPackagesCockpitViewPackage implements OnInit {
         this.backend.postRequest(`module/SystemDeploymentPackages/${pkg.id}/system/${pkg.source_system}/download`).subscribe(
             response => {
                 this.loading = 'configuration';
-                this.loader.reloadPrimary().subscribe(() => {
+                this.loader.load().subscribe(() => {
                     this.package.rpstatus = this.parentView.statusConst.STATUS_FETCHED;
                     this.broadcast.broadcastMessage('loader.reloaded');
                     this.loading = undefined;
@@ -111,7 +111,7 @@ export class DeploymentSystemPackagesCockpitViewPackage implements OnInit {
         this.backend.postRequest(`module/SystemDeploymentPackages/${id}/setup`).subscribe(
             response => {
                 this.loading = 'configuration';
-                this.loader.reloadPrimary().subscribe(() => {
+                this.loader.load().subscribe(() => {
                     this.package.rpstatus = this.parentView.statusConst.STATUS_DEPLOYED;
                     this.broadcast.broadcastMessage('loader.reloaded');
                     this.loading = undefined;
@@ -128,7 +128,7 @@ export class DeploymentSystemPackagesCockpitViewPackage implements OnInit {
         this.backend.deleteRequest(`module/SystemDeploymentPackages/${id}/setup`).subscribe(() => {
             this.loading = 'configuration';
             this.package.rpstatus = this.parentView.statusConst.STATUS_FETCHED
-            this.loader.reloadPrimary().subscribe(() => {
+            this.loader.load().subscribe(() => {
                 this.broadcast.broadcastMessage('loader.reloaded');
                 this.loading = undefined;
             });

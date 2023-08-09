@@ -1,0 +1,19 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_CONVERT_PROCUREMENTDOC"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <table class="slds-table slds-table--fixed-layout slds-table_bordered">
+            <thead>
+                <tr procurement-docs-convert-modal-item-header></tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of targetData.ProcurementDocItems">
+                    <tr procurement-docs-convert-modal-item [data]="item"></tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="convert()"><system-label label="LBL_OK"></system-label></button>
+    </system-modal-footer>
+</system-modal>

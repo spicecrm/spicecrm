@@ -6,6 +6,7 @@ import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {WorkflowManagerService} from "../services/workflowmanager.service";
 import {WorkflowTaskDefI} from "../interfaces/workflow.interfaces";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'workflow-manager-detail-task-taskpanel',
@@ -17,7 +18,7 @@ export class WorkflowManagerDetailTaskTaskpanel {
      */
     public hasTiming: boolean = false;
 
-    constructor(public metadata: metadata, public model: model, public workflowManagerService: WorkflowManagerService) {
+    constructor(public metadata: metadata, public model: model, public workflowManagerService: WorkflowManagerService, public language: language) {
 
     }
 

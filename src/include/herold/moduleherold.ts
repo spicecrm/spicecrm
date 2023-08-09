@@ -13,6 +13,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {HeroldAddAccountButton} from "./components/heroldaddaccountbutton";
 import {HeroldAddAccountModal} from "./components/heroldaddaccountmodal";
+import {fieldHeroldId} from "./fields/fieldheroldid";
+import {HeroldCompleteAccountModal} from "./components/heroldcompleteaccountmodal";
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import {HeroldAddAccountModal} from "./components/heroldaddaccountmodal";
     ],
     declarations: [
         HeroldAddAccountButton,
-        HeroldAddAccountModal
+        HeroldAddAccountModal,
+        HeroldCompleteAccountModal,
+        fieldHeroldId
     ]
 })
 export class ModuleHerold {

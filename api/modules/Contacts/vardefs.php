@@ -95,7 +95,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'dbType' => 'varchar',
                 'len' => '255',
                 'source' => 'non-db',
-                'unified_search' => true,
+                'unified_search' => false,
             ],
             'account_id' => [
                 'name' => 'account_id',
@@ -890,6 +890,18 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'source' => 'non-db',
     ];
 }
+
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['procurementdoc'] = [
+        'name' => 'procurementdoc',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCS',
+        'relationship' => 'procurementdocs_contacts',
+        'module' => 'ProcurementDocs',
+        'source' => 'non-db'
+    ];
+}
+
 if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactsonlineprofiles'] = [
         'name' => 'contactsonlineprofiles',

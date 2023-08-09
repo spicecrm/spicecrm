@@ -151,7 +151,6 @@ import {HooksManagerHooks} from "./components/hooksmanagerhooks";
 import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmodal";
 import {WebHooksManager} from "./components/webhooksmanager";
 import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
-import {WebHooksManagerResultModal} from "./components/webhooksmanagerresultmodal";
 
 
 
@@ -295,10 +294,10 @@ import {WebHooksManagerResultModal} from "./components/webhooksmanagerresultmoda
         HooksManagerHooksEditModal,
         WebHooksManager,
         WebHooksManagerEditModal,
-        WebHooksManagerResultModal
     ],
     exports: [
         SortPipe,
+        WorkbenchConfigLabel,
     ]
 })
 export class WorkbenchModule {}

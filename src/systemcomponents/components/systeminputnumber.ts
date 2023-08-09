@@ -44,7 +44,7 @@ export class SystemInputNumber implements ControlValueAccessor {
         this.precision = precision;
         this.textValue = typeof (this.textValue) != 'number' ? this.getValSanitized(this.textValue) : this.textValue;
     }
-    public precision: number;
+    public precision: number = 0;
 
     /**
      * Display only the html input field, not the surrounding html
@@ -129,7 +129,7 @@ export class SystemInputNumber implements ControlValueAccessor {
     }
 
     public writeValue(value: any): void {
-        this.textValue = typeof (value) != 'number' ? this.getValSanitized(value) : this.getValAsText(value);
+        this.textValue = typeof (value) != 'number' && !this.asNumber ? this.getValSanitized(value) : this.getValAsText(value);
         this.lastTextValue = this.textValue;
     }
 
@@ -379,7 +379,7 @@ export class SystemInputNumber implements ControlValueAccessor {
      * only necessary separators are enabled: an integer won't need the decimal separator
      */
     public defineInputPattern(){
-        let pattern = "^[0-9";
+        let pattern = "^[-+]?[-0-9";
         pattern+= this.userpreferences.toUse.num_grp_sep;
         if(!this.isInteger()){
             pattern+= this.userpreferences.toUse.dec_sep;

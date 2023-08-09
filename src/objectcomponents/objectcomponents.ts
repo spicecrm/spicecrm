@@ -109,6 +109,7 @@ import {ObjectRecordView} from './components/objectrecordview';
 import {ObjectRecordViewDetail1} from './components/objectrecordviewdetail1';
 import {ObjectRecordViewDetail2and1} from './components/objectrecordviewdetail2and1';
 import {ObjectRecordViewDetailsplit} from './components/objectrecordviewdetailsplit';
+import {ObjectRecordCreateContainer} from "./components/objectrecordcreatecontainer";
 import {ObjectPageHeader} from './components/objectpageheader';
 import {ObjectPageHeaderTags} from './components/objectpageheadertags';
 import {ObjectPageHeaderTagPicker} from './components/objectpageheadertagpicker';
@@ -207,6 +208,11 @@ import {ObjectTimelineStencil} from "./components/objecttimelinestencil";
 import {ObjectPopoverBodyItem} from "./components/objectpopoverbodyitem";
 import {ObjectPopoverHeader} from "./components/objectpopoverheader";
 import {ObjectSelectBeanListModal} from "./components/objectselectbeanlistmodal";
+import {ObjectActionHelpTextButton} from "./components/objectactionhelptextbutton";
+import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
+import {ObjectStatusNetworkModal} from "./components/objectstatusnetworkmodal";
+import {ObjectStatusNetworkOpenModalButton} from "./components/objectstatusnetworkopenmodalbutton";
+
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -289,6 +295,7 @@ import {ObjectSelectBeanListModal} from "./components/objectselectbeanlistmodal"
         ObjectActionNewCopyRuleBeanButton,
         ObjectActionNewCopyRuleBeanButtonModelHelper,
         ObjectActionSelectButton,
+        ObjectRecordCreateContainer,
         ObjectEditModal,
         ObjectEditModalWReference,
         ObjectEditModalDialogContainer,
@@ -388,7 +395,11 @@ import {ObjectSelectBeanListModal} from "./components/objectselectbeanlistmodal"
         ObjectActionDeactivateBeansModal,
         ObjectChecklists,
         ObjectPopoverBodyItem,
-        ObjectPopoverHeader
+        ObjectPopoverHeader,
+        ObjectActionHelpTextButton,
+        ObjectHelpTextModal,
+        ObjectStatusNetworkModal,
+        ObjectStatusNetworkOpenModalButton
     ],
     exports: [
         ObjectListViewHeader,

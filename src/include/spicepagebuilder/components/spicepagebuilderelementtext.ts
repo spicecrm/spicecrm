@@ -57,6 +57,9 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      */
     public ngOnInit() {
         super.ngOnInit();
+        if (!this.element.editorType) {
+            this.element.editorType = 'richText';
+        }
         this.sanitizeContent();
     }
 

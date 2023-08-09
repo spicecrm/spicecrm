@@ -10,7 +10,7 @@ import {
     ViewContainerRef
 } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {CanActivate, CanDeactivate, Router} from "@angular/router";
+import { Router } from "@angular/router";
 import {LocationStrategy} from "@angular/common";
 import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
@@ -500,6 +500,7 @@ export class metadata {
     public setFieldset(fieldset_id, params) {
         this.fieldSets[fieldset_id].name = params.name;
         this.fieldSets[fieldset_id].package = params.package;
+        this.configuration.setData('fieldsets', this.fieldSets);
     }
 
     public addFieldset(id, module, name, type = "custom", items = []) {
@@ -509,13 +510,14 @@ export class metadata {
             name: name,
             type: type
         };
+        this.configuration.setData('fieldsets', this.fieldSets);
     }
 
-    public addFieldsetToFieldset(id, parent, itemid) {
+    public addFieldsetToFieldset(id, parent, itemid, config: any = {}) {
         this.fieldSets[parent].items.push({
             id: id,
             fieldset: itemid,
-            fieldconfig: {},
+            fieldconfig: config,
             sequence: 0
         });
 
@@ -524,13 +526,15 @@ export class metadata {
             item.sequence = i;
             i++;
         }
+
+        this.configuration.setData('fieldsets', this.fieldSets);
     }
 
-    public addFieldToFieldset(id, parent, field) {
+    public addFieldToFieldset(id, parent, field, config: any = {}) {
         this.fieldSets[parent].items.push({
             id: id,
             field: field,
-            fieldconfig: {},
+            fieldconfig: config,
             sequence: 0
         });
 
@@ -539,6 +543,8 @@ export class metadata {
             item.sequence = i;
             i++;
         }
+
+        this.configuration.setData('fieldsets', this.fieldSets);
     }
 
     public removeFieldsetItem(parent, item) {
@@ -557,6 +563,8 @@ export class metadata {
                 thisitem.sequence = i;
                 i++;
             }
+
+            this.configuration.setData('fieldsets', this.fieldSets);
             return true;
         } else {
             return false;
@@ -883,6 +891,7 @@ export class metadata {
      */
     public addModuleListType(module: string, listTypeData: any) {
         this.moduleDefs[module].listtypes.push(listTypeData);
+        this.configuration.setData('moduledefs', this.moduleDefs);
     }
 
     /**
@@ -899,6 +908,7 @@ export class metadata {
                         listtype[key] = listTypeData[key];
                     }
                 }
+                this.configuration.setData('moduledefs', this.moduleDefs);
                 return true;
             }
         });
@@ -915,6 +925,7 @@ export class metadata {
         if (typeIndex >= 0) {
             this.moduleDefs[module].listtypes.splice(typeIndex, 1);
         }
+        this.configuration.setData('moduledefs', this.moduleDefs);
         return this.moduleDefs[module].listtypes;
     }
 
@@ -1154,6 +1165,8 @@ export class metadata {
     public setActionset(actionset_id, params) {
         this.actionSets[actionset_id].name = params.name;
         this.actionSets[actionset_id].package = params.package;
+
+        this.configuration.setData('actionsets', this.actionSets);
     }
 
     public setActionSet(actionset_id, params) {
@@ -1166,10 +1179,14 @@ export class metadata {
             actions: params.actions,
             type: params.type
         };
+
+        this.configuration.setData('actionsets', this.actionSets);
     }
 
     public setActionSetItems(actionset_id, actions) {
         this.actionSets[actionset_id].actions = actions;
+
+        this.configuration.setData('actionsets', this.actionSets);
     }
 
     public addActionset(id, module, name, type = "custom", items = []) {
@@ -1179,10 +1196,14 @@ export class metadata {
             name: name,
             type: type
         };
+
+        this.configuration.setData('actionsets', this.actionSets);
     }
 
     public removeActionset(id) {
         delete this.actionSets[id];
+
+        this.configuration.setData('actionsets', this.actionSets);
     }
 
     public removeActionsetItem(parent, item) {
@@ -1201,10 +1222,13 @@ export class metadata {
                 thisitem.sequence = i;
                 i++;
             }
+
+            this.configuration.setData('actionsets', this.actionSets);
             return true;
         } else {
             return false;
         }
+
     }
 
     /**
@@ -1256,13 +1280,15 @@ export class metadata {
      * @param type: object
      */
     public setModuleFilter(id, name, module, type = 'custom') {
-        if (!this.moduleFilters) this.configuration.setData('moduleFilters', {});
+        if (!this.moduleFilters) this.configuration.setData('modulefilters', {});
         this.moduleFilters[id] = {
             id,
             name,
             module,
             type
         };
+
+        this.configuration.setData('modulefilters', this.moduleFilters);
     }
 
     /**
@@ -1270,6 +1296,8 @@ export class metadata {
      */
     public removeModuleFilter(filterId) {
         delete this.moduleFilters[filterId];
+
+        this.configuration.setData('modulefilters', this.moduleFilters);
     }
 
     /**
@@ -1748,7 +1776,7 @@ export class metadata {
 @Injectable({
     providedIn: 'root'
 })
-export class aclCheck implements CanActivate {
+export class aclCheck  {
     constructor(public metadata: metadata, public router: Router, public session: session, public configurationService: configurationService) {
     }
 
@@ -1785,7 +1813,7 @@ export class aclCheck implements CanActivate {
 @Injectable({
     providedIn: 'root'
 })
-export class noBack implements CanDeactivate<any> {
+export class noBack  {
 
     public navigatingBack: boolean = false;
 
