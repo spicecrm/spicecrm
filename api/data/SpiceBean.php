@@ -2537,6 +2537,8 @@ class SpiceBean
         //get the email id's to merge
         $existingData = $data;
 
+        $existingEmails = [];
+
         //make sure id's to merge exist and are in array format
         //get the existing email id's
         $this->load_relationship($name);
