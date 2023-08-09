@@ -26,9 +26,20 @@ class SpiceImport extends SpiceBean
      */
     public static function getFilePreview($params)
     {
-        $delimiter = ($params['separator'] == 'comma') ? ',' : ';';
-        $enclosure = chr(8);
+        $delimiter = ",";
+        switch ($params['separator']) {
+            case 'comma':
+                $delimiter = ",";
+                break;
+            case 'semicolon':
+                $delimiter = ";";
+                break;
+            case 'endofline':
+                $delimiter = "\\n";
+                break;
+        }
 
+        $enclosure = chr(8);
         switch ($params['enclosure']) {
             case 'single':
                 $enclosure = "'";
@@ -51,7 +62,7 @@ class SpiceImport extends SpiceBean
                 return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
             }, $fileHeader);
 
-            if (!is_array($fileHeader) || count($fileHeader) < 2) {
+            if (!is_array($fileHeader) || count($fileHeader) < 1) {
                 throw new BadRequestException('separator or enclosure settings do not match the file settings');
             }
 
