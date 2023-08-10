@@ -258,6 +258,8 @@ class SpiceUIRESTHandler
             self::setComponentsetItems($componentsetId, $componentsetData);
         }
 
+        SpiceCache::clear('spiceComponentSets');
+
         return true;
     }
 
