@@ -12,7 +12,7 @@
                     <div *ngIf="!spiceImport.fileData" class="slds-grid slds-m-around--x-small">
                         <fieldset class="slds-form-element">
                             <div class="slds-form-element__control">
-                                <system-input-radio-button-group [(ngModel)]="spiceImport.separator" [inputOptions]="[{label: ';', value: 'semicolon'}, {label: ',', value: 'comma'}]"></system-input-radio-button-group>
+                                <system-input-radio-button-group [(ngModel)]="spiceImport.separator" [inputOptions]="delimiterOptions"></system-input-radio-button-group>
                             </div>
                             <legend class="slds-form-element__legend slds-form-element__label">
                                 <system-label label="LBL_SEPARATOR"></system-label>
