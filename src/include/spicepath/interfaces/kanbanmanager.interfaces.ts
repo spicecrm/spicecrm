@@ -18,6 +18,7 @@ export interface SpiceBeanGuidesI {
     module: string;
     status_field: string;
     build_language?: string;
+    scope?: string;
     name: string;
     systextid: string;
 }

@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
-import {Observable, Subject} from "rxjs";
+
+import {forkJoin, Observable, Subject} from "rxjs";
+import {tap, map} from "rxjs/operators";
 
 import {backend} from "../../../services/backend.service";
 import {
@@ -47,7 +49,22 @@ export class KanbanManagerService {
 
 
     public getBeanGuides(): Observable<SpiceBeanGuidesI[]> {
-        return this.backend.getRequest(`configuration/configurator/entries/spicebeanguides`);
+        const data1: Observable<SpiceBeanGuidesI> = this.backend.getRequest(`configuration/configurator/entries/spicebeanguides`).pipe(
+            tap((res) => {
+                res.map(data => data.scope = 'global');
+            })
+        );
+        const data2: Observable<SpiceBeanGuidesI> = this.backend.getRequest(`configuration/configurator/entries/spicebeancustomguides`).pipe(
+            tap((res) => {
+                res.map(data => data.scope = 'custom');
+            })
+        );
+
+        return forkJoin([data1, data2]).pipe(
+                    map(responses => {
+                        return [].concat(...responses);
+                    })
+                );
     }
 
     public loadValidations() {
