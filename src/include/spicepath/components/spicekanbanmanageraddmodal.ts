@@ -39,6 +39,11 @@ export class SpiceKanbanManagerAddModal implements OnInit{
 
     public isEditing: boolean = false;
 
+    /**
+     *  scope global | custom
+     */
+    public scope: string = 'global';
+
     constructor(
         public modal: modal,
         public metadata: metadata,
@@ -73,11 +78,22 @@ export class SpiceKanbanManagerAddModal implements OnInit{
      */
     public save() {
 
-        this.selectedBeanGuide.systextid = this.selectedBeanGuide.systextid + this.sysTextIDName;
+
+        this.selectedBeanGuide.systextid = `kanban_${this.selectedBeanGuide.module.toLowerCase()}_${this.sysTextIDName}`;
+
+        let table = this.scope == 'global' ? 'spicebeanguides' : 'spicebeancustomguides';
+
+        if(!this.isEditing) {
+            this.selectedBeanGuide.scope = this.scope;
+        } else {
+            table = this.selectedBeanGuide.scope == 'global' ? 'spicebeanguides' : 'spicebeancustomguides';
+        }
+
+        delete this.selectedBeanGuide.scope;
 
         let spinner = this.modal.await('LBL_SAVING');
 
-        this.backend.postRequest(`configuration/configurator/spicebeanguides`, null, {config: [this.selectedBeanGuide]}).subscribe({
+        this.backend.postRequest(`configuration/configurator/${table}`, null, {config: [this.selectedBeanGuide]}).subscribe({
             next: () => {
                 spinner.emit(true);
                 this.toast.sendToast('LBL_SPICEBEANGUIDE_SAVED', "success");
