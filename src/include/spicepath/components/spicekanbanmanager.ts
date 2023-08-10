@@ -20,14 +20,19 @@ import {modelutilities} from "../../../services/modelutilities.service";
 export class SpiceKanbanManager implements OnInit{
 
 
+    public loading: boolean;
+
     /**
      * module name
      */
     public _moduleName: string = '';
 
+
     public beanGuides: SpiceBeanGuidesI[] = [];
+    public beanGuidesCustom: SpiceBeanGuidesI[] = [];
 
     public moduleBeanGuides: SpiceBeanGuidesI[] = [];
+    public moduleBeanGuidesCustom: SpiceBeanGuidesI[] = [];
 
     public preview: boolean = false;
 
@@ -51,11 +56,15 @@ export class SpiceKanbanManager implements OnInit{
     set moduleName(val: string) {
         this._moduleName = val;
         this.moduleBeanGuides = this.beanGuides.filter(res => res.module == val);
+        this.moduleBeanGuidesCustom = this.beanGuidesCustom.filter(res => res.module == val);
     }
 
     public ngOnInit() {
+        this.loading = true;
         this.kanbanManagerService.getBeanGuides().subscribe(res => {
-            this.beanGuides = res;
+            this.beanGuides = res.filter(r => r.scope == 'global');
+            this.beanGuidesCustom = res.filter(r => r.scope == 'custom');
+            this.loading = false;
         })
     }
 
@@ -68,10 +77,11 @@ export class SpiceKanbanManager implements OnInit{
                 module: this.moduleName,
                 status_field: '',
                 name: '',
+                scope: '',
                 systextid: `kanban_${this.moduleName.toLowerCase()}_`
             };
             modalRef.instance.emitSelectedBeanGuide.subscribe(selected => {
-                this.beanGuides.push(selected);
+                selected.scope == 'global' ? this.beanGuides.push(selected) : this.beanGuidesCustom.push(selected);
                 this.moduleName = selected.module;
 
                 this.kanbanManagerService.loadItems();
