@@ -409,6 +409,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                 ]
             ],
         ],
+        'employees' => [
+            'name'         => 'employees',
+            'type'         => 'link',
+            'relationship' => 'employees_meetings',
+            'module'       => 'Employees',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_EMPLOYEES',
+        ],
         'leads' => [
             'name'         => 'leads',
             'type'         => 'link',
