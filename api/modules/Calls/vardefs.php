@@ -316,6 +316,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'source'       => 'non-db',
             'vname'        => 'LBL_CONSUMERS',
         ],
+        'employees' => [
+            'name'         => 'employees',
+            'type'         => 'link',
+            'relationship' => 'employees_calls',
+            'module'       => 'Employees',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_EMPLOYEES',
+        ],
         'contacts' => [
             'name'         => 'contacts',
             'type'         => 'link',
