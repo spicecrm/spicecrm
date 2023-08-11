@@ -130,6 +130,9 @@ class SchedulerJob extends SpiceBean
     {
         global $overCLI;
 
+        // set the status explicit on the DB with commit
+        $this->setStatus('Running');
+
         $this->last_run_date = TimeDate::getInstance()->nowDb();
         $this->job_status = 'Running';
 
@@ -140,6 +143,19 @@ class SchedulerJob extends SpiceBean
         }
 
         $this->save();
+    }
+
+    /**
+     * sets the status transactional and commits it as well
+     *
+     * @param $status
+     * @return void
+     * @throws \Exception
+     */
+    private function setStatus($status){
+        $dbConn = DBManagerFactory::getInstance('jobupdate');
+        $dbConn->query("UPDATE {$this->_tablename} SET job_status='{$status}' WHERE id='{$this->id}'");
+        $dbConn->commit();
     }
 
     /**
@@ -186,6 +202,11 @@ class SchedulerJob extends SpiceBean
      */
     public function runTasks(): array
     {
+        // double check that the job is not running alreasy
+        $status = "SELECT job_status FROM {$this->_tablename} WHERE id = '{$this->id}'";
+        if($status == 'Running') ['success' => false, 'message' => 'JOB is running already'];
+
+        // do the before checks
         $this->beforeRun();
 
         # Feature: In case the assigned user of the cron job is different to the current user (basically "1"), use it instead.
