@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -91,7 +90,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'name' => 'taxcategory',
             'vname' => 'LBL_TAXCATEGORY',
             'type' => 'enum',
-            'length' => 1,
+            'len' => 1,
             'options' => 'product_tax_categories_dom',
             'comment' => 'the tax category for the tax determination'
         ],

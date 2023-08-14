@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Accounts\api\controllers\AccountsHierarchyController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

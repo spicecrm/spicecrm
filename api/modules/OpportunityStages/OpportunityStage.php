@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\OpportunityStages;
 
 use SpiceCRM\data\SpiceBean;

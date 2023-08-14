@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Administration\api\controllers\ConfiguratorController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
 use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;

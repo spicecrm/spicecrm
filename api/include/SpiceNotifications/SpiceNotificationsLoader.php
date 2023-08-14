@@ -78,7 +78,7 @@ class SpiceNotificationsLoader
         $query = $db->query("SELECT COUNT(*) AS cnt FROM spicenotifications WHERE deleted <> 1 AND user_id = '{$current_user->id}'");
         $notificationCount = $db->fetchRow($query)['cnt'];
 
-        return $notificationCount;
+        return is_null($notificationCount) ? 0 : $notificationCount;
     }
 
     /**

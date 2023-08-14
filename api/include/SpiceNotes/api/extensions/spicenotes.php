@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceNotes\api\controllers\SpiceNotesController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

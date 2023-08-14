@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 //check on function_exists for backwards compatibility
 //runScheduledKReports might already exist under custom/Extensions/modules/Jobs/Ext...
 if(!function_exists('runScheduledKReports')) {

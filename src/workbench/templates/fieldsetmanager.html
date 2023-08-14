@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="slds-form-element slds-col--bump-left">
-            <button [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="copy()" >
+            <button [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="openCopyModal()" >
                 <span><system-label label="LBL_COPY"></system-label></span>
             </button>
             <button [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addFieldset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
@@ -83,7 +83,7 @@
                                 <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field' || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="add item"  (click)="addItem(currentFieldSetItem.item.fieldset)">
                                     <system-button-icon [icon]="'new'"></system-button-icon>
                                 </button>
-                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field'" class="slds-button slds-button--icon" title="customize" (click)="copy(currentFieldSetItem.item.fieldset, currentFieldSetItem)">
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field'" class="slds-button slds-button--icon" title="customize" (click)="openCopyModal(currentFieldSetItem)">
                                     <system-button-icon [icon]="'copy'"></system-button-icon>
                                 </button>
                                 <button [disabled]="!view.isEditMode() || (currentFieldSetItem.parentScope=='global' && currentFieldSetItem.type=='field')" class="slds-button slds-button--icon || customModeGlobalField" title="unlink item" (click)="unlinkItem(currentFieldSetItem)">

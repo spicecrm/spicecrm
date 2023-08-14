@@ -3,22 +3,22 @@
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
  * You can contact us at info@spicecrm.io
- *
+ * 
  * SpiceCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version
- *
+ * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- *
+ * 
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
- *
+ * 
  * SpiceCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,7 +26,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
-
 
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -124,6 +123,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
         'email_template_id' => [
             'name' => 'email_template_id',
             'vname' => 'LBL_EMAILTEMPLATE_ID',
+            'type' => 'varchar',
+            'len' => 36
+        ],
+        'textmessage_template_name' => [
+            'name' => 'textmessage_template_name',
+            'rname' => 'name',
+            'id_name' => 'textmessage_template_id',
+            'vname' => 'LBL_TEXTMESSAGETEMPLATE',
+            'type' => 'relate',
+            'table' => 'textmessage_templates',
+            'isnull' => 'true',
+            'module' => 'TextMessageTemplates',
+            'dbType' => 'varchar',
+            'link' => 'textmessage_templates',
+            'len' => '255',
+            'source' => 'non-db',
+        ],
+        'textmessage_templates' => [
+            'name' => 'textmessage_templates',
+            'type' => 'link',
+            'relationship' => 'campaigntask_textmessage_template',
+            'source' => 'non-db',
+            'module' => 'TextMessageTemplates'
+        ],
+        'textmessage_template_id' => [
+            'name' => 'textmessage_template_id',
+            'vname' => 'LBL_TEXTMESSAGETEMPLATE_ID',
             'type' => 'varchar',
             'len' => 36
         ],
@@ -294,11 +320,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'relationship' => 'campaigntask_emailtrackingactions',
             'source' => 'non-db'
         ],
-        'trackinglinks' => [
-            'name' => 'trackinglinks',
+        'emailtrackinglinks' => [
+            'name' => 'emailtrackinglinks',
             'type' => 'link',
-            'module' => 'TrackingLinks',
-            'relationship' => 'campaigntask_trackinglinks',
+            'module' => 'EmailTrackingLinks',
+            'relationship' => 'campaigntask_emailtrackinglinks',
             'source' => 'non-db'
         ],
         'module_filter' => [
@@ -379,6 +405,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'rhs_module' => 'CampaignTasks',
             'rhs_table' => 'campaigntasks',
             'rhs_key' => 'email_template_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'campaigntask_textmessage_template' => [
+            'lhs_module' => 'TextMessageTemplates',
+            'lhs_table' => 'textmessage_templates',
+            'lhs_key' => 'id',
+            'rhs_module' => 'CampaignTasks',
+            'rhs_table' => 'campaigntasks',
+            'rhs_key' => 'textmessage_template_id',
             'relationship_type' => 'one-to-many'
         ],
         'campaigntask_output_template' => [

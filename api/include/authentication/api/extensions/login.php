@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Users\api\controllers\UsersController;
 use SpiceCRM\includes\authentication\api\controllers\LoginController;

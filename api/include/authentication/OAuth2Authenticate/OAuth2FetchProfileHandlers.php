@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\authentication\OAuth2Authenticate;
 
 use Exception;

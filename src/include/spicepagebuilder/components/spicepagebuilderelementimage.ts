@@ -20,7 +20,7 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
     /**
      * containers to be rendered
      */
-    @Input() public element: ImageI;
+    @Input() public declare element: ImageI;
     /**
      * list of the editable attributes
      */

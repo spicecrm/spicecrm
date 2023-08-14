@@ -61,6 +61,20 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     }
 
     /**
+     * determines if the recent hits shall be displayed
+     */
+    get disablerecent() {
+        return this.fieldconfig.disablerecent ? true : false;
+    }
+
+    /**
+     * determines if the latest search shall be displayed
+     */
+    get disablesearch() {
+        return this.fieldconfig.disablesearch ? true : false;
+    }
+
+    /**
      * returns the currently set id;
      */
     get id() {

@@ -27,8 +27,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
-/** @deprecated
+/* @deprecated in 2023.01.001
+ * Will be removed in 2023.02.001
  * new Module at HCMTrainings
  */
 namespace SpiceCRM\modules\Qualifications;

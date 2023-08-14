@@ -35,4 +35,21 @@ export class fieldEmailStatus extends fieldGeneric {
         }
     }
 
+
+    get direction(){
+        return this.model.getField('type');
+    }
+
+    // get a status icon
+    get directionicon() {
+        switch (this.model.getField('type')) {
+            case 'inbound':
+                return 'back';
+            case 'out':
+                return 'forward';
+            default:
+                return '';
+        }
+    }
+
 }

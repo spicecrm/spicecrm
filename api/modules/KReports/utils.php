@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 if(!function_exists("randomstring")){ 
     function randomstring(){
         $len = 10;

@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, SkipSelf} from '@angular/core';
-import {language} from '../../services/language.service';
+import {Component, Input, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
-import {helper} from '../../services/helper.service';
-import { systemrichtextservice } from '../services/systemrichtext.service';
+import {systemrichtextservice} from '../services/systemrichtext.service';
+import {modal} from "../../services/modal.service";
+import {Subject} from "rxjs";
+import {backend} from "../../services/backend.service";
 
 @Component({
     templateUrl: '../templates/systemrichtextlink.html',
@@ -35,7 +36,7 @@ export class SystemRichTextLink implements OnInit {
     /**
      * The mode: Add a new or edit an existing link.
      */
-    public alterMode: false;
+    public alterMode = false;
 
     /**
      * Keep the link text in sync with the link URL while editing the URL?
@@ -45,40 +46,105 @@ export class SystemRichTextLink implements OnInit {
     /**
      * Event emitter to emit the form data.
      */
-    public response: EventEmitter<any>;
+    public response = new Subject<{
+        url: string,
+        trackByMethod: 'id' | 'url',
+        trackingId: string,
+        text: string,
+        linkType: 'conv' | 'mark',
+        marketingAction: string,
+    }>();
 
     public self: any;
 
-    public linkType: 'conv'|'mark' = 'conv';
+    public linkType: 'conv' | 'mark' = 'conv';
 
     public editorService: systemrichtextservice;
+    /**
+     * track by method for the radio buttons
+     */
+    public trackByMethod: 'id' | 'url';
 
-    constructor(public language: language, public helper: helper, private model: model ) {
-        this.response = new EventEmitter<any>(); // Create the event emitter for emitting the form input.
+    constructor(private model: model,
+                private backend: backend,
+                private modal: modal) {
+    }
+
+    /**
+     * set the track by method and open selection modal on id method
+     * @param value
+     */
+    public setTrackByMethod(value: 'id' | 'url') {
+        this.trackByMethod = value;
+
+        if (value == 'id') {
+            this.openTrackingLinkSelectModal();
+        } else {
+            this.trackingId = undefined;
+        }
+    }
+
+    /**
+     * open tracking link selection modal
+     */
+    public openTrackingLinkSelectModal() {
+
+        const options = [
+            {value: 'select', display: 'LBL_SELECT'},
+            {value: 'new', display: 'LBL_NEW'},
+            {value: undefined, display: 'LBL_CANCEL'},
+        ];
+
+        this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_TRACKINGLINKS', 'shade', 'select', options, 'button').subscribe(answer => {
+
+            if (!answer) return;
+
+            switch (answer) {
+                case 'new':
+                    const presets = {
+                        name: this.text,
+                        url: this.url
+                    };
+                    this.model.addModel('', null, presets, true).subscribe(res => {
+                        this.trackingId = res.id;
+                    });
+                    break;
+                case 'select':
+                    this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
+                        selectModal.instance.module = 'EmailTrackingLinks';
+                        selectModal.instance.multiselect = false;
+                        selectModal.instance.selectedItems.subscribe((items) => {
+                            this.trackingId = items[0].id;
+                        });
+                    });
+                    break;
+            }
+        });
+
     }
 
     public ngOnInit() {
+        this.model.module = 'EmailTrackingLinks';
         this.url = this.url.trim(); // Trim spaces from URL if present.
         this.text = this.text.trim(); // Trim spaces from link text if present.
-        if ( !this.urlHasProtocol( this.url ) ) this.url = 'https://'; // Start the URL with "https://" in case there isn´t already a protocol.
+        if (!this.urlHasProtocol(this.url)) this.url = 'https://'; // Start the URL with "https://" in case there isn´t already a protocol.
         this.textIsUrl = !this.text; // In case there is no link text given, the link text
-        this.toTrack = !!this.trackingId;
-        if ( this.url ) this.url = this.url.trim();
-        if ( this.marketingAction ) this.linkType = 'mark';
+        if (this.url) this.url = this.url.trim();
+        if (this.marketingAction) this.linkType = 'mark';
         this.loadMarketingActions();
     }
 
     /**
      * Check if the URL has a protocol at the beginning.
      */
-    public urlHasProtocol( url: string ): boolean {
+    public urlHasProtocol(url: string): boolean {
         return /^[a-zA-Z]+\:\/\//.test(url.trim());
     }
 
     /**
      * Check the validity of a URL.
      */
-    public urlIsValid( url: string ): boolean {
+    public urlIsValid(url: string): boolean {
         return /^[a-zA-Z]+\:\/\/.+/.test(url.trim());
     }
 
@@ -87,14 +153,14 @@ export class SystemRichTextLink implements OnInit {
      */
     public checkUrl(): boolean {
         let urlTrimmed = this.url.trim();
-        if ( !urlTrimmed ) {
+        if (!urlTrimmed) {
             this.urlErrorLabel = 'MSG_INPUT_REQUIRED';
-        } else if ( !this.urlIsValid( urlTrimmed )) {
+        } else if (!this.urlIsValid(urlTrimmed)) {
             this.urlErrorLabel = 'LBL_INPUT_INVALID';
         } else {
             this.urlErrorLabel = '';
         }
-        if ( this.textIsUrl ) this.text = this.url;
+        if (this.textIsUrl) this.text = this.url;
         return !this.urlErrorLabel;
     }
 
@@ -102,7 +168,7 @@ export class SystemRichTextLink implements OnInit {
      * Check existence of the marketing action and set the error text if necessary.
      */
     public checkMarketingAction(): boolean {
-        if ( !this.marketingAction ) {
+        if (!this.marketingAction) {
             this.marketingActionErrorLabel = 'MSG_INPUT_REQUIRED';
         } else {
             this.marketingActionErrorLabel = '';
@@ -115,9 +181,9 @@ export class SystemRichTextLink implements OnInit {
      * Got the link text changed? Then stop keeping the link text in sync with the link URL while editing the URL.
      */
     public changeTextIsUrl() {
-        if ( !this.text ) this.textIsUrl = true;
+        if (!this.text) this.textIsUrl = true;
         else {
-            if ( this.url != this.text ) this.textIsUrl = false;
+            if (this.url != this.text) this.textIsUrl = false;
         }
     }
 
@@ -125,24 +191,19 @@ export class SystemRichTextLink implements OnInit {
      * Submit the form and close the modal.
      */
     public submit() {
-        if ( this.linkType === 'conv' && !this.checkUrl() ) return;
-        if ( this.linkType === 'mark' && !this.checkMarketingAction() ) return;
-        if (this.toTrack) {
-            if ( !this.trackingId ) {
-                this.trackingId = this.helper.generateGuid();
-                this.saveTrackingLink();
-            }
-        } else delete this.trackingId;
+        if (this.linkType === 'conv' && !this.checkUrl()) return;
+        if (this.linkType === 'mark' && !this.checkMarketingAction()) return;
         let responseObject = {
             url: this.linkType === 'conv' ? this.url.trim() : '',
-            toTrack: this.linkType === 'conv' ? this.toTrack : undefined,
-            trackingId: this.linkType === 'conv' ? this.trackingId : undefined,
+            trackingId: this.linkType === 'conv' ? (this.trackingId ?? '') : undefined,
             text: undefined as string,
             linkType: this.linkType,
+            trackByMethod: this.trackByMethod,
             marketingAction: this.linkType === 'mark' ? this.marketingAction : undefined
         };
-        if ( !this.alterMode ) responseObject.text = this.text.trim();
-        this.response.emit( responseObject );
+        if (!this.alterMode) responseObject.text = this.text.trim();
+        this.response.next(responseObject);
+        this.response.complete();
         this.self.destroy(); // close the modal
     }
 
@@ -150,22 +211,9 @@ export class SystemRichTextLink implements OnInit {
      * Cancel adding/editing a link and close the modal.
      */
     public cancel() {
-        this.response.emit(null);
+        this.response.next(null);
+        this.response.complete();
         this.self.destroy(); // close the modal
-    }
-
-    /**
-     * */
-    private saveTrackingLink() {
-        this.model.id = this.trackingId;
-        this.model.module = 'TrackingLinks';
-        this.model.setFields({
-            name: this.text,
-            url: this.url,
-            parent_type: this.parent.module,
-            parent_id: this.parent.id
-        });
-        this.model.save();
     }
 
     private loadMarketingActions() {

@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\AccountKPIs\api\controllers\AccountKpiController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

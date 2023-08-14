@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 $customFunctionInclude = 'modules/KReports/KReportCustomFunctions.php';
 
 $kreportEmailTemplate = 'dd457b9e-ec56-70c7-5b74-4d9c6d0938b6';

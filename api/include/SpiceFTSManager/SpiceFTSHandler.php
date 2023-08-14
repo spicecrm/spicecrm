@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\data\BeanFactory;
@@ -181,7 +180,7 @@ class SpiceFTSHandler
 
         // use FTS
         if ($useFts) {
-            $result = $this->getGlobalSearchResults($postBody['modules'], $postBody['searchterm'], json_decode($postBody['searchtags']), $postBody, $postBody['aggregates'], $postBody['sort']);
+            $result = $this->getGlobalSearchResults($postBody['modules'], $postBody['searchterm'], json_decode($postBody['searchtags']), $postBody, $postBody['aggregates'], $postBody['sort'], [],$postBody['useGlobalFilter'] ?? true);
         } else {
             // else go for a DB query and guess global modules
 
@@ -726,7 +725,7 @@ class SpiceFTSHandler
      *
      * @return array|mixed
      */
-    function searchModule($module, $searchterm = '', $searchtags = [], $aggregatesFilters = [], $size = 25, $from = 0, $sort = [], $addFilters = [], $useWildcard = false, $requiredFields = [], $source = true, $addAggregates = [])
+    function searchModule($module, $searchterm = '', $searchtags = [], $aggregatesFilters = [], $size = 25, $from = 0, $sort = [], $addFilters = [], $useWildcard = false, $requiredFields = [], $source = true, $addAggregates = [], $useGlobalFilter = true)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -885,7 +884,7 @@ class SpiceFTSHandler
 
         // check if we have a global filter for the module defined
         // if yes add this here to the add filters
-        if (!empty($indexSettings['globalfilter'])) {
+        if (!empty($indexSettings['globalfilter']) && $useGlobalFilter) {
             $sysFilter = new SysModuleFilters();
             $filterForId = $sysFilter->generareElasticFilterForFilterId($indexSettings['globalfilter']);
             if (!empty($filterForId)) {
@@ -1183,7 +1182,7 @@ class SpiceFTSHandler
      *
      * @return array
      */
-    function getGlobalSearchResults($modules, $searchterm, $searchtags, $params, $aggregates = [], $sort = [], $required = [])
+    function getGlobalSearchResults($modules, $searchterm, $searchtags, $params, $aggregates = [], $sort = [], $required = [], $useGlobalFilter = true)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -1282,7 +1281,7 @@ class SpiceFTSHandler
             $params['buckets'] = json_decode($params['buckets'], true);
             if (is_array($params['buckets']) && count($params['buckets']) > 0) {
                 // get the full aggregates
-                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, 0, 0, $sort, $addFilters, $useWildcard, $required);
+                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, 0, 0, $sort, $addFilters, $useWildcard, $required, $useGlobalFilter);
                 $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)];
                 $searchresults[$module]['aggregations'] = $searchresultsraw['aggregations'];
 
@@ -1300,7 +1299,7 @@ class SpiceFTSHandler
                         }
                     }
 
-                    $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs);
+                    $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $bucketitem['items'] ?: 0, $sort, array_merge($addFilters, $bucketfilters), $useWildcard, $required, true, $addAggrs, $useGlobalFilter);
                     foreach ($searchresultsraw['hits']['hits'] as &$hit) {
                         $seed = BeanFactory::getBean($module, $hit['_id'], ['forceRetrieve' => true]);
 
@@ -1343,7 +1342,7 @@ class SpiceFTSHandler
                 $searchresults[$module]['buckets'] = $params['buckets'];
             } else {
 
-                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters, $useWildcard, $required);
+                $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, $params['records'] ?: 5, $params['start'] ?: 0, $sort, $addFilters, $useWildcard, $required, true, $addAggrs, $useGlobalFilter);
                 $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)];
 
                 if ($searchresultsraw['error']) {
@@ -1681,7 +1680,7 @@ class SpiceFTSHandler
             while ($indexBean = $db->fetchByAssoc($indexBeans)) {
                 if ($toConsole) {
                     if ($counterIndexed + $counterDeleted > 0) echo str_repeat(chr(8), $numRowsLength); // delete previous counter output
-                    echo sprintf("%${numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
+                    echo sprintf("%{$numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
                 }
                 if ($indexBean['deleted'] == 0) {
                     $seed->retrieve($indexBean['id']);
@@ -1773,7 +1772,7 @@ class SpiceFTSHandler
             while ($indexBean = $db->fetchByAssoc($indexBeans)) {
                 if ($toConsole) {
                     if ($counterIndexed + $counterDeleted > 0) echo str_repeat(chr(8), $numRowsLength); // delete previous counter output
-                    echo sprintf("%${numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
+                    echo sprintf("%{$numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
                 }
                 if ($indexBean['deleted'] == 0) {
 

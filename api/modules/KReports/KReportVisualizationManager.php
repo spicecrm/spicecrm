@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\KReports\KReportPluginManager;
 

@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\ScrumUserStories\guideChecks;
 
 

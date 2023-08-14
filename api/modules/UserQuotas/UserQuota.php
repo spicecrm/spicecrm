@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\UserQuotas;
 
 use SpiceCRM\data\SpiceBean;

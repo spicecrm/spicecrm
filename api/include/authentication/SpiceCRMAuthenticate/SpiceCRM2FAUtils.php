@@ -53,7 +53,6 @@ use SpiceCRM\modules\Users\User;
  ********************************************************************************/
 
 
-
 /**
  * user two-factor authentication utils
  */
@@ -71,6 +70,9 @@ class SpiceCRM2FAUtils
         $requireOn = $sys2FAConfig->require_on;
         $method = $sys2FAConfig->method;
 
+        # exclude api users from system-wide 2FA
+        if ($user->is_api_user && $requireOn) return;
+
         # if the system-wide 2FA is inactive then check for the user 2FA method
         if (!$requireOn && !empty($user->user_2fa_method)) {
             $requireOn = true;
@@ -83,7 +85,7 @@ class SpiceCRM2FAUtils
 
         # throw an exception and send the 2FA code if the code was not provided and the device is not trusted or the 2FA check is always on
         if (empty($authData->code2fa) && ($requireOn == 'always' || ($requireOn == 'device_change' && !self::isTrustedDevice($userId, $authData->deviceID)))) {
-            self::handleRequire2FAException($userId, $method);
+            self::handleRequire2FAException($user, $method);
         }
 
         if (!empty($authData->code2fa)) {
@@ -97,25 +99,26 @@ class SpiceCRM2FAUtils
 
     /**
      * throw exception and send code by sms
-     * @param string $userId
+     * @param User $user
      * @param string $method
      * @return mixed
      * @throws UnauthorizedException
      */
-    private static function handleRequire2FAException(string $userId, string $method)
+    private static function handleRequire2FAException(User $user, string $method)
     {
         $message = '';
 
         switch ($method) {
             case 'email':
                 $message = 'Enter the code sent to your email';
-                self::send2FACodeByEmail($userId);
+                self::send2FACodeByEmail($user->id);
                 break;
             case 'sms':
                 $message = 'Enter the sms code sent to your mobile device';
-                self::send2FACodeBySMS($userId);
+                self::send2FACodeBySMS($user->id);
                 break;
             case 'one_time_password':
+                self::checkActiveOneTimePassword($user);
                 $message = 'Enter the one-time password code displayed on the authenticator app in your mobile device';
                 break;
         }
@@ -158,8 +161,8 @@ class SpiceCRM2FAUtils
 
         switch ($method) {
             case 'one_time_password':
-                self::checkActiveOneTimePassword($user);
-                $tokenMatch = TOTPAuthentication::checkTOTPCode($user->id, $code2fa);
+                $userId = empty($user->impersonating_user_id) ? $user->id : $user->impersonating_user_id;
+                $tokenMatch = TOTPAuthentication::checkTOTPCode($userId, $code2fa);
                 break;
             case 'sms':
             case 'email':
@@ -185,7 +188,8 @@ class SpiceCRM2FAUtils
      */
     private static function checkActiveOneTimePassword(User $userObj)
     {
-        if (TOTPAuthentication::checkTOTPActive($userObj->id)) {
+        $userId = empty($userObj->impersonating_user_id) ? $userObj->id : $userObj->impersonating_user_id;
+        if (TOTPAuthentication::checkTOTPActive($userId)) {
             return;
         }
 

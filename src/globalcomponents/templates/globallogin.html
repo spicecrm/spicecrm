@@ -24,7 +24,7 @@
                         <div *ngIf="twoFactorAuthCodeRequired" class="slds-form-element slds-m-vertical--small slds-grid slds-grid--vertical-align-center">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
                                 <system-utility-icon icon="scan" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" [placeholder]="loginLabels.LBL_ENTER_CODE?.default ?? 'Enter code'" />
+                                <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" [placeholder]="loginLabels.LBL_ENTER_CODE?.default ?? 'Enter code'" />
                             </div>
                         </div>
                         <div class="slds-m-bottom--small">

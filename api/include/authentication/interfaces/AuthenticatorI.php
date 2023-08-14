@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\authentication\interfaces;
 
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;

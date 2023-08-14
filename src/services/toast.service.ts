@@ -7,7 +7,9 @@ import {modelutilities} from "./modelutilities.service";
 /**
  * a generic service that handles the toasts. The service is also injected in the footer component that renders the toas on top of the complete UI. In the DOM hierarchy Toasts are high in the index overlyaing all other elements.
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class toast {
 
     /**

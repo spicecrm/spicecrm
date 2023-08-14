@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Activities\api\controllers\UiAssistantController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

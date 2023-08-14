@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\CampaignTasks\api\controllers;
 
 use SpiceCRM\data\SpiceBean;

@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;

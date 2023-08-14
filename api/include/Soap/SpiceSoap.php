@@ -35,7 +35,6 @@ namespace SpiceCRM\includes\Soap;
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -158,7 +157,8 @@ class SpiceSoap {
             $out = ob_get_contents();
             ob_end_clean();
             LoggerManager::getLogger()->fatal('soap', 'NusoapSoap->shutdown: service died unexpectedly');
-            $this->server->fault(-1, "Unknown error in SOAP call: service died unexpectedly", '', $out);
+            $php_error = error_get_last();
+            $this->server->fault(-1, "Unknown error in SOAP call", '' , $php_error['message']);
             $this->server->send_response();
             $this->generateLogEntry();
             $this->updateLogEntry();

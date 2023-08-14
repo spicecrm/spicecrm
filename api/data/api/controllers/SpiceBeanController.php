@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\data\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
@@ -152,6 +151,22 @@ class SpiceBeanController
         $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
         $requestParams = $req->getQueryParams();
         return $res->withJson($moduleHandler->get_bean_detail($args['beanName'], $args['beanId'], $requestParams));
+    }
+    
+    /**
+     * find bean by string fields 
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws 
+     * @throws NotFoundException | BadRequestException | ForbiddenException
+     */
+    public function findBeanByStringFields(Request $req, Response $res, array $args): Response
+    {
+        $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
+        $retrieveFields = json_decode($req->getQueryParams()['retrieveFields'], true);
+        return $res->withJson($moduleHandler->find_bean_by_string_fields($args['beanName'], $retrieveFields));
     }
 
     public function getBeanByExternalId(Request $req, Response $res, array $args): Response

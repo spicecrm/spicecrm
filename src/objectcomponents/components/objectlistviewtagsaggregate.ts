@@ -54,10 +54,10 @@ export class ObjectListViewTagsAggregate extends ObjectListViewAggregate {
     public toggle(tag) {
         if (!this.isactive(tag)) {
             this.modellist.setAggregate('tags', tag.aggdata);
-            this.modellist.reLoadList();
+            this.modellist.scheduleReloadList();
         } else {
             const removed = this.modellist.removeAggregate('tags', tag.aggdata);
-            if (removed) this.modellist.reLoadList();
+            if (removed) this.modellist.scheduleReloadList();
         }
     }
 }

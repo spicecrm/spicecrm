@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -117,6 +116,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'type' => 'varchar',
             'comment' => 'Catch All address for debugging',
         ],
+        'whitelist' => [
+            'name' => 'whitelist',
+            'vname' => 'LBL_WHITELIST',
+            'dbType' => 'varchar',
+            'type' => 'text',
+            'len' => 1000,
+            'popupHelp' => 'For use in test phases: A list of addresses (comma separated, spaces around are allowed) to which shipping *is* allowed. Messages to any other addresses will not be sent - or they go to the catch-all address instead (if set).',
+            'comment' => 'List of addresses. All other destination addresses will be changed to the catch-all address. A comma separated list. Spaces around the addresses allowed.',
+        ],
         'track_mailbox' => [
             'name' => 'track_mailbox',
             'vname' => 'LBL_TRACK_MAILBOX',
@@ -130,6 +138,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'type' => 'varchar',
             'len' => 255,
             'comment' => 'tracking url of the Mailbox',
+        ],
+        'unsubscribe_header' => [
+            'name' => 'unsubscribe_header',
+            'vname' => 'LBL_UNSUBSCRIBE_HEADER',
+            'type' => 'bool',
+            'default' => false,
+            'comment' => 'Flag to add an unsubscribe Header',
         ],
         'emails' => [
             'name' => 'emails',

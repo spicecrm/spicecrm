@@ -13,7 +13,6 @@
 
 
 
-
 $kreportChartstyles = [
     'fusioncharts' => [
         'default' => [

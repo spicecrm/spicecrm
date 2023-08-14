@@ -23,21 +23,19 @@ export interface BodyI extends TagElementI {
  */
 export interface SectionI extends TagElementI {
     attributes: {
-        'background-color'?: string,
-        'background-repeat'?: string,
-        'background-size'?: string,
-        'background-url'?: string,
-        'border'?: string,
-        'border-top'?: string,
-        'border-right'?: string,
-        'border-bottom'?: string,
-        'border-left'?: string,
-        'border-radius'?: string,
-        'padding'?: string,
-        'css-class'?: string,
-        'direction'?: string,
-        'full-width'?: string,
-        'text-align'?: string
+        'background-color'?: string;
+        'color'?: string;
+        'padding'?: string;
+        'css-class'?: string;
+        'border'?: string;
+        'border-top'?: string;
+        'border-right'?: string;
+        'border-bottom'?: string;
+        'border-left'?: string;
+        'background-position'?: string;
+        'background-repeat'?: string;
+        'background-size'?: string;
+        'background-url'?: string;
     };
 }
 /**
@@ -95,6 +93,8 @@ export interface DividerI extends ContentElementI {
  */
 export interface ButtonI extends ContentElementI {
     content: string;
+    trackingLink?: string,
+    trackByMethod?: 'url' | 'id',
     attributes: {
         'href': string,
         'align': string,
@@ -120,6 +120,40 @@ export interface ButtonI extends ContentElementI {
         'line-height'?: string,
         'rel'?: string,
         'target'?: string,
+        'text-decoration'?: string,
+        'text-transform'?: string,
+        'width'?: string
+    };
+}
+/**
+ * button element to be rendered in the view
+ */
+export interface RSSI extends ContentElementI {
+    content: string;
+    href: string,
+    count: string,
+    showDate: '1' | '0',
+    children: [{tagName: 'column', children: SectionI[]}],
+    attributes: {
+        'count': string,
+        'href': string,
+        'background-color'?: string,
+        'color'?: string,
+        'border'?: string,
+        'border-top'?: string,
+        'border-right'?: string,
+        'border-bottom'?: string,
+        'border-left'?: string,
+        'border-radius'?: string,
+        'height'?: string,
+        'padding'?: string,
+        'text-align'?: string,
+        'css-class'?: string,
+        'font-size'?: string,
+        'font-style'?: string,
+        'font-weight'?: string,
+        'letter-spacing'?: string,
+        'line-height'?: string,
         'text-decoration'?: string,
         'text-transform'?: string,
         'width'?: string
@@ -166,6 +200,7 @@ export interface SpacerI extends ContentElementI {
  */
 export interface TextI extends ContentElementI {
     content: string;
+    editorType: 'richText' | 'html';
     attributes: {
         'color'?: string,
         'container-background-color'?: string,
@@ -195,6 +230,10 @@ export interface PanelElementI extends ContentElementI {
     icon: string;
     label: string;
     content?: string;
+    count?: string,
+    href?: string,
+    showDate?: '0' | '1',
+    children?: ContentElementI|SectionI|ColumnI[]
 }
 /**
  * spacer element to be rendered in the view

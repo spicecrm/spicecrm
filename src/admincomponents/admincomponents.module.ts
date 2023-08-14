@@ -87,6 +87,7 @@ import {AdministrationLoginMethods} from './components/administrationloginmethod
 import {AdministrationGDPRRetentionManager} from "./components/administrationgdprretentionmanager";
 import {AdministrationAssetManager} from "./components/administrationassetmanager";
 import {AdministrationMigrateLegacyDoms} from "./components/administrationmigratelegacydoms";
+import {WorkbenchModule} from "../workbench/workbench.module";
 
 
 
@@ -98,7 +99,8 @@ import {AdministrationMigrateLegacyDoms} from "./components/administrationmigrat
         DirectivesModule,
         DragDropModule,
         ObjectComponents,
-        ObjectFields
+        ObjectFields,
+        WorkbenchModule
     ],
     declarations: [
         AdministrationAPIInspector,

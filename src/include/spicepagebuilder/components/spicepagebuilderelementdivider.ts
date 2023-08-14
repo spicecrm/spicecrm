@@ -20,7 +20,7 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
     /**
      * containers to be rendered
      */
-    @Input() public element: DividerI;
+    @Input() public declare element: DividerI;
     /**
      * list of the editable attributes
      */

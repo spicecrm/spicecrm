@@ -29,7 +29,8 @@ export class AdministrationGeneralSettings implements OnInit {
             stack_trace_errors: false,
             dump_slow_queries: false,
             slow_query_time_msec: 0,
-            upload_maxsize: 0
+            upload_maxsize: 0,
+            international_email_addresses: 0
         },
         cache: {
             class: 'SpiceCacheFile',
@@ -86,6 +87,16 @@ export class AdministrationGeneralSettings implements OnInit {
 
                 // switch developer mode
                 switch (this.settings.advanced.developerMode){
+                    case true:
+                        this.settings.advanced.developerMode = '1';
+                        break;
+                    case false:
+                        this.settings.advanced.developerMode = '0';
+                        break;
+                }
+
+                // switch developer mode
+                switch (this.settings.advanced.international_email_addresses){
                     case true:
                         this.settings.advanced.developerMode = '1';
                         break;

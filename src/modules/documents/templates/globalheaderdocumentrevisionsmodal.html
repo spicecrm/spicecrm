@@ -1,0 +1,39 @@
+<system-modal>
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_UNAPPROVED_REVISIONS"></system-label></system-modal-header>
+    <system-modal-content [system-modal-content-grow]="false" class="slds-scrollable_none">
+        <div class="slds-scrollable--y" >
+                <div class="slds-scrollable--y slds-height_full">
+                    <div *ngFor="let relatedRevision of relatedRevisions" class="slds-cell slds-grid">
+                        <a (click)="process(relatedRevision.id)" class="slds-box_link slds-media  slds-size_11-of-12" href="javascript:void(0);">
+                            <div class="slds-media__body">
+                                <div class="slds-welcome-mat__tile-body">
+                                    <h3 class="slds-welcome-mat__tile-title">
+                                        <system-label label="LBL_DOCUMENT_NAME"></system-label>:
+                                        <system-label [label]="relatedRevision.document_name"></system-label>
+                                    </h3>
+                                    <p class="slds-welcome-mat__tile-description">
+                                        <system-label label="LBL_REVISION_NAME"></system-label>:
+                                        <system-label [label]="relatedRevision.name"></system-label>
+                                    </p>
+                                    <p class="slds-welcome-mat__tile-description">
+                                        <system-label label="LBL_REVISION_NUMBER"></system-label>:
+                                        <system-label [label]="relatedRevision.revision"></system-label>
+                                    </p>
+                                    <p class="slds-welcome-mat__tile-description">
+                                        <system-label label="LBL_DATE"></system-label>:
+                                        <system-label [label]="relatedRevision.date_entered"></system-label>
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                        <a (click)="acceptance(relatedRevision.id)" class="slds-box_link slds-media slds-size_1-of-12" href="javascript:void(0);">
+                        <system-utility-icon class="slds-align--absolute-center" icon="check" size="medium"></system-utility-icon>
+                        </a>
+                    </div>
+                </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CLOSE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

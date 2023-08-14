@@ -14,6 +14,10 @@
                 <system-utility-icon class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleExpand($event)" [@animateicon]="expanded ? 'open' : 'closed'"></system-utility-icon>
             </div>
         </header>
+        <system-label label="LBL_FROM" class="slds-m-right--xx-small"></system-label>
+        <system-input-date [(ngModel)]="fromDateTime" (ngModelChange)="reloadData()" class="slds-m-right--xx-small"></system-input-date>
+        <system-input-time [(ngModel)]="fromDateTime" (ngModelChange)="reloadData()" class="slds-m-right--xx-small"></system-input-time>
+        <system-checkbox-toggle [(ngModel)]="failedOnly" (ngModelChange)="reloadData()" label="LBL_FAILED" class="slds-m-right--xx-small"></system-checkbox-toggle>
         <button (click)="reloadData()" [disabled]="!expanded" class="slds-button slds-button--icon">
             <system-button-icon class="slds-p-horizontal--xxx-small" icon="refresh"></system-button-icon>
         </button>
@@ -26,8 +30,11 @@
                         <th scope="col">
                             <div class="slds-truncate"><system-label [label]="model.module == 'SchedulerJobs' ? 'LBL_TASK' : 'LBL_SCHEDULERJOB'"></system-label></div>
                         </th>
-                        <th scope="col">
+                        <th scope="col" class="slds-is-sortable slds-is-sorted slds-grid">
                             <div class="slds-truncate"><system-label label="LBL_EXECUTE_TIME"></system-label></div>
+                            <button (click)="toggleSort()" class="slds-button slds-button--icon">
+                                <system-button-icon [icon]="sortDirection != 'DESC' ? 'arrowdown' : 'arrowup'" addclasses="slds-is-sortable__icon"></system-button-icon>
+                            </button>
                         </th>
                         <th scope="col">
                             <div class="slds-truncate"><system-label label="LBL_RESOLUTION"></system-label></div>
@@ -39,7 +46,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let log of jobLogs; trackBy: trackByFn" [system-model-provider]="{module: log.rel_module, id: log.rel_id, data: null}" class="slds-hint-parent" [ngStyle]="{'opacity':isLoading?0.33:1}">
+                    <tr *ngFor="let log of jobLogs; trackBy: trackByFn" [system-model-provider]="{module: log.rel_module, id: log.rel_id, data: {summary_text: log.name}}" class="slds-hint-parent" [ngStyle]="{'opacity':isLoading?0.33:1}">
                         <td [system-model-popover]="!!log.rel_id" [enablelink]="!!log.rel_id">
                             <div class="slds-truncate">{{log.name}}</div>
                         </td>

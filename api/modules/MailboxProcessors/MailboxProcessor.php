@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\MailboxProcessors;
 
 use SpiceCRM\data\SpiceBean;

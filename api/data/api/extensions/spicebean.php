@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\data\api\controllers\SpiceBeanController;
@@ -164,6 +163,12 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'required'    => false,
                 'description' => 'encoded fields - DEPRECATED and to be removed',
+            ],
+            'resolvelinks' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => false,
+                'description' => 'telling to resolve the links in that particular request',
             ]
         ]
     ],
@@ -351,6 +356,29 @@ $routes = [
                 'required'    => true,
                 'description' => 'Bean GUIDs'
             ],
+        ],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/{beanName}/find',
+        'class'       => SpiceBeanController::class,
+        'function'    => 'findBeanByStringFields',
+        'description' => 'Find a bean based on the provided retrieve fields',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters'  => [
+            'beanName'        => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'retrieveFields' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_OBJECT,
+                'description' => 'object with retrieve fields',
+                'example' => '{active: true}',
+                'required'    => true,
+            ]
         ],
     ],
     [

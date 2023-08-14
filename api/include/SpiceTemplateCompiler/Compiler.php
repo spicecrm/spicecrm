@@ -3,22 +3,22 @@
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
  * You can contact us at info@spicecrm.io
- *
+ * 
  * SpiceCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version
- *
+ * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- *
+ * 
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
- *
+ * 
  * SpiceCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -28,13 +28,13 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\SpiceTemplateCompiler;
 
 use DateInterval;
 use DateTime;
 use DateTimeZone;
 use DOMDocument;
+use DOMXPath;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -77,6 +77,10 @@ use SpiceCRM\includes\utils\SpiceUtils;
 
 class Compiler
 {
+    /**
+     * @var bool if true keep the comment tags
+     */
+    public $keepComments = true;
     public $additionalValues;
     public $doc;
     public $root;
@@ -122,7 +126,7 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null )
+    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null)
     {
         $this->additionalValues = $additionalValues;
         $this->lang = $lang;
@@ -133,12 +137,51 @@ class Compiler
         #$html = preg_replace("/\n|\r|\t/", "", html_entity_decode($txt, ENT_QUOTES));
         $dom->loadHTML('<?xml encoding="utf-8"?>' . html_entity_decode($txt, ENT_QUOTES));
 
+        // handle the beans array
+        $beans = ['bean' => $bean];
+        foreach($additionalBeans as $beanName => $beanObject){
+            $beans[$beanName] = $beanObject;
+        }
+
         $dummy = $dom->getElementsByTagName('html');
-        foreach( $this->parseDom( $dummy[0], ['bean' => $bean] ) as $newElement ){
+        foreach( $this->parseDom( $dummy[0], $beans ) as $newElement ){
             $this->root->appendChild($newElement);
         };
 
+        $this->addStyleTag($additionalStyleId);
+
         return $this->doc->saveHTML();
+    }
+
+    /**
+     * add style tag to the dom
+     * @param string|null $additionalStyleId
+     * @return void
+     * @throws \Exception
+     */
+    private function addStyleTag(?string $additionalStyleId): void
+    {
+        if (!$additionalStyleId) return;
+
+        $head = $this->root->getElementsByTagName('head')[0];
+
+        if (!$head) {
+            $head = $this->doc->createElement('head');
+            $this->doc->appendChild($head);
+        }
+
+        $db = DBManagerFactory::getInstance();
+
+        $content = (string) $db->getOne("SELECT csscode FROM sysuihtmlstylesheets WHERE id='$additionalStyleId'");
+
+        if (empty($content)) return;
+
+        $styleElement = $this->doc->createElement('style', html_entity_decode($content, ENT_QUOTES));
+        $typeAttr = $this->doc->createAttribute('type');
+        $typeAttr->value = 'text/css';
+        $styleElement->appendChild($typeAttr);
+
+        $head->appendChild($styleElement);
     }
 
     private function parseDom($thisNode, $beans = []){
@@ -174,7 +217,10 @@ class Compiler
                     }
                     break;
                 case 'DOMComment':
-                    // no takeover of comments
+                    if ($this->keepComments) {
+                        $comment = $this->doc->createComment($node->data);
+                        $elements[] = $comment;
+                    }
                     break;
                 case 'DOMElement':
 //                    $newElement = $this->doc->createElement($node->tagName);
@@ -263,6 +309,12 @@ class Compiler
                         } else {
                             throw new BadRequestException("{$this->module_name}: Recursion with embedded template detected/prevented.");
                         }
+                        # handle rss rendering
+                    } else if ($node->tagName !== 'td' && in_array('rss-container', explode(' ', $node->getAttribute('class') ?? ''))) {
+
+                        $node = $this->parseRSSFeed($node);
+
+                        $elements[] = $this->createNewElement($node, $beans);
                     } else {
                         $elements[] = $this->createNewElement($node, $beans);
                     }
@@ -272,6 +324,130 @@ class Compiler
             }
         }
         return $elements;
+    }
+
+    /**
+     * parse rss content from the url in the item template
+     * @param \DOMElement $node
+     * @return \DOMElement
+     */
+    private function parseRSSFeed(\DOMElement $node)
+    {
+        $finder = new DomXPath($node->ownerDocument);
+
+        # read the rss data required for the fetch
+        $data = $finder->query("//*[@data-spice-rss]", $node);
+        $url = $data[0]->getAttribute('data-spice-rss');
+        $limit = $data[0]->getAttribute('data-spice-rss-count') ?? 3;
+
+        $xml = simplexml_load_file($url);
+
+        if (!$xml) return $node;
+
+        $itemsTemplates = $this->getElementsByClassName($node, 'rss-item');
+
+        $currentIndex = 0;
+
+        foreach ($xml->channel->item as $xmlItem) {
+
+            if ($currentIndex == $limit) break;
+
+            $this->setRSSItemImage($itemsTemplates[$currentIndex], $xmlItem->enclosure->attributes()['url']);
+
+            $this->setRSSItemHeader($itemsTemplates[$currentIndex], $xmlItem->title, $xmlItem->link);
+
+            $this->setRSSItemDate($itemsTemplates[$currentIndex], $xmlItem->pubDate);
+
+            $this->setRSSItemDescription($itemsTemplates[$currentIndex], $xmlItem->description);
+
+            $currentIndex++;
+        }
+
+        return $node;
+    }
+
+    /**
+     * get elements by class name
+     * @param \DOMElement $item
+     * @param string $className
+     * @return array
+     */
+    private function getElementsByClassName(\DOMElement $item, string $className)
+    {
+        $children = [];
+
+        foreach ($item->getElementsByTagName('td') as $childNode) {
+            if (!in_array($className, explode(' ', $childNode->getAttribute('class') ?? ''))) continue;
+            $children[] = $childNode;
+        }
+
+        return $children;
+    }
+
+    /**
+     * replace rss item description placeholder with the content
+     * @param \DOMElement $item
+     * @param string $title
+     * @param string $link
+     * @return void
+     */
+    private function setRSSItemHeader(\DOMElement $item, string $title, string $link)
+    {
+        $itemHeader = $this->getElementsByClassName($item, 'rss-header')[0];
+
+        foreach ($itemHeader->getElementsByTagName('a') as $childNode) {
+            $childNode->nodeValue = $title;
+            $childNode->setAttribute('href', $link);
+        }
+    }
+
+    /**
+     * replace rss item image src
+     * @param \DOMElement $item
+     * @param string $src
+     * @return void
+     */
+    private function setRSSItemImage(\DOMElement $item, string $src)
+    {
+        $itemHeader = $this->getElementsByClassName($item, 'rss-image')[0];
+
+        foreach ($itemHeader->getElementsByTagName('img') as $childNode) {
+            $childNode->setAttribute('src', $src);
+        }
+    }
+
+    /**
+     * replace rss item description placeholder with the content
+     * @param \DOMElement $item
+     * @param string $description
+     * @return void
+     */
+    private function setRSSItemDescription(\DOMElement $item, string $description)
+    {
+        $description = implode(' ', array_slice(explode(' ', $description), 0, 20));
+        $descriptionContainer = $this->getElementsByClassName($item, 'rss-description')[0];
+
+        foreach ($descriptionContainer->childNodes as $childNode) {
+            if (get_class($childNode) != 'DOMElement') continue;
+            $childNode->nodeValue = $description;
+        }
+    }
+
+    /**
+     * replace rss item date placeholder with the content
+     * @param \DOMElement $item
+     * @param string $date
+     * @return void
+     */
+    private function setRSSItemDate(\DOMElement $item, string $date)
+    {
+        $pubDate = date('d.m.Y H:i',strtotime($date));
+        $itemDate = $this->getElementsByClassName($item, 'rss-date')[0];
+
+        foreach ($itemDate->childNodes as $childNode) {
+            if (get_class($childNode) != 'DOMElement') continue;
+            $childNode->nodeValue = $pubDate;
+        }
     }
 
     /**

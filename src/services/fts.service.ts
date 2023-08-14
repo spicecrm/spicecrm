@@ -30,7 +30,9 @@ interface ftsSearchParameters {
     buckets?: ftsSearchBuckets;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class fts {
     /**
      * reference id will be sent with each backend request to enable canceling the pending requests

@@ -34,6 +34,7 @@ import {fieldPageBuilder} from './fields/fieldpagebuilder';
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {SpicePageBuilderElementRSS} from "./components/spicepagebuilderelementrss";
 
 @NgModule({
     declarations: [
@@ -55,6 +56,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
         SpicePageBuilderElementSpacer,
         SpicePageBuilderElementButton,
         SpicePageBuilderElementCode,
+        SpicePageBuilderElementRSS,
         fieldPageBuilder
     ],
     exports: [

@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\OutputTemplates\handlers\pdf;
 
 abstract class ApiPdfHandler extends PdfHandler

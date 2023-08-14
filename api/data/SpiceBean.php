@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\AddressReferences\AddressReferences;
@@ -357,6 +356,15 @@ class SpiceBean
      */
     var $newFromTemplate = '';
 
+
+    /**
+     * set to true before saving to enforce a reload on the frontend when a socket message is retrieved
+     * this will change the message type that is sent via the socket and bypass the session check
+     *
+     * @var bool
+     */
+    public $systemUpdate = false;
+
     /**
      * Constructor for the bean, it performs following tasks:
      *
@@ -444,7 +452,7 @@ class SpiceBean
     {
         // added check on new_with_id for BW compatibility
         // return ($this->_bean_action == self::BEAN_ACTION_CREATE);
-        return ($this->_bean_action == self::BEAN_ACTION_CREATE || $this->new_with_id);
+        return ($this->_bean_action == self::BEAN_ACTION_CREATE || empty($this->id) || $this->new_with_id);
     }
 
     /**
@@ -1424,12 +1432,13 @@ class SpiceBean
         //Now that the record has been saved, we don't want to insert again on further saves
         $this->new_with_id = false;
         $this->in_save = false;
-        //unset current bean_action
-        $this->set_bean_action(null);
 
         AddressReferences::getInstance()->updateReferencedBeansAddress($this);
 
         $this->call_custom_logic('after_save', '');
+
+        //unset current bean_action
+        $this->set_bean_action(null);
 
         return $this->id;
     }
@@ -2562,6 +2571,8 @@ class SpiceBean
         //get the email id's to merge
         $existingData = $data;
 
+        $existingEmails = [];
+
         //make sure id's to merge exist and are in array format
         //get the existing email id's
         $this->load_relationship($name);
@@ -2712,7 +2723,7 @@ class SpiceBean
      * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
      * @return object Instance of this bean with fetched data.
      */
-    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true, $relationships = true)
+    function retrieve_by_string_fields($fields_array, $encode = false, $deleted = true, $relationships = true)
     {
         $where_clause = $this->get_where($fields_array, $deleted);
         $query = "SELECT $this->_tablename.id" . " FROM $this->_tablename ";

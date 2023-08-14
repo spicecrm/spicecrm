@@ -3,10 +3,10 @@
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use DirectoryIterator;
-use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -158,12 +158,14 @@ class ConfigTransferController
     static function writeBackupFile( $content ) {
         self::cleanOutOldBackupFiles();
         if ( !is_dir( self::$backupFolder )) mkdir( self::$backupFolder, 0700, true  );
+        if ( !is_writable( self::$backupFolder )) throw new Exception('Cannot write to Backup Folder.');
         $i = 0;
         do {
             while ( true ) { # Try to build a file name that does not already exist.
                 $filepath = self::$backupFolder . self::$backupPrefix . date( 'Ymd-His' ) . ( $i ? "-($i)" : '' ) . '.sql';
                 if ( !file_exists( $filepath )) break;
                 $i++;
+                if ( $i > 1000 ) throw new Exception('Unable to create proper Backup File Name.');
             }
             $fh = fopen( $filepath, 'w' );
         } while ( !flock( $fh, LOCK_EX )); # If another process (running at the same time) built the same file name ... flock() helps.

@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\RESTManager;
@@ -45,7 +44,7 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'authResetPasswordByToken',
         'description' => '',
-        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'options' => ['noAuth' => true, 'adminOnly' => false, 'validate' => true ],
         'parameters' => [
             'token' => [
                 'in' => 'path',

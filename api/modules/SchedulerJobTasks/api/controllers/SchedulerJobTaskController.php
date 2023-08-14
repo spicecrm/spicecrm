@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\SchedulerJobTasks\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -52,10 +51,16 @@ class SchedulerJobTaskController
         $db = DBManagerFactory::getInstance();
         $params = $req->getQueryParams();
         $logArray = [];
-        $sortField = $params['sortfield'] ?: 'executed_on';
-        $q = "SELECT j.name, j.id rel_id, 'SchedulerJobs' rel_module, l.* FROM schedulerjob_log l LEFT JOIN schedulerjobs j ON j.id = l.schedulerjob_id WHERE l.schedulerjobtask_id = '{$args['id']}' ORDER BY l.$sortField DESC";
+
+        $failedOnlyCondition = $params['failedOnly'] ? " AND l.resolution = 'failed' " : '';
+        $fromDateTimeCondition = $params['fromDateTime'] ? " AND l.executed_on >= '{$params['fromDateTime']}' " : '';
+
+        $q = "SELECT j.name, j.id rel_id, 'SchedulerJobs' rel_module, l.* FROM schedulerjob_log l LEFT JOIN schedulerjobs j ON j.id = l.schedulerjob_id WHERE l.schedulerjobtask_id = '{$args['id']}' $failedOnlyCondition $fromDateTimeCondition ORDER BY l.executed_on {$params['sortDirection']}";
         $query = $db->limitQuery($q, $params['offset'], $params['limit']);
-        $countRes = $db->fetchOne("SELECT COUNT(id) c FROM schedulerjob_log where schedulerjob_id = '{$args['id']}'");
+
+        $failedOnlyCondition = $params['failedOnly'] ? " AND resolution = 'failed' " : '';
+        $fromDateTimeCondition = $params['fromDateTime'] ? " AND executed_on >= '{$params['fromDateTime']}' " : '';
+        $countRes = $db->fetchOne("SELECT COUNT(id) c FROM schedulerjob_log where schedulerjobtask_id = '{$args['id']}' $failedOnlyCondition $fromDateTimeCondition");
 
         while ($log = $db->fetchByAssoc($query)) $logArray[] = $log;
 

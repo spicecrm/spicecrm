@@ -38,7 +38,6 @@ namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
  ********************************************************************************/
 
 
-
 use DateInterval;
 use Exception;
 use SpiceCRM\data\BeanFactory;

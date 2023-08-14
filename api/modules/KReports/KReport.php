@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\KReports;
 
 use SpiceCRM\data\BeanFactory;

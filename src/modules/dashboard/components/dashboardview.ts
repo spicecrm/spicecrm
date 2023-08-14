@@ -19,7 +19,7 @@ import {metadata} from "../../../services/metadata.service";
 export class DashboardView implements OnInit {
 
     public panelwidth = 250;
-    public showpanel: boolean = false;
+    public showpanel: boolean = true;
 
     constructor(public navigationTab: navigationtab,
                 public language: language,
@@ -37,14 +37,15 @@ export class DashboardView implements OnInit {
 
     get dashboardstyle() {
         return {
-            width: 'calc(100% - ' + (this.ismobile ? 0 : this.panelwidth) + 'px)'
+            width: 'calc(100% - ' + (this.ismobile || !this.showpanel ? 0 : this.panelwidth) + 'px)'
         };
     }
 
     get panelstyle() {
         return {
-            'width': this.panelwidth + 'px',
+            'width': (!this.showpanel ? 0 : this.panelwidth) + 'px',
             'z-index': 1,
+            'display': !this.showpanel && !this.ismobile ? 'none' : 'block',
             'left': this.ismobile && !this.showpanel ? '-250px' : '0px'
         };
     }

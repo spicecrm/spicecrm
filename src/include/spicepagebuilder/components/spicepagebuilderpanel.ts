@@ -10,16 +10,11 @@ import {ColumnI, CustomElement, SectionI} from "../interfaces/spicepagebuilder.i
  * render a set of tools and configurations to be used for building pages
  */
 @Component({
-    selector: 'spice-page-builder-panel',
+    selector: ' spice-page-builder-panel',
     templateUrl: '../templates/spicepagebuilderpanel.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderPanel {
-    /**
-     * reference of the parent to allow destroy
-     * @private
-     */
-    @Input() public self: any;
     /**
      * user predefined sections
      */
@@ -109,22 +104,5 @@ export class SpicePageBuilderPanel {
             event.container.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
             this.spicePageBuilderService.dragPlaceholderNode = undefined;
         }
-    }
-
-    /**
-     * emit the page data by the service
-     * @private
-     */
-    public save() {
-        this.spicePageBuilderService.emitData();
-    }
-
-    /**
-     * emit the page data by the service
-     * @private
-     */
-    public cancel() {
-        this.spicePageBuilderService.emitData(true);
-        this.self.destroy();
     }
 }

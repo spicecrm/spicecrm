@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Mailboxes\schedulerjobtasks;
 
 use SpiceCRM\data\BeanFactory;

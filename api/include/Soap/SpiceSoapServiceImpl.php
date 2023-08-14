@@ -37,7 +37,6 @@ namespace SpiceCRM\includes\Soap;
  ********************************************************************************/
 
 
-
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;

@@ -110,6 +110,21 @@ export class ConfigTransfer {
         });
     }
 
+    /**
+     * select all the tables containing the word custom in their name
+     * if any other table is selected it will be deselected
+     * @param status
+     */
+    public selectCustom( status: boolean ) {
+        let regEx: RegExp = /custom/;
+        this.selectableTables.forEach( table => {
+            table.include = !status;
+            if(regEx.test(table.name)){
+                table.include = status;
+            }
+        });
+    }
+
     public get numberOfSelectedTables() {
         let number = 0;
         this.selectableTables.forEach( table => table.include && number++ );

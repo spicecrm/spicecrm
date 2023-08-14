@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -85,6 +85,9 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
      */
     public escKeyListener: any;
 
+    @ViewChild('focusEl') focusElement: ElementRef;
+    @ViewChild('categoryTree') categoryTree: ElementRef;
+
     constructor(
         public model: model,
         public view: view,
@@ -146,15 +149,10 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         }
     }
 
-    /**
-     * add escape key listener
-     */
-    public ngAfterViewInit() {
-        this.subscribeToESCKeyUp();
-    }
-
     public ngOnDestroy() {
         super.ngOnDestroy();
+        // kill the listeners
+        if(this.escKeyListener) this.escKeyListener();
         if(this.clickListener) this.clickListener();
     }
 
@@ -179,6 +177,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     public openDropDown(){
         if(!this.dropDownOpen){
             this.dropDownOpen = true;
+            this.subscribeToESCKeyUp();
             // this.clickListener = this.renderer.listen("document", "click", (event) => this.onClick(event));
         }
     }
@@ -300,7 +299,8 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
 
 
 
-        // kill the listener for the open dropdown
+        // kill the listeners for the open dropdown
+        if(this.escKeyListener) this.escKeyListener();
         if(this.clickListener) this.clickListener();
     }
 
@@ -322,6 +322,28 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         this.model.setFields(fields);
 
         this.resetTmpSearchTerm();
+    }
+
+    /**
+     * focus on input field
+     */
+    public focusInputField() {
+        setTimeout(() => {
+            const element = this.renderer.selectRootElement(this.focusElement.nativeElement);
+            element.focus();
+        }, 200);
+    }
+
+    /**
+     * Listen event if click outside of element
+     * @param targetElement
+     */
+    @HostListener('document:click', ['$event.target'])
+    public onPageClick(targetElement) {
+        const clickedInside = this.elementRef.nativeElement.contains(targetElement);
+        if (!clickedInside) {
+            this.dropDownOpen = false;
+        }
     }
 
     public search(_e) {

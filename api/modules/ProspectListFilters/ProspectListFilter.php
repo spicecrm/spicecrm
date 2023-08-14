@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\ProspectListFilters;
 
 use SpiceCRM\data\SpiceBean;

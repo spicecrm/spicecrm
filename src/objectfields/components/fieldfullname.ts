@@ -8,6 +8,7 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
+import {userpreferences} from "../../services/userpreferences.service";
 
 @Component({
     selector: 'field-full-name',
@@ -42,7 +43,8 @@ export class fieldFullName extends fieldGeneric {
     }
 
     get value() {
-        return this.filterUndefined(this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, this.model.getField(this.fieldsalutation))) + ' ' + this.filterUndefined(this.model.getField(this.fielddegree)) + ' ' + this.filterUndefined(this.model.getField(this.fieldfirstname)) + ' ' + this.filterUndefined(this.model.getField(this.fieldlastname)) + ' ' + this.filterUndefined(this.model.getField(this.fieldlasttitle));
+        // return this.filterUndefined(this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, this.model.getField(this.fieldsalutation))) + ' ' + this.filterUndefined(this.model.getField(this.fielddegree)) + ' ' + this.filterUndefined(this.model.getField(this.fieldfirstname)) + ' ' + this.filterUndefined(this.model.getField(this.fieldlastname)) + ' ' + this.filterUndefined(this.model.getField(this.fieldlasttitle));
+        return this.filterUndefined(this.getNameFormat());
     }
 
 
@@ -90,9 +92,45 @@ export class fieldFullName extends fieldGeneric {
         return value ? value : '';
     }
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public userpreferences:userpreferences) {
         super(model, view, language, metadata, router);
 
+    }
+
+    public getNameFormat() {
+        const userPref = this.userpreferences.toUse.locale_name_format;
+        const s = this.model.getField(this.fieldsalutation);
+        const f = this.model.getField(this.fieldfirstname);
+        const l = this.model.getField(this.fieldlastname);
+        const d = this.model.getField(this.fielddegree);
+        const a = this.model.getField(this.fieldlasttitle);
+        if (this.userpreferences.toUse.locale_name_format === 's f l') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s + ' ' + this.filterUndefined(f) + ' ' + this.filterUndefined(l));
+        }
+        else if (userPref === 'f l') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldfirstname, f + ' ' + this.filterUndefined(l));
+        }
+        else if (userPref === 's l') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s + ' ' + this.filterUndefined(l));
+        }
+        else if (userPref === 'l, s f') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldlastname, l + ', ' + this.filterUndefined(s) + ' ' + this.filterUndefined(f));
+        }
+        else if (userPref === 'l, f') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldlastname, l + ', ' + this.filterUndefined(f));
+        }
+        else if (userPref === 's l, f') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s + ' ' + this.filterUndefined(l) + ', ' + this.filterUndefined(f));
+        }
+        else if (userPref === 'l s f') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldlastname, l + ' ' + this.filterUndefined(s) + ' ' + this.filterUndefined(f));
+        }
+        else if (userPref === 'l f s') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldlastname, l + ' ' + this.filterUndefined(f) + ' ' + this.filterUndefined(s));
+        }
+        else if (userPref === 's d f l a') {
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s + ' ' + this.filterUndefined(d) + ' ' + this.filterUndefined(f) + ' ' + this.filterUndefined(l) + ' ' + this.filterUndefined(a));
+        }
     }
 
     /**

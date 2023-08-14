@@ -1,0 +1,8 @@
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-right--xx-small" [ngClass]="{'slds-p-right--x-small': notificationService.unreadCount > 0}">
+    <div (click)="openModal();" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification" [ngClass]="{'slds-hide': relatedRevisions.length == 0}">
+        <system-utility-icon icon="approval" size="x-small"></system-utility-icon>
+    </div>
+    <div *ngIf="relatedRevisions.length > 0" style="top:-5px; right:0px;" class="slds-notification-badge slds-incoming-notification slds-show-notification">
+        {{relatedRevisions.length}}
+    </div>
+</div>

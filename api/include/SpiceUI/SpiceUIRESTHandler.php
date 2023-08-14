@@ -258,6 +258,8 @@ class SpiceUIRESTHandler
             self::setComponentsetItems($componentsetId, $componentsetData);
         }
 
+        SpiceCache::clear('spiceComponentSets');
+
         return true;
     }
 
@@ -749,9 +751,23 @@ class SpiceUIRESTHandler
     private function getStatusNetworks(){
         $db = DBManagerFactory::getInstance();
         $retArray = [];
+
+        // check custom first
+        if($db->tableExists('systcustomstatusnetworks')) { // for BWC
+            $statuscustomnetworks = $db->query("SELECT * FROM systcustomstatusnetworks ORDER BY domain, status_priority");
+            while ($statusnetwork = $db->fetchByAssoc($statuscustomnetworks)) {
+                $retArray[$statusnetwork['domain']][] = $statusnetwork;
+            }
+        }
+
+        // skip core domains if any found in custom
+        $customizedDomains = array_keys($retArray);
+
         $statusnetworks = $db->query("SELECT * FROM syststatusnetworks ORDER BY domain, status_priority");
         while($statusnetwork = $db->fetchByAssoc($statusnetworks)){
-            $retArray[$statusnetwork['domain']][] = $statusnetwork;
+            if(!in_array($statusnetwork['domain'], $customizedDomains)){
+                $retArray[$statusnetwork['domain']][] = $statusnetwork;
+            }
         }
         return $retArray;
     }

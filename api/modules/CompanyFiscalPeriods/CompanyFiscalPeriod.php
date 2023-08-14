@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\CompanyFiscalPeriods;
 
 use SpiceCRM\data\SpiceBean;

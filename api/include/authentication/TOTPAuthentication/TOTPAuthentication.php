@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\authentication\TOTPAuthentication;
 
 use Com\Tecnick\Barcode\Barcode;

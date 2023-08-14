@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Folders\api\controllers\FoldersController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

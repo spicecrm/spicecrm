@@ -1,0 +1,111 @@
+<div *ngIf="!isEditMode; else editContainer" class="spice-drop-zone" [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'content'" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1">
+    <div class="spice-drop-zone-label">
+        <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+                <system-icon icon="text" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <h2 class="slds-truncate">
+                    <system-label label="LBL_RSS_FEED"></system-label>
+                </h2>
+            </div>
+            <button (click)="spicePageBuilderService.saveCustomElement(element, 'item')" class="slds-button slds-button--icon slds-m-right--xx-small">
+                <system-button-icon icon="save" [inverse]="true"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <article (dblclick)="edit()" class="spice-drop-zone-content">
+        <div [ngStyle]="style" class="slds-grid slds-grid--vertical slds-grid--vertical-align-center slds-grid--align-center">
+            <div [title]="element.content" class="slds-p-horizontal--xx-small slds-truncate">{{element.content}}</div>
+            <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAAAaVBMVEVHcEz/pQD/pQD/pQD/pQD/pQD/pQD/pQD/pQD/pQD/pQD/pQD/pQD/////pAD/04H/9eP/qg7/vkf/36P/+vD/sB7/79H/ujr//vz/6L7//ff/tCn/owD/x2D/2JD/0Xz/w1X/ymn/zW8DMx5KAAAADHRSTlMAdwb+UdH3I+mM+caVTWFiAAAEpUlEQVRo3r2a2ZaiMBCG06MiTDNFIOy7vv9DTqBbTWUjCJg+xxtoP2r/MSFEWNdz8O17p3DTOnn+d3C+Eu36cw0uHr8n3GN5l0CHuQb+ToDf5auY82VfxLQuZ+yqLz88YPlff0TG3/CQ9VegHMWYKM94+OFhy/+Ny/USHrguPzkWHMkIT8FsiH8oJPSv2BDgq22nzz0pAYoIFNFwv3VJ0WRxCO1eKB6Vs/eCRP+mVaYprVjfFVm8i03eGXnrB8Ix5fRZ06ofm3g7JyDfGsgvavqgVZRw322CfBPfCHmsOu+TTfb4xFuEzJyhed8cj5xcINx1lHFz3qxHEjpBZnOq7k3MCgi3503MKghf1fgGZi2EO61YnQKrIbwh9BlsgNwppWldLnLycZ0xIiSMs6YpivEWsYqmVp+xVcYgyNzrp2bPcUXXV9RsVJ68DXnRWv4XNx3LawMljdzTjNgu8oaVjb3JHtbAHhC+uOuyrtIHKC9gH8hsT5wwLYaOu0EmTlj0Okx63xEyY3TW1MOekAmTVGoKlC5JRlakO8R3qlL6eFcIxzSsVG1ZB3lou3XGlMOqBlkMw6TtJmlnJEFRKdG/r271dUpzFpkFF2SKy9IR3pon5Sy4tJw2HuRkpvbatw2tOo8KPaeTA5Nb+9jCZEwn6aD5/1GmsHjD+C3L/KYZUJDIlGjjjM9valW3MiVNYJuQKKtEGeoKJTdPZEe1olEorRwXtl0SaYZ6hzO5NlaLu+7SDPWhdHPYGnGn6KCY4Rt6R3Fn1XbyUG8z3MdSQ+Er4i4ZB5YblF2ZS3kKBQ5+FTuKu0naTYJLaxGVKXfxttIQe2IWXFqFIlOksOhNIRZhV/R0kQINvqeDleMXwkYjhKToY4fpTVma8YWqUCqcyTHKsFJnyhJEN9RxW4ckXTJlWa1ohrrU1lHsa003dtHCylDHbR2KdKFPuuguiPva2tZ79EqpTmIncQfhUFu6lGTKAK7F2AL+VU2iSHOQod4Tu0B4uSc3rvOSTJiHfWkubZxgauiJTr0zWv/8qsaeYxek/oHqAXCt9IuWcE0tPFb6fDEEqa2j2EMn2qn4iyhaJ5fHLujb+k2EZNTmL7Kkp14dUepS+HmRMyMrBJpcMw8fHrN0qXasLa2FWDqEXMNSPYhfBZn4dFSqR2LpdWpR4NIWez6gUhktEL0hgil4QkXG/OrNEJwj4rtKpjMFhR7zpaAgSGL4taZ+pbGxtFFWUNxARUh7MwmuW7ucqr2oWgojBAYT5NlYYSwNXmk7pCfaLRBjqmJPRpvcFZpSFWcN2xD4KVUN8wl3YpxeLiksJgs0qemBmTG9VhXjnKq5qVIiY2NZ11ZsD4wiil8iyMm9QaopKH5XK2Z3KT7XSdykWWr1aj2INQ+FmDZjK27S+M5D6/FqXeuLrkWFIiT9yRc3zuzjV1t0wnfhvLuDuHEWOAqJ5wOjdisUivFCGIibmTZJZCimAZYveGfdRrlW3L0K5R69lpippgvTZnngJFPlrYnHcrgQfGqr/OBN/9mQDx1f+MhBjM8cKfnM4ZiPHPP5ObC0f8zPuqNX+5phOOF18fYiGA6RHXkc7j/PiO/oPEbyIgAAAABJRU5ErkJggg==">
+        </div>
+    </article>
+    <div class="spice-drop-zone-actions">
+        <div class="slds-button-group" role="group">
+            <button cdkDragHandle class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_MOVE">
+                <system-button-icon icon="move" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="edit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_EDIT">
+                <system-button-icon icon="edit" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="delete$.emit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_DELETE">
+                <system-button-icon icon="delete" addclasses="slds-icon"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>
+
+<ng-template #editContainer>
+    <div>
+        <system-section  titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true" class="spice-collapsible-tab-grow slds-m-bottom--small">
+            <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
+                <div class="slds-size--1-of-1">
+                    <div class="slds-grid">
+                        <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_TEXT"></system-label>
+                            </label>
+                            <div class="slds-form-element__control">
+                                <input type="text" [(ngModel)]="element.content" class="slds-input">
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_URL"></system-label>
+                            </label>
+                            <div class="slds-form-element__control">
+                                <input type="text" [(ngModel)]="element.href" class="slds-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-grid">
+                        <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_COUNT"></system-label>
+                            </label>
+                            <div class="slds-form-element__control">
+                                <input type="text" [(ngModel)]="count" max="100" min="1" class="slds-input">Min 1 - Max 100
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_DATE_VISIBILITY"></system-label>
+                            </label>
+                            <div class="slds-form-element__control">
+                                <system-input-radio-button-group [(ngModel)]="element.showDate" [inputOptions]="dateHiddenOptions"></system-input-radio-button-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </system-section>
+        <ng-container *ngFor="let column of element.children[0].children[0].children">
+            <ng-container *ngFor="let item of column.children">
+                <system-section [titlelabel]="item.attributes['css-class']" [alwaysExpanded]="true" class="spice-collapsible-tab-grow slds-m-bottom--small">
+                    <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                        <ng-container *ngFor="let styleAttribute of childrenAttributesList[item.attributes['css-class']]" [ngSwitch]="styleAttribute.type">
+                            <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                            <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                            <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
+                            <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="item.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
+                        </ng-container>
+                    </div>
+                </system-section>
+            </ng-container>
+        </ng-container>
+    </div>
+    <div>
+        <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
+                <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                    <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
+                        <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
+                        <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
+                    </ng-container>
+                </div>
+            </div>
+        </system-section>
+    </div>
+</ng-template>

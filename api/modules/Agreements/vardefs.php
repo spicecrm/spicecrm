@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -182,5 +181,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
         ['name' => 'idx_agreements_status', 'type' => 'index', 'fields' => ['agreement_status', 'deleted']]
     ]
 ];
+
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Agreement']['fields']['procurementdocs'] = [
+        'name' => 'procurementdocs',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCS',
+        'relationship' => 'procurementdocs_agreements_parent',
+        'module' => 'ProcurementDocs',
+        'source' => 'non-db',
+    ];
+}
 
 VardefManager::createVardef('Agreements', 'Agreement', ['default', 'assignable']);

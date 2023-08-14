@@ -81,6 +81,18 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * holds card expansion boolean
      */
     public expanded: boolean = true;
+    /**
+     * boolean to fetch failed log entries only
+     */
+    public failedOnly: boolean = false;
+    /**
+     * from date to filter the log results
+     */
+    public fromDateTime: any;
+    /**
+     * sort direction
+     */
+    public sortDirection: 'DESC' | 'ASC' = 'DESC';
 
     constructor(public model: model,
                 public language: language,
@@ -147,8 +159,11 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
     public getData() {
         let params = {
             offset: 0,
-            limit: 10
+            limit: 10,
+            failedOnly: this.failedOnly,
+            sortDirection: this.sortDirection
         };
+
         this.totalLimit = 10;
         this.isLoading = true;
         this.backend.getRequest(`module/${this.model.module}/${this.model.id}/log`, params)
@@ -166,14 +181,13 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      */
     public getMoreData() {
         let params = {
-            sort: {
-                sortfield: 'executed_on',
-                sortdirection: 'DESC'
-            },
             offset: this.jobLogs.length,
             limit: 10,
-            getcount: true
+            failedOnly: this.failedOnly,
+            sortDirection: this.sortDirection,
+            fromDateTime: !this.fromDateTime ? null : moment(this.fromDateTime).utc().format('YYYY-MM-DD HH:mm:ss')
         };
+
         this.totalLimit += 10;
         this.isLoading = true;
         this.backend.getRequest(`module/${this.model.module}/${this.model.id}/log`, params)
@@ -196,7 +210,10 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
 
         let params = {
             offset: 0,
-            limit: this.totalLimit
+            limit: this.totalLimit,
+            failedOnly: this.failedOnly,
+            sortDirection: this.sortDirection,
+            fromDateTime: !this.fromDateTime ? null : moment(this.fromDateTime).utc().format('YYYY-MM-DD HH:mm:ss')
         };
         this.isLoading = this.isReloading = true;
         this.backend.getRequest(`module/${this.model.module}/${this.model.id}/log`, params)
@@ -228,5 +245,13 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
     public toggleExpand(e: MouseEvent) {
         e.stopPropagation();
         this.expanded = !this.expanded;
+    }
+
+    /**
+     * toggle sort direction
+     */
+    public toggleSort() {
+        this.sortDirection = this.sortDirection == 'DESC' ? 'ASC' : 'DESC';
+        this.reloadData();
     }
 }

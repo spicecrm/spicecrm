@@ -34,7 +34,6 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-
 namespace SpiceCRM\includes\SugarObjects\templates\person;
 
 use SpiceCRM\data\BeanFactory;

@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 /**
  * CR1000108
@@ -1312,7 +1311,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['sysdictionaryfields'] = [
         'fieldtype' => [
             'name' => 'fieldtype',
             'type' => 'varchar',
-            'len' => 20,
+            'len' => 32,
             'comment' => 'the field ytpe'
         ],
         'fielddefinition' => [

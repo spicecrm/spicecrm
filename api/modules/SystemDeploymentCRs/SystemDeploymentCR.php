@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\SystemDeploymentCRs;
 
 use SpiceCRM\includes\database\DBManagerFactory;

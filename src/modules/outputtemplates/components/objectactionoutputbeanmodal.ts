@@ -226,32 +226,30 @@ export class ObjectActionOutputBeanModal {
                     bean_data: this.liveCompile ? this.modelutilities.spiceModel2backend(this.model.module, this.model.data) : null
                 };
 
-                this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe(
-                    pdf => {
-                        let blob = this.datatoBlob(atob(pdf.content));
+                this.backend.postRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`, null, body).subscribe({
+                    next: (pdf) => {
+                        let blob = this.datatoBlob(atob(pdf.content), 'application/pdf');
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                         this.contentForHandBack = pdf.content;
                         this.setEmailAttachmentData();
                         this.loading_output = false;
-                    },
-                    err => {
+                    }, error: () => {
                         this.loading_output = false;
                     }
-                );
+                });
                 break;
             case 'html':
                 // compile the template to show the user...
-                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe(
-                    res => {
+                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe({
+                    next: (res) => {
                         this.compiled_selected_template = res.content;
                         this.contentForHandBack = res.content;
                         this.setEmailAttachmentData();
                         this.loading_output = false;
-                    },
-                    err => {
+                    }, error: () => {
                         this.loading_output = false;
                     }
-                );
+                });
                 break;
         }
     }

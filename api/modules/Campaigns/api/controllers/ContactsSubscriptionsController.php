@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Campaigns\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;

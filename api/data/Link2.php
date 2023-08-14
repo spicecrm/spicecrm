@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\data;
 
 use SpiceCRM\data\Relationships\SugarRelationship;

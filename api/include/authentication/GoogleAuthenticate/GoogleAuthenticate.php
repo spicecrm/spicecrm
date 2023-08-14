@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\authentication\GoogleAuthenticate;
 
 use Exception;
@@ -149,17 +148,11 @@ class GoogleAuthenticate implements AuthenticatorI
     {
         $userObj = BeanFactory::getBean('Users', $userid, ['relationships' => false]);
 
-        // instantiate to check if gsuite config exists for the user
-        $userConf = new GSuiteUserConfig($userid);
-        $gsuiteUserConfig = $userConf->exists();
-
         // subscription renewal is possible only for active users, check if user still active
-        if ($gsuiteUserConfig) {
-            if ($userObj->status == "Active") {
-                return $this->getTokenByUserName($userObj->user_name);
-            }
-            LoggerManager::getLogger()->error('googleauth', "Trying to get token of an inactive user with user id: {$userid} and user_name: {$userObj->user_name}");
+        if($userObj->status == "Active") {
+            return $this->getTokenByUserName($userObj->user_name);
         }
+        LoggerManager::getLogger()->error('googleauth', "Trying to get token of an inactive user with user id: {$userid} and user_name: {$userObj->user_name}");
     }
 
     /**

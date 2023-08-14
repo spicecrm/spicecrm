@@ -17,13 +17,17 @@ import {view} from "../../services/view.service";
 export class MailboxesmanagerTestIMAPModal {
 
     public self: any = {};
-    public validConnection: boolean|null = null;
+    public validConnection: boolean;
     public isvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
     public testemailaddress: string = "";
-    public imapStatus: boolean = false;
-    public smtpStatus: boolean = false;
+    public imapStatus: boolean;
+    public smtpStatus: boolean;
     public testing: boolean = false;
     public tested: boolean = false;
+    /**
+     * holds the error message to display
+     */
+    public errorMessage: string;
 
     constructor(
         public backend: backend,
@@ -51,25 +55,27 @@ export class MailboxesmanagerTestIMAPModal {
         this.backend.postRequest("module/Mailboxes/test",{}, {
             data: modelData,
             test_email: this.testemailaddress
-        }).subscribe(
-            (response: any) => {
+        }).subscribe({
+            next:(response: any) => {
                 this.validConnection = true;
                 if (this.isInbound) {
                     if (response.imap.result !== true) {
                         this.validConnection = false;
                     }
 
-                    if (response.imap.errors && response.imap.errors.length > 0) {
+                    if (!!response.imap?.errors || !!response.errors) {
                         this.imapStatus = false;
+                        this.errorMessage = response.errors ?? response.imap.errors;
                     } else {
                         this.imapStatus = true;
                     }
                 }
 
                 if (this.isOutbound) {
-                    if (response.smtp.errors && response.smtp.errors.length > 0) {
+                    if (!!response.smtp?.errors  || !!response.errors) {
                         this.smtpStatus = false;
                         this.validConnection = false;
+                        this.errorMessage = response.errors ?? response.smtp.errors;
                     } else {
                         this.smtpStatus = true;
                     }
@@ -78,22 +84,24 @@ export class MailboxesmanagerTestIMAPModal {
                 this.tested = true;
                 this.testing = false;
             },
-            (err: any) => {
+            error:(err: any) => {
                 this.testing = false;
-            });
+                this.validConnection = undefined;
+                this.errorMessage = err.error?.error?.message ?? err.error?.message;
+            }});
     }
 
     public close() {
-        if ( this.validConnection !== null ) this.isvalid.emit(this.validConnection);
+        if ( this.validConnection !== undefined ) this.isvalid.emit(this.validConnection);
         this.self.destroy();
     }
 
     get imapIcon() {
-        return this.imapStatus ? "check" : "close";
+        return this.imapStatus ? "check" : "error";
     }
 
     get smtpIcon() {
-        return this.smtpStatus ? "check" : "close";
+        return this.smtpStatus ? "check" : "error";
     }
 
     /**

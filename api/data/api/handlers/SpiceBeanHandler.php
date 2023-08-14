@@ -3,22 +3,22 @@
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
  * You can contact us at info@spicecrm.io
- * 
+ *
  * SpiceCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
- * 
+ *
  * SpiceCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,7 +26,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
-
 
 
 namespace SpiceCRM\data\api\handlers;
@@ -218,7 +217,7 @@ class SpiceBeanHandler
                 $thisBean->retrieveListDetails();
 
                 // map and add to the array
-                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, false);
+                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, (isset($searchParams['resolvelinks']) ? $searchParams['resolvelinks'] : false ));
             }
             $retArray['aggregations'] = $result['aggregations'];
             $retArray['buckets'] = $result['buckets'];
@@ -699,6 +698,43 @@ class SpiceBeanHandler
 
         if ($requestParams['trackaction']) {
             $this->_trackAction($requestParams['trackaction'], $beanModule, $thisBean);
+        }
+
+        return $this->mapBeanToArray($beanModule, $thisBean);
+    }
+
+    /**
+     * find bean by string fields
+     * @throws NotFoundException | ForbiddenException | BadRequestException
+     */
+    public function find_bean_by_string_fields($beanModule, $retrieveFields): array
+    {
+        // acl check if user can get the detail
+        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
+            throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
+
+        $thisBean = BeanFactory::newBean($beanModule);
+
+        # check if all the provided fields are module fields
+        foreach ($retrieveFields as $field => $val) {
+            if (!isset($thisBean->field_defs[$field])) {
+                throw new BadRequestException("Module has no $field property");
+            }
+        }
+
+        $thisBean->retrieve_by_string_fields($retrieveFields);
+
+        if (empty($thisBean->id)) throw (new NotFoundException('Record not found.'));
+
+        if (!$thisBean->ACLAccess('view')) {
+            throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
+        }
+
+        // load the view details
+        $thisBean->retrieveViewDetails();
+
+        if ($retrieveFields['trackaction']) {
+            $this->_trackAction($retrieveFields['trackaction'], $beanModule, $thisBean);
         }
 
         return $this->mapBeanToArray($beanModule, $thisBean);
@@ -1809,7 +1845,7 @@ class SpiceBeanHandler
                 // if the existing email address id is the same but the email address was changed create a new one
                 // copy the old additional relationship values
                 // delete the link to the old one
-                if ($existingEmailAddress) {
+                if ($existingEmailAddress && $existingEmailAddress->id) {
 
                     $linkedEmailAddresses = $bean->get_linked_beans($linkName);
 
@@ -2145,8 +2181,13 @@ class SpiceBeanHandler
                         //
                     }
                     break;
+                case 'quantity':
+                case 'double':
+                case 'currency':
+                    $beanDataArray[$fieldId] = (double) $thisBean->$fieldId;
+                    break;
                 default:
-                    $beanDataArray[$fieldId] = is_string($thisBean->$fieldId) ? html_entity_decode($thisBean->$fieldId, ENT_QUOTES) : $thisBean->$fieldId;
+                    $beanDataArray[$fieldId] = $thisBean->$fieldId;
                     break;
             }
         }

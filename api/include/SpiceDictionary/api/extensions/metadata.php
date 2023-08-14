@@ -29,7 +29,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceDictionary\api\controllers\MetadataController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

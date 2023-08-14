@@ -186,6 +186,9 @@ export class ReporterFieldContainer implements OnInit {
                 case 'text':
                     this.fieldType = 'ReporterFieldText';
                     break;
+                case 'category':
+                    this.fieldType = 'ReporterFieldCategoryTree';
+                    break;
                 default:
                     this.fieldType = 'ReporterFieldStandard';
                     break;

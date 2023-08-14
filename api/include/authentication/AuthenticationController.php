@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\authentication;
 
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
@@ -163,6 +162,8 @@ class AuthenticationController
     public function setCurrentUser(User $userBean)
     {
         $this->currentUser = $userBean;
+
+        SpiceLanguageManager::getInstance()::setCurrentLanguage();
     }
 
     /**
@@ -385,9 +386,6 @@ class AuthenticationController
         if ($authType == 'credentials') {
             SpiceCRM2FAUtils::handle2FAFlow($userObj, $authData);
         }
-
-        global $current_language;
-        $current_language = $userObj->getPreference('language');
 
         if (!empty($authResponse->tenantId)) {
             $userObj->reloadPreferences();

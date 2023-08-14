@@ -3,18 +3,11 @@
  */
 import {
     Component,
-    ComponentFactoryResolver,
-    ComponentRef,
     EventEmitter,
-    Injector,
     Output,
-    ReflectiveInjector, ViewContainerRef
 } from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';
-import {language} from '../../../services/language.service';
-import {userpreferences} from '../../../services/userpreferences.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
 
 @Component({

@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\KReports\api\controllers\KReportsPluginsController;
 

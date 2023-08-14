@@ -11,7 +11,6 @@
  * You can contact us at info@kreporter.org
  ********************************************************************************/
 
-
 /////////////// KEEP A WHILE FFOR ARCHIVE AND DEV PURPOSES ////////////////////
 //use SpiceCRM\data\BeanFactory;
 //use SpiceCRM\includes\RESTManager;

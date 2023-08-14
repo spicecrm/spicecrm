@@ -306,14 +306,6 @@ export class model implements OnDestroy {
                 */
             })
         );
-
-        /*
-        this.subscriptions.add(
-            this.socket.initializeNamespace('module').subscribe(e =>
-                this.handleSocketEvents(e)
-            )
-        );
-        */
     }
 
     /**
@@ -357,24 +349,6 @@ export class model implements OnDestroy {
      */
     get backendData() {
         return this.utils.spiceModel2backend(this.module, this.data);
-    }
-
-    /**
-     * handle socket event
-     * @param event
-     * @private
-     */
-    public handleSocketEvents(event: SocketEventI) {
-        switch (event.type) {
-            case 'update':
-                // check that we have a match on id and moduel and come from another session
-                if (event.data.id == this.id && event.data.module == this.module && event.data.sessionId != this.session.authData.sessionId) {
-                    if (!this.isEditing) {
-                        this.getData(false, '', false);
-                    }
-                }
-                break;
-        }
     }
 
     /**
@@ -585,7 +559,7 @@ export class model implements OnDestroy {
             }
         }
         if (!this.isValid) {
-            console.warn("validation failed:", this.messages);
+            // console.warn("validation failed:", this.messages);
         }
         this.validated$.next();
         return this.isValid;
@@ -725,6 +699,8 @@ export class model implements OnDestroy {
 
         // loop through validations...
         for (let validation of validations) {
+            if(!validation.active) continue ;
+
             let checksum: number = 0;
             let is_valid: boolean = true;
 
@@ -1180,7 +1156,7 @@ export class model implements OnDestroy {
                             break;
                         default:
                             if (notify) {
-                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
+                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message );
                             }
                             responseSubject.error(error);
                             responseSubject.complete();
@@ -1653,6 +1629,11 @@ export class model implements OnDestroy {
                 if (!copyRule.params?.number || !copyRule.params?.unit) return fromFieldDate;
 
                 return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
+            case "currentYear":
+                date = new moment.utc().tz(timeZone);
+                let year = date.year();
+                return year;
+
         }
         return "";
     }

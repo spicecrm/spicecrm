@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\SugarObjects\templates\company;
 
 use SpiceCRM\data\BeanFactory;

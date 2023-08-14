@@ -4,7 +4,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Subject, Observable} from 'rxjs';
-import {CanActivate}    from '@angular/router';
+
 
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';

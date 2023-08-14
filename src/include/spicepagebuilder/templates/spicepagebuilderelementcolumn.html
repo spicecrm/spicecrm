@@ -8,6 +8,7 @@
         <spice-page-builder-element-divider *ngSwitchCase="'divider'" [element]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-element-divider>
         <spice-page-builder-element-spacer *ngSwitchCase="'spacer'" [element]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-element-spacer>
         <spice-page-builder-element-code *ngSwitchCase="'raw'" [element]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-element-code>
+        <spice-page-builder-element-rss *ngSwitchCase="'rss'" [element]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-element-rss>
     </ng-container>
     <div *ngIf="!dragEntered && column.children?.length == 0" class="slds-align--absolute-center slds-size--1-of-1" [style.height.px]="spicePageBuilderService.defaultPlaceholderHeight">
         <div class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-theme--shade slds-text-title--caps slds-truncate">

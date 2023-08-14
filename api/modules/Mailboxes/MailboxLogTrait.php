@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Mailboxes;
 
 use SpiceCRM\includes\Logger\LoggerManager;

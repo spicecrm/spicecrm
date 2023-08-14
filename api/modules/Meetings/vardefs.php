@@ -409,6 +409,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                 ]
             ],
         ],
+        'employees' => [
+            'name'         => 'employees',
+            'type'         => 'link',
+            'relationship' => 'employees_meetings',
+            'module'       => 'Employees',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_EMPLOYEES',
+        ],
         'leads' => [
             'name'         => 'leads',
             'type'         => 'link',
@@ -627,5 +635,15 @@ if (file_exists("extensions/modules/ServiceOrders")) {
         'vname'        => 'LBL_SERVICEORDER',
     ];
 }
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Meeting']['fields']['procurementdocs'] = [
+        'name'         => 'procurementdocs',
+        'type'         => 'link',
+        'relationship' => 'procurementdocs_meetings',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_PROCUREMENTDOCS',
+    ];
+}
+
 
 VardefManager::createVardef('Meetings', 'Meeting', ['default', 'assignable']);

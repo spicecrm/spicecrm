@@ -11,7 +11,9 @@ import {language} from './language.service';
 import {broadcast} from './broadcast.service';
 import {StoreService} from "./store.service";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class loader {
     public module: string = '';
     public id: string = '';

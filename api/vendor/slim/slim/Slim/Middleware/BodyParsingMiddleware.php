@@ -38,7 +38,7 @@ class BodyParsingMiddleware implements MiddlewareInterface
     /**
      * @var callable[]
      */
-    protected $bodyParsers;
+    protected array $bodyParsers;
 
     /**
      * @param callable[] $bodyParsers list of body parsers as an associative array of mediaType => callable
@@ -52,15 +52,11 @@ class BodyParsingMiddleware implements MiddlewareInterface
         }
     }
 
-    /**
-     * @param ServerRequestInterface  $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $parsedBody = $request->getParsedBody();
-        if ($parsedBody === null || empty($parsedBody)) {
+
+        if (empty($parsedBody)) {
             $parsedBody = $this->parseBody($request);
             $request = $request->withParsedBody($parsedBody);
         }
@@ -71,7 +67,6 @@ class BodyParsingMiddleware implements MiddlewareInterface
     /**
      * @param string   $mediaType A HTTP media type (excluding content-type params).
      * @param callable $callable  A callable that returns parsed contents for media type.
-     * @return self
      */
     public function registerBodyParser(string $mediaType, callable $callable): self
     {
@@ -81,7 +76,6 @@ class BodyParsingMiddleware implements MiddlewareInterface
 
     /**
      * @param string   $mediaType A HTTP media type (excluding content-type params).
-     * @return boolean
      */
     public function hasBodyParser(string $mediaType): bool
     {
@@ -90,7 +84,6 @@ class BodyParsingMiddleware implements MiddlewareInterface
 
     /**
      * @param string    $mediaType A HTTP media type (excluding content-type params).
-     * @return callable
      * @throws RuntimeException
      */
     public function getBodyParser(string $mediaType): callable
@@ -100,7 +93,6 @@ class BodyParsingMiddleware implements MiddlewareInterface
         }
         return $this->bodyParsers[$mediaType];
     }
-
 
     protected function registerDefaultBodyParsers(): void
     {
@@ -140,7 +132,6 @@ class BodyParsingMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
      * @return null|array<mixed>|object
      */
     protected function parseBody(ServerRequestInterface $request)
@@ -163,7 +154,7 @@ class BodyParsingMiddleware implements MiddlewareInterface
             $body = (string)$request->getBody();
             $parsed = $this->bodyParsers[$mediaType]($body);
 
-            if (!is_null($parsed) && !is_object($parsed) && !is_array($parsed)) {
+            if ($parsed !== null && !is_object($parsed) && !is_array($parsed)) {
                 throw new RuntimeException(
                     'Request body media type parser return value must be an array, an object, or null'
                 );
@@ -176,7 +167,6 @@ class BodyParsingMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
      * @return string|null The serverRequest media type, minus content-type params
      */
     protected function getMediaType(ServerRequestInterface $request): ?string

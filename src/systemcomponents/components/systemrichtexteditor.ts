@@ -32,6 +32,7 @@ import {helper} from '../../services/helper.service';
 import {libloader} from "../../services/libloader.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as less from 'less'
+import {configurationService} from "../../services/configuration.service";
 
 declare var ClassicEditor;
 
@@ -83,7 +84,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     @Input() private stylesheetId: string;
 
     public get useTemplateVariableHelper() {
-        return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
+        return this.model?.module in {OutputTemplates: true, EmailTemplates: true, CampaignTasks: true,LandingPages: true,}
     }
 
     // for the value accessor
@@ -123,6 +124,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 private zone: NgZone,
                 private sanitizer: DomSanitizer,
                 public viewContainerRef: ViewContainerRef,
+                public configurationService: configurationService,
                 @Optional() public model: model,
                 public helper: helper ) {
     }
@@ -227,14 +229,16 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @private
      */
     private loadCustomStyleDefinitions() {
-        this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
-            this.customStyleDefinitions.push({
-                display: format.name,
-                id: format.id,
-                classes: format.classes ? format.classes.trim().split(/\s+/) : [],
-                element: format.block ? format.block : ( format.inline ? format.inline : '' )
-            })
-        });
+        if(this.stylesheetId){
+            this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
+                this.customStyleDefinitions.push({
+                    display: format.name,
+                    id: format.id,
+                    classes: format.classes ? format.classes.trim().split(/\s+/) : [],
+                    element: format.block ? format.block : ( format.inline ? format.inline : '' )
+                })
+            });
+        }
     }
 
     /**
@@ -248,6 +252,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             return {
                 name: tag,
                 attributes: {
+                    'data-trackinglink': true,
+                    'data-marketingaction': true,
                     'data-spicefor': true,
                     'data-spiceif': true,
                     'data-spicefor-first': true,
@@ -465,18 +471,20 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
                     if (!image) return;
 
+                    const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
+
                     if (image.upload) {
                         this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                             uploadComponentRef.instance.answer.subscribe(uploadimage => {
                                 if (uploadimage) {
-                                    this.editor.execute('imageInsert', {source: [{src: 'https://cdn.spicecrm.io/' + uploadimage}]});
+                                    this.editor.execute('imageInsert', {source: [{src: mediaFileConfig.public_url + uploadimage}]});
                                 }
                                 this.modalOpen = false;
                             });
                         });
                     } else {
                         if (image.id) {
-                            this.editor.execute('imageInsert', {source: [{src: 'https://cdn.spicecrm.io/' + image.id}]});
+                            this.editor.execute('imageInsert', {source: [{src: mediaFileConfig.public_url + image.id}]});
                         }
                         this.modalOpen = false;
                     }

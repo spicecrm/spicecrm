@@ -35,7 +35,6 @@ namespace SpiceCRM\includes\Soap;
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-
 use SpiceCRM\includes\Logger\LoggerManager;
 
 

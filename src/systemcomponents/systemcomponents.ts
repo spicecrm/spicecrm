@@ -39,6 +39,7 @@ import {SystemComponentMissing} from "./components/systemcomponentmissing";
 import {SystemComponentSet} from "./components/systemcomponentset";
 import {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import {SystemCustomIcon} from "./components/systemcustomicon";
+import {SystemDisplayCurrencySymbol} from "./components/systemdisplaycurrencysymbol";
 import {SystemDisplayDatetime} from "./components/systemdisplaydatetime";
 import {SystemDisplayNumber} from "./components/systemdisplaynumber";
 import {SystemDynamicComponent} from "./components/systemdynamiccomponent";
@@ -77,6 +78,7 @@ import {SystemInputRadioButtonGroup} from "./components/systeminputradiobuttongr
 import {SystemInputRelate} from "./components/systeminputrelate";
 import {SystemInputState} from "./components/systeminputstate";
 import {SystemInputTags} from "./components/systeminputtags";
+import {SystemInputTaxCode} from "./components/systeminputtaxcode";
 import {SystemInputTime} from "./components/systeminputtime";
 import {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
 import {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
@@ -171,6 +173,14 @@ import {SystemIframeModal} from "./components/systemiframemodal";
 import {SystemInputColor} from "./components/systeminputcolor";
 import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcontent";
 import {SystemHtmlEditor} from "./components/systemhtmleditor";
+import {SystemInputDashboardset} from "./components/systeminputdashboardset";
+import {SystemInputDashboard} from "./components/systeminputdashboard";
+import {SystemSplitContainer} from "./components/systemsplitcontainer";
+import {SystemSplitContainerRight} from "./components/systemsplitcontainerright";
+import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
+
+
+
 
 @NgModule({
     imports: [
@@ -208,6 +218,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemComponentSet,
         SystemConfirmDialog,
         SystemCustomIcon,
+        SystemDisplayCurrencySymbol,
         SystemDisplayDatetime,
         SystemDisplayNumber,
         SystemDynamicComponent,
@@ -224,6 +235,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemIllustrationNoTask,
         SystemIllustrationPageNotAvailable,
         SystemImagePreviewModal,
+        SystemInputTaxCode,
         SystemInputText,
         SystemInputInteger,
         SystemInputEnum,
@@ -332,7 +344,12 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemWrappedText,
         SystemRichTextEditorContent,
         SystemHtmlEditor,
-        SystemStripHtmlTagsPipe
+        SystemStripHtmlTagsPipe,
+        SystemInputDashboardset,
+        SystemInputDashboard,
+        SystemSplitContainer,
+        SystemSplitContainerLeft,
+        SystemSplitContainerRight
     ],
     exports: [
         PaginationControlsComponent,
@@ -468,7 +485,14 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemHtmlEditor,
         SystemCardStencil,
         SystemSelectIcon,
-        SystemSelectIconItem
+        SystemSelectIconItem,
+        SystemInputTaxCode,
+        SystemDisplayCurrencySymbol,
+        SystemInputDashboardset,
+        SystemInputDashboard,
+        SystemSplitContainer,
+        SystemSplitContainerLeft,
+        SystemSplitContainerRight
     ]
 })
 export class SystemComponents {}

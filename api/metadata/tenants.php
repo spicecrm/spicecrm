@@ -36,7 +36,6 @@
 
 
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 SpiceDictionaryHandler::getInstance()->dictionary['tenants_deploymentpackages'] = [

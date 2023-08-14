@@ -12,16 +12,16 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\KReports;
 
 use DateInterval;
 use DateTime;
+use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
-
-use SpiceCRM\modules\KReports\KReportQueryArray;
-
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 
 // require_once('modules/ACL/ACLController.php');
 
@@ -245,8 +245,8 @@ class KReportQuery
     function build_from_string()
     {
         global $app_list_strings;
-$current_user = \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser();
-$db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
 
         // Create a root GUID
         $this->rootGuid = randomstring();
@@ -294,7 +294,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         // get ther root Object
         //require_once(SpiceModules::getInstance()->getBeanFiles()[$beanList[$this->root_module]]);
         //$this->joinSegments['root:' . $this->root_module]['object'] = new $beanList[$this->root_module]();
-        $this->joinSegments['root:' . $this->root_module]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->root_module);
+        $this->joinSegments['root:' . $this->root_module]['object'] = BeanFactory::getBean($this->root_module);
 
 
         // changed so we spport teams in Pro
@@ -349,12 +349,22 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             if ($this->joinSegments[$leftPath]['object']->_module != $rightArray[1]) {
                                  die('fatal Error in Join');
                             }
-                            // load the module on the right hand side
-                            $this->joinSegments[$thisPath]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['module']);
 
-                            // join on the id = relate id .. on _cstm if custom field .. on main if regular
-                            $this->fromString .= ' ' . $thisPathDetails['jointype'] . ' ' . $this->joinSegments[$thisPath]['object']->_tablename . ' AS ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id=' . ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name']]['source'] == 'custom_fields' ? $this->joinSegments[$leftPath]['customjoin'] : $this->joinSegments[$leftPath]['alias']) . '.' . $this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name'] . ' ';
+                            // Workaround for BWC (deprecated path) on user relationship
+                            // root:Opportunities::relate:Opportunities:assigned_user_id::field:user_name (will error the query)
+                            // root:Opportunities::link:Opportunities:assigned_user_link::field:user_name (shall be used)
+                            if(in_array($rightArray[2], ['assigned_user_id', 'created_by', 'modified_user_id'])){
+                                $this->joinSegments[$thisPath]['object'] = BeanFactory::getBean('Users');
+                                // join on the id = relate id .. on _cstm if custom field .. on main if regular
+                                $this->fromString .= ' ' . $thisPathDetails['jointype'] . ' ' . $this->joinSegments[$thisPath]['object']->_tablename . ' AS ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id=' . ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name']]['source'] == 'custom_fields' ? $this->joinSegments[$leftPath]['customjoin'] : $this->joinSegments[$leftPath]['alias']) . '.' . $this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['name'] . ' ';
+                            }
+                            else {
+                                // load the module on the right hand side
+                                $this->joinSegments[$thisPath]['object'] = BeanFactory::getBean($this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['module']);
 
+                                // join on the id = relate id .. on _cstm if custom field .. on main if regular
+                                $this->fromString .= ' ' . $thisPathDetails['jointype'] . ' ' . $this->joinSegments[$thisPath]['object']->_tablename . ' AS ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.id=' . ($this->joinSegments[$leftPath]['object']->field_defs[$this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name']]['source'] == 'custom_fields' ? $this->joinSegments[$leftPath]['customjoin'] : $this->joinSegments[$leftPath]['alias']) . '.' . $this->joinSegments[$leftPath]['object']->field_defs[$rightArray[2]]['id_name'] . ' ';
+                            }
                         } else {
                             if ($this->joinSegments[$leftPath]['object']->_module != $rightArray[1]) {
                                die('fatal Error in Join ' . $thisPath);
@@ -397,7 +407,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                                 $this->fromString .= ' ' . $linkJoin;
                             }
                             // load the module on the right hand side
-                            $this->joinSegments[$thisPath]['object'] = \SpiceCRM\data\BeanFactory::getBean($this->joinSegments[$leftPath]['object']->$rightArrayEl->getRelatedModuleName()); //$rightArray[2]
+                            $this->joinSegments[$thisPath]['object'] = BeanFactory::getBean($this->joinSegments[$leftPath]['object']->$rightArrayEl->getRelatedModuleName()); //$rightArray[2]
 
                             //bugfix 2010-08-19, respect ACL role access for owner reuqired in select
                             if ($this->joinSegments[$leftPath]['object']->bean_implements('ACL') && SpiceACL::getInstance()->requireOwner($this->joinSegments[$leftPath]['object']->_module, 'list')) {
@@ -1846,7 +1856,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
     function get_table_for_module($module)
     {
-        $thisModule = \SpiceCRM\data\BeanFactory::getBean($module);
+        $thisModule = BeanFactory::getBean($module);
         return $thisModule->_tablename;
     }
 

@@ -1,4 +1,4 @@
-<div *ngIf="display" class="slds-box--border">
+<div *ngIf="display" [ngClass]="getClass()">
     <div class="slds-p-around--xx-small slds-text-heading--label">
         <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
     </div>

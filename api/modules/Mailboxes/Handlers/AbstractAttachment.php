@@ -28,10 +28,10 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 
 abstract class AbstractAttachment
 {
@@ -41,25 +41,25 @@ abstract class AbstractAttachment
     public $mime_type;
     public $content;
 
-    const ATTACHMENT_DIR = "upload://";
-
     /**
      * saveFile
      *
      * Saves the attachment in the file system
      */
     public function saveFile() {
-        if (!is_writable(self::ATTACHMENT_DIR)) {
-            throw new Exception(self::ATTACHMENT_DIR . ' is not writable.');
+        $prefix = StreamFactory::getPathPrefix('upload');
+
+        if (!is_writable($prefix)) {
+            throw new Exception($prefix . ' is not writable.');
         }
 
-        file_put_contents(self::ATTACHMENT_DIR . $this->filename, $this->content);
+        file_put_contents($prefix . $this->filename, $this->content);
 
-        if(file_exists(self::ATTACHMENT_DIR . $this->filename)) {
+        if(file_exists($prefix . $this->filename)) {
             $this->initMD5();
 
-            rename(self::ATTACHMENT_DIR . $this->filename,
-                self::ATTACHMENT_DIR . $this->filemd5);
+            rename($prefix . $this->filename,
+                $prefix . $this->filemd5);
 
             $this->initFilesize();
         }
@@ -71,7 +71,7 @@ abstract class AbstractAttachment
      * Initializes the md5 attribute.
      */
     protected function initMd5() {
-        $this->filemd5 = md5_file(self::ATTACHMENT_DIR . $this->filename);
+        $this->filemd5 = md5_file(StreamFactory::getPathPrefix('upload') . $this->filename);
     }
 
     /**
@@ -80,6 +80,6 @@ abstract class AbstractAttachment
      * Initializes the file size attribute.
      */
     protected function initFilesize() {
-        $this->filesize = filesize(self::ATTACHMENT_DIR . $this->filemd5);
+        $this->filesize = filesize(StreamFactory::getPathPrefix('upload') . $this->filemd5);
     }
 }

@@ -17,6 +17,7 @@ import {domainmanager} from '../services/domainmanager.service';
  * a component allowing the management of the domaisn in the dictionary defined in the system
  */
 @Component({
+    selector: 'domain-manager',
     templateUrl: '../templates/domainmanager.html',
     providers: [metadata, domainmanager]
 })

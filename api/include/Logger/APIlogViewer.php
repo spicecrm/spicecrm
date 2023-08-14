@@ -43,7 +43,6 @@ use SpiceCRM\includes\authentication\AuthenticationController;
  ********************************************************************************/
 
 
-
 /**
  * Viewing/Selecting from API log (database)
  */

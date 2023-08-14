@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -100,6 +99,32 @@ SpiceDictionaryHandler::getInstance()->dictionary['UserAbsence'] = [
             'relationship' => 'users_userabsences',
             'source' => 'non-db',
             'module' => 'Users'
+        ],
+        'employee_id' => [
+            'name' => 'employee_id',
+            'vname' => 'LBL_EMPLOYEE_ID',
+            'type' => 'id',
+        ],
+        'employee_name' => [
+            'name' => 'employee_name',
+            'rname' => 'name',
+            'id_name' => 'employee_id',
+            'vname' => 'LBL_EMPLOYEE',
+            'type' => 'relate',
+            'table' => 'employees',
+            'module' => 'Employees',
+            'dbType' => 'varchar',
+            'link' => 'employees',
+            'len' => 255,
+            'source' => 'non-db'
+        ],
+        'employees' => [
+            'name' => 'employees',
+            'vname' => 'LBL_EMPLOYEES',
+            'type' => 'link',
+            'relationship' => 'employees_userabsences',
+            'source' => 'non-db',
+            'module' => 'Employees'
         ],
         'representative_id' => [
             'name' => 'representative_id',

@@ -38,7 +38,6 @@ namespace SpiceCRM\includes\authentication\TenantAuthenticate;
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;

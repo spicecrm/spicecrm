@@ -182,6 +182,7 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
 
         const params = {
             limit: isNaN(this.dashletconfig?.limit) ? 50 : this.dashletconfig.limit,
+            resolvelinks: isNaN(this.dashletconfig?.resolvelinks) ? false : this.dashletconfig.resolvelinks,
             modulefilter: this.dashletconfig.modulefilter,
             sortfields: [{
                 sortfield: this.sortparams.sortfield,
@@ -221,6 +222,7 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
 
         const params = {
             limit: isNaN(this.dashletconfig?.limit) ? 50 : this.dashletconfig.limit,
+            resolvelinks: isNaN(this.dashletconfig?.resolvelinks) ? false : this.dashletconfig.resolvelinks,
             offset: this.records.length,
             modulefilter: this.dashletconfig?.modulefilter,
             sortfields: [{

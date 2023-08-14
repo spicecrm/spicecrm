@@ -1,22 +1,26 @@
 <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
     <div class="slds-grid slds-grid--vertical-align-center">
         <div class="slds-form-element__control slds-p-right--xx-small">
-            <select class="slds-select" [(ngModel)]="mailbox" style="min-width: 250px;" [disabled]="mailboxesEmails.mailboxes.length==0 || isFetching">
-                <option *ngFor="let mailbox of mailboxesEmails.mailboxes" value="{{mailbox.id}}">
-                    {{mailbox.name}}
-                </option>
-            </select>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="mailbox" style="min-width: 250px;" [disabled]="mailboxesEmails.mailboxes.length==0 || isFetching">
+                    <option *ngFor="let mailbox of mailboxesEmails.mailboxes" value="{{mailbox.id}}">
+                        {{mailbox.name}}
+                    </option>
+                </select>
+            </div>
         </div>
         <div class="slds-form-element__control slds-p-horizontal--xx-small">
             <system-checkbox [(ngModel)]="mailboxesEmails.unreadonly"><system-label label="LBL_UNREAD_ONLY"></system-label></system-checkbox>
         </div>
         <div class="slds-form-element__control slds-p-horizontal--xx-small">
-            <select class="slds-select" [(ngModel)]="emailopenness">
-                <option value="all"><system-label label="LBL_EMAILS_ALL"></system-label></option>
-                <option value="open"><system-label label="LBL_EMAILS_OPEN"></system-label></option>
-                <option value="user_closed"><system-label label="LBL_EMAILS_USER_CLOSED"></system-label></option>
-                <option value="system_closed"><system-label label="LBL_EMAILS_SYSTEM_CLOSED"></system-label></option>
-            </select>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="emailopenness">
+                    <option value="all"><system-label label="LBL_EMAILS_ALL"></system-label></option>
+                    <option value="open"><system-label label="LBL_EMAILS_OPEN"></system-label></option>
+                    <option value="user_closed"><system-label label="LBL_EMAILS_USER_CLOSED"></system-label></option>
+                    <option value="system_closed"><system-label label="LBL_EMAILS_SYSTEM_CLOSED"></system-label></option>
+                </select>
+            </div>
         </div>
         <div class="slds-p-horizontal--xx-small">
             <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">

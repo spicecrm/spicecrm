@@ -3,7 +3,7 @@ namespace SpiceCRM\modules\Calls\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\extensions\includes\MicrosoftGraph\ModuleHandlers\MSGraphMeetingHandler;
+use SpiceCRM\extensions\includes\MicrosoftGraph\ModuleHandlers\MSGraphEventHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -40,12 +40,11 @@ class CallsController
             SpiceFTSHandler::getInstance()->indexBean($bean);
         }
 
-        if (SpiceConfig::getInstance()->config['MicrosoftService']['client_id']) {
-            /** @var User $user */
-            $user = BeanFactory::getBean('Users', $bean->assigned_user_id);
+        /** @var User $user */
+        $user = BeanFactory::getBean('Users', $bean->assigned_user_id);
+        if ($user->getPreference('microsoftActiveService', 'global') == 'msgraph' && SpiceConfig::getInstance()->config['MicrosoftService']['client_id']) {
             $participant = BeanFactory::getBean('Users', $args['userid']);
-
-            $graphHandler = new MSGraphMeetingHandler($user, $bean);
+            $graphHandler = new MSGraphEventHandler($user, $bean);
             $graphHandler->updateGraphAttendeeStatus($participant, $args['value']);
         }
 

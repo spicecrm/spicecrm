@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Agreements;
 
 use SpiceCRM\data\SpiceBean;

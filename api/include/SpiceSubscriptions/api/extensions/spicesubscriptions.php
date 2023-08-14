@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceSubscriptions\api\controllers\SpiceSubscriptionsController;
 

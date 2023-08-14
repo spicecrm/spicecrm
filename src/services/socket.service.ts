@@ -11,7 +11,9 @@ import {Observable, of, Subject} from "rxjs";
 declare var io: any;
 declare var _: any;
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class socket {
 
     /**

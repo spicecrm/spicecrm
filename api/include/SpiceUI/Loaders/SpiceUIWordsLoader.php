@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\SpiceUI\Loaders;
 
 use SpiceCRM\includes\database\DBManagerFactory;

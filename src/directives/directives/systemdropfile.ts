@@ -41,6 +41,22 @@ export class SystemDropFile {
     }
 
     public ngOnDestroy() {
+        this.removeWindowEventsListeners();
+    }
+
+    @Input()
+    set disabled(val) {
+        if (val) {
+            this.removeWindowEventsListeners();
+        } else {
+            this.listenWindowEvents();
+        }
+    }
+
+    public removeWindowEventsListeners() {
+
+        if (!this.dragStartListener) return;
+
         this.dragStartListener();
         this.dragEnterListener();
         this.dragOverListener();

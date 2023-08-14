@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -150,6 +149,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Letter'] = [
             'bean_name' => 'Consumer',
             'source' => 'non-db',
             'vname' => 'LBL_CONSUMER',
+            'comment'  => 'The link to the consumer',
+        ],
+        'consumers' => [
+            'name' => 'consumers',
+            'type' => 'link',
+            'relationship' => 'consumer_letters',
+            'module' => 'Consumers',
+            'bean_name' => 'Contact',
+            'source' => 'non-db',
+            'vname' => 'LBL_CONSUMERS',
             'comment'  => 'The link to the consumer',
         ],
         'consumers' => [

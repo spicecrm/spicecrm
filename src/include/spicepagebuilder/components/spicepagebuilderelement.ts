@@ -63,6 +63,7 @@ export class SpicePageBuilderElement implements OnInit {
     public handleEditResponse(res) {
         this.element.attributes = res.attributes;
         this.generateStyle();
+        this.spicePageBuilderService.emitData();
         this.cdRef.detectChanges();
     }
 
@@ -83,16 +84,16 @@ export class SpicePageBuilderElement implements OnInit {
     }
 
     /**
-     * set the current editing element
+     * open edit modal
      */
     public edit() {
-        this.modal.openModal('SpicePageBuilderEditor', true, this.injector).subscribe(modalRef => {
-            modalRef.instance.element = JSON.parse(JSON.stringify(this.element));
-            modalRef.instance.response.subscribe(res => {
+
+        this.spicePageBuilderService.openEditModal(this.element).subscribe({
+            next: res => {
                 if (!!res) {
                     this.handleEditResponse(res);
                 }
-            });
+            }
         });
     }
 }

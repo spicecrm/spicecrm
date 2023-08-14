@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\OutputTemplates\api\controllers\OutputTemplatesController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -335,7 +334,45 @@ $routes = [
         'function'    => 'getTemplateFunctions',
         'description' => 'Get the full list of system template functions.',
         'options'     => ['noAuth' => false, 'adminOnly' => false]
-    ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/OutputTemplates/{id}/livecompile/{parentmodule}/{parentid}',
+        'class'       => OutputTemplatesController::class,
+        'function'    => 'liveCompileHtml',
+        'description' => 'live compile html',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'parentmodule' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'name of parent module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'parentid' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => 'if of parent bean',
+                'example' => '2816ba5c-97e7-11eb-8c42-00fffe0c4f07',
+                'required' => true
+            ],
+            'html' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'html string',
+                'example' => '',
+                'required' => true
+            ],
+            'field' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'html field',
+                'example' => '',
+                'required' => false
+            ]
+        ]
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);

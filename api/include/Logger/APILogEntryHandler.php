@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\Logger;
 
 use SpiceCRM\includes\authentication\AuthenticationController;

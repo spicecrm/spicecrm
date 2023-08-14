@@ -28,16 +28,17 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\OutputTemplates;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class OutputTemplate extends SpiceBean
 {
@@ -122,6 +123,42 @@ class OutputTemplate extends SpiceBean
         }
 
         return $html;
+    }
+
+    /**
+     * parse html content
+     * @param $bean
+     * @param $additionalValues
+     * @param $additionalBeans
+     * @return array|string|string[]|null
+     */
+    function parse( $bean, $field = 'body_html',  $additionalValues = null, $additionalBeans = [] ){
+
+        global $app_list_strings;
+
+        $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
+
+
+        return preg_replace(
+            '#^<html>#', '<html><head><style>'.$this->getStyle().'</style></head>',
+            $this->parseHTMLTextField($field, $bean, $additionalValues, $additionalBeans )
+        );
+    }
+
+    /**
+     * parse html text field
+     * @param $field
+     * @param $parentbean
+     * @param $additionalValues
+     * @param $additionalBeans
+     * @return string
+     */
+    public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [] )
+    {
+        $templateCompiler = new Compiler($this);
+        $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
+        $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues, $additionalBeans );
+        return html_entity_decode($html);
     }
 
     public function __toString()

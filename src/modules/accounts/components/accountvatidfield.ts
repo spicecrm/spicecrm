@@ -126,6 +126,7 @@ export class AccountVATIDField extends fieldGeneric implements OnInit {
                 } else {
                     this.model.getField('accountvatids').beans[beanid].verification_details = JSON.stringify(response.data);
                     this.model.getField('accountvatids').beans[beanid].vatid_status = 'valid';
+                    this.toast.sendToast(this.language.getLabel('VALID_VAT'), 'success');
                 }
             } else {
                 this.toast.sendToast(this.language.getLabel('ERR_CHECK_VAT'), 'error');

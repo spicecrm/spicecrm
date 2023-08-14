@@ -108,6 +108,12 @@ export class modellist implements OnDestroy {
     public isLoading: boolean = false;
 
     /**
+     * a helper to either enable/disable cancellation of pending requests
+     * aim: more flexibility on first load
+     */
+    public cancelPendingRequests: boolean = true;
+
+    /**
      * the search term
      */
     public searchTerm: string = '';
@@ -131,6 +137,21 @@ export class modellist implements OnDestroy {
      * the aggregate values the user selected
      */
     public selectedAggregates: string[] = [];
+
+    /**
+     * a timeout to handle aggregate changes
+     *
+     * @private
+     */
+    private reloadTimeOut: any = undefined;
+
+    /**
+     * holds changed aggergates to allow multiple changes at once
+     */
+    public changedAggregates: any = {
+        added: [],
+        deleted:[]
+    }
 
     /**
      * search geo data
@@ -734,7 +755,7 @@ export class modellist implements OnDestroy {
             list.listcomponent = component;
         });
         this.determineListFields();
-        this.userpreferences.setPreference('defaultlisttype', component, false, this.module);
+        this.userpreferences.setPreference('defaultlisttype', component, true, this.module);
         this.emitListTypeComponentChange();
     }
 
@@ -862,15 +883,45 @@ export class modellist implements OnDestroy {
     }
 
     /**
+     * schedules  reload if no further changes are set
+     */
+    public scheduleReloadList(){
+        // cancel any ongoing search
+        if (this.reloadTimeOut) {
+            window.clearTimeout(this.reloadTimeOut);
+            this.reloadTimeOut = undefined;
+        }
+
+        this.reloadTimeOut = window.setTimeout(() => {
+            this.exceuteReload();
+        }, 1000);
+    }
+
+    /**
+     * checks if we have changes and if then execcutes the reload
+     * @private
+     */
+    private exceuteReload(){
+        if(this.changedAggregates.added.length > 0 || this.changedAggregates.deleted.length > 0){
+            this.reLoadList();
+        }
+    }
+
+    /**
      * reloads the last loaded list
      */
     public reLoadList(quiet: boolean = false) {
         if (this.isLoading) {
             const requestID = this.httpRequestsRefID + '_get_list_data';
-            this.backend.cancelPendingRequests([requestID]);
+            if(this.cancelPendingRequests) this.backend.cancelPendingRequests([requestID]);
             this.isLoading = false;
             return of(false);
         } else {
+            // reset the changed data
+            this.changedAggregates.added = [];
+            this.changedAggregates.deleted = [];
+
+            // execute the load
             return this.getListData(quiet);
         }
     }
@@ -968,6 +1019,14 @@ export class modellist implements OnDestroy {
      */
     public setAggregate(aggregate, aggdata) {
         this.selectedAggregates.push(aggregate + '::' + aggdata);
+
+        // handle also that we record the changes
+        let delIndex = this.changedAggregates.deleted.indexOf(aggregate + '::' + aggdata);
+        if(delIndex >= 0){
+            this.changedAggregates.deleted.splice(delIndex, 1);
+        } else {
+            this.changedAggregates.added.push(aggregate + '::' + aggdata);
+        }
     }
 
     /**
@@ -1001,6 +1060,30 @@ export class modellist implements OnDestroy {
             return false;
         }
         this.selectedAggregates.splice(index, 1);
+
+        // record the changes
+        let addIndex = this.changedAggregates.added.indexOf(aggregate + '::' + aggdata);
+        if(addIndex >= 0){
+            this.changedAggregates.added.splice(addIndex, 1);
+        } else {
+            this.changedAggregates.deleted.push(aggregate + '::' + aggdata);
+        }
+
+        // return true
+        return true;
+    }
+
+    /**
+     * checks if an aggregate can be changed or changed reords for another aggregate are existing
+     *
+     * @param aggregate
+     */
+    public canChangeAggegate(aggregate){
+        if(this.changedAggregates.added.length == 0 && this.changedAggregates.deleted.length == 0) return true;
+
+        if(this.changedAggregates.added.filter(a => a.indexOf(aggregate + '::') != 0).length > 0) return false;
+        if(this.changedAggregates.deleted.filter(a => a.indexOf(aggregate + '::') != 0).length > 0) return false;
+
         return true;
     }
 
@@ -1158,7 +1241,8 @@ export class modellist implements OnDestroy {
 
         const requestID = this.httpRequestsRefID + '_get_list_data';
 
-        this.backend.cancelPendingRequests([requestID]);
+        // cancel pending requests only if allowed
+        if(this.cancelPendingRequests) this.backend.cancelPendingRequests([requestID]);
 
         this.backend.getList(this.module, this.sortArray, params, requestID).subscribe({
             next: (res: any) => {

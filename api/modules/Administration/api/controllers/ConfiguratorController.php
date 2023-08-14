@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -84,6 +85,7 @@ class ConfiguratorController{
         }
 
         // clear the config cache and reload from DB
+        SpiceCache::deleteByKey('dbconfig');
         SpiceConfig::getInstance()->reloadConfig(true);
 
         return $res->withJson($postBody);
@@ -150,6 +152,9 @@ class ConfiguratorController{
 
         SystemDeploymentCR::deleteDBEntry($args['table'], $args['id'], $args['table']);
 
+        SpiceCache::instance()->resetFull();
+        $this->resetSessionCache($args['table']);
+
         return $res->withJson(['status' => 'success']);
     }
 
@@ -189,9 +194,31 @@ class ConfiguratorController{
             }
 
             SystemDeploymentCR::writeDBEntry($args['table'], $args['id'], $postBody['config'], $args['table']);
+
+            SpiceCache::instance()->resetFull();
+
+            $this->resetSessionCache($args['table']);
         }
 
-        return $res->withJson(['status' => 'success']);
+            return $res->withJson(['status' => 'success']);
+    }
+
+    /**
+     * reset session cache for configurations cached in the session array
+     * @param string $table
+     * @return void
+     */
+    private function resetSessionCache(string $table)
+    {
+        # reset user filtered sys modules list
+        if (in_array($table, ['sysmodules', 'syscustommodules'])) {
+            unset($_SESSION['SpiceUI']['modules']);
+        }
+
+        # reset user filtered sys modules list
+        if (in_array($table, ['syscustomhooks', 'syshooks'])) {
+            unset($_SESSION['SpiceCRM']['hooks']);
+        }
     }
 
     /**
@@ -219,6 +246,9 @@ class ConfiguratorController{
             }
 
             SystemDeploymentCR::writeDBEntry($args['table'], $entry['id'], $entry, $args['table']);
+
+            SpiceCache::instance()->resetFull();
+            $this->resetSessionCache($args['table']);
         }
 
         return $res->withJson(['status' => 'success']);

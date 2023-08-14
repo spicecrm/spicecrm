@@ -114,7 +114,7 @@ class Localization
 			'export_charset'				=> $this->default_export_charset,
 			'locale_name_format'			=> 's f l',
             'name_formats'                          => ['s f l' => 's f l', 'f l' => 'f l', 's l' => 's l', 'l, s f' => 'l, s f',
-                                                            'l, f' => 'l, f', 's l, f' => 's l, f', 'l s f' => 'l s f', 'l f s' => 'l f s'],
+                                                            'l, f' => 'l, f', 's l, f' => 's l, f', 'l s f' => 'l s f', 'l f s' => 'l f s', 's d f l a' => 's d f l a'],
 			'number_grouping_seperator'		=> ',',
 			'decimal_seperator'				=> '.',
 			'export_delimiter'						=> ',',

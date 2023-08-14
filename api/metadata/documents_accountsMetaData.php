@@ -34,7 +34,6 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 SpiceDictionaryHandler::getInstance()->dictionary["documents_accounts"] = [

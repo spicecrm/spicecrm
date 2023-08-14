@@ -1,12 +1,14 @@
 <div *ngIf="displayHomeAssistant" class="slds-grid">
-    <div class="slds-col slds-large-size--3-of-4 slds-medium-size--1-of-2">
-        <ng-container *ngIf="hasDashboardSet; else homeDashboardContainer">
-            <home-dashboardset-container></home-dashboardset-container>
-        </ng-container>
-    </div>
-    <div class="slds-col slds-large-size--1-of-4 slds-medium-size--1-of-2">
-        <home-assistant></home-assistant>
-    </div>
+    <system-split-container (onExpand)="cdRef.detectChanges()">
+        <system-split-container-left class="slds-col slds-large-size--3-of-4 slds-medium-size--1-of-2">
+            <ng-container *ngIf="hasDashboardSet; else homeDashboardContainer">
+                <home-dashboardset-container></home-dashboardset-container>
+            </ng-container>
+        </system-split-container-left>
+        <system-split-container-right class="slds-col slds-large-size--1-of-4 slds-medium-size--1-of-2">
+            <home-assistant></home-assistant>
+        </system-split-container-right>
+    </system-split-container>
 </div>
 <div *ngIf="!displayHomeAssistant" class="slds-grid">
     <div class="slds-col slds-size--1-of-1">
@@ -18,3 +20,5 @@
 <ng-template #homeDashboardContainer>
     <home-dashboard></home-dashboard>
 </ng-template>
+
+

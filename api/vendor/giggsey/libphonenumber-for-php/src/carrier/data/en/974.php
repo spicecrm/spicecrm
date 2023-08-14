@@ -11,8 +11,6 @@
  */
 
 return array (
-  97428 => 'ooredoo',
-  97429 => 'Vodafone',
   97430 => 'Vodafone',
   974310 => 'Vodafone',
   974311 => 'Vodafone',
@@ -24,9 +22,8 @@ return array (
   97433 => 'ooredoo',
   974399 => 'ooredoo',
   97450 => 'ooredoo',
-  974510 => 'ooredoo',
-  974511 => 'ooredoo',
-  974520 => 'ooredoo',
+  97451 => 'ooredoo',
+  97452 => 'ooredoo',
   97455 => 'ooredoo',
   974599 => 'ooredoo',
   974600 => 'ooredoo',
@@ -37,6 +34,9 @@ return array (
   974721 => 'Vodafone',
   974722 => 'Vodafone',
   974723 => 'Vodafone',
+  974724 => 'Vodafone',
+  974725 => 'Vodafone',
+  974726 => 'Vodafone',
   97474 => 'Vodafone',
   97477 => 'Vodafone',
 );

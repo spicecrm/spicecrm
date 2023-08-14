@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\EmailTemplates\api\controllers\EmailTemplatesController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -113,6 +112,13 @@ $routes = [
                 'description' => 'html string',
                 'example' => '',
                 'required' => true
+            ],
+            'field' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'html field',
+                'example' => '',
+                'required' => false
             ]
         ]
     ],

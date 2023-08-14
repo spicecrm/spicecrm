@@ -3,6 +3,7 @@ namespace SpiceCRM\modules\EmailAddresses\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\EmailAddresses\EmailAddressRestHandler;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -50,4 +51,27 @@ class EmailAddressesController
         return $res->withJson($emailAddress->searchForParentBean($seed));
     }
 
+    /**
+     * validate email address domain
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function validateEmailAddressDomain(Request $req, Response $res, array $args): Response
+    {
+        $body = $req->getParsedBody();
+
+        $split = explode('@', $body['text']);
+
+
+        $invalid_email = !EmailAddress::validateEmailAddressLocalPart($split[0]);
+
+        $invalid_domain = count($split) !== 2 || !EmailAddress::validateEmailAddressDomain($split[1]);
+
+        return $res->withJson([
+            'invalid_email' => $invalid_email,
+            'invalid_domain' => $invalid_domain
+        ]);
+    }
 }

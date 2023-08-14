@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\data\SpiceBean;

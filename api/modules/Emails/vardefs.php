@@ -299,6 +299,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'module' => 'Consumers',
             'source' => 'non-db',
         ],
+        'employees' => [
+            'name'         => 'employees',
+            'type'         => 'link',
+            'relationship' => 'employees_emails',
+            'module'       => 'Employees',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_EMPLOYEES',
+        ],
         'contacts' => [
             'name' => 'contacts',
             'vname' => 'LBL_CONTACTS',
@@ -482,12 +490,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'relationship' => 'email_emailtrackingactions',
             'source' => 'non-db'
         ],
-        'trackinglinks' => [
-            'name' => 'trackinglinks',
+        'emailtrackinglinks' => [
+            'name' => 'emailtrackinglinks',
             'type' => 'link',
-            'module' => 'TrackingLinks',
-            'bean_name' => 'TrackingLink',
-            'relationship' => 'emails_trackinglinks',
+            'module' => 'EmailTrackingLinks',
+            'relationship' => 'emails_emailtrackinglinks',
+            'source' => 'non-db'
+        ],
+        'campaign_log' => [
+            'name' => 'campaign_log',
+            'vname' => 'LBL_CAMPAIGNLOG',
+            'type' => 'link',
+            'module' => 'CampaignLog',
+            'relationship' => 'campaignlog_sent_emails',
             'source' => 'non-db'
         ]
         /* end relationship collections */
@@ -611,19 +626,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'rhs_key' => 'mailbox_id',
             'relationship_type' => 'one-to-many',
         ],
-        'emails_trackinglinks' => [
+        'emails_emailtrackinglinks' => [
             'lhs_module' => 'Emails',
             'lhs_table' => 'emails',
             'lhs_key' => 'id',
-            'rhs_module' => 'TrackingLinks',
-            'rhs_table' => 'trackinglinks',
+            'rhs_module' => 'EmailTrackingLinks',
+            'rhs_table' => 'emailtrackinglinks',
             'rhs_key' => 'id',
             'relationship_type' => 'many-to-many',
             'join_table' => 'emails_beans',
             'join_key_lhs' => 'email_id',
             'join_key_rhs' => 'bean_id',
             'relationship_role_column' => 'bean_module',
-            'relationship_role_column_value' => 'TrackingLinks',
+            'relationship_role_column_value' => 'EmailTrackingLinks',
         ],
     ], // end relationships
     'indices' => [
@@ -651,6 +666,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'name' => 'idx_email_external_id_mailbox',
             'type' => 'index',
             'fields' => ['external_id', 'mailbox_id']
+        ],
+        [
+            'name' => 'idx_email_mailboxid_status_deleted',
+            'type' => 'index',
+            'fields' => ['mailbox_id', 'status', 'deleted']
         ]
     ], // end indices
 ];
@@ -715,5 +735,13 @@ if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
         'source' => 'non-db'
     ];
 }
-
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['procurementdocs'] = [
+        'name'         => 'procurementdocs',
+        'type'         => 'link',
+        'relationship' => 'procurementdocs_emails',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_PROCUREMENTDOCS',
+    ];
+}
 VardefManager::createVardef('Emails', 'Email', ['default', 'assignable']);

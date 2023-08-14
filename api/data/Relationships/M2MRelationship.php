@@ -35,11 +35,11 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Link2;
@@ -179,7 +179,21 @@ class M2MRelationship extends SugarRelationship
             $this->callAfterAdd($lhs, $rhs, $lhsLinkName);
             $this->callAfterAdd($rhs, $lhs, $rhsLinkName);
 
+        $this->reindexBeans($lhs, $rhs);
+
         return true;
+    }
+
+    /**
+     * reindex sides beans
+     * @param SpiceBean $lhs
+     * @param SpiceBean $rhs
+     * @return void
+     */
+    private function reindexBeans(SpiceBean $lhs, SpiceBean $rhs)
+    {
+        SpiceFTSHandler::getInstance()->indexBean($lhs);
+        SpiceFTSHandler::getInstance()->indexBean($rhs);
     }
 
     protected function getRowToInsert($lhs, $rhs, $additionalFields = [])

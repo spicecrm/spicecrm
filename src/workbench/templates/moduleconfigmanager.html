@@ -76,7 +76,7 @@
                     <button [disabled]="!getAllowCopyButton" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--neutral" (click)="copyConf()">
                         <system-label label="LBL_COPY"></system-label>
                     </button>
-                    <button [disabled]="!view.isEditMode()" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
+                    <button [disabled]="!view.isEditMode() || !selectedComponent?.id" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
                         <system-label label="LBL_SAVE"></system-label>
                     </button>
                 </div>

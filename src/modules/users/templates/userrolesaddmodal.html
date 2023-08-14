@@ -12,12 +12,12 @@
                             <option value=""><system-label label="LBL_SELECT"></system-label> &hellip;</option>
                             <ng-container *ngIf="nonUserGlobalRoles.length">
                                 <option *ngFor="let role of nonUserGlobalRoles" [value]="role.id">
-                                    {{ ( role.label ? language.getLabel(role.label, 'short') : role.name.substring(0, 2) | uppercase ) +' '+ language.getLabel(role.label) }}
+                                    {{ ( role.label ? language.getLabel(role.label, 'short') : (role.name.substring(0, 2) | uppercase ) +' '+ language.getLabel(role.label)) }}
                                 </option>
                             </ng-container>
                             <optgroup *ngIf="nonUserCustomRoles.length" label="{{language.getLabel('LBL_CUSTOM_ROLES')}}">
                                 <option *ngFor="let role of nonUserCustomRoles" [value]="role.id">
-                                    {{ ( role.label ? language.getLabel(role.label, 'short') : role.name.substring(0, 2) | uppercase ) +' '+ language.getLabel(role.label) }} (<system-label label="LBL_CUSTOM"></system-label>)
+                                    {{ ( role.label ? language.getLabel(role.label, 'short') : (role.name.substring(0, 2) | uppercase ) +' '+ language.getLabel(role.label)) }} (<system-label label="LBL_CUSTOM"></system-label>)
                                 </option>
                             </optgroup>
 

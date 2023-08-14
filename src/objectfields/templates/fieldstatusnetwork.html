@@ -1,0 +1,22 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-truncate">
+            <span>{{getValue()}}</span>
+        </div>
+        <div *ngIf="networkItems.length > 0" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
+            <button class="slds-button slds-button--icon-small slds-button_icon-border-filled" [disabled]="model.isEditing" system-title="LBL_SET_STATUS">
+                <system-button-icon icon="stage"></system-button-icon>
+            </button>
+            <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
+                <ul class="slds-dropdown__list" role="menu">
+                    <li class="slds-dropdown__item" *ngFor="let networkItem of networkItems" role="presentation" (click)="propagateclick(networkItem.id)">
+                        <a class="slds-truncate" href="javascript:void(0);" role="menuitem">
+                            <field-statusnetwork-item [item]="networkItem"></field-statusnetwork-item>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</field-generic-display>

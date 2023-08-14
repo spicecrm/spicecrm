@@ -1,7 +1,10 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <div class="slds-text-align_right">
-        <system-display-number [number]="value" [precision]="precision"></system-display-number>
+    <div class="slds-grid slds-grid_vertical-align-center slds-text-align_right">
+        <div class="slds-form-element slds-size--1-of-2">
+            <system-display-number [number]="value" [precision]="precision"></system-display-number>
+        </div>
+        <system-select-uom [disabled]="true" class="slds-size--1-of-2 slds-p-left--x-small" [(ngModel)]="uomid"></system-select-uom>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">

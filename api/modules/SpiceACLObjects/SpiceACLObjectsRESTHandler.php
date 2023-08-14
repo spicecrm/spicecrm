@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\SpiceACLObjects;
 
 use SpiceCRM\data\BeanFactory;

@@ -3,6 +3,7 @@ import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 
+//test 6
 
 @Component({
     selector: 'git-pull-from-repository',
@@ -39,7 +40,7 @@ export class GitPullFromRepository {
      * Regex for password
      */
     public pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})");
-    public tokenRegexp: RegExp = new RegExp("^ghp_[a-zA-Z0-9]{36}$");
+    public gitHubTokenRegexp: RegExp = new RegExp("^ghp_[a-zA-Z0-9]{36}$");
     public userRegexp: RegExp = new RegExp("^[a-zA-Z0-9-]+$");
     public emailRegexp: RegExp = new RegExp("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$");
 
@@ -52,7 +53,7 @@ export class GitPullFromRepository {
      */
     public loginCheck() {
         this.passwordCondition = this.loginDetails.password.length > 0 && this.pwRegexp.test(this.loginDetails.password);
-        this.tokenCondition = this.loginDetails.token.length > 0 && this.tokenRegexp.test(this.loginDetails.token);
+        this.tokenCondition = this.loginDetails.token.length > 0  && (this.gitHubTokenRegexp.test(this.loginDetails.token)||this.pwRegexp.test(this.loginDetails.token));
         this.usernameCondition = this.userRegexp.test(this.loginDetails.username) || this.emailRegexp.test(this.loginDetails.username);
     }
 

@@ -16,7 +16,9 @@ interface lib {
     status: 'loaded' | 'loading' | 'error';
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class libloader {
 
     /**

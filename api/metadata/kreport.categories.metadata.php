@@ -13,7 +13,7 @@
  * ****************************************************************************** */
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
-SpiceDictionaryHandler::getInstance()->dictionary['KReportCategory'] = [
+SpiceDictionaryHandler::getInstance()->dictionary['kreportcategories'] = [
     'table' => 'kreportcategories',
     'fields' => [
         'id' => [

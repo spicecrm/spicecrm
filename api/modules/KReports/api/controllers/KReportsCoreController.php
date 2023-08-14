@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\KReports\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;

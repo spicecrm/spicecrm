@@ -1,0 +1,8 @@
+<div class="slds-form-element">
+    <div class="slds-select_container">
+        <select class="slds-select" [disabled]="taxcodes.length == 0 || disabled" [(ngModel)]="value">
+            <option value=""></option>
+            <option *ngFor="let t of taxcodes" [value]="t.taxcategoryid">{{t.taxcategoryname}} ({{t.taxcategoryid}})</option>
+        </select>
+    </div>
+</div>

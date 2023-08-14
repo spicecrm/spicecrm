@@ -28,13 +28,14 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\TimeDate;
 use Exception;
 use SpiceCRM\includes\Logger\SpiceLogger;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\MailboxLogTrait;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
@@ -83,13 +84,13 @@ abstract class TransportHandler
      */
     abstract public function testConnection($testEmail);
 
-    public function sendMail($email)
+    public function sendMail($email, $noSecurityCheck = false )
     {
         $timedate = TimeDate::getInstance();
 
         if ($this->mailbox->active == false) {
             return [
-                'result'  => 'false',
+                'result'  => false,
                 'message' => 'Message not sent. Mailbox inactive.',
             ];
         }
@@ -105,13 +106,12 @@ abstract class TransportHandler
         if ($this->mailbox->stylesheet != '') {
             $email->addStylesheet($this->mailbox->stylesheet);
         }
-
-        $messageId = $this->composeEmail($email);
+        $message = $this->composeEmail($email, $noSecurityCheck );
 
         // set the date sent
         $email->date_sent = $timedate->nowDb();
 
-        return $this->dispatch($messageId);
+        return $this->dispatch( $message );
     }
 
     /**
@@ -121,6 +121,30 @@ abstract class TransportHandler
      * @return mixed
      */
     abstract protected function composeEmail($email);
+
+    /**
+     * returns the biody with a tracking pixel if the mailbox sets it
+     *
+     * @param Email $email
+     * @return mixed|string
+     */
+    protected function trackedBody($email){
+        $body = $email->body;
+        [$parentType, $parentId] = $email->getTrackingParentData();
+        if($this->mailbox->track_mailbox){
+            $pixel = EmailTracking::getTrackingPixel("ParentType:$parentType:ParentId:$parentId");
+            $body = EmailTracking::attachElementToBody($pixel, $body);
+        }
+
+        if($this->mailbox->unsubscribe_header) {
+            $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
+            $unsubUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl'));
+            $body = EmailTracking::attachElementToBody("<a href=\"{$unsubUrl}\">unsubscribe</a>", $body);
+        }
+
+        # prevent misinterpretation of the style tag css class selectors
+        return str_replace(["\n.", "\r."], ["\n .", "\r ."], $body);
+    }
 
     /**
      * Handles the sending of a message that is already in a format needed by a given transport handler.
@@ -172,5 +196,30 @@ abstract class TransportHandler
         if (!($object instanceof TextMessage)) {
             throw new Exception('TextMessage is not of TextMessage class.');
         }
+    }
+
+    /**
+     * Is a White List defined?
+     * @return boolean
+     */
+    public function whiteListing(): bool
+    {
+        return isset( trim( $this->mailbox->whitelist )[0] );
+    }
+
+    /**
+     * Can handle *one* address (as string) or a *list* of addresses (as array).
+     * @param $addressOrAddresses
+     * @return boolean
+     */
+    protected function isWhiteListed( string $destinationAddress ): bool
+    {
+        # Parse the (comma separated) content of the field "whitelist" and build an array
+        $whiteAddresses = empty( $this->mailbox->whitelist ) ? [] : explode(',', $this->mailbox->whitelist );
+        # Check, if the destination address is one of the addresses in the array (ignoring space characters) and return true;
+        foreach ( $whiteAddresses as $address ) {
+            if ( str_replace(' ', '', $address ) === str_replace( ' ', '', $destinationAddress )) return true;
+        }
+        return false;
     }
 }

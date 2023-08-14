@@ -40,24 +40,10 @@ class App extends RouteCollectorProxy implements RequestHandlerInterface
      */
     public const VERSION = '4.10.0';
 
-    /**
-     * @var RouteResolverInterface
-     */
-    protected $routeResolver;
+    protected RouteResolverInterface $routeResolver;
 
-    /**
-     * @var MiddlewareDispatcherInterface
-     */
-    protected $middlewareDispatcher;
+    protected MiddlewareDispatcherInterface $middlewareDispatcher;
 
-    /**
-     * @param ResponseFactoryInterface              $responseFactory
-     * @param ContainerInterface|null               $container
-     * @param CallableResolverInterface|null        $callableResolver
-     * @param RouteCollectorInterface|null          $routeCollector
-     * @param RouteResolverInterface|null           $routeResolver
-     * @param MiddlewareDispatcherInterface|null    $middlewareDispatcher
-     */
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         ?ContainerInterface $container = null,
@@ -103,7 +89,6 @@ class App extends RouteCollectorProxy implements RequestHandlerInterface
 
     /**
      * @param MiddlewareInterface|string|callable $middleware
-     * @return self
      */
     public function add($middleware): self
     {
@@ -113,7 +98,6 @@ class App extends RouteCollectorProxy implements RequestHandlerInterface
 
     /**
      * @param MiddlewareInterface $middleware
-     * @return self
      */
     public function addMiddleware(MiddlewareInterface $middleware): self
     {

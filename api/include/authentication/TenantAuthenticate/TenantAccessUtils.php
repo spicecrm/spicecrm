@@ -38,7 +38,6 @@ namespace SpiceCRM\includes\authentication\TenantAuthenticate;
  ********************************************************************************/
 
 
-
 use DateInterval;
 use Exception;
 use SpiceCRM\includes\authentication\interfaces\AccessUtilsI;

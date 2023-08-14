@@ -1,8 +1,17 @@
-<div *ngIf="!hasAccess || model.isLoading; else content" class="slds-grid slds-grid--vertical">
-    <system-card-stencil></system-card-stencil>
-    <system-card-stencil></system-card-stencil>
-    <system-card-stencil></system-card-stencil>
-</div>
-<ng-template #content>
-    <system-componentset [componentset]="componentset"></system-componentset>
+<ng-container *ngIf="componentset; else nocomponentset">
+    <div *ngIf="!hasAccess || model.isLoading; else content" class="slds-grid slds-grid--vertical">
+        <system-card-stencil></system-card-stencil>
+        <system-card-stencil></system-card-stencil>
+        <system-card-stencil></system-card-stencil>
+    </div>
+    <ng-template #content>
+        <system-componentset [componentset]="componentset"></system-componentset>
+    </ng-template>
+</ng-container>
+<ng-template #nocomponentset>
+    <div class="slds-box slds-box--border slds-align--absolute-center">
+        <system-illustration-no-data class="slds-m-around--medium">
+            <system-label label="LBL_NO_RELATED_ITEMS"/>
+        </system-illustration-no-data>
+    </div>
 </ng-template>

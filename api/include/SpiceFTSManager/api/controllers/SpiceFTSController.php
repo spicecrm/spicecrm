@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\SpiceFTSManager\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;

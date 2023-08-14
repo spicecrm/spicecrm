@@ -3,22 +3,22 @@
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
  * You can contact us at info@spicecrm.io
- *
+ * 
  * SpiceCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version
- *
+ * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- *
+ * 
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
- *
+ * 
  * SpiceCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,7 +26,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
-
 
 
 namespace SpiceCRM\modules\ServiceTickets;
@@ -51,7 +50,7 @@ class ServiceTicket extends SpiceBean
         'sysservicecategory_id2' => 'sysservicecategory_id2',
         'sysservicecategory_id3' => 'sysservicecategory_id3',
         'sysservicecategory_id4' => 'sysservicecategory_id4',
-        'resolve_date' => 'resolve_date'
+        'resolve_date' => 'resolve_date',
     ];
 
     public $sysnumberranges = true; //entries in table sysnumberranges required!
@@ -91,9 +90,10 @@ class ServiceTicket extends SpiceBean
     {
         $bean = parent::retrieve($id, $encode, $deleted, $relationships);
 
-        if (!empty($this->contact_id)) {
-            if($contact = BeanFactory::getBean('Contacts', $this->contact_id)){
-                $this->email1 = $contact->email1;
+        // try to retrieve the parent and set the email if we have one
+        if (!empty($this->parent_id)) {
+            if($parent = BeanFactory::getBean($this->parent_type, $this->parent_id)){
+                $this->email1 = $parent->email1;
             }
         }
 
@@ -110,7 +110,7 @@ class ServiceTicket extends SpiceBean
     public function save($check_notify = false, $fts_index_bean = true)
     {
         $timedate = TimeDate::getInstance();
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+//        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         //set serviceticket_number
         if (empty($this->serviceticket_number)) {
@@ -125,12 +125,16 @@ class ServiceTicket extends SpiceBean
         // set a default ticekt status if no other is set
         if (empty($this->serviceticket_status)) $this->serviceticket_status = 'New';
 
-        if ($this->serviceticket_status != $this->fetched_row['serviceticket_status']) {
-            switch ($this->serviceticket_status) {
-                case 'Assigned':
-                    $this->assigned_user_id = $current_user->id;
-                    $this->assigned_user_name = $current_user->get_summary_text();
-                    break;
+//        if ($this->serviceticket_status != $this->fetched_row['serviceticket_status']) {
+//            switch ($this->serviceticket_status) {
+//                case 'Assigned':
+//                    $this->assigned_user_id = $current_user->id;
+//                    $this->assigned_user_name = $current_user->get_summary_text();
+//                    break;
+//                case 'Assigned':
+//                    $this->assigned_user_id = $current_user->id;
+//                    $this->assigned_user_name = $current_user->get_summary_text();
+//                    break;
 // CR1000860
 //                case 'In Process':
 //                case 'Pending Input':
@@ -138,24 +142,26 @@ class ServiceTicket extends SpiceBean
 //                    $this->assigned_user_id = '';
 //                    $this->assigned_user_name = '';
 //                    break;
-            }
-        }
+//            }
+//        }
 
         $changedFields = $this->detectStageChange();
-        if (!$this->new_with_id && !$this->in_save && $changedFields !== false) {
+        if (!$this->in_save && $changedFields !== false) {
             $ticketStage = BeanFactory::getBean('ServiceTicketStages');
             if ($ticketStage) {
+                // if it is a new ticket, create an id
                 if (empty($this->id)) {
                     $this->id = SpiceUtils::createGuid();
                     $this->new_with_id = true;
                 }
 
-                foreach ($changedFields as $stageField) {
-                    $ticketStage->{$this->stageFields[$stageField]} = $this->$stageField;
+                // set the value for each stage field from the list
+                foreach ($this->stageFields as $ticketField => $stageField) {
+                    $ticketStage->$stageField = $this->$ticketField;
                 }
 
                 $ticketStage->name = $this->serviceticket_number . ' ' . $timedate->nowDb();
-                $ticketStage->created_by = $this->id;
+                $ticketStage->created_by = AuthenticationController::getInstance()->getCurrentUser()->id;
                 $ticketStage->serviceticket_id = $this->id;
                 $ticketStage->save();
             }
@@ -193,16 +199,13 @@ class ServiceTicket extends SpiceBean
             $this->resolve_date = '';
         }
 
-        // determine the notification status
-        $this->has_notification = $this->determineNotificationStatus();
-
-        $dummy = parent::save($check_notify);
+        $saveResponse = parent::save($check_notify);
 
         if (!empty(json_decode($this->questionnaire_answers, true))) {
             QuestionAnsweringHandler::saveAnswers_byParent(json_decode($this->questionnaire_answers, true)['answers'], 'ServiceTickets', $this->id, true);
         }
 
-        return $dummy;
+        return $saveResponse;
 
     }
 
@@ -220,17 +223,6 @@ class ServiceTicket extends SpiceBean
             }
             $sla->setSLADatesforTicket($this, $slaTime);
         }
-    }
-
-    /**
-     * check if there are unread emails resp also to be extended to serviceticketnotes
-     */
-    public function determineNotificationStatus()
-    {
-        return 0;
-        $unreadEmailCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM emails WHERE parent_id = '{$this->id}' and status = 'unread' AND deleted = 0"));
-        $unreadNoteCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM serviceticketnotes WHERE serviceticket_id = '{$this->id}' and servicenote_status = 'unread' AND deleted = 0"));
-        return $unreadEmailCount['total'] > 0 || $unreadNoteCount['total'] > 0 ? 1 : 0;
     }
 
     /**

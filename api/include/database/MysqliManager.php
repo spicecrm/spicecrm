@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\database;
 
 use SpiceCRM\data\SpiceBean;
@@ -211,7 +210,6 @@ class MysqliManager extends DBManager
 
     public function query($sql, $dieOnError = false, $msg = '', $suppress = false, $keepResult = false)
     {
-
         try {
             if (is_array($sql)) {
                 return $this->queryArray($sql, $dieOnError, $msg, $suppress);
@@ -255,8 +253,10 @@ class MysqliManager extends DBManager
                 $this->checkError($msg . ' Query Failed: ' . $sql, $dieOnError);
             }
         } catch (Exception $e) {
+
             LoggerManager::getLogger()->fatal('sql', ['error' => $e->getMessage(), "query" => $this->lastsql]);
-            throw $e;
+
+            if ($dieOnError) throw $e;
         }
 
         return $result;

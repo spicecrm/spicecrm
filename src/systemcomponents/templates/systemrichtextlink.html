@@ -47,26 +47,20 @@
                 <div *ngIf="marketingActionErrorLabel" class="slds-form-element__help"><system-label [label]="marketingActionErrorLabel"></system-label></div>
             </div>
             <ng-container *ngIf="linkType==='conv'">
-                <div *ngIf="!alterMode" class="slds-form-element slds-col slds-grow-none">
-                    <label class="slds-form-element__label" for="cbTrackable1"><system-label label="LBL_CLICKS_TRACKABLE"></system-label></label>
-                    <div class="slds-form-element__control">
-                        <span class="slds-checkbox slds-checkbox_standalone">
-                            <input type="checkbox" id="cbTrackable1" name="label" [value]="true" [(ngModel)]="toTrack" />
-                            <span class="slds-checkbox_faux"></span>
-                        </span>
-                    </div>
-                </div>
-                <div *ngIf="alterMode" class="slds-form-element__control slds-col">
-                    <system-checkbox [(ngModel)]="toTrack">
-                        <system-label label="LBL_CLICKS_TRACKABLE"></system-label>
-                    </system-checkbox>
+                <div class="slds-form-element slds-col slds-grow-none">
+                    <label class="slds-form-element__label"><system-label label="LBL_CLICKS_TRACKABLE"></system-label></label>
+                    <system-input-radio-button-group [ngModel]="trackByMethod" (ngModelChange)="setTrackByMethod($event)" [inputOptions]="[{value: 'id', label: 'LBL_BY_ID'}, {value: undefined, icon: 'topic2', label: 'LBL_NONE'}, {value: 'url', icon: 'link', label: 'LBL_BY_URL'}]" class="spice-display-block"></system-input-radio-button-group>
                 </div>
             </ng-container>
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" (click)="submit()">{{language.getLabel('LBL_OK')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" (click)="submit()">
+            <system-label label="LBL_OK"></system-label>
+        </button>
     </system-modal-footer>
 </system-modal>
 

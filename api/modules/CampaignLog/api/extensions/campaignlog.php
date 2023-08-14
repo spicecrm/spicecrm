@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\modules\CampaignLog\api\controllers\CampaignLogController;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

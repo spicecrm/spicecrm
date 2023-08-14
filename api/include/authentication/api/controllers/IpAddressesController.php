@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\authentication\api\controllers;
 
 use SpiceCRM\includes\authentication\AuthenticationController;

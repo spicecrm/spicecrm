@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 SpiceDictionaryHandler::getInstance()->dictionary['spicefavorites'] = [
@@ -250,6 +249,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['spiceattachments'] = [
             'name' => 'tatusrbean_idx',
             'type' => 'index',
             'fields' => ['bean_type', 'bean_id', 'trdate'],
+        ],
+        [
+            'name' => 'spiceattachments_idx_beanid',
+            'type' => 'index',
+            'fields' => ['bean_id'],
         ],
         [
             'name' => 'tatselection_idx',

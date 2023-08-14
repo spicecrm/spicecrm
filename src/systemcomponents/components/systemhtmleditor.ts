@@ -5,15 +5,19 @@
 // from https://github.com/kolkov/angular-editor
 import {
     Component,
+    ComponentRef,
     ElementRef,
     EventEmitter,
     forwardRef,
     Inject,
-    OnDestroy, OnInit, Output,
+    Input,
+    OnDestroy,
+    OnInit,
+    Optional,
+    Output,
     Renderer2,
     ViewChild,
-    ViewContainerRef,
-    Input, Optional
+    ViewContainerRef
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {DOCUMENT} from "@angular/common";
@@ -23,8 +27,10 @@ import {systemrichtextservice} from "../services/systemrichtext.service";
 import {language} from "../../services/language.service";
 import {take} from "rxjs/operators";
 import {metadata} from "../../services/metadata.service";
-import { model } from '../../services/model.service';
-import { helper } from '../../services/helper.service';
+import {model} from '../../services/model.service';
+import {helper} from '../../services/helper.service';
+import {configurationService} from "../../services/configuration.service";
+import {SystemRichTextLink} from "./systemrichtextlink";
 
 @Component({
     selector: "system-html-editor",
@@ -60,22 +66,15 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
      * @private
      */
     @Input() public useMedialFile: boolean = false;
-
-    public get useTemplateVariableHelper() {
-        return ( this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks' );
-    }
-
     // for the value accessor
     public onChange: (value: string) => void;
     public onTouched: () => void;
     public _html: string = '';
-
     public isActive: boolean = false;
     public clickListener: any;
     public keydownListener: any;
     public modalOpen: boolean = false;
     public isExpanded: boolean = false;
-
     public block: string = 'default';
     public fontName: string = 'Tilium Web';
     public fontSize: string = '5';
@@ -83,9 +82,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         BLOCKQUOTE: "indent",
         A: "link"
     };
-
     @Output() public save$: EventEmitter<string> = new EventEmitter<string>();
-
     public select = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "PRE", "DIV"];
 
     constructor(public modal: modal,
@@ -96,8 +93,13 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                 public elementRef: ElementRef,
                 public language: language,
                 public viewContainerRef: ViewContainerRef,
+                public configurationService: configurationService,
                 @Optional() public model: model,
-                public helper: helper ) {
+                public helper: helper) {
+    }
+
+    public get useTemplateVariableHelper() {
+        return (this.model?.module === 'LandingPages' || this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks');
     }
 
     get expandIcon() {
@@ -112,7 +114,11 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     get richTextStyle() {
-        return this.isExpanded ? {height: '100vh', resize: 'none', position: 'fixed'} : {height: (+this.innerHeight + 50) + 'px'};
+        return this.isExpanded ? {
+            height: '100vh',
+            resize: 'none',
+            position: 'fixed'
+        } : {height: (+this.innerHeight + 50) + 'px'};
     }
 
     public ngOnInit() {
@@ -253,7 +259,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
      */
     public insertImage() {
         this.editorService.saveSelection();
-        this.modal.input(this.language.getLabel('LBL_IMAGE_LINK',this.language.getLabel('LBL_IMAGE')))
+        this.modal.input(this.language.getLabel('LBL_IMAGE_LINK', this.language.getLabel('LBL_IMAGE')))
             .pipe(take(1))
             .subscribe(url => {
                 if (!url) return;
@@ -272,14 +278,19 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
             .pipe(take(1))
             .subscribe(componentRef => {
                 componentRef.instance.answer.subscribe(image => {
-                    if (!image) {return;}
+                    if (!image) {
+                        return;
+                    }
                     if (image.upload) {
                         this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                             uploadComponentRef.instance.answer.subscribe(uploadimage => {
                                 if (uploadimage) {
+                                    const mediaFileConfig: {
+                                        public_url: string
+                                    } = this.configurationService.getCapabilityConfig('mediafiles');
                                     this.focusEditor();
                                     this.editorService.restoreSelection();
-                                    this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage, this.htmlEditor.element.nativeElement);
+                                    this.editorService.insertImage(mediaFileConfig.public_url + uploadimage, this.htmlEditor.element.nativeElement);
                                     this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
                                 }
                                 this.modalOpen = false;
@@ -287,9 +298,12 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                         });
                     } else {
                         if (image.id) {
+                            const mediaFileConfig: {
+                                public_url: string
+                            } = this.configurationService.getCapabilityConfig('mediafiles');
                             this.focusEditor();
                             this.editorService.restoreSelection();
-                            this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id, this.htmlEditor.element.nativeElement);
+                            this.editorService.insertImage(mediaFileConfig.public_url + image.id, this.htmlEditor.element.nativeElement);
                             this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
                         }
                         this.modalOpen = false;
@@ -299,7 +313,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     public openSourceEditor() {
-        this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector )
+        this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector)
             .pipe(take(1))
             .subscribe(componentRef => {
                 componentRef.instance._html = this._html;
@@ -353,46 +367,46 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     /**
      * Insert or edit anchor (link)
      */
-    public insertAnchor()
-    {
+    public insertAnchor() {
         this.editorService.selectedText = this.getSelectedText();
         this.editorService.saveSelection();
         let aTag: HTMLAnchorElement = null;
-        if ( this.editorService.savedSelectionParentElement.nodeName === 'A' ) aTag = (this.editorService.savedSelectionParentElement as HTMLAnchorElement);
+        if (this.editorService.savedSelectionParentElement.nodeName === 'A') aTag = (this.editorService.savedSelectionParentElement as HTMLAnchorElement);
         else aTag = this.editorService.savedSelectionParentElement.closest('a');
-        this.modal.openModal('SystemRichTextLink', true )
-            .pipe(take(1))
-            .subscribe(modalRef => {
-                modalRef.instance.text = this.editorService.selectedText;
+        this.modal.openModal('SystemRichTextLink', true)
+            .subscribe((modalRef: ComponentRef<SystemRichTextLink>) => {
+                modalRef.instance.text = aTag?.text ?? this.editorService.selectedText;
                 modalRef.instance.parent = this.model;
                 modalRef.instance.editorService = this.editorService;
-                if ( aTag ) {
+                if (aTag) {
                     modalRef.instance.alterMode = true;
                     modalRef.instance.url = aTag.href;
-                    modalRef.instance.trackingId = aTag.dataset.trackingid;
+                    modalRef.instance.trackingId = aTag.dataset.trackinglink;
+                    modalRef.instance.trackByMethod = !!aTag.dataset.trackinglink ? 'id' : ('trackinglink' in aTag.dataset) ? 'url' : undefined;
                     modalRef.instance.marketingAction = aTag.dataset.marketingaction;
                 }
                 modalRef.instance.response
-                    .pipe(take(1))
-                    .subscribe( anchorData => {
-                        if ( anchorData ) {
-                            if ( aTag ) {
-                                aTag.href = anchorData.url;
-                                if ( anchorData.linkType === 'conv' && anchorData.trackingId ) aTag.dataset.trackingid = anchorData.trackingId;
-                                else delete aTag.dataset.trackingid;
-                                if ( anchorData.marketingAction ) aTag.dataset.marketingaction = anchorData.marketingAction;
-                                else delete aTag.dataset.marketingaction;
-                            } else {
-                                if ( !anchorData.text ) anchorData.text = anchorData.url;
-                                this.editorService.restoreSelection();
-                                let linkContent = anchorData.text;
-                                if( this.editorService.selectedText === anchorData.text ) linkContent = this.editorService.selectedHtml;
-                                let dataAttributes: any = {};
-                                if ( anchorData.linkType === 'conv' && anchorData.toTrack ) dataAttributes.trackingid = anchorData.trackingId;
-                                if ( anchorData.linkType === 'mark' ) dataAttributes.marketingaction = anchorData.marketingAction;
-                                this.editorService.insertAnchor( anchorData.url, linkContent, dataAttributes );
+                    .subscribe({
+                        next: anchorData => {
+                            if (anchorData) {
+                                if (aTag) {
+                                    aTag.href = anchorData.url;
+                                    if (anchorData.linkType === 'conv' && !!anchorData.trackByMethod) aTag.dataset.trackinglink = anchorData.trackingId;
+                                    else delete aTag.dataset.trackinglink;
+                                    if (anchorData.marketingAction) aTag.dataset.marketingaction = anchorData.marketingAction;
+                                    else delete aTag.dataset.marketingaction;
+                                } else {
+                                    if (!anchorData.text) anchorData.text = anchorData.url;
+                                    this.editorService.restoreSelection();
+                                    let linkContent = anchorData.text;
+                                    if (this.editorService.selectedText === anchorData.text) linkContent = this.editorService.selectedHtml;
+                                    let dataAttributes: any = {};
+                                    if (anchorData.linkType === 'conv' && !!anchorData.trackByMethod) dataAttributes.trackinglink = anchorData.trackingId;
+                                    if (anchorData.linkType === 'mark') dataAttributes.marketingaction = anchorData.marketingAction;
+                                    this.editorService.insertAnchor(anchorData.url, linkContent, dataAttributes);
+                                }
+                                this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
                             }
-                            this.onContentChange( this.htmlEditor.element.nativeElement.innerHTML );
                         }
                     });
             });
@@ -401,23 +415,24 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     /**
      * Remove anchor (link)
      */
-    public removeAnchor()
-    {
+    public removeAnchor() {
         this.editorService.selectedText = this.getSelectedText();
         this.editorService.saveSelection();
         let aTag: HTMLAnchorElement;
-        if ( this.editorService.savedSelectionParentElement.nodeName === 'A' ) aTag = (this.editorService.savedSelectionParentElement as HTMLAnchorElement);
+        if (this.editorService.savedSelectionParentElement.nodeName === 'A') aTag = (this.editorService.savedSelectionParentElement as HTMLAnchorElement);
         else aTag = this.editorService.savedSelectionParentElement.closest('a');
-        if ( aTag ) {
+        if (aTag) {
             aTag.outerHTML = aTag.innerHTML;
-            this.onContentChange( this.htmlEditor.element.nativeElement.innerHTML );
+            this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
         }
     }
 
     public addVideo() {
-        if (!this.isActive) {return;}
+        if (!this.isActive) {
+            return;
+        }
         this.editorService.saveSelection();
-        this.modal.input('Add Video','Insert Video URL')
+        this.modal.input('Add Video', 'Insert Video URL')
             .pipe(take(1))
             .subscribe((url: string) => {
                 if (!url || url.length == 0) return;
@@ -488,7 +503,9 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     public addCodeSnippet(): void {
-        if (!this.isActive) {return;}
+        if (!this.isActive) {
+            return;
+        }
         let value = this.encodeHtml(this.getSelectedText()) || '&nbsp;';
         let html = `<br><pre style="background-color: #eee;border-radius: .2rem; border:1px solid #ccc; padding: .5rem"><code>${value}</code></pre><br>`;
         this._document.execCommand('insertHTML', false, html);
@@ -519,18 +536,20 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
     }
 
     public openTemplateVariableHelper() {
-        if (!this.isActive) {return;}
+        if (!this.isActive) {
+            return;
+        }
         this.editorService.saveSelection();
         this.modalOpen = true;
-        this.modal.openModal('OutputTemplatesVariableHelper', null, this.viewContainerRef.injector )
+        this.modal.openModal('OutputTemplatesVariableHelper', null, this.viewContainerRef.injector)
             .pipe(take(1))
             .subscribe(modal => {
                 modal.instance.response
                     .pipe(take(1))
-                    .subscribe( text => {
+                    .subscribe(text => {
                         this.focusEditor();
                         this.editorService.restoreSelection();
-                        this._document.execCommand('insertText', false, '{'+text+'}' );
+                        this._document.execCommand('insertText', false, '{' + text + '}');
                         this.modalOpen = false;
                     });
             });
@@ -540,16 +559,16 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         let range;
         let userSelection = window.getSelection();
         // Get the range:
-        if (userSelection.getRangeAt) range = userSelection.getRangeAt (0);
+        if (userSelection.getRangeAt) range = userSelection.getRangeAt(0);
         else {
             range = document.createRange();
-            range.setStart( userSelection.anchorNode, userSelection.anchorOffset );
-            range.setEnd( userSelection.focusNode, userSelection.focusOffset );
+            range.setStart(userSelection.anchorNode, userSelection.anchorOffset);
+            range.setEnd(userSelection.focusNode, userSelection.focusOffset);
         }
         // And the HTML:
         let clonedSelection = range.cloneContents();
-        let div = document.createElement( 'div' );
-        div.appendChild( clonedSelection );
+        let div = document.createElement('div');
+        div.appendChild(clonedSelection);
         return div.innerHTML;
     }
 

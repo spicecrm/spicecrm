@@ -957,6 +957,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'module' => 'SystemTenants',
             'source' => 'non-db'
         ],
+
+        /* @deprecated in 2023.01.001
+         * Will be removed in 2023.02.001
+         */
         'qualifications' => [
             'name' => 'qualifications',
             'rel_fields' => [
@@ -969,6 +973,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'rname' => 'name',
             'module' => 'Qualifications'
         ],
+
         'shop_id' => [
             'name' => 'shop_id',
             'vname' => 'LBL_SHOP',

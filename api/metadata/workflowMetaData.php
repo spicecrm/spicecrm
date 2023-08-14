@@ -35,7 +35,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 
 

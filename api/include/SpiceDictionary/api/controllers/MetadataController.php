@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;

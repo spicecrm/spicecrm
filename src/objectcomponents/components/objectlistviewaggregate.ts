@@ -23,6 +23,16 @@ export class ObjectListViewAggregate {
      */
     @Input() public aggregate: any = {};
 
+    /**
+     * list the number of items that are displayed by  default
+     */
+    public aggregateDefaultItems = 5;
+
+    /**
+     * inidcates that all shoudl be shopwn
+     */
+    public showall: boolean = false;
+
     constructor(public language: language, public modellist: modellist, public model: model) {
     }
 
@@ -53,11 +63,23 @@ export class ObjectListViewAggregate {
     }
 
     /**
+     * returns the aggregate bucket count
+     */
+    get aggregateBucketCount() {
+        if (this.aggregatename && this.modellist.searchAggregates?.[this.aggregatename]) {
+            return this.modellist.searchAggregates?.[this.aggregatename].buckets.length;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * returns the buckets from the modellist service
      */
     get aggregateBuckets() {
         if (this.aggregatename && this.modellist.searchAggregates?.[this.aggregatename]) {
-            return this.modellist.searchAggregates?.[this.aggregatename].buckets;
+            // show all or the first five plus all selected
+            return this.modellist.searchAggregates?.[this.aggregatename].buckets.filter((a, i) => this.showall || i < this.aggregateDefaultItems || this.modellist.checkAggregate(this.aggregatename, a.aggdata));
         } else {
             return [];
         }

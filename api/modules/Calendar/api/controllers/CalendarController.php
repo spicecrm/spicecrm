@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Calendar\api\controllers;
 
 use SpiceCRM\modules\Calendar\api\handlers\CalendarRestHandler;

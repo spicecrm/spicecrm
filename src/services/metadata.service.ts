@@ -10,7 +10,7 @@ import {
     ViewContainerRef
 } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {CanActivate, CanDeactivate, Router} from "@angular/router";
+import { Router } from "@angular/router";
 import {LocationStrategy} from "@angular/common";
 import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
@@ -23,7 +23,9 @@ import {ComponentType} from "@angular/cdk/overlay";
 
 declare var _;
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class metadata {
     // modules: Array<any> = [];
     public role: string = "";
@@ -509,11 +511,11 @@ export class metadata {
         };
     }
 
-    public addFieldsetToFieldset(id, parent, itemid) {
+    public addFieldsetToFieldset(id, parent, itemid, config: any = {}) {
         this.fieldSets[parent].items.push({
             id: id,
             fieldset: itemid,
-            fieldconfig: {},
+            fieldconfig: config,
             sequence: 0
         });
 
@@ -524,11 +526,11 @@ export class metadata {
         }
     }
 
-    public addFieldToFieldset(id, parent, field) {
+    public addFieldToFieldset(id, parent, field, config: any = {}) {
         this.fieldSets[parent].items.push({
             id: id,
             field: field,
-            fieldconfig: {},
+            fieldconfig: config,
             sequence: 0
         });
 
@@ -881,6 +883,7 @@ export class metadata {
      */
     public addModuleListType(module: string, listTypeData: any) {
         this.moduleDefs[module].listtypes.push(listTypeData);
+        this.configuration.setData('moduledefs', this.moduleDefs);
     }
 
     /**
@@ -897,6 +900,7 @@ export class metadata {
                         listtype[key] = listTypeData[key];
                     }
                 }
+                this.configuration.setData('moduledefs', this.moduleDefs);
                 return true;
             }
         });
@@ -913,6 +917,7 @@ export class metadata {
         if (typeIndex >= 0) {
             this.moduleDefs[module].listtypes.splice(typeIndex, 1);
         }
+        this.configuration.setData('moduledefs', this.moduleDefs);
         return this.moduleDefs[module].listtypes;
     }
 
@@ -1743,8 +1748,10 @@ export class metadata {
 
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
-export class aclCheck implements CanActivate {
+@Injectable({
+    providedIn: 'root'
+})
+export class aclCheck  {
     constructor(public metadata: metadata, public router: Router, public session: session, public configurationService: configurationService) {
     }
 
@@ -1778,8 +1785,10 @@ export class aclCheck implements CanActivate {
 
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
-export class noBack implements CanDeactivate<any> {
+@Injectable({
+    providedIn: 'root'
+})
+export class noBack  {
 
     public navigatingBack: boolean = false;
 

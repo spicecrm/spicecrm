@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Letters;
 
 use SpiceCRM\data\SpiceBean;

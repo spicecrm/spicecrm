@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\SpiceACLProfiles;
 
 use SpiceCRM\includes\database\DBManagerFactory;

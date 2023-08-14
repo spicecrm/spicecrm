@@ -30,7 +30,7 @@ class SpiceUIFieldsetsController
 
             if (!isset($retArray[$fieldset['fid']])) {
                 $retArray[$fieldset['fid']] = [
-                    'fid' => $fieldset['fid'],
+                    'id' => $fieldset['fid'],
                     'name' => $fieldset['name'],
                     'package' => $fieldset['fieldsetpackage'],
                     'module' => $fieldset['module'] ?: '*',
@@ -62,6 +62,7 @@ class SpiceUIFieldsetsController
 
             if (!isset($retArray[$fieldset['fid']])) {
                 $retArray[$fieldset['fid']] = [
+                    'id' => $fieldset['fid'],
                     'name' => $fieldset['name'],
                     'package' => $fieldset['fieldsetpackage'],
                     'module' => $fieldset['module'] ?: '*',

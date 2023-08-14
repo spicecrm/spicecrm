@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -43,6 +42,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'name' => 'action',
             'type' => 'enum',
             'options' => 'tracking_actions_dom'
+        ],
+        'ip_address' => [
+            'name' => 'ip_address',
+            'vname' => 'LBL_IP_ADDRESS',
+            'type' => 'varchar',
+            'len' => 15
+        ],
+        'user_agent' => [
+            'name' => 'user_agent',
+            'vname' => 'LBL_USER_AGENT',
+            'type' => 'varchar',
+            'len' => 255
         ],
         'parent_id' => [
             'name' => 'parent_id',
@@ -87,39 +98,53 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'relationship' => 'email_emailtrackingactions',
             'source' => 'non-db'
         ],
-        'trackinglink_id' => [
-            'name' => 'trackinglink_id',
+        'emailtrackinglink_id' => [
+            'name' => 'emailtrackinglink_id',
             'vname' => 'LBL_TRACKINGLINK_ID',
             'type' => 'id'
         ],
-        'trackinglink_name' => [
-            'name' => 'trackinglink_name',
+        'emailtrackinglink_name' => [
+            'name' => 'emailtrackinglink_name',
             'rname' => 'name',
-            'id_name' => 'trackinglink_id',
+            'id_name' => 'emailtrackinglink_id',
             'vname' => 'LBL_TRACKINGLINK',
             'type' => 'relate',
-            'table' => 'trackinglinks',
+            'table' => 'emailtrackinglinks',
             'isnull' => 'true',
-            'module' => 'TrackingLinks',
+            'module' => 'EmailTrackingLinks',
             'dbType' => 'varchar',
-            'link' => 'trackinglinks',
+            'link' => 'emailtrackinglinks',
             'len' => '255',
             'source' => 'non-db'
         ],
-        'trackinglinks' => [
-            'name' => 'trackinglinks',
+        'emailtrackinglinks' => [
+            'name' => 'emailtrackinglinks',
             'type' => 'link',
-            'relationship' => 'trackinglink_emailtrackingactions',
+            'relationship' => 'emailtrackinglink_emailtrackingactions',
             'source' => 'non-db',
-            'module' => 'TrackingLinks'
+            'module' => 'EmailTrackingLinks'
         ],
-
-
+        'campaign_log' => [
+            'name' => 'campaign_log',
+            'type' => 'link',
+            'relationship' => 'campaign_log_emailtrackingactions',
+            'source' => 'non-db',
+            'module' => 'CampaignLog'
+        ],
     ],
     'relationships' => [
         'campaigntask_emailtrackingactions' => [
             'lhs_module' => 'CampaignTasks',
             'lhs_table' => 'campaigntasks',
+            'lhs_key' => 'id',
+            'rhs_module' => 'EmailTrackingActions',
+            'rhs_table' => 'emailtrackingactions',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'campaign_log_emailtrackingactions' => [
+            'lhs_module' => 'CampaignLog',
+            'lhs_table' => 'campaign_log',
             'lhs_key' => 'id',
             'rhs_module' => 'EmailTrackingActions',
             'rhs_table' => 'emailtrackingactions',
@@ -135,13 +160,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTrackingAction'] = [
             'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many'
         ],
-        'trackinglink_emailtrackingactions' => [
-            'lhs_module' => 'TrackingLinks',
-            'lhs_table' => 'trackinglinks',
+        'emailtrackinglink_emailtrackingactions' => [
+            'lhs_module' => 'EmailTrackingLinks',
+            'lhs_table' => 'emailtrackinglinks',
             'lhs_key' => 'id',
             'rhs_module' => 'EmailTrackingActions',
             'rhs_table' => 'emailtrackingactions',
-            'rhs_key' => 'trackinglink_id',
+            'rhs_key' => 'emailtrackinglink_id',
             'relationship_type' => 'one-to-many'
         ],
 

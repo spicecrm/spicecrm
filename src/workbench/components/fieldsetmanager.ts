@@ -2,9 +2,9 @@
  * @module WorkbenchModule
  */
 import {
-    Component
+    Component, ComponentRef
 } from '@angular/core';
-import {Subject} from 'rxjs';
+import {firstValueFrom, Subject} from 'rxjs';
 
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -15,8 +15,11 @@ import {language} from '../../services/language.service';
 import {configurationService} from '../../services/configuration.service';
 import {modal} from '../../services/modal.service';
 import {view} from "../../services/view.service";
+import {FieldsetManagerCopyDialog} from "./fieldsetmanagercopydialog";
+import {subscription} from "../../services/subscription.service";
 
 @Component({
+    selector: 'fieldset-manager',
     templateUrl: '../templates/fieldsetmanager.html',
     providers: [view]
 })
@@ -417,141 +420,116 @@ export class FieldsetManager {
         return tablescope;
     }
 
-
     /**
-     * copies teh current fieldset
-     *
-     * @param currentFieldset
-     * @param customizeItem
+     * open copy modal
      */
-    public copy(currentFieldset = this.currentFieldSet, customizeItem = null) {
-        this.modalservice.openModal('FieldsetManagerCopyDialog').subscribe(modal => {
+    public async openCopyModal(subFieldset?) {
 
-            modal.instance.fieldset = currentFieldset;
-            modal.instance.metaFieldSets = this.metadata.getAllFieldsets();
+        const fieldset = subFieldset ? subFieldset.item.fieldset : this.currentFieldSet;
+        const copyModal: ComponentRef<FieldsetManagerCopyDialog> = await firstValueFrom(this.modalservice.openModal('FieldsetManagerCopyDialog'));
 
-            modal.instance.edit_mode = this.edit_mode;
+        copyModal.instance.fieldset = this.metadata.getFieldset(fieldset);
+        copyModal.instance.edit_mode = this.edit_mode;
 
-            modal.instance.closedialog.subscribe(update => {
+        copyModal.instance.response.subscribe({
+            next: async copyDialogRes => {
 
-                this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
+                if (!copyDialogRes) return;
 
-                    let fieldset = {...update.fieldset};
+                const isLoading = this.modal.await('LBL_PROCESSING');
 
-                    let module = update.module;
-                    let type = update.type;
-                    let name = update.name;
+                const existing = await this.checkExisting(copyDialogRes.module, copyDialogRes.type, copyDialogRes.name);
 
-                    if (module == "*") {
-                        module = 'global';
-                    }
+                if (!existing) {
+                    copyModal.instance.close();
+                   this.copyFieldset(copyDialogRes, isLoading, subFieldset);
 
+                } else {
+                    isLoading.next(true);
+                    isLoading.complete();
+                    this.toast.sendAlert('Fieldset already exists!');
+                }
 
-                    let checkParams = {
-                        'module': module,
-                        'type': type,
-                        'name': name
-                    };
-
-                    // check if component exists
-                    this.backend.getRequest('configuration/spiceui/core/fieldsetalreadyexists', checkParams).subscribe(
-                        data => {
-                            if (data == false) {
-
-                                let tablescope = this.findTable(type);
-
-                                fieldset.module = module;
-                                if (module == "global") {
-                                    fieldset.module = '*';
-                                }
-                                fieldset.name = name;
-
-                                let newid = this.modelutilities.generateGuid(); // generate id
-                                fieldset.id = newid;
-
-                                let save_items: any = [];
-
-                                for (let item of fieldset.items) {
-                                    let copied_item = {...item};
-                                    copied_item.fieldconfig = {...item.fieldconfig};
-
-                                    copied_item.id = this.modelutilities.generateGuid(); // item generate id
-                                    copied_item.fieldset_id = newid;
-                                    save_items.push(copied_item);
-                                }
-
-
-                                delete fieldset.items;
-                                delete fieldset.type;
-
-
-                                this.backend.postRequest('configuration/configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, {config: fieldset}).subscribe(
-                                    (success) => {
-                                        let savecounter = 0;
-
-                                        fieldset.items = save_items;
-                                        fieldset.type = type;
-
-                                        for (let save_item of save_items) {
-                                            this.backend.postRequest('configuration/configurator/' + tablescope.itemsTable + '/' + save_item.id, null, {config: save_item}).subscribe(
-                                                (success) => {
-                                                    savecounter++;
-                                                    if (savecounter == save_items.length) {
-                                                        if (customizeItem) {
-                                                            customizeItem.item.fieldset = fieldset.id;
-                                                            let parenttablescope = this.findTable(customizeItem.parentScope);
-
-                                                            this.backend.postRequest('configuration/configurator/' + parenttablescope.itemsTable + '/' + customizeItem.id, null, {config: customizeItem.item}).subscribe(
-                                                                (success) => {
-                                                                    loadingModalRef.instance.self.destroy();
-                                                                    this.toast.sendToast('saved!');
-                                                                    this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
-                                                                },
-                                                                (error) => {
-                                                                    loadingModalRef.instance.self.destroy();
-                                                                    this.toast.sendAlert('saving link failed!, ' + save_item.id);
-                                                                    console.error(error);
-                                                                }
-                                                            );
-
-                                                        } else {
-                                                            loadingModalRef.instance.self.destroy();
-                                                            this.toast.sendToast('saved!');
-                                                            this.currentModule = fieldset.module;
-                                                            this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
-                                                            this.currentFieldSet = fieldset.id;
-
-                                                            this.currentFieldSetItems = save_items;
-                                                            this.selectedItem = {};
-                                                            this.currentFieldSetName = fieldset.name;
-                                                            this.loadCurrentFieldset();
-                                                        }
-                                                    }
-                                                },
-                                                (error) => {
-                                                    loadingModalRef.instance.self.destroy();
-                                                    this.toast.sendAlert('saving failed!, ' + save_item.id);
-                                                    console.error(error);
-                                                }
-                                            );
-                                        }
-                                    },
-                                    (error) => {
-                                        loadingModalRef.instance.self.destroy();
-                                        this.toast.sendAlert('saving failed!');
-                                        console.error(error);
-                                    }
-                                );
-                            } else {
-                                loadingModalRef.instance.self.destroy();
-                                this.toast.sendAlert('Fieldset already exists!');
-                            }
-                        });
-                });
-            });
+            }
         });
     }
 
+    /**
+     * check fieldset by name and module and type
+     * @param module
+     * @param type
+     * @param name
+     * @private
+     */
+    private checkExisting(module: string, type: 'custom' | 'global', name: string) {
+        const checkParams = {module, type, name};
+        return firstValueFrom(this.backend.getRequest('configuration/spiceui/core/fieldsetalreadyexists', checkParams));
+    }
+
+    /**
+     * copy fieldset
+     * @param copyDialogRes
+     * @param isLoading
+     * @param subFieldset
+     * @private
+     */
+    private copyFieldset(copyDialogRes, isLoading, subFieldset?) {
+
+        const newFieldsetId = this.modelutilities.generateGuid();
+
+        // set the new parent fieldset for the sub fieldset
+        if (subFieldset) {
+            subFieldset.item.fieldset = newFieldsetId;
+        }
+
+        const fieldsetData = {[newFieldsetId]: this.copyFieldsetToMetadata(newFieldsetId, copyDialogRes)};
+        const postData = { add: fieldsetData};
+
+        this.backend.postRequest('configuration/spiceui/core/fieldsets', {}, { add: fieldsetData}).subscribe({
+            next: () => {
+                isLoading.next(true);
+                isLoading.complete();
+                this.broadcast.broadcastMessage('metadata.updatefieldsets', postData);
+                this.toast.sendToast('LBL_DATA_SAVED', 'success');
+
+                // reset the view data
+                if (!subFieldset) {
+                    this.currentModule = copyDialogRes.module;
+                    this.currentFieldSet = newFieldsetId;
+                    this.currentFieldSetName = copyDialogRes.name;
+                }
+
+                this.loadCurrentFieldset();
+            },
+            error: () => {
+                isLoading.next(false);
+                isLoading.complete();
+                this.broadcast.broadcastMessage('metadata.updatefieldsets', {delete: fieldsetData});
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
+        });
+    }
+
+    /**
+     * copy fieldset data to metadata service
+     * @param newFieldsetId
+     * @param copyDialogRes
+     * @private
+     */
+    private copyFieldsetToMetadata(newFieldsetId, copyDialogRes): any {
+
+        this.metadata.addFieldset(newFieldsetId, copyDialogRes.module, copyDialogRes.name, copyDialogRes.type);
+
+        copyDialogRes.fieldset.items.forEach(item => {
+            if (!item.fieldset) {
+                this.metadata.addFieldToFieldset(this.modelutilities.generateGuid(), newFieldsetId, item.field, item.fieldconfig);
+            } else {
+                this.metadata.addFieldsetToFieldset(this.modelutilities.generateGuid(), newFieldsetId, item.fieldset, item.fieldconfig);
+            }
+        });
+
+        return this.metadata.getFieldset(newFieldsetId);
+    }
 
     public saveChanges() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {

@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component
+    Component, ComponentRef
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -19,6 +19,7 @@ import {view} from '../../services/view.service';
 import {configurationService} from '../../services/configuration.service';
 
 @Component({
+    selector: 'componentset-manager',
     templateUrl: '../templates/componentsetmanager.html',
     providers: [view]
 })
@@ -229,40 +230,45 @@ export class ComponentsetManager {
     }
 
     public addComponentset() {
-        this.reset();
         this.editComponentset();
     }
 
     public duplicateComponentset() {
-        let currentComponentSet = this.currentComponentSet
-        this.reset();
-        this.editComponentset().subscribe({
+        let currentComponentSet = this.currentComponentSet;
+        this.editComponentset(true).subscribe({
             next: (cs) => {
                 let componentsetItems = this.metadata.getComponentSetObjects(currentComponentSet);
                 for( let componentsetItem of componentsetItems){
                     this.metadata.addComponentToComponentset(this.modelutilities.generateGuid(), cs.id, componentsetItem.component, componentsetItem.componentconfig);
                 }
+                this.saveChanges();
             }
         });
     }
 
-    public editComponentset(): Observable<any> {
+    public editComponentset(showModuleField: boolean = false): Observable<any> {
         let responseSubject = new Subject<any>();
-        this.modalservice.openModal('ComponentsetManagerEditDialog').subscribe(modal => {
+        this.modalservice.openModal('ComponentsetManagerEditDialog').subscribe((modal: ComponentRef<ComponentsetManagerEditDialog>) => {
             modal.instance.componentset = this.currentComponentSet;
             modal.instance.edit_mode = this.edit_mode;
+            modal.instance.showModuleField = showModuleField;
+            modal.instance.module = this.currentModule;
             modal.instance.closedialog.subscribe(componentset => {
                 if (componentset !== false) {
+                    this.reset();
                     if (this.currentComponentSet === '') {
                         let id = this.modelutilities.generateGuid();
+                        if (showModuleField) {
+                            this.currentModule = componentset.module;
+                        }
                         this.metadata.addComponentSet(id, this.currentModule, componentset.name, componentset.type);
                         this.currentComponentSet = id;
                         this.checkMode();
 
                         responseSubject.next({id: id, type: componentset.type});
                     } else {
-                        let componentset = this.metadata.getComponentSet(this.currentComponentSet);
-                        componentset.name = componentset.name;
+                        let metadataComponentset = this.metadata.getComponentSet(this.currentComponentSet);
+                        metadataComponentset.name = componentset.name;
                     }
                 }
                 responseSubject.complete();

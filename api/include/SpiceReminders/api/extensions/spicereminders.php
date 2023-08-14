@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceReminders\api\controllers\SpiceRemindersController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

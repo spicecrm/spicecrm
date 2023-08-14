@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\MarketingActions\api\controllers;
 
 use SpiceCRM\includes\database\DBManagerFactory;

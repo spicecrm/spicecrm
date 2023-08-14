@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\includes;
 
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -110,9 +111,10 @@ class UploadFile
      */
     protected static function tryRename($filename, $bean_id)
     {
-        $fullname = "upload://$bean_id.$filename";
+        $prefix = StreamFactory::getPathPrefix('upload');
+        $fullname = "{$prefix}$bean_id.$filename";
         if (file_exists($fullname)) {
-            if (!rename($fullname, "upload://$bean_id")) {
+            if (!rename($fullname, "{$prefix}$bean_id")) {
                 LoggerManager::getLogger()->fatal("unable to rename file: $fullname => $bean_id");
             }
             return true;
@@ -228,8 +230,9 @@ class UploadFile
     function final_move($bean_id, $replace = true)
     {
         $destination = $bean_id;
-        if (substr($destination, 0, 9) != "upload://") {
-            $destination = "upload://$bean_id";
+        $prefix = StreamFactory::getPathPrefix('upload');
+        if (substr($destination, 0, 9) != $prefix) {
+            $destination = "{$prefix}$bean_id";
         }
 
         if (!$replace && file_exists($destination)) {
@@ -262,7 +265,7 @@ class UploadFile
         $end = (strlen($file_name) > 212) ? 212 : strlen($file_name);
         $ret_file_name = substr($file_name, 0, $end);
 
-        return "upload://$ret_file_name";
+        return StreamFactory::getPathPrefix('upload') . $ret_file_name;
     }
 
     /**
@@ -272,8 +275,9 @@ class UploadFile
      */
     static public function unlink_file($bean_id, $file_name = '')
     {
-        if (file_exists("upload://$bean_id$file_name")) {
-            return unlink("upload://$bean_id$file_name");
+        $prefix = StreamFactory::getPathPrefix('upload');
+        if (file_exists("$prefix$bean_id$file_name")) {
+            return unlink("$prefix$bean_id$file_name");
         }
     }
 
@@ -283,7 +287,7 @@ class UploadFile
      */
     public function get_upload_dir()
     {
-        return "upload://";
+        return StreamFactory::getPathPrefix('upload');
     }
 
 }

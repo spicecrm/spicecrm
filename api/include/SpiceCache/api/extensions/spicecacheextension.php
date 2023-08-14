@@ -28,7 +28,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceCache\api\controllers\SpiceCacheController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

@@ -8,7 +8,9 @@ import {session} from './session.service';
 import {metadata} from './metadata.service';
 import {backend} from './backend.service';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class territories {
 
     public addTerritories: any = {};

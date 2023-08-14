@@ -318,4 +318,32 @@ class SpiceLanguagesRESTHandler
         return $translation['global_translations'][0]['translation_default'] ?: $labelName;
 
     }
+
+
+    /**
+     * get the id of the label by label name
+     * consider the scope if passed
+     * @param $labelName
+     * @param $scope
+     * @return mixed|null
+     */
+    public function getLabelIdByName($labelName, $scope = null){
+        // set the ource
+        switch($scope) {
+            case 'global':
+                $from = " syslanguagelabels labels";
+                break;
+            case 'custom':
+                $from = " syslanguagecustomlabels labels";
+                break;
+            default:
+                $from = "(select id, name from syslanguagelabels UNION select id, name from syslanguagecustomlabels) labels";
+        }
+
+        // build query
+        if($row = $this->db->fetchOne("SELECT id FROM $from WHERE name = '$labelName'")){
+            return $row['id'];
+        }
+        return null;
+    }
 }

@@ -7,6 +7,7 @@ import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, ButtonI} from "../interfaces/spicepagebuilder.interfaces";
 import {SpicePageBuilderElement} from "./spicepagebuilderelement";
+import {model} from "../../../services/model.service";
 
 /**
  * Parse and renders renderer container
@@ -14,13 +15,14 @@ import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 @Component({
     selector: 'spice-page-builder-element-button',
     templateUrl: '../templates/spicepagebuilderelementbutton.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [model]
 })
 export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
     /**
      * containers to be rendered
      */
-    @Input() public element: ButtonI;
+    @Input() public declare element: ButtonI;
     /**
      * list of the editable attributes
      */
@@ -51,11 +53,13 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
     ];
 
     constructor(public domSanitizer: DomSanitizer,
+                private model: model,
                 public modal: modal,
                 public injector: Injector,
                 public cdRef: ChangeDetectorRef,
                 public spicePageBuilderService: SpicePageBuilderService) {
         super(domSanitizer, modal, injector, cdRef, spicePageBuilderService);
+        this.model.module = 'EmailTrackingLinks';
     }
 
     /**
@@ -63,6 +67,8 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
      */
     public handleEditResponse(res) {
         this.element.content = res.content;
+        this.element.trackingLink = res.trackingLink;
+        this.element.trackByMethod = res.trackByMethod;
         super.handleEditResponse(res);
     }
 
@@ -75,5 +81,60 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
             'height', 'line-height', 'vertical-align', 'font-size', 'font-style', 'font-weight', 'text-align',
             'letter-spacing', 'text-decoration', 'text-transform', 'background-color', 'align', 'color'
         ]);
+    }
+
+    /**
+     * set the track by method and open selection modal on id method
+     * @param value
+     */
+    public setTrackByMethod(value: 'id' | 'url') {
+        this.element.trackByMethod = value;
+
+        if (value == 'id') {
+            this.openTrackingLinkSelectModal();
+        } else if (value == 'url') {
+            this.element.trackingLink = '';
+        } else {
+            delete this.element.trackingLink;
+        }
+    }
+
+    /**
+     * open tracking link selection modal
+     */
+    public openTrackingLinkSelectModal() {
+
+        const options = [
+            {value: 'select', display: 'LBL_SELECT'},
+            {value: 'new', display: 'LBL_NEW'},
+            {value: undefined, display: 'LBL_CANCEL'},
+        ];
+
+        this.modal.prompt('input', 'LBL_MAKE_SELECTION', 'LBL_TRACKINGLINKS', 'shade', 'select', options, 'button').subscribe(answer => {
+
+            if (!answer) return;
+
+            switch (answer) {
+                case 'new':
+                    const presets = {
+                        name: this.element.content,
+                        url: this.element.attributes.href
+                    };
+                    this.model.addModel('', null, presets, true).subscribe(res => {
+                        this.element.trackingLink = res.id;
+                    });
+                    break;
+                case 'select':
+                    this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
+                        selectModal.instance.module = 'EmailTrackingLinks';
+                        selectModal.instance.multiselect = false;
+                        selectModal.instance.selectedItems.subscribe((items) => {
+                            this.element.trackingLink = items[0].id;
+                        });
+                    });
+                    break;
+            }
+        });
+
     }
 }

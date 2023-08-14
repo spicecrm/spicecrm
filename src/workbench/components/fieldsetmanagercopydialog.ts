@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
+import {Subject} from "rxjs";
 
 @Component({
     selector: 'fieldsetmanager-copy-dialog',
@@ -17,11 +18,10 @@ import {metadata} from '../../services/metadata.service';
 })
 export class FieldsetManagerCopyDialog implements OnInit{
 
-    @Input() metaFieldSets: any[] = [];
-    @Input() fieldset: string = '';
+    @Input() fieldset: any;
 
     @Input() edit_mode: string = '';
-    @Output() closedialog: EventEmitter<any> = new EventEmitter<any>();
+    @Output() response: Subject<any> = new Subject<any>();
 
     /**
      * the list of modules
@@ -43,28 +43,27 @@ export class FieldsetManagerCopyDialog implements OnInit{
     }
 
     ngOnInit(){
-        if(this.fieldset) {
-            this.currentName = this.metaFieldSets[this.fieldset].name;
-            this.currentModule = this.metaFieldSets[this.fieldset].module;
-            if(this.edit_mode == "all"){
-                this.currentType = this.metaFieldSets[this.fieldset].type;
-            }else{
-                this.currentType = "custom";
-            }
+        this.currentName = this.fieldset.name + ' (custom)';
+        this.currentModule = this.fieldset.module;
+        if(this.edit_mode == "all"){
+            this.currentType = this.fieldset.type;
+        }else{
+            this.currentType = "custom";
         }
     }
 
-    closeDialog() {
+    close() {
+        this.response.next(undefined);
+        this.response.complete();
         this.self.destroy();
     }
 
     onModalEscX() {
-        this.closeDialog();
+        this.close();
     }
 
     copy() {
-        this.closedialog.emit({fieldset: this.metaFieldSets[this.fieldset], type: this.currentType, module: this.currentModule, name: this.currentName});
-        this.self.destroy();
+        this.response.next({fieldset: this.fieldset, type: this.currentType, module: this.currentModule, name: this.currentName});
     }
 
     validate(){
@@ -74,5 +73,4 @@ export class FieldsetManagerCopyDialog implements OnInit{
             return true;
         }
     }
-
 }

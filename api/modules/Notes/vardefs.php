@@ -157,7 +157,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Note'] = [
             'reportable' => false,
             'source' => 'non-db',
         ],
-
+        'employees' => [
+            'name'         => 'employees',
+            'type'         => 'link',
+            'relationship' => 'employees_notes',
+            'module'       => 'Employees',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_EMPLOYEES',
+        ],
         'contact' => [
             'name' => 'contact',
             'type' => 'link',
@@ -279,6 +286,15 @@ if (file_exists("extensions/modules/ServiceOrders")) {
         'bean_name' => 'ServiceOrder',
         'source' => 'non-db',
         'vname' => 'LBL_SERVICEORDER',
+    ];
+}
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Note']['fields']['procurementdocs'] = [
+        'name'         => 'procurementdocs',
+        'type'         => 'link',
+        'relationship' => 'procurementdocs_notes',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_PROCUREMENTDOCS',
     ];
 }
 

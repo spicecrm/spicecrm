@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\SpiceImportTemplates;
 
 use SpiceCRM\data\SpiceBean;

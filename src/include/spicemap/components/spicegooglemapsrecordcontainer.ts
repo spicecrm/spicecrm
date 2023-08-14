@@ -46,6 +46,9 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
      * check if the model has geo data
      */
     public ngOnInit(): void {
+        // disable cancellation of pending requests on first load
+        this.modelList.cancelPendingRequests = false;
+
         this.initializeModelList();
         this.loadComponentConfigs();
         this.subscribeToModelChanges();

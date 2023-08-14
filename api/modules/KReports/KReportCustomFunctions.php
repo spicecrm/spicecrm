@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 $kreportCustomFunctions = [

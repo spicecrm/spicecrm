@@ -476,6 +476,5 @@ SpiceDictionaryHandler::getInstance()->dictionary['Campaign'] = [
             'relationship_type' => 'one-to-many'],
     ]
 ];
-VardefManager::createVardef('Campaigns', 'Campaign', ['default', 'assignable',
-]);
+VardefManager::createVardef('Campaigns', 'Campaign', ['default', 'assignable', 'activities']);
 

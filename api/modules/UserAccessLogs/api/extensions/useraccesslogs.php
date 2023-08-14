@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\UserAccessLogs\api\controllers\UserAccessLogController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;

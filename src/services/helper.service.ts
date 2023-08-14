@@ -5,7 +5,9 @@ import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {modal} from './modal.service';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class helper {
 
     public dialog: any = null;

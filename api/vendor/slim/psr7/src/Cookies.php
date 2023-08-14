@@ -31,24 +31,18 @@ class Cookies
 {
     /**
      * Cookies from HTTP request
-     *
-     * @var array
      */
-    protected $requestCookies = [];
+    protected array $requestCookies = [];
 
     /**
      * Cookies for HTTP response
-     *
-     * @var array
      */
-    protected $responseCookies = [];
+    protected array $responseCookies = [];
 
     /**
      * Default cookie properties
-     *
-     * @var array
      */
-    protected $defaults = [
+    protected array $defaults = [
         'value' => '',
         'domain' => null,
         'hostonly' => null,
@@ -193,7 +187,7 @@ class Cookies
     public static function parseHeader($header): array
     {
         if (is_array($header)) {
-            $header = isset($header[0]) ? $header[0] : '';
+            $header = $header[0] ?? '';
         }
 
         if (!is_string($header)) {

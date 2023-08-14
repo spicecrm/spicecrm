@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -93,10 +92,10 @@ class ElasticHandler
         }
 
         if (isset(SpiceConfig::getInstance()->config['fts']['number_of_shards'])) {
-            $this->standardSettings['index']['number_of_shards'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_shards'];
+            $this->standardSettings['index']['number_of_shards'] = SpiceConfig::getInstance()->config['fts']['number_of_shards'];
         }
         if (isset(SpiceConfig::getInstance()->config['fts']['number_of_replicas'])) {
-            $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_replicas'];
+            $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['number_of_replicas'];
         }
 
         $this->username = SpiceConfig::getInstance()->config['fts']['username'];
@@ -618,25 +617,5 @@ class ElasticHandler
         }
 
         return $resultdec;
-    }
-
-    /**
-     * adds a log entry to the fts log
-     *
-     * @param $method
-     * @param $url
-     * @param null $status
-     * @param $request
-     * @param $response
-     * @return bool
-     */
-    private function addLogEntry($method, $url, $status = null, $request, $response) # , $rtlocal, $rtremote )
-    {
-        $timedate = TimeDate::getInstance();
-        $db = DBManagerFactory::getInstance('spicelogger');
-        //catch installation process and abort. table sysftslog will not exist at the point during installation
-        if (SpiceConfig::getInstance()->installing) return false;
-
-        $db->query(sprintf("INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( '%s', '" . TimeDate::getInstance()->nowDb() . "', '%s', '%s', '%s', '%s', '%s')", SpiceUtils::createGuid(), $db->quote($method), $db->quote($url), $db->quote($status), $db->quote(str_replace("\\n", "", $request)), $db->quote($response)));
     }
 }

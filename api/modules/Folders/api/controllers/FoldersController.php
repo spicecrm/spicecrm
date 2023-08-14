@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Folders\api\controllers;
 
 use SpiceCRM\data\BeanFactory;

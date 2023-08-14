@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Mailboxes\processors;
 
 use SpiceCRM\modules\Emails\Email;

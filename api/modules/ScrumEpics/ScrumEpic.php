@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\ScrumEpics;
 
 use SpiceCRM\data\SpiceBean;

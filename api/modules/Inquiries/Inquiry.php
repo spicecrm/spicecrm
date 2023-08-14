@@ -28,7 +28,6 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\Inquiries;
 
 use SpiceCRM\data\BeanFactory;

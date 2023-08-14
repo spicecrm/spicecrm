@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 
-
 global $kreporterWhereOperatorCount;
 
 $kreporterWhereOperatorCount = [

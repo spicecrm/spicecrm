@@ -27,7 +27,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\CampaignTasks\api\controllers\CampaignTasksController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -200,6 +199,13 @@ $routes = [
                 'description' => 'html string',
                 'example' => '',
                 'required' => true
+            ],
+            'field' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'html field',
+                'example' => '',
+                'required' => false
             ]
         ]
     ],

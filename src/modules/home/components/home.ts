@@ -2,6 +2,7 @@
  * @module ModuleHome
  */
 import {
+    ChangeDetectorRef,
     Component
 } from '@angular/core';
 import {broadcast} from '../../../services/broadcast.service';
@@ -10,11 +11,16 @@ import {metadata} from '../../../services/metadata.service';
 import {userpreferences} from "../../../services/userpreferences.service";
 
 @Component({
+    selector: 'home',
     templateUrl: '../templates/home.html',
 })
 export class Home {
     public hasDashboardSet: boolean = false;
-    constructor(public broadcast: broadcast, public navigation: navigation, public metadata: metadata, public userpreferences: userpreferences) {
+    constructor(public broadcast: broadcast,
+                public navigation: navigation,
+                public metadata: metadata,
+                public userpreferences: userpreferences,
+                public cdRef: ChangeDetectorRef) {
         this.userpreferences.loadPreferences().subscribe(res => this.hasDashboardSet = res.home_dashboardset && res.home_dashboardset.length > 0);
         // fallback to value set in active role
         if(!this.hasDashboardSet){

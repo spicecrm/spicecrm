@@ -8,7 +8,9 @@ import {BehaviorSubject} from "rxjs";
 
 declare var moment: any;
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class telephony {
 
     /**

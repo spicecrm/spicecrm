@@ -3,22 +3,22 @@
  * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
  * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
  * You can contact us at info@spicecrm.io
- *
+ * 
  * SpiceCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version
- *
+ * 
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- *
+ * 
  * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
  * SugarCRM" logo. If the display of the logo is not reasonably feasible for
  * technical reasons, the Appropriate Legal Notices must display the words
  * "Powered by SugarCRM".
- *
+ * 
  * SpiceCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -28,12 +28,12 @@
  ********************************************************************************/
 
 
-
 namespace SpiceCRM\modules\SpiceImports;
 
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -72,7 +72,7 @@ class SpiceImport extends SpiceBean
         $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 50);
 
 
-        if (($handle = fopen("upload://" . $params['file_md5'], "r")) !== FALSE) {
+        if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $params['file_md5'], "r")) !== FALSE) {
             $fileHeader = fgetcsv($handle, 0, $delimiter, $enclosure);
             $fileHeader = array_map(function ($item) {
                 return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
@@ -111,7 +111,7 @@ class SpiceImport extends SpiceBean
      */
     public function deleteImportFile($filemd5)
     {
-        if (!unlink("upload://" . $filemd5)) {
+        if (!unlink(StreamFactory::getPathPrefix('upload') . $filemd5)) {
             return ['status' => 'File cant be deleted'];
         } else {
             return ['status' => 'succeed'];
@@ -197,7 +197,7 @@ class SpiceImport extends SpiceBean
      * @return $end
      */
     public function getPointerForEndPosition(){
-        $handle = fopen("upload://" . $this->objectimport->fileId, "r");
+        $handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r");
         fseek($handle,0,SEEK_END);
         $end = ftell($handle);
         fclose($handle);
@@ -211,7 +211,7 @@ class SpiceImport extends SpiceBean
      * @return array|string[]
      */
     public function getFileHeader($delimiter, $enclosure){
-        if (($handle = fopen("upload://" . $this->objectimport->fileId, "r")) !== FALSE) {
+        if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r")) !== FALSE) {
             $fileHeader = fgetcsv($handle, 1000, $delimiter, $enclosure);
             $fileHeader = array_map(function ($item) {
                 return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
@@ -256,7 +256,7 @@ class SpiceImport extends SpiceBean
         $fileHeader = $this->getFileHeader($delimiter,$enclosure);
         //set limit for rows amount to process in one batch
         $limit = $maxRows;
-        if (($handle = fopen("upload://" . $this->objectimport->fileId, "r")) !== FALSE) {
+        if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r")) !== FALSE) {
 
                 // find if the pointer has been set otherwise set it to 0
                 if(!isset($this->objectimport->pointer)) $this->objectimport->pointer = 0;
@@ -322,7 +322,7 @@ class SpiceImport extends SpiceBean
 
         } else {
 
-            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES ('".$this->db->getGuidSQL()."', '" . $this->id . "', 'Cant open file', 'upload://" . $this->objectimport->fileId . "')";
+            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (".$this->db->getGuidSQL().", '" . $this->id . "', 'Cant open file', 'upload://" . $this->objectimport->fileId . "')";
             $this->db->query($sql);
             $this->status = 'e';
             $this->save();
@@ -394,13 +394,13 @@ class SpiceImport extends SpiceBean
                     $error = true;
                     $newBeanId = $newBean->save();
                     LoggerManager::getLogger()->debug('SpiceImports saved id ' . $newBeanId);
-                    $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (UUID(), '" . $this->id . "', '" . 'Duplicate Entry' . "', '" . implode('";"', $row) . "')";
+                    $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (".$this->db->getGuidSQL().", '" . $this->id . "', '" . 'Duplicate Entry' . "', '" . implode('";"', $row) . "')";
                     $list[] = ['status' => 'Duplicate Entry', 'data' => [$row[0], $row[1], $row[2], $row[3]]];
                     $this->db->query($sql);
                 }
             }
         } else {
-            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (UUID(), '" . $this->id . "', 'Record Exists', '" . implode('";"', $row) . "')";
+            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (".$this->db->getGuidSQL().", '" . $this->id . "', 'Record Exists', '" . implode('";"', $row) . "')";
             $error = true;
             $list[] = ['status' => 'Record Exists', 'data' => [$row[0], $row[1], $row[2], $row[3]]];
             $this->db->query($sql);
@@ -438,7 +438,7 @@ class SpiceImport extends SpiceBean
             LoggerManager::getLogger()->debug('SpiceImports saved id ' . $newBeanId);
             $list[] = ['status' => 'updated', 'recordId' => $newBeanId, 'data' => [$row[0], $row[1], $row[2], $row[3]]];
         } else {
-            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES ('".$this->db->getGuidSQL()."', '" . $this->id . "', 'No Entries', '" . implode('";"', $row) . "')";
+            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (".$this->db->getGuidSQL().", '" . $this->id . "', 'No Entries', '" . implode('";"', $row) . "')";
             $error = true;
             $list[] = ['status' => 'No Entries', 'data' => [$row[0], $row[1], $row[2], $row[3]]];
             $this->db->query($sql);
