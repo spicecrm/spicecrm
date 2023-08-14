@@ -5,7 +5,7 @@ Welcome to the [SpiceCRM](https://www.spicecrm.com)
 ![SpiceUI](https://www.spicecrm.com/wp-content/uploads/2020/12/allformfactors-1.png)
 
 * Built from scratch as new flexible UI that can be used with the SpiceCRM backend
-* written in Angular (current Release 15.2.6)
+* written in Angular (current Release 16.0.4)
 * based on the lightning design system
 
 SpiceCRM is available as public core release and as licensed more release. You can learn about the differences between core and more release at [www.spicecrm.com](https://www.spicecrm.com/editions/)
