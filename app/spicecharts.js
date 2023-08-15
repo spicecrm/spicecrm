@@ -4,9 +4,9 @@
  *
  *                     release: 2023.02.001
  *
- *                     date: 2023-08-14 15:46:31
+ *                     date: 2023-08-15 08:39:15
  *
- *                     build: 2023.02.001.1692020791886
+ *                     build: 2023.02.001.1692081555935
  *
  */
 "use strict";(self.webpackChunkcore=self.webpackChunkcore||[]).push([["src_include_spicecharts_spicecharts_ts"],{4972:(e,t,r)=>{r.r(t),r.d(t,{SpiceChartsModule:()=>m});var a=r(1180),o=r(4755),s=r(5030),n=r(4357),i=r(3190),c=r(4826),l=r(6490),d=r(3735),p=r(2242),h=r(2067);const u=["chartcontainer"];let C=(()=>{var e;class SpiceChart{constructor(e){(0,a.Z)(this,"libLoader",void 0),(0,a.Z)(this,"chartContainer",void 0),(0,a.Z)(this,"chart",void 0),this.libLoader=e}ngAfterViewInit(){this.loadNecessaryLibraries()}loadNecessaryLibraries(){this.libLoader.loadLib("chartjs").subscribe((()=>{this.renderchart()}))}renderchart(){const e={type:"bar",data:{labels:["January","February","March","April","May","June"],datasets:[{backgroundColor:getComputedStyle(document.documentElement).getPropertyValue("--brand-primary"),borderColor:getComputedStyle(document.documentElement).getPropertyValue("--brand-primary"),data:[0,10,5,2,20,30,45]}]},options:{plugins:{legend:{display:!1}}}};this.chart=new Chart(this.chartContainer.nativeElement,e)}}return e=SpiceChart,(0,a.Z)(SpiceChart,"ɵfac",(function(t){return new(t||e)(p.Y36(h.$))})),(0,a.Z)(SpiceChart,"ɵcmp",p.Xpm({type:e,selectors:[["spice-chart"]],viewQuery:function(e,t){if(1&e&&p.Gf(u,5),2&e){let e;p.iGM(e=p.CRH())&&(t.chartContainer=e.first)}},decls:3,vars:0,consts:[[1,"slds-size--1-of-1",2,"height","400px"],["chartcontainer",""]],template:function(e,t){1&e&&(p.TgZ(0,"div",0),p._UZ(1,"canvas",null,1),p.qZA())},encapsulation:2})),SpiceChart})(),m=(()=>{var e;class SpiceChartsModule{}return e=SpiceChartsModule,(0,a.Z)(SpiceChartsModule,"ɵfac",(function(t){return new(t||e)})),(0,a.Z)(SpiceChartsModule,"ɵmod",p.oAB({type:e})),(0,a.Z)(SpiceChartsModule,"ɵinj",p.cJS({imports:[o.ez,s.u5,i.ObjectFields,c.GlobalComponents,l.ObjectComponents,d.SystemComponents,n.o]})),SpiceChartsModule})();("undefined"==typeof ngJitMode||ngJitMode)&&p.kYT(m,{declarations:[C],imports:[o.ez,s.u5,i.ObjectFields,c.GlobalComponents,l.ObjectComponents,d.SystemComponents,n.o]})}}]);
