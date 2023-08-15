@@ -3,7 +3,7 @@
 namespace SpiceCRM\includes\SpiceUI;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
