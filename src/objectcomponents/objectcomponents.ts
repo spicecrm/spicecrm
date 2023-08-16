@@ -61,6 +61,7 @@ import {ObjectActionEditRelatedButton} from "./components/objectactioneditrelate
 import {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
 import {ObjectActionOpenButton} from './components/objectactionopenbutton';
+import {ObjectActionBooleanToggleButton} from "./components/objectactionbooleantogglebutton";
 import {ObjectActionCancelButton} from './components/objectactioncancelbutton';
 import {ObjectActionModalSaveButton} from './components/objectactionmodalsavebutton';
 import {ObjectActionRemoveButton} from "./components/objectactionremovebutton";
@@ -290,6 +291,7 @@ import {ObjectStatusNetworkOpenModalButton} from "./components/objectstatusnetwo
         ObjectActionAuditlogModal,
         ObjectGDPRModal,
         ObjectActionNewButton,
+        ObjectActionBooleanToggleButton,
         ObjectActionDuplicateButton,
         ObjectActionNewrelatedButton,
         ObjectActionNewCopyRuleBeanButton,
