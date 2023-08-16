@@ -510,7 +510,7 @@ class TimeDate
     public function fromDbDate($date)
     {
         try {
-            return DateTime::createFromFormat(self::DB_DATE_FORMAT, $date, self::$gmtTimezone);
+            return DateTime::createFromFormat(self::DB_DATE_FORMAT, $date, self::$gmtTimezone) ?: self::fromDb($date);
         } catch (Exception $e) {
             LoggerManager::getLogger()->error("fromDbDate: Conversion of $date from DB format failed: {$e->getMessage()}");
             return null;
