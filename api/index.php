@@ -64,6 +64,9 @@ try {
     // add the developer middleware
     $app->add(DeveloperMiddleware::class);
 
+    // load the metadata from the database
+    SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
+
     // authenticate
     AuthenticationController::getInstance()->authenticate();
 
@@ -72,9 +75,6 @@ try {
 
     // load the modules first
     SpiceModules::getInstance()->loadModules();
-
-    // load the metadata from the database
-    SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 
     if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);
