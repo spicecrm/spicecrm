@@ -4,6 +4,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\SpiceCronJobs\SpiceCronJobs;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -44,6 +45,7 @@ SpiceModules::getInstance()->loadModules();
 SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 //$system_config = (new Administration())->retrieveSettings();
 
+SpiceLanguageManager::setCurrentLanguage();
 /**
  * ----- Run the Job Tasks -------
  */

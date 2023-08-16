@@ -58,9 +58,13 @@ export class fieldActivityReminder extends fieldGeneric {
 
     /**
      * returns the display value
+     * catch bad value (= not in reminder time options)
      */
     get display(){
-        return this.options.find(o => o.value == this.value).label;
+        if(this.options.find(o => o.value == this.value) && this.options.find(o => o.value == this.value).label){
+            return this.options.find(o => o.value == this.value).label;
+        }
+        return this.options.find(o => o.value == '-1').label;
     }
 
     /**
