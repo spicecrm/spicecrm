@@ -2518,6 +2518,8 @@ class SpiceBean
 
             //mark deleted
             $tmpBean->mark_deleted($beanId);
+
+            AddressReferences::getInstance()->updateReferencedBeansAddress($this, $tmpBean->id);
         }
         //free memory
         unset($tmpBeans);
