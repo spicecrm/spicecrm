@@ -10,6 +10,7 @@ use DI\Container;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -42,6 +43,8 @@ try {
     DBManagerFactory::setDBConfig();
 
     SpiceConfig::getInstance()->reloadConfig();
+
+    SpiceLanguageManager::setCurrentLanguage();
 
     $slimContainer = new Container();
     AppFactory::setContainer($slimContainer);
