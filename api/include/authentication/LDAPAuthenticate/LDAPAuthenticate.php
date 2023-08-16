@@ -159,10 +159,12 @@ class LDAPAuthenticate implements AuthenticatorI
                 if ($userObj = $this->ldapAuthenticate($authData->username, $authData->password)) {
                     return new AuthResponse($userObj->user_name, $this->getUserLdapValues($userObj));
                 } else {
-                    // try Spice Authentication
-                    $spiceAuth = new SpiceCRMAuthenticate();
-                    if ($authResponse = $spiceAuth->authenticate($authData, 'credentials')) {
-                        return $authResponse;
+                    // if no connection made it, try Spice Authentication
+                    if(!next($this->config['servers'])){
+                        $spiceAuth = new SpiceCRMAuthenticate();
+                        if ($authResponse = $spiceAuth->authenticate($authData, 'credentials')) {
+                            return $authResponse;
+                        }
                     }
                 }
             }

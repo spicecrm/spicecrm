@@ -32,7 +32,7 @@ class TrackersController
                 $seed = BeanFactory::getBean($row['module_name'], $row['item_id'], ['relationships' => false]);
                 if ($seed) {
                     $row['data'] = $moduleHandler->mapBeanToArray($row['module_name'], $seed);
-                    $row['summary_text'] = $seed->summary_text;
+                    $row['summary_text'] = $seed->get_summary_text();
                     $recentItems[] = $row;
                 }
             } catch(exception $e){
@@ -61,7 +61,7 @@ class TrackersController
             $seed = BeanFactory::getBean($row['module_name'], $row['item_id']);
             if($seed){
                 $row['data'] = $moduleHandler->mapBeanToArray($row['module_name'], $seed);
-                $row['summary_text'] = $seed->summary_text;
+                $row['summary_text'] = $seed->get_summary_text();
                 $recentItems[] = $row;
             }
         }
