@@ -1974,6 +1974,21 @@ export class model implements OnDestroy {
         return true;
     }
 
+    /**
+     * rollback removed related records
+     */
+    public rollbackRemovedRelatedRecords(relation_link_name: string, records: any[]): boolean {
+        if (!this.isFieldARelationLink(relation_link_name) || !this.data[relation_link_name].beans_relations_to_delete) {
+            return false;
+        }
+
+        records.forEach(id => {
+            delete this.data[relation_link_name].beans_relations_to_delete[id];
+        });
+
+        return true;
+    }
+
 
     public ngOnDestroy(): void {
 

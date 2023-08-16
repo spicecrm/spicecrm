@@ -178,6 +178,7 @@ import {SystemInputDashboard} from "./components/systeminputdashboard";
 import {SystemSplitContainer} from "./components/systemsplitcontainer";
 import {SystemSplitContainerRight} from "./components/systemsplitcontainerright";
 import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
+import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 
 
 
@@ -349,7 +350,8 @@ import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
         SystemInputDashboard,
         SystemSplitContainer,
         SystemSplitContainerLeft,
-        SystemSplitContainerRight
+        SystemSplitContainerRight,
+        SystemInputSearchTerm
     ],
     exports: [
         PaginationControlsComponent,
@@ -492,7 +494,8 @@ import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
         SystemInputDashboard,
         SystemSplitContainer,
         SystemSplitContainerLeft,
-        SystemSplitContainerRight
+        SystemSplitContainerRight,
+        SystemInputSearchTerm
     ]
 })
 export class SystemComponents {}

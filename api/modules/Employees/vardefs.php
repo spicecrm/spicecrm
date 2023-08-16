@@ -103,5 +103,5 @@ SpiceDictionaryHandler::getInstance()->dictionary['Employee'] = [
     ],
 ];
 
-VardefManager::createVardef('Employees', 'Employee', ['default', 'assignable', 'person']);
+VardefManager::createVardef('Employees', 'Employee', ['default', 'assignable', 'person', 'activities']);
 
