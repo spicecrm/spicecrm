@@ -48,7 +48,7 @@ export class ComponentsetManagerEditDialog implements OnInit{
     }
 
     add() {
-        this.closedialog.emit({name: this.componentsetname, type: this.componentsettype});
+        this.closedialog.emit({name: this.componentsetname, type: this.componentsettype, module: this.module});
         this.self.destroy();
     }
 
