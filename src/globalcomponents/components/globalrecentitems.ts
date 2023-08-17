@@ -15,7 +15,12 @@ import {language} from '../../services/language.service';
     templateUrl: '../templates/globalrecentitems.html'
 })
 export class GlobalRecentItems {
-    constructor(public language: language, navigationtab: navigationtab,public router: Router,public recent: recent) {
+    constructor(
+        public language: language,
+        navigationtab: navigationtab,
+        public router: Router,
+        public recent: recent)
+    {
         // set the navigationtab title
         navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_RECENTLYVIEWED'), displayicon: 'breadcrumbs'});
     }
