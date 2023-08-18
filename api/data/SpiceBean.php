@@ -2516,10 +2516,11 @@ class SpiceBean
             // merge attachments
             $this->db->query("UPDATE spiceattachments SET bean_id='{$this->id}' WHERE deleted=0 AND bean_id='{$tmpBean->id}'");
 
+            AddressReferences::getInstance()->updateReferencedBeansAddress($this, $tmpBean->id);
+
             //mark deleted
             $tmpBean->mark_deleted($beanId);
 
-            AddressReferences::getInstance()->updateReferencedBeansAddress($this, $tmpBean->id);
         }
         //free memory
         unset($tmpBeans);
