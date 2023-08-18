@@ -1518,7 +1518,7 @@ abstract class DBManager
 
             if(is_null($string)) return '';
 
-            if(is_object($string)) $string = json_encode($string);
+            if(is_object($string) || is_array($string)) $string = json_encode($string);
         }
 
 		return $string;
