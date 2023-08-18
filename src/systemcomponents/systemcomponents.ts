@@ -182,6 +182,7 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 
 
 
+import {SystemObjectPreview} from "./components/systemobjectpreview";
 
 @NgModule({
     imports: [
@@ -285,6 +286,7 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
         SystemModuleGlobalPipe,
         SystemNumberSpinner,
         SystemObjectPreviewModal,
+        SystemObjectPreview,
         SystemPDFContainer,
         SystemInputModuleFilter,
         SystemFilterBuilder,
@@ -495,7 +497,9 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
         SystemSplitContainer,
         SystemSplitContainerLeft,
         SystemSplitContainerRight,
-        SystemInputSearchTerm
+        SystemInputSearchTerm,
+        SystemSelectIconItem,
+        SystemObjectPreview
     ]
 })
 export class SystemComponents {}
