@@ -574,7 +574,7 @@ class SpiceDictionaryVardefs  {
         return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname,
-        sysdi.name itemname, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus,
+        sysdi.name itemname, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required itemrequired, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus,
         sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
         LEFT JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmod ON sysmod.sysdictionarydefinition_id = sysd.id
@@ -894,7 +894,7 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
 
         // enrich with relationships from sysdictionaryrelationships/ syscustomdictionaryrelationships
         if(self::isDbManaged()){
-            $sysDictRels = SpiceDictionaryHandler::getInstance()->getDictionaryRelationships();
+            $sysDictRels = SpiceDictionaryHandler::getInstance()->getDictionaryRelationships('a');
             foreach($sysDictRels as $relDef){
                 $relKey = $relDef['relationship_name'];
                 $relationships[$relKey] = array_merge(['name' => $relKey], $relDef);
@@ -1067,10 +1067,10 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
      * @return array
      */
     public static function loadRelationshipsForModuleFromCache($module){
-        $cachedValue = SpiceCache::get('relationships');
+        $cachedValue = SpiceCache::get('relationships'.$module);
         if(!$cachedValue) {
             $cachedValue = self::getRelationshipsCacheFromDb($module);
-            SpiceCache::set('relationships',$cachedValue );
+            SpiceCache::set('relationships'.$module, $cachedValue );
         }
         return $cachedValue;
     }

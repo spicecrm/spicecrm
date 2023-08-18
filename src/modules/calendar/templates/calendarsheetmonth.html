@@ -9,12 +9,12 @@
     <div class="slds-scrollable slds-grow">
         <div #sheetContainer class="slds-p-vertical--medium slds-is-relative slds-height_full" style="min-height: 375px">
                 <ng-container *ngFor="let sheetWeek of monthGrid; let weekIndex = index; let lastWeek = last trackBy: trackByFnDate">
-                    <div *ngFor="let sheetDay of sheetWeek; let dayIndex = index; trackBy: trackByFnDate" class="slds-is-absolute slds-truncate" [ngStyle]="getDayStyle(weekIndex, dayIndex, sheetDay.month)">
+                    <div *ngFor="let sheetDay of sheetWeek; let dayIndex = index; trackBy: trackByFnDate" class="slds-is-absolute slds-truncate" (click)="openAddModal(sheetDay.date)" [ngStyle]="getDayStyle(weekIndex, dayIndex, sheetDay.month)">
                         <div class="slds-p-around--xx-small" [style.height.px]="offsetHeight">
                             <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
                         </div>
                         <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height.px]="offsetHeight">
-                            <calendar-more-button *ngIf="sheetDay.visibleEventsCount > 0 && sheetDay.visibleEventsCount > maxEventsPerDay" [sheetday]="sheetDay" [moreevents]="sheetDay.events" [ismobileview]="calendar.isMobileView"></calendar-more-button>
+                            <calendar-more-button *ngIf="sheetDay.events.length > 0 && sheetDay.events.length > maxEventsPerDay" [sheetday]="sheetDay" [moreevents]="sheetDay.events" [ismobileview]="calendar.isMobileView"></calendar-more-button>
                         </div>
                     </div>
                     <div *ngIf="!lastWeek" class="slds-is-absolute slds-border--bottom slds-size--1-of-1" [ngStyle]="getWeekDividerStyle(weekIndex +1)"></div>
@@ -23,29 +23,19 @@
                     <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
                 </ng-container>
                 <ng-container *ngFor="let event of ownerEvents; trackBy: trackByFn">
-                    <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
-                    <ng-container *ngIf="event.illusions">
-                        <ng-container *ngFor="let event of event.illusions; trackBy: trackByFn">
-                            <calendar-sheet-event [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
-                        </ng-container>
+                    <ng-container *ngFor="let keyValue of event.existsInRanges | keyvalue; trackBy: trackByFn">
+                        <calendar-sheet-event [event]="event" [ngStyle]="event.existsInRanges[keyValue.key].style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
                     </ng-container>
                 </ng-container>
                 <ng-container *ngFor="let event of userEvents; trackBy: trackByFn">
-                    <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
-                    <ng-container *ngIf="event.illusions">
-                        <ng-container *ngFor="let event of event.illusions; trackBy: trackByFn">
-                            <calendar-sheet-event [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
-                        </ng-container>
+                    <ng-container *ngFor="let keyValue of event.existsInRanges | keyvalue; trackBy: trackByFn">
+                        <calendar-sheet-event [event]="event" [ngStyle]="event.existsInRanges[keyValue.key].style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
                     </ng-container>
                 </ng-container>
                 <ng-container *ngFor="let event of groupwareEvents; trackBy: trackByFn">
-                    <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
-                    <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-microsoft-event>
-                    <ng-container *ngIf="event.illusions">
-                        <ng-container *ngFor="let event of event.illusions; trackBy: trackByFn">
-                            <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
-                            <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-microsoft-event>
-                        </ng-container>
+                    <ng-container *ngFor="let keyValue of event.existsInRanges | keyvalue; trackBy: trackByFn">
+                        <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [ngStyle]="event.existsInRanges[keyValue.key].style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
+                        <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [ngStyle]="event.existsInRanges[keyValue.key].style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-microsoft-event>
                     </ng-container>
                 </ng-container>
         </div>

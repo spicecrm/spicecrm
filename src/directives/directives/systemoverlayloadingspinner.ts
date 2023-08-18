@@ -1,45 +1,116 @@
 /**
  * @module DirectivesModule
  */
-import {Component, ElementRef, EventEmitter, Input, Output, Renderer2} from '@angular/core';
-import {language} from "../../services/language.service";
+import {
+    ApplicationRef,
+    ComponentRef,
+    createComponent,
+    Directive,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+    Renderer2
+} from '@angular/core';
+import {SystemSpinner} from "../../systemcomponents/components/systemspinner";
 
 /**
  * a directive that displays a loading spinner inside an overlay container over the parent
  */
-@Component({
+@Directive({
     selector: '[system-overlay-loading-spinner]',
-    template: `
-        <div *ngIf="isLoading" class="slds-align--absolute-center slds-is-relative" style="position: absolute; height: 100%; width: 100%; z-index: 999; top: 0; left: 0; background-color: rgba(0,0,0,0.25);">
-            <div class="slds-grid slds-grid--vertical slds-grid--vertical-align-center">
-                <div style="width: 48px; border-radius: 50%; box-shadow: 0 0 5px 0 #555; padding: .5rem; background-color: #fff; color: #080707;">
-                    <div class="cssload-container">
-                        <div class="cssload-double-torus" style="width: 32px; height: 32px;"></div>
-                    </div>
-                </div>
-                <button *ngIf="cancellable" (click)="onCancel.emit()" class="slds-button slds-button--brand slds-m-top--x-small">
-                    {{language.getLabel('LBL_CANCEL')}}
-                </button>
-            </div>
-        </div>
-    <ng-content></ng-content>`,
     host: {
         class: 'slds-is-relative'
     }
 })
 export class SystemOverlayLoadingSpinnerDirective {
-
+    /**
+     * emit the on cancel click event
+     */
     @Output() public onCancel = new EventEmitter<void>();
+    /**
+     * holds the system spinner component reference
+     */
+    private spinnerRef: ComponentRef<SystemSpinner>;
+    /**
+     * container for the system spinner
+     * @private
+     */
+    private spinnerContainer = document.createElement('div');
+    /**
+     * holds the cancellable value until the system spinner is rendered
+     * @private
+     */
+    private cancellable: boolean = false;
 
     constructor(
         public renderer: Renderer2,
-        public language: language,
+        private appRef: ApplicationRef,
         public elementRef: ElementRef
     ) {
     }
 
+    /**
+     * on loading change render/destroy the spinner
+     * @param val
+     */
     @Input('system-overlay-loading-spinner')
-    public isLoading: boolean = false;
+    set isLoadingChange(val) {
+        if (val) {
+            this.renderSpinner();
+        } else {
+            this.destroySpinner();
+        }
+    }
 
-    @Input() public cancellable: boolean = false;
+    /**
+     * set cancellable on the system spinner
+     * @param val
+     */
+    @Input('cancellable')
+    set cancellableChange(val) {
+
+        this.cancellable = val;
+
+        if (!this.spinnerRef) return;
+
+        this.spinnerRef.instance.cancellable = val;
+    }
+
+    /**
+     * destroy the spinner component
+     * @private
+     */
+    private destroySpinner() {
+        if (!this.spinnerRef) return;
+        this.spinnerRef.instance.onCancel$.unsubscribe();
+        this.spinnerRef.destroy();
+        this.spinnerRef = undefined;
+        this.renderer.removeChild(this.elementRef.nativeElement, this.spinnerContainer);
+    }
+
+    /**
+     * use the system spinner as overlay
+     * @private
+     */
+    private renderSpinner() {
+
+        if (this.spinnerRef) return;
+
+        this.renderer.appendChild(this.elementRef.nativeElement, this.spinnerContainer);
+
+        // create spinner component without appending it to the dom
+        this.spinnerRef = createComponent(SystemSpinner, {
+            environmentInjector: this.appRef.injector,
+            hostElement: this.spinnerContainer
+        });
+
+        this.spinnerRef.instance.asOverlay = true;
+        this.spinnerRef.instance.cancellable = this.cancellable;
+        this.spinnerRef.instance.onCancel$.subscribe(() => this.onCancel.emit());
+
+        // attach the spinner component to the application view to enable change detection
+        this.appRef.attachView(this.spinnerRef.hostView);
+        this.spinnerRef.changeDetectorRef.detectChanges();
+    }
 }

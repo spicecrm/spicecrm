@@ -3,6 +3,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -101,6 +102,7 @@ class PackageController {
         $confloader = new SpiceUIConfLoader($this->getRepoUrl($args['repository']));
         $result = ['response' => $confloader->loadPackage($args['package'], '*')];
         SpiceModules::getInstance()->loadModules(true);
+        SpiceCache::instance()->resetFull();
         return $res->withJson($result);
     }
 
@@ -111,7 +113,11 @@ class PackageController {
 
         if(!$confloader) $this->getLoaders();
 
-        return $res->withJson(['response' => $confloader->deletePackage($args['package'])]);
+        $result = ['response' => $confloader->deletePackage($args['package'])];
+        SpiceModules::getInstance()->loadModules(true);
+        SpiceCache::instance()->resetFull();
+
+        return $res->withJson($result);
     }
 
     /**

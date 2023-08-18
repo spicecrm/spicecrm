@@ -20,7 +20,7 @@ export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
     /**
      * containers to be rendered
      */
-    @Input() public element: SpacerI;
+    @Input() public declare element: SpacerI;
     /**
      * list of the editable attributes
      */

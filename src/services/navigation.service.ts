@@ -7,7 +7,7 @@ import {Title} from "@angular/platform-browser";
 import {Observable, Subject, of, BehaviorSubject, Subscription} from "rxjs";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
-import {Router, ActivatedRouteSnapshot, CanActivate, Params, Route, UrlSegment} from "@angular/router";
+import { Router, ActivatedRouteSnapshot, Params, Route, UrlSegment } from "@angular/router";
 import {modal} from "./modal.service";
 import {language} from "./language.service";
 import {metadata} from "./metadata.service";
@@ -84,6 +84,11 @@ export interface objectTab {
      */
     enablesubtabs: boolean;
 
+    /**
+     * additional tabdata
+     */
+    tabdata?: object;
+
 }
 
 /**
@@ -95,7 +100,9 @@ export interface objectTabInfo {
     displayicon?: string;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class navigation {
 
     /**
@@ -166,7 +173,8 @@ export class navigation {
         id: 'main',
         active: true,
         pinned: false,
-        enablesubtabs: false
+        enablesubtabs: false,
+        url: 'module/Home'
     };
 
     /**
@@ -391,7 +399,8 @@ export class navigation {
                     id: 'main',
                     pinned: false,
                     active: true,
-                    enablesubtabs: false
+                    enablesubtabs: false,
+                    url: 'module/Home'
                 };
 
                 // unsubscribe from all subscriptions
@@ -447,7 +456,8 @@ export class navigation {
     public handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'update':
-                if (event.data.sessionId != Md5.hashStr(this.session.authData.sessionId) && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
+            case 'systemupdate':
+                if ((event.type == 'systemupdate' || event.data.sessionId != Md5.hashStr(this.session.authData.sessionId)) && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
                     this.backend.get(event.data.module, event.data.id).subscribe(modelData => {
                         let models = this.modelregister.filter(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing);
                         for (let model of models) {
@@ -631,7 +641,7 @@ export class navigation {
     /**
      * matches two route params ignoring the tabid if the match is different
      *
-     * @param objectparams
+     * @param objecttab
      * @param routeparams
      */
     public matchRouteParams(objecttab: objectTab, routeparams: any): boolean {
@@ -661,7 +671,7 @@ export class navigation {
         // get the route data replacing the tab and tabid if this is passed in as part of the route
         let routeData = this.metadata.getRouteDetails(routeConfig.path.replace('tab/:tabid/', ''));
 
-        if (routeData?.target == 'M') {
+        if (routeData?.target == 'M' || routeParams.module == 'Home') {
             // if we just navigate to the maintab .. no checks
             if (this.maintab.path == routeConfig.path && _.isEqual(this.maintab.params, routeParams)) {
                 this.activeTab = 'main';
@@ -729,6 +739,17 @@ export class navigation {
     }
 
     /**
+     * adds an object tab
+     *
+     * @param tabDetails
+     */
+    public addObjectTab(tabDetails: objectTab){
+        this.objectTabs.unshift(tabDetails);
+        // set the current tab as active tab
+        this.activeTab = tabDetails.id;
+    }
+
+    /**
      * sets the tab with the passed in ID as active tab
      *
      * @param tabid
@@ -781,9 +802,8 @@ export class navigation {
     /**
      * set the tab info
      *
-     * @param tabid
-     * @param displayname
-     * @param displaymodule
+     * @param tabid string
+     * @param tabinfo object
      */
     public settabinfo(tabid: string, tabinfo: objectTabInfo) {
         if (tabid == 'main') {
@@ -836,7 +856,8 @@ export class navigation {
     /**
      * closes a tab
      *
-     * * @param tabid
+     * * @param tabid string
+     * @param force bool
      */
     public closeObjectTab(tabid, force: boolean = false) {
         // not for the main tab
@@ -870,9 +891,12 @@ export class navigation {
                 if (this.objectTabs[index].parentid) {
                     this.setActiveTab(this.objectTabs[index].parentid);
                     // this.router.navigate([this.objectTabs.find(tab => tab.id == this.objectTabs[index].parentid).url]);
+                } else if(index != 0) {
+                    // tab to the left of the closed tab is set active
+                    const leftIndex = index - 1;
+                    this.setActiveTab(this.objectTabs[leftIndex].id);
                 } else {
                     this.setActiveTab('main');
-                    // this.router.navigate([this.maintab.url]);
                 }
             }
 
@@ -921,8 +945,10 @@ export class navigation {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-@Injectable()
-export class canNavigateAway implements CanActivate {
+@Injectable({
+    providedIn: 'root'
+})
+export class canNavigateAway  {
     constructor(public navigation: navigation, public modal: modal, public language: language) {
     }
 

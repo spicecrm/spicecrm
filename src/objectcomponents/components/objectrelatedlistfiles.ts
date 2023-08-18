@@ -151,6 +151,15 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
     public ngAfterViewInit() {
         this.setModelData();
 
+        // default category
+        if(this.componentconfig.hasOwnProperty('defaultcategory') && this.componentconfig.defaultcategory){
+            this.defaultCategoryId = this.componentconfig.defaultcategory;
+        }
+        // in case no defaultCategoryId is set, load all & display all files
+        if(!this.defaultCategoryId && !this.selectedCategoryId) {
+            this.selectedCategoryId = '*';
+        }
+
         setTimeout(() => this.loadFiles(), 10);
 
         // subscribe to the broadcast to get a merge notification or reload the file list
@@ -396,7 +405,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         switch (action) {
             case 'category':
                 this.selectedCategoryId = value;
-                this.filteredFiles = value == '*' ? this.modelattachments.files : this.modelattachments.files
+                this.filteredFiles = (value == '*' || !value) ? this.modelattachments.files : this.modelattachments.files
                     .filter(file => !!file.category_ids && file.category_ids.includes(value));
                 break;
             case 'input':

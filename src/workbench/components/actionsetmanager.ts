@@ -17,6 +17,7 @@ import {modal} from '../../services/modal.service';
 import {view} from "../../services/view.service";
 
 @Component({
+    selector: 'actionset-manager',
     templateUrl: '../templates/actionsetmanager.html',
     providers: [view]
 })
@@ -397,6 +398,7 @@ export class ActionsetManager {
                     loadingModalRef.instance.self.destroy();
                     this.toast.sendToast('changes saved');
                     this.loadCurrentActionset(this.currentActionSet.id);
+                    this.configurationService.reloadTaskData('actionsets');
                 } else {
                     loadingModalRef.instance.self.destroy();
                     this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
@@ -413,7 +415,7 @@ export class ActionsetManager {
             modal.instance.actionsetModule = this.currentModule;
             modal.instance.mode = "copy";
             modal.instance.edit_mode = this.edit_mode;
-            modal.instance.actionsetName = (' ' + this.currentActionSet.name).slice(1);
+            modal.instance.actionsetName = this.currentActionSet.name + ' (custom)';
 
             modal.instance.closedialog.subscribe(added => {
                 if (added) {
@@ -443,6 +445,7 @@ export class ActionsetManager {
                     this.currentActionSet.actions = actions;
                     // this.currentActionSet.package = this.currentActionSet.package;
                     this.currentActionSet.isnew = true;
+                    this.configurationService.reloadTaskData('actionsets');
                     this.view.setEditMode();
                 }
             });

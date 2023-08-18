@@ -190,7 +190,7 @@ class SpiceBeanHandler
                 $thisBean->retrieveListDetails();
 
                 // map and add to the array
-                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, false);
+                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, (isset($searchParams['resolvelinks']) ? $searchParams['resolvelinks'] : false ));
             }
             $retArray['aggregations'] = $result['aggregations'];
             $retArray['buckets'] = $result['buckets'];
@@ -677,6 +677,43 @@ class SpiceBeanHandler
     }
 
     /**
+     * find bean by string fields
+     * @throws NotFoundException | ForbiddenException | BadRequestException
+     */
+    public function find_bean_by_string_fields($beanModule, $retrieveFields): array
+    {
+        // acl check if user can get the detail
+        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
+            throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
+
+        $thisBean = BeanFactory::newBean($beanModule);
+
+        # check if all the provided fields are module fields
+        foreach ($retrieveFields as $field => $val) {
+            if (!isset($thisBean->field_defs[$field])) {
+                throw new BadRequestException("Module has no $field property");
+            }
+        }
+
+        $thisBean->retrieve_by_string_fields($retrieveFields);
+
+        if (empty($thisBean->id)) throw (new NotFoundException('Record not found.'));
+
+        if (!$thisBean->ACLAccess('view')) {
+            throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
+        }
+
+        // load the view details
+        $thisBean->retrieveViewDetails();
+
+        if ($retrieveFields['trackaction']) {
+            $this->_trackAction($retrieveFields['trackaction'], $beanModule, $thisBean);
+        }
+
+        return $this->mapBeanToArray($beanModule, $thisBean);
+    }
+
+    /**
      * retrieves a bean based on an external id passed in
      *
      * @param $beanModule
@@ -1104,9 +1141,9 @@ class SpiceBeanHandler
             $auditLog[$auditRecord['transaction_id']]['data'][] = [
                 'field_name' => $auditRecord['field_name'],
                 'data_type' => $auditRecord['data_type'],
-                'before_value_string' => $auditRecord['before_value_string'],
+                'before_value_string' => $this->makeValueReadable($auditRecord['before_value_string']),
                 'before_value_text' => $auditRecord['before_value_text'],
-                'after_value_string' => $auditRecord['after_value_string'],
+                'after_value_string' => $this->makeValueReadable($auditRecord['after_value_string']),
                 'after_value_text' => $auditRecord['after_value_text'],
             ];
         }
@@ -1153,7 +1190,7 @@ class SpiceBeanHandler
         }
 
 
-        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE parent_id = '$beanId' $excludedFieldsSQL";
+        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE al.parent_id = '$beanId' $excludedFieldsSQL";
         if ($params['user']) {
             $query .= " AND au.user_name like '%{$params['user']}%'";
         }
@@ -1185,9 +1222,9 @@ class SpiceBeanHandler
                 $auditLog[$auditRecord['transaction_id']]['audit_log'][] = [
                     'field_name' => $auditRecord['field_name'],
                     'data_type' => $auditRecord['data_type'],
-                    'before_value_string' => $auditRecord['before_value_string'],
+                    'before_value_string' => $this->makeValueReadable($auditRecord['field_name'], $auditRecord['before_value_string']),
                     'before_value_text' => $auditRecord['before_value_text'],
-                    'after_value_string' => $auditRecord['after_value_string'],
+                    'after_value_string' => $this->makeValueReadable($auditRecord['field_name'], $auditRecord['after_value_string']),
                     'after_value_text' => $auditRecord['after_value_text'],
                 ];
             } else {
@@ -1197,6 +1234,26 @@ class SpiceBeanHandler
 
         return $params['grouped'] ? array_values($auditLog) : $auditLog;
 
+    }
+
+    /**
+     * Make some field values readable
+     * Do only if config['auditlog']['readable'] is set and true
+     *
+     * @param $value
+     * @return mixed
+     */
+    public function makeValueReadable($field_name, $value) {
+        if(!SpiceConfig::getInstance()->config['auditlog']['readable']) {
+            return $value;
+        }
+
+        switch($field_name){
+            case 'assigned_user_id':
+                $user = BeanFactory::getBean('Users', $value, ['relationships' => false]);
+                return $user->user_name;
+        }
+        return $value;
     }
 
 
@@ -1761,13 +1818,13 @@ class SpiceBeanHandler
                 // if the existing email address id is the same but the email address was changed create a new one
                 // copy the old additional relationship values
                 // delete the link to the old one
-                if ($existingEmailAddress) {
+                if ($existingEmailAddress && $existingEmailAddress->id) {
 
                     $linkedEmailAddresses = $bean->get_linked_beans($linkName);
 
                     foreach ($linkedEmailAddresses as $linkedEmailAddress) {
 
-                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || $existingEmailAddress->email_address == $emailAddressData['email_address']) {
+                        if ($existingEmailAddress->id !== $linkedEmailAddress->id || ($existingEmailAddress->email_address == $emailAddressData['email_address'] && $existingEmailAddress->primary_address == $emailAddressData['primary_address'])){
                             continue;
                         }
 
@@ -2085,8 +2142,13 @@ class SpiceBeanHandler
                         //
                     }
                     break;
+                case 'quantity':
+                case 'double':
+                case 'currency':
+                    $beanDataArray[$fieldId] = (double) $thisBean->$fieldId;
+                    break;
                 default:
-                    $beanDataArray[$fieldId] = is_string($thisBean->$fieldId) ? html_entity_decode($thisBean->$fieldId, ENT_QUOTES) : $thisBean->$fieldId;
+                    $beanDataArray[$fieldId] = $thisBean->$fieldId;
                     break;
             }
         }

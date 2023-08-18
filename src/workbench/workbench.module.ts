@@ -158,6 +158,8 @@ import {DictionaryManagerCloneDefinitionModal} from "./components/dictionarymana
 import {HooksManager} from "./components/hooksmanager";
 import {HooksManagerHooks} from "./components/hooksmanagerhooks";
 import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmodal";
+import {WebHooksManager} from "./components/webhooksmanager";
+import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
 
 
 
@@ -308,10 +310,13 @@ import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmoda
         GitStatusOfRepository,
         HooksManager,
         HooksManagerHooks,
-        HooksManagerHooksEditModal
+        HooksManagerHooksEditModal,
+        WebHooksManager,
+        WebHooksManagerEditModal,
     ],
     exports: [
         SortPipe,
+        WorkbenchConfigLabel,
     ]
 })
 export class WorkbenchModule {}

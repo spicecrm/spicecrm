@@ -11,7 +11,9 @@ import {language} from "./language.service";
 /**
  * handles the modals in the system
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class modal {
 
     /**
@@ -165,7 +167,7 @@ export class modal {
      * @param options options to be presented to the user
      * @param optionsAsRadio
      */
-    public prompt(type: 'info'|'input'|'input_text'|'input_date'|'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: { value: string, display: string}[] = null, optionsAsRadio?: boolean, regex?: string): Observable<any> {
+    public prompt(type: 'info'|'input'|'input_text'|'input_date'|'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: { value: string|boolean, display: string}[] = null, optionsAs: true|'radio'|'button'|'select' = 'select', regex?: string ): Observable<any> {
         let responseSubject = new Subject();
         this.openModal("SystemPrompt").subscribe(component => {
             component.instance.type = type;
@@ -175,7 +177,7 @@ export class modal {
             component.instance.value = defaultvalue;
             component.instance.options = options;
             component.instance.regex = regex;
-            component.instance.optionsAsRadio = optionsAsRadio;
+            component.instance.optionsAs = ( optionsAs === true ? 'radio':optionsAs );
             component.instance.answer.subscribe(answervalue => {
                 responseSubject.next(answervalue); // return the answer
                 responseSubject.complete();

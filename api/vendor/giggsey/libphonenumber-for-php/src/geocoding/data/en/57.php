@@ -11,6 +11,7 @@
  */
 
 return array (
+  576010 => 'Cundinamarca',
   576012 => 'Bogotá',
   576013 => 'Bogotá',
   576014 => 'Bogotá',
@@ -143,6 +144,9 @@ return array (
   5760633 => 'Pereira',
   5760634 => 'Pereira',
   5760635 => 'Pereira',
+  5760636 => 'Eje Cafetero',
+  5760637 => 'Eje Cafetero',
+  5760638 => 'Eje Cafetero',
   5760687 => 'Manizales',
   5760688 => 'Manizales',
   5760689 => 'Manizales',

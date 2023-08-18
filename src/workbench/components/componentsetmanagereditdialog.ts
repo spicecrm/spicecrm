@@ -20,10 +20,10 @@ export class ComponentsetManagerEditDialog implements OnInit{
     @Input() componentset: string = '';
     @Input() edit_mode: string = '';
 
-    adding: boolean = false;
-
     componentsetname: string = '';
-    componentsettype: string = '';
+    componentsettype: string = 'custom';
+    public module: string = '*';
+    public showModuleField: boolean = false;
 
     self;
 
@@ -32,14 +32,9 @@ export class ComponentsetManagerEditDialog implements OnInit{
     }
 
     ngOnInit(){
-        if(this.componentset !== ''){
+        if (this.showModuleField) {
             let componentset = this.metadata.getComponentSet(this.componentset);
-            this.componentsetname = componentset.name;
-            this.componentsettype = componentset.type;
-            this.adding = false;
-        } else {
-            this.adding = true;
-            this.componentsettype = 'custom';
+            this.componentsetname = componentset.name + ' (custom)';
         }
     }
 
@@ -53,7 +48,7 @@ export class ComponentsetManagerEditDialog implements OnInit{
     }
 
     add() {
-        this.closedialog.emit({name: this.componentsetname, type: this.componentsettype});
+        this.closedialog.emit({name: this.componentsetname, type: this.componentsettype, module: this.module});
         this.self.destroy();
     }
 

@@ -323,6 +323,15 @@ class SpiceBean
      */
     var $newFromTemplate = '';
 
+
+    /**
+     * set to true before saving to enforce a reload on the frontend when a socket message is retrieved
+     * this will change the message type that is sent via the socket and bypass the session check
+     *
+     * @var bool
+     */
+    public $systemUpdate = false;
+
     /**
      * @var int helper var for the logic hook depth
      */
@@ -481,7 +490,7 @@ class SpiceBean
     {
         // added check on new_with_id for BW compatibility
         // return ($this->_bean_action == self::BEAN_ACTION_CREATE);
-        return ($this->_bean_action == self::BEAN_ACTION_CREATE || $this->new_with_id);
+        return ($this->_bean_action == self::BEAN_ACTION_CREATE || empty($this->id) || $this->new_with_id);
     }
 
     /**
@@ -1344,12 +1353,13 @@ class SpiceBean
         //Now that the record has been saved, we don't want to insert again on further saves
         $this->new_with_id = false;
         $this->in_save = false;
-        //unset current bean_action
-        $this->set_bean_action(null);
 
         AddressReferences::getInstance()->updateReferencedBeansAddress($this);
 
         $this->call_custom_logic('after_save', '');
+
+        //unset current bean_action
+        $this->set_bean_action(null);
 
         return $this->id;
     }
@@ -2408,18 +2418,28 @@ class SpiceBean
                     //check to see if loaded relationship is with email address
                     $relName = $tmpBean->$name->getRelatedModuleName();
                     if (!empty($relName) and strtolower($relName) == 'emailaddresses') {
+                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
                         //handle email address merge
-                        $this->handleEmailMerge($name, $tmpBean->$name->get());
+                        $this->handleEmailMerge($name, $tmpBean->$name->rows);
                     } else {
-                        $data = $tmpBean->$name->get();
+                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
+                        $data = $tmpBean->$name->rows;
+
                         if (is_array($data) && !empty($data)) {
                             if ($this->load_relationship($name)) {
-                                foreach ($data as $related_id) {
+                                foreach ($data as $related_id => $row) {
+
+                                    $additionalValues = [];
+
+                                    foreach ($this->$name->relationship_fields as $field => $def) {
+                                        $additionalValues[$field] = $row[$field];
+                                    }
+
                                     //remove from tmpBean (only many-to-many)
                                     if ($tmpBean->$name->getType == 'many')
                                         $tmpBean->$name->delete($tmpBean->id, $related_id);
                                     //add to primary bean
-                                    $this->$name->add($related_id);
+                                    $this->$name->add($related_id, $additionalValues);
 
                                     // re-index the related bean
                                     $relatedBean = BeanFactory::getBean($relName, $related_id, ['relationships' => false]);
@@ -2434,8 +2454,11 @@ class SpiceBean
             // merge attachments
             $this->db->query("UPDATE spiceattachments SET bean_id='{$this->id}' WHERE deleted=0 AND bean_id='{$tmpBean->id}'");
 
+            AddressReferences::getInstance()->updateReferencedBeansAddress($this, $tmpBean->id);
+
             //mark deleted
             $tmpBean->mark_deleted($beanId);
+
         }
         //free memory
         unset($tmpBeans);
@@ -2454,6 +2477,8 @@ class SpiceBean
         $mrgArray = [];
         //get the email id's to merge
         $existingData = $data;
+
+        $existingEmails = [];
 
         //make sure id's to merge exist and are in array format
         //get the existing email id's
@@ -2486,7 +2511,7 @@ class SpiceBean
         //query email and retrieve email address to be linked.
         $newEmailQuery = 'Select id, email_address from email_addresses where id in (';
         $first = true;
-        foreach ($existingData as $id) {
+        foreach ($existingData as $id => $row) {
             if ($first) {
                 $newEmailQuery .= " '$id' ";
                 $first = false;
@@ -2499,20 +2524,24 @@ class SpiceBean
 
         $newResult = $this->db->query($newEmailQuery);
         while (($row = $this->db->fetchByAssoc($newResult)) != null) {
-            $newEmails[$row['id']] = $row['email_address'];
+            $newEmails[$row['id']] = [];
+
+            foreach ($this->$name->relationship_fields as $field => $def) {
+                $newEmails[$row['id']][$field] = $existingData[$row['id']][$field];
+            }
         }
 
         //compare the two arrays and remove duplicates
-        foreach ($newEmails as $k => $n) {
+         foreach ($newEmails as $k => $n) {
             if (!in_array($n, $existingEmails)) {
                 $mrgArray[$k] = $n;
             }
         }
 
         //add email id's.
-        foreach ($mrgArray as $related_id => $related_val) {
+        foreach ($mrgArray as $related_id => $additionalValues) {
             //add to primary bean
-            $this->$name->add($related_id);
+            $this->$name->add($related_id, $additionalValues);
         }
     }
 
@@ -2605,7 +2634,7 @@ class SpiceBean
      * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
      * @return object Instance of this bean with fetched data.
      */
-    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true, $relationships = true)
+    function retrieve_by_string_fields($fields_array, $encode = false, $deleted = true, $relationships = true)
     {
         $where_clause = $this->get_where($fields_array, $deleted);
         $query = "SELECT $this->_tablename.id" . " FROM $this->_tablename ";

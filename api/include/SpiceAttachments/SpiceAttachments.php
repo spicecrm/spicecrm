@@ -6,6 +6,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
@@ -16,12 +17,10 @@ use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachment;
-use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachment;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachment;
 
 class SpiceAttachments
 {
-    const UPLOAD_DESTINATION = 'upload://';
-
     /**
      * get attachments for a bean
      * @param $beanName
@@ -254,7 +253,7 @@ class SpiceAttachments
      * @param OutlookAttachment $attachment
      */
     public static function saveEmailAttachmentFromOutlook(Email $email, OutlookAttachment $attachment) {
-        $filepath = 'upload://' . $attachment->fileMd5;
+        $filepath = StreamFactory::getPathPrefix('upload') . $attachment->fileMd5;
         touch($filepath);
 
         $byteContent = base64_decode($attachment->content);
@@ -275,7 +274,7 @@ class SpiceAttachments
      */
     public static function saveEmailAttachmentFromGSuite(Email $email, GSuiteAttachment $attachment)
     {
-        $filepath = 'upload://' . $attachment->fileMd5;
+        $filepath = StreamFactory::getPathPrefix('upload') . $attachment->fileMd5;
         touch($filepath);
 
         file_put_contents($filepath, $attachment->content);
@@ -305,7 +304,7 @@ class SpiceAttachments
 
     public static function saveBase64File(string $fileContent): string {
         $md5 = md5($fileContent);
-        $filepath = 'upload://' . $md5;
+        $filepath = StreamFactory::getPathPrefix('upload') . $md5;
         touch($filepath);
 
         file_put_contents($filepath, $fileContent);
@@ -410,11 +409,11 @@ class SpiceAttachments
         $thisAttachment = $db->fetchByAssoc($db->query("SELECT * FROM spiceattachments WHERE id = '$attachmentId'"));
 
         // check if we found the attachment oand the file is here
-        if (!$thisAttachment || !file_exists(self::UPLOAD_DESTINATION . ($thisAttachment['filemd5'] ?: $thisAttachment['id']))) {
+        if (!$thisAttachment || !file_exists(StreamFactory::getPathPrefix('upload') . ($thisAttachment['filemd5'] ?: $thisAttachment['id']))) {
             throw new NotFoundException('attachment not found');
         }
 
-        $file = base64_encode(file_get_contents(self::UPLOAD_DESTINATION . ($thisAttachment['filemd5'] ?: $thisAttachment['id'])));
+        $file = base64_encode(file_get_contents(StreamFactory::getPathPrefix('upload') . ($thisAttachment['filemd5'] ?: $thisAttachment['id'])));
         $attachment = [
             'id' => $thisAttachment['id'],
             'user_id' => $thisAttachment['user_id'],
@@ -449,7 +448,7 @@ class SpiceAttachments
         if (count($filetypearray) == 2
             && strtolower($filetypearray[0]) == 'image'
             && array_search(strtolower($filetypearray[1]), $supportedimagetypes) !== false) {
-            if (list($width, $height) = getimagesize(self::UPLOAD_DESTINATION . $filename)) {
+            if (list($width, $height) = getimagesize(StreamFactory::getPathPrefix('upload') . $filename)) {
 
                 $limitingDim = $height > $width ? $width : $height;
 
@@ -457,7 +456,7 @@ class SpiceAttachments
 
                 // create
                 $createfunction = 'imagecreatefrom' . strtolower($filetypearray[1]);
-                $source = $createfunction(self::UPLOAD_DESTINATION . $filename);
+                $source = $createfunction(StreamFactory::getPathPrefix('upload') . $filename);
 
                 if ($source) {
                     imagecopyresized($thumb, $source, 0, 0, ($width - $limitingDim) / 2, ($height - $limitingDim) / 2, $thumbSize, $thumbSize, $limitingDim, $limitingDim);
@@ -518,21 +517,21 @@ class SpiceAttachments
 
         $attachmentsInDb = $db->query('SELECT id, filemd5, bean_type, bean_id, trdate, filename FROM spiceattachments WHERE deleted = 0');
         while ( $attachment = $db->fetchByAssoc( $attachmentsInDb )) {
-            if ( !file_exists(self::UPLOAD_DESTINATION . ( isset( $attachment['filemd5'] ) ? $attachment['filemd5'] : $attachment['id'] ))) {
+            if ( !file_exists(StreamFactory::getPathPrefix('upload') . ( isset( $attachment['filemd5'] ) ? $attachment['filemd5'] : $attachment['id'] ))) {
                 $missingAttachmentsFiles[] = $attachment;
             }
         }
 
         $notesInDb = $db->query('SELECT id, file_md5, date_entered, file_name FROM notes WHERE file_name IS NOT NULL AND file_name <> "" AND deleted = 0');
         while ( $note = $db->fetchByAssoc( $notesInDb )) {
-            if ( !file_exists('upload://' . ( isset( $note['file_md5'][0] ) ? $note['file_md5'] : $note['id'] ))) {
+            if ( !file_exists(StreamFactory::getPathPrefix('upload') . ( isset( $note['file_md5'][0] ) ? $note['file_md5'] : $note['id'] ))) {
                 $missingNoteFiles[] = $note;
             }
         }
 
         $emailsInDb = $db->query('SELECT id, file_md5, date_entered, file_name FROM emails WHERE file_name IS NOT NULL AND file_name <> "" AND deleted = 0');
         while ( $email = $db->fetchByAssoc( $emailsInDb )) {
-            if ( !file_exists('upload://' . ( isset( $email['file_md5'][0] ) ? $email['file_md5'] : $email['id'] ))) {
+            if ( !file_exists(StreamFactory::getPathPrefix('upload') . ( isset( $email['file_md5'][0] ) ? $email['file_md5'] : $email['id'] ))) {
                 $missingEmailFiles[] = $email;
             }
         }

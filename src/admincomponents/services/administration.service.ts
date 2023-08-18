@@ -54,6 +54,8 @@ export class administration implements OnDestroy {
      */
     public admincomponent$: BehaviorSubject<any>;
 
+    public loaded$: BehaviorSubject<boolean>;
+
     /**
      * a filter string to be applied to the content
      */
@@ -68,6 +70,7 @@ export class administration implements OnDestroy {
         this.admincomponent$ = new BehaviorSubject<any>(this.admincomponent);
 
         // load the navigation
+        this.loaded$ = new BehaviorSubject<boolean>(false);
         this.loadNavigation();
 
         // subscribe to broadcast
@@ -106,6 +109,7 @@ export class administration implements OnDestroy {
             nav => {
                 this.adminNavigation = nav;
                 this.loading = false;
+                this.loaded$.next(true);
             }
         );
 

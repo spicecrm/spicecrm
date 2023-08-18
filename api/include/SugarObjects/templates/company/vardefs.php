@@ -190,7 +190,7 @@ $vardefs = [
         ],
         'billing_address_georesult' => [
             'name' => 'billing_address_georesult',
-            'vname' => 'LBL_BILLING_ADDRESS_GEORESULT',
+            'vname' => 'LBL_BILLING_ADDRESS_GEOCOORDINATES',
             'type' => 'text'
         ],
         'rating' => [
@@ -374,7 +374,7 @@ $vardefs = [
         ],
         'shipping_address_georesult' => [
             'name' => 'shipping_address_georesult',
-            'vname' => 'LBL_BILLING_ADDRESS_GEORESULT',
+            'vname' => 'LBL_SHIPPING_ADDRESS_GEOCOORDINATES',
             'type' => 'text'
         ],
         'email1' => [
@@ -414,7 +414,6 @@ $vardefs = [
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAIL_ADDRESSES',
                 'reportable' => false,
-                'unified_search' => true,
                 'default' => true,
                 'module' => 'EmailAddresses',
                 'side' => 'left',

@@ -1,4 +1,4 @@
-<div class="slds-tabs--default">
+<div class="slds-tabs--default slds-height_full slds-grid slds-grid--vertical">
     <ul class="slds-tabs--default__nav" role="tablist">
         <li *ngFor="let tab of tabs; let tabindex = index" class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': tabindex === activeTab, 'slds-hide': isHidden(tab)}"
             role="presentation" (click)="setActiveTab(tabindex)">
@@ -8,7 +8,7 @@
         </li>
     </ul>
     <ng-container *ngFor="let tab of tabs; let tabindex = index">
-        <div *ngIf="checkRenderTab(tabindex)" class="slds-tabs--default__content" role="tabpanel" [ngClass]="{'slds-show': tabindex == activeTab, 'slds-hide': tabindex != activeTab, 'slds-p-bottom--none': componentconfig?.noBottomPadding }">
+        <div *ngIf="checkRenderTab(tabindex)" class="slds-tabs--default__content slds-grow" style="min-height: 0" role="tabpanel" [ngClass]="{'slds-show': tabindex == activeTab, 'slds-hide': tabindex != activeTab, 'slds-p-bottom--none': componentconfig?.noBottomPadding }">
             <object-tab-container-item *ngIf="tab.componentset" [componentset]="tab.componentset"></object-tab-container-item>
         </div>
     </ng-container>

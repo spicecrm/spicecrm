@@ -9,7 +9,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
-
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
@@ -249,7 +249,21 @@ class M2MRelationship extends Relationship
             $this->callAfterAdd($lhs, $rhs, $lhsLinkName);
             $this->callAfterAdd($rhs, $lhs, $rhsLinkName);
 
+        $this->reindexBeans($lhs, $rhs);
+
         return true;
+    }
+
+    /**
+     * reindex sides beans
+     * @param SpiceBean $lhs
+     * @param SpiceBean $rhs
+     * @return void
+     */
+    private function reindexBeans(SpiceBean $lhs, SpiceBean $rhs)
+    {
+        SpiceFTSHandler::getInstance()->indexBean($lhs);
+        SpiceFTSHandler::getInstance()->indexBean($rhs);
     }
 
     protected function getRowToInsert($lhs, $rhs, $additionalFields = [])

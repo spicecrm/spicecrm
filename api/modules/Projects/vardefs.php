@@ -294,6 +294,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Project'] = [
             'relationship' => 'project_primary_contact',
             'source' => 'non-db',
         ],
+        'products' => [
+            'name' => 'products',
+            'vname' => 'LBL_PRODUCTS',
+            'type' => 'link',
+            'module' => 'Products',
+            'relationship' => 'projects_products',
+            'source' => 'non-db'
+        ]
     ],
 
     'relationships' => [
@@ -468,17 +476,6 @@ if(file_exists('extensions/modules/ProjectWBSs')) {
         'module' => 'ProjectWBSs'
     ];
 }
-if(file_exists('extensions/modules/Products')) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['products'] = [
-        'name' => 'products',
-        'vname' => 'LBL_PRODUCTS',
-        'type' => 'link',
-        'module' => 'Products',
-        'relationship' => 'projects_products',
-        'side' => 'right',
-        'source' => 'non-db',
-    ];
-}
 
 VardefManager::createVardef('Projects', 'Project', ['default', 'assignable']);
 
@@ -552,4 +549,16 @@ if(file_exists('extensions/modules/ProjectSettlementProfiles')){
         'rhs_key' => 'projectsettlementprofile_id',
         'relationship_type' => 'one-to-many'
     ];
+
+    if (file_exists('extensions/modules/Travels')) {
+        SpiceDictionaryHandler::getInstance()->dictionary['Project']['fields']['travels'] = [
+            'name' => 'travels',
+            'type' => 'link',
+            'relationship' => 'projects_travels',
+            'source' => 'non-db',
+            'vname' => 'LBL_PROJECTS',
+            'module' => 'Projects',
+            'default' => false
+        ];
+    }
 }

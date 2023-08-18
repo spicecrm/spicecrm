@@ -96,7 +96,7 @@ class SpiceFavorites
                     'item_id' => $seed->id,
                     'module_name' => $seed->_module,
                     'item_summary' => $seed->get_summary_text(),
-                    'item_summary_short' => substr($seed->get_summary_text(), 0, 15),
+                    'item_summary_short' => mb_substr($seed->get_summary_text(), 0, 15),
                     'data' => $moduleHandler->mapBeanToArray($thisFav['bean'], $seed)
                 ];
             } else {

@@ -263,37 +263,15 @@ export class CalendarHeader implements OnDestroy {
         return this.calendar.otherCalendars.some(calendar => module == calendar.name && !calendar.visible) ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {};
     }
 
-    set searchTerm(value: string) {
-        if (value != this.calendar.searchTerm) {
-            this.calendar.searchTerm = value;
-            if(value == '' || this.searchTermsValid(value)) {
-                this.searchTermError = false;
-                this.reloadList();
-            } else {
-                // if we have a timeout set .. clear it
-                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-                // set the error
-                this.searchTermError = true;
-            }
-        }
-    }
-
-    /**
-     * checks if we have the proper length of searchterms
-     *
-     * @param searchTerm
-     * @private
-     */
-    public searchTermsValid(searchTerm) {
-        let config = this.configuration.getCapabilityConfig('search');
-        let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
-        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
-        let items = searchTerm.split(' ');
-        return items.filter(i => i.length < minNgram || i.length > maxNgram).length == 0;
-    }
-
     get searchTerm(): string {
         return this.calendar.searchTerm;
+    }
+
+    set searchTerm(value: string) {
+        if (value == this.calendar.searchTerm) return;
+
+        this.calendar.searchTerm = value;
+        this.reloadList();
     }
 
     /**
@@ -309,10 +287,7 @@ export class CalendarHeader implements OnDestroy {
      * @private
      */
     public reloadList() {
-        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-        this.searchTimeOut = window.setTimeout(() => {
-            this.calendar.refresh();
-            this.calendar.cdRef.detectChanges();
-        }, 1000);
+        this.calendar.refresh();
+        this.calendar.cdRef.detectChanges();
     }
 }
