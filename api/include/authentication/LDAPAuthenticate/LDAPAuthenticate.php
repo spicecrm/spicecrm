@@ -139,7 +139,7 @@ class LDAPAuthenticate implements AuthenticatorI
                 $this->baseDn = $authSys['base_dn'];
                 $this->loginAttr = $authSys['login_attr'];
                 $this->bindAttr = $authSys['bind_attr'];
-                $this->loginFilter = $authSys['loginFilter'];
+                $this->loginFilter = $authSys['login_filter'];
                 $this->ldapAuthentication = $authSys['ldap_authentication'];
                 $this->groups = $authSys['ldap_groups'];
                 $this->autoCreateUser = $authSys['auto_create_users'];
@@ -159,10 +159,12 @@ class LDAPAuthenticate implements AuthenticatorI
                 if ($userObj = $this->ldapAuthenticate($authData->username, $authData->password)) {
                     return new AuthResponse($userObj->user_name, $this->getUserLdapValues($userObj));
                 } else {
-                    // try Spice Authentication
-                    $spiceAuth = new SpiceCRMAuthenticate();
-                    if ($authResponse = $spiceAuth->authenticate($authData, 'credentials')) {
-                        return $authResponse;
+                    // if no connection made it, try Spice Authentication
+                    if(!next($this->config['servers'])){
+                        $spiceAuth = new SpiceCRMAuthenticate();
+                        if ($authResponse = $spiceAuth->authenticate($authData, 'credentials')) {
+                            return $authResponse;
+                        }
                     }
                 }
             }
@@ -258,7 +260,10 @@ class LDAPAuthenticate implements AuthenticatorI
 
         // lunch the search in Active Directory
         try {
-            $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
+            $loginFilter = new LDAPLoginFilter();
+            $filter = $loginFilter->buildLdapSearchFilter($this->loginAttr, $name, $this->loginFilter);
+//            $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
+            $result = ldap_search($this->ldapConn, $this->baseDn, $filter, array_merge(['dn'], [$this->bindAttr]));
         } catch (Exception $e) {
             $error = $this->logLdapError();
             // throw new Exception("unable to query ldap: " . $error);

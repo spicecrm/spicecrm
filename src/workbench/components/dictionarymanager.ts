@@ -10,6 +10,7 @@ import {modal} from '../../services/modal.service';
 
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
+import {configurationService} from "../../services/configuration.service";
 
 /**
  * the central dictionary Manager
@@ -23,8 +24,12 @@ export class DictionaryManager {
 
     public definitionsExpanded: boolean = false;
 
-    constructor(public dictionarymanager: dictionarymanager, public modal: modal, public backend: backend, public toast: toast, public injector: Injector) {
-
+    constructor(public dictionarymanager: dictionarymanager,
+                public modal: modal,
+                public backend: backend,
+                public toast: toast,
+                public injector: Injector,
+                private configurationService: configurationService) {
     }
 
     public migrate(){
@@ -80,6 +85,7 @@ export class DictionaryManager {
                         loadingModal.emit(true);
                         if (result) {
                             this.toast.sendToast('LBL_CACHE_REPAIRED', 'success');
+                            this.configurationService.reloadTaskData('fielddefs');
                         } else {
                             this.toast.sendToast('LBL_ERROR', 'error');
                         }

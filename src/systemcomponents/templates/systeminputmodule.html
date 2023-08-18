@@ -2,6 +2,7 @@
     <div class="slds-select_container">
         <select [disabled]="disabled"  class="slds-select" [(ngModel)]="module">
             <option *ngIf="displayAsterisk" value="*">*</option>
+            <option *ngIf="displayEmptyOption" value=""></option>
             <option *ngFor="let thismodule of _modules" [value]="thismodule">
                 <span *ngIf="!displaytechnicalname"><system-label-modulename [module]="thismodule"></system-label-modulename>&nbsp;({{thismodule}})</span>
                 <span *ngIf="displaytechnicalname">{{thismodule}}</span>

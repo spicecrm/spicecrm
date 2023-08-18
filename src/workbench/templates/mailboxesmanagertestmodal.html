@@ -12,9 +12,10 @@
                 <system-spinner size="10"></system-spinner>
                 <span class="slds-p-horizontal--xx-small"><system-label label="LBL_TESTING"></system-label></span>
             </div>
-            <div *ngIf="!testing && validConnection" class="slds-grid slds-grid--vertical-align-center">
-                <system-utility-icon icon="check" size="x-small"></system-utility-icon>
-                <span class="slds-p-horizontal--xx-small"><system-label label="LBL_OK"></system-label></span>
+            <div *ngIf="!testing && (validConnection !== undefined || !!errorMessage)" class="slds-grid slds-grid--vertical-align-center">
+                <system-utility-icon [icon]="validConnection ? 'check' : 'error'" size="x-small" [colorclass]="validConnection ? 'slds-icon-text-success' : 'slds-icon-text-error'"></system-utility-icon>
+                <span *ngIf="validConnection" class="slds-p-horizontal--xx-small"><system-label label="LBL_OK"></system-label></span>
+                <span *ngIf="!!errorMessage" class="slds-p-horizontal--xx-small slds-text-color--error">{{errorMessage}}</span>
             </div>
             <button [disabled]="!validConnection" class="slds-button slds-col--bump-left slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
             <button [disabled]="testemailaddress.trim().length === 0" class="slds-button slds-button--brand" (click)="testConnection()"><system-label label="LBL_TEST"></system-label></button>

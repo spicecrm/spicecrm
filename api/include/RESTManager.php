@@ -61,6 +61,7 @@ use SpiceCRM\includes\utils\RESTRateLimiter;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\Contacts\Contact;
 use Throwable;
+use SpiceCRM\includes\Middleware\ipClientsMiddleware;
 
 class RESTManager
 {
@@ -500,8 +501,8 @@ class RESTManager
             if (isset($route['method']) && isset($route['route']) && isset($route['class'])
                 && isset($route['function'])) {
 
-                if (isset($route['options']['noAuth']) && $route['options']['noAuth'] == false
-                    && $authController->isAuthenticated()===false) {
+                # prevent access to routes that require authentication when the user is not authenticated
+                if (!$authController->isAuthenticated() && (!isset($route['options']['noAuth']) || $route['options']['noAuth'] !== true)) {
                     continue;
                 }
 
@@ -511,20 +512,25 @@ class RESTManager
 
                 $routeObject = $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
 
-                if (isset($route['options']['adminOnly']) && $route['options']['adminOnly'] == true) {
+                if (isset($route['options']['adminOnly']) && $route['options']['adminOnly'] === true) {
                     $routeObject->add(AdminOnlyAccessMiddleware::class);
                 }
 
                 // add validation for API only
-                if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] == true) {
+                if (isset($route['options']['apiOnly']) && $route['options']['apiOnly'] === true) {
                     $routeObject->add(ApiOnlyAccessMiddleware::class);
                 }
 
-                if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] == true) {
+                // add validation for specific IP addresses only
+                if ( isset( $route['options']['ipClients'] ) and ( is_string( $route['options']['ipClients'] ) or is_array( $route['options']['ipClients'] ) or $route['options']['ipClients'] === true )) {
+                    $routeObject->add(ipClientsMiddleware::class);
+                }
+
+                if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] === true) {
                     $routeObject->add(ModuleRouteMiddleware::class);
                 }
 
-                if (isset($route['options']['validate']) && $route['options']['validate'] == true) {
+                if (isset($route['options']['validate']) && $route['options']['validate'] === true) {
                     $routeObject->add(ValidationMiddleware::class);
                 }
 

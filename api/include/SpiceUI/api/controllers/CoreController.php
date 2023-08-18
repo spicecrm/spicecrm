@@ -8,6 +8,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
@@ -47,6 +48,9 @@ class CoreController
     public function getSysinfo(Request $req, Response $res, array $args): Response {
 
         $languages = LanguageManager::getLanguages(true);
+        $languages['required_labels'] = LanguageManager::getSpecificLabels( SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
+            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE'
+        ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
         $aclcontroller = 'spiceacl';
@@ -57,12 +61,13 @@ class CoreController
         $uiRestHandler = new SpiceUIRESTHandler();
 
         $payload = [
-            'version' => '2.0',
+            'version' => SpiceConfig::getSystemVersion(),
             'systemsettings' => [
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
                 'enableSettingUserPrefsByAdmin' => isset(SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin']) ? (boolean)@SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin'] : false,
                 'aclcontroller' => $aclcontroller, //CR1000463
-                'developermode' => SpiceConfig::getInstance()->config['developerMode']
+                'developermode' => SpiceConfig::getInstance()->config['developerMode'],
+                'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'] ?? 0
             ],
             'extensions' => RESTManager::getInstance()->extensions,
             'languages' => $languages,

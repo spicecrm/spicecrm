@@ -57,6 +57,10 @@ class SpiceModules
     public function loadModules($forceReload = false): void {
         $cached = SpiceCache::get('spiceModules');
         if (!$cached || $forceReload) {
+
+            # reset the modules session cache when reloading the modules from the database
+            unset($_SESSION['SpiceUI']['modules']);
+
             $this->modules = [];
             $columns = ['id', 'acl', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id'];
             $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns)." FROM sysmodules UNION SELECT ".implode(', ', $columns)." FROM syscustommodules");

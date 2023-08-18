@@ -225,7 +225,8 @@ class CampaignTask extends SpiceBean
             'searchterm' => $searchTerm,
             'records' => $limit,
             'start' => $offset,
-            'sort' => !$sort ? [] : ['sortfield' => $sort->sortfield, 'sortdirection' => $sort->sortdirection]
+            'useGlobalFilter' => false,
+            'sort' => !$sort || !$sort->sortfield ? [] : ['sortfield' => $sort->sortfield, 'sortdirection' => $sort->sortdirection]
         ];
     }
 
@@ -362,7 +363,7 @@ class CampaignTask extends SpiceBean
      * send queued emails for email campaign tasks thewre the log entry is set to queued
      * @return bool
      */
-    function sendQueuedEmails(){
+    function sendQueuedEmails($addBeans = []){
         // set the admin user
         $admin = BeanFactory::getBean('Users', '1');
         AuthenticationController::getInstance()->setCurrentUser($admin);
@@ -385,25 +386,22 @@ class CampaignTask extends SpiceBean
 
             // load the bean and send the email
             $seed = BeanFactory::getBean($queuedEmail['target_type'], $queuedEmail['target_id']);
+            $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
             if($seed && $seed->is_inactive) {
-                $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
                 $campaignLog->activity_type = 'inactive';
                 $campaignLog->save();
             } else if($seed) {
-                $email = $this->sendEmail($seed, true);
+                $email = $this->sendEmail($seed, true, false, ['CampaignLog' => $campaignLog]);
                 if($email == false){
-                    $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
                     $campaignLog->activity_type = 'noemail';
                     $campaignLog->save();
                 } else {
-                    $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
                     $campaignLog->activity_type = 'sent';
                     $campaignLog->related_id = $email->id;
                     $campaignLog->related_type = 'Emails';
                     $campaignLog->save();
                 }
             } else {
-                $campaignLog = BeanFactory::getBean('CampaignLog', $queuedEmail['id']);
                 $campaignLog->activity_type = 'error';
                 $campaignLog->save();
             }
@@ -423,7 +421,7 @@ class CampaignTask extends SpiceBean
      * @param false $test
      * @return false|SpiceBean
      */
-    function sendEmail($seed, $saveEmail = false, $test = false)
+    function sendEmail($seed, $saveEmail = false, $test = false, $addBeans = [])
     {
         if(!$seed->email1) {
             return false;
@@ -440,7 +438,7 @@ class CampaignTask extends SpiceBean
             $emailTemplate->body_html = $this->email_body;
             $emailTemplate->style = $this->email_stylesheet_id;
         }
-        $parsedHtml = $emailTemplate->parse($seed);
+        $parsedHtml = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
 
         $email->id = SpiceUtils::createGuid();
         $email->new_with_id = true;
@@ -461,6 +459,7 @@ class CampaignTask extends SpiceBean
             $email->parent_type = $seed->_module;
             $email->parent_id = $seed->id;
             $email->to_be_sent = true;
+            $email->registerTrackingParentData('CampaignLog', $addBeans['CampaignLog']->id);
             $email->save();
         } else {
             $email->sendEmail();

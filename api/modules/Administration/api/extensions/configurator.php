@@ -52,13 +52,13 @@ $routes = [
         'route'       => '/configuration/configurator/entries/{table}',
         'class'       => ConfiguratorController::class,
         'function'    => 'readConfig',
-        'description' => 'reads the config from a db table as gen eric interface',
+        'description' => 'reads the config from a db table as generic interface',
         'options'     => ['adminOnly' => true, 'validate' => true ],
         'parameters'  => [
             'table' => [
                 'in' => 'path',
                 'description' => 'Table',
-                'type' => ValidationMiddleware::TYPE_ALPHANUMERIC,
+                'type' => ValidationMiddleware::TYPE_STRING,
                 'required' => true
             ]
         ]

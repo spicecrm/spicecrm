@@ -63,7 +63,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'name' => 'taxcategory',
             'vname' => 'LBL_TAXCATEGORY',
             'type' => 'enum',
-            'length' => 1,
+            'len' => 1,
             'options' => 'product_tax_categories_dom',
             'comment' => 'the tax category for the tax determination'
         ],
@@ -102,6 +102,41 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
         'manufacturer_id' => [
             'name' => 'manufacturer_id',
             'type' => 'id',
+        ],
+        // product hierarchy categories
+        'producthierarchy_category' => [
+            'name' => 'producthierarchy_category',
+            'vname' => 'LBL_PRODUCTHIERARCHY_CATEGORY',
+            'type' => 'categories',
+            'source' => 'non-db'
+        ],
+        'producthierarchy_category_id1' => [
+            'name' => 'producthierarchy_category_id1',
+            'vname' => 'LBL_PRODUCTHIERARCHY_CATEGORY_ID1',
+            'type' => 'category',
+            'dbType' => 'varchar',
+            'len' => 2
+        ],
+        'producthierarchy_category_id2' => [
+            'name' => 'producthierarchy_category_id2',
+            'vname' => 'LBL_PRODUCTHIERARCHY_CATEGORY_ID2',
+            'type' => 'category',
+            'dbType' => 'varchar',
+            'len' => 2
+        ],
+        'producthierarchy_category_id3' => [
+            'name' => 'producthierarchy_category_id3',
+            'vname' => 'LBL_PRODUCTHIERARCHY_CATEGORY_ID3',
+            'type' => 'category',
+            'dbType' => 'varchar',
+            'len' => 3
+        ],
+        'producthierarchy_category_id4' => [
+            'name' => 'producthierarchy_category_id4',
+            'vname' => 'LBL_PRODUCTHIERARCHY_CATEGORY_ID4',
+            'type' => 'category',
+            'dbType' => 'varchar',
+            'len' => 3
         ],
         'manufacturer_name' => [
             'name' => 'manufacturer_name',
@@ -256,6 +291,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'relationship' => 'outputtemplates_products',
             'source' => 'non-db',
             'vname' => 'LBL_OUTPUTTEMPLATES',
+        ],
+        'projects' => [
+            'name' => 'projects',
+            'vname' => 'LBL_PROJECTS',
+            'type' => 'link',
+            'module' => 'Projects',
+            'relationship' => 'projects_products',
+            'source' => 'non-db',
         ]
     ],
     'relationships' => [

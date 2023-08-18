@@ -177,10 +177,10 @@ class EmailAddressRelationship extends M2MRelationship
         $query = $this->getQuery($link, $params);
 
         // check if we kept it in memory
-        $cached = SpiceCache::getMemory('spicerelationshipresult'.md5($query));
-        if($cached){
-            return ["rows" => $cached];
-        }
+//        $cached = SpiceCache::getMemory('spicerelationshipresult'.md5($query));
+//        if($cached){
+//            return ["rows" => $cached];
+//        }
 
         $result = $db->query($query);
         $rows = [];
@@ -194,7 +194,7 @@ class EmailAddressRelationship extends M2MRelationship
         }
 
         // put to globals so we keep it
-        SpiceCache::setMemory('spicerelationshipresult'.md5($query), $rows);
+//        SpiceCache::setMemory('spicerelationshipresult'.md5($query), $rows);
 
 
         // return the rows

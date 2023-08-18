@@ -1,9 +1,10 @@
 <?php
 /***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\Soap\SpiceSoap;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\UploadStream;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 /**
@@ -27,8 +28,7 @@ DBManagerFactory::setDBConfig();
 
 SpiceConfig::getInstance()->reloadConfig();
 
-// register the upload stream handler
-UploadStream::register();
+StreamFactory::initialize();
 
 // load the modules first
 SpiceModules::getInstance()->loadModules();

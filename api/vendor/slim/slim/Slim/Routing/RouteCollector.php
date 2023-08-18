@@ -34,74 +34,52 @@ use function is_writable;
  */
 class RouteCollector implements RouteCollectorInterface
 {
-    /**
-     * @var RouteParserInterface
-     */
-    protected $routeParser;
+    protected RouteParserInterface $routeParser;
 
-    /**
-     * @var CallableResolverInterface
-     */
-    protected $callableResolver;
+    protected CallableResolverInterface $callableResolver;
 
-    /**
-     * @var ContainerInterface|null
-     */
-    protected $container;
+    protected ?ContainerInterface $container = null;
 
-    /**
-     * @var InvocationStrategyInterface
-     */
-    protected $defaultInvocationStrategy;
+    protected InvocationStrategyInterface $defaultInvocationStrategy;
 
     /**
      * Base path used in pathFor()
-     *
-     * @var string
      */
-    protected $basePath = '';
+    protected string $basePath = '';
 
     /**
      * Path to fast route cache file. Set to null to disable route caching
-     *
-     * @var string|null
      */
-    protected $cacheFile;
+    protected ?string $cacheFile = null;
 
     /**
      * Routes
      *
      * @var RouteInterface[]
      */
-    protected $routes = [];
+    protected array $routes = [];
+
+    /**
+     * Routes indexed by name
+     *
+     * @var RouteInterface[]
+     */
+    protected array $routesByName = [];
 
     /**
      * Route groups
      *
      * @var RouteGroup[]
      */
-    protected $routeGroups = [];
+    protected array $routeGroups = [];
 
     /**
      * Route counter incrementer
-     *
-     * @var int
      */
-    protected $routeCounter = 0;
+    protected int $routeCounter = 0;
 
-    /**
-     * @var ResponseFactoryInterface
-     */
-    protected $responseFactory;
+    protected ResponseFactoryInterface $responseFactory;
 
-    /**
-     * @param ResponseFactoryInterface         $responseFactory
-     * @param CallableResolverInterface        $callableResolver
-     * @param ContainerInterface|null          $container
-     * @param InvocationStrategyInterface|null $defaultInvocationStrategy
-     * @param RouteParserInterface|null        $routeParser
-     * @param string|null                      $cacheFile
-     */
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         CallableResolverInterface $callableResolver,
@@ -121,9 +99,6 @@ class RouteCollector implements RouteCollectorInterface
         }
     }
 
-    /**
-     * @return RouteParserInterface
-     */
     public function getRouteParser(): RouteParserInterface
     {
         return $this->routeParser;
@@ -131,18 +106,12 @@ class RouteCollector implements RouteCollectorInterface
 
     /**
      * Get default route invocation strategy
-     *
-     * @return InvocationStrategyInterface
      */
     public function getDefaultInvocationStrategy(): InvocationStrategyInterface
     {
         return $this->defaultInvocationStrategy;
     }
 
-    /**
-     * @param InvocationStrategyInterface $strategy
-     * @return self
-     */
     public function setDefaultInvocationStrategy(InvocationStrategyInterface $strategy): RouteCollectorInterface
     {
         $this->defaultInvocationStrategy = $strategy;
@@ -188,10 +157,6 @@ class RouteCollector implements RouteCollectorInterface
 
     /**
      * Set the base path used in urlFor()
-     *
-     * @param string $basePath
-     *
-     * @return self
      */
     public function setBasePath(string $basePath): RouteCollectorInterface
     {
@@ -214,7 +179,8 @@ class RouteCollector implements RouteCollectorInterface
     public function removeNamedRoute(string $name): RouteCollectorInterface
     {
         $route = $this->getNamedRoute($name);
-        unset($this->routes[$route->getIdentifier()]);
+
+        unset($this->routesByName[$route->getName()], $this->routes[$route->getIdentifier()]);
         return $this;
     }
 
@@ -223,11 +189,22 @@ class RouteCollector implements RouteCollectorInterface
      */
     public function getNamedRoute(string $name): RouteInterface
     {
+        if (isset($this->routesByName[$name])) {
+            $route = $this->routesByName[$name];
+            if ($route->getName() === $name) {
+                return $route;
+            }
+
+            unset($this->routesByName[$name]);
+        }
+
         foreach ($this->routes as $route) {
             if ($name === $route->getName()) {
+                $this->routesByName[$name] = $route;
                 return $route;
             }
         }
+
         throw new RuntimeException('Named route does not exist for name: ' . $name);
     }
 
@@ -271,6 +248,12 @@ class RouteCollector implements RouteCollectorInterface
     {
         $route = $this->createRoute($methods, $pattern, $handler);
         $this->routes[$route->getIdentifier()] = $route;
+
+        $routeName = $route->getName();
+        if ($routeName !== null && !isset($this->routesByName[$routeName])) {
+            $this->routesByName[$routeName] = $route;
+        }
+
         $this->routeCounter++;
 
         return $route;
@@ -278,10 +261,7 @@ class RouteCollector implements RouteCollectorInterface
 
     /**
      * @param string[]        $methods
-     * @param string          $pattern
      * @param callable|string $callable
-     *
-     * @return RouteInterface
      */
     protected function createRoute(array $methods, string $pattern, $callable): RouteInterface
     {

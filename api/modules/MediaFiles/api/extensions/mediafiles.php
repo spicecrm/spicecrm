@@ -1,6 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\MediaFiles\api\controllers\MediaFilesController;
 use Slim\Routing\RouteCollectorProxy;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -13,7 +14,9 @@ $RESTManager = RESTManager::getInstance();
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('mediafiles', '1.0');
+$RESTManager->registerExtension('mediafiles', '1.0', [
+    'public_url' => SpiceConfig::getInstance()->config['mediafiles']['public_url'] ?? 'https://cdn.spicecrm.io/'
+]);
 
 $routes = [
     [

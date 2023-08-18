@@ -185,6 +185,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Task'] = ['table' => 'tasks',
             'source'       => 'non-db',
             'vname'        => 'LBL_CONSUMERS',
         ],
+        'employees' => [
+            'name'         => 'employees',
+            'type'         => 'link',
+            'relationship' => 'employees_tasks',
+            'module'       => 'Employees',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_EMPLOYEES',
+        ],
         'opportunities' => [
             'name'         => 'opportunities',
             'type'         => 'link',
@@ -204,7 +212,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Task'] = ['table' => 'tasks',
             'type'         => 'link',
             'relationship' => 'meetings_tasks',
             'source'       => 'non-db',
-            'vname'        => 'LBL_MEETINS',
+            'vname'        => 'LBL_MEETINGS',
         ],
         'leads' => [
             'name'         => 'leads',
@@ -363,6 +371,15 @@ if (file_exists("extensions/modules/ServiceOrders")) {
         'bean_name'    => 'ServiceOrder',
         'source'       => 'non-db',
         'vname'        => 'LBL_SERVICEORDER',
+    ];
+}
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Task']['fields']['procurementdocs'] = [
+        'name'         => 'procurementdocs',
+        'type'         => 'link',
+        'relationship' => 'procurementdocs_tasks',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_PROCUREMENTDOCS',
     ];
 }
 

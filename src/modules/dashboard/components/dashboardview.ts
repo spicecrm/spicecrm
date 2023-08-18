@@ -1,14 +1,15 @@
 /**
  * @module ModuleDashboard
  */
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {dashboardlayout} from '../services/dashboardlayout.service';
 import {view} from "../../../services/view.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'dashboard-view',
@@ -18,15 +19,16 @@ import {view} from "../../../services/view.service";
 export class DashboardView implements OnInit {
 
     public panelwidth = 250;
-    public showpanel: boolean = false;
+    public showpanel: boolean = true;
 
-    constructor(public navigation: navigation,
+    constructor(public navigationTab: navigationtab,
                 public language: language,
                 public dashboardlayout: dashboardlayout,
                 public userpreferences: userpreferences,
                 public model: model,
                 public view: view,
-                public modellist: modellist) {
+                public modellist: modellist,
+                public metadata: metadata) {
     }
 
     get ismobile() {
@@ -35,21 +37,22 @@ export class DashboardView implements OnInit {
 
     get dashboardstyle() {
         return {
-            width: 'calc(100% - ' + (this.ismobile ? 0 : this.panelwidth) + 'px)'
+            width: 'calc(100% - ' + (this.ismobile || !this.showpanel ? 0 : this.panelwidth) + 'px)'
         };
     }
 
     get panelstyle() {
         return {
-            'width': this.panelwidth + 'px',
+            'width': (!this.showpanel ? 0 : this.panelwidth) + 'px',
             'z-index': 1,
+            'display': !this.showpanel && !this.ismobile ? 'none' : 'block',
             'left': this.ismobile && !this.showpanel ? '-250px' : '0px'
         };
     }
 
     public ngOnInit() {
         this.loadDashboards();
-        this.navigation.setActiveModule('Dashboards');
+        this.navigationTab.setTabInfo({displaymodule: 'Dashboards', displayname: this.metadata.getModuleDefs('Dashboards').module_label});
     }
 
     public loadDashboards() {

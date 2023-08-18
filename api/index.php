@@ -8,8 +8,9 @@ require_once 'vendor/autoload.php';
 use Slim\Factory\AppFactory;
 use DI\Container;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
-use SpiceCRM\includes\UploadStream;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -43,6 +44,8 @@ try {
 
     SpiceConfig::getInstance()->reloadConfig();
 
+    SpiceLanguageManager::setCurrentLanguage();
+
     $slimContainer = new Container();
     AppFactory::setContainer($slimContainer);
     $app = AppFactory::create(new SpiceResponseFactory());
@@ -61,17 +64,20 @@ try {
     // add the developer middleware
     $app->add(DeveloperMiddleware::class);
 
+    // load the metadata from the database
+    SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
+
     // authenticate
     AuthenticationController::getInstance()->authenticate();
 
-    // register the upload stream handler
-    UploadStream::register();
+    // load the data streams
+    StreamFactory::initialize();
 
     // load the modules first
     SpiceModules::getInstance()->loadModules();
 
     // load the metadata from the database
-    // SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
+    SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 
     if (!empty(SpiceConfig::getInstance()->config['session_dir'])) {
         session_save_path(SpiceConfig::getInstance()->config['session_dir']);

@@ -282,6 +282,23 @@ class EmailsController
         $email->status = $req->getParsedBody()['status'];
         $email->save();
 
+        // check if we need to update notification status
+        if($email->parent_type && $email->parent_id){
+            $seed = BeanFactory::getBean($email->parent_type);
+            if(isset($seed->field_defs['has_notification']) && $seed->retrieve($email->parent_id)){
+                $count = $seed->db->fetchOne("SELECT count(id) unreadcount FROM emails WHERE status='unread' AND deleted = 0 AND parent_id='{$email->parent_id}' AND parent_type='{$email->parent_type}'");
+                if($count['unreadcount'] > 0 && $seed->has_notification == 0) {
+                    $seed->has_notification = 1;
+                    $seed->systemUpdate = true;
+                    $seed->save();
+                } elseif ($count['unreadcount'] == 0 && $seed->has_notification == 1) {
+                    $seed->has_notification = 0;
+                    $seed->systemUpdate = true;
+                    $seed->save();
+                }
+            }
+        }
+
         return $res->withJson(['status' => 'success']);
     }
 

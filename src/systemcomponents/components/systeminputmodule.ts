@@ -39,6 +39,11 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
      */
     @Input() public displayAsterisk: boolean = false;
 
+    /**
+     * for use in components make empty option selectable
+     */
+    @Input() public displayEmptyOption: boolean = false;
+
     @Input() set filterModules(value:string[]){
         this._modules = this._modules.filter(m=>!value.some(v=>v==m))
     }

@@ -3,8 +3,8 @@
         <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center">
             <system-label label="LBL_NAME"></system-label>
         </label>
-        <div class="slds-form-element__control slds-grow">
-            <input type="text" [ngModel]="whereCondition.name" [disabled]="true" class="slds-input">
+        <div class="slds-form-element__control slds-grow slds-truncate">
+            <system-input-label class="slds-truncate" [(ngModel)]="whereCondition.label"></system-input-label>
         </div>
     </div>
     <div class="slds-form-element slds-p-horizontal--xx-small slds-grid slds-grid--vertical-align-center slds-size--1-of-2">

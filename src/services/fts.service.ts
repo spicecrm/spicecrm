@@ -30,7 +30,9 @@ interface ftsSearchParameters {
     buckets?: ftsSearchBuckets;
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class fts {
     /**
      * reference id will be sent with each backend request to enable canceling the pending requests
@@ -73,6 +75,26 @@ export class fts {
 
     get loadedSearchModules() {
         return this.searchModules.filter(module => this.metadata.checkModuleAcl(module, 'list'));
+    }
+
+    /**
+     * check for search term errors
+     * @param searchTerm
+     */
+    public checkForSearchTermErrors(searchTerm): {label: string, nestedValues: string[]}[] | undefined {
+        let config = this.configurationService.getCapabilityConfig('search');
+        let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
+        let items = searchTerm.split(' ');
+        const errors = [];
+
+        if (items.filter(i => i.length < minNgram).length > 0) {
+            errors.push({
+                label: 'MSG_SEARCH_TERM_TOO_SHORT',
+                nestedValues: [String(minNgram)]
+            });
+        }
+
+        return errors.length == 0 ? undefined : errors;
     }
 
     public transformHits(hits) {

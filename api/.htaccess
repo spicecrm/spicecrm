@@ -30,9 +30,11 @@ RewriteCond %{REQUEST_URI} ^(.*)install(\.php)$
 RewriteRule ^ include/SpiceInstaller/install.php [QSA,L]
 
 # use the rewrite rule below if loaded as CLI in Apache
-<IfModule !mod_php.so>
-    RewriteRule ^ index.php?PHP_AUTH_DIGEST_RAW=%{HTTP:Authorization} [QSA,L]
-</IfModule>
+# CGIPassAuth shoudl not require the rewrite rule as below .. it is causing errors in latest apache builds
+CGIPassAuth On
+#<IfModule !mod_php.so>
+#    RewriteRule ^ index.php?PHP_AUTH_DIGEST_RAW=%{HTTP:Authorization} [QSA,L]
+#</IfModule>
 
 # the default rewrite
 RewriteRule ^ index.php [QSA,L]

@@ -92,6 +92,14 @@
                     <system-input-integer [disabled]="true" [(ngModel)]="settings.advanced.maximum_export_lines"></system-input-integer>
                 </div>
             </div>
+            <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-p-around--x-small slds-size--1-of-2">
+                    <div class="slds-grid slds-grid_vertical">
+                        <system-label label="LBL_INTERNATIONAL_EMAIL_ADDRESSES"></system-label>
+                        <system-checkbox class="slds-p-vertical--xx-small" [(ngModel)]="settings.advanced.international_email_addresses"></system-checkbox>
+                    </div>
+                </div>
+            </div>
         </div>
     </div><div class="slds-section slds-is-open">
         <h3 class="slds-section__title">
