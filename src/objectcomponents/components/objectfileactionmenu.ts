@@ -6,6 +6,8 @@ import {language} from "../../services/language.service";
 import {modelattachments} from "../../services/modelattachments.service";
 import {broadcast} from "../../services/broadcast.service";
 import {modal} from '../../services/modal.service';
+import {Router} from "@angular/router";
+import {navigationtab} from "../../services/navigationtab.service";
 
 /**
  * renders the action menu for the attachment
@@ -23,8 +25,9 @@ export class ObjectFileActionMenu {
                 public language: language,
                 public elementRef: ElementRef,
                 public modalservice: modal,
-                public injector: Injector) {
-
+                public injector: Injector,
+                public router: Router,
+                public navigationtab: navigationtab ) {
     }
 
     /**
@@ -71,4 +74,18 @@ export class ObjectFileActionMenu {
             }
         );
     }
+
+    /**
+     * opens file/url in a new tab
+     * module/:module/:moduleId/:attachment/:attachmentId
+     *
+     */
+    public openInTab() {
+        let routePrefix = '';
+        if (this.navigationtab?.tabid) {
+            routePrefix = '/tab/' + this.navigationtab.tabid;
+        }
+        this.router.navigate([`${routePrefix}/attachment/${this.file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
+    }
+
 }
