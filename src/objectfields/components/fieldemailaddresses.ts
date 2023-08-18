@@ -159,6 +159,13 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
                 const email_addresses = this.model.getRelatedRecords('email_addresses');
                 this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
 
+                // check if we have at least one email address and if we are in is adding but no email has been inputted
+                // this is the case if we have a new record or edit an existing without email address but from other areas an email address is added
+                // then cancel the adding process so only the now one email address remains
+                if(email_addresses.length > 0 && this.isAdding){
+                    if(!this.inputNewEmailAddress.email_address) this.isAdding = false;
+                }
+
             })
         );
     }
@@ -221,6 +228,8 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         const emailAddresses = this.getUniqueCleanEmailAddresses();
         this.model.addRelatedRecords('email_addresses', emailAddresses.unique);
+        // rollback the deleted empty addresses if they were refilled
+        this.model.rollbackRemovedRelatedRecords('email_addresses', emailAddresses.unique.map(e => e.id));
         this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
 
         let invalid = this.handleFieldInvalid();

@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
@@ -28,6 +28,14 @@ declare var _: any;
     }
 })
 export class GlobalLogin {
+
+    /**
+     * identifies the focus element. If the field is set to edit mode a specific field can be set to be focused
+     *
+     * in case there are e.g. multiple inut elements define the most important one in the template
+     */
+    @ViewChild('twofactorinput', {read: ViewContainerRef, static: false}) public twofactorinput: ViewContainerRef;
+
     /**
      * two-factor authentication active boolean
      */
@@ -160,6 +168,10 @@ export class GlobalLogin {
         return this.configuration.data.loginProgressBar;
     }
 
+    get loginLabels() {
+        return this.configuration.data.languages?.required_labels ?? {};
+    }
+
     /**
      * register to the resize event that handles if the news feed should be shown or not
      */
@@ -244,8 +256,13 @@ export class GlobalLogin {
                 break;
                 // required 2FA code
             case 4:
-                this.messageId = this.toast.sendToast(error.message, "error");
+                this.messageId = this.toast.sendToast(error.message, "success");
                 this.twoFactorAuthCodeRequired = true;
+                setTimeout(() => {
+                    if (this.twofactorinput) {
+                        this.twofactorinput.element.nativeElement.focus();
+                    }
+                });
                 break;
             // TOTP authentication required
             case 12:

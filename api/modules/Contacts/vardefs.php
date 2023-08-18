@@ -95,7 +95,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'dbType' => 'varchar',
                 'len' => '255',
                 'source' => 'non-db',
-                'unified_search' => true,
+                'unified_search' => false,
             ],
             'account_id' => [
                 'name' => 'account_id',
@@ -271,7 +271,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'contact_calls_parent',
                 'source' => 'non-db',
-                'vname' => 'LBL_CALLS',
+                'vname' => 'LBL_CALLS_AS_PARENT',
             ],
             'callattempts_parent' => [
                 'name' => 'callattempts_parent',
@@ -318,7 +318,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'documents_contacts',
                 'source' => 'non-db',
-                'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+                'vname' => 'LBL_DOCUMENTS',
             ],
             'leads' => [
                 'name' => 'leads',
@@ -340,7 +340,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'contact_meetings_parent',
                 'source' => 'non-db',
-                'vname' => 'LBL_MEETINGS',
+                'vname' => 'LBL_MEETINGS_AS_PARENT',
             ],
             'notes' => [
                 'name' => 'notes',
@@ -376,7 +376,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'contact_tasks_parent',
                 'source' => 'non-db',
-                'vname' => 'LBL_TASKS',
+                'vname' => 'LBL_TASKS_AS_PARENT',
                 'reportable' => false
             ],
             'notes_parent' => [
@@ -384,7 +384,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'contact_notes_parent',
                 'source' => 'non-db',
-                'vname' => 'LBL_TASKS',
+                'vname' => 'LBL_NOTES_AS_PARENT',
                 'reportable' => false
             ],
             'user_sync' => [
@@ -408,7 +408,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'name' => 'modified_user_link',
                 'type' => 'link',
                 'relationship' => 'contacts_modified_user',
-                'vname' => 'LBL_MODIFIED_BY_USER',
+                'vname' => 'LBL_MODIFIED_BY',
                 'link_type' => 'one',
                 'module' => 'Users',
                 'bean_name' => 'User',
@@ -890,6 +890,18 @@ if (file_exists("extensions/modules/SalesDocs")) {
         'source' => 'non-db',
     ];
 }
+
+if (file_exists("extensions/modules/ProcurementDocs")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['procurementdoc'] = [
+        'name' => 'procurementdoc',
+        'type' => 'link',
+        'vname' => 'LBL_PROCUREMENTDOCS',
+        'relationship' => 'procurementdocs_contacts',
+        'module' => 'ProcurementDocs',
+        'source' => 'non-db'
+    ];
+}
+
 if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactsonlineprofiles'] = [
         'name' => 'contactsonlineprofiles',
@@ -903,7 +915,7 @@ if (file_exists("extensions/modules/ContactsOnlineProfiles")) {
 if (file_exists("extensions/modules/ContactCCDetails")) {
     SpiceDictionaryHandler::getInstance()->dictionary['Contact']['fields']['contactccdetails'] = [
         'name' => 'contactccdetails',
-        'vname' => 'LBL_CONTACTCCDETAILS_LINK',
+        'vname' => 'LBL_CONTACTCCDETAILS',
         'type' => 'link',
         'relationship' => 'contacts_contactccdetails',
         'link_type' => 'one',

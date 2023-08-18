@@ -16,19 +16,20 @@ use SpiceCRM\modules\SpiceACL\SpiceACL;
 
 class SpiceUIModulesController
 {
-    function geUnfilteredModules(){
+    function geUnfilteredModules()
+    {
         global $modInvisList;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
         $modules = [];
-        if(!is_array($modInvisList)) $modInvisList = [];
+        if (!is_array($modInvisList)) $modInvisList = [];
 
         // select from sysmodules
         $modules = SpiceModules::getInstance()->modules;
         foreach (SpiceModules::getInstance()->modules as $module => $moduleDetails) {
             // check if we have the module or if it has been filtered out
-            if (!$moduleDetails['acl'] || ( isset( $current_user ) and $current_user->is_admin ) || $module == 'Home' || array_search($module, $modInvisList) !== false)
+            if (!$moduleDetails['acl'] || (isset($current_user) and $current_user->is_admin) || $module == 'Home' || array_search($module, $modInvisList) !== false)
                 $modules[$module] = $moduleDetails;
         }
 
@@ -49,19 +50,19 @@ class SpiceUIModulesController
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
-        if(isset($_SESSION['SpiceUI']['modules'])){
-            $retArray =  $_SESSION['SpiceUI']['modules'];
+        if (isset($_SESSION['SpiceUI']['modules'])) {
+            $retArray = $_SESSION['SpiceUI']['modules'];
         } else {
 
             // if we have no ACL Controller yet .. return an empty array
-            if(!SpiceACL::getInstance()) return [];
+            if (!SpiceACL::getInstance()) return [];
 
             // filter the module list
             SpiceACL::getInstance()->filterModuleList($globalModuleList);
 
             // in case $modInvisList is no longer an array, define as such
             // might happen when a new user has no ACL allocated
-            if(!is_array($modInvisList)){
+            if (!is_array($modInvisList)) {
                 $modInvisList = [];
             }
 
@@ -88,7 +89,7 @@ class SpiceUIModulesController
 
                 // get acls for the module
                 $aclArray = [];
-                if($module['module'] == 'LandingPages'){
+                if ($module['module'] == 'LandingPages') {
                     $i = 1;
                 }
                 $seed = BeanFactory::getBean($module['module']);
@@ -100,7 +101,7 @@ class SpiceUIModulesController
 
                 $ftsBeanHandler = new SpiceFTSBeanHandler($seed);
                 // check if we have any ACL right
-                if ($module['module'] == 'Home' || $aclArray['list'] ||$aclArray['listrelated'] || $aclArray['view'] || $aclArray['edit']) {
+                if ($module['module'] == 'Home' || $aclArray['list'] || $aclArray['listrelated'] || $aclArray['view'] || $aclArray['edit']) {
                     $retArray[$module['module']] = [
                         'id' => $module['id'],
                         'icon' => $module['icon'],
@@ -148,7 +149,7 @@ class SpiceUIModulesController
     {
         $db = DBManagerFactory::getInstance();
         $ret = [];
-        if(!empty($moduleid)) {
+        if (!empty($moduleid)) {
             $dbresult = $db->query("SELECT * FROM sysmodules WHERE id='{$moduleid}' UNION SELECT * FROM syscustommodules WHERE id='{$moduleid}'");
             while ($m = $db->fetchByAssoc($dbresult)) {
                 // we should get only 1 record
@@ -170,16 +171,16 @@ class SpiceUIModulesController
         $modules = self::getModules();
         foreach ($modules as $module => $moduleDetails) {
             $seed = BeanFactory::getBean($module);
-            if(!$seed) continue;
-            foreach($seed->field_defs as $fieldname => $fielddata){
+            if (!$seed) continue;
+            foreach ($seed->field_defs as $fieldname => $fielddata) {
                 $retArray[$module][$fieldname] = $fielddata;
-                switch($fielddata['type']){
+                switch ($fielddata['type']) {
                     case 'parent':
                     case 'linkedparent':
                         $parentmodules = [];
                         $relationships = $seed->db->query("SELECT lhs_module FROM relationships WHERE rhs_module='{$module}' AND rhs_key='{$fielddata['id_name']}' AND deleted=0");
-                        while($relationship = $seed->db->fetchByAssoc($relationships)){
-                            if(isset($modules[$relationship['lhs_module']])){
+                        while ($relationship = $seed->db->fetchByAssoc($relationships)) {
+                            if (isset($modules[$relationship['lhs_module']])) {
                                 $parentmodules[] = $relationship['lhs_module'];
                             }
                         }
@@ -241,9 +242,22 @@ class SpiceUIModulesController
     {
         $db = DBManagerFactory::getInstance();
         $retArray = [];
+
+        // check custom first
+        if ($db->tableExists('systcustomstatusnetworks')) { // for BWC
+            $statuscustomnetworks = $db->query("SELECT * FROM systcustomstatusnetworks ORDER BY domain, status_priority");
+            while ($statusnetwork = $db->fetchByAssoc($statuscustomnetworks)) {
+                $retArray[$statusnetwork['domain']][] = $statusnetwork;
+            }
+        }
+
+        // skip core domains if any found in custom
+        $customizedDomains = array_keys($retArray);
         $statusnetworks = $db->query("SELECT * FROM syststatusnetworks ORDER BY domain, status_priority");
         while ($statusnetwork = $db->fetchByAssoc($statusnetworks)) {
-            $retArray[$statusnetwork['domain']][] = $statusnetwork;
+            if (!in_array($statusnetwork['domain'], $customizedDomains)) {
+                $retArray[$statusnetwork['domain']][] = $statusnetwork;
+            }
         }
         return $retArray;
     }
@@ -261,14 +275,26 @@ class SpiceUIModulesController
         $retArray = [];
 
         # load all the global roles:
-        $roles = $db->query( "SELECT sysuiroles.*, 0 defaultrole, 'global' scope  FROM sysuiroles ORDER BY NAME" );
-        while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+        $roles = $db->query("SELECT sysuiroles.*, 0 defaultrole, 'global' scope  FROM sysuiroles ORDER BY NAME");
+        while ($role = $db->fetchByAssoc($roles)){
+            if (is_null($role['systemdefault'])) $role['systemdefault'] = 0;
+            if (is_null($role['portaldefault'])) $role['portaldefault'] = 0;
+            if (is_null($role['showsearch'])) $role['showsearch'] = 1;
+            if (is_null($role['showfavorites'])) $role['showfavorites'] = 1;
+            $retArray[] = $role;
+        }
 
         // load all the custom roles:
-        $roles = $db->query( "SELECT sysuicustomroles.*, 0 defaultrole, 'custom' scope FROM sysuicustomroles ORDER BY NAME" );
-        while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+        $roles = $db->query("SELECT sysuicustomroles.*, 0 defaultrole, 'custom' scope FROM sysuicustomroles ORDER BY NAME");
+        while ($role = $db->fetchByAssoc($roles)){
+            if (is_null($role['systemdefault'])) $role['systemdefault'] = 0;
+            if (is_null($role['portaldefault'])) $role['portaldefault'] = 0;
+            if (is_null($role['showsearch'])) $role['showsearch'] = 1;
+            if (is_null($role['showfavorites'])) $role['showfavorites'] = 1;
+            $retArray[] = $role;
+        }
 
-        return array_values( $retArray );
+        return array_values($retArray);
     }
 
     /**
@@ -285,28 +311,28 @@ class SpiceUIModulesController
 
         # Load the roles assigned to the user (custom and global roles):
         $roles = $db->query("SELECT sysuicustomroles.*, sysuiuserroles.defaultrole FROM sysuiuserroles INNER JOIN sysuicustomroles ON sysuicustomroles.id = sysuiuserroles.sysuirole_id WHERE sysuiuserroles.user_id = '$current_user->id' ORDER BY NAME");
-        while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+        while ($role = $db->fetchByAssoc($roles)) $retArray[] = $role;
         $roles = $db->query("SELECT sysuiroles.*, sysuiuserroles.defaultrole FROM sysuiuserroles INNER JOIN sysuiroles ON sysuiroles.id = sysuiuserroles.sysuirole_id WHERE sysuiuserroles.user_id = '$current_user->id' ORDER BY NAME");
-        while ( $role = $db->fetchByAssoc( $roles )) {
-            if ( !isset( $retArray[$role['id']] )) $retArray[$role['id']] = $role; # In case a custom and a global role have the same ID, don´t load the global role.
+        while ($role = $db->fetchByAssoc($roles)) {
+            if (!isset($retArray[$role['id']])) $retArray[$role['id']] = $role; # In case a custom and a global role have the same ID, don´t load the global role.
         }
 
         // When there are no to the user assigned roles ...
-        if ( count( $retArray ) === 0 ) {
+        if (count($retArray) === 0) {
 
             // ... load all the custom roles:
-            $roles = $db->query( 'SELECT sysuicustomroles.*, 0 defaultrole FROM sysuicustomroles WHERE '.( $current_user->portal_only ? 'portaldefault':'systemdefault' ).' = 1 ORDER BY NAME' );
-            while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+            $roles = $db->query('SELECT sysuicustomroles.*, 0 defaultrole FROM sysuicustomroles WHERE ' . ($current_user->portal_only ? 'portaldefault' : 'systemdefault') . ' = 1 ORDER BY NAME');
+            while ($role = $db->fetchByAssoc($roles)) $retArray[] = $role;
 
             # ... or when there are no custom roles, load all the global roles:
-            if ( count( $retArray ) === 0 ) {
-                $roles = $db->query( 'SELECT sysuiroles.*, 0 defaultrole FROM sysuiroles WHERE '.( $current_user->portal_only ? 'portaldefault':'systemdefault' ).' = 1 ORDER BY NAME' );
-                while ( $role = $db->fetchByAssoc( $roles )) $retArray[] = $role;
+            if (count($retArray) === 0) {
+                $roles = $db->query('SELECT sysuiroles.*, 0 defaultrole FROM sysuiroles WHERE ' . ($current_user->portal_only ? 'portaldefault' : 'systemdefault') . ' = 1 ORDER BY NAME');
+                while ($role = $db->fetchByAssoc($roles)) $retArray[] = $role;
             }
 
         }
 
-        return array_values( $retArray );
+        return array_values($retArray);
     }
 
 
@@ -390,17 +416,18 @@ class SpiceUIModulesController
      * @param $res
      * @param $args
      */
-    public function getReassignModules($moduleids = [] ){
+    public function getReassignModules($moduleids = [])
+    {
         $modules = [];
         $addWhere = "";
-        if(!empty($moduleids)){
-            $addWhere.= " AND id IN('".implode("', '", $moduleids )."')";
+        if (!empty($moduleids)) {
+            $addWhere .= " AND id IN('" . implode("', '", $moduleids) . "')";
         }
 
         $q = "SELECT id, module, reassign_modulefilter_id  FROM sysmodules WHERE reassignable = 1 {$addWhere} UNION SELECT id, module, reassign_modulefilter_id FROM syscustommodules WHERE reassignable = 1 {$addWhere}";
 
         if ($results = DBManagerFactory::getInstance()->query($q)) {
-            while($row = DBManagerFactory::getInstance()->fetchByAssoc($results)){
+            while ($row = DBManagerFactory::getInstance()->fetchByAssoc($results)) {
                 $modules[$row['id']] = ['id' => $row['id'], 'module' => $row['module'], 'filterid' => $row['reassign_modulefilter_id']];
             }
         }

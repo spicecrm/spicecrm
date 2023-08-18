@@ -11,6 +11,7 @@ import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {telecockpitservice} from "../../telesales/services/telecockpit.service";
 import {backend} from "../../../services/backend.service";
+import {firstValueFrom} from "rxjs";
 
 /**
  * a convert component that handles the multi stp converting from prospect to
@@ -117,15 +118,20 @@ export class ProspectConvertModal implements OnInit {
     /**
      * converts the prospect and links to the new contact or lead
      */
-    public convert() {
+    public async convert() {
+
+        const loadingModal = this.modal.await('LBL_SAVING_DATA');
 
         if (this.account?.isNew) {
-            this.account.save();
+            await firstValueFrom(this.account.save());
         }
 
         if (this.person?.isNew) {
-            this.person.save();
+            await firstValueFrom(this.person.save());
         }
+
+        loadingModal.next(true);
+        loadingModal.complete();
 
         this.model.setFields({
             is_converted: 1,
@@ -139,7 +145,6 @@ export class ProspectConvertModal implements OnInit {
         );
 
         this.close();
-
     }
 
     /**

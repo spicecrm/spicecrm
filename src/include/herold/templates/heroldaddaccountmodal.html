@@ -1,0 +1,67 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_ADD_FROM_HEROLD"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-box slds-box--border">
+            <div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+                <system-label label="LBL_NAME"/>
+                <system-input-text class="slds-grow slds-m-horizontal--x-small" [(ngModel)]="searchterm"></system-input-text>
+                <system-label label="LBL_POSTALCODE"/>
+                <system-input-text class="slds-m-horizontal--x-small" [(ngModel)]="searchpostalcode"></system-input-text>
+                <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="search()"><system-label label="LBL_SEARCH"/></button>
+            </div>
+        </div>
+        <div class="slds-box slds-box--border slds-m-top--x-small" *ngIf="items.length > 0">
+            <table class="slds-table slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_KSVNAME"></system-label></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_ADDRESS"></system-label></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-hint-parent" *ngFor="let item of items" (click)="select(item)" (dblclick)="create(item)" [ngClass]="{'slds-is-selected': selectedSID == item.sid}">
+                        <td>
+                            <div class="slds-truncate">{{item.name}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{item.nameKsv}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{item.streetHouseNumber}}, {{item.postalCode}} {{item.city.name}}</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-theme--shade">
+                <div class="slds-grid slds-grid--vertical-align-center">
+                    <system-label label="LBL_TOTAL"/>
+                    <div class="slds-p-horizontal--x-small">{{total}}</div>
+                </div>
+                <div class="slds-grid slds-grid--vertical-align-center">
+                    <button class="slds-button slds-button--icon" [disabled]="page == 1" (click)="prev()"><system-button-icon icon="left"/></button>
+                    <div class="slds-p-horizontal--xx-small">
+                        <system-label class="slds-p-horizontal--xx-small" label="LBL_PAGE"/>{{page}}<system-label class="slds-p-horizontal--xx-small" label="LBL_OF"/>{{pages}}
+                    </div>
+                    <button class="slds-button slds-button--icon" [disabled]="page == pages" (click)="next()"><system-button-icon icon="right"/></button>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CANCEL"/>
+        </button>
+        <button class="slds-button slds-button--brand" [disabled]="!selectedSID" (click)="create()">
+            <system-label label="LBL_ADD"/>
+        </button>
+    </system-modal-footer>
+</system-modal>

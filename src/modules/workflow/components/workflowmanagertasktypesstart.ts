@@ -4,6 +4,7 @@
 import {Component,} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {language} from "../../../services/language.service";
 
 /**
  * @ignore
@@ -20,7 +21,8 @@ declare var _;
 export class WorkflowManagerTaskTypesStart {
 
     constructor(public model: model,
-                public workflowManagerService: WorkflowManagerService) {
+                public workflowManagerService: WorkflowManagerService,
+                public language: language) {
     }
 
 }

@@ -1,0 +1,162 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">{{modalTitle}}</system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-modal__content">
+            <div class="slds-grid" style="height: 70vh;">
+                <div class="slds-size--1-of-2">
+                    <div class="slds-p-around--small" style="height: 100%; width: 200%; margin: 0; padding: 0"
+                         [@slideInOut]="expanded? 'open': 'closed'">
+                        <div class="slds-m-top--small slds-border--top slds-border--right slds-border--left slds-border--bottom"
+                             style="width: 100%; height: 100%; margin: 0;">
+                            <object *ngIf="!loading_output && blobUrl" [data]="blobUrl" type="application/pdf"
+                                    width="100%" height="100%"></object>
+                            <!-- a spinner when the template is loading-->
+                            <div *ngIf="loading_output" class="slds-align--absolute-center" style="height: 100%;">
+                                <system-spinner></system-spinner>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-size--1-of-2">
+                    <div class="slds-m-around--large">
+                        <div class="slds-form-element__control">
+                            <div class="slds-combobox-group slds-p-vertical--xx-small">
+                                <div class="slds-combobox_object-switcher slds-combobox-addon_start">
+                                    <div class="slds-combobox_container">
+                                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click"
+                                             [ngClass]="{'slds-is-open': lookuplinkSelectOpen}" role="combobox">
+                                            <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon--right"
+                                                 (click)="toggleLookupTypeSelect()">
+                                                <input type="text" readonly
+                                                       class="slds-input slds-combobox__input slds-combobox__input-value"
+                                                       autoComplete="off" role="textbox" [value]="lookupTypeName"/>
+                                                <system-icon icon="down" sprite="utility"
+                                                             addclasses="slds-input__icon slds-input__icon_right"></system-icon>
+                                            </div>
+                                            <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_x-small slds-dropdown_left"
+                                                 role="listbox">
+                                                <ul class="slds-listbox slds-listbox_vertical" role="group"
+                                                    aria-label="Suggested for you">
+                                                    <li *ngFor="let lookuplink of lookuplinks; index as i"
+                                                        role="presentation" class="slds-listbox__item"
+                                                        (click)="setLookupType(i)">
+                                                        <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                             role="option">
+                                                            <div class="slds-grid slds-grid--vertical-align-center">
+                                                                <system-icon [module]="lookuplink.module"
+                                                                             size="x-small"></system-icon>
+                                                                <div class="slds-truncate">
+                                                                    <system-label-modulename
+                                                                            [module]="lookuplink.module"></system-label-modulename>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-combobox_container slds-combobox-addon_end">
+                                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click"
+                                         [ngClass]="{'slds-is-open': lookupSearchOpen}" role="combobox">
+                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                                             role="none">
+                                            <input type="text" class="slds-input"
+                                                   [ngClass]="{'slds-combobox__input':lookuplinks.length > 1}"
+                                                   aria-autocomplete="list" (click)="onFocus()" (focus)="onFocus()"
+                                                   autoComplete="off" role="textbox" [(ngModel)]="lookupSearchTerm"
+                                                   [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', lookuplinks[lookupType]?.module)"/>
+                                            <button (click)="searchWithModal()"
+                                                    class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+                                                <system-button-icon [icon]="'search'"></system-button-icon>
+                                            </button>
+                                        </div>
+                                        <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid"
+                                             role="listbox">
+                                            <field-lookup-recent *ngIf="lookupSearchOpen && lookupSearchTerm === ''"
+                                                                 [module]="lookuplinks[lookupType].module"
+                                                                 (selectedObject)="addItem($event.data)"></field-lookup-recent>
+                                            <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''"
+                                                                 [module]="lookuplinks[lookupType].module"
+                                                                 [relatefilter]="relateFilter"
+                                                                 (selectedObject)="addItem($event.data)"
+                                                                 (searchWithModal)="searchWithModal()"
+                                                                 [searchterm]="lookupSearchTerm"></field-lookup-search>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                               aria-labelledby="element-with-table-label other-element-with-table-label">
+                            <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                        <system-label label="LBL_NAME"></system-label>
+                                    </div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_EMAIL')">
+                                        <system-label label="LBL_EMAIL"></system-label>
+                                    </div>
+                                </th>
+                                <th class=" slds-text-align--right" scope="col">
+
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let participant of participants"
+                                class="slds-hint-parent"
+                                style="transition: all 0.5s ease-in-out; "
+                                [ngStyle]="!participant.status ? {'text-decoration': 'line-through', 'opacity': '0.5'} : undefined">
+                                <th data-label="Opportunity Name" scope="row">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                        {{participant.data.first_name}} {{participant.data.last_name}}
+                                    </div>
+                                </th>
+                                <td data-label="Contact">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_EMAIL')">
+                                        {{participant.data.email1}}
+                                    </div>
+                                </td>
+                                <td data-label="Contact">
+                                    <div class="slds-truncate slds-text-align--right"
+                                         [title]="language.getLabel('LBL_DELETE')">
+                                        <button [disabled]="!participant.status || loading_output"
+                                                class="slds-button slds-button--icon slds-pill__remove"
+                                                (click)="removeItem(participant)">
+                                            <system-button-icon [icon]="'close'"></system-button-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-end">
+            <div class="slds-button-group" role="group">
+                <button class="slds-button slds-button--neutral" (click)="close()">
+                    <system-label label="LBL_CANCEL"></system-label>
+                </button>
+                <button class="slds-button slds-button--brand" *ngIf="loading_send_button && !loading_output"
+                        (click)="sendESignDocument()">
+                    <system-label label="LBL_SIGN"></system-label>
+                </button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>

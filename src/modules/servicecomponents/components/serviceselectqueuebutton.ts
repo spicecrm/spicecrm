@@ -14,6 +14,11 @@ import {ServiceSelectQueueModal} from "./serviceselectqueuemodal";
     templateUrl: '../templates/serviceselectqueuebutton.html'
 })
 export class ServiceSelectQueueButton {
+    /**
+     * holds the action config
+     */
+    public actionconfig: any = {};
+
     constructor(
         public model: model,
         public metadata: metadata,
@@ -21,10 +26,18 @@ export class ServiceSelectQueueButton {
         public modal: modal,
         public injector: Injector
     ) {
+        this.model.mode$.subscribe(mode => {
+            this.canChange();
+        });
 
     }
 
-    get canChange() {
+
+    get buttonLabel() {
+        return this.actionconfig.label ? this.actionconfig.label : 'LBL_FORWARD';
+    }
+
+    public canChange() {
         if (!this.model.checkAccess('edit')) return false;
 
         let resolveDate = this.model.getField('resolve_date');
@@ -35,7 +48,7 @@ export class ServiceSelectQueueButton {
         return this.model.isEditing ? false : true;
     }
 
-    public showModal() {
+    public execute() {
         if (this.canChange) {
             this.modal.openModal('ServiceSelectQueueModal', true, this.injector);
         }

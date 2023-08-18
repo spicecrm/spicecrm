@@ -99,6 +99,33 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'type' => 'varchar',
             'len' => 36
         ],
+        'textmessage_template_name' => [
+            'name' => 'textmessage_template_name',
+            'rname' => 'name',
+            'id_name' => 'textmessage_template_id',
+            'vname' => 'LBL_TEXTMESSAGETEMPLATE',
+            'type' => 'relate',
+            'table' => 'textmessage_templates',
+            'isnull' => 'true',
+            'module' => 'TextMessageTemplates',
+            'dbType' => 'varchar',
+            'link' => 'textmessage_templates',
+            'len' => '255',
+            'source' => 'non-db',
+        ],
+        'textmessage_templates' => [
+            'name' => 'textmessage_templates',
+            'type' => 'link',
+            'relationship' => 'campaigntask_textmessage_template',
+            'source' => 'non-db',
+            'module' => 'TextMessageTemplates'
+        ],
+        'textmessage_template_id' => [
+            'name' => 'textmessage_template_id',
+            'vname' => 'LBL_TEXTMESSAGETEMPLATE_ID',
+            'type' => 'varchar',
+            'len' => 36
+        ],
         'output_template_name' => [
             'name' => 'output_template_name',
             'rname' => 'name',
@@ -266,11 +293,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'relationship' => 'campaigntask_emailtrackingactions',
             'source' => 'non-db'
         ],
-        'trackinglinks' => [
-            'name' => 'trackinglinks',
+        'emailtrackinglinks' => [
+            'name' => 'emailtrackinglinks',
             'type' => 'link',
-            'module' => 'TrackingLinks',
-            'relationship' => 'campaigntask_trackinglinks',
+            'module' => 'EmailTrackingLinks',
+            'relationship' => 'campaigntask_emailtrackinglinks',
             'source' => 'non-db'
         ],
         'module_filter' => [
@@ -351,6 +378,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'rhs_module' => 'CampaignTasks',
             'rhs_table' => 'campaigntasks',
             'rhs_key' => 'email_template_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'campaigntask_textmessage_template' => [
+            'lhs_module' => 'TextMessageTemplates',
+            'lhs_table' => 'textmessage_templates',
+            'lhs_key' => 'id',
+            'rhs_module' => 'CampaignTasks',
+            'rhs_table' => 'campaigntasks',
+            'rhs_key' => 'textmessage_template_id',
             'relationship_type' => 'one-to-many'
         ],
         'campaigntask_output_template' => [

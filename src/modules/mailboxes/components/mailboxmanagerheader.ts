@@ -93,6 +93,7 @@ export class MailboxManagerHeader implements OnInit {
         return this.mailboxesEmails.emailopenness == "" ? 'all' : this.mailboxesEmails.emailopenness;
     }
 
+
     /**
      * a setter for the openness that also triggers the relaod
      *
@@ -133,6 +134,9 @@ export class MailboxManagerHeader implements OnInit {
      * initialize
      */
     public ngOnInit() {
+
+        this.loadOneMailbox();
+
         if (this.navigationtab.activeRoute.params.id) {
             // catch an event from mailboxesEmails service once the mailboxes are actually loaded
             this.mailboxesEmails.mailboxesLoaded$.subscribe(
@@ -143,6 +147,21 @@ export class MailboxManagerHeader implements OnInit {
                 }
             );
         }
+    }
+
+    /**
+     * If we have one mailbox load mailbox in view
+     */
+    public loadOneMailbox() {
+        this.mailboxesEmails.mailboxesLoaded$.subscribe(
+            (loaded) => {
+                if (loaded === true) {
+                    if(this.mailboxesEmails.mailboxes.length == 1){
+                        this.mailbox = this.mailboxesEmails.mailboxes[0].id;
+                    }
+                }
+            }
+        );
     }
 
     /**
@@ -162,9 +181,8 @@ export class MailboxManagerHeader implements OnInit {
     public searchTermsValid(searchTerm) {
         let config = this.configuration.getCapabilityConfig('search');
         let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
-        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
         let items = searchTerm.split(' ');
-        return items.filter(i => i.length < minNgram || i.length > maxNgram).length == 0;
+        return items.filter(i => i.length < minNgram).length == 0;
     }
 
     /**

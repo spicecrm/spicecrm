@@ -25,6 +25,12 @@ import {view} from '../../services/view.service';
 export class ObjectListItem implements OnInit, OnDestroy {
 
     /**
+     * list fields
+     * @private
+     */
+    @Input('listFields') private _listFields;
+
+    /**
      * set to true if the rowselect checkboy should be displayed
      */
     @Input() public rowselect: boolean = false;
@@ -86,7 +92,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
      * getter for the listfields
      */
     get listFields() {
-        return this.modellist.listfields;
+        return this._listFields ?? this.modellist.listfields;
     }
 
     /**
@@ -96,6 +102,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
         this.model.module = this.modellist.module;
         this.model.id = this.listItem.id;
         this.model.setData(this.listItem);
+        this.model.validate('change');
         this.model.initializeFieldsStati();
 
         this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');

@@ -199,9 +199,9 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     top: .5rem;
 }
 
-/* responsive tables */
-/* reduce padding */
+/* mobile view */
 @media (max-width: 48em) {
+    /* responsive tables reduce padding */
     .slds-max-medium-table--stacked-horizontal tr > td:first-child,
     .slds-max-medium-table_stacked-horizontal tr > td:first-child,
     .slds-max-medium-table--stacked-horizontal td,
@@ -209,6 +209,18 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     .slds-max-medium-table--stacked-horizontal tr > td:last-child,
     .slds-max-medium-table_stacked-horizontal tr > td:last-child {
         padding: .5em;
+    }
+
+    .spice-dropdown-mobile {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 1px !important;
+        right: 1px !important;
+        top: unset !important;
+        min-width: 300px !important;
+        max-width: calc(100vw - 2px) !important;
+        z-index: 999999 !important;
+        box-shadow: 0 -5px 10px 0 #999 !important;
     }
 }
 
@@ -403,7 +415,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background:#0070d2;
     top: -20px;
     position: absolute;
-    width: 100px;
+    width: 120px;
     height: 20px;
     left: calc(50% - 50px);
     color: #fff;
@@ -490,3 +502,44 @@ input[type="submit"] {
     transition: width .5s linear;
 }
 
+.spice-overlay-spinner-container {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.25);
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.spice-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    z-index: 999999;
+}
+
+.child-height-full > * {
+    height: 100%;
+}
+
+.spice-split-container-splitter {
+    left: -8px;
+    box-shadow: 0 0 2px;
+    padding: 0 2px 2px 2px;
+    border-radius: 0 0 2px 2px;
+}
+
+
+.spice-split-container-splitter button {
+    border: 0 !important;
+    width: 12px !important;
+    margin: 0 !important;
+}

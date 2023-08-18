@@ -1,62 +1,77 @@
-<system-collapsable-tab *ngIf="!isHidden" tabtitle="LBL_CONTENT">
-    <div class="slds-tabs_scoped slds-p-around--x-small">
-        <ul class="slds-tabs_scoped__nav" role="tablist">
-            <li class="slds-tabs_scoped__item" [class.slds-is-active]="selectedTab == 'editor'" system-title="LBL_EDITOR" (click)="setSelectedTab('editor')" role="presentation">
-                <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_EDITOR"></system-label></a>
-            </li>
-            <li *ngIf="!!fieldsNames.previewForBean" class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': selectedTab == 'preview', 'slds-text-color--inverse-weak': !model.data[fieldsNames.bodyHtmlField]}" system-title="LBL_PREVIEW" (click)="setSelectedTab('preview')" role="presentation">
-                <a [class.slds-text-color--inverse-weak]="!model.data[fieldsNames.bodyHtmlField]" class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_PREVIEW"></system-label></a>
-            </li>
-        </ul>
-        <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'editor', 'slds-hide': selectedTab != 'editor'}" role="tabpanel">
-            <div *ngIf="!view.isEditMode() && !model.data[fieldsNames.bodyHtmlField]; else contentEditingContainer" (dblclick)="setEditMode()" style="min-height: 250px">
+<div class="slds-grid slds-height_full slds-is-relative slds-theme--default" [class.spice-fullscreen]="isFullscreen">
+    <div [ngClass]="{'slds-size--7-of-12': !expanded, 'slds-hide': expanded == 'right', 'slds-grow': expanded == 'left'}" class="slds-border--right slds-height_full slds-grid slds-grid--vertical">
+        <div class="slds-grid slds-grid--align-end slds-p-right--x-small slds-p-top--xxx-small">
+            <button (click)="copyFromTemplate()" class="slds-button slds-button--icon-bare slds-button--icon">
+                <system-button-icon icon="copy" size="small"></system-button-icon>
+            </button>
+            <button (click)="expand('right')" class="slds-button slds-button--icon-bare slds-button--icon">
+                <system-button-icon icon="arrow_left" size="small"></system-button-icon>
+            </button>
+            <ng-container *ngIf="expanded == 'left'">
+                <ng-container *ngTemplateOutlet="fullscreenButton"></ng-container>
+            </ng-container>
+        </div>
+        <div class="slds-p-around--x-small slds-grow" style="min-height: 0">
+            <div *ngIf="!view.isEditMode(); else contentEditingContainer" (dblclick)="setEditMode()" class="slds-height_full slds-p-top--x-small" style="min-height: 250px">
                 <div class="slds-grid slds-m-bottom--xx-small">
                     <field-container *ngIf="!!fieldsNames.subjectField" [field]="fieldsNames.subjectField" class="slds-grow slds-m-right--x-small"  fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small"></field-container>
-                    <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-right--x-small"></field-container>
+                    <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-left--x-small"></field-container>
                 </div>
                 <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center" style="min-height: 250px">
-                    <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1"></field-container>
-                    <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1"></field-container>
-                    <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1"></field-container>
+                    <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
+                    <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
+                    <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
                     <div *ngSwitchDefault>
-                        <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1"></field-container>
+                        <field-container [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
                     </div>
                 </div>
             </div>
             <ng-template #contentEditingContainer>
-                <div class="slds-grid slds-m-bottom--xx-small">
-                    <field-container *ngIf="!!fieldsNames.subjectField" [field]="fieldsNames.subjectField" class="slds-grow slds-m-right--x-small"  fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small"></field-container>
-                    <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-right--x-small"></field-container>
-                    <div class="slds-align-bottom slds-col--bump-left slds-p-bottom--xx-small">
-                        <button [disabled]="!view.isEditMode()" (click)="copyFromTemplate()" class="slds-button slds-button--neutral">
-                            <system-button-icon icon="copy" position="left"></system-button-icon>
-                            <system-label label="LBL_COPY_TEMPLATE"></system-label>
-                        </button>
+                <div class="slds-grid slds-grid--vertical slds-height_full">
+                    <div class="slds-grid slds-m-bottom--xx-small">
+                        <field-container *ngIf="!!fieldsNames.subjectField" [field]="fieldsNames.subjectField" class="slds-grow"  fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small"></field-container>
+                        <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-left--x-small"></field-container>
                     </div>
-                </div>
-                <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center" style="min-height: 250px">
-                    <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1"></field-container>
-                    <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1"></field-container>
-                    <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1"></field-container>
-                    <div *ngSwitchDefault>
-                        <system-label label="LBL_EDIT_WITH" class="slds-m-right--xx-small"></system-label>
-                        <button class="slds-button slds-button--neutral spice-hover-button" (click)="updateModelEditor('richText')">
-                            <system-label label="LBL_RICH_TEXT_EDITOR"></system-label>
-                        </button>
-                        <system-label label="LBL_OR" class="slds-m-horizontal--xx-small"></system-label>
-                        <button class="slds-button slds-button--neutral spice-hover-button slds-m-lef" (click)="updateModelEditor ('pageBuilder')">
-                            <system-label label="LBL_PAGE_BUILDER"></system-label>
-                        </button>
-                        <system-label label="LBL_OR" class="slds-m-horizontal--xx-small"></system-label>
-                        <button class="slds-button slds-button--neutral spice-hover-button slds-m-lef" (click)="updateModelEditor ('html')">
-                            <system-label label="LBL_HTML"></system-label>
-                        </button>
+                    <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-grow" style="min-height: 250px">
+                        <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
+                        <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
+                        <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
+                        <div *ngSwitchDefault>
+                            <system-label label="LBL_EDIT_WITH" class="slds-m-right--xx-small"></system-label>
+                            <button class="slds-button slds-button--neutral spice-hover-button" (click)="updateModelEditor('richText')">
+                                <system-label label="LBL_RICH_TEXT_EDITOR"></system-label>
+                            </button>
+                            <system-label label="LBL_OR" class="slds-m-horizontal--xx-small"></system-label>
+                            <button class="slds-button slds-button--neutral spice-hover-button slds-m-lef" (click)="updateModelEditor ('pageBuilder')">
+                                <system-label label="LBL_PAGE_BUILDER"></system-label>
+                            </button>
+                            <system-label label="LBL_OR" class="slds-m-horizontal--xx-small"></system-label>
+                            <button class="slds-button slds-button--neutral spice-hover-button slds-m-lef" (click)="updateModelEditor ('html')">
+                                <system-label label="LBL_HTML"></system-label>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </ng-template>
         </div>
-        <div *ngIf="!!fieldsNames.previewForBean" class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'preview', 'slds-hide': selectedTab != 'preview'}" role="tabpanel">
-            <email-templates-preview [previewForBean]="fieldsNames.previewForBean" [bodyHtmlField]="fieldsNames.bodyHtmlField" [iframeHeight]="iframeHeight"></email-templates-preview>
+    </div>
+    <div [ngClass]="{'slds-hide': expanded == 'left'}" class="slds-is-relative slds-grow slds-height_full slds-grid slds-grid--vertical" style="min-width: 0">
+        <div class="slds-grid slds-p-left--x-small slds-grid--align-spread">
+            <button (click)="expand('left')" class="slds-button slds-button--icon-bare slds-button--icon">
+                <system-button-icon icon="arrow_right" size="small"></system-button-icon>
+            </button>
+            <div *ngIf="expanded != 'left'" class="slds-m-right--x-small">
+                <ng-container *ngTemplateOutlet="fullscreenButton"></ng-container>
+            </div>
+        </div>
+        <div class="slds-grow slds-p-around--x-small" style="min-height: 0">
+            <email-templates-preview [previewForBean]="fieldsNames.previewForBean" [bodyHtmlField]="fieldsNames.bodyHtmlField" class="slds-grid slds-grid--vertical slds-height_full"></email-templates-preview>
         </div>
     </div>
-</system-collapsable-tab>
+</div>
+
+<ng-template #fullscreenButton>
+    <button (click)="toggleFullscreen()" class="slds-button slds-button--icon-bare slds-button--icon">
+        <system-button-icon [icon]="isFullscreen ? 'contract_alt' : 'expand_alt'"></system-button-icon>
+    </button>
+</ng-template>

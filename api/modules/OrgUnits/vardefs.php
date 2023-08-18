@@ -86,6 +86,42 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'source' => 'non-db',
             'vname' => 'LBL_USERS',
         ],
+        'employees' => [
+            'name' => 'employees',
+            'type' => 'link',
+            'relationship' => 'orgunits_employees',
+            'module' => 'Employees',
+            'bean_name' => 'User',
+            'source' => 'non-db',
+            'vname' => 'LBL_EMPLYOEES',
+        ],
+        'hcmjoboffers' => [
+            'name' => 'hcmjoboffers',
+            'type' => 'link',
+            'relationship' => 'orgunits_hcmjoboffers',
+            'module' => 'HCMJobOffers',
+            'bean_name' => 'HCMJobOffer',
+            'source' => 'non-db',
+            'vname' => 'LBL_HCMJOBOFFERS',
+        ],
+        'hcmjoboffers_id' => [
+            'name' => 'hcmjoboffers_id',
+            'vname' => 'LBL_HCMJOBOFFERS_ID',
+            'type' => 'id',
+        ],
+        'hcmjoboffers_name' => [
+            'name' => 'hcmjoboffers_name',
+            'rname' => 'name',
+            'id_name' => 'hcmjoboffers_id',
+            'vname' => 'LBL_HCMJOBOFFERS',
+            'type' => 'relate',
+            'table' => 'hcmjoboffers',
+            'module' => 'HCMJobOffers',
+            'dbType' => 'varchar',
+            'link' => 'hcmjoboffers',
+            'len' => 255,
+            'source' => 'non-db'
+        ],
         'member_of' => [
             'name' => 'member_of',
             'type' => 'link',
@@ -124,6 +160,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
         'orgunits_users' => [
             'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
             'rhs_module' => 'Users', 'rhs_table' => 'users', 'rhs_key' => 'orgunit_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'orgunits_employees' => [
+            'lhs_module' => 'OrgUnits', 'lhs_table' => 'orgunits', 'lhs_key' => 'id',
+            'rhs_module' => 'Employees', 'rhs_table' => 'employees', 'rhs_key' => 'orgunit_id',
             'relationship_type' => 'one-to-many'
         ],
     ],

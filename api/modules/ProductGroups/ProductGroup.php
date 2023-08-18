@@ -100,7 +100,7 @@ class ProductGroup extends SpiceBean
         $moduleHandler = new SpiceBeanHandler();
 
         if ($this->parent_productgroup_id) {
-            $parent_group = new ProductGroup();
+            $parent_group = BeanFactory::getBean('ProductGroups');
             $parent_group->retrieve($this->parent_productgroup_id);
             $attributes = $parent_group->getRelatedAttributesRecursively($searchEnabled, $attributes, $attributeIds);
 

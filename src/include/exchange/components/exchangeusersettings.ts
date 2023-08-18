@@ -9,7 +9,7 @@ import {backend} from '../../../services/backend.service';
 import {configurationService} from '../../../services/configuration.service';
 import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
-import {firstValueFrom} from "rxjs";
+import {firstValueFrom, of} from "rxjs";
 import {session} from "../../../services/session.service";
 import {MSGraphMappingModal} from "./msgraphmappingmodal";
 import {userpreferences} from "../../../services/userpreferences.service";
@@ -72,21 +72,80 @@ export class ExchangeUserSettings implements OnInit {
         this.setSubscriptionTime();
     }
 
+    /**
+     * cached active api value
+     * @private
+     */
+    private _activeAPI: 'msgraph' | 'spicecrmexchange' = 'msgraph';
+    /**
+     * set active api
+     * @param val
+     */
     set activeAPI(val: 'msgraph' | 'spicecrmexchange') {
-        this.userPreferences.setPreference('microsoftActiveService', val).subscribe(() => {
-            this.getConfig();
-        });
+
+        const loadingModal = this.modal.await('LBL_LOADING');
+
+        this._activeAPI = val;
+
+        if (this.model.id === this.session.authData.userId) {
+            this.userPreferences.setPreference('microsoftActiveService', val).subscribe(() => {
+                loadingModal.next(true);
+                loadingModal.complete();
+                this.getConfig();
+            });
+        } else {
+            this.backend.postRequest(`module/Users/${this.model.id}/preferences/global`, {}, {microsoftActiveService: val})
+                .subscribe(() => {
+                    loadingModal.next(true);
+                    loadingModal.complete();
+                    this.getConfig();
+                });
+
+        }
+
     }
 
+    /**
+     * @return active api
+     */
     get activeAPI(): 'msgraph' | 'spicecrmexchange' {
-        return this.userPreferences.preferences.global.microsoftActiveService ?? 'msgraph';
+        return this._activeAPI;
+    }
+
+    /**
+     * load active api preference
+     * @private
+     */
+    private loadActiveAPIPreference() {
+
+        if (this.model.id !== this.session.authData.userId) {
+
+            const loadingModal = this.modal.await('LBL_LOADING');
+            const params = {names: ['microsoftActiveService']};
+
+            return this.backend.getRequest(`module/Users/${this.model.id}/preferences/global`, params).subscribe(prefs => {
+                loadingModal.next(true);
+                loadingModal.complete();
+                if (!!prefs.microsoftActiveService) {
+                    this._activeAPI = prefs.microsoftActiveService;
+                }
+                this.getConfig();
+            });
+
+        } else if (!!this.userPreferences.preferences.global.microsoftActiveService) {
+            this._activeAPI = this.userPreferences.preferences.global.microsoftActiveService;
+            this.getConfig();
+        }
+        else {
+            this.getConfig();
+        }
     }
 
     /**
      * load the active subscriptions
      */
     public ngOnInit(): void {
-        this.getConfig();
+        this.loadActiveAPIPreference();
     }
 
     private setSubscriptionTime() {

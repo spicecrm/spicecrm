@@ -25,6 +25,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {DeploymentSystemPackagesCockpitView} from "./components/deploymentsystempackagescockpitview";
 import {DeploymentSystemPackagesCockpitViewPackage} from "./components/deploymentsystempackagescockpitviewpackage";
 import {DeploymentCRCompleteButton} from "./components/deploymentcrcompletebutton";
+import {DeploymentSystemCRUpgradeView} from "./components/deploymentsystemcrupgradeview";
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import {DeploymentCRCompleteButton} from "./components/deploymentcrcompletebutto
         DeploymentCRDBEntries,
         DeploymentCRSetActiveButton,
         DeploymentCRActive,
-        DeploymentCRDBSQL
+        DeploymentCRDBSQL,
+        DeploymentSystemCRUpgradeView
     ]
 })
 export class ModuleDeployment {}

@@ -1,22 +1,26 @@
 <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
     <div class="slds-grid slds-grid--vertical-align-center">
         <div class="slds-form-element__control slds-p-right--xx-small">
-            <select class="slds-select" [(ngModel)]="mailbox" style="min-width: 250px;" [disabled]="mailboxesEmails.mailboxes.length==0 || isFetching">
-                <option *ngFor="let mailbox of mailboxesEmails.mailboxes" value="{{mailbox.id}}">
-                    {{mailbox.name}}
-                </option>
-            </select>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="mailbox" style="min-width: 250px;" [disabled]="mailboxesEmails.mailboxes.length==0 || isFetching">
+                    <option *ngFor="let mailbox of mailboxesEmails.mailboxes" value="{{mailbox.id}}">
+                        {{mailbox.name}}
+                    </option>
+                </select>
+            </div>
         </div>
         <div class="slds-form-element__control slds-p-horizontal--xx-small">
             <system-checkbox [(ngModel)]="mailboxesEmails.unreadonly"><system-label label="LBL_UNREAD_ONLY"></system-label></system-checkbox>
         </div>
         <div class="slds-form-element__control slds-p-horizontal--xx-small">
-            <select class="slds-select" [(ngModel)]="emailopenness">
-                <option value="all"><system-label label="LBL_EMAILS_ALL"></system-label></option>
-                <option value="open"><system-label label="LBL_EMAILS_OPEN"></system-label></option>
-                <option value="user_closed"><system-label label="LBL_EMAILS_USER_CLOSED"></system-label></option>
-                <option value="system_closed"><system-label label="LBL_EMAILS_SYSTEM_CLOSED"></system-label></option>
-            </select>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="emailopenness">
+                    <option value="all"><system-label label="LBL_EMAILS_ALL"></system-label></option>
+                    <option value="open"><system-label label="LBL_EMAILS_OPEN"></system-label></option>
+                    <option value="user_closed"><system-label label="LBL_EMAILS_USER_CLOSED"></system-label></option>
+                    <option value="system_closed"><system-label label="LBL_EMAILS_SYSTEM_CLOSED"></system-label></option>
+                </select>
+            </div>
         </div>
         <div class="slds-p-horizontal--xx-small">
             <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
@@ -24,14 +28,8 @@
                 <li class="slds-item"><system-utility-icon [icon]="mailboxesEmails.source == 'db' ? 'database' : 'feed'" size="xx-small"></system-utility-icon></li>
             </ul>
         </div>
-        <div *ngIf="!!mailbox" class="slds-form-element slds-p-right--small slds-m-left--small" style="width: 400px" [ngClass]="{'slds-has-error': searchTermError}">
-            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left-right slds-size--1-of-1">
-                <system-utility-icon icon="search" size="x-small" addclasses="slds-icon slds-input__icon slds-input__icon_left"></system-utility-icon>
-                <input system-autofocus style="max-width: 400px;" class="slds-input slds-lookup__search-input" type="search" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', 'Mailboxes')" [(ngModel)]="searchTerm" (keyup.enter)="reloadList()"/>
-                <button [disabled]="!mailboxesEmails.searchTerm" (click)="clearSearchTerm()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
-                    <system-button-icon icon="clear"></system-button-icon>
-                </button>
-            </div>
+        <div *ngIf="!!mailbox" class="slds-p-right--small slds-m-left--small" style="width: 400px">
+            <system-input-search-term [(ngModel)]="searchTerm" (onEnterPress)="reloadList()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', 'Mailboxes')" class="slds-grow"></system-input-search-term>
         </div>
     </div>
     <div class="slds-col--bump-left slds-grid">

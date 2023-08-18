@@ -43,14 +43,27 @@
                 </div>
                 <div class="slds-combobox_container" [ngClass]="{'slds-combobox-addon_end': showModuleSelector}">
                     <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox" [ngClass]="{'slds-is-open': showRecent}">
-                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element"
-                             role="none">
+                        <div [ngClass]="{'slds-has-error': searchTermErrors}" class="slds-is-relative slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element" role="none">
                             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
                             <input #searchfield class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" (focus)="onFocus()" (blur)="onBlur()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
                         </div>
                         <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                            <ul *ngIf="searchTermErrors" role="listbox">
+                                <li role="presentation">
+                                   <span class="slds-lookup__item-action slds-media slds-media--center" role="option">
+                                       <system-utility-icon icon="warning" size="small" colorclass="slds-icon-text-error"></system-utility-icon>
+                                       <div class="slds-media__body slds-p-left--x-small">
+                                            <div *ngIf="searchTermErrors" class="slds-lookup__result-text">
+                                                <div *ngFor="let error of searchTermErrors">
+                                                    <system-label [label]="error.label" [nestedValues]="error.nestedValues"></system-label>
+                                                </div>
+                                            </div>
+                                       </div>
+                                   </span>
+                                </li>
+                            </ul>
                             <global-header-search-recent-items *ngIf="showRecent && searchTerm === ''" (selected)="selected($event)"></global-header-search-recent-items>
-                            <global-header-search-results-items *ngIf="searchTerm !== '' && searchTermsValid(searchTerm)" [searchTerm]="searchTerm" [searchResults]="searchresults" (selected)="selected($event)"></global-header-search-results-items>
+                            <global-header-search-results-items *ngIf="searchTerm !== '' && !searchTermErrors" [searchTerm]="searchTerm" [searchResults]="searchresults" (selected)="selected($event)"></global-header-search-results-items>
                         </div>
                     </div>
                 </div>

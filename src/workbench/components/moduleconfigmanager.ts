@@ -14,6 +14,7 @@ import {configurationService} from "../../services/configuration.service";
 import {view} from "../../services/view.service";
 
 @Component({
+    selector: 'moduleconfig-manager',
     templateUrl: '../templates/moduleconfigmanager.html',
     providers: [view]
 })
@@ -407,6 +408,7 @@ export class ModuleConfigManager {
                     case "default":
                         this.backend.postRequest('configuration/configurator/sysuicomponentdefaultconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
                             if (status.status == "success") {
+                                this.configuration.reloadTaskData('componentdefaultconfigs');
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
                             }
@@ -415,6 +417,7 @@ export class ModuleConfigManager {
                     case "default_custom":
                         this.backend.postRequest('configuration/configurator/sysuicustomcomponentdefaultconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
                             if (status.status == "success") {
+                                this.configuration.reloadTaskData('componentdefaultconfigs');
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
                             }
@@ -423,6 +426,7 @@ export class ModuleConfigManager {
                     case "global":
                         this.backend.postRequest('configuration/configurator/sysuicomponentmoduleconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
                             if (status.status == "success") {
+                                this.configuration.reloadTaskData('componentmoduleconfigs');
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
                             }
@@ -431,6 +435,7 @@ export class ModuleConfigManager {
                     case "custom":
                         this.backend.postRequest('configuration/configurator/sysuicustomcomponentmoduleconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
                             if (status.status == "success") {
+                                this.configuration.reloadTaskData('componentmoduleconfigs');
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
                             }
@@ -441,6 +446,7 @@ export class ModuleConfigManager {
                         break;
                 }
                 this.selectedComponent.componentconfig = JSON.parse(this.selectedComponent.componentconfig);
+                this.selectedOutputItem(this.selectedComponent.id);
             }
         });
     }

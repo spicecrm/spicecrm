@@ -1,4 +1,4 @@
-<system-collapsable-tab [collapsible]="false" tabtitle="LBL_CONFIGURATIONS" class="slds-m-top--large spice-display-block">
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_CONFIGURATION" class="slds-m-top--large spice-display-block">
     <workflow-manager-task-next-tasks *ngIf="!workflowManagerService.displayDiagram"></workflow-manager-task-next-tasks>
     <div>
         <div class="slds-grid">
@@ -62,7 +62,7 @@
                     <system-label label="LBL_CONTENT_OPTION"></system-label>
                 </label>
                 <select id="workflow-manager-details-tasks-email-panel-content-option" class="slds-select" [(ngModel)]="contentOption">
-                    <option value="sms_template"><system-label label="LBL_SMSTEMPLATE"></system-label></option>
+                    <option value="sms_template"><system-label label="LBL_TEXTMESSAGETEMPLATE"></system-label></option>
                     <option value="method"><system-label label="LBL_METHOD_CONTENT"></system-label></option>
                 </select>
             </div>
