@@ -204,9 +204,13 @@ class SchedulerJob extends SpiceBean
      */
     public function runTasks(): array
     {
+        $db = DBManagerFactory::getInstance();
+
         // double check that the job is not running alreasy and the next run date is still in the past
         // that woudl have been set to a future date if the job was completed in aprallel already
-        $status = "SELECT job_status, next_run_date FROM {$this->_tablename} WHERE id = '{$this->id}'";
+        $sql = "SELECT job_status, next_run_date FROM {$this->_tablename} WHERE id = '{$this->id}'";
+        $status = $db->fetchOne($sql);
+
         // job status check
         if($status['job_status'] == 'Running') return ['success' => false, 'message' => 'JOB is running already'];
         // job run date check
