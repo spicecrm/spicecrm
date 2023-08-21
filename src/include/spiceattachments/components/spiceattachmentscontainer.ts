@@ -54,6 +54,11 @@ export class SpiceAttachmentsContainer implements OnDestroy {
      */
     public type: string;
 
+    /**
+     * holds image data
+     */
+    public imgData: string;
+
     constructor(
         public navigationtab: navigationtab,
         public modelattachments: modelattachments,
@@ -67,10 +72,26 @@ export class SpiceAttachmentsContainer implements OnDestroy {
     }
 
     /**
+     * translates the file type
+     */
+    get fileType() {
+        if (!this.type) return '';
+
+        let typeArray = this.type.split("/");
+        switch (typeArray[0]) {
+            case 'image':
+                return typeArray[0];
+            default:
+                return 'notImage';
+        }
+    }
+
+    /**
      * unsubscribe
      */
     public ngOnDestroy() {
         this.componentSubscriptions.unsubscribe();
+        this.navigationtab.closeTab();
     }
 
     /**
@@ -86,6 +107,11 @@ export class SpiceAttachmentsContainer implements OnDestroy {
                 this.type = this.file.file_mime_type.toLowerCase();
                 this.blobFile = atob(this.file.file);
                 this.setTabTitle();
+
+                // set imgsrc data for image
+                if (this.fileType == 'image') {
+                    this.imgData = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + this.file.file;
+                }
             }, error: () => {
                 this.loadingerror = true;
             }
