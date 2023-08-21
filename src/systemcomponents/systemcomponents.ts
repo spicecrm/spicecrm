@@ -55,6 +55,7 @@ import {SystemIllustrationNoRecords} from "./components/systemillustrationnoreco
 import {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
 import {SystemIllustrationPageNotAvailable} from "./components/systemillustrationpagenotavailable";
 import {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
+import {SystemImagePreview} from "./components/systemimagepreview";
 import {SystemInputText} from "./components/systeminputtext";
 import {SystemInputEnum} from "./components/systeminputenum";
 import {SystemInputMultiEnum} from "./components/systeminputmultienum";
@@ -333,6 +334,7 @@ import {SystemObjectPreview} from "./components/systemobjectpreview";
         SystemSlider,
         SystemTrendIndicator,
         SystemImageModal,
+        SystemImagePreview,
         SystemNavigationCollector,
         SystemNavigationManager,
         SystemNavigationManagerRouteContainer,
@@ -499,7 +501,8 @@ import {SystemObjectPreview} from "./components/systemobjectpreview";
         SystemSplitContainerRight,
         SystemInputSearchTerm,
         SystemSelectIconItem,
-        SystemObjectPreview
+        SystemObjectPreview,
+        SystemImagePreview
     ]
 })
 export class SystemComponents {}
