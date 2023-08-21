@@ -1,7 +1,7 @@
 /**
  * @module ServiceComponentsModule
  */
-import {Component} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -19,17 +19,17 @@ import {field} from "../../../objectfields/components/field";
     templateUrl: '../templates/serviceticketassigntomodal.html',
     providers: [view]
 })
-export class ServiceTicketAssignToModal {
+export class ServiceTicketAssignToModal implements OnInit {
 
     /**
-     * the status network item record
+     * reference to self to be able to close the modal
      */
     public self: any;
 
     /**
      * the target status value passed from the network button
      */
-    public serviceticket_status: string;
+    public serviceticket_status: string = '';
 
     /**
      * the fieldset to be rendered according to the componentconfig
@@ -48,12 +48,24 @@ export class ServiceTicketAssignToModal {
         this.view.isEditable = true;
         this.view.setEditMode();
 
+        // start editing the model and set the status
+        this.model.startEdit(true, true);
+
         // load the fieldset
         let componentconfig = this.metadata.getComponentConfig('ServiceTicketAssignToModal', this.model.module);
         this.fieldset = componentconfig.fieldset;
 
-        // start editing the model and set the status
-        this.model.startEdit(true, true);
+    }
+
+    /**
+     * set the values
+     */
+    public ngOnInit() {
+        // set the target status passed by the actionbutton
+        this.model.setField('serviceticket_status', this.serviceticket_status);
+        // empty the value so that user has to set one
+        // make sure that fieldis required in the field
+        this.model.setField('assigned_user_id', '');
     }
 
     /**
