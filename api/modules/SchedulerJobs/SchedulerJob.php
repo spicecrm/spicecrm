@@ -3,6 +3,8 @@
 
 namespace SpiceCRM\modules\SchedulerJobs;
 
+use DateTime;
+use DateTimeZone;
 use Cron\CronExpression;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
@@ -202,9 +204,13 @@ class SchedulerJob extends SpiceBean
      */
     public function runTasks(): array
     {
-        // double check that the job is not running alreasy
-        $status = "SELECT job_status FROM {$this->_tablename} WHERE id = '{$this->id}'";
-        if($status == 'Running') ['success' => false, 'message' => 'JOB is running already'];
+        // double check that the job is not running alreasy and the next run date is still in the past
+        // that woudl have been set to a future date if the job was completed in aprallel already
+        $status = "SELECT job_status, next_run_date FROM {$this->_tablename} WHERE id = '{$this->id}'";
+        // job status check
+        if($status['job_status'] == 'Running') return ['success' => false, 'message' => 'JOB is running already'];
+        // job run date check
+        if(new DateTime($status['next_run_date'], new DateTimeZone('UTC')) > new DateTime('now', new DateTimeZone('UTC'))) return ['success' => false, 'message' => 'JOB did run already'];
 
         // do the before checks
         $this->beforeRun();
