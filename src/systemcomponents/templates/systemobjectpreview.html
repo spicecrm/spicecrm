@@ -11,7 +11,7 @@
         </audio>
     </div>
     <div *ngSwitchCase="'video'" class="slds-p-around--small slds-text-align--center">
-        <video width="320" height="240" controls>
+        <video style="max-height:80%; max-width:80%" controls>
             <source [src]="blobUrl" [type]="type">
         </video>
     </div>
