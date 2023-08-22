@@ -108,8 +108,8 @@ export class SystemObjectPreview {
      */
     private setBlobUrl(rawData) {
         if (rawData && !!this.type) {
-            let blob = this.helper.datatoBlob(rawData, this.type);
-            this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+            const blob = this.helper.datatoBlob(rawData, this.type);
+            this.blobUrl = this.helper.dataToBlobUrl(blob);
         }
     }
 }
