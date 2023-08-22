@@ -20,6 +20,6 @@ class EmailAddressesHooks
         $dataBefore = $bean->email_addresses->relationship->fetchedRow ?? [];
         $dataAfter = $bean->email_addresses->relationship->updatedRow ?? ['opt_in_status' => $data['related_bean']->opt_in_status, 'id' => $bean->email_addresses->relationship->relid];
 
-        EmailAddress::writeRelationshipAudit($dataBefore, $dataAfter);
+        EmailAddress::writeRelationshipAudit($dataBefore['id'], 'opt_in_status', $dataBefore['opt_in_status'], $dataAfter['opt_in_status']);
     }
 }
