@@ -358,4 +358,13 @@ export class helper {
         let blob = new Blob(byteArrays, {type: contentType});
         return blob;
     }
+
+    /**
+     * create blob url
+     * @param blob
+     */
+    public dataToBlobUrl(blob): any {
+        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+        return this.blobUrl;
+    }
 }

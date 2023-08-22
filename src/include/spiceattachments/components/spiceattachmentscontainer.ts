@@ -87,9 +87,10 @@ export class SpiceAttachmentsContainer implements OnDestroy {
     }
 
     /**
-     * unsubscribe
+     * unsubscribe & revoke blob url from session cache
      */
     public ngOnDestroy() {
+        URL.revokeObjectURL(this.helper.blobUrl);
         this.componentSubscriptions.unsubscribe();
         this.navigationtab.closeTab();
     }
