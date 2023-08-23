@@ -202,7 +202,7 @@ class SchedulerJob extends SpiceBean
      * execute the job tasks
      * execute job tasks
      */
-    public function runTasks(): array
+    public function runTasks($checkDate = true): array
     {
         $db = DBManagerFactory::getInstance();
 
@@ -213,8 +213,8 @@ class SchedulerJob extends SpiceBean
 
         // job status check
         if($status['job_status'] == 'Running') return ['success' => false, 'message' => 'JOB is running already'];
-        // job run date check
-        if(new DateTime($status['next_run_date'], new DateTimeZone('UTC')) > new DateTime('now', new DateTimeZone('UTC'))) return ['success' => false, 'message' => 'JOB did run already'];
+        // job run date check if not set to omit (this will happen when the user manually executes a task
+        if($checkDate && new DateTime($status['next_run_date'], new DateTimeZone('UTC')) > new DateTime('now', new DateTimeZone('UTC'))) return ['success' => false, 'message' => 'JOB did run already'];
 
         // do the before checks
         $this->beforeRun();
