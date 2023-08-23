@@ -55,7 +55,7 @@ class SchedulerJobController
     public function runJob(Request $req, Response $res, array $args): Response
     {
         $job = BeanFactory::getBean('SchedulerJobs', $args['id']);
-        $return = $job->runTasks();
+        $return = $job->runTasks(false);
 
         return $res->withJson($return['success']);
     }
