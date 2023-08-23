@@ -1435,7 +1435,7 @@ class SpiceBeanHandler
 
         foreach ($relatedIds as $relatedId) {
             $result = $thisBean->{$linkName}->add($relatedId);
-            if (!$result)
+            if ($result !== true)
                 throw new Exception("Something went wrong by adding $relatedId to $linkName");
             $retArray[$relatedId] = $thisBean->{$linkName}->relationship->relid;
         }
