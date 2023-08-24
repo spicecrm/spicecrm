@@ -115,7 +115,7 @@ class SpiceDictionary
     public function generateSystemCache(){
         $systemDictionary = [];
         $definitons = SpiceDictionaryDefinitions::getInstance()->getDefinitions();
-        $systemDefinitions = array_map(function($d){return $d['name'];}, array_filter($definitons, function($d){return $d['package'] == 'system';}));
+        $systemDefinitions = array_map(function($d){return $d['name'];}, array_filter($definitons, function($d){return $d['package'] == 'system' || $d['Name'] == 'User';}));
         foreach ($systemDefinitions as $systemDefinition){
             if(isset($this->dictionary[$systemDefinition])) $systemDictionary[$systemDefinition] = $this->dictionary[$systemDefinition];
         }
@@ -126,7 +126,7 @@ class SpiceDictionary
         return true;
     }
 
-    private function loadSystemCache(){
+    public function loadSystemCache(){
         $fHandle = fopen(self::systemdump, 'r');
         $this->dictionary = unserialize(fread($fHandle, filesize(self::systemdump)));
         fclose($fHandle);

@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, Injector, OnInit
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {modal} from '../../services/modal.service';
@@ -18,7 +18,7 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 @Component({
     templateUrl: '../templates/dictionarymanagerrelationshipadd.html',
 })
-export class DictionaryManagerRelationshipAdd {
+export class DictionaryManagerRelationshipAdd implements OnInit{
 
     /**
      * reference to the modal window
@@ -54,6 +54,10 @@ export class DictionaryManagerRelationshipAdd {
     public scope: 'c' | 'g';
 
     constructor(public dictionarymanager: dictionarymanager, public modal: modal, public injector: Injector) {
+
+    }
+
+    public ngOnInit() {
         this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
         this.scope = this.dictionarymanager.defaultScope;
     }
