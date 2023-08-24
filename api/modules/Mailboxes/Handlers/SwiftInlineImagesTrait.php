@@ -79,6 +79,6 @@ trait SwiftInlineImagesTrait
         $inlineImage = $inlineImages->item(0);
         $inlineImage->setAttribute('src', $cid);
 
-        $message->setBody($doc->saveXML(), 'text/html');
+        $message->setBody($doc->saveHTML(), 'text/html');
     }
 }

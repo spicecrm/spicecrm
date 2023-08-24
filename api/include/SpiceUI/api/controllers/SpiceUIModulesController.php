@@ -276,22 +276,23 @@ class SpiceUIModulesController
 
         # load all the global roles:
         $roles = $db->query("SELECT sysuiroles.*, 0 defaultrole, 'global' scope  FROM sysuiroles ORDER BY NAME");
-        while ($role = $db->fetchByAssoc($roles))
-
+        while ($role = $db->fetchByAssoc($roles)){
             if (is_null($role['systemdefault'])) $role['systemdefault'] = 0;
-        if (is_null($role['portaldefault'])) $role['portaldefault'] = 0;
-        if (is_null($role['showsearch'])) $role['showsearch'] = 1;
-        if (is_null($role['showfavorites'])) $role['showfavorites'] = 1;
-        $retArray[] = $role;
+            if (is_null($role['portaldefault'])) $role['portaldefault'] = 0;
+            if (is_null($role['showsearch'])) $role['showsearch'] = 1;
+            if (is_null($role['showfavorites'])) $role['showfavorites'] = 1;
+            $retArray[] = $role;
+        }
 
         // load all the custom roles:
         $roles = $db->query("SELECT sysuicustomroles.*, 0 defaultrole, 'custom' scope FROM sysuicustomroles ORDER BY NAME");
-        while ($role = $db->fetchByAssoc($roles))
+        while ($role = $db->fetchByAssoc($roles)){
             if (is_null($role['systemdefault'])) $role['systemdefault'] = 0;
-        if (is_null($role['portaldefault'])) $role['portaldefault'] = 0;
-        if (is_null($role['showsearch'])) $role['showsearch'] = 1;
-        if (is_null($role['showfavorites'])) $role['showfavorites'] = 1;
-        $retArray[] = $role;
+            if (is_null($role['portaldefault'])) $role['portaldefault'] = 0;
+            if (is_null($role['showsearch'])) $role['showsearch'] = 1;
+            if (is_null($role['showfavorites'])) $role['showfavorites'] = 1;
+            $retArray[] = $role;
+        }
 
         return array_values($retArray);
     }

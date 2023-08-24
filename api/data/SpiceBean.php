@@ -2490,18 +2490,28 @@ class SpiceBean
                     //check to see if loaded relationship is with email address
                     $relName = $tmpBean->$name->getRelatedModuleName();
                     if (!empty($relName) and strtolower($relName) == 'emailaddresses') {
+                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
                         //handle email address merge
-                        $this->handleEmailMerge($name, $tmpBean->$name->get());
+                        $this->handleEmailMerge($name, $tmpBean->$name->rows);
                     } else {
-                        $data = $tmpBean->$name->get();
+                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
+                        $data = $tmpBean->$name->rows;
+
                         if (is_array($data) && !empty($data)) {
                             if ($this->load_relationship($name)) {
-                                foreach ($data as $related_id) {
+                                foreach ($data as $related_id => $row) {
+
+                                    $additionalValues = [];
+
+                                    foreach ($this->$name->relationship_fields as $field => $def) {
+                                        $additionalValues[$field] = $row[$field];
+                                    }
+
                                     //remove from tmpBean (only many-to-many)
                                     if ($tmpBean->$name->getType == 'many')
                                         $tmpBean->$name->delete($tmpBean->id, $related_id);
                                     //add to primary bean
-                                    $this->$name->add($related_id);
+                                    $this->$name->add($related_id, $additionalValues);
 
                                     // re-index the related bean
                                     $relatedBean = BeanFactory::getBean($relName, $related_id, ['relationships' => false]);
@@ -2516,8 +2526,11 @@ class SpiceBean
             // merge attachments
             $this->db->query("UPDATE spiceattachments SET bean_id='{$this->id}' WHERE deleted=0 AND bean_id='{$tmpBean->id}'");
 
+            AddressReferences::getInstance()->updateReferencedBeansAddress($this, $tmpBean->id);
+
             //mark deleted
             $tmpBean->mark_deleted($beanId);
+
         }
         //free memory
         unset($tmpBeans);
@@ -2536,6 +2549,8 @@ class SpiceBean
         $mrgArray = [];
         //get the email id's to merge
         $existingData = $data;
+
+        $existingEmails = [];
 
         //make sure id's to merge exist and are in array format
         //get the existing email id's
@@ -2568,7 +2583,7 @@ class SpiceBean
         //query email and retrieve email address to be linked.
         $newEmailQuery = 'Select id, email_address from email_addresses where id in (';
         $first = true;
-        foreach ($existingData as $id) {
+        foreach ($existingData as $id => $row) {
             if ($first) {
                 $newEmailQuery .= " '$id' ";
                 $first = false;
@@ -2581,20 +2596,24 @@ class SpiceBean
 
         $newResult = $this->db->query($newEmailQuery);
         while (($row = $this->db->fetchByAssoc($newResult)) != null) {
-            $newEmails[$row['id']] = $row['email_address'];
+            $newEmails[$row['id']] = [];
+
+            foreach ($this->$name->relationship_fields as $field => $def) {
+                $newEmails[$row['id']][$field] = $existingData[$row['id']][$field];
+            }
         }
 
         //compare the two arrays and remove duplicates
-        foreach ($newEmails as $k => $n) {
+         foreach ($newEmails as $k => $n) {
             if (!in_array($n, $existingEmails)) {
                 $mrgArray[$k] = $n;
             }
         }
 
         //add email id's.
-        foreach ($mrgArray as $related_id => $related_val) {
+        foreach ($mrgArray as $related_id => $additionalValues) {
             //add to primary bean
-            $this->$name->add($related_id);
+            $this->$name->add($related_id, $additionalValues);
         }
     }
 

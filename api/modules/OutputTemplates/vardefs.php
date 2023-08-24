@@ -150,6 +150,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['OutputTemplate'] = [
             'relationship' => 'campaigntask_output_template',
             'source' => 'non-db',
             'module' => 'CampaignTasks'
+        ],
+        'emailtemplates' => [
+            'name' => 'emailtemplates',
+            'type' => 'link',
+            'relationship' => 'outputtemplates_emailtemplates',
+            'source' => 'non-db',
+            'module' => 'EmailTemplates',
+            'vname' => 'LBL_Email_TEMPLATES',
         ]
     ],
     'indices' => [

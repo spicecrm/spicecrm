@@ -3,24 +3,32 @@
 
 namespace SpiceCRM\data\api\handlers;
 
-use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ConflictException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSBeanHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\ArrayUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\includes\UploadFile;
-use SpiceCRM\includes\TimeDate;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\modules\UserPreferences\UserPreference;
+use stdClass;
 
 /*
  * This File is part of KREST is a Restful service extension for SugarCRM
@@ -35,16 +43,6 @@ use SpiceCRM\includes\TimeDate;
  *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\ErrorHandlers\ConflictException;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use stdClass;
-use SpiceCRM\modules\UserPreferences\UserPreference;
 
 class SpiceBeanHandler
 {
@@ -338,6 +336,15 @@ class SpiceBeanHandler
 
         if (!empty($searchParams['modulefilter'])) {
             $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter']);
+            if ($filterWhere) {
+                $whereClauses[] = '(' . $filterWhere . ')';
+            }
+        }
+
+        // add global filter if fts setings are defined so the filter is also applied here
+        $indexSettings = SpiceFTSUtils::getBeanIndexSettings($beanModule);
+        if (!empty($indexSettings['globalfilter'])) {
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($indexSettings['globalfilter']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
@@ -1428,7 +1435,7 @@ class SpiceBeanHandler
 
         foreach ($relatedIds as $relatedId) {
             $result = $thisBean->{$linkName}->add($relatedId);
-            if (!$result)
+            if ($result !== true)
                 throw new Exception("Something went wrong by adding $relatedId to $linkName");
             $retArray[$relatedId] = $thisBean->{$linkName}->relationship->relid;
         }
