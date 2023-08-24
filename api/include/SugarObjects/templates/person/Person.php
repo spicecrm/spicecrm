@@ -135,6 +135,8 @@ class Person extends Basic
     private function setPrimaryEmailAddress(string $primaryEmailAddressId, $relFieldsValues = [])
     {
 
+        if(!$this->email_addresses) return;
+
         $relationExists = false;
         $linkedEmailAddresses = $this->get_linked_beans('email_addresses');
 

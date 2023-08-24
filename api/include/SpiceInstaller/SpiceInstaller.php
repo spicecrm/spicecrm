@@ -481,6 +481,7 @@ class SpiceInstaller
      */
     public function loadSystemData($db){
         // ToDo: load from dump or from remote repo
+        SpiceDictionary::getInstance()->loadSystemCache();
     }
 
     /**
@@ -529,7 +530,7 @@ class SpiceInstaller
         }
 
         // relationship workaround: relationship has to be the first table to be  created before module tables
-        require_once('modules/Relationships/vardefs.php');
+        //require_once('modules/Relationships/vardefs.php');
         $table   = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['table'];
         $fields  = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['fields'];
         $indices = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['indices'];
@@ -582,6 +583,7 @@ class SpiceInstaller
                 }
 
             }
+            /*
             SpiceBean::createRelationshipMeta(
                 $bean,
                 $db,
@@ -589,6 +591,7 @@ class SpiceInstaller
                 '',
                 $dir
             );
+            */
         }
         SpiceModules::getInstance()->setBeanList($globalBeanList);
 
@@ -601,7 +604,7 @@ class SpiceInstaller
                 $db->query($query);
             }
 
-            SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
+            //SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
         }
 
 
@@ -697,7 +700,7 @@ class SpiceInstaller
     {
         $confLoader = new SpiceUIConfLoader();
         // load some packages to enable a good start
-        $loadPackages = ['core', 'aclessentials', 'ftsreference', 'schedulerjobs'];
+        $loadPackages = ['core', 'aclessentials', 'ftsreference'];
         foreach ($loadPackages as $loadPackage) {
             $confLoader->loadPackage($loadPackage);
         }

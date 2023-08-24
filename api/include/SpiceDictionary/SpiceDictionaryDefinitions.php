@@ -56,7 +56,7 @@ class SpiceDictionaryDefinitions
     public function __construct()
     {
         $cached = SpiceCache::get(self::cachename);
-        if ($cached) {
+        if ($cached && 1 == 2) {
             $this->dictionaryDefinitions = $cached;
             return;
         }
