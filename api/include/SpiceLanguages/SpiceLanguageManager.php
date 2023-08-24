@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceLanguages;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSingleton;
 
@@ -26,8 +27,23 @@ class SpiceLanguageManager extends SpiceSingleton
      * @return mixed|string
      * @throws \Exception
      */
-    public function getSystemDefaultLanguage(){
+    public static function getSystemDefaultLanguage(){
         $defaultLanguage = DBManagerFactory::getInstance()->fetchOne("SELECT language_code FROM syslangs WHERE is_default = 1");
         return $defaultLanguage['language_code'] ?? 'en_us';
+    }
+
+    /**
+     * set current language
+     * @return void
+     * @throws \Exception
+     */
+    public static function setCurrentLanguage(): void
+    {
+        global $current_language;
+
+        $current_language = self::getSystemDefaultLanguage();
+
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        if($current_user) $current_language = $current_user->getPreference('language') ?? $current_language;
     }
 }

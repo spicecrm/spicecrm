@@ -1,0 +1,4 @@
+<ng-container *ngIf="type" [ngSwitch]="fileType">
+    <system-object-preview *ngSwitchCase="'notImage'" [data]="blobFile" [type]="type"></system-object-preview>
+    <system-image-preview *ngSwitchCase="'image'" [data]="imgData"></system-image-preview>
+</ng-container>

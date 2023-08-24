@@ -27,6 +27,7 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\EmailTrackingLinks\EmailTrackingLink;
@@ -262,6 +263,33 @@ class Email extends SpiceBean
                 if (!$this->load_relationship($name)) continue;
                 $this->{$name}->add($linkedBean->id);
             }
+        }
+    }
+
+    /**
+     * @param string $templateId
+     * @param SpiceBean $bean
+     * @param null $additionalValues
+     * @param array $additionalBeans
+     * @return void
+     * @throws Exception
+     */
+    public function generateFromTemplate(string $templateId, SpiceBean $bean, $additionalValues = null, array $additionalBeans = [])
+    {
+        if (empty($this->id)) {
+            $this->id = SpiceUtils::createGuid();
+            $this->new_with_id = true;
+        }
+
+        /** @var EmailTemplate $template */
+        $template = BeanFactory::getBean('EmailTemplates');
+        $template->retrieve($templateId);
+        $parsedTpl = $template->parse($bean, $additionalValues, $additionalBeans);
+        $this->body = $parsedTpl['body_html'];
+        $this->name = $parsedTpl['subject'];
+
+        foreach ($parsedTpl['attachments'] as $file) {
+            SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $file);
         }
     }
 

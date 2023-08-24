@@ -228,6 +228,8 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         const emailAddresses = this.getUniqueCleanEmailAddresses();
         this.model.addRelatedRecords('email_addresses', emailAddresses.unique);
+        // rollback the deleted empty addresses if they were refilled
+        this.model.rollbackRemovedRelatedRecords('email_addresses', emailAddresses.unique.map(e => e.id));
         this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
 
         let invalid = this.handleFieldInvalid();

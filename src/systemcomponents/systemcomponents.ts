@@ -57,6 +57,7 @@ import {SystemIllustrationNoRecords} from "./components/systemillustrationnoreco
 import {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
 import {SystemIllustrationPageNotAvailable} from "./components/systemillustrationpagenotavailable";
 import {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
+import {SystemImagePreview} from "./components/systemimagepreview";
 import {SystemInputText} from "./components/systeminputtext";
 import {SystemInputEnum} from "./components/systeminputenum";
 import {SystemInputMultiEnum} from "./components/systeminputmultienum";
@@ -180,9 +181,11 @@ import {SystemInputDashboard} from "./components/systeminputdashboard";
 import {SystemSplitContainer} from "./components/systemsplitcontainer";
 import {SystemSplitContainerRight} from "./components/systemsplitcontainerright";
 import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
+import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 
 
 
+import {SystemObjectPreview} from "./components/systemobjectpreview";
 
 
 @NgModule({
@@ -289,6 +292,7 @@ import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
         SystemModuleGlobalPipe,
         SystemNumberSpinner,
         SystemObjectPreviewModal,
+        SystemObjectPreview,
         SystemPDFContainer,
         SystemInputModuleFilter,
         SystemFilterBuilder,
@@ -335,6 +339,7 @@ import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
         SystemSlider,
         SystemTrendIndicator,
         SystemImageModal,
+        SystemImagePreview,
         SystemNavigationCollector,
         SystemNavigationManager,
         SystemNavigationManagerRouteContainer,
@@ -354,7 +359,8 @@ import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
         SystemInputDashboard,
         SystemSplitContainer,
         SystemSplitContainerLeft,
-        SystemSplitContainerRight
+        SystemSplitContainerRight,
+        SystemInputSearchTerm
     ],
     exports: [
         PaginationControlsComponent,
@@ -499,7 +505,11 @@ import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
         SystemInputDashboard,
         SystemSplitContainer,
         SystemSplitContainerLeft,
-        SystemSplitContainerRight
+        SystemSplitContainerRight,
+        SystemInputSearchTerm,
+        SystemSelectIconItem,
+        SystemObjectPreview,
+        SystemImagePreview
     ]
 })
 export class SystemComponents {}
