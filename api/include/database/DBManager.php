@@ -1518,7 +1518,7 @@ abstract class DBManager
 
             if(is_null($string)) return '';
 
-            if(is_object($string)) $string = json_encode($string);
+            if(is_object($string) || is_array($string)) $string = json_encode($string);
         }
 
 		return $string;
@@ -2895,8 +2895,12 @@ abstract class DBManager
                         // Manual merge of fix 95727f2eed44852f1b6bce9a9eccbe065fe6249f from DBHelper
                         // This fix also fixes Bug #44624 in a more generic way and therefore eliminates the need for fix 0a55125b281c4bee87eb347709af462715f33d2d in DBHelper
                         if ($this->isNumericType($field_type)) {
-                            $numerator = abs(2 * (($before_value + 0) - ($after_value + 0)));
-                            $denominator = abs((($before_value + 0) + ($after_value + 0)));
+
+                            $after_value = intval($after_value);
+                            $before_value = intval($before_value);
+
+                            $numerator = abs(2 * ($before_value - $after_value));
+                            $denominator = abs($before_value + $after_value);
                             // detect whether to use absolute or relative error. use absolute if denominator is zero to avoid division by zero
                             $error = ($denominator == 0) ? $numerator : $numerator / $denominator;
                             if ($error >= 0.0000000001) {    // Smaller than 10E-10
