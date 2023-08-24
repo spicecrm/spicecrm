@@ -140,7 +140,8 @@ export class SpiceKanbanManagerAddModal implements OnInit{
      * cleanup field name
      */
     get sysTextIDName() {
-        return this.selectedBeanGuide.name.trim().toLowerCase().replace(/\s/g, "_");
+        const noSpecialChars = this.selectedBeanGuide.name.trim().toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '');
+        return noSpecialChars.replace(/\s/g, "_");
     }
 
     /**
