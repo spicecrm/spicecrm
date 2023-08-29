@@ -1,10 +1,7 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    Component, OnInit, Input
-} from '@angular/core';
-import {model} from '../../../services/model.service';
+import {Component, Input, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {workflow} from '../services/workflow.service';
 import {broadcast} from '../../../services/broadcast.service';
@@ -18,14 +15,14 @@ import moment from "moment";
     templateUrl: '../templates/workflowpaneltasks.html'
 
 })
-export class WorkflowPanelTasks implements OnInit{
+export class WorkflowPanelTasks implements OnInit {
 
     /**
      * an array of workflow tasks
      */
     @Input() public workflowtasks: any[] = [];
 
-    constructor(public model: model, public workflow: workflow, public language: language, public broadcast: broadcast) {
+    constructor(public workflow: workflow, public language: language, public broadcast: broadcast) {
     }
 
     /**

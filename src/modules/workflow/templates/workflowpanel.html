@@ -1,25 +1,27 @@
-<div class="slds-section slds-is-open">
-    <h3 class="slds-section__title">
-        <div class="slds-grid slds-grid--vertical-align-center slds-section__title-action" style="cursor: default">
-            <system-icon  module="Workflows" size="x-small"></system-icon>
-            <span class="slds-truncate">{{workflow.activeCount}} <system-label label="LBL_OPEN_WORKFLOWS"></system-label></span>
+<div class="slds-m-horizontal--x-small slds-p-top--xxx-small">
+    <div class="slds-section slds-is-open">
+        <h3 class="slds-section__title">
+            <div class="slds-grid slds-grid--vertical-align-center slds-section__title-action" style="cursor: default">
+                <system-icon  module="Workflows" size="x-small"></system-icon>
+                <span class="slds-truncate">{{workflow.activeCount}} <system-label label="LBL_OPEN_WORKFLOWS"></system-label></span>
+            </div>
+        </h3>
+        <div class="slds-p-vertical--x-small">
+            <workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowpenworkflowspipe" [workflow]="thisworkflow"></workflow-panel-item>
         </div>
-    </h3>
-    <div class="slds-p-vertical--x-small">
-        <workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowpenworkflowspipe" [workflow]="thisworkflow"></workflow-panel-item>
-    </div>
-    <div *ngIf="workflow.activeCount == 0" class="slds-box slds-align--absolute-center slds-p-around--medium slds-m-bottom--medium" [system-overlay-loading-spinner]="workflow.loading">
-        <system-illustration-no-records><system-label label="LBL_NO_ACTIVE_WORKFLOWS"></system-label></system-illustration-no-records>
-    </div>
-</div>
-<div class="slds-section slds-is-open" *ngIf="workflow.completeCount > 0">
-    <h3 class="slds-section__title">
-        <div class="slds-grid slds-grid--vertical-align-center slds-section__title-action" style="cursor: default">
-            <system-icon  module="Workflows" size="x-small"></system-icon>
-            <span class="slds-truncate">{{workflow.completeCount}} <system-label label="LBL_COMPLETED_WORKFLOWS"></system-label></span>
+        <div *ngIf="workflow.activeCount == 0" class="slds-box slds-align--absolute-center slds-p-around--medium slds-m-bottom--medium" [system-overlay-loading-spinner]="workflow.loading">
+            <system-illustration-no-records><system-label label="LBL_NO_ACTIVE_WORKFLOWS"></system-label></system-illustration-no-records>
         </div>
-    </h3>
-    <div class="slds-p-vertical--x-small">
-        <workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowcompletedworkflowspipe" [workflow]="thisworkflow" [collapsed]="true"></workflow-panel-item>
+    </div>
+    <div class="slds-section slds-is-open" *ngIf="workflow.completeCount > 0">
+        <h3 class="slds-section__title">
+            <div class="slds-grid slds-grid--vertical-align-center slds-section__title-action" style="cursor: default">
+                <system-icon  module="Workflows" size="x-small"></system-icon>
+                <span class="slds-truncate">{{workflow.completeCount}} <system-label label="LBL_COMPLETED_WORKFLOWS"></system-label></span>
+            </div>
+        </h3>
+        <div class="slds-p-vertical--x-small">
+            <workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowcompletedworkflowspipe" [workflow]="thisworkflow" [collapsed]="true"></workflow-panel-item>
+        </div>
     </div>
 </div>
