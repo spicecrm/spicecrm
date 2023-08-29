@@ -42,6 +42,8 @@ import {SystemCustomIcon} from "./components/systemcustomicon";
 import {SystemDisplayCurrencySymbol} from "./components/systemdisplaycurrencysymbol";
 import {SystemDisplayDatetime} from "./components/systemdisplaydatetime";
 import {SystemDisplayNumber} from "./components/systemdisplaynumber";
+import {SystemDuelingPicklist} from "./components/systemduelingpicklist";
+import {SystemDuelingPicklistItem} from "./components/systemduelingpicklistitem";
 import {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
 import {SystemDynamicRouteInterceptor} from "./components/systemdynamicrouteinterceptor";
@@ -185,6 +187,7 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 
 import {SystemObjectPreview} from "./components/systemobjectpreview";
 
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -224,6 +227,8 @@ import {SystemObjectPreview} from "./components/systemobjectpreview";
         SystemDisplayCurrencySymbol,
         SystemDisplayDatetime,
         SystemDisplayNumber,
+        SystemDuelingPicklist,
+        SystemDuelingPicklistItem,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
         SystemDynamicRouteInterceptor,
@@ -380,6 +385,8 @@ import {SystemObjectPreview} from "./components/systemobjectpreview";
         SystemCustomIcon,
         SystemDisplayDatetime,
         SystemDisplayNumber,
+        SystemDuelingPicklist,
+        SystemDuelingPicklistItem,
         SystemDynamicComponent,
         SystemFilterBuilderFilterExpression,
         SystemFilterBuilderFilterExpressionFields,
