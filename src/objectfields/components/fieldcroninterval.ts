@@ -36,6 +36,13 @@ export class fieldCronInterval extends fieldGeneric {
         every?: 'minutes' | 'hours' | 'days' | 'months' | 'weekdays' | 'daysAt' | 'monthsAt'
         everyQuantity?: number,
         everyAtValue?: any,
+    } = {
+        minutes: '',
+        hours: '',
+        monthDay: '',
+        month: '',
+        weekDay: '',
+        stringValue: ''
     };
     /**
      * holds the moment weekdays
@@ -112,13 +119,29 @@ export class fieldCronInterval extends fieldGeneric {
      * call to set the field value on default recurrence and reset every quantity
      */
     public onRecurrenceSet() {
-        if (this.expression.recurrence != 'custom' && this.expression.recurrence != 'cron') {
-            this.setDefaultRecurrenceEveryAtValue();
-            this.setFieldValue();
-        } else {
-            this.expression.every = 'minutes';
+
+        if (!this.expression.recurrence) {
+            this.value = '';
+            this.expression.stringValue = '';
+            this.setExpressionProperties(undefined);
+            this.setDisplayValue();
+            return;
         }
-        this.resetEveryQuantity();
+
+        switch (this.expression.recurrence) {
+            case 'custom':
+                this.expression.every = 'minutes';
+                this.expression.everyQuantity = 1;
+                break;
+            case 'cron':
+                this.setExpressionProperties('*');
+                break;
+            default:
+                this.setDefaultRecurrenceEveryAtValue();
+                this.resetEveryQuantity();
+        }
+
+        this.setFieldValue();
     }
 
     /**
@@ -208,7 +231,7 @@ export class fieldCronInterval extends fieldGeneric {
      */
     public setFieldValue() {
 
-        this.resetExpressionProperties();
+        this.setExpressionProperties('*');
 
         switch (this.expression.recurrence) {
             case 'custom':
@@ -294,12 +317,12 @@ export class fieldCronInterval extends fieldGeneric {
      * reset the expression properties to *
      * @private
      */
-    public resetExpressionProperties() {
-        this.expression.minutes = '*';
-        this.expression.hours = '*';
-        this.expression.monthDay = '*';
-        this.expression.month = '*';
-        this.expression.weekDay = '*';
+    public setExpressionProperties(val: string) {
+        this.expression.minutes = val;
+        this.expression.hours = val;
+        this.expression.monthDay = val;
+        this.expression.month = val;
+        this.expression.weekDay = val;
     }
 
     /**
@@ -484,6 +507,10 @@ export class fieldCronInterval extends fieldGeneric {
      * @private
      */
     public setDisplayValue() {
+
+        if (!this.expression.recurrence) {
+            return this.expression.displayValue = '';
+        }
 
         if (this.expression.recurrence == 'cron') {
             return this.expression.displayValue = this.expression.stringValue;

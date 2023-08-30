@@ -213,6 +213,7 @@ import {ObjectActionHelpTextButton} from "./components/objectactionhelptextbutto
 import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
 import {ObjectStatusNetworkModal} from "./components/objectstatusnetworkmodal";
 import {ObjectStatusNetworkOpenModalButton} from "./components/objectstatusnetworkopenmodalbutton";
+import {ObjectWorkflowButton} from "./components/objectworkflowbutton";
 
 
 /**
@@ -401,7 +402,8 @@ import {ObjectStatusNetworkOpenModalButton} from "./components/objectstatusnetwo
         ObjectActionHelpTextButton,
         ObjectHelpTextModal,
         ObjectStatusNetworkModal,
-        ObjectStatusNetworkOpenModalButton
+        ObjectStatusNetworkOpenModalButton,
+        ObjectWorkflowButton
     ],
     exports: [
         ObjectListViewHeader,
