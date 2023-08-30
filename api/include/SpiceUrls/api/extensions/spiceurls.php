@@ -89,36 +89,30 @@ $routes = [
     ],
     [
         'method' => 'post',
-        'route' => '/common/spiceurls',
+        'route' => '/common/spiceurls/module/{beanName}/{beanId}',
         'class' => SpiceUrlsController::class,
         'function' => 'saveUrl',
         'description' => '',
         'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
         'parameters' => [
-            'url' => [
+            'data' => [
                 'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
+                'type' => ValidationMiddleware::TYPE_ARRAY,
                 'required' => true,
                 'description' => 'url content',
             ],
-            'url_name' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'required' => false,
-                'description' => 'url name',
-            ],
             'beanId' => [
-                'in' => 'body',
+                'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'description' => 'GUID of bean',
-                'required' => false
+                'required' => true
             ],
             'beanName' => [
-                'in' => 'body',
+                'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_MODULE,
                 'description' => 'name of a module',
                 'example' => 'Accounts',
-                'required' => false
+                'required' => true
             ],
         ]
     ],

@@ -1,0 +1,29 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_EDIT"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_URL"></system-label></label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="url.url" disabled>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_DISPLAY_NAME"></system-label></label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="inputData.url_name">
+            </div>
+        </div>
+        <div class="slds-form-element slds-p-horizontal--xx-small">
+            <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
+            <div class="slds-form-element__control">
+                <textarea style="height:250px" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="inputData.description"></textarea>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid">
+            <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

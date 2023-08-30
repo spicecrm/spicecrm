@@ -94,7 +94,7 @@ class SpiceUrlsController
         }
 
         $postBody = $req->getParsedBody();
-        return $res->withJson(SpiceUrls::saveUrl($postBody));
+        return $res->withJson(SpiceUrls::saveUrl($postBody, $args));
     }
 
     /**
