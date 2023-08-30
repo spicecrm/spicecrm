@@ -31,10 +31,10 @@ class SpiceUrls
             $urls[] = [
                 'id' => $thisUrl['id'],
                 'user_id' => $thisUrl['user_id'],
-                'user_name' => $thisUrl['user_name'],
                 'date' => $thisUrl['date_entered'],
                 'description' => nl2br($thisUrl['description']),
-                'url_name' => $thisUrl['display_name'],
+                'url' => $thisUrl['url'],
+                'url_name' => $thisUrl['url_name'],
                 'external_id' => $thisUrl['external_id']
             ];
         }
@@ -49,7 +49,7 @@ class SpiceUrls
     /**
      * Returns a json encoded array with url data for a given url ID.
      *
-     * @param $attachmentId
+     * @param $urlId
      * @param bool $json_encode
      * @return false|string
      * @throws NotFoundException|\Exception
@@ -95,28 +95,29 @@ class SpiceUrls
     /**
      * saves a single url in the db
      * @param $urlData
+     * @param $seed
      * @return array
      * @throws Exception|\Exception
      */
-    public static function saveUrl($urlData): array
+    public static function saveUrl($urlData, $seed): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $db = DBManagerFactory::getInstance();
         $guid = SpiceUtils::createGuid();
 
-        if ($urlData['beanName'] && $urlData['beanId']) {
+        if ($seed['beanName'] && $seed['beanId']) {
             // add the url
             $db->insertQuery('spiceurls', [
                 'id' => $guid,
-                'bean_type' => $urlData['beanName'],
-                'bean_id' => $urlData['beanId'],
+                'bean_type' => $seed['beanName'],
+                'bean_id' => $seed['beanId'],
                 'user_id' => $current_user->id,
                 'date_entered' => TimeDate::getInstance()->nowDb(),
-                'url' => $urlData['url'],
-                'url_name' => $urlData['url_name'],
-                'description' => $urlData['description'],
-                'external_id' => $urlData['external_id']
+                'url' => $urlData['data']['url'],
+                'url_name' => $urlData['data']['url_name'],
+                'description' => $urlData['data']['description'],
+                'external_id' => $urlData['data']['external_id']
             ]);
         }
 
@@ -124,10 +125,10 @@ class SpiceUrls
             'id' => $guid,
             'user_id' => $current_user->id,
             'user_name' => $current_user->user_name,
-            'url' => $urlData['url'],
-            'url_name' => $urlData['url_name'],
-            'description' => $urlData['description'],
-            'external_id' => $urlData['external_id']
+            'url' => $urlData['data']['url'],
+            'url_name' => $urlData['data']['url_name'],
+            'description' => $urlData['data']['description'],
+            'external_id' => $urlData['data']['external_id']
         ];
 
         return $urls;
@@ -156,11 +157,11 @@ class SpiceUrls
 
             $url = $db->fetchOne($sql);
             if ($url === false) {
-                throw (new NotFoundException('Attachment not found.'))->setLookedFor(['id' => $urlId])->setErrorCode('notFound');
+                throw (new NotFoundException('Url not found.'))->setLookedFor(['id' => $urlId])->setErrorCode('notFound');
             } elseif (($current_user->id !== $url['user_id']) and !$current_user->is_admin) {
-                throw (new ForbiddenException('Forbidden to delete the attachment. Belongs to user with ID ' . $url['user_id'] . '.'))->setErrorCode('noDelete');
+                throw (new ForbiddenException('Forbidden to delete the url. Belongs to user with ID ' . $url['user_id'] . '.'))->setErrorCode('noDelete');
             } else {
-                throw new Exception('Unknown error deleting the attachment.');
+                throw new Exception('Unknown error deleting the url.');
             }
         }
 
@@ -168,7 +169,7 @@ class SpiceUrls
 
 
     /**
-     * update attachment display name, text and category
+     * update url display name, text and category
      * @param string $urlId
      * @param $data
      * @return array
