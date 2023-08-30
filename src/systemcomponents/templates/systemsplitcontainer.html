@@ -1,12 +1,18 @@
-<ng-content select="system-split-container-left"></ng-content>
-<div class="slds-is-relative">
-    <div [style.left.px]="childLeft.expanded ? -16 : childRight.expanded ? 0 : -8" class="slds-grid slds-is-absolute__top slds-grid--vertical slds-theme--default spice-split-container-splitter">
-        <button *ngIf="!childRight.expanded" (click)="expand('right')" class="slds-button slds-button--icon-bare slds-button--icon">
-            <system-button-icon icon="arrow_left" size="small"></system-button-icon>
-        </button>
-        <button *ngIf="!childLeft.expanded" (click)="expand('left')" class="slds-button slds-button--icon-bare slds-button--icon">
-            <system-button-icon icon="arrow_right" size="small"></system-button-icon>
-        </button>
+<div [class]="childLeft.containerClass" [style.width]="childRight.expanded ? 0 : childLeft.expanded ? '100%' : null" class="slds-split-view_container">
+    <div class="slds-split-view__toggle-button slds-align--absolute-center">
+        <div>
+            <button (click)="expand('right')" [disabled]="childRight.expanded" class="slds-button slds-button_icon slds-button_icon" style="width: 0.75rem; margin-left: 0;" aria-expanded="false">
+                <system-button-icon icon="left"></system-button-icon>
+            </button>
+            <button (click)="expand('left')" [disabled]="childLeft.expanded" class="slds-button slds-button_icon slds-button_icon" style="width: 0.75rem; margin-left: 0;" aria-expanded="false">
+                <system-button-icon icon="right"></system-button-icon>
+            </button>
+        </div>
     </div>
+    <article aria-hidden="true" class="slds-split-view slds-height_full">
+        <ng-content select="system-split-container-left"></ng-content>
+    </article>
 </div>
-<ng-content select="system-split-container-right"></ng-content>
+<div [class]="childRight.containerClass" [style.width]="childLeft.expanded ? 0 : childRight.expanded ? '100%' : null" class="slds-height_full" style="margin-left: 12px">
+    <ng-content select="system-split-container-right"></ng-content>
+</div>
