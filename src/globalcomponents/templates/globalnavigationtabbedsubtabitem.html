@@ -4,7 +4,7 @@
             <ng-container *ngIf="tabname; else tabloading">
                 <system-utility-icon *ngIf="tabicon" [icon]="tabicon" size="x-small" class="slds-p-right--x-small"></system-utility-icon>
                 <system-icon *ngIf="tabmodule" [module]="tabmodule" size="x-small" divClass="slds-p-right--x-small"></system-icon>
-                <div>{{tabname}}</div>
+                <div class="slds-truncate" style="white-space: nowrap;"><system-label [label]="tabname"></system-label></div>
             </ng-container>
             <ng-template #tabloading>
                 <system-spinner size="10" class="slds-p-right--x-small"></system-spinner>
