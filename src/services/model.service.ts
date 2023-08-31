@@ -1038,7 +1038,6 @@ export class model implements OnDestroy {
      */
     public cancelEdit() {
         this.isEditing = false;
-        this.mode$.emit('display');
         this.navigation.removeModelEditing(this.module, this.id);
 
         if (this.backupData) {
@@ -1049,6 +1048,7 @@ export class model implements OnDestroy {
             this.resetMessages();
         }
 
+        this.mode$.emit('display');
         // emit that the edit mode has been cancelled
         this.canceledit$.emit(true);
     }
