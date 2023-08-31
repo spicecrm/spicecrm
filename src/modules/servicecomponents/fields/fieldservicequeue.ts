@@ -27,12 +27,16 @@ export class fieldServiceQueue extends fieldGeneric {
             return false;
         }
 
-        return this.model.isEditing ? false : true;
+        return !this.model.isEditing;
     }
 
     public selectQueue() {
         if(this.canChange) {
             this.modal.openModal('ServiceSelectQueueModal', true, this.injector);
         }
+    }
+
+    public returnToQueue(){
+        this.modal.openModal('ServiceReturnToQueueModal', true, this.injector);
     }
 }

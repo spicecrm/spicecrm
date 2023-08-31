@@ -75,6 +75,7 @@ import {ServiceDocSignatureButton} from "./components/servicedocsignaturebutton"
 import {ServiceDocSignatureContent} from "./components/servicedocsignaturecontent";
 import {ServiceDocSignatureModal} from "./components/servicedocsignaturemodal";
 import {ServiceTreeAddData} from "./components/servicetreeadddata";
+import {ServiceReturnToQueueModal} from "./components/servicereturntoqueuemodal";
 
 @NgModule({
     imports: [
@@ -101,6 +102,7 @@ import {ServiceTreeAddData} from "./components/servicetreeadddata";
         ServiceCategoryManagerComponent,
         ServiceSelectQueueButton,
         ServiceSelectQueueModal,
+        ServiceReturnToQueueModal,
         ServiceMyTicketsDashlet,
         ServiceMyQueuesTicketsDashlet,
         ServiceMyQueuesTicketsDashletItem,

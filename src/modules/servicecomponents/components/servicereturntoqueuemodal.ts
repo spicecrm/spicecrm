@@ -11,11 +11,11 @@ import {firstValueFrom, Subscription} from "rxjs";
 import {modal} from "../../../services/modal.service";
 
 @Component({
-    selector: 'service-select-queue-modal',
-    templateUrl: '../templates/serviceselectqueuemodal.html',
+    selector: 'service-return-to-queue-modal',
+    templateUrl: '../templates/servicereturntoqueuemodal.html',
     providers: [model, modellist]
 })
-export class ServiceSelectQueueModal {
+export class ServiceReturnToQueueModal {
     /**
      * reference to the modal itself
      */
@@ -24,24 +24,12 @@ export class ServiceSelectQueueModal {
     /**
      * the current queue id for the service ticket
      */
-    public parentqueue_id: string = '';
+    public returntoqueue_id: string = '';
 
     /**
      * the list of available queues
      */
     public queues: any[] = [];
-
-    /**
-     * getter for template
-     */
-    get queuelist() {
-        return this.queues.filter(queue => {if(queue.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0) return true;  return false;}).sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    /**
-     * indicates when we are laoding queues
-     */
-    public loading: boolean = true;
 
     /**
      * an indicator if a note shoudl be displayed
@@ -54,24 +42,17 @@ export class ServiceSelectQueueModal {
     public selectedqueueid: string = '';
 
     /**
-     * boolean to save the id of the original queue
-     */
-    public returntoqueue: boolean;
-
-    /**
      * the string for the note
      */
     public note: string = '';
-
+    /**
+     * indicates when we are laoding queues
+     */
+    public loading: boolean = true;
     /**
      * an emitter for the selected queue if all was passed properly
      */
     public selectedqueue: EventEmitter<any> = new EventEmitter<any>();
-
-    /**
-     * a search term to filter the queue list
-     */
-    public searchTerm: string = '';
 
     /**
      * holds component subscriptions
@@ -86,28 +67,8 @@ export class ServiceSelectQueueModal {
         public modellist: modellist,
         public modal: modal
     ) {
-        this.parentqueue_id = this.model.getField('servicequeue_id');
+        this.returntoqueue_id = this.model.getField('returntoqueue_id');
 
-        this.modellist.initialize('ServiceQueues');
-        this.modellist.setListType('all', false);
-        this.modellist.setSortField( 'name', 'ASC' );
-        this.modellist.loadlimit = -99;
-        this.modellist.useCache = true;
-        this.modellist.searchTerm = this.searchTerm;
-        this.subscriptions.add(
-            this.modellist.getListData().subscribe( data => {
-                if ( data ) {
-                    this.queues = this.modellist.listData.list;
-                }
-                this.loading = false;
-            }));
-    }
-
-    /**
-     * filter the queues according to search
-     */
-    get queueList(): ServiceQueueI[] {
-        return this.queues.filter(queue => {if(queue.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) >= 0) return true;  return false;}).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     /**
@@ -120,28 +81,15 @@ export class ServiceSelectQueueModal {
     }
 
     /**
-     * track queue list for filter
-     * @param index
-     * @param item
-     */
-    public trackByFn(index, item) {
-        return item.id;
-    }
-
-
-    /**
      * save the new Queue ID and the ServiceTicketNote for history
      */
     public async save() {
         const loadingModal = this.modal.await('LBL_SAVING_DATA');
 
         // set the model fields and save the model
-        this.model.setField('servicequeue_id', this.selectedqueueid);
-        if(this.returntoqueue==true){
-            this.model.setField('returntoqueue_id', this.parentqueue_id);
-        }
-        this.model.setField('servicequeue_name', this.queues.find(q => q.id == this.selectedqueueid).name);
-        this.model.setField('serviceticket_status', 'In Process');
+        this.model.setField('servicequeue_id', this.returntoqueue_id);
+        this.model.setField('returntoqueue_id', '');
+        this.model.setField('serviceticket_status', 'Returned');
         await firstValueFrom(this.model.save());
 
         /**
@@ -161,4 +109,5 @@ export class ServiceSelectQueueModal {
 
         this.self.destroy();
     }
+
 }
