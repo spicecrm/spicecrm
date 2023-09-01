@@ -6,8 +6,6 @@ import {language} from "../../services/language.service";
 import {modelurls} from "../../services/modelurls.service";
 import {broadcast} from "../../services/broadcast.service";
 import {modal} from '../../services/modal.service';
-import {Router} from "@angular/router";
-import {navigationtab} from "../../services/navigationtab.service";
 import {model} from "../../services/model.service";
 
 /**
@@ -24,15 +22,14 @@ export class ObjectUrlActionMenu {
      */
     @Input() public url: any;
 
-    constructor(public broadcast: broadcast,
-                public modelurls: modelurls,
-                public language: language,
-                public elementRef: ElementRef,
-                public modal: modal,
-                public injector: Injector,
-                public model: model) {
-        this.model.initialize();
-    }
+    constructor(
+        public broadcast: broadcast,
+        public modelurls: modelurls,
+        public language: language,
+        public elementRef: ElementRef,
+        public modal: modal,
+        public injector: Injector,
+        public model: model){}
 
     /**
      * determines where the menu is opened
@@ -60,6 +57,7 @@ export class ObjectUrlActionMenu {
         this.modal.openModal('SpiceUrlsEditModal', true, this.injector).subscribe(modalRef => {
                 modalRef.instance.url = this.url;
                 modalRef.instance.inputData = {
+                    url: this.url.url,
                     description: this.url.description,
                     url_name: this.url.url_name,
                 };
