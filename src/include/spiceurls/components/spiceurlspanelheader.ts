@@ -1,6 +1,6 @@
 /**
- * @module ModuleWorkflow
- */
+ * @module ModuleSpiceUrls
+ * */
 import {
     Component, OnDestroy, OnInit
 } from '@angular/core';
@@ -9,6 +9,9 @@ import {broadcast} from '../../../services/broadcast.service';
 import {language} from '../../../services/language.service';
 import {modelurls} from '../../../services/modelurls.service';
 
+/**
+ * renders the url count in the panel header
+ */
 @Component({
     selector: 'spice-urls-panel-header',
     templateUrl: '../templates/spiceurlspanelheader.html',
