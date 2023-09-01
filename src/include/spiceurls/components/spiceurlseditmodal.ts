@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpiceUrls
  */
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
@@ -13,14 +13,13 @@ import {model} from "../../../services/model.service";
  */
 @Component({
     selector: 'spice-urls-edit-modal',
-    templateUrl: '../templates/spiceurlseditmodal.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: '../templates/spiceurlseditmodal.html'
 })
-export class SpiceUrlsEditModal {
+export class SpiceUrlsEditModal implements OnInit{
     /**
      * passed from the modal trigger
      */
-    public url: any = {};
+    @Input() public url: any = {};
 
     /**
      * holds the local input data to update the original url after save
@@ -39,6 +38,9 @@ export class SpiceUrlsEditModal {
                 public backend: backend) {
     }
 
+    public ngOnInit() {
+        const x = this.url;
+    }
     /**
      * close the modal
      */
