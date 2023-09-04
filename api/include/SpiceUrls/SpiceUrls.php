@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceUrls;
 
+use DOMDocument;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
@@ -35,7 +36,6 @@ class SpiceUrls
                 'description' => nl2br($thisUrl['description']),
                 'url' => $thisUrl['url'],
                 'url_name' => $thisUrl['url_name'],
-                'external_id' => $thisUrl['external_id']
             ];
         }
 
@@ -69,7 +69,6 @@ class SpiceUrls
             'url' => $thisUrl['url'],
             'url_name' => $thisUrl['url_name'],
             'deleted' => $thisUrl['deleted'],
-            'external_id' => $thisUrl['external_id']
         ];
 
         return $json_encode ? json_encode($url) : $url;
@@ -106,6 +105,9 @@ class SpiceUrls
         $db = DBManagerFactory::getInstance();
         $guid = SpiceUtils::createGuid();
 
+        // retrieves url details from curl and headless chrome
+        $urlDetails = self::getUrlHeadDetails($urlData['data']['url']);
+
         if ($seed['beanName'] && $seed['beanId']) {
             // add the url
             $db->insertQuery('spiceurls', [
@@ -115,23 +117,23 @@ class SpiceUrls
                 'user_id' => $current_user->id,
                 'date_entered' => TimeDate::getInstance()->nowDb(),
                 'url' => $urlData['data']['url'],
-                'url_name' => $urlData['data']['url_name'],
-                'description' => $urlData['data']['description'],
-                'external_id' => $urlData['data']['external_id']
+                'url_name' => $urlDetails['title'],
+                'thumbnail' => $urlDetails['thumbnail'],
+                'description' => $urlDetails['description'],
             ]);
         }
 
-        $urls[] = [
+        $url = [
             'id' => $guid,
             'user_id' => $current_user->id,
             'user_name' => $current_user->user_name,
             'url' => $urlData['data']['url'],
-            'url_name' => $urlData['data']['url_name'],
-            'description' => $urlData['data']['description'],
-            'external_id' => $urlData['data']['external_id']
+            'url_name' => $urlDetails['title'],
+            'thumbnail' => $urlDetails['thumbnail'],
+            'description' => $urlDetails['description'],
         ];
 
-        return $urls;
+        return $url;
     }
 
     /**
@@ -186,5 +188,67 @@ class SpiceUrls
         return ['success' => $res];
     }
 
+    /**
+     * retrieves url title and description from curl
+     *
+     * @param string $url
+     * @return array $urlDetails with url title, description and thumbnail
+     * @throws Exception
+     */
+    private static function getUrlHeadDetails(string $url): array
+    {
+        $title = $url;
+        $description = '';
+
+        // curl call to retrieve html details
+        $html = self::fileGetContentsCurl($url);
+
+        //parsing html file data
+        $doc = new DOMDocument();
+        $doc->loadHTML($html);
+
+        //get url title
+        $nodes = $doc->getElementsByTagName('title');
+        $title = $nodes->item(0)->nodeValue;
+
+        $metas = $doc->getElementsByTagName('meta');
+
+        for ($i = 0; $i < $metas->length; $i++) {
+            $meta = $metas->item($i);
+
+            // make sure we've got url title if nodes empty
+            if(!$title && $meta->getAttribute('property') == 'og:title') {
+                $title = $meta->getAttribute('content');
+            }
+            // get website description
+            if ($meta->getAttribute('name') == 'description') {
+                $description = $meta->getAttribute('content');
+            }
+        }
+        $urlHead = ['title' => $title, 'description' => $description];
+
+        return $urlHead;
+    }
+
+    /**
+     * curl call for retrieving html doc
+     * @param string $url
+     * @return string
+     */
+    private static function fileGetContentsCurl(string $url): string
+    {
+        $data = '';
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+        $data = curl_exec($ch);
+        curl_close($ch);
+
+        return $data;
+    }
 
 }
