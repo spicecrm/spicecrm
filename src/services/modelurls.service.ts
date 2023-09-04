@@ -175,10 +175,10 @@ export class modelurls implements OnDestroy {
 
 
     /**
-     * retrueves an url with a given id for a model
+     * retrieves an url with a given id for a model
      * @param id
      */
-    public geturl(id): Observable<any> {
+    public getUrl(id): Observable<any> {
         let retSubject = new Subject();
 
         this.backend.getRequest(`common/spiceurls/module/${this.module}/${this.id}/${id}`, null, this.httpRequestsRefID).subscribe({
@@ -213,7 +213,7 @@ export class modelurls implements OnDestroy {
                 date: new moment(),
                 url: urlString,
                 id: '',
-                url_name: urlString,
+                url_name: '',
                 user_id: '1',
                 user_name: 'admin',
                 uploadprogress: 0
@@ -246,9 +246,11 @@ export class modelurls implements OnDestroy {
         let data = {data: newUrl};
 
         this.backend.postRequestWithProgress(`common/spiceurls/module/${this.module}/${this.id}`, null, data, progressSubscription, this.httpRequestsRefID).subscribe(val => {
-            newUrl.id = val[0].id;
-            newUrl.user_id = val[0].user_id;
-            newUrl.user_name = val[0].user_name;
+            newUrl.id = val.id;
+            newUrl.user_id = val.user_id;
+            newUrl.user_name = val.user_name;
+            newUrl.url = val.url;
+            newUrl.url_name = val.url_name;
 
             delete (newUrl.uploadprogress);
 
