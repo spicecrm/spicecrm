@@ -399,9 +399,9 @@ if (file_exists('extensions/modules/ServiceQueues')) {
         'vname' => 'LBL_SERVICEQUEUE_ID',
         'type' => 'id',
     ];
-    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['returntoqueue_id'] = [
-        'name' => 'returntoqueue_id',
-        'vname' => 'LBL_SERVICEQUEUE_ID',
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['return_to_servicequeue_id'] = [
+        'name' => 'return_to_servicequeue_id',
+        'vname' => 'LBL_RETURN_TO_SERVICEQUEUE_ID',
         'type' => 'id',
     ];
     SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['servicequeue_name'] = [
