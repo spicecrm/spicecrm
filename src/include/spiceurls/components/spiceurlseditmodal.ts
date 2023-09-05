@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpiceUrls
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
@@ -15,7 +15,7 @@ import {model} from "../../../services/model.service";
     selector: 'spice-urls-edit-modal',
     templateUrl: '../templates/spiceurlseditmodal.html'
 })
-export class SpiceUrlsEditModal implements OnInit{
+export class SpiceUrlsEditModal {
     /**
      * passed from the modal trigger
      */
@@ -38,9 +38,6 @@ export class SpiceUrlsEditModal implements OnInit{
                 public backend: backend) {
     }
 
-    public ngOnInit() {
-        const x = this.url;
-    }
     /**
      * close the modal
      */
