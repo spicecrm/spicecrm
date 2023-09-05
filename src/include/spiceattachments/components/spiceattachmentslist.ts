@@ -15,6 +15,7 @@ declare var moment: any;
  * displays a quicknote that is read in teh stream
  */
 @Component({
+    selector: 'spice-attachments-list',
     templateUrl: '../templates/spiceattachmentslist.html',
     providers: [modelattachments],
     changeDetection: ChangeDetectionStrategy.OnPush
