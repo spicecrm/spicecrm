@@ -10,6 +10,7 @@ import {language} from '../../../services/language.service';
 import {modelattachments} from '../../../services/modelattachments.service';
 
 @Component({
+    selector: 'spice-attachments-panel-header',
     templateUrl: '../templates/spiceattachmentspanelheader.html',
     providers:[modelattachments]
 
