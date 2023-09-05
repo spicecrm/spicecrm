@@ -406,11 +406,11 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectHelpTextModal,
         ObjectStatusNetworkModal,
         ObjectStatusNetworkOpenModalButton,
-        ObjectWorkflowButton
+        ObjectWorkflowButton,
         ObjectPopoverHeader,
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
-        ObjectUrlActionMenu
+        ObjectUrlActionMenu,
     ],
     exports: [
         ObjectListViewHeader,
