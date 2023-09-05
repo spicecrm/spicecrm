@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="cancel()">
-        <system-label label="RETURN_TO_QUEUE"></system-label>
+        <div><system-label label="RETURN_TO_QUEUE"></system-label> {{returntoqueue_name}}</div>
     </system-modal-header>
     <system-modal-content>
         <div *ngIf="displaynote" class="slds-form-element slds-p-top--small">
@@ -17,7 +17,7 @@
             <system-label label="LBL_CANCEL"></system-label>
         </button>
         <button class="slds-button slds-button--brand" (click)="save()">
-            <system-label label="LBL_SAVE"></system-label>
+            <system-label label="LBL_RETURN"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>
