@@ -21,6 +21,7 @@ interface imageData {
  * displays a quicknote that is read in teh stream
  */
 @Component({
+    selector: 'spice-attachment-add-image-modal',
     templateUrl: '../templates/spiceattachmentaddimagemodal.html',
 })
 export class SpiceAttachmentAddImageModal {
