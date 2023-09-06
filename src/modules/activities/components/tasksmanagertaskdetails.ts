@@ -56,7 +56,7 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
 
     public handleMessage(message: any) {
         // only handle if the module is the list module
-        if (message.messagedata.module !== this.model.module)  return;
+        if (message.messagedata.module !== this.model.module) return;
 
         switch (message.messagetype) {
             case 'model.delete':
@@ -71,18 +71,15 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
     }
 
     public ngOnChanges() {
-        // set or delete the component
+
+        if (this.viewComponent) {
+            this.viewComponent.destroy();
+            this.viewComponent = null;
+        }
         if (this.focusid) {
-            if (!this.viewComponent) {
-                this.metadata.addComponent('ObjectRecordDetails', this.detailscontent).subscribe(component => {
-                    this.viewComponent = component;
-                })
-            }
-        } else {
-            if (this.viewComponent) {
-                this.viewComponent.destroy();
-                this.viewComponent = null;
-            }
+            this.metadata.addComponent('ObjectRecordDetails', this.detailscontent).subscribe(component => {
+                this.viewComponent = component;
+            })
         }
 
         if (this.focusid && this.focusid != this.model.id) {
@@ -98,7 +95,7 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
     get nameStyle() {
         let styles = {};
 
-        if (this.isCompleted){
+        if (this.isCompleted) {
             styles['text-decoration'] = 'line-through';
         }
 

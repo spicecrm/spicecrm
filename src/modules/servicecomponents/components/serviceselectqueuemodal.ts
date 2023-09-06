@@ -54,6 +54,11 @@ export class ServiceSelectQueueModal {
     public selectedqueueid: string = '';
 
     /**
+     * boolean to save the id of the original queue
+     */
+    public returntoqueue: boolean;
+
+    /**
      * the string for the note
      */
     public note: string = '';
@@ -132,6 +137,10 @@ export class ServiceSelectQueueModal {
 
         // set the model fields and save the model
         this.model.setField('servicequeue_id', this.selectedqueueid);
+        if(this.returntoqueue==true){
+            this.model.setField('return_to_servicequeue_id', this.parentqueue_id);
+            this.model.setField('return_to_servicequeue_name', this.queues.find(q => q.id == this.parentqueue_id).name);
+        }
         this.model.setField('servicequeue_name', this.queues.find(q => q.id == this.selectedqueueid).name);
         this.model.setField('serviceticket_status', 'In Process');
         await firstValueFrom(this.model.save());
