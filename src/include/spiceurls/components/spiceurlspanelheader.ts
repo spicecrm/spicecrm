@@ -1,21 +1,24 @@
 /**
- * @module ModuleWorkflow
- */
+ * @module ModuleSpiceUrls
+ * */
 import {
     Component, OnDestroy, OnInit
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {language} from '../../../services/language.service';
-import {modelattachments} from '../../../services/modelattachments.service';
+import {modelurls} from '../../../services/modelurls.service';
 
+/**
+ * renders the url count in the panel header
+ */
 @Component({
-    selector: 'spice-attachments-panel-header',
-    templateUrl: '../templates/spiceattachmentspanelheader.html',
-    providers:[modelattachments]
+    selector: 'spice-urls-panel-header',
+    templateUrl: '../templates/spiceurlspanelheader.html',
+    providers:[modelurls]
 
 })
-export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
+export class SpiceUrlsPanelHeader implements OnInit, OnDestroy {
 
     /**
      * subscroibe to the broadcast to catch when the panel issues the number
@@ -25,9 +28,13 @@ export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
     /**
      * the count recieved
      */
-    public attachmentcount: number = 0;
+    public urlcount: number = 0;
 
-    constructor(public model: model, public modelattachments: modelattachments, public language: language, public broadcast: broadcast) {
+    constructor(
+        public model: model,
+        public modelurls: modelurls,
+        public language: language,
+        public broadcast: broadcast) {
         this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
@@ -37,18 +44,18 @@ export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
      * get the count also if the panel is not forced to load
      */
     public ngOnInit(): void {
-        this.modelattachments.module = this.model.module;
-        this.modelattachments.id = this.model.id;
-        this.modelattachments.getCount().subscribe(count => {
-            this.attachmentcount = count;
+        this.modelurls.module = this.model.module;
+        this.modelurls.id = this.model.id;
+        this.modelurls.getCount().subscribe(count => {
+            this.urlcount = count;
         });
     }
 
     /**
      * check if there are workflows
      */
-    get hasAttachments() {
-        return this.attachmentcount > 0 ? true : false;
+    get hasUrls() {
+        return this.urlcount > 0 ? true : false;
     }
 
     /**
@@ -63,8 +70,8 @@ export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
         }
 
         switch (message.messagetype) {
-            case 'attachments.loaded':
-                this.attachmentcount = message.messagedata.attachmentcount;
+            case 'urls.loaded':
+                this.urlcount = message.messagedata.urlcount;
                 break;
 
         }

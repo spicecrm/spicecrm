@@ -1,26 +1,18 @@
 /**
- * @module ModuleSpiceAttachments
+ * @module ModuleSpiceUrls
  */
 import {ChangeDetectionStrategy, Component, ChangeDetectorRef} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
-import {modelattachments} from "../../../services/modelattachments.service";
+ import {modelurls} from "../../../services/modelurls.service";
 
-/**
- * @ignore
- */
-declare var moment: any;
-
-/**
- * displays a quicknote that is read in teh stream
- */
 @Component({
-    selector: 'spice-attachments-list',
-    templateUrl: '../templates/spiceattachmentslist.html',
-    providers: [modelattachments],
+    selector: 'spice-urls-list',
+    templateUrl: '../templates/spiceurlslist.html',
+    providers: [modelurls],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpiceAttachmentsList {
+export class SpiceUrlsList {
 
     /**
      * @ignore
@@ -31,21 +23,26 @@ export class SpiceAttachmentsList {
 
     /**
      * contructor sets the module and id for the laoder
-     * @param modelattachments
+     * @param modelurls
      * @param language
      * @param model
+     * @param cdRef
      */
-    constructor(public modelattachments: modelattachments, public language: language, public model: model, public cdRef: ChangeDetectorRef) {
-        this.modelattachments.module = this.model.module;
-        this.modelattachments.id = this.model.id;
+    constructor(
+        public modelurls: modelurls,
+        public language: language,
+        public model: model,
+        public cdRef: ChangeDetectorRef) {
+        this.modelurls.module = this.model.module;
+        this.modelurls.id = this.model.id;
     }
 
 
     /**
-     * initializes the model attachments service and loads the attachments
+     * initializes the model urls service and loads the urls
      */
     public loadFiles() {
-        this.modelattachments.getAttachments().subscribe(files => {
+        this.modelurls.getUrls().subscribe(urls => {
             this.cdRef.detectChanges();
         });
     }
