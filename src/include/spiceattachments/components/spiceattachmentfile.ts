@@ -46,6 +46,11 @@ export class SpiceAttachmentFile {
      */
     @Input() public modelattachments: modelattachments;
 
+    /**
+     * disables the preview click
+     */
+    @Input() public disabled: boolean = false;
+
     constructor(public userpreferences: userpreferences, public modal: modal, public toast: toast, public helper: helper, public injector: Injector) {
 
     }
@@ -80,6 +85,9 @@ export class SpiceAttachmentFile {
      * @param e
      */
     public previewFile(e) {
+        // disable click event
+        if(this.disabled) return;
+
         // stop the event from bubbling
         e.preventDefault();
         e.stopPropagation();
