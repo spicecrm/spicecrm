@@ -74,15 +74,21 @@ class SpiceAttachments
      * @param $fromBeanId
      * @param bool $save
      * @param null $categoryId
+     * @param array $selectedFiles
      * @return array
      * @throws Exception
      */
-    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null): array
+    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, array $selectedFiles = []): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
-        $attachments = self::getAttachmentsForBean($fromBeanName, $fromBeanId, 100, false, $categoryId);
+        if(count($selectedFiles) > 0) {
+            // get selected attachments
+            $attachments = $selectedFiles;
+        } else {
+            $attachments = self::getAttachmentsForBean($fromBeanName, $fromBeanId, 100, false, $categoryId);
+        }
 
         $colQuery = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) ";
         $clonedAttachments = [];
@@ -97,7 +103,7 @@ class SpiceAttachments
 
             if (!$save) continue;
 
-            $timeDate = TimeDate::getInstance()->nowDbDate();
+            $timeDate = TimeDate::getInstance()->nowDb();
             $q = "$colQuery VALUES ('{$attachment['id']}', '{$attachment['bean_type']}', '{$attachment['bean_id']}', '{$attachment['user_id']}', '$timeDate', ";
             $q .= "'{$attachment['filename']}', '{$attachment['filesize']}', '{$attachment['filemd5']}', '{$_POST['text']}', '{$attachment['thumbnail']}', 0, ";
             $q .= "'{$attachment['file_mime_type']}', '{$attachment['category_ids']}')";
