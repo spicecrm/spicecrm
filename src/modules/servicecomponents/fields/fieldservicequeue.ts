@@ -26,6 +26,7 @@ export class fieldServiceQueue extends fieldGeneric {
         if (resolveDate && resolveDate.isValid && resolveDate.isValid()) {
             return false;
         }
+        if(!this.model.getField('servicequeue_id')) return false;
 
         return !this.model.isEditing;
     }
