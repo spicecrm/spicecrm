@@ -186,6 +186,7 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 
 
 import {SystemObjectPreview} from "./components/systemobjectpreview";
+import {SystemInputCronExpression} from "./components/systeminputcronexpression";
 
 
 @NgModule({
@@ -360,7 +361,8 @@ import {SystemObjectPreview} from "./components/systemobjectpreview";
         SystemSplitContainer,
         SystemSplitContainerLeft,
         SystemSplitContainerRight,
-        SystemInputSearchTerm
+        SystemInputSearchTerm,
+        SystemInputCronExpression
     ],
     exports: [
         PaginationControlsComponent,
@@ -509,7 +511,8 @@ import {SystemObjectPreview} from "./components/systemobjectpreview";
         SystemInputSearchTerm,
         SystemSelectIconItem,
         SystemObjectPreview,
-        SystemImagePreview
+        SystemImagePreview,
+        SystemInputCronExpression
     ]
 })
 export class SystemComponents {}
