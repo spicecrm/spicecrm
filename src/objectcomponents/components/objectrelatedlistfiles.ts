@@ -143,13 +143,6 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
-    }
-
-    /**
-     * @ignore
-     */
-    public ngAfterViewInit() {
-        this.setModelData();
 
         // default category
         if(this.componentconfig.hasOwnProperty('defaultcategory') && this.componentconfig.defaultcategory){
@@ -159,6 +152,13 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
         if(!this.defaultCategoryId && !this.selectedCategoryId) {
             this.selectedCategoryId = '*';
         }
+    }
+
+    /**
+     * @ignore
+     */
+    public ngAfterViewInit() {
+        this.setModelData();
 
         setTimeout(() => this.loadFiles(), 10);
 
