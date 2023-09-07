@@ -34,6 +34,7 @@ declare var moment: any;
  * if the parent provides the service the parent is also responsible for the laoding of atatchments
  */
 @Component({
+    selector: 'spice-attachments-panel',
     templateUrl: '../templates/spiceattachmentspanel.html',
     providers: [modelattachments]
 })

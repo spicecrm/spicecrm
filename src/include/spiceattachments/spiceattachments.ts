@@ -34,6 +34,10 @@ import {SpiceAttachmentsContainer} from "./components/spiceattachmentscontainer"
         SystemComponents,
         DirectivesModule,
     ],
+    exports: [
+        SpiceAttachmentsList,
+        SpiceAttachmentFile
+    ],
     declarations: [
         SpiceAttachmentsPanel,
         SpiceAttachmentsPanelHeader,

@@ -215,6 +215,9 @@ import {ObjectStatusNetworkModal} from "./components/objectstatusnetworkmodal";
 import {ObjectStatusNetworkOpenModalButton} from "./components/objectstatusnetworkopenmodalbutton";
 import {ObjectWorkflowButton} from "./components/objectworkflowbutton";
 
+import {ObjectRelatedListUrls} from "./components/objectrelatedlisturl";
+import {ObjectRelatedCardUrl} from "./components/objectrelatedcardurl";
+import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -403,7 +406,11 @@ import {ObjectWorkflowButton} from "./components/objectworkflowbutton";
         ObjectHelpTextModal,
         ObjectStatusNetworkModal,
         ObjectStatusNetworkOpenModalButton,
-        ObjectWorkflowButton
+        ObjectWorkflowButton,
+        ObjectPopoverHeader,
+        ObjectRelatedListUrls,
+        ObjectRelatedCardUrl,
+        ObjectUrlActionMenu,
     ],
     exports: [
         ObjectListViewHeader,
@@ -449,7 +456,9 @@ import {ObjectWorkflowButton} from "./components/objectworkflowbutton";
         ObjectModalModuleLookupHeader,
         ObjectModalModuleLookupAggregates,
         ObjectModelPopoverHeader,
-        ObjectChecklists
+        ObjectChecklists,
+        ObjectRelatedListUrls,
+        ObjectRelatedCardUrl
     ]
 })
 export class ObjectComponents {}

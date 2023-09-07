@@ -1,0 +1,35 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()"><system-label label="LBL_CLONE_ATTACHMENTS"></system-label></system-modal-header>
+    <system-modal-content>
+        <ng-container *ngIf="filteredFiles.length == 0 && !showArchive; else showAttachments">
+            <div class="slds-align--absolute-center slds-p-around--small">
+                <system-spinner *ngIf="!showIllustration"></system-spinner>
+                <system-illustration-no-records *ngIf="showIllustration"><system-label label="LBL_NO_RECORDS"></system-label></system-illustration-no-records>
+            </div>
+        </ng-container>
+        <ng-template #showAttachments>
+            <div *ngFor="let filteredFile of filteredFiles" [ngClass]="{'slds-theme_shade': filteredFile.selected}" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
+                <div><system-checkbox [(ngModel)]="filteredFile.selected" [disabled]="false"></system-checkbox></div>
+                <div><spice-attachment-file [modelattachments]="modelattachments" [file]="filteredFile" [editmode]="false" [disabled]="true" class="slds-media" style="pointer-events: none"></spice-attachment-file></div>
+            </div>
+        </ng-template>
+        <div *ngIf="showArchive && linkedFiles.length > 0">
+            <div [ngClass]="{'slds-border_top': showArchive && filteredFiles.length > 0}"></div>
+            <div *ngFor="let linkedFile of linkedFiles" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
+                <div><system-checkbox [disabled]="true"></system-checkbox></div>
+                <div><spice-attachment-file [modelattachments]="modelattachments" [file]="linkedFile" [editmode]="false" class="slds-media" [disabled]="true" style="pointer-events: none"></spice-attachment-file></div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-checkbox-toggle  [(ngModel)]="showArchive" [disabled]="linkedFiles.length == 0" [label]="'LBL_SHOW_LINKED'" class="slds-col--bump-right"></system-checkbox-toggle>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!canSave" (click)="save()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>
