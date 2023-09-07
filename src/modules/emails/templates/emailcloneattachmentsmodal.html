@@ -8,14 +8,14 @@
             </div>
         </ng-container>
         <ng-template #showAttachments>
-            <div *ngFor="let filteredFile of filteredFiles" [ngClass]="{'slds-theme--info': filteredFile.selected}" class="slds-grid slds-grid_vertical-align-center slds-p-bottom--small">
+            <div *ngFor="let filteredFile of filteredFiles" [ngClass]="{'slds-theme_shade': filteredFile.selected}" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
                 <div><system-checkbox [(ngModel)]="filteredFile.selected" [disabled]="false"></system-checkbox></div>
                 <div><spice-attachment-file [modelattachments]="modelattachments" [file]="filteredFile" [editmode]="false" class="slds-media"></spice-attachment-file></div>
             </div>
         </ng-template>
         <div *ngIf="showArchive && linkedFiles.length > 0">
-            <div [ngClass]="{'slds-border_top slds-p-bottom--small': showArchive && filteredFiles.length > 0}"></div>
-            <div *ngFor="let linkedFile of linkedFiles" class="slds-grid slds-grid_vertical-align-center slds-p-bottom--small">
+            <div [ngClass]="{'slds-border_top': showArchive && filteredFiles.length > 0}"></div>
+            <div *ngFor="let linkedFile of linkedFiles" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
                 <div><system-checkbox [disabled]="true"></system-checkbox></div>
                 <div><spice-attachment-file [modelattachments]="modelattachments" [file]="linkedFile" [editmode]="false" class="slds-media"></spice-attachment-file></div>
             </div>
