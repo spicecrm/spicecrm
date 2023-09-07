@@ -1,33 +1,32 @@
-/**
- * @module ModuleSpiceAttachments
- */
-import {
-    Component, OnInit, Input, NgZone, Output, EventEmitter, ViewChild, ViewContainerRef, Renderer2, Injector
-} from '@angular/core';
+/*
+/!**
+ * @module ModuleSpiceUrls
+ *!/
+import {Component} from '@angular/core';
 import {backend} from "../../../services/backend.service";
 import { modal } from '../../../services/modal.service';
 import { take } from 'rxjs/operators';
 
-/**
+/!**
  * displays a quicknote that is read in teh stream
- */
+ *!/
 @Component({
-    selector: 'spice-attachments-stats',
-    templateUrl: '../templates/spiceattachmentstats.html',
+    selector: 'spice-url-stats',
+    templateUrl: '../templates/spiceurlstats.html',
 })
-export class SpiceAttachmentStats {
+export class SpiceUrlStats {
 
     public analysisresults: any[] = [];
 
-    /**
+    /!**
      * List of the missing files.
-     */
+     *!/
     public missingFiles: any[];
     public missingFilesTotalcount = 0;
 
-    /**
-     * The areas where files may be missing (Attachments, Notes, ...).
-     */
+    /!**
+     * The areas where files may be missing (Urls, Notes, ...).
+     *!/
     public fileAreas: string[] = [];
 
     constructor(public backend: backend, public modal: modal ) {
@@ -35,14 +34,14 @@ export class SpiceAttachmentStats {
         this.getMissingFiles();
     }
 
-    /**
+    /!**
      * call the backend to get the analysis results
      *
      * @public
-     */
+     *!/
     public analyze() {
         this.analysisresults = [];
-        this.backend.getRequest('common/spiceattachments/admin')
+        this.backend.getRequest('common/spiceurls/admin')
             .pipe(take(1))
             .subscribe(res => {
                 for (let module in res) {
@@ -54,9 +53,9 @@ export class SpiceAttachmentStats {
             });
     }
 
-    /**
+    /!**
      * getter for the total count
-     */
+     *!/
     get totalcount() {
         let total = 0;
         for (let f of this.analysisresults) {
@@ -66,17 +65,17 @@ export class SpiceAttachmentStats {
     }
 
 
-    /**
+    /!**
      * call the backend to get the analysis results
      *
      * @public
-     */
+     *!/
     public delete() {
-        this.modal.confirm('Are you sure you want to delete the data of all orphaned File Attachments?', 'Delete Orphaned Attachments?',  'warning')
+        this.modal.confirm('Are you sure you want to delete the data of all orphaned File Urls?', 'Delete Orphaned Urls?',  'warning')
             .pipe(take(1))
             .subscribe( answer => {
                 if ( answer ) {
-                    this.backend.postRequest('common/spiceattachments/admin/cleanup')
+                    this.backend.postRequest('common/spiceurls/admin/cleanup')
                         .pipe(take(1))
                         .subscribe(res => {
                             this.analyze();
@@ -85,13 +84,13 @@ export class SpiceAttachmentStats {
             });
     }
 
-    /**
+    /!**
      * Call the backend to get a list of missing files.
-     */
+     *!/
     public getMissingFiles() {
         this.fileAreas = [];
         this.missingFilesTotalcount = 0;
-        this.backend.getRequest('common/spiceattachments/admin/missingfiles')
+        this.backend.getRequest('common/spiceurls/admin/missingfiles')
             .pipe(take(1))
             .subscribe(res => {
                 this.missingFiles = res;
@@ -103,3 +102,4 @@ export class SpiceAttachmentStats {
     }
 
 }
+*/

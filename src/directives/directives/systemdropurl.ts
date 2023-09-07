@@ -9,12 +9,13 @@ import {toast} from "../../services/toast.service";
  * highlights the wrapped element to notify that this element is draggable and emit the dropped files
  */
 @Directive({
-    selector: '[system-drop-file]' // spiceDropFileArea
+    selector: '[system-drop-url]' // spiceDropFileArea
 })
-export class SystemDropFile {
+export class SystemDropUrl {
 
-    @Output('system-drop-file') public filesDrop: EventEmitter<FileList> = new EventEmitter<FileList>();
+    @Output('system-drop-url') public urlsDrop: EventEmitter<FileList> = new EventEmitter<FileList>();
     @Input() public dropMessage: string;
+
     public overlayElement: HTMLElement;
     public dragStartListener: any;
     public dragEnterListener: any;
@@ -29,7 +30,7 @@ export class SystemDropFile {
         public renderer: Renderer2,
         public elementRef: ElementRef,
         public language: language,
-        public toast: toast
+        public toast: toast,
     ) {
         this.defineOverlayElement();
         this.listenWindowEvents();
@@ -43,22 +44,6 @@ export class SystemDropFile {
     }
 
     public ngOnDestroy() {
-        this.removeWindowEventsListeners();
-    }
-
-    @Input()
-    set disabled(val) {
-        if (val) {
-            this.removeWindowEventsListeners();
-        } else {
-            this.listenWindowEvents();
-        }
-    }
-
-    public removeWindowEventsListeners() {
-
-        if (!this.dragStartListener) return;
-
         this.dragStartListener();
         this.dragEnterListener();
         this.dragOverListener();
@@ -81,7 +66,7 @@ export class SystemDropFile {
         this.renderer.setStyle(this.overlayElement, 'background', 'rgba(135,135,135,0.8)');
         this.renderer.setStyle(this.overlayElement, 'color', '#fff');
         this.renderer.setStyle(this.overlayElement, 'border', 'dashed 2px #fff');
-        this.renderer.setProperty(this.overlayElement, 'textContent', this.language.getLabel('LBL_DROP_FILES'));
+        this.renderer.setProperty(this.overlayElement, 'textContent', this.language.getLabel('LBL_DROP_URLS'));
         this.renderer.addClass(this.overlayElement, 'slds-align--absolute-center');
 
         // set relative position to the reference
@@ -103,8 +88,8 @@ export class SystemDropFile {
         this.dragEnterListener = this.renderer.listen('window', 'dragenter', (dragenter) => {
             this.dragDepth++;
 
-            // enable upload only for files
-            if (this.dragDepth == 1 && dragenter.dataTransfer.types.indexOf('Files') == 0) {
+            // enable upload only for urls
+            if (this.dragDepth == 1 && dragenter.dataTransfer.types.indexOf('Files') == -1) {
                 this.renderer.appendChild(this.elementRef.nativeElement, this.overlayElement);
             }
         });
@@ -119,7 +104,7 @@ export class SystemDropFile {
         });
 
         /**
-         * listen to dragleave, decrease counter and on one emit boracast so the resp directive can catch this
+         * listen to dragleave, decrease counter and on one emit broadcast so the resp directive can catch this
          */
         this.dragLeaveListener = this.renderer.listen('window', 'dragleave', () => {
             this.dragDepth--;
@@ -137,11 +122,15 @@ export class SystemDropFile {
         });
 
         /**
-         * listen to drop event and emit it.
+         * listen to drop event and emit the url
          */
         this.dragDropListener = this.renderer.listen(this.overlayElement, 'drop', (drop) => {
             this.dragDepth = 0;
-            if (drop.dataTransfer.files.length > 0) this.filesDrop.emit(drop.dataTransfer.files);
+            if (drop.dataTransfer.items.length > 0) {
+                this.urlsDrop.emit(drop.dataTransfer);
+            } else {
+                this.toast.sendToast('LBL_ERROR', 'error');
+            }
             this.renderer.removeChild(this.elementRef.nativeElement, this.overlayElement);
         });
 
@@ -155,13 +144,13 @@ export class SystemDropFile {
     }
 
     /**
-     * helper to check if all elements of the drag over event are files
+     * helper to check if all elements of the drag over event are urls
      *
      * @param items the items from the event
      */
-    public hasOneItemsFile(items) {
+    public hasOneItemsUrls(items) {
         for (let item of items) {
-            if (item.kind == 'file') {
+            if (item.kind == 'string') {
                 return true;
             }
         }
