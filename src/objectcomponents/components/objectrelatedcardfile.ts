@@ -7,6 +7,8 @@ import {modelattachments} from "../../services/modelattachments.service";
 import {modal} from "../../services/modal.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {helper} from "../../services/helper.service";
+import {navigationtab} from "../../services/navigationtab.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: "[object-related-card-file]",
@@ -21,7 +23,20 @@ export class ObjectRelatedCardFile {
      */
     @Input() public bigThumbnail: boolean = false;
 
-    constructor(public modelattachments: modelattachments, public userpreferences: userpreferences, public modal: modal, public toast: toast, public helper: helper, public injector: Injector) {
+    /**
+     * disables the click event
+     */
+    @Input() public disabled: boolean = false;
+
+    constructor(
+        public modelattachments: modelattachments,
+        public userpreferences: userpreferences,
+        public modal: modal,
+        public toast: toast,
+        public helper: helper,
+        public injector: Injector,
+        public navigationtab: navigationtab,
+        public router: Router) {
 
     }
 
@@ -47,6 +62,21 @@ export class ObjectRelatedCardFile {
         if (!this.uploading) {
             this.modelattachments.downloadAttachment(this.file.id, this.file.filename);
         }
+    }
+
+    /**
+     * opens file/url in a new tab
+     * module/:module/:moduleId/:attachment/:attachmentId
+     */
+    public openInTab() {
+        // disable click event
+        if(this.disabled) return;
+
+        let routePrefix = '';
+        if (this.navigationtab?.tabid) {
+            routePrefix = '/tab/' + this.navigationtab.tabid;
+        }
+        this.router.navigate([`${routePrefix}/attachment/${this.file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
     }
 
     public previewFile() {
