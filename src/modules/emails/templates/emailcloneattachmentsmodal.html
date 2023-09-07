@@ -1,0 +1,32 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_CLONE_ATTACHMENTS"></system-label></system-modal-header>
+    <system-modal-content margin="large">
+        <ng-container *ngIf="filteredFiles.length == 0 && linkedFiles.length == 0; else showAttachments">
+            <div class="slds-align--absolute-center">
+                <system-spinner *ngIf="!loadingError"></system-spinner>
+                <system-illustration-page-not-available *ngIf="loadingError"><system-label label="MSG_ERROR_LOADING_FILE"></system-label></system-illustration-page-not-available>
+            </div>
+        </ng-container>
+        <ng-template #showAttachments>
+        <div *ngFor="let filteredFile of filteredFiles" [ngClass]="{'slds-theme--info': filteredFile.selected}" class="slds-grid slds-p-around--small">
+                <div><system-checkbox [(ngModel)]="filteredFile.selected" [disabled]="false"></system-checkbox></div>
+                <div><spice-attachment-file [modelattachments]="modelattachments" [file]="filteredFile" [editmode]="false" class="slds-media"></spice-attachment-file></div>
+            </div>
+            <div *ngIf="filteredFiles.length > 0 && linkedFiles.length > 0" class="slds-border_bottom"></div>
+            <div *ngFor="let linkedFile of linkedFiles" class="slds-grid slds-p-around--small">
+                <div><system-checkbox [disabled]="true"></system-checkbox></div>
+                <div><spice-attachment-file [modelattachments]="modelattachments" [file]="linkedFile" [editmode]="false" class="slds-media"></spice-attachment-file></div>
+            </div>
+        </ng-template>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!canSave" (click)="save()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>
