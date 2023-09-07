@@ -66,6 +66,9 @@ export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
             case 'attachments.loaded':
                 this.attachmentcount = message.messagedata.attachmentcount;
                 break;
+            case 'attachments.cloned':
+                this.attachmentcount = message.messagedata.attachmentcount;
+                break;
 
         }
     }
