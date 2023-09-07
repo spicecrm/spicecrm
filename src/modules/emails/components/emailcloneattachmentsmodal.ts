@@ -60,7 +60,13 @@ export class EmailCloneAttachmentsModal {
     /**
      * loading error
      */
-    public loadingError: boolean = false;
+    public showIllustration: boolean = false;
+
+    /**
+     *
+     */
+    public showArchive: boolean = false;
+
 
     constructor(
         public model: model,
@@ -90,13 +96,14 @@ export class EmailCloneAttachmentsModal {
 
                 // filter out files NOT linked to parent Bean
                 this.filteredFiles = this.modelattachments.files.filter(x => !this.parentFiles.some(y => y.filemd5 === x.filemd5));
+                if(this.filteredFiles.length == 0) this.showIllustration = true;
 
-                // filter out files linked to parent
                 this.linkedFiles = this.modelattachments.files.filter(x => this.parentFiles.some(y => y.filemd5 === x.filemd5));
 
                 this.cdRef.detectChanges();
             }, error: () => {
-                this.loadingError = true;
+                this.showIllustration = true;
+                this.toast.sendToast('LBL_ERROR', 'error');
             }
         });
     }
