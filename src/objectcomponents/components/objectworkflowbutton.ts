@@ -85,6 +85,11 @@ export class ObjectWorkflowButton implements OnDestroy {
     }
 
     public handleMessage(message: any) {
+
+        if (message.messagetype == 'workflows.reload') {
+            return this.getOpenWorkflowsCount();
+        }
+
         // only handle if the module is the one in focus
         if (message.messagedata.module !== this.model.module && message.messagedata.id !== this.model.id){
             return;
