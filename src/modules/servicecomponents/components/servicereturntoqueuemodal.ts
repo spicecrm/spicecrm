@@ -25,6 +25,7 @@ export class ServiceReturnToQueueModal {
      * the current queue id for the service ticket
      */
     public returntoqueue_id: string = '';
+    public returntoqueue_name: string = '';
 
     /**
      * the list of available queues
@@ -67,7 +68,8 @@ export class ServiceReturnToQueueModal {
         public modellist: modellist,
         public modal: modal
     ) {
-        this.returntoqueue_id = this.model.getField('returntoqueue_id');
+        this.returntoqueue_id = this.model.getField('return_to_servicequeue_id');
+        this.returntoqueue_name = this.model.getField('return_to_servicequeue_name');
 
     }
 
@@ -88,8 +90,8 @@ export class ServiceReturnToQueueModal {
 
         // set the model fields and save the model
         this.model.setField('servicequeue_id', this.returntoqueue_id);
-        this.model.setField('returntoqueue_id', '');
-        this.model.setField('serviceticket_status', 'Returned');
+        this.model.setField('return_to_servicequeue_id', '');
+        this.model.setField('serviceticket_status', 'Returnedtoqueue');
         await firstValueFrom(this.model.save());
 
         /**
