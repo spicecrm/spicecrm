@@ -32,8 +32,10 @@ export class WorkflowPanel implements OnInit, OnDestroy {
      */
     private parentId: string;
     /**
-     * @ignore
+     * loading boolean for the
      */
+    public loading: boolean = true;
+
     constructor(@Optional() public model: model,
                 public workflow: workflow,
                 public language: language,
@@ -66,6 +68,7 @@ export class WorkflowPanel implements OnInit, OnDestroy {
      */
     public ngOnInit() {
         this.workflow.getWorkflowsForModule(this.parentModule, this.parentId);
+        this.workflow.getManualDefinitions();
     }
 
     /**
@@ -85,14 +88,30 @@ export class WorkflowPanel implements OnInit, OnDestroy {
      * @param message
      */
     public handleMessage(message: any) {
+
+        if (message.messagetype == 'workflows.reload') {
+            return this.workflow.getWorkflowsForModule(this.parentModule, this.parentId);
+        }
+
         // only handle if the module is the list module
         if (message.messagedata.module !== this.parentModule && message.messagedata.id !== this.parentId) return;
 
         switch (message.messagetype) {
             case 'model.save':
                 this.workflow.getWorkflowsForModule(this.parentModule, this.parentId);
+                this.workflow.getManualDefinitions();
                 break;
-
         }
+    }
+
+    /**
+     * process manual workflow
+     * @param definitionId
+     */
+    public processWorkflow(definitionId: string) {
+        this.modal.confirm('LBL_PROCESS_WORKFLOW', 'LBL_PROCESS_WORKFLOW').subscribe(answer => {
+            if (!answer) return;
+            this.workflow.processManualWorkflow(definitionId);
+        });
     }
 }
