@@ -7,6 +7,7 @@ import {
 import {Subject} from 'rxjs';
 import {backend} from "../../../services/backend.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {toast} from "../../../services/toast.service";
 
 /**
  * a helper service for the workflow handler
@@ -14,11 +15,18 @@ import {broadcast} from "../../../services/broadcast.service";
 @Injectable()
 export class workflow {
     public workflows: any[] = [];
+    public manualDefinitions: {id: string, name: string}[] = [];
     public module: string = '';
     public id: string = '';
     public loading: boolean = false;
+    /**
+     * holds the id if the currently processing workflow definition
+     */
+    public processing: string;
 
-    constructor(public backend: backend, public broadcast: broadcast) {
+    constructor(public backend: backend,
+                private toast: toast,
+                public broadcast: broadcast) {
     }
 
     /**
@@ -56,6 +64,24 @@ export class workflow {
         });
 
         return retSubject.asObservable();
+    }
+
+    /**
+     * get manual processable definitions
+     */
+    public getManualDefinitions() {
+
+        this.loading = true;
+
+        this.backend.getRequest(`module/WorkflowDefinitions/manual/processable/forModule/${this.module}/${this.id}`).subscribe({
+            next: definitions => {
+                this.loading = false;
+                this.manualDefinitions = definitions;
+            },
+            error: () => {
+                this.loading = false;
+            }
+        });
     }
 
 
@@ -134,6 +160,32 @@ export class workflow {
             module: this.module,
             id: this.id,
             workflowcount: this.activeCount
+        });
+    }
+
+    /**
+     * process manual workflow
+     * @param definitionId
+     */
+    public processManualWorkflow(definitionId: string) {
+
+        this.processing = definitionId;
+
+        this.backend.postRequest(`module/WorkflowDefinitions/${definitionId}/processWorkflow/${this.id}`).subscribe({
+            next: res => {
+                this.processing = undefined;
+                if (res) {
+                    this.getWorkflowsForModule(this.module, this.id);
+                    this.getManualDefinitions();
+                    this.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
+                } else {
+                    this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                }
+            },
+            error: () => {
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                this.processing = undefined;
+            }
         });
     }
 

@@ -23,6 +23,7 @@ import {ReportsDesignerMoreIntegrateItemSchedule} from "./components/reportsdesi
 import {ReportsDesignerMoreIntegrateItemDrilldown} from "./components/reportsdesignermoreintegrateitemdrilldown";
 import {ReportsDesignerMoreIntegrateItemFilters} from "./components/reportsdesignermoreintegrateitemfilters";
 import {ReportsDesignerMoreIntegrateItemSnapshots} from "./components/reportsdesignermoreintegrateitemsnapshots";
+import {ReportsDesignerMoreIntegrateItemProcessWorkflow} from "./components/reportsdesignermoreintegrateitemprocessworkflow";
 
 @NgModule({
     imports: [
@@ -48,6 +49,7 @@ import {ReportsDesignerMoreIntegrateItemSnapshots} from "./components/reportsdes
         ReportsDesignerMoreIntegrateItemDrilldown,
         ReportsDesignerMoreIntegrateItemFilters,
         ReportsDesignerMoreIntegrateItemSnapshots,
+        ReportsDesignerMoreIntegrateItemProcessWorkflow
     ]
 })
 export class ModuleReportsDesignerMore {
