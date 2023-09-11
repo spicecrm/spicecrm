@@ -3,6 +3,7 @@
  */
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
     ComponentRef,
     ElementRef,
@@ -138,7 +139,8 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
                 public elementRef: ElementRef,
                 public configurationService: configurationService,
                 public modal: modal,
-                public injector: Injector
+                public injector: Injector,
+                public cdRef: ChangeDetectorRef,
     ) {
         this.broadcastSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
@@ -219,6 +221,16 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
                 if(message.messagedata.reload) {
                     this.setFilteredFiles('category', this.selectedCategoryId);
                 }
+                break;
+            case 'attachments.cloned':
+                // reload files after cloning
+                const clonedFiles = message.messagedata.clonedFiles;
+                clonedFiles.forEach((item) => {
+                    if (!this.filteredFiles.find(a => a.id == item.id)) {
+                        this.filteredFiles.push(item);
+                        this.cdRef.detectChanges();
+                    }
+                });
                 break;
         }
 
