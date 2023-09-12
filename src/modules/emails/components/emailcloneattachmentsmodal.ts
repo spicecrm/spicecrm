@@ -63,7 +63,7 @@ export class EmailCloneAttachmentsModal {
     public showIllustration: boolean = false;
 
     /**
-     *
+     * shows/hides already cloned files
      */
     public showArchive: boolean = false;
 
@@ -112,7 +112,7 @@ export class EmailCloneAttachmentsModal {
      * Is everything ready to save?
      */
     public get canSave(): boolean {
-        return this.filteredFiles.filter(file => file.selected).length > 0;;
+        return this.filteredFiles.filter(file => file.selected).length > 0;
     }
 
     /**
@@ -147,6 +147,7 @@ export class EmailCloneAttachmentsModal {
             module: this.parent.module,
             id: this.parent.id,
             attachmentcount: this.parentCount,
+            clonedFiles: this.parentFiles,
             reload: true
         });
     }
