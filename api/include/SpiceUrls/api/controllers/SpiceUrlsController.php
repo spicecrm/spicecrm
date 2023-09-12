@@ -113,7 +113,7 @@ class SpiceUrlsController
         $seed = BeanFactory::getBean($args['beanName'], $args['beanId']);
 
         // check if we have access
-        if ($seed && !$seed->ACLAccess('delete')) {
+        if ($seed && !$seed->ACLAccess('edit')) {
             throw (new ForbiddenException("Forbidden to delete the url."))->setErrorCode('noModuleDelete');
         }
 
