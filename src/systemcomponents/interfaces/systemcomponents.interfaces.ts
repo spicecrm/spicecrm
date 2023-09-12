@@ -43,3 +43,5 @@ export interface SystemTreeConfigI {
     expandall?: boolean;
     collapsible?: boolean;
 }
+
+export type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut';
