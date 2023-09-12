@@ -8,6 +8,7 @@ import {broadcast} from "../../services/broadcast.service";
 import {modal} from '../../services/modal.service';
 import {Router} from "@angular/router";
 import {navigationtab} from "../../services/navigationtab.service";
+import {toast} from "../../services/toast.service";
 
 /**
  * renders the action menu for the attachment
@@ -27,7 +28,13 @@ export class ObjectFileActionMenu {
                 public modalservice: modal,
                 public injector: Injector,
                 public router: Router,
-                public navigationtab: navigationtab ) {
+                public navigationtab: navigationtab,
+                public toast: toast,
+                public modal: modal) {
+    }
+
+    get uploading() {
+        return this.file.hasOwnProperty('uploadprogress');
     }
 
     /**
@@ -60,7 +67,6 @@ export class ObjectFileActionMenu {
 
     /**
      * open edit modal and fill in the input data
-     * @private
      */
     public edit() {
         this.modalservice.openModal('SpiceAttachmentsEditModal', true, this.injector).subscribe(
@@ -76,16 +82,105 @@ export class ObjectFileActionMenu {
     }
 
     /**
-     * opens file/url in a new tab
-     * module/:module/:moduleId/:attachment/:attachmentId
-     *
+     * handle the preview of the file
      */
-    public openInTab() {
-        let routePrefix = '';
-        if (this.navigationtab?.tabid) {
-            routePrefix = '/tab/' + this.navigationtab.tabid;
+    public previewFile() {
+        if (this.uploading) {
+            this.toast.sendToast('upload still in progress', "info");
+            return;
         }
-        this.router.navigate([`${routePrefix}/attachment/${this.file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
+
+        if (this.file.file_mime_type) {
+            let fileTypeArray = this.file.file_mime_type.toLowerCase().split("/");
+            // check the application
+            switch (fileTypeArray[0].trim()) {
+                case "image":
+                    switch (fileTypeArray[1]) {
+                        case 'svg+xml':
+                            this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                                modalref.instance.name = this.file.filename;
+                                modalref.instance.type = this.file.file_mime_type.toLowerCase();
+                                this.modelattachments.getAttachment(this.file.id).subscribe({
+                                    next: (file) => {
+                                        modalref.instance.data = atob(file);
+                                    },
+                                    error: (err) => {
+                                        modalref.instance.loadingerror = true;
+                                    }
+                                });
+                            });
+                            break;
+                        default:
+                            this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
+                                modalref.instance.imgname = this.file.filename;
+                                modalref.instance.imgtype = this.file.file_mime_type.toLowerCase();
+                                this.modelattachments.getAttachment(this.file.id).subscribe({
+                                    next: (file) => {
+                                        modalref.instance.imgsrc = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + file;
+                                    },
+                                    error: (err) => {
+                                        modalref.instance.loadingerror = true;
+                                    }
+                                });
+                            });
+                            break;
+                    }
+                    break;
+                case 'text':
+                case 'audio':
+                case 'video':
+                    this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                        modalref.instance.name = this.file.filename;
+                        modalref.instance.type = this.file.file_mime_type.toLowerCase();
+                        this.modelattachments.getAttachment(this.file.id).subscribe({
+                            next: (file) => {
+                                modalref.instance.data = atob(file);
+                            },
+                            error: (err) => {
+                                modalref.instance.loadingerror = true;
+                            }
+                        });
+                    });
+                    break;
+                case "application":
+                    switch (fileTypeArray[1]) {
+                        case 'pdf':
+                            this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
+                                modalref.instance.name = this.file.filename;
+                                modalref.instance.type = this.file.file_mime_type.toLowerCase();
+                                this.modelattachments.getAttachment(this.file.id).subscribe({
+                                    next: (file) => {
+                                        modalref.instance.data = atob(file);
+                                    },
+                                    error: (err) => {
+                                        modalref.instance.loadingerror = true;
+                                    }
+                                });
+                            });
+                            break;
+                        default:
+                            let nameparts = this.file.filename.split('.');
+                            let type = nameparts.splice(-1, 1)[0];
+                            switch (type.toLowerCase()) {
+                                case 'msg':
+                                    this.modal.openModal('EmailPreviewModal', true, this.injector).subscribe(modalref => {
+                                        modalref.instance.name = this.file.filename;
+                                        modalref.instance.type = this.file.file_mime_type.toLowerCase();
+                                        modalref.instance.file = this.file;
+                                    });
+                                    break;
+                                default:
+                                    this.downloadFile();
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                default:
+                    this.downloadFile();
+                    break;
+            }
+        }
     }
 
 }
