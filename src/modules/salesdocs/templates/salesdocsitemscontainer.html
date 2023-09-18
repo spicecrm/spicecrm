@@ -11,11 +11,12 @@
                     <td [attr.colspan]="fieldsetItems.length">
                         <salesdocs-item-details-container [item]="item" [parentview]="view" [salesdoc]="model"></salesdocs-item-details-container>
                     </td>
+                    <td></td>
                 </tr>
             </ng-container>
         </tbody>
         <tbody *ngIf="itemcount == 0">
-            <td [attr.colspan]="2 + fieldsetItems.length">
+            <td [attr.colspan]="3 + fieldsetItems.length">
                 <div class="slds-p-around--medium slds-align--absolute-center">
                     <button [disabled]="!editing" class="slds-button slds-button_neutral" (click)="addItem()">
                         <div class="slds-grid">
