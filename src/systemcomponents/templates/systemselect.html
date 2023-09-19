@@ -1,14 +1,13 @@
-<div class="slds-form-element slds-size_2-of-2">
+<div [class.slds-hide]="!inputIsVisible && (emitInputValueOnEnterPress ? !!value : !!focusedItemId)" class="slds-form-element slds-size_2-of-2">
     <label *ngIf="label" class="slds-form-element__label"><system-label [label]="label"></system-label></label>
     <div class="slds-form-element__control slds-size_2-of-2">
-        <div class="slds-combobox_container">
-            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
-                 aria-expanded="true" aria-haspopup="listbox" role="combobox">
+        <div class="slds-combobox_container slds-size--1-of-1">
+            <div system-dropdown-trigger class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-size--1-of-1" aria-expanded="true" aria-haspopup="listbox" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input type="text" (focus)="onFocus()" (blur)="onBlur($event)" (click)="onInputClick($event)" [(ngModel)]="value" (keyup)="onKeyup($event)" [disabled]="disabled" system-placeholder="LBL_SEARCH" class="slds-input slds-combobox__input slds-combobox__input-value" aria-autocomplete="list" autoComplete="off" role="textbox">
+                    <input #inputElement system-dropdown-trigger-button type="text" (focus)="onFocus()" (blur)="onBlur($event)" (click)="onInputClick($event)" [(ngModel)]="value" (keyup)="onKeyup($event)" [disabled]="disabled" system-placeholder="LBL_SEARCH" class="slds-input slds-combobox__input slds-combobox__input-value" aria-autocomplete="list" autoComplete="off" role="textbox">
                     <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
                 </div>
-                <div *ngIf="searchListVisible" [style.max-height]="dropdownLength" class="slds-dropdown slds-dropdown_fluid slds-scrollable--y" role="listbox">
+                <div class="slds-dropdown slds-dropdown_fluid slds-scrollable--y" role="listbox">
                     <ul #resultList class="slds-listbox slds-listbox_vertical" role="presentation">
                         <ng-container *ngFor="let item of searchList">
                             <li *ngIf="item.isGroup" role="presentation" [attr.data-is-group]="true">
@@ -33,4 +32,14 @@
             </div>
         </div>
     </div>
+</div>
+<div *ngIf="!inputIsVisible && (emitInputValueOnEnterPress ? !!value : !!focusedItemId)" (click)="setInputVisible(inputElement, $event)" class="slds-pill_container">
+    <span class="slds-pill slds-pill_link slds-size--1-of-1">
+        <a class="slds-pill__action" [system-title]="value">
+            <span class="slds-pill__label">{{value}}</span>
+        </a>
+        <button (click)="clearValue($event)" tabindex="-1" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" system-title="LBL_CLEAR">
+            <system-button-icon icon="close"/>
+        </button>
+    </span>
 </div>
