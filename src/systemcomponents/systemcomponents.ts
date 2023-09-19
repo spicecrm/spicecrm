@@ -189,6 +189,7 @@ import {SystemObjectPreview} from "./components/systemobjectpreview";
 import {SystemInputCronExpression} from "./components/systeminputcronexpression";
 import {SystemChartOneDimensional} from "./components/systemchartonedimensional";
 import {SystemChartOneDimensionalValue} from "./components/systemchartonedimensionalvalue";
+import {SystemSelectOption} from "./components/SystemSelectOption";
 
 @NgModule({
     imports: [
@@ -365,7 +366,8 @@ import {SystemChartOneDimensionalValue} from "./components/systemchartonedimensi
         SystemInputSearchTerm,
         SystemInputCronExpression,
         SystemChartOneDimensional,
-        SystemChartOneDimensionalValue
+        SystemChartOneDimensionalValue,
+        SystemSelectOption
     ],
     exports: [
         PaginationControlsComponent,
@@ -517,7 +519,8 @@ import {SystemChartOneDimensionalValue} from "./components/systemchartonedimensi
         SystemImagePreview,
         SystemInputCronExpression,
         SystemChartOneDimensional,
-        SystemChartOneDimensionalValue
+        SystemChartOneDimensionalValue,
+        SystemSelectOption
     ]
 })
 export class SystemComponents {}
