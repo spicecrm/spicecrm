@@ -189,7 +189,7 @@ import {SystemObjectPreview} from "./components/systemobjectpreview";
 import {SystemInputCronExpression} from "./components/systeminputcronexpression";
 import {SystemChartOneDimensional} from "./components/systemchartonedimensional";
 import {SystemChartOneDimensionalValue} from "./components/systemchartonedimensionalvalue";
-import {SystemSelectOption} from "./components/SystemSelectOption";
+import {SystemSelectOption} from "./components/systemselectoption";
 
 @NgModule({
     imports: [
