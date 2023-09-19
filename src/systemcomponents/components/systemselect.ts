@@ -16,7 +16,7 @@ import {
 } from "@angular/core";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {SystemDropdownTriggerDirective} from "../../directives/directives/systemdropdowntrigger";
-import {SystemSelectOption} from "./SystemSelectOption";
+import {SystemSelectOption} from "./systemselectoption";
 
 /**
  * @ignore
