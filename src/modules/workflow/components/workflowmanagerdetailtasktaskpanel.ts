@@ -13,17 +13,9 @@ import {language} from "../../../services/language.service";
     templateUrl: '../templates/workflowmanagerdetailtasktaskpanel.html'
 })
 export class WorkflowManagerDetailTaskTaskpanel {
-    /**
-     * true if the task type can use timing panel
-     */
-    public hasTiming: boolean = false;
 
     constructor(public metadata: metadata, public model: model, public workflowManagerService: WorkflowManagerService, public language: language) {
 
-    }
-
-    public ngOnInit() {
-        this.hasTiming = this.workflowManagerService.getType(this.model.data.tasktype).has_timing == 1;
     }
 
     get tasks(): WorkflowTaskDefI[] {

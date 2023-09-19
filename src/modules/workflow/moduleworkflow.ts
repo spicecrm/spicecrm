@@ -56,6 +56,7 @@ import {WorkflowTimelineItem} from "./components/workflowtimelineitem";
 import {WorkflowTaskStatusIcon} from "./components/workflowtaskstatusicon";
 import {WorkflowManagerTaskTypesEmailHandle} from "./components/workflowmanagertasktypesemailhandle";
 import {WorkflowManagerTaskTypesCloseWorkflows} from "./components/workflowmanagertasktypescloseworkflows";
+import {WorkflowManagerTaskTypesGenerateBean} from "./components/workflowmanagertasktypesgeneratebean";
 
 @NgModule({
     imports: [
@@ -90,6 +91,7 @@ import {WorkflowManagerTaskTypesCloseWorkflows} from "./components/workflowmanag
         WorkflowTasksDashlet,
         WorkflowCloseWorkflowButton,
         fieldWorkflowTaskName,
+        WorkflowManagerTaskTypesGenerateBean,
         WorkflowManagerTaskTypesEmail,
         WorkflowManagerTaskTypesSystem,
         WorkflowManagerTaskTypesDecision,
@@ -105,7 +107,7 @@ import {WorkflowManagerTaskTypesCloseWorkflows} from "./components/workflowmanag
         WorkflowTimelineItem,
         WorkflowTaskStatusIcon,
         WorkflowManagerTaskTypesEmailHandle,
-        WorkflowManagerTaskTypesCloseWorkflows
+        WorkflowManagerTaskTypesCloseWorkflows,
     ]
 })
 export class ModuleWorkflow {
