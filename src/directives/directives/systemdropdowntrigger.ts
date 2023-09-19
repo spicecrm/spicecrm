@@ -95,7 +95,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
      * remove dropdown from footer if it is closed
      * remove global click listener
      */
-    public toggleDropdown(event) {
+    public toggleDropdown(event?) {
 
         if (!this.dropdownElement) {
             this.setDropdownElement();
@@ -225,8 +225,7 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             this.renderer.setStyle(this.dropdownElement, 'right', (window.innerWidth - triggerRect.right) + 'px');
             this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
 
-            // on overflow adjust the height
-            this.renderer.setStyle(this.dropdownElement, 'max-width', (triggerRect.left - 10) + 'px');
+            this.renderer.setStyle(this.dropdownElement, 'max-width', triggerRect.width + 'px');
 
             // from left to right direction
         } else {
