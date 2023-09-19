@@ -304,6 +304,30 @@ class SysModuleFilters
                     return "{$tablename}.{$relatedField} = '{$filtervalues['0']}'";
                 }
                 break;
+            case 'notequalr':
+                if ($this->filtermodule) {
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    $filtervalues = explode('::', $condition->filtervalue);
+                    return "{$tablename}.{$relatedField} <> '{$filtervalues['0']}'";
+                }
+                break;
+            case 'equalrcu':
+                if ($this->filtermodule) {
+                    $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    return "{$tablename}.{$relatedField} = '{$currentUser->id}'";
+                }
+                break;
+            case 'notequalrcu':
+                if ($this->filtermodule) {
+                    $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    return "{$tablename}.{$relatedField} <> '{$currentUser->id}'";
+                }
+                break;
             case 'oneof':
                 $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
                 $seed = BeanFactory::getBean($this->filtermodule);
@@ -604,6 +628,30 @@ class SysModuleFilters
                     return ['term' => [$relatedField => $filtervalues['0']]];
                 }
                 break;
+            case 'notequalr':
+                if ($this->filtermodule) {
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    $filtervalues = explode('::', $condition->filtervalue);
+                    return ['bool' => ['must_not' => ['term' => [$relatedField . '.raw' => $filtervalues['0']]]]];
+                }
+                break;
+            case 'equalrcu':
+                if ($this->filtermodule) {
+                    $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    return ['term' => [$relatedField => $currentUser->id]];
+                }
+                break;
+            case 'notequalrcu':
+                if ($this->filtermodule) {
+                    $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    return ['bool' => ['must_not' => ['term' => [$relatedField . '.raw' => $currentUser->id]]]];
+                }
+                break;
             case 'oneof':
                 if (is_array($condition->filtervalue)) {
                     $valArray = $condition->filtervalue;
@@ -846,6 +894,20 @@ class SysModuleFilters
                 $relatedField = $bean->field_defs[$condition->field]['id_name'];
                 $filtervalues = explode('::', $condition->filtervalue);
                 return $bean->{$relatedField} == $filtervalues['0'];
+            case 'notequalr':
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
+                $filtervalues = explode('::', $condition->filtervalue);
+                return $bean->{$relatedField} != $filtervalues['0'];
+            case 'equalrcu':
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
+                $filtervalues = explode('::', $condition->filtervalue);
+                return $bean->{$relatedField} == $currentUser->id;
+            case 'notequalrcu':
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
+                $filtervalues = explode('::', $condition->filtervalue);
+                return $bean->{$relatedField} != $currentUser->id;
             case 'oneof':
                 $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
                 $isMultiEnum = $bean->field_defs[$condition->field]['type'] == 'multienum';
