@@ -84,7 +84,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     @Input() private stylesheetId: string;
 
     public get useTemplateVariableHelper() {
-        return this.model?.module in {OutputTemplates: true, EmailTemplates: true, CampaignTasks: true,LandingPages: true,}
+        return this.model?.module in {OutputTemplates: true, EmailTemplates: true, CampaignTasks: true,LandingPages: true, Mailboxes: true}
     }
 
     // for the value accessor
