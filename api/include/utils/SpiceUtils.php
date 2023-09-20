@@ -1248,11 +1248,11 @@ class SpiceUtils
 
     /**
      * This function retrieves an application language file and returns the array of strings included in the $app_list_strings var.
-     * @param string $language specific language to load
+     * @param ?string $language specific language to load
      * @return array lang strings
      * @throws \Exception
      */
-    public static function returnAppListStringsLanguage(string $language = '', $scope = 'all'): ?array
+    public static function returnAppListStringsLanguage(?string $language = '', $scope = 'all'): ?array
     {
         if (empty($language)) {
             $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
