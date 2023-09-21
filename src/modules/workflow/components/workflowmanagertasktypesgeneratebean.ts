@@ -69,6 +69,9 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
 
         if (!this.mappingFields) {
             this.mappingFields = [];
+        } else {
+            this.onFromFieldChange();
+            this.onToFieldChange();
         }
     }
 
@@ -119,6 +122,9 @@ export class WorkflowManagerTaskTypesGenerateBean implements OnInit, OnDestroy {
 
             if (requiredExists) return;
             this.mappingFields.push({toField: field, fromField: ''});
+
+            this.addedToFields = this.mappingFields.map(f => f.toField);
+
             this.requiredAdded++;
         });
     }
