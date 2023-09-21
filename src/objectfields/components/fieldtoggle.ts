@@ -49,20 +49,34 @@ export class fieldToggle extends fieldGeneric implements OnInit{
     }
 
     /**
-     * the toggle is enabled if the current_user is the created_by user of the bean
+     * default: the toggle is enabled if the current_user is the created_by user of the bean
      * @return boolean
      */
     public hasAccess(): boolean {
-        return this.metadata.session.authData.user.id === this.model.data.created_by;
+        if(this.fieldconfig.assignedUserAccess) {
+            return this.metadata.session.authData.user.id === this.model.data.assigned_user_id;
+        } else {
+            return this.metadata.session.authData.user.id === this.model.data.created_by;
+        }
+    }
+
+    /**
+     * sets the new field value
+     * @param value
+     */
+    public setValue(value: boolean): void {
+        this.model.setField(this.fieldname, value);
+
+        // allow to save automatically only if configured
+        if(this.fieldconfig.autoSave) this.save();
     }
 
     /**
      * saves the new field value
-     * @param value
      */
-    public setValue(value: boolean): void {
+    public save() {
         let updateEmitter = this.modal.await('LBL_UPDATING');
-        this.model.setField(this.fieldname, value);
+
         this.model.save(true).subscribe({
             next: (data) => {
                 updateEmitter.emit(true);
