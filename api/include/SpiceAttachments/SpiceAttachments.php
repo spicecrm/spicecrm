@@ -78,7 +78,7 @@ class SpiceAttachments
      * @return array
      * @throws Exception
      */
-    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, array $selectedFiles = []): array
+    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, $selectedFiles = []): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
