@@ -134,6 +134,13 @@ class SpiceInstaller
             $requirements['mailparse'] = true;
         }
 
+        // check imap
+        if (!function_exists('imap_qprint')) {
+            $requirements['imap'] = false;
+        } else {
+            $requirements['imap'] = true;
+        }
+
         // db check
         $drivers = $this->dbManagerFactory::getDbDrivers();
 
