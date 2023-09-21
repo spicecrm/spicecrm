@@ -62,9 +62,9 @@ class CampaignLog extends SpiceBean {
      */
     public function optOutParentEmailAddress()
     {
-        if (empty($this->related_id) || empty($this->related_type)) return null;
+        if (empty($this->target_id) || empty($this->target_type)) return null;
 
-        $parent = BeanFactory::getBean($this->related_type, $this->related_id);
+        $parent = BeanFactory::getBean($this->target_type, $this->target_id);
 
         $emailAddresses = $parent->get_linked_beans('email_addresses');
 
