@@ -1629,6 +1629,9 @@ export class model implements OnDestroy {
                 if (!copyRule.params?.number || !copyRule.params?.unit) return fromFieldDate;
 
                 return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
+
+            case "nl2br":
+                return fromField.replace(/\r\n/g, '<br>').replace(/\n\n/g, '<br>').replace(/\n/g, '<br>');
         }
         return "";
     }
