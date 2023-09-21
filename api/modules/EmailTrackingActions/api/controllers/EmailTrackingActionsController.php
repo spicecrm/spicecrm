@@ -9,6 +9,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\extensions\modules\LandingPages\LandingPage;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -72,7 +73,7 @@ class EmailTrackingActionsController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws BadRequestException
+     * @throws BadRequestException|Exception
      */
     public function handleUnsubscribe(Request $req, Response $res, array $args): Response
     {
@@ -87,6 +88,10 @@ class EmailTrackingActionsController
         // get the email seed
         /** @var Email | CampaignLog $seed */
         $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+
+        if (!$seed) {
+            new NotFoundException('Email or CampaignLog not found');
+        }
 
         $seed->optOutParentEmailAddress();
 
