@@ -47,6 +47,13 @@ export class ReporterPresentationContainer {
     }
 
     /**
+     * @return matchedModelState: boolean
+     */
+    get hidden() {
+        return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
+    }
+
+    /**
      * called when the container canot load the report
      * @param event
      */
