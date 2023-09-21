@@ -104,6 +104,27 @@ class Email extends SpiceBean
     }
 
     /**
+     * opt out email the parent email address
+     */
+    public function optOutParentEmailAddress()
+    {
+        if (empty($this->parent_id) || empty($this->parent_type)) return null;
+
+        $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
+
+        $emailAddresses = $parent->get_linked_beans('email_addresses');
+
+        foreach ($emailAddresses as $address) {
+
+            if ($address->primary_address != 1 || empty($address->opt_in_status) || $address->opt_in_status == 'opted_out') continue;
+
+            EmailAddress::setOptInStatus($parent, $address, 'opted_out');
+
+            break;
+        }
+    }
+
+    /**
      * sets the proper date either date_entered, date_start or date_
      */
     public function add_fts_fields()
@@ -224,17 +245,13 @@ class Email extends SpiceBean
                 ];
             }
 
-
             if ($result['result'] == true) {
                 $this->status = 'sent';
 
             } else {
-                if ($result['errors']) {
-                    $this->status = 'send_error';
-                } else {
-                    $this->status = 'created';
-                }
+                $this->status = $result['errors'] ? 'send_error' : 'created';
             }
+
             $this->new_with_id = false;
             parent::save($check_notify, $fts_index_bean);
 
@@ -1274,6 +1291,12 @@ class Email extends SpiceBean
 
         while ($row = $db->fetchByAssoc($q)) {
             $this->body = '<style>' . $row['csscode'] . '</style>' . $this->body;
+
+            if (strpos($this->body, '</head>')) {
+                return str_replace('</head>', "<style>{$row['csscode']}</style></head>", $this->body);
+            } else {
+                return "<style>{$row['csscode']}</style>" . $this->body;
+            }
         }
     }
 

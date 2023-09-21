@@ -8,6 +8,7 @@ use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -504,6 +505,15 @@ class ImapHandler extends TransportHandler
             ->setEncoder(new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'))
             ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
             ->setBody($this->trackedBody($email), 'text/html');
+
+        if($this->mailbox->unsubscribe_header) {
+
+            $unsubscribeUrl = EmailTracking::getUnsubscribeURL($email);
+
+            if ($unsubscribeUrl) {
+                $message->getHeaders()->addTextHeader('List-Unsubscribe', "<$unsubscribeUrl>");
+            }
+        }
 
         $toAddresses = [];
         $intendedRecipients = [];
