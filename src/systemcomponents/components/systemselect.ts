@@ -16,7 +16,7 @@ import {
 } from "@angular/core";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {SystemDropdownTriggerDirective} from "../../directives/directives/systemdropdowntrigger";
-import {SystemSelectOption} from "./SystemSelectOption";
+import {SystemSelectOption} from "./systemselectoption";
 
 /**
  * @ignore
@@ -322,7 +322,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
                 this.options.filter(e => e.group == g)
                     .sort((a, b) => a.display > b.display ? 1 : -1)
                     .forEach((e) =>
-                        searchList.push({id: e.value, name: e.display, content: e.display})
+                        searchList.push({id: e.value, name: e.display, content: e.display, group: g})
                     );
             }
         );
