@@ -113,7 +113,7 @@ export class RoleMenuManager implements OnInit {
         };
 
         this.roleModules.push(roleModule);
-
+        this.filterModules = this.roleModules.map(rm=>rm.module);
 
         // triggering change detection to find changes in order for angular to render edit view
         this.cdRef.detectChanges();
