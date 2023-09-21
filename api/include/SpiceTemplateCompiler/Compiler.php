@@ -726,15 +726,15 @@ class Compiler
 
     function handleSubstitution( $string, $beans, $raw = false ) {
         $items = preg_split('#\|#', $string );
-        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw , $bean);
+        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw);
         for ( $i = 1; $i < count( $items ); $i++ ) {
-            if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans, $bean )) === false ) break;
+            if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans )) === false ) break;
             $currentValue = $temp;
         }
         return $currentValue;
     }
 
-    function getValueForCompileblock($m, $beans, $raw = false , &$bean = null) {
+    function getValueForCompileblock($m, $beans, $raw = false ) {
 
         preg_match('#^([^:]+)(:(.*))?$#s', $m, $matches );
 
@@ -866,7 +866,7 @@ class Compiler
         return $this->executeFunction( true, $function, null, $params, $beans );
     }
 
-    function doPipeItem( $value, $pipeText, $beans, $bean = null ) {
+    function doPipeItem( $value, $pipeText, $beans ) {
         $pipeParts = self::parseParams( $pipeText );
         $pipeFunction = $pipeParts[0]['value'];
         $pipeParts = array_slice( $pipeParts, 1 );
@@ -875,7 +875,7 @@ class Compiler
             if ( $v['type'] === 'term' ) $partValues[] = $this->getValue( $v['value'], $beans );
             else $partValues[] = $v['value'];
         }
-        return $this->executeFunction( false, $pipeFunction, $value, $partValues, $beans, $bean );
+        return $this->executeFunction( false, $pipeFunction, $value, $partValues, $beans );
     }
 
     /**
@@ -909,7 +909,7 @@ class Compiler
      * @return mixed
      * @throws BadRequestException
      */
-    private function executeFunction( $noPipe, $name, $value, $pipeParams = [], $beans, $bean = null ) {
+    private function executeFunction( $noPipe, $name, $value, $pipeParams = [], $beans ) {
 
         $this->loadTemplateFunctions();
 
@@ -920,13 +920,13 @@ class Compiler
         $functionDef = ( $noPipe ? $this->noPipeFunctions[$name] : $this->pipeFunctions[$name] );
 
         if ( strpos( $functionDef['method'], '::') !== false ) {
-            if ( $noPipe ) return $functionDef['method']($this, $bean, ...$pipeParams );
-            else return $functionDef['method']($this, $bean, $value, ...$pipeParams ) ;
+            if ( $noPipe ) return $functionDef['method']($this, $beans, ...$pipeParams );
+            else return $functionDef['method']($this, $beans, $value, ...$pipeParams ) ;
         } else if ( strpos( $functionDef['method'], '->') !== false ) {
             $funcArray = explode('->', $functionDef['method'] );
             $obj = new $funcArray[0]();
-            if ( $noPipe ) return $obj->{$funcArray[1]}($this, $bean, ...$pipeParams );
-            else return $obj->{$funcArray[1]}($this, $bean, $value, ...$pipeParams );
+            if ( $noPipe ) return $obj->{$funcArray[1]}($this, $beans, ...$pipeParams );
+            else return $obj->{$funcArray[1]}($this, $beans, $value, ...$pipeParams );
         } else {
             return $value;
         }

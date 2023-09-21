@@ -2,7 +2,9 @@
     <div class="slds-form-element">
         <label class="slds-form-element__label">Module</label>
         <div style="width:400px"  class="slds-form-element__control">
-            <system-select style="width:100%" [listHeight]="'10'" [selectList]="moduleReposSelect" [(ngModel)]="moduleReposSelectedItem"></system-select>
+            <system-select style="width:100%" [listHeight]="'10'" [(ngModel)]="moduleReposSelectedItem">
+                <system-select-option *ngFor="let option of moduleReposSelect" [value]="option.id" [display]="option.name" [group]="option.group"/>
+            </system-select>
         </div>
     </div>
     <div class="slds-form-element slds-col--bump-left">
