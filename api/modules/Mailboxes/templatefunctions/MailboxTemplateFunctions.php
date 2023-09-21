@@ -18,6 +18,8 @@ class MailboxTemplateFunctions
      */
     public static function generateUnsubscribeLink($compiler, $beans, $inputString): string
     {
+        if (empty($beans['bean'])) return '';
+
         [$parentType, $parentId] = $beans['bean']->getTrackingParentData();
 
         $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
