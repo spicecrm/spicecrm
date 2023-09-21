@@ -31,8 +31,6 @@
                     </label>
                     <system-input-label [(ngModel)]="newRole.label"></system-input-label>
                 </div>
-            </div>
-            <div class="slds-grid">
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
                         <system-label label="LBL_IDENTIFIER"></system-label>
@@ -45,12 +43,6 @@
                     </label>
                     <system-input-text [(ngModel)]="newRole.icon"></system-input-text>
                 </div>
-                <!--            <div class="slds-form-element__control slds-size&#45;&#45;1-of-4 slds-p-right&#45;&#45;xxx-small">-->
-                <!--                <label class="slds-form-element__label">-->
-                <!--                    <system-label label="LBL_DESCRIPTION"></system-label>-->
-                <!--                </label>-->
-                <!--                <system-input-text [(ngModel)]="newRole.description"></system-input-text>-->
-                <!--            </div>-->
             </div>
             <div class="slds-grid slds-m-top--medium">
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
@@ -74,16 +66,7 @@
                     </system-checkbox>
                 </div>
             </div>
-            <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label">
-                    <system-label label="LBL_DESCRIPTION"></system-label>
-                </label>
-                <textarea
-                        class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid"
-                        [(ngModel)]="newRole.description"
-                        style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
-            </div>
-            <div class="slds-grid">
+            <div class="slds-grid slds-m-top--small">
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_DEFAULT_DASHBOARD"></system-label>
@@ -95,9 +78,7 @@
                         <system-label label="LBL_DEFAULT_DASHBOARD_SET"></system-label>
                     </label>
                     <system-input-dashboardset [(ngModel)]="newRole.default_dashboardset"></system-input-dashboardset>
-            </div>
-            </div>
-            <div class="slds-grid">
+                </div>
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label">
                         <system-label label="LBL_VERSION"></system-label>
@@ -110,6 +91,15 @@
                     </label>
                     <system-input-text [(ngModel)]="newRole.package"></system-input-text>
                 </div>
+            </div>
+            <div class="slds-form-element__control slds-size--4-of-4 slds-p-right--xxx-small slds-m-top--x-small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_DESCRIPTION"></system-label>
+                </label>
+                <textarea
+                        class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid"
+                        [(ngModel)]="newRole.description"
+                        style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
             </div>
         </div>
     </system-modal-content>

@@ -119,6 +119,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'default' => false,
             'comment' => 'Flag to add an unsubscribe Header',
         ],
+        'unsubscribe_redirect_url' => [
+            'name' => 'unsubscribe_redirect_url',
+            'vname' => 'LBL_UNSUBSCRIBE_REDIRECT_URL',
+            'type' => 'varchar',
+            'comment' => 'redirect url for the unsubscribe link',
+        ],
         'emails' => [
             'name' => 'emails',
             'vname' => 'LBL_EMAILS_LINK',

@@ -26,12 +26,21 @@ export class ReporterIntegrationProcessWorkflowButton {
      * send process workflow request to the backend
      */
     public process() {
+
+        const processing = this.backend.modalservice.await('LBL_PROCESSING');
+
         this.backend.postRequest(`module/KReports/${this.model.id}/plugins/kprocessworkflow/now`).subscribe({
             next: res => {
+                processing.next(true);
+                processing.complete();
                 this.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
                 this.broadcast.broadcastMessage('workflows.reload');
             },
-            error: () => this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error')
+            error: () => {
+                processing.next(false);
+                processing.complete();
+                this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
         })
     }
 }

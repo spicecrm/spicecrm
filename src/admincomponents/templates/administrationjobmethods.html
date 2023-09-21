@@ -41,7 +41,9 @@
                     <system-label label="LBL_METHOD"></system-label>
                 </label>
                 <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
-                    <system-select [selectList]="availableClasses" [(ngModel)]="className" (ngModelChange)="setClassname($event)" class="slds-grow"></system-select>
+                    <system-select [(ngModel)]="className" (ngModelChange)="setClassname($event)" class="slds-grow">
+                        <system-select-option *ngFor="let option of availableClasses" [value]="option.id" [display]="option.name"/>
+                    </system-select>
                     <div class="slds-col slds-size--1-of-3 slds-select_container">
                         <select class="slds-select" [disabled]="!classExists || _methods.length == 0" [(ngModel)]="methodName">
                             <option *ngFor="let o of _methods" [value]="o">{{o}}</option>
