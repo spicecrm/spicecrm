@@ -70,7 +70,7 @@ class CampaignLog extends SpiceBean {
 
         foreach ($emailAddresses as $address) {
 
-            if ($address->primary_address != 1 || empty($address->opt_in_status) || $address->opt_in_status == 'opted_out') continue;
+            if ($address->primary_address != 1 || $address->opt_in_status == 'opted_out') continue;
 
             EmailAddress::setOptInStatus($parent, $address, 'opted_out');
 
