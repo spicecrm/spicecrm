@@ -41,13 +41,14 @@ export class fieldToggle extends fieldGeneric implements OnInit{
      */
     private createdBy: string = '';
 
-    constructor(public model: model,
-                public view: view,
-                public language: language,
-                public metadata: metadata,
-                public router: Router,
-                public modal: modal
-                ) {
+    constructor(
+        public model: model,
+        public view: view,
+        public language: language,
+        public metadata: metadata,
+        public router: Router,
+        public modal: modal,
+        ) {
         super(model, view, language, metadata, router);
     }
 
@@ -73,16 +74,16 @@ export class fieldToggle extends fieldGeneric implements OnInit{
      * @return boolean
      * */
     get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'edit') || !this.toggleVisible();
+        return !this.metadata.checkModuleAcl(this.model.module, 'edit') || !this.userCanEdit();
     }
 
     /**
      * manages visibility of the toggle
      * default: visible if the current_user is the created_by user of the bean
-     * visibility for assigned_user be set up in the field config
+     * visibility for assigned_user can be set up in the field config
      * @return boolean
      */
-    public toggleVisible(): boolean {
+    private userCanEdit(): boolean {
         if(this.fieldconfig.assignedUserAccess) {
             return this.currentUser === this.assignedUser;
         } else {
