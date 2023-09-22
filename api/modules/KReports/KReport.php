@@ -1490,6 +1490,8 @@ $db = DBManagerFactory::getInstance();
                                 break;
                         }
                         break;
+                    case 'ndaysago':
+                    case 'lessthanndays':
                     case 'lastndays':
                     case 'lastnfdays':
                     case 'lastnweeks':
@@ -1551,6 +1553,8 @@ $db = DBManagerFactory::getInstance();
 
                 // if needed switch the type for the dashlet
                 switch ($thisWhereField ['operator']) {
+                    case 'ndaysago' :
+                    case 'lessthanndays' :
                     case 'lastndays' :
                     case 'nextndays' :
                         $thisWhereField ['type'] = 'int';
