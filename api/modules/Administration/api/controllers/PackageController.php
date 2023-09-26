@@ -148,4 +148,20 @@ class PackageController {
         return $res->withJson(['success' => $langloader->deleteLanguage($args['language'])]);
     }
 
+    /**
+     * loads metadata from repository
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function loadRepositoriesMetadata(Request $req, Response $res, array $args): Response {
+        $confLoader = new SpiceUIConfLoader();
+        $repositoriesMetadata = $confLoader->getRepositoryInfo();
+
+        return $res->withJson($repositoriesMetadata);
+    }
+
 }
