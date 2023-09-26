@@ -45,3 +45,17 @@ export interface SystemTreeConfigI {
 }
 
 export type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut';
+
+export interface SystemSelectNgModelValue {
+    id: string;
+    name: string;
+    group?: string;
+}
+
+export interface SystemSelectOptionI {
+    id: string;
+    name: string;
+    group?: string;
+    content?: string;
+    isGroup?: boolean;
+}
