@@ -17,6 +17,7 @@ import {
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {SystemDropdownTriggerDirective} from "../../directives/directives/systemdropdowntrigger";
 import {SystemSelectOption} from "./systemselectoption";
+import {SystemSelectNgModelValue, SystemSelectOptionI} from "../interfaces/systemcomponents.interfaces";
 
 /**
  * @ignore
@@ -40,6 +41,10 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
      */
     @ViewChild(SystemDropdownTriggerDirective) private dropdownTrigger: SystemDropdownTriggerDirective;
     /**
+     * when true emit and receive the id as ngModel value
+     */
+    @Input() public idOnly: boolean = false;
+    /**
      * label of the form element
      */
     @Input() public label: string = "";
@@ -62,7 +67,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
     /**
      * holds the search list results
      */
-    public searchList: { id: string, name: string, content?: string, group?: string, isGroup: boolean }[] = [];
+    public searchList: SystemSelectOptionI[] = [];
     /**
      * holds a boolean to show/hide the results list
      */
@@ -75,7 +80,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
      * change emitter by ngModel
      * @private
      */
-    public onChange: (value: { id: string, name: string, group?: string } | string) => void;
+    public onChange: (value: SystemSelectNgModelValue | string) => void;
     /**
      * reference to the result list ul element
      * @private
@@ -128,11 +133,30 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
      * Write a new value to the element.
      * @param value
      */
-    public writeValue(value: { id: string, name: string, group?: string }) {
+    public writeValue(value: string | SystemSelectNgModelValue) {
+
         if (!value) return;
+
+        if(typeof value == 'string') {
+            value = this.searchList.find(e => e.id == value);
+        }
         this.value = value.name;
         this.focusedItemId = value.id;
+
         this.cdRef.detectChanges();
+    }
+
+    /**
+     * emit the value by ngModelChange
+     * @param option
+     */
+    public emitValue(option: SystemSelectOptionI) {
+
+        if (this.idOnly) {
+            this.onChange(option?.id);
+        } else {
+            this.onChange({id: option.id, name: option.name, group: option.group});
+        }
     }
 
     /**
@@ -213,22 +237,17 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
 
     /**
      * handle result list item click
-     * @param item
+     * @param listItem
      * @param event
      * @private
      */
-    public itemClicked(item: { id: string }, event: MouseEvent) {
+    public itemClicked(listItem: SystemSelectOptionI, event: MouseEvent) {
 
         this.setSearchListVisible(false);
 
-        this.searchList.some((listItem) => {
-            if (listItem.id == item.id) {
-                this.onChange(listItem);
-                this.value = listItem.name;
-                this.focusedItemId = listItem.id;
-                return true;
-            }
-        });
+        this.emitValue(listItem);
+        this.value = listItem.name;
+        this.focusedItemId = listItem.id;
 
         this.inputIsVisible = false;
 
@@ -291,7 +310,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
      */
     public handleEnterPress() {
         if (!!this.focusedItemId) {
-            this.onChange(
+            this.emitValue(
                 this.searchList.find(e => e.id == this.focusedItemId)
             );
             this.inputIsVisible = false;
@@ -306,7 +325,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
      * @return array of the search list
      * @private
      */
-    public generateSearchList(): { id: string, name: string, group?: string, isGroup: boolean }[] {
+    public generateSearchList(): SystemSelectOptionI[] {
 
         const searchList = [];
         const groups = _.uniq(this.options.map(e => e.group)).sort();
@@ -360,7 +379,7 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
         }
 
         if (!this.searchListIsVisible && !!nextItem) {
-            this.onChange(nextItem);
+            this.emitValue(nextItem);
         }
 
         this.scrollToFocusedSearchItem(direction);
