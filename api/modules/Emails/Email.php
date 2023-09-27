@@ -660,25 +660,6 @@ class Email extends SpiceBean
                 $this->body = utf8_encode($this->body);
         }
 
-        // check for embedded files, if they are attached embed them as base64 ref
-        $matches = [];
-        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($this->body), $matches)) {
-            $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
-            foreach ($attachments as $attachment) {
-                foreach ($matches[1] as $match) {
-                    if (strpos($match, $attachment['filename']) !== false) {
-                        // catch exception so that error on getting attchments would not break fts indexing of the record
-                        try {
-                            $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
-                            $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
-                        } catch (Exception $e) {
-                            // do nothing
-                        }
-                    }
-                }
-            }
-        };
-
         // get the number of attachments
         $this->attachments_count = SpiceAttachments::getAttachmentsCount('Emails', $this->id);
 
@@ -1517,7 +1498,8 @@ class Email extends SpiceBean
                         $fileArray = [
                             'filename' => $bodyPart['content-name'],
                             'file' => base64_encode($contents[$index]),
-                            'filemimetype' => $bodyPart['content-type']
+                            'filemimetype' => $bodyPart['content-type'],
+                            'external_id' => $bodyPart['content-id']
                         ];
                         SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
                     }
@@ -1585,7 +1567,8 @@ class Email extends SpiceBean
             $fileArray = [
                 'filename' => $attachment->getFilename(),
                 'file' => base64_encode($attachment->getData()),
-                'filemimetype' => $attachment->getMimeType()
+                'filemimetype' => $attachment->getMimeType(),
+                'external_id' => $attachment->getContentId(),
             ];
             SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
         }
@@ -1627,5 +1610,50 @@ class Email extends SpiceBean
         if ($workflowTask->workflow->workflow_status < 30) {
             $workflowTask->callHandlerMethod('handleEvent', [$event]);
         }
+    }
+
+    /**
+     * get field html content
+     * @param string $fieldName
+     * @return string
+     */
+    public function getFieldHtmlContent(string $fieldName): string
+    {
+        switch ($fieldName) {
+            case 'body':
+                return $this->getBodyFieldAsHtml();
+            default:
+                return $this->$fieldName;
+        }
+    }
+
+    /**
+     * get the body field content with the images as base64
+     * @return string
+     */
+    private function getBodyFieldAsHtml(): string
+    {
+        $content = $this->body;
+
+        // check for embedded files, if they are attached embed them as base64 ref
+        $matches = [];
+        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($content), $matches)) {
+            $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
+            foreach ($attachments as $attachment) {
+                foreach ($matches[1] as $match) {
+                    if (strpos($match, $attachment['external_id']) !== false || strpos($match, $attachment['filename']) !== false) {
+                        // catch exception so that error on getting attchments would not break fts indexing of the record
+                        try {
+                            $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
+                            $content = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $content);
+                        } catch (Exception $e) {
+                            // do nothing
+                        }
+                    }
+                }
+            }
+        }
+
+        return $content;
     }
 }

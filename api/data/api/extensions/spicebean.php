@@ -1047,6 +1047,34 @@ $routes = [
 
         ],
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/{beanName}/{beanId}/{fieldName}/html',
+        'class'       => SpiceBeanController::class,
+        'function'    => 'getBeanFieldHtmlContent',
+        'description' => 'get bean field html content ',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters'  => [
+            'beanName'   => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'beanId'   => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'The id of the bean',
+            ],
+            'fieldName'   => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'field name to get the html content',
+            ]
+        ]
+    ]
 ];
 
 /**

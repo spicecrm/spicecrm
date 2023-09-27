@@ -20,6 +20,7 @@ import {socket} from "./socket.service";
 import {SocketEventI} from "./interfaces.service";
 import {filter, map} from "rxjs/operators";
 import {userpreferences} from "./userpreferences.service";
+import {DomSanitizer} from "@angular/platform-browser";
 
 /**
  * @ignore
@@ -285,7 +286,8 @@ export class model implements OnDestroy {
         public configuration: configurationService,
         public injector: Injector,
         public socket: socket,
-        public userpreferences: userpreferences
+        public userpreferences: userpreferences,
+        private sanitizer: DomSanitizer
     ) {
 
         this.data$ = new BehaviorSubject(this.data);
@@ -2130,6 +2132,21 @@ export class model implements OnDestroy {
             }
         });
         return clone;
+    }
+
+    /**
+     * generate html content blob
+     */
+    public generateFieldHtmlContentBlobUrl(fieldName: string) {
+
+        return this.backend.getRequest(`module/${this.module}/${this.id}/${fieldName}/html`).pipe(
+            map(content => {
+                const blob = new Blob([content.html], {type: 'text/html'});
+                return this.sanitizer.bypassSecurityTrustResourceUrl(
+                    window.URL.createObjectURL(blob)
+                );
+            })
+        );
     }
 
 }
