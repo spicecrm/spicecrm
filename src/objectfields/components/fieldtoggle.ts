@@ -23,13 +23,32 @@ export class fieldToggle extends fieldGeneric implements OnInit{
      */
     public hidden: boolean = false;
 
-    constructor(public model: model,
-                public view: view,
-                public language: language,
-                public metadata: metadata,
-                public router: Router,
-                public modal: modal
-                ) {
+    /**
+     * holds the current user id
+     * @private
+     */
+    private currentUser: string = '';
+
+    /**
+     * holds the assigned_user_id
+     * @private
+     */
+    private assignedUser: string = '';
+
+    /**
+     * holds the created by user id
+     * @private
+     */
+    private createdBy: string = '';
+
+    constructor(
+        public model: model,
+        public view: view,
+        public language: language,
+        public metadata: metadata,
+        public router: Router,
+        public modal: modal,
+        ) {
         super(model, view, language, metadata, router);
     }
 
@@ -38,6 +57,16 @@ export class fieldToggle extends fieldGeneric implements OnInit{
         if (this.fieldconfig.acl && !this.metadata.checkModuleAcl(this.model.module, this.fieldconfig.acl)) {
             this.hidden = true;
         }
+
+        this.currentUser = this.metadata.session.authData.user.id;
+        this.currentUser = this.model.data.assigned_user_id;
+
+        // check if are in edit mode
+        if(this.model.isNew) {
+            this.createdBy = this.model.data.created_by_id;
+        } else {
+            this.createdBy = this.model.data.created_by;
+        }
     }
 
     /**
@@ -45,18 +74,20 @@ export class fieldToggle extends fieldGeneric implements OnInit{
      * @return boolean
      * */
     get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'edit') || !this.hasAccess();
+        return !this.metadata.checkModuleAcl(this.model.module, 'edit') || !this.userCanEdit();
     }
 
     /**
-     * default: the toggle is enabled if the current_user is the created_by user of the bean
+     * manages visibility of the toggle
+     * default: visible if the current_user is the created_by user of the bean
+     * visibility for assigned_user can be set up in the field config
      * @return boolean
      */
-    public hasAccess(): boolean {
+    private userCanEdit(): boolean {
         if(this.fieldconfig.assignedUserAccess) {
-            return this.metadata.session.authData.user.id === this.model.data.assigned_user_id;
+            return this.currentUser === this.assignedUser;
         } else {
-            return this.metadata.session.authData.user.id === this.model.data.created_by;
+            return this.currentUser === this.createdBy;
         }
     }
 
