@@ -135,8 +135,13 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
     /**
      * returns the inner height .. and if not set sets it to a default of 250
+     * innerheight value comes from height fielconfig value. MIght be entered with px.
+     * Check an d remove if necessary
      */
     get innerHeight() {
+        if(this.innerheight && this.innerheight.indexOf('px') > -1){
+            return this.innerheight.substring(0, this.innerheight.indexOf('px'));
+        }
         return this.innerheight ? this.innerheight : '250';
     }
 
