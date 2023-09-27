@@ -2,7 +2,7 @@
  * @module ObjectFields
  */
 import {ChangeDetectorRef, Component, Injector, OnInit} from '@angular/core';
-import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {DomSanitizer, SafeHtml, SafeResourceUrl} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -67,6 +67,14 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     public useStylesheets: boolean;
 
     public signaturePosition: number = -1;
+    /**
+     * holds the iframe blob url
+     */
+    public iframeUrl: SafeResourceUrl;
+    /**
+     * loading boolean for the iframe blob
+     */
+    public isLoading: boolean = false;
 
     constructor(public model: model,
                 public view: view,
@@ -141,6 +149,17 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      * call to load the initial values
      */
     public ngOnInit() {
+
+        if (this.fieldconfig.iframe_as_blob_url) {
+
+            this.isLoading = true;
+            this.model.generateFieldHtmlContentBlobUrl(this.fieldname).subscribe((blob: SafeResourceUrl) => {
+                this.isLoading = false;
+                this.iframeUrl = blob;
+                this.cdRef.detectChanges();
+            });
+        }
+
         this.setStylesheetField();
         this.setStylesheetsToUse();
         this.setHtmlValue();
@@ -323,7 +342,6 @@ export class fieldRichText extends fieldGeneric implements OnInit {
             this.sanitizedValue = this.sanitized.bypassSecurityTrustResourceUrl(this.fullValue ? 'data:text/html;charset=UTF-8,' + encodeURIComponent(this.fullValue) : '');
             this.fullValue_cached = this.fullValue;
         }
-        return this.sanitizedValue;
     }
 
     public modelChangesSubscriber() {
@@ -342,7 +360,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
      */
     public setHtmlValue() {
 
-        if (!this.value?.includes('</html>')) {
+        if (!this.value?.includes('</html>') && !this.fieldconfig.iframe_as_blob_url) {
             return this.setSanitizedValue();
         }
 
@@ -357,7 +375,9 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         this.model.setField(this.fieldname, element.innerHTML, true);
         this._styleTag = styleContent;
 
-        this.setSanitizedValue();
+        if (!this.fieldconfig.iframe_as_blob_url) {
+            this.setSanitizedValue();
+        }
     }
 
     public save(content) {
