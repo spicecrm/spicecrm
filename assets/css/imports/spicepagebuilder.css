@@ -42,3 +42,10 @@
 .spice-drop-zone.slds-is-hovered {
     z-index: 90000 !important;
 }
+
+
+.spice-field-page-builder-display-container,
+.spice-field-page-builder-display-container:first-child,
+.spice-field-page-builder-display-container:first-child :first-child {
+    height: 100%;
+}

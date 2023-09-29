@@ -1248,13 +1248,15 @@ class SpiceUtils
 
     /**
      * This function retrieves an application language file and returns the array of strings included in the $app_list_strings var.
-     *
-     * @param string $language specific language to load
+     * @param ?string $language specific language to load
      * @return array lang strings
+     * @throws \Exception
      */
-    public static function returnAppListStringsLanguage($language = 'en_us', $scope = 'all'): ?array
+    public static function returnAppListStringsLanguage(?string $language = '', $scope = 'all'): ?array
     {
-        global $app_list_strings;
+        if (empty($language)) {
+            $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
+        }
 
         $cache_key = 'app_list_strings.' . $language;
 
@@ -1266,90 +1268,11 @@ class SpiceUtils
             }
         }
 
-        $default_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
-        $temp_app_list_strings = $app_list_strings;
-
-        $langs = [];
-        if ($language != 'en_us') {
-            $langs[] = 'en_us';
-        }
-        if ($default_language != 'en_us' && $language != $default_language) {
-            $langs[] = $default_language;
-        }
-        $langs[] = $language;
-
-        $app_list_strings_array = [];
-
-//        if (SpiceDictionaryVardefs::isDomainManaged()) {
-//            foreach ($langs as $lang) {
-//                $app_list_strings = [];
-//                if ($scope == 'all' || $scope == 'global') {
-//                    if (file_exists("include/language/$lang.lang.php")) {
-//                        include("include/language/$lang.lang.php");
-//                        LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
-//                    }
-//                    if (file_exists("include/language/$lang.lang.override.php")) {
-//                        include("include/language/$lang.lang.override.php");
-//                        LoggerManager::getLogger()->info("Found override language file: $lang.lang.override.php");
-//                    }
-//                    if (file_exists("include/language/$lang.lang.php.override")) {
-//                        include("include/language/$lang.lang.php.override");
-//                        LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
-//                    }
-//                }
-//
-//                // load BWC custom language app_list_strings
-//                if ($scope == 'all' || $scope == 'custom') {
-//                    //check custom
-//                    if (file_exists("custom/include/language/$lang.lang.php")) {
-//                        include("custom/include/language/$lang.lang.php");
-//                        LoggerManager::getLogger()->info("Found language file: $lang.lang.php");
-//                    }
-//                    if (file_exists("custom/include/language/$lang.lang.override.php")) {
-//                        include("custom/include/language/$lang.lang.override.php");
-//                        LoggerManager::getLogger()->info("Found override language file: $lang.lang.override.php");
-//                    }
-//                    if (file_exists("custom/include/language/$lang.lang.php.override")) {
-//                        include("custom/include/language/$lang.lang.php.override");
-//                        LoggerManager::getLogger()->info("Found override language file: $lang.lang.php.override");
-//                    }
-//                    if (is_dir('custom/Extension/application/Ext/Language')) {
-//                        foreach (new DirectoryIterator('custom/Extension/application/Ext/Language') as $langfile) {
-//                            if ($langfile->isDot()) continue;
-//                            if (preg_match('#^(' . $lang . ')\.#', $langfile->getFilename(), $found)) {
-//                                include('custom/Extension/application/Ext/Language/' . $langfile->getFilename());
-//                                LoggerManager::getLogger()->info("Found custom language file: {$langfile->getFilename()}");
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                $app_list_strings_array[] = $app_list_strings;
-//            }
-//
-//            $app_list_strings = [];
-//            foreach ($app_list_strings_array as $app_list_strings_item) {
-//                $app_list_strings = self::spiceLangArrayMerge($app_list_strings, $app_list_strings_item);
-//            }
-//
-//            if ($scope == 'all' || $scope == 'custom') {
-//                foreach ($langs as $lang) {
-//                    if (file_exists("custom/application/Ext/Language/$lang.lang.ext.php")) {
-//                        $app_list_strings = self::mergeCustomAppListStrings("custom/application/Ext/Language/$lang.lang.ext.php", $app_list_strings);
-//                        LoggerManager::getLogger()->info("Found extended language file: $lang.lang.ext.php");
-//                    }
-//                    if (file_exists("custom/include/language/$lang.lang.php")) {
-//                        include("custom/include/language/$lang.lang.php");
-//                        LoggerManager::getLogger()->info("Found custom language file: $lang.lang.php");
-//                    }
-//                }
-//            }
-//        }
+        $app_list_strings = [];
 
         // BEGIN CR1000108 vardefs to db
         if (SpiceDictionaryVardefs::isDomainManaged()) {
             // reset anything you've done so far
-            $app_list_strings = [];
             //load sys_app_list_strings
             $sys_app_list_strings = SpiceDictionaryVardefs::createDictionaryValidationDoms($language);
 
@@ -1362,21 +1285,10 @@ class SpiceUtils
                 }
             }
         }
-        // END
 
-        if (!isset($app_list_strings)) {
-            LoggerManager::getLogger()->fatal("Unable to load the application language file for the selected language ($language) or the default language ($default_language) or the en_us language");
-            return null;
-        }
+        SpiceCache::set($cache_key, $app_list_strings);
 
-        $return_value = $app_list_strings;
-        $app_list_strings = $temp_app_list_strings;
-
-        //if ($scope != 'all') {
-            SpiceCache::set($cache_key, $return_value);
-        //}
-
-        return $return_value;
+        return $app_list_strings;
     }
 
     /**

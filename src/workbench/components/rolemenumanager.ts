@@ -113,7 +113,7 @@ export class RoleMenuManager implements OnInit {
         };
 
         this.roleModules.push(roleModule);
-
+        this.filterModules = this.roleModules.map(rm=>rm.module);
 
         // triggering change detection to find changes in order for angular to render edit view
         this.cdRef.detectChanges();
@@ -172,17 +172,22 @@ export class RoleMenuManager implements OnInit {
      * @param id
      */
     public deleteRole(id: string) {
+        this.modal.confirm('MSG_DELETE_RECORD', 'MSG_DELETE_RECORD').subscribe({
+            next: (res) => {
+                if (res) {
+                    const role = this.roles.find(r => r.id == id);
 
-        const role = this.roles.find(r => r.id == id);
+                    const table = role.scope == 'global' ? 'sysuiroles' : 'sysuicustomroles';
 
-        const table = role.scope == 'global' ? 'sysuiroles' : 'sysuicustomroles';
-
-        this.backend.deleteRequest(`configuration/configurator/${table}/${role.id}`).subscribe(() => {
-            this.configurationService.reloadTaskData('roles');
-            this.configurationService.reloadTaskData('sysroles');
-            this.toast.sendToast('MSG_SUCCESSFULLY_DELETED', 'success');
-        });
-        this.roles = this.roles.filter(id => id.id != role.id);
+                    this.backend.deleteRequest(`configuration/configurator/${table}/${role.id}`).subscribe(() => {
+                        this.configurationService.reloadTaskData('roles');
+                        this.configurationService.reloadTaskData('sysroles');
+                        this.toast.sendToast('MSG_SUCCESSFULLY_DELETED', 'success');
+                    });
+                    this.roles = this.roles.filter(id => id.id != role.id);
+                }
+            }
+        })
     }
 
     /**

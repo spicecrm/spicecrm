@@ -104,6 +104,27 @@ class Email extends SpiceBean
     }
 
     /**
+     * opt out email the parent email address
+     */
+    public function optOutParentEmailAddress()
+    {
+        if (empty($this->parent_id) || empty($this->parent_type)) return null;
+
+        $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
+
+        $emailAddresses = $parent->get_linked_beans('email_addresses');
+
+        foreach ($emailAddresses as $address) {
+
+            if ($address->primary_address != 1 || $address->opt_in_status == 'opted_out') continue;
+
+            EmailAddress::setOptInStatus($parent, $address, 'opted_out');
+
+            break;
+        }
+    }
+
+    /**
      * sets the proper date either date_entered, date_start or date_
      */
     public function add_fts_fields()
@@ -224,17 +245,13 @@ class Email extends SpiceBean
                 ];
             }
 
-
             if ($result['result'] == true) {
                 $this->status = 'sent';
 
             } else {
-                if ($result['errors']) {
-                    $this->status = 'send_error';
-                } else {
-                    $this->status = 'created';
-                }
+                $this->status = $result['errors'] ? 'send_error' : 'created';
             }
+
             $this->new_with_id = false;
             parent::save($check_notify, $fts_index_bean);
 
@@ -642,25 +659,6 @@ class Email extends SpiceBean
             if (json_last_error() == 5)
                 $this->body = utf8_encode($this->body);
         }
-
-        // check for embedded files, if they are attached embed them as base64 ref
-        $matches = [];
-        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($this->body), $matches)) {
-            $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
-            foreach ($attachments as $attachment) {
-                foreach ($matches[1] as $match) {
-                    if (strpos($match, $attachment['filename']) !== false) {
-                        // catch exception so that error on getting attchments would not break fts indexing of the record
-                        try {
-                            $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
-                            $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
-                        } catch (Exception $e) {
-                            // do nothing
-                        }
-                    }
-                }
-            }
-        };
 
         // get the number of attachments
         $this->attachments_count = SpiceAttachments::getAttachmentsCount('Emails', $this->id);
@@ -1274,6 +1272,12 @@ class Email extends SpiceBean
 
         while ($row = $db->fetchByAssoc($q)) {
             $this->body = '<style>' . $row['csscode'] . '</style>' . $this->body;
+
+            if (strpos($this->body, '</head>')) {
+                return str_replace('</head>', "<style>{$row['csscode']}</style></head>", $this->body);
+            } else {
+                return "<style>{$row['csscode']}</style>" . $this->body;
+            }
         }
     }
 
@@ -1494,7 +1498,8 @@ class Email extends SpiceBean
                         $fileArray = [
                             'filename' => $bodyPart['content-name'],
                             'file' => base64_encode($contents[$index]),
-                            'filemimetype' => $bodyPart['content-type']
+                            'filemimetype' => $bodyPart['content-type'],
+                            'external_id' => $bodyPart['content-id']
                         ];
                         SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
                     }
@@ -1562,7 +1567,8 @@ class Email extends SpiceBean
             $fileArray = [
                 'filename' => $attachment->getFilename(),
                 'file' => base64_encode($attachment->getData()),
-                'filemimetype' => $attachment->getMimeType()
+                'filemimetype' => $attachment->getMimeType(),
+                'external_id' => $attachment->getContentId(),
             ];
             SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
         }
@@ -1604,5 +1610,50 @@ class Email extends SpiceBean
         if ($workflowTask->workflow->workflow_status < 30) {
             $workflowTask->callHandlerMethod('handleEvent', [$event]);
         }
+    }
+
+    /**
+     * get field html content
+     * @param string $fieldName
+     * @return string
+     */
+    public function getFieldHtmlContent(string $fieldName): string
+    {
+        switch ($fieldName) {
+            case 'body':
+                return $this->getBodyFieldAsHtml();
+            default:
+                return $this->$fieldName;
+        }
+    }
+
+    /**
+     * get the body field content with the images as base64
+     * @return string
+     */
+    private function getBodyFieldAsHtml(): string
+    {
+        $content = $this->body;
+
+        // check for embedded files, if they are attached embed them as base64 ref
+        $matches = [];
+        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($content), $matches)) {
+            $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
+            foreach ($attachments as $attachment) {
+                foreach ($matches[1] as $match) {
+                    if (strpos($match, $attachment['external_id']) !== false || strpos($match, $attachment['filename']) !== false) {
+                        // catch exception so that error on getting attchments would not break fts indexing of the record
+                        try {
+                            $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
+                            $content = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $content);
+                        } catch (Exception $e) {
+                            // do nothing
+                        }
+                    }
+                }
+            }
+        }
+
+        return $content;
     }
 }

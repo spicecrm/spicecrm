@@ -101,6 +101,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 			'len' => 100,
 			'comment' => 'The activity that occurred (e.g., Viewed Message, Bounced, Opted out)'
         ],
+		'activity_comment' => [
+			'name' => 'activity_comment',
+			'vname' => 'LBL_COMMENT',
+			'type' => 'varchar',
+			'comment' => 'comment message helpful to explain the error'
+        ],
 		'activity_date' => [
 			'name' => 'activity_date',
 			'vname' => 'LBL_ACTIVITY_DATE',
