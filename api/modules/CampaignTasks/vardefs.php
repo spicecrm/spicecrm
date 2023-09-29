@@ -351,6 +351,30 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignTask'] = [
             'type' => 'enum',
             'comment' => 'options: richText, pageBuilder, html'
         ],
+        'save_emails' => [
+            'name' => 'save_emails',
+            'vname' => 'LBL_SAVE_EMAILS',
+            'type' => 'bool',
+            'comment' => 'enable/disable saving sent campaign emails'
+        ],
+        'disable_marketing_agreement_check' => [
+            'name' => 'disable_marketing_agreement_check',
+            'vname' => 'LBL_DISABLE_MARKETING_AGREEMENT_CHECK',
+            'type' => 'bool',
+            'comment' => 'enable/disable marketing agreement check'
+        ],
+        'disable_opt_out_check' => [
+            'name' => 'disable_opt_out_check',
+            'vname' => 'LBL_DISABLE_OPT_OUT_CHECK',
+            'type' => 'bool',
+            'comment' => 'enable/disable opt out check'
+        ],
+        'disable_inactive_check' => [
+            'name' => 'disable_inactive_check',
+            'vname' => 'LBL_DISABLE_INACTIVE_CHECK',
+            'type' => 'bool',
+            'comment' => 'enable/disable inactive check'
+        ],
     ],
     'relationships' => [
         'campaign_campaigntasks' => [

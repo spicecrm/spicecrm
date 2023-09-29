@@ -31,7 +31,7 @@ export class fieldLookupRecent implements OnInit, OnChanges , OnDestroy {
     /**
      * selected item for keyboard navigation
      */
-    public selectedItem: {item_id:string, summary_text:string, data:{}};
+    public selectedItem: {data:{id:string, summary_text:string}};
 
     /**
      * emits the selectes item
@@ -54,8 +54,8 @@ export class fieldLookupRecent implements OnInit, OnChanges , OnDestroy {
                     case 'Enter':
                         if(this.recentItems.length == 1) this.selectedItem = this.recentItems[0];
                         this.selectedObject.emit({
-                            id: this.selectedItem.item_id,
-                            text: this.selectedItem.summary_text,
+                            id: this.selectedItem.data.id,
+                            text: this.selectedItem.data.summary_text,
                             data: this.selectedItem.data
                         });
                         break;
@@ -66,7 +66,7 @@ export class fieldLookupRecent implements OnInit, OnChanges , OnDestroy {
                         this.selectedItem = this.recentItems[index - 1 < 0 ? this.recentItems.length - 1 : index - 1];
                         break;
                         case 'Escape':
-                        this.selectedItem = {item_id:'', summary_text:'', data:{}};
+                        this.selectedItem = {data:{id:'', summary_text:''}};
                         break;
                 }
             });

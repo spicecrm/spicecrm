@@ -78,7 +78,7 @@ class SpiceAttachments
      * @return array
      * @throws Exception
      */
-    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, array $selectedFiles = []): array
+    static function cloneAttachmentsForBean($beanName, $beanId, $fromBeanName, $fromBeanId, bool $save = true, $categoryId = null, $selectedFiles = []): array
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
@@ -90,7 +90,7 @@ class SpiceAttachments
             $attachments = self::getAttachmentsForBean($fromBeanName, $fromBeanId, 100, false, $categoryId);
         }
 
-        $colQuery = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) ";
+        $colQuery = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids, external_id) ";
         $clonedAttachments = [];
 
         foreach ($attachments as $attachment) {
@@ -106,7 +106,7 @@ class SpiceAttachments
             $timeDate = TimeDate::getInstance()->nowDb();
             $q = "$colQuery VALUES ('{$attachment['id']}', '{$attachment['bean_type']}', '{$attachment['bean_id']}', '{$attachment['user_id']}', '$timeDate', ";
             $q .= "'{$attachment['filename']}', '{$attachment['filesize']}', '{$attachment['filemd5']}', '{$_POST['text']}', '{$attachment['thumbnail']}', 0, ";
-            $q .= "'{$attachment['file_mime_type']}', '{$attachment['category_ids']}')";
+            $q .= "'{$attachment['file_mime_type']}', '{$attachment['category_ids']}', '{$attachment['external_id']}')";
             $db->query($q);
         }
         return $clonedAttachments;
@@ -184,7 +184,8 @@ class SpiceAttachments
                 'thumbnail' => $thumbnail,
                 'deleted' => '0',
                 'file_mime_type' => $file_mime_type,
-                'category_ids' => $file['category_ids']
+                'category_ids' => $file['category_ids'],
+                'external_id' => $file['external_id']
             ]);
             // $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids) VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "', '{$filename}', '{$filesize}', '{$filemd5}', '{$file['text']}', '$thumbnail', 0, '{$file_mime_type}', '{$file['category_ids']}')");
         }
@@ -200,6 +201,7 @@ class SpiceAttachments
             'file_mime_type' => $file_mime_type,
             'thumbnail' => $thumbnail,
             'filemd5' => $filemd5,
+            'external_id' => $file['external_id']
         ];
         return $attachments;
     }
@@ -221,7 +223,8 @@ class SpiceAttachments
         $fileArray = [
             'filename' => $file['name'],
             'file' => base64_encode(file_get_contents($file['path'] . $file['name'])),
-            'filemimetype' => $file['mime_type'] ?: mime_content_type($file['path'] . $file['name'])
+            'filemimetype' => $file['mime_type'] ?: mime_content_type($file['path'] . $file['name']),
+            'external_id' => $file['external_id']
         ];
 
         return self::saveAttachmentHashFiles($module_name, $bean_id, $fileArray);
@@ -245,9 +248,9 @@ class SpiceAttachments
         // if we have an image create a thumbnail
         $thumbnail = self::createThumbnail($payload->filemd5, $payload->mime_type);
 
-        $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type)
+        $db->query("INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, external_id)
                         VALUES ('{$guid}', '{$beanName}', '{$beanId}', '" . $current_user->id . "', '" . gmdate('Y-m-d H:i:s') . "',
-                        '{$payload->filename}', '{$payload->filesize}', '{$payload->filemd5}', '{$_POST['text']}', '{$thumbnail}', 0, '{$payload->mime_type}')");
+                        '{$payload->filename}', '{$payload->filesize}', '{$payload->filemd5}', '{$_POST['text']}', '{$thumbnail}', 0, '{$payload->mime_type}', '$payload->external_id')");
 
         return true;
     }
@@ -431,6 +434,7 @@ class SpiceAttachments
             'file_mime_type' => $thisAttachment['file_mime_type'],
             'file' => $file,
             'filemd5' => $thisAttachment['filemd5'],
+            'external_id' => $thisAttachment['external_id']
         ];
 
         return $json_encode ? json_encode($attachment) : $attachment;
