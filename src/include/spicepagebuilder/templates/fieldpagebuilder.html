@@ -1,6 +1,6 @@
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <div class="slds-size--1-of-1" [style.min-height.px]="iframeHeight">
-        <iframe *ngIf="parsedHtml" [src]="parsedHtml" [style.height.px]="iframeHeight" style="border: 0; resize: vertical" class="slds-size--1-of-1" sandbox></iframe>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass + ' spice-field-page-builder-display-container'" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div class="slds-size--1-of-1 slds-height_full" [style.min-height.px]="iframeHeight">
+        <iframe *ngIf="parsedHtml" [src]="parsedHtml" style="border: 0; resize: vertical" class="slds-size--1-of-1 slds-height_full" sandbox></iframe>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-height_full" [ngClass]="getFieldClass()">

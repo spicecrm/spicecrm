@@ -504,7 +504,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'module' => 'CampaignLog',
             'relationship' => 'campaignlog_sent_emails',
             'source' => 'non-db'
-        ]
+        ],
+        'contactsonlineprofiles' => [
+            'name' => 'contactsonlineprofiles',
+            'vname' => 'LBL_CONTACTSONLINEPROFILES',
+            'module' => 'ContactsOnlineProfiles',
+            'type' => 'link',
+            'relationship' => 'contactsonlineprofiles_emails',
+            'source' => 'non-db',
+        ],
         /* end relationship collections */
 
     ], /* end fields() array */
