@@ -4,7 +4,7 @@
 import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {modal} from './modal.service';
-import {DomSanitizer} from "@angular/platform-browser";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Injectable({
     providedIn: 'root'
@@ -363,7 +363,7 @@ export class helper {
      * create blob url
      * @param blob
      */
-    public dataToBlobUrl(blob): any {
+    public dataToBlobUrl(blob): SafeResourceUrl {
         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
         return this.blobUrl;
     }

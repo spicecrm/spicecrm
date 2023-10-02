@@ -1,6 +1,13 @@
 <system-modal size="large">
     <system-modal-header (close)="closeModal()">{{name}}</system-modal-header>
     <system-modal-content margin="none">
-        <system-object-preview [data]="data" [type]="type"></system-object-preview>
+        <system-object-preview [data]="data" [type]="type" [downloadTrigger$]="downloadTrigger$" [name]="name"></system-object-preview>
     </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-text-align--right">
+            <button class="slds-button slds-button--icon slds-button--icon-border" (click)="downloadTrigger$.emit()">
+                <system-button-icon icon="download" size="small"></system-button-icon>
+            </button>
+        </div>
+    </system-modal-footer>
 </system-modal>
