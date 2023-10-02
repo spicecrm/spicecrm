@@ -635,7 +635,7 @@ class Email extends SpiceBean
         // END
 
         // if body does NOT contain html elements, add a default style so the UI can display it properly
-        if (!$this->containsHTMLElem($this->body)) {
+        if (empty($this->body) || !$this->containsHTMLElem($this->body)) {
             $this->body = '<html><head><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
         }
 
@@ -673,8 +673,10 @@ class Email extends SpiceBean
      * @param array $htmlElements (collection of html elements)
      * @return bool
      */
-    function containsHTMLElem(string $emailBody): bool
+    function containsHTMLElem(string|null $emailBody): bool
     {
+        if(is_null($emailBody)) return false;
+
         // to of HTML elements check if the body contains one of the html elements.
         $htmlElements = ['<html>','<head>','<style>', '<div>'];
 
