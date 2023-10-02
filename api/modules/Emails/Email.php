@@ -635,7 +635,7 @@ class Email extends SpiceBean
         // END
 
         // if body does NOT contain html elements, add a default style so the UI can display it properly
-        if (empty($this->body) && !$this->containsHTMLElem($this->body)) {
+        if (empty($this->body) || !$this->containsHTMLElem($this->body)) {
             $this->body = '<html><head><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
         }
 
