@@ -1,10 +1,11 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input} from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
+import { Component, EventEmitter, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import {language} from '../../services/language.service';
 import {helper} from "../../services/helper.service";
+import { Subscription } from 'rxjs';
 
 /**
  * a modal that renders and provides a preview for an object
@@ -18,7 +19,7 @@ export class SystemObjectPreview {
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
-    public blobUrl: any;
+    public blobUrl: SafeResourceUrl;
 
     /**
      * the name of the object. This is displayed in the header
@@ -34,6 +35,15 @@ export class SystemObjectPreview {
      * raw data of the object being passed in. When the data is passed in the blob url is created
      */
     private rawData: string;
+
+    /**
+     * Indicates that setBlobUrl() is finished and the download is available.
+     */
+    public downloadReady = false;
+
+    @ViewChild('downloadlink', {read: ViewContainerRef, static: false }) private downloadlink: ViewContainerRef;
+
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
         public language: language,
@@ -73,6 +83,22 @@ export class SystemObjectPreview {
     }
 
     /**
+     * Notifies the component, that - somewhere outside - a download button or download menu item has been clicked.
+     */
+    @Input() downloadTrigger$: EventEmitter<void>;
+
+    public ngOnInit() {
+        if ( this.downloadTrigger$ ) this.subscriptions.add(
+            this.downloadTrigger$.subscribe( {
+                next:
+                    () => {
+                        if ( this.downloadReady ) this.downloadlink.element.nativeElement.click();
+                    }
+            })
+        );
+    }
+
+    /**
      * translates the type passed in into the proper obejcttype
      */
     get objecttype() {
@@ -89,18 +115,6 @@ export class SystemObjectPreview {
     }
 
     /**
-     * a download option in teh window that triggers creation of a link elekent and simulates a click. This will prompt the download in the UI
-     */
-    public download() {
-        let a = document.createElement("a");
-        document.body.appendChild(a);
-        a.href = this.blobUrl;
-        a.download = this.name;
-        a.click();
-        a.remove();
-    }
-
-    /**
      * process raw file data
      * generate blob url
      * @param rawData
@@ -110,6 +124,14 @@ export class SystemObjectPreview {
         if (rawData && !!this.type) {
             const blob = this.helper.datatoBlob(rawData, this.type);
             this.blobUrl = this.helper.dataToBlobUrl(blob);
+            this.downloadReady = true;
         }
+    }
+
+    /*
+     * @unsubscribe subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 }
