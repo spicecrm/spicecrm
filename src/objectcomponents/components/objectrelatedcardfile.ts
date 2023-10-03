@@ -74,7 +74,11 @@ export class ObjectRelatedCardFile {
 
         // disable preview for specific files
         let fileTypeArray = this.file.file_mime_type.toLowerCase().split("/");
-        if(fileTypeArray[0] == 'application' && fileTypeArray[1] != 'pdf' && fileTypeArray[1] != 'msg') return this.downloadFile();
+
+        // disable preview for specific files
+        const applicationFile = fileTypeArray[0] == 'application' && fileTypeArray[1] != 'pdf' && fileTypeArray[1] != 'msg';
+        const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
+        if(applicationFile || csvFile) return this.downloadFile();
 
         let routePrefix = '';
         if (this.navigationtab?.tabid) {
