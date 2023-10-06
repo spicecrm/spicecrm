@@ -673,7 +673,7 @@ class Email extends SpiceBean
      * @param array $htmlElements (collection of html elements)
      * @return bool
      */
-    function containsHTMLElem(string|null $emailBody): bool
+    function containsHTMLElem(?string $emailBody): bool
     {
         if(is_null($emailBody)) return false;
 
