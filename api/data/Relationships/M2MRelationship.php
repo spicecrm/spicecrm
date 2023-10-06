@@ -311,7 +311,15 @@ class M2MRelationship extends SugarRelationship
     public function load($link, $params = [])
     {
         $db = DBManagerFactory::getInstance();
-        $query = $this->getQuery($link, $params);
+        // for elasticsearch results have to be returned without paging
+        $rangeParams = $params;
+
+        if (isset($params['searchterm'])) {
+            $rangeParams['limit'] = 0;
+            $rangeParams['offset'] = 0;
+        }
+
+        $query = $this->getQuery($link, $rangeParams);
         $result = $db->query($query);
         $rows = [];
         $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
@@ -322,7 +330,16 @@ class M2MRelationship extends SugarRelationship
             $id = empty($row['id']) ? $row[$idField] : $row['id'];
             $rows[$id] = $row;
         }
-        return ["rows" => $rows];
+
+        if (!empty($params['searchterm'])) {
+            $rows = $this->getResultsFilteredByFTS($link->getRelatedModuleName(), $params, $rows);
+        }
+
+        $this->count = count($rows);
+
+        return [
+            "rows" => $rows
+        ];
     }
 
     protected function linkIsLHS($link) {
@@ -593,4 +610,68 @@ class M2MRelationship extends SugarRelationship
         return $fields;
     }
 
+    /**
+     * @return array
+     */
+    protected function getResultsFilteredByFTS($module, $params, $presults) {
+        $rows = [];
+        $relatedID = "relid";
+
+        // check if fts index available for module
+        if (!SpiceFTSHandler::getInstance()->checkModule($module, true)) {
+            return $presults;
+        }
+
+        // extract needed params
+        [
+            'limit' => $size,
+            'offset' => $start,
+            'searchterm' => $searchterm
+        ] = $params;
+
+        // collect ids from unfiltered results
+        $ids = array_column($presults, $relatedID);
+
+        // build fts search options
+        $filterArray = [
+            'bool' => [
+                'must' => [
+                    [
+                        'terms' => [
+                            "id" => $ids
+                        ]
+                    ],
+                ],
+            ]
+        ];
+
+        $filteredResults = SpiceFTSHandler::getInstance()->searchModule($module, $searchterm, [], [], $size, $start, [$filterArray]);
+
+        // collect FTS ids
+        if ($hits = $filteredResults['hits']['hits']) {
+            $filteredIds = array_column($hits, '_id');
+
+            // filter db results by FTS results
+            $rows = array_filter($presults, function($row) use ($filteredIds) {
+                return in_array($row['id'], $filteredIds);
+            });
+        }
+
+        return $rows;
+    }
+
+    public function getCount($link, $params) {
+        if (isset($params['searchterm'])) {
+            // get ids
+
+            return $this->count;
+        } else {
+            $params['return_as_array'] = true;
+            $queryArray = $this->getQuery($link, $params);
+            $queryArray['select'] = 'SELECT count(*) relcount';
+            $db = DBManagerFactory::getInstance();
+            $result = $db->fetchByAssoc($db->query($queryArray['select'] . ' ' . $queryArray['from'] . ' ' . $queryArray['where']));
+            return $result['relcount'];
+        }
+    }
 }

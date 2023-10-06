@@ -778,6 +778,12 @@ $routes = [
                 'required'    => false,
                 'description' => 'Forces resolving the links (when default=true in vardefs).',
             ],
+            'searchterm' => [
+                'in'          => 'query',
+                'description' => 'a searchterm to search by',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+
         ],
     ],
     [
