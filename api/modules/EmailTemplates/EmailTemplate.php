@@ -102,11 +102,13 @@ class EmailTemplate extends SpiceBean {
 
     /**
      * generate pdf files from output templates
-     * @param SpiceBean $bean
-     * @throws Exception
+     * @param ?SpiceBean $bean
+     * @return array
      */
-    private function generatePdfFilesFromOutputTemplates(SpiceBean $bean): array
+    private function generatePdfFilesFromOutputTemplates(?SpiceBean $bean): array
     {
+        if (!$bean) return [];
+
         $outputTemplates = $this->get_linked_beans('outputtemplates');
 
         $attachments = [];
