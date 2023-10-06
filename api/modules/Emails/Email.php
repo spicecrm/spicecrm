@@ -635,10 +635,15 @@ class Email extends SpiceBean
         // END
 
         // if body does NOT contain html elements, add a default style so the UI can display it properly
+        // assume charset is UTF-8
         if (empty($this->body) || !$this->containsHTMLElem($this->body)) {
-            $this->body = '<html><head><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
+            $this->body = '<html><head><meta charset="UTF-8"><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
         }
 
+        // check on the charset
+        $this->correctCharsetTag();
+
+        // get the email addresses
         $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
@@ -678,7 +683,7 @@ class Email extends SpiceBean
         if(is_null($emailBody)) return false;
 
         // to of HTML elements check if the body contains one of the html elements.
-        $htmlElements = ['<html>','<head>','<style>', '<div>'];
+        $htmlElements = ['</html>','</head>','</style>', '</div>'];
 
         foreach($htmlElements as $htmlElement) {
             if (stripos($emailBody, $htmlElement) !== false) return true;
@@ -687,7 +692,70 @@ class Email extends SpiceBean
         return false;
     }
 
-    public    function mapToRestArray($beanDataArray)
+    /**
+     * return the meta tag with the microsoft information
+     * @param string $emailBody
+     * @return mixed
+     */
+    public function containsMicrosoftWordGeneratorHTML(string $emailBody){
+        $pattern = '/(<meta.*name=.*Generator.*content=.*Microsoft.*>)/i';
+        preg_match($pattern, $emailBody, $matches);
+
+        if(is_array($matches)) return $matches[0];
+        return null;
+    }
+
+    /**
+     * if it's not a meta microsoft generator, it might have a standalone <html> tag
+     * @param string $emailBody
+     * @return false|int
+     */
+    public function containsHtmlTagStandalone(string $emailBody){
+        $pattern = "/<html>/";
+        preg_match($pattern, $emailBody, $matches);
+
+        if(is_array($matches)) return $matches[0];
+        return null;
+    }
+
+    /**
+     * check if there is any html meta tag for a charset
+     * .msg e-mail might lack it
+     * @return int|false
+     */
+    public function findMetaCharset(string $emailBody){
+        $pattern = "/(<meta.*charset=.*>)/";
+        return preg_match($pattern, $emailBody, $matches);
+    }
+
+    /**
+     * try to correct missing charset tag
+     * will be mostly because of microsoft emails renders with microsoft word
+     * We check first if there is any charset tag
+     * Then we check on a microsoft word generator and replace the genrator tag with a charset tag
+     * Last try: we inject the charset tag after a <html> tag
+     * @return void
+     */
+    public function correctCharsetTag(){
+        if(!$this->findMetaCharset($this->body)){
+            // check on the meta generator and replace
+            $microsoftTag = $this->containsMicrosoftWordGeneratorHTML($this->body);
+            if($microsoftTag){
+                $microsoftTagReplace = '<meta charset="UTF-8">';
+                $this->body = str_replace($microsoftTag, $microsoftTagReplace, $this->body);
+            } else{
+                // try to set a meta charset tag after the html tag
+                // even if the meta charset tag should within a head tag, charset tag shall be interpretade correctly for the display
+                $htmlTag = $this->containsHtmlTagStandalone($this->body);
+                if($htmlTag){
+                    $htmlTagReplace = '<html><meta charset="UTF-8">';
+                    $this->body = str_replace($htmlTag, $htmlTagReplace, $this->body);
+                }
+            }
+        }
+    }
+
+    public function mapToRestArray($beanDataArray)
     {
 
         $q = "SELECT eam.id, eam.email_address_id, ea.email_address, eam.address_type, eam.parent_type, eam.parent_id, eam.deleted
