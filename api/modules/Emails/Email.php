@@ -637,14 +637,14 @@ class Email extends SpiceBean
         // if body does NOT contain html elements, add a default style so the UI can display it properly
         // assume charset is UTF-8
         if (empty($this->body) || !$this->containsHTMLElem($this->body)) {
-            $this->body = '<html><head><meta charset="UTF-8"><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
+            $this->body = '<html><head><meta charset="UTF-8"><style type="text/css">body {word-break: break-word; white-space: pre-wrap; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
         }
 
         // check on the charset
         $this->correctCharsetTag();
 
         // get the email addresses
-        $ret->retrieveEmailAddresses();
+       //$ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
         $ret->time_start = '';
@@ -680,8 +680,6 @@ class Email extends SpiceBean
      */
     function containsHTMLElem(string|null $emailBody): bool
     {
-        if(is_null($emailBody)) return false;
-
         // to of HTML elements check if the body contains one of the html elements.
         $htmlElements = ['</html>','</head>','</style>', '</div>'];
 
@@ -764,6 +762,8 @@ class Email extends SpiceBean
 				WHERE eam.email_id = '{$this->id}' AND eam.deleted=0";
         $r = $this->db->query($q);
 
+        $bwcFrom = true; // a bwc indicator for a from value
+
         while ($a = $this->db->fetchByAssoc($r)) {
             // PHP >=7.1 triggers an error
             // [] operator not supported by string
@@ -772,6 +772,21 @@ class Email extends SpiceBean
             }
 
             $beanDataArray['recipient_addresses'][] = $a;
+
+            if($a['address_type'] == 'from') $bwcFrom = false;
+        }
+
+        // BWC for imported emails before recipient_addresses functionality
+        if(is_array($beanDataArray) && $bwcFrom && !empty($this->from_addr)){
+            $beanDataArray['recipient_addresses'][] = [
+                'id' => SpiceUtils::createGuid(),
+                'email_address_id' => $this->id,
+                'email_address' => $this->from_addr,
+                'address_type' => 'from',
+                'parent_type' => $this->parent_type,
+                'parent_id' => $this->parent_id,
+                'deleted' => 0
+            ];
         }
 
         return $beanDataArray;
