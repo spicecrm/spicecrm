@@ -33,14 +33,18 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     public isAdding: boolean = false;
     /**
+     * holds the current focused email address
+     */
+    public focusedEmailAddress: string;
+    /**
      * holds the email addresses locally
      */
     public emailAddresses = [];
     /**
      * holds the new input email address data
      */
-    public inputNewEmailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?} = {
-        primary_address: '', invalid_email: 0, email_address: '', hasFocus: true
+    public inputNewEmailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?} = {
+        primary_address: '', invalid_email: 0, email_address: ''
     };
 
     constructor(public model: model,
@@ -65,7 +69,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * delete the email address from the array triggered by delete button
      * @param emailAddress
      */
-    public handleOnDelete(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public handleOnDelete(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
 
         this.emailAddresses = this.emailAddresses.filter(e => e.id !== emailAddress.id);
 
@@ -94,7 +98,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * open the email link by mailto in browser
      * @param emailAddress
      */
-    public sendEmail(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public sendEmail(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
         if (emailAddress.invalid_email == 1) return;
         window.location.assign('mailto:' + emailAddress.email_address);
     }
@@ -113,7 +117,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set the primary email address
      * @param emailAddress
      */
-    public setPrimary(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public setPrimary(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
 
         if (emailAddress.invalid_email == 1) {
             return;
@@ -175,7 +179,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @param emailAddress
      * @private
      */
-    public setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
         if (emailAddress?.invalid_email == 1 || emailAddress?.email_address == this.model.getField('email1')) {
             return;
         }
@@ -258,6 +262,8 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         this.inputNewEmailAddress.id = this.model.generateGuid();
         this.inputNewEmailAddress.isNew = true;
 
+        this.focusedEmailAddress = this.inputNewEmailAddress.id;
+
         this.emailAddresses.push({...this.inputNewEmailAddress});
         this.cancelAdding();
     }
@@ -302,7 +308,6 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             .filter(emailAddress => !!emailAddress.email_address)
             .forEach(emailAddress => {
                 if (!unique.some(e => e.email_address == emailAddress.email_address)) {
-                    delete emailAddress.hasFocus;
                     unique.push(emailAddress);
                 } else if (!emailAddress.isNew) {
                     deletedIds.push(emailAddress.id);
@@ -318,7 +323,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     public cancelAdding() {
 
         this.inputNewEmailAddress = {
-            id: '', primary_address: '', invalid_email: 0, email_address: '', hasFocus: true
+            id: '', primary_address: '', invalid_email: 0, email_address: ''
         };
 
         if (this.emailAddresses.length > 0) {
