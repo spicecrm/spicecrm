@@ -67,7 +67,7 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
      * render the component if we have a status component
      */
     public ngAfterViewInit(): void {
-        if (this.hasComponent) {
+        if (this.hasComponent && this.componentcontainer) {
             this.metadata.addComponent(this.item.status_component, this.componentcontainer, this.injector).subscribe(actioncomponent => {
                 this.actioncomponent = actioncomponent.instance;
                 actioncomponent.instance.item = this.item;

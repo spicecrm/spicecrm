@@ -6,7 +6,7 @@
 </div>
 <ng-container *ngIf="blobUrl" [ngSwitch]="objecttype">
     <div *ngSwitchCase="'audio'" class="slds-p-around--small slds-text-align--center">
-        <audio controls>
+        <audio controls style="width:100%">
             <source [src]="blobUrl" [type]="type">
         </audio>
     </div>
@@ -18,4 +18,5 @@
     <div *ngSwitchDefault style="height: 80vh; overflow: hidden;">
         <object [data]="blobUrl" [type]="type" width="100%" height="100%"></object>
     </div>
+    <a *ngIf="downloadTrigger$ && downloadReady" #downloadlink [href]="this.blobUrl" [download]="name" style="display:none"></a>
 </ng-container>

@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input} from '@angular/core';
+import { Component, EventEmitter, Input } from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {language} from '../../services/language.service';
 
@@ -40,6 +40,11 @@ export class SystemObjectPreviewModal {
      * holds data input sent by trigger
      */
     @Input() public data: any;
+
+    /**
+     * To tell the SystemObjectPreview component that the download button has been clicked.
+     */
+    public downloadTrigger$ = new EventEmitter<void>;
 
     constructor(public language: language, public sanitizer: DomSanitizer) {
     }
