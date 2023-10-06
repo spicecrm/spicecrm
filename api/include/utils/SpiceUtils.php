@@ -1379,4 +1379,20 @@ class SpiceUtils
         self::spiceCleanup();
         throw new \Exception( $error_message , 500) ;
     }
+
+    /**
+     * try to extract the e-mail address from recipient string like
+     * Joh Doe <john@doe.com> shall return john@doe.com
+     * @param $addr
+     * @return string
+     */
+    public static function extractEmailAddress($addr){
+        if(empty($addr)) return $addr;
+        $pattern = '/(<[alpha:num_-]@?.*>)/i';
+        preg_match($pattern, $addr, $matches);
+        if(is_array($matches) && $matches[0]){
+            return str_replace(['<', '>'], ['', ''], $matches[0]);
+        }
+        return $addr;
+    }
 }
