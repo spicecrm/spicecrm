@@ -678,7 +678,7 @@ class Email extends SpiceBean
      * @param array $htmlElements (collection of html elements)
      * @return bool
      */
-    function containsHTMLElem(string|null $emailBody): bool
+    function containsHTMLElem(?string $emailBody): bool
     {
         // to of HTML elements check if the body contains one of the html elements.
         $htmlElements = ['</html>','</head>','</style>', '</div>'];
