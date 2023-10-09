@@ -21,6 +21,8 @@ class M2MRelationship extends SugarRelationship
 {
     var $type = "many-to-many";
 
+    const REL_ID = "relid";
+
     public function __construct($def)
     {
         $this->def = $def;
@@ -314,7 +316,7 @@ class M2MRelationship extends SugarRelationship
         // for elasticsearch results have to be returned without paging
         $rangeParams = $params;
 
-        if (isset($params['searchterm'])) {
+        if (!empty($params['searchterm'])) {
             $rangeParams['limit'] = 0;
             $rangeParams['offset'] = 0;
         }
@@ -333,9 +335,12 @@ class M2MRelationship extends SugarRelationship
 
         if (!empty($params['searchterm'])) {
             $rows = $this->getResultsFilteredByFTS($link->getRelatedModuleName(), $params, $rows);
-        }
 
-        $this->count = count($rows);
+            $this->count = count($rows);
+            $rows = array_slice($rows, $params['offset'], $params['limit']);
+        } else {
+            $this->count = count($rows);
+        }
 
         return [
             "rows" => $rows
@@ -615,7 +620,6 @@ class M2MRelationship extends SugarRelationship
      */
     protected function getResultsFilteredByFTS($module, $params, $presults) {
         $rows = [];
-        $relatedID = "relid";
 
         // check if fts index available for module
         if (!SpiceFTSHandler::getInstance()->checkModule($module, true)) {
@@ -630,7 +634,7 @@ class M2MRelationship extends SugarRelationship
         ] = $params;
 
         // collect ids from unfiltered results
-        $ids = array_column($presults, $relatedID);
+        $ids = array_column($presults, self::REL_ID);
 
         // build fts search options
         $filterArray = [
@@ -645,7 +649,8 @@ class M2MRelationship extends SugarRelationship
             ]
         ];
 
-        $filteredResults = SpiceFTSHandler::getInstance()->searchModule($module, $searchterm, [], [], $size, $start, [$filterArray]);
+        // get results from FTS (make sure 'filterArray' is within in an array itself)
+        $filteredResults = SpiceFTSHandler::getInstance()->searchModule($module, $searchterm, [], [], -1, 0, [$filterArray]);
 
         // collect FTS ids
         if ($hits = $filteredResults['hits']['hits']) {
@@ -661,9 +666,7 @@ class M2MRelationship extends SugarRelationship
     }
 
     public function getCount($link, $params) {
-        if (isset($params['searchterm'])) {
-            // get ids
-
+        if (!empty($params['searchterm'])) {
             return $this->count;
         } else {
             $params['return_as_array'] = true;
