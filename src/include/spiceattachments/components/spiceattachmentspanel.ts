@@ -25,6 +25,7 @@ import {toast} from "../../../services/toast.service";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {EmailCloneAttachmentsModal} from "../../../modules/emails/components/emailcloneattachmentsmodal";
 import {SpiceAttachmentAddFromRecordModal} from "./spiceattachmentaddfromrecordmodal";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 /**
  * @ignore
@@ -38,7 +39,7 @@ declare var moment: any;
 @Component({
     selector: 'spice-attachments-panel',
     templateUrl: '../templates/spiceattachmentspanel.html',
-    providers: [modelattachments]
+    providers: [modelattachments, navigationtab]
 })
 export class SpiceAttachmentsPanel implements AfterViewInit {
 
@@ -91,7 +92,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         public metadata: metadata,
         public modalservice: modal,
         public injector: Injector,
-        @SkipSelf() private parentModel: model
+        @SkipSelf() private parentModel: model,
+        public navigationtab: navigationtab
     ) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
