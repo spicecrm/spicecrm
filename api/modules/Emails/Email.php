@@ -644,7 +644,7 @@ class Email extends SpiceBean
         $this->correctCharsetTag();
 
         // get the email addresses
-       //$ret->retrieveEmailAddresses();
+       $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
         $ret->time_start = '';
