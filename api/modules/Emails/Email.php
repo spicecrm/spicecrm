@@ -727,8 +727,7 @@ class Email extends SpiceBean
      * try to correct missing charset tag
      * will be mostly because of microsoft emails renders with microsoft word
      * We check first if there is any charset tag
-     * Then we check on a microsoft word generator and replace the genrator tag with a charset tag
-     * Last try: we inject the charset tag after a <html> tag
+     * Then we inject the charset tag before the end </head> tag
      * @return void
      */
     public function correctCharsetTag(){
