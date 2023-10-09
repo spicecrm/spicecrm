@@ -704,16 +704,13 @@ class Email extends SpiceBean
     }
 
     /**
-     * if it's not a meta microsoft generator, it might have a standalone <html> tag
+     * check if we find a head tag
      * @param string $emailBody
      * @return false|int
      */
-    public function containsHtmlTagStandalone(string $emailBody){
-        $pattern = "/<html>/";
-        preg_match($pattern, $emailBody, $matches);
-
-        if(is_array($matches)) return $matches[0];
-        return null;
+    public function containsHeadTag(string $emailBody){
+        $pattern = "/<\/head>/";
+        return preg_match($pattern, $emailBody);
     }
 
     /**
@@ -736,19 +733,11 @@ class Email extends SpiceBean
      */
     public function correctCharsetTag(){
         if(!$this->findMetaCharset($this->body)){
-            // check on the meta generator and replace
-            $microsoftTag = $this->containsMicrosoftWordGeneratorHTML($this->body);
-            if($microsoftTag){
-                $microsoftTagReplace = '<meta charset="UTF-8">';
-                $this->body = str_replace($microsoftTag, $microsoftTagReplace, $this->body);
-            } else{
-                // try to set a meta charset tag after the html tag
-                // even if the meta charset tag should within a head tag, charset tag shall be interpretade correctly for the display
-                $htmlTag = $this->containsHtmlTagStandalone($this->body);
-                if($htmlTag){
-                    $htmlTagReplace = '<html><meta charset="UTF-8">';
-                    $this->body = str_replace($htmlTag, $htmlTagReplace, $this->body);
-                }
+            $foundHeadTag = $this->containsHeadTag($this->body);
+            if($foundHeadTag){
+                $searchHtmlTag = '</head>';
+                $htmlTagReplace = '<meta charset="UTF-8"></head>';
+                $this->body = str_replace($searchHtmlTag, $htmlTagReplace, $this->body);
             }
         }
     }
