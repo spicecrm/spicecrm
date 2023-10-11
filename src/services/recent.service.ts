@@ -80,6 +80,9 @@ export class recent {
             this.items.pop();
         }
 
+        // write back to the service and update the indexed DB
+        this.configuration.setData('recentitmes', this.items, true);
+
         // handle the module specific tracker
         if (this.moduleItems[module_name]) {
             this.moduleItems[module_name].some((item, index) => {
