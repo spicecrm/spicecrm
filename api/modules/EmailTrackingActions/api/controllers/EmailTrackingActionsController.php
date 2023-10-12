@@ -9,10 +9,12 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\extensions\modules\LandingPages\LandingPage;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\CampaignLog\CampaignLog;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
@@ -29,14 +31,12 @@ class EmailTrackingActionsController
      */
     public function handleTrackingLink(Request $req, Response $res, array $args): Response
     {
-        $decrypted = EmailTracking::decodeTrackingID($args['key']);
+        $data = EmailTracking::decodeTrackingID($args['key']);
 
-        if (!$decrypted) {
+        if (!$data) {
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
-        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
         $trackingLink = BeanFactory::getBean('EmailTrackingLinks', $data['EmailTrackingLinks']);
         $this->logTrackingAction($data, 'clicked');
 
@@ -54,14 +54,12 @@ class EmailTrackingActionsController
      */
     public function handleTrackingPixel(Request $req, Response $res, array $args): Response
     {
-        $decrypted = EmailTracking::decodeTrackingID($args['key']);
+        $data = EmailTracking::decodeTrackingID($args['key']);
 
-        if (!$decrypted) {
+        if (!$data) {
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
-        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
         $this->logTrackingAction($data, 'opened');
 
         // return an image - 1x1 transparent pixel
@@ -75,27 +73,37 @@ class EmailTrackingActionsController
      * @param Response $res
      * @param array $args
      * @return Response
-     * @throws BadRequestException
+     * @throws BadRequestException|Exception
      */
     public function handleUnsubscribe(Request $req, Response $res, array $args): Response
     {
-        $decrypted = EmailTracking::decodeTrackingID($args['key']);
+        $data = EmailTracking::decodeTrackingID($args['key']);
 
-        if (!$decrypted) {
+        if (!$data) {
             throw new BadRequestException('Failed to decrypt key');
         }
 
-        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
-
-        if($chunks[0][0] !== 'Emails'){
-            throw new BadRequestException('invalid entry');
-        }
-
-        $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
         $this->logTrackingAction($data, 'unsubscribe');
 
         // get the email seed
-        $seed = BeanFactory::getBean($chunks[0][0], $chunks[0][1]);
+        /** @var Email | CampaignLog $seed */
+        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+
+        if (!$seed) {
+            new NotFoundException('Email or CampaignLog not found');
+        }
+
+        $seed->optOutParentEmailAddress();
+
+        $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.unsubscribe_redirect_url');
+
+        if ($seed->_module == 'Emails') {
+            $redirectUrl = $seed->getMailbox()->unsubscribe_redirect_url ?: $redirectUrl;
+        }
+
+        if (!empty($redirectUrl)) {
+            return $res->withHeader('Location', $redirectUrl)->withStatus(302);
+        }
 
         // load the unsub landingpage content
         /** @var LandingPage $landingPage */

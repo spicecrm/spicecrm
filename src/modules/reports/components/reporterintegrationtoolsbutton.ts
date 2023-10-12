@@ -52,6 +52,10 @@ export class ReporterIntegrationToolsButton implements OnChanges, AfterViewInit 
                 switch (plugin) {
                     case 'kqueryanalizer':
                         if (this.integrationParams.activePlugins.kqueryanalizer == 1) return false;
+                    case 'kprocessworkflow':
+                        if (this.integrationParams.activePlugins.kprocessworkflow == 1 && !!this.integrationParams.kprocessworkflow?.definition_id) {
+                            return false;
+                        }
                 }
             }
         }
@@ -88,6 +92,13 @@ export class ReporterIntegrationToolsButton implements OnChanges, AfterViewInit 
                     case 'kqueryanalizer':
                         if (this.integrationParams.activePlugins.kqueryanalizer == 1) {
                             this.metadata.addComponent('ReporterIntegrationQueryanalyzerButton', this.actionItemsContainer).subscribe(object => {
+                                this.actionComponentRefs.push(object);
+                            });
+                        }
+                        break;
+                    case 'kprocessworkflow':
+                        if (this.integrationParams.activePlugins.kprocessworkflow == 1 && !!this.integrationParams.kprocessworkflow?.definition_id) {
+                            this.metadata.addComponent('ReporterIntegrationProcessWorkflowButton', this.actionItemsContainer).subscribe(object => {
                                 this.actionComponentRefs.push(object);
                             });
                         }

@@ -124,7 +124,15 @@ $routes = [
                 'example' => 'de_DE'
             ]
         ]
-    ]
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/configuration/packages/repositories/metadata',
+        'class'       => PackageController::class,
+        'function'    => 'loadRepositoriesMetadata',
+        'description' => 'load packages and version from all repositories for the system',
+        'options'     => ['adminOnly' => true, 'validate' => true],
+    ],
 ];
 
 /**

@@ -42,6 +42,8 @@ import {SystemCustomIcon} from "./components/systemcustomicon";
 import {SystemDisplayCurrencySymbol} from "./components/systemdisplaycurrencysymbol";
 import {SystemDisplayDatetime} from "./components/systemdisplaydatetime";
 import {SystemDisplayNumber} from "./components/systemdisplaynumber";
+import {SystemDuelingPicklist} from "./components/systemduelingpicklist";
+import {SystemDuelingPicklistItem} from "./components/systemduelingpicklistitem";
 import {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
 import {SystemDynamicRouteInterceptor} from "./components/systemdynamicrouteinterceptor";
@@ -55,6 +57,7 @@ import {SystemIllustrationNoRecords} from "./components/systemillustrationnoreco
 import {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
 import {SystemIllustrationPageNotAvailable} from "./components/systemillustrationpagenotavailable";
 import {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
+import {SystemImagePreview} from "./components/systemimagepreview";
 import {SystemInputText} from "./components/systeminputtext";
 import {SystemInputEnum} from "./components/systeminputenum";
 import {SystemInputMultiEnum} from "./components/systeminputmultienum";
@@ -182,6 +185,11 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 
 
 
+import {SystemObjectPreview} from "./components/systemobjectpreview";
+import {SystemInputCronExpression} from "./components/systeminputcronexpression";
+import {SystemChartOneDimensional} from "./components/systemchartonedimensional";
+import {SystemChartOneDimensionalValue} from "./components/systemchartonedimensionalvalue";
+import {SystemSelectOption} from "./components/systemselectoption";
 
 @NgModule({
     imports: [
@@ -222,6 +230,8 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
         SystemDisplayCurrencySymbol,
         SystemDisplayDatetime,
         SystemDisplayNumber,
+        SystemDuelingPicklist,
+        SystemDuelingPicklistItem,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
         SystemDynamicRouteInterceptor,
@@ -285,6 +295,7 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
         SystemModuleGlobalPipe,
         SystemNumberSpinner,
         SystemObjectPreviewModal,
+        SystemObjectPreview,
         SystemPDFContainer,
         SystemInputModuleFilter,
         SystemFilterBuilder,
@@ -331,6 +342,7 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
         SystemSlider,
         SystemTrendIndicator,
         SystemImageModal,
+        SystemImagePreview,
         SystemNavigationCollector,
         SystemNavigationManager,
         SystemNavigationManagerRouteContainer,
@@ -351,7 +363,11 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
         SystemSplitContainer,
         SystemSplitContainerLeft,
         SystemSplitContainerRight,
-        SystemInputSearchTerm
+        SystemInputSearchTerm,
+        SystemInputCronExpression,
+        SystemChartOneDimensional,
+        SystemChartOneDimensionalValue,
+        SystemSelectOption
     ],
     exports: [
         PaginationControlsComponent,
@@ -376,6 +392,8 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
         SystemCustomIcon,
         SystemDisplayDatetime,
         SystemDisplayNumber,
+        SystemDuelingPicklist,
+        SystemDuelingPicklistItem,
         SystemDynamicComponent,
         SystemFilterBuilderFilterExpression,
         SystemFilterBuilderFilterExpressionFields,
@@ -495,7 +513,14 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
         SystemSplitContainer,
         SystemSplitContainerLeft,
         SystemSplitContainerRight,
-        SystemInputSearchTerm
+        SystemInputSearchTerm,
+        SystemSelectIconItem,
+        SystemObjectPreview,
+        SystemImagePreview,
+        SystemInputCronExpression,
+        SystemChartOneDimensional,
+        SystemChartOneDimensionalValue,
+        SystemSelectOption
     ]
 })
 export class SystemComponents {}

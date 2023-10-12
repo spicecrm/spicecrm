@@ -3,11 +3,14 @@
 
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
+use DOMDocument;
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\TimeDate;
 use Exception;
 use SpiceCRM\includes\Logger\SpiceLogger;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\MailboxLogTrait;
 use SpiceCRM\modules\Mailboxes\Mailbox;
@@ -57,7 +60,7 @@ abstract class TransportHandler
      */
     abstract public function testConnection($testEmail);
 
-    public function sendMail($email, $noSecurityCheck = false )
+    public function sendMail(Email $email, $noSecurityCheck = false )
     {
         $timedate = TimeDate::getInstance();
 
@@ -68,12 +71,31 @@ abstract class TransportHandler
             ];
         }
 
-        if ($this->mailbox->mailbox_header != '') {
-            $email->body = html_entity_decode($this->mailbox->mailbox_header) . $email->body;
+        /** @var EmailTemplate $emailTemplate */
+        $emailTemplate = BeanFactory::newBean('EmailTemplates');
+
+        # add the header to the email content
+        if (!empty($this->mailbox->mailbox_header)) {
+
+            $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_header);
+
+            if (strpos($email->body, '<body>')) {
+                $email->body = str_replace('<body>', "<body><header>{$parsedHtml}</header>", $email->body);
+            } else {
+                $email->body = "<header>{$parsedHtml}</header>" . $email->body;
+            }
         }
 
-        if ($this->mailbox->mailbox_footer != '') {
-            $email->body .= html_entity_decode($this->mailbox->mailbox_footer);
+        # add the footer to the email content
+        if (!empty($this->mailbox->mailbox_footer)) {
+
+            $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_footer);
+
+            if (strpos($email->body, '</body>')) {
+                $email->body = str_replace('</body>', "<footer>{$parsedHtml}</footer></body>", $email->body);
+            } else {
+                $email->body = "<footer>{$parsedHtml}</footer>" . $email->body;
+            }
         }
 
         if ($this->mailbox->stylesheet != '') {
@@ -85,6 +107,29 @@ abstract class TransportHandler
         $email->date_sent = $timedate->nowDb();
 
         return $this->dispatch( $message );
+    }
+
+    /**
+     * parse template body only
+     * @param EmailTemplate $emailTemplate
+     * @param Email $email
+     * @param string $content
+     * @return mixed
+     */
+    private function parseTemplateBodyOnly(EmailTemplate $emailTemplate, Email $email, string $content)
+    {
+        $emailTemplate->body_html = $content;
+        $parsedContent = $emailTemplate->parse($email)['body_html'];
+        $doc = new DOMDocument();
+        $doc->loadHTML($parsedContent);
+
+        # remove <!DOCTYPE
+        $doc->removeChild($doc->doctype);
+
+        # remove <html><body></body></html>
+        $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
+
+        return $doc->saveHTML();
     }
 
     /**
@@ -107,12 +152,6 @@ abstract class TransportHandler
         if($this->mailbox->track_mailbox){
             $pixel = EmailTracking::getTrackingPixel("ParentType:$parentType:ParentId:$parentId");
             $body = EmailTracking::attachElementToBody($pixel, $body);
-        }
-
-        if($this->mailbox->unsubscribe_header) {
-            $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
-            $unsubUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl'));
-            $body = EmailTracking::attachElementToBody("<a href=\"{$unsubUrl}\">unsubscribe</a>", $body);
         }
 
         # prevent misinterpretation of the style tag css class selectors

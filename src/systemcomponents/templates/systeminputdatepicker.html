@@ -13,7 +13,9 @@
         </div>
     </div>
     <div class="slds-shrink-none">
-        <system-select [selectList]="yearsList" [(ngModel)]="currentYear" [emitInputValueOnEnterPress]="true"></system-select>
+        <system-select [(ngModel)]="currentYear" [emitInputValueOnEnterPress]="true">
+            <system-select-option *ngFor="let option of yearsList" [value]="option.id" [display]="option.name"/>
+        </system-select>
     </div>
 </div>
 <div class="slds-p-left--x-small">

@@ -1,0 +1,78 @@
+<!--
+<div class="slds-grid slds-grid_vertical-align-center  slds-p-around&#45;&#45;small">
+    <h2 class="slds-text-heading_medium"><system-label label="LBL_ATTACHMENTSTATISTICS"></system-label></h2>
+    <button class="slds-col&#45;&#45;bump-left slds-button slds-button_icon slds-button_icon-border-filled" (click)="delete()">
+        <system-button-icon icon="delete"></system-button-icon>
+    </button>
+    <button class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="analyze();getMissingFiles();">
+        <system-button-icon icon="refresh"></system-button-icon>
+    </button>
+</div>
+<div class="slds-border&#45;&#45;top system-to-bottom">
+
+    <h3 class="slds-text-heading&#45;&#45;small slds-p-around&#45;&#45;small"><system-label label="LBL_SPICEATTACHMENTS_ORPHANED"></system-label></h3>
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table&#45;&#45;header-fixed">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
+            </th>
+            <th scope="col" class="slds-text-align&#45;&#45;right">
+                <div class="slds-truncate"><system-label label="LBL_RECORDS"></system-label></div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let statrecord of analysisresults">
+            <td>
+                <div class="slds-truncate">{{statrecord.module}}</div>
+            </td>
+            <td class="slds-text-align&#45;&#45;right">
+                <div class="slds-truncate">{{statrecord.count}}</div>
+            </td>
+        </tr>
+        <tr class="slds-theme&#45;&#45;alt-inverse">
+            <td>
+                <div class="slds-truncate"><system-label label="LBL_TOTAL"></system-label></div>
+            </td>
+            <td class="slds-text-align&#45;&#45;right">
+                <div class="slds-truncate">{{totalcount}}</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 class="slds-text-heading&#45;&#45;small slds-p-around&#45;&#45;small"><system-label label="LBL_MISSING_FILES"></system-label></h3>
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table&#45;&#45;header-fixed">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_AREA"></system-label></div>
+            </th>
+            <th scope="col" class="slds-text-align&#45;&#45;right">
+                <div class="slds-truncate"><system-label label="LBL_FILES"></system-label></div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let area of fileAreas">
+            <td>
+                <div class="slds-truncate"><system-label [label]="missingFiles[area].label"></system-label></div>
+            </td>
+            <td class="slds-text-align&#45;&#45;right">
+                <div class="slds-truncate">{{missingFiles[area].count}}</div>
+            </td>
+        </tr>
+        <tr class="slds-theme&#45;&#45;alt-inverse">
+            <td>
+                <div class="slds-truncate"><system-label label="LBL_TOTAL"></system-label></div>
+            </td>
+            <td class="slds-text-align&#45;&#45;right">
+                <div class="slds-truncate">{{missingFilesTotalcount}}</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+-->

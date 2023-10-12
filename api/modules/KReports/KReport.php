@@ -726,7 +726,11 @@ class KReport extends SpiceBean
                                 if ($fieldArray['fieldid'] == $key){
                                     $translation = $spiceLanguageHandler->getTranslationLabelDataByName($fieldArray['name'], $current_language);
                                     # $header .= '"' .iconv("UTF-8", $current_user->getPreference('default_export_charset'), $translation) . '"' . $export_delimiter;
-                                    $header .= '"' .iconv("UTF-8", $current_user->getPreference('export_charset'), $translation) . '"' . $export_delimiter;
+                                    if($current_user->getPreference('export_charset')) {
+                                        $header .= '"' . iconv("UTF-8", $current_user->getPreference('export_charset'), $translation) . '"' . $export_delimiter;
+                                    } else {
+                                        $header .= '"' .  $translation . '"' . $export_delimiter;
+                                    }
                                 }
                         }
 
@@ -1486,6 +1490,8 @@ $db = DBManagerFactory::getInstance();
                                 break;
                         }
                         break;
+                    case 'ndaysago':
+                    case 'lessthanndays':
                     case 'lastndays':
                     case 'lastnfdays':
                     case 'lastnweeks':
@@ -1547,6 +1553,8 @@ $db = DBManagerFactory::getInstance();
 
                 // if needed switch the type for the dashlet
                 switch ($thisWhereField ['operator']) {
+                    case 'ndaysago' :
+                    case 'lessthanndays' :
                     case 'lastndays' :
                     case 'nextndays' :
                         $thisWhereField ['type'] = 'int';
