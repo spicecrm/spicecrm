@@ -32,9 +32,6 @@ export class recent {
                 if (item) {
                     item.data = message.messagedata.data;
                     item.item_summary = message.messagedata.data.summary_text;
-
-                    // write back to the service and update the indexed DB
-                    this.configuration.setData('recentitmes', this.items, true);
                 }
 
                 if (this.moduleItems[message.messagedata.module]) {
@@ -50,9 +47,6 @@ export class recent {
                 let itemIndex = this.items.findIndex(i => i.module_name == message.messagedata.module && i.item_id == message.messagedata.id);
                 if (itemIndex) {
                     this.items.splice(itemIndex, 1);
-
-                    // write back to the service and update the indexed DB
-                    this.configuration.setData('recentitmes', this.items, true);
                 }
 
                 if (this.moduleItems[message.messagedata.module]) {
