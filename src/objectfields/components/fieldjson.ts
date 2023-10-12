@@ -24,7 +24,9 @@ export class fieldJson extends fieldGeneric {
      * a getter for the value bound top the model
      */
     get value() {
-        return JSON.stringify( this.model.getField(this.fieldname), null, '\t' );
+        const fromModel: string = this.model.getField(this.fieldname);
+        if ( fromModel === null ) return '';
+        return JSON.stringify( fromModel, null, '\t' );
         // return JSON.stringify(JSON.parse(this.model.getField(this.fieldname)), null, '\t');
     }
 
