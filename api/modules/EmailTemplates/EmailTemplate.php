@@ -1,7 +1,11 @@
 <?php
 namespace SpiceCRM\modules\EmailTemplates;
 
+use Exception;
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -67,14 +71,83 @@ class EmailTemplate extends SpiceBean {
         global $app_list_strings;
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
+        $pdfFiles = $this->generatePdfFilesFromOutputTemplates($bean);
+
         $retArray = [
             'subject' => $this->parsePlainTextField('subject', $bean, $additionalValues ),
             'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans ),
-            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans )        ];
-        $retArray['subject'] = preg_replace('#\s+#', ' ', $retArray['subject'] ); // multiple white spaces -> one
+            'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans ),
+            'attachments' => array_merge($this->getAttachmentsWithFiles(), $pdfFiles)
+        ];
 
-        return $retArray;
+        $retArray['subject'] = preg_replace('#\s+#', ' ', $retArray['subject'] ); // multiple white spaces -> one
+        return $this->callContentMethod($retArray);
     }
+
+    /**
+     * get attachments with files
+     * @return array|false|string
+     * @throws NotFoundException
+     */
+    private function getAttachmentsWithFiles()
+    {
+        $attachments = SpiceAttachments::getAttachmentsForBean('EmailTemplates', $this->id, 25, false);
+        foreach ($attachments as &$attachment) {
+            $attachmentWithFile = SpiceAttachments::getAttachment($attachment['id'], false);
+            $attachment['file'] = $attachmentWithFile['file'];
+        }
+
+        return $attachments;
+    }
+
+    /**
+     * generate pdf files from output templates
+     * @param ?SpiceBean $bean
+     * @return array
+     */
+    private function generatePdfFilesFromOutputTemplates(?SpiceBean $bean): array
+    {
+        if (!$bean) return [];
+
+        $outputTemplates = $this->get_linked_beans('outputtemplates');
+
+        $attachments = [];
+
+        foreach ($outputTemplates as $outputTemplate) {
+
+            if ($bean->_module != $outputTemplate->module_name) continue;
+
+            $outputTemplate->bean_id = $bean->id;
+
+            $fileContent = base64_encode($outputTemplate->getPdfContent());
+
+            $attachments[] = [
+                'file' => $fileContent,
+                'file_mime_type' => 'application/pdf',
+                'filename' => $outputTemplate->name . '.pdf',
+                'filesize' => strlen($fileContent),
+            ];
+        }
+
+        return $attachments;
+    }
+
+    /**
+     * call the content method and return the adjusted html content by the method
+     * @param string $html
+     * @return mixed
+     */
+    private function callContentMethod(array $retArray)
+    {
+        if (empty($this->content_method)) return $retArray;
+
+        $classMethod = SpiceUtils::loadExecutionClassMethod($this->content_method);
+
+        if (!$classMethod) return $retArray;
+
+        return $classMethod->class->{$classMethod->method}($this, $retArray);
+    }
+
 
     public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null, $additionalBeans = [] )
     {

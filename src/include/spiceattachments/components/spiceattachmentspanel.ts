@@ -14,7 +14,7 @@ import {
     Injector,
     Optional,
     SkipSelf,
-    AfterViewInit, OnChanges, SimpleChanges
+    AfterViewInit, OnChanges, SimpleChanges, ComponentRef
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -23,6 +23,9 @@ import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
 import {modelattachments} from "../../../services/modelattachments.service";
+import {EmailCloneAttachmentsModal} from "../../../modules/emails/components/emailcloneattachmentsmodal";
+import {SpiceAttachmentAddFromRecordModal} from "./spiceattachmentaddfromrecordmodal";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 /**
  * @ignore
@@ -34,8 +37,9 @@ declare var moment: any;
  * if the parent provides the service the parent is also responsible for the laoding of atatchments
  */
 @Component({
+    selector: 'spice-attachments-panel',
     templateUrl: '../templates/spiceattachmentspanel.html',
-    providers: [modelattachments]
+    providers: [modelattachments, navigationtab]
 })
 export class SpiceAttachmentsPanel implements AfterViewInit {
 
@@ -87,7 +91,9 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         public toast: toast,
         public metadata: metadata,
         public modalservice: modal,
-        public injector: Injector
+        public injector: Injector,
+        @SkipSelf() private parentModel: model,
+        public navigationtab: navigationtab
     ) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
@@ -244,6 +250,15 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      */
     public addImage() {
         this.modal.openModal('SpiceAttachmentAddImageModal', true, this.injector);
+    }
+
+    /**
+     * opens the add from record modal
+     */
+    public addFromRecord() {
+        this.modal.openModal('SpiceAttachmentAddFromRecordModal', true, this.injector).subscribe((modalRef: ComponentRef<SpiceAttachmentAddFromRecordModal>) => {
+            modalRef.instance.parent = this.parentModel;
+        });
     }
 
 }

@@ -1,13 +1,7 @@
 <system-modal size="large">
     <system-modal-header (close)="closeModal()">{{imgname}}</system-modal-header>
     <system-modal-content margin="none">
-        <div *ngIf="!imgsrc" style="height: 50vh;" class="slds-align--absolute-center">
-            <system-spinner *ngIf="!loadingerror"></system-spinner>
-            <system-illustration-page-not-available *ngIf="loadingerror"><system-label label="MSG_ERROR_LOADING_FILE"></system-label></system-illustration-page-not-available>
-        </div>
-        <div *ngIf="imgsrc" class="slds-text-align--center" style="height:100%">
-            <img style="max-height:100%;max-width:100%" [src]="imgsrc"/>
-        </div>
+        <system-image-preview [data]="imgsrc"></system-image-preview>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--icon slds-button--icon-border" (click)="download()">

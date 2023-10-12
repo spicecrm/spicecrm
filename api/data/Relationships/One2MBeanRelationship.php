@@ -174,7 +174,7 @@ class One2MBeanRelationship extends One2MRelationship
             $this->callBeforeAdd($rhs, $lhs);
         }
 
-        $this->updateFields($lhs, $rhs, $additionalFields);
+        $resaveRequired = $this->updateFields($lhs, $rhs, $additionalFields);
 
         if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes")
         {
@@ -190,8 +190,9 @@ class One2MBeanRelationship extends One2MRelationship
 
         //One2MBean relationships require that the RHS bean be saved or else the relationship will not be saved.
         //If we aren't already in a relationship save, intitiate a save now.
-        if (empty($GLOBALS['resavingRelatedBeans']))
+        if ($resaveRequired && empty($GLOBALS['resavingRelatedBeans'])) {
             Relationship::resaveRelatedBeans();
+        }
 
         return true;
     }
@@ -209,19 +210,31 @@ class One2MBeanRelationship extends One2MRelationship
 
     protected function updateFields($lhs, $rhs, $additionalFields)
     {
+        // memorize if we need a resave
+        $resaveRequired = false;
+
         //Now update the RHS bean's ID field
         $rhsID = $this->def['rhs_key'];
+
+        if($rhs->$rhsID != $lhs->id) $resaveRequired = true;
+
         $rhs->$rhsID = $lhs->id;
         foreach($additionalFields as $field => $val)
         {
+            if($rhs->$field != $val) $resaveRequired = true;
             $rhs->$field = $val;
         }
         //Update role fields
         if(!empty($this->def["relationship_role_column"]) && !empty($this->def["relationship_role_column_value"]))
         {
             $roleField = $this->def["relationship_role_column"];
+
+            if($rhs->$roleField != $this->def["relationship_role_column_value"]) $resaveRequired = true;;
+
             $rhs->$roleField = $this->def["relationship_role_column_value"];
         }
+
+        return $resaveRequired;
     }
 
     public function remove($lhs, $rhs, $save = true)

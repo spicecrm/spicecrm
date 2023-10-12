@@ -45,7 +45,7 @@ export class ObjectRepositoryManager {
     public edit_mode: string = "custom";
     public change_request_required: boolean = false;
     public crNoneActive: boolean = false;
-    public moduleReposSelect: any[] = [];
+    public moduleReposSelect: {id: string, name: string, group: string}[] = [];
     public moduleRepos: any[] = [];
     public modulereposselecteditem: any = {};
     public objrepoList: any[] = [];
@@ -92,8 +92,7 @@ export class ObjectRepositoryManager {
 
             for (let module of modules) {
                 this.moduleRepos.push(module);
-                let moduleRepos = {};
-                moduleRepos = {
+                const moduleRepos = {
                     id: module.id,
                     name: module.module,
                     group: "global"
@@ -107,8 +106,7 @@ export class ObjectRepositoryManager {
             for (let module of modules) {
 
                 this.moduleRepos.push(module);
-                let moduleObj = {};
-                moduleObj = {
+                const moduleObj = {
                     id: module.id,
                     name: module.module,
                     group: "custom"

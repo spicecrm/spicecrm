@@ -1874,6 +1874,130 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
     }
 
     /**
+     * read validations and create app_list_strings doms
+     *
+     * @return array
+     */
+    public static function loadDictionaryValidations(){
+        $db = DBManagerFactory::getInstance();
+
+        // try to get the cached values
+        $cached = SpiceCache::get('domains');
+
+        // already loaded
+        if($cached){
+            return $cached;
+        }
+
+        // load first time
+        $retArray = [];
+        // core values
+        $coreEnums = $db->query("SELECT id, name FROM sysdomainfieldvalidations WHERE (validation_type = 'enum' OR validation_type = 'options') AND status='a' AND deleted = 0");
+
+        while($coreEnum = $db->fetchByAssoc($coreEnums)){
+            $retArray[$coreEnum['name']]['name'] = $coreEnum['name'];
+            $retArray[$coreEnum['name']]['values'] = [];
+            $enumValues = $db->query("SELECT enumvalue, sequence, label FROM sysdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$coreEnum['id']}' AND status = 'a' AND deleted = 0");
+            while($enumValue = $db->fetchByAssoc($enumValues)){
+                $retArray[$coreEnum['name']]['values'][$enumValue['enumvalue']] = [
+                    'enumvalue' => $enumValue['enumvalue'],
+                    'label' => $enumValue['label'],
+                    'sequence' => $enumValue['sequence']
+                ];
+            }
+
+            // load custom enum values added to original dom
+            $cenumValues = $db->query("SELECT enumvalue, sequence, label FROM syscustomdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$coreEnum['id']}' AND status = 'a' AND deleted = 0");
+            while($cenumValue = $db->fetchByAssoc($cenumValues)){
+                $retArray[$coreEnum['name']]['values'][$cenumValue['enumvalue']] = [
+                    'enumvalue' => $cenumValue['enumvalue'],
+                    'label' => $cenumValue['label'],
+                    'sequence' => $cenumValue['sequence']
+                ];
+            }
+        }
+
+        // custom values
+        $coreEnums = $db->query("SELECT id, name FROM syscustomdomainfieldvalidations WHERE validation_type = 'enum' AND status='a' AND deleted = 0");
+        while($coreEnum = $db->fetchByAssoc($coreEnums)){
+            $retArray[$coreEnum['name']]['name'] = $coreEnum['name'];
+            $retArray[$coreEnum['name']]['values'] = [];
+
+            // load custom enum values
+            $cenumValues = $db->query("SELECT enumvalue, sequence, label FROM syscustomdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$coreEnum['id']}' AND status = 'a' AND deleted = 0");
+            while($cenumValue = $db->fetchByAssoc($cenumValues)){
+                $retArray[$coreEnum['name']]['values'][$cenumValue['enumvalue']] = [
+                    'enumvalue' => $cenumValue['enumvalue'],
+                    'label' => $cenumValue['label'],
+                    'sequence' => $cenumValue['sequence']
+                ];
+            }
+        }
+
+        // save to the session
+        SpiceCache::set('domains', $retArray);
+
+        return $retArray;
+    }
+
+
+    /**
+     * get system languages
+     *
+     * @param bool $sysonly
+     * @return array
+     */
+    public static function getLanguages($sysonly = true){
+        $db = DBManagerFactory::getInstance();
+        $languages = [];
+        $results = $db->query("SELECT language_code FROM syslangs " . ($sysonly ? "WHERE system_language = 1" : ""). " ORDER BY sort_sequence, language_name");
+        while($row = $db->fetchByAssoc($results)){
+            $languages[] = $row['language_code'];
+        }
+        return $languages;
+    }
+
+    /**
+     * build an array containing doms for each language
+     *
+     * @param string $language
+     * @return array
+     */
+    public static function createDictionaryValidationDoms($language = null){
+        if(empty($language)){
+            $language = $GLOBALS['current_language'];
+            if(empty($language)){
+                $language = LanguageManager::getDefaultLanguage();
+            }
+        }
+
+        $sys_app_list_strings = [];
+        $validations = self::loadDictionaryValidations();
+        $syslanguagelabels[$language] = LanguageManager::loadDatabaseLanguage($language);
+
+        foreach($validations as $dom => $definition){
+            // re-organize and add translation
+            foreach($definition['values'] as $enumvalue => $def){
+                $translation = (!empty($syslanguagelabels[$language][$def['label']]['default']) ? $syslanguagelabels[$language][$def['label']]['default'] : $enumvalue);
+                $sys_app_list_strings[$dom][$language]['values'][$enumvalue]['enumvalue'] = $enumvalue;
+                $sys_app_list_strings[$dom][$language]['values'][$enumvalue]['translation'] = $translation;
+                $sys_app_list_strings[$dom][$language]['values'][$enumvalue]['sequence'] = $def['sequence'];
+            }
+
+            // sort by the sequence
+            if(is_array($sys_app_list_strings[$dom][$language]['values'])){
+                $arrmap = array_map(function($element) {
+                    return $element['sequence'];
+                }, $sys_app_list_strings[$dom][$language]['values']);
+                array_multisort($arrmap, ($definition['sort_flag'] == 'desc' ? SORT_DESC : SORT_ASC), $sys_app_list_strings[$dom][$language]['values']);
+            }
+        }
+
+        return $sys_app_list_strings;
+    }
+
+
+    /**
      * delete a relationship entry from cache table by relationship name
      *
      * @param string $relName

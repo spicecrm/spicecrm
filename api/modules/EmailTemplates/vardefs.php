@@ -282,6 +282,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'reportable' => false,
             'options' => 'systemdeploymentpackage_repair_modules_dom'
         ],
+        'content_method' => [
+            'name' => 'content_method',
+            'vname' => 'LBL_METHOD',
+            'type' => 'varchar'
+        ],
+        'outputtemplates' => [
+            'name' => 'outputtemplates',
+            'type' => 'link',
+            'relationship' => 'outputtemplates_emailtemplates',
+            'source' => 'non-db',
+            'vname' => 'LBL_OUTPUT_TEMPLATES',
+            'module' => 'OutputTemplates'
+        ],
     ],
     'indices' => [
         [

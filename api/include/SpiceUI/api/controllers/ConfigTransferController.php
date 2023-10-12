@@ -34,7 +34,8 @@ class ConfigTransferController
         'sysauthconfig', # auth client config
         'sysnumberranges',
         'sysnumberrangeallocation',
-        'syssalesdocnumberranges'
+        'syssalesdocnumberranges',
+        'sysdatastreams',
     ];
 
     static private $dataFormat = 2;

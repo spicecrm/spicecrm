@@ -1260,13 +1260,15 @@ class SpiceUtils
 
     /**
      * This function retrieves an application language file and returns the array of strings included in the $app_list_strings var.
-     *
-     * @param string $language specific language to load
+     * @param ?string $language specific language to load
      * @return array lang strings
+     * @throws \Exception
      */
-    public static function returnAppListStringsLanguage($language = 'en_us', $scope = 'all'): ?array
+    public static function returnAppListStringsLanguage(?string $language = '', $scope = 'all'): ?array
     {
-        global $app_list_strings;
+        if (empty($language)) {
+            $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
+        }
 
         $cache_key = 'app_list_strings.' . $language;
 
@@ -1278,25 +1280,11 @@ class SpiceUtils
             }
         }
 
-        $default_language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
-        $temp_app_list_strings = $app_list_strings;
-
-        $langs = [];
-        if ($language != 'en_us') {
-            $langs[] = 'en_us';
-        }
-        if ($default_language != 'en_us' && $language != $default_language) {
-            $langs[] = $default_language;
-        }
-        $langs[] = $language;
-
-        $app_list_strings_array = [];
-
+        $app_list_strings = [];
 
         // BEGIN CR1000108 vardefs to db
         if (SpiceDictionaryVardefs::isDomainManaged()) {
             // reset anything you've done so far
-            $app_list_strings = [];
             //load sys_app_list_strings
             $sys_app_list_strings = SpiceDictionaryDomainValidations::getInstance()->createDictionaryValidationDoms($language);
 
@@ -1309,21 +1297,10 @@ class SpiceUtils
                 }
             }
         }
-        // END
 
-        if (!isset($app_list_strings)) {
-            LoggerManager::getLogger()->fatal("Unable to load the application language file for the selected language ($language) or the default language ($default_language) or the en_us language");
-            return null;
-        }
+        SpiceCache::set($cache_key, $app_list_strings);
 
-        $return_value = $app_list_strings;
-        $app_list_strings = $temp_app_list_strings;
-
-        //if ($scope != 'all') {
-            SpiceCache::set($cache_key, $return_value);
-        //}
-
-        return $return_value;
+        return $app_list_strings;
     }
 
     /**
@@ -1413,5 +1390,21 @@ class SpiceUtils
     public static function sugarDie($error_message, $exit_code = 1) {
         self::spiceCleanup();
         throw new \Exception( $error_message , 500) ;
+    }
+
+    /**
+     * try to extract the e-mail address from recipient string like
+     * Joh Doe <john@doe.com> shall return john@doe.com
+     * @param $addr
+     * @return string
+     */
+    public static function extractEmailAddress($addr){
+        if(empty($addr)) return $addr;
+        $pattern = '/(<[alpha:num_-]@?.*>)/i';
+        preg_match($pattern, $addr, $matches);
+        if(is_array($matches) && $matches[0]){
+            return str_replace(['<', '>'], ['', ''], $matches[0]);
+        }
+        return $addr;
     }
 }
