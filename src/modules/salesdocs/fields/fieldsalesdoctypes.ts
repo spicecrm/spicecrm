@@ -39,6 +39,11 @@ export class fieldSalesdocTypes extends fieldGeneric {
         super.ngOnInit();
 
         this.getOptions();
+
+        // if we have only one option set it
+        if(this.options.length == 1){
+            this.value = this.options[0].name;
+        }
     }
 
     public getValue(): string {
@@ -70,6 +75,17 @@ export class fieldSalesdocTypes extends fieldGeneric {
             } else {
                 this.options = salesdocTypes;
             }
+
+            // filter by party
+            if(this.model.getField('salesdocparty')){
+                this.options = this.options.filter( salesdocType => salesdocType.salesdocparty == this.model.getField('salesdocparty') );
+            }
+
+            // filter by type
+            if(this.model.getField('salesdoccategory')){
+                this.options = this.options.filter( salesdocType => salesdocType.salesdoccategory == this.model.getField('salesdoccategory') );
+            }
+
             this.translateAndSortOptions();
         }
     }

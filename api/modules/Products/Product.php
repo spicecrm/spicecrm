@@ -94,4 +94,21 @@ class Product extends SpiceBean {
 
         return $attribArray;
     }
+
+    /**
+     * retunrs teh account for the GL posting when posting revenues
+     *
+     * @param $params
+     * @return void
+     */
+    public function getRevenueAccount($companycode_id, $params = null){
+        if(empty($this->account_determination_group)) return false;
+
+        $sql = "SELECT account_number FROM products_accountdeterminations WHERE companycode_id='{$companycode_id}' AND account_determination_group='{$this->account_determination_group}'";
+        if($params) $sql .= " AND account_determination_params='{$params}'";
+
+        $record = $this->db->fetchOne($sql);
+
+        return $record ? $record['account_number'] : false;
+    }
 }

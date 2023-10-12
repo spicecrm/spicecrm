@@ -80,7 +80,7 @@ class LDAPAuthenticate implements AuthenticatorI
             [
                 'fields' =>
                     [
-                        "givenName" => 'first_name',
+                        "givenname" => 'first_name',
                         "sn" => 'last_name',
                         "mail" => 'email1',
                         "telephoneNumber" => 'phone_work',

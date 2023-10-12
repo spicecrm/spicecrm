@@ -430,6 +430,42 @@ if (file_exists('extensions/modules/ServiceQueues')) {
         'relationship_type' => 'one-to-many'
     ];
 
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['return_to_servicequeue_id'] = [
+        'name' => 'return_to_servicequeue_id',
+        'vname' => 'LBL_RETURN_TO_SERVICEQUEUE_ID',
+        'type' => 'id',
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['return_to_servicequeue_name'] = [
+        'name' => 'return_to_servicequeue_name',
+        'vname' => 'LBL_RETURN_TO_SERVICEQUEUE_NAME',
+        'type' => 'relate',
+        'source' => 'non-db',
+        'len' => '255',
+        'id_name' => 'return_to_servicequeue_id',
+        'rname' => 'name',
+        'module' => 'ServiceQueues',
+        'link' => 'returntoservicequeues',
+        'join_name' => 'returntoservicequeues',
+        'required' => false,
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['returntoservicequeues'] = [
+        'vname' => 'LBL_SERVICEQUEUES',
+        'name' => 'returntoservicequeues',
+        'type' => 'link',
+        'module' => 'ServiceQueues',
+        'relationship' => 'servicetickets_servicequeuesreturn',
+        'source' => 'non-db'
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['relationships']['servicetickets_servicequeuesreturn'] = [
+        'lhs_module' => 'ServiceQueues',
+        'lhs_table' => 'servicequeues',
+        'lhs_key' => 'id',
+        'rhs_module' => 'ServiceTickets',
+        'rhs_table' => 'servicetickets',
+        'rhs_key' => 'return_to_servicequeue_id',
+        'relationship_type' => 'one-to-many'
+    ];
+
 }
 
 if (file_exists('extensions/modules/ServiceCalls')) {

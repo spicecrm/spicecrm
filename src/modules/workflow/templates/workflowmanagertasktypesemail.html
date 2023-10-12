@@ -75,9 +75,9 @@
                 </select>
             </div>
             <div *ngIf="contentOption == 'email_template'" class="slds-grow slds-m-left--xx-small">
-                <system-select *ngIf="!model.data.type_config.emailtemplate_id" [selectList]="emailTemplates"
-                               [ngModel]="model.data.type_config.emailtemplate_id"
-                               (ngModelChange)="setEmailTemplate($event)"></system-select>
+                <system-select *ngIf="!model.data.type_config.emailtemplate_id" [ngModel]="model.data.type_config.emailtemplate_id" (ngModelChange)="setEmailTemplate($event)">
+                    <system-select-option *ngFor="let option of emailTemplates" [value]="option.id" [display]="option.name"/>
+                </system-select>
                 <div *ngIf="!!model.data.type_config.emailtemplate_id" class="slds-pill_container">
                 <span class="slds-pill slds-size--1-of-1">
                     <span class="slds-icon_container slds-pill__icon_container">

@@ -24,6 +24,7 @@ import {ReporterIntegrationPDFexportButton} from "./components/reporterintegrati
 
 import {ReporterIntegrationQueryanalyzerButton} from "./components/reporterintegrationqueryanalyzerbutton";
 import {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegrationqueryanalyzermodal";
+import {ReporterIntegrationProcessWorkflowButton} from "./components/reporterintegrationprocessworkflowbutton";
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import {ReporterIntegrationQueryanalyzerModal} from "./components/reporterintegr
         ReporterIntegrationXLSexportButton,
         ReporterIntegrationPDFexportButton,
         ReporterIntegrationQueryanalyzerButton,
-        ReporterIntegrationQueryanalyzerModal
+        ReporterIntegrationQueryanalyzerModal,
+        ReporterIntegrationProcessWorkflowButton
     ]
 })
 export class ModuleReportsMore {

@@ -88,20 +88,18 @@ export class ObjectStatusNetworkModal implements OnInit {
     /**
      * saves changes
      */
-    public confirm(): void {
+    public save(): void {
+
+        if (!this.model.validate()) return;
+
         let loadingModal = this.modal.await(this.language.getLabel('LBL_SAVING'));
 
-        if (this.model.validate()) {
-            this.model.save(true).subscribe(res => {
-                loadingModal.next(true);
-                loadingModal.complete();
-                this.close();
-            });
-        } else {
+        this.model.save(true).subscribe(res => {
+
             loadingModal.next(true);
             loadingModal.complete();
-            this.toast.sendToast('LBL_ERROR', 'error');
-        }
+            this.close();
+        });
     }
 
     /**

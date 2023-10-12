@@ -1,8 +1,8 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable, OnDestroy} from "@angular/core";
-import {Subject, Observable, BehaviorSubject} from "rxjs";
+import {Injectable, OnDestroy} from "@angular/core";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 
 import {configurationService} from "./configuration.service";
 import {session} from "./session.service";
@@ -11,6 +11,7 @@ import {toast} from "./toast.service";
 import {language} from "./language.service";
 import {broadcast} from "./broadcast.service";
 import {model} from "./model.service";
+import {modal} from "./modal.service";
 
 /**
  * @ignore
@@ -67,7 +68,8 @@ export class modelattachments implements OnDestroy {
         public session: session,
         public toast: toast,
         public broadcast: broadcast,
-        public language: language
+        public language: language,
+        public modal: modal
     ) {
         this.loaded$ = new BehaviorSubject<boolean>(false);
     }
@@ -573,6 +575,27 @@ export class modelattachments implements OnDestroy {
             let blobUrl = URL.createObjectURL(blob);
             window.open(blobUrl, "_blank");
         });
+    }
+
+    /**
+     * retrieves all attachment data from backend
+     * @param attachmentId
+     */
+    public getAttachmentData(attachmentId): Observable<any> {
+        let retSubject = new Subject();
+
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${attachmentId}`, null, this.httpRequestsRefID).subscribe({
+            next: (fileData) => {
+                    retSubject.next(fileData);
+                    retSubject.complete();
+                },
+            error: (err) => {
+                retSubject.error(err);
+                retSubject.complete();
+            }
+        });
+
+        return retSubject.asObservable();
     }
 
     public ngOnDestroy() {

@@ -24,6 +24,10 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
     providers: [model, view]
 })
 export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
+    /**
+     * true if the task type can use timing panel
+     */
+    public hasTiming: boolean = false;
 
     public activeTab: string = 'T';
     /**
@@ -99,7 +103,8 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
     private setViewParams(){
         let type = this.workflowManagerService.types.find(t => t.id == this.task.tasktype);
         if(type){
-            this.assignable = type.assignable == '1'
+            this.assignable = type.assignable == '1';
+            this.hasTiming = type.has_timing == 1;
         }
     }
 

@@ -34,6 +34,9 @@ export class ServiceSelectQueueButton {
 
 
     get buttonLabel() {
+        if(!!this.model.getField('return_to_servicequeue_id')){
+            return 'LBL_RETURN_TO_QUEUE'
+        }
         return this.actionconfig.label ? this.actionconfig.label : 'LBL_FORWARD';
     }
 
@@ -44,12 +47,16 @@ export class ServiceSelectQueueButton {
         if (resolveDate && resolveDate.isValid && resolveDate.isValid()) {
             return false;
         }
+        if(!!this.model.getField('return_to_servicequeue_id')) return false;
 
         return this.model.isEditing ? false : true;
     }
 
     public execute() {
-        if (this.canChange) {
+        if(!!this.model.getField('return_to_servicequeue_id')){
+            this.modal.openModal('ServiceReturnToQueueModal', true, this.injector);
+        }
+        else if (this.canChange) {
             this.modal.openModal('ServiceSelectQueueModal', true, this.injector);
         }
     }

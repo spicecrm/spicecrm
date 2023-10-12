@@ -40,6 +40,9 @@ import {EmailParentAddressesModal} from "./components/emailparentaddressesmodal"
 import {EmailToLeadModal} from "./components/emailtoleadmodal";
 import {EmailToLeadEmailText} from "./components/emailtoleademailtext";
 import {EmailToLeadButton} from "./components/emailtoleadbutton";
+import {EmailCloneAttachmentsButton} from "./components/emailcloneattachmentsbutton";
+import {EmailCloneAttachmentsModal} from "./components/emailcloneattachmentsmodal";
+import {ModuleSpiceAttachments} from "../../include/spiceattachments/spiceattachments";
 
 @NgModule({
     imports: [
@@ -50,6 +53,7 @@ import {EmailToLeadButton} from "./components/emailtoleadbutton";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        ModuleSpiceAttachments,
     ],
     declarations: [
         EmailToObjectButton,
@@ -79,7 +83,9 @@ import {EmailToLeadButton} from "./components/emailtoleadbutton";
         fieldEmailActivityOpenness,
         EmailToLeadModal,
         EmailToLeadEmailText,
-        EmailToLeadButton
+        EmailToLeadButton,
+        EmailCloneAttachmentsButton,
+        EmailCloneAttachmentsModal
     ]
 })
 export class ModuleEmails {}

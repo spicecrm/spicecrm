@@ -26,13 +26,18 @@ export class fieldServiceQueue extends fieldGeneric {
         if (resolveDate && resolveDate.isValid && resolveDate.isValid()) {
             return false;
         }
+        if(!this.model.getField('servicequeue_id')) return false;
 
-        return this.model.isEditing ? false : true;
+        return !this.model.isEditing;
     }
 
     public selectQueue() {
         if(this.canChange) {
             this.modal.openModal('ServiceSelectQueueModal', true, this.injector);
         }
+    }
+
+    public returnToQueue(){
+        this.modal.openModal('ServiceReturnToQueueModal', true, this.injector);
     }
 }

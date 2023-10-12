@@ -319,7 +319,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      */
     public getWorkflowDefinitions() {
         let loadingModal = this.modal.await('LBL_LOADING');
-        this.backend.getRequest('module/WorkflowDefinitions/' + this.currentModule).subscribe({
+        this.backend.getRequest('module/WorkflowDefinitions/forModule/' + this.currentModule).subscribe({
             next: wfd => {
                 loadingModal.emit(true);
                 this.workflowManagerService.currentModule.workflowDefinitions = wfd;

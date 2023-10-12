@@ -15,7 +15,7 @@
                 <fieldset class="slds-form-element">
                     <div class="slds-grid slds-grid--vertical">
                         <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_AVAILABLE_QUEUES"></system-label></legend>
-                        <system-input-radio *ngFor="let queue of queueList; trackBy: trackByFn" [disabled]="(queue.id === parentqueue_id ? true : false)" [value]="queue.id" name="queue" [(ngModel)]="selectedqueueid">{{queue.name}}</system-input-radio>
+                        <system-input-radio *ngFor="let queue of queueList; trackBy: trackByFn" [disabled]="(queue.id === parentqueue_id)" [value]="queue.id" name="queue" [(ngModel)]="selectedqueueid">{{queue.name}}</system-input-radio>
                     </div>
                 </fieldset>
                 <div *ngIf="displaynote" class="slds-form-element slds-p-top--small">
@@ -28,7 +28,19 @@
         </ng-template>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        <div class="slds-grid slds-grid--align-spread">
+            <system-checkbox [(ngModel)]="returntoqueue">
+                <system-label label="LBL_RETURN_TO_QUEUE"></system-label>
+            </system-checkbox>
+            <div>
+                <button class="slds-button slds-button--neutral" (click)="cancel()">
+                    <system-label label="LBL_CANCEL"></system-label>
+                </button>
+                <button class="slds-button slds-button--brand" (click)="save()">
+                    <system-label label="LBL_SAVE"></system-label>
+                </button>
+            </div>
+        </div>
+
     </system-modal-footer>
 </system-modal>

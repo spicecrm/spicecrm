@@ -492,4 +492,61 @@ class SpiceUIConfLoader
         }
         return ['packages' => $packages, 'versions' => $versions];
     }
+
+    /**
+     * get packages, versions and languages from all repository sources (i.e. reference, release)
+     * returns array with packages and versions
+     * @return array[]
+     * @throws Exception
+     */
+    public function getRepositoryInfo(): array
+    {
+
+        $repositoriesMetadata = ['packages' => [], 'versions' => []];
+
+        $db = DBManagerFactory::getInstance();
+        $repositoryObjects = $db->query("SELECT * FROM sysuipackagerepositories");
+
+        while($repository = $db->fetchByAssoc($repositoryObjects)){
+
+            // prepare url
+            $repositoryUrl = $repository['url'].'/';
+
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            curl_setopt($curl, CURLOPT_URL, $repositoryUrl .'config');
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_ENCODING, "UTF-8");
+            $getJSONcontent = curl_exec($curl);
+
+            // decode content as array
+            $content = json_decode($getJSONcontent, true);
+
+            // loop through content and push the versions to repositoriesMetadata array
+            foreach ($content['versions'] as $version) {
+
+                // check if the version exists in array
+                if(!in_array(['name' => $version['version']], $repositoriesMetadata['versions'])) {
+                    $repositoriesMetadata['versions'][] = ['name' => $version['version']];
+                }
+            }
+
+            // loop through content and push the packages to repositoriesMetadata array
+            foreach ($content['packages'] as $package) {
+
+                // check if the package exists in array
+                if(!in_array(['package' => $package['package']], $repositoriesMetadata['packages'])) {
+                    $repositoriesMetadata['packages'][] = ['package' => $package['package']];
+                }
+            }
+        };
+
+        // sort arrays
+        rsort($repositoriesMetadata['versions']);
+        sort($repositoriesMetadata['packages']);
+
+        return $repositoriesMetadata;
+    }
 }
