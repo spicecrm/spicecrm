@@ -1,0 +1,7 @@
+<th class="slds-tree__item" scope="row">
+    <field-container [fieldname]="fields[0].field" [fieldconfig]="fields[0].fieldconfig" fielddisplayclass="slds-truncate"></field-container>
+</th>
+<td *ngFor="let field of fields|slice:1">
+    <field-container [fieldname]="field.field" [fieldconfig]="field.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
+</td>
+
