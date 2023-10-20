@@ -208,6 +208,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         }
 
+        // set limit to 25 ... since this is retrieved per stage
+        this.modellist.loadlimit = this.componentconfig.limit ? parseInt(this.componentconfig.limit) : 25;
 
         if (_.isEmpty(this.modellist.buckets)) {
 
@@ -220,10 +222,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
             this.modellist.getListData();
 
         }
-
-
-        // set limit to 10 .. since this is retrieved bper stage
-        this.modellist.loadlimit = 25;
 
         // subscribe to changes of the list type
         // since this is a behavior subject this will also fire the initial list load

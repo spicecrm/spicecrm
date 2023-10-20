@@ -52,6 +52,10 @@ export class SalesDocsAddBasics {
      * continues to the next step and closes the modal
      */
     public next() {
+        // set the party type
+        let typeData = this.configuration.getData('salesdoctypes').find( typeRecord => typeRecord.name == this.model.getField('salesdoctype') );
+        this.model.data.salesdocparty =  typeData.salesdocparty ? typeData.salesdocparty : 'C';
+
         this.self.destroy();
         // open a new tab
         this.navigation.addObjectTab({

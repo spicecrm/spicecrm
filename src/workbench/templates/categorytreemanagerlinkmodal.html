@@ -104,7 +104,7 @@
             <button type="button" class="slds-button slds-button--neutral" (click)="close()">
                 <system-label label="LBL_CANCEL"></system-label>
             </button>
-            <button [disabled]="canSave || !canSaveOnInit || categoriesInputArray.length == 0"  type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
+            <button [disabled]="canSave || !canSaveOnInit"  type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
                 <system-label label="LBL_SAVE"></system-label>
             </button>
         </div>
