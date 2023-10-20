@@ -637,14 +637,14 @@ class Email extends SpiceBean
         // if body does NOT contain html elements, add a default style so the UI can display it properly
         // assume charset is UTF-8
         if (empty($this->body) || !$this->containsHTMLElem($this->body)) {
-            $this->body = '<html><head><meta charset="UTF-8"><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
+            $this->body = '<html><head><meta charset="UTF-8"><style type="text/css">body {word-break: break-word; white-space: pre-wrap; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
         }
 
         // check on the charset
         $this->correctCharsetTag();
 
         // get the email addresses
-        $ret->retrieveEmailAddresses();
+       $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
         $ret->time_start = '';
@@ -678,10 +678,8 @@ class Email extends SpiceBean
      * @param array $htmlElements (collection of html elements)
      * @return bool
      */
-    function containsHTMLElem(string|null $emailBody): bool
+    function containsHTMLElem(?string $emailBody): bool
     {
-        if(is_null($emailBody)) return false;
-
         // to of HTML elements check if the body contains one of the html elements.
         $htmlElements = ['</html>','</head>','</style>', '</div>'];
 
@@ -706,16 +704,13 @@ class Email extends SpiceBean
     }
 
     /**
-     * if it's not a meta microsoft generator, it might have a standalone <html> tag
+     * check if we find a head tag
      * @param string $emailBody
      * @return false|int
      */
-    public function containsHtmlTagStandalone(string $emailBody){
-        $pattern = "/<html>/";
-        preg_match($pattern, $emailBody, $matches);
-
-        if(is_array($matches)) return $matches[0];
-        return null;
+    public function containsHeadTag(string $emailBody){
+        $pattern = "/<\/head>/";
+        return preg_match($pattern, $emailBody);
     }
 
     /**
@@ -732,25 +727,16 @@ class Email extends SpiceBean
      * try to correct missing charset tag
      * will be mostly because of microsoft emails renders with microsoft word
      * We check first if there is any charset tag
-     * Then we check on a microsoft word generator and replace the genrator tag with a charset tag
-     * Last try: we inject the charset tag after a <html> tag
+     * Then we inject the charset tag before the end </head> tag
      * @return void
      */
     public function correctCharsetTag(){
         if(!$this->findMetaCharset($this->body)){
-            // check on the meta generator and replace
-            $microsoftTag = $this->containsMicrosoftWordGeneratorHTML($this->body);
-            if($microsoftTag){
-                $microsoftTagReplace = '<meta charset="UTF-8">';
-                $this->body = str_replace($microsoftTag, $microsoftTagReplace, $this->body);
-            } else{
-                // try to set a meta charset tag after the html tag
-                // even if the meta charset tag should within a head tag, charset tag shall be interpretade correctly for the display
-                $htmlTag = $this->containsHtmlTagStandalone($this->body);
-                if($htmlTag){
-                    $htmlTagReplace = '<html><meta charset="UTF-8">';
-                    $this->body = str_replace($htmlTag, $htmlTagReplace, $this->body);
-                }
+            $foundHeadTag = $this->containsHeadTag($this->body);
+            if($foundHeadTag){
+                $searchHtmlTag = '</head>';
+                $htmlTagReplace = '<meta charset="UTF-8"></head>';
+                $this->body = str_replace($searchHtmlTag, $htmlTagReplace, $this->body);
             }
         }
     }
@@ -764,6 +750,8 @@ class Email extends SpiceBean
 				WHERE eam.email_id = '{$this->id}' AND eam.deleted=0";
         $r = $this->db->query($q);
 
+        $bwcFrom = true; // a bwc indicator for a from value
+
         while ($a = $this->db->fetchByAssoc($r)) {
             // PHP >=7.1 triggers an error
             // [] operator not supported by string
@@ -772,6 +760,21 @@ class Email extends SpiceBean
             }
 
             $beanDataArray['recipient_addresses'][] = $a;
+
+            if($a['address_type'] == 'from') $bwcFrom = false;
+        }
+
+        // BWC for imported emails before recipient_addresses functionality
+        if(is_array($beanDataArray) && $bwcFrom && !empty($this->from_addr)){
+            $beanDataArray['recipient_addresses'][] = [
+                'id' => SpiceUtils::createGuid(),
+                'email_address_id' => $this->id,
+                'email_address' => $this->from_addr,
+                'address_type' => 'from',
+                'parent_type' => $this->parent_type,
+                'parent_id' => $this->parent_id,
+                'deleted' => 0
+            ];
         }
 
         return $beanDataArray;
