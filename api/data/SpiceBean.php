@@ -1103,7 +1103,7 @@ class SpiceBean
     function is_AuditEnabled()
     {
         if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'])) {
-            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'];
+            return boolval(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited']);
         } else {
             return false;
         }
