@@ -4,11 +4,12 @@
         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element"
              role="none">
             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
-            <input [disabled]="searching" system-autofocus class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
+            <input system-autofocus class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
         </div>
         <ul role="listbox">
-            <li global-header-search-results-item global-header-search-results-item-nonavigation class="slds-box--border slds-m-vertical--xx-small" *ngFor="let searchResult of searchresults" [hit]="searchResult" (selected)="select(searchResult, $event)"></li>
+            <li global-header-search-results-item global-header-search-results-item-nonavigation [ngClass]="{'slds-is-selected slds-color__background_gray-5': selectedItem == searchResult }" class="slds-box--border slds-m-vertical--xx-small" *ngFor="let searchResult of searchresults; let index = index" [hit]="searchResult" (selected)="select(searchResult, $event)"></li>
         </ul>
+<!--        [class] = "selectedIndex == index ? 'slds-is-selected slds-color__background_gray-5' : 'none' "-->
         <div class="slds-align--absolute-center" style="height: calc(100% - 30px)" *ngIf="!searchTerm && !searching">
             <system-label label="LBL_ENTER_SEARCHTERM"></system-label>
         </div>

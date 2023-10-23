@@ -1,11 +1,12 @@
 /**
  * @module ModuleTelephony
  */
-import {Component, EventEmitter, Input, OnInit, Output, SkipSelf} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, QueryList, SkipSelf, ViewChildren} from '@angular/core';
 
 import {metadata} from "../../../services/metadata.service";
 import {fts} from "../../../services/fts.service";
 import {configurationService} from "../../../services/configuration.service";
+import {GlobalHeaderSearchResultsItem} from "../../../globalcomponents/components/globalheadersearchresultsitem";
 
 /**
  * renders a modal to search for any phone related beans
@@ -15,6 +16,9 @@ import {configurationService} from "../../../services/configuration.service";
     templateUrl: '../templates/telephonycallsearchmodal.html'
 })
 export class TelephonyCallSearchModal implements OnInit {
+    @ViewChildren(GlobalHeaderSearchResultsItem) private resultsItemComponents: QueryList<GlobalHeaderSearchResultsItem>;
+
+    public selectedItem;
 
     /**
      * the reference to the modal itself
@@ -62,6 +66,7 @@ export class TelephonyCallSearchModal implements OnInit {
      */
     public searching: boolean = false;
 
+
     /**
      * an event emitter when a record is selected
      *
@@ -99,7 +104,11 @@ export class TelephonyCallSearchModal implements OnInit {
 
         this.searchresults = [];
         this.searching = true;
-        this.fts.searchByModules({searchterm: this.searchTerm, modules: this.searchmodules, size: 25}).subscribe(rsults => {
+        this.fts.searchByModules({
+            searchterm: this.searchTerm,
+            modules: this.searchmodules,
+            size: 25
+        }).subscribe(rsults => {
             let hits = [];
             for (let moduleSearchresult of this.fts.moduleSearchresults) {
                 hits = hits.concat(moduleSearchresult.data.hits);
@@ -127,24 +136,28 @@ export class TelephonyCallSearchModal implements OnInit {
 
     public search(_e) {
         // handle the key pressed
-        switch (_e.key) {
-            case 'Enter':
-                this.searchTerm = this.searchTermUntrimmed.trim();
-                if (this.searchTerm.length && this.searchTermsValid(this.searchTerm)) {
-                    // if we wait for completion kill the timeout
-                    if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-                    this.doSearch()
-                }
-                break;
-            default:
-                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-                if (this.searchTermsValid(this.searchTermUntrimmed.trim())) {
-                    this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
-                } else if (this.searchTermUntrimmed.trim() == '') {
-                    this.searchTerm = '';
-                    this.searchresults = [];
-                }
-                break;
+        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+        if (this.searchTermsValid(this.searchTermUntrimmed.trim())) {
+            this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
+        } else if (this.searchTermUntrimmed.trim() == '') {
+            this.searchTerm = '';
+            this.searchresults = [];
+        }
+        if (this.searchresults) {
+            let index = this.searchresults.findIndex(i => i == this.selectedItem);
+            switch (_e.key) {
+                case 'Enter':
+                    if (this.searchresults.length == 1) index = 0;
+                    const itemComponent = this.resultsItemComponents.get(index);
+                    this.select(null, itemComponent.model);
+                    break;
+                case 'ArrowDown':
+                    this.selectedItem = this.searchresults[index + 1 >= this.searchresults.length ? 0 : index + 1];
+                    break;
+                case 'ArrowUp':
+                    this.selectedItem = this.searchresults[index - 1 < 0 ? this.searchresults.length - 1 : index - 1];
+                    break;
+            }
         }
     }
 
