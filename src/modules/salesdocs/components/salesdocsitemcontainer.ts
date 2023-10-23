@@ -167,6 +167,13 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
+    /**
+     * returns if the item can be edited
+     */
+    get canEdit(){
+        return !!this.editModal && this.editing;
+    }
+
     get editing() {
         return this.view.isEditMode();
     }
@@ -221,6 +228,9 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
      * opens the edit modal if one is defined in the type
      */
     public editDetails() {
+        // check if we can edit at all
+        if(!this.canEdit) return false
+
         let itemTypes = this.configuration.getData('salesdocitemtypes');
         let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.model.getField('itemtype'));
 
