@@ -136,14 +136,6 @@ export class TelephonyCallSearchModal implements OnInit {
 
     public search(_e) {
         // handle the key pressed
-        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-        if (this.searchTermsValid(this.searchTermUntrimmed.trim())) {
-            this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
-        } else if (this.searchTermUntrimmed.trim() == '') {
-            this.searchTerm = '';
-            this.searchresults = [];
-        }
-        if (this.searchresults) {
             let index = this.searchresults.findIndex(i => i == this.selectedItem);
             switch (_e.key) {
                 case 'Enter':
@@ -157,8 +149,15 @@ export class TelephonyCallSearchModal implements OnInit {
                 case 'ArrowUp':
                     this.selectedItem = this.searchresults[index - 1 < 0 ? this.searchresults.length - 1 : index - 1];
                     break;
+                default:
+                    if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+                    if (this.searchTermsValid(this.searchTermUntrimmed.trim())) {
+                        this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
+                    } else if (this.searchTermUntrimmed.trim() == '') {
+                        this.searchTerm = '';
+                        this.searchresults = [];
+                    }
             }
-        }
     }
 
 
