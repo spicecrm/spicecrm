@@ -130,6 +130,17 @@ $kreporterWhereOperatorTypes = [
         'isnull',
         'isnotempty'
     ],
+    'category' => [
+        'equals',
+        'notequal',
+        'oneof',
+        'oneofnot',
+        'oneofnotornull',
+        'isempty',
+        'isemptyornull',
+        'isnull',
+        'isnotempty'
+    ],
     'id' => [
         'equals',
         'autocomplete',
@@ -245,7 +256,8 @@ $kreporterWhereOperatorAssignments = [
     'datetime' => 'date',
     'datetimecombo' => 'date', 
     //2013-08-07 added fixed field
-    'fixed' => 'varchar'
+    'fixed' => 'varchar',
+    'category' => 'category',
 ];
 
 if (file_exists('custom/modules/KReports/config/KReportWhereOperators.php'))
