@@ -150,6 +150,7 @@ export class ReporterFilterItemCategory implements OnInit, OnChanges {
                 // load all categories which are needed to display the choosen categories...
                 this.backend.getRequest(`configuration/spiceui/core/categorytrees/${this.treeid}/categorytreenodes`).subscribe(
                     (res: any) => {
+                        if(!categories) categories = {};
                         categories[this.treeid] = res;
                         this.buildOptionsFromCategories(res);
                         this.config.setData('categories', categories);
