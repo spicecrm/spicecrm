@@ -27,6 +27,7 @@
     </label>
     <div class="slds-grid slds-grow">
         <div [ngSwitch]="itemType" class="slds-grow">
+            <reporter-filter-item-category *ngSwitchCase="'category'" [field]="'value'" [wherecondition]="whereCondition" [isMultiSelect]="whereCondition.operator.includes('oneof')"></reporter-filter-item-category>
             <reporter-filter-item-enum *ngSwitchCase="'enum' || 'multienum' || 'radioenum'" [field]="'value'" [wherecondition]="whereCondition" [isMultiSelect]="whereCondition.operator.includes('oneof')"></reporter-filter-item-enum>
             <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuekey'" [wherecondition]="whereCondition"></reporter-filter-item-date>
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-text>
