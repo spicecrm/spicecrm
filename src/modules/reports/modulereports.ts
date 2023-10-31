@@ -59,6 +59,7 @@ import {ReporterIntegrationCSVexportButton} from "./components/reporterintegrati
 import {ReporterIntegrationToolsButton} from "./components/reporterintegrationtoolsbutton";
 import {ReporterNewButton} from "./components/reporternewbutton";
 import {ReporterFieldCategoryTree} from "./components/reporterfieldcategorytree";
+import {ReporterFilterItemCategory} from "./components/reporterfilteritemcategory";
 
 /**
  * @ignore
@@ -87,6 +88,7 @@ declare var moment: any;
         ReporterFilterItem,
         ReporterFilterItemText,
         ReporterFilterItemEnum,
+        ReporterFilterItemCategory,
         ReporterFilterItemDate,
         ReporterFilterItemUser,
         ReporterFilterItemParent,
@@ -130,7 +132,8 @@ declare var moment: any;
         ReporterFilterItemUser,
         ReporterFilterItemReference,
         ReporterFilterItemFunction,
-        ReporterFilterItemParent
+        ReporterFilterItemParent,
+        ReporterFilterItemCategory
     ]
 })
 export class ModuleReports {

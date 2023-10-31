@@ -1,0 +1,20 @@
+<div class="slds-form-element">
+    <div *ngIf="!isMultiSelect; else checkboxContainer" class="slds-form-element__control">
+        <div class="slds-select_container">
+            <select class="slds-select" [disabled]="isDisabled" [(ngModel)]="value">
+                <option *ngFor="let categoryNode of categoryNodes" [ngValue]="categoryNode.node_key">{{categoryNode.node_name}}</option>
+            </select>
+        </div>
+    </div>
+    <ng-template #checkboxContainer>
+        <system-checkbox-group [(ngModel)]="value" class="slds-grid slds-wrap">
+            <ng-container *ngFor="let categoryNode of categoryNodes">
+                <div *ngIf="!!categoryNode.node_key" [title]="categoryNode.node_name" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
+                    <system-checkbox-group-checkbox [value]="categoryNode.node_key">
+                        <span class="slds-m-left--xx-small">{{categoryNode.node_name}}</span>
+                    </system-checkbox-group-checkbox>
+                </div>
+            </ng-container>
+        </system-checkbox-group>
+    </ng-template>
+</div>

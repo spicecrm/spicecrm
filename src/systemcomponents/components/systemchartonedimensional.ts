@@ -3,86 +3,88 @@ import {
     ContentChildren,
     EventEmitter,
     Input,
-    NgZone,
+    OnDestroy,
     Output,
     QueryList,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import {libloader} from "../../services/libloader.service";
 import {language} from "../../services/language.service";
-import {GoogleChartTypeOneDimensional} from "../interfaces/systemcomponents.interfaces";
-import {SystemChartOneDimensionalValue} from "./systemchartonedimensionalvalue";
-
-declare var google;
+import {
+    GoogleChartSelectedObject,
+    GoogleChartDataI,
+    GoogleChartOptionLegendI,
+    GoogleChartOptionsI,
+    GoogleChartTypeOneDimensional
+} from "../interfaces/systemcomponents.interfaces";
+import {SystemChartService} from "../services/systemchart.service";
+import {Subscription} from "rxjs";
+import {SystemChartDataRow} from "./systemchartdatarow";
 
 @Component({
     selector: 'system-chart-one-dimensional',
-    templateUrl: '../templates/systemchartonedimensional.html'
+    templateUrl: '../templates/systemchartonedimensional.html',
+    providers: [SystemChartService]
 })
-export class SystemChartOneDimensional {
+export class SystemChartOneDimensional implements OnDestroy, GoogleChartOptionsI {
     /**
      * save if the chart series has data or not
      */
     public hasData = true;
     /**
-     * google wrapper chart instance
-     */
-    public wrapper: { draw: (config: any) => void; };
-    /**
-     * save the high chart instance
-     */
-    public chart: any = {};
-    /**
      * chart container reference
-     * @private
      */
-    @ViewChild('chartContainer', {read: ViewContainerRef}) private chartContainer: ViewContainerRef;
+    @ViewChild('chartContainer', {read: ViewContainerRef}) public chartContainer: ViewContainerRef;
     /**
      * values components
-     * @private
      */
-    @ContentChildren(SystemChartOneDimensionalValue) private values: QueryList<SystemChartOneDimensionalValue>;
+    @ContentChildren(SystemChartDataRow) public rowChildren: QueryList<SystemChartDataRow>;
     /**
      * google chart type
-     * @private
      */
-    @Input() private chartType: GoogleChartTypeOneDimensional;
+    @Input() public chartType: GoogleChartTypeOneDimensional;
     /**
      * google chart legend
-     * @private
      */
-    @Input() private legend: {position: 'right' | 'left' | 'top' | 'bottom' | 'none', alignment?: 'start' | 'center' | 'end'} = {position: 'none'};
+    @Input() public legend: GoogleChartOptionLegendI;
     /**
      * google chart colors
-     * @private
      */
-    @Input() private colors: string[] = ["#862C7E", "#99C21C", "#EA9150", "#81789E", "#353535"];
+    @Input() public colors: string[];
     /**
      * google chart font size
-     * @private
      */
-    @Input() private fontSize: number = 11;
+    @Input() public fontSize: number;
     /**
      * google chart is 3D boolean
-     * @private
      */
-    @Input() private is3D: boolean = false;
+    @Input() public is3D: boolean = false;
     /**
      * emit the index value of the selected SystemChartOneDimensionalValue row
-     * @private
      */
-    @Output() private onValueClick = new EventEmitter<number>();
+    @Output() public onValueClick = new EventEmitter<GoogleChartSelectedObject>();
     /**
      * holds the rows retrieved from the content children
-     * @private
      */
-    private rows: { c: { v: string | number }[] }[] = [];
+    public data: GoogleChartDataI;
+    /**
+     * holds the rxjs subscriptions
+     */
+    public subscriptions = new Subscription();
 
+    constructor(public chartService: SystemChartService, public language: language) {
+    }
 
-    constructor(private libLoader: libloader,
-                private zone: NgZone,
-                private language: language) {
+    /**
+     * config object to be passed to the service
+     */
+    get options(): GoogleChartOptionsI {
+        return {
+            legend: this.legend,
+            colors: this.colors,
+            fontSize: this.fontSize,
+            is3D: this.is3D,
+        };
     }
 
     /**
@@ -92,110 +94,66 @@ export class SystemChartOneDimensional {
         this.loadChart();
     }
 
+    /**
+     * load rows from content children
+     */
     public ngAfterContentInit() {
-        this.loadRowsFromContentChildren();
+        this.loadDataFromContentChildren();
     }
 
     /**
-     * load the Google chart library
+     * unsubscribe from rxjs subscriptions
      */
-    public loadChart() {
-
-        this.libLoader.loadLib('googlecharts').subscribe(
-            () => {
-                this.zone.runOutsideAngular(() => {
-                    google.charts.load('current', {packages: ['corechart']});
-                    google.charts.setOnLoadCallback(() => this.renderChart());
-
-                });
-            });
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     /**
-     * load the rows values from the content children
-     * @private
+     * load rows and columns from content children
      */
-    private loadRowsFromContentChildren() {
-        this.values.forEach(i => this.rows.push({
-            c: [
-                {v: this.language.getLabel(i.label)},
-                {v: Number(i.value)}
-            ]
-        }));
-    }
+    public loadDataFromContentChildren() {
 
-    /**
-     * render chart from data
-     * @private
-     */
-    private renderChart() {
-
-        if (!this.chartContainer) return;
-
-        if (this.rows.length == 0) {
+        if (this.rowChildren.length == 0) {
             return this.hasData = false;
         }
 
-        this.hasData = true;
+        this.data = {
+            rows: [],
+            cols: [{id: 'label', label: 'label', type: 'string'}, {id: 'value', label: 'value', type: 'number'}]
+        };
 
-        const data = this.generateWrapperConfig();
+        if (this.colors && this.chartType == 'Bar') {
+            this.data.cols.push({id: 'style', type: 'string', role: 'style'});
+        }
 
-        this.wrapper = new google.visualization.ChartWrapper(data);
+        let colorIndex = 0;
 
-        this.drawChart();
-        this.addValueClickListener();
+        this.rowChildren.forEach(i => {
+            const entry = {
+                c: [{v: this.language.getLabel(i.label)}, {v: Number(i.value)},]
+            };
 
-    }
+            if (this.colors && this.chartType == 'Bar') {
+                entry.c.push({v: `color: ${this.colors[colorIndex]}`});
+                colorIndex = colorIndex > this.colors.length ? 0 : colorIndex + 1;
+            }
 
-    /**
-     * add select listener on values and emit the selected SystemChartOneDimensionalValue index
-     * @private
-     */
-    private addValueClickListener() {
-        google.visualization.events.addListener(this.wrapper, 'select', (e: {
-            getSelection: () => { row: number; }[];
-        }) => {
-            if (e.getSelection().length == 0) return;
-            this.onValueClick.emit(e.getSelection()[0].row);
+            this.data.rows.push(entry);
         });
     }
 
     /**
-     * call draw on the wrapper to redraw the chart
+     * load chart by the service
      * @private
      */
-    private drawChart() {
-        this.wrapper.draw(this.chartContainer.element.nativeElement);
-    }
+    private loadChart() {
 
-    /**
-     * generate google wrapper config
-     * @private
-     */
-    private generateWrapperConfig() {
-        return {
-            chartType: this.chartType + 'Chart',
-            dataTable: {
-                cols: [
-                    {
-                        id: 'label',
-                        label: 'label',
-                        type: 'string',
-                    },
-                    {
-                        id: 'value',
-                        label: 'value',
-                        type: 'number'
-                    }
-                ],
-                rows: this.rows
-            },
-            options: {
-                legend: this.legend,
-                fontSize: this.fontSize,
-                colors: this.colors,
-                is3D: this.is3D
-            },
-        };
+        this.chartService.loadChart(this.chartContainer.element.nativeElement, this.chartType, this.options, this.data);
+
+        this.subscriptions.add(this.chartService.onValueClick$.subscribe({
+            next: res => this.chartService.zone.run(() =>
+                this.onValueClick.emit(res)
+            )
+        }));
     }
 }
