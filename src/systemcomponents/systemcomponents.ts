@@ -188,8 +188,10 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 import {SystemObjectPreview} from "./components/systemobjectpreview";
 import {SystemInputCronExpression} from "./components/systeminputcronexpression";
 import {SystemChartOneDimensional} from "./components/systemchartonedimensional";
-import {SystemChartOneDimensionalValue} from "./components/systemchartonedimensionalvalue";
+import {SystemChartDataRow} from "./components/systemchartdatarow";
 import {SystemSelectOption} from "./components/systemselectoption";
+import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
+import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
 
 @NgModule({
     imports: [
@@ -366,7 +368,9 @@ import {SystemSelectOption} from "./components/systemselectoption";
         SystemInputSearchTerm,
         SystemInputCronExpression,
         SystemChartOneDimensional,
-        SystemChartOneDimensionalValue,
+        SystemChartDataRow,
+        SystemChartDataColumn,
+        SystemChartMultiDimensional,
         SystemSelectOption
     ],
     exports: [
@@ -519,7 +523,9 @@ import {SystemSelectOption} from "./components/systemselectoption";
         SystemImagePreview,
         SystemInputCronExpression,
         SystemChartOneDimensional,
-        SystemChartOneDimensionalValue,
+        SystemChartDataRow,
+        SystemChartDataColumn,
+        SystemChartMultiDimensional,
         SystemSelectOption
     ]
 })
