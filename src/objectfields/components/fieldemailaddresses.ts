@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -90,8 +90,6 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         // enforce a duplicate check
         this.model.duplicateCheckOnChange([], true);
-
-        this.handleFieldInvalid();
     }
 
     /**
@@ -216,8 +214,6 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         } else {
             this.setCanAdd();
         }
-
-        this.handleFieldInvalid();
     }
 
     /**
@@ -236,15 +232,11 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         this.model.rollbackRemovedRelatedRecords('email_addresses', emailAddresses.unique.map(e => e.id));
         this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
 
-        let invalid = this.handleFieldInvalid();
         this.setEmail1Field(
             emailAddresses.unique.find(e => e.primary_address == '1')
         );
 
-        // if the field is not invalid
-        if(invalid == false) {
-            this.model.duplicateCheckOnChange([], true);
-        }
+        this.model.duplicateCheckOnChange([], true);
 
         this.setCanAdd();
     }
@@ -266,24 +258,6 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         this.emailAddresses.push({...this.inputNewEmailAddress});
         this.cancelAdding();
-    }
-    /**
-     * handle setting/clearing the field message for invalid status
-     * returns ture if invalid, otherwise false
-     *
-     * @private
-     */
-    public handleFieldInvalid() {
-        if (((this.emailAddresses.length == 1 && !!this.emailAddresses[0].email_address) || this.emailAddresses.length > 1) && this.emailAddresses.some(e => e.invalid_email == 1)) {
-            this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
-            return true;
-        } else {
-            if (this.emailAddresses.length == 1) {
-                this.emailAddresses[0].invalid_email = 0;
-            }
-            this.clearFieldError();
-            return false;
-        }
     }
 
     /**
