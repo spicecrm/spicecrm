@@ -290,7 +290,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'name' => 'prospectlistunsubscribes',
             'vname' => 'LBL_PROSPECTLISTS_UNSUBSCRIBES',
             'type' => 'link',
-            'relationship' => 'prospectlistunsubscribes_prospects',
+            'relationship' => 'prospectlists_prospectlistunsubscribes',
             'source' => 'non-db',
         ],
         'prospectlistunsubscribe_id' => [
