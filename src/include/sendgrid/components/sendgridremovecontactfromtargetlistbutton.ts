@@ -8,11 +8,11 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: 'sendgrid-delete-list-button',
-    templateUrl: '../templates/sendgriddeletecontactfromunsubscribelistbutton.html',
+    templateUrl: '../templates/sendgridremovecontactfromtargetlistbutton.html',
 
 })
 
-export class SendgridDeleteContactFromUnsubscribeListButton {
+export class SendgridRemoveContactFromTargetListButton {
     constructor(
         public model: model,
         public language: language,
@@ -38,7 +38,7 @@ export class SendgridDeleteContactFromUnsubscribeListButton {
                 if (answer) {
                     this.relatedmodels.deleteItem(this.model.id);
                     let awaitModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
-                    this.backend.deleteRequest(`channels/emarketing/sendgrid/ProspectListUnsubscribes/${this.relatedmodels.id}/suppressions/delete/${this.model.id}`).subscribe(
+                    this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.model.id}/contacts/${this.relatedmodels.id}`).subscribe(
                         response => {
                             awaitModal.emit(true);
                             if(response) {

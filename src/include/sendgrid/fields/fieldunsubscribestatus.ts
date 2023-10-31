@@ -8,7 +8,8 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'field-unsubscribe-status',
-    templateUrl: '../templates/fieldunsubscribestatus.html'
+    templateUrl: '../templates/fieldunsubscribestatus.html',
+
 })
 
 export class fieldUnsubscribeStatus implements OnInit {

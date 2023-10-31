@@ -17,6 +17,7 @@ import {fieldUnsubscribeStatus} from "./fields/fieldunsubscribestatus";
 import {
     SendgridDeleteContactFromUnsubscribeListButton
 } from "./components/sendgriddeletecontactfromunsubscribelistbutton";
+import {SendgridRemoveContactFromTargetListButton} from "./components/sendgridremovecontactfromtargetlistbutton";
 
 
 @NgModule(
@@ -35,7 +36,8 @@ import {
             SendgridSyncUnsubscribeButton,
             SendgridUnsubscribeDeleteButton,
             fieldUnsubscribeStatus,
-            SendgridDeleteContactFromUnsubscribeListButton
+            SendgridDeleteContactFromUnsubscribeListButton,
+            SendgridRemoveContactFromTargetListButton
         ]
     })
 export class SendGridModule {
