@@ -520,8 +520,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'rel_fields' => [
                     'quantity' => [
                         'map' => 'prospectlists_contacts_quantity'
+                    ],
+                    'unsubscribegroup_status' => [
+                        'map' => 'prospectlists_contacts_unsubscribegroup_status'
                     ]
                 ]
+            ],
+            'prospectlistunsubscribes' => [
+                'name' => 'prospectlistunsubscribes',
+                'vname' => 'LBL_PROSPECTLISTS_UNSUBSCRIBES',
+                'type' => 'link',
+                'relationship' => 'prospectlistunsubscribes_contacts',
+                'source' => 'non-db',
             ],
             'sync_contact' => [
                 'name' => 'sync_contact',
@@ -583,6 +593,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'name' => 'prospectlists_contacts_quantity',
                 'vname' => 'LBL_QUANTITY',
                 'type' => 'varchar',
+                'source' => 'non-db'
+            ],
+            'prospectlists_contacts_unsubscribegroup_status' => [
+                'name' => 'prospectlists_contacts_unsubscribegroup_status',
+                'vname' => 'LBL_UNSUBSCRIBE_STATUS',
+                'type' => 'bool',
                 'source' => 'non-db'
             ],
             'catalogorders' => [
