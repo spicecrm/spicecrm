@@ -1,0 +1,43 @@
+<div class="slds-height_full slds-grid slds-grid--vertical">
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li *ngFor="let chart of charts; let index = index" [class.slds-active]="index == activeChartIdx" class="slds-tabs_default__item slds-sub-tabs__item slds-grid slds-grid_vertical-align-center slds-border--right" role="presentation">
+            <a class="slds-tabs_default__link slds-p-horizontal_xx-small" href="javascript:void(0);" role="tab" (click)="setActiveChart(index)" >
+                <div class="slds-truncate slds-grid slds-grid--vertical-align-center">
+                    <system-utility-icon icon="chart" size="x-small" class="slds-p-right--x-small"/>
+                    <div class="slds-truncate" style="white-space: nowrap;"><system-label [label]="chart.title"/></div>
+                </div>
+            </a>
+        </li>
+    </ul>
+    <div class="slds-grow slds-grid" style="min-height: 0">
+        <div class="slds-height_full slds-size--2-of-3 slds-grid slds-is-relative">
+            <button (click)="setActiveChart(activeChartIdx -1)" [disabled]="activeChartIdx == 0" class="slds-is-absolute slds-button slds-button--icon" style="left: 10px; top: 50%; z-index: 1">
+                <system-button-icon icon="left" size="large"/>
+            </button>
+            <button (click)="setActiveChart(activeChartIdx +1)" [disabled]="activeChartIdx == charts.length - 1" class="slds-is-absolute slds-button slds-button--icon" style="right: 10px; top: 50%; z-index: 1">
+                <system-button-icon icon="right" size="large"/>
+            </button>
+            <div *ngFor="let chart of charts; let index = index" [class.slds-hide]="index != activeChartIdx" class="slds-height_full slds-size--1-of-1 slds-grid">
+                <div class="slds-grid slds-grid--vertical slds-size--1-of-1 slds-border--right">
+                    <workflow-chart [componentConfig]="chart" class="slds-grow" style="min-height: 0"/>
+                </div>
+            </div>
+        </div>
+        <div class="slds-height_full slds-size--1-of-3 slds-border--left slds-grid slds-grid--vertical slds-theme--default">
+            <div class="slds-p-vertical--small slds-p-horizontal--xx-small">
+                <span>{{wms.listData?.list?.length ?? 0}}</span>
+                <system-label class="slds-p-horizontal--xx-small" label="LBL_OF"/>
+                <span>{{wms.listData?.total ?? 0}}</span>
+                <system-label label="LBL_ITEMS" class="slds-p-horizontal--xx-small"/>
+                <span *ngIf="wms.selectedChartObject">
+                        <system-label label="LBL_FOR" class="slds-p-right--xx-small"/>
+                        <span style="font-weight: bold">{{wms.selectedChartObject.label}}</span>
+                    </span>
+            </div>
+            <div #listContainer (scroll)="onScroll(listContainer)" class="slds-scrollable--y slds-grow">
+                <object-table module="Workflows" [fixedHeader]="true" [fieldset_id]="componentConfig.workflowsFieldset" [isLoading]="wms.isLoading" [objects]="wms.listData?.list" class="slds-scrollable--y slds-grow" style="min-height: 0"/>
+                <system-spinner *ngIf="wms.isLoadingMore" class="spice-display-block slds-p-around--medium"></system-spinner>
+            </div>
+        </div>
+    </div>
+</div>
