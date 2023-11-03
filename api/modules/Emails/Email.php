@@ -740,10 +740,15 @@ class Email extends SpiceBean
             } else {
                 $foundHTMLTag = SpiceUtils::containsHTMLElem($this->body, ['html']);
                 if($foundHTMLTag){
-                    // @todo: html may have some attributes. A preg_replace with regex might be better.
-                    $searchHtmlTag = '<html>';
+                    $pattern = "#<\s*?html\b[^>]*>#is";
                     $htmlTagReplace = '<html><meta charset="UTF-8">';
-                    $this->body = str_replace($searchHtmlTag, $htmlTagReplace, $this->body);
+                    if($foundText = preg_replace($pattern, $htmlTagReplace, $this->body)){
+                        $this->body = $foundText;
+                    }
+                } else{
+                    $startTag = '<html><meta charset="UTF-8">';
+                    $endTag = '</html>';
+                    $this->body = $startTag.$this->body.$endTag;
                 }
             }
         }
