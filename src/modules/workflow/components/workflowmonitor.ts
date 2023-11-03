@@ -51,6 +51,7 @@ export class WorkflowMonitor implements AfterViewInit {
         const chartComponent = this.wcs.get(idx);
 
         chartComponent.updateServiceApiConfig();
+        chartComponent.propagateSelectedChartObjectToService();
 
         if (!chartComponent.chartData) {
             chartComponent.loadData();
