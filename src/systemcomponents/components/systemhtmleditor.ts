@@ -31,6 +31,7 @@ import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
 import {configurationService} from "../../services/configuration.service";
 import {SystemRichTextLink} from "./systemrichtextlink";
+import {ObjectModalModuleLookup} from "../../objectcomponents/components/objectmodalmodulelookup";
 
 @Component({
     selector: "system-html-editor",
@@ -185,6 +186,9 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                 break;
             case 'openTemplateVariableHelper':
                 this.openTemplateVariableHelper();
+                break;
+            case 'openTextSnippetHelper':
+                this.openTextSnippetHelper();
                 break;
             default:
                 if (this.isActive && command != '') {
@@ -553,6 +557,24 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                         this.modalOpen = false;
                     });
             });
+    }
+
+    public openTextSnippetHelper() {
+        if (!this.isActive) {
+            return;
+        }
+        this.editorService.saveSelection();
+        this.modalOpen = true;
+
+        this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal: ComponentRef<ObjectModalModuleLookup>) => {
+            selectModal.instance.module = 'TextSnippets';
+            selectModal.instance.multiselect = false;
+            selectModal.instance.selectedItems.subscribe((items) => {
+                this.focusEditor();
+                this.editorService.restoreSelection();
+                this._document.execCommand('insertText', false, items[0].body);
+            });
+        });
     }
 
     public getHtmlFromSelection() {
