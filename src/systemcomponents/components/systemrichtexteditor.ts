@@ -84,7 +84,13 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     @Input() private stylesheetId: string;
 
     public get useTemplateVariableHelper() {
-        return this.model?.module in {OutputTemplates: true, EmailTemplates: true, CampaignTasks: true,LandingPages: true, Mailboxes: true}
+        return this.model?.module in {
+            OutputTemplates: true,
+            EmailTemplates: true,
+            CampaignTasks: true,
+            LandingPages: true,
+            Mailboxes: true
+        }
     }
 
     // for the value accessor
@@ -126,7 +132,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 public viewContainerRef: ViewContainerRef,
                 public configurationService: configurationService,
                 @Optional() public model: model,
-                public helper: helper ) {
+                public helper: helper) {
     }
 
     get expandIcon() {
@@ -139,21 +145,33 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * Check an d remove if necessary
      */
     get innerHeight() {
-        if(this.innerheight && this.innerheight.indexOf('px') > -1){
+        if (this.innerheight && this.innerheight.indexOf('px') > -1) {
             return this.innerheight.substring(0, this.innerheight.indexOf('px'));
         }
         return this.innerheight ? this.innerheight : '250';
     }
 
     get richTextStyle() {
-        return this.isExpanded ? {height: '100vh', resize: 'none', position: 'fixed'} : {height: (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px'};
+        return this.isExpanded ? {
+            height: '100vh',
+            resize: 'none',
+            position: 'fixed'
+        } : {height: (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px'};
     }
 
     /**
      * holds a reference to the ckeditor
      * @private
      */
-    public editor: {execute: (command: string, params?: any) => void, setData: (data: string) => void, getData: () => string, model: any, ui: any, editing: any, enableReadOnlyMode: (val: string) => void};
+    public editor: {
+        execute: (command: string, params?: any) => void,
+        setData: (data: string) => void,
+        getData: () => string,
+        model: any,
+        ui: any,
+        editing: any,
+        enableReadOnlyMode: (val: string) => void
+    };
 
     public customStyleDefinitions: { id: string, display: string, classes: string[], element: string }[] = [];
 
@@ -165,7 +183,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             this.zone.runOutsideAngular(() => {
 
                 ClassicEditor.create(this.ckEditor.element.nativeElement, {
-                    removePlugins: ['Markdown','Title'],
+                    removePlugins: ['Markdown', 'Title'],
                     style: {
                         definitions: this.customStyleDefinitions.map(s => ({
                             name: s.id,
@@ -208,8 +226,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         // hr
                     },
                     autosave: {
-                        save: ( editor ) => {
-                            return this.onChange( editor.getData() );
+                        save: (editor) => {
+                            return this.onChange(editor.getData());
                         }
                     },
                 }).then(res => {
@@ -217,7 +235,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     if (this.readOnly) {
                         this.editor.enableReadOnlyMode('efsjeflksjefloikjse');
                     }
-                    this.editor.editing.view.change(writer=>{
+                    this.editor.editing.view.change(writer => {
                         writer.setStyle('height', '100%', this.editor.editing.view.document.getRoot());
                     });
                     this.editor.setData(this._html);
@@ -234,13 +252,13 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * @private
      */
     private loadCustomStyleDefinitions() {
-        if(this.stylesheetId){
-            this.metadata.getHtmlFormats( this.stylesheetId ).forEach( format => {
+        if (this.stylesheetId) {
+            this.metadata.getHtmlFormats(this.stylesheetId).forEach(format => {
                 this.customStyleDefinitions.push({
                     display: format.name,
                     id: format.id,
                     classes: format.classes ? format.classes.trim().split(/\s+/) : [],
-                    element: format.block ? format.block : ( format.inline ? format.inline : '' )
+                    element: format.block ? format.block : (format.inline ? format.inline : '')
                 })
             });
         }
@@ -364,7 +382,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      *
      * execute headings
      */
-    public heading(command: string){
+    public heading(command: string) {
         this.editor.execute('heading', {value: command});
     }
 
@@ -372,14 +390,15 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      *
      * execute custom style
      */
-    public customStyle(name: string){
-        if ( name ) this.editor.execute('style', name);
+    public customStyle(name: string) {
+        if (name) this.editor.execute('style', name);
     }
+
     /**
      *
      *  table modal
      */
-    public  openTable() {
+    public openTable() {
         this.isShow = !this.isShow;
         this.selectedColumn = this.selectedRow = 0;
     }
@@ -388,7 +407,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      *
      * selecting row and column
      */
-    public selectTable(row,column) {
+    public selectTable(row, column) {
         this.selectedColumn = column;
         this.selectedRow = row;
     }
@@ -396,12 +415,12 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * inserting table
      */
-    public insertTable(){
-        this.editor.execute('insertTable', { rows: this.selectedRow, columns: this.selectedColumn })
+    public insertTable() {
+        this.editor.execute('insertTable', {rows: this.selectedRow, columns: this.selectedColumn})
         this.isShow = false;
     }
 
-    public cancelTable(){
+    public cancelTable() {
         this.isShow = false;
     }
 
@@ -460,7 +479,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * handle inserting image from media file if active or from url directly
      */
     public insertImage() {
-        this.modal.input(this.language.getLabel('LBL_IMAGE_LINK',this.language.getLabel('LBL_IMAGE')))
+        this.modal.input(this.language.getLabel('LBL_IMAGE_LINK', this.language.getLabel('LBL_IMAGE')))
             .subscribe(url => {
                 if (!url) return;
                 this.editor.execute('imageInsert', {source: [{src: url}]});
@@ -476,7 +495,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
                     if (!image) return;
 
-                    const mediaFileConfig: {public_url: string} = this.configurationService.getCapabilityConfig('mediafiles');
+                    const mediaFileConfig: {
+                        public_url: string
+                    } = this.configurationService.getCapabilityConfig('mediafiles');
 
                     if (image.upload) {
                         this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
@@ -498,7 +519,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     public openSourceEditor() {
-        this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector )
+        this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector)
             .pipe(take(1))
             .subscribe(componentRef => {
                 componentRef.instance._html = this.editor.getData();
@@ -634,25 +655,25 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         if (!this.isActive) return;
 
         const options = [
-            { value: 'plaintext', display: 'Plain text' },
-            { value: 'c', display: 'C' },
-            { value: 'cs', display: 'C#' },
-            { value: 'cpp', display: 'C++' },
-            { value: 'css', display: 'CSS' },
-            { value: 'diff', display: 'Diff' },
-            { value: 'html', display: 'HTML' },
-            { value: 'java', display: 'Java' },
-            { value: 'javascript', display: 'JavaScript' },
-            { value: 'php', display: 'PHP' },
-            { value: 'python', display: 'Python' },
-            { value: 'ruby', display: 'Ruby' },
-            { value: 'typescript', display: 'TypeScript' },
-            { value: 'xml', display: 'XML' }
+            {value: 'plaintext', display: 'Plain text'},
+            {value: 'c', display: 'C'},
+            {value: 'cs', display: 'C#'},
+            {value: 'cpp', display: 'C++'},
+            {value: 'css', display: 'CSS'},
+            {value: 'diff', display: 'Diff'},
+            {value: 'html', display: 'HTML'},
+            {value: 'java', display: 'Java'},
+            {value: 'javascript', display: 'JavaScript'},
+            {value: 'php', display: 'PHP'},
+            {value: 'python', display: 'Python'},
+            {value: 'ruby', display: 'Ruby'},
+            {value: 'typescript', display: 'TypeScript'},
+            {value: 'xml', display: 'XML'}
         ];
 
         this.modal.prompt('input', '', 'LBL_SELECT_LANGUAGE', 'shade', undefined, options, true).subscribe(res => {
             if (!res) return;
-            this.editor.execute( 'codeBlock', { language: res, forceValue: true } );
+            this.editor.execute('codeBlock', {language: res, forceValue: true});
         })
 
         // todo check html
@@ -677,17 +698,35 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
         this.modalOpen = true;
 
-        this.modal.openModal('OutputTemplatesVariableHelper', null, this.viewContainerRef.injector )
+        this.modal.openModal('OutputTemplatesVariableHelper', null, this.viewContainerRef.injector)
             .subscribe(modal => {
                 modal.instance.response
                     .pipe(take(1))
-                    .subscribe( text => {
+                    .subscribe(text => {
                         this.modalOpen = false;
 
                         this.editor.model.change(writer => {
-                            this.editor.model.insertContent( writer.createText( `{${text}}` ) );
+                            this.editor.model.insertContent(writer.createText(`{${text}}`));
                         });
                     });
+            });
+    }
+
+    public openTextSnippetHelper() {
+        if (!this.isActive) return;
+        this.modalOpen = true;
+
+        this.modal.openModal('ObjectModalModuleLookup', null, this.viewContainerRef.injector)
+            .subscribe((modal) => {
+                modal.instance.module = 'TextSnippets';
+                modal.instance.multiselect = false;
+                modal.instance.selectedItems.subscribe((items) => {
+                    const text = items[0].body || '';
+
+                    this.editor.model.change(writer => {
+                        this.editor.model.insertContent(writer.createText(`{${text}}`));
+                    });
+                });
             });
     }
 
@@ -695,16 +734,16 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         let range;
         let userSelection = window.getSelection();
         // Get the range:
-        if (userSelection.getRangeAt) range = userSelection.getRangeAt (0);
+        if (userSelection.getRangeAt) range = userSelection.getRangeAt(0);
         else {
             range = document.createRange();
-            range.setStart( userSelection.anchorNode, userSelection.anchorOffset );
-            range.setEnd( userSelection.focusNode, userSelection.focusOffset );
+            range.setStart(userSelection.anchorNode, userSelection.anchorOffset);
+            range.setEnd(userSelection.focusNode, userSelection.focusOffset);
         }
         // And the HTML:
         let clonedSelection = range.cloneContents();
-        let div = document.createElement( 'div' );
-        div.appendChild( clonedSelection );
+        let div = document.createElement('div');
+        div.appendChild(clonedSelection);
         return div.innerHTML;
     }
 
