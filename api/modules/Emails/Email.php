@@ -715,12 +715,24 @@ class Email extends SpiceBean
 
     /**
      * check if there is any html meta tag for a charset
-     * .msg e-mail might lack it
+     * .msg e-mail might lack it or contain an iso charset
+     * In case we find any, we check on utf-8 (for ckeditor)
+     * If it is not uft-8 we set utf-8
      * @return int|false
      */
-    public function findMetaCharset(string $emailBody){
+    public function findMetaCharset(string &$emailBody){
         $pattern = "#<\s*?meta.*?charset=.*?[^>]*>#is";
-        return preg_match($pattern, $emailBody);
+        $found = preg_match($pattern, $emailBody, $matches);
+
+        if($found){
+            // is it utf-8?
+            if (strpos($matches[0], 'utf-8') === false){
+                $replacement = 'meta charset="utf-8"';
+                $emailBody = preg_replace($matches[0], $replacement, $emailBody);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
