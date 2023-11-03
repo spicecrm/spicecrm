@@ -720,7 +720,9 @@ class Email extends SpiceBean
      * If it is not uft-8 we set utf-8
      * @return int|false
      */
-    public function findMetaCharset(string &$emailBody){
+    public function findMetaCharset(?string &$emailBody){
+        if(empty($emailBody)) return false;
+
         $pattern = "#<\s*?meta.*?charset=.*?[^>]*>#is";
         $found = preg_match($pattern, $emailBody, $matches);
 
