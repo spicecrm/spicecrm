@@ -1395,4 +1395,94 @@ class SpiceUtils
         }
         return $addr;
     }
+
+    /**
+     * Trying to tell if the text is html or not
+     * Checks if the $text contains at least one of the given html elements
+     * We check on the end tag for now
+     * @param string|null $text
+     * @return bool
+     */
+    public static function containsHTMLElem(?string $text, $htmlElements = ['html','head','body', 'div']): bool
+    {
+        if(empty($text)) return false;
+
+        foreach($htmlElements as $htmlElement) {
+            if (stripos($text, '</'.$htmlElement.'>') !== false) return true;
+        }
+        return false;
+    }
+
+    /**
+     * 1. Do you have a body tag?
+     *   extract <body> content
+     * 2. remove specific Tags
+     *   <style> <iframe> ...
+     * @param string|null $text
+     * @return mixed|string|null
+     */
+    public static function cleanHtmlBody(?string $text){
+        if(empty($text)) return $text;
+
+        // extract body content
+        $text = self::extractHtmlBodyTagContent($text);
+
+        // remove bad tags
+        $text = self::removeHtmlTagContent($text, ['style', 'iframe'] );
+
+        return $text;
+    }
+
+    /**
+     * returns the content between <body></body>
+     * @param string $text
+     * @return void
+     */
+    public static function extractHtmlBodyTagContent(?string $text){
+        if(empty($text)) return $text;
+        // Do we have a body Tag?
+        if(self::containsHTMLElem($text, ['body'])) {
+            $text = self::extractHtmlTagContent($text, 'body');
+        }
+        return $text;
+    }
+
+    /**
+     * extracts the content within a given single tag
+     * meant for tags with start and end tag like body, head
+     * @param string $text
+     * @param string $htmlTag
+     * @return mixed|string
+     */
+    public static function extractHtmlTagContent(string $text, string $htmlTag){
+        // @todo: adapt pattern for openend tags like img
+        $pattern = '/<'.$htmlTag.'.*?>(.*?)<\/'.$htmlTag.'>/is';
+        if(preg_match($pattern, $text, $match)) {
+            $text = $match[1];
+        }
+        return $text;
+    }
+
+    /**
+     * remove given tags from a text
+     * @param string $text
+     * @param array $htmlTags
+     * @return array|string|string[]|null
+     */
+    public static function removeHtmlTagContent(string $text, array $htmlTags){
+        $patterns = [];
+        foreach($htmlTags as $htmlTag){
+            // @todo: adapt pattern for openend tags like img
+            $patterns[] = "/<$htmlTag.*>(.*)<\/$htmlTag>/is";
+            $replaces[] = "";
+        }
+        if(!empty($patterns)){
+            if($found = preg_replace($patterns, $replaces, $text)){
+                $text = $found;
+            }
+        }
+        return $text;
+    }
+
+
 }
