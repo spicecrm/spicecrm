@@ -718,4 +718,18 @@ class CampaignTask extends SpiceBean
         $res = ['pdfcontent' => $pdfHandler->__toString(), 'inactiveCount' => $inactiveCount];
         return $res;
     }
+
+    /**
+     * deactivate campaign task and delete the unprocessed log entries
+     * @return void
+     * @throws Exception
+     */
+    public function deactivate()
+    {
+        $this->db->query("DELETE FROM campaign_log WHERE campaign_id='$this->campaign_id' AND campaigntask_id='$this->id' AND activity_type IN ('targeted', 'queued')");
+
+        $this->activated = 0;
+        $this->status = 'Inactive';
+        $this->save();
+    }
 }
