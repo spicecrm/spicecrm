@@ -1561,16 +1561,18 @@ class Email extends SpiceBean
                     break;
                 case 'text/html':
                     $body_html = $this->getHTMLOnly($contents[$index]);
-                    switch ($bodyPart['transfer-encoding']) {
-                        case 'quoted-printable':
-                            $this->body = imap_qprint($body_html);
-                            if ($bodyPart['charset'] != 'UTF-8') {
-                                $this->body = mb_convert_encoding($this->body, 'UTF-8', $bodyPart['charset']);
-                            }
-                            break;
-                        default:
-                            $this->body = $body_html;
-                            break;
+                    if(!empty($body_html)) {
+                        switch ($bodyPart['transfer-encoding']) {
+                            case 'quoted-printable':
+                                $this->body = imap_qprint($body_html);
+                                if ($bodyPart['charset'] != 'UTF-8') {
+                                    $this->body = mb_convert_encoding($this->body, 'UTF-8', $bodyPart['charset']);
+                                }
+                                break;
+                            default:
+                                $this->body = $body_html;
+                                break;
+                        }
                     }
                     break;
                 default:
@@ -1595,9 +1597,11 @@ class Email extends SpiceBean
 
     private function getHTMLOnly($string)
     {
-        $pattern = "#<\s*?html\b[^>]*>(.*?)</html\b[^>]*>#s";
-        preg_match($pattern, $string, $matches);
-        return $matches[0];
+        $pattern = "#<\s*?html\b[^>]*>(.*?)</html\b[^>]*>#is";
+        if(preg_match($pattern, $string, $matches)){
+            return $matches[0];
+        }
+        return $string;
     }
 
     /**
