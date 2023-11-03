@@ -719,7 +719,7 @@ class Email extends SpiceBean
      * @return int|false
      */
     public function findMetaCharset(string $emailBody){
-        $pattern = "/<meta.*?charset=.*?>/";
+        $pattern = "#<\s*?meta.*?charset=.*?[^>]*>#is";
         return preg_match($pattern, $emailBody, $matches);
     }
 
