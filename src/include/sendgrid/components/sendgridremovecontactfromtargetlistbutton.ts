@@ -5,9 +5,10 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
-    selector: 'sendgrid-delete-list-button',
+    selector: 'sendgrid-delete-from-targetlist-button',
     templateUrl: '../templates/sendgridremovecontactfromtargetlistbutton.html',
 
 })
@@ -19,15 +20,19 @@ export class SendgridRemoveContactFromTargetListButton {
         public backend: backend,
         public toast: toast,
         public modal: modal,
-        public relatedmodels: relatedmodels
-    ) {}
+        public relatedmodels: relatedmodels,
+        public metadata: metadata
+    ) {
+    }
+
 
     /**
-     * the button disabled if the list type does not match
+     * gets the disabled state for the import button based on the acl rights for the user
      */
-//     get disabled() {
-//         return this.model.getFieldValue('list_type') != 'event';
-//     }
+
+    get disabled(): boolean {
+        return !this.metadata.checkModuleAcl(this.model.module, 'sendgrid_remove');
+    }
 
     /**
      * fires rest call from backend to Sendgrid
@@ -41,7 +46,7 @@ export class SendgridRemoveContactFromTargetListButton {
                     this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.model.id}/contacts/${this.relatedmodels.id}`).subscribe(
                         response => {
                             awaitModal.emit(true);
-                            if(response) {
+                            if (response) {
                                 this.toast.sendToast('LBL_SUCCESS', 'success');
                             } else {
                                 this.toast.sendToast('LBL_ERROR', 'error');
