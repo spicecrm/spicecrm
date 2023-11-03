@@ -31,6 +31,7 @@ import {EventWithCampaignActivateButton} from "./components/eventwithcampaignact
 import {CampaignTaskTargetsManager} from "./components/campaigntasktargetsmanager";
 import {CampaignTaskTargetsManagerButton} from "./components/campaigntasktargetsmanagerbutton";
 import {CampaignTaskTargetsManagerDetails} from "./components/campaigntasktargetsmanagerdetail";
+import {CampaignDeactivateButton} from "./components/campaigndeactivatebutton";
 
 @NgModule({
     imports: [
@@ -62,6 +63,7 @@ import {CampaignTaskTargetsManagerDetails} from "./components/campaigntasktarget
         EventRegistrationModalList,
         EventRegistrationModalType,
         EventWithCampaignActivateButton,
+        CampaignDeactivateButton
     ]
 })
 export class ModuleCampaigns {}
