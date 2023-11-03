@@ -533,6 +533,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'relationship' => 'prospectlistunsubscribes_contacts',
                 'source' => 'non-db',
             ],
+            'optout_sendgrid' => [
+                'name' => 'optout_sendgrid',
+                'vname' => 'LBL_OPTOUT_SENDGRID',
+                'type' => 'bool',
+            ],
             'sync_contact' => [
                 'name' => 'sync_contact',
                 'vname' => 'LBL_SYNC_CONTACT',
