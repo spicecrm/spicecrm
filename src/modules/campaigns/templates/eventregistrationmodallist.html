@@ -4,7 +4,7 @@
         <tr object-list-header [showSelectColumn]="multiselect" [showRowActionMenu]="false"></tr>
         </thead>
         <tbody>
-        <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listItem]="listItem" [showActionMenu]="false" [rowselect]="multiselect" [displaylinks]="false" class="slds-hint-parent slds-p-horizontal--x-small" (click)="clickRow($event, listItem)"></tr>
+        <tr object-list-item *ngFor="let listItem of modellist.listData.list; let i = index" [listItem]="listItem" [showActionMenu]="false" [rowselect]="true" [displaylinks]="false" class="slds-hint-parent slds-p-horizontal--x-small" (click)="clickRow($event, listItem)"></tr>
         </tbody>
         <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect" [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>
     </table>
