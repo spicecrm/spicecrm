@@ -577,6 +577,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                 this.focusEditor();
                 this.editorService.restoreSelection();
                 this._document.execCommand('insertText', false, items[0].body);
+                this.modalOpen = false;
             });
         });
     }
