@@ -6,6 +6,7 @@ import {
     GoogleChartTypeMultiDimensional
 } from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 import {
+    SelectedChartObject,
     WorkflowChartApiConfig,
     WorkflowChartComponentConfigI,
     WorkflowChartDataI,
@@ -47,6 +48,10 @@ export class WorkflowChart implements OnInit, OnChanges {
      * optional selected id to be passed to the chart method
      */
     public selectedDefinitionId: string;
+    /**
+     * holds the selected chart data
+     */
+    public selectedChartObject: SelectedChartObject;
     /**
      * emit the index value of the selected SystemChartOneDimensionalValue row
      */
@@ -195,11 +200,19 @@ export class WorkflowChart implements OnInit, OnChanges {
     public setSelectedObject(selectedObject: GoogleChartSelectedObject) {
 
         if (this.wms) {
-            this.wms.selectedChartObject = this.generateSelectionObject(selectedObject);
+            this.selectedChartObject = this.generateSelectionObject(selectedObject);
+            this.wms.selectedChartObject = this.selectedChartObject;
             this.wms.loadListData();
         }
 
         this.onValueClick.emit(selectedObject);
+    }
+
+    /**
+     * propagate the selected chart object to the service in case of switching between the charts
+     */
+    public propagateSelectedChartObjectToService() {
+        this.wms.selectedChartObject = this.selectedChartObject;
     }
 
     /**
