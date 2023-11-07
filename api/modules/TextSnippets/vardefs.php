@@ -5,7 +5,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
 SpiceDictionaryHandler::getInstance()->dictionary['TextSnippet'] = [
-    'table' => 'text_snippets',
+    'table' => 'textsnippets',
     'comment' => 'TextSnippets Module',
     'fields' => [
         'for_bean' => [
@@ -22,19 +22,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['TextSnippet'] = [
             'type' => 'longhtml',
             'comment' => 'HTML formatted text snippet body to be used in resulting email'
         ],
-    ],
-    'indices' => [
-        [
-            'name' => 'idx_text_snippet_template_name',
-            'type' => 'index',
-            'fields' => ['name']
+        'language' => [
+            'name' => 'language',
+            'vname' => 'LBL_LANGUAGE',
+            'type' => 'language',
+            'dbtype' => 'varchar',
+            'len' => 10,
+            'required' => true,
+            'comment' => 'Language used by the template'
         ],
-        [
-            'name' => 'idx_text_snippet_template_forbean',
-            'type' => 'index',
-            'fields' => ['for_bean']
-        ]
-    ],
+    ]
 ];
 
 VardefManager::createVardef('TextSnippets', 'TextSnippet', ['default', 'assignable']);

@@ -18,37 +18,27 @@ $RESTManager->registerExtension('textsnippets', '1.0');
 $routes = [
     [
         'method' => 'get',
-        'route' => '/module/TextSnippets/{modulename}/load',
+        'route' => '/module/TextSnippets/{id}/liveCompile/{forBean}',
         'class' => TextSnippetsController::class,
-        'function' => 'loadTextSnippets',
-        'description' => 'loads text snippets for specified module',
+        'function' => 'liveCompile',
+        'description' => 'live compile text snippet',
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
-            'parentmodule' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'name of parent module',
-                'example' => 'Accounts',
+            'model_data' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_OBJECT,
+                'description' => 'model data to be parsed',
+                'example' => '{first_name: someone}',
                 'required' => true
-            ]
-        ]
-    ],
-    [
-        'method' => 'get',
-        'route' => '/module/TextSnippets/{id}/parse/{parentmodule}/{parentid}',
-        'class' => TextSnippetsController::class,
-        'function' => 'formatTextSnippet',
-        'description' => 'formats the text snippet',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
-        'parameters' => [
-            'parentmodule' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'name of parent module',
+            ],
+            'module' => [
+                'in' => 'query',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'module name to be parsed',
                 'example' => 'Accounts',
                 'required' => true
             ],
-            'parentid' => [
+            'id' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_GUID,
                 'description' => 'if of parent bean',
@@ -56,46 +46,7 @@ $routes = [
                 'required' => true
             ]
         ]
-    ],
-    [
-        'method' => 'post',
-        'route' => '/module/TextSnippets/{id}/livecompile/{parentmodule}/{parentid}',
-        'class' => TextSnippetsController::class,
-        'function' => 'getTextSnippet',
-        'description' => 'gets the body of an email',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
-        'parameters' => [
-            'parentmodule' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'name of parent module',
-                'example' => 'Accounts',
-                'required' => true
-            ],
-            'parentid' => [
-                'in' => 'path',
-                'type' => ValidationMiddleware::TYPE_GUID,
-                'description' => 'if of parent bean',
-                'example' => '2816ba5c-97e7-11eb-8c42-00fffe0c4f07',
-                'required' => true
-            ],
-            'html' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'html string',
-                'example' => '',
-                'required' => true
-            ],
-            'field' => [
-                'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_STRING,
-                'description' => 'html field',
-                'example' => '',
-                'required' => false
-            ]
-        ]
-    ],
-
+    ]
 ];
 $RESTManager->registerRoutes($routes);
 
