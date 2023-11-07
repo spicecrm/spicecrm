@@ -6,7 +6,6 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\TextSnippets\TextSnippet;
 
 class TextSnippetsController
@@ -27,7 +26,6 @@ class TextSnippetsController
         $modelData = json_decode($params['bean_data']);
 
         $bean = BeanFactory::getBean($params['module']);
-        $bean->id = SpiceUtils::createGuid();
 
         foreach ($modelData as $field => $value) {
             $bean->$field = $value;
