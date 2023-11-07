@@ -5,7 +5,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
 SpiceDictionaryHandler::getInstance()->dictionary['TextSnippet'] = [
-    'table' => 'textsnippets',
+    'table' => 'text_snippets',
     'comment' => 'TextSnippets Module',
     'fields' => [
         'for_bean' => [
