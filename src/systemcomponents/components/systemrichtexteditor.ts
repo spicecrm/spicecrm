@@ -95,13 +95,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     }
 
     public get useTextSnippetHelper() {
-        return this.model?.module in {
-            OutputTemplates: true,
-            EmailTemplates: true,
-            CampaignTasks: true,
-            LandingPages: true,
-            Mailboxes: true
-        }
+        return this.metadata.checkModuleAcl('TextSnippets', 'list') && this.metadata.checkModuleAcl('TextSnippets', 'view');
     }
 
     // for the value accessor
@@ -179,6 +173,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         setData: (data: string) => void,
         getData: () => string,
         model: any,
+        data: any,
         ui: any,
         editing: any,
         enableReadOnlyMode: (val: string) => void
@@ -732,11 +727,23 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 modal.instance.module = 'TextSnippets';
                 modal.instance.multiselect = false;
                 modal.instance.selectedItems.subscribe((items) => {
-                    const text = items[0].body || '';
 
-                    this.editor.model.change(writer => {
-                        this.editor.model.insertContent(writer.createText(`{${text}}`));
-                    });
+                    const params = !this.model ? null : {
+                        module: this.model.module,
+                        bean_data: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
+                    };
+
+                    this.model.backend.getRequest(`module/TextSnippets/${items[0].id}/liveCompile`, params).subscribe({
+                        next: res => {
+                            this.editor.model.change(writer => {
+                                const ckHtmlContent = this.editor.data.htmlProcessor.toView(res.html);
+                                this.editor.model.insertContent(ckHtmlContent);
+                            });
+                        },
+                        error: () => {
+                            this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                        }
+                    })
                 });
             });
     }

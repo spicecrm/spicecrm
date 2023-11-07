@@ -55,61 +55,21 @@ use SpiceCRM\includes\utils\SpiceUtils;
 // TextSnippet is used to store text snippets information.
 class TextSnippet extends SpiceBean
 {
-
     /**
-     * List of IDs of possible parent templates (to prevent recursions).
-     * @var array
+     * parse text snippet by the compiler
+     * @param SpiceBean $bean
+     * @param array|null $additionalValues
+     * @param array $additionalBeans
+     * @return string
+     * @throws Exception
      */
-    public array $idsOfParentTemplates = [];
-
-// not needed, unless something is done from within the constructor
-//    function __construct()
-//    {
-//        parent::__construct();
-//    }
-
-    function parse($bean, $additionalValues = null, $additionalBeans = [])
+    function parse(SpiceBean $bean, array $additionalValues = null, array $additionalBeans = [])
     {
         global $app_list_strings;
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
-        $retArray = [
-            'body' => $this->parseHTMLTextField('body', $bean, $additionalValues, $additionalBeans),
-        ];
-
-        return $this->callContentMethod($retArray);
-    }
-
-    /**
-     * call the content method and return the adjusted html content by the method
-     * @param array $retArray
-     * @return mixed
-     */
-    private function callContentMethod(array $retArray)
-    {
-        if (empty($this->content_method)) return $retArray;
-
-        $classMethod = SpiceUtils::loadExecutionClassMethod($this->content_method);
-
-        if (!$classMethod) return $retArray;
-
-        return $classMethod->class->{$classMethod->method}($this, $retArray);
-    }
-
-    /**
-     * parses a text snippet and returns html
-     * @param $field
-     * @param $parentBean
-     * @param $additionalValues
-     * @param array $additionalBeans
-     * @return string
-     */
-    public function parseHTMLTextField($field, $parentBean = null, $additionalValues = null, array $additionalBeans = []): string
-    {
         $templateCompiler = new Compiler($this);
-        $templateCompiler->idsOfParentTemplates = array_merge($this->idsOfParentTemplates, [$this->id]);
-        $html = $templateCompiler->compile($this->$field, $parentBean, $this->language, $additionalValues, $additionalBeans);
-        return html_entity_decode($html);
+        return $templateCompiler->compile($this->body, $bean, $this->language, $additionalValues, $additionalBeans);
     }
 }
 
