@@ -1,5 +1,5 @@
 /**
- * @module ModuleCampaigns
+ * @module ModuleEvents
  */
 import {Component, EventEmitter, Injector, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
