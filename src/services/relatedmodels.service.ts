@@ -250,6 +250,9 @@ export class relatedmodels implements OnDestroy {
                 }
 
                 break;
+            case "relatedmodels.reload":
+                this.getData(true);
+                break;
         }
     }
 

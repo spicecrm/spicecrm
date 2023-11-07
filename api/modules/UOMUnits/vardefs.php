@@ -108,6 +108,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['UOMUnit'] = [
         ],
     ],
 	'indices' => [
+        ['name' => 'idx_uomunits_del', 'type' => 'index', 'fields' => ['deleted']]
     ]
 ];
 
