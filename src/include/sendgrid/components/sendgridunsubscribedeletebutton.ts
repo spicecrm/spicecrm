@@ -4,6 +4,7 @@ import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modal} from "../../../services/modal.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'sendgrid-unsubscribe-delete-list-button',
@@ -16,15 +17,18 @@ export class SendgridUnsubscribeDeleteButton {
         public language: language,
         public backend: backend,
         public toast: toast,
-        public modal: modal
+        public modal: modal,
+        public metadata:metadata
     ) {}
 
     /**
-     * the button disabled if the list type does not match
+     * gets the disabled state for the import button based on the acl rights for the user
      */
-//     get disabled() {
-//         return this.model.getFieldValue('list_type') != 'event';
-//     }
+
+    get disabled(): boolean {
+        return !this.metadata.checkModuleAcl(this.model.module, 'sendgrid_delete');
+    }
+
 
     /**
      * fires rest call from backend to Sendgrid

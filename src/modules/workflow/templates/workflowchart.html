@@ -1,0 +1,45 @@
+<div class="slds-grid slds-grid--vertical slds-height_full slds-theme--default">
+    <h2 class="slds-p-around--x-small slds-border--bottom slds-page-header__title slds-theme--default slds-grid--align-spread slds-grid">
+        <system-label [label]="componentConfig.title"/>
+        <button (click)="loadData()" class="slds-button slds-button--icon slds-p-bottom--x-small">
+            <system-button-icon icon="refresh" />
+        </button>
+    </h2>
+    <system-select *ngIf="componentConfig.onlySingleDefinition" [idOnly]="true" [(ngModel)]="selectedDefinitionId" (ngModelChange)="onSelectedDefinitionIdChange()" class="slds-m-around--xx-small">
+        <system-select-option *ngFor="let item of workflowDefinitions" [display]="item.name" [value]="item.id" />
+    </system-select>
+    <div *ngIf="chartData?.data && !isLoading" class="slds-grow" style="min-height: 0">
+        <system-chart-one-dimensional *ngIf="!chartData.config?.isMulti; else multiContainer" (onValueClick)="setSelectedObject($event)" [chartType]="componentConfig.chartType" [legend]="componentConfig.legend" [is3D]="componentConfig.is3D" [colors]="componentConfig.colors" [fontSize]="componentConfig.fontSize">
+            <system-chart-data-row *ngFor="let entry of chartData.data" [label]="entry.label" [value]="entry.value"/>
+        </system-chart-one-dimensional>
+        <ng-template #multiContainer>
+            <system-chart-multi-dimensional (onValueClick)="setSelectedObject($event)" [chartType]="multiChartType" [cols]="chartData.cols" [isStacked]="componentConfig.isStacked" [legend]="componentConfig.legend" [is3D]="componentConfig.is3D" [colors]="componentConfig.colors" [fontSize]="componentConfig.fontSize">
+                <system-chart-data-column *ngFor="let column of chartData.data" [value]="column.value">
+                    <system-chart-data-row *ngFor="let row of column.rows" [label]="row.label" [value]="row.value"/>
+                </system-chart-data-column>
+            </system-chart-multi-dimensional>
+        </ng-template>
+    </div>
+    <div *ngIf="isLoading" class="slds-p-around--xx-large slds-align--absolute-center slds-theme--default slds-grow slds-size--1-of-1" style="min-height: 0">
+        <div class="slds-size--1-of-1 slds-p-horizontal--xx-large">
+            <system-stencil class="slds-p-around--small"></system-stencil>
+            <system-stencil class="slds-p-around--small"></system-stencil>
+            <system-stencil class="slds-p-around--small"></system-stencil>
+            <system-stencil class="slds-p-around--small"></system-stencil>
+            <system-stencil class="slds-p-around--small"></system-stencil>
+            <system-stencil class="slds-p-around--small"></system-stencil>
+        </div>
+    </div>
+    <div *ngIf="!isLoading && !chartData?.data" class="slds-grow" style="min-height: 0">
+        <div class="slds-size--1-of-1 slds-align_absolute-center slds-theme--default slds-height_full">
+            <system-illustration-no-data *ngIf="workflowDefinitions.length == 0 || !!selectedDefinitionId; else makeSelection">
+                <system-label label="LBL_NO_DATA"></system-label>
+            </system-illustration-no-data>
+            <ng-template #makeSelection>
+                <system-illustration-no-records>
+                    <system-label label="LBL_MAKE_SELECTION"></system-label>
+                </system-illustration-no-records>
+            </ng-template>
+        </div>
+    </div>
+</div>

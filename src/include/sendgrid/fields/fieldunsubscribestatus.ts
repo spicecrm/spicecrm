@@ -8,7 +8,8 @@ import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'field-unsubscribe-status',
-    templateUrl: '../templates/fieldunsubscribestatus.html'
+    templateUrl: '../templates/fieldunsubscribestatus.html',
+
 })
 
 export class fieldUnsubscribeStatus implements OnInit {
@@ -25,35 +26,37 @@ export class fieldUnsubscribeStatus implements OnInit {
         public toast: toast,
         public modelutilities: modelutilities,
         public configurationService:configurationService,
-        public cdRef: ChangeDetectorRef
+        public cdRef: ChangeDetectorRef,
+        public parent: model
     ) {
 
     }
 
-    ngOnInit() {
+
+    public ngOnInit() {
         if(this.model.getField('prospectlists_contacts_unsubscribegroup_status')==0){
         this.subscribed = true;
         }
         else{
             this.subscribed = false;
         }
-        // this.subscribed = this.model.getField('prospectlists_contacts_unsubscribegroup_status');
+       this.setOptedOut();
+
+    }
+    public setOptedOut(){
+        this.model.parentmodel = this.relatedmodels.model;
+        //this can unsubscribe from all lists if opted out
+        // if(this.disabled()==true){
+        //     this.subscribed = false;
+        //     this.execute();
+        // }
+    }
+    public disabled(){
+        if(this.model.parentmodel.getField('optout_sendgrid')==1){
+            return true;
+        }
     }
 
-    // public execute() {
-    //     this.model.setField('prospectlists_contacts_unsubscribegroup_status', this.subscribed);
-    //
-    //     let changedData: any = this.model.getDirtyFields();
-    //
-    //     changedData.prospectlists_contacts_unsubscribegroup_status = this.model.getField('prospectlists_contacts_unsubscribegroup_status');
-    //     changedData.id = this.model.id;
-    //
-    //     // save related model
-    //     this.relatedmodels.setItem(changedData);
-    //     this.model.save(true).subscribe(success=>
-    //         this.data.emit(changedData)
-    //     );
-    // }
     public execute(){
             this.unsubscribed = this.subscribed == false ? 1 : 0;
 
@@ -72,7 +75,7 @@ export class fieldUnsubscribeStatus implements OnInit {
             if(response) {
                 this.toast.sendToast('LBL_SUCCESS', 'success');
             } else {
-                // this.toast.sendToast('LBL_ERROR', 'error');
+                this.toast.sendToast('LBL_ERROR', 'error');
             }
         })
     }

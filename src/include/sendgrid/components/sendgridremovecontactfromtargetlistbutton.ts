@@ -8,12 +8,12 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 import {metadata} from "../../../services/metadata.service";
 
 @Component({
-    selector: 'sendgrid-delete-from-unsubscribelist-button',
-    templateUrl: '../templates/sendgriddeletecontactfromunsubscribelistbutton.html',
-    // providers:[relatedmodels]
+    selector: 'sendgrid-delete-from-targetlist-button',
+    templateUrl: '../templates/sendgridremovecontactfromtargetlistbutton.html',
+
 })
 
-export class SendgridDeleteContactFromUnsubscribeListButton {
+export class SendgridRemoveContactFromTargetListButton {
     constructor(
         public model: model,
         public language: language,
@@ -22,7 +22,9 @@ export class SendgridDeleteContactFromUnsubscribeListButton {
         public modal: modal,
         public relatedmodels: relatedmodels,
         public metadata: metadata
-    ) {}
+    ) {
+    }
+
 
     /**
      * gets the disabled state for the import button based on the acl rights for the user
@@ -41,10 +43,10 @@ export class SendgridDeleteContactFromUnsubscribeListButton {
                 if (answer) {
                     this.relatedmodels.deleteItem(this.model.id);
                     let awaitModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
-                    this.backend.deleteRequest(`channels/emarketing/sendgrid/ProspectListUnsubscribes/${this.relatedmodels.id}/suppressions/delete/${this.model.id}`).subscribe(
+                    this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.model.id}/contacts/${this.relatedmodels.id}`).subscribe(
                         response => {
                             awaitModal.emit(true);
-                            if(response) {
+                            if (response) {
                                 this.toast.sendToast('LBL_SUCCESS', 'success');
                             } else {
                                 this.toast.sendToast('LBL_ERROR', 'error');

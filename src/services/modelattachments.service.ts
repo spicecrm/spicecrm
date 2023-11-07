@@ -2,7 +2,7 @@
  * @module services
  */
 import {Injectable, OnDestroy} from "@angular/core";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable, Subject, Subscription} from "rxjs";
 
 import {configurationService} from "./configuration.service";
 import {session} from "./session.service";
@@ -62,6 +62,8 @@ export class modelattachments implements OnDestroy {
      */
     public loaded$: BehaviorSubject<boolean>;
 
+    public subscriptions: Subscription = new Subscription();
+
     constructor(
         public backend: backend,
         public configurationService: configurationService,
@@ -105,6 +107,13 @@ export class modelattachments implements OnDestroy {
             attachmentcount: this.count,
             reload: true
         });
+
+        // subscribe to the broadcast message
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(message => {
+                this.handleMessage(message);
+            })
+        );
     }
 
     /**
@@ -362,8 +371,9 @@ export class modelattachments implements OnDestroy {
      * @param filecontent
      * @param filename
      * @param filetype
+     * @param systemCategoryId
      */
-    public uploadFileBase64(filecontent: string, filename: string, filetype: string): Observable<any> {
+    public uploadFileBase64(filecontent: string, filename: string, filetype: string, systemCategoryId?: string): Observable<any> {
 
         let retSub = new Subject<any>();
         let maxSize = this.configurationService.getSystemParamater('upload_maxsize');
@@ -386,6 +396,7 @@ export class modelattachments implements OnDestroy {
             thumbnail: '',
             user_id: '1',
             user_name: 'admin',
+            category_ids: systemCategoryId,
             uploadprogress: 0
         };
         this.files.unshift(newfile);
@@ -403,7 +414,8 @@ export class modelattachments implements OnDestroy {
         let fileBody = {
             file: filecontent,
             filename: filename,
-            filemimetype: filetype ? filetype : 'application/octet-stream'
+            filemimetype: filetype ? filetype : 'application/octet-stream',
+            category_ids: newfile.category_ids
         };
 
         // determine the upload URL
@@ -600,5 +612,20 @@ export class modelattachments implements OnDestroy {
 
     public ngOnDestroy() {
         this.backend.cancelPendingRequests([this.httpRequestsRefID]);
+    }
+
+    /**
+     * handle broadcast message data
+     * @param message
+     */
+    public handleMessage(message) {
+        // reload file list
+        switch (message.messagetype) {
+            case 'attachments.uploaded':
+                if (message.messagedata.reload) {
+                    this.files = message.messagedata.uploadedFiles;
+                }
+                break;
+        }
     }
 }

@@ -1,31 +1,41 @@
 /**
  * @module ModuleCampaigns
  */
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
+import {Subscription} from "rxjs";
 
 @Component({
     templateUrl: '../templates/campaigntaskactivatebutton.html',
     selector: "campaign-activate-button",
 })
-export class CampaignTaskActivateButton {
+export class CampaignTaskActivateButton implements OnDestroy {
 
     public activating: boolean = false;
     public disabled: boolean = true;
+    /**
+     * holds the rxjs subscriptions
+     * @private
+     */
+    private subscriptions = new Subscription();
 
     constructor(public language: language, public metadata: metadata, public model: model, public toast: toast, public backend: backend) {
-        this.model.mode$.subscribe(mode => {
-            this.handleDisabled();
-        });
+        this.subscriptions.add(
+            this.model.mode$.subscribe(mode => {
+                this.handleDisabled();
+            })
+        );
 
-        this.model.data$.subscribe(data => {
-            this.handleDisabled();
-        });
+        this.subscriptions.add(
+            this.model.data$.subscribe(data => {
+                this.handleDisabled();
+            })
+        );
     }
 
     /**
@@ -50,7 +60,7 @@ export class CampaignTaskActivateButton {
             return;
         }
 
-        this.disabled = this.model.isEditing || this.model.getField('activated') === true ? true : false;
+        this.disabled = this.model.isEditing || this.model.getField('activated') === true;
     }
 
     public execute() {
@@ -66,10 +76,20 @@ export class CampaignTaskActivateButton {
 
             // send toast and set active
             if (status.success) {
+                this.model.getData();
+                this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'CampaignLog'});
+
                 this.toast.sendToast(this.language.getLabel("LBL_CAMPAIGNTASK_ACTIVATED"));
             } else {
                 this.toast.sendToast(this.language.getLabel('LBL_NO_TARGETS_SELECTED'), 'error');
             }
         });
+    }
+
+    /**
+     * unsubscribe from rxjs subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 }
