@@ -16,16 +16,20 @@ export class EventRegistrationModalList {
 
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) public tablecontent: ViewContainerRef;
 
-    constructor(public language: language, public injector: Injector, public modal: modal, public modellist: modellist) {
+    /**
+     * emits when an item is selected and which items are selected
+     */
+    @Output() public selectedItems: EventEmitter<any> = new EventEmitter<any>();
 
-    }
-
+    /**
+     * contains the selected items
+     */
     public selectedItem: any;
 
     public subscriptions: Subscription = new Subscription();
 
-    public ngOnDestroy(): void {
-        this.subscriptions.unsubscribe();
+    constructor(public language: language, public injector: Injector, public modal: modal, public modellist: modellist) {
+
     }
 
     /**
@@ -44,14 +48,18 @@ export class EventRegistrationModalList {
     public multiselect: boolean = true;
 
     /**
-     * emits when an item is selected and which items are selected
+     * should deliver the full selected items
+     * but this function is not called anywhere
      */
-    @Output() public selectedItems = new EventEmitter<any>();
-
     public selectItems() {
         this.selectedItems.emit(this.modellist.getSelectedItems());
     }
 
+    /**
+     * emit the click with the selected item
+     * @param event
+     * @param item
+     */
     public clickRow(event, item) {
             this.selectedItems.emit([item]);
             // console.log(this.selectedItems[item]);
@@ -66,6 +74,10 @@ export class EventRegistrationModalList {
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
             this.modellist.loadMoreList();
         }
+    }
+
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 
 }

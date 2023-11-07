@@ -1,7 +1,7 @@
 <div class="slds-grid slds-height_full slds-is-relative slds-theme--default" [class.spice-fullscreen]="isFullscreen">
     <div [ngClass]="{'slds-size--7-of-12': !expanded, 'slds-hide': expanded == 'right', 'slds-grow': expanded == 'left'}" class="slds-border--right slds-height_full slds-grid slds-grid--vertical">
         <div class="slds-grid slds-grid--align-end slds-p-right--x-small slds-p-top--xxx-small">
-            <button (click)="copyFromTemplate()" class="slds-button slds-button--icon-bare slds-button--icon">
+            <button (click)="copyFromTemplate()" [disabled]="!view.isEditMode()" class="slds-button slds-button--icon-bare slds-button--icon">
                 <system-button-icon icon="copy" size="small"></system-button-icon>
             </button>
             <button (click)="expand('right')" class="slds-button slds-button--icon-bare slds-button--icon">
