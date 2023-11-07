@@ -18,7 +18,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['TextSnippet'] = [
         ],
         'body' => [
             'name' => 'body',
-            'vname' => 'LBL_TEXT_SNIPPET_BODY',
+            'vname' => 'LBL_BODY',
             'type' => 'longhtml',
             'comment' => 'HTML formatted text snippet body to be used in resulting email'
         ],

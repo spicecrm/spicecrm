@@ -273,7 +273,7 @@
                 </button>
             </li>
         </ul>
-        <ul *ngIf="useTemplateVariableHelper || useTextSnippetHelper" class="slds-button-group-list">
+        <ul *ngIf="useTemplateVariableHelper || useTextSnippet" class="slds-button-group-list">
             <li *ngIf="useTemplateVariableHelper">
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
                         [title]="language.getLabel('LBL_TEMPLATE_VARIABLE_HELPER')"
@@ -281,11 +281,11 @@
                     <system-button-icon icon="variable"></system-button-icon>
                 </button>
             </li>
-            <li *ngIf="useTextSnippetHelper">
+            <li *ngIf="useTextSnippet">
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
-                        [title]="language.getLabel('LBL_TEXT_SNIPPETS_HELPER')"
-                        (click)="openTextSnippetHelper()">
-                    <system-button-icon icon="variable"></system-button-icon>
+                        system-title="LBL_INSERT_TEXT_SNIPPET"
+                        (click)="openTextSnippetModal()">
+                    <system-button-icon icon="quick_text"></system-button-icon>
                 </button>
             </li>
         </ul>

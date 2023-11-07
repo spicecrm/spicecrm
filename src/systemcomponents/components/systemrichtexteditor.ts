@@ -94,7 +94,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         }
     }
 
-    public get useTextSnippetHelper() {
+    public get useTextSnippet() {
         return this.metadata.checkModuleAcl('TextSnippets', 'list') && this.metadata.checkModuleAcl('TextSnippets', 'view');
     }
 
@@ -718,7 +718,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             });
     }
 
-    public openTextSnippetHelper() {
+    public openTextSnippetModal() {
         if (!this.isActive) return;
         this.modalOpen = true;
 
@@ -736,8 +736,9 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     this.model.backend.getRequest(`module/TextSnippets/${items[0].id}/liveCompile`, params).subscribe({
                         next: res => {
                             this.editor.model.change(writer => {
-                                const ckHtmlContent = this.editor.data.htmlProcessor.toView(res.html);
-                                this.editor.model.insertContent(ckHtmlContent);
+                                const viewFragment = this.editor.data.htmlProcessor.toView(res.html);
+                                const modelFragment = this.editor.data.toModel(viewFragment);
+                                this.editor.model.insertContent(modelFragment);
                             });
                         },
                         error: () => {
