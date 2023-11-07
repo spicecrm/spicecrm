@@ -103,6 +103,10 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
         return (this.model?.module === 'LandingPages' || this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks');
     }
 
+    public get useTextSnippetHelper() {
+        return (this.model?.module === 'LandingPages' || this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks');
+    }
+
     get expandIcon() {
         return this.isExpanded ? 'contract_alt' : 'expand_alt';
     }
