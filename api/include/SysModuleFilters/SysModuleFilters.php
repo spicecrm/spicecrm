@@ -339,6 +339,17 @@ class SysModuleFilters
                 } else {
                     return "{$tablename}.{$condition->field} IN ('" . implode("','", $valArray) . "')";
                 }
+            case 'notoneof':
+                $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
+                if ($isMultiEnum) {
+                    $fieldEqual = "{$tablename}.{$condition->field}";
+                    $conditionString = implode(" AND ", array_map(function ($item) use ($fieldEqual) {return "$fieldEqual NOT LIKE '%$item%'";}, $valArray));
+                    return "($conditionString)";
+                } else {
+                    return "{$tablename}.{$condition->field} NOT IN ('" . implode("','", $valArray) . "')";
+                }
             case 'true':
                 return "{$tablename}.{$condition->field} = 1";
             case 'false':
@@ -668,6 +679,21 @@ class SysModuleFilters
                     return ['terms' => [$condition->field . '.raw' => $valArray]];
                 }
                 break;
+            case 'notoneof':
+                if (is_array($condition->filtervalue)) {
+                    $valArray = $condition->filtervalue;
+                } else {
+                    $valArray = explode(',', $condition->filtervalue);
+                }
+
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
+                if ($isMultiEnum) {
+                    $matchArray = array_map(function ($item) use ($condition) {return ['match' => [$condition->field => $item]]; }, $valArray);
+                    return ['bool' => ['must_not' => $matchArray]];
+                } else {
+                    return ['terms' => [$condition->field . '.raw' => $valArray]];
+                }
             case 'true':
                 return ['term' => [$condition->field . '.raw' => 1]];
                 break;
@@ -916,6 +942,15 @@ class SysModuleFilters
                     return false;
                 } else {
                     return array_search($bean->{$condition->field}, $valArray) !== false;
+                }
+            case 'notoneof':
+                $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
+                $isMultiEnum = $bean->field_defs[$condition->field]['type'] == 'multienum';
+                if ($isMultiEnum) {
+                    foreach ($valArray as $val) if (strpos($bean->{$condition->field}, $val) === false) return true;
+                    return false;
+                } else {
+                    return array_search($bean->{$condition->field}, $valArray) === false;
                 }
             case 'true':
                 return $bean->{$condition->field};

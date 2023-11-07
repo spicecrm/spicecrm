@@ -16,6 +16,16 @@ use SpiceCRM\modules\Mailboxes\MailboxLogTrait;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
 
+class DispatchResponse {
+   public bool $result = false;
+
+   public function __construct(bool $result, array $optionalParams = [])
+   {
+       $this->result = $result;
+       foreach ($optionalParams as $property => $value) $this->$property = $value;
+   }
+}
+
 abstract class TransportHandler
 {
     use MailboxLogTrait;
@@ -106,7 +116,7 @@ abstract class TransportHandler
         // set the date sent
         $email->date_sent = $timedate->nowDb();
 
-        return $this->dispatch( $message );
+        return (array) $this->dispatch( $message );
     }
 
     /**
@@ -162,9 +172,9 @@ abstract class TransportHandler
      * Handles the sending of a message that is already in a format needed by a given transport handler.
      *
      * @param $message
-     * @return mixed
+     * @return DispatchResponse
      */
-    abstract protected function dispatch($message);
+    abstract protected function dispatch($message): DispatchResponse;
 
     /**
      * checkConfiguration

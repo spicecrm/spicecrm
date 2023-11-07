@@ -239,6 +239,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_ONEOF',
                 value1: 'multienum'
             }, {
+                operator: 'notoneof',
+                name: 'LBL_NOTONEOF',
+                value1: 'multienum'
+            }, {
                 operator: 'empty',
                 name: 'LBL_OP_ISEMPTY'
             }, {

@@ -1317,6 +1317,9 @@ class SpiceBeanHandler
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
             throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
 
+        // initialize addWhere param
+        $addWhere = '';
+
         // get the bean
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if ($thisBean === false) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
