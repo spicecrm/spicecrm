@@ -62,10 +62,11 @@ class TextSnippet extends SpiceBean
      */
     public array $idsOfParentTemplates = [];
 
-    function __construct()
-    {
-        parent::__construct();
-    }
+// not needed, unless something is done from within the constructor
+//    function __construct()
+//    {
+//        parent::__construct();
+//    }
 
     function parse($bean, $additionalValues = null, $additionalBeans = [])
     {
@@ -81,7 +82,7 @@ class TextSnippet extends SpiceBean
 
     /**
      * call the content method and return the adjusted html content by the method
-     * @param string $html
+     * @param array $retArray
      * @return mixed
      */
     private function callContentMethod(array $retArray)

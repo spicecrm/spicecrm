@@ -93,6 +93,16 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         }
     }
 
+    public get useTextSnippetHelper() {
+        return this.model?.module in {
+            OutputTemplates: true,
+            EmailTemplates: true,
+            CampaignTasks: true,
+            LandingPages: true,
+            Mailboxes: true
+        }
+    }
+
     // for the value accessor
     public onChange: (value: string) => void;
     public onTouched: () => void;
