@@ -28,9 +28,11 @@ export class ObjectTable implements OnInit {
     @Input() public fields = [];
     @Input() public objects = [];
     @Input() public selected_objects: any = [];
+    @Input() public fixedHeader: boolean = false;
 
     @Input("fieldset_id") public fieldset_id: string;
     @Input("module") public module: string;
+    @Input() isLoading: boolean = false;
 
     @Output('selected_objectsChange') public selected_objects$ = new EventEmitter();
     @Input('max-selections') public max_selections = 0;

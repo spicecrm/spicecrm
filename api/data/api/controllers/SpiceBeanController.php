@@ -347,13 +347,15 @@ class SpiceBeanController
     public function getBeanFieldHtmlContent(Request $req, Response $res, array $args): Response
     {
         $bean = BeanFactory::getBean($args['beanName'], $args['beanId']);
+        if (!!$bean) {
+            $content = $bean->{$args['fieldName']};
 
-        $content = $bean->{$args['fieldName']};
-
-        if (method_exists($bean, 'getFieldHtmlContent')) {
-            $content = $bean->getFieldHtmlContent($args['fieldName']);
+            if (method_exists($bean, 'getFieldHtmlContent')) {
+                $content = $bean->getFieldHtmlContent($args['fieldName']);
+            }
+            return $res->withJson(['html' => $content]);
+        } else {
+            return $res->withJson(['success' => false]);
         }
-
-        return $res->withJson(['html' => $content]);
     }
 }

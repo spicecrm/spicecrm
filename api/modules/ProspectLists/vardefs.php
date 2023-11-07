@@ -171,6 +171,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'type' => 'varchar',
             'source' => 'non-db'
         ],
+        'prospectlists_contacts_unsubscribegroup_status' => [
+            'name' => 'prospectlists_contacts_unsubscribegroup_status',
+            'vname' => 'LBL_UNSUBSCRIBE_STATUS',
+            'type' => 'bool',
+            'source' => 'non-db'
+        ],
         'prospects' => [
             'name' => 'prospects',
             'type' => 'link',
@@ -186,6 +192,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'rel_fields' => [
                 'quantity' => [
                     'map' => 'prospectlists_contacts_quantity'
+                ],
+                'unsubscribegroup_status' => [
+                    'map' => 'prospectlists_contacts_unsubscribegroup_status'
                 ]
             ]
         ],
@@ -277,7 +286,35 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'source' => 'non-db',
             'module' => 'EmailSchedules'
         ],
+        'prospectlistunsubscribes' => [
+            'name' => 'prospectlistunsubscribes',
+            'vname' => 'LBL_PROSPECTLISTS_UNSUBSCRIBES',
+            'type' => 'link',
+            'relationship' => 'prospectlists_prospectlistunsubscribes',
+            'source' => 'non-db',
+        ],
+        'prospectlistunsubscribe_id' => [
+            'name' => 'prospectlistunsubscribe_id',
+            'vname' => 'LBL_PROSPECTLIST_UNSUBSCRIBE_ID',
+            'type' => 'varchar',
+            'len' => 36,
+        ],
+        'prospectlistunsubscribe_name' => [
+            'name' => 'prospectlistunsubscribe_name',
+            'rname' => 'name',
+            'id_name' => 'prospectlistunsubscribe_id',
+            'vname' => 'LBL_PROSPECTLISTS_UNSUBSCRIBE',
+            'type' => 'relate',
+            'table' => 'prospectlistunsubscribes',
+            'isnull' => 'true',
+            'module' => 'ProspectListUnsubscribes',
+            'dbType' => 'varchar',
+            'link' => 'prospectlistunsubscribes',
+            'len' => '255',
+            'source' => 'non-db',
+        ],
     ],
+
 
     'indices' => [
         [
@@ -303,6 +340,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'rhs_module' => 'ProspectListFilters',
             'rhs_table' => 'prospect_list_filters',
             'rhs_key' => 'prospectlist_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'prospectlists_prospectlistunsubscribes' => [
+            'lhs_module' => 'ProspectLists',
+            'lhs_table' => 'prospectlists',
+            'lhs_key' => 'id',
+            'rhs_module' => 'ProspectListUnsubscribes',
+            'rhs_table' => 'prospectlistunsubscribes',
+            'rhs_key' => 'prospectlistunsubscribe_id',
             'relationship_type' => 'one-to-many'
         ],
 
