@@ -18,7 +18,7 @@ $RESTManager->registerExtension('textsnippets', '1.0');
 $routes = [
     [
         'method' => 'get',
-        'route' => '/module/TextSnippets/{id}/liveCompile/{forBean}',
+        'route' => '/module/TextSnippets/{id}/liveCompile',
         'class' => TextSnippetsController::class,
         'function' => 'liveCompile',
         'description' => 'live compile text snippet',
