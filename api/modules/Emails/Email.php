@@ -715,12 +715,26 @@ class Email extends SpiceBean
 
     /**
      * check if there is any html meta tag for a charset
-     * .msg e-mail might lack it
+     * .msg e-mail might lack it or contain an iso charset
+     * In case we find any, we check on utf-8 (for ckeditor)
+     * If it is not uft-8 we set utf-8
      * @return int|false
      */
-    public function findMetaCharset(string $emailBody){
-        $pattern = "/(<meta.*charset=.*>)/";
-        return preg_match($pattern, $emailBody, $matches);
+    public function findMetaCharset(?string &$emailBody){
+        if(empty($emailBody)) return false;
+
+        $pattern = "#<\s*?meta.*?charset=.*?[^>]*>#is";
+        $found = preg_match($pattern, $emailBody, $matches);
+
+        if($found){
+            // is it utf-8?
+            if (strpos($matches[0], 'utf-8') === false){
+                $replacement = 'meta charset="utf-8"';
+                $emailBody = preg_replace($matches[0], $replacement, $emailBody);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -737,6 +751,19 @@ class Email extends SpiceBean
                 $searchHtmlTag = '</head>';
                 $htmlTagReplace = '<meta charset="UTF-8"></head>';
                 $this->body = str_replace($searchHtmlTag, $htmlTagReplace, $this->body);
+            } else {
+                $foundHTMLTag = SpiceUtils::containsHTMLElem($this->body, ['html']);
+                if($foundHTMLTag){
+                    $pattern = "#<\s*?html\b[^>]*>#is";
+                    $htmlTagReplace = '<html><meta charset="UTF-8">';
+                    if($foundText = preg_replace($pattern, $htmlTagReplace, $this->body)){
+                        $this->body = $foundText;
+                    }
+                } else{
+                    $startTag = '<html><meta charset="UTF-8">';
+                    $endTag = '</html>';
+                    $this->body = $startTag.$this->body.$endTag;
+                }
             }
         }
     }
@@ -1553,16 +1580,18 @@ class Email extends SpiceBean
                     break;
                 case 'text/html':
                     $body_html = $this->getHTMLOnly($contents[$index]);
-                    switch ($bodyPart['transfer-encoding']) {
-                        case 'quoted-printable':
-                            $this->body = imap_qprint($body_html);
-                            if ($bodyPart['charset'] != 'UTF-8') {
-                                $this->body = mb_convert_encoding($this->body, 'UTF-8', $bodyPart['charset']);
-                            }
-                            break;
-                        default:
-                            $this->body = $body_html;
-                            break;
+                    if(!empty($body_html)) {
+                        switch ($bodyPart['transfer-encoding']) {
+                            case 'quoted-printable':
+                                $this->body = imap_qprint($body_html);
+                                if ($bodyPart['charset'] != 'UTF-8') {
+                                    $this->body = mb_convert_encoding($this->body, 'UTF-8', $bodyPart['charset']);
+                                }
+                                break;
+                            default:
+                                $this->body = $body_html;
+                                break;
+                        }
                     }
                     break;
                 default:
@@ -1587,9 +1616,11 @@ class Email extends SpiceBean
 
     private function getHTMLOnly($string)
     {
-        $pattern = "#<\s*?html\b[^>]*>(.*?)</html\b[^>]*>#s";
-        preg_match($pattern, $string, $matches);
-        return $matches[0];
+        $pattern = "#<\s*?html\b[^>]*>(.*?)</html\b[^>]*>#is";
+        if(preg_match($pattern, $string, $matches)){
+            return $matches[0];
+        }
+        return $string;
     }
 
     /**
