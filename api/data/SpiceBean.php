@@ -1111,7 +1111,7 @@ class SpiceBean
     function is_AuditEnabled()
     {
         if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'])) {
-            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'];
+            return boolval(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited']);
         } else {
             return false;
         }
@@ -1810,13 +1810,12 @@ class SpiceBean
         // Check to see if we have a count query available.
         if (empty(SpiceConfig::getInstance()->config['disable_count_query']) || $toEnd) {
             $count_query = $this->create_list_count_query($query);
-            if (!empty($count_query) && (empty($limit) || $limit == -1)) {
+            if (!empty($count_query) && !empty($limit) && $limit > 0) {
                 // We have a count query.  Run it and get the results.
                 $result = $db->query($count_query, true, "Error running count query for $this->_objectname List: ");
                 $assoc = $db->fetchByAssoc($result);
                 if (!empty($assoc['c'])) {
                     $rows_found = $assoc['c'];
-                    $limit = SpiceConfig::getInstance()->config['list_max_entries_per_page'];
                 }
                 if ($toEnd) {
                     $row_offset = (floor(($rows_found - 1) / $limit)) * $limit;

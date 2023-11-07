@@ -399,6 +399,36 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'vname' => 'LBL_VAT_DETAILS',
             'type' => 'text'
         ],
+        'paymentterms' => [
+            'name' => 'paymentterms',
+            'vname' => 'LBL_PAYMENTTERMS',
+            'type' => 'enum',
+            'len' => 10,
+            'options' => 'salesdocs_paymentterms',
+        ],
+        'billingtype' => [
+            'name' => 'billingtype',
+            'vname' => 'LBL_BILLINGTYPE',
+            'type' => 'enum',
+            'len' => 1,
+            'options' => 'salesdocs_billingtype',
+            'comment' => 'an indicator for the type of automated billing: i for incremental, c for complete, m for monthly'
+        ],
+        'billingmedium' => [
+            'name' => 'billingmedium',
+            'vname' => 'LBL_BILLINGMEDIUM',
+            'type' => 'enum',
+            'len' => 1,
+            'options' => 'salesdocs_billingmedium',
+            'comment' => 'the medium on how the invopice is sent : P for Paper E for email'
+        ],
+        'billingemail' => [
+            'name' => 'billingemail',
+            'vname' => 'LBL_BILLINGEMAIL',
+            'type' => 'varchar',
+            'len' => 255,
+            'comment' => 'the emaila ddress to send invoices to'
+        ],
         'accountkpis' => [
             'name' => 'accountkpis',
             'type' => 'link',

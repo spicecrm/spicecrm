@@ -835,7 +835,7 @@ class Compiler
                         $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
                         break;
                     case 'html':
-                        $value = html_entity_decode($obj->{$part});
+                        $value = SpiceUtils::cleanHtmlBody(html_entity_decode($obj->{$part}));
                         break;
                     case 'image':
                         if ( !empty( $obj->{$part} )) {
@@ -844,7 +844,7 @@ class Compiler
                         break;
                     default:
                         // moved nl2br to only be added when non specific fields are parsed
-                        $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
+                        $value = SpiceUtils::cleanHtmlBody($raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES)));
                         break;
                 }
             }
