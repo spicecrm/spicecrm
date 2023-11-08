@@ -55,6 +55,12 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     public modulefilter: string = '';
 
     /**
+     * an optional bean for modulefilter (parent-bean over the list)
+     * is given to the custom filter methods
+     */
+    public filtercontext: {id?: string, module: string, data?: any};
+
+    /**
      * a relate filter for the modellist
      */
     @Input() public relatefilter: relateFilter;
@@ -111,6 +117,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         // this.model.module = this.module;
         this.modellist.modulefilter = this.modulefilter;
         this.modellist.relatefilter = this.relatefilter;
+        this.modellist.filtercontext = this.filtercontext;
         this.modellist.useCache = false;
         this.modellist.initialize(this.module);
         this.modellist.getListData();
