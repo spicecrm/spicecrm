@@ -20,15 +20,19 @@ class TextSnippetsController
      */
     public function liveCompile(Request $req, Response $res, array $args): Response
     {
-        $params = $req->getQueryParams();
+        $params = $req->getParsedBody();
         /** @var TextSnippet $textSnippet */
         $textSnippet = BeanFactory::getBean("TextSnippets", $args['id']);
-        $modelData = json_decode($params['bean_data']);
 
-        $bean = BeanFactory::getBean($params['module']);
+        $bean = null;
 
-        foreach ($modelData as $field => $value) {
-            $bean->$field = $value;
+        if (!empty($params['bean_data'])) {
+
+            $bean = BeanFactory::getBean($params['module']);
+
+            foreach ($params['bean_data'] as $field => $value) {
+                $bean->$field = $value;
+            }
         }
 
         return $res->withJson(['html' => $textSnippet->parse($bean)]);
