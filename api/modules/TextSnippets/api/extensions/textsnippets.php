@@ -17,7 +17,7 @@ $RESTManager->registerExtension('textsnippets', '1.0');
 
 $routes = [
     [
-        'method' => 'get',
+        'method' => 'post',
         'route' => '/module/TextSnippets/{id}/liveCompile',
         'class' => TextSnippetsController::class,
         'function' => 'liveCompile',
@@ -25,14 +25,14 @@ $routes = [
         'options' => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [
             'model_data' => [
-                'in' => 'query',
+                'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_OBJECT,
                 'description' => 'model data to be parsed',
                 'example' => '{first_name: someone}',
                 'required' => true
             ],
             'module' => [
-                'in' => 'query',
+                'in' => 'body',
                 'type' => ValidationMiddleware::TYPE_MODULE,
                 'description' => 'module name to be parsed',
                 'example' => 'Accounts',

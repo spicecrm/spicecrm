@@ -3,12 +3,9 @@
 namespace SpiceCRM\modules\TextSnippets;
 
 use Exception;
-use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /*********************************************************************************
@@ -57,19 +54,39 @@ class TextSnippet extends SpiceBean
 {
     /**
      * parse text snippet by the compiler
-     * @param SpiceBean $bean
+     * @param SpiceBean|null $bean
      * @param array|null $additionalValues
      * @param array $additionalBeans
      * @return string
      * @throws Exception
      */
-    function parse(SpiceBean $bean, array $additionalValues = null, array $additionalBeans = [])
+    function parse(?SpiceBean $bean, array $additionalValues = null, array $additionalBeans = []): string
     {
         global $app_list_strings;
         $app_list_strings = SpiceUtils::returnAppListStringsLanguage($this->language);
 
         $templateCompiler = new Compiler($this);
-        return $templateCompiler->compile($this->body, $bean, $this->language, $additionalValues, $additionalBeans);
+        return $templateCompiler->compile($this->body, $bean, $this->language, $additionalValues, $additionalBeans, null, true);
+    }
+
+    /**
+     * list filter method to be called for the ObjectModalModuleLookup list results
+     * @param SpiceBean $contextBean
+     * @return array of filter ids
+     * @throws Exception
+     */
+    public function lookupModalListFilter(SpiceBean $contextBean): array
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $query = $db->query("SELECT id FROM textsnippets WHERE (for_bean = '*' OR for_bean = '$contextBean->_module') AND deleted != 1");
+        $ids = [];
+
+        while ($row = $db->fetchByAssoc($query)) {
+            $ids[] = $row['id'];
+        }
+
+        return $ids;
     }
 }
 
