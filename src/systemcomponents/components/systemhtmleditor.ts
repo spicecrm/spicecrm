@@ -99,12 +99,22 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                 public helper: helper) {
     }
 
-    public get useTemplateVariableHelper() {
-        return (this.model?.module === 'LandingPages' || this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks');
+    get useTemplateVariableHelper() {
+        return this.model?.module in {
+            OutputTemplates: true,
+            EmailTemplates: true,
+            CampaignTasks: true,
+            LandingPages: true,
+            Mailboxes: true,
+            TextSnippets: true
+        }
     }
 
-    public get useTextSnippetHelper() {
-        return (this.model?.module === 'LandingPages' || this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks');
+    /**
+     * check the acl view and list access for the text snippets to show/hide button
+     */
+    get useTextSnippet(): boolean {
+        return this.metadata.checkModuleAcl('TextSnippets', 'list') && this.metadata.checkModuleAcl('TextSnippets', 'view');
     }
 
     get expandIcon() {
@@ -190,9 +200,6 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                 break;
             case 'openTemplateVariableHelper':
                 this.openTemplateVariableHelper();
-                break;
-            case 'openTextSnippetHelper':
-                this.openTextSnippetHelper();
                 break;
             default:
                 if (this.isActive && command != '') {
@@ -563,24 +570,51 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
             });
     }
 
-    public openTextSnippetHelper() {
-        if (!this.isActive) {
-            return;
-        }
+    /**
+     * open the text snippet select modal and insert the parsed snippet html
+     */
+    public openTextSnippetModal() {
+        if (!this.isActive) return;
+
         this.editorService.saveSelection();
         this.modalOpen = true;
+        const config = this.metadata.getComponentConfig('SystemHtmlEditor', 'TextSnippets');
 
-        this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal: ComponentRef<ObjectModalModuleLookup>) => {
-            selectModal.instance.module = 'TextSnippets';
-            selectModal.instance.multiselect = false;
-            selectModal.instance.selectedItems.subscribe((items) => {
-                this.focusEditor();
-                this.editorService.restoreSelection();
-                this._document.execCommand('insertText', false, items[0].body);
-                this.modalOpen = false;
+        this.modal.openModal('ObjectModalModuleLookup', null, this.viewContainerRef.injector)
+            .subscribe((modal: ComponentRef<ObjectModalModuleLookup>) => {
+                modal.instance.module = 'TextSnippets';
+                modal.instance.multiselect = false;
+
+                if (this.model) {
+                    modal.instance.modulefilter = config.textSnippetsModuleFilter;
+                    modal.instance.filtercontext = {
+                        module: this.model.module
+                    };
+                }
+
+                modal.instance.selectedItems.subscribe((items) => {
+
+                    this.modalOpen = false;
+
+                    const body = !this.model ? null : {
+                        module: this.model.module,
+                        bean_data: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
+                    };
+
+                    this.model.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body).subscribe({
+                        next: res => {
+                            this.focusEditor();
+                            this.editorService.restoreSelection();
+                            this._document.execCommand('insertHTML', false, res.html);
+                        },
+                        error: () => {
+                            this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                        }
+                    })
+                });
             });
-        });
     }
+
 
     public getHtmlFromSelection() {
         let range;

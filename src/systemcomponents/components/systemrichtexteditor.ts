@@ -4,7 +4,7 @@
 
 // from https://github.com/kolkov/angular-editor
 import {
-    Component,
+    Component, ComponentRef,
     ElementRef,
     EventEmitter,
     forwardRef,
@@ -34,6 +34,7 @@ import {libloader} from "../../services/libloader.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as less from 'less'
 import {configurationService} from "../../services/configuration.service";
+import {ObjectModalModuleLookup} from "../../objectcomponents/components/objectmodalmodulelookup";
 
 declare var ClassicEditor;
 
@@ -84,17 +85,21 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() private stylesheetId: string;
 
-    public get useTemplateVariableHelper() {
+    get useTemplateVariableHelper() {
         return this.model?.module in {
             OutputTemplates: true,
             EmailTemplates: true,
             CampaignTasks: true,
             LandingPages: true,
-            Mailboxes: true
+            Mailboxes: true,
+            TextSnippets: true
         }
     }
 
-    public get useTextSnippet() {
+    /**
+     * check the acl view and list access for the text snippets to show/hide button
+     */
+    get useTextSnippet(): boolean {
         return this.metadata.checkModuleAcl('TextSnippets', 'list') && this.metadata.checkModuleAcl('TextSnippets', 'view');
     }
 
@@ -718,22 +723,37 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             });
     }
 
+    /**
+     * open the text snippet select modal and insert the parsed snippet html
+     */
     public openTextSnippetModal() {
         if (!this.isActive) return;
         this.modalOpen = true;
 
+        const config = this.metadata.getComponentConfig('SystemRichTextEditor', 'TextSnippets');
+
         this.modal.openModal('ObjectModalModuleLookup', null, this.viewContainerRef.injector)
-            .subscribe((modal) => {
+            .subscribe((modal: ComponentRef<ObjectModalModuleLookup>) => {
                 modal.instance.module = 'TextSnippets';
                 modal.instance.multiselect = false;
+
+                if (this.model) {
+                    modal.instance.modulefilter = config.textSnippetsModuleFilter;
+                    modal.instance.filtercontext = {
+                        module: this.model.module
+                    };
+                }
+
                 modal.instance.selectedItems.subscribe((items) => {
 
-                    const params = !this.model ? null : {
+                    this.modalOpen = false;
+
+                    const body = !this.model ? null : {
                         module: this.model.module,
                         bean_data: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
                     };
 
-                    this.model.backend.getRequest(`module/TextSnippets/${items[0].id}/liveCompile`, params).subscribe({
+                    this.model.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body).subscribe({
                         next: res => {
                             this.editor.model.change(writer => {
                                 const viewFragment = this.editor.data.htmlProcessor.toView(res.html);
