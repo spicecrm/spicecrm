@@ -123,6 +123,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
             'table' => 'agreementconditions',
             'source' => 'non-db'
         ],
+        'accounts_oner' => [
+            'name' => 'accounts_oner',
+            'type' => 'link',
+            'relationship' => 'account_agreements',
+            'source' => 'non-db',
+            'vname' => 'LBL_ACCOUNTS_ONER',
+            'module' => 'Accounts',
+            'default' => false,
+            'comment' => 'One-2-many relationship link to Accounts'
+        ],
     ],
     'relationships' => [
         'account_agreements' => [
