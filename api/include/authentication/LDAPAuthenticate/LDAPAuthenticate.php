@@ -209,7 +209,7 @@ class LDAPAuthenticate implements AuthenticatorI
 
     private function ldapConn()
     {
-        if (SpiceUtils::inDeveloperMode()) {
+        if ($this->getLdapDebug()) {
             if (!defined("LDAP_OPT_DIAGNOSTIC_MESSAGE")) {
                 define("LDAP_OPT_DIAGNOSTIC_MESSAGE", 0x0032); // needed for more detailed logging
             }
@@ -618,6 +618,14 @@ class LDAPAuthenticate implements AuthenticatorI
 
     }
 
+    /**
+     * @return boolean
+     */
+    private function getLdapDebug()
+    {
+        if(!isset($this->config['ldap_debug'])) return false;
+        return boolval($this->config['ldap_debug']);
+    }
 
     /**
      * Creates a user with the given User Name and populates fields from ldap
