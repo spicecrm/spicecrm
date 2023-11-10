@@ -68,7 +68,7 @@ $routes = [
                 'in' => 'body',
                 'description' => 'the advanced settings',
                 'type' => ValidationMiddleware::TYPE_ARRAY,
-                'example' => '{"developerMode":true,"stack_trace_errors":null,"dump_slow_queries":null,"log_memory_usage":null,"slow_query_time_msec":null,"upload_maxsize":30000000,"upload_dir":"upload/"}'
+                'example' => '{"stack_trace_errors":1,"dump_slow_queries":null,"log_memory_usage":null,"slow_query_time_msec":null,"upload_maxsize":30000000,"upload_dir":"upload/"}'
             ],
             'logger' => [
                 'in' => 'body',
