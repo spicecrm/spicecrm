@@ -640,19 +640,26 @@ class SpiceUtils
     }
 
     /**
+     * @deprecated in 2023.03.001
      * @return bool
      */
     public static function inDeveloperMode(): bool {
-        return isset(SpiceConfig::getInstance()->config['developerMode'])
-            && SpiceConfig::getInstance()->config['developerMode'] === true;
+        if(self::getStackTrace() > 0)
+            return true;
+        return false;
     }
 
     /**
-     * @return bool
+     * Possible values:
+     * 0 => no debug
+     * 1 => return main error information
+     * 2 => return full stack trace
+     * @return int
      */
-    public static function stackTrace(): bool {
-        return isset(SpiceConfig::getInstance()->config['stack_trace_errors'])
-            && SpiceConfig::getInstance()->config['stack_trace_errors'] === true;
+    public static function getStackTrace(): int {
+        if(!isset(SpiceConfig::getInstance()->config['stack_trace_errors']))
+            return 0;
+        return intval(SpiceConfig::getInstance()->config['stack_trace_errors']);
     }
 
     /**

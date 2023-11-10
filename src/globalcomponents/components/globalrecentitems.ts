@@ -17,15 +17,25 @@ import {language} from '../../services/language.service';
 export class GlobalRecentItems {
     constructor(
         public language: language,
-        navigationtab: navigationtab,
+        public navigationtab: navigationtab,
         public router: Router,
         public recent: recent)
     {
         // set the navigationtab title
         navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_RECENTLYVIEWED'), displayicon: 'breadcrumbs'});
+
+        this.getRecent();
     }
 
    public goRecent(module, id) {
         this.router.navigate(['/module/' + module + '/' + id]);
     }
+
+    /**
+     * retrieves recent items from backend or cache
+     */
+    public getRecent() {
+        this.recent.getRecentItems();
+    }
+
 }
