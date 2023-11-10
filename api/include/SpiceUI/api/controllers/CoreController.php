@@ -66,7 +66,7 @@ class CoreController
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
                 'enableSettingUserPrefsByAdmin' => isset(SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin']) ? (boolean)@SpiceConfig::getInstance()->config['enableSettingUserPrefsByAdmin'] : false,
                 'aclcontroller' => $aclcontroller, //CR1000463
-                'developermode' => SpiceConfig::getInstance()->config['developerMode'],
+                'stack_trace_errors' => SpiceUtils::getStackTrace(),
                 'international_email_addresses' => SpiceConfig::getInstance()->config['international_email_addresses'] ?? 0
             ],
             'extensions' => RESTManager::getInstance()->extensions,
