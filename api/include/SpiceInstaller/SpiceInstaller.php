@@ -391,7 +391,6 @@ class SpiceInstaller
             'dbconfigoption' => $postData['dboptions'],
             'fts' => $postData['fts'],
             'site_url' => $postData['backendconfig']['backendUrl'],
-            'developerMode' => false,
             'cache_dir' => 'cache/',
             'session_dir' => '',
             'tmp_dir' => 'cache/xml/',

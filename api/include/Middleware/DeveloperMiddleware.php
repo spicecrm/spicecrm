@@ -4,7 +4,7 @@ namespace SpiceCRM\includes\Middleware;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * sets the developer mode
@@ -12,9 +12,8 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 class DeveloperMiddleware
 {
     public function __invoke(Request $request, RequestHandler $handler): Response {
-        if (SpiceConfig::getInstance()->config['developerMode'] === true || SpiceConfig::getInstance()->config['developerMode'] == 1 || (SpiceConfig::getInstance()->config['developerMode'] == 2 && $request->getHeaderLine('developermode') == 1)) {
+        if (SpiceUtils::getStackTrace()) {
             ini_set('display_errors', 1);
-            SpiceConfig::getInstance()->config['developerMode'] = true;
         }
 
         // invoke the request
