@@ -25,8 +25,7 @@ export class AdministrationGeneralSettings implements OnInit {
             unique_key: ''
         },
         advanced: {
-            developerMode: 0,
-            stack_trace_errors: false,
+            stack_trace_errors: 0,
             dump_slow_queries: false,
             slow_query_time_msec: 0,
             upload_maxsize: 0,
@@ -85,23 +84,13 @@ export class AdministrationGeneralSettings implements OnInit {
 
                 this.settings = data;
 
-                // switch developer mode
-                switch (this.settings.advanced.developerMode){
-                    case true:
-                        this.settings.advanced.developerMode = '1';
-                        break;
-                    case false:
-                        this.settings.advanced.developerMode = '0';
-                        break;
-                }
-
-                // switch developer mode
+                // switch stack_trace_errors
                 switch (this.settings.advanced.international_email_addresses){
                     case true:
-                        this.settings.advanced.developerMode = '1';
+                        this.settings.advanced.stack_trace_errors = '2';
                         break;
                     case false:
-                        this.settings.advanced.developerMode = '0';
+                        this.settings.advanced.stack_trace_errors = '0';
                         break;
                 }
 
