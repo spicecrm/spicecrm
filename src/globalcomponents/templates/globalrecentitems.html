@@ -10,7 +10,7 @@
                             </h1>
                         </div>
                     </div>
-                    <p class="slds-page-header__name-meta">{{recent.items.length}} <system-label label="LBL_ITEMS"></system-label></p>
+                    <p class="slds-page-header__name-meta">{{recent.recentItems.length}} <system-label label="LBL_ITEMS"></system-label></p>
                 </div>
             </div>
         </div>
@@ -31,7 +31,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let recentItem of recent.items" [system-model-provider]="{module: recentItem.module_name, data: recentItem.data}" class="slds-hint-parent">
+        <tr class="slds-p-bottom--small" *ngIf="!recent.isInitialized">
+            <system-spinner size="16" ></system-spinner>
+        </tr>
+            <tr *ngFor="let recentItem of recent.recentItems" [system-model-provider]="{module: recentItem.module_name, data: recentItem.data}" class="slds-hint-parent">
                 <td role="gridcell" class="slds-cell-shrink">
                     <system-icon [module]="recentItem.module_name" size="small" divClass=""></system-icon>
                 </td>
