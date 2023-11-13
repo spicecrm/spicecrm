@@ -40,13 +40,19 @@ export class fieldUnsubscribeStatus implements OnInit {
         else{
             this.subscribed = false;
         }
-        this.model.parentmodel = this.relatedmodels.model;
+       this.setOptedOut();
 
     }
-
+    public setOptedOut(){
+        this.model.parentmodel = this.relatedmodels.model;
+        //this can unsubscribe from all lists if opted out
+        // if(this.disabled()==true){
+        //     this.subscribed = false;
+        //     this.execute();
+        // }
+    }
     public disabled(){
         if(this.model.parentmodel.getField('optout_sendgrid')==1){
-            // for more than one account set disabled based on account(sendgrid_source) && this.model.getField('sendgrid_source') == 'sendgrid'
             return true;
         }
     }

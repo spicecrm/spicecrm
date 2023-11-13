@@ -18,7 +18,6 @@ import {
     SendgridDeleteContactFromUnsubscribeListButton
 } from "./components/sendgriddeletecontactfromunsubscribelistbutton";
 import {SendgridRemoveContactFromTargetListButton} from "./components/sendgridremovecontactfromtargetlistbutton";
-import {fieldSendgridBlacklist} from "./fields/fieldsendgridblacklist";
 
 
 @NgModule(
@@ -38,8 +37,7 @@ import {fieldSendgridBlacklist} from "./fields/fieldsendgridblacklist";
             SendgridUnsubscribeDeleteButton,
             fieldUnsubscribeStatus,
             SendgridDeleteContactFromUnsubscribeListButton,
-            SendgridRemoveContactFromTargetListButton,
-            fieldSendgridBlacklist
+            SendgridRemoveContactFromTargetListButton
         ]
     })
 export class SendGridModule {
