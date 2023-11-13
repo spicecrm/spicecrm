@@ -3,14 +3,16 @@
 namespace SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions;
 
 use Com\Tecnick\Barcode\Barcode;
+use DateTime;
+use DateTimeZone;
+use IntlDateFormatter;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use DateTime, DateTimeZone;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
-use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use IntlDateFormatter;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
+
 # use SpiceCRM\includes\utils\SpiceUtils;
 
 class SystemTemplateFunctions {
@@ -189,6 +191,22 @@ class SystemTemplateFunctions {
         $label = $db->fetchOne("SELECT st.* FROM syslanguagetranslations st, syslanguagelabels sl WHERE st.syslanguagelabel_id = sl.id AND sl.name = 'LBL_COUNTRY_AT' AND st.syslanguage = '{$language}'");
 
         return $label['translation_default'] ?: $inputString;
+    }
+
+    /**
+     * formats a number
+     *
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    static function currencyFormatNumber($compiler, $beans, $inputString){
+
+        if (empty($inputString)) return '';
+
+        return SpiceUtils::currencyFormatNumber($inputString);
+
     }
 
 }
