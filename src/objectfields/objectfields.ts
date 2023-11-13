@@ -292,7 +292,8 @@ declare var _: any;
         fieldCategories,
         fieldCategoriesTree,
         fieldEmailRecipientsInput,
-        fieldMultienumCheckBox
+        fieldMultienumCheckBox,
+        fieldToggle
     ]
 })
 export class ObjectFields {}
