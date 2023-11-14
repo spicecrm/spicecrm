@@ -130,9 +130,9 @@ export class GlobaUserPanel {
     //  * @deprecated since 2023.03.001
     //  * returns if the logged in user is an admin
     //  */
-    // get displayDeveloperMode(){
-    //     return this.session.authData.admin;
-    // }
+    get displayDeveloperMode(){
+        return this.session.authData.admin;
+    }
     //
     // /**
     //  * @deprecated since 2023.03.001
