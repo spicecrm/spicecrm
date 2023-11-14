@@ -51,17 +51,13 @@ class ServiceTicket extends SpiceBean
     }
 
     /**
-     * overwrite the retrieve and also add the email1 to the ticket
+     * overwrite the retrieveViewDetails and also add the email1 to the ticket
      *
-     * @param int $id
-     * @param bool $encode
-     * @param bool $deleted
-     * @param bool $relationships
      * @return ServiceTicket|null
      */
-    public function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
+    public function retrieveViewDetails()
     {
-        $bean = parent::retrieve($id, $encode, $deleted, $relationships);
+        parent::retrieveViewDetails();
 
         // try to retrieve the parent and set the email if we have one
         if (!empty($this->parent_id)) {
@@ -70,7 +66,7 @@ class ServiceTicket extends SpiceBean
             }
         }
 
-        return $bean;
+        return $this;
     }
 
     /**
