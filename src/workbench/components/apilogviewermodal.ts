@@ -268,17 +268,25 @@ export class APIlogViewerModal {
     public getFormattedBody(contentType, content) {
         switch (contentType) {
             case 'application/json':
-                return JSON.stringify(JSON.parse(content), null, '\t');
+                try {
+                    return JSON.stringify(JSON.parse(content), null, '\t');
+                } catch (e) {
+                    return content;
+                }
                 break;
             case 'application/x-ndjson':
-                let res = [];
-                let cItems = content.split('\n');
-                for(let cItem of cItems) {
-                    if(cItem) {
-                        res.push(JSON.stringify(JSON.parse(cItem), null, '\t'));
+                try {
+                    let res = [];
+                    let cItems = content.split('\n');
+                    for (let cItem of cItems) {
+                        if (cItem) {
+                            res.push(JSON.stringify(JSON.parse(cItem), null, '\t'));
+                        }
                     }
+                    return res.join('\r\n\r\n');
+                } catch (e) {
+                    return content;
                 }
-                return res.join('\r\n\r\n');
                 break;
             case 'application/x-www-form-urlencoded':
                 let cArray = [];
