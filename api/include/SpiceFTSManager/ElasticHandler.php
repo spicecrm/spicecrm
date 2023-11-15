@@ -206,6 +206,14 @@ class ElasticHandler
         else
             include 'include/SpiceFTSManager/filters/spice_filters.php';
         $this->standardSettings['analysis']['filter'] = $elasticFilters;
+
+        $elasticCharFilters = [];
+        if (file_exists('custom/include/SpiceFTSManager/charfilters/spice_charfilters.php'))
+            include 'custom/include/SpiceFTSManager/charfilters/spice_charfilters.php';
+        else
+            include 'include/SpiceFTSManager/charfilters/spice_charfilters.php';
+        $this->standardSettings['analysis']['char_filter'] = $elasticCharFilters;
+
     }
 
     private function getAllIndexes()
