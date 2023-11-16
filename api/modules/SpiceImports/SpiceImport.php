@@ -26,9 +26,20 @@ class SpiceImport extends SpiceBean
      */
     public static function getFilePreview($params)
     {
-        $delimiter = ($params['separator'] == 'comma') ? ',' : ';';
-        $enclosure = chr(8);
+        $delimiter = ",";
+        switch ($params['separator']) {
+            case 'comma':
+                $delimiter = ",";
+                break;
+            case 'semicolon':
+                $delimiter = ";";
+                break;
+            case 'endofline':
+                $delimiter = "\\n";
+                break;
+        }
 
+        $enclosure = chr(8);
         switch ($params['enclosure']) {
             case 'single':
                 $enclosure = "'";
@@ -51,7 +62,7 @@ class SpiceImport extends SpiceBean
                 return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
             }, $fileHeader);
 
-            if (!is_array($fileHeader) || count($fileHeader) < 2) {
+            if (!is_array($fileHeader) || count($fileHeader) < 1) {
                 throw new BadRequestException('separator or enclosure settings do not match the file settings');
             }
 
@@ -295,7 +306,7 @@ class SpiceImport extends SpiceBean
 
         } else {
 
-            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES ('".$this->db->getGuidSQL()."', '" . $this->id . "', 'Cant open file', 'upload://" . $this->objectimport->fileId . "')";
+            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (".$this->db->getGuidSQL().", '" . $this->id . "', 'Cant open file', 'upload://" . $this->objectimport->fileId . "')";
             $this->db->query($sql);
             $this->status = 'e';
             $this->save();
@@ -367,13 +378,13 @@ class SpiceImport extends SpiceBean
                     $error = true;
                     $newBeanId = $newBean->save();
                     LoggerManager::getLogger()->debug('SpiceImports saved id ' . $newBeanId);
-                    $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (UUID(), '" . $this->id . "', '" . 'Duplicate Entry' . "', '" . implode('";"', $row) . "')";
+                    $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (".$this->db->getGuidSQL().", '" . $this->id . "', '" . 'Duplicate Entry' . "', '" . implode('";"', $row) . "')";
                     $list[] = ['status' => 'Duplicate Entry', 'data' => [$row[0], $row[1], $row[2], $row[3]]];
                     $this->db->query($sql);
                 }
             }
         } else {
-            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (UUID(), '" . $this->id . "', 'Record Exists', '" . implode('";"', $row) . "')";
+            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (".$this->db->getGuidSQL().", '" . $this->id . "', 'Record Exists', '" . implode('";"', $row) . "')";
             $error = true;
             $list[] = ['status' => 'Record Exists', 'data' => [$row[0], $row[1], $row[2], $row[3]]];
             $this->db->query($sql);
@@ -411,7 +422,7 @@ class SpiceImport extends SpiceBean
             LoggerManager::getLogger()->debug('SpiceImports saved id ' . $newBeanId);
             $list[] = ['status' => 'updated', 'recordId' => $newBeanId, 'data' => [$row[0], $row[1], $row[2], $row[3]]];
         } else {
-            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES ('".$this->db->getGuidSQL()."', '" . $this->id . "', 'No Entries', '" . implode('";"', $row) . "')";
+            $sql = "INSERT INTO spiceimportlogs (id, import_id, msg, data) VALUES (".$this->db->getGuidSQL().", '" . $this->id . "', 'No Entries', '" . implode('";"', $row) . "')";
             $error = true;
             $list[] = ['status' => 'No Entries', 'data' => [$row[0], $row[1], $row[2], $row[3]]];
             $this->db->query($sql);

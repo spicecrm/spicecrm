@@ -52,5 +52,11 @@ $elasticAnalyzers = [
         "type" => "custom",
         "tokenizer" => "spice_email",
         "filter" => ["lowercase"]
+    ],
+    "spice_phone" => [
+        "type" => "custom",
+        "tokenizer" => "spice_phone",
+        "filter" => array_merge(["lowercase"],$languagefilter),
+        "char_filter" => ["spice_phone"]
     ]
 ];

@@ -48,6 +48,17 @@ export class ReportsDesignerCondition {
                         break;
                 }
                 break;
+            case 'category':
+                switch (this.whereCondition.operator) {
+                    case 'equals':
+                    case 'notequal':
+                    case 'oneof':
+                    case 'oneofnot':
+                    case 'oneofnotornull':
+                        type = 'category';
+                        break;
+                }
+                break;
             case 'date':
             case 'datetime':
             case 'datetimecombo':

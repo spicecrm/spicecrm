@@ -77,6 +77,22 @@ $routes = [
         ]
     ],
     [
+        'method' => 'get',
+        'route' => '/system/spiceui/core/loadtaskitem/{name}',
+        'class' => SpiceUILoadtasksController::class,
+        'function' => 'executeLoadTaskItemByName',
+        'description' => 'executes the loaded task item by name',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'name' => [
+                'in' => 'path',
+                'description' => 'the name of the loadtask item',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'moduledefs',
+            ]
+        ]
+    ],
+    [
         'method' => 'post',
         'route' => '/configuration/spiceui/core/modules/{module}/listtypes',
         'oldroute' => '/spiceui/core/modules/{module}/listtypes',
@@ -246,6 +262,22 @@ $routes = [
     ],
     [
         'method'      => 'get',
+        'route'       => '/configuration/spiceui/core/module/dashboardsets',
+        'class'       => SystemUIController::class,
+        'function'    => 'getDashboardSets',
+        'description' => 'selects all dashboardsets',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/configuration/spiceui/core/module/dashboards',
+        'class'       => SystemUIController::class,
+        'function'    => 'getDashboards',
+        'description' => 'selects all dashboards',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+    ],
+    [
+        'method'      => 'get',
         'route'       => '/configuration/spiceui/core/module/hooks',
         'class'       => SystemUIController::class,
         'function'    => 'getAllHooks',
@@ -254,7 +286,7 @@ $routes = [
     ],
     [
         'method'      => 'get',
-        'route'       => '/configuration/spiceui/core/module/webhooks',
+        'route'       => '/configuration/spiceui/core/module/syswebhooks',
         'class'       => SystemUIController::class,
         'function'    => 'getAllWebHooks',
         'description' => 'selects all global and custom hooks',

@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {Router} from "@angular/router";
-import {Component, EventEmitter, Output, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, EventEmitter, Output} from "@angular/core";
 import {loginService} from "../../services/login.service";
 import {session} from "../../services/session.service";
 import {metadata} from "../../services/metadata.service";
@@ -126,35 +126,39 @@ export class GlobaUserPanel {
         return this.session.authData.user.user_image;
     }
 
-    /**
-     * returns if the logged in user is an admin
-     */
+    // /**
+    //  * @deprecated since 2023.03.001
+    //  * returns if the logged in user is an admin
+    //  */
     get displayDeveloperMode(){
         return this.session.authData.admin;
     }
-
-    /**
-     * returns if we can set the developermode
-     */
-    get canSetDeveloperMode(){
-        return this.config.data.systemparameters.developermode == '2';
-    }
-
-    /**
-     * gets the developermode
-     */
-    get developermode(){
-        return (this.config.data.systemparameters.developermode == '1' || this.config.data.systemparameters.developermode === true) || (this.canSetDeveloperMode && this.session.developerMode);
-    }
-
-    /**
-     * sets the developermode
-     *
-     * @param value
-     */
-    set developermode(value){
-        if(this.canSetDeveloperMode) this.session.developerMode = value;
-    }
+    //
+    // /**
+    //  * @deprecated since 2023.03.001
+    //  * returns if we can set the developermode
+    //  */
+    // get canSetDeveloperMode(){
+    //     return this.config.data.systemparameters.developermode == '2';
+    // }
+    //
+    // /**
+    //  * @deprecated since 2023.03.001
+    //  * gets the developermode
+    //  */
+    // get developermode(){
+    //     return (this.config.data.systemparameters.developermode == '1' || this.config.data.systemparameters.developermode === true) || (this.canSetDeveloperMode && this.session.developerMode);
+    // }
+    //
+    // /**
+    //  * @deprecated since 2023.03.001
+    //  * sets the developermode
+    //  *
+    //  * @param value
+    //  */
+    // set developermode(value){
+    //     if(this.canSetDeveloperMode) this.session.developerMode = value;
+    // }
 
     /**
      * changes the users timezone

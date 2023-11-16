@@ -42,6 +42,8 @@ import {SystemCustomIcon} from "./components/systemcustomicon";
 import {SystemDisplayCurrencySymbol} from "./components/systemdisplaycurrencysymbol";
 import {SystemDisplayDatetime} from "./components/systemdisplaydatetime";
 import {SystemDisplayNumber} from "./components/systemdisplaynumber";
+import {SystemDuelingPicklist} from "./components/systemduelingpicklist";
+import {SystemDuelingPicklistItem} from "./components/systemduelingpicklistitem";
 import {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
 import {SystemDynamicRouteInterceptor} from "./components/systemdynamicrouteinterceptor";
@@ -55,6 +57,7 @@ import {SystemIllustrationNoRecords} from "./components/systemillustrationnoreco
 import {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
 import {SystemIllustrationPageNotAvailable} from "./components/systemillustrationpagenotavailable";
 import {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
+import {SystemImagePreview} from "./components/systemimagepreview";
 import {SystemInputText} from "./components/systeminputtext";
 import {SystemInputEnum} from "./components/systeminputenum";
 import {SystemInputMultiEnum} from "./components/systeminputmultienum";
@@ -173,8 +176,22 @@ import {SystemIframeModal} from "./components/systemiframemodal";
 import {SystemInputColor} from "./components/systeminputcolor";
 import {SystemRichTextEditorContent} from "./components/systemrichtexteditorcontent";
 import {SystemHtmlEditor} from "./components/systemhtmleditor";
+import {SystemInputDashboardset} from "./components/systeminputdashboardset";
+import {SystemInputDashboard} from "./components/systeminputdashboard";
+import {SystemSplitContainer} from "./components/systemsplitcontainer";
+import {SystemSplitContainerRight} from "./components/systemsplitcontainerright";
+import {SystemSplitContainerLeft} from "./components/systemsplitcontainerleft";
+import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 
 
+
+import {SystemObjectPreview} from "./components/systemobjectpreview";
+import {SystemInputCronExpression} from "./components/systeminputcronexpression";
+import {SystemChartOneDimensional} from "./components/systemchartonedimensional";
+import {SystemChartDataRow} from "./components/systemchartdatarow";
+import {SystemSelectOption} from "./components/systemselectoption";
+import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
+import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
 
 @NgModule({
     imports: [
@@ -215,6 +232,8 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemDisplayCurrencySymbol,
         SystemDisplayDatetime,
         SystemDisplayNumber,
+        SystemDuelingPicklist,
+        SystemDuelingPicklistItem,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
         SystemDynamicRouteInterceptor,
@@ -278,6 +297,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemModuleGlobalPipe,
         SystemNumberSpinner,
         SystemObjectPreviewModal,
+        SystemObjectPreview,
         SystemPDFContainer,
         SystemInputModuleFilter,
         SystemFilterBuilder,
@@ -324,6 +344,7 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemSlider,
         SystemTrendIndicator,
         SystemImageModal,
+        SystemImagePreview,
         SystemNavigationCollector,
         SystemNavigationManager,
         SystemNavigationManagerRouteContainer,
@@ -338,7 +359,19 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemWrappedText,
         SystemRichTextEditorContent,
         SystemHtmlEditor,
-        SystemStripHtmlTagsPipe
+        SystemStripHtmlTagsPipe,
+        SystemInputDashboardset,
+        SystemInputDashboard,
+        SystemSplitContainer,
+        SystemSplitContainerLeft,
+        SystemSplitContainerRight,
+        SystemInputSearchTerm,
+        SystemInputCronExpression,
+        SystemChartOneDimensional,
+        SystemChartDataRow,
+        SystemChartDataColumn,
+        SystemChartMultiDimensional,
+        SystemSelectOption
     ],
     exports: [
         PaginationControlsComponent,
@@ -363,6 +396,8 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemCustomIcon,
         SystemDisplayDatetime,
         SystemDisplayNumber,
+        SystemDuelingPicklist,
+        SystemDuelingPicklistItem,
         SystemDynamicComponent,
         SystemFilterBuilderFilterExpression,
         SystemFilterBuilderFilterExpressionFields,
@@ -477,8 +512,21 @@ import {SystemHtmlEditor} from "./components/systemhtmleditor";
         SystemSelectIconItem,
         SystemInputTaxCode,
         SystemDisplayCurrencySymbol,
-        SystemModuleCustomPipe,
-        SystemModuleGlobalPipe
+        SystemInputDashboardset,
+        SystemInputDashboard,
+        SystemSplitContainer,
+        SystemSplitContainerLeft,
+        SystemSplitContainerRight,
+        SystemInputSearchTerm,
+        SystemSelectIconItem,
+        SystemObjectPreview,
+        SystemImagePreview,
+        SystemInputCronExpression,
+        SystemChartOneDimensional,
+        SystemChartDataRow,
+        SystemChartDataColumn,
+        SystemChartMultiDimensional,
+        SystemSelectOption
     ]
 })
 export class SystemComponents {}

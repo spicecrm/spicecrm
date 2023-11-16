@@ -226,6 +226,9 @@ class EmailSchedulesController
         $links = $postBody['links'];
         $bean = BeanFactory::getBean($module, $beanId);
         $bean->load_relationships();
+
+        $relatedbeans = [];
+
         if (count($links) > 0) {
             foreach ($links as $module) {
                 $seed = BeanFactory::getBean($module);

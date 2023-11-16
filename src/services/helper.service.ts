@@ -4,6 +4,7 @@
 import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {modal} from './modal.service';
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,12 @@ export class helper {
 
     public _base64_keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-    constructor(public modalservice: modal) {
+    /**
+     * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
+     */
+    public blobUrl: any;
+
+    constructor(public modalservice: modal, public sanitizer: DomSanitizer) {
     } // public metadata: metadata, public footer: footer
 
     /*
@@ -296,4 +302,69 @@ export class helper {
         }
     }
 
+    /**
+     * internal function to translate the data to a BLOL URL
+     *
+     * @param byteCharacters the file data
+     * @param contentType the type
+     * @param sliceSize optional parameter to change performance
+     */
+    public datatoBlob(byteCharacters, contentType = '', sliceSize = 512) {
+        let byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            let slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            let byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            let byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        let blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
+    /**
+     * converts the base 64 stroing to a blbo and adds it as url so the file can be displayed
+     *
+     * @param b64Data
+     * @param contentType
+     * @param sliceSize
+     * @private
+     */
+    public b64toBlob(b64Data, contentType = '', sliceSize = 512) {
+
+        let byteCharacters = atob(b64Data);
+        let byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            let slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            let byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            let byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        let blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
+    /**
+     * create blob url
+     * @param blob
+     */
+    public dataToBlobUrl(blob): SafeResourceUrl {
+        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+        return this.blobUrl;
+    }
 }

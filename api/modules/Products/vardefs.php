@@ -67,6 +67,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'options' => 'product_tax_categories_dom',
             'comment' => 'the tax category for the tax determination'
         ],
+        'account_determination_group' => [
+            'name' => 'account_determination_group',
+            'vname' => 'LBL_ACCOUNT_DETERMINATION_GROUP',
+            'type' => 'enum',
+            'len' => 30,
+            'options' => 'product_account_determination_group',
+            'comment' => 'a group to determine the revenue accounts when posting invoices to the general ledger'
+        ],
         'std_price'=> [
             'name' => 'std_price',
             'vname' => 'LBL_STD_PRICE',

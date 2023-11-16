@@ -171,7 +171,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailAddress'] = [
             'source' => 'non-db',
             'comment' => 'possible values opted_in, opted_out, pending'
         ],
-
+        'bounced_count' => [
+            'name' => 'bounced_count',
+            'type' => 'int',
+            'len' => 2,
+            'comment' => 'register bounced status'
+        ],
         'created_by_link' =>
             [
                 'name' => 'created_by_link',

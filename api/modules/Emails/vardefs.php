@@ -299,6 +299,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'module' => 'Consumers',
             'source' => 'non-db',
         ],
+        'employees' => [
+            'name'         => 'employees',
+            'type'         => 'link',
+            'relationship' => 'employees_emails',
+            'module'       => 'Employees',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_EMPLOYEES',
+        ],
         'contacts' => [
             'name' => 'contacts',
             'vname' => 'LBL_CONTACTS',
@@ -496,7 +504,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'module' => 'CampaignLog',
             'relationship' => 'campaignlog_sent_emails',
             'source' => 'non-db'
-        ]
+        ],
+        'contactsonlineprofiles' => [
+            'name' => 'contactsonlineprofiles',
+            'vname' => 'LBL_CONTACTSONLINEPROFILES',
+            'module' => 'ContactsOnlineProfiles',
+            'type' => 'link',
+            'relationship' => 'contactsonlineprofiles_emails',
+            'source' => 'non-db',
+        ],
         /* end relationship collections */
 
     ], /* end fields() array */
@@ -728,7 +744,7 @@ if (file_exists('extensions/modules/ServiceOrders/ServiceOrder.php')) {
     ];
 }
 if (file_exists("extensions/modules/ProcurementDocs")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Email']['relationships']['procurementdocs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Email']['fields']['procurementdocs'] = [
         'name'         => 'procurementdocs',
         'type'         => 'link',
         'relationship' => 'procurementdocs_emails',

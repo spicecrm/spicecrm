@@ -7,6 +7,10 @@
             <h2 id="header43" class="slds-text-heading--medium">Add Componentset</h2>
         </div>
         <div class="slds-modal__content slds-p-around--medium">
+            <div *ngIf="showModuleField" class="slds-form-element">
+                <label class="slds-form-element__label">Module</label>
+                <system-input-module [(ngModel)]="module" [displayAsterisk]="true"></system-input-module>
+            </div>
             <div class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label">Componentset Name</label>
                 <div class="slds-form-element__control">
@@ -17,7 +21,7 @@
                 <label class="slds-form-element__label">type</label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="componentsettype" [disabled]="!adding">
+                        <select class="slds-select" [(ngModel)]="componentsettype">
                             <option *ngIf="edit_mode == 'all'" value="global">Global</option>
                             <option value="custom">Custom</option>
                         </select>

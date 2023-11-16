@@ -1,12 +1,11 @@
 /**
  * @module ModuleSpiceAttachments
  */
-import {
-    Component, OnInit, Input, NgZone, Output, EventEmitter, ViewChild, ViewContainerRef, Renderer2, Injector
-} from '@angular/core';
+import {Component, Output, EventEmitter, ViewChild} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {SystemInputMedia} from "../../../systemcomponents/components/systeminputmedia";
+import {Subject} from "rxjs";
 
 /**
  * the image data the event emitter emits
@@ -21,6 +20,7 @@ interface imageData {
  * displays a quicknote that is read in teh stream
  */
 @Component({
+    selector: 'spice-attachment-add-image-modal',
     templateUrl: '../templates/spiceattachmentaddimagemodal.html',
 })
 export class SpiceAttachmentAddImageModal {
@@ -45,6 +45,16 @@ export class SpiceAttachmentAddImageModal {
      */
     @Output() public imagedata: EventEmitter<imageData> = new EventEmitter<imageData>();
 
+    /**
+     * holds system category id
+     */
+    public systemCategoryId: string = '';
+
+    /**
+     * observable subject
+     */
+    public responseSubject: Subject<any> = new Subject<any>();
+
     constructor(public language: language, public modelattachments: modelattachments) {
 
     }
@@ -64,7 +74,11 @@ export class SpiceAttachmentAddImageModal {
         let mediaMetaData = this.inputMedia.mediaMetaData;
 
         // upload the attachment
-        this.modelattachments.uploadFileBase64( this.filecontent, mediaMetaData.filename, mediaMetaData.mimetype );
+        this.modelattachments.uploadFileBase64( this.filecontent, mediaMetaData.filename, mediaMetaData.mimetype, this.systemCategoryId);
+
+        // emit when upload finished
+        this.responseSubject.next(true);
+        this.responseSubject.complete();
 
         this.self.destroy();
     }
