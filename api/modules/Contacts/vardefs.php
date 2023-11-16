@@ -178,13 +178,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'options' => 'dom_meeting_accept_status',
                 'comment' => 'non db field retrieved from the relationship to the meeting call etc'
             ],
-            'activity_status_date_modified' => [
-                'name' => 'activity_status_date_modified',
-                'type' => 'datetime',
-                'source' => 'non-db',
-                'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODIFIED',
-                'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-            ],
             'activity_required' => [
                 'name' => 'activity_required',
                 'type' => 'bool',
