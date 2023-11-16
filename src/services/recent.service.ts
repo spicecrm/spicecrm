@@ -182,7 +182,7 @@ export class recent {
         } else {
             this.backend.getRequest('module/Trackers/recentitems', {}, this.httpRequestsRefID).subscribe(res => {
                 this.recentItems = res;
-                this.configuration.setData('recentitems', this.recentItems);
+                this.configuration.setData('recentitems', this.recentItems, false);
                 this.isInitialized = true;
 
                 responseSubject.next(this.recentItems);
