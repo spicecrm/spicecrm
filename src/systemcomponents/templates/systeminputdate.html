@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div *ngIf="!isDisabled" aria-hidden="false" class="slds-datepicker slds-dropdown slds-dropdown--large" [ngClass]="dropdownside" role="dialog">
-                    <system-input-date-picker [setDate]="_date.moment" (datePicked)="datePicked($event)"></system-input-date-picker>
+                    <system-input-date-picker [setDate]="_date.moment" [minDate]="minDate" [maxDate]="maxDate" [enabledDays]="enabledDays" [holidayCalendarId]="holidayCalendarId" [holidaysDisabled]="holidaysDisabled" (datePicked)="datePicked($event)"></system-input-date-picker>
                     <div *ngIf="showCalendarButton" class="slds-grid slds-grid--align-center">
                         <button class="slds-button slds-text-link slds-p-around--xx-small" (click)="openCalendar()"><system-label label="LBL_CALENDAR"></system-label></button>
                     </div>

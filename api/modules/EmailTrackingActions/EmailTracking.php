@@ -3,6 +3,7 @@
 namespace SpiceCRM\modules\EmailTrackingActions;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\modules\Emails\Email;
 
 class EmailTracking
 {
@@ -25,16 +26,17 @@ class EmailTracking
     /**
      * encodes the tracking ID
      *
-     * @param $trackingData
+     * @param $trackingData string must have the following syntax "ParentType:$parentType:ParentId:$parentId"
      * @return string
      */
-    static function encodeTrackingID($trackingData){
+    static function encodeTrackingID(string $trackingData): string
+    {
         $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
-        $data = $trackingData;
+
         if($key){
-            return urlencode(base64_encode(openssl_encrypt($data, 'blowfish', $key)));
+            return urlencode(base64_encode(openssl_encrypt($trackingData, 'blowfish', $key)));
         } else {
-            return urlencode(base64_encode($data));
+            return urlencode(base64_encode($trackingData));
         }
 
     }
@@ -43,11 +45,22 @@ class EmailTracking
      * decodes the tracking ID
      *
      * @param $trackingData
-     * @return false|string
+     * @return array
      */
-    static function decodeTrackingID($trackingData){
+    static function decodeTrackingID($trackingData): ?array
+    {
         $key = SpiceConfig::getInstance()->get('emailtracking.blowfishkey') ?? "2fs5uhnjcnpxcpg9";
-        return openssl_decrypt(base64_decode(urldecode($trackingData)), 'blowfish', $key);
+
+        if (!$key) {
+            $decrypted = base64_decode(urldecode($trackingData));
+        } else {
+            $decrypted = openssl_decrypt(base64_decode(urldecode($trackingData)), 'blowfish', $key);;
+        }
+
+        if (!$decrypted) return null;
+
+        $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
+        return array_combine(array_column($chunks, 0), array_column($chunks, 1));
     }
 
 
@@ -79,13 +92,16 @@ class EmailTracking
     /**
      * generates the tracking pixel image
      *
-     * @param $trackingData
+     * @param Email $email
      * @return string
      */
-    static function getUnsubscribeURL($email){
+    static function getUnsubscribeURL(Email $email){
         $url = SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl');
+
+        [$parentType, $parentId] = $email->getTrackingParentData();
+
         if($url){
-            return str_replace('{refid}', self::encodeTrackingID('Emails:' . $email->id), $url);
+            return str_replace('{refid}', self::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $url);
         }
         return false;
     }

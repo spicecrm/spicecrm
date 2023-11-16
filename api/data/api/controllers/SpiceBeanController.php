@@ -5,8 +5,10 @@ namespace SpiceCRM\data\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
@@ -332,5 +334,28 @@ class SpiceBeanController
         }
 
         return $res->withJson(['success' => false]);
+    }
+
+    /**
+     * get bean field html content for iframe
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException | Exception | UnauthorizedException
+     */
+    public function getBeanFieldHtmlContent(Request $req, Response $res, array $args): Response
+    {
+        $bean = BeanFactory::getBean($args['beanName'], $args['beanId']);
+        if (!!$bean) {
+            $content = $bean->{$args['fieldName']};
+
+            if (method_exists($bean, 'getFieldHtmlContent')) {
+                $content = $bean->getFieldHtmlContent($args['fieldName']);
+            }
+            return $res->withJson(['html' => $content]);
+        } else {
+            return $res->withJson(['success' => false]);
+        }
     }
 }

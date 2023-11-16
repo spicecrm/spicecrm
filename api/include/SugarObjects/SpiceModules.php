@@ -59,13 +59,21 @@ class SpiceModules
     public function loadModules($forceReload = false): void {
         $cached = SpiceCache::get('spiceModules');
         if (!$cached || $forceReload) {
+
+            # reset the modules session cache when reloading the modules from the database
+            unset($_SESSION['SpiceUI']['modules']);
+
             $this->modules = [];
             $columns = ['id', 'acl', 'module', 'bean', 'beanfile', 'workflow', 'visible', 'tagging', 'sysdictionarydefinition_id'];
-            $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns)." FROM sysmodules UNION SELECT ".implode(', ', $columns)." FROM syscustommodules");
+            $modules = DBManagerFactory::getInstance()->query("SELECT ".implode(', ', $columns)." FROM sysmodules UNION ALL SELECT ".implode(', ', $columns)." FROM syscustommodules");
             while ($module = DBManagerFactory::getInstance()->fetchByAssoc($modules)) {
                 $this->moduleList[$module['module']] = $module['module'];
 
-                // keep the module
+                // keep the module with its original sysmodules id when a custom entry is found (important for acl module actions)
+                if(!empty($this->modules[$module['module']]) && !empty($this->modules[$module['module']]['id'])) {
+                    // keep the original id from sysmodules (ACL module actions compatibility)
+                    $module['id'] = $this->modules[$module['module']]['id'];
+                }
                 $this->modules[$module['module']] = $module;
 
                 // if we have a bean try to load the beanfile, build it from the name or use the generic sugarbean

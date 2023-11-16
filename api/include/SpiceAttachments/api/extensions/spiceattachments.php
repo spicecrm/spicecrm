@@ -296,6 +296,12 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_GUID,
                 'description' => 'GUID of a category to be cloned',
                 'required' => false
+            ],
+            'selectedFiles' => [
+                'in' => 'body',
+                'type'        => ValidationMiddleware::TYPE_ARRAY,
+                'description' => 'Selected Attachments from Email to be cloned',
+                'required' => false
             ]
         ]
     ],

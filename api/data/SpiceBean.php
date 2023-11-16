@@ -951,7 +951,7 @@ class SpiceBean
      *
      * Internal function, do not override.
      */
-    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "")
+    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "")
     {
         // CR1000509 get a collection of related beans
         if (is_array($field_name)) {
@@ -961,7 +961,7 @@ class SpiceBean
         if ($this->load_relationship($field_name)) {
 
             // Link2 style
-            if ($end_index != -1 || !empty($deleted) || !empty($optional_where)) {
+            if ($end_index != -1 || !empty($deleted) || !empty($optional_where) || !empty($searchterm)) {
 
                 // BEGIN CR1000382: move sort_array content to 'sorthook' when sortfield is non-db
                 if (!empty($sort_array) && isset($sort_array['sortfield'])) {
@@ -977,7 +977,8 @@ class SpiceBean
                     'deleted' => $deleted,
                     'offset' => $begin_index,
                     'limit' => ($end_index - $begin_index),
-                    'sort' => $sort_array
+                    'sort' => $sort_array,
+                    'searchterm' => $searchterm
                 ]));
             } else
                 return array_values($this->$field_name->getBeans());
@@ -1039,16 +1040,17 @@ class SpiceBean
      * @param string $optional_where
      * @return int
      */
-    function get_linked_beans_count($field_name, $bean_name = null, $deleted = 0, $optional_where = "")
+    function get_linked_beans_count($field_name, $bean_name = null, $deleted = 0, $optional_where = "", $searchterm = "")
     {
         if (is_array($field_name)) {
-            return $this->get_multiple_linked_beans_count($field_name);
+            return $this->get_multiple_linked_beans_count($field_name, $searchterm);
         }
 
         if ($this->load_relationship($field_name)) {
             return $this->$field_name->getBeanCount([
                 'where' => $optional_where,
-                'deleted' => $deleted
+                'deleted' => $deleted,
+                'searchterm' => $searchterm
             ]);
         } else
             return 0;
@@ -1058,7 +1060,7 @@ class SpiceBean
      * @param array $field_names list of linknames => [params]
      * @return int
      */
-    function get_multiple_linked_beans_count($field_names)
+    function get_multiple_linked_beans_count($field_names, $searchterm = '')
     {
         // check how field_names is formed. Make an array if it's not.
         foreach ($field_names as $field_name){
@@ -1070,10 +1072,16 @@ class SpiceBean
         $count = 0;
         foreach ($field_names as $field_name => $field_name_params) {
             if ($this->load_relationship($field_name)) {
-                $count += $this->$field_name->getBeanCount([
-                    'where' => $field_name_params['optional_where'],
-                    'deleted' => $field_name_params['deleted']
-                ]);
+                // get fts count
+                if (!empty($searchterm)) {
+                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule($this->$field_name->getRelatedModuleName(), $searchterm, [], [], 0, 0);
+                    $count += ($filteredResults['hits']['total']['value'] ?: 0);
+                } else {
+                    $count += $this->$field_name->getBeanCount([
+                        'where' => $field_name_params['optional_where'],
+                        'deleted' => $field_name_params['deleted']
+                    ]);
+                }
             }
         }
         return $count;
@@ -1103,7 +1111,7 @@ class SpiceBean
     function is_AuditEnabled()
     {
         if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'])) {
-            return SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited'];
+            return boolval(SpiceDictionaryHandler::getInstance()->dictionary[$this->getObjectName()]['audited']);
         } else {
             return false;
         }
@@ -1398,12 +1406,13 @@ class SpiceBean
         //Now that the record has been saved, we don't want to insert again on further saves
         $this->new_with_id = false;
         $this->in_save = false;
-        //unset current bean_action
-        $this->set_bean_action(null);
 
         AddressReferences::getInstance()->updateReferencedBeansAddress($this);
 
         $this->call_custom_logic('after_save', '');
+
+        //unset current bean_action
+        $this->set_bean_action(null);
 
         return $this->id;
     }
@@ -1801,13 +1810,12 @@ class SpiceBean
         // Check to see if we have a count query available.
         if (empty(SpiceConfig::getInstance()->config['disable_count_query']) || $toEnd) {
             $count_query = $this->create_list_count_query($query);
-            if (!empty($count_query) && (empty($limit) || $limit == -1)) {
+            if (!empty($count_query) && !empty($limit) && $limit > 0) {
                 // We have a count query.  Run it and get the results.
                 $result = $db->query($count_query, true, "Error running count query for $this->_objectname List: ");
                 $assoc = $db->fetchByAssoc($result);
                 if (!empty($assoc['c'])) {
                     $rows_found = $assoc['c'];
-                    $limit = SpiceConfig::getInstance()->config['list_max_entries_per_page'];
                 }
                 if ($toEnd) {
                     $row_offset = (floor(($rows_found - 1) / $limit)) * $limit;
@@ -2489,18 +2497,28 @@ class SpiceBean
                     //check to see if loaded relationship is with email address
                     $relName = $tmpBean->$name->getRelatedModuleName();
                     if (!empty($relName) and strtolower($relName) == 'emailaddresses') {
+                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
                         //handle email address merge
-                        $this->handleEmailMerge($name, $tmpBean->$name->get());
+                        $this->handleEmailMerge($name, $tmpBean->$name->rows);
                     } else {
-                        $data = $tmpBean->$name->get();
+                        $tmpBean->$name->load(['relationship_fields' => $tmpBean->$name->relationship_fields]);
+                        $data = $tmpBean->$name->rows;
+
                         if (is_array($data) && !empty($data)) {
                             if ($this->load_relationship($name)) {
-                                foreach ($data as $related_id) {
+                                foreach ($data as $related_id => $row) {
+
+                                    $additionalValues = [];
+
+                                    foreach ($this->$name->relationship_fields as $field => $def) {
+                                        $additionalValues[$field] = $row[$field];
+                                    }
+
                                     //remove from tmpBean (only many-to-many)
                                     if ($tmpBean->$name->getType == 'many')
                                         $tmpBean->$name->delete($tmpBean->id, $related_id);
                                     //add to primary bean
-                                    $this->$name->add($related_id);
+                                    $this->$name->add($related_id, $additionalValues);
 
                                     // re-index the related bean
                                     $relatedBean = BeanFactory::getBean($relName, $related_id, ['relationships' => false]);
@@ -2515,8 +2533,11 @@ class SpiceBean
             // merge attachments
             $this->db->query("UPDATE spiceattachments SET bean_id='{$this->id}' WHERE deleted=0 AND bean_id='{$tmpBean->id}'");
 
+            AddressReferences::getInstance()->updateReferencedBeansAddress($this, $tmpBean->id);
+
             //mark deleted
             $tmpBean->mark_deleted($beanId);
+
         }
         //free memory
         unset($tmpBeans);
@@ -2535,6 +2556,8 @@ class SpiceBean
         $mrgArray = [];
         //get the email id's to merge
         $existingData = $data;
+
+        $existingEmails = [];
 
         //make sure id's to merge exist and are in array format
         //get the existing email id's
@@ -2567,7 +2590,7 @@ class SpiceBean
         //query email and retrieve email address to be linked.
         $newEmailQuery = 'Select id, email_address from email_addresses where id in (';
         $first = true;
-        foreach ($existingData as $id) {
+        foreach ($existingData as $id => $row) {
             if ($first) {
                 $newEmailQuery .= " '$id' ";
                 $first = false;
@@ -2580,20 +2603,24 @@ class SpiceBean
 
         $newResult = $this->db->query($newEmailQuery);
         while (($row = $this->db->fetchByAssoc($newResult)) != null) {
-            $newEmails[$row['id']] = $row['email_address'];
+            $newEmails[$row['id']] = [];
+
+            foreach ($this->$name->relationship_fields as $field => $def) {
+                $newEmails[$row['id']][$field] = $existingData[$row['id']][$field];
+            }
         }
 
         //compare the two arrays and remove duplicates
-        foreach ($newEmails as $k => $n) {
+         foreach ($newEmails as $k => $n) {
             if (!in_array($n, $existingEmails)) {
                 $mrgArray[$k] = $n;
             }
         }
 
         //add email id's.
-        foreach ($mrgArray as $related_id => $related_val) {
+        foreach ($mrgArray as $related_id => $additionalValues) {
             //add to primary bean
-            $this->$name->add($related_id);
+            $this->$name->add($related_id, $additionalValues);
         }
     }
 
@@ -2686,7 +2713,7 @@ class SpiceBean
      * @param boolean $deleted Optional, default true, if set to false deleted filter will not be added.
      * @return object Instance of this bean with fetched data.
      */
-    function retrieve_by_string_fields($fields_array, $encode = true, $deleted = true, $relationships = true)
+    function retrieve_by_string_fields($fields_array, $encode = false, $deleted = true, $relationships = true)
     {
         $where_clause = $this->get_where($fields_array, $deleted);
         $query = "SELECT $this->_tablename.id" . " FROM $this->_tablename ";

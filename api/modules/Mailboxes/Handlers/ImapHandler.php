@@ -5,8 +5,10 @@ namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use Exception;
 use SpiceCRM\includes\DataStreams\StreamFactory;
+use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -471,7 +473,7 @@ class ImapHandler extends TransportHandler
         try {
             $this->transport_handler->getTransport()->start();
 
-            $response = $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail));
+            $response = $this->sendMail(Email::getTestEmail($this->mailbox, $testEmail),true);
             $response['result'] = true;
         } catch (Swift_TransportException $e) {
             $response['errors'] = $e->getMessage();
@@ -495,48 +497,77 @@ class ImapHandler extends TransportHandler
      * @return Swift_Message
      * @throws Exception
      */
-    protected function composeEmail($email)
+    protected function composeEmail($email, $noSecurityCheck = false )
     {
         $this->checkEmailClass($email);
 
         $message = (new Swift_Message($email->name))
             ->setEncoder(new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'))
             ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
-            ->setBody($this->trackedBody($email), 'text/html')
-        ;
+            ->setBody($this->trackedBody($email), 'text/html');
 
-        if ($this->mailbox->catch_all_address == '') {
-            $toAddressess = [];
-            foreach ($email->to() as $address) {
-                array_push($toAddressess, $address['email']);
-            }
-            $message->setTo($toAddressess);
-        } else { // send everything to the catch all address
-            $message->setTo([$this->mailbox->catch_all_address]);
+        if($this->mailbox->unsubscribe_header) {
 
-            // add a message for whom this was intended for
-            $intendedReciepients = [];
-            foreach ($email->to() as $recipient) {
-                $intendedReciepients[] = $recipient['email'];
+            $unsubscribeUrl = EmailTracking::getUnsubscribeURL($email);
+
+            if ($unsubscribeUrl) {
+                $message->getHeaders()->addTextHeader('List-Unsubscribe', "<$unsubscribeUrl>");
             }
-            $email->name .= ' [intended for ' . join(', ', $intendedReciepients) . ']';
-            $message->setSubject($email->name);
         }
 
-        if (!empty($email->cc_addrs)) {
-            $ccAddressess = [];
-            foreach ($email->cc() as $address) {
-                array_push($ccAddressess, $address['email']);
+        $toAddresses = [];
+        $intendedRecipients = [];
+        foreach ( $email->to() as $recipient ) {
+            if ( $noSecurityCheck ) {
+                $toAddresses[] = $recipient['email'];
+                continue;
             }
-            $message->setCc($ccAddressess);
+            if ( $this->whiteListing() ) {
+                if ( !$this->isWhiteListed( $recipient['email'] )) $intendedRecipients[] = $recipient['email'];
+                else $toAddresses[] = $recipient['email'];
+            }
+            else {
+                if ( $this->mailbox->hasCatchAllAddress() ) $intendedRecipients[] = $recipient['email'];
+                else $toAddresses[] = $recipient['email'];
+            }
+        }
+
+        if ( count( $intendedRecipients )) {
+            if ( $this->mailbox->hasCatchAllAddress() ) {
+                $toAddresses[] = $this->mailbox->catch_all_address;
+                // add a message for whom this was intended for
+                $email->name .= ' [to '.$this->mailbox->catch_all_address.' intended for ' . join(', ', $intendedRecipients) . ']';
+            } else {
+                throw ( new MessageInterceptedException('Email intercepted.'))->setErrorCode('emailIntercepted')->setLbl('LBL_EMAIL_INTERCEPTED');
+            }
+        }
+
+        $message->setTo( $toAddresses );
+
+        if (!empty($email->cc_addrs)) {
+            $ccAddresses = [];
+            foreach ($email->cc() as $recipient) {
+                if ( $noSecurityCheck
+                     or ( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
+                     or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
+                ) {
+                    $ccAddresses[] = $recipient['email'];
+                }
+            }
+            if ( count( $ccAddresses )) $message->setCc($ccAddresses);
         }
 
         if (!empty($email->bcc_addrs)) {
-            $bccAddressess = [];
-            foreach ($email->bcc() as $address) {
-                array_push($bccAddressess, $address['email']);
+            $bccAddresses = [];
+            foreach ($email->bcc() as $recipient ) {
+                if ( $noSecurityCheck
+                     or( !$this->whiteListing() and !$this->mailbox->hasCatchAllAddress() )
+                     or ( $this->whiteListing() and $this->isWhiteListed( $recipient['email'] ))
+                ) {
+                    $bccAddresses[] = $recipient['email'];
+                }
             }
-            $message->setBcc($bccAddressess);
+            if ( count( $bccAddresses )) $message->setBcc( $bccAddresses );
         }
 
         if ($this->mailbox->reply_to != '') {
@@ -560,44 +591,42 @@ class ImapHandler extends TransportHandler
      * Sends the converted Email
      *
      * @param $message
-     * @return array
+     * @return DispatchResponse
      * @throws Exception
      */
-    protected function dispatch($message) {
+    protected function dispatch($message): DispatchResponse
+    {
         $logEntryHandler = new APILogEntryHandler();
         try {
             // todo Call to undefined method Swift_RfcComplianceException::isFatal()
             // this error message shows on the first try
             $logEntryHandler->generateSmtpLogEntry($message, $this->mailbox,  'smtp_send');
-            $result = [
-                'result'     => $this->transport_handler->send($message),
-                'message_id' => $message->getId(),
-            ];
+            $result = new DispatchResponse(
+                $this->transport_handler->send($message) > 0,
+                ['message_id' => $message->getId()]
+            );
 
         } catch (Swift_RfcComplianceException $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => $exception->getMessage(),
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         } catch (Swift_TransportException $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => "Cannot inititalize connection.",
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         } catch (Exception $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => $exception->getMessage(),
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         }
 
-        if (($result['result'] == true || $result == true)) {
+        if (($result->result == true)) {
             $logEntryHandler->updateSmtpLogEntry($result);
             if ($this->mailbox->imap_sent_dir != '') {
                 $msg = $message->toString();

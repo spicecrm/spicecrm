@@ -2,7 +2,6 @@
  * @module GlobalComponents
  */
 import {ElementRef, Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
@@ -22,9 +21,13 @@ export class GlobalSearchModule implements OnInit {
     @Output()public scope: EventEmitter<string> = new EventEmitter<string>();
    public listfields: any[] = [];
 
-    constructor(public metadata: metadata,public elementref: ElementRef, router: Router,public fts: fts,public language: language,public layout: layout) {
-
-    }
+    constructor(
+        public metadata: metadata,
+        public elementref: ElementRef,
+        public fts: fts,
+        public language: language,
+        public layout: layout
+    ) {}
 
     get issmall() {
         return this.layout.screenwidth == 'small';
@@ -78,5 +81,14 @@ export class GlobalSearchModule implements OnInit {
 
    public setSearchScope(): void {
         this.scope.emit(this.module);
+    }
+
+    /**
+     * a helper for the fieldset item to determine the size class in the grid
+     * @param i the index of the item
+     */
+    public sizeClass(i): string {
+        // regular -- calculate grid
+        return 'slds-size--1' +'-of-' + this.listfields[i].fieldconfig.width;
     }
 }

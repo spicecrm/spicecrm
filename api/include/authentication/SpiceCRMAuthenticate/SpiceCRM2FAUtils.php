@@ -127,7 +127,8 @@ class SpiceCRM2FAUtils
 
         switch ($method) {
             case 'one_time_password':
-                $tokenMatch = TOTPAuthentication::checkTOTPCode($user->id, $code2fa);
+                $userId = empty($user->impersonating_user_id) ? $user->id : $user->impersonating_user_id;
+                $tokenMatch = TOTPAuthentication::checkTOTPCode($userId, $code2fa);
                 break;
             case 'sms':
             case 'email':
@@ -153,7 +154,8 @@ class SpiceCRM2FAUtils
      */
     private static function checkActiveOneTimePassword(User $userObj)
     {
-        if (TOTPAuthentication::checkTOTPActive($userObj->id)) {
+        $userId = empty($userObj->impersonating_user_id) ? $userObj->id : $userObj->impersonating_user_id;
+        if (TOTPAuthentication::checkTOTPActive($userId)) {
             return;
         }
 

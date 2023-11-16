@@ -3,6 +3,7 @@
  */
 import {Directive, ElementRef, EventEmitter, Input, Output, Renderer2} from '@angular/core';
 import {language} from "../../services/language.service";
+import {toast} from "../../services/toast.service";
 
 /**
  * highlights the wrapped element to notify that this element is draggable and emit the dropped files
@@ -28,6 +29,7 @@ export class SystemDropFile {
         public renderer: Renderer2,
         public elementRef: ElementRef,
         public language: language,
+        public toast: toast
     ) {
         this.defineOverlayElement();
         this.listenWindowEvents();
@@ -98,9 +100,11 @@ export class SystemDropFile {
         /**
          * listen to dragenter, increase counter and on one emit boracast so the resp directive canm catch this
          */
-        this.dragEnterListener = this.renderer.listen('window', 'dragenter', () => {
+        this.dragEnterListener = this.renderer.listen('window', 'dragenter', (dragenter) => {
             this.dragDepth++;
-            if (this.dragDepth == 1) {
+
+            // enable upload only for files
+            if (this.dragDepth == 1 && dragenter.dataTransfer.types.indexOf('Files') == 0) {
                 this.renderer.appendChild(this.elementRef.nativeElement, this.overlayElement);
             }
         });

@@ -2,11 +2,12 @@
  * @module WorkbenchModule
  */
 import {
-    Component, forwardRef, Input
+    Component, ComponentRef, forwardRef, Input
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {modal} from "../../services/modal.service";
+import {ObjectModalModuleLookup} from "../../objectcomponents/components/objectmodalmodulelookup";
 
 @Component({
     selector: 'system-input-relate',
@@ -31,6 +32,11 @@ export class SystemInputRelate implements ControlValueAccessor {
      * the module so the enum can be determined
      */
     @Input() public module: string;
+
+    /**
+     * the module so the enum can be determined
+     */
+    @Input() public moduleFilter: string;
 
     /**
      * The field of the related name.
@@ -98,8 +104,9 @@ export class SystemInputRelate implements ControlValueAccessor {
      * opens a search modal
      */
     public searchWithModal() {
-        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+        this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal: ComponentRef<ObjectModalModuleLookup>) => {
             selectModal.instance.module = this.module;
+            selectModal.instance.modulefilter = this.moduleFilter;
             selectModal.instance.multiselect = false;
             selectModal.instance.selectedItems.subscribe(items => {
                 if (items.length) {

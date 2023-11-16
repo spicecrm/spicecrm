@@ -14,11 +14,10 @@ class TrackersController
 {
 
     /**
-     * called from the REST loader to load the recent items initially
-     *
-     * @return array
+     * load the recent items
+     * @return Response
      */
-    public function loadRecent(): array
+    public function loadRecent(Request $req, Response $res, array $args): Response
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -32,14 +31,14 @@ class TrackersController
                 $seed = BeanFactory::getBean($row['module_name'], $row['item_id'], ['relationships' => false]);
                 if ($seed) {
                     $row['data'] = $moduleHandler->mapBeanToArray($row['module_name'], $seed);
-                    $row['summary_text'] = $seed->summary_text;
+                    $row['summary_text'] = $seed->get_summary_text();
                     $recentItems[] = $row;
                 }
-            } catch(exception $e){
-
+            } catch(\Exception $e) {
+                LoggerManager::getLogger()->error("Unable to load recently viewed items: ".$e->getMessage());
             }
         }
-        return $recentItems;
+        return $res->withJson($recentItems);
     }
 
     /**
@@ -61,7 +60,7 @@ class TrackersController
             $seed = BeanFactory::getBean($row['module_name'], $row['item_id']);
             if($seed){
                 $row['data'] = $moduleHandler->mapBeanToArray($row['module_name'], $seed);
-                $row['summary_text'] = $seed->summary_text;
+                $row['summary_text'] = $seed->get_summary_text();
                 $recentItems[] = $row;
             }
         }

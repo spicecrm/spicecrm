@@ -1,7 +1,7 @@
 <div class="slds-grid slds-height_full slds-is-relative slds-theme--default" [class.spice-fullscreen]="isFullscreen">
     <div [ngClass]="{'slds-size--7-of-12': !expanded, 'slds-hide': expanded == 'right', 'slds-grow': expanded == 'left'}" class="slds-border--right slds-height_full slds-grid slds-grid--vertical">
         <div class="slds-grid slds-grid--align-end slds-p-right--x-small slds-p-top--xxx-small">
-            <button (click)="copyFromTemplate()" class="slds-button slds-button--icon-bare slds-button--icon">
+            <button (click)="copyFromTemplate()" [disabled]="!view.isEditMode()" class="slds-button slds-button--icon-bare slds-button--icon">
                 <system-button-icon icon="copy" size="small"></system-button-icon>
             </button>
             <button (click)="expand('right')" class="slds-button slds-button--icon-bare slds-button--icon">
@@ -12,12 +12,12 @@
             </ng-container>
         </div>
         <div class="slds-p-around--x-small slds-grow" style="min-height: 0">
-            <div *ngIf="!view.isEditMode(); else contentEditingContainer" (dblclick)="setEditMode()" class="slds-height_full slds-p-top--x-small" style="min-height: 250px">
+            <div *ngIf="!view.isEditMode(); else contentEditingContainer" (dblclick)="setEditMode()" class="slds-height_full slds-p-top--x-small slds-grid slds-grid--vertical" style="min-height: 250px">
                 <div class="slds-grid slds-m-bottom--xx-small">
                     <field-container *ngIf="!!fieldsNames.subjectField" [field]="fieldsNames.subjectField" class="slds-grow slds-m-right--x-small"  fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small"></field-container>
                     <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-left--x-small"></field-container>
                 </div>
-                <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center" style="min-height: 250px">
+                <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-grow" style="min-height: 250px">
                     <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
                     <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>
                     <field-container *ngSwitchCase="'html'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'html', hidelabel: true}" class="slds-size--1-of-1 slds-height_full child-height-full"></field-container>

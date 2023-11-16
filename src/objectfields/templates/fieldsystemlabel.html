@@ -1,5 +1,10 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
-    {{value}}
+    <ng-container *ngIf="fieldconfig.display_as_translated; else labelContainer">
+        <system-label [label]="value"/>
+    </ng-container>
+    <ng-template #labelContainer>
+        {{value}}
+    </ng-template>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="css_classes">
     <system-input-label [(ngModel)]="value"></system-input-label>

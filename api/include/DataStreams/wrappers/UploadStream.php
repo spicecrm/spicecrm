@@ -40,6 +40,8 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\DataStreams\interfaces\StreamWrapperRegisterI;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceFileUtils;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 /**
  * @internal
@@ -333,6 +335,16 @@ class UploadStream extends StreamWrapperAbstract implements StreamWrapperRegiste
     public function url_stat(string $path, int $flags)
     {
         return @stat(self::path($path));
+    }
+
+    public function getStats(string $name, ?object $config = null, $path){
+        $size = 0;
+        $count = 0;
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(self::getDir())) as $file) {
+            $size += $file->getSize();
+            $count++;
+        }
+        return ['size' => $size, 'count' => $count];
     }
 }
 

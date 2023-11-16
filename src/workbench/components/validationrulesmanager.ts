@@ -30,6 +30,7 @@ export class ValidationRulesManager {
         public language: language,
         public utils: modelutilities,
         public toast: toast,
+        public configurationService: configurationService,
     ) {
         this.logicoperator_options = this.language.getDisplayOptions('logicoperators_dom', true);
     }
@@ -83,6 +84,7 @@ export class ValidationRulesManager {
                 // this.broadcast.broadcastMessage('metadata.updatefieldsets', data);
                 this.toast.sendToast('rule removed');
                 this.removeRule(this.current_rule);
+                this.configurationService.reloadTaskData('validationrules');
                 return true;
             },
             (error) => {
@@ -111,6 +113,7 @@ export class ValidationRulesManager {
 
                 this.rules.sort((a, b) => a.name.localeCompare(b.name));
 
+                this.configurationService.reloadTaskData('validationrules');
                 this.toast.sendToast('changes saved');
             },
             (error) => {
@@ -171,6 +174,7 @@ export class ValidationRulesManager {
 
 import {Pipe} from '@angular/core';
 import {JsonPipe} from '@angular/common';
+import {configurationService} from "../../services/configuration.service";
 
 // tslint:disable-next-line:max-classes-per-file
 @Pipe({name: 'maybejson'})

@@ -40,7 +40,7 @@ $routes = [
             'separator' => [
                 'in'          => 'query',
                 'type'        => ValidationMiddleware::TYPE_ENUM,
-                'options'     => ['comma', 'semicolon'],
+                'options'     => ['comma', 'semicolon', 'endofline'],
                 'required'    => true,
                 'description' => ''
             ],

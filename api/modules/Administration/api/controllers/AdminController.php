@@ -59,6 +59,7 @@ class AdminController
         // execute git pull
         $gitPullLog = '';
 
+
         // get the remote url
         $output = '';
         exec("git config --get remote.origin.url", $output);
@@ -71,10 +72,12 @@ class AdminController
         } else
             $remoteUrl = str_replace('//', '//' . $username . ':' . $password . '@', $output);
 
+        $remoteUrl =  trim($remoteUrl[0], '.git');
+
         $currentBranch = null;
         exec("git branch --show-current", $currentBranch);
 
-        exec("git pull $remoteUrl[0] $currentBranch[0]", $gitPullLog);
+        exec("git pull $remoteUrl $currentBranch[0] 2>&1", $gitPullLog);
 
 
         // error handling if this fails
@@ -133,7 +136,7 @@ class AdminController
         // get the fts stats
         $statsArray['elastic'] = SpiceFTSHandler::getInstance()->getStats();
 
-        $statsArray['uploadfiles'] = $this->getDirectorySize(StreamFactory::getPathPrefix('upload'));
+        $statsArray['uploadfiles'] = StreamFactory::getStats('upload');
 
         $params = $req->getQueryParams();
         if ($params['summary']) {
@@ -145,21 +148,6 @@ class AdminController
             ]);
         }
         return $res->withJson($statsArray);
-    }
-
-    /**
-     * @param $directory
-     * @return array
-     */
-    private function getDirectorySize($directory)
-    {
-        $size = 0;
-        $count = 0;
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory)) as $file) {
-            $size += $file->getSize();
-            $count++;
-        }
-        return ['size' => $size, 'count' => $count];
     }
 
     /**
@@ -186,8 +174,7 @@ class AdminController
                 'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
             ],
             'advanced' => [
-                'developerMode' => SpiceConfig::getInstance()->config['developerMode'],
-                'stack_trace_errors' => SpiceConfig::getInstance()->config['stack_trace_errors'],
+                'stack_trace_errors' => SpiceUtils::getStackTrace(),
                 'dump_slow_queries' => SpiceConfig::getInstance()->config['dump_slow_queries'],
                 'log_memory_usage' => SpiceConfig::getInstance()->config['log_memory_usage'],
                 'slow_query_time_msec' => SpiceConfig::getInstance()->config['slow_query_time_msec'],
