@@ -136,6 +136,9 @@ export class ExchangeUserSettings implements OnInit {
             this._activeAPI = this.userPreferences.preferences.global.microsoftActiveService;
             this.getConfig();
         }
+        else {
+            this.getConfig();
+        }
     }
 
     /**

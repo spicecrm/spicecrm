@@ -4,7 +4,6 @@
 import {
     Component, Input
 } from '@angular/core';
-import {model} from '../../../services/model.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {language} from '../../../services/language.service';
 import {workflow} from '../services/workflow.service';
@@ -32,7 +31,7 @@ export class WorkflowPanelTaskStandard {
      */
     public comment: string = '';
 
-    constructor(private model: model, private workflowservice: workflow, private language: language, private broadcast: broadcast, private toast: toast, private modelutilities: modelutilities) {
+    constructor(private workflowservice: workflow, private language: language, private broadcast: broadcast, private toast: toast, private modelutilities: modelutilities) {
 
     }
 
@@ -64,15 +63,11 @@ export class WorkflowPanelTaskStandard {
         this.posting = true;
         this.workflowservice.callTaskMethod(this.taskData.id, 'setStatus', {status: status, comment: this.comment}).subscribe(parent => {
             this.taskData.workflowtask_status = status;
-            this.model.data = this.modelutilities.backendModel2spice(this.model.module, parent);
-
             /**
              * broadcast that we saved the model
              */
             this.broadcast.broadcastMessage('model.save', {
-                id: this.model.id,
-                module: this.model.module,
-                data: this.model.data
+                module: this.workflowservice.module
             });
 
             /**

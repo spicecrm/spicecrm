@@ -1,7 +1,7 @@
 <system-modal size="large">
     <system-modal-header (close)="close()"><system-label label="LBL_SALESDOCSFLOW"></system-label></system-modal-header>
     <system-modal-content system-modal-content-grow margin="none">
-        <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-tree slds-table_tree" role="treegrid">
+        <table *ngIf="!itemid" class="slds-table slds-table_bordered slds-table_fixed-layout slds-tree slds-table_tree" role="treegrid">
             <thead>
                 <tr class="slds-line-height_reset">
                     <th scope="col" *ngFor="let field of fields">
@@ -9,13 +9,38 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody *ngIf="!loading">
                 <tr *ngFor="let row of rows" [ngClass]="{'slds-theme--warning': row.model.id == model.id}" [fields]="fields" [attr.aria-level]="row.level" salesdocs-flow-table-row [data]="row.model"></tr>
             </tbody>
+            <tbody system-table-stencils [columns]="fields.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
         </table>
-
+        <table *ngIf="itemid" class="slds-table slds-table_bordered slds-table_fixed-layout slds-tree slds-table_tree" role="treegrid">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col" *ngFor="let field of itemfields">
+                        <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody *ngIf="!loading">
+                <tr *ngFor="let row of itemrows" [ngClass]="{'slds-theme--warning': row.model.id == itemid}" [fields]="itemfields" [attr.aria-level]="row.level" salesdocs-flow-item-table-row [data]="row.model"></tr>
+            </tbody>
+            <tbody system-table-stencils [columns]="fields.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
+        </table>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--neutral" [disabled]="loading" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <!--div class="slds-grid slds-grid--vertical-align-center">
+            <system-label label="LBL_ITEM"></system-label>
+            <div class="slds-m-left--x-small slds-form-element__control slds-col--bump-right">
+                <div class="slds-select_container">
+                    <select class="slds-select" [disabled]="items.length == 0" [(ngModel)]="itemid">
+                        <option value=""><system-label label="LBL_SELECT"></system-label></option>
+                        <option *ngFor="let item of items" [ngValue]="item.id">{{item.itemnr}}</option>
+                    </select>
+                </div>
+            </div>
+            <button class="slds-button slds-button--neutral" [disabled]="loading" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        </div-->
     </system-modal-footer>
 </system-modal>

@@ -67,5 +67,13 @@ $elasticTokenizers = [
     "spice_email" => [
         "type" => "uax_url_email",
         "max_token_length" => 5
+    ],
+    "spice_phone" => [
+        "type" => "nGram",
+        "min_gram" => $minNgram,
+        "max_gram" => 15,
+        "token_chars" => [
+            "digit"
+        ]
     ]
 ];

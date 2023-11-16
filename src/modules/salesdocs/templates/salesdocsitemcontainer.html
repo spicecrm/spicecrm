@@ -10,3 +10,8 @@
 <td *ngFor="let fieldsetItem of fieldsetItems">
     <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
 </td>
+<td class="slds-cell-shrink">
+    <button class="slds-button slds-button--icon slds-col_bump-left"  [disabled]="!canEdit" (click)="editDetails()">
+        <system-button-icon icon="prompt_edit"></system-button-icon>
+    </button>
+</td>

@@ -26,9 +26,12 @@
                         </button>
                     </li>
                 </ol>
+                <div class="slds-progress-bar slds-progress-bar_x-small">
+                    <span class="slds-progress-bar__value" [ngStyle]="getProgressBarWidth()"></span>
+                </div>
             </div>
-            <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>
-            <button *ngIf="showSave()" class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+            <button *ngIf="showNext()" class="slds-button slds-button--neutral" [disabled]="this.model.isLoading || disableNext()" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>
+            <button *ngIf="showSave()" class="slds-button slds-button--brand" [disabled]="this.model.isLoading || disableNext()" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
         <div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
             <ng-container *ngIf="!model.isLoading">

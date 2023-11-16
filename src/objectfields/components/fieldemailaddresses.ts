@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -33,14 +33,18 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     public isAdding: boolean = false;
     /**
+     * holds the current focused email address
+     */
+    public focusedEmailAddress: string;
+    /**
      * holds the email addresses locally
      */
     public emailAddresses = [];
     /**
      * holds the new input email address data
      */
-    public inputNewEmailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?} = {
-        primary_address: '', invalid_email: 0, email_address: '', hasFocus: true
+    public inputNewEmailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?} = {
+        primary_address: '', invalid_email: 0, email_address: ''
     };
 
     constructor(public model: model,
@@ -65,7 +69,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * delete the email address from the array triggered by delete button
      * @param emailAddress
      */
-    public handleOnDelete(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public handleOnDelete(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
 
         this.emailAddresses = this.emailAddresses.filter(e => e.id !== emailAddress.id);
 
@@ -86,15 +90,13 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         // enforce a duplicate check
         this.model.duplicateCheckOnChange([], true);
-
-        this.handleFieldInvalid();
     }
 
     /**
      * open the email link by mailto in browser
      * @param emailAddress
      */
-    public sendEmail(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public sendEmail(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
         if (emailAddress.invalid_email == 1) return;
         window.location.assign('mailto:' + emailAddress.email_address);
     }
@@ -113,7 +115,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set the primary email address
      * @param emailAddress
      */
-    public setPrimary(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public setPrimary(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
 
         if (emailAddress.invalid_email == 1) {
             return;
@@ -175,7 +177,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @param emailAddress
      * @private
      */
-    public setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
+    public setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
         if (emailAddress?.invalid_email == 1 || emailAddress?.email_address == this.model.getField('email1')) {
             return;
         }
@@ -212,8 +214,6 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         } else {
             this.setCanAdd();
         }
-
-        this.handleFieldInvalid();
     }
 
     /**
@@ -228,17 +228,15 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         const emailAddresses = this.getUniqueCleanEmailAddresses();
         this.model.addRelatedRecords('email_addresses', emailAddresses.unique);
+        // rollback the deleted empty addresses if they were refilled
+        this.model.rollbackRemovedRelatedRecords('email_addresses', emailAddresses.unique.map(e => e.id));
         this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
 
-        let invalid = this.handleFieldInvalid();
         this.setEmail1Field(
             emailAddresses.unique.find(e => e.primary_address == '1')
         );
 
-        // if the field is not invalid
-        if(invalid == false) {
-            this.model.duplicateCheckOnChange([], true);
-        }
+        this.model.duplicateCheckOnChange([], true);
 
         this.setCanAdd();
     }
@@ -256,26 +254,10 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         this.inputNewEmailAddress.id = this.model.generateGuid();
         this.inputNewEmailAddress.isNew = true;
 
+        this.focusedEmailAddress = this.inputNewEmailAddress.id;
+
         this.emailAddresses.push({...this.inputNewEmailAddress});
         this.cancelAdding();
-    }
-    /**
-     * handle setting/clearing the field message for invalid status
-     * returns ture if invalid, otherwise false
-     *
-     * @private
-     */
-    public handleFieldInvalid() {
-        if (((this.emailAddresses.length == 1 && !!this.emailAddresses[0].email_address) || this.emailAddresses.length > 1) && this.emailAddresses.some(e => e.invalid_email == 1)) {
-            this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
-            return true;
-        } else {
-            if (this.emailAddresses.length == 1) {
-                this.emailAddresses[0].invalid_email = 0;
-            }
-            this.clearFieldError();
-            return false;
-        }
     }
 
     /**
@@ -283,8 +265,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @private
      */
     public setCanAdd() {
-        this.canAdd = !this.fieldconfig.singleMode ?
-            !this.emailAddresses.some(emailAddress => emailAddress.invalid_email == 1) : this.emailAddresses.length == 0;
+        this.canAdd = !this.fieldconfig.singleMode ? true : this.emailAddresses.length == 0;
     }
 
     /**
@@ -301,7 +282,6 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             .filter(emailAddress => !!emailAddress.email_address)
             .forEach(emailAddress => {
                 if (!unique.some(e => e.email_address == emailAddress.email_address)) {
-                    delete emailAddress.hasFocus;
                     unique.push(emailAddress);
                 } else if (!emailAddress.isNew) {
                     deletedIds.push(emailAddress.id);
@@ -317,7 +297,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     public cancelAdding() {
 
         this.inputNewEmailAddress = {
-            id: '', primary_address: '', invalid_email: 0, email_address: '', hasFocus: true
+            id: '', primary_address: '', invalid_email: 0, email_address: ''
         };
 
         if (this.emailAddresses.length > 0) {

@@ -510,7 +510,7 @@ class TimeDate
     public function fromDbDate($date)
     {
         try {
-            return DateTime::createFromFormat(self::DB_DATE_FORMAT, $date, self::$gmtTimezone);
+            return DateTime::createFromFormat(self::DB_DATE_FORMAT, $date, self::$gmtTimezone) ?: self::fromDb($date);
         } catch (Exception $e) {
             LoggerManager::getLogger()->error("fromDbDate: Conversion of $date from DB format failed: {$e->getMessage()}");
             return null;
@@ -977,4 +977,19 @@ class TimeDate
         return $this->_getUserTZ($user)->getOffset($time) / 60;
     }
 
+    /**
+     * Convert local datetime to DB date
+     *
+     * TZ conversion depends on parameter. If false, only format conversion is performed.
+     *
+     * @param string $date Local date
+     * @param bool $convert_tz Should time and TZ be taken into account?
+     * @return string Date in DB format
+     */
+    public function to_db_date($date, $convert_tz = true)
+    {
+        return $this->_convert($date,
+            $this->get_date_time_format(), $convert_tz ? $this->_getUserTZ() : self::$gmtTimezone,
+            self::DB_DATE_FORMAT, self::$gmtTimezone, true);
+    }
 }

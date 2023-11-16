@@ -21,6 +21,7 @@ import {Observable, Subject} from "rxjs";
  * renders a field to upload files in a model itself
  */
 @Component({
+    selector: 'field-model-attachment',
     templateUrl: '../templates/fieldmodelattachment.html',
     providers: [modelattachments]
 })

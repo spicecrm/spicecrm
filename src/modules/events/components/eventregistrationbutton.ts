@@ -1,18 +1,19 @@
 /**
- * @module ModuleCampaigns
+ * trigger opening the EventRegistrationModal window
+ * @module ModuleEvents
  */
 import {Component, Injector} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
-import {backend} from "../../../services/backend.service";
 import {Subscription} from "rxjs";
+import {ActionSetItemI} from "../../../objectcomponents/interfaces/objectcomponents.interfaces";
 
 @Component({
     selector: 'event-registration-button',
     templateUrl: '../templates/eventregistrationbutton.html'
 })
-export class EventRegistrationButton {
+export class EventRegistrationButton implements ActionSetItemI {
 
     constructor(public language: language, public model: model, public injector: Injector, public modal: modal) {
 

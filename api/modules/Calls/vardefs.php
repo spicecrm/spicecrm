@@ -316,6 +316,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'source'       => 'non-db',
             'vname'        => 'LBL_CONSUMERS',
         ],
+        'employees' => [
+            'name'         => 'employees',
+            'type'         => 'link',
+            'relationship' => 'employees_calls',
+            'module'       => 'Employees',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_EMPLOYEES',
+        ],
         'contacts' => [
             'name'         => 'contacts',
             'type'         => 'link',
@@ -600,7 +608,7 @@ if (file_exists("extensions/modules/ServiceOrders")) {
     ];
 }
 if (file_exists("extensions/modules/ProcurementDocs")) {
-    SpiceDictionaryHandler::getInstance()->dictionary['Call']['relationships']['procurementdocs'] = [
+    SpiceDictionaryHandler::getInstance()->dictionary['Call']['fields']['procurementdocs'] = [
         'name'         => 'procurementdocs',
         'type'         => 'link',
         'relationship' => 'procurementdocs_calls',

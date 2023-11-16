@@ -3,10 +3,11 @@
  */
 import {
     Component,
-    ElementRef, EventEmitter,
+    ElementRef, EventEmitter, Injector,
     Input, OnDestroy, OnInit, Output
 } from '@angular/core';
 import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
 import {metadata} from '../../../services/metadata.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
@@ -54,6 +55,11 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
     public hasDetailsView: boolean = false;
 
     /**
+     * if the item type has an edit modal
+     */
+    public editModal: string;
+
+    /**
      * holds the subscrptions
      *
      * @private
@@ -66,10 +72,12 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         public backend: backend,
         public elementRef: ElementRef,
         public model: model,
+        public modal: modal,
         public userpreferences: userpreferences,
         public view: view,
         public configuration: configurationService,
-        public salesdocrecord: salesdocrecord
+        public salesdocrecord: salesdocrecord,
+        public injector: Injector
     ) {
         this.view.displayLabels = false;
 
@@ -135,6 +143,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         if (itemTypes) {
             let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.item.itemtype);
             if (itemTypeDetails && itemTypeDetails.detailcomponentset) this.hasDetailsView = true;
+            if (itemTypeDetails && itemTypeDetails.editmodalcomponent) this.editModal = itemTypeDetails.editmodalcomponent;
 
             // determine the list fieldset
             if (itemTypeDetails && itemTypeDetails.itemfieldset) {
@@ -156,6 +165,13 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * returns if the item can be edited
+     */
+    get canEdit(){
+        return !!this.editModal && this.editing;
     }
 
     get editing() {
@@ -209,16 +225,34 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
     }
 
     /**
+     * opens the edit modal if one is defined in the type
+     */
+    public editDetails() {
+        // check if we can edit at all
+        if(!this.canEdit) return false
+
+        let itemTypes = this.configuration.getData('salesdocitemtypes');
+        let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.model.getField('itemtype'));
+
+        this.modal.openModal(this.editModal, true, this.injector).subscribe({
+            next: (editModal) => {
+                // add the item type details
+                editModal.instance.itemTypeDetails = itemTypeDetails;
+            }
+        })
+    }
+
+    /**
      * triggered when a recalculate of the complete salesdoc is required
      */
     public recalculate() {
         // do not recalculate in display mode
-        if(this.view.getMode() == 'view') return;
+        if (this.view.getMode() == 'view') return;
 
         // check that we have values to recalculate otherwise set totals to 0
         if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
 
-            if(this.item.salesdocitempricecalculationschema_id){
+            if (this.item.salesdocitempricecalculationschema_id) {
                 this.salesdocrecord.getItemFieldsByElements(this.item.salesdocitempricecalculationschema_id, this.item.quantity, this.item.salesdocitempricedetermination, this.item);
             } else if (this.item.gross_priced) {
                 this.item.amount_gross = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);

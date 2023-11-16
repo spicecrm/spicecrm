@@ -229,7 +229,11 @@ export class WorkflowManager implements OnInit, AfterViewInit {
             next: () => {
                 this.model.data.isNew = false;
                 this.currentWorkflow.data.isNew = false;
-
+                this.workflowManagerService.currentModule.workflowDefinitions.some(d => {
+                    if (d.id != this.currentWorkflowId) return false;
+                    d.tasks = this.model.data.tasks;
+                    return true;
+                });
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             },
             error: () => {
@@ -315,7 +319,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      */
     public getWorkflowDefinitions() {
         let loadingModal = this.modal.await('LBL_LOADING');
-        this.backend.getRequest('module/WorkflowDefinitions/' + this.currentModule).subscribe({
+        this.backend.getRequest('module/WorkflowDefinitions/forModule/' + this.currentModule).subscribe({
             next: wfd => {
                 loadingModal.emit(true);
                 this.workflowManagerService.currentModule.workflowDefinitions = wfd;

@@ -157,6 +157,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     }
 
     get categories(){
+        if(!this.treeid) return [];
         let categories = this.config.getData('categories');
         return categories ? categories[this.treeid] : [];
     }

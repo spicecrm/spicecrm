@@ -1,0 +1,16 @@
+<div class="slds-p-around--x-small">
+    <fieldset class="slds-form-element slds-form-element_compound slds-m-bottom--medium">
+        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps"><system-label label="LBL_WORKFLOWDEFINITION"></system-label></legend>
+        <div class="slds-form-element__control slds-p-left--small slds-p-top--small">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <system-input-relate *ngIf="!model.data.integration_params.kprocessworkflow.definition_id; else inputWithDisplayNameContainer" (ngModelChange)="setDefinitionId($event)" [ngModel]="undefined" module="WorkflowDefinitions" [moduleFilter]="componentconfig.moduleFilter" class="slds-grow"/>
+                    <ng-template #inputWithDisplayNameContainer #modelProvider="system-model-provider" [system-model-provider]="{module: 'WorkflowDefinitions', id: model.data.integration_params.kprocessworkflow.definition_id, data: null}">
+                        <system-input-relate *ngIf="!modelProvider.model.data.summary_text"  module="WorkflowDefinitions" [moduleFilter]="componentconfig.moduleFilter" (ngModelChange)="setDefinitionId($event)" [ngModel]="model.data.integration_params.kprocessworkflow.definition_id + '::' + model.data.integration_params.kprocessworkflow.definition_id" class="slds-grow"/>
+                        <system-input-relate *ngIf="!!modelProvider.model.data.summary_text"  module="WorkflowDefinitions" [moduleFilter]="componentconfig.moduleFilter" (ngModelChange)="setDefinitionId($event)" [ngModel]="model.data.integration_params.kprocessworkflow.definition_id + '::' + modelProvider.model.data.summary_text" class="slds-grow"/>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

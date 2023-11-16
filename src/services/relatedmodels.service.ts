@@ -51,6 +51,10 @@ export class relatedmodels implements OnDestroy {
      * the link in the parents vardefs. If none is set it is assmed that the name of the link is the same as the name of the module but in lowercase
      */
     public linkName = '';
+    /**
+     * the search term
+     */
+    public searchTerm: string = '';
 
     /**
      * alternative to the link a specific endoint can be specified that is called instead of the relationship
@@ -250,6 +254,9 @@ export class relatedmodels implements OnDestroy {
                 }
 
                 break;
+            case "relatedmodels.reload":
+                this.getData(true);
+                break;
         }
     }
 
@@ -287,7 +294,8 @@ export class relatedmodels implements OnDestroy {
             getcount: true,
             offset: this.offset,
             limit: this.loaditems,
-            fieldfilters: this.fieldfilters
+            fieldfilters: this.fieldfilters,
+            searchterm: this.searchTerm
         };
 
         // check if we have a sortfield

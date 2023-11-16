@@ -168,7 +168,7 @@ export class WorkflowDiagramService implements OnDestroy {
             SpiceBpmnModules.spiceContextPad.elementTypes = this.elementTypes;
 
             this.bpmnJS = new BpmnJS({
-                keyboard: { bindTo: document },
+                keyboard: { bindTo: container },
                 moddleExtensions: {
                     spice: {
                         name: 'WorkflowTask', prefix: 'spice', xml: {'tagAlias': 'lowerCase'},

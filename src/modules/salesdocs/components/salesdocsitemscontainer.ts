@@ -191,6 +191,9 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
                     let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == itemType);
                     if (itemTypeDetails) {
                         this.modal.openModal(itemTypeDetails.addmodalcomponent, true, this.injector).subscribe(addModal => {
+                            // add the item type details
+                            addModal.instance.itemTypeDetails = itemTypeDetails;
+
                             // if a filter is set add the filter
                             if (itemTypeDetails.addmodalfilter) {
                                 addModal.instance.modulefilter = itemTypeDetails.addmodalfilter;

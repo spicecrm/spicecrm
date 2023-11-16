@@ -117,13 +117,19 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
             'name' => 'bank_bic',
             'vname' => 'LBL_BIC',
             'type' => 'varchar',
-            'len' => 50
+            'len' => 11
         ],
         'bank_iban' => [
             'name' => 'bank_iban',
             'vname' => 'LBL_IBAN',
             'type' => 'varchar',
-            'len' => 50
+            'len' => 34
+        ],
+        'bank_accountholder' => [
+            'name' => 'bank_accountholder',
+            'vname' => 'LBL_ACCOUNTHOLDER',
+            'type' => 'varchar',
+            'len' => 70
         ],
         'header_from' => [
             'name' => 'header_from',

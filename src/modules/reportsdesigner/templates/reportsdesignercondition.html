@@ -3,8 +3,8 @@
         <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center">
             <system-label label="LBL_NAME"></system-label>
         </label>
-        <div class="slds-form-element__control slds-grow">
-            <system-input-label [(ngModel)]="whereCondition.label"></system-input-label>
+        <div class="slds-form-element__control slds-grow slds-truncate">
+            <system-input-label class="slds-truncate" [(ngModel)]="whereCondition.label"></system-input-label>
         </div>
     </div>
     <div class="slds-form-element slds-p-horizontal--xx-small slds-grid slds-grid--vertical-align-center slds-size--1-of-2">
@@ -27,6 +27,7 @@
     </label>
     <div class="slds-grid slds-grow">
         <div [ngSwitch]="itemType" class="slds-grow">
+            <reporter-filter-item-category *ngSwitchCase="'category'" [field]="'value'" [wherecondition]="whereCondition" [isMultiSelect]="whereCondition.operator.includes('oneof')"></reporter-filter-item-category>
             <reporter-filter-item-enum *ngSwitchCase="'enum' || 'multienum' || 'radioenum'" [field]="'value'" [wherecondition]="whereCondition" [isMultiSelect]="whereCondition.operator.includes('oneof')"></reporter-filter-item-enum>
             <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuekey'" [wherecondition]="whereCondition"></reporter-filter-item-date>
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-text>
