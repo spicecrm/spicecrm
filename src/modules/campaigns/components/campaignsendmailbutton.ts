@@ -72,10 +72,10 @@ export class CampaignSendMailButton {
     }
 
     /**
-     * only show for campaign tasks of type email
+     * only show for campaign tasks of type Email or SMS
      */
     get hidden() {
-        return this.model.getField('campaigntask_type') !== 'Email';
+        return !/^Email|SMS$/.test( this.model.getField('campaigntask_type') );
     }
 
     /**
@@ -91,12 +91,6 @@ export class CampaignSendMailButton {
 
         // not if editing
         if (!this.model.checkAccess('edit')) {
-            this.disabled = true;
-            return;
-        }
-
-        // only for email
-        if (this.model.getField('campaigntask_type') !== 'Email') {
             this.disabled = true;
             return;
         }
