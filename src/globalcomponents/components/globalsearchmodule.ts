@@ -6,6 +6,7 @@ import {fts} from '../../services/fts.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {layout} from '../../services/layout.service';
+import {view} from "../../services/view.service";
 
 /**
  * @ignore
@@ -14,19 +15,21 @@ declare var _;
 
 @Component({
     selector: 'global-search-module',
-    templateUrl: '../templates/globalsearchmodule.html'
+    templateUrl: '../templates/globalsearchmodule.html',
+    providers: [view]
 })
 export class GlobalSearchModule implements OnInit {
     @Input()public module: string = '';
     @Output()public scope: EventEmitter<string> = new EventEmitter<string>();
-   public listfields: any[] = [];
+    public listfields: any[] = [];
 
     constructor(
         public metadata: metadata,
         public elementref: ElementRef,
         public fts: fts,
         public language: language,
-        public layout: layout
+        public layout: layout,
+        public view: view
     ) {}
 
     get issmall() {
@@ -46,7 +49,7 @@ export class GlobalSearchModule implements OnInit {
         }
     }
 
-   public getCount(): any {
+    public getCount(): any {
         let resultCount = {};
         this.fts.moduleSearchresults.some(item => {
             if (item.module === this.module) {
@@ -64,11 +67,11 @@ export class GlobalSearchModule implements OnInit {
         return !this.fts.runningmodulesearch && this.getCount().total > 0 ? false : true;
     }
 
-   public canViewMore(): boolean {
+    public canViewMore(): boolean {
         return this.getCount().total > 5;
     }
 
-   public getItems(): any[] {
+    public getItems(): any[] {
         let items: any[] = [];
         this.fts.moduleSearchresults.some(item => {
             if (item.module === this.module) {
@@ -79,7 +82,7 @@ export class GlobalSearchModule implements OnInit {
         return items;
     }
 
-   public setSearchScope(): void {
+    public setSearchScope(): void {
         this.scope.emit(this.module);
     }
 
@@ -88,7 +91,15 @@ export class GlobalSearchModule implements OnInit {
      * @param i the index of the item
      */
     public sizeClass(i): string {
+        // in case of small view size 1-of-1
+        if (this.view.size == 'small') return 'slds-size--1-of-1';
+
+        let confWidth = this.listfields[i].fieldconfig.width;
+
+        // if width is not defined in config set default to 1
+        if(!confWidth) confWidth = '1';
+
         // regular -- calculate grid
-        return 'slds-size--1' +'-of-' + this.listfields[i].fieldconfig.width;
+        return 'slds-col slds-size--' + confWidth + '-of-12';
     }
 }
