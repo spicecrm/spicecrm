@@ -572,13 +572,14 @@ class CampaignTask extends SpiceBean
             $emailTemplate->body_html = $this->email_body;
             $emailTemplate->style = $this->email_stylesheet_id;
         }
-        $parsedHtml = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
+        $parsedContent = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
 
         $email->id = SpiceUtils::createGuid();
         $email->new_with_id = true;
         $email->mailbox_id = $this->mailbox_id;
-        $email->name = $test ? ('[TEST] ' . $this->email_subject) : $this->email_subject;
-        $email->body = $parsedHtml['body_html'];
+        $email->name = $parsedContent['subject'];
+        $email->body = $parsedContent['body_html'];
+        if ( $test ) $email->name = '[TEST] ' . $email->name;
 
         $email->addEmailAddress('to', $seed->email1);
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
