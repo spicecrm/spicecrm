@@ -1544,14 +1544,12 @@ class Email extends SpiceBean
         }
 
         // get the main parts for the email
-        $this->name = $bodyParts[0]['headers']['subject'];
-        // handle a subject like Subject: =?iso-8859-1?B?V0c6IFRFU1QgRUtGQi00MDkgxNzW5Pb8?=
-        $subjectParts = explode("?", $bodyParts[0]['headers']['subject']);
-        if(count($subjectParts) > 1) {
-            if ($base64Subject = base64_decode($subjectParts[3])) {
-                $this->name = $this->setBodyEncodingToUTF8($base64Subject);
-            }
-        }
+        // decode mail subject
+        $this->name = $this->setBodyEncodingToUTF8(
+            array_reduce(imap_mime_header_decode($bodyParts[0]['headers']['subject']), function($acc, $charsetInfo) {
+                return $acc . $charsetInfo->text;
+            }, "")
+        );
 
         // get the proper date sent
         $date = new DateTime($bodyParts[0]['headers']['date']);
