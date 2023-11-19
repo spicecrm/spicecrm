@@ -1656,6 +1656,33 @@ abstract class DBManager
     }
 
     /**
+     * Runs a query and returns all Rows
+     *
+     * @param string $sql SQL Statement to execute
+     * @param bool $dieOnError True if we want to call die if the query returns errors
+     * @param string $msg Message to log if error occurs
+     * @param bool $suppress Message to log if error occurs
+     * @return array    single row from the query
+     */
+    public function fetchAll($sql, $dieOnError = false, $msg = '', $suppress = false)
+    {
+        $this->checkConnection();
+        $queryresult = $this->limitQuery($sql, 0, 1, $dieOnError, $msg);
+        $this->checkError($msg . ' Fetch One Failed:' . $sql, $dieOnError);
+
+        if (!$queryresult) return false;
+
+        // get the rows
+        while($row = $this->fetchByAssoc($queryresult)){
+            $rows[] = $row;
+        }
+        if (!$rows) return false;
+
+        $this->freeResult($queryresult);
+        return $rows;
+    }
+
+    /**
      * Returns the number of rows affected by the last query
      * @abstract
      * See also affected_rows capability, will return 0 unless the DB supports it
