@@ -220,7 +220,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'relationship' => 'accounts_contacts',
                 'link_type' => 'one',
                 'source' => 'non-db',
-                'vname' => 'LBL_ACCOUNT',
+                'vname' => 'LBL_ACCOUNTS',
                 'duplicate_merge' => false,
                 'module' => 'Accounts'
             ],
