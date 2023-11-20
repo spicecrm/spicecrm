@@ -874,7 +874,7 @@ $db = DBManagerFactory::getInstance();
         }
 
         // process seleciton limit and run the main query
-        if ($this->selectionlimit != '') {
+        if (!empty($this->selectionlimit)) {
             $isPercentage = false;
             $selectionLimit = trim($this->selectionlimit);
             // 2013-02-26 check for p and not %
@@ -907,12 +907,12 @@ $db = DBManagerFactory::getInstance();
                 $parameters ['start'] = 0;
 
             $parameters ['limit'] = $selectionLimit;
-        } else {
-            // remove parameters when they shall not be in use to avoid a limit query like 0,0
-            if (isset($parameters ['limit']) && empty($parameters ['limit']) && isset($parameters ['start'])) {
-                unset($parameters ['start']);
-                unset($parameters ['limit']);
-            }
+        }
+
+        // remove parameters when they shall not be in use to avoid a limit query like LIMIT 0,0
+        if (isset($parameters ['limit']) && empty($parameters ['limit']) && isset($parameters ['start'])) {
+            unset($parameters ['start']);
+            unset($parameters ['limit']);
         }
 //        file_put_contents("sugarcrm.log", "#######". print_r($this->whereOverride, true)."\n", FILE_APPEND);
 
