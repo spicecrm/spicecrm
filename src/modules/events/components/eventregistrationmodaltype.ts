@@ -1,5 +1,5 @@
 /**
- * @module ModuleCampaigns
+ * @module ModuleEvents
  */
 import {Component, Injector} from '@angular/core';
 import {metadata} from "../../../services/metadata.service";

@@ -293,9 +293,9 @@ export class configurationService {
      *
      * @param key
      * @param data
-     * @param updateStore
+     * @param updateLoadTaskStore concerns only load
      */
-    public setData(key, data, updateStore = true) {
+    public setData(key, data, updateLoadTaskStore = true) {
 
         this.appdata[key] = data;
         // write also to the store
@@ -304,7 +304,7 @@ export class configurationService {
         // emit the key
         this.datachanged$.emit(key);
 
-        if (!updateStore || !this.keysLoaderTaskID[key]) return;
+        if (!updateLoadTaskStore || !this.keysLoaderTaskID[key]) return;
 
         // update the stored load task data
         this.storeService.readStore('loaddata', 'loadtaskdata', this.keysLoaderTaskID[key]).subscribe({

@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
+import {modal} from "../../../services/modal.service";
 
 declare var moment: any;
 
@@ -18,6 +19,9 @@ declare var moment: any;
 })
 export class SpicePriceManagerModal implements OnInit{
 
+    /**
+     * reference to the modal itself
+     */
     public self: any;
 
     public conditionTypes: any[] = [];
@@ -30,7 +34,7 @@ export class SpicePriceManagerModal implements OnInit{
     public loadedconditions: any[] = [];
     public conditions: any[] = [];
 
-    constructor(public backend: backend,  public model: model) {
+    constructor(public backend: backend,  public model: model, public modal: modal) {
 
     }
 
@@ -90,6 +94,7 @@ export class SpicePriceManagerModal implements OnInit{
      */
     public loadConditions(){
         this.conditions = [];
+        let awaitModal = this.modal.await('LBL_LOADING');
         this.backend.getRequest(`module/${this.model.module}/${this.model.id}/pricedetermination/conditions/${this.conditionType}/${this.determinationType}`).subscribe({
             next: (res) => {
                 this.loadedconditions= res;
@@ -97,7 +102,12 @@ export class SpicePriceManagerModal implements OnInit{
                     if(c.valid_from) c.valid_from = new moment(c.valid_from);
                     if(c.valid_to) c.valid_to = new moment(c.valid_to);
                     c.condition_value = parseFloat(c.condition_value);
+                    c.quantity_base = parseFloat(c.quantity_base);
                 }
+                awaitModal.emit(true);
+            },
+            error: () => {
+                awaitModal.emit(true);
             }
         })
     }
@@ -106,6 +116,7 @@ export class SpicePriceManagerModal implements OnInit{
         let condition = {
             id: this.model.utils.generateGuid(),
             valid_from: moment(),
+            quantity_base: 1,
             elementvalues: []
         }
 

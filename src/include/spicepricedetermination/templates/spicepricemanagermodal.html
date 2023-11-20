@@ -31,7 +31,7 @@
     </div>
     <!-- conditions table -->
     <div>
-      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" aria-label="Example table of Opportunities with striped rows">
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
         <thead>
           <tr class="slds-line-height_reset">
             <th class="" scope="col" *ngFor="let ce of conditionTypeElements">
@@ -45,6 +45,9 @@
             </th>
             <th class="" scope="col">
               <div class="slds-truncate"><system-label label="LBL_VALUE"/></div>
+            </th>
+            <th class="" scope="col">
+            <div class="slds-truncate"><system-label label="LBL_QUANTIYBASE"/></div>
             </th>
             <th *ngIf="isTypeTax" scope="col">
               <div class="slds-truncate"><system-label label="LBL_TAX_CATEGORY"/></div>
@@ -65,6 +68,9 @@
             </td>
             <td>
               <system-input-number disabled [ngModel]="c.condition_value"></system-input-number>
+            </td>
+            <td>
+              <system-input-number disabled [ngModel]="c.quantity_base"></system-input-number>
             </td>
             <td *ngIf="isTypeTax">
               <system-input-taxcode disabled [ngModel]="c.tax_category"></system-input-taxcode>
@@ -88,6 +94,9 @@
             </td>
             <td>
               <system-input-number [(ngModel)]="c.condition_value" [asNumber]="true" precision="2"></system-input-number>
+            </td>
+            <td>
+              <system-input-number [(ngModel)]="c.quantity_base" [asNumber]="true" precision="0"></system-input-number>
             </td>
             <td *ngIf="isTypeTax">
               <system-input-taxcode [(ngModel)]="c.tax_category"></system-input-taxcode>

@@ -1,6 +1,6 @@
 /**
  * trigger opening the EventRegistrationModal window
- * @module ModuleCampaigns
+ * @module ModuleEvents
  */
 import {Component, Injector} from '@angular/core';
 import {model} from '../../../services/model.service';

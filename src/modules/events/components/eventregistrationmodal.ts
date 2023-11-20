@@ -3,7 +3,7 @@
  * step by step layout
  * 1. select prospect lists
  * 2. set common values for the created event registrations
- * @module ModuleCampaigns
+ * @module ModuleEvents
  */
 import {Component, ComponentRef, SkipSelf} from '@angular/core';
 import {model} from "../../../services/model.service";

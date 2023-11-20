@@ -17,6 +17,15 @@ $RESTManager->registerExtension('trackers', '1.0');
 $routes = [
     [
         'method'      => 'get',
+        'route'       => '/module/Trackers/recentitems',
+        'class'       => TrackersController::class,
+        'function'    => 'loadRecent',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => false],
+        'parameters' => []
+    ],
+    [
+        'method'      => 'get',
         'route'       => '/module/Trackers/recent',
         'class'       => TrackersController::class,
         'function'    => 'getRecent',
