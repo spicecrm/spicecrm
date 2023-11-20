@@ -726,7 +726,7 @@ class CampaignTask extends SpiceBean
      */
     public function deactivate()
     {
-        $this->db->query("DELETE FROM campaign_log WHERE campaign_id='$this->campaign_id' AND campaigntask_id='$this->id' AND activity_type IN ('targeted', 'queued')");
+        $this->db->query("DELETE FROM campaign_log WHERE campaign_id='$this->campaign_id' AND campaigntask_id='$this->id' AND activity_type IN ('targeted', 'queued', 'inactive')");
 
         $this->activated = 0;
         $this->status = 'Inactive';

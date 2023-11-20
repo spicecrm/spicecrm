@@ -344,10 +344,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                     'options' => 'dom_meeting_accept_status',
                     'map' => 'activity_accept_status'
                 ],
-                'date_modified' => [
-                    'type' => 'datetime',
-                    'map' => 'activity_status_date_modified'
-                ]
             ],
         ],
         'parent_name' => [
@@ -371,10 +367,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                     'type' => 'enum',
                     'options' => 'dom_meeting_accept_status',
                     'map' => 'activity_accept_status'
-                ],
-                'date_modified' => [
-                    'type' => 'datetime',
-                    'map' => 'activity_status_date_modified'
                 ],
                 'required' => [
                     'type' => 'bool',
@@ -403,10 +395,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                     'options' => 'dom_meeting_accept_status',
                     'map' => 'activity_accept_status'
                 ],
-                'date_modified' => [
-                    'type' => 'datetime',
-                    'map' => 'activity_status_date_modified'
-                ]
             ],
         ],
         'employees' => [
