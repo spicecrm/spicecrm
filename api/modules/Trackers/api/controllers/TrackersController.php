@@ -30,6 +30,7 @@ class TrackersController
             try {
                 $seed = BeanFactory::getBean($row['module_name'], $row['item_id'], ['relationships' => false]);
                 if ($seed) {
+                    $seed->retrieveViewDetails();
                     $row['data'] = $moduleHandler->mapBeanToArray($row['module_name'], $seed);
                     $row['summary_text'] = $seed->get_summary_text();
                     $recentItems[] = $row;
@@ -59,6 +60,7 @@ class TrackersController
         foreach($history as $row){
             $seed = BeanFactory::getBean($row['module_name'], $row['item_id']);
             if($seed){
+                $seed->retrieveViewDetails();
                 $row['data'] = $moduleHandler->mapBeanToArray($row['module_name'], $seed);
                 $row['summary_text'] = $seed->get_summary_text();
                 $recentItems[] = $row;
