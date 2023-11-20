@@ -88,7 +88,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
         ],
         'campaigns' => [
             'name' => 'campaigns',
-            'vname' => 'LBL_CAMPAIGN_LINK',
+            'vname' => 'LBL_CAMPAIGN',
             'type' => 'link',
             'relationship' => 'eventregistration_campaign_rel',
             'source' => 'non-db',
@@ -160,7 +160,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['EventRegistration'] = [
         ],
         'campaigntask_link' => [
             'name' => 'campaigntask_link',
-            'vname' => 'LBL_CAMPAIGNtask_LINK',
+            'vname' => 'LBL_CAMPAIGNTASK',
             'type' => 'link',
             'relationship' => 'eventregistration_campaigntask_rel',
             'source' => 'non-db',
