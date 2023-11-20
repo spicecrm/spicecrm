@@ -1,6 +1,7 @@
 <div (click)="onEditorClick($event)"
      class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap slds-grid slds-grid--vertical slds-theme--default"
-     style="  top: 0; right: 0; left: 0; bottom: 0; z-index: 9999;" [ngStyle]="richTextStyle">
+     style="  top: 0; right: 0; left: 0; bottom: 0; z-index: 9999;" [ngStyle]="richTextStyle"
+     [system-overlay-loading-spinner]="isLoading">
     <!--system-richtext-toolbar [isActive]="isActive" #editorToolbar (execute)="executeCommand($event)"></system-richtext-toolbar-->
     <div *ngIf="!readOnly" role="toolbar" style="top: 0; z-index: 2; position: sticky"
          class="slds-rich-text-editor__toolbar slds-shrink-none">
@@ -284,7 +285,8 @@
             <li *ngIf="useTextSnippet">
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
                         system-title="LBL_INSERT_TEXT_SNIPPET"
-                        (click)="openTextSnippetModal()">
+                        (click)="openTextSnippetModal()"
+                >
                     <system-button-icon icon="quick_text"></system-button-icon>
                 </button>
             </li>
