@@ -57,6 +57,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     @ViewChild('ckEditor', {read: ViewContainerRef, static: true}) public ckEditor: ViewContainerRef;
 
     /**
+     * sets if the component is loading and a spinner is rendered
+     */
+    public isLoading: boolean = false;
+
+    /**
      * set to true to have all options
      */
     @Input() public extendedmode: boolean = true;
@@ -735,6 +740,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.modal.openModal('ObjectModalModuleLookup', null, this.viewContainerRef.injector)
             .subscribe((modal: ComponentRef<ObjectModalModuleLookup>) => {
                 modal.instance.module = 'TextSnippets';
+
                 modal.instance.multiselect = false;
 
                 if (this.model) {
@@ -753,6 +759,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         bean_data: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
                     };
 
+                    this.isLoading = true;
+
                     this.model.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body).subscribe({
                         next: res => {
                             this.editor.model.change(writer => {
@@ -760,9 +768,12 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                                 const modelFragment = this.editor.data.toModel(viewFragment);
                                 this.editor.model.insertContent(modelFragment);
                             });
+
+                            this.isLoading = false;
                         },
                         error: () => {
                             this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                            this.isLoading = false;
                         }
                     })
                 });
