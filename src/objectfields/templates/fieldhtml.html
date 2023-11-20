@@ -2,24 +2,39 @@
     <div>
         <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
     </div>
-    <button *ngIf="!isEditMode() && isEditable()" class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button" (click)="setEditMode()">
+    <button *ngIf="!isEditMode() && isEditable()"
+            class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button" (click)="setEditMode()">
         <system-button-icon [icon]="'edit'"></system-button-icon>
     </button>
 </div>
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
-    <div *ngIf="!fieldconfig.asiframe" class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="parsedHtml" style="white-space: normal; resize: vertical; overflow-y: auto;" (click)="$event.preventDefault()"></div>
-    <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false"
+                       [fieldconfig]="fieldconfig">
+    <div *ngIf="!truncated; else truncateddisplay">
+        <div *ngIf="!fieldconfig.asiframe" class="slds-size--1-of-1 slds-rich-text-editor__output"
+             [innerHTML]="parsedHtml"
+             style="white-space: normal; resize: vertical; overflow-y: auto;" (click)="$event.preventDefault()"></div>
+        <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle"
+                width="100%" frameborder="0" seamless="true" sandbox></iframe>
+    </div>
+    <ng-template #truncateddisplay>
+        <div [title]="value" style="max-width: 200px; text-overflow: ellipsis" class="slds-truncate"
+             [innerHTML]="parsedHtml"></div>
+    </ng-template>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-html-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
+    <system-html-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode"
+                        [innerheight]="fieldconfig.innerheight"
+                        [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
         <li *ngIf="fieldconfig?.useSignature">
             <div class="slds-form-element slds-grid">
                 <label class="slds-form-element__label">
-                    <system-label label="LBL_SIGNATURE"></system-label>:
+                    <system-label label="LBL_SIGNATURE"></system-label>
+                    :
                 </label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select [(ngModel)]="selectedSignatureId" (ngModelChange)="renderSelectedSignature()" [disabled]="signatures?.length == 0" class="slds-select">
+                        <select [(ngModel)]="selectedSignatureId" (ngModelChange)="renderSelectedSignature()"
+                                [disabled]="signatures?.length == 0" class="slds-select">
                             <option value="">
                                 <system-label label="LBL_NONE"></system-label>
                             </option>
