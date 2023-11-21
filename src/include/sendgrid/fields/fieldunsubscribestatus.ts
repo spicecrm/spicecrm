@@ -34,12 +34,7 @@ export class fieldUnsubscribeStatus implements OnInit {
 
 
     public ngOnInit() {
-        if(this.model.getField('prospectlists_contacts_unsubscribegroup_status')==0){
-        this.subscribed = true;
-        }
-        else{
-            this.subscribed = false;
-        }
+        this.subscribed = this.model.getField('prospectlists_contacts_unsubscribegroup_status') == 0;
         this.model.parentmodel = this.relatedmodels.model;
 
     }
