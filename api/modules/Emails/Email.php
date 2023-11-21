@@ -909,7 +909,9 @@ class Email extends SpiceBean
      */
     private function findMarketingActions($mailboxTrackingUrl) {
         $dom = new DOMDocument();
-        $dom->loadHTML($this->body);
+
+        // encode dom object
+        $dom->loadHTML('<?xml encoding="utf-8"?>'. $this->body);
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
