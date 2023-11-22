@@ -176,7 +176,15 @@ class One2MBeanRelationship extends One2MRelationship
         else //If the link is LHS, we need to query to get the full list and load all the beans.
         {
             $db = DBManagerFactory::getInstance();
-            $query = $this->getQuery($link, $params);
+
+            $rangeParams = $params;
+
+            if (!empty($params['searchterm'])) {
+                $rangeParams['limit'] = 0;
+                $rangeParams['offset'] = 0;
+            }
+
+            $query = $this->getQuery($link, $rangeParams);
             if (empty($query))
             {
                 LoggerManager::getLogger()->fatal('relationships', "query for {$this->name} was empty when loading from  {$this->lhsLink} in One2MBean");
@@ -188,9 +196,20 @@ class One2MBeanRelationship extends One2MRelationship
                 $id = $row['id'];
                 $rows[$id] = $row;
             }
+
+            if (!empty($params['searchterm'])) {
+                $rows = $this->getResultsFilteredByFTS($link->getRelatedModuleName(), $params, $rows);
+
+                $this->count = count($rows);
+                $rows = array_slice($rows, $params['offset'], $params['limit']);
+            } else {
+                $this->count = count($rows);
+            }
         }
 
-        return ["rows" => $rows];
+        return [
+            "rows" => $rows
+        ];
     }
 
     public function getQuery($link, $params = [])

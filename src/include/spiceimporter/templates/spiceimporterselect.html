@@ -115,7 +115,7 @@
                     <system-label label="LBL_METHOD"></system-label>
                 </label>
                 <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
-                    <system-select [(ngModel)]="selectedClass" (ngModelChange)="getClassMethods($event.name)" class="slds-grow">
+                    <system-select [(ngModel)]="selectedClass" (ngModelChange)="getClassMethods($event.name)" class="slds-grow slds-truncate">
                         <system-select-option *ngFor="let option of spiceImport.availableClasses" [value]="option.id" [display]="option.name"/>
                     </system-select>
                     <div class="slds-col slds-size--1-of-3 slds-select_container">

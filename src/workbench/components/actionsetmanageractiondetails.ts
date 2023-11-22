@@ -89,6 +89,7 @@ export class ActionsetManagerActionDetails implements OnChanges {
     public setActionComponent() {
         if(this.action.action) {
             this.localcomponent = this.standardActions.find( action => action.value === this.action.action ).component;
+            this.setComponent();
         } else {
             this.localcomponent = this.component_backup;
         }
