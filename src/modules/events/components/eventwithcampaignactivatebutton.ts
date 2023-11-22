@@ -1,5 +1,6 @@
 /**
- * @module ModuleCampaigns
+ * Button used in campaigntask actionset
+ * @module ModuleEvents
  */
 import {Component} from '@angular/core';
 

@@ -34,14 +34,18 @@ export class fieldQuestionnaire extends fieldGeneric implements AfterViewInit, O
     }
 
     public ngOnInit() {
-        this.questionnaireId = this.model.getField('questionnaire_id');
         this.subscribeToModelDataChange();
         this.subscribeToModelEditCancel();
-        this.model.validated$.subscribe( () => this.questionnaireParticipation.showInvalidities = true );
+        this.subscriptions.add(
+            this.model.validated$.subscribe( () => this.questionnaireParticipation && ( this.questionnaireParticipation.showInvalidities = true ))
+        );
     }
 
-    public ngAfterViewInit() {
-        super.ngAfterViewInit();
+    /**
+     * Things to do, when the component QuestionnaireRender has created and emitted the questionnaireParticipationService.
+     */
+    public gotParticipation( p: questionnaireParticipationService ) {
+        this.questionnaireParticipation = p;
         this.questionnaireParticipation.isLoaded$.subscribe( () => {
             this.isValid = !this.questionnaireParticipation.hasUnunsweredQuestions();
             this.setValid( this.isValid );
@@ -53,15 +57,8 @@ export class fieldQuestionnaire extends fieldGeneric implements AfterViewInit, O
      */
     public subscribeToModelDataChange(): void {
         this.subscriptions.add(
-            this.model.data$.subscribe(data => {
-                let dummy = this.model.getField('questionnaire_id');
-                if ( dummy ) {
-                    if( dummy !== this.questionnaireId ) {
-                        this.questionnaireId = dummy;
-                    }
-                } else {
-                    if ( this.questionnaireId ) this.questionnaireId = dummy;
-                }
+            this.model.field$.subscribe( ( data ) => {
+                if ( data.field === 'questionnaire_id' ) this.questionnaireId = this.model.getField('questionnaire_id');
             })
         );
     }
@@ -122,4 +119,3 @@ export class fieldQuestionnaire extends fieldGeneric implements AfterViewInit, O
     }
 
 }
-
