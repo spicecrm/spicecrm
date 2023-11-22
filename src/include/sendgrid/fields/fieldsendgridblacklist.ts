@@ -28,6 +28,10 @@ export class fieldSendgridBlacklist extends fieldToggle {
         super(model, view, language, metadata, router, modal);
     }
 
+    get disabled(): boolean {
+        return !this.model.checkAccess('sendgrid_blacklist');
+    }
+
     public setValue(value: boolean): void {
         this.model.setField(this.fieldname, value);
         if(this.fieldconfig.autoSave) this.save();

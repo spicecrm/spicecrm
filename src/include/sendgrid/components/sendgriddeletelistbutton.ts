@@ -18,15 +18,15 @@ export class SendgridDeleteListButton {
         public backend: backend,
         public toast: toast,
         public modal: modal,
-        public metadata: metadata
-    ) {}
+    ) {
+    }
 
     /**
      * gets the disabled state for the import button based on the acl rights for the user
      */
 
     get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'sendgrid_delete');
+        return !this.model.checkAccess('sendgrid_delete');
     }
 
 
@@ -38,7 +38,7 @@ export class SendgridDeleteListButton {
         this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.model.id}`).subscribe(
             response => {
                 awaitModal.emit(true);
-                if(response) {
+                if (response) {
                     this.toast.sendToast('LBL_SUCCESS', 'success');
                 } else {
                     this.toast.sendToast('LBL_ERROR', 'error');
