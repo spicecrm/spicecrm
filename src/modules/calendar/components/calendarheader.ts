@@ -139,7 +139,7 @@ export class CalendarHeader implements OnDestroy {
      */
     get weekNumberDisplay() {
         let focDate = new moment(this.calendar.calendarDate);
-        return `${this.language.getLabel('LBL_WEEK')} ${focDate.format('W')}`;
+        return `${this.language.getLabel('LBL_WEEK')} ${focDate.format('w')}`;
     }
 
     /**
