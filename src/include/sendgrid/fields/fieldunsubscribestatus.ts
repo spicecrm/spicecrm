@@ -5,6 +5,7 @@ import {toast} from "../../../services/toast.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {configurationService} from "../../../services/configuration.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'field-unsubscribe-status',
@@ -27,7 +28,7 @@ export class fieldUnsubscribeStatus implements OnInit {
         public modelutilities: modelutilities,
         public configurationService:configurationService,
         public cdRef: ChangeDetectorRef,
-        public parent: model
+        public parent: model,
     ) {
 
     }
@@ -39,11 +40,10 @@ export class fieldUnsubscribeStatus implements OnInit {
 
     }
 
-    public disabled(){
-        if(this.model.parentmodel.getField('optout_sendgrid')==1){
+    get disabled(){
+        if(this.model.parentmodel.getField('optout_sendgrid')==1)return true;
             // for more than one account set disabled based on account(sendgrid_source) && this.model.getField('sendgrid_source') == 'sendgrid'
-            return true;
-        }
+        else if (!this.model.checkAccess('sendgrid_sync')) return true;
     }
 
     public execute(){
