@@ -207,6 +207,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS',
         ],
+        'emails_parent' => [
+            'name' => 'emails_parent',
+            'type' => 'link',
+            'relationship' => 'account_emails',
+            'source' => 'non-db',
+            'vname' => 'LBL_EMAILS_AS_PARENT',
+        ],
         'documents' => [
             'name' => 'documents',
             'type' => 'link',
@@ -628,7 +635,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
         )
         */
         'account_emails' => [
-            'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id', 'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id', 'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+            'lhs_module' => 'Accounts',
+            'lhs_table' => 'accounts',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Emails',
+            'rhs_table' => 'emails',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Accounts'
         ],
         'account_letters' => [

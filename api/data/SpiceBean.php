@@ -951,7 +951,7 @@ class SpiceBean
      *
      * Internal function, do not override.
      */
-    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "")
+    function get_linked_beans($field_name, $bean_name = null, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "", $searchterm = "")
     {
         // CR1000509 get a collection of related beans
         if (is_array($field_name)) {
@@ -961,7 +961,7 @@ class SpiceBean
         if ($this->load_relationship($field_name)) {
 
             // Link2 style
-            if ($end_index != -1 || !empty($deleted) || !empty($optional_where)) {
+            if ($end_index != -1 || !empty($deleted) || !empty($optional_where) || !empty($searchterm)) {
 
                 // BEGIN CR1000382: move sort_array content to 'sorthook' when sortfield is non-db
                 if (!empty($sort_array) && isset($sort_array['sortfield'])) {
@@ -977,7 +977,8 @@ class SpiceBean
                     'deleted' => $deleted,
                     'offset' => $begin_index,
                     'limit' => ($end_index - $begin_index),
-                    'sort' => $sort_array
+                    'sort' => $sort_array,
+                    'searchterm' => $searchterm
                 ]));
             } else
                 return array_values($this->$field_name->getBeans());
@@ -1039,16 +1040,17 @@ class SpiceBean
      * @param string $optional_where
      * @return int
      */
-    function get_linked_beans_count($field_name, $bean_name = null, $deleted = 0, $optional_where = "")
+    function get_linked_beans_count($field_name, $bean_name = null, $deleted = 0, $optional_where = "", $searchterm = "")
     {
         if (is_array($field_name)) {
-            return $this->get_multiple_linked_beans_count($field_name);
+            return $this->get_multiple_linked_beans_count($field_name, $searchterm);
         }
 
         if ($this->load_relationship($field_name)) {
             return $this->$field_name->getBeanCount([
                 'where' => $optional_where,
-                'deleted' => $deleted
+                'deleted' => $deleted,
+                'searchterm' => $searchterm
             ]);
         } else
             return 0;
@@ -1058,7 +1060,7 @@ class SpiceBean
      * @param array $field_names list of linknames => [params]
      * @return int
      */
-    function get_multiple_linked_beans_count($field_names)
+    function get_multiple_linked_beans_count($field_names, $searchterm = '')
     {
         // check how field_names is formed. Make an array if it's not.
         foreach ($field_names as $field_name){
@@ -1070,10 +1072,16 @@ class SpiceBean
         $count = 0;
         foreach ($field_names as $field_name => $field_name_params) {
             if ($this->load_relationship($field_name)) {
-                $count += $this->$field_name->getBeanCount([
-                    'where' => $field_name_params['optional_where'],
-                    'deleted' => $field_name_params['deleted']
-                ]);
+                // get fts count
+                if (!empty($searchterm)) {
+                    $filteredResults = SpiceFTSHandler::getInstance()->searchModule($this->$field_name->getRelatedModuleName(), $searchterm, [], [], 0, 0);
+                    $count += ($filteredResults['hits']['total']['value'] ?: 0);
+                } else {
+                    $count += $this->$field_name->getBeanCount([
+                        'where' => $field_name_params['optional_where'],
+                        'deleted' => $field_name_params['deleted']
+                    ]);
+                }
             }
         }
         return $count;
