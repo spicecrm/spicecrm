@@ -549,27 +549,28 @@ class Compiler
 
         //parse pipe if passed in
 
-        $value = $this->handleSubstitution($conditionparts[0], $beans, true);
+        $value1 = $this->handleSubstitution($conditionparts[0], $beans, true);
+        $value2 = $this->handleSubstitution($conditionparts[2], $beans, true);
 
         switch ($conditionparts[1]) {
             case '>':
-                return $value > trim($conditionparts[2], "'");
+                return $value1 > $value2;
             case '>=':
-                return $value >= trim($conditionparts[2], "'");
+                return $value1 >= $value2;
             case '<':
-                return$value < trim($conditionparts[2], "'");
+                return$value1 < $value2;
             case '<=':
-                return $value <= trim($conditionparts[2], "'");
+                return $value1 <= $value2;
             case '===':
-                return $value === trim($conditionparts[2], "'");
+                return $value1 === $value2;
             case '==':
-                return $value == trim($conditionparts[2], "'");
+                return $value1 == $value2;
             case '!=':
-                return $value != trim($conditionparts[2], "'");
+                return $value1 != $value2;
             case 'in':
-                return in_array( $value, explode( ",", trim($conditionparts[2], "'")));
+                return in_array( $value1, explode( ",", $value2));
             case 'notin':
-                return !in_array( $value, explode( ",", trim($conditionparts[2], "'")));
+                return !in_array( $value1, explode( ",", $value2));
         }
         return false;
 
