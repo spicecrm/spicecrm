@@ -526,7 +526,9 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
-        SystemSelectOption
+        SystemSelectOption,
+        SystemModuleCustomPipe,
+        SystemModuleGlobalPipe,
     ]
 })
 export class SystemComponents {}
