@@ -9,6 +9,7 @@ import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {Subject, of, Observable} from 'rxjs';
 import {map} from "rxjs/operators";
+import {modelutilities} from "./modelutilities.service";
 
 @Injectable({
     providedIn: 'root'
@@ -40,6 +41,7 @@ export class recent {
         public backend: backend,
         public broadcast: broadcast,
         public configuration: configurationService,
+        public modelutils: modelutilities,
         public session: session)
     {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
@@ -124,7 +126,7 @@ export class recent {
                 item_id,
                 module_name,
                 item_summary: item_data.summary_text,
-                data: item_data
+                data: this.modelutils.spiceModel2backend(module_name, item_data)
             };
 
             this.moduleItems[module_name].unshift(item);
