@@ -118,7 +118,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     public ngAfterViewInit() {
         if ( this.type === 'confirm' ) this.cancelButton.nativeElement.focus();
         else if ( this.type === 'info' ) this.okButton.nativeElement.focus();
-        else if ( this.type.startsWith('input') ) {
+        else if ( this.type?.startsWith('input') ) {
             if ( this.inputField ) this.inputField.nativeElement.focus();
             else if ( this.selectField ) this.selectField.nativeElement.focus();
         }
@@ -129,7 +129,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
      */
     get canSubmit(){
         // only check for input and input data
-        if(!this.type.startsWith('input')) return true;
+        if(!this.type?.startsWith('input')) return true;
 
         // value needs to be set
         if (!this.value ) return false;
@@ -146,7 +146,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
      * when ok is clicked
      */
     public clickOK() {
-        if (this.type.startsWith('input')) this.answerSubject.next( this.value );
+        if (this.type?.startsWith('input')) this.answerSubject.next( this.value );
         else this.answerSubject.next( true );
         this.answerSubject.complete();
         this.self.destroy();
