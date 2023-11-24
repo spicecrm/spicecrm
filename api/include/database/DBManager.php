@@ -1667,7 +1667,7 @@ abstract class DBManager
     public function fetchAll($sql, $dieOnError = false, $msg = '', $suppress = false)
     {
         $this->checkConnection();
-        $queryresult = $this->limitQuery($sql, 0, 1, $dieOnError, $msg);
+        $queryresult = $this->query($sql, $dieOnError, $msg);
         $this->checkError($msg . ' Fetch One Failed:' . $sql, $dieOnError);
 
         if (!$queryresult) return false;
