@@ -530,6 +530,7 @@ export class WorkflowDiagramService implements OnDestroy {
 
         asapScheduler.schedule(() => this.updateConnectionsLabels());
 
+        if (newTask)
         this.bpmnJS.get('canvas').zoom('fit-viewport');
     }
 
@@ -683,6 +684,13 @@ export class WorkflowDiagramService implements OnDestroy {
                     return;
                 }
                 this.wfm.appendTaskNextTask(task, targetTask);
+
+                // open the conditions editor modal if the source task is from type conditional decision
+                if (this.wfm.getType(task.tasktype).admin_component == 'WorkflowManagerTaskTypesConditionalDecision') {
+                    this.wfm.openConditionsModal(
+                        task.type_config.next_tasks.find(t => t.id == targetTask.id)
+                    );
+                }
 
                 return true;
             }
