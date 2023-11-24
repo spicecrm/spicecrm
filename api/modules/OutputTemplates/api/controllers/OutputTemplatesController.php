@@ -40,7 +40,7 @@ class OutputTemplatesController
     public function compile(Request $req, Response $res, array $args): Response {
         $bean = BeanFactory::getBean('OutputTemplates', $args['id']);
         $bean->bean_id = $args['bean_id'];
-        return $res->withJson(['content' => $bean->translateBody()]);
+        return $res->withJson(['content' => $bean->translateBody(), 'filename' => $bean->getFileName()]);
 
     }
 
@@ -65,13 +65,14 @@ class OutputTemplatesController
         $bean->bean_id = $body['parentid'];
         $file = $bean->getPdfContent();
 
-        $response = [ 'content' => base64_encode( $file ) ];
+        $response = [ 'content' => base64_encode( $file ), 'filename' => $bean->getFileName() ];
         if ( SpiceConfig::getInstance()->config['outputtemplates']['debug_mode'] ) $response['htmlOfPdfCreation'] = $bean->getHtmlOfPdfCreation();
         return $res->withJson( $response );
     }
 
     public function previewhtml(Request $req, Response $res, array $args): Response {
         $body = $req->getParsedBody();
+        /** @var OutputTemplate $bean */
         $bean = BeanFactory::getBean('OutputTemplates');
 
         $bean->id = $body['id'];
@@ -81,7 +82,7 @@ class OutputTemplatesController
         $bean->stylesheet_id = $body['stylesheet_id'];
         $bean->module_name = $body['parentype'];
         $bean->bean_id = $body['parentid'];
-        return $res->withJson(['content' => $bean->translateBody()]);
+        return $res->withJson(['content' => $bean->translateBody(), 'filename' => $bean->getFileName()]);
 
     }
 
@@ -97,6 +98,7 @@ class OutputTemplatesController
 
         $params = $req->getParsedBody();
 
+        /** @var OutputTemplate $outputTemplate */
         $outputTemplate = BeanFactory::getBean('OutputTemplates', $args['id']);
         $outputTemplate->bean_id = $args['bean_id'];
 
@@ -108,7 +110,7 @@ class OutputTemplatesController
             $content = $outputTemplate->getPdfContent();
         }
 
-        return $res->withJson(['content' => base64_encode($content)]);
+        return $res->withJson(['content' => base64_encode($content), 'filename' => $outputTemplate->getFileName()]);
     }
 
     public function getModuleTemplates(Request $req, Response $res, array $args): Response {
@@ -165,6 +167,8 @@ class OutputTemplatesController
         $db->transactionStart();
         SpiceFTSHandler::getInstance()->startTransaction();
         SpiceSocket::getInstance()->startTransaction();
+
+
 
         return $content;
     }
