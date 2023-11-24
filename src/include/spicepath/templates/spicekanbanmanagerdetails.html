@@ -4,7 +4,6 @@
             <div class="slds-col slds-size_1-of-2 slds-p-around--x-small">
                 <div class="slds-form-element">
                     <label class="slds-form-element__label"><system-label label="LBL_LABEL"></system-label></label>
-                    <system-icon-help-text [helpText]="language.getLabel('LBL_STAGE_LABEL_HELP', '', 'long')"></system-icon-help-text>
                     <system-input-label [(ngModel)]="selectedStage.stage_label"></system-input-label>
                 </div>
             </div>
@@ -31,7 +30,8 @@
         <div class="slds-grid slds-wrap slds-p-around--x-small">
             <div class="slds-col">
                 <div class="slds-form-element">
-                    <label class="slds-form-element__label"><system-label label="LBL_SYSTEXT_ID"></system-label></label>
+                    <label class="slds-form-element__label"><system-label label="LBL_TEXT"></system-label></label>
+                    <system-icon-help-text [helpText]="language.getLabel('LBL_SYSTEXT_HELP', '', 'long')"></system-icon-help-text>
                 </div>
             </div>
             <div class="slds-tabs_scoped">
@@ -42,7 +42,7 @@
                         </li>
                     </ul>
                     <div *ngFor="let lang of systemLanguages" [ngClass]="{'slds-show': lang.language == activeTab,'slds-hide': lang.language != activeTab}" class="slds-tabs_scoped__content" role="tabpanel">
-                        <input type="text" class="slds-input" [(ngModel)]="spiceText">
+                        <system-richtext-editor [(ngModel)]="spiceText"></system-richtext-editor>
                     </div>
                 </div>
             </div>
