@@ -349,7 +349,7 @@ class SpiceSoapServiceImpl
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $error = new SoapError();
-        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'write', 'no_access', $error)) {
+        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'edit', 'no_access', $error)) {
             $error->set_error('no_access');
             self::$helperObject->setFaultObject($error);
             return;
