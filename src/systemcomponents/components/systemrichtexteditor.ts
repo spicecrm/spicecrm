@@ -709,23 +709,24 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
 
     public openTemplateVariableHelper() {
-
         if (!this.isActive) return;
-
         this.modalOpen = true;
 
-        this.modal.openModal('OutputTemplatesVariableHelper', null, this.viewContainerRef.injector)
-            .subscribe(modal => {
-                modal.instance.response
-                    .pipe(take(1))
-                    .subscribe(text => {
-                        this.modalOpen = false;
+        this.helper.addTemplateVariables(this.modal, this.model, this.viewContainerRef.injector).subscribe({
+            next: text => {
+                this.modalOpen = false
 
-                        this.editor.model.change(writer => {
-                            this.editor.model.insertContent(writer.createText(`{${text}}`));
-                        });
-                    });
-            });
+                this.editor.model.change(writer => {
+                    this.editor.model.insertContent(writer.createText(`{${text}}`));
+                });
+
+                this.isLoading = false
+            },
+            error: () => {
+                this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                this.isLoading = false
+            }
+        })
     }
 
     /**
@@ -733,51 +734,24 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public openTextSnippetModal() {
         if (!this.isActive) return;
-        this.modalOpen = true;
 
-        const config = this.metadata.getComponentConfig('SystemRichTextEditor', 'TextSnippets');
+        const moduleFilter = this.metadata.getComponentConfig('SystemRichTextEditor', 'TextSnippets')?.textSnippetsModuleFilter;
 
-        this.modal.openModal('ObjectModalModuleLookup', null, this.viewContainerRef.injector)
-            .subscribe((modal: ComponentRef<ObjectModalModuleLookup>) => {
-                modal.instance.module = 'TextSnippets';
-
-                modal.instance.multiselect = false;
-
-                if (this.model) {
-                    modal.instance.modulefilter = config.textSnippetsModuleFilter;
-                    modal.instance.filtercontext = {
-                        module: this.model.module
-                    };
-                }
-
-                modal.instance.selectedItems.subscribe((items) => {
-
-                    this.modalOpen = false;
-
-                    const body = !this.model ? null : {
-                        module: this.model.module,
-                        bean_data: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
-                    };
-
-                    this.isLoading = true;
-
-                    this.model.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body).subscribe({
-                        next: res => {
-                            this.editor.model.change(writer => {
-                                const viewFragment = this.editor.data.htmlProcessor.toView(res.html);
-                                const modelFragment = this.editor.data.toModel(viewFragment);
-                                this.editor.model.insertContent(modelFragment);
-                            });
-
-                            this.isLoading = false;
-                        },
-                        error: () => {
-                            this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
-                            this.isLoading = false;
-                        }
-                    })
+        this.helper.addTextSnippet('HTML', moduleFilter, this.modal, this.model, this.viewContainerRef.injector).subscribe({
+            next: res => {
+                this.editor.model.change(writer => {
+                    const viewFragment = this.editor.data.htmlProcessor.toView(res.html);
+                    const modelFragment = this.editor.data.toModel(viewFragment);
+                    this.editor.model.insertContent(modelFragment);
                 });
-            });
+
+                this.isLoading = false;
+            },
+            error: () => {
+                this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                this.isLoading = false;
+            }
+        })
     }
 
     public getHtmlFromSelection() {

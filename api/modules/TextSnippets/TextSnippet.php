@@ -69,6 +69,12 @@ class TextSnippet extends SpiceBean
         return $templateCompiler->compile($this->body, $bean, $this->language, $additionalValues, $additionalBeans, null, true);
     }
 
+
+    function parsePlainText(?SpiceBean $bean, array $additionalValues = null, array $additionalBeans = []): string
+    {
+        return strip_tags($this->parse($bean, $additionalValues, $additionalBeans));
+    }
+
     /**
      * list filter method to be called for the ObjectModalModuleLookup list results
      * @param SpiceBean $contextBean
