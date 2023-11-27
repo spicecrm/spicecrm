@@ -256,6 +256,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
     		'vname' => 'LBL_DATE_MODIFIED',
     		'type' => 'datetime',
         ],
+        'date_indexed' => [
+            'name' => 'date_indexed',
+            'vname' => 'LBL_DATE_INDEXED',
+            'type' => 'datetime'
+        ],
     	'more_information'=> [
 			'name'=>'more_information',
 			'vname'=>'LBL_MORE_INFO',
