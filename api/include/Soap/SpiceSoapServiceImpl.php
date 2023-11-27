@@ -350,6 +350,8 @@ class SpiceSoapServiceImpl
 
         $error = new SoapError();
         if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'write', 'no_access', $error)) {
+            $error->set_error('no_access');
+            self::$helperObject->setFaultObject($error);
             return;
         } // if
 
@@ -384,7 +386,9 @@ class SpiceSoapServiceImpl
                 $return_fields[] = $value['name'];
             }
         }
-        if (!self::$helperObject->checkACLAccess($seed, 'Save', $error, 'no_access') || ($seed->deleted == 1 && !self::$helperObject->checkACLAccess($seed, 'Delete', $error, 'no_access'))) {
+        if (!self::$helperObject->checkACLAccess($seed, 'edit', $error, 'no_access') || ($seed->deleted == 1 && !self::$helperObject->checkACLAccess($seed, 'delete', $error, 'no_access'))) {
+            $error->set_error('no_access');
+            self::$helperObject->setFaultObject($error);
             return;
         } // if
 
