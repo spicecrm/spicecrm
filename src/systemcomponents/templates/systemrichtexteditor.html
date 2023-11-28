@@ -274,15 +274,15 @@
                 </button>
             </li>
         </ul>
-        <ul *ngIf="useTemplateVariableHelper || useTextSnippet" class="slds-button-group-list">
-            <li *ngIf="useTemplateVariableHelper">
+        <ul *ngIf="displayTemplateVariableHelper || displayTextSnippet" class="slds-button-group-list">
+            <li *ngIf="displayTemplateVariableHelper">
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
                         [title]="language.getLabel('LBL_TEMPLATE_VARIABLE_HELPER')"
                         (click)="openTemplateVariableHelper()">
                     <system-button-icon icon="variable"></system-button-icon>
                 </button>
             </li>
-            <li *ngIf="useTextSnippet">
+            <li *ngIf="displayTextSnippet">
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
                         system-title="LBL_INSERT_TEXT_SNIPPET"
                         (click)="openTextSnippetModal()"
