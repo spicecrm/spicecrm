@@ -90,7 +90,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() private stylesheetId: string;
 
-    get useTemplateVariableHelper() {
+    get displayTemplateVariableHelper() {
         return this.model?.module in {
             OutputTemplates: true,
             EmailTemplates: true,
@@ -104,7 +104,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * check the acl view and list access for the text snippets to show/hide button
      */
-    get useTextSnippet(): boolean {
+    get displayTextSnippet(): boolean {
         return this.metadata.checkModuleAcl('TextSnippets', 'list') && this.metadata.checkModuleAcl('TextSnippets', 'view');
     }
 
