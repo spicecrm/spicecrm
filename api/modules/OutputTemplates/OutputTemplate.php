@@ -64,11 +64,14 @@ class OutputTemplate extends SpiceBean
     public function translateBody($bean = null, $bodyOnly = false)
     {
         if (!$bean) {
-            if (!$this->bean)
+
+            if(!$this->bean || $this->bean->id != $this->bean_id) {
                 $this->retrieveBean();
+            }
 
             $bean = $this->bean;
         }
+
         if (!$bean)
             throw new Exception("No Bean found, translation aborted!");
 
@@ -155,7 +158,6 @@ class OutputTemplate extends SpiceBean
 
     private function setPDFHandler()
     {
-        if ($this->pdf_handler) return; // PDF handler already set, nothing to do
         $class = @SpiceConfig::getInstance()->config['outputtemplates']['pdf_handler_class'];
         if (!$class) $class = '\SpiceCRM\modules\OutputTemplates\handlers\pdf\DomPdfHandler';
         $this->pdf_handler = new $class($this);
