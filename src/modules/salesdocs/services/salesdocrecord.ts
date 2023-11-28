@@ -255,26 +255,35 @@ export class salesdocrecord implements OnDestroy {
      *
      * @param elements
      */
-    public recalculate(schemaelements, conditionelements){
+    public recalculate(schemaelements, conditionelements, quantity ){
         for(let element of schemaelements){
             let ce = conditionelements.find(c => c.id == element.id);
             if(element.elementcalculation){
                  ce.elementamount = this.evaluateFormula(element.elementcalculation,schemaelements, conditionelements);
+                 ce.elementtotalamount = this.evaluateFormula(element.elementcalculation,schemaelements, conditionelements, true);
             } else if(element.elementbase && (element.valuetype == 'P' || element.valuetype == 'T')) {
                 switch(element.elementbasetype) {
                     case 'I':
                         ce.elementamount =  this.evaluateFormula(element.elementbase, schemaelements, conditionelements) * ( 1 - 100 / (100 + parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0)));
+                        ce.elementtotalamount =  this.evaluateFormula(element.elementbase, schemaelements, conditionelements, true) * ( 1 - 100 / (100 + parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0)));
                         break;
                     default:
                         ce.elementamount = parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0) * this.evaluateFormula(element.elementbase, schemaelements, conditionelements) / 100;
+                        ce.elementtotalamount = parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0) * this.evaluateFormula(element.elementbase, schemaelements, conditionelements, true) / 100;
                         break;
                 }
+            } else if (element.valuetype == 'F') {
+                ce.elementamount = ce.elementoverridevalue ?? ce.elementvalue ?? 0;
+                ce.elementtotalamount = ce.elementamount;
+                ce.elementamount = ce.elementamount / quantity;
             } else {
                 ce.elementamount = ce.elementoverridevalue ?? ce.elementvalue ?? 0;
+                ce.elementtotalamount = ce.elementamount * quantity;
             }
 
             // mathematical round the value
             ce.elementamount = Math.round(ce.elementamount * 100) / 100;
+            ce.elementtotalamount = Math.round(ce.elementtotalamount * 100) / 100;
         }
     }
 
@@ -285,11 +294,11 @@ export class salesdocrecord implements OnDestroy {
      * @param elements
      * @private
      */
-    private evaluateFormula(elementcalculation, elements, conditionelements): number{
+    private evaluateFormula(elementcalculation, elements, conditionelements, total = false): number{
         let reg = new RegExp(/{(.*?)}/g);
         let matches = elementcalculation.matchAll(reg)
         for(let match of matches){
-            let value = this.getElementValueByIndex(match['1'], elements, conditionelements);
+            let value = this.getElementValueByIndex(match['1'], elements, conditionelements, total);
             elementcalculation = elementcalculation.replaceAll(match['0'], value);
         }
         try{
@@ -306,10 +315,12 @@ export class salesdocrecord implements OnDestroy {
      * @param elements
      * @private
      */
-    private getElementValueByIndex(index, elements, conditionelements){
+    private getElementValueByIndex(index, elements, conditionelements, total = false){
+        let elementname = total ? 'elementtotalamount' : 'elementamount'
+
         for (let element of elements){
             if(element.elementindex == index || element.elementtype == index){
-                return parseFloat(conditionelements.find(c => c.id == element.id).elementamount ?? 0);
+                return parseFloat(conditionelements.find(c => c.id == element.id)[elementname] ?? 0);
             }
         }
         return 0;
@@ -332,13 +343,13 @@ export class salesdocrecord implements OnDestroy {
             switch (element.elementtype) {
                 case 'NET':
                     updateFields.amount_net_per_uom = ce.elementamount;
-                    updateFields.amount_net = ce.elementamount * quantity;
+                    updateFields.amount_net = ce.elementtotalamount;
                     break;
                 case 'GROSS':
-                    updateFields.amount_gross = ce.elementamount * quantity;
+                    updateFields.amount_gross = ce.elementtotalamount;
                     break;
                 case 'VAT':
-                    updateFields.tax_amount = ce.elementamount * quantity;
+                    updateFields.tax_amount = ce.elementtotalamount;
                     updateFields.tax_category = ce.tax_category;
                     break;
             }
