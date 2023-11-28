@@ -38,9 +38,7 @@ export class fieldText extends fieldGeneric implements OnInit {
      * determines if html content shall be removed
      */
     public striphtml = false;
-
-    // public currentPosition = 0;
-
+    
     get displayTemplateVariableHelper() {
         return this.model?.module in {
             OutputTemplates: true,
