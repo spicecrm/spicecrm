@@ -374,6 +374,14 @@ export class helper {
         return this.blobUrl;
     }
 
+    /**
+     * opens a modal to choose from textsnippets
+     * @param displayType
+     * @param moduleFilter
+     * @param modalService
+     * @param model
+     * @param viewContainerRefInjector
+     */
     public addTextSnippet(displayType: 'PLAIN' | 'HTML', moduleFilter, modalService, model, viewContainerRefInjector) {
         let responseSubject = new Subject<any>();
 
@@ -419,6 +427,12 @@ export class helper {
         return responseSubject.asObservable()
     }
 
+    /**
+     * opens a modal to choose from template variables
+     * @param modalService
+     * @param model
+     * @param viewContainerRefInjector
+     */
     public addTemplateVariables(modalService, model, viewContainerRefInjector) {
         let responseSubject = new Subject<any>();
 
