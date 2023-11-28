@@ -150,7 +150,7 @@ export class modellist implements OnDestroy {
      */
     public changedAggregates: any = {
         added: [],
-        deleted:[]
+        deleted: []
     }
 
     /**
@@ -286,7 +286,7 @@ export class modellist implements OnDestroy {
         for (let moduleAggregate of this.metadata.getModuleAggregates(this.module)) {
             this.moduleAggregates.push({...moduleAggregate});
         }
-        this.moduleAggregates.forEach( item => this.moduleAggregatesByFieldname[item.fieldname] = item );
+        this.moduleAggregates.forEach(item => this.moduleAggregatesByFieldname[item.fieldname] = item);
         this.moduleAggregates.sort((a, b) => {
             if (!a.priority && !b.priority) return 0;
             return (!a.priority || a.priority > b.priority) ? 1 : -1;
@@ -400,23 +400,27 @@ export class modellist implements OnDestroy {
      * @param sortDirection optional the sort direction
      * @param reload an indicator if the list shoudl reload automatically
      */
-    public setSortField(field: string, sortDirection?: 'ASC' | 'DESC', reload = true) {
+    public setSortField(field: string, sortDirection?: 'ASC' | 'DESC', reload = true, reverted = false) {
         // check that a field is set and that the list is not right now loading
         if (!field || this.isLoading) return;
+
+        const firstOrder: typeof sortDirection = reverted ? 'DESC' : 'ASC'
+        const secondOrder: typeof sortDirection = reverted ? 'ASC' : 'DESC'
 
         // find the field we are sorting an and if found handle the sort
         let sortItemIndex = this.sortArray.findIndex(item => item.sortfield == field);
         if (sortItemIndex >= 0) {
             let sortItem = this.sortArray[sortItemIndex];
-            if (sortItem.sortdirection == 'ASC') {
-                sortItem.sortdirection = 'DESC';
+
+            if (sortItem.sortdirection == firstOrder) {
+                sortItem.sortdirection = secondOrder;
             } else {
                 this.sortArray.splice(sortItemIndex, 1);
             }
         } else {
             this.sortArray.push({
                 sortfield: field,
-                sortdirection: sortDirection ? sortDirection : 'ASC'
+                sortdirection: sortDirection ? sortDirection : firstOrder
             });
         }
     }
@@ -885,7 +889,7 @@ export class modellist implements OnDestroy {
     /**
      * schedules  reload if no further changes are set
      */
-    public scheduleReloadList(){
+    public scheduleReloadList() {
         // cancel any ongoing search
         if (this.reloadTimeOut) {
             window.clearTimeout(this.reloadTimeOut);
@@ -901,8 +905,8 @@ export class modellist implements OnDestroy {
      * checks if we have changes and if then execcutes the reload
      * @private
      */
-    private exceuteReload(){
-        if(this.changedAggregates.added.length > 0 || this.changedAggregates.deleted.length > 0){
+    private exceuteReload() {
+        if (this.changedAggregates.added.length > 0 || this.changedAggregates.deleted.length > 0) {
             this.reLoadList();
         }
     }
@@ -913,7 +917,7 @@ export class modellist implements OnDestroy {
     public reLoadList(quiet: boolean = false) {
         if (this.isLoading) {
             const requestID = this.httpRequestsRefID + '_get_list_data';
-            if(this.cancelPendingRequests) this.backend.cancelPendingRequests([requestID]);
+            if (this.cancelPendingRequests) this.backend.cancelPendingRequests([requestID]);
             this.isLoading = false;
             return of(false);
         } else {
@@ -997,18 +1001,18 @@ export class modellist implements OnDestroy {
      * a getter to check if the current search result has non-system aggregates
      */
     get hasNonSysAggregates() {
-        return this.selectedAggregates.some( item => {
-            let fieldname = item.split('::',1)[0];
-            if ( !this.moduleAggregatesByFieldname[fieldname]?.system ) return true;
+        return this.selectedAggregates.some(item => {
+            let fieldname = item.split('::', 1)[0];
+            if (!this.moduleAggregatesByFieldname[fieldname]?.system) return true;
         });
     }
 
     /**
      * Is a specific aggregate selected?
      */
-    public hasAggregate( aggregate: string, aggdata: string ) {
+    public hasAggregate(aggregate: string, aggdata: string) {
         let searchFor = aggregate + '::' + aggdata;
-        return this.selectedAggregates.some( item => item === searchFor );
+        return this.selectedAggregates.some(item => item === searchFor);
     }
 
     /**
@@ -1022,7 +1026,7 @@ export class modellist implements OnDestroy {
 
         // handle also that we record the changes
         let delIndex = this.changedAggregates.deleted.indexOf(aggregate + '::' + aggdata);
-        if(delIndex >= 0){
+        if (delIndex >= 0) {
             this.changedAggregates.deleted.splice(delIndex, 1);
         } else {
             this.changedAggregates.added.push(aggregate + '::' + aggdata);
@@ -1063,7 +1067,7 @@ export class modellist implements OnDestroy {
 
         // record the changes
         let addIndex = this.changedAggregates.added.indexOf(aggregate + '::' + aggdata);
-        if(addIndex >= 0){
+        if (addIndex >= 0) {
             this.changedAggregates.added.splice(addIndex, 1);
         } else {
             this.changedAggregates.deleted.push(aggregate + '::' + aggdata);
@@ -1078,11 +1082,11 @@ export class modellist implements OnDestroy {
      *
      * @param aggregate
      */
-    public canChangeAggegate(aggregate){
-        if(this.changedAggregates.added.length == 0 && this.changedAggregates.deleted.length == 0) return true;
+    public canChangeAggegate(aggregate) {
+        if (this.changedAggregates.added.length == 0 && this.changedAggregates.deleted.length == 0) return true;
 
-        if(this.changedAggregates.added.filter(a => a.indexOf(aggregate + '::') != 0).length > 0) return false;
-        if(this.changedAggregates.deleted.filter(a => a.indexOf(aggregate + '::') != 0).length > 0) return false;
+        if (this.changedAggregates.added.filter(a => a.indexOf(aggregate + '::') != 0).length > 0) return false;
+        if (this.changedAggregates.deleted.filter(a => a.indexOf(aggregate + '::') != 0).length > 0) return false;
 
         return true;
     }
@@ -1090,11 +1094,11 @@ export class modellist implements OnDestroy {
     /**
      * clears all set aggregates
      */
-    public removeAllAggregates( keepSystemAggregates = false ) {
-        if ( !keepSystemAggregates ) this.selectedAggregates = [];
+    public removeAllAggregates(keepSystemAggregates = false) {
+        if (!keepSystemAggregates) this.selectedAggregates = [];
         else {
-            this.selectedAggregates = this.selectedAggregates.filter( item => {
-                let fieldname = item.split('::',1)[0];
+            this.selectedAggregates = this.selectedAggregates.filter(item => {
+                let fieldname = item.split('::', 1)[0];
                 return !!this.moduleAggregatesByFieldname[fieldname]?.system;
             });
         }
@@ -1103,9 +1107,9 @@ export class modellist implements OnDestroy {
     /**
      * Clears all set aggregates for a specific field.
      */
-    public removeAggregatesOfField( fieldname: string ) {
+    public removeAggregatesOfField(fieldname: string) {
         // Keep only all for other fields selected aggregates:
-        this.selectedAggregates = this.selectedAggregates.filter( item => item.split('::',1)[0] !== fieldname );
+        this.selectedAggregates = this.selectedAggregates.filter(item => item.split('::', 1)[0] !== fieldname);
     }
 
     /*
@@ -1242,7 +1246,7 @@ export class modellist implements OnDestroy {
         const requestID = this.httpRequestsRefID + '_get_list_data';
 
         // cancel pending requests only if allowed
-        if(this.cancelPendingRequests) this.backend.cancelPendingRequests([requestID]);
+        if (this.cancelPendingRequests) this.backend.cancelPendingRequests([requestID]);
 
         this.backend.getList(this.module, this.sortArray, params, requestID).subscribe({
             next: (res: any) => {
@@ -1301,16 +1305,17 @@ export class modellist implements OnDestroy {
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
         this.backend.getList(this.module, this.sortArray, {
-            modulefilter: this.modulefilter,
-            filtercontextbeanid: this.filtercontextbeanid,
-            start: this.listData.list.length,
-            limit: this.loadlimit,
-            listid: this.currentList.id,
-            searchterm: this.searchTerm,
-            searchgeo: this.searchGeo,
-            aggregates: aggregates,
-            buckets: this.buckets,
-            relatefilter: this.relatefilter?.active ? this.relatefilter : null},
+                modulefilter: this.modulefilter,
+                filtercontextbeanid: this.filtercontextbeanid,
+                start: this.listData.list.length,
+                limit: this.loadlimit,
+                listid: this.currentList.id,
+                searchterm: this.searchTerm,
+                searchgeo: this.searchGeo,
+                aggregates: aggregates,
+                buckets: this.buckets,
+                relatefilter: this.relatefilter?.active ? this.relatefilter : null
+            },
             this.httpRequestsRefID)
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
@@ -1336,19 +1341,20 @@ export class modellist implements OnDestroy {
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
         this.backend.getList(this.module, this.sortArray, {
-            modulefilter: this.modulefilter,
-            filtercontextbeanid: this.filtercontextbeanid,
-            start: this.listData.list.length,
-            limit: this.loadlimit,
-            listid: this.currentList.id,
-            searchterm: this.searchTerm,
-            searchgeo: this.searchGeo,
-            aggregates: aggregates,
-            buckets: {
-                bucketfield: this.buckets.bucketfield,
-                bucketitems: [bucket]
+                modulefilter: this.modulefilter,
+                filtercontextbeanid: this.filtercontextbeanid,
+                start: this.listData.list.length,
+                limit: this.loadlimit,
+                listid: this.currentList.id,
+                searchterm: this.searchTerm,
+                searchgeo: this.searchGeo,
+                aggregates: aggregates,
+                buckets: {
+                    bucketfield: this.buckets.bucketfield,
+                    bucketitems: [bucket]
+                },
+                relatefilter: this.relatefilter?.active ? this.relatefilter : null
             },
-            relatefilter: this.relatefilter?.active ? this.relatefilter : null},
             this.httpRequestsRefID
         )
             .subscribe((res: any) => {
