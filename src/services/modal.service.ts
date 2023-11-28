@@ -1,12 +1,13 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable, Injector} from "@angular/core";
+import {ComponentRef, EventEmitter, Injectable, Injector} from "@angular/core";
 import {metadata} from "./metadata.service";
 import {Observable, Subject, of} from "rxjs";
 import {footer} from "./footer.service";
 import {toast} from "./toast.service";
 import {language} from "./language.service";
+import {SystemModalWrapper} from "../systemcomponents/components/systemmodalwrapper";
 
 /**
  * handles the modals in the system
@@ -45,29 +46,34 @@ export class modal {
         // SPICEUI-35
         if (this.metadata.checkComponent(componentName)) {
             let retSubjectXY = new Subject<any>();
-            this.metadata.addComponentDirect("SystemModalWrapper", this.footer.modalcontainer).subscribe(wrapperComponent => {
+            this.metadata.addComponentDirect("SystemModalWrapper", this.footer.modalcontainer).subscribe((wrapperComponent: ComponentRef<SystemModalWrapper>) => {
                 let newModal: any = {};
                 newModal.wrapper = wrapperComponent;
                 newModal.blurBackdrop = blurBackdrop;
                 wrapperComponent.instance.escKey = escKey;
                 this.modalsArray.push(newModal);
                 this.modalsObject[newModal.modalId] = newModal;
-                this.metadata.addComponentDirect(componentName, wrapperComponent.instance.target, injector).subscribe(
-                    component => {
-                        component.instance.self = wrapperComponent;
-                        newModal.component = component;
-                        wrapperComponent.instance.childComponent = component;
-                        retSubjectXY.next(component);
-                        retSubjectXY.complete();
-                    },
-                    e => {
+                this.metadata.addComponentDirect(componentName, wrapperComponent.instance.target, injector).subscribe({
+                    next:
+                        component => {
+                            component.changeDetectorRef.detectChanges();
+                            component.changeDetectorRef.markForCheck();
+
+                            component.instance.self = wrapperComponent;
+                            newModal.component = component;
+                            wrapperComponent.instance.childComponent = component;
+                            retSubjectXY.next(component);
+                            retSubjectXY.complete();
+                        },
+                    error: e => {
                         // remove the wrapper
                         this.removeModal(wrapperComponent);
                         // send a toast
                         this.sendError(componentName);
                         retSubjectXY.error(e);
                         retSubjectXY.complete();
-                    });
+                    }
+                });
                 wrapperComponent.instance.zIndex = this.modalsArray.length * 2 + 1;
             });
             return retSubjectXY.asObservable();

@@ -26,13 +26,18 @@
                 <system-icon  module="Workflows" size="x-small"></system-icon>
                 <span class="slds-truncate">{{workflow.activeCount}} <system-label label="LBL_OPEN_WORKFLOWS"></system-label></span>
             </div>
+            <button *ngIf="workflow.activeCount > 0" (click)="reloadWorkflows($event)" class="slds-button slds-button_icon slds-button_icon slds-button--icon-border-filled" style="color:#706e6b">
+                <system-button-icon [icon]="'refresh'"></system-button-icon>
+            </button>
         </h3>
-        <div class="slds-p-vertical--x-small">
-            <workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowpenworkflowspipe" [workflow]="thisworkflow"></workflow-panel-item>
+        <div *ngIf="workflow.activeCount == 0 || workflow.loading; else loadedWorkflows" class="slds-box slds-align--absolute-center slds-p-around--medium slds-m-bottom--medium" [system-overlay-loading-spinner]="workflow.loading">
+            <system-illustration-no-records><system-label [label]="workflow.loading ? 'LBL_LOADING' : 'LBL_NO_ACTIVE_WORKFLOWS'"></system-label></system-illustration-no-records>
         </div>
-        <div *ngIf="workflow.activeCount == 0" class="slds-box slds-align--absolute-center slds-p-around--medium slds-m-bottom--medium" [system-overlay-loading-spinner]="workflow.loading">
-            <system-illustration-no-records><system-label label="LBL_NO_ACTIVE_WORKFLOWS"></system-label></system-illustration-no-records>
-        </div>
+        <ng-template #loadedWorkflows>
+            <div class="slds-p-vertical--x-small">
+                <workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowpenworkflowspipe" [workflow]="thisworkflow"></workflow-panel-item>
+            </div>
+        </ng-template>
     </div>
     <div class="slds-section slds-is-open" *ngIf="workflow.completeCount > 0">
         <h3 class="slds-section__title">
