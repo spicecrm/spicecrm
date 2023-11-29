@@ -1176,7 +1176,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'rhs_module' => 'Users',
             'rhs_table' => 'users',
             'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many'
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column'       => 'parent_type',
+            'relationship_role_column_value' => 'Employees',
         ]
     ]
 ];
