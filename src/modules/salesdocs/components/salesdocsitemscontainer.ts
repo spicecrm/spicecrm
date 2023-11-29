@@ -222,7 +222,8 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
         // So for this time only one specific tax rate per CRM installation is possible.
         // ToDo: Work out a tax rate calculation.
         // itemData.tax_category = 'V20';
-        itemData.quantity = 1;
+        // set the quantity by default to 1 if not set
+        if(!itemData.quantity) itemData.quantity = 1;
         itemData.itemnr = this.getNextItemNr();
         itemData.itemtype = itemType;
         itemData.date_entered = new moment();
