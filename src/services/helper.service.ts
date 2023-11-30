@@ -410,6 +410,15 @@ export class helper {
                     };
                 }
 
+                // subscribe to onClose and send undefined
+                // this can be checked in the caller function
+                modal.instance.onClose.subscribe({
+                    next: () => {
+                        responseSubject.next(undefined);
+                        responseSubject.complete();
+                    }
+                })
+
                 modal.instance.selectedItems.subscribe((items) => {
                     const body = !model ? null : {
                         module: model.module,

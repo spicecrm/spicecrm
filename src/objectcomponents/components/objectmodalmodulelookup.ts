@@ -19,7 +19,7 @@ import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import {metadata} from '../../services/metadata.service';
-import {Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {ObjectModalModuleLookupHeader} from "./objectmodalmodulelookupheader";
 import {relateFilter} from "../../services/interfaces.service";
 
@@ -90,6 +90,11 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * emits when an item is selected and which items are selected
      */
     @Output() public selectedItems: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * emit when modal closed
+     */
+    public onClose = new Subject<void>();
 
     /**
      * emits the used search term
@@ -197,6 +202,8 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      */
     public closePopup() {
         this.usedSearchTerm.emit(this.modellist.searchTerm);
+        this.onClose.next();
+        this.onClose.complete();
         this.self.destroy();
     }
 
