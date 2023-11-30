@@ -330,7 +330,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
     public setSanitizedValue() {
         if (this.value) {
             if (this.value.includes('</html>')) {
-                this.fullValue = (typeof this.value === 'undefined' ? '' : this.value);
+                this.fullValue = this.value;
             } else {
                 // added <base target="_blank"> so all links open in new window
                 this.fullValue = `<html><head><base target="_blank"><style>${this.styleTag}</style></head><body class="spice">${this.value}</body></html>`;
