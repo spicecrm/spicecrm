@@ -737,6 +737,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
         const moduleFilter = this.metadata.getComponentConfig('SystemRichTextEditor', 'TextSnippets')?.textSnippetsModuleFilter;
 
+        this.isLoading = true;
+
         this.helper.addTextSnippet('HTML', moduleFilter, this.modal, this.model, this.viewContainerRef.injector).subscribe({
             next: res => {
                 this.editor.model.change(writer => {
@@ -750,7 +752,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             error: () => {
                 this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                 this.isLoading = false;
-            }
+            },
         })
     }
 
