@@ -1,16 +1,20 @@
 <div class="slds-grid slds-grid--vertical-align-center">
-    <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-    <div class="slds-col--bump-left" *ngIf="value" (click)="toSpeech()">
-        <system-utility-icon icon="volume_high" size="xx-small"></system-utility-icon>
+    <div class="slds-col--bump-right">
+        <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
     </div>
-    <ng-container *ngIf="isEditMode() && isEditable()">
-        <div class="slds-col--bump-left" *ngIf="displayTextSnippet" (click)="openTextSnippetModal()">
-            <system-utility-icon icon="quick_text" size="xx-small"></system-utility-icon>
+    <div class="slds-grid slds-gutters_xxx-small">
+        <div class="slds-col" *ngIf="value" (click)="toSpeech()">
+            <system-utility-icon icon="volume_high" size="xx-small"></system-utility-icon>
         </div>
-        <div class="slds-col--bump-left" *ngIf="displayTemplateVariableHelper" (click)="openTemplateVariableHelper()">
-            <system-utility-icon icon="variable" size="xx-small"></system-utility-icon>
-        </div>
-    </ng-container>
+        <ng-container *ngIf="isEditMode() && isEditable()">
+            <div class="slds-col" *ngIf="displayTextSnippet" (click)="openTextSnippetModal()">
+                <system-utility-icon icon="quick_text" size="xx-small"></system-utility-icon>
+            </div>
+            <div class="slds-col" *ngIf="displayTemplateVariableHelper" (click)="openTemplateVariableHelper()">
+                <system-utility-icon icon="variable" size="xx-small"></system-utility-icon>
+            </div>
+        </ng-container>
+    </div>
 </div>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()"
                        [fieldconfig]="fieldconfig" [fieldid]="fieldid">

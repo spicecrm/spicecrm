@@ -397,7 +397,7 @@ export class helper {
                 routeMethod = 'liveCompile'
         }
 
-        modalService.openModal('ObjectModalModuleLookup', null, viewContainerRefInjector)
+        modalService.openModal('ObjectModalModuleLookup', true, viewContainerRefInjector)
             .subscribe((modal: ComponentRef<ObjectModalModuleLookup>) => {
                 modal.instance.module = 'TextSnippets';
 
@@ -436,16 +436,13 @@ export class helper {
     public addTemplateVariables(modalService, model, viewContainerRefInjector) {
         let responseSubject = new Subject<any>();
 
-        modalService.openModal('OutputTemplatesVariableHelper', null, viewContainerRefInjector)
+        modalService.openModal('OutputTemplatesVariableHelper', true, viewContainerRefInjector)
             .subscribe(modal => {
                 modal.instance.response
                     .pipe(take(1))
                     .subscribe(text => {
                         responseSubject.next(text);
                         responseSubject.complete();
-                        // this.editor.model.change(writer => {
-                        //     this.editor.model.insertContent(writer.createText(`{${text}}`));
-                        // });
                     });
             });
 
