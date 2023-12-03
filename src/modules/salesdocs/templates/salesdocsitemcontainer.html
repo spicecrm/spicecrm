@@ -5,7 +5,12 @@
     </button>
 </td>
 <td>
-    <field-container fieldname="itemnr" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <field-container fieldname="itemnr" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+        <!--button class="slds-button slds-button--icon">
+            <system-button-icon icon="new"></system-button-icon>
+        </button-->
+    </div>
 </td>
 <td *ngFor="let fieldsetItem of fieldsetItems">
     <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>

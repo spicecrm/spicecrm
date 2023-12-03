@@ -59,7 +59,7 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
         public configuration: configurationService,
         public metadata: metadata,
         public broadcast: broadcast,
-        private salesdocrecord: salesdocrecord
+        public salesdocrecord: salesdocrecord
     ) {
         // build in any case if the items had already been passed in
         this.buildItems();
@@ -79,6 +79,11 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
         if (config.fieldset) {
             this.fieldsetItems = this.metadata.getFieldSetFields(config.fieldset);
         }
+
+        // subscribe to the record service to build items
+        this.salesdocrecord.buildItems$.subscribe(() => {
+            this.buildItems();
+        })
     }
 
     /**
@@ -162,145 +167,4 @@ export class SalesDocsItemsContainer implements OnInit, OnDestroy {
         return true;
     }
 
-
-    /**
-     * gets the next item number
-     */
-    public getNextItemNr() {
-        let lastitemnr = 0;
-        for (let item of this.items) {
-            let thisitemNr = parseInt(item.itemnr, 10);
-            if (thisitemNr > lastitemnr) {
-                lastitemnr = thisitemNr;
-            }
-        }
-
-        return lastitemnr + 10;
-    }
-
-
-    /**
-     * called to add an Item
-     */
-    public addItem() {
-        this.modal.openModal('SalesDocsItemsAddTypeSelector', true, this.injector).subscribe(addItemModal => {
-            addItemModal.instance.itemTypeSelected.subscribe(itemType => {
-                if (itemType) {
-                    // get the item type data
-                    let itemTypes = this.configuration.getData('salesdocitemtypes');
-                    let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == itemType);
-                    if (itemTypeDetails) {
-                        this.modal.openModal(itemTypeDetails.addmodalcomponent, true, this.injector).subscribe(addModal => {
-                            // add the item type details
-                            addModal.instance.itemTypeDetails = itemTypeDetails;
-
-                            // if a filter is set add the filter
-                            if (itemTypeDetails.addmodalfilter) {
-                                addModal.instance.modulefilter = itemTypeDetails.addmodalfilter;
-                            }
-                            // subscribe to the add event
-                            addModal.instance.additem.subscribe(item => {
-                                // add the item
-                                this.handleAddItem(item, itemType);
-                            });
-                        });
-                    }
-                }
-            });
-        });
-    }
-
-    /**
-     * handler to add the item
-     * @param itemData
-     */
-    public handleAddItem(itemData, itemType) {
-        itemData.id = this.model.generateGuid();
-        itemData.deleted = 0;
-        itemData.salesdoc_id = this.model.id;
-        // The tax category is temporarily set by a copy rule.
-        // So for this time only one specific tax rate per CRM installation is possible.
-        // ToDo: Work out a tax rate calculation.
-        // itemData.tax_category = 'V20';
-        // set the quantity by default to 1 if not set
-        if(!itemData.quantity) itemData.quantity = 1;
-        itemData.itemnr = this.getNextItemNr();
-        itemData.itemtype = itemType;
-        itemData.date_entered = new moment();
-        itemData.date_modified = new moment();
-
-        // add to the bean as well
-        if (!this.model.data.salesdocitems) {
-            this.model.data.salesdocitems = {
-                beans: {}
-            };
-        }
-
-
-        // check if we shoudl calculate
-        let itemTypeDetails = this.configuration.getData('salesdocitemtypes').find(it => it.name == itemType);
-        if (itemTypeDetails.pricecalculationschema_id) {
-            // if we have the pricing data already the add dialog did the pricing (hopefully) and we do not need to do anything more
-            if(!!itemData.salesdocitempricedetermination && !!itemData.salesdocitempricecalculationschema_id){
-                // update the relevant fields
-                this.salesdocrecord.getItemFieldsByElements(itemData.salesdocitempricecalculationschema_id, 1, itemData.salesdocitempricedetermination, itemData);
-                this.model.data.salesdocitems.beans[itemData.id] = itemData;
-                this.buildItems()
-            } else {
-                // otherwise run the price determination here and now
-                itemData.salesdocitempricecalculationschema_id = itemTypeDetails.pricecalculationschema_id;
-                this.calculateItem(itemTypeDetails.pricecalculationschema_id, itemData).subscribe({
-                    next: () => {
-                        this.model.data.salesdocitems.beans[itemData.id] = itemData;
-                        this.buildItems();
-                    },
-                    error: () => {
-                        this.model.data.salesdocitems.beans[itemData.id] = itemData;
-                        this.buildItems();
-                    }
-                })
-            }
-
-        } else {
-            this.model.data.salesdocitems.beans[itemData.id] = itemData;
-            this.buildItems();
-        }
-
-    }
-
-    /**
-     * caclulate the item on the backend
-     *
-     * @param itemData
-     * @private
-     */
-    private calculateItem(pricecalculationschema_id, itemData) {
-        let retSubject = new Subject();
-        let postData = {
-            salesdoc: this.model.utils.spiceModel2backend('SalesDocs', this.model.data),
-            items: [this.model.utils.spiceModel2backend('SalesDocItems', itemData)]
-        }
-        let calcAwait = this.modal.await('LBL_CALCULATING');
-        this.backend.postRequest(`module/SalesDocs/${this.model.id}/calculateitems`, {}, postData).subscribe({
-            next: (calcdata) => {
-                // set the itemdata
-                itemData.salesdocitempricedetermination = calcdata[itemData.id];
-
-                // update the relevant fields
-                this.salesdocrecord.getItemFieldsByElements(pricecalculationschema_id, this.model.getField('quantity'), itemData.salesdocitempricedetermination, itemData);
-
-                // retutn the subject so the item gets added
-                retSubject.next(true);
-                retSubject.complete();
-
-                calcAwait.emit(true);
-            },
-            error: () => {
-                calcAwait.emit(true);
-                retSubject.error(false);
-            }
-        })
-
-        return retSubject.asObservable();
-    }
 }
