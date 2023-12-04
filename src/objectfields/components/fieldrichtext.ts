@@ -367,7 +367,7 @@ export class fieldRichText extends fieldGeneric implements OnInit {
         let styleContent = !!this.stylesheetId ? this.metadata.getHtmlStylesheetCode(this.stylesheetId) : '';
 
         const element = document.createElement('div');
-        element.innerHTML = this.value;
+        element.innerHTML = (typeof this.value === 'undefined' ? '' : this.value);
         const styleTag = element.getElementsByTagName('style')[0];
         styleContent += styleTag?.innerHTML ?? '';
         styleTag?.remove();
