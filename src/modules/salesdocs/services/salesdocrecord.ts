@@ -457,7 +457,7 @@ export class salesdocrecord implements OnDestroy {
      */
     public getNextItemNr() {
         let lastitemnr = 0;
-        for (let itemid in this.salesdoc.data.salesdocitems.beans) {
+        for (let itemid in this.salesdoc.data.salesdocitems?.beans) {
             let item = this.salesdoc.data.salesdocitems.beans[itemid];
             let thisitemNr = parseInt(item.itemnr, 10);
             if (thisitemNr > lastitemnr) {
