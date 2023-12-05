@@ -9,11 +9,14 @@
         <div>
             {{itemNr}}
         </div>
-        <div *ngIf="canAddSubitem" class="slds-p-horizontal--small">
+        <ng-container *ngIf="canAddSubitem">
+        <div class="slds-p-horizontal--xx-small">/</div>
+        <div>
             <button class="slds-button slds-button--icon" [disabled]="!editing" (click)="addSubItem()" system-title="LBL_ADD_SUBITEM">
                 <system-button-icon icon="new"></system-button-icon>
             </button>
         </div>
+        </ng-container>
     </div>
     <div *ngIf="isSubItem" class="slds-grid slds-grid--vertical-align-center">
         <div>
