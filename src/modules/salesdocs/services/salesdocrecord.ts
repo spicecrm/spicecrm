@@ -366,8 +366,11 @@ export class salesdocrecord implements OnDestroy {
     /**
      * called to add an Item
      */
-    public addItem() {
+    public addItem(parentItemId = null) {
         this.modal.openModal('SalesDocsItemsAddTypeSelector', true, this.injector).subscribe(addItemModal => {
+            if(parentItemId){
+                addItemModal.instance.parentItemType = this.salesdoc.data.salesdocitems.beans[parentItemId].itemtype;
+            }
             addItemModal.instance.itemTypeSelected.subscribe(itemType => {
                 if (itemType) {
                     // get the item type data
@@ -384,6 +387,7 @@ export class salesdocrecord implements OnDestroy {
                             }
                             // subscribe to the add event
                             addModal.instance.additem.subscribe(item => {
+                                if(parentItemId) item.parentitem_id = parentItemId;
                                 // add the item
                                 this.handleAddItem(item, itemType);
                             });
@@ -453,12 +457,32 @@ export class salesdocrecord implements OnDestroy {
     }
 
     /**
+     * returns if there are subtypes for this item type configured
+     * @param itemId
+     */
+    public canAddSubitems(itemId){
+        let typesData = this.configuration.getData('salesdoctypes').find(typeRecord => typeRecord.name == this.salesdoc.getField('salesdoctype'));
+        return typesData.itemsubtypes[this.salesdoc.data.salesdocitems.beans[itemId].itemtype] && typesData.itemsubtypes[this.salesdoc.data.salesdocitems.beans[itemId].itemtype].length > 0;
+    }
+
+    /**
+     * returns the itemnr
+     *
+     * @param itemid
+     */
+    public getItemNr(itemid){
+        return this.salesdoc.data.salesdocitems.beans[itemid].itemnr;
+    }
+
+    /**
      * gets the next item number
      */
     public getNextItemNr() {
         let lastitemnr = 0;
         for (let itemid in this.salesdoc.data.salesdocitems?.beans) {
+            // get the item data
             let item = this.salesdoc.data.salesdocitems.beans[itemid];
+            // get an itemNR
             let thisitemNr = parseInt(item.itemnr, 10);
             if (thisitemNr > lastitemnr) {
                 lastitemnr = thisitemNr;

@@ -5,11 +5,24 @@
     </button>
 </td>
 <td>
-    <div class="slds-grid slds-grid--vertical-align-center">
-        <field-container fieldname="itemnr" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
-        <!--button class="slds-button slds-button--icon">
-            <system-button-icon icon="new"></system-button-icon>
-        </button-->
+    <div *ngIf="!isSubItem" class="slds-grid slds-grid--vertical-align-center">
+        <div>
+            {{itemNr}}
+        </div>
+        <div *ngIf="canAddSubitem" class="slds-p-horizontal--small">
+            <button class="slds-button slds-button--icon" [disabled]="!editing" (click)="addSubItem()" system-title="LBL_ADD_SUBITEM">
+                <system-button-icon icon="new"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="isSubItem" class="slds-grid slds-grid--vertical-align-center">
+        <div>
+            {{parentItemNr}}
+        </div>
+        <div class="slds-p-horizontal--xx-small">/</div>
+        <div>
+            {{itemNr}}
+        </div>
     </div>
 </td>
 <td *ngFor="let fieldsetItem of fieldsetItems">
