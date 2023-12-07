@@ -208,6 +208,29 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         this.item.deleted = 1;
     }
 
+    get canAddSubitem(){
+        return this.salesdocrecord.canAddSubitems(this.model.id);
+    }
+
+    get isSubItem(){
+        return !!this.model.getField('parentitem_id')
+    }
+
+    get itemNr(){
+        return this.salesdocrecord.getItemNr(this.model.id);
+    }
+
+    get parentItemNr(){
+        return this.salesdocrecord.getItemNr(this.model.getField('parentitem_id'));
+    }
+
+    /**
+     * adds a subitem
+     */
+    public addSubItem(){
+        this.salesdocrecord.addItem(this.model.id);
+    }
+
     /**
      * getter for the icon of the exoanded section
      *
