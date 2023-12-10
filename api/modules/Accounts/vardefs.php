@@ -447,10 +447,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
         ],
         'accountbankaccounts' => [
             'name' => 'accountbankaccounts',
+            'module' => 'AccountBankAccounts',
             'type' => 'link',
             'relationship' => 'accounts_bankaccounts',
             'source' => 'non-db',
-            'side' => 'right',
             'vname' => 'LBL_ACCOUNTBANKACCOUNTS'
         ],
         'accountccdetails' => [
