@@ -480,6 +480,20 @@ class SysModuleFilters
                 $date = new DateTime('now', new DateTimeZone($timeZone));
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return "({$tablename}.{$condition->field} > '$to')";
+            case 'nyearsago':
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $dateToday = new DateTime('now', new DateTimeZone($timeZone));
+                $dateToday->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $seed->field_defs[$condition->field]['type'] === 'date') {
+                    $sql = "({$tablename}.{$condition->field} = '{$dateToday->format( TimeDate::DB_DATE_FORMAT )}')";
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $sql = "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
+                }
+                return $sql;
         }
     }
 
@@ -839,6 +853,19 @@ class SysModuleFilters
                 $date = new DateTime('now', new DateTimeZone($timeZone));
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return ['range' => [$condition->field => ["gt" => $to]]];
+            case 'nyearsago':
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $dateToday = new DateTime('now', new DateTimeZone($timeZone));
+                $dateToday->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $seed->field_defs[$condition->field]['type'] === 'date') {
+                    return ['term' => [$condition->field . '.raw' => $dateToday->format( TimeDate::DB_DATE_FORMAT )]];
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
+                }
         }
     }
 
@@ -1054,6 +1081,15 @@ class SysModuleFilters
                 $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) > $to;
+            case 'nyearsago':
+                $date->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $bean->field_defs[$condition->field]['type'] === 'date') {
+                    return $bean->{$condition->field} === $date->format( TimeDate::DB_DATE_FORMAT );
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    return ( $bean->{$condition->field} >= $from and $bean->{$condition->field} <= $to );
+                }
             default:
                 return false;
         }

@@ -211,6 +211,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
             'source' => 'non-db',
             'comment' => 'Currency symbole'
         ],
+        'accountbankaccounts' => [
+            'name' => 'accountbankaccounts',
+            'type' => 'link',
+            'module' => 'AccountBankAccounts',
+            'relationship' => 'companycodes_bankaccounts',
+            'source' => 'non-db',
+            'vname' => 'LBL_ACCOUNTBANKACCOUNTS',
+        ],
     ],
     'indices' => [
         ['name' => 'idx_companycodes_id_del', 'type' => 'index', 'fields' => ['id', 'deleted'],],
