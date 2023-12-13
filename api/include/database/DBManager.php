@@ -275,6 +275,38 @@ abstract class DBManager
     public $dbConfig = [];
 
     /**
+     * holds the latest sql error
+     * @var
+     */
+    public $lastsql;
+
+    /**
+     * holds the count of references
+     * @var int
+     */
+    public $references = 0;
+
+    /**
+     * holds the index of the instance
+     * @var 
+     */
+    public $count_id;
+
+    /**
+     * holds the connectOptions of the database connection
+     * @var
+     */
+    public $connectOptions = [];
+
+    /**
+     * holds a DBManager instance of itself
+     * Not sure waht it is vor. Might a relic from the past
+     * @var
+     */
+    public $helper;
+
+
+    /**
      * Create DB Driver
      */
     public function __construct(array $config)
