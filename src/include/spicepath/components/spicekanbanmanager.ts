@@ -82,8 +82,8 @@ export class SpiceKanbanManager implements OnInit{
             };
             modalRef.instance.emitSelectedBeanGuide.subscribe(selected => {
                 selected.scope == 'global' ? this.beanGuides.push(selected) : this.beanGuidesCustom.push(selected);
+                this.kanbanManagerService.selectedBeanGuide = selected;
                 this.moduleName = selected.module;
-
                 this.kanbanManagerService.loadItems();
             });
         });

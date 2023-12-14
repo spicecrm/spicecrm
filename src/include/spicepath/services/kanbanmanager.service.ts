@@ -13,6 +13,10 @@ import {
 
 @Injectable()
 export class KanbanManagerService {
+    public currentStages: SpiceBeanGuideStagesI[] = [];
+
+    public currentStagesSpiceTexts: [] = [];
+    public currentStagesChecks: [] = [];
 
     public stages: SpiceBeanGuideStagesI[] = [];
 
@@ -33,10 +37,11 @@ export class KanbanManagerService {
     /**
      * holds the selected bean guide
      */
-    private _selectedBeanGuide;
+    private _selectedBeanGuide: SpiceBeanGuidesI;
 
-    set selectedBeanGuide(val) {
+    set selectedBeanGuide(val:SpiceBeanGuidesI) {
         this._selectedBeanGuide = val;
+        this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id);
 
         this.selectedBeanGuide$.next(val);
     }

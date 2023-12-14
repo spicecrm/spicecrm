@@ -13,6 +13,14 @@ export interface SpiceBeanGuideStagesI {
     spicebeanguide_status: string;
 }
 
+export interface SpiceBeanGuideActiveStageI extends SpiceBeanGuideStagesI {
+    not_in_kanban: 0 | undefined;
+}
+
+export interface SpiceBeanGuideInactiveStageI extends SpiceBeanGuideStagesI {
+    not_in_kanban: 1;
+}
+
 export interface SpiceBeanGuidesI {
     id: string;
     module: string;
