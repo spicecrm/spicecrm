@@ -82,7 +82,7 @@ export class KanbanManagerService {
      */
     public loadItems() {
         this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages => {
-            this.stages = stages;
+            this.stages = stages.sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
         })
     }
 
