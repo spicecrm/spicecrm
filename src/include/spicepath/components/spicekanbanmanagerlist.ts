@@ -3,7 +3,11 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag
 import {backend} from "../../../services/backend.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {Subscription} from "rxjs";
-import {SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
+import {
+    SpiceBeanGuideActiveStageI,
+    SpiceBeanGuideInactiveStageI,
+    SpiceBeanGuideStagesI
+} from "../interfaces/kanbanmanager.interfaces";
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,8 +17,8 @@ import {SpiceBeanGuideStagesI} from "../interfaces/kanbanmanager.interfaces";
 
 export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
 
-    public notInKanban:SpiceBeanGuideStagesI[] = [];
-    public activeStages:SpiceBeanGuideStagesI[] = [];
+    public inactiveStages:SpiceBeanGuideInactiveStageI[] = [];
+    public activeStages:SpiceBeanGuideActiveStageI[] = [];
 
     public selected: string;
     private subscription: Subscription = new Subscription();
@@ -67,16 +71,14 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
 
         if (!this.kanbanManagerService.selectedBeanGuide) return this.emitActiveStages.emit([]);
 
-        this.activeStages = this.kanbanManagerService.stages
-            .filter(dis=>dis.not_in_kanban == 0 && dis.spicebeanguide_id == this.kanbanManagerService.selectedBeanGuide.id);
-        this.notInKanban = this.kanbanManagerService.stages
-            .filter(dis=>dis.not_in_kanban == 1 && dis.spicebeanguide_id == this.kanbanManagerService.selectedBeanGuide.id);
+        this.activeStages = this.kanbanManagerService.currentStages.filter(dis=>dis.not_in_kanban == 0) as SpiceBeanGuideActiveStageI[];
+        this.inactiveStages = this.kanbanManagerService.currentStages.filter(dis=>dis.not_in_kanban == 1) as SpiceBeanGuideInactiveStageI[];
 
         this.emitActiveStages.emit(this.activeStages);
     }
 
     public openDetails(selectedStage){
         this.selected = selectedStage.id;
-        this.selectedStage.emit(selectedStage)
+        this.selectedStage.emit(selectedStage);
     }
 }
