@@ -10,6 +10,7 @@ import {language} from '../../../services/language.service';
 import {modelattachments} from '../../../services/modelattachments.service';
 
 @Component({
+    selector: 'spice-attachments-panel-header',
     templateUrl: '../templates/spiceattachmentspanelheader.html',
     providers:[modelattachments]
 
@@ -63,6 +64,9 @@ export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
 
         switch (message.messagetype) {
             case 'attachments.loaded':
+                this.attachmentcount = message.messagedata.attachmentcount;
+                break;
+            case 'attachments.cloned':
                 this.attachmentcount = message.messagedata.attachmentcount;
                 break;
 

@@ -5,15 +5,7 @@
                 <system-icon [module]="model.module"></system-icon>
                 <object-list-types></object-list-types>
             </div>
-            <div class="slds-form-element slds-grow" [ngClass]="{'slds-has-error': searchTermError}">
-                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left-right">
-                    <system-utility-icon icon="search" size="x-small" addclasses="slds-icon slds-input__icon slds-input__icon_left"></system-utility-icon>
-                    <input system-autofocus class="slds-input slds-lookup__search-input" type="search" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', model.module)" [(ngModel)]="searchTerm" (keyup.enter)="reloadList()"/>
-                    <button [disabled]="!searchTerm" (click)="clearSearchTerm()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
-                        <system-button-icon icon="clear"></system-button-icon>
-                    </button>
-                </div>
-            </div>
+            <system-input-search-term [(ngModel)]="searchTerm" (onSearchTermClear)="clearSearchTerm()" (onEnterPress)="reloadList()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', model.module)" class="slds-grow"></system-input-search-term>
         </div>
         <div [class.slds-m-top--x-small]="layout.screenwidth == 'small'" class="slds-grid slds-grid--vertical-align-center slds-grow slds-grid--align-end slds-p-left--small">
             <object-listview-header-details></object-listview-header-details>

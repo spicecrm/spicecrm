@@ -304,6 +304,30 @@ class SysModuleFilters
                     return "{$tablename}.{$relatedField} = '{$filtervalues['0']}'";
                 }
                 break;
+            case 'notequalr':
+                if ($this->filtermodule) {
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    $filtervalues = explode('::', $condition->filtervalue);
+                    return "{$tablename}.{$relatedField} <> '{$filtervalues['0']}'";
+                }
+                break;
+            case 'equalrcu':
+                if ($this->filtermodule) {
+                    $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    return "{$tablename}.{$relatedField} = '{$currentUser->id}'";
+                }
+                break;
+            case 'notequalrcu':
+                if ($this->filtermodule) {
+                    $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    return "{$tablename}.{$relatedField} <> '{$currentUser->id}'";
+                }
+                break;
             case 'oneof':
                 $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
                 $seed = BeanFactory::getBean($this->filtermodule);
@@ -314,6 +338,17 @@ class SysModuleFilters
                     return "($conditionString)";
                 } else {
                     return "{$tablename}.{$condition->field} IN ('" . implode("','", $valArray) . "')";
+                }
+            case 'notoneof':
+                $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
+                if ($isMultiEnum) {
+                    $fieldEqual = "{$tablename}.{$condition->field}";
+                    $conditionString = implode(" AND ", array_map(function ($item) use ($fieldEqual) {return "$fieldEqual NOT LIKE '%$item%'";}, $valArray));
+                    return "($conditionString)";
+                } else {
+                    return "{$tablename}.{$condition->field} NOT IN ('" . implode("','", $valArray) . "')";
                 }
             case 'true':
                 return "{$tablename}.{$condition->field} = 1";
@@ -445,6 +480,20 @@ class SysModuleFilters
                 $date = new DateTime('now', new DateTimeZone($timeZone));
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return "({$tablename}.{$condition->field} > '$to')";
+            case 'nyearsago':
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $dateToday = new DateTime('now', new DateTimeZone($timeZone));
+                $dateToday->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $seed->field_defs[$condition->field]['type'] === 'date') {
+                    $sql = "({$tablename}.{$condition->field} = '{$dateToday->format( TimeDate::DB_DATE_FORMAT )}')";
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $sql = "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
+                }
+                return $sql;
         }
     }
 
@@ -604,6 +653,30 @@ class SysModuleFilters
                     return ['term' => [$relatedField => $filtervalues['0']]];
                 }
                 break;
+            case 'notequalr':
+                if ($this->filtermodule) {
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    $filtervalues = explode('::', $condition->filtervalue);
+                    return ['bool' => ['must_not' => ['term' => [$relatedField . '.raw' => $filtervalues['0']]]]];
+                }
+                break;
+            case 'equalrcu':
+                if ($this->filtermodule) {
+                    $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    return ['term' => [$relatedField => $currentUser->id]];
+                }
+                break;
+            case 'notequalrcu':
+                if ($this->filtermodule) {
+                    $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    return ['bool' => ['must_not' => ['term' => [$relatedField . '.raw' => $currentUser->id]]]];
+                }
+                break;
             case 'oneof':
                 if (is_array($condition->filtervalue)) {
                     $valArray = $condition->filtervalue;
@@ -620,6 +693,21 @@ class SysModuleFilters
                     return ['terms' => [$condition->field . '.raw' => $valArray]];
                 }
                 break;
+            case 'notoneof':
+                if (is_array($condition->filtervalue)) {
+                    $valArray = $condition->filtervalue;
+                } else {
+                    $valArray = explode(',', $condition->filtervalue);
+                }
+
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
+                if ($isMultiEnum) {
+                    $matchArray = array_map(function ($item) use ($condition) {return ['match' => [$condition->field => $item]]; }, $valArray);
+                    return ['bool' => ['must_not' => $matchArray]];
+                } else {
+                    return ['terms' => [$condition->field . '.raw' => $valArray]];
+                }
             case 'true':
                 return ['term' => [$condition->field . '.raw' => 1]];
                 break;
@@ -765,6 +853,19 @@ class SysModuleFilters
                 $date = new DateTime('now', new DateTimeZone($timeZone));
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return ['range' => [$condition->field => ["gt" => $to]]];
+            case 'nyearsago':
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $dateToday = new DateTime('now', new DateTimeZone($timeZone));
+                $dateToday->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $seed->field_defs[$condition->field]['type'] === 'date') {
+                    return ['term' => [$condition->field . '.raw' => $dateToday->format( TimeDate::DB_DATE_FORMAT )]];
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
+                }
         }
     }
 
@@ -846,6 +947,20 @@ class SysModuleFilters
                 $relatedField = $bean->field_defs[$condition->field]['id_name'];
                 $filtervalues = explode('::', $condition->filtervalue);
                 return $bean->{$relatedField} == $filtervalues['0'];
+            case 'notequalr':
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
+                $filtervalues = explode('::', $condition->filtervalue);
+                return $bean->{$relatedField} != $filtervalues['0'];
+            case 'equalrcu':
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
+                $filtervalues = explode('::', $condition->filtervalue);
+                return $bean->{$relatedField} == $currentUser->id;
+            case 'notequalrcu':
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $relatedField = $bean->field_defs[$condition->field]['id_name'];
+                $filtervalues = explode('::', $condition->filtervalue);
+                return $bean->{$relatedField} != $currentUser->id;
             case 'oneof':
                 $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
                 $isMultiEnum = $bean->field_defs[$condition->field]['type'] == 'multienum';
@@ -854,6 +969,15 @@ class SysModuleFilters
                     return false;
                 } else {
                     return array_search($bean->{$condition->field}, $valArray) !== false;
+                }
+            case 'notoneof':
+                $valArray = is_array($condition->filtervalue) ? $condition->filtervalue : explode(',', $condition->filtervalue);
+                $isMultiEnum = $bean->field_defs[$condition->field]['type'] == 'multienum';
+                if ($isMultiEnum) {
+                    foreach ($valArray as $val) if (strpos($bean->{$condition->field}, $val) === false) return true;
+                    return false;
+                } else {
+                    return array_search($bean->{$condition->field}, $valArray) === false;
                 }
             case 'true':
                 return $bean->{$condition->field};
@@ -957,6 +1081,15 @@ class SysModuleFilters
                 $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) > $to;
+            case 'nyearsago':
+                $date->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $bean->field_defs[$condition->field]['type'] === 'date') {
+                    return $bean->{$condition->field} === $date->format( TimeDate::DB_DATE_FORMAT );
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    return ( $bean->{$condition->field} >= $from and $bean->{$condition->field} <= $to );
+                }
             default:
                 return false;
         }

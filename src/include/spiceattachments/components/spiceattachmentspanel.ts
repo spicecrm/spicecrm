@@ -3,9 +3,6 @@
  */
 import {
     Component,
-    OnInit,
-    Input,
-    NgZone,
     Output,
     EventEmitter,
     ViewChild,
@@ -14,7 +11,8 @@ import {
     Injector,
     Optional,
     SkipSelf,
-    AfterViewInit, OnChanges, SimpleChanges
+    AfterViewInit,
+    ComponentRef
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -23,19 +21,20 @@ import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
 import {modelattachments} from "../../../services/modelattachments.service";
-
-/**
- * @ignore
- */
-declare var moment: any;
+import {SpiceAttachmentAddFromRecordModal} from "./spiceattachmentaddfromrecordmodal";
+import {navigationtab} from "../../../services/navigationtab.service";
+import {broadcast} from "../../../services/broadcast.service";
+import {SpiceAttachmentAddImageModal} from "./spiceattachmentaddimagemodal";
+import {Subscription} from "rxjs";
 
 /**
  * renders a panel for the attachments. The modelatatchment service can be provided by the component or by the parent
  * if the parent provides the service the parent is also responsible for the laoding of atatchments
  */
 @Component({
+    selector: 'spice-attachments-panel',
     templateUrl: '../templates/spiceattachmentspanel.html',
-    providers: [modelattachments]
+    providers: [modelattachments, navigationtab]
 })
 export class SpiceAttachmentsPanel implements AfterViewInit {
 
@@ -66,15 +65,26 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     } = {};
 
     /**
+     * holds the components subscriptions
+     */
+    public subscriptions: Subscription = new Subscription();
+
+    /**
      * contructor sets the module and id for the laoder
-     * @param modelattachments
+     * @param _modelattachments
      * @param parentmodelattachments
      * @param language
+     * @param modal
      * @param model
+     * @param view
      * @param renderer
      * @param toast
      * @param metadata
      * @param modalservice
+     * @param injector
+     * @param parentModel
+     * @param navigationtab
+     * @param broadcast
      */
     constructor(
         public _modelattachments: modelattachments,
@@ -87,7 +97,10 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         public toast: toast,
         public metadata: metadata,
         public modalservice: modal,
-        public injector: Injector
+        public injector: Injector,
+        @SkipSelf() private parentModel: model,
+        public navigationtab: navigationtab,
+        public broadcast: broadcast,
     ) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
@@ -236,14 +249,47 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * @param files an array with files
      */
     public doupload(files) {
-        this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId);
+        this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId).subscribe({
+            next: () => {
+                this.broadcastUpload();
+            }
+        });
     }
 
     /**
      * opens the add Image modal
      */
     public addImage() {
-        this.modal.openModal('SpiceAttachmentAddImageModal', true, this.injector);
+        this.modal.openModal('SpiceAttachmentAddImageModal', true, this.injector).subscribe((modalRef: ComponentRef<SpiceAttachmentAddImageModal>) => {
+            modalRef.instance.systemCategoryId = this.componentconfig.systemCateogryId;
+
+            // wait for modal to finish upload
+            modalRef.instance.responseSubject.subscribe({
+                next: () => {
+                    this.broadcastUpload();
+                }
+            })
+        });
     }
 
+    /**
+     * opens the add from record modal
+     */
+    public addFromRecord() {
+        this.modal.openModal('SpiceAttachmentAddFromRecordModal', true, this.injector).subscribe((modalRef: ComponentRef<SpiceAttachmentAddFromRecordModal>) => {
+            modalRef.instance.parent = this.parentModel;
+        });
+    }
+
+    /**
+     * broadcasts uploaded data to _modelattachments service
+     * @private
+     */
+    private broadcastUpload() {
+        this._modelattachments.broadcast.broadcastMessage('attachments.uploaded', {
+            uploadedFiles: this._modelattachments.files,
+            uniqueID: this._modelattachments.httpRequestsRefID,
+            reload: true
+        })
+    }
 }

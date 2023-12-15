@@ -60,6 +60,7 @@ class TimeDate
 	const DB_TIME_FORMAT = 'H:i:s';
     // little optimization
 	const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
+	const DB_DATETIME_MICROSECONDS_FORMAT = 'Y-m-d H:i:s.v';
 	const RFC2616_FORMAT = 'D, d M Y H:i:s \G\M\T';
 
     const SECONDS_IN_A_DAY = 86400;
@@ -510,7 +511,7 @@ class TimeDate
     public function fromDbDate($date)
     {
         try {
-            return DateTime::createFromFormat(self::DB_DATE_FORMAT, $date, self::$gmtTimezone);
+            return DateTime::createFromFormat(self::DB_DATE_FORMAT, $date, self::$gmtTimezone) ?: self::fromDb($date);
         } catch (Exception $e) {
             LoggerManager::getLogger()->error("fromDbDate: Conversion of $date from DB format failed: {$e->getMessage()}");
             return null;
@@ -698,6 +699,15 @@ class TimeDate
     public function nowDb()
     {
         return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format(self::DB_DATETIME_FORMAT);
+    }
+
+    /**
+     * Return current time in microseconds format
+     * @return string
+     */
+    public function nowDbInMicroseconds(): string
+    {
+        return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->createFromFormat('U.u', microtime(true))->format(self::DB_DATETIME_MICROSECONDS_FORMAT);
     }
 
     /**
@@ -977,4 +987,19 @@ class TimeDate
         return $this->_getUserTZ($user)->getOffset($time) / 60;
     }
 
+    /**
+     * Convert local datetime to DB date
+     *
+     * TZ conversion depends on parameter. If false, only format conversion is performed.
+     *
+     * @param string $date Local date
+     * @param bool $convert_tz Should time and TZ be taken into account?
+     * @return string Date in DB format
+     */
+    public function to_db_date($date, $convert_tz = true)
+    {
+        return $this->_convert($date,
+            $this->get_date_time_format(), $convert_tz ? $this->_getUserTZ() : self::$gmtTimezone,
+            self::DB_DATE_FORMAT, self::$gmtTimezone, true);
+    }
 }

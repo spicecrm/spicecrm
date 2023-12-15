@@ -32,6 +32,8 @@ $kreporterWhereOperatorCount = [
     'lastmonth' => 0,
     'last3month' => 0,
     'lastnfquarter' => 1,
+    'ndaysago' => 1,
+    'lessthanndays' => 1,
     'lastndays' => 1,
     'lastnfdays' => 1,
     'lastnddays' => 1,
@@ -128,6 +130,17 @@ $kreporterWhereOperatorTypes = [
         'isnull',
         'isnotempty'
     ],
+    'category' => [
+        'equals',
+        'notequal',
+        'oneof',
+        'oneofnot',
+        'oneofnotornull',
+        'isempty',
+        'isemptyornull',
+        'isnull',
+        'isnotempty'
+    ],
     'id' => [
         'equals',
         'autocomplete',
@@ -160,6 +173,8 @@ $kreporterWhereOperatorTypes = [
         'future',
         'between',
         'today',
+        'ndaysago',
+        'lessthanndays',
         'lastndays',
         'lastnfdays',
         'lastnddays',
@@ -241,7 +256,8 @@ $kreporterWhereOperatorAssignments = [
     'datetime' => 'date',
     'datetimecombo' => 'date', 
     //2013-08-07 added fixed field
-    'fixed' => 'varchar'
+    'fixed' => 'varchar',
+    'category' => 'category',
 ];
 
 if (file_exists('custom/modules/KReports/config/KReportWhereOperators.php'))

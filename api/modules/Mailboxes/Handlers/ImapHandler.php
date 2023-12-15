@@ -8,6 +8,7 @@ use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -505,6 +506,15 @@ class ImapHandler extends TransportHandler
             ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
             ->setBody($this->trackedBody($email), 'text/html');
 
+        if($this->mailbox->unsubscribe_header) {
+
+            $unsubscribeUrl = EmailTracking::getUnsubscribeURL($email);
+
+            if ($unsubscribeUrl) {
+                $message->getHeaders()->addTextHeader('List-Unsubscribe', "<$unsubscribeUrl>");
+            }
+        }
+
         $toAddresses = [];
         $intendedRecipients = [];
         foreach ( $email->to() as $recipient ) {
@@ -581,44 +591,42 @@ class ImapHandler extends TransportHandler
      * Sends the converted Email
      *
      * @param $message
-     * @return array
+     * @return DispatchResponse
      * @throws Exception
      */
-    protected function dispatch($message) {
+    protected function dispatch($message): DispatchResponse
+    {
         $logEntryHandler = new APILogEntryHandler();
         try {
             // todo Call to undefined method Swift_RfcComplianceException::isFatal()
             // this error message shows on the first try
             $logEntryHandler->generateSmtpLogEntry($message, $this->mailbox,  'smtp_send');
-            $result = [
-                'result'     => $this->transport_handler->send($message),
-                'message_id' => $message->getId(),
-            ];
+            $result = new DispatchResponse(
+                $this->transport_handler->send($message) > 0,
+                ['message_id' => $message->getId()]
+            );
 
         } catch (Swift_RfcComplianceException $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => $exception->getMessage(),
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         } catch (Swift_TransportException $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => "Cannot inititalize connection.",
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         } catch (Exception $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => $exception->getMessage(),
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         }
 
-        if (($result['result'] == true || $result == true)) {
+        if (($result->result == true)) {
             $logEntryHandler->updateSmtpLogEntry($result);
             if ($this->mailbox->imap_sent_dir != '') {
                 $msg = $message->toString();

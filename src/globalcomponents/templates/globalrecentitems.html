@@ -10,7 +10,7 @@
                             </h1>
                         </div>
                     </div>
-                    <p class="slds-page-header__name-meta">{{recent.items.length}} <system-label label="LBL_ITEMS"></system-label></p>
+                    <p class="slds-page-header__name-meta">{{recent.recentItems.length}} <system-label label="LBL_ITEMS"></system-label></p>
                 </div>
             </div>
         </div>
@@ -28,20 +28,31 @@
                 <th class="slds-is-sortable slds-is-resizable " scope="col">
                     <span class="slds-truncate slds-th__action"><system-label label="LBL_MODULE"></system-label></span>
                 </th>
+                <th class="slds-is-sortable slds-is-resizable " scope="col">
+                    <span class="slds-truncate slds-th__action"><system-label label="LBL_VIEWED"></system-label></span>
+                </th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let recentItem of recent.items" [system-model-provider]="{module: recentItem.module_name, data: recentItem.data}" class="slds-hint-parent">
+        <tr class="slds-p-bottom--small" *ngIf="!recent.isInitialized">
+            <system-spinner size="16" ></system-spinner>
+        </tr>
+            <tr *ngFor="let recentItem of recent.recentItems" [system-model-provider]="{module: recentItem.module_name, data: recentItem.data}" class="slds-hint-parent">
                 <td role="gridcell" class="slds-cell-shrink">
                     <system-icon [module]="recentItem.module_name" size="small" divClass=""></system-icon>
                 </td>
-                <td scope="row">
+                <td>
                     <a href="javascript:void(0);" class=" slds-text-link--reset" (click)="goRecent(recentItem.module_name, recentItem.item_id)">
-                        <div class="slds-truncate" system-model-popover [module]="recentItem.module_name" [id]="recentItem.item_id">{{recentItem.item_summary}}</div>
+                        <div class="slds-truncate" system-model-popover [module]="recentItem.module_name" [id]="recentItem.item_id">
+                            {{recentItem.summary_text ? recentItem.summary_text : recentItem.item_summary}}
+                        </div>
                     </a>
                 </td>
-                <td scope="row">
+                <td>
                     <div class="slds-truncate"><system-label-modulename [module]="recentItem.module_name" [singular]="true"></system-label-modulename></div>
+                </td>
+                <td>
+                    <div class="slds-truncate">{{recentItem.date_modified}}</div>
                 </td>
             </tr>
         </tbody>

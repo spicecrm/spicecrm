@@ -1,4 +1,4 @@
-<div class="slds-card slds-card_boundary slds-m-bottom--medium" [ngClass]="{'slds-hide': isHidden}">
+<div class="slds-card slds-card_boundary slds-m-bottom--medium" *ngIf="!hidden" [ngClass]="{'slds-hide': isHidden}">
     <div class="slds-card__header slds-grid slds-grid--vertical-align-center">
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
             <system-icon module="KReports" [size]="'small'"></system-icon>

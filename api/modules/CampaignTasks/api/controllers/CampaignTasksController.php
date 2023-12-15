@@ -440,4 +440,26 @@ class CampaignTasksController
 
         return $res->withJson($response);
     }
+
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     * @throws \Exception
+     */
+    public function deactivateCampaignTask(Request $req, Response $res, array $args): Response
+    {
+        /** @var CampaignTask $campaignTask */
+        $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
+
+        if (!SpiceACL::getInstance()->checkAccess($campaignTask, 'deactivate', true)) {
+            throw (new ForbiddenException("Forbidden to deactivate in module CampaignTasks."))->setErrorCode('noModuleEdit');
+        }
+
+        $campaignTask->deactivate();
+
+        return $res->withJson(['success' => true]);
+    }
 }
