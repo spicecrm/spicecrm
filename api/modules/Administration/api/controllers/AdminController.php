@@ -174,8 +174,7 @@ class AdminController
                 'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
             ],
             'advanced' => [
-                'developerMode' => SpiceConfig::getInstance()->config['developerMode'],
-                'stack_trace_errors' => SpiceConfig::getInstance()->config['stack_trace_errors'],
+                'stack_trace_errors' => SpiceUtils::getStackTrace(),
                 'dump_slow_queries' => SpiceConfig::getInstance()->config['dump_slow_queries'],
                 'log_memory_usage' => SpiceConfig::getInstance()->config['log_memory_usage'],
                 'slow_query_time_msec' => SpiceConfig::getInstance()->config['slow_query_time_msec'],

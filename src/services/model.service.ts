@@ -20,6 +20,7 @@ import {socket} from "./socket.service";
 import {SocketEventI} from "./interfaces.service";
 import {filter, map} from "rxjs/operators";
 import {userpreferences} from "./userpreferences.service";
+import {DomSanitizer} from "@angular/platform-browser";
 
 /**
  * @ignore
@@ -285,7 +286,8 @@ export class model implements OnDestroy {
         public configuration: configurationService,
         public injector: Injector,
         public socket: socket,
-        public userpreferences: userpreferences
+        public userpreferences: userpreferences,
+        private sanitizer: DomSanitizer
     ) {
 
         this.data$ = new BehaviorSubject(this.data);
@@ -1038,7 +1040,6 @@ export class model implements OnDestroy {
      */
     public cancelEdit() {
         this.isEditing = false;
-        this.mode$.emit('display');
         this.navigation.removeModelEditing(this.module, this.id);
 
         if (this.backupData) {
@@ -1049,6 +1050,7 @@ export class model implements OnDestroy {
             this.resetMessages();
         }
 
+        this.mode$.emit('display');
         // emit that the edit mode has been cancelled
         this.canceledit$.emit(true);
     }
@@ -1629,11 +1631,9 @@ export class model implements OnDestroy {
                 if (!copyRule.params?.number || !copyRule.params?.unit) return fromFieldDate;
 
                 return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
-            case "currentYear":
-                date = new moment.utc().tz(timeZone);
-                let year = date.year();
-                return year;
 
+            case "nl2br":
+                return fromField.replace(/\r\n/g, '<br>').replace(/\n\n/g, '<br>').replace(/\n/g, '<br>');
         }
         return "";
     }
@@ -1979,6 +1979,21 @@ export class model implements OnDestroy {
         return true;
     }
 
+    /**
+     * rollback removed related records
+     */
+    public rollbackRemovedRelatedRecords(relation_link_name: string, records: any[]): boolean {
+        if (!this.isFieldARelationLink(relation_link_name) || !this.data[relation_link_name].beans_relations_to_delete) {
+            return false;
+        }
+
+        records.forEach(id => {
+            delete this.data[relation_link_name].beans_relations_to_delete[id];
+        });
+
+        return true;
+    }
+
 
     public ngOnDestroy(): void {
 
@@ -2117,6 +2132,21 @@ export class model implements OnDestroy {
             }
         });
         return clone;
+    }
+
+    /**
+     * generate html content blob
+     */
+    public generateFieldHtmlContentBlobUrl(fieldName: string) {
+
+        return this.backend.getRequest(`module/${this.module}/${this.id}/${fieldName}/html`).pipe(
+            map(content => {
+                const blob = new Blob([content.html], {type: 'text/html'});
+                return this.sanitizer.bypassSecurityTrustResourceUrl(
+                    window.URL.createObjectURL(blob)
+                );
+            })
+        );
     }
 
 }

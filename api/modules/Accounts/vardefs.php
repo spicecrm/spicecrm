@@ -207,6 +207,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS',
         ],
+        'emails_parent' => [
+            'name' => 'emails_parent',
+            'type' => 'link',
+            'relationship' => 'account_emails',
+            'source' => 'non-db',
+            'vname' => 'LBL_EMAILS_AS_PARENT',
+        ],
         'documents' => [
             'name' => 'documents',
             'type' => 'link',
@@ -399,6 +406,36 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'vname' => 'LBL_VAT_DETAILS',
             'type' => 'text'
         ],
+        'paymentterms' => [
+            'name' => 'paymentterms',
+            'vname' => 'LBL_PAYMENTTERMS',
+            'type' => 'enum',
+            'len' => 10,
+            'options' => 'salesdocs_paymentterms',
+        ],
+        'billingtype' => [
+            'name' => 'billingtype',
+            'vname' => 'LBL_BILLINGTYPE',
+            'type' => 'enum',
+            'len' => 1,
+            'options' => 'salesdocs_billingtype',
+            'comment' => 'an indicator for the type of automated billing: i for incremental, c for complete, m for monthly'
+        ],
+        'billingmedium' => [
+            'name' => 'billingmedium',
+            'vname' => 'LBL_BILLINGMEDIUM',
+            'type' => 'enum',
+            'len' => 1,
+            'options' => 'salesdocs_billingmedium',
+            'comment' => 'the medium on how the invopice is sent : P for Paper E for email'
+        ],
+        'billingemail' => [
+            'name' => 'billingemail',
+            'vname' => 'LBL_BILLINGEMAIL',
+            'type' => 'varchar',
+            'len' => 255,
+            'comment' => 'the emaila ddress to send invoices to'
+        ],
         'accountkpis' => [
             'name' => 'accountkpis',
             'type' => 'link',
@@ -410,10 +447,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
         ],
         'accountbankaccounts' => [
             'name' => 'accountbankaccounts',
+            'module' => 'AccountBankAccounts',
             'type' => 'link',
             'relationship' => 'accounts_bankaccounts',
             'source' => 'non-db',
-            'side' => 'right',
             'vname' => 'LBL_ACCOUNTBANKACCOUNTS'
         ],
         'accountccdetails' => [
@@ -598,7 +635,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
         )
         */
         'account_emails' => [
-            'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id', 'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id', 'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+            'lhs_module' => 'Accounts',
+            'lhs_table' => 'accounts',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Emails',
+            'rhs_table' => 'emails',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Accounts'
         ],
         'account_letters' => [

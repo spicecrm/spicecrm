@@ -19,7 +19,8 @@ use SpiceCRM\includes\TimeDate;
 class EventController
 {
     /**
-     * returns registrations in the linked event
+     * create eventregistrations for given records related to a prospectlist
+     * In case the prospect already has an eventregistration record no further eventregistration will be created for that prospect.
      * @param Request $req
      * @param Response $res
      * @param array $args
@@ -28,7 +29,7 @@ class EventController
     public function createEventRegistrations(Request $req, Response $res, array $args): Response
     {
         $body = $req->getParsedBody();
-        $listDataIds = $body['targetListIds'];
+        $prospectListIds = $body['targetListIds'];
         $registrationData = $body['registrationData'];
         $event = BeanFactory::getBean('Events', $body['eventId']);
         $existingEventRegistrations = $event->get_linked_beans('eventregistrations');
@@ -36,18 +37,33 @@ class EventController
         foreach ($existingEventRegistrations as $existingEventRegistration){
             $participants[] = $existingEventRegistration->parent_id;
         }
-        foreach ($listDataIds as $idx => $targetlistId) {
-            $allProspectList = BeanFactory::getBean('ProspectLists', $targetlistId);
-            $prospects = [];
-            $prospects = array_merge($prospects, $allProspectList->get_linked_beans('contacts'));
-            $prospects = array_merge($prospects, $allProspectList->get_linked_beans('consumers'));
-            $prospects = array_merge($prospects, $allProspectList->get_linked_beans('users'));
-            $prospects = array_merge($prospects, $allProspectList->get_linked_beans('accounts'));
+        foreach ($prospectListIds as $prospectListId) {
+            $prospectList = BeanFactory::getBean('ProspectLists', $prospectListId);
+            if(!$prospectList) continue;
 
+            $prospects = [];
+            // get related beans - we consider only Person extended beans
+            $prospects = array_merge($prospects, $prospectList->get_linked_beans('contacts'));
+            if($prospectList->load_relationship('consumers')){
+                $prospects = array_merge($prospects, $prospectList->get_linked_beans('consumers'));
+            }
+            if($prospectList->load_relationship('users')){
+                $prospects = array_merge($prospects, $prospectList->get_linked_beans('users'));
+            }
+            if($prospectList->load_relationship('leads')){
+                $prospects = array_merge($prospects, $prospectList->get_linked_beans('leads'));
+            }
+            // $prospects = array_merge($prospects, $allProspectList->get_linked_beans('accounts'));
+
+            // initiate counter for new records
+            $addedProspects = [];
+
+            // loop the prospects
             foreach ($prospects as $prospect) {
-                $eventRegistration = BeanFactory::getBean('EventRegistrations');
+                if(empty($prospect->id)) continue;
                 if (!in_array($prospect->id, $participants)) {
                     // map personal data
+                    $eventRegistration = BeanFactory::getBean('EventRegistrations');
                     $eventRegistration->salutation = $prospect->salutation;
                     $eventRegistration->first_name = $prospect->first_name;
                     $eventRegistration->last_name = $prospect->last_name;
@@ -65,9 +81,11 @@ class EventController
                     }
                     // save
                     $eventRegistration->save();
+                    // update counter
+                    $addedProspects[] = $prospect->id;
                 }
             }
         }
-        return $res->withJson(['success' => true]);
+        return $res->withJson(['success' => true, 'added_prospects_count' => count($addedProspects)]);
     }
 }

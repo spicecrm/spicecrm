@@ -66,7 +66,7 @@ export class WebHooksManagerEditModal {
         fieldset_id: '',
         ssl_verifypeer: true,
         ssl_verifyhost: true,
-        // custom_headers : {},
+        custom_headers : '',
     };
     public save$ = new Subject<WebHookI>();
 

@@ -12,7 +12,7 @@
                     <div *ngIf="!spiceImport.fileData" class="slds-grid slds-m-around--x-small">
                         <fieldset class="slds-form-element">
                             <div class="slds-form-element__control">
-                                <system-input-radio-button-group [(ngModel)]="spiceImport.separator" [inputOptions]="[{label: ';', value: 'semicolon'}, {label: ',', value: 'comma'}]"></system-input-radio-button-group>
+                                <system-input-radio-button-group [(ngModel)]="spiceImport.separator" [inputOptions]="delimiterOptions"></system-input-radio-button-group>
                             </div>
                             <legend class="slds-form-element__legend slds-form-element__label">
                                 <system-label label="LBL_SEPARATOR"></system-label>
@@ -115,8 +115,9 @@
                     <system-label label="LBL_METHOD"></system-label>
                 </label>
                 <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xx-small">
-                    <system-select [selectList]="spiceImport.availableClasses" [(ngModel)]="selectedClass"
-                                   (ngModelChange)="getClassMethods($event.name)" class="slds-grow"></system-select>
+                    <system-select [(ngModel)]="selectedClass" (ngModelChange)="getClassMethods($event.name)" class="slds-grow slds-truncate">
+                        <system-select-option *ngFor="let option of spiceImport.availableClasses" [value]="option.id" [display]="option.name"/>
+                    </system-select>
                     <div class="slds-col slds-size--1-of-3 slds-select_container">
                         <select class="slds-select" [disabled]="spiceImport.availableClasses.length == 0"
                                 [(ngModel)]="spiceImport.selectedMethod">

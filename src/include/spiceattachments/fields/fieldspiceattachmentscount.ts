@@ -15,6 +15,7 @@ import {Router} from "@angular/router";
  * renders a bar with quick add sysmbols to be rendered in the model popover
  */
 @Component({
+    selector: 'field-spice-attachments-count',
     templateUrl: '../templates/fieldspiceattachmentscount.html'
 })
 export class fieldSpiceAttachmentsCount extends fieldGeneric {

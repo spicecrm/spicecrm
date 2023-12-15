@@ -15,6 +15,7 @@
     </div>
     <div class="slds-grid slds-p-vertical--xx-small" *ngIf="showValue">
         <div [ngSwitch]="itemType" [ngClass]="{'slds-size--1-of-1': !showValueTo, 'slds-size--1-of-2': showValueTo, 'slds-p-right--xxx-small': showValueTo}">
+            <reporter-filter-item-category *ngSwitchCase="'category'" [field]="'value'" [wherecondition]="wherecondition" [isMultiSelect]="wherecondition.operator.includes('oneof')"></reporter-filter-item-category>
             <reporter-filter-item-enum *ngSwitchCase="'enum' || 'multienum' || 'radioenum'" [field]="'value'" [wherecondition]="wherecondition" [isMultiSelect]="wherecondition.operator.includes('oneof')"></reporter-filter-item-enum>
             <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuekey'" [wherecondition]="wherecondition"></reporter-filter-item-date>
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'value'" [wherecondition]="wherecondition"></reporter-filter-item-text>

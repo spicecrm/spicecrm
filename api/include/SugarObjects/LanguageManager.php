@@ -183,7 +183,7 @@ class LanguageManager
             $labelArr = $cached[$label];
         }
         if(empty($labelArr)){
-            $labelArr = self::getSpecificLabels($syslang, [$label]);
+            $labelArr = self::getSpecificLabels($syslang, [$label])[$label];
         }
         if(empty($labelArr)) {
             $labelArr = [];
@@ -216,12 +216,12 @@ class LanguageManager
             }
         }
 
-        // custom translations to default labels
-        $q = 'SELECT syslanguagecustomtranslations.*, syslanguagelabels.name label
-            FROM syslanguagecustomtranslations, syslanguagelabels
-            WHERE (syslanguagecustomtranslations.syslanguagelabel_id = syslanguagelabels.id )
+        // custom translations to default or custom labels
+        $q = 'SELECT syslanguagecustomtranslations.*, labels.name label
+            FROM syslanguagecustomtranslations, (select id, name from syslanguagelabels UNION select id, name from syslanguagecustomlabels) labels
+            WHERE (syslanguagecustomtranslations.syslanguagelabel_id = labels.id )
             AND syslanguagecustomtranslations.syslanguage = \''. $db->quote( $syslang ).'\' 
-            AND syslanguagelabels.name IN (\'' . implode( '\',\'', $labels ).'\')';
+            AND labels.name IN (\'' . implode( '\',\'', $labels ).'\')';
         if ( $res = $db->query( $q )) {
             while ( $row = $db->fetchByAssoc( $res )) {
                 $retArray[$row['label']] = [

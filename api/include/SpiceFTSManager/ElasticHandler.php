@@ -70,6 +70,9 @@ class ElasticHandler
         if (isset(SpiceConfig::getInstance()->config['fts']['number_of_replicas'])) {
             $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['number_of_replicas'];
         }
+        if (isset(SpiceConfig::getInstance()->config['fts']['max_ngram'])) {
+            $this->standardSettings['index']['max_ngram_diff'] = SpiceConfig::getInstance()->config['fts']['max_ngram'];
+        }
 
         $this->username = SpiceConfig::getInstance()->config['fts']['username'];
         $this->password = SpiceConfig::getInstance()->config['fts']['password'];
@@ -206,6 +209,14 @@ class ElasticHandler
         else
             include 'include/SpiceFTSManager/filters/spice_filters.php';
         $this->standardSettings['analysis']['filter'] = $elasticFilters;
+
+        $elasticCharFilters = [];
+        if (file_exists('custom/include/SpiceFTSManager/charfilters/spice_charfilters.php'))
+            include 'custom/include/SpiceFTSManager/charfilters/spice_charfilters.php';
+        else
+            include 'include/SpiceFTSManager/charfilters/spice_charfilters.php';
+        $this->standardSettings['analysis']['char_filter'] = $elasticCharFilters;
+
     }
 
     private function getAllIndexes()
