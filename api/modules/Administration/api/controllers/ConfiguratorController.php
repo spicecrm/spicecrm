@@ -222,24 +222,6 @@ class ConfiguratorController{
     }
 
     /**
-     * reset session cache for configurations cached in the session array
-     * @param string $table
-     * @return void
-     */
-    private function resetSessionCache(string $table)
-    {
-        # reset user filtered sys modules list
-        if (in_array($table, ['sysmodules', 'syscustommodules'])) {
-            unset($_SESSION['SpiceUI']['modules']);
-        }
-
-        # reset user filtered sys modules list
-        if (in_array($table, ['syscustomhooks', 'syshooks'])) {
-            unset($_SESSION['SpiceCRM']['hooks']);
-        }
-    }
-
-    /**
      * @throws NotFoundException
      * @throws ForbiddenException
      */
