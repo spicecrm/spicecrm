@@ -212,6 +212,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             }, {
                 operator: 'fromtomorrow',
                 name: 'LBL_OP_FROMTOMORROW'
+            }, {
+                operator: 'nyearsago',
+                name: 'LBL_N_YEARS_AGO',
+                value1: 'integer'
             }
         ],
         bool: [
