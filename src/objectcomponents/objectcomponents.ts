@@ -61,6 +61,7 @@ import {ObjectActionEditRelatedButton} from "./components/objectactioneditrelate
 import {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
 import {ObjectActionOpenButton} from './components/objectactionopenbutton';
+import {ObjectActionBooleanToggleButton} from "./components/objectactionbooleantogglebutton";
 import {ObjectActionCancelButton} from './components/objectactioncancelbutton';
 import {ObjectActionModalSaveButton} from './components/objectactionmodalsavebutton';
 import {ObjectActionRemoveButton} from "./components/objectactionremovebutton";
@@ -210,7 +211,13 @@ import {ObjectPopoverHeader} from "./components/objectpopoverheader";
 import {ObjectSelectBeanListModal} from "./components/objectselectbeanlistmodal";
 import {ObjectActionHelpTextButton} from "./components/objectactionhelptextbutton";
 import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
+import {ObjectStatusNetworkModal} from "./components/objectstatusnetworkmodal";
+import {ObjectStatusNetworkOpenModalButton} from "./components/objectstatusnetworkopenmodalbutton";
+import {ObjectWorkflowButton} from "./components/objectworkflowbutton";
 
+import {ObjectRelatedListUrls} from "./components/objectrelatedlisturl";
+import {ObjectRelatedCardUrl} from "./components/objectrelatedcardurl";
+import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -288,6 +295,7 @@ import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
         ObjectActionAuditlogModal,
         ObjectGDPRModal,
         ObjectActionNewButton,
+        ObjectActionBooleanToggleButton,
         ObjectActionDuplicateButton,
         ObjectActionNewrelatedButton,
         ObjectActionNewCopyRuleBeanButton,
@@ -395,7 +403,14 @@ import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
         ObjectPopoverBodyItem,
         ObjectPopoverHeader,
         ObjectActionHelpTextButton,
-        ObjectHelpTextModal
+        ObjectHelpTextModal,
+        ObjectStatusNetworkModal,
+        ObjectStatusNetworkOpenModalButton,
+        ObjectWorkflowButton,
+        ObjectPopoverHeader,
+        ObjectRelatedListUrls,
+        ObjectRelatedCardUrl,
+        ObjectUrlActionMenu,
     ],
     exports: [
         ObjectListViewHeader,
@@ -441,7 +456,9 @@ import {ObjectHelpTextModal} from "./components/objecthelptextmodal";
         ObjectModalModuleLookupHeader,
         ObjectModalModuleLookupAggregates,
         ObjectModelPopoverHeader,
-        ObjectChecklists
+        ObjectChecklists,
+        ObjectRelatedListUrls,
+        ObjectRelatedCardUrl
     ]
 })
 export class ObjectComponents {}

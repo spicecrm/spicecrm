@@ -76,8 +76,10 @@ export class SpiceUI {
      * sets the top margin the headers that is set static requires
      */
     get outletstyle() {
+        const headerHeight = (this.globalHeader ? this.globalHeader.headerHeight : 0);
         return {
-            'margin-top': (this.globalHeader ? this.globalHeader.headerHeight : 0) + 'px'
+            'margin-top': headerHeight + 'px',
+            'height': `calc(100vh - ${headerHeight}px)`
         };
     }
 }

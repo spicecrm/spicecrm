@@ -1,8 +1,7 @@
 /**
  * @module ServiceComponentsModule
  */
-import {Component, EventEmitter, OnInit, Injector} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, Injector} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -19,7 +18,7 @@ export class ServiceTicketAssignToButton {
     /**
      * the status network item record
      */
-    public item: any;
+    public item: any = {};
 
     public hidden = false;
     public disabled = false;

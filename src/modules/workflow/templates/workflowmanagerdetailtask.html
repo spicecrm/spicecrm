@@ -1,27 +1,67 @@
-<div *ngIf="assignable; else detailonly" class="slds-tabs_default">
+<div *ngIf="assignable || hasTiming; else detailonly" class="slds-tabs_default">
     <ul class="slds-tabs_default__nav" role="tablist">
         <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab=='T'}">
             <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="activeTab='T'">
                 <system-label label="LBL_DETAILS"></system-label>
             </a>
         </li>
-        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab=='A'}">
+        <li *ngIf="hasTiming" class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab=='TIMING'}">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="activeTab='TIMING'">
+                <system-label label="LBL_TASKTIMING"></system-label>
+            </a>
+        </li>
+        <li *ngIf="assignable" class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab=='A'}">
             <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="activeTab='A'">
                 <system-label label="LBL_ASSIGNMENT"></system-label>
             </a>
         </li>
     </ul>
     <div class="slds-tabs_default__content slds-p-around--x-small" [ngClass]="{'slds-show' : activeTab=='T', 'slds-hide': activeTab!='T'}" role="tabpanel">
-        <workflow-manager-detail-task-taskpanel></workflow-manager-detail-task-taskpanel>
         <div #typeComponentContainer></div>
+        <workflow-manager-detail-task-taskpanel></workflow-manager-detail-task-taskpanel>
     </div>
-    <div class="slds-tabs_default__content slds-p-around--x-small" [ngClass]="{'slds-show' : activeTab=='A', 'slds-hide': activeTab!='A'}" role="tabpanel">
+    <div *ngIf="assignable" class="slds-tabs_default__content slds-p-around--x-small" [ngClass]="{'slds-show' : activeTab=='A', 'slds-hide': activeTab!='A'}" role="tabpanel">
         <workflow-manager-detail-task-assignmentpanel></workflow-manager-detail-task-assignmentpanel>
+    </div>
+    <div *ngIf="hasTiming" class="slds-tabs_default__content slds-p-around--x-small" [ngClass]="{'slds-show' : activeTab=='TIMING', 'slds-hide': activeTab != 'TIMING'}" role="tabpanel">
+        <system-collapsable-tab [collapsible]="false" tabtitle="LBL_TASKTIMING" tabhelptext="LBL_HELP_WORKFLOWTASK_TIMING">
+            <div class="slds-grid slds-gutters_direct-xx-small">
+                <div class="slds-grid slds-col slds-size--1-of-3 slds-p-right--xx-small">
+                    <div class="slds-grow">
+                        <field-label fieldname="timetostart"></field-label>
+                        <field-container field="timetostart"></field-container>
+                    </div>
+                </div>
+                <div class="slds-col slds-size--2-of-3 slds-p-right--xx-small">
+                    <field-label fieldname="timetostart_method"></field-label>
+                    <field-container field="timetostart_method"></field-container>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters_direct-xx-small">
+                <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+                    <field-label fieldname="timetocomplete"></field-label>
+                    <field-container field="timetocomplete"></field-container>
+                </div>
+                <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+                    <field-label fieldname="timetoalert"></field-label>
+                    <field-container field="timetoalert"></field-container>
+                </div>
+                <div class="slds-col slds-size--1-of-3 slds-p-right--xx-small">
+                    <field-label fieldname="timetoescalate"></field-label>
+                    <field-container field="timetoescalate"></field-container>
+                </div>
+            </div>
+            <div class="slds-gutters_direct-xx-small">
+                <field-label fieldname="servicecalendar_name"></field-label>
+                <system-icon-help-text helpText="LBL_HELP_WORKFLOWTASK_SERVICECALENDAR"></system-icon-help-text>
+                <field-container field="servicecalendar_name"></field-container>
+            </div>
+        </system-collapsable-tab>
     </div>
 </div>
 <ng-template #detailonly>
     <div class="slds-p-around--x-small">
-        <workflow-manager-detail-task-taskpanel></workflow-manager-detail-task-taskpanel>
         <div #typeComponentContainer></div>
+        <workflow-manager-detail-task-taskpanel></workflow-manager-detail-task-taskpanel>
     </div>
 </ng-template>

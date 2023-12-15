@@ -40,6 +40,14 @@ export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit 
             this.model.setField('salesdoctype', this.actionconfig.defaultsalesdoctype);
         }
 
+        if(this.actionconfig.salesdocparty){
+            this.model.setField('salesdocparty', this.actionconfig.salesdocparty);
+        }
+
+        if(this.actionconfig.salesdoccategory){
+            this.model.setField('salesdoccategory', this.actionconfig.salesdoccategory);
+        }
+
 
          this.modal.openModal(this.actionconfig.modalcomponent ? this.actionconfig.modalcomponent : 'SalesDocsAddBasics', true, this.injector);
     }

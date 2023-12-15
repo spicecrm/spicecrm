@@ -244,7 +244,7 @@ export class ModuleConfigAddDialog implements OnInit {
                 if (data == false) {
                     this.backend.postRequest('configuration/configurator/' + table + '/' + saveComp.id, null, { config: saveComp }).subscribe(
                         (success) => {
-
+                            this.configuration.reloadTaskData(loadTaskKey);
                             this.toast.sendToast('saved');
                             saveComp.table = table;
                             this.response$.emit(saveComp);

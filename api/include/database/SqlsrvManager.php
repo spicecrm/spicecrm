@@ -153,8 +153,6 @@ class SqlsrvManager extends DBManager
 	        'decimal_tpl' => 'decimal(%d, %d)',
     ];
 
-    protected $connectOptions = null;
-
 	/**
      * @see DBManager::connect()
      */

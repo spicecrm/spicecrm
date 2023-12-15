@@ -36,19 +36,6 @@ export class ObjectListViewHeader {
      */
     public actionSet: any = {};
 
-    /**
-     * the search timeout triggered by the keyup in the search box
-     */
-    public searchTimeOut: any;
-
-    /**
-     * indicates if the entered searchterms woudl provoke any error
-     * dues to the min and max engram restrictions and thus
-     * would certainly not pfind any results
-     * @private
-     */
-    public searchTermError: boolean = false;
-
     constructor(
         public metadata: metadata,
         public configuration: configurationService,
@@ -62,36 +49,15 @@ export class ObjectListViewHeader {
     }
 
     set searchTerm(value: string) {
-        if (value != this.modellist.searchTerm) {
-            this.modellist.searchTerm = value;
-            if(value == '' || this.searchTermsValid(value)) {
-                this.searchTermError = false;
-                this.reloadList();
-            } else {
-                // if we have a timeout set .. clear it
-                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-                // set the error
-                this.searchTermError = true;
-            }
-        }
+
+        if (value == this.modellist.searchTerm) return;
+
+        this.modellist.searchTerm = value;
+        this.reloadList();
     }
 
     get searchTerm(): string {
         return this.modellist.searchTerm;
-    }
-
-    /**
-     * checks if we have the proper length of searchterms
-     *
-     * @param searchTerm
-     * @private
-     */
-    public searchTermsValid(searchTerm) {
-        let config = this.configuration.getCapabilityConfig('search');
-        let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
-        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
-        let items = searchTerm.split(' ');
-        return items.filter(i => i.length < minNgram || i.length > maxNgram).length == 0;
     }
 
     /**
@@ -107,7 +73,6 @@ export class ObjectListViewHeader {
      * @private
      */
     public reloadList() {
-        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-        this.searchTimeOut = window.setTimeout(() => this.modellist.reLoadList(), 1000);
+        this.modellist.getListData();
     }
 }

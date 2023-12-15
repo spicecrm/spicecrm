@@ -1,6 +1,6 @@
 <div *ngIf="bigThumbnail; else smallThumbnailContainer" class="slds-file slds-file_card slds-has-title slds-m-left--small" style="width: 300px">
     <figure style="height: 300px">
-        <a (click)="previewFile()" href="javascript:void(0)" class="slds-file__crop" style="padding-top: 245px">
+        <a (click)="openInTab()" href="javascript:void(0)" class="slds-file__crop" style="padding-top: 245px">
             <img *ngIf="file.thumbnail" [src]="'data:image/jpg;base64,' + file.thumbnail">
         </a>
         <figcaption class="slds-file__title slds-file__title_card slds-file-has-actions" style="height: 55px">
@@ -9,10 +9,10 @@
                     <system-file-icon [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="'small'"></system-file-icon>
                 </div>
                 <div class="slds-media__body">
-                    <div *ngIf="!!file.display_name" (click)="previewFile()" class="slds-file__text slds-truncate" [system-title]="file.display_name">
+                    <div *ngIf="!!file.display_name" (click)="openInTab()" class="slds-file__text slds-truncate" [system-title]="file.display_name">
                         {{file.display_name}}
                     </div>
-                    <div *ngIf="!file.display_name" (click)="previewFile()" class="slds-file__text slds-truncate" [system-title]="file.filename">
+                    <div *ngIf="!file.display_name" (click)="openInTab()" class="slds-file__text slds-truncate" [system-title]="file.filename">
                         {{file.filename}}
                     </div>
                     <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small slds-truncate">
@@ -55,7 +55,7 @@
         </div>
         <div class="slds-media__body" style="width: 260px">
             <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
-                <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small"[system-title]="file.text" (click)="previewFile()">
+                <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small"[system-title]="file.text" (click)="openInTab()">
                     <a *ngIf="!!file.display_name; else fileNameContainer" href="javascript:void(0);">
                         {{file.display_name}}
                     </a>

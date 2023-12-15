@@ -1,3 +1,10 @@
+import {
+    GoogleChartSelectedObject,
+    GoogleChartOptionsI,
+    GoogleChartTypeMultiDimensional,
+    GoogleChartTypeOneDimensional
+} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
+
 /**
  * object of WorkflowTaskType vardefs
  */
@@ -27,7 +34,10 @@ export interface NextTaskI {
     id: string;
     name: string;
     type: string;
-
+    conditions?: any[];
+    checkMethod?: string;
+    checkMethodParams?: string;
+    sequence?: number;
 }
 
 /**
@@ -110,4 +120,62 @@ export interface WorkflowTaskTypeCloseWorkflowsI {
      * close all other workflows flag
      */
     closeAll: boolean;
+}
+
+export type WorkflowChartMethodI =  {
+    method: 'openWithAging';
+    methodParams?: {dateGroupByTimeline?: number[]};
+} | {
+    method: 'closedLastNMonths';
+    methodParams?: {lastMonthsNumber?: number[]};
+} | {
+    method: 'currentOpenTasks';
+    methodParams?: {definitionId: string};
+} | {
+    method: 'closedWithDuration';
+    methodParams?: {dateGroupByTimeline?: number[]};
+} | {
+    method: 'openTasksByUser';
+    methodParams?: undefined;
+} | {
+    method: 'erroneousTasks';
+    methodParams?: undefined;
+}
+
+export interface WorkflowChartApiConfig {
+    isNamespace?: boolean;
+    methodParams?: WorkflowChartMethodI['methodParams'] | any;
+    method: WorkflowChartMethodI['method'] | string;
+    listMethod?: WorkflowChartMethodI['method'] | string;
+}
+
+export interface WorkflowChartComponentConfigI extends GoogleChartOptionsI, WorkflowChartApiConfig {
+    title: string;
+    onlySingleDefinition?: boolean,
+    chartType: GoogleChartTypeMultiDimensional | GoogleChartTypeOneDimensional;
+}
+
+interface WorkflowChartDataOneDObject {
+    id: string;
+    label?: string;
+    value: number;
+}
+
+interface WorkflowChartDataMultiDObject {
+    id: string;
+    value: number;
+    rows?: {id: string, label?: string, value: number }[];
+}
+
+export interface WorkflowChartDataI {
+    selectList?: {id: string, name: string}[];
+    config: {isMulti: boolean};
+    data?: WorkflowChartDataOneDObject[] & WorkflowChartDataMultiDObject[];
+    cols: {id: string, label: string}[];
+}
+
+export interface SelectedChartObject {
+        indexObject: GoogleChartSelectedObject,
+        idObject: {rowId: string, colId?: string},
+        label?: string
 }

@@ -11,7 +11,6 @@ import {AfterViewInit,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import {model} from '../../../services/model.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {language} from '../../../services/language.service';
 import {workflow} from '../services/workflow.service';
@@ -57,8 +56,7 @@ export class WorkflowPanelTask implements OnChanges, AfterViewInit, OnInit {
      */
     public typeComponentRef: ComponentRef<any>;
 
-    constructor(public model: model,
-                public workflowservice: workflow,
+    constructor(public workflowservice: workflow,
                 public language: language, public broadcast: broadcast,
                 public configurationService: configurationService,
                 public toast: toast,

@@ -23,14 +23,10 @@ import {CampaignTaskMailMergePanel} from "./components/campaigntaskmailmergepane
 import {CampaignTaskMailergeButton} from "./components/campaigntaskmailmergebutton";
 import {CampaignTaskMailMergeModal} from "./components/campaigntaskmailmergemodal";
 import {DirectivesModule} from "../../directives/directives";
-import {EventRegistrationButton} from "./components/eventregistrationbutton";
-import {EventRegistrationModal} from "./components/eventregistrationmodal";
-import {EventRegistrationModalList} from "./components/eventregistrationmodallist";
-import {EventRegistrationModalType} from "./components/eventregistrationmodaltype";
-import {EventWithCampaignActivateButton} from "./components/eventwithcampaignactivatebutton";
 import {CampaignTaskTargetsManager} from "./components/campaigntasktargetsmanager";
 import {CampaignTaskTargetsManagerButton} from "./components/campaigntasktargetsmanagerbutton";
 import {CampaignTaskTargetsManagerDetails} from "./components/campaigntasktargetsmanagerdetail";
+import {CampaignDeactivateButton} from "./components/campaigndeactivatebutton";
 
 @NgModule({
     imports: [
@@ -57,11 +53,7 @@ import {CampaignTaskTargetsManagerDetails} from "./components/campaigntasktarget
         CampaignTaskTargetsManager,
         CampaignTaskTargetsManagerDetails,
         CampaignTaskTargetsManagerButton,
-        EventRegistrationButton,
-        EventRegistrationModal,
-        EventRegistrationModalList,
-        EventRegistrationModalType,
-        EventWithCampaignActivateButton,
+        CampaignDeactivateButton
     ]
 })
 export class ModuleCampaigns {}

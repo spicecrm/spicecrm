@@ -18,7 +18,7 @@
 <div *ngIf="isEditMode()" class="slds-m-top--xx-small">
     <div *ngFor="let emailAddress of emailAddresses; trackBy: trackByFn" [class.slds-m-bottom--x-small]="emailAddresses.length > 0" class="slds-grid">
         <system-input-radio *ngIf="!fieldconfig.singleMode" value="1" [name]="primaryInputRadioName" [ngModel]="emailAddress.primary_address == '1'" (ngModelChange)="setPrimary(emailAddress)" [disabled]="emailAddress.invalid_email == 1 || !emailAddress.email_address" system-title="LBL_PRIMARY" class="slds-m-top--xx-small" style="max-width: 1.4rem"></system-input-radio>
-        <field-email-emailaddress (keyup.enter)="startAdding()" [emailAddress]="emailAddress" (onBlur)="setEmailAddressesField()" class="slds-grow"></field-email-emailaddress>
+        <field-email-emailaddress (keyup.enter)="startAdding()" [emailAddress]="emailAddress" (onBlur)="setEmailAddressesField()" [hasFocus]="focusedEmailAddress == emailAddress.id" class="slds-grow"></field-email-emailaddress>
         <field-email-emailaddress-status [status]="emailAddress.opt_in_status" class="slds-p-right--xx-small slds-p-left--x-small slds-m-top--xx-small"></field-email-emailaddress-status>
         <button (click)="handleOnDelete(emailAddress)" [disabled]="emailAddress.primary_address == '1' && emailAddresses.length > 1" class="slds-button slds-button--icon slds-m-top--xxx-small" style="max-height: 1.6rem">
             <system-button-icon icon="clear"></system-button-icon>

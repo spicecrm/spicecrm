@@ -25,17 +25,29 @@ export class SalesDocsItemRejectContainer implements OnInit {
     public fieldset: string;
 
     constructor(public language: language, public model: model, public view: view, public metadata: metadata) {
-        this.view.isEditable = true;
-        this.view.setEditMode();
+
     }
 
     public ngOnInit(): void {
         this.model.module = 'SalesDocItems';
         this.model.id = this.item.id;
-        this.model.setData(this.item);
+
+        // set explicit to edit in cancel modal
+        // ToDo: make proper ACL action on sales docs that allows the cancellation and then triggers this here
+        this.item.acl.edit = true;
+
+        // set the data
+        this.model.setData({...this.item});
 
         let componentconfig = this.metadata.getComponentConfig('SalesDocsItemRejectContainer', this.model.module);
         this.fieldset = componentconfig.fieldset;
+
+        // set editable if rejection reason is not yet set
+        if(!this.model.getField('rejection_reason')){
+            this.view.isEditable = true;
+            this.view.setEditMode();
+            this.model.startEdit();
+        }
 
     }
 }

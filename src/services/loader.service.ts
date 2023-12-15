@@ -10,6 +10,7 @@ import {session} from './session.service';
 import {language} from './language.service';
 import {broadcast} from './broadcast.service';
 import {StoreService} from "./store.service";
+import {backend} from "./backend.service";
 
 @Injectable({
     providedIn: 'root'
@@ -50,6 +51,7 @@ export class loader {
         public configuration: configurationService,
         public session: session,
         public language: language,
+        public backend: backend,
         private storeService: StoreService
     ) {
         this.loaderHandler.subscribe(val => this.handleLoaderHandler());
@@ -57,7 +59,12 @@ export class loader {
         this.storeService.initializeStores(this.storeDBName, ['loadtaskdata', 'loadtasks'], 'id');
 
         // subscribe to the broadcast to catch the logout
-        this.broadcast.message$.subscribe(message => this.handleLogout(message));
+        this.broadcast.message$.subscribe(message => {
+            this.handleLogout(message);
+            if (message.messagetype == 'configuration.reloadtaskdata') {
+                this.loadTaskItemFromBackendByName(message.messagedata);
+            }
+        });
     }
 
     /**
@@ -331,4 +338,17 @@ export class loader {
         }
     }
 
+    /**
+     * load task item from backend by key and pass it to the configuration service
+     * @param key
+     */
+    public loadTaskItemFromBackendByName(key: string) {
+
+        this.backend.getRequest(`system/spiceui/core/loadtaskitem/${key}`)
+            .subscribe({
+            next: (data: any) => {
+                this.configuration.setData(key, data[key]);
+            }
+        });
+    }
 }

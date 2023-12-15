@@ -3,19 +3,21 @@
 namespace SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions;
 
 use Com\Tecnick\Barcode\Barcode;
+use DateTime;
+use DateTimeZone;
+use IntlDateFormatter;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use DateTime, DateTimeZone;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
-use SpiceCRM\includes\TimeDate;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use IntlDateFormatter;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
+
 # use SpiceCRM\includes\utils\SpiceUtils;
 
 class SystemTemplateFunctions {
 
-    static function dateFormat( $compiler, $bean, $inputString, $format, $placeHolderForOldLanguageParameter = null){
+    static function dateFormat($compiler, $beans, $inputString, $format, $placeHolderForOldLanguageParameter = null){
 
         if (empty($inputString)) return '';
 
@@ -34,7 +36,7 @@ class SystemTemplateFunctions {
 
     }
 
-    static function dateFormatIntl( $compiler, $bean, $inputString, $format, $language = 'en_US'){
+    static function dateFormatIntl( $compiler, $beans, $inputString, $format, $language = 'en_US'){
 
         # For formatting look here:
         # https://unicode-org.github.io/icu/userguide/format_parse/datetime/
@@ -57,42 +59,42 @@ class SystemTemplateFunctions {
 
     }
 
-    static function cat( $compiler, $bean, $inputString, $stringToAdd ) {
+    static function cat( $compiler, $beans, $inputString, $stringToAdd ) {
         return isset( $inputstring[0] ) ? $$inputstring.$stringToAdd : $$inputString;
     }
 
-    static function uppercase( $compiler, $bean, $inputstring ) {
+    static function uppercase( $compiler, $beans, $inputstring ) {
         return strtoupper( $inputstring );
     }
 
-    static function lowercase( $compiler, $bean, $inputstring ) {
+    static function lowercase( $compiler, $beans, $inputstring ) {
         return strtolower( $inputstring );
     }
 
-    static function nl2br( $compiler, $bean, $inputstring ) {
+    static function nl2br( $compiler, $beans, $inputstring ) {
         return nl2br( $inputstring );
     }
 
-    static function truncate( $compiler, $bean, $inputString, $length, $endchars = '' ) {
+    static function truncate( $compiler, $beans, $inputString, $length, $endchars = '' ) {
         if ( !is_numeric( $length ) and !ctype_digit( $length )) {
             throw new BadRequestException('Output template function "truncate": Invalid truncation length "'.$length.'"');
         }
         return substr( $inputString, 0, $length ).$endchars;
     }
 
-    static function replace( $compiler, $bean, $inputString, $needle, $replacement ) {
+    static function replace( $compiler, $beans, $inputString, $needle, $replacement ) {
         return str_replace( $needle, $replacement, $inputString );
     }
 
-    static function capitalize( $compiler, $bean, $inputString ) {
+    static function capitalize( $compiler, $beans, $inputString ) {
         return ucwords( $inputString );
     }
 
-    static function spacify( $compiler, $bean, $inputString ) {
+    static function spacify( $compiler, $beans, $inputString ) {
         return preg_replace( '#[\w\-](?!$)#', '\\0 ', str_replace( ' ', '   ', $inputString ));
     }
 
-    static function barcode( $compiler, $bean, $inputString, $type = null, $width = null, $height = null, $color = 'black') {
+    static function barcode( $compiler, $beans, $inputString, $type = null, $width = null, $height = null, $color = 'black') {
         if( !extension_loaded('gd')) {
             // throw new Exception('Output template function "barcode": GD library not loaded!');
             throw new BadRequestException('Output template function "barcode": GD library not loaded!');
@@ -125,7 +127,7 @@ class SystemTemplateFunctions {
 
     // No piping functions (functions without input value):
 
-    static function lorem( $compiler, $bean, $length ) {
+    static function lorem( $compiler, $beans, $length ) {
         if ( !is_numeric( $length ) and !ctype_digit( $length )) {
             throw new BadRequestException('Output template function "lorem": Missing or invalid text length "'.$length.'".');
         }
@@ -137,7 +139,7 @@ class SystemTemplateFunctions {
         return $output;
     }
 
-    static function currentDateTime( $compiler, $bean, $format = null ) {
+    static function currentDateTime( $compiler, $beans, $format = null ) {
         if ( !isset( $format[0] )) {
             $current_user = AuthenticationController::getInstance()->getCurrentUser();
             $format = $current_user->getUserDateTimePreferences()['date'];
@@ -161,7 +163,7 @@ class SystemTemplateFunctions {
      * @param $format
      * @return string
      */
-    static function remoteIP( $compiler, $bean ) {
+    static function remoteIP( $compiler, $beans ) {
         return $_SERVER['REMOTE_ADDR'];
     }
 
@@ -178,7 +180,7 @@ class SystemTemplateFunctions {
      * @param $language
      * @return mixed
      */
-    static function getCountryName( $compiler, $bean, $inputString, $language = 'en_us') {
+    static function getCountryName( $compiler, $beans, $inputString, $language = 'en_us') {
         $db = DBManagerFactory::getInstance();
         $c = $db->fetchOne("SELECT * FROM syscountries WHERE cc = '{$inputString}'");
 
@@ -189,6 +191,22 @@ class SystemTemplateFunctions {
         $label = $db->fetchOne("SELECT st.* FROM syslanguagetranslations st, syslanguagelabels sl WHERE st.syslanguagelabel_id = sl.id AND sl.name = 'LBL_COUNTRY_AT' AND st.syslanguage = '{$language}'");
 
         return $label['translation_default'] ?: $inputString;
+    }
+
+    /**
+     * formats a number
+     *
+     * @param $compiler
+     * @param $beans
+     * @param $inputString
+     * @return string
+     */
+    static function currencyFormatNumber($compiler, $beans, $inputString){
+
+        if (empty($inputString)) return '';
+
+        return SpiceUtils::currencyFormatNumber($inputString);
+
     }
 
 }

@@ -1,5 +1,6 @@
 /**
- * @module ModuleCampaigns
+ * Button used in campaigntask actionset
+ * @module ModuleEvents
  */
 import {Component} from '@angular/core';
 
@@ -8,12 +9,13 @@ import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
+import {ActionSetItemI} from "../../../objectcomponents/interfaces/objectcomponents.interfaces";
 
 @Component({
     templateUrl: '../templates/eventwithcampaignactivatebutton.html',
     selector: 'event-with-campaign-activate-button'
 })
-export class EventWithCampaignActivateButton {
+export class EventWithCampaignActivateButton implements ActionSetItemI {
 
     public activating: boolean = false;
     public disabled: boolean = true;

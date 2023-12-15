@@ -1,0 +1,28 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_FROM_RECORD"></system-label></system-modal-header>
+    <system-modal-content margin="xx-small">
+        <ng-container *ngIf=" modelattachments.files.length == 0 else showAttachments">
+            <div class="slds-align--absolute-center slds-p-around--small">
+                <system-illustration-no-records><system-label label="LBL_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+            </div>
+        </ng-container>
+        <ng-template #showAttachments>
+            <div class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
+                <system-checkbox [(ngModel)]="selectAll"
+                                 [indeterminate]="selectedFilesCount > 0 && !selectAll">
+                    <system-label label="LBL_SELECT_ALL"></system-label>
+                </system-checkbox>
+            </div>
+            <div *ngFor="let file of modelattachments.files" (click)="toggleSelectFile(file)" [ngClass]="{'slds-theme_shade': file.selected}" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
+                <div><system-checkbox [ngModel]="file.selected" (click)="toggleSelectFile(file)" [disabled]="false"></system-checkbox></div>
+            <spice-attachment-file [modelattachments]="modelattachments" [file]="file" [editmode]="false" [disabled]="true" class="slds-media" style="pointer-events: none"></spice-attachment-file>
+        </div>
+        </ng-template>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-col--bump-left slds-button slds-button--brand" (click)="save()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>

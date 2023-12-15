@@ -29,6 +29,20 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     }
 
     /**
+     * set the cron expression fields from the expression object
+     * @return string the schedule cron expression
+     * @param schedule
+     * @param expressionObject
+     */
+    public setCronExpression(schedule: { min: any; hrs: any; day: any; month: any; weekday: any; }, expressionObject: { minutes: any; hours: any; monthDay: any; month: any; weekDay: any; }) {
+        schedule.min = expressionObject.minutes;
+        schedule.hrs = expressionObject.hours;
+        schedule.day = expressionObject.monthDay;
+        schedule.month = expressionObject.month;
+        schedule.weekday = expressionObject.weekDay;
+    }
+
+    /**
      * initialize the plugin properties
      */
     public ngOnInit() {

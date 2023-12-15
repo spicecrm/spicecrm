@@ -17,9 +17,6 @@ import {model} from "../../../services/model.service";
 })
 export class ServicePlannerMapsModelPopover extends ObjectModelPopover implements OnInit {
 
-    public popovermodule: string;
-    public popoverid: string;
-
     constructor(
         public model: model,
         public view: view,

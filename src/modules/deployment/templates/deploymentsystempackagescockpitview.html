@@ -22,7 +22,9 @@
             </div>
             <div class="slds-grid slds-grid--vertical-align-center slds-page-header__col-actions slds-m-left--x-small">
                 <system-label label="LBL_SYSTEM" class="slds-m-right--xx-small"></system-label>
-                <system-select [(ngModel)]="selectedSystem" (ngModelChange)="updateFilteredPackagesSystem()" [selectList]="systems" [disabled]="systems.length == 0"></system-select>
+                <system-select [(ngModel)]="selectedSystem" (ngModelChange)="updateFilteredPackagesSystem()" [disabled]="systems.length == 0">
+                    <system-select-option *ngFor="let option of systems" [value]="option.id" [display]="option.name"/>
+                </system-select>
             </div>
             <div class="slds-m-left--small slds-grid slds-grid--vertical-align-center">
                 <system-checkbox [(ngModel)]="filterStatus.released" (ngModelChange)="updateFilteredPackagesStatus('released', statusConst.STATUS_RELEASED)"><system-label label="LBL_RELEASED"></system-label></system-checkbox>
