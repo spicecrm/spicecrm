@@ -1,13 +1,16 @@
 /**
  * @module ModuleSalesDocs
  */
-import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {EventEmitter, Injectable, Injector, OnDestroy} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
 import {configurationService} from '../../../services/configuration.service';
 import {Observable, of, Subject, Subscription} from "rxjs";
+import {modelutilities} from "../../../services/modelutilities.service";
+
+declare var moment: any;
 
 /**
  * a helper service to handle the Sales Doc
@@ -45,11 +48,15 @@ export class salesdocrecord implements OnDestroy {
      */
     public subscribptions: Subscription = new Subscription();
 
+    public buildItems$: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor(
         public configuration: configurationService,
         public backend: backend,
         public language: language,
-        public modal: modal
+        public modal: modal,
+        public modelutilities: modelutilities,
+        public injector: Injector
     ) {
     }
 
@@ -354,5 +361,170 @@ export class salesdocrecord implements OnDestroy {
                     break;
             }
         }
+    }
+
+    /**
+     * called to add an Item
+     */
+    public addItem(parentItemId = null) {
+        this.modal.openModal('SalesDocsItemsAddTypeSelector', true, this.injector).subscribe(addItemModal => {
+            if(parentItemId){
+                addItemModal.instance.parentItemType = this.salesdoc.data.salesdocitems.beans[parentItemId].itemtype;
+            }
+            addItemModal.instance.itemTypeSelected.subscribe(itemType => {
+                if (itemType) {
+                    // get the item type data
+                    let itemTypes = this.configuration.getData('salesdocitemtypes');
+                    let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == itemType);
+                    if (itemTypeDetails) {
+                        this.modal.openModal(itemTypeDetails.addmodalcomponent, true, this.injector).subscribe(addModal => {
+                            // add the item type details
+                            addModal.instance.itemTypeDetails = itemTypeDetails;
+
+                            // if a filter is set add the filter
+                            if (itemTypeDetails.addmodalfilter) {
+                                addModal.instance.modulefilter = itemTypeDetails.addmodalfilter;
+                            }
+                            // subscribe to the add event
+                            addModal.instance.additem.subscribe(item => {
+                                if(parentItemId) item.parentitem_id = parentItemId;
+                                // add the item
+                                this.handleAddItem(item, itemType);
+                            });
+                        });
+                    }
+                }
+            });
+        });
+    }
+
+    /**
+     * handler to add the item
+     * @param itemData
+     */
+    public handleAddItem(itemData, itemType) {
+        itemData.id = this.modelutilities.generateGuid();
+        itemData.deleted = 0;
+        itemData.salesdoc_id = this.salesdoc.id;
+        // The tax category is temporarily set by a copy rule.
+        // So for this time only one specific tax rate per CRM installation is possible.
+        // ToDo: Work out a tax rate calculation.
+        // itemData.tax_category = 'V20';
+        // set the quantity by default to 1 if not set
+        if(!itemData.quantity) itemData.quantity = 1;
+        itemData.itemnr = this.getNextItemNr();
+        itemData.itemtype = itemType;
+        itemData.date_entered = new moment();
+        itemData.date_modified = new moment();
+
+        // add to the bean as well
+        if (!this.salesdoc.data.salesdocitems) {
+            this.salesdoc.data.salesdocitems = {
+                beans: {}
+            };
+        }
+
+
+        // check if we shoudl calculate
+        let itemTypeDetails = this.configuration.getData('salesdocitemtypes').find(it => it.name == itemType);
+        if (itemTypeDetails.pricecalculationschema_id) {
+            // if we have the pricing data already the add dialog did the pricing (hopefully) and we do not need to do anything more
+            if(!!itemData.salesdocitempricedetermination && !!itemData.salesdocitempricecalculationschema_id){
+                // update the relevant fields
+                this.getItemFieldsByElements(itemData.salesdocitempricecalculationschema_id, 1, itemData.salesdocitempricedetermination, itemData);
+                this.salesdoc.data.salesdocitems.beans[itemData.id] = itemData;
+                this.buildItems$.emit(true);
+            } else {
+                // otherwise run the price determination here and now
+                itemData.salesdocitempricecalculationschema_id = itemTypeDetails.pricecalculationschema_id;
+                this.calculateItem(itemTypeDetails.pricecalculationschema_id, itemData).subscribe({
+                    next: () => {
+                        this.salesdoc.data.salesdocitems.beans[itemData.id] = itemData;
+                        this.buildItems$.emit(true);
+                    },
+                    error: () => {
+                        this.salesdoc.data.salesdocitems.beans[itemData.id] = itemData;
+                        this.buildItems$.emit(true);
+                    }
+                })
+            }
+
+        } else {
+            this.salesdoc.data.salesdocitems.beans[itemData.id] = itemData;
+            this.buildItems$.emit(true);
+        }
+
+    }
+
+    /**
+     * returns if there are subtypes for this item type configured
+     * @param itemId
+     */
+    public canAddSubitems(itemId){
+        let typesData = this.configuration.getData('salesdoctypes').find(typeRecord => typeRecord.name == this.salesdoc.getField('salesdoctype'));
+        return typesData.itemsubtypes[this.salesdoc.data.salesdocitems.beans[itemId].itemtype] && typesData.itemsubtypes[this.salesdoc.data.salesdocitems.beans[itemId].itemtype].length > 0;
+    }
+
+    /**
+     * returns the itemnr
+     *
+     * @param itemid
+     */
+    public getItemNr(itemid){
+        return this.salesdoc.data.salesdocitems.beans[itemid].itemnr;
+    }
+
+    /**
+     * gets the next item number
+     */
+    public getNextItemNr() {
+        let lastitemnr = 0;
+        for (let itemid in this.salesdoc.data.salesdocitems?.beans) {
+            // get the item data
+            let item = this.salesdoc.data.salesdocitems.beans[itemid];
+            // get an itemNR
+            let thisitemNr = parseInt(item.itemnr, 10);
+            if (thisitemNr > lastitemnr) {
+                lastitemnr = thisitemNr;
+            }
+        }
+
+        return lastitemnr + 10;
+    }
+
+    /**
+     * caclulate the item on the backend
+     *
+     * @param itemData
+     * @private
+     */
+    private calculateItem(pricecalculationschema_id, itemData) {
+        let retSubject = new Subject();
+        let postData = {
+            salesdoc: this.modelutilities.spiceModel2backend('SalesDocs', this.salesdoc.data),
+            items: [this.modelutilities.spiceModel2backend('SalesDocItems', itemData)]
+        }
+        let calcAwait = this.modal.await('LBL_CALCULATING');
+        this.backend.postRequest(`module/SalesDocs/${this.salesdoc.id}/calculateitems`, {}, postData).subscribe({
+            next: (calcdata) => {
+                // set the itemdata
+                itemData.salesdocitempricedetermination = calcdata[itemData.id];
+
+                // update the relevant fields
+                this.getItemFieldsByElements(pricecalculationschema_id, itemData.quantity, itemData.salesdocitempricedetermination, itemData);
+
+                // retutn the subject so the item gets added
+                retSubject.next(true);
+                retSubject.complete();
+
+                calcAwait.emit(true);
+            },
+            error: () => {
+                calcAwait.emit(true);
+                retSubject.error(false);
+            }
+        })
+
+        return retSubject.asObservable();
     }
 }
