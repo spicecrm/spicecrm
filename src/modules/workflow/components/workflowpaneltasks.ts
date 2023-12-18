@@ -29,9 +29,7 @@ export class WorkflowPanelTasks implements OnInit {
      * on init sort the tasks by date entered
      */
     public ngOnInit() {
-        this.workflowtasks.sort((a, b) => {
-            return moment(a.date_entered).isBefore(moment(b.date_entered)) ? -1 : 1;
-        })
+        this.workflowtasks;
     }
 
 }

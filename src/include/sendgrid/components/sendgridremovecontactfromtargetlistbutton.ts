@@ -21,7 +21,6 @@ export class SendgridRemoveContactFromTargetListButton {
         public toast: toast,
         public modal: modal,
         public relatedmodels: relatedmodels,
-        public metadata: metadata
     ) {
     }
 
@@ -31,7 +30,7 @@ export class SendgridRemoveContactFromTargetListButton {
      */
 
     get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'sendgrid_remove');
+        return !this.model.checkAccess('sendgrid_remove');
     }
 
     /**
