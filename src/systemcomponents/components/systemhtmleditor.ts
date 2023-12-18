@@ -31,6 +31,7 @@ import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
 import {configurationService} from "../../services/configuration.service";
 import {SystemRichTextLink} from "./systemrichtextlink";
+import {ObjectModalModuleLookup} from "../../objectcomponents/components/objectmodalmodulelookup";
 
 @Component({
     selector: "system-html-editor",
@@ -98,8 +99,22 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                 public helper: helper) {
     }
 
-    public get useTemplateVariableHelper() {
-        return (this.model?.module === 'LandingPages' || this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' || this.model?.module === 'CampaignTasks');
+    get useTemplateVariableHelper() {
+        return this.model?.module in {
+            OutputTemplates: true,
+            EmailTemplates: true,
+            CampaignTasks: true,
+            LandingPages: true,
+            Mailboxes: true,
+            TextSnippets: true
+        }
+    }
+
+    /**
+     * check the acl view and list access for the text snippets to show/hide button
+     */
+    get useTextSnippet(): boolean {
+        return this.metadata.checkModuleAcl('TextSnippets', 'list') && this.metadata.checkModuleAcl('TextSnippets', 'view');
     }
 
     get expandIcon() {
@@ -554,6 +569,52 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
                     });
             });
     }
+
+    /**
+     * open the text snippet select modal and insert the parsed snippet html
+     */
+    public openTextSnippetModal() {
+        if (!this.isActive) return;
+
+        this.editorService.saveSelection();
+        this.modalOpen = true;
+        const config = this.metadata.getComponentConfig('SystemHtmlEditor', 'TextSnippets');
+
+        this.modal.openModal('ObjectModalModuleLookup', null, this.viewContainerRef.injector)
+            .subscribe((modal: ComponentRef<ObjectModalModuleLookup>) => {
+                modal.instance.module = 'TextSnippets';
+                modal.instance.multiselect = false;
+
+                if (this.model) {
+                    modal.instance.modulefilter = config.textSnippetsModuleFilter;
+                    modal.instance.filtercontext = {
+                        module: this.model.module
+                    };
+                }
+
+                modal.instance.selectedItems.subscribe((items) => {
+
+                    this.modalOpen = false;
+
+                    const body = !this.model ? null : {
+                        module: this.model.module,
+                        bean_data: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
+                    };
+
+                    this.model.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body).subscribe({
+                        next: res => {
+                            this.focusEditor();
+                            this.editorService.restoreSelection();
+                            this._document.execCommand('insertHTML', false, res.html);
+                        },
+                        error: () => {
+                            this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                        }
+                    })
+                });
+            });
+    }
+
 
     public getHtmlFromSelection() {
         let range;

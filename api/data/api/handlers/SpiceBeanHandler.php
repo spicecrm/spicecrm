@@ -121,11 +121,36 @@ class SpiceBeanHandler
         return $dynamicDomains;
     }
 
+    /**
+     * prepare filter context when the list ist retrieved within a bean context
+     * @param array $searchParams
+     * @return void
+     */
+    private function prepareFilterContext(array &$searchParams)
+    {
+        $searchParams['filtercontext'] = json_decode($searchParams['filtercontext']);
+
+        if (!empty($searchParams['filtercontext']->module)) {
+
+            if (!empty($searchParams['filtercontext']->data)) {
+                $contextBean = BeanFactory::getBean($searchParams['filtercontext']->module);
+                foreach ($searchParams['filtercontext']->data as $field => $value) {
+                    $contextBean->$field = $value;
+                }
+                $searchParams['filtercontext'] = $contextBean;
+
+            } else {
+                $searchParams['filtercontext'] = BeanFactory::getBean($searchParams['filtercontext']->module, $searchParams['filtercontext']->id);
+            }
+        }
+    }
 
     public function get_bean_list($beanModule, $searchParams, $addwhere = "")
     {
         $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
+
+        $this->prepareFilterContext($searchParams);
 
         $retArray = [];
 
@@ -335,7 +360,7 @@ class SpiceBeanHandler
         }
 
         if (!empty($searchParams['modulefilter'])) {
-            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter']);
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter'], null, $searchParams['filtercontext']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
@@ -344,7 +369,7 @@ class SpiceBeanHandler
         // add global filter if fts setings are defined so the filter is also applied here
         $indexSettings = SpiceFTSUtils::getBeanIndexSettings($beanModule);
         if (!empty($indexSettings['globalfilter'])) {
-            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($indexSettings['globalfilter']);
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($indexSettings['globalfilter'], null, $searchParams['filtercontext']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
