@@ -2,29 +2,19 @@
  * @module ModuleSalesDocs
  */
 import {
-    Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef
+    Component, EventEmitter, Input,  Output
 } from '@angular/core';
-import {model} from "../../../services/model.service";
-import {backend} from "../../../services/backend.service";
-import {Subscription} from "rxjs";
-import {helper} from "../../../services/helper.service";
-import {modal} from "../../../services/modal.service";
-import {language} from "../../../services/language.service";
-import {toast} from "../../../services/toast.service";
-import {animate, state, style, transition, trigger} from "@angular/animations";
-import {SalesDocsPDFTabContainerEmail} from "./salesdocspdftabcontaineremail";
-import {DomSanitizer} from "@angular/platform-browser";
 
-declare var moment: any
+
 
 /**
  * preview a new OutPut
  */
 @Component({
-    selector: 'salesdocs-pdf-tab-container-preview',
-    templateUrl: '../templates/salesdocpdftabcontainerpreview.html'
+    selector: 'outputrevisions-pdf-tab-container-preview',
+    templateUrl: '../templates/outputrevisionspdftabcontainerpreview.html'
 })
-export class SalesDocsPDFTabContainerPreview {
+export class OutputRevisionsPDFTabContainerPreview {
 
 
     /**
@@ -59,7 +49,7 @@ export class SalesDocsPDFTabContainerPreview {
      */
     @Output() public save$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(public language: language) {
+    constructor() {
     }
 
     /**

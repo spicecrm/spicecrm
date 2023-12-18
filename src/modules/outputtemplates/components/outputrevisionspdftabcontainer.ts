@@ -1,5 +1,5 @@
 /**
- * @module ModuleSalesDocs
+ * @module ModuleOutputTemplates
  */
 import {
     Component, OnDestroy, OnInit, ViewChild, ViewContainerRef
@@ -12,8 +12,8 @@ import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {SalesDocsPDFTabContainerEmail} from "./salesdocspdftabcontaineremail";
-import {SalesDocsPDFTabContainerPreview} from "./salesdocspdftabcontainerpreview";
+import {OutputRevisionsPDFTabContainerEmail} from "./outputrevisionspdftabcontaineremail";
+
 
 declare var moment: any
 
@@ -21,8 +21,8 @@ declare var moment: any
  * a component for the tab container to preivew the PDF of a salesdoc
  */
 @Component({
-    selector: 'salesdocs-pdf-tab-container',
-    templateUrl: '../templates/salesdocpdftabcontainer.html',
+    selector: 'outputrevisions-pdf-tab-container',
+    templateUrl: '../templates/outputrevisionspdftabcontainer.html',
     animations: [
         trigger('slideInOut', [
             state('open', style({width: '50%'})),
@@ -40,10 +40,10 @@ declare var moment: any
         ]),
     ]
 })
-export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
+export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
 
 
-    @ViewChild(SalesDocsPDFTabContainerEmail, {static: false}) public emailContainer: SalesDocsPDFTabContainerEmail;
+    @ViewChild(OutputRevisionsPDFTabContainerEmail, {static: false}) public emailContainer: OutputRevisionsPDFTabContainerEmail;
 
     /**
      * holds file object
@@ -60,8 +60,8 @@ export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
      */
     public loading: boolean = false;
 
-    public salesdocOutput: string = '';
-    public salesdocOutputs: any[] = [];
+    public outputRevision: string = '';
+    public outputRevisions: any[] = [];
 
     private subscriptions: Subscription = new Subscription();
 
@@ -100,7 +100,7 @@ export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
      */
     public loadOutput() {
         this.loading = true;
-        this.backend.getRequest(`common/spiceattachments/module/SalesDocOutputs/${this.salesdocOutput}/byfield/file`).subscribe({
+        this.backend.getRequest(`common/spiceattachments/module/OutputRevisions/${this.outputRevision}/byfield/file`).subscribe({
             next: (fileData) => {
                 this.file = fileData;
                 this.blobFile = atob(this.file.file);
@@ -118,7 +118,7 @@ export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
      * @constructor
      */
     get outputDescription() {
-        return this.salesdocOutput ? this.salesdocOutputs.find(o => o.id == this.salesdocOutput).description : '';
+        return this.outputRevision ? this.outputRevisions.find(o => o.id == this.outputRevision).description : '';
     }
 
     /**
@@ -126,17 +126,17 @@ export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
      */
     public getOutputs(forceSetOutput = false) {
         this.loading = true;
-        this.backend.getRequest(`module/SalesDocs/${this.model.id}/related/salesdocoutputs?offset=0&limit=99`).subscribe({
+        this.backend.getRequest(`module/${this.model.module}/${this.model.id}/related/outputrevisions?offset=0&limit=99`).subscribe({
             next: (response) => {
                 // set loading to false
                 this.loading = false;
                 // reset the current array
-                this.salesdocOutputs = [];
+                this.outputRevisions = [];
                 // sort the response
                 for (let id in response) {
                     if (response.hasOwnProperty(id)) {
-                        let item = this.model.utils.backendModel2spice('SalesDocOutputs', response[id]);
-                        this.salesdocOutputs.push({
+                        let item = this.model.utils.backendModel2spice('OutputRevisions', response[id]);
+                        this.outputRevisions.push({
                             id: item.id,
                             date_entered: item.date_entered,
                             created_by: item.created_by_user.user_name,
@@ -146,11 +146,11 @@ export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
                 }
 
                 // sort the array by date entered
-                this.salesdocOutputs.sort((a, b) => a.date_entered.isBefore(b.date_entered) ? 1 : -1);
+                this.outputRevisions.sort((a, b) => a.date_entered.isBefore(b.date_entered) ? 1 : -1);
 
                 // set the default one and laod the output
-                if (this.salesdocOutputs.length > 0 && (forceSetOutput || !this.salesdocOutput)) {
-                    this.salesdocOutput = this.salesdocOutputs[0].id;
+                if (this.outputRevisions.length > 0 && (forceSetOutput || !this.outputRevision)) {
+                    this.outputRevision = this.outputRevisions[0].id;
                     this.loadOutput();
                 }
             },
@@ -177,15 +177,37 @@ export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
         }
     }
 
+
+    /**
+     * create a new output
+     */
+    public createNewOutput() {
+        let loadTemplatesModal = this.modal.await('LBL_LOADING_TEMPLATES');
+        // module/OutputTemplates/formodule/{module}/{id}
+
+        this.backend.getRequest(`module/OutputTemplates/formodule/${this.model.module}/${this.model.id}`).subscribe({
+            next: (templates) => {
+                loadTemplatesModal.emit(true);
+                if(templates.length > 0){
+                    this.generateOutput(templates[0].id);
+                }
+            },
+            error: (e) => {
+                loadTemplatesModal.emit(true);
+                this.toast.sendToast('LBL_NO_TEMPLATE_FOUND', 'warning');
+            }
+        })
+    }
+
     /**
      * creates a new Output file
      */
-    public createNewOutput() {
+    public generateOutput(template) {
         let generatorModal = this.modal.await('LBL_GENERATING');
-        this.backend.getRequest(`module/SalesDocs/${this.model.id}/output/preview`).subscribe({
+        this.backend.getRequest(`module/OutputRevisions/${this.model.module}/${this.model.id}/output/${template}/preview`).subscribe({
             next: (file) => {
                 generatorModal.emit(true);
-                this.modal.openModal('SalesDocsPDFTabContainerPreview').subscribe({
+                this.modal.openModal('OutputRevisionsPDFTabContainerPreview').subscribe({
                     next: (modalRef) => {
                         modalRef.instance.data = atob(file.file);
                         modalRef.instance.name = file.filename;
@@ -196,7 +218,7 @@ export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
                                     this.modal.prompt('input_text', 'MSG_CREATE_NEW_OUTPUT', 'MSG_CREATE_NEW_OUTPUT').subscribe({
                                         next: (text) => {
                                             this.loading = true;
-                                            this.backend.postRequest(`module/SalesDocs/${this.model.id}/output`, {}, {
+                                            this.backend.postRequest(`module/OutputRevisions/${this.model.module}/${this.model.id}/output/${template}`, {}, {
                                                 description: text
                                             }).subscribe({
                                                 next: (res) => {
@@ -225,7 +247,7 @@ export class SalesDocsPDFTabContainer implements OnInit, OnDestroy {
      * send the current file to the print spooler
      */
     public printCurrent() {
-        this.backend.putRequest(`module/SalesDocOutputs/${this.salesdocOutput}/print`).subscribe({
+        this.backend.putRequest(`module/OutPutRevisions/${this.outputRevision}/print`).subscribe({
             next: (res) => {
                 if (res.printed) {
                     this.toast.sendToast('LBL_PRINTED', 'success');

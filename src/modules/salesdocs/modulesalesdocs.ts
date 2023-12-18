@@ -63,6 +63,7 @@ import {SalesDocsFlowModal} from './components/salesdocsflowmodal';
 import {fieldSalesdocItemAmount} from "./fields/fieldsalesdocitemamount";
 import {SalesDocsItemCalculate} from "./components/salesdocsitemcalculate";
 import {SalesDocsFlowItemTableRow} from "./components/salesdocsflowitemtablerow";
+import {SalesDocsActionOutputBeanButton} from "./components/salesdocsactionoutputbeanbutton";
 
 @NgModule({
     imports: [
