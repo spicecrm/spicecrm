@@ -100,20 +100,22 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         this.model.setData(this.item);
 
         // link the two views
-        this.view.isEditable = this.parentview.isEditable;
-        this.parentview.mode$.subscribe(mode => {
-            // check if we are in the same mode already
-            if (this.view.getMode() == mode) return;
+        if(this.parentview) {
+            this.view.isEditable = this.parentview.isEditable;
+            this.parentview.mode$.subscribe(mode => {
+                // check if we are in the same mode already
+                if (this.view.getMode() == mode) return;
 
-            // process the mode change
-            if (mode == 'edit') {
-                this.view.setEditMode();
-                this.view.displayLinks = false;
-            } else {
-                this.view.setViewMode();
-                this.view.displayLinks = true;
-            }
-        });
+                // process the mode change
+                if (mode == 'edit') {
+                    this.view.setEditMode();
+                    this.view.displayLinks = false;
+                } else {
+                    this.view.setViewMode();
+                    this.view.displayLinks = true;
+                }
+            });
+        }
 
         this.view.mode$.subscribe(mode => {
             // check if we are in the same mode already
@@ -124,7 +126,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
                 // start editing the Salesdoc
                 this.salesdoc.startEdit();
                 // set the view to edit mode
-                this.parentview.setEditMode();
+                if(this.parentview) this.parentview.setEditMode();
 
                 // do not display links
                 this.view.displayLinks = false;
