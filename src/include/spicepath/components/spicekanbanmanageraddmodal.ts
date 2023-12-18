@@ -17,6 +17,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 export class SpiceKanbanManagerAddModal implements OnInit{
 
+    public loading = false;
+
     /**
      * reference to the modal to close it
      */
@@ -78,7 +80,7 @@ export class SpiceKanbanManagerAddModal implements OnInit{
      */
     public save() {
 
-
+        this.loading = true;
         this.selectedBeanGuide.systextid = `kanban_${this.selectedBeanGuide.module.toLowerCase()}_${this.sysTextIDName}`;
 
         let table = this.scope == 'global' ? 'spicebeanguides' : 'spicebeancustomguides';
@@ -88,8 +90,6 @@ export class SpiceKanbanManagerAddModal implements OnInit{
         } else {
             table = this.selectedBeanGuide.scope == 'global' ? 'spicebeanguides' : 'spicebeancustomguides';
         }
-
-        delete this.selectedBeanGuide.scope;
 
         let spinner = this.modal.await('LBL_SAVING');
 
@@ -101,11 +101,14 @@ export class SpiceKanbanManagerAddModal implements OnInit{
                 // emit selected bean guide
                 this.emitSelectedBeanGuide.emit(this.selectedBeanGuide);
 
+                this.loading = false;
+
                 this.close();
             },
             error: (err) => {
                 spinner.emit(true);
                 this.toast.sendToast('LBL_ERROR_SAVING_SPICEBEANGUIDE', "error", err);
+                this.loading = false;
             }
         });
 
@@ -126,11 +129,13 @@ export class SpiceKanbanManagerAddModal implements OnInit{
                 next: () => {
                     spinner.emit(true);
                     this.toast.sendToast('LBL_SPICEBEANGUIDESTAGES_SAVED', "success");
+                    this.loading = false;
                     this.close();
                 },
                 error: (err) => {
                     spinner.emit(true);
                     this.toast.sendToast('LBL_ERROR_SAVING_SPICEBEANGUIDESTAGES', "error", err);
+                    this.loading = false;
                 }
             });
         }

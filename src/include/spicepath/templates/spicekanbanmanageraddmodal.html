@@ -24,7 +24,7 @@
             <div *ngIf="!isEditing" class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label"><system-label label="LBL_SYSTEXTID_FIELD"></system-label></label>
                 <div class="slds-form-element__control">
-                    <span>{{selectedBeanGuide.systextid + sysTextIDName}}</span>
+                    <span>{{selectedBeanGuide.systextid + (!loading ? sysTextIDName : '')}}</span>
                 </div>
             </div>
         </div>
