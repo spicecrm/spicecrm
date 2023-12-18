@@ -99,7 +99,7 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null)
+    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
     {
         $this->additionalValues = $additionalValues;
         $this->lang = $lang;
@@ -119,11 +119,15 @@ class Compiler
         $dummy = $dom->getElementsByTagName('html');
         foreach( $this->parseDom( $dummy[0], $beans ) as $newElement ){
             $this->root->appendChild($newElement);
-        };
+        }
 
         $this->addStyleTag($additionalStyleId);
 
-        return $this->doc->saveHTML();
+        if ($bodyContentOnly) {
+            return str_replace(['<body>', '</body>'], '', $this->doc->saveHTML($this->doc->getElementsByTagName('body')->item(0)));
+        } else {
+            return $this->doc->saveHTML();
+        }
     }
 
     /**
