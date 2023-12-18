@@ -15,6 +15,8 @@ import {
 export class KanbanManagerService {
     public currentStages: SpiceBeanGuideStagesI[] = [];
 
+    public currentChecks:SpiceBeanGuideChecksI[] = [];
+
     public currentStagesSpiceTexts: [] = [];
     public currentStagesChecks: [] = [];
 
@@ -42,6 +44,7 @@ export class KanbanManagerService {
     set selectedBeanGuide(val:SpiceBeanGuidesI) {
         this._selectedBeanGuide = val;
         this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id);
+        this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this.selectedBeanGuide.id);
 
         this.selectedBeanGuide$.next(val);
     }
