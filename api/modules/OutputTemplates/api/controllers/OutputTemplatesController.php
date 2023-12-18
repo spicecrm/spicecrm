@@ -113,18 +113,17 @@ class OutputTemplatesController
         return $res->withJson(['content' => base64_encode($content), 'filename' => $outputTemplate->getFileName()]);
     }
 
+    /**
+     * returns the templates for the bean
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
     public function getModuleTemplates(Request $req, Response $res, array $args): Response {
-        $templates = [];
-        $bean = BeanFactory::getBean('OutputTemplates');
-        $beans = $bean->get_full_list('name', "module_name='{$args['module']}'");
-        foreach ($beans as $bean) {
-            $templates[] = [
-                'id' => $bean->id,
-                'name' => $bean->name,
-                'language' => $bean->language
-            ];
-        };
-        return $res->withJson($templates);
+        $bean = $args['id'] ? BeanFactory::getBean($args['module'], $args['id']) : BeanFactory::getBean($args['module']) ;
+        return $res->withJson($bean->getOutputTemplates());
     }
 
     public function getTemplateFunctions( Request $req, Response $res, array $args ): Response

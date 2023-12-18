@@ -15,6 +15,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
 import {session} from "../../../services/session.service";
+import {OutputRevisionsPDFTabContainer} from "./outputrevisionspdftabcontainer";
 
 declare var moment: any
 
@@ -22,11 +23,11 @@ declare var moment: any
  * a component for the tab container to preivew the PDF of a salesdoc
  */
 @Component({
-    selector: 'salesdocs-pdf-tab-container-email',
-    templateUrl: '../templates/salesdocpdftabcontaineremail.html',
+    selector: 'outputrevisions-pdf-tab-container-email',
+    templateUrl: '../templates/outputrevisionspdftabcontaineremail.html',
     providers: [view, model]
 })
-export class SalesDocsPDFTabContainerEmail {
+export class OutputRevisionsPDFTabContainerEmail {
 
     /**
      * the fieldset
