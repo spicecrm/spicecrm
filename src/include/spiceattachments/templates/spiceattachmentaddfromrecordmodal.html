@@ -7,8 +7,14 @@
             </div>
         </ng-container>
         <ng-template #showAttachments>
-        <div *ngFor="let file of modelattachments.files" [ngClass]="{'slds-theme_shade': file.selected}" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
-            <div><system-checkbox [(ngModel)]="file.selected" [disabled]="false"></system-checkbox></div>
+            <div class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
+                <system-checkbox [(ngModel)]="selectAll"
+                                 [indeterminate]="selectedFilesCount > 0 && !selectAll">
+                    <system-label label="LBL_SELECT_ALL"></system-label>
+                </system-checkbox>
+            </div>
+            <div *ngFor="let file of modelattachments.files" (click)="toggleSelectFile(file)" [ngClass]="{'slds-theme_shade': file.selected}" class="slds-grid slds-grid_vertical-align-center slds-p-around--xx-small">
+                <div><system-checkbox [ngModel]="file.selected" (click)="toggleSelectFile(file)" [disabled]="false"></system-checkbox></div>
             <spice-attachment-file [modelattachments]="modelattachments" [file]="file" [editmode]="false" [disabled]="true" class="slds-media" style="pointer-events: none"></spice-attachment-file>
         </div>
         </ng-template>

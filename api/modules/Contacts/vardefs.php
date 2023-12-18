@@ -220,7 +220,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'relationship' => 'accounts_contacts',
                 'link_type' => 'one',
                 'source' => 'non-db',
-                'vname' => 'LBL_ACCOUNT',
+                'vname' => 'LBL_ACCOUNTS',
                 'duplicate_merge' => false,
                 'module' => 'Accounts'
             ],
@@ -296,6 +296,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'bean_name' => 'Email',
                 'source' => 'non-db',
                 'vname' => 'LBL_EMAILS',
+            ],
+            'emails_parent' => [
+                'name' => 'emails_parent',
+                'type' => 'link',
+                'relationship' => 'contact_emails_parent',
+                'source' => 'non-db',
+                'vname' => 'LBL_EMAILS_AS_PARENT',
             ],
             'letters' => [
                 'name'         => 'letters',
@@ -386,6 +393,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'relationship' => 'contacts_users',
                 'source' => 'non-db',
                 'vname' => 'LBL_USER_SYNC',
+                'rel_fields' =>[
+                    'external_id' => [
+                        'map' => 'contact_external_id'
+                    ]
+                ]
+            ],
+            'contact_external_id' => [
+                'name' => 'contact_external_id',
+                'type' => 'varchar',
+                'source' => 'non-db',
+                'comment' => 'the external id of the contact in user\' address book'
             ],
             'created_by_link' => [
                 'name' => 'created_by_link',
@@ -856,6 +874,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
         'contact_callattempts_parent' => [
             'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
             'rhs_module' => 'CallAttempts', 'rhs_table' => 'callattempts', 'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Contacts'
+        ],
+        'contact_emails_parent' => [
+            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
+            'rhs_module' => 'Emails', 'rhs_table' => 'emails', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Contacts'
         ],
