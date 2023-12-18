@@ -6,7 +6,7 @@
                 <system-input-module [disabled]="loading" [(ngModel)]="moduleName">{{moduleName}}</system-input-module>
                 <div class="slds-form-element__control slds-m-left--xx-small" style="min-width:250px;">
                     <div class="slds-select_container">
-                        <select class="slds-select" [disabled]="beanGuides.length == 0" [(ngModel)]="kanbanManagerService.selectedBeanGuide">
+                        <select class="slds-select" [disabled]="loading" [(ngModel)]="kanbanManagerService.selectedBeanGuide">
 <!--                            <option></option>-->
 <!--                            <option *ngFor="let beanGuide of moduleBeanGuides" [ngValue]="beanGuide">{{beanGuide.name}}</option>-->
                             <option></option>
