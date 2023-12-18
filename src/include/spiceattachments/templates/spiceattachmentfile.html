@@ -6,7 +6,7 @@
 </div>
 <div class="slds-media__body">
     <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
-        <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small" (click)="openInTab()">
+        <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small" (click)="preview($event)">
             <a href="javascript:void(0);">{{file.filename}}</a>
         </h3>
         <div *ngIf="!uploading && editmode" class="slds-shrink-none">
