@@ -1,0 +1,12 @@
+<div *ngFor="let item of spiceGanttService.flat" class="slds-scrollable--none">
+    <div class="slds-grid slds-wrap" style="height: 40px">
+        <div class="slds-col slds-size--1-of-4">&nbsp;</div>
+        <div class="slds-col slds-size--1-of-4">{{ item.name }}</div>
+        <div class="slds-col slds-size--1-of-4">
+            <system-display-datetime [date]="item.start"></system-display-datetime>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <system-display-datetime [date]="item.end"></system-display-datetime>
+        </div>
+    </div>
+</div>

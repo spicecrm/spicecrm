@@ -701,14 +701,14 @@ export class model implements OnDestroy {
 
         // loop through validations...
         for (let validation of validations) {
-            if(!validation.active) continue ;
+            if (!validation.active) continue;
 
             let checksum: number = 0;
             let is_valid: boolean = true;
 
             // make sure we have an array of events to filter properly on events
             let onEventCheck = validation.onevents instanceof Array;
-            if(!onEventCheck){
+            if (!onEventCheck) {
                 validation.onevents = validation.onevents.split(',');
             }
 
@@ -797,9 +797,9 @@ export class model implements OnDestroy {
                 this.data[action.fieldname] = this.data[params];
                 return true;
             case "set_value_from_user":
-                if(this.session.authData.user[params]){
+                if (this.session.authData.user[params]) {
                     this.data[action.fieldname] = this.session.authData.user[params];
-                } else if(this.userpreferences.toUse[params]){
+                } else if (this.userpreferences.toUse[params]) {
                     this.data[action.fieldname] = this.userpreferences.toUse[params];
                 }
                 return true;
@@ -1158,7 +1158,7 @@ export class model implements OnDestroy {
                             break;
                         default:
                             if (notify) {
-                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel( error.error.error.lbl ) : error.error.error.message );
+                                this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.lbl ? this.language.getLabel(error.error.error.lbl) : error.error.error.message);
                             }
                             responseSubject.error(error);
                             responseSubject.complete();
@@ -1304,7 +1304,7 @@ export class model implements OnDestroy {
 
         this.executeCopyRules(parent);
         this.setFieldsDefaultValues();
-        this.evaluateValidationRules(null,'initialize');
+        this.evaluateValidationRules(null, 'initialize');
 
         // set default acl to allow editing
         this.acl = {
@@ -1592,7 +1592,7 @@ export class model implements OnDestroy {
                     break;
                 default:
                     // set nullable in validation rules
-                    if(value == '(NULL)') value = null;
+                    if (value == '(NULL)') value = null;
 
                     this.setField(toField, value);
                     break;
@@ -1605,7 +1605,13 @@ export class model implements OnDestroy {
      * @param copyRule
      * @param fromField
      */
-    public getCalculatedValue(copyRule: { fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any }, fromField?: string) {
+    public getCalculatedValue(copyRule: {
+        fromfield: string,
+        tofield: string,
+        fixedvalue: string,
+        calculatedvalue: string,
+        params: any
+    }, fromField?: string) {
 
         let timeZone = this.session.getSessionData('timezone', false) || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
@@ -1643,9 +1649,9 @@ export class model implements OnDestroy {
      */
     public edit(reload: boolean = false, componentSet: string = ""): Observable<any> {
         // check if the user can edit
-        if (!this.checkAccess("edit")) {
-            return of(false);
-        }
+        // if (!this.checkAccess("edit")) {
+        //     return of(false);
+        // }
 
         // create a response subject
         let responseSubject = new Subject<any>();
@@ -1925,7 +1931,7 @@ export class model implements OnDestroy {
      * @param {boolean} overwrite default true, if false, it will ignore records which are already set
      * @returns {boolean}
      */
-    public addRelatedRecords(relation_link_name:string, records: any[], overwrite = true): boolean {
+    public addRelatedRecords(relation_link_name: string, records: any[], overwrite = true): boolean {
         if (!this.isFieldARelationLink(relation_link_name)) {
             return false;
         }
