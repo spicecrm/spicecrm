@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ComponentRef, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -9,6 +9,7 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {modal} from '../../services/modal.service';
+import {helper} from '../../services/helper.service';
 
 declare const window: any;
 
@@ -37,13 +38,39 @@ export class fieldText extends fieldGeneric implements OnInit {
      * determines if html content shall be removed
      */
     public striphtml = false;
+    
+    get displayTemplateVariableHelper() {
+        return this.model?.module in {
+            OutputTemplates: true,
+            EmailTemplates: true,
+            CampaignTasks: true,
+            LandingPages: true,
+            Mailboxes: true,
+            TextSnippets: true
+        }
+    }
+
+    /**
+     * check the acl view and list access for the text snippets to show/hide button
+     */
+    get displayTextSnippet(): boolean {
+        return this.metadata.checkModuleAcl('TextSnippets', 'list') && this.metadata.checkModuleAcl('TextSnippets', 'view');
+    }
 
     /**
      * reference to the text area
      */
     @ViewChild('textField', {read: ViewContainerRef, static: false}) public textField: ViewContainerRef;
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public modalservice: modal) {
+    constructor(public model: model,
+                public view: view,
+                public language: language,
+                public metadata: metadata,
+                public router: Router,
+                public modal: modal,
+                public viewContainerRef: ViewContainerRef,
+                public helper: helper
+    ) {
         super(model, view, language, metadata, router);
     }
 
@@ -52,7 +79,7 @@ export class fieldText extends fieldGeneric implements OnInit {
      */
     public ngOnInit() {
         super.ngOnInit();
-        if ( window.SpeechRecognition || window.webkitSpeechRecognition ) {
+        if (window.SpeechRecognition || window.webkitSpeechRecognition) {
             this.speechRecognition = this.fieldconfig.speechRecognition; // boolean
         }
 
@@ -65,7 +92,7 @@ export class fieldText extends fieldGeneric implements OnInit {
      *
      */
     public setStripHtml() {
-        if(this.fieldconfig.striphtml){
+        if (this.fieldconfig.striphtml) {
             this.striphtml = this.fieldconfig.striphtml;
         }
     }
@@ -78,9 +105,9 @@ export class fieldText extends fieldGeneric implements OnInit {
     public getFieldLength() {
         let field = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         if (field.len) {
-            this.fieldlength = parseInt( field.len, 10 );
+            this.fieldlength = parseInt(field.len, 10);
         }
-        if ( this.fieldconfig.maxlength && ( !this.fieldlength || parseInt( this.fieldconfig.maxlength, 10 ) < this.fieldlength )) this.fieldlength = this.fieldconfig.maxlength;
+        if (this.fieldconfig.maxlength && (!this.fieldlength || parseInt(this.fieldconfig.maxlength, 10) < this.fieldlength)) this.fieldlength = this.fieldconfig.maxlength;
     }
 
     /**
@@ -124,7 +151,7 @@ export class fieldText extends fieldGeneric implements OnInit {
     /**
      * use the speech API and read the text
      */
-    public toSpeech(){
+    public toSpeech() {
         let speech = new SpeechSynthesisUtterance();
         speech.text = this.value;
         speech.lang = this.getSpeechLanguage();
@@ -136,9 +163,9 @@ export class fieldText extends fieldGeneric implements OnInit {
      *
      * @private
      */
-    private getSpeechLanguage(){
+    private getSpeechLanguage() {
         let langArray = this.language.currentlanguage.split('_');
-        if(langArray.length != 2) return 'en-US';
+        if (langArray.length != 2) return 'en-US';
         return langArray[0] + '-' + langArray[1].toUpperCase();
     }
 
@@ -150,7 +177,7 @@ export class fieldText extends fieldGeneric implements OnInit {
     }
 
     public speechRecognitionStart() {
-        this.modalservice.openModal('SpeechRecognition', false).subscribe(modal => {
+        this.modal.openModal('SpeechRecognition', false).subscribe(modal => {
             modal.instance.textfield = this.textField;
         });
     }
@@ -169,4 +196,40 @@ export class fieldText extends fieldGeneric implements OnInit {
         return this.value ? this.value.length : 0;
     }
 
+    get currentPosition() {
+        return this.focuselement.element.nativeElement.selectionStart;
+    }
+
+    /**
+     * open the template variable select modal and insert the parsed variable
+     */
+
+    public openTemplateVariableHelper() {
+        this.helper.addTemplateVariables(this.modal, this.model, this.viewContainerRef.injector).subscribe({
+            next: text => {
+                const oldString = this.value ?? '';
+                this.value = oldString.substring(0, this.currentPosition) + text + oldString.substring(this.currentPosition)
+            },
+            error: () => {
+                this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
+        })
+    }
+
+    /**
+     * open the text snippet select modal and insert the parsed snippet html
+     */
+    public openTextSnippetModal() {
+        const moduleFilter = this.metadata.getComponentConfig('SystemRichTextEditor', 'TextSnippets')?.textSnippetsModuleFilter;
+
+        this.helper.addTextSnippet('PLAIN', moduleFilter, this.modal, this.model, this.viewContainerRef.injector).subscribe({
+            next: res => {
+                const oldString = this.value ?? '';
+                this.value = oldString.substring(0, this.currentPosition) + res.html + oldString.substring(this.currentPosition)
+            },
+            error: () => {
+                this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+            }
+        })
+    }
 }
