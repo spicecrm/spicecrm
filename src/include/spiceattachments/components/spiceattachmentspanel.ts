@@ -49,9 +49,19 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     public uploadfiles: any[] = [];
 
     /**
+     * set to true if we know the upload files exist and thus do not need to be extra uploaded
+     */
+    public uploadfilesExist: boolean = false;
+
+    /**
      * emits when the attachments are loaded
      */
     @Output() public attachmentsLoaded: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * a paramater to be set to force the previe of the attachments ina  modal
+     */
+    @Input() public forceModalPreview: boolean = false;
 
     /**
      * @ignore
@@ -141,7 +151,11 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * loads files that are to be added dynamically in the call from a compoinent adding a base64 file
      */
     public loadInputFiles() {
-        this.modelattachments.uploadAttachmentsBase64FromArray(this.uploadfiles);
+        if(this.uploadfilesExist){
+            this.modelattachments.addFiles(this.uploadfiles);
+        } else {
+            this.modelattachments.uploadAttachmentsBase64FromArray(this.uploadfiles);
+        }
     }
 
     /**
