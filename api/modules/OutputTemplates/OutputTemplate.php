@@ -61,6 +61,19 @@ class OutputTemplate extends SpiceBean
 
     public $filename;
 
+    /**
+     * the ID of the bean to be used as paren
+     * @var
+     */
+    public $bean_id;
+
+    /**
+     * if not the id is set the bean can be set alternatively.
+     *
+     * @var
+     */
+    public $bean;
+
     public function translateBody($bean = null, $bodyOnly = false)
     {
         if (!$bean) {
