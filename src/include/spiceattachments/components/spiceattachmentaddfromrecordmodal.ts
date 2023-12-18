@@ -35,19 +35,14 @@ export class SpiceAttachmentAddFromRecordModal {
 
     public parent: model;
 
-    public filteredFiles: any[] = [];
+    public selectedFilesCount: number = 0;
 
     /**
      * holds all files
      */
     public files: any = [];
 
-    /**
-     * contructor sets the module and id for the laoder
-     * @param modelattachments
-     * @param language
-     * @param model
-     */
+
     constructor(
         @SkipSelf() public emailAttachments: modelattachments,
         public modelattachments: modelattachments,
@@ -109,7 +104,7 @@ export class SpiceAttachmentAddFromRecordModal {
         this.backend.postRequest(`common/spiceattachments/module/${this.parent.module}/${this.parent.id}/clone/${this.parent.data.parent_type}/${this.parent.data.parent_id}`, {}, body, this.modelattachments.httpRequestsRefID).subscribe({
             next: response => {
                 for (let attId in response) {
-                    if (!this.filteredFiles.find(a => a.id == attId)) {
+                    if (!this.modelattachments.files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
                         this.files.push(response[attId]);
                     }
@@ -129,6 +124,21 @@ export class SpiceAttachmentAddFromRecordModal {
         return retSubject.asObservable();
     }
 
+    /**
+     * select/deselect all attachments based on the checkbox boolean value
+     * @param val
+     */
+    set selectAll(val) {
+        this.modelattachments.files.forEach(f=> f.selected = val);
+        this.selectedFilesCount = val ? this.modelattachments.files.filter(file=>file.selected).length : 0;
+    }
+
+    /**
+     * @return true if all attachments are selected
+     */
+    get selectAll() {
+        return this.modelattachments.files.length == this.selectedFilesCount;
+    }
 
     /**
      * initializes the model attachments service and loads the attachments
@@ -136,7 +146,7 @@ export class SpiceAttachmentAddFromRecordModal {
     public loadFiles() {
         this.modelattachments.getAttachments().subscribe(res => {
             this.cdRef.detectChanges();
-            this.filteredFiles = res;
+            this.files = res;
         });
     }
 
@@ -147,6 +157,17 @@ export class SpiceAttachmentAddFromRecordModal {
 
     public close() {
         this.self.destroy();
+    }
+
+    public toggleSelectFile(file: {selected: boolean}) {
+
+        file.selected = !file.selected;
+
+        if (file.selected) {
+            this.selectedFilesCount++;
+        } else {
+            this.selectedFilesCount--;
+        }
     }
 
 }
