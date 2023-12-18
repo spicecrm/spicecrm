@@ -12,7 +12,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import { projectwbsHierarchy } from "./services/projectwbshierarchy.service";
+import {projectwbsHierarchy} from "./services/projectwbshierarchy.service";
 
 import {ProjectWBSHierarchy} from "./components/projectwbshierarchy";
 import {ProjectWBSHierarchyNode} from "./components/projectwbshierarchynode";
@@ -32,6 +32,7 @@ import {ProjectSettlementButton} from "./components/projectsettlementbutton";
 import {ProjectSettlement} from "./components/projectsettlement";
 import {ProjectWBSHierarchyAddNode} from "./components/projectwbshierarchyaddnode";
 import {ProjectWBSGantt} from "./components/projectwbsgantt";
+import {SpiceGanttModule} from "../../include/SpiceGantt/spicegantt";
 
 @NgModule({
     imports: [
@@ -42,6 +43,7 @@ import {ProjectWBSGantt} from "./components/projectwbsgantt";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        SpiceGanttModule,
     ],
     declarations: [
         ProjectWBSHierarchy,
@@ -62,4 +64,5 @@ import {ProjectWBSGantt} from "./components/projectwbsgantt";
         ProjectWBSQuoteButton
     ]
 })
-export class ModuleProjects {}
+export class ModuleProjects {
+}
