@@ -1,8 +1,7 @@
 <system-collapsable-tab [collapsible]="true" [expanded]="false" tabtitle="LBL_KANBAN_CHECKS"> <!-- [expanded]="true" -->
-    <div class="slds-grid slds-wrap">
-        <div class="slds-col slds-size_1-of-3 slds-p-around--x-small">
+    <div class="slds-grid slds-wrap slds-p-around--medium">
+        <div *ngIf="checks.length>0; else noChecks" class="slds-col slds-size_1-of-3 slds-p-around--x-small">
             <div class="slds-form-element">
-                <div *ngIf="checks.length>0; else noChecks"></div>
                 <div class="slds-form-element__control">
                     <ul class="slds-has-dividers_around-space dragboundary" cdkDropList [cdkDropListData]="checks"
                         (cdkDropListDropped)="dropCheckLabels($event)">
@@ -17,14 +16,26 @@
 
                         </li>
                     </ul>
+                    <div class="slds-align--absolute-center slds-p-around--small">
+                        <system-utility-icon icon="new" size="x-small"
+                                             (click)="addCheckLabel($event)"></system-utility-icon>
+                    </div>
                 </div>
-                <ng-template #noChecks>
-<!--                    todo if no checks found make layout to add one-->
-                    <system-illustration-no-records><system-label label="LBL_NO_RECORDS"></system-label> </system-illustration-no-records>
-                </ng-template>
             </div>
         </div>
-        <div class="slds-col slds-size_2-of-3 slds-p-around--medium">
+        <ng-template #noChecks>
+            <div class="slds-col slds-size_1-of-1 slds-p-around--medium slds-align--absolute-center">
+                <div>
+                    <system-illustration-no-records><system-label label="LBL_NO_RECORDS"></system-label> </system-illustration-no-records>
+                    <div class="slds-align--absolute-center slds-p-around--small">
+                        <system-utility-icon icon="new" size="x-small"
+                                             (click)="addCheckLabel($event)"></system-utility-icon>
+                    </div>
+                </div>
+
+            </div>
+        </ng-template>
+        <div class="slds-col slds-size_2-of-3 slds-p-around--x-small">
             <div *ngIf="selectedCheck">
                 <div class="slds-form-element slds-size_2-of-3">
                     <div class="slds-form-element__control">
@@ -45,10 +56,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slds-align--absolute-center slds-p-around--small">
-                <system-utility-icon icon="new" size="x-small"
-                                     (click)="addCheckLabel($event)"></system-utility-icon>
-            </div>
+
         </div>
     </div>
 </system-collapsable-tab>

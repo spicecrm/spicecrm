@@ -4,6 +4,7 @@ import {backend} from "../../../services/backend.service";
 import {SpiceBeanGuideChecksI} from "../interfaces/kanbanmanager.interfaces";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {Subscription} from "rxjs";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     selector: 'spice-kanban-manager-checks',
@@ -50,7 +51,8 @@ export class SpiceKanbanManagerChecks {
 
     constructor(
         public backend: backend,
-        public kanbanManagerService: KanbanManagerService
+        public kanbanManagerService: KanbanManagerService,
+        public modelutilities:modelutilities
     ) {
     }
 
@@ -68,8 +70,7 @@ export class SpiceKanbanManagerChecks {
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes.selectedStage.previousValue === changes.selectedStage.currentValue || !(!!changes.selectedStage.currentValue)) return;
         this.loadChecks();
-        // todo set back selected check
-        this.selectedCheck;
+        this.selectedCheck = null;
     }
 
     /**
@@ -97,7 +98,7 @@ export class SpiceKanbanManagerChecks {
      * @private
      */
     private loadChecks(){
-        this.checks = this.kanbanManagerService.checks.filter(check=>check.stage_id == this.selectedStage.id && check.spicebeanguide_id == this.kanbanManagerService.selectedBeanGuide.id);
+        this.checks = this.kanbanManagerService.currentChecks.filter(check=>check.stage_id == this.selectedStage.id);
     }
 
     public openCheckDetails(check){
@@ -121,7 +122,19 @@ export class SpiceKanbanManagerChecks {
      * @param e
      */
     public addCheckLabel(e) {
-        const x = 'clicked';
+        e.stopPropagation();
+        const newCheck: SpiceBeanGuideChecksI = {
+            id: this.modelutilities.generateGuid(),
+            spicebeanguide_id: this.kanbanManagerService.selectedBeanGuide.id,
+            stage_id: this.selectedStage.id,
+            check_sequence: this.checks.length,
+            check_include: '',
+            check_class: '',
+            check_method: '',
+            check_label: '',
+        };
+        this.checks.push(newCheck);
+        this.openCheckDetails(newCheck);
     }
 
 }
