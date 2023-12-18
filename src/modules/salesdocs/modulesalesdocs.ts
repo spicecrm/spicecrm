@@ -75,6 +75,7 @@ import {SalesDocsFlowItemTableRow} from "./components/salesdocsflowitemtablerow"
         DirectivesModule,
     ],
     declarations: [
+        SalesDocsActionOutputBeanButton,
         SalesDocsItemsContainer,
         SalesDocsItemHeader,
         SalesDocsItemFooter,
