@@ -28,7 +28,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
     /**
      * holds spice text
      */
-    public spiceText: string = '';
+    public spiceText: any = {id: '', name: '', parent_id: '', parent_type: '', text_id: '', text_language: '', label: '', deleted: 0 | 1};
 
     /**
      * holds active tab instance
@@ -39,7 +39,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
         public language: language,
         public modal: modal,
         public toast: toast,
-        public kanban: KanbanManagerService
+        public kanban: KanbanManagerService,
     ) { }
 
     public ngOnInit() {
@@ -47,6 +47,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
         this.systemLanguages = this.language.getAvialableLanguages();
         this.activeTab = this.language.currentlanguage;
 
+        this.displaySpiceText();
     }
 
     /**
@@ -55,6 +56,22 @@ export class SpiceKanbanManagerDetails implements OnInit {
      */
     public switchTab(langTab: string) {
         this.activeTab = langTab;
+        this.displaySpiceText();
+    }
+
+    /**
+     * determines spice text for current tab
+     */
+    public displaySpiceText(): {} {
+        // reset cached spice text
+        this.spiceText = {id: '', name: '', parent_id: '', parent_type: '', text_id: '', text_language: '', label: '', deleted: 0};
+
+        // get spice text by language
+        const selectedSpiceText = this.kanban.currentSpiceTexts.find((text) => text.text_language == this.activeTab);
+
+        if(!selectedSpiceText) return this.spiceText;
+
+        return this.spiceText = selectedSpiceText;
     }
 
 }

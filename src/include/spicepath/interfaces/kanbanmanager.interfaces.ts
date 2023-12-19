@@ -1,3 +1,4 @@
+
 export interface SpiceBeanGuideStagesI {
     id: string;
     spicebeanguide_id: string;
@@ -42,3 +43,13 @@ export interface SpiceBeanGuideChecksI {
     check_label: string;
 }
 
+export interface SpiceTextsI {
+    id: string;
+    name: string | '';
+    parent_id: string;
+    parent_type: string;
+    text_id: string;
+    text_language: string;
+    label: string;
+    deleted: 0 | 1 | undefined;
+}

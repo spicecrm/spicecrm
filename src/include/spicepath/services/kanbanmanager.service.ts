@@ -7,8 +7,10 @@ import {backend} from "../../../services/backend.service";
 import {
     SpiceBeanGuideChecksI,
     SpiceBeanGuidesI,
-    SpiceBeanGuideStagesI
+    SpiceBeanGuideStagesI, SpiceTextsI
 } from "../interfaces/kanbanmanager.interfaces";
+import {toast} from "../../../services/toast.service";
+import _ from "underscore";
 
 
 @Injectable()
@@ -24,15 +26,29 @@ export class KanbanManagerService {
 
     public checks: SpiceBeanGuideChecksI[] = [];
 
+    /**
+     * holds all SpiceTexts from backend for all SpiceBeanGuides
+     */
+    public spiceTexts: SpiceTextsI[] = [];
+
+    /**
+     * holds current SpiceText for selected SpiceBeanGuide
+     */
+    public currentSpiceTexts: SpiceTextsI[] = [];
+
     public domainFieldValidations: any = [];
     public domainFieldValidationsValues: any = [];
 
     public minimized: boolean = false;
 
-    public constructor(public backend: backend) {
+    public constructor(
+        public backend: backend,
+        public toast: toast
+    ) {
         this.loadItems();
         this.loadChecks();
         this.loadValidations();
+        this.loadSpiceTexts();
     }
 
 
@@ -45,6 +61,7 @@ export class KanbanManagerService {
         this._selectedBeanGuide = val;
         this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id);
         this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this.selectedBeanGuide.id);
+        this.currentSpiceTexts = this.spiceTexts.filter(spiceTexts => spiceTexts.parent_id == this.selectedBeanGuide.id);
 
         this.selectedBeanGuide$.next(val);
     }
@@ -92,6 +109,21 @@ export class KanbanManagerService {
         this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages => {
             this.stages = stages.sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
         })
+    }
+
+    /**
+     * load spice texts for SpiceBeanGuide from backend
+     */
+    public loadSpiceTexts() {
+        this.backend.getRequest(`module/SpiceTexts/SpiceBeanGuides/load`).subscribe({
+            next: (resp: SpiceTextsI[]) => {
+                // transform Object to Array
+                this.spiceTexts = _.toArray(resp);
+            }, error: (err) => {
+                this.toast.sendToast('LBL_ERROR' + ': ' + err, 'error');
+            }
+        })
+
     }
 
     /**
