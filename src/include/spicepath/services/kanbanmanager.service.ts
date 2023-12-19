@@ -105,9 +105,10 @@ export class KanbanManagerService {
     /**
      * load spice bean guide items from backend
      */
-    public loadItems() {
+    public loadItems(selected = null) {
         this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages => {
             this.stages = stages.sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
+            this.selectedBeanGuide = selected;
         })
     }
 
