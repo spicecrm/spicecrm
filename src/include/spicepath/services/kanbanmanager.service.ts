@@ -19,7 +19,6 @@ export class KanbanManagerService {
 
     public currentChecks:SpiceBeanGuideChecksI[] = [];
 
-    public currentStagesSpiceTexts: [] = [];
     public currentStagesChecks: [] = [];
 
     public stages: SpiceBeanGuideStagesI[] = [];
@@ -34,7 +33,7 @@ export class KanbanManagerService {
     /**
      * holds current SpiceText for selected SpiceBeanGuide
      */
-    public currentSpiceTexts: SpiceTextsI[] = [];
+    public currentBeanGuideSpiceTexts: SpiceTextsI[] = [];
 
     public domainFieldValidations: any = [];
     public domainFieldValidationsValues: any = [];
@@ -61,7 +60,9 @@ export class KanbanManagerService {
         this._selectedBeanGuide = val;
         this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id);
         this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this.selectedBeanGuide.id);
-        this.currentSpiceTexts = this.spiceTexts.filter(spiceTexts => spiceTexts.parent_id == this.selectedBeanGuide.id);
+
+        // filters spice texts for selected spice bean guide
+        this.currentBeanGuideSpiceTexts = this.spiceTexts.filter(spiceTexts => spiceTexts.spiceBeanGuideId == this.selectedBeanGuide.id);
 
         this.selectedBeanGuide$.next(val);
     }
@@ -113,10 +114,10 @@ export class KanbanManagerService {
     }
 
     /**
-     * load spice texts for SpiceBeanGuide from backend
+     * load spice texts for SpiceBeanGuideStages from backend
      */
     public loadSpiceTexts() {
-        this.backend.getRequest(`module/SpiceTexts/SpiceBeanGuides/load`).subscribe({
+        this.backend.getRequest(`module/SpiceTexts/SpiceBeanGuideStages/load`).subscribe({
             next: (resp: SpiceTextsI[]) => {
                 // transform Object to Array
                 this.spiceTexts = _.toArray(resp);

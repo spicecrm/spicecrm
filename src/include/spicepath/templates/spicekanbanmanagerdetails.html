@@ -42,7 +42,7 @@
                         </li>
                     </ul>
                     <div *ngFor="let lang of systemLanguages" [ngClass]="{'slds-show': lang.language == activeTab,'slds-hide': lang.language != activeTab}" class="slds-tabs_scoped__content" role="tabpanel">
-                        <system-richtext-editor [(ngModel)]="spiceText.name" ></system-richtext-editor>
+                        <system-richtext-editor [(ngModel)]="selectedSpiceText.name" ></system-richtext-editor>
                     </div>
                 </div>
             </div>
