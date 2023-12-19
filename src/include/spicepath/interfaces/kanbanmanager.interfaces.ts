@@ -51,5 +51,6 @@ export interface SpiceTextsI {
     text_id: string;
     text_language: string;
     label: string;
+    spiceBeanGuideId: string;
     deleted: 0 | 1 | undefined;
 }
