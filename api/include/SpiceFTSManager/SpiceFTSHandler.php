@@ -1233,7 +1233,7 @@ class SpiceFTSHandler
             // check for modulefilter
             if (!empty($params['modulefilter'])) {
                 $sysFilter = new SysModuleFilters();
-                $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontextbeanid']);
+                $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
             }
 
 
@@ -1433,7 +1433,7 @@ class SpiceFTSHandler
 
         // check for modulefilter
         if (!empty($params['modulefilter'])) {
-            $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontextbeanid']);
+            $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
         }
 
         // check if we have a listid
@@ -1586,7 +1586,7 @@ class SpiceFTSHandler
         // check for modulefilter
         if (!empty($params['modulefilter'])) {
             $sysFilter = new SysModuleFilters();
-            $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontextbeanid']);
+            $addFilters[] = $sysFilter->generareElasticFilterForFilterId($params['modulefilter'], $params['filtercontext']);
         }
 
         //check if we use a wildcard for the search
