@@ -398,6 +398,10 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
                     (this.dual && date.isSame(this.secondDate, 'month') && fdom.isSameOrAfter(this.secondDate, 'month'))) {
                     week.days[i] = moment(fdom.format());
                 }
+
+                // get the week number based on the thursday in that week
+                if(fdom.format('d') == 5) week.number = fdom.format('w');
+
                 fdom.add(1, 'd');
                 i++;
             }

@@ -480,7 +480,7 @@ class Link2
      */
     public function beansAreLoaded()
     {
-        return is_array($this->beans);
+        return is_array($this->beans) && count($this->beans) == count($this->rows);
     }
 
     /**
