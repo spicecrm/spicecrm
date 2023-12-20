@@ -127,6 +127,7 @@ export class ProjectWBSGantt implements  AfterViewInit, OnDestroy {
 
             gantt.init(this.ganttContainer.nativeElement);
             gantt.parse({tasks, links});
+            gantt.ext.zoom.setLevel("quarter");
         });
     }
 

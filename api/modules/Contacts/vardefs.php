@@ -393,6 +393,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'relationship' => 'contacts_users',
                 'source' => 'non-db',
                 'vname' => 'LBL_USER_SYNC',
+                'rel_fields' =>[
+                    'external_id' => [
+                        'map' => 'contact_external_id'
+                    ]
+                ]
+            ],
+            'contact_external_id' => [
+                'name' => 'contact_external_id',
+                'type' => 'varchar',
+                'source' => 'non-db',
+                'comment' => 'the external id of the contact in user\' address book'
             ],
             'created_by_link' => [
                 'name' => 'created_by_link',
