@@ -81,7 +81,7 @@ $elasticTokenizers = [
         "custom_token_chars" => "+~-_@"
     ],
     "spice_phone" => [
-        "type" => "nGram",
+        "type" => "ngram",
         "min_gram" => $minNgram,
         "max_gram" => 15,
         "token_chars" => [
