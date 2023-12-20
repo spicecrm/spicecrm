@@ -53,7 +53,8 @@
     </div>
 </fieldset>
 <div *ngIf="configValues.sortable" class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label"><system-label label="LBL_SORTFIELD"></system-label></label>
+    <label class="slds-form-element__label"><system-label label="LBL_SORTFIELD_NAME"></system-label></label>
+    <system-icon-help-text helpText="HLP_SORTFIELD_NAME" />
     <div class="slds-form-element__control">
         <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.sortfield"/>
     </div>
