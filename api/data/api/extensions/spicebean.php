@@ -46,7 +46,7 @@ $routes = [
                 'required'    => false,
                 'description' => '',
             ],
-            'filtercontextbeanid'     => [
+            'filtercontext'     => [
                 'in'          => 'query',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'required'    => false,
