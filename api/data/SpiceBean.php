@@ -3093,4 +3093,27 @@ class SpiceBean
     public function onClone()
     {
     }
+
+    /**
+     * returns output templates that can be rendered for this module
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getOutputTemplates()
+    {
+        $templates = [];
+        $bean = BeanFactory::getBean('OutputTemplates');
+        $beans = $bean->get_full_list('name', "module_name='{$this->_module}'");
+        foreach ($beans as $bean) {
+            $templates[] = [
+                'id' => $bean->id,
+                'name' => $bean->name,
+                'language' => $bean->language
+            ];
+        };
+        return $templates;
+    }
 }

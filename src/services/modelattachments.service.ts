@@ -304,8 +304,8 @@ export class modelattachments implements OnDestroy {
                 id: '',
                 text: '',
                 thumbnail: '',
-                user_id: '1',
-                user_name: 'admin',
+                user_id: this.session.authData.userId,
+                user_name: this.session.authData.userName,
                 uploadprogress: 0
             };
             this.files.unshift(newfile);
@@ -318,6 +318,35 @@ export class modelattachments implements OnDestroy {
         }
 
         return retSub.asObservable();
+    }
+
+    /**
+     * simply adds the files .. assuming the upload files exist
+     *
+     * @param files
+     */
+    public addFiles(files) {
+        if (files.length === 0) {
+            return;
+        }
+
+        for (let file of files) {
+
+            let newfile = {
+                date: new moment(),
+                file: '',
+                file_mime_type: file.type ? file.type : 'application/octet-stream',
+                filesize: file.size,
+                filename: file.name,
+                filemd5: file.filemd5,
+                id: '',
+                text: '',
+                thumbnail: file.thumbnail,
+                user_id: this.session.authData.userId,
+                user_name: this.session.authData.userName
+            };
+            this.files.unshift(newfile);
+        }
     }
 
     /**
