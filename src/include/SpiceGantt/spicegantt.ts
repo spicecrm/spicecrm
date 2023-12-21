@@ -20,8 +20,11 @@ import {SpiceGanttLeft} from "./components/spicegannttleft";
 import {SpiceGanttRight} from "./components/spiceganttright";
 import {SpiceGanttLeftHeader} from "./components/spiceganttleftheader";
 import {SpiceGanttLeftBody} from "./components/spiceganttleftbody";
+import {SpiceGanttTreeTaskItem} from "./components/spicegantttreetaskitem";
 import {SpiceGanttRightHeader} from "./components/spiceganttrightheader";
 import {SpiceGanttRightBody} from "./components/spiceganttrightbody";
+import {SpiceGanttTaskItem} from "./components/spicegantttaskitem";
+import {SpiceGanttMomentLabel} from "./components/spiceganttmomentlabel";
 
 @NgModule({
     imports: [
@@ -42,8 +45,13 @@ import {SpiceGanttRightBody} from "./components/spiceganttrightbody";
         SpiceGanttRight,
         SpiceGanttLeftHeader,
         SpiceGanttLeftBody,
+        SpiceGanttTreeTaskItem,
         SpiceGanttRightHeader,
-        SpiceGanttRightBody
+        SpiceGanttRightBody,
+
+        SpiceGanttMomentLabel,
+
+        SpiceGanttTaskItem
 
     ],
     exports: [

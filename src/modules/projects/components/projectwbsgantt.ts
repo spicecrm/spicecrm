@@ -4,37 +4,33 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
+import moment from "moment";
+import DurationConstructor = moment.unitOfTime.DurationConstructor;
+import {SpiceGanttService} from "../../../include/SpiceGantt/services/spicegantt.service";
 
 @Component({
     selector: "projectwbs-gantt",
     templateUrl: "../templates/projectwbsgantt.html",
+    providers: [SpiceGanttService]
 })
 export class ProjectWBSGantt implements OnInit, OnDestroy {
     public self: any
     public items = [];
     public milestones = []
-    private _zoomLevel: string = 'MONTH'
-
-    get zoomLevels() {
-        return [
-            {id: 'WEEK', label: 'Woche'},
-            {id: 'MONTH', label: 'Monat'},
-            {id: 'QUARTER', label: 'Quartal'},
-            {id: 'YEAR', label: 'Jahr'},
-        ]
-    }
-
+    private _zoomLevel: DurationConstructor = null
+    
     get zoomLevel() {
-        return this._zoomLevel
+        return this._zoomLevel as DurationConstructor
     }
 
-    set zoomLevel(level: string) {
+    set zoomLevel(level: DurationConstructor) {
         this._zoomLevel = level
     }
 
     constructor(
         public projectwbsHierarchy: projectwbsHierarchy,
-        public model: model
+        public model: model,
+        public spiceGanttService: SpiceGanttService
     ) {
     }
 
