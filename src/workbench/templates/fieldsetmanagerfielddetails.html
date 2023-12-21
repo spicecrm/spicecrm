@@ -66,8 +66,9 @@
     <div class="slds-grid slds-gutters_xx-small">
         <div class="slds-col slds-form-element__control slds-size--2-of-4">
             <label class="slds-form-element__label">
-                <system-label label="LBL_SORTFIELD"></system-label>
+                <system-label label="LBL_SORTFIELD_NAME"></system-label>
             </label>
+            <system-icon-help-text helpText="HLP_SORTFIELD_NAME" />
             <input [disabled]="!view.isEditMode()" type="text" class="slds-input"
                    [(ngModel)]="configValues.sortfield"/>
         </div>
