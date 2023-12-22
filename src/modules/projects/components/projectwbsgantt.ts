@@ -1,37 +1,52 @@
 /**
  * @module ModuleProjects
  */
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {model} from "../../../services/model.service";
-import {libloader} from '../../../services/libloader.service';
 import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
-
 import moment from "moment";
-
-declare var gantt: any;
+import DurationConstructor = moment.unitOfTime.DurationConstructor;
+import {SpiceGanttService} from "../../../include/SpiceGantt/services/spicegantt.service";
 
 @Component({
     selector: "projectwbs-gantt",
     templateUrl: "../templates/projectwbsgantt.html",
+    providers: [SpiceGanttService]
 })
-export class ProjectWBSGantt implements  AfterViewInit, OnDestroy {
-    public self: any;
+export class ProjectWBSGantt implements OnInit, OnDestroy {
+    public self: any
+    public items = [];
+    public milestones = []
+    private _zoomLevel: DurationConstructor = null
+    
+    get zoomLevel() {
+        return this._zoomLevel as DurationConstructor
+    }
 
-    @ViewChild("gantt_here") public ganttContainer;
-
-    private g: any;
+    set zoomLevel(level: DurationConstructor) {
+        this._zoomLevel = level
+    }
 
     constructor(
         public projectwbsHierarchy: projectwbsHierarchy,
         public model: model,
-        public libloader: libloader,
+        public spiceGanttService: SpiceGanttService
     ) {
-
-
     }
 
-    public ngAfterViewInit() {
-        this.loadNecessaryLibraries();
+    public ngOnInit() {
+        this.items = this.projectwbsHierarchy.members.map(t => ({
+            id: t.id,
+            name: t.data.name,
+            start: t.data.date_start.format("YYYY-MM-DD HH:mm:ss"),
+            end: t.data.date_end.format("YYYY-MM-DD HH:mm:ss"),
+            type: 'wbs',
+            // duration: t.data.date_end.diff(t.data.date_start, 'days'),
+            progress: t.data.level_of_completion ? t.data.level_of_completion / 100 : 0,
+            parent: t.data.parent_id,
+        }));
+
+        this.milestones = []
     }
 
     /**
@@ -39,6 +54,7 @@ export class ProjectWBSGantt implements  AfterViewInit, OnDestroy {
      * load cluster library and set the marker clusterer if the direction service is inactive
      */
     public loadNecessaryLibraries() {
+        /*
         this.libloader.loadLib('dhtmlx.gantt').subscribe(() => {
             gantt.config.xml_date = "%Y-%m-%d %H:%i";
             gantt.config.readonly = true;
@@ -129,21 +145,14 @@ export class ProjectWBSGantt implements  AfterViewInit, OnDestroy {
             gantt.parse({tasks, links});
             gantt.ext.zoom.setLevel("quarter");
         });
+
+        */
     }
 
-    public zoomIn(){
-        gantt.ext.zoom.zoomIn();
-    }
-    public zoomOut(){
-        gantt.ext.zoom.zoomOut();
-    }
-
-    public close(){
+    public close() {
         this.self.destroy();
     }
 
     public ngOnDestroy() {
-        gantt.clearAll();
     }
-
 }
