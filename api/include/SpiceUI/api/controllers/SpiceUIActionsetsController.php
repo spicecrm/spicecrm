@@ -132,6 +132,7 @@ class SpiceUIActionsetsController
 
                 $dbData = [
                     'name' => $actionsetData['name'],
+                    'grouped' => $actionsetData['grouped'],
                     'package' => $actionsetData['package'],
                     'version' => $_SESSION['confversion']
                 ];
