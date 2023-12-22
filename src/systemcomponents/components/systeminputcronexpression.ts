@@ -251,7 +251,6 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
      */
     public setFieldValue() {
 
-        this.setExpressionProperties('*');
 
         switch (this.expression.recurrence) {
             case 'custom':
@@ -268,6 +267,7 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
         this.expression.stringValue += `${this.expression.month}::`;
         this.expression.stringValue += `${this.expression.weekDay}`;
         this.onChange(this.asObject ? this.getExpressionProperties() : this.expression.stringValue);
+        this.setExpressionProperties('*');
     }
 
     /**
