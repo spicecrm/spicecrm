@@ -37,6 +37,7 @@
     max-height: none;
     resize: vertical;
     overflow: auto;
+    white-space: normal;
 }
 
 .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused){
