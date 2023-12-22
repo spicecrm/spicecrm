@@ -443,9 +443,7 @@ export class ActionsetManager {
                     this.currentActionSet.name = added.name;
                     this.currentActionSet.type = added.type;
                     this.currentActionSet.actions = actions;
-                    // this.currentActionSet.package = this.currentActionSet.package;
                     this.currentActionSet.isnew = true;
-                    this.configurationService.reloadTaskData('actionsets');
                     this.view.setEditMode();
                 }
             });
