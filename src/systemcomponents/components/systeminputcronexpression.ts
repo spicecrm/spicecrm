@@ -158,9 +158,14 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
      */
     public onRecurrenceSet() {
 
+        this.setExpressionProperties('*');
+
+        this.expression.every = undefined;
+        this.expression.everyQuantity = undefined;
+        this.expression.everyAtValue = undefined;
+
         if (!this.expression.recurrence) {
             this.expression.stringValue = '';
-            this.setExpressionProperties(undefined);
             this.onChange(this.asObject ? this.getExpressionProperties() : '');
 
             return;
@@ -172,7 +177,6 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
                 this.expression.everyQuantity = 1;
                 break;
             case 'cron':
-                this.setExpressionProperties('*');
                 break;
             default:
                 this.setDefaultRecurrenceEveryAtValue();
@@ -187,6 +191,7 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
      */
     public onEverySet() {
 
+        this.setExpressionProperties('*');
         this.resetEveryAtValue();
 
         if (this.expression.every == 'weekdays') {
@@ -251,7 +256,6 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
      */
     public setFieldValue() {
 
-
         switch (this.expression.recurrence) {
             case 'custom':
                 this.setCustomExpression();
@@ -267,7 +271,6 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
         this.expression.stringValue += `${this.expression.month}::`;
         this.expression.stringValue += `${this.expression.weekDay}`;
         this.onChange(this.asObject ? this.getExpressionProperties() : this.expression.stringValue);
-        this.setExpressionProperties('*');
     }
 
     /**
@@ -447,7 +450,7 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
         const isWeekly = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.weekDay)) && this.expression.month == '*' && this.expression.monthDay == '*';
         const isEveryWeekDay = val == '0::0::*::*::1-5';
         const isMonthly = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.monthDay)) && val.endsWith('::*::*');
-        const isAnnually = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.monthDay + this.expression.monthDay)) && val.endsWith('::*');
+        const isAnnually = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.month)) && this.expression.monthDay == '*' && val.endsWith('::*');
 
         if (isDaily) {
             this.expression.recurrence = 'daily';
@@ -459,6 +462,7 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
 
         } else if (isEveryWeekDay) {
             this.expression.recurrence = 'everyWeekday';
+            this.expression.everyAtValue = moment(moment.utc().hour(0).minute(0)).tz(this.userPreferences.toUse.timezone);
 
         } else if (isMonthly) {
             this.expression.recurrence = 'monthly';
@@ -541,10 +545,25 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
 
         if (this.expression.recurrence != 'custom') {
             this.expression.displayValue = `${this.language.getLabel(this.recurrenceLabels[this.expression.recurrence])} `;
-            this.expression.displayValue += `${this.language.getLabel(this.expression.recurrence == 'daily' ? 'LBL_AT_HOUR' : 'LBL_ON_DATE', '', 'short')} `;
 
             switch (this.expression.recurrence) {
                 case 'daily':
+                case 'everyWeekday':
+                    this.expression.displayValue += `${this.language.getLabel('LBL_AT_HOUR', '', 'short')} `;
+                    break;
+                case 'weekly':
+                    this.expression.displayValue += `${this.language.getLabel('LBL_DAY', '', 'short')} `;
+                    break;
+                case 'annually':
+                    this.expression.displayValue += `${this.language.getLabel('LBL_MONTH', '', 'short')} `;
+                    break;
+                default:
+                    this.expression.displayValue += `${this.language.getLabel('LBL_ON_DATE', '', 'short')} `;
+            }
+
+            switch (this.expression.recurrence) {
+                case 'daily':
+                case 'everyWeekday':
                     if (!moment.isMoment(this.expression.everyAtValue)) break;
                     this.expression.displayValue += `${this.expression.everyAtValue.tz(this.userPreferences.toUse.timezone).format(this.userPreferences.getTimeFormat())} ${this.language.getLabel('LBL_O_CLOCK')}`;
                     break;
@@ -583,7 +602,7 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
                 this.expression.displayValue += ` ${this.expression.everyAtValue}${this.language.getLabel(
                     everyAtVal == 1 || everyAtVal == 21 || everyAtVal == 31 ? 'LBL_ST_DAY'
                         : everyAtVal == 2 || everyAtVal == 22 ? 'LBL_ND_DAY'
-                            : everyAtVal == 3 || everyAtVal == 23 ? 'LBL_RD_DAY' : ''
+                            : everyAtVal == 3 || everyAtVal == 23 ? 'LBL_RD_DAY' : 'LBL_TH_DAY'
                 )}`;
 
             } else if (this.expression.every == 'daysAt' && moment.isMoment(this.expression.everyAtValue)) {
