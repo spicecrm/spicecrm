@@ -105,7 +105,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
         if(this.technicalNameOnly){
             this._modules.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
         } else {
-            this._modules.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+            this._modules.sort((a, b) => this.language.getModuleName(a.id).toLowerCase() > this.language.getModuleName(b.id).toLowerCase() ? 1 : -1);
         }
     }
 
@@ -154,6 +154,9 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
+
+        if (!value) return;
+
         this._module = {id: value, name: this.technicalNameOnly ? value : `${this.language.getModuleName(value)} (${value})`};
     }
 
