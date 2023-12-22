@@ -80,6 +80,7 @@ export class AdministrationJobMethods implements OnInit {
         this.loadAvailableClasses();
         this.subscribeToFieldChanges();
         this.subscribeToView();
+        this.splitValue();
     }
 
     /**
