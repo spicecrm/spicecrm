@@ -32,9 +32,11 @@
             </div>
         </div>
     </div>
-    <label *ngIf="expression.recurrence != 'custom' && expression.recurrence != 'cron' && expression.recurrence != 'everyWeekday'" class="slds-form-element__label slds-align-middle slds-m-left--small">
-        <system-label *ngIf="expression.recurrence =='daily'" label="LBL_AT_HOUR" length="short"></system-label>
-        <system-label *ngIf="expression.recurrence !='daily'" label="LBL_ON_DATE" length="short"></system-label>
+    <label *ngIf="expression.recurrence != 'custom' && expression.recurrence != 'cron' && expression.recurrence != 'everyWeekday'" [ngSwitch]="expression.recurrence" class="slds-form-element__label slds-align-middle slds-m-left--small">
+        <system-label *ngSwitchCase="'daily'" label="LBL_AT_HOUR" length="short"></system-label>
+        <system-label *ngSwitchCase="'weekly'" label="LBL_DAY" length="short"></system-label>
+        <system-label *ngSwitchCase="'annually'" label="LBL_MONTH" length="short"></system-label>
+        <system-label *ngSwitchDefault label="LBL_ON_DATE" length="short"></system-label>
     </label>
     <ng-container *ngIf="expression.recurrence != 'cron'">
         <div *ngIf="expression.every != 'weekdays' && expression.recurrence == 'custom'" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--xx-small slds-grow">
@@ -45,6 +47,9 @@
                 <input type="text" [(ngModel)]="expression.everyQuantity" (ngModelChange)="setFieldValue()" size="3" maxlength="3" class="slds-input">
             </div>
         </div>
+        <label *ngIf="expression.every == 'weekdays' && expression.recurrence == 'custom'" class="slds-form-element__label">
+            <system-label label="LBL_EVERY" class="slds-m-left--x-small"></system-label>
+        </label>
         <div *ngIf="expression.recurrence == 'custom'" class="slds-form-element slds-grid slds-m-left--xx-small slds-grow">
             <div class="slds-form-element__control slds-grow">
                 <div class="slds-select_container">
