@@ -29,7 +29,7 @@
     "@angular/compiler-cli": "16.0.4",
     "@angular-devkit/build-angular": "16.0.4",
     "typescript": "4.9.5",
-    "webpack": "5.75.0",
+    "webpack": "5.76.0",
     "@angular-builders/custom-webpack": "16.0.0",
     "css-minimizer-webpack-plugin": "4.0.0",
     "terser-webpack-plugin": "5.2.5",
