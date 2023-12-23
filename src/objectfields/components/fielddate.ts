@@ -46,4 +46,16 @@ export class fieldDate extends fieldGeneric {
     get highlightdate() {
         return this.fieldconfig.highlightpast && this.value && new moment() > new moment(this.model.getField(this.fieldname)) ? true : false;
     }
+
+    /**
+     * sets the validity from the emitter on teh date field
+     * @param valid
+     */
+    public setValidity(valid){
+        if (!valid) {
+            this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
+        } else {
+            this.clearFieldError();
+        }
+    }
 }

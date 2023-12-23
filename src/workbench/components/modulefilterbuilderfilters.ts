@@ -9,6 +9,7 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {session} from '../../services/session.service';
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'module-builder-filters',
@@ -29,7 +30,8 @@ export class ModuleFilterBuilderFilters {
         public language: language,
         public metadata: metadata,
         public modelutilities: modelutilities,
-        public session: session
+        public session: session,
+        private configurationService: configurationService
     ) {
         this.modules = this.metadata.getModules();
         this.modules.sort();
@@ -87,7 +89,9 @@ export class ModuleFilterBuilderFilters {
 
     public remove(filter) {
         this.metadata.removeModuleFilter(filter.id);
-        this.backend.deleteRequest('configuration/sysmodulefilters/' + filter.module + '/' + filter.id);
+        this.backend.deleteRequest('configuration/sysmodulefilters/' + filter.module + '/' + filter.id).subscribe(() => {
+            this.configurationService.reloadTaskData('modulefilters');
+        });
         this.filters = this.filters.filter(moduleFilter => moduleFilter.id != filter.id);
         this.filter.emit(undefined);
     }

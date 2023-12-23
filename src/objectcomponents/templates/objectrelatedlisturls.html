@@ -1,0 +1,26 @@
+<div class="slds-card slds-card_boundary slds-m-bottom--medium" (system-drop-url)="urlDrop($event)">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-size--1-of-1 slds-grid slds-grid--vertical-align-center">
+            <system-icon [icon]="'channel_program_history'" [size]="'small'"></system-icon>
+            <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
+                <h2>
+                    <a *ngIf="!componentconfig.alwaysExpanded" href="javascript:void(0);" class="slds-text-link--reset">
+                        <span class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_URLS'"></system-label> ({{modelurls.urls.length}})</span>
+                    </a>
+                    <span *ngIf="componentconfig.alwaysExpanded" class="slds-text-heading--small"><system-label [label]="componentconfig.label ? componentconfig.label+'' : 'LBL_URLS'"></system-label> {{modelurls.urls.length}})</span>
+                </h2>
+                <system-utility-icon *ngIf="modelurls.urls.length > 0 && !componentconfig.alwaysExpanded" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
+            </div>
+        </header>
+
+
+    </div>
+    <div class="slds-card__body slds-card__body_inner" @displaycard *ngIf="isopen">
+        <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
+            <div object-related-card-url *ngFor="let url of urls" [url]="url" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent"></div>
+        </div>
+        <div *ngIf="modelurls.loading" class="slds-p-around--large slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+    </div>
+</div>

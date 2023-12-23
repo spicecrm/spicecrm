@@ -1,10 +1,22 @@
 /**
  * @module SystemComponents
  */
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output
+} from '@angular/core';
 import {language} from '../../services/language.service';
 import {userpreferences} from "../../services/userpreferences.service";
 import {layout} from "../../services/layout.service";
+import {backend} from "../../services/backend.service";
+import {configurationService} from "../../services/configuration.service";
+import {config} from "rxjs";
 
 /* @ignore */
 declare var moment: any;
@@ -46,6 +58,24 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @input showTodayButton: boolean
     */
     @Input() public showTodayButton: boolean = true;
+    /**
+     * an array with the ensbled weekdays, 0 equals sunday
+     */
+    @Input() public enabledDays: number[] = [0, 1, 2, 3, 4, 5, 6];
+    /**
+     * an optional holiday calendar that displays holidays
+     */
+    @Input() public holidayCalendarId: string;
+    /**
+     * set to true by default to disable picking of holidays
+     */
+    @Input() public holidaysDisabled: boolean = true;
+
+    /**
+     * holds holidays loaded
+     */
+    private holidays: any[] = [];
+
     /*
     * @output datePicked: moment
     */
@@ -55,7 +85,10 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
 
     constructor(public language: language,
                 public layout: layout,
-                public userPreferences: userpreferences) {
+                public userPreferences: userpreferences,
+                public backend: backend,
+                public config: configurationService,
+                public cdRef: ChangeDetectorRef) {
         let preferences = this.userPreferences.unchangedPreferences.global;
         this.weekStartDay = preferences.week_day_start == "Monday" ? 1 : 0 || this.weekStartDay;
     }
@@ -114,12 +147,36 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     }
 
     public ngOnInit() {
+        // load the holidays
+        this.loadHolidays();
+
+        // initialize the grid
         this.initializeGrid();
     }
 
     public ngOnChanges() {
         this.initializeGrid();
     }
+
+    public loadHolidays(){
+        if(this.holidayCalendarId){
+            let cachedHolidays = this.config.getData('holidays');
+            if(cachedHolidays && cachedHolidays[this.holidayCalendarId]){
+                this.holidays = cachedHolidays[this.holidayCalendarId]
+            } else {
+                this.backend.getRequest(`module/SystemHolidayCalendars/${this.holidayCalendarId}/holidays`).subscribe({
+                    next: (holidays) => {
+                        if(!cachedHolidays) cachedHolidays = [];
+                        cachedHolidays[this.holidayCalendarId] = holidays;
+                        this.config.setData('holidays', cachedHolidays)
+                        this.holidays = holidays;
+                        this.cdRef.detectChanges();
+                    }
+                })
+            }
+        }
+    }
+
 
     /*
     * @initialize grid
@@ -165,6 +222,11 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         return moment.weekdays(dayIndex + this.weekStartDay);
     }
 
+    public notCurrentMonth(date) {
+        if (!date) return false;
+        return (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month')));
+    }
+
     /*
     * @check is disabled
     * @param date: moment
@@ -172,13 +234,56 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     */
     public disabled(date) {
         if (!date) return false;
-        if (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month'))) return true;
+        // if (date.isBefore(this.curDate, 'month') || (!this.dual && date.isAfter(this.curDate, 'month')) || (this.dual && date.isAfter(this.secondDate, 'month'))) return true;
 
+        // check mindate if set
         let thedate = new moment(date.format());
         if (this.minDate && thedate.isBefore(this.minDate, 'day')) {
             return true;
         }
-        return !!(this.maxDate && thedate.isAfter(this.maxDate, 'day'));
+
+        // check mindate if set
+        if (this.maxDate && thedate.isAfter(this.maxDate, 'day')) {
+            return true;
+        }
+
+        // check if this is a holiday and holidays are disabled
+        if(this.holidaysDisabled && this.isHoliday(date)){
+            return true;
+        }
+
+        return this.enabledDays.indexOf(parseInt(date.format('d'), 10)) < 0;
+    }
+
+    /**
+     * gets addtional styles for the date
+     *  - cursor not allowed if date is disabled
+     *
+     * @param date
+     */
+    public getDayStyle(date){
+        // cursor style
+        let style: any = {
+            cursor: this.disabled(date) ? 'default' : 'pointer'
+        }
+         // holiday style
+        if(this.isHoliday(date)){
+            style.border = '1px solid';
+            style['border-radius'] = '2px';
+
+        }
+
+        // return the style
+        return style;
+    }
+
+    /**
+     * checks if the date is a holiday
+     * @param date
+     */
+    public isHoliday(date){
+        let df = date.format('YYYY-MM-DD');
+        return !!this.holidays.find(h => h.holiday_date.substr(0, 10) == df)
     }
 
     /*
@@ -240,18 +345,15 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
     * @param date
     * @emit newDate: moment by datePicked
     */
-    public pickDate(date) {
-        if (!date) return;
-        let newDate = new moment(date.format());
-
-        if (this.minDate && newDate.isBefore(this.minDate)) {
-            return false;
+    public pickDate(date, e: MouseEvent) {
+        if(this.disabled(date)) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            // emit the date
+            let newDate = new moment(date.format());
+            this.datePicked.emit(newDate);
         }
-        if (this.maxDate && newDate.isAfter(this.maxDate)) {
-            return false;
-        }
-
-        this.datePicked.emit(newDate);
     }
 
     /*
@@ -287,7 +389,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         let j = 0;
         while (j < 6) {
             let i = 0;
-            let week = {days: [], number: fdom.format('W')};
+            let week = {days: [], number: fdom.format('w')};
             while (i < 7) {
                 // push the day only if we are in currentGrid and the date is the same or before the current date
                 // or if we are not i dual mode and the date is after the current date
@@ -296,6 +398,10 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
                     (this.dual && date.isSame(this.secondDate, 'month') && fdom.isSameOrAfter(this.secondDate, 'month'))) {
                     week.days[i] = moment(fdom.format());
                 }
+
+                // get the week number based on the thursday in that week
+                if(fdom.format('d') == 5) week.number = fdom.format('w');
+
                 fdom.add(1, 'd');
                 i++;
             }

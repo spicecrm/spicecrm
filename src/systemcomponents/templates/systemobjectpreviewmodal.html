@@ -1,29 +1,13 @@
 <system-modal size="large">
     <system-modal-header (close)="closeModal()">{{name}}</system-modal-header>
     <system-modal-content margin="none">
-        <div *ngIf="!blobUrl" style="height: 50vh;" class="slds-align--absolute-center">
-            <system-spinner *ngIf="!loadingerror"></system-spinner>
-            <system-illustration-page-not-available *ngIf="loadingerror"><system-label label="MSG_ERROR_LOADING_FILE"></system-label></system-illustration-page-not-available>
-        </div>
-        <ng-container *ngIf="blobUrl" [ngSwitch]="objecttype">
-            <div *ngSwitchCase="'audio'" class="slds-p-around--small slds-text-align--center">
-                <audio controls>
-                    <source [src]="blobUrl" [type]="type">
-                </audio>
-            </div>
-            <div *ngSwitchCase="'video'" class="slds-p-around--small slds-text-align--center">
-                <video width="320" height="240" controls>
-                    <source [src]="blobUrl" [type]="type">
-                </video>
-            </div>
-            <div  *ngSwitchDefault style="height: 80vh; overflow: hidden;">
-                <object [data]="blobUrl" [type]="type" width="100%" height="100%"></object>
-            </div>
-        </ng-container>
+        <system-object-preview [data]="data" [type]="type" [downloadTrigger$]="downloadTrigger$" [name]="name"></system-object-preview>
     </system-modal-content>
-    <!--system-modal-footer>
-        <button class="slds-button slds-button--icon slds-button--icon-border" (click)="download()">
-            <system-button-icon icon="download" size="small"></system-button-icon>
-        </button>
-    </system-modal-footer-->
+    <system-modal-footer>
+        <div class="slds-text-align--right">
+            <button class="slds-button slds-button--icon slds-button--icon-border" (click)="downloadTrigger$.emit()">
+                <system-button-icon icon="download" size="small"></system-button-icon>
+            </button>
+        </div>
+    </system-modal-footer>
 </system-modal>

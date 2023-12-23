@@ -7,7 +7,7 @@
               </div>
         </div>
     </li>
-    <li field-lookup-search-item *ngFor="let searchItem of modellist.listData.list" [module]="module" [item]="searchItem" (mousedown)="setItem(searchItem)"></li>
+    <li field-lookup-search-item *ngFor="let searchItem of modellist.listData.list" [module]="module" [item]="searchItem" (mousedown)="setItem(searchItem)"  [ngClass]="{'slds-is-selected slds-color__background_gray-5': selectedItem == searchItem}"></li>
     <ng-container *ngIf="modellist.isLoading">
         <li style="opacity: 1"><system-searchresult-stencil></system-searchresult-stencil></li>
         <li style="opacity: 0.6"><system-searchresult-stencil></system-searchresult-stencil></li>

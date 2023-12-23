@@ -1,7 +1,7 @@
 <?php
 namespace SpiceCRM\modules\Administration\api\controllers;
 
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;

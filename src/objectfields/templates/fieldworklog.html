@@ -23,7 +23,7 @@
         <div class="slds-size--1-of-2 slds-scrollable--y slds-m-left--xx-small" [ngStyle]="styles">
             <div *ngFor="let log of logs" class="slds-p-around--x-small slds-border--bottom">
                 <div class="slds-p-around--x-small slds-theme--shade">{{log.user_name}} • {{formatTimestamp(log.timestamp)}}</div>
-                <div class="slds-p-around--x-small">{{log.text}}</div>
+                <div class="slds-p-around--x-small"><pre>{{log.text}}</pre></div>
             </div>
             <!--section class="slds-chat">
                 <ul class="slds-chat-list">

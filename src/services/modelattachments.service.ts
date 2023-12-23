@@ -1,8 +1,8 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable, OnDestroy} from "@angular/core";
-import {Subject, Observable, BehaviorSubject} from "rxjs";
+import {Injectable, OnDestroy} from "@angular/core";
+import {BehaviorSubject, Observable, Subject, Subscription} from "rxjs";
 
 import {configurationService} from "./configuration.service";
 import {session} from "./session.service";
@@ -11,6 +11,7 @@ import {toast} from "./toast.service";
 import {language} from "./language.service";
 import {broadcast} from "./broadcast.service";
 import {model} from "./model.service";
+import {modal} from "./modal.service";
 
 /**
  * @ignore
@@ -61,13 +62,16 @@ export class modelattachments implements OnDestroy {
      */
     public loaded$: BehaviorSubject<boolean>;
 
+    public subscriptions: Subscription = new Subscription();
+
     constructor(
         public backend: backend,
         public configurationService: configurationService,
         public session: session,
         public toast: toast,
         public broadcast: broadcast,
-        public language: language
+        public language: language,
+        public modal: modal
     ) {
         this.loaded$ = new BehaviorSubject<boolean>(false);
     }
@@ -103,6 +107,13 @@ export class modelattachments implements OnDestroy {
             attachmentcount: this.count,
             reload: true
         });
+
+        // subscribe to the broadcast message
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(message => {
+                this.handleMessage(message);
+            })
+        );
     }
 
     /**
@@ -293,8 +304,8 @@ export class modelattachments implements OnDestroy {
                 id: '',
                 text: '',
                 thumbnail: '',
-                user_id: '1',
-                user_name: 'admin',
+                user_id: this.session.authData.userId,
+                user_name: this.session.authData.userName,
                 uploadprogress: 0
             };
             this.files.unshift(newfile);
@@ -307,6 +318,35 @@ export class modelattachments implements OnDestroy {
         }
 
         return retSub.asObservable();
+    }
+
+    /**
+     * simply adds the files .. assuming the upload files exist
+     *
+     * @param files
+     */
+    public addFiles(files) {
+        if (files.length === 0) {
+            return;
+        }
+
+        for (let file of files) {
+
+            let newfile = {
+                date: new moment(),
+                file: '',
+                file_mime_type: file.type ? file.type : 'application/octet-stream',
+                filesize: file.size,
+                filename: file.name,
+                filemd5: file.filemd5,
+                id: '',
+                text: '',
+                thumbnail: file.thumbnail,
+                user_id: this.session.authData.userId,
+                user_name: this.session.authData.userName
+            };
+            this.files.unshift(newfile);
+        }
     }
 
     /**
@@ -360,8 +400,9 @@ export class modelattachments implements OnDestroy {
      * @param filecontent
      * @param filename
      * @param filetype
+     * @param systemCategoryId
      */
-    public uploadFileBase64(filecontent: string, filename: string, filetype: string): Observable<any> {
+    public uploadFileBase64(filecontent: string, filename: string, filetype: string, systemCategoryId?: string): Observable<any> {
 
         let retSub = new Subject<any>();
         let maxSize = this.configurationService.getSystemParamater('upload_maxsize');
@@ -384,6 +425,7 @@ export class modelattachments implements OnDestroy {
             thumbnail: '',
             user_id: '1',
             user_name: 'admin',
+            category_ids: systemCategoryId,
             uploadprogress: 0
         };
         this.files.unshift(newfile);
@@ -401,7 +443,8 @@ export class modelattachments implements OnDestroy {
         let fileBody = {
             file: filecontent,
             filename: filename,
-            filemimetype: filetype ? filetype : 'application/octet-stream'
+            filemimetype: filetype ? filetype : 'application/octet-stream',
+            category_ids: newfile.category_ids
         };
 
         // determine the upload URL
@@ -575,7 +618,43 @@ export class modelattachments implements OnDestroy {
         });
     }
 
+    /**
+     * retrieves all attachment data from backend
+     * @param attachmentId
+     */
+    public getAttachmentData(attachmentId): Observable<any> {
+        let retSubject = new Subject();
+
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${attachmentId}`, null, this.httpRequestsRefID).subscribe({
+            next: (fileData) => {
+                    retSubject.next(fileData);
+                    retSubject.complete();
+                },
+            error: (err) => {
+                retSubject.error(err);
+                retSubject.complete();
+            }
+        });
+
+        return retSubject.asObservable();
+    }
+
     public ngOnDestroy() {
         this.backend.cancelPendingRequests([this.httpRequestsRefID]);
+    }
+
+    /**
+     * handle broadcast message data
+     * @param message
+     */
+    public handleMessage(message) {
+        // reload file list
+        switch (message.messagetype) {
+            case 'attachments.uploaded':
+                if (message.messagedata.reload) {
+                    this.files = message.messagedata.uploadedFiles;
+                }
+                break;
+        }
     }
 }

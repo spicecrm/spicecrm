@@ -369,6 +369,9 @@ class OCI8Manager extends DBManager
                         return "ADD_MONTHS($string, {$additional_parameters[0]}*12)";
                 }
                 break;
+
+            case 'date_diff':
+                return "TO_DATE($string[0], 'YYYY-MM-DD') - TO_DATE($string[1], 'YYYY-MM-DD')";
         }
 
         // eliminate quotes if im trying to insert a function

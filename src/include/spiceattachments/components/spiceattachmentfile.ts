@@ -1,19 +1,14 @@
 /**
  * @module ModuleSpiceAttachments
  */
-import {
-    Component, OnInit, Input, NgZone, Output, EventEmitter, ViewChild, ViewContainerRef, Renderer2, Injector
-} from '@angular/core';
+import {Component, Input, Injector} from '@angular/core';
 import {helper} from "../../../services/helper.service";
 import {modal} from "../../../services/modal.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {toast} from "../../../services/toast.service";
 import {modelattachments} from "../../../services/modelattachments.service";
-
-/**
- * @ignore
- */
-declare var moment: any;
+import {navigationtab} from "../../../services/navigationtab.service";
+import {Router} from "@angular/router";
 
 /**
  * displays a quicknote that is read in teh stream
@@ -24,19 +19,13 @@ declare var moment: any;
 })
 export class SpiceAttachmentFile {
 
-
     /**
      * the file
-     *
-     * @private
      */
     @Input() public file: any = {};
 
-
     /**
      * if we are editing and thus can unlink files
-     *
-     * @private
      */
     @Input() public editmode: boolean = true;
 
@@ -46,8 +35,24 @@ export class SpiceAttachmentFile {
      */
     @Input() public modelattachments: modelattachments;
 
-    constructor(public userpreferences: userpreferences, public modal: modal, public toast: toast, public helper: helper, public injector: Injector) {
+    /**
+     * disables the preview click
+     */
+    @Input() public disabled: boolean = false;
 
+    /**
+     * a paramater to be set to force the previe of the attachments ina  modal
+     */
+    @Input() public forceModalPreview: boolean = false;
+
+    constructor(
+        public userpreferences: userpreferences,
+        public modal: modal,
+        public toast: toast,
+        public helper: helper,
+        public injector: Injector,
+        public navigationtab: navigationtab,
+        public router: Router) {
     }
 
     get humanFileSize() {
@@ -74,12 +79,44 @@ export class SpiceAttachmentFile {
         }
     }
 
+    public preview(e){
+        if(this.forceModalPreview){
+            this.previewFile(e);
+        } else {
+            this.openInTab();
+        }
+    }
+
+    /**
+     * opens file/url in a new tab
+     * module/:module/:moduleId/:attachment/:attachmentId
+     */
+    public openInTab() {
+        // disable click event
+        if(this.disabled) return;
+
+        let fileTypeArray = this.file.file_mime_type.toLowerCase().split("/");
+
+        // disable preview for specific files
+        const applicationFile = fileTypeArray[0] == 'application' && fileTypeArray[1] != 'pdf' && fileTypeArray[1] != 'msg';
+        const csvFile = fileTypeArray[0] == 'text' && fileTypeArray[1] == 'csv';
+        if(applicationFile || csvFile) return this.downloadFile();
+
+        let routePrefix = '';
+        if (this.navigationtab?.tabid) {
+            routePrefix = '/tab/' + this.navigationtab.tabid;
+        }
+        this.router.navigate([`${routePrefix}/attachment/${this.file.id}/${this.modelattachments.module}/${this.modelattachments.id}`]);
+    }
+
     /**
      * handle the preview of the file
-     *
      * @param e
      */
     public previewFile(e) {
+        // disable click event
+        if(this.disabled) return;
+
         // stop the event from bubbling
         e.preventDefault();
         e.stopPropagation();

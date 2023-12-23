@@ -357,34 +357,35 @@ class SpiceFTSActivityHandler
 
         $items = [];
         /** @todo clarify if we should add a check for the data types to split an object etc.. */
-        foreach ($results['hits']['hits'] as &$hit) {
-            $seed = BeanFactory::getBean($elastichandler->getHitModule($hit), $hit['_id']);
+        foreach ($results['hits']['hits'] as $hit) {
+            $hitModule = $elastichandler->getHitModule($hit);
+            $seed = BeanFactory::getBean($hitModule, $hit['_id']);
                 // check if bean found since it might be deleted
             if($seed){
 
                 foreach ($seed->field_defs as $field => $fieldData) {
                     //if (!isset($hit['_source']{$field}))
-                    if(is_string($seed->$field)){
+                    if(empty($seed->$field) && is_string($seed->$field)){
                         $hit['_source'][$field] = html_entity_decode( $seed->$field, ENT_QUOTES);
                     }
                 }
 
                 //$hit['_source']['emailaddresses'] = $moduleHandler->getEmailAddresses($elastichandler->getHitModule($hit), $hit['_id']);
 
-                $hit['acl'] = $seed->getACLActions();
+//                $hit['acl'] = $seed->getACLActions(); // done in mapBeanToArray!
                 // $hit['acl_fieldcontrol'] = $krestHandler->get_acl_fieldaccess($seed);
 
-                // unset hidden fields
-                foreach ($hit['acl_fieldcontrol'] as $field => $control) {
-                    if ($control == 1 && isset($hit['_source'][$field])) unset($hit['_source'][$field]);
-                }
+                // unset hidden fields                  // done in mapBeanToArray!
+//                foreach ($hit['acl_fieldcontrol'] as $field => $control) {
+//                    if ($control == 1 && isset($hit['_source'][$field])) unset($hit['_source'][$field]);
+//                }
                 $items[] = [
                     'id' => $seed->id,
-                    'module' => $elastichandler->getHitModule($hit),
+                    'module' => $hitModule,
                     'start' => $hit['_source']['_activitydate'],
                     'end' => $hit['_source']['_activityenddate'],
-                    'type' => $elastichandler->getHitModule($hit) == 'UserAbsences' ? 'absence' : 'event',
-                    'data' => $moduleHandler->mapBeanToArray($elastichandler->getHitModule($hit), $seed)
+                    'type' => $hitModule == 'UserAbsences' ? 'absence' : 'event',
+                    'data' => $moduleHandler->mapBeanToArray($hitModule, $seed, false)
                 ];
             }
         }

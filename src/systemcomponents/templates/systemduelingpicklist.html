@@ -1,0 +1,32 @@
+<div class="slds-dueling-list">
+    <div class="slds-dueling-list__column" style="width: calc(50% - 20px)">
+        <div class="slds-dueling-list__options slds-size--1-of-1">
+            <ul aria-describedby="option-drag-label" class="slds-listbox slds-listbox_vertical" role="listbox">
+                <li *ngFor="let selectListItem of availableItems" role="presentation" class="slds-listbox__item" (click)="selectItem(selectListItem.id, 'left')">
+                    <div class="slds-listbox__option slds-p-around--xx-small" [attr.aria-selected]="isSelected(selectListItem.id, 'left')" role="option" tabindex="0">
+                        <span class="slds-truncate"><system-label [label]="selectListItem.label"></system-label></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="slds-dueling-list__column">
+        <button class="slds-button slds-button_icon slds-button_icon-container" [disabled]="selectedleft.length == 0" (click)="addItems()">
+            <system-button-icon icon="right"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button_icon slds-button_icon-container" [disabled]="selectedright.length == 0" (click)="removeItems()">
+            <system-button-icon icon="left"></system-button-icon>
+        </button>
+    </div>
+    <div class="slds-dueling-list__column" style="width: calc(50% - 20px)">
+        <div class="slds-dueling-list__options slds-size--1-of-1">
+            <ul aria-describedby="option-drag-label" aria-multiselectable="true" class="slds-listbox slds-listbox_vertical" role="listbox" >
+                <li *ngFor="let selectListItem of selectedItems" role="presentation" class="slds-listbox__item" (click)="selectItem(selectListItem.id, 'right')">
+                    <div class="slds-listbox__option slds-p-around--xx-small" [attr.aria-selected]="isSelected(selectListItem.id, 'right')" role="option" tabindex="0">
+                        <span class="slds-truncate"><system-label [label]="selectListItem.label"></system-label></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,16 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of KReporter. KReporter is an enhancement developed
- * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- *
- * This Version of the KReporter is licensed software and may only be used in
- * alignment with the License Agreement received with this Software.
- * This Software is copyrighted and may not be further distributed without
- * witten consent of aac services k.s.
- *
- * You can contact us at info@kreporter.org
- ********************************************************************************/
-
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\KReports;
 
@@ -967,6 +956,8 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
         // 2011-07-15 manage Date & DateTime Fields
         if (
+            $operator != 'ndaysago' &&
+            $operator != 'lessthanndays' &&
             $operator != 'lastndays' &&
             $operator != 'lastnfdays' &&
             $operator != 'lastnweeks' &&
@@ -1311,6 +1302,15 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
             case 'lastndays':
                 $date = time();
                 $thisWhereString .= ' >= \'' . date('Y-m-d H:i:s', time() - $value * 86400) . '\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . ' < \'' . date('Y-m-d H:i:s', time()) . '\'';
+                break;
+            case 'lessthanndays':
+                $date = date('Y-m-d H:i:s', time() - $value * 86400);
+                $thisWhereString .= " <= '$date'";
+                break;
+            case 'ndaysago':
+                $date = date('Y-m-d', time() - $value * 86400);
+                $fieldQ = $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql);
+                $thisWhereString .= " >= '$date 00:00:00' AND $fieldQ <= '$date 23:59:59'";
                 break;
             case 'lastnfdays':
                 $date = gmmktime(0, 0, 0, date('m', time()), date('d', time()), date('Y', time()));

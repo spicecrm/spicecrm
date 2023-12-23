@@ -17,7 +17,7 @@ import {Subscription} from "rxjs";
     templateUrl: '../templates/objectlistheader.html',
     providers: [view]
 })
-export class ObjectListHeader implements OnDestroy{
+export class ObjectListHeader implements OnDestroy {
 
     @ViewChildren(SystemResizeDirective) public resizeElements: QueryList<SystemResizeDirective>;
 
@@ -114,13 +114,26 @@ export class ObjectListHeader implements OnDestroy{
     }
 
     /**
+     * returns if a given field has a reverted sortorder in the fieldconfig
+     *
+     * @param field the field from the fieldset
+     */
+    public hasRevertedSortOrder(field): boolean {
+        if (!!field.fieldconfig.sortordersequence) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * sets the field as sort parameter
      *
      * @param field the field from the fieldset
      */
     public setSortField(field): void {
         if (this.isSortable(field)) {
-            this.modellist.setSortField(field.field);
+            this.modellist.setSortField(field.field, null, true, this.hasRevertedSortOrder(field));
             if (this.reloadTimeOut) window.clearTimeout(this.reloadTimeOut);
             this.reloadTimeOut = window.setTimeout(() => this.modellist.reLoadList(), 500);
         }

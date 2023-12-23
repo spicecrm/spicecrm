@@ -45,7 +45,7 @@ export class ObjectRepositoryManager {
     public edit_mode: string = "custom";
     public change_request_required: boolean = false;
     public crNoneActive: boolean = false;
-    public moduleReposSelect: any[] = [];
+    public moduleReposSelect: {id: string, name: string, group: string}[] = [];
     public moduleRepos: any[] = [];
     public modulereposselecteditem: any = {};
     public objrepoList: any[] = [];
@@ -92,8 +92,7 @@ export class ObjectRepositoryManager {
 
             for (let module of modules) {
                 this.moduleRepos.push(module);
-                let moduleRepos = {};
-                moduleRepos = {
+                const moduleRepos = {
                     id: module.id,
                     name: module.module,
                     group: "global"
@@ -107,8 +106,7 @@ export class ObjectRepositoryManager {
             for (let module of modules) {
 
                 this.moduleRepos.push(module);
-                let moduleObj = {};
-                moduleObj = {
+                const moduleObj = {
                     id: module.id,
                     name: module.module,
                     group: "custom"
@@ -308,6 +306,8 @@ export class ObjectRepositoryManager {
                                 this.objrepoList[i] = this.currentObjRepo;
                             }
                         }
+                        this.configurationService.reloadTaskData('components');
+
                         loadingModalRef.instance.self.destroy();
                         this.toast.sendToast('changes saved');
                     }
@@ -339,6 +339,7 @@ export class ObjectRepositoryManager {
                         this.backend.postRequest('configuration/configurator/' + table + '/' + this.newRepo.id, null, { config: this.newRepo }).subscribe(
                             (success) => {
                                 this.objrepoList.push(this.newRepo);
+                                this.configurationService.reloadTaskData('components');
                                 this.currentObjRepo = this.newRepo;
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
@@ -407,6 +408,7 @@ export class ObjectRepositoryManager {
                                 this.currentModule = this.newModule;
                                 this.moduleReposSelect = Object.assign([], this.moduleReposSelect);
                                 this.moduleReposSelectedItem = moduleRepoSelect;
+                                this.configurationService.reloadTaskData('modules');
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
                             }

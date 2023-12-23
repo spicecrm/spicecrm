@@ -8,6 +8,7 @@ import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
 import {metadata} from "../../services/metadata.service";
+import {configurationService} from "../../services/configuration.service";
 
 /**
  * @ignore
@@ -32,6 +33,7 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
         public language: language,
         public metadata: metadata,
         public toast: toast,
+        private configurationService: configurationService
     ) {
 
     }
@@ -54,7 +56,10 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
         this.filter.filterdefs = this.primaryGroup;
         this.metadata.setModuleFilter(this.filter.id, this.filter.name, this.filter.module, this.filter.type);
         this.backend.postRequest('configuration/sysmodulefilters/' + this.filter.module + '/' + this.filter.id, {}, this.filter)
-            .subscribe(res => this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success"));
+            .subscribe(res => {
+                this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
+                this.configurationService.reloadTaskData('modulefilters');
+            });
     }
 
     public cleangroup(group) {

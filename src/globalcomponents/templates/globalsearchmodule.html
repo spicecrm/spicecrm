@@ -11,7 +11,6 @@
             </div>
             <div class="slds-grid">
                 <div class="slds-col slds-align-bottom">
-                    <!--p class="slds-text-body--small">{{getCount()}} items</p-->
                     <ul class="slds-list--horizontal slds-has-dividers--left">
                         <li class="slds-item"><span>{{getCount().hits}} <system-label label="LBL_OF"></system-label> {{getCount().total}} <system-label label="LBL_ITEMS"></system-label></span></li>
                         <li *ngIf="canViewMore()" class="slds-item slds-text-link--reset" (click)="setSearchScope()"><system-label label="LBL_VIEWALL"></system-label></li>
@@ -24,7 +23,7 @@
         <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
             <thead class="slds-show--medium">
                 <tr class="slds-text-title--caps">
-                    <th *ngFor="let item of listfields" scope="col">
+                    <th *ngFor="let item of listfields; let i=index" scope="col" class="slds-resizable" [ngClass]="sizeClass(i)">
                         <div class="slds-truncate slds-p-around--x-small"><system-label-fieldname [module]="module" [field]="item.field"></system-label-fieldname></div>
                     </th>
                 </tr>

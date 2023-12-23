@@ -1,0 +1,33 @@
+<system-modal *ngIf="secret" size="small">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_TOTP_AUTHENTICATION"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid">
+            <div class="slds-size--1-of-2">
+                <system-label label="MSG_AUTHENTICATOR_INSTRUCTIONS" length="long"></system-label>
+            </div>
+            <div class="slds-size--1-of-2 slds-align--absolute-center slds-grid slds-grid--vertical">
+                <div class="slds-p-vertical--small">{{name}}</div>
+                <img style="width: 200px; height: 200px;" *ngIf="QRCode" [src]="QRCode">
+                <div class="slds-p-vertical--small">{{secret}}</div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-label label="LBL_CODE"></system-label>
+                <input class="slds-m-left--x-small slds-input" maxlength="6" style="width: 6rem" [(ngModel)]="code">
+            </div>
+            <div class="slds-grid">
+                <button class="slds-button slds-button--neutral" (click)="close()">
+                    <system-label label="LBL_CANCEL"></system-label>
+                </button>
+                <button [disabled]="code.length != 6" class="slds-button slds-button--brand" (click)="save()">
+                    <system-label label="LBL_SAVE"></system-label>
+                </button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>

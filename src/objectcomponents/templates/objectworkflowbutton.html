@@ -1,0 +1,8 @@
+<div *ngIf="workflowEnabled" class="slds-is-relative slds-m-horizontal--x-small">
+    <button  style="text-transform:capitalize" class="slds-button" (click)="open()">
+        <system-icon icon="process" divClass=""></system-icon>
+    </button>
+    <span *ngIf="openWorkflowsCount > 0" style="box-shadow: 0 0 0 2px #fff;" aria-hidden="true" class="slds-notification-badge slds-incoming-notification slds-show-notification">
+        {{openWorkflowsCount}}
+    </span>
+</div>

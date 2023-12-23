@@ -1,21 +1,30 @@
 <div class="slds-page-header">
-    <nav role="navigation" aria-label="Breadcrumbs">
-        <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
-            <li class="slds-breadcrumb__item slds-text-title_caps">
-                <a href="javascript:void(0);" (click)="goModule()"><system-label-modulename [module]=" module "></system-label-modulename></a>
-            </li>
-            <li class="slds-breadcrumb__item slds-text-title_caps">
-                <a href="javascript:void(0);" (click)="goModel()">{{model.data.summary_text}}</a>
-            </li>
-        </ol>
-    </nav>
-    <div class="slds-media">
-        <div class="slds-media__body">
-            <h1 class="slds-page-header__title slds-truncate slds-align-middle slds-p-vertical--xx-small">{{listingTitle}}</h1>
+    <div class="slds-grid slds-grid--align-spread slds-p-bottom--xx-small slds-wrap">
+        <div class="slds-grid slds-grid--vertical-align-center slds-grow">
+            <div class="slds-m-right--medium">
+                <nav role="navigation" aria-label="Breadcrumbs">
+                    <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                        <li class="slds-breadcrumb__item slds-text-title_caps">
+                            <a href="javascript:void(0);" (click)="goModule()"><system-label-modulename [module]=" module "></system-label-modulename></a>
+                        </li>
+                        <li class="slds-breadcrumb__item slds-text-title_caps">
+                            <a href="javascript:void(0);" (click)="goModel()">{{model.data.summary_text}}</a>
+                        </li>
+                    </ol>
+                </nav>
+                <div class="slds-media">
+                    <div class="slds-media__body">
+                        <h1 class="slds-page-header__title slds-truncate slds-align-middle slds-p-vertical--xx-small">{{listingTitle}}</h1>
+                    </div>
+                </div>
+                <div class="slds-col slds-align-bottom">
+                    <p class="slds-text-body--small">{{relatedmodels.items.length}} <system-label label="LBL_OF"></system-label> {{relatedmodels.count}} <system-label label="LBL_ITEMS"></system-label> • <system-label label="LBL_SORTEDBY"></system-label> <system-label-fieldname [module]="related" [field]="relatedmodels.sortfield"></system-label-fieldname>   • <system-label label="LBL_LASTUPDATE"></system-label> {{relatedmodels.getLastLoadTime()}}</p>
+                </div>
+            </div>
+            <div class="slds-col slds-size--1-of-3">
+                <system-input-search-term [(ngModel)]="searchTerm" (onSearchTermClear)="clearSearchTerm()" (onEnterPress)="reloadList()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', relatedmodels.relatedModule)" class="slds-grow"></system-input-search-term>
+            </div>
         </div>
-    </div>
-    <div class="slds-col slds-align-bottom">
-        <p class="slds-text-body--small">{{relatedmodels.items.length}} <system-label label="LBL_OF"></system-label> {{relatedmodels.count}} <system-label label="LBL_ITEMS"></system-label> • <system-label label="LBL_SORTEDBY"></system-label> <system-label-fieldname [module]="related" [field]="relatedmodels.sortfield"></system-label-fieldname>   • <system-label label="LBL_LASTUPDATE"></system-label> {{relatedmodels.getLastLoadTime()}}</p>
     </div>
 </div>
 <div system-to-bottom #tablecontent (scroll)="onScroll($event)">

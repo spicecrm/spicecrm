@@ -83,19 +83,6 @@ class StreamFactory extends SpiceSingleton
     }
 
     /**
-     * returns the streams array
-     * @return array
-     */
-    public function getStreams()
-    {
-        if (self::$streams)
-            return self::$streams;
-        else {
-            return [];
-        }
-    }
-
-    /**
      * returns stats for the stream based on specific implementations for the streamhandler
      *
      * @param string $name

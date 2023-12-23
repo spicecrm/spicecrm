@@ -1,7 +1,17 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges} from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnChanges,
+    SimpleChanges,
+    Renderer2,
+    OnDestroy
+} from '@angular/core';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {relateFilter} from "../../services/interfaces.service";
@@ -18,7 +28,7 @@ import {Subscription} from "rxjs";
     templateUrl: '../templates/fieldlookupsearch.html',
     providers: [modellist]
 })
-export class fieldLookupSearch implements OnInit, OnChanges {
+export class fieldLookupSearch implements OnInit, OnChanges, OnDestroy {
     /**
      * the searchterm entered
      */
@@ -29,6 +39,17 @@ export class fieldLookupSearch implements OnInit, OnChanges {
      */
     public searchTimeout: any = {};
 
+    /**
+     * input element from template
+     */
+    @Input() public inputElement;
+
+    private listener: any;
+
+    /**
+     * selected item for keyboard navigation
+     */
+    public selectedItem:{id: string, summary_text: string};
     /**
      * the module we are searching for
      */
@@ -82,7 +103,7 @@ export class fieldLookupSearch implements OnInit, OnChanges {
         this.searchTimeout = window.setTimeout(() => this.doSearch(), 500);
     }
 
-    constructor(public metadata: metadata, public model: model, public modellist: modellist, public language: language, public modal: modal) {
+    constructor(public metadata: metadata, public model: model, public modellist: modellist, public language: language, public modal: modal, public renderer: Renderer2,) {
     }
 
     /**
@@ -101,6 +122,32 @@ export class fieldLookupSearch implements OnInit, OnChanges {
         this.modellist.initialize(this.module);
 
         this.modellist.getListData();
+
+       // event listener for keyboard events
+        if (this.inputElement) {
+            this.listener = this.renderer.listen(this.inputElement, 'keyup', (e: KeyboardEvent) => {
+                const index = this.modellist.listData.list.findIndex(i => i == this.selectedItem);
+                switch (e.key) {
+                    case 'Enter':
+                        if(this.modellist.listData.list.length == 1) this.selectedItem = this.modellist.listData.list[0];
+                        this.selectedObject.emit({
+                            id: this.selectedItem.id,
+                            text: this.selectedItem.summary_text,
+                            data: this.selectedItem
+                        });
+                        break;
+                    case 'ArrowDown':
+                        this.selectedItem = this.modellist.listData.list[index + 1 >= this.modellist.listData.list.length ? 0 : index + 1];
+                        break;
+                    case 'ArrowUp':
+                        this.selectedItem = this.modellist.listData.list[index - 1 < 0 ? this.modellist.listData.list.length - 1 : index - 1];
+                        break;
+                    case 'Escape':
+                        this.selectedItem = {id: '', summary_text: ''};
+                        break;
+                }
+            });
+        }
     }
 
     /**
@@ -152,6 +199,15 @@ export class fieldLookupSearch implements OnInit, OnChanges {
      */
     public recordAdded(record) {
         this.setItem(record.data);
+    }
+
+    /**
+     * unlisten
+     */
+    public ngOnDestroy() {
+        if (this.listener) {
+            this.listener()
+        }
     }
 
 }

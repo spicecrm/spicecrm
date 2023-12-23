@@ -58,7 +58,7 @@ export class AdministrationDefaultPreferences implements OnInit {
         const loadingModal = this.modal.await('LBL_SAVING_DATA');
 
         this.backend.postRequest('configuration/configurator/editor/default_preferences', [], { config: this.preferences }).subscribe(data => {
-            this.configuration.setData('defaultuserpreferences', this.preferences);
+            this.configuration.reloadTaskData('defaultuserpreferences');
             this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             this.view.setViewMode();
             loadingModal.emit();

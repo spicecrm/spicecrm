@@ -1,0 +1,17 @@
+<!--
+<div *ngIf="!isHidden" class="slds-box slds-m-around&#45;&#45;xx-small" (system-drop-url)="urlDrop($event)">
+-->
+
+<div *ngIf="!isHidden" class="slds-box slds-m-around--xx-small" (system-drop-file)="fileDrop($event)">
+    <div>
+        <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
+            <spice-url-item *ngFor="let url of modelurls" [modelurls]="modelurls" [urlItem]="url" [editmode]="editing" class="slds-media slds-size--1-of-1"></spice-url-item>
+        </div>
+        <div *ngIf="modelurls.loading" class="slds-p-around--x-small slds-align--absolute-center">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-spinner size="14"></system-spinner>
+                <system-label class="slds-p-left--x-small" label="LBL_INITIALIZING"></system-label>
+            </div>
+        </div>
+    </div>
+</div>

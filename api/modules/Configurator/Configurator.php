@@ -47,7 +47,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
 class Configurator {
 	var $config = '';
 	var $override = '';
-	var $allow_undefined = ['stack_trace_errors', 'export_delimiter', 'use_real_names', 'developerMode', 'default_module_favicon', 'authenticationClass', 'SAML_loginurl', 'SAML_X509Cert', 'dashlet_auto_refresh_min', 'show_download_tab', 'enable_action_menu'];
+	var $allow_undefined = ['stack_trace_errors', 'export_delimiter', 'use_real_names', 'default_module_favicon', 'authenticationClass', 'SAML_loginurl', 'SAML_X509Cert', 'dashlet_auto_refresh_min', 'show_download_tab', 'enable_action_menu'];
 	var $errors = ['main' => ''];
 	var $logger = NULL;
 	var $previous_sugar_override_config_array = [];

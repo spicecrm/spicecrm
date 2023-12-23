@@ -1,0 +1,3 @@
+<div *ngIf="modelurls.urls.length > 0" class="slds-m-vertical--xx-small slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded" [ngStyle]="getCompStyle()" [ngClass]="componentconfig.addClasses">
+    <spice-url-item *ngFor="let url of modelurls.urls" [modelurls]="modelurls" [urlItem]="url" [editmode]="false" class="slds-media" [ngClass]="getItemClass()"></spice-url-item>
+</div>

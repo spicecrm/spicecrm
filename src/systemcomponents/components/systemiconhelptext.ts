@@ -18,6 +18,7 @@ export class SystemIconHelpText {
     @Input() public desaturate: boolean = false;
     @Input() public addclasses: string = '';
     @Input() public divClass = 'slds-media__figure';
+    @Input() public verticalPositionBottom = false;
 
     /**
      * helpText string

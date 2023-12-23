@@ -1,0 +1,87 @@
+<div class="slds-border--bottom">
+    <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small"><system-label label="LBL_OTHER_CALENDARS"></system-label></label>
+    <div class="slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+             (mouseenter)="hovered = 'own'" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == 'own'">
+            <div class="slds-grid" (click)="toggleVisible(null, 'Owner')" style="cursor: pointer">
+                <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="calendar.ownerCalendarVisible ? calendar.eventColor : '#dddbda'">
+                    <system-button-icon icon="user" size="small"></system-button-icon>
+                </div>
+                <a class="slds-text-body--regular slds-truncate" [style.color]="calendar.ownerCalendarVisible ? calendar.eventColor : '#dddbda'">
+                    <system-label label="LBL_MY_CALENDAR"></system-label>
+                </a>
+            </div>
+        </div>
+        <div *ngIf="calendar.activeGroupware == 'google'" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+             (mouseenter)="hovered = 'google'" (mouseleave)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
+            <div class="slds-grid" (click)="toggleVisible(null, 'Google')" style="cursor: pointer">
+                <img src="https://developers.google.com/identity/images/g-logo.png" style="height: 13px;width:13px;margin-right: 2px; margin-top: 2px" alt="G"
+                     [ngStyle]="!groupwareVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
+                <a class="slds-text-body--regular slds-truncate" [style.color]="!groupwareVisible ? '#dddbda' : calendar.groupwareColor"><system-label label="MY_GOOGLE_CALENDAR"></system-label></a>
+            </div>
+        </div>
+        <div *ngIf="calendar.activeGroupware == 'microsoft'" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+             (mouseenter)="hovered = 'microsoft'" (mouseleave)="hovered = ''" [ngClass]="hovered == 'microsoft' ? 'slds-theme--shade' : ''">
+            <div class="slds-grid" (click)="toggleVisible(null, 'Google')" style="cursor: pointer">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAACXBIWXMAAAsSAAALEgHS3X78AAAAVElEQVQ4jWP8//8/A7UBC8i8z4HKBE3mXX+XsWE3I0F1Da7/GZmo7kwGBoZRQ0cNpTKgXY5iXPqBoMn/owUYGXYRzlEMbqM5atTQoWEo9XMUAwMDAGSOGCOVddy/AAAAAElFTkSuQmCC" style="height: 13px;width:13px;margin-right: 2px; margin-top: 2px" alt="G"
+                     [ngStyle]="!groupwareVisible ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {}">
+                <a class="slds-text-body--regular slds-truncate" [style.color]="!groupwareVisible ? '#dddbda' : calendar.groupwareColor"><system-label label="LBL_MY_MICROSOFT_CALENDAR"></system-label></a>
+            </div>
+        </div>
+        <div *ngFor="let usersCalendar of usersCalendars; trackBy: trackByFn"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+             (mouseenter)="hovered = usersCalendar.id" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == usersCalendar.id">
+            <div class="slds-grid" (click)="toggleVisible(usersCalendar.id, 'Users')" style="cursor: pointer">
+                <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">
+                    <system-button-icon icon="user" size="small"></system-button-icon>
+                </div>
+                <a class="slds-text-body--regular slds-truncate" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">{{usersCalendar.name}}</a>
+            </div>
+            <div>
+                <calendar-color-picker *ngIf="hovered == usersCalendar.id" (colorChange)="setUserColor(usersCalendar.id, $event)"></calendar-color-picker>
+                <button  class="slds-button slds-button--icon" (click)="removeUserCalendar(usersCalendar.id)">
+                    <system-button-icon icon="clear" size="small"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-form-element__control slds-p-around--x-small slds-border--bottom slds-theme--default" style="height: 52px">
+    <div #inputcontainer class="slds-form-element slds-lookup">
+        <div class="slds-form-element__control slds-grid slds-box--border slds-m-vertical--xxx-small">
+            <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
+                <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
+                <input type="search" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="searchTerm"
+                       (focus)="searchOpen = true"
+                       (blur)="searchOpen = false"
+                       [system-placeholder]="language.getLabel('LBL_ADD') + ' ' + language.getLabel('LBL_USER') + ' ' + language.getLabel('LBL_CALENDAR')" role="combobox">
+            </div>
+        </div>
+    </div>
+    <div *ngIf="searchopen" class="slds-lookup__menu slds-size--1-of-4 slds-p-vertical--none" [ngStyle]="lookupMenuStyle">
+        <div *ngIf="searchterm.length > 0" class="slds-theme--shade slds-p-around--xx-small slds-text-body--small slds-text-title--caps slds-border--bottom">
+            {{resultsList.length}} <system-label label="LBL_USERS"></system-label> <system-label label="LBL_FOUND"></system-label>
+        </div>
+        <div *ngIf="searchterm.length == 0" class="slds-theme--shade slds-p-around--xx-small slds-text-body--small slds-text-title--caps slds-border--bottom">
+            <system-label label="LBL_RECENTLYVIEWED"></system-label>
+        </div>
+        <ul class="slds-lookup__list" style="height: 175px" role="listbox">
+            <ng-container *ngIf="searchterm.length > 0">
+                <li *ngFor="let user of resultsList; trackBy: trackByFn" role="presentation" (mousedown)="addUserCalendar(user.id, user.summary_text)">
+                    <div class="slds-lookup__item-action slds-media" role="option">
+                        <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
+                        <span class="slds-lookup__result-text">{{user.summary_text}}</span>
+                    </div>
+                </li>
+            </ng-container>
+            <ng-container *ngIf="searchterm.length == 0">
+                <li *ngFor="let user of recentUsers; trackBy: trackByFn" role="presentation" (mousedown)="addUserCalendar(user.item_id, user.item_summary)">
+                    <div class="slds-lookup__item-action slds-media" role="option">
+                        <system-icon icon="user" size="x-small" divClass="slds-p-around--xxx-small slds-m-right--xxx-small"></system-icon>
+                        <span class="slds-lookup__result-text">{{user.item_summary}}</span>
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+        <system-spinner [size]="16" *ngIf="isLoading && resultsList.length == 0"></system-spinner>
+    </div>
+</div>

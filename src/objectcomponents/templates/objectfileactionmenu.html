@@ -4,24 +4,24 @@
     </button>
     <div class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
         <ul class="slds-dropdown__list" role="menu">
-            <!--li class="slds-dropdown__item" role="presentation" (click)="openFile()">
-                <a href="javascript:void(0);" role="menuitem" tabindex="0">
-                    <span class="slds-truncate"><system-label label="LBL_OPEN"></system-label></span>
-                </a>
-            </li-->
             <li class="slds-dropdown__item" role="presentation" (click)="edit()">
                 <a href="javascript:void(0);" role="menuitem" tabindex="0">
                     <span class="slds-truncate"><system-label label="LBL_EDIT"></system-label></span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation" (click)="downloadFile()">
-                <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
                     <span class="slds-truncate"><system-label label="LBL_DOWNLOAD"></system-label></span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation" (click)="deleteFile()">
-                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                <a href="javascript:void(0);" role="menuitem" tabindex="-2">
                     <span class="slds-truncate"><system-label label="LBL_DELETE"></system-label></span>
+                </a>
+            </li>
+            <li class="slds-dropdown__item" role="presentation" (click)="previewFile()">
+                <a href="javascript:void(0);" role="menuitem" tabindex="-3">
+                    <span class="slds-truncate"><system-label label="LBL_PREVIEW"></system-label></span>
                 </a>
             </li>
         </ul>

@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {AfterViewInit, Component, forwardRef, Input, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, forwardRef, Input, OnDestroy, OnInit} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
@@ -22,7 +22,7 @@ import {Subscription} from "rxjs";
         }
     ]
 })
-export class SystemInputModule implements ControlValueAccessor, OnDestroy {
+export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnInit {
 
     /**
      * input to disable the input
@@ -32,7 +32,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     /**
      * if set to true also the tecnical name will be displayed
      */
-    @Input() public displaytechnicalname: boolean = true;
+    @Input() public technicalNameOnly: boolean = true;
 
     /**
      * for generic selections show an '*' as option
@@ -40,12 +40,17 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     @Input() public displayAsterisk: boolean = false;
 
     /**
-     * for use in components make empty option selectable
+     * filter modules input local property
+     * @private
      */
-    @Input() public displayEmptyOption: boolean = false;
-
+    private _filterModules: string[] = [];
+    /**
+     * filter out the given modules array
+     * @param value
+     */
     @Input() set filterModules(value:string[]){
-        this._modules = this._modules.filter(m=>!value.some(v=>v==m))
+        this._filterModules = value;
+        this._modules = this._modules.filter(m => !value.some(v => v == m.id));
     }
     // for the value accessor
     public onChange: (value: string) => void;
@@ -60,25 +65,36 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     /**
      * holds the companycoded
      */
-    public _module: string;
+    public _module: {id: string, name: string};
 
     /**
      * the available companycodes
      */
-    public _modules: any[] = [];
+    public _modules: {id: string, name: string}[] = [];
 
     constructor(
         public language: language,
         public metadata: metadata,
         public configuration: configurationService
     ) {
-        this._modules = this.metadata.getModules();
-        this.sortModules();
-
         // resort in case of Language change
         this.subscription = this.language.currentlanguage$.subscribe((language) => {
             this.sortModules();
         });
+    }
+
+    public ngOnInit() {
+        this._modules = this.metadata.getModules().map(m => ({id: m, name: this.technicalNameOnly ? m : `${this.language.getModuleName(m)} (${m})`}));
+
+        if (this._filterModules.length > 0) {
+            this._modules = this._modules.filter(m => !this._filterModules.some(v => v == m.id));
+        }
+
+        if (this.displayAsterisk) {
+            this._modules.unshift({id: '*', name: '*'});
+        }
+
+        this.sortModules();
     }
 
     public ngOnDestroy(): void {
@@ -86,10 +102,10 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     }
 
     public sortModules() {
-        if(this.displaytechnicalname){
-            this._modules.sort((a, b) => a.toLowerCase() > b.toLowerCase() ? 1 : -1);
+        if(this.technicalNameOnly){
+            this._modules.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
         } else {
-            this._modules.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+            this._modules.sort((a, b) => this.language.getModuleName(a.id).toLowerCase() > this.language.getModuleName(b.id).toLowerCase() ? 1 : -1);
         }
     }
 
@@ -103,12 +119,12 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     /**
      * a setter for the companycode - also trigers the onchange
      *
-     * @param companycode the id of the companycode
+     * @param module
      */
-    set module(module) {
+    set module(module: {id: string, name: string}) {
         this._module = module;
         if (this.onChange) {
-            this.onChange(module);
+            this.onChange(module?.id);
         }
     }
 
@@ -138,7 +154,10 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
-        this._module = value;
+
+        if (!value) return;
+
+        this._module = {id: value, name: this.technicalNameOnly ? value : `${this.language.getModuleName(value)} (${value})`};
     }
 
 }

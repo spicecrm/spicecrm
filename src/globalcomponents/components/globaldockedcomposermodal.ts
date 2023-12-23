@@ -18,6 +18,7 @@ import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
 import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
+import {telephony} from "../../services/telephony.service";
 
 @Component({
     selector: 'global-docked-composer-modal',
@@ -40,7 +41,7 @@ export class GlobalDockedComposerModal implements OnInit {
      */
    public componentconfig: any;
 
-    constructor(public metadata: metadata,public dockedComposer: dockedComposer,public language: language, public modal: modal, public model: model,public view: view) {
+    constructor(public metadata: metadata,public dockedComposer: dockedComposer,public language: language, public modal: modal, public model: model,public view: view, public telephony:telephony) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -75,7 +76,7 @@ export class GlobalDockedComposerModal implements OnInit {
      */
    public minimize() {
         // if we do not yet have a composer .. create one
-        if(!this.dockedComposer.composers.find(c => c.id == this.model.id)){
+        if(!this.dockedComposer.composers.find(c => c.id == this.model.id) && !this.telephony.calls.find(t => t.id)){
             this.dockedComposer.addComposer(this.model.module, this.model);
         }
         // destroy the modal

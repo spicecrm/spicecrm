@@ -1,32 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Emails;
 
@@ -54,6 +27,7 @@ use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\EmailAddresses\EmailAddress;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\EmailTrackingLinks\EmailTrackingLink;
@@ -127,6 +101,27 @@ class Email extends SpiceBean
             $this->runtime_tracking_parent_type ?: 'Emails',
             $this->runtime_tracking_parent_id ?: $this->id
         ];
+    }
+
+    /**
+     * opt out email the parent email address
+     */
+    public function optOutParentEmailAddress()
+    {
+        if (empty($this->parent_id) || empty($this->parent_type)) return null;
+
+        $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
+
+        $emailAddresses = $parent->get_linked_beans('email_addresses');
+
+        foreach ($emailAddresses as $address) {
+
+            if ($address->primary_address != 1 || $address->opt_in_status == 'opted_out') continue;
+
+            EmailAddress::setOptInStatus($parent, $address, 'opted_out');
+
+            break;
+        }
     }
 
     /**
@@ -250,17 +245,13 @@ class Email extends SpiceBean
                 ];
             }
 
-
             if ($result['result'] == true) {
                 $this->status = 'sent';
 
             } else {
-                if ($result['errors']) {
-                    $this->status = 'send_error';
-                } else {
-                    $this->status = 'created';
-                }
+                $this->status = $result['errors'] ? 'send_error' : 'created';
             }
+
             $this->new_with_id = false;
             parent::save($check_notify, $fts_index_bean);
 
@@ -289,6 +280,33 @@ class Email extends SpiceBean
                 if (!$this->load_relationship($name)) continue;
                 $this->{$name}->add($linkedBean->id);
             }
+        }
+    }
+
+    /**
+     * @param string $templateId
+     * @param SpiceBean $bean
+     * @param null $additionalValues
+     * @param array $additionalBeans
+     * @return void
+     * @throws Exception
+     */
+    public function generateFromTemplate(string $templateId, SpiceBean $bean, $additionalValues = null, array $additionalBeans = [])
+    {
+        if (empty($this->id)) {
+            $this->id = SpiceUtils::createGuid();
+            $this->new_with_id = true;
+        }
+
+        /** @var EmailTemplate $template */
+        $template = BeanFactory::getBean('EmailTemplates');
+        $template->retrieve($templateId);
+        $parsedTpl = $template->parse($bean, $additionalValues, $additionalBeans);
+        $this->body = $parsedTpl['body_html'];
+        $this->name = $parsedTpl['subject'];
+
+        foreach ($parsedTpl['attachments'] as $file) {
+            SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $file);
         }
     }
 
@@ -617,11 +635,16 @@ class Email extends SpiceBean
         // END
 
         // if body does NOT contain html elements, add a default style so the UI can display it properly
-        if (!$this->containsHTMLElem($this->body)) {
-            $this->body = '<html><head><style type="text/css">body {white-space: pre; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
+        // assume charset is UTF-8
+        if (empty($this->body) || !$this->containsHTMLElem($this->body)) {
+            $this->body = '<html><head><meta charset="UTF-8"><style type="text/css">body {word-break: break-word; white-space: pre-wrap; font-size:12px; font-family:Titillium Web, sans-serif;}</style></head><body>' . $this->body . '</body></html>';
         }
 
-        $ret->retrieveEmailAddresses();
+        // check on the charset
+        $this->correctCharsetTag();
+
+        // get the email addresses
+       $ret->retrieveEmailAddresses();
 
         $ret->date_start = '';
         $ret->time_start = '';
@@ -642,25 +665,6 @@ class Email extends SpiceBean
                 $this->body = utf8_encode($this->body);
         }
 
-        // check for embedded files, if they are attached embed them as base64 ref
-        $matches = [];
-        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($this->body), $matches)) {
-            $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
-            foreach ($attachments as $attachment) {
-                foreach ($matches[1] as $match) {
-                    if (strpos($match, $attachment['filename']) !== false) {
-                        // catch exception so that error on getting attchments would not break fts indexing of the record
-                        try {
-                            $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
-                            $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
-                        } catch (Exception $e) {
-                            // do nothing
-                        }
-                    }
-                }
-            }
-        };
-
         // get the number of attachments
         $this->attachments_count = SpiceAttachments::getAttachmentsCount('Emails', $this->id);
 
@@ -674,10 +678,10 @@ class Email extends SpiceBean
      * @param array $htmlElements (collection of html elements)
      * @return bool
      */
-    function containsHTMLElem(string $emailBody): bool
+    function containsHTMLElem(?string $emailBody): bool
     {
         // to of HTML elements check if the body contains one of the html elements.
-        $htmlElements = ['<html>','<head>','<style>', '<div>'];
+        $htmlElements = ['</html>','</head>','</style>', '</div>'];
 
         foreach($htmlElements as $htmlElement) {
             if (stripos($emailBody, $htmlElement) !== false) return true;
@@ -686,7 +690,85 @@ class Email extends SpiceBean
         return false;
     }
 
-    public    function mapToRestArray($beanDataArray)
+    /**
+     * return the meta tag with the microsoft information
+     * @param string $emailBody
+     * @return mixed
+     */
+    public function containsMicrosoftWordGeneratorHTML(string $emailBody){
+        $pattern = '/(<meta.*name=.*Generator.*content=.*Microsoft.*>)/i';
+        preg_match($pattern, $emailBody, $matches);
+
+        if(is_array($matches)) return $matches[0];
+        return null;
+    }
+
+    /**
+     * check if we find a head tag
+     * @param string $emailBody
+     * @return false|int
+     */
+    public function containsHeadTag(string $emailBody){
+        $pattern = "/<\/head>/";
+        return preg_match($pattern, $emailBody);
+    }
+
+    /**
+     * check if there is any html meta tag for a charset
+     * .msg e-mail might lack it or contain an iso charset
+     * In case we find any, we check on utf-8 (for ckeditor)
+     * If it is not uft-8 we set utf-8
+     * @return int|false
+     */
+    public function findMetaCharset(?string &$emailBody){
+        if(empty($emailBody)) return false;
+
+        $pattern = "#<\s*?meta.*?charset=.*?[^>]*>#is";
+        $found = preg_match($pattern, $emailBody, $matches);
+
+        if($found){
+            // is it utf-8?
+            if (strpos($matches[0], 'utf-8') === false){
+                $replacement = 'meta charset="utf-8"';
+                $emailBody = preg_replace($matches[0], $replacement, $emailBody);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * try to correct missing charset tag
+     * will be mostly because of microsoft emails renders with microsoft word
+     * We check first if there is any charset tag
+     * Then we inject the charset tag before the end </head> tag
+     * @return void
+     */
+    public function correctCharsetTag(){
+        if(!$this->findMetaCharset($this->body)){
+            $foundHeadTag = $this->containsHeadTag($this->body);
+            if($foundHeadTag){
+                $searchHtmlTag = '</head>';
+                $htmlTagReplace = '<meta charset="UTF-8"></head>';
+                $this->body = str_replace($searchHtmlTag, $htmlTagReplace, $this->body);
+            } else {
+                $foundHTMLTag = SpiceUtils::containsHTMLElem($this->body, ['html']);
+                if($foundHTMLTag){
+                    $pattern = "#<\s*?html\b[^>]*>#is";
+                    $htmlTagReplace = '<html><meta charset="UTF-8">';
+                    if($foundText = preg_replace($pattern, $htmlTagReplace, $this->body)){
+                        $this->body = $foundText;
+                    }
+                } else{
+                    $startTag = '<html><meta charset="UTF-8">';
+                    $endTag = '</html>';
+                    $this->body = $startTag.$this->body.$endTag;
+                }
+            }
+        }
+    }
+
+    public function mapToRestArray($beanDataArray)
     {
 
         $q = "SELECT eam.id, eam.email_address_id, ea.email_address, eam.address_type, eam.parent_type, eam.parent_id, eam.deleted
@@ -694,6 +776,8 @@ class Email extends SpiceBean
 				JOIN email_addresses ea ON ea.id = eam.email_address_id
 				WHERE eam.email_id = '{$this->id}' AND eam.deleted=0";
         $r = $this->db->query($q);
+
+        $bwcFrom = true; // a bwc indicator for a from value
 
         while ($a = $this->db->fetchByAssoc($r)) {
             // PHP >=7.1 triggers an error
@@ -703,6 +787,21 @@ class Email extends SpiceBean
             }
 
             $beanDataArray['recipient_addresses'][] = $a;
+
+            if($a['address_type'] == 'from') $bwcFrom = false;
+        }
+
+        // BWC for imported emails before recipient_addresses functionality
+        if(is_array($beanDataArray) && $bwcFrom && !empty($this->from_addr)){
+            $beanDataArray['recipient_addresses'][] = [
+                'id' => SpiceUtils::createGuid(),
+                'email_address_id' => $this->id,
+                'email_address' => $this->from_addr,
+                'address_type' => 'from',
+                'parent_type' => $this->parent_type,
+                'parent_id' => $this->parent_id,
+                'deleted' => 0
+            ];
         }
 
         return $beanDataArray;
@@ -810,7 +909,9 @@ class Email extends SpiceBean
      */
     private function findMarketingActions($mailboxTrackingUrl) {
         $dom = new DOMDocument();
-        $dom->loadHTML($this->body);
+
+        // encode dom object
+        $dom->loadHTML('<?xml encoding="utf-8"?>'. $this->body);
         foreach ($dom->getElementsByTagName('a') as $node) {
             $marketingaction = $node->getAttribute('data-marketingaction');
             if (!empty($marketingaction)) {
@@ -1273,6 +1374,12 @@ class Email extends SpiceBean
 
         while ($row = $db->fetchByAssoc($q)) {
             $this->body = '<style>' . $row['csscode'] . '</style>' . $this->body;
+
+            if (strpos($this->body, '</head>')) {
+                return str_replace('</head>', "<style>{$row['csscode']}</style></head>", $this->body);
+            } else {
+                return "<style>{$row['csscode']}</style>" . $this->body;
+            }
         }
     }
 
@@ -1439,14 +1546,12 @@ class Email extends SpiceBean
         }
 
         // get the main parts for the email
-        $this->name = $bodyParts[0]['headers']['subject'];
-        // handle a subject like Subject: =?iso-8859-1?B?V0c6IFRFU1QgRUtGQi00MDkgxNzW5Pb8?=
-        $subjectParts = explode("?", $bodyParts[0]['headers']['subject']);
-        if(count($subjectParts) > 1) {
-            if ($base64Subject = base64_decode($subjectParts[3])) {
-                $this->name = $this->setBodyEncodingToUTF8($base64Subject);
-            }
-        }
+        // decode mail subject
+        $this->name = $this->setBodyEncodingToUTF8(
+            array_reduce(imap_mime_header_decode($bodyParts[0]['headers']['subject']), function($acc, $charsetInfo) {
+                return $acc . $charsetInfo->text;
+            }, "")
+        );
 
         // get the proper date sent
         $date = new DateTime($bodyParts[0]['headers']['date']);
@@ -1475,16 +1580,18 @@ class Email extends SpiceBean
                     break;
                 case 'text/html':
                     $body_html = $this->getHTMLOnly($contents[$index]);
-                    switch ($bodyPart['transfer-encoding']) {
-                        case 'quoted-printable':
-                            $this->body = imap_qprint($body_html);
-                            if ($bodyPart['charset'] != 'UTF-8') {
-                                $this->body = mb_convert_encoding($this->body, 'UTF-8', $bodyPart['charset']);
-                            }
-                            break;
-                        default:
-                            $this->body = $body_html;
-                            break;
+                    if(!empty($body_html)) {
+                        switch ($bodyPart['transfer-encoding']) {
+                            case 'quoted-printable':
+                                $this->body = imap_qprint($body_html);
+                                if ($bodyPart['charset'] != 'UTF-8') {
+                                    $this->body = mb_convert_encoding($this->body, 'UTF-8', $bodyPart['charset']);
+                                }
+                                break;
+                            default:
+                                $this->body = $body_html;
+                                break;
+                        }
                     }
                     break;
                 default:
@@ -1493,7 +1600,8 @@ class Email extends SpiceBean
                         $fileArray = [
                             'filename' => $bodyPart['content-name'],
                             'file' => base64_encode($contents[$index]),
-                            'filemimetype' => $bodyPart['content-type']
+                            'filemimetype' => $bodyPart['content-type'],
+                            'external_id' => $bodyPart['content-id']
                         ];
                         SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
                     }
@@ -1508,9 +1616,11 @@ class Email extends SpiceBean
 
     private function getHTMLOnly($string)
     {
-        $pattern = "#<\s*?html\b[^>]*>(.*?)</html\b[^>]*>#s";
-        preg_match($pattern, $string, $matches);
-        return $matches[0];
+        $pattern = "#<\s*?html\b[^>]*>(.*?)</html\b[^>]*>#is";
+        if(preg_match($pattern, $string, $matches)){
+            return $matches[0];
+        }
+        return $string;
     }
 
     /**
@@ -1561,7 +1671,8 @@ class Email extends SpiceBean
             $fileArray = [
                 'filename' => $attachment->getFilename(),
                 'file' => base64_encode($attachment->getData()),
-                'filemimetype' => $attachment->getMimeType()
+                'filemimetype' => $attachment->getMimeType(),
+                'external_id' => $attachment->getContentId(),
             ];
             SpiceAttachments::saveAttachmentHashFiles('Emails', $this->id, $fileArray);
         }
@@ -1603,5 +1714,50 @@ class Email extends SpiceBean
         if ($workflowTask->workflow->workflow_status < 30) {
             $workflowTask->callHandlerMethod('handleEvent', [$event]);
         }
+    }
+
+    /**
+     * get field html content
+     * @param string $fieldName
+     * @return string
+     */
+    public function getFieldHtmlContent(string $fieldName): string
+    {
+        switch ($fieldName) {
+            case 'body':
+                return $this->getBodyFieldAsHtml();
+            default:
+                return $this->$fieldName;
+        }
+    }
+
+    /**
+     * get the body field content with the images as base64
+     * @return string
+     */
+    private function getBodyFieldAsHtml(): string
+    {
+        $content = $this->body;
+
+        // check for embedded files, if they are attached embed them as base64 ref
+        $matches = [];
+        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($content), $matches)) {
+            $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
+            foreach ($attachments as $attachment) {
+                foreach ($matches[1] as $match) {
+                    if (strpos($match, $attachment['external_id']) !== false || strpos($match, $attachment['filename']) !== false) {
+                        // catch exception so that error on getting attchments would not break fts indexing of the record
+                        try {
+                            $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
+                            $content = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $content);
+                        } catch (Exception $e) {
+                            // do nothing
+                        }
+                    }
+                }
+            }
+        }
+
+        return $content;
     }
 }

@@ -70,9 +70,10 @@ export class session {
     public sessionData: any = {};
 
     /**
+     * @deprecated since 2023.03.001
      * can be set by developers and triggers the developer mode flag to be sent in the header
      */
-    public developerMode: boolean = false;
+    // public developerMode: boolean = false;
 
 
     constructor( public logger: loggerService, public broadcast: broadcast) {
@@ -141,10 +142,11 @@ export class session {
         headers = headers.set('OAuth-Token', this.authData.sessionId);
         headers = headers.set('OAuth-Issuer', 'SpiceCRM');
 
+        // @deprecated since 2023.03.001
         // set the developer mode
-        if(this.developerMode){
-            headers = headers.set('developermode', '1');
-        }
+        // if(this.developerMode){
+        //     headers = headers.set('developermode', '1');
+        // }
 
         return headers;
     }

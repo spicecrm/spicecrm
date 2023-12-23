@@ -1,32 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
@@ -35,6 +8,7 @@ use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -532,6 +506,15 @@ class ImapHandler extends TransportHandler
             ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
             ->setBody($this->trackedBody($email), 'text/html');
 
+        if($this->mailbox->unsubscribe_header) {
+
+            $unsubscribeUrl = EmailTracking::getUnsubscribeURL($email);
+
+            if ($unsubscribeUrl) {
+                $message->getHeaders()->addTextHeader('List-Unsubscribe', "<$unsubscribeUrl>");
+            }
+        }
+
         $toAddresses = [];
         $intendedRecipients = [];
         foreach ( $email->to() as $recipient ) {
@@ -608,44 +591,42 @@ class ImapHandler extends TransportHandler
      * Sends the converted Email
      *
      * @param $message
-     * @return array
+     * @return DispatchResponse
      * @throws Exception
      */
-    protected function dispatch($message) {
+    protected function dispatch($message): DispatchResponse
+    {
         $logEntryHandler = new APILogEntryHandler();
         try {
             // todo Call to undefined method Swift_RfcComplianceException::isFatal()
             // this error message shows on the first try
             $logEntryHandler->generateSmtpLogEntry($message, $this->mailbox,  'smtp_send');
-            $result = [
-                'result'     => $this->transport_handler->send($message),
-                'message_id' => $message->getId(),
-            ];
+            $result = new DispatchResponse(
+                $this->transport_handler->send($message) > 0,
+                ['message_id' => $message->getId()]
+            );
 
         } catch (Swift_RfcComplianceException $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => $exception->getMessage(),
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         } catch (Swift_TransportException $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => "Cannot inititalize connection.",
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         } catch (Exception $exception) {
-            $result = [
-                'result' => false,
+            $result = new DispatchResponse(false, [
                 'errors' => $exception->getMessage(),
-            ];
+            ]);
             $logEntryHandler->updateSmtpLogEntry($exception);
             $this->log(Mailbox::LOG_DEBUG, $this->mailbox->name . ': ' . $exception->getMessage());
         }
 
-        if (($result['result'] == true || $result == true)) {
+        if (($result->result == true)) {
             $logEntryHandler->updateSmtpLogEntry($result);
             if ($this->mailbox->imap_sent_dir != '') {
                 $msg = $message->toString();

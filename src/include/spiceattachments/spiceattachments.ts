@@ -22,6 +22,8 @@ import {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmentscount";
 import {SpiceAttachmentsEditModal} from "./components/spiceattachmentseditmodal";
 import {SpiceAttachmentStats} from "./components/spiceattachmentstats";
 import {fieldModelAttachment} from "./fields/fieldmodelattachment";
+import {SpiceAttachmentsContainer} from "./components/spiceattachmentscontainer";
+import {SpiceAttachmentAddFromRecordModal} from "./components/spiceattachmentaddfromrecordmodal";
 
 @NgModule({
     imports: [
@@ -32,6 +34,10 @@ import {fieldModelAttachment} from "./fields/fieldmodelattachment";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+    ],
+    exports: [
+        SpiceAttachmentsList,
+        SpiceAttachmentFile
     ],
     declarations: [
         SpiceAttachmentsPanel,
@@ -44,7 +50,9 @@ import {fieldModelAttachment} from "./fields/fieldmodelattachment";
         fieldSpiceAttachmentsCount,
         SpiceAttachmentsEditModal,
         SpiceAttachmentStats,
-        fieldModelAttachment
+        fieldModelAttachment,
+        SpiceAttachmentsContainer,
+        SpiceAttachmentAddFromRecordModal
     ]
 })
 export class ModuleSpiceAttachments {

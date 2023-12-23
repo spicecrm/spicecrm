@@ -45,12 +45,12 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit, OnD
     /**
      * holds the field
      */
-    public _field: string;
+    public _field: {id: string, name: string};
 
     /**
      * the available fields
      */
-    public _fields: any[] = [];
+    public _fields: {id: string, name: string}[] = [];
 
     public subscription: Subscription = new Subscription();
 
@@ -66,7 +66,14 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit, OnD
         let fields = this.metadata.getModuleFields(this.module);
 
         for (let field in fields) {
-            this._fields.push(field);
+
+            // skip the omitted fields
+            if (this.omittedFields.some(f => fields[field].name == f)) continue;
+
+            this._fields.push({
+                id: fields[field].name,
+                name: this.getFieldDisplay(fields[field].name)
+            });
         }
 
         this.sortFields();
@@ -77,26 +84,50 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit, OnD
         });
     }
 
+    /**
+     * holds the omitted fields array
+     * @private
+     */
+    private omittedFields: string[] = [];
+    /**
+     * set the omitted fields
+     * @param arr
+     */
+    @Input('omittedFields')
+    set omittedFieldsInput(arr: string[]) {
+        this.omittedFields = arr;
+        this._fields = this._fields.filter(f => this._field?.id == f.id || !arr.some(fo => fo == f.id));
+    }
+
+    /**
+     * get field display value
+     * @param fieldName
+     * @private
+     */
+    private getFieldDisplay(fieldName: string): string {
+        return this.language.getFieldDisplayName(this.module, fieldName) + (!this.displaytechnicalname ? '' : ` (${fieldName})`);
+    }
+
     public sortFields() {
-        this._fields.sort((a, b) => this.language.getFieldDisplayName(this.module, a).toLowerCase() > this.language.getFieldDisplayName(this.module, b).toLowerCase() ? 1 : -1);
+        this._fields.sort((a, b) => this.language.getFieldDisplayName(this.module, a.name).toLowerCase() > this.language.getFieldDisplayName(this.module, b.name).toLowerCase() ? 1 : -1);
     }
 
     /**
      * a getter for the companycode itself
      */
-    get field() {
+    get field(): {id: string, name: string} {
         return this._field;
     }
 
     /**
      * a setter for the companycode - also trigers the onchange
      *
-     * @param companycode the id of the companycode
+     * @param field
      */
-    set field(field) {
+    set field(field: {id: string, name: string}) {
         this._field = field;
         if (this.onChange) {
-            this.onChange(field);
+            this.onChange(field?.id);
         }
     }
 
@@ -126,7 +157,7 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit, OnD
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
-        this._field = value;
+        this._field = !value ? undefined : {id: value, name: this.getFieldDisplay(value)};
     }
 
     public ngOnDestroy(): void {

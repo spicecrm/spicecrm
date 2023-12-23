@@ -125,7 +125,7 @@ export class ObjectRecordCreateContainer implements OnInit {
                 break;
             case 'save':
                 this.navigationtab.closeTab();
-                this.model.goDetail();
+                this.model.goDetail(this.navigationtab ? this.navigationtab.objecttab.parentid : null);
                 break;
         }
     }

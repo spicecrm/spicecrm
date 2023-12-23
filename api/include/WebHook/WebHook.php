@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\WebHook;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 
 
 class WebHook
@@ -21,8 +22,18 @@ class WebHook
     public final function __construct()
     {
         $db = DBManagerFactory::getInstance();
-        $hooks = $db->query("SELECT * FROM syswebhooks");
-        while($hook = $db->fetchByAssoc($hooks)) $this->webhooks[]=$hook;
+
+        $cached = SpiceCache::get('webhooks');
+        if($cached) return $cached;
+        else {
+            $hooks = $db->query("SELECT * FROM syswebhooks");
+            while($hook = $db->fetchByAssoc($hooks)) $this->webhooks[]=$hook;
+
+           SpiceCache::set('webhooks', $this->webhooks);
+           return  $this->webhooks;
+        }
+
+
     }
 
     private function __clone()
@@ -69,6 +80,7 @@ class WebHook
        if($hook['webHook']['send_data']){
            $body['data'] = (new SpiceBeanHandler())->mapBean($bean);
        }
+       list($user,$pass) = explode(":",$hook['webHook']['custom_headers']);
 
        $curl = curl_init();
        $curlOptions = [
@@ -78,10 +90,11 @@ class WebHook
            CURLOPT_URL            => $hook['webHook']['url'],
            CURLOPT_POST           => true,
            CURLOPT_POSTFIELDS     => json_encode($body),
+           CURLOPT_HTTPAUTH       => CURLAUTH_BASIC,
            CURLOPT_HEADER         => 1,
            CURLOPT_HTTPHEADER     => [
                'Content-Type:application/json',
-               //$customHeader
+               'Authorization: Basic ' . $user . ':' . $pass,
            ],
        ];
        curl_setopt_array($curl, $curlOptions);

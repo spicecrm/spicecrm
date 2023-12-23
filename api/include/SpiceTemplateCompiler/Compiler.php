@@ -1,32 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\includes\SpiceTemplateCompiler;
 
@@ -36,11 +9,11 @@ use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
+use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SalesDocsTemplateFunctions;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 // CR1000360
@@ -576,33 +549,28 @@ class Compiler
 
         //parse pipe if passed in
 
-        $value = $this->handleSubstitution($conditionparts[0], $beans, true);
+        $value1 = trim($this->handleSubstitution($conditionparts[0], $beans, true), "'");
+        $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
 
-        switch ($conditionparts[1]) {
+        switch (strtolower($conditionparts[1])) {
             case '>':
-                return $value > trim($conditionparts[2], "'");
-                break;
+                return $value1 > $value2;
             case '>=':
-                return $value >= trim($conditionparts[2], "'");
-                break;
+                return $value1 >= $value2;
             case '<':
-                return$value < trim($conditionparts[2], "'");
-                break;
+                return$value1 < $value2;
             case '<=':
-                return $value <= trim($conditionparts[2], "'");
-                break;
+                return $value1 <= $value2;
             case '===':
-                return $value === trim($conditionparts[2], "'");
-                break;
+                return $value1 === $value2;
             case '==':
-                return $value == trim($conditionparts[2], "'");
-                break;
+                return $value1 == $value2;
             case '!=':
-                return $value != trim($conditionparts[2], "'");
-                break;
+                return $value1 != $value2;
             case 'in':
-                return in_array( $value, explode( ",", trim($conditionparts[2], "'")));
-                break;
+                return in_array( $value1, explode( ",", $value2));
+            case 'notin':
+                return !in_array( $value1, explode( ",", $value2));
         }
         return false;
 
@@ -702,7 +670,7 @@ class Compiler
                 $obj = (object)$this->additionalValues;
                 break;
             case 'func':
-                $obj = new SystemTemplateFunctions( $beans[$object], $this->currentTemplate );
+                $obj = new SalesDocsTemplateFunctions( $beans[$object], $this->currentTemplate );
                 break;
             case 'template':
                 $obj = BeanFactory::getBean($this->currentTemplate->_module, $this->currentTemplate->id);
@@ -759,19 +727,24 @@ class Compiler
 
     function handleSubstitution( $string, $beans, $raw = false ) {
         $items = preg_split('#\|#', $string );
-        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw , $bean);
+        $currentValue = $this->getValueForCompileblock( $items[0], $beans, $raw);
         for ( $i = 1; $i < count( $items ); $i++ ) {
-            if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans, $bean )) === false ) break;
+            if (( $temp = $this->doPipeItem( $currentValue, $items[$i], $beans )) === false ) break;
             $currentValue = $temp;
         }
         return $currentValue;
     }
 
-    function getValueForCompileblock($m, $beans, $raw = false , &$bean = null) {
+    function getValueForCompileblock($m, $beans, $raw = false ) {
 
         preg_match('#^([^:]+)(:(.*))?$#s', $m, $matches );
 
         $parts = explode('.', $matches[1] );
+
+        // if we have no parts return the value itself
+        if(count($parts) < 2) return $m;
+
+        // get the name
         $objectname = $parts[0];
 
         // get the object
@@ -868,7 +841,7 @@ class Compiler
                         $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
                         break;
                     case 'html':
-                        $value = html_entity_decode($obj->{$part});
+                        $value = SpiceUtils::cleanHtmlBody(html_entity_decode($obj->{$part}));
                         break;
                     case 'image':
                         if ( !empty( $obj->{$part} )) {
@@ -877,7 +850,7 @@ class Compiler
                         break;
                     default:
                         // moved nl2br to only be added when non specific fields are parsed
-                        $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
+                        $value = SpiceUtils::cleanHtmlBody($raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES)));
                         break;
                 }
             }
@@ -899,7 +872,7 @@ class Compiler
         return $this->executeFunction( true, $function, null, $params, $beans );
     }
 
-    function doPipeItem( $value, $pipeText, $beans, $bean = null ) {
+    function doPipeItem( $value, $pipeText, $beans ) {
         $pipeParts = self::parseParams( $pipeText );
         $pipeFunction = $pipeParts[0]['value'];
         $pipeParts = array_slice( $pipeParts, 1 );
@@ -908,7 +881,7 @@ class Compiler
             if ( $v['type'] === 'term' ) $partValues[] = $this->getValue( $v['value'], $beans );
             else $partValues[] = $v['value'];
         }
-        return $this->executeFunction( false, $pipeFunction, $value, $partValues, $beans, $bean );
+        return $this->executeFunction( false, $pipeFunction, $value, $partValues, $beans );
     }
 
     /**
@@ -942,7 +915,7 @@ class Compiler
      * @return mixed
      * @throws BadRequestException
      */
-    private function executeFunction( $noPipe, $name, $value, $pipeParams = [], $beans, $bean = null ) {
+    private function executeFunction( $noPipe, $name, $value, $pipeParams = [], $beans ) {
 
         $this->loadTemplateFunctions();
 
@@ -953,13 +926,13 @@ class Compiler
         $functionDef = ( $noPipe ? $this->noPipeFunctions[$name] : $this->pipeFunctions[$name] );
 
         if ( strpos( $functionDef['method'], '::') !== false ) {
-            if ( $noPipe ) return $functionDef['method']($this, $bean, ...$pipeParams );
-            else return $functionDef['method']($this, $bean, $value, ...$pipeParams ) ;
+            if ( $noPipe ) return $functionDef['method']($this, $beans, ...$pipeParams );
+            else return $functionDef['method']($this, $beans, $value, ...$pipeParams ) ;
         } else if ( strpos( $functionDef['method'], '->') !== false ) {
             $funcArray = explode('->', $functionDef['method'] );
             $obj = new $funcArray[0]();
-            if ( $noPipe ) return $obj->{$funcArray[1]}($this, $bean, ...$pipeParams );
-            else return $obj->{$funcArray[1]}($this, $bean, $value, ...$pipeParams );
+            if ( $noPipe ) return $obj->{$funcArray[1]}($this, $beans, ...$pipeParams );
+            else return $obj->{$funcArray[1]}($this, $beans, $value, ...$pipeParams );
         } else {
             return $value;
         }

@@ -1,39 +1,5 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data\Relationships;
 
@@ -54,6 +20,8 @@ use SpiceCRM\includes\utils\SpiceUtils;
 class M2MRelationship extends SugarRelationship
 {
     var $type = "many-to-many";
+
+    const REL_ID = "relid";
 
     public function __construct($def)
     {
@@ -345,7 +313,15 @@ class M2MRelationship extends SugarRelationship
     public function load($link, $params = [])
     {
         $db = DBManagerFactory::getInstance();
-        $query = $this->getQuery($link, $params);
+        // for elasticsearch results have to be returned without paging
+        $rangeParams = $params;
+
+        if (!empty($params['searchterm'])) {
+            $rangeParams['limit'] = 0;
+            $rangeParams['offset'] = 0;
+        }
+
+        $query = $this->getQuery($link, $rangeParams);
         $result = $db->query($query);
         $rows = [];
         $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
@@ -356,7 +332,19 @@ class M2MRelationship extends SugarRelationship
             $id = empty($row['id']) ? $row[$idField] : $row['id'];
             $rows[$id] = $row;
         }
-        return ["rows" => $rows];
+
+        if (!empty($params['searchterm'])) {
+            $rows = $this->getResultsFilteredByFTS($link->getRelatedModuleName(), $params, $rows);
+
+            $this->count = count($rows);
+            $rows = array_slice($rows, $params['offset'], $params['limit']);
+        } else {
+            $this->count = count($rows);
+        }
+
+        return [
+            "rows" => $rows
+        ];
     }
 
     protected function linkIsLHS($link) {
@@ -627,4 +615,66 @@ class M2MRelationship extends SugarRelationship
         return $fields;
     }
 
+    /**
+     * @return array
+     */
+    protected function getResultsFilteredByFTS($module, $params, $presults) {
+        $rows = [];
+
+        // check if fts index available for module
+        if (!SpiceFTSHandler::getInstance()->checkModule($module, true)) {
+            return $presults;
+        }
+
+        // extract needed params
+        [
+            'limit' => $size,
+            'offset' => $start,
+            'searchterm' => $searchterm
+        ] = $params;
+
+        // collect ids from unfiltered results
+        $ids = array_column($presults, self::REL_ID);
+
+        // build fts search options
+        $filterArray = [
+            'bool' => [
+                'must' => [
+                    [
+                        'terms' => [
+                            "id" => $ids
+                        ]
+                    ],
+                ],
+            ]
+        ];
+
+        // get results from FTS (make sure 'filterArray' is within in an array itself)
+        $filteredResults = SpiceFTSHandler::getInstance()->searchModule($module, $searchterm, [], [], ($params['limit'] ? $params['limit'] : 25), ($params['offset'] ? $params['offset'] : 0), [$filterArray]);
+
+        // collect FTS ids
+        if ($hits = $filteredResults['hits']['hits']) {
+            $filteredIds = array_column($hits, '_id');
+
+            // filter db results by FTS results
+            $rows = array_filter($presults, function($row) use ($filteredIds) {
+                return in_array($row['id'], $filteredIds);
+            });
+        }
+
+        return $rows;
+    }
+
+    public function getCount($link, $params) {
+        if (!empty($params['searchterm'])) {
+            return $this->count;
+        } else {
+            $params['return_as_array'] = true;
+            $queryArray = $this->getQuery($link, $params);
+            $queryArray['select'] = 'SELECT count(*) relcount';
+            $db = DBManagerFactory::getInstance();
+            $result = $db->fetchByAssoc($db->query($queryArray['select'] . ' ' . $queryArray['from'] . ' ' . $queryArray['where']));
+            return $result['relcount'];
+        }
+    }
 }

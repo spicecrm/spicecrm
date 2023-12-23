@@ -1,41 +1,7 @@
 <?php
 
 namespace SpiceCRM\includes\Soap;
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\data\BeanFactory;
@@ -383,7 +349,9 @@ class SpiceSoapServiceImpl
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $error = new SoapError();
-        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'write', 'no_access', $error)) {
+        if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'edit', 'no_access', $error)) {
+            $error->set_error('no_access');
+            self::$helperObject->setFaultObject($error);
             return;
         } // if
 
@@ -418,7 +386,9 @@ class SpiceSoapServiceImpl
                 $return_fields[] = $value['name'];
             }
         }
-        if (!self::$helperObject->checkACLAccess($seed, 'Save', $error, 'no_access') || ($seed->deleted == 1 && !self::$helperObject->checkACLAccess($seed, 'Delete', $error, 'no_access'))) {
+        if (!self::$helperObject->checkACLAccess($seed, 'edit', $error, 'no_access') || ($seed->deleted == 1 && !self::$helperObject->checkACLAccess($seed, 'delete', $error, 'no_access'))) {
+            $error->set_error('no_access');
+            self::$helperObject->setFaultObject($error);
             return;
         } // if
 

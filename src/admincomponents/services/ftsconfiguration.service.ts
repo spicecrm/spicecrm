@@ -11,6 +11,7 @@ import {backend} from '../../services/backend.service';
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {modal} from "../../services/modal.service";
 import {Subject} from "rxjs";
+import {configurationService} from "../../services/configuration.service";
 
 @Injectable()
 export class ftsconfiguration {
@@ -29,7 +30,8 @@ export class ftsconfiguration {
         public metadata: metadata,
         public language: language,
         public modal: modal,
-        public toast: toast
+        public toast: toast,
+        public configurationService: configurationService,
     ) {
         this.backend.getRequest('configuration/elastic/core/modules').subscribe(modules => this.modules = modules);
         this.backend.getRequest('configuration/elastic/core/analyzers').subscribe(analyzers => this.analyzers = analyzers.sort((a, b) => a.value > b.value ? 1 : -1));
@@ -101,6 +103,7 @@ export class ftsconfiguration {
             if (!notify) return;
             if (response) {
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                this.configurationService.reloadTaskData('moduledefs');
             } else {
                 this.toast.sendToast(this.language.getLabel('ERR_NETWORK'), 'error');
             }

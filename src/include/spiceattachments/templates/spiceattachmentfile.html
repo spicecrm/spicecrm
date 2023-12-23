@@ -6,14 +6,13 @@
 </div>
 <div class="slds-media__body">
     <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
-        <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small" (click)="previewFile($event)">
+        <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small" (click)="preview($event)">
             <a href="javascript:void(0);">{{file.filename}}</a>
         </h3>
         <div *ngIf="!uploading && editmode" class="slds-shrink-none">
             <button  class="slds-button slds-button--icon" (click)="deleteFile()">
                 <system-button-icon icon="clear"></system-button-icon>
             </button>
-            <!--object-file-action-menu [file]="file"></object-file-action-menu-->
         </div>
     </div>
     <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small">

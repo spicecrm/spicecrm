@@ -1,11 +1,13 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()"
+                       [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div class="slds-grid slds-grid--vertical-align-center slds-text-link_reset" (click)="navigateTo()">
-        <system-utility-icon *ngIf="url" class="slds-m-right--xx-small" icon="world" size="x-small"></system-utility-icon>
-        <div class="slds-truncate">{{url}}</div>
+            <system-utility-icon *ngIf="url" class="slds-m-right--xx-small" [icon]="fieldconfig.iconname ? fieldconfig.iconname : 'world'" size="x-small"></system-utility-icon>
+            <div *ngIf="!fieldconfig.icononly" class="slds-truncate">{{url}}</div>
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread" [ngClass]="getFieldClass()">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
+     [ngClass]="getFieldClass()">
     <input #focus class="slds-input" type="text" [(ngModel)]="value" [ngModelOptions]="modelOptions"/>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

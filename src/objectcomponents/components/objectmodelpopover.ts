@@ -95,6 +95,16 @@ export class ObjectModelPopover implements OnInit {
      */
     public widthcorrection = 30;
 
+    /**
+     * module from injector
+     */
+    public popovermodule: string;
+
+    /**
+     * id from injector
+     */
+    public popoverid: string;
+
     constructor(
         public model: model,
         public view: view,
@@ -166,6 +176,14 @@ export class ObjectModelPopover implements OnInit {
     public ngOnInit() {
         // load the fields
         let componentconfig = this.metadata.getComponentConfig('ObjectModelPopover', this.model.module);
+
+        // load the model from injector
+        if(this.popoverid && this.popovermodule) {
+            this.model.module = this.popovermodule;
+            this.model.id = this.popoverid;
+            this.model.getData();
+        }
+
         if (componentconfig.fieldset || componentconfig.componentset) {
             this.fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
 

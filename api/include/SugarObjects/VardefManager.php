@@ -470,14 +470,6 @@ class VardefManager{
             return;
         }
 
-        // --- LEGACY LOGIC: Retrieve the vardefs from cache or reload on refresh=true --- //
-        //here check if the cache file exists, if it does then load it, if it doesn't
-        //then call refreshVardef
-        //if either our session or the system is set to developerMode then refresh is set to true
-        if (SpiceUtils::inDeveloperMode() || !empty($_SESSION['developerMode'])) {
-            $refresh = true;
-        }
-
         // legacy logic: Retrieve the vardefs from cache or reload on refresh=true
         if(!$refresh)
         {

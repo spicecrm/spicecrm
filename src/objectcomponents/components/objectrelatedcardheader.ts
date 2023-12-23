@@ -46,6 +46,7 @@ export class ObjectRelatedCardHeader implements OnInit {
      * indicates if the panel is open ... this is checked fromt eh vcard to render the content or not
      */
     public isopen: boolean = true;
+    public disabled: boolean = true;
 
     /**
      * Reference to <ng-content></ngcontent>. Is needed in the template.
@@ -59,6 +60,7 @@ export class ObjectRelatedCardHeader implements OnInit {
             // use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
             setTimeout(() => this.isopen = !this.componentconfig.collapsed);
         }
+        if (!!this.componentconfig.displaysearch) this.disabled = false;
     }
 
     /**
@@ -107,4 +109,32 @@ export class ObjectRelatedCardHeader implements OnInit {
         return !fieldStatus || fieldStatus > 2 ? true : false;
     }
 
+    set searchTerm(value: string) {
+
+        if (value == this.relatedmodels.searchTerm) return;
+
+        this.relatedmodels.searchTerm = value;
+        this.reloadList();
+    }
+
+    get searchTerm(): string {
+        return this.relatedmodels.searchTerm;
+    }
+
+    /**
+     * clears the searchterm
+     * @private
+     */
+    public clearSearchTerm() {
+        this.searchTerm = '';
+    }
+
+    /**
+     * reload the model list on 1 second timeout
+     * @private
+     */
+    public reloadList() {
+        this.relatedmodels.offset = 0;
+        this.relatedmodels.getData();
+    }
 }

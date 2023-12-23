@@ -17,7 +17,18 @@ export class ReporterFieldCategoryTree {
     /**
      * the field
      */
-    public field: {fieldid: string, fieldname: string};
+    public field: any;
+
+    /**
+     * the fieldname in focus
+     */
+    public fieldName: string;
+
+    /**
+     * the module in focus
+     */
+    public moduleName: string;
+
     /**
      * category nodes for a spefcific level object key category node_key value node_name
      * @private
@@ -46,6 +57,28 @@ export class ReporterFieldCategoryTree {
     }
 
     public ngOnInit() {
+
+
+        let pathArray = this.field.path.split('::');
+
+        // get the entries in the path
+        let arrCount = pathArray.length;
+
+        // the last entry has to be the field
+        let fieldArray = pathArray[arrCount - 1].split(':');
+        this.fieldName = fieldArray[1];
+
+        let moduleArray = pathArray[arrCount - 2].split(':');
+        switch (moduleArray[0]) {
+            case 'root':
+                this.moduleName = moduleArray[1];
+                break;
+            case 'link':
+                let field = this.metadata.getFieldDefs(moduleArray[1], moduleArray[2]);
+                this.moduleName = field.module;
+                break;
+        }
+
 
         const treeId = this.setCategoryField();
 
@@ -82,12 +115,12 @@ export class ReporterFieldCategoryTree {
     private setCategoryField(): string {
 
         let treeId;
-        const moduleDefs = this.metadata.getModuleDefs(this.record.sugarRecordModule);
+        const moduleDefs = this.metadata.getModuleDefs(this.moduleName);
 
         if (!moduleDefs?.categorytrees) return treeId;
 
         moduleDefs.categorytrees.some(t => {
-            const moduleField = Object.keys(t).find(key => t[key] == this.field.fieldname);
+            const moduleField = Object.keys(t).find(key => t[key] == this.fieldName);
             if (moduleField) {
                 treeId = t.syscategorytree_id;
                 this.categoryField = moduleField;

@@ -1,7 +1,7 @@
 <div [ngStyle]="style" cdkDropList #dropList="cdkDropList" (cdkDropListEntered)="dragEntered = true"
      (cdkDropListExited)="dragEntered = false" (cdkDropListDropped)="onDrop($event)"
      [cdkDropListEnterPredicate]="sectionPredicate" [cdkDropListData]="body"
-     style="height: 100%; width: 100%" class="spice-page-builder-renderer-drop-list">
+     style="min-height: 100%; width: 100%" class="spice-page-builder-renderer-drop-list">
     <spice-page-builder-element-section *ngFor="let section of body.children; trackBy: trackByFn"
                                          [ngStyle]="section.style" [cdkDragData]="section"
                                          (delete$)="onSectionDelete(section)" [section]="section" cdkDrag

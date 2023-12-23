@@ -51,6 +51,9 @@ export class AdministrationConfigurator implements OnInit {
     public ngOnInit() {
         this.administrationconfigurator.dictionary = this.componentconfig.dictionary;
         this.administrationconfigurator.loadEntries(this.componentconfig.fields);
+        if (Array.isArray(this.componentconfig.reloadTaskItems)) {
+            this.administrationconfigurator.reloadTaskItems = this.componentconfig.reloadTaskItems;
+        }
     }
 
     get count(){

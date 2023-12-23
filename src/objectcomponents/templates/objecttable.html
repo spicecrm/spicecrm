@@ -1,17 +1,23 @@
-<table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal slds-table_fixed-layout">
+<table [class.slds-table--header-fixed]="fixedHeader" class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal slds-table_fixed-layout">
     <thead>
-    <tr class="slds-text-title--caps">
-        <th *ngIf="selectable" class="slds-cell-shrink" scope="col">
-            <span class="slds-assistive-text" id="check-group-header"><system-label label="LBL_CHOOSE_ROWS_TO_SELECT"></system-label></span>
-            <system-checkbox [ngModel]="areAllObjectsSelected()" (ngModelChange)="toggleAll()" [disabled]="objects.length > max_selections"></system-checkbox>
-        </th>
-        <th *ngFor="let field of fields" scope="col">
-            <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate"><system-label-fieldname [module]="module" [field]="field.field" [fieldconfig]="field.fieldconfig"></system-label-fieldname></div>
-        </th>
-    </tr>
+        <tr class="slds-text-title--caps">
+            <th *ngIf="selectable" class="slds-cell-shrink" scope="col">
+                <span class="slds-assistive-text" id="check-group-header"><system-label label="LBL_CHOOSE_ROWS_TO_SELECT"></system-label></span>
+                <system-checkbox [ngModel]="areAllObjectsSelected()" (ngModelChange)="toggleAll()" [disabled]="objects.length > max_selections"></system-checkbox>
+            </th>
+            <th *ngFor="let field of fields" scope="col">
+                <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate" [class.slds-p-around--xx-small]="fixedHeader"><system-label-fieldname [module]="module" [field]="field.field" [fieldconfig]="field.fieldconfig"></system-label-fieldname></div>
+            </th>
+        </tr>
     </thead>
-    <tbody>
-    <tr object-table-row *ngFor="let object of objects" [fields]="fields" [system-model-provider]="{module:module, data:object}" [selectable]="selectable ? true : null" (select)="select($event)" (unselect)="unselect($event)" [selected]="isObjectSelected(object)">
-    </tr>
+    <tbody *ngIf="!isLoading">
+        <tr object-table-row *ngFor="let object of objects" [fields]="fields" [system-model-provider]="{module:module, data:object}" [selectable]="selectable ? 'true' : null" (select)="select($event)" (unselect)="unselect($event)" [selected]="isObjectSelected(object)">
+        </tr>
+    </tbody>
+    <tbody *ngIf="isLoading" class="slds-is-relative">
+        <tr style="position: absolute; background: linear-gradient(rgba(0,0,0,0) 0%, rgba(255,255,255,.8) 100%); width: 100%; height: 100%; z-index: 1"></tr>
+        <tr *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
+            <td *ngFor="let f of fields" style="overflow: hidden"><system-stencil/></td>
+        </tr>
     </tbody>
 </table>

@@ -1,0 +1,52 @@
+<div class="slds-grid slds-grid--vertical" style="height: 100%">
+    <div class="slds-grid slds-border--bottom">
+        <div class="slds-align--absolute-center slds-m-around--none slds-p-vertical--x-small slds-text-align--center slds-height_full" [style.width.px]="calendar.sheetTimeWidth">
+            {{offset}}
+        </div>
+        <div class="slds-border--left slds-p-top--xx-small slds-grow">
+            <div class="slds-p-bottom--xx-small" [ngClass]="dayTextContainerClass" [ngStyle]="isTodayStyle">
+                <div class="slds-p-left--x-small slds-truncate" [ngClass]="dayTextClass">{{calendar.weekdayShort(displayDate('weekday'))}}</div>
+                <h1 class="slds-p-left--x-small slds-truncate" [ngClass]="dateTextClass">{{displayDate('date')}}</h1>
+            </div>
+            <div [style.min-height.px]="calendar.multiEventHeight" class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small">
+                <ng-container *ngFor="let event of ownerMultiEvents; trackBy: trackByItemFn">
+                    <calendar-sheet-event [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-event>
+                </ng-container>
+                <ng-container *ngFor="let event of userMultiEvents; trackBy: trackByItemFn">
+                    <calendar-sheet-event [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-event>
+                </ng-container>
+                <ng-container *ngFor="let event of groupwareMultiEvents; trackBy: trackByItemFn">
+                    <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-google-event>
+                    <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-microsoft-event>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div #sheetContainer class="slds-scrollable--y slds-is-relative slds-grow calendar-event-drag-boundary">
+        <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByIndexFn" class="slds-grid">
+            <div [style.width.px]="calendar.sheetTimeWidth" class="slds-height_full">
+                <div class="slds-text-align--center slds-border--bottom" [style.height.px]="calendar.sheetHourHeight">{{sheetHour}}:00</div>
+            </div>
+            <div class="slds-border--left slds-border--bottom slds-grow" [style.height.px]="calendar.sheetHourHeight">
+                <div class="slds-grid slds-grid--vertical" style="height: 50%">
+                    <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="0" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                    <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="1" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                </div>
+                <div class="slds-border--top slds-grid slds-grid--vertical" style="height: 50%">
+                    <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="2" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                    <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="3" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngFor="let event of ownerEvents; trackBy: trackByItemFn">
+            <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" (eventDrop)="onEventDrop($event)" class="spice-calendar-event"></calendar-sheet-event>
+        </ng-container>
+        <ng-container *ngFor="let event of userEvents; trackBy: trackByItemFn">
+            <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" (eventDrop)="onEventDrop($event)" class="spice-calendar-event"></calendar-sheet-event>
+        </ng-container>
+        <ng-container *ngFor="let event of groupwareEvents; trackBy: trackByItemFn">
+            <calendar-sheet-google-event *ngIf="event.type == 'google'" [event]="event" [ngStyle]="event.style" class="spice-calendar-event"></calendar-sheet-google-event>
+            <calendar-sheet-microsoft-event *ngIf="event.type == 'microsoft'" [event]="event" [ngStyle]="event.style" class="spice-calendar-event"></calendar-sheet-microsoft-event>
+        </ng-container>
+    </div>
+</div>

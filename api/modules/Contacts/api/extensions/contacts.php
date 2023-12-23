@@ -71,6 +71,36 @@ $routes = [
             ],
         ],
     ],
+    [
+        'method'      => 'put',
+        'route'       => '/module/Contacts/{id}/msgraphsync',
+        'class'       => ContactsController::class,
+        'function'    => 'msgraphSync',
+        'description' => 'send contact to msgraph',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Contact id',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+        ],
+    ],
+    [
+        'method'      => 'delete',
+        'route'       => '/module/Contacts/{id}/msgraphsync',
+        'class'       => ContactsController::class,
+        'function'    => 'msgraphDelete',
+        'description' => 'delete contact from msgraph',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Contact id',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+        ],
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);

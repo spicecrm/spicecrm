@@ -1,1 +1,4 @@
-<iframe style="height: 400px;" [src]="sanitizedValue" style="resize: vertical;" width="100%" frameborder="0" seamless="true" sandbox></iframe>
+<iframe *ngIf="!isLoading && iframeUrl" style="height: 400px;" [src]="iframeUrl" style="resize: vertical;" width="100%" frameborder="0" seamless="true" sandbox></iframe>
+<div *ngIf="isLoading" class="slds-p-around--small">
+    <system-stencil></system-stencil>
+</div>

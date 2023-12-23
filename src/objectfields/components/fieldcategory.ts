@@ -89,7 +89,7 @@ export class fieldCategory extends fieldGeneric implements OnInit, OnDestroy {
     // get the display value
     get display_value() {
         let n = this.categories.find(n => n.node_key == this.value)
-        return n ? n.node_name : this.value;
+        return n ? this.language.getLabel(n.node_name) : this.value;
         // return `I am a category ${this.value}`;
     }
 }

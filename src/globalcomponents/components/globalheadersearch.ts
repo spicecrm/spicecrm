@@ -21,6 +21,13 @@ import {userpreferences} from "../../services/userpreferences.service";
 export class GlobalHeaderSearch {
 
     @ViewChild('searchfield', {read: ViewContainerRef, static: false}) public searchfield: ViewContainerRef;
+    /**
+     * indicates if the entered search terms would provoke any error
+     * dues to the min engram restrictions and thus
+     * would certainly not find any results
+     */
+    public searchTermErrors: {label: string, nestedValues: string[]}[];
+    public showError: boolean = false;
 
     public isFocused = false;
     public showRecent: boolean = false;
@@ -63,6 +70,10 @@ export class GlobalHeaderSearch {
         public userPreferences: userpreferences,
         public language: language
     ) {
+    }
+
+    get minNGram() {
+        return this.configuration.getCapabilityConfig('search').min_ngram ?? 3;
     }
 
     get showModuleSelector() {
@@ -124,6 +135,8 @@ export class GlobalHeaderSearch {
         // make sure the popup is open
         this.showRecent = true;
 
+        let errors: {label: string, nestedValues: string[]}[] | undefined;
+
         // handle the key pressed
         switch (_e.key) {
             case 'ArrowDown':
@@ -131,43 +144,46 @@ export class GlobalHeaderSearch {
                 break;
             case 'Enter':
                 this.searchTerm = this.searchTermUntrimmed.trim();
-                if (this.searchTerm.length && this.searchTermsValid(this.searchTerm)) {
-                    // if we wait for completion kill the timeout
-                    if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
-                    // close the dropdown
-                    this.showRecent = false;
+                errors = this.fts.checkForSearchTermErrors(this.searchTerm);
 
-                    // navigate to the search view
-                    if (this.searchTerm.length > 0) {
-                        this.router.navigate(['/search/' + encodeURIComponent(btoa(this.searchTerm))]);
+                if (!errors) {
+
+                    this.searchTermErrors = undefined;
+
+                    if (this.searchTerm.length) {
+                        // if we wait for completion kill the timeout
+                        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+
+                        // close the dropdown
+                        this.showRecent = false;
+
+                        // navigate to the search view
+                        if (this.searchTerm.length > 0) {
+                            this.router.navigate(['/search/' + encodeURIComponent(btoa(this.searchTerm))]);
+                        }
                     }
+
+                } else {
+                    this.searchTermErrors = errors;
                 }
                 break;
             default:
                 if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-                if (this.searchTermsValid(this.searchTermUntrimmed.trim())) {
+
+                errors = this.fts.checkForSearchTermErrors(this.searchTermUntrimmed.trim());
+
+                if (!errors) {
+                    this.searchTermErrors = undefined;
                     this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
                 } else if (this.searchTermUntrimmed.trim() == '') {
                     this.searchTerm = '';
+                    this.searchTermErrors = undefined;
+                } else {
+                    this.searchTimeOut = window.setTimeout(() => this.searchTermErrors = errors, 1000);
                 }
                 break;
         }
-    }
-
-
-    /**
-     * checks if we have the proper length of searchterms
-     *
-     * @param searchTerm
-     * @private
-     */
-    public searchTermsValid(searchTerm) {
-        let config = this.configuration.getCapabilityConfig('search');
-        let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
-        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 50;
-        let items = searchTerm.split(' ');
-        return items.filter(i => i.length < minNgram || i.length > maxNgram).length == 0;
     }
 
     public onClick(event: MouseEvent): void {

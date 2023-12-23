@@ -493,13 +493,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'options' => 'dom_meeting_accept_status',
             'comment' => 'non db field retrieved from the relationship to the meeting call etc'
         ],
-        'activity_status_date_modified' => [
-            'name' => 'activity_status_date_modified',
-            'type' => 'datetime',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODIFIED',
-            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-        ],
         'activity_required' => [
             'name' => 'activity_required',
             'type' => 'bool',
@@ -1183,7 +1176,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'rhs_module' => 'Users',
             'rhs_table' => 'users',
             'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many'
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column'       => 'parent_type',
+            'relationship_role_column_value' => 'Employees',
         ]
     ]
 ];

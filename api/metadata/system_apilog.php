@@ -96,6 +96,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['sysapilog'] = [
         'runtime' => [
             'name' => 'runtime',
             'type' => 'int',
+            'comment' => 'the runtime in milliseconds'
         ],
         'user_id' => [
             'name' => 'user_id',

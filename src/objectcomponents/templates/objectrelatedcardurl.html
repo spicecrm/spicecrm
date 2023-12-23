@@ -1,0 +1,37 @@
+<div class="slds-media slds-truncate" style="width: 300px">
+    <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
+        <system-file-icon size="'small'"></system-file-icon>
+    </div>
+    <div class="slds-media__body" style="width: 260px">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+            <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small"
+                [system-title]="url.description" (click)="openUrl()">
+                <a *ngIf="!!url.url_name; else urlNameContainer" href="javascript:void(0);"> {{url.url_name}}</a>
+                <ng-template #urlNameContainer>
+                    <a href="javascript:void(0);">{{url.url}}</a>
+                </ng-template>
+            </h3>
+            <div *ngIf="!uploading" class="slds-shrink-none">
+                <object-url-action-menu [url]="url"></object-url-action-menu>
+            </div>
+        </div>
+        <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small">
+            <ul class="slds-list--vertical">
+                <li [system-title]="urlDate" class="slds-item">{{urlDate}}</li>
+            </ul>
+            <div *ngIf="!!url.url_name" [system-title]="url.url"
+                 class="slds-text-color--inverse-weak slds-truncate">{{url.url}}</div>
+        </div>
+        <div *ngIf="uploading"
+             class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+            <div class="slds-progress-bar">
+            <span class="slds-progress-bar__value" [ngStyle]="progressbarstyle">
+                <span class="slds-assistive-text">Progress: 25%</span>
+            </span>
+            </div>
+            <div class="slds-text-align--right" style="width: 50px;">
+                {{url.uploadprogress}} %
+            </div>
+        </div>
+    </div>
+</div>

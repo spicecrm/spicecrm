@@ -2,18 +2,22 @@
  * @module SystemComponents
  */
 import {
+    AfterContentInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component,
+    Component, ContentChildren,
     ElementRef,
     forwardRef,
-    Input,
+    Input, QueryList,
     Renderer2,
     SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {SystemDropdownTriggerDirective} from "../../directives/directives/systemdropdowntrigger";
+import {SystemSelectOption} from "./systemselectoption";
+import {SystemSelectNgModelValue, SystemSelectOptionI} from "../interfaces/systemcomponents.interfaces";
 
 /**
  * @ignore
@@ -30,11 +34,16 @@ declare var _;
         multi: true
     }]
 })
-export class SystemSelect implements ControlValueAccessor {
+export class SystemSelect implements ControlValueAccessor, AfterContentInit {
     /**
-     * the input list to be displayed
+     * reference to the dropdown trigger directive
+     * @private
      */
-    @Input() public selectList: { id: string, name: string, group?: string }[] = [];
+    @ViewChild(SystemDropdownTriggerDirective) private dropdownTrigger: SystemDropdownTriggerDirective;
+    /**
+     * when true emit and receive the id as ngModel value
+     */
+    @Input() public idOnly: boolean = false;
     /**
      * label of the form element
      */
@@ -58,11 +67,11 @@ export class SystemSelect implements ControlValueAccessor {
     /**
      * holds the search list results
      */
-    public searchList: { id: string, name: string, content: string, group?: string }[] | any = {};
+    public searchList: SystemSelectOptionI[] = [];
     /**
      * holds a boolean to show/hide the results list
      */
-    public searchListVisible: boolean = false;
+    public searchListIsVisible: boolean = false;
     /**
      * holds the focused dom item data
      */
@@ -71,12 +80,18 @@ export class SystemSelect implements ControlValueAccessor {
      * change emitter by ngModel
      * @private
      */
-    public onChange: (value: { id: string, name: string, group?: string } | string) => void;
+    public onChange: (value: SystemSelectNgModelValue | string) => void;
     /**
      * reference to the result list ul element
      * @private
      */
     @ViewChild('resultList', {read: ViewContainerRef}) public resultListContainer: ViewContainerRef;
+    /**
+     * true if the focus in the input
+     */
+    public inputIsVisible: boolean = false;
+
+    @ContentChildren(SystemSelectOption) private options: QueryList<SystemSelectOption>;
 
     constructor(public elementRef: ElementRef,
                 public cdRef: ChangeDetectorRef,
@@ -88,6 +103,10 @@ export class SystemSelect implements ControlValueAccessor {
      */
     get dropdownLength() {
         return `calc(((1rem * 1.5) + 1rem) * ${this.listHeight})`;
+    }
+
+    public ngAfterContentInit() {
+        this.searchList = this.generateSearchList();
     }
 
     /**
@@ -114,19 +133,29 @@ export class SystemSelect implements ControlValueAccessor {
      * Write a new value to the element.
      * @param value
      */
-    public writeValue(value: { id: string, name: string, group?: string }) {
+    public writeValue(value: string | SystemSelectNgModelValue) {
+
         if (!value) return;
+
+        if(typeof value == 'string') {
+            value = this.searchList.find(e => e.id == value);
+        }
         this.value = value.name;
         this.focusedItemId = value.id;
+
         this.cdRef.detectChanges();
     }
 
     /**
-     * generate search list
+     * emit the value by ngModelChange
+     * @param option
      */
-    public ngOnChanges(changes: SimpleChanges) {
-        if (changes.selectList) {
-            this.searchList = this.generateSearchList();
+    public emitValue(option: SystemSelectOptionI) {
+
+        if (this.idOnly) {
+            this.onChange(option?.id);
+        } else {
+            this.onChange({id: option.id, name: option.name, group: option.group});
         }
     }
 
@@ -138,7 +167,7 @@ export class SystemSelect implements ControlValueAccessor {
 
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
-            this.hideSearchList();
+            this.setSearchListVisible(false);
         }
     }
 
@@ -155,14 +184,21 @@ export class SystemSelect implements ControlValueAccessor {
             case 'Enter':
                 this.handleEnterPress();
                 break;
+            case 'Escape':
+                event.stopPropagation();
+                this.setSearchListVisible(false);
+                break;
             default:
+                if (!this.value) {
+                    this.onChange(undefined);
+                }
                 this.filterSearchList();
                 break;
         }
 
         if (this.searchList.length == 0 || event.key == 'Enter') {
 
-            this.hideSearchList();
+            this.setSearchListVisible(false);
         }
 
         this.cdRef.detectChanges();
@@ -173,15 +209,16 @@ export class SystemSelect implements ControlValueAccessor {
      */
     public onFocus() {
 
-        this.searchListVisible = true;
-
+        this.setSearchListVisible(true);
+        this.inputIsVisible = true;
     }
 
     /**
      * handle input blur the hide the result list
      */
     public onBlur(event: FocusEvent) {
-        this.hideSearchList();
+        this.inputIsVisible = false;
+        this.setSearchListVisible(false);
     }
 
     /**
@@ -190,32 +227,29 @@ export class SystemSelect implements ControlValueAccessor {
      */
     public onInputClick(event: MouseEvent) {
 
-        if (!this.searchListVisible) {
+        if (!this.searchListIsVisible) {
             this.searchList = this.generateSearchList();
         }
 
-        this.searchListVisible = true;
+        this.setSearchListVisible(true);
         event.stopPropagation();
     }
 
     /**
      * handle result list item click
-     * @param item
+     * @param listItem
      * @param event
      * @private
      */
-    public itemClicked(item, event) {
+    public itemClicked(listItem: SystemSelectOptionI, event: MouseEvent) {
 
-        this.hideSearchList();
+        this.setSearchListVisible(false);
 
-        this.selectList.some((listItem) => {
-            if (listItem.id == item.id) {
-                this.onChange(listItem);
-                this.value = listItem.name;
-                this.focusedItemId = listItem.id;
-                return true;
-            }
-        });
+        this.emitValue(listItem);
+        this.value = listItem.name;
+        this.focusedItemId = listItem.id;
+
+        this.inputIsVisible = false;
 
         if (event.stopPropagation) event.stopPropagation();
     }
@@ -223,9 +257,17 @@ export class SystemSelect implements ControlValueAccessor {
     /**
      * hide the search list and destroy the outside click listener
      */
-    public hideSearchList() {
-        this.searchListVisible = false;
-        this.cdRef.detectChanges();
+    public setSearchListVisible(bool: boolean) {
+
+        this.searchListIsVisible = bool && this.searchList.length > 0;
+
+        if (!bool && this.dropdownTrigger.dropDownOpen) {
+            this.dropdownTrigger.toggleDropdown();
+        }
+
+        if (bool && !this.dropdownTrigger.dropDownOpen) {
+            this.dropdownTrigger.toggleDropdown();
+        }
     }
 
     /**
@@ -233,8 +275,7 @@ export class SystemSelect implements ControlValueAccessor {
      * @private
      */
     public filterSearchList() {
-
-        this.searchListVisible = true;
+        this.setSearchListVisible(true);
         this.focusedItemId = undefined;
 
         this.searchList = this.generateSearchList();
@@ -269,11 +310,13 @@ export class SystemSelect implements ControlValueAccessor {
      */
     public handleEnterPress() {
         if (!!this.focusedItemId) {
-            this.onChange(
-                this.selectList.find(e => e.id == this.focusedItemId)
+            this.emitValue(
+                this.searchList.find(e => e.id == this.focusedItemId)
             );
+            this.inputIsVisible = false;
         } else if (this.emitInputValueOnEnterPress) {
             this.onChange(this.value);
+            this.inputIsVisible = false;
         }
     }
 
@@ -282,10 +325,10 @@ export class SystemSelect implements ControlValueAccessor {
      * @return array of the search list
      * @private
      */
-    public generateSearchList(): { id: string, name: string, group?: string }[] {
+    public generateSearchList(): SystemSelectOptionI[] {
 
         const searchList = [];
-        const groups = _.uniq(this.selectList.map(e => e.group)).sort();
+        const groups = _.uniq(this.options.map(e => e.group)).sort();
 
         groups.forEach((g) => {
 
@@ -295,10 +338,10 @@ export class SystemSelect implements ControlValueAccessor {
                     );
                 }
 
-                this.selectList.filter(e => e.group == g)
-                    .sort((a, b) => a.name > b.name ? 1 : -1)
+                this.options.filter(e => e.group == g)
+                    .sort((a, b) => a.display > b.display ? 1 : -1)
                     .forEach((e) =>
-                        searchList.push({...e, content: e.name})
+                        searchList.push({id: e.value, name: e.display, content: e.display, group: g})
                     );
             }
         );
@@ -313,7 +356,7 @@ export class SystemSelect implements ControlValueAccessor {
      */
     public navigateThroughResultList(event: KeyboardEvent) {
 
-        let list = !this.searchListVisible ? this.generateSearchList() : this.searchList;
+        let list = !this.searchListIsVisible ? this.generateSearchList() : this.searchList;
         list = list.filter(e => !e.isGroup);
 
         if (list.length == 0) {
@@ -335,8 +378,8 @@ export class SystemSelect implements ControlValueAccessor {
             this.value = nextItem.name;
         }
 
-        if (!this.searchListVisible && !!nextItem) {
-            this.onChange(nextItem);
+        if (!this.searchListIsVisible && !!nextItem) {
+            this.emitValue(nextItem);
         }
 
         this.scrollToFocusedSearchItem(direction);
@@ -362,6 +405,28 @@ export class SystemSelect implements ControlValueAccessor {
             focusedHTMLElementIndex = direction == 'down' ? focusedHTMLElementIndex + 1 : focusedHTMLElementIndex - 1;
         }
 
-        listHTMLElements[focusedHTMLElementIndex].scrollIntoView();
+        listHTMLElements[focusedHTMLElementIndex]?.scrollIntoView();
     }
+
+    /**
+     * clear the value
+     */
+    public clearValue(e: MouseEvent) {
+        e.stopPropagation();
+        this.value = undefined;
+        this.focusedItemId = undefined;
+        this.onChange(undefined);
+        this.inputIsVisible = true;
+    }
+
+    /**
+     * set is typing and focus the input
+     */
+    public setInputVisible(inputContainer: HTMLInputElement, e: MouseEvent) {
+        e.stopPropagation();
+        this.inputIsVisible = true;
+        this.cdRef.detectChanges();
+        inputContainer.focus();
+    }
+
 }

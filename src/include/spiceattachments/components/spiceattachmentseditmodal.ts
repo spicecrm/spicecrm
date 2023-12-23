@@ -12,6 +12,7 @@ import {model} from "../../../services/model.service";
  * Display edit fields for spice attachment
  */
 @Component({
+    selector: 'spice-attachments-edit-modal',
     templateUrl: '../templates/spiceattachmentseditmodal.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

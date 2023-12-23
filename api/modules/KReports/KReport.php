@@ -1,16 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of KReporter. KReporter is an enhancement developed
- * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- *
- * This Version of the KReporter is licensed software and may only be used in
- * alignment with the License Agreement received with this Software.
- * This Software is copyrighted and may not be further distributed without
- * witten consent of aac services k.s.
- *
- * You can contact us at info@kreporter.org
- ********************************************************************************/
-
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\KReports;
 
@@ -737,7 +726,11 @@ class KReport extends SpiceBean
                                 if ($fieldArray['fieldid'] == $key){
                                     $translation = $spiceLanguageHandler->getTranslationLabelDataByName($fieldArray['name'], $current_language);
                                     # $header .= '"' .iconv("UTF-8", $current_user->getPreference('default_export_charset'), $translation) . '"' . $export_delimiter;
-                                    $header .= '"' .iconv("UTF-8", $current_user->getPreference('export_charset'), $translation) . '"' . $export_delimiter;
+                                    if($current_user->getPreference('export_charset')) {
+                                        $header .= '"' . iconv("UTF-8", $current_user->getPreference('export_charset'), $translation) . '"' . $export_delimiter;
+                                    } else {
+                                        $header .= '"' .  $translation . '"' . $export_delimiter;
+                                    }
                                 }
                         }
 
@@ -881,7 +874,7 @@ $db = DBManagerFactory::getInstance();
         }
 
         // process seleciton limit and run the main query
-        if ($this->selectionlimit != '') {
+        if (!empty($this->selectionlimit)) {
             $isPercentage = false;
             $selectionLimit = trim($this->selectionlimit);
             // 2013-02-26 check for p and not %
@@ -914,12 +907,12 @@ $db = DBManagerFactory::getInstance();
                 $parameters ['start'] = 0;
 
             $parameters ['limit'] = $selectionLimit;
-        } else {
-            // remove parameters when they shall not be in use to avoid a limit query like 0,0
-            if (isset($parameters ['limit']) && empty($parameters ['limit']) && isset($parameters ['start'])) {
-                unset($parameters ['start']);
-                unset($parameters ['limit']);
-            }
+        }
+
+        // remove parameters when they shall not be in use to avoid a limit query like LIMIT 0,0
+        if (isset($parameters ['limit']) && empty($parameters ['limit']) && isset($parameters ['start'])) {
+            unset($parameters ['start']);
+            unset($parameters ['limit']);
         }
 //        file_put_contents("sugarcrm.log", "#######". print_r($this->whereOverride, true)."\n", FILE_APPEND);
 
@@ -1497,6 +1490,8 @@ $db = DBManagerFactory::getInstance();
                                 break;
                         }
                         break;
+                    case 'ndaysago':
+                    case 'lessthanndays':
                     case 'lastndays':
                     case 'lastnfdays':
                     case 'lastnweeks':
@@ -1558,6 +1553,8 @@ $db = DBManagerFactory::getInstance();
 
                 // if needed switch the type for the dashlet
                 switch ($thisWhereField ['operator']) {
+                    case 'ndaysago' :
+                    case 'lessthanndays' :
                     case 'lastndays' :
                     case 'nextndays' :
                         $thisWhereField ['type'] = 'int';

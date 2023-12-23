@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, Output, OnInit, EventEmitter, OnChanges} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter, OnChanges, Renderer2, OnDestroy} from '@angular/core';
 import {model} from '../../services/model.service';
 import {recent} from '../../services/recent.service';
 import {language} from '../../services/language.service';
@@ -14,12 +14,24 @@ import {session} from '../../services/session.service';
     selector: 'field-lookup-recent',
     templateUrl: '../templates/fieldlookuprecent.html'
 })
-export class fieldLookupRecent implements OnChanges {
+export class fieldLookupRecent implements OnInit, OnChanges , OnDestroy {
 
     /**
      * the module for the recent items
      */
     @Input() public module: string = '';
+
+    /**
+     * input element from template
+     */
+    @Input() public inputElement;
+
+    private listener: any;
+
+    /**
+     * selected item for keyboard navigation
+     */
+    public selectedItem: {data:{id:string, summary_text:string}};
 
     /**
      * emits the selectes item
@@ -29,8 +41,36 @@ export class fieldLookupRecent implements OnChanges {
 
     public loading: boolean = false;
 
-    constructor(public model: model, public recent: recent, public language: language, public session: session, ) {
+    constructor(public model: model, public recent: recent, public language: language, public session: session, public renderer: Renderer2,) {
 
+
+    }
+// event listener for keyboard events
+    public ngOnInit() {
+        if (this.inputElement) {
+            this.listener = this.renderer.listen(this.inputElement, 'keyup', (e: KeyboardEvent) => {
+                const index = this.recentItems.findIndex(i => i == this.selectedItem);
+                switch (e.key) {
+                    case 'Enter':
+                        if(this.recentItems.length == 1) this.selectedItem = this.recentItems[0];
+                        this.selectedObject.emit({
+                            id: this.selectedItem.data.id,
+                            text: this.selectedItem.data.summary_text,
+                            data: this.selectedItem.data
+                        });
+                        break;
+                    case 'ArrowDown':
+                        this.selectedItem = this.recentItems[index + 1 >= this.recentItems.length ? 0 : index + 1];
+                        break;
+                    case 'ArrowUp':
+                        this.selectedItem = this.recentItems[index - 1 < 0 ? this.recentItems.length - 1 : index - 1];
+                        break;
+                        case 'Escape':
+                        this.selectedItem = {data:{id:'', summary_text:''}};
+                        break;
+                }
+            });
+        }
     }
 
     /**
@@ -73,5 +113,14 @@ export class fieldLookupRecent implements OnChanges {
             this.recentItems = recentItems;
             this.loading = false;
         });
+    }
+
+    /**
+     * unlisten
+     */
+    public ngOnDestroy() {
+        if (this.listener) {
+            this.listener()
+        }
     }
 }

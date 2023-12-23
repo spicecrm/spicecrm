@@ -1,32 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -454,6 +427,42 @@ if (file_exists('extensions/modules/ServiceQueues')) {
         'rhs_module' => 'ServiceTickets',
         'rhs_table' => 'servicetickets',
         'rhs_key' => 'servicequeue_id',
+        'relationship_type' => 'one-to-many'
+    ];
+
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['return_to_servicequeue_id'] = [
+        'name' => 'return_to_servicequeue_id',
+        'vname' => 'LBL_RETURN_TO_SERVICEQUEUE_ID',
+        'type' => 'id',
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['return_to_servicequeue_name'] = [
+        'name' => 'return_to_servicequeue_name',
+        'vname' => 'LBL_RETURN_TO_SERVICEQUEUE_NAME',
+        'type' => 'relate',
+        'source' => 'non-db',
+        'len' => '255',
+        'id_name' => 'return_to_servicequeue_id',
+        'rname' => 'name',
+        'module' => 'ServiceQueues',
+        'link' => 'returntoservicequeues',
+        'join_name' => 'returntoservicequeues',
+        'required' => false,
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['fields']['returntoservicequeues'] = [
+        'vname' => 'LBL_SERVICEQUEUES',
+        'name' => 'returntoservicequeues',
+        'type' => 'link',
+        'module' => 'ServiceQueues',
+        'relationship' => 'servicetickets_servicequeuesreturn',
+        'source' => 'non-db'
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['ServiceTicket']['relationships']['servicetickets_servicequeuesreturn'] = [
+        'lhs_module' => 'ServiceQueues',
+        'lhs_table' => 'servicequeues',
+        'lhs_key' => 'id',
+        'rhs_module' => 'ServiceTickets',
+        'rhs_table' => 'servicetickets',
+        'rhs_key' => 'return_to_servicequeue_id',
         'relationship_type' => 'one-to-many'
     ];
 

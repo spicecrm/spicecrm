@@ -1,0 +1,37 @@
+<div style="height: 100%" class="slds-scrollable--y">
+    <div *ngFor="let day of eventDays; trackBy: trackByFnDate" class="slds-grid slds-border--bottom">
+        <div class="slds-border--right slds-p-around--xx-small slds-size--1-of-4">
+            <div>{{day.dayShortText}}</div>
+            <div>
+                <a style="cursor: pointer" class="slds-text-link" (click)="goToDay(day.date)">
+                    {{day.dateText}}
+                </a>
+            </div>
+        </div>
+        <div class="slds-size--3-of-4">
+            <div *ngFor="let event of day.events; trackBy: trackByFn; let last = last" [class.slds-border--bottom]="!last" class="slds-grid slds-p-horizontal--xx-small">
+                <div class="slds-button slds-button--icon slds-m-right--x-small slds-p-top--xxx-small" style="height: 100%" [style.color]="event.color">
+                    <system-button-icon icon="user" size="small"></system-button-icon>
+                </div>
+                <div class="slds-truncate slds-size--1-of-4" style="height: 100%;" [title]="event.timeText">
+                    {{event.timeText}}
+                </div>
+                <div class="slds-grow" [ngSwitch]="event.type">
+                    <calendar-sheet-google-event *ngSwitchCase="'google'" [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-google-event>
+                    <calendar-sheet-microsoft-event *ngSwitchCase="'microsoft'" [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-microsoft-event>
+                    <calendar-sheet-event *ngSwitchDefault [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-event>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!showNoRecordsMsg" class="slds-grid slds-p-around--small">
+        <system-label label="MSG_SHOWING_EVENTS_UNTIL"></system-label>
+        <span class="slds-m-left--xx-small">{{calendar.monthShort(untilDate.month())}}{{untilDate.format('D, Y')}}</span>
+        <a style="cursor: pointer" class="slds-text-link slds-m-left--xx-small" (click)="loadMore()">
+            <system-label label="LBL_MORE"></system-label>
+        </a>
+    </div>
+    <div *ngIf="showNoRecordsMsg" class="slds-align_absolute-center slds-m-top--medium">
+        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+    </div>
+</div>

@@ -74,6 +74,8 @@ export class SystemCollabsableTab {
      */
     @Input() public tabhelptext: string = '';
 
+    @Input() public tabHelpTextVerticalPositionBottom = false;
+
     constructor(public language: language) {
     }
 
@@ -94,6 +96,6 @@ export class SystemCollabsableTab {
     }
 
     get _helpText() {
-        return this.tabhelptext ? this.language.getLabel(this.tabhelptext) : false;
+        return this.tabhelptext ? this.language.getLabel(this.tabhelptext) : undefined;
     }
 }

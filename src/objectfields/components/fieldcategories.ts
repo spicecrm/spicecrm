@@ -1,7 +1,16 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    HostListener,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+    ViewChild
+} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -10,6 +19,8 @@ import {Router} from "@angular/router";
 import {fieldGeneric} from "./fieldgeneric";
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
+import {broadcast} from "../../services/broadcast.service";
+import {subscription} from "../../services/subscription.service";
 
 /**
  * renders a field to choose from teh category tree
@@ -97,7 +108,9 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
         public backend: backend,
         public config: configurationService,
         public elementRef: ElementRef,
-        public renderer: Renderer2
+        public renderer: Renderer2,
+        public changeDetectorRef: ChangeDetectorRef,
+        public broadcast: broadcast
     ) {
         super(model, view, language, metadata, router);
     }
@@ -144,9 +157,20 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
                 (res: any) => {
                     categories[this.treeid] = res;
                     this.config.setData('categories', categories);
+                    // emit that the tree has been loaded
+                    this.broadcast.broadcastMessage('categories.loaded', this.treeid);
                 }
             );
         }
+
+        // subvscribe to the brioadcast when the categories are loaded
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe( message => {
+                if (message.messagetype === 'categories.loaded' && message.messagedata === this.treeid) {
+                    this.changeDetectorRef.detectChanges();
+                }
+            })
+        )
     }
 
     public ngOnDestroy() {
@@ -157,6 +181,7 @@ export class fieldCategories extends fieldGeneric implements OnInit, OnDestroy {
     }
 
     get categories(){
+        if(!this.treeid) return [];
         let categories = this.config.getData('categories');
         return categories ? categories[this.treeid] : [];
     }

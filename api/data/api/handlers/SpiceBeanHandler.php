@@ -1,53 +1,34 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data\api\handlers;
 
-use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\ConflictException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSBeanHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\ArrayUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
-use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\includes\UploadFile;
-use SpiceCRM\includes\TimeDate;
+use SpiceCRM\modules\SpiceACL\SpiceACL;
+use SpiceCRM\modules\UserPreferences\UserPreference;
+use stdClass;
 
 /*
  * This File is part of KREST is a Restful service extension for SugarCRM
@@ -62,16 +43,6 @@ use SpiceCRM\includes\TimeDate;
  *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
-use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\ErrorHandlers\ConflictException;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
-use SpiceCRM\includes\authentication\AuthenticationController;
-use stdClass;
-use SpiceCRM\modules\UserPreferences\UserPreference;
 
 class SpiceBeanHandler
 {
@@ -365,6 +336,15 @@ class SpiceBeanHandler
 
         if (!empty($searchParams['modulefilter'])) {
             $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter']);
+            if ($filterWhere) {
+                $whereClauses[] = '(' . $filterWhere . ')';
+            }
+        }
+
+        // add global filter if fts setings are defined so the filter is also applied here
+        $indexSettings = SpiceFTSUtils::getBeanIndexSettings($beanModule);
+        if (!empty($indexSettings['globalfilter'])) {
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($indexSettings['globalfilter']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
@@ -1337,6 +1317,9 @@ class SpiceBeanHandler
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
             throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
 
+        // initialize addWhere param
+        $addWhere = '';
+
         // get the bean
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if ($thisBean === false) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
@@ -1402,7 +1385,7 @@ class SpiceBeanHandler
 
         // get related beans and related module
         // get_linked_beans($field_name, $bean_name, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "")
-        $relBeans = $thisBean->get_linked_beans($linkName, SpiceModules::getInstance()->getBeanName($beanModule), $sortingDefinition, $dummy = $params['offset'] ?: 0, $dummy + ($params['limit'] ?: 5), 0, $addWhere);
+        $relBeans = $thisBean->get_linked_beans($linkName, SpiceModules::getInstance()->getBeanName($beanModule), $sortingDefinition, $dummy = $params['offset'] ?: 0, $dummy + ($params['limit'] ?: 5), 0, $addWhere, $params['searchterm']) ;
 
         $retArray = [];
         foreach ($relBeans as $relBean) {
@@ -1422,10 +1405,9 @@ class SpiceBeanHandler
 //            }
         }
 
-        // wtf? retrieve all the related data and at the end, ignore all this and count it new? (╯°□°)╯︵ ┻━┻
         if ($params['getcount']) {
             return [
-                'count' => count($relBeans) > 0 ? $thisBean->get_linked_beans_count($linkName, SpiceModules::getInstance()->getBeanName($beanModule), 0, $addWhere) : 0,
+                'count' => count($relBeans) > 0 ? $thisBean->get_linked_beans_count($linkName, SpiceModules::getInstance()->getBeanName($beanModule), 0, $addWhere, $params['searchterm']) : 0,
                 'list' => $retArray
             ];
         } else
@@ -1455,7 +1437,7 @@ class SpiceBeanHandler
 
         foreach ($relatedIds as $relatedId) {
             $result = $thisBean->{$linkName}->add($relatedId);
-            if (!$result)
+            if ($result !== true)
                 throw new Exception("Something went wrong by adding $relatedId to $linkName");
             $retArray[$relatedId] = $thisBean->{$linkName}->relationship->relid;
         }

@@ -1,0 +1,19 @@
+<div class="slds-dropdown-trigger slds-dropdown-trigger--click" system-dropdown-trigger>
+    <button class="slds-button slds-button--icon-border-filled slds-button--icon-x-small" aria-haspopup="true">
+        <system-button-icon [icon]="'down'"></system-button-icon>
+    </button>
+    <div class="slds-dropdown slds-dropdown--right" [ngClass]="getDropdownLocationClass()">
+        <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__item" role="presentation" (click)="edit()">
+                <a href="javascript:void(0);" role="menuitem" tabindex="0">
+                    <span class="slds-truncate"><system-label label="LBL_EDIT"></system-label></span>
+                </a>
+            </li>
+            <li class="slds-dropdown__item" role="presentation" (click)="deleteFile()">
+                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                    <span class="slds-truncate"><system-label label="LBL_DELETE"></system-label></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

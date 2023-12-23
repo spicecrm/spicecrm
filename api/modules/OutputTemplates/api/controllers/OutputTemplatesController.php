@@ -1,32 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- * 
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- * 
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 namespace SpiceCRM\modules\OutputTemplates\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -67,7 +40,7 @@ class OutputTemplatesController
     public function compile(Request $req, Response $res, array $args): Response {
         $bean = BeanFactory::getBean('OutputTemplates', $args['id']);
         $bean->bean_id = $args['bean_id'];
-        return $res->withJson(['content' => $bean->translateBody()]);
+        return $res->withJson(['content' => $bean->translateBody(), 'filename' => $bean->getFileName()]);
 
     }
 
@@ -92,13 +65,14 @@ class OutputTemplatesController
         $bean->bean_id = $body['parentid'];
         $file = $bean->getPdfContent();
 
-        $response = [ 'content' => base64_encode( $file ) ];
+        $response = [ 'content' => base64_encode( $file ), 'filename' => $bean->getFileName() ];
         if ( SpiceConfig::getInstance()->config['outputtemplates']['debug_mode'] ) $response['htmlOfPdfCreation'] = $bean->getHtmlOfPdfCreation();
         return $res->withJson( $response );
     }
 
     public function previewhtml(Request $req, Response $res, array $args): Response {
         $body = $req->getParsedBody();
+        /** @var OutputTemplate $bean */
         $bean = BeanFactory::getBean('OutputTemplates');
 
         $bean->id = $body['id'];
@@ -108,7 +82,7 @@ class OutputTemplatesController
         $bean->stylesheet_id = $body['stylesheet_id'];
         $bean->module_name = $body['parentype'];
         $bean->bean_id = $body['parentid'];
-        return $res->withJson(['content' => $bean->translateBody()]);
+        return $res->withJson(['content' => $bean->translateBody(), 'filename' => $bean->getFileName()]);
 
     }
 
@@ -124,6 +98,7 @@ class OutputTemplatesController
 
         $params = $req->getParsedBody();
 
+        /** @var OutputTemplate $outputTemplate */
         $outputTemplate = BeanFactory::getBean('OutputTemplates', $args['id']);
         $outputTemplate->bean_id = $args['bean_id'];
 
@@ -135,21 +110,20 @@ class OutputTemplatesController
             $content = $outputTemplate->getPdfContent();
         }
 
-        return $res->withJson(['content' => base64_encode($content)]);
+        return $res->withJson(['content' => base64_encode($content), 'filename' => $outputTemplate->getFileName()]);
     }
 
+    /**
+     * returns the templates for the bean
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
     public function getModuleTemplates(Request $req, Response $res, array $args): Response {
-        $templates = [];
-        $bean = BeanFactory::getBean('OutputTemplates');
-        $beans = $bean->get_full_list('name', "module_name='{$args['module']}'");
-        foreach ($beans as $bean) {
-            $templates[] = [
-                'id' => $bean->id,
-                'name' => $bean->name,
-                'language' => $bean->language
-            ];
-        };
-        return $res->withJson($templates);
+        $bean = $args['id'] ? BeanFactory::getBean($args['module'], $args['id']) : BeanFactory::getBean($args['module']) ;
+        return $res->withJson($bean->getOutputTemplates());
     }
 
     public function getTemplateFunctions( Request $req, Response $res, array $args ): Response
@@ -192,6 +166,8 @@ class OutputTemplatesController
         $db->transactionStart();
         SpiceFTSHandler::getInstance()->startTransaction();
         SpiceSocket::getInstance()->startTransaction();
+
+
 
         return $content;
     }

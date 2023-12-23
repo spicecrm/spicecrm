@@ -9,7 +9,8 @@ use SpiceCRM\includes\SpiceCache\SpiceCache;
 class SpiceUIModelValidationsController
 {
     /**
-     * gets active validations
+     * gets all validations
+     * only active ones will be processed by the frontend
      * @return mixed
      * @throws \Exception
      */
@@ -22,7 +23,7 @@ class SpiceUIModelValidationsController
         $db = DBManagerFactory::getInstance();
         $sql = "SELECT id, module
                 FROM sysuimodelvalidations 
-                WHERE deleted = 0 and active = 1
+                WHERE deleted = 0
                 ORDER BY priority ASC";
         $res = $db->query($sql);
         while($row = $db->fetchByAssoc($res))

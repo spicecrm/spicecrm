@@ -1,0 +1,25 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()">{{model.module}}</system-modal-header>
+    <system-modal-content>
+        <ng-container *ngIf="!componentConfig?.fieldset && !componentConfig?.componentset">
+            <system-illustration-no-records>
+                <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+            </system-illustration-no-records>
+        </ng-container>
+        <object-record-fieldset *ngIf="componentConfig?.fieldset" [fieldset]="componentConfig.fieldset" direction="vertical"></object-record-fieldset>
+        <system-componentset *ngIf="componentConfig?.componentset" [componentset]="componentConfig.componentset"></system-componentset>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-is-absolute">
+            <object-record-messages-badge></object-record-messages-badge>
+        </div>
+        <div>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" (click)="save()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </system-modal-footer>
+</system-modal>

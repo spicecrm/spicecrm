@@ -7,5 +7,8 @@
                </div>
            </span>
     </li>
-    <li global-header-search-recent-item *ngFor="let item of recent.items.slice(0, 10)" [item]="item" (selected)="selected.emit(true)"></li>
+    <li class="slds-p-bottom--small" *ngIf="!recent.isInitialized">
+        <system-spinner size="16" ></system-spinner>
+    </li>
+    <li global-header-search-recent-item *ngFor="let item of recent.recentItems.slice(0, 10)" [item]="item" (selected)="selected.emit(true)"></li>
 </ul>

@@ -12,7 +12,7 @@ import {
     OnDestroy,
     Renderer2,
     ChangeDetectorRef,
-    Output, EventEmitter
+    Output, EventEmitter, OnInit
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
@@ -20,6 +20,8 @@ import {language} from "../../services/language.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {modal} from "../../services/modal.service";
 import {take} from "rxjs/operators";
+import {backend} from "../../services/backend.service";
+import {configurationService} from "../../services/configuration.service";
 
 /**
  * @ignore
@@ -38,13 +40,33 @@ declare var moment: any;
         }
     ]
 })
-export class SystemInputDate implements ControlValueAccessor {
+export class SystemInputDate implements OnInit, ControlValueAccessor {
 
 
     // for the value accessor
     public onChange: (value: string) => void;
     public onTouched: () => void;
-    public showCalendarButton: boolean = true;
+
+    /**
+     * set to false to not display the calendar button at the bottom
+     */
+    @Input() public showCalendarButton: boolean = true;
+
+    /**
+     * an optional holiday calendar that displays holidays
+     */
+    @Input() public holidayCalendarId: string;
+
+    /**
+     * set to true by default to disable picking of holidays
+     */
+    @Input() public holidaysDisabled: boolean = true;
+
+    /**
+     * holds holidays loaded
+     */
+    private holidays: any[] = [];
+
     public _date: any = {
         display: '',
         moment: null,
@@ -66,12 +88,6 @@ export class SystemInputDate implements ControlValueAccessor {
     @Input() public isDirty = false;
 
     /**
-     * emits if the date is valid or not
-     */
-    @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-
-    /**
      * an attribute that can be set and does not require the value true passed in
      *
      * @param value
@@ -83,6 +99,16 @@ export class SystemInputDate implements ControlValueAccessor {
             this.isDisabled = true;
         }
     }
+
+    /**
+     * sets  minimum for the datepicker
+     */
+    @Input() public minDate;
+
+    /**
+     * set a maximum for the datepicker
+     */
+    @Input() public maxDate;
 
     @Input() public id: string;
 
@@ -106,16 +132,71 @@ export class SystemInputDate implements ControlValueAccessor {
         }
     }
 
+    /**
+     * an array with the ensbled weekdays, 0 equals sunday
+     */
+    @Input() public enabledDays: number[] = [0, 1, 2, 3, 4, 5, 6];
+
+    /**
+     * set to false to hide error message on the input
+     * the valid emitted can enable e.g. field to handle the message
+     */
+    @Input() displayError: boolean = true;
+
+    /**
+     * emits the validity status
+     */
+    @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor(public elementref: ElementRef,
                 public renderer: Renderer2,
                 public userpreferences: userpreferences,
                 public modal: modal,
                 public cdref: ChangeDetectorRef,
+                public backend: backend,
+                public config: configurationService,
                 private elementRef: ElementRef) {
     }
 
+    public ngOnInit(){
+        this.loadHolidays()
+    }
+
+    public loadHolidays(){
+        if(this.holidayCalendarId){
+            let cachedHolidays = this.config.getData('holidays');
+            if(cachedHolidays && cachedHolidays[this.holidayCalendarId]){
+                this.holidays = cachedHolidays[this.holidayCalendarId]
+            } else {
+                this.backend.getRequest(`module/SystemHolidayCalendars/${this.holidayCalendarId}/holidays`).subscribe({
+                    next: (holidays) => {
+                        if(!cachedHolidays) cachedHolidays = [];
+                        cachedHolidays[this.holidayCalendarId] = holidays;
+                        this.config.setData('holidays', cachedHolidays)
+                        this.holidays = holidays;
+                    }
+                })
+            }
+        }
+    }
+
+    /**
+     * checks if the date is a holiday
+     * @param date
+     */
+    public isHoliday(date){
+        if(!date) return false;
+        let df = date.format('YYYY-MM-DD');
+        return !!this.holidays.find(h => h.holiday_date.substr(0, 10) == df)
+    }
+
+    public isEnabledDay(date){
+        if(!date) return true;
+        return this.enabledDays.indexOf(parseInt(date.format('d'), 10)) >= 0;
+    }
+
     get isValid() {
-        return this._date.valid;
+        return this._date.valid && (!this._date.moment || !this.minDate || this._date.moment.isSameOrAfter(this.minDate)) && (!this._date.moment || !this.maxDate || this._date.moment.isSameOrBefore(this.maxDate)) && (!this.holidaysDisabled || !this.isHoliday(this._date.moment)) && this.isEnabledDay(this._date.moment);
     }
 
     get display() {
@@ -147,8 +228,9 @@ export class SystemInputDate implements ControlValueAccessor {
             this.clear();
         }
 
-        // emit if the date is valid
-        this.valid.emit(this._date.valid);
+        // emit the validity
+        this.valid.emit(this.isValid);
+
     }
 
     get canclear() {
@@ -239,6 +321,8 @@ export class SystemInputDate implements ControlValueAccessor {
                 this.onChange(this._date.moment);
             }
         }
+
+        this.valid.emit(this.isValid);
     }
 
     public openCalendar() {

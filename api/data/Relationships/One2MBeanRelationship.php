@@ -1,39 +1,5 @@
 <?php
-/*********************************************************************************
- * SugarCRM Community Edition is a customer relationship management program developed by
- * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 as published by the
- * Free Software Foundation with the addition of the following permission added
- * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
- * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Affero General Public License along with
- * this program; if not, see http://www.gnu.org/licenses or write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
- * 
- * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
- * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
- * 
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- * 
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- ********************************************************************************/
-
+/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\data\Relationships;
 
@@ -94,7 +60,7 @@ class One2MBeanRelationship extends One2MRelationship
             $this->callBeforeAdd($rhs, $lhs);
         }
 
-        $this->updateFields($lhs, $rhs, $additionalFields);
+        $resaveRequired = $this->updateFields($lhs, $rhs, $additionalFields);
 
         if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes")
         {
@@ -110,8 +76,9 @@ class One2MBeanRelationship extends One2MRelationship
 
         //One2MBean relationships require that the RHS bean be saved or else the relationship will not be saved.
         //If we aren't already in a relationship save, intitiate a save now.
-        if (empty($GLOBALS['resavingRelatedBeans']))
+        if ($resaveRequired && empty($GLOBALS['resavingRelatedBeans'])) {
             SugarRelationship::resaveRelatedBeans();
+        }
 
         return true;
     }
@@ -129,19 +96,31 @@ class One2MBeanRelationship extends One2MRelationship
 
     protected function updateFields($lhs, $rhs, $additionalFields)
     {
+        // memorize if we need a resave
+        $resaveRequired = false;
+
         //Now update the RHS bean's ID field
         $rhsID = $this->def['rhs_key'];
+
+        if($rhs->$rhsID != $lhs->id) $resaveRequired = true;
+
         $rhs->$rhsID = $lhs->id;
         foreach($additionalFields as $field => $val)
         {
+            if($rhs->$field != $val) $resaveRequired = true;
             $rhs->$field = $val;
         }
         //Update role fields
         if(!empty($this->def["relationship_role_column"]) && !empty($this->def["relationship_role_column_value"]))
         {
             $roleField = $this->def["relationship_role_column"];
+
+            if($rhs->$roleField != $this->def["relationship_role_column_value"]) $resaveRequired = true;;
+
             $rhs->$roleField = $this->def["relationship_role_column_value"];
         }
+
+        return $resaveRequired;
     }
 
     public function remove($lhs, $rhs, $save = true)
@@ -197,7 +176,15 @@ class One2MBeanRelationship extends One2MRelationship
         else //If the link is LHS, we need to query to get the full list and load all the beans.
         {
             $db = DBManagerFactory::getInstance();
-            $query = $this->getQuery($link, $params);
+
+            $rangeParams = $params;
+
+            if (!empty($params['searchterm'])) {
+                $rangeParams['limit'] = 0;
+                $rangeParams['offset'] = 0;
+            }
+
+            $query = $this->getQuery($link, $rangeParams);
             if (empty($query))
             {
                 LoggerManager::getLogger()->fatal('relationships', "query for {$this->name} was empty when loading from  {$this->lhsLink} in One2MBean");
@@ -209,9 +196,20 @@ class One2MBeanRelationship extends One2MRelationship
                 $id = $row['id'];
                 $rows[$id] = $row;
             }
+
+            if (!empty($params['searchterm'])) {
+                $rows = $this->getResultsFilteredByFTS($link->getRelatedModuleName(), $params, $rows);
+
+                $this->count = count($rows);
+                $rows = array_slice($rows, $params['offset'], $params['limit']);
+            } else {
+                $this->count = count($rows);
+            }
         }
 
-        return ["rows" => $rows];
+        return [
+            "rows" => $rows
+        ];
     }
 
     public function getQuery($link, $params = [])

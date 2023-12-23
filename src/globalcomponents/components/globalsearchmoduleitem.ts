@@ -15,7 +15,7 @@ import {model} from '../../services/model.service';
 })
 export class GlobalSearchModuleItem implements OnInit {
     @Input()public module: string = '';
-    @Input()public listfields: string = '';
+    @Input()public listfields: any[] = [];
     @Input()public listitem: any = {};
 
    public expanded: boolean = false;

@@ -28,9 +28,10 @@
 ********************************************************************************/
 namespace SpiceCRM\includes\SpiceFTSManager;
 
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -286,6 +287,9 @@ class SpiceFTSRESTManager
 
             SystemDeploymentCR::writeDBEntry("sysfts", $data['id'], $data, $module, SystemDeploymentCR::ACTION_INSERT);
         }
+
+        SpiceCache::clear('ftsBeanIndexSettings');
+
         return true;
     }
 

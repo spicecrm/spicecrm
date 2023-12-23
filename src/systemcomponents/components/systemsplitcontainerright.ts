@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'system-split-container-right',
@@ -12,5 +12,5 @@ import {Component} from '@angular/core';
 export class SystemSplitContainerRight {
     public hidden = false;
     public expanded = false;
-
+    @Input() public containerClass: string;
 }

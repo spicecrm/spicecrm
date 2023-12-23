@@ -12,6 +12,7 @@ import { take } from 'rxjs/operators';
  * displays a quicknote that is read in teh stream
  */
 @Component({
+    selector: 'spice-attachments-stats',
     templateUrl: '../templates/spiceattachmentstats.html',
 })
 export class SpiceAttachmentStats {

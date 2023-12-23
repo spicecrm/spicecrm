@@ -6,6 +6,7 @@ import {Subject, Observable} from 'rxjs';
 
 import {backend} from '../../services/backend.service';
 import {modelutilities} from '../../services/modelutilities.service';
+import {configurationService} from "../../services/configuration.service";
 
 @Injectable()
 /**
@@ -23,7 +24,11 @@ export class administrationconfigurator {
     };
     public fielddefobj: any = {};
 
-    constructor(public backend: backend, public modelutilities: modelutilities) {
+    public reloadTaskItems: string[] = [];
+
+    constructor(public backend: backend,
+                public modelutilities: modelutilities,
+                private configurationService: configurationService) {
     }
 
 
@@ -97,6 +102,16 @@ export class administrationconfigurator {
     }
 
     /**
+     * reload the frontend cache for the related task item
+     * @private
+     */
+    private reloadCache() {
+        this.reloadTaskItems.forEach(key => {
+            this.configurationService.reloadTaskData(key);
+        })
+    }
+
+    /**
      * @param id
      */
     public saveEntry(id) {
@@ -105,6 +120,7 @@ export class administrationconfigurator {
                 delete(entry.backup);
                 this.backend.postRequest('configuration/configurator/' + this.dictionary + '/' + id, {}, { config: this.remapData(entry.data)}).subscribe(status => {
                     entry.mode = '';
+                    this.reloadCache();
                 });
                 return true;
             }
@@ -120,6 +136,7 @@ export class administrationconfigurator {
                 delete(entry.backup);
                 this.backend.deleteRequest('configuration/configurator/' + this.dictionary + '/' + id).subscribe(status => {
                     this.entries.splice(index, 1);
+                    this.reloadCache();
                 });
                 return true;
             }

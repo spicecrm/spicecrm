@@ -43,3 +43,55 @@ export interface SystemTreeConfigI {
     expandall?: boolean;
     collapsible?: boolean;
 }
+
+export type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut';
+
+export type GoogleChartTypeMultiDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line'; // 'Bubble' | 'Sankey' need different structure
+
+export interface SystemSelectNgModelValue {
+    id: string;
+    name: string;
+    group?: string;
+}
+
+export interface SystemSelectOptionI {
+    id: string;
+    name: string;
+    group?: string;
+    content?: string;
+    isGroup?: boolean;
+}
+
+export interface GoogleChartOptionsI {
+    legend?: GoogleChartOptionLegendI;
+    colors?: string[];
+    fontSize?: number;
+    is3D?: boolean;
+    isStacked?: boolean;
+}
+
+export interface GoogleChartOptionLegendI {
+    position: 'right' | 'left' | 'top' | 'bottom' | 'none',
+    alignment?: 'start' | 'center' | 'end'
+}
+
+export interface GoogleChartDataRowI {
+    c: { v: string | number }[]
+}
+
+export interface GoogleChartDataColI {
+    id: string;
+    label?: string;
+    type: string;
+    role?: string
+}
+
+export interface GoogleChartDataI {
+    cols: GoogleChartDataColI[];
+    rows: GoogleChartDataRowI[]
+}
+
+export interface GoogleChartSelectedObject {
+    column: number;
+    row: number;
+}

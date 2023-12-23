@@ -4,6 +4,9 @@
   Header always unset X-Powered-By
 </IfModule>
 
+# no directory listing access
+Options -Indexes
+
 # enable rewrite
 RewriteEngine On
 

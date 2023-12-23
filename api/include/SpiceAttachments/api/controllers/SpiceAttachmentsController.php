@@ -179,7 +179,7 @@ class SpiceAttachmentsController
         }
         $attachment = [
             'filename' => $seed->{$args['fieldprefix'] . '_name'} ?: $seed->filename,
-            'filesize' => $seed->{$args['fieldprefix'] . '_size'},
+            'filesize' => filesize($prefix . $seed->{$args['fieldprefix'] . '_md5'}),
             'file_mime_type' => $seed->{$args['fieldprefix'] . '_mime_type'},
             'file' => $file,
             'filemd5' => $seed->{$args['fieldprefix'] . '_md5'}
@@ -205,7 +205,7 @@ class SpiceAttachmentsController
         }
         $params = $req->getParsedBody();
 
-        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId']);
+        $clonedAttachments = SpiceAttachments::cloneAttachmentsForBean($args['beanName'], $args['beanId'], $args['fromBeanName'], $args['fromBeanId'], true, $params['categoryId'], $params['selectedFiles']);
         return $res->withJson($clonedAttachments);
     }
 

@@ -56,7 +56,7 @@ class Tracker extends SpiceBean
         } else {
             $history_max_viewed = (!empty(SpiceConfig::getInstance()->config['history_max_viewed'])) ? SpiceConfig::getInstance()->config['history_max_viewed'] : 50;
         }
-        $rows = $this->db->limitQuery("SELECT item_id, module_name FROM tracker WHERE user_id = '{$user_id}' AND visible = 1 $module_query ORDER BY date_modified DESC", 0, $history_max_viewed);
+        $rows = $this->db->limitQuery("SELECT item_id, module_name, date_modified FROM tracker WHERE user_id = '{$user_id}' AND visible = 1 $module_query ORDER BY date_modified DESC", 0, $history_max_viewed);
         while (($row = $this->db->fetchByAssoc($rows))) {
             $list[] = $row;
 

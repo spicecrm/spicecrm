@@ -2027,6 +2027,9 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
     public static function createDictionaryValidationDoms($language = null){
         if(empty($language)){
             $language = $GLOBALS['current_language'];
+            if(empty($language)){
+                $language = LanguageManager::getDefaultLanguage();
+            }
         }
 
         $sys_app_list_strings = [];

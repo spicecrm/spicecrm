@@ -77,6 +77,26 @@ export class fts {
         return this.searchModules.filter(module => this.metadata.checkModuleAcl(module, 'list'));
     }
 
+    /**
+     * check for search term errors
+     * @param searchTerm
+     */
+    public checkForSearchTermErrors(searchTerm): {label: string, nestedValues: string[]}[] | undefined {
+        let config = this.configurationService.getCapabilityConfig('search');
+        let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
+        let items = searchTerm.split(' ');
+        const errors = [];
+
+        if (items.filter(i => i.length < minNgram).length > 0) {
+            errors.push({
+                label: 'MSG_SEARCH_TERM_TOO_SHORT',
+                nestedValues: [String(minNgram)]
+            });
+        }
+
+        return errors.length == 0 ? undefined : errors;
+    }
+
     public transformHits(hits) {
         let retArray = [];
         for (let hit of hits) {

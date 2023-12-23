@@ -1,35 +1,10 @@
 <?php
-/*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
-
+/***** SPICE-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\SchedulerJobs;
 
+use DateTime;
+use DateTimeZone;
 use Cron\CronExpression;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
@@ -157,6 +132,9 @@ class SchedulerJob extends SpiceBean
     {
         global $overCLI;
 
+        // set the status explicit on the DB with commit
+        $this->setStatus('Running');
+
         $this->last_run_date = TimeDate::getInstance()->nowDb();
         $this->job_status = 'Running';
 
@@ -167,6 +145,19 @@ class SchedulerJob extends SpiceBean
         }
 
         $this->save();
+    }
+
+    /**
+     * sets the status transactional and commits it as well
+     *
+     * @param $status
+     * @return void
+     * @throws \Exception
+     */
+    private function setStatus($status){
+        $dbConn = DBManagerFactory::getInstance('jobupdate');
+        $dbConn->query("UPDATE {$this->_tablename} SET job_status='{$status}' WHERE id='{$this->id}'");
+        $dbConn->commit();
     }
 
     /**
@@ -211,8 +202,21 @@ class SchedulerJob extends SpiceBean
      * execute the job tasks
      * execute job tasks
      */
-    public function runTasks(): array
+    public function runTasks($checkDate = true): array
     {
+        $db = DBManagerFactory::getInstance();
+
+        // double check that the job is not running alreasy and the next run date is still in the past
+        // that woudl have been set to a future date if the job was completed in aprallel already
+        $sql = "SELECT job_status, next_run_date FROM {$this->_tablename} WHERE id = '{$this->id}'";
+        $status = $db->fetchOne($sql);
+
+        // job status check
+        if($status['job_status'] == 'Running') return ['success' => false, 'message' => 'JOB is running already'];
+        // job run date check if not set to omit (this will happen when the user manually executes a task
+        if($checkDate && new DateTime($status['next_run_date'], new DateTimeZone('UTC')) > new DateTime('now', new DateTimeZone('UTC'))) return ['success' => false, 'message' => 'JOB did run already'];
+
+        // do the before checks
         $this->beforeRun();
 
         # Feature: In case the assigned user of the cron job is different to the current user (basically "1"), use it instead.

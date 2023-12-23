@@ -1,0 +1,50 @@
+<div class="slds-size--1-of-1 slds-height_full" >
+    <div class="slds-grid slds-p-bottom--xx-small">
+        <div class="slds-form-element slds-grid slds-grid_vertical-align-center slds-col--bump-right">
+            <div class="slds-form-element__control">
+                <div class="slds-select_container" style="min-width: 200px;">
+                    <select [disabled]="outputRevisions.length < 2 || loading || showEmail" class="slds-select" [(ngModel)]="outputRevision" (ngModelChange)="loadOutput()">
+                        <option *ngFor="let sdo of outputRevisions" [ngValue]="sdo.id"><system-display-datetime [date]="sdo.date_entered"></system-display-datetime> ({{sdo.created_by}})</option>
+                    </select>
+                </div>
+            </div>
+            <system-icon-help-text class="slds-m-horizontal--xx-small" [helpText]="outputDescription"></system-icon-help-text>
+            <button [disabled]="loading || showEmail" class="slds-button slds-button--icon slds-button--icon-border" (click)="getOutputs()">
+                <system-button-icon icon="sync"></system-button-icon>
+            </button>
+            <button [disabled]="loading || showEmail" class="slds-button slds-button--icon slds-button--icon-border" (click)="createNewOutput()">
+                <system-button-icon icon="new"></system-button-icon>
+            </button>
+        </div>
+        <button *ngIf="!showEmail" [disabled]="!outputRevision || loading" class="slds-button slds-button--icon slds-button--icon-border" (click)="printCurrent()">
+            <system-button-icon icon="print"></system-button-icon>
+        </button>
+        <button *ngIf="!showEmail" [disabled]="!outputRevision || loading" class="slds-button slds-button--icon slds-button--icon-border" (click)="downloadOutput()">
+            <system-button-icon icon="download"></system-button-icon>
+        </button>
+        <button *ngIf="!showEmail" [disabled]="!outputRevision || loading" class="slds-button slds-button--icon slds-button--icon-border" (click)="showEmail = true">
+            <system-button-icon icon="email"></system-button-icon>
+        </button>
+        <button *ngIf="showEmail" class="slds-button slds-button--icon slds-button--icon-border" (click)="cancelSend()">
+            <system-button-icon icon="close"></system-button-icon>
+        </button>
+        <button *ngIf="showEmail" [disabled]="!canSend" class="slds-button slds-button--icon slds-button--icon-border" (click)="sendEmail()">
+            <system-button-icon icon="send"></system-button-icon>
+        </button>
+    </div>
+    <div style="height: calc(100% - 36px); overflow: hidden;" class="slds-grid" [system-overlay-loading-spinner]="loading">
+        <div [@slideInOut]="showEmail? 'open': 'closed'" class="slds-height_full">
+            <system-object-preview objectContainerHeight="100%" *ngIf="blobFile" [data]="blobFile" type="application/pdf"></system-object-preview>
+            <div *ngIf="!blobFile && !loading" class="slds-box--border slds-height_full slds-size--1-of-1 slds-align--absolute-center">
+                <system-illustration-no-data>
+                    <system-label label="LBL_NO_FILE"></system-label>
+                </system-illustration-no-data>
+            </div>
+        </div>
+        <div class="slds-height_full slds-p-left--xx-small slds-scrollable--y" [@slideInOut2]="showEmail? 'open': 'closed'">
+            <div class="slds-box--border slds-height_full">
+                <outputrevisions-pdf-tab-container-email *ngIf="showEmail" [filelist]="filelist"></outputrevisions-pdf-tab-container-email>
+            </div>
+        </div>
+    </div>
+</div>

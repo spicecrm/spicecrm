@@ -1,7 +1,17 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef, OnDestroy, Input} from '@angular/core';
+import {
+    Component,
+    OnInit,
+    EventEmitter,
+    Output,
+    ViewChild,
+    ViewContainerRef,
+    OnDestroy,
+    Input,
+    SkipSelf
+} from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
@@ -40,6 +50,11 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     public self: any = {};
 
     /**
+     * store component config
+     */
+    public componentConfig: any = {};
+
+    /**
      * set to true to enable multiselect, default to false
      */
     public multiselect: boolean = false;
@@ -53,6 +68,12 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * a module filter id to be applied to the search
      */
     public modulefilter: string = '';
+
+    /**
+     * an optional bean for modulefilter (parent-bean over the list)
+     * is given to the custom filter methods
+     */
+    public filtercontext: { id?: string, module: string, data?: any };
 
     /**
      * a relate filter for the modellist
@@ -84,7 +105,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * get the style for the content so the table can scroll with fixed header
      */
     public contentStyle() {
-        if(this.headercontent) {
+        if (this.headercontent) {
             let headerRect = this.headercontent.element.nativeElement.getBoundingClientRect();
 
             return {
@@ -115,6 +136,9 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         this.modellist.initialize(this.module);
         this.modellist.getListData();
 
+        // get component config for add button
+        this.componentConfig = this.metadata.getComponentConfig('ObjectModalModuleLookup', this.module);
+
         // set hte module on the model
         this.model.module = this.module;
 
@@ -132,13 +156,20 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     }
 
     /**
+     *
+     */
+    get canAdd() {
+        return this.componentConfig.showaddbutton && this.metadata.checkModuleAcl(this.model.module, 'create');
+    }
+
+    /**
      * handle the change of listtype
      */
     public switchListtype() {
         /**
-        if (this.modellist.module) {
-            this.modellist.reLoadList();
-        }*/
+         if (this.modellist.module) {
+         this.modellist.reLoadList();
+         }*/
     }
 
     /**
@@ -166,6 +197,18 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     public closePopup() {
         this.usedSearchTerm.emit(this.modellist.searchTerm);
         this.self.destroy();
+    }
+
+    public createNew() {
+        // make sure we have no idea so a new on gets issues
+        this.model.initialize();
+        this.model.addModel('', null, {}, true).subscribe({
+            next: (item) => {
+                this.selectedItems.emit([item]);
+                this.usedSearchTerm.emit(this.searchTerm);
+                this.self.destroy();
+            }
+        });
     }
 
 

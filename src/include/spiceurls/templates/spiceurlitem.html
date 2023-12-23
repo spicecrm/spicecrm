@@ -1,0 +1,30 @@
+<div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
+    <system-icon icon="share_link" [module]="'SpiceUrls'" size="small"></system-icon>
+</div>
+<div class="slds-media__body">
+    <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+        <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small" (click)="openUrl($event)">
+            <a href="javascript:void(0);">{{urlItem.urlItemName}}</a>
+        </h3>
+        <div *ngIf="!uploading && editmode" class="slds-shrink-none">
+            <button  class="slds-button slds-button--icon" (click)="deleteUrl()">
+                <system-button-icon icon="clear"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small">
+        <ul class="slds-list--horizontal slds-has-dividers--left">
+            <li class="slds-item">{{urlItemDate}}</li>
+        </ul>
+    </div>
+    <div *ngIf="uploading" class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+        <div class="slds-progress-bar">
+            <span class="slds-progress-bar__value" [ngStyle]="progressbarstyle">
+                <span class="slds-assistive-text">Progress: 25%</span>
+            </span>
+        </div>
+        <div class="slds-text-align--right" style="width: 50px;">
+            {{urlItem.uploadprogress}} %
+        </div>
+    </div>
+</div>

@@ -23,19 +23,18 @@ class ErrorMiddleware extends FailureMiddleware
 
     /**
      * Handles errors that are not exceptions.
-     * Returns the error info only if the developer mode is enabled.
-     * todo figure out how to make it work
+     * Returns the error info only if the stack_trace_errors is enabled.
      *
      * @param $exception
      * @return ResponseInterface
      */
     private function handleErrorResponse($errno, $errstr, $errfile, $errline): ?ResponseInterface {
         if ($errno == E_USER_ERROR) {
-            $inDevMode = SpiceUtils::inDeveloperMode();
+            $stackTraceLevel = SpiceUtils::getStackTrace();
             $errorMessage = "Error number[{$errno}] {$errstr} on line {$errline} in file {$errfile}";
 
             LoggerManager::getLogger()->fatal($errorMessage);
-            $responseData['error'] = [ 'message' => $inDevMode ? 'Application Error.' : $errorMessage ];
+            $responseData['error'] = [ 'message' => $stackTraceLevel ? 'Application Error.' : $errorMessage ];
             $httpCode = 500;
 
             DBManagerFactory::getInstance()->transactionRollback();

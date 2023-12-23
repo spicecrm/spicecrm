@@ -3,7 +3,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SpiceCache\SpiceCache;

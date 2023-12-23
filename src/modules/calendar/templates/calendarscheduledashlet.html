@@ -1,0 +1,10 @@
+<div class="slds-height_full">
+    <div #headercontainer class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
+        <system-icon module="Calendar" size="small"></system-icon>
+        <h2 class="slds-text-heading--medium slds-truncate">{{title}}</h2>
+    </div>
+    <div [ngStyle]="contentStyle" class="slds-size--1-of-1">
+        <calendar-sheet-schedule [setdate]="calendarDate" (untildate$)="scheduleUntilDate = $event">
+        </calendar-sheet-schedule>
+    </div>
+</div>

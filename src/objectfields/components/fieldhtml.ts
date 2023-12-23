@@ -139,6 +139,14 @@ export class fieldHtml extends fieldGeneric implements OnInit {
     }
 
     /**
+     * returns true if the field is to be displaxed truncated
+     */
+    get truncated() {
+        return !!this.fieldconfig.truncate;
+    }
+
+
+    /**
      * call to load the initial values
      */
     public async ngOnInit() {
@@ -146,7 +154,7 @@ export class fieldHtml extends fieldGeneric implements OnInit {
         this.setStylesheetsToUse();
         this.setHtmlValue();
         if (!!this.fieldconfig?.useSignature) {
-            if(this.model.getField('mailbox_id')) {
+            if (this.model.getField('mailbox_id')) {
                 await this.loadMailboxSignature();
             }
             this.loadUserSignature();
@@ -318,14 +326,18 @@ export class fieldHtml extends fieldGeneric implements OnInit {
     }
 
     public modelChangesSubscriber() {
-        this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe({next: (value) => {
-            this.setHtmlValue();
-        }}));
-        this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe({next: (mailboxId) => {
-            if (this.fieldconfig?.useSignature && !!mailboxId && !this.signatures.some(s => s.id == mailboxId)) {
-                this.loadMailboxSignature();
+        this.subscriptions.add(this.model.observeFieldChanges(this.fieldname).subscribe({
+            next: (value) => {
+                this.setHtmlValue();
             }
-        }}));
+        }));
+        this.subscriptions.add(this.model.observeFieldChanges('mailbox_id').subscribe({
+            next: (mailboxId) => {
+                if (this.fieldconfig?.useSignature && !!mailboxId && !this.signatures.some(s => s.id == mailboxId)) {
+                    this.loadMailboxSignature();
+                }
+            }
+        }));
     }
 
     public setHtmlValue() {

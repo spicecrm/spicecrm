@@ -163,13 +163,13 @@ class DBManagerFactory
 
             $count++;
             self::$instances[self::$instanceName] = self::getTypeInstance(self::$config['dbconfig']['db_type'], self::$config);
-            if (!empty($dbConfig['dbconfigoption'])) {
-                self::$instances[self::$instanceName]->setOptions($dbConfig['dbconfigoption']);
+            if (!empty(self::$config['dbconfigoption'])) {
+                self::$instances[self::$instanceName]->setOptions(self::$config['dbconfigoption']);
             }
 
             // set the current db name to determine if we are connected to the tenant db or to the
 
-            self::$instances[self::$instanceName]->connect($dbConfig['dbconfig'], true);
+            self::$instances[self::$instanceName]->connect(self::$config['dbconfig'], true);
             self::$instances[self::$instanceName]->count_id = $count;
             self::$instances[self::$instanceName]->references = 0;
             self::$instances[self::$instanceName]->resetQueryCount();

@@ -6,7 +6,7 @@
     <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
 </div>
 <ul class="slds-lookup__list" role="listbox">
-    <li *ngFor="let recentItem of recentItems" role="presentation" (mousedown)="setParent($event, recentItem)">
+    <li *ngFor="let recentItem of recentItems" role="presentation" (mousedown)="setParent($event, recentItem)" [ngClass]="{'slds-is-selected slds-color__background_gray-5': selectedItem == recentItem}">
         <field-lookup-recent-item [item]="recentItem"></field-lookup-recent-item>
     </li>
     <ng-container *ngIf="loading">

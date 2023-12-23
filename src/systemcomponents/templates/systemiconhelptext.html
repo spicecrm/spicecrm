@@ -1,12 +1,12 @@
 <div class="slds-is-relative" style="display: inline;">
-    <a (mouseover)="showHelp=true" (mouseout)="showHelp=false">
+    <a (mouseover)="showHelp=!!helpText" (mouseout)="showHelp=false">
         <span class="slds-icon_container slds-icon-utility-info">
             <system-custom-icon [ngStyle]="{'color': showHelp==true  ? ghovercolor : gcolor}" [icon]="gicon" [file]="gfile" [size]="gsizeClass" [desaturate]="gdesaturate" [addclasses]="gaddClass" [divClass]="gdivClass"></system-custom-icon>
         </span>
     </a>
-    <div *ngIf="showHelp" class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip" id="help" [ngStyle]="{'bottom': bottomdistance, 'left': leftdistance, 'max-width': PopoverMaxWidth}" style="position: absolute; display: block; z-index: 50; width: max-content;">
+    <div *ngIf="showHelp" class="slds-popover slds-popover_tooltip" role="tooltip" id="help" [ngClass]="{'slds-nubbin_top-left': verticalPositionBottom, 'slds-nubbin_bottom-left': !verticalPositionBottom}" [ngStyle]="verticalPositionBottom ? {'top': bottomdistance, 'left': leftdistance, 'max-width': PopoverMaxWidth} : {'bottom': bottomdistance, 'left': leftdistance, 'max-width': PopoverMaxWidth}" style="position: absolute; display: block; z-index: 50; width: max-content;">
         <div class="slds-popover__body" style="width: 100%">
-            <span style="display: block;white-space:pre-wrap;">{{helpText}}</span>
+            <span style="display: block;white-space:pre-wrap;"><system-label [label]="helpText"/></span>
         </div>
     </div>
-</div >
+</div>

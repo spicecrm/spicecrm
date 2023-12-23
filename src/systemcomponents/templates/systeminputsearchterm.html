@@ -1,0 +1,19 @@
+<div class="slds-form-element slds-size--1-of-1" [ngClass]="{'slds-has-error': searchTermErrors}">
+    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left-right slds-size--1-of-1">
+        <system-utility-icon icon="search" size="x-small" addclasses="slds-icon slds-input__icon slds-input__icon_left"></system-utility-icon>
+        <input system-autofocus type="search" [(ngModel)]="searchTerm" (keyup.enter)="onEnterPress.emit()" (focus)="onFocusChange.emit(true)" (blur)="onFocusChange.emit(false)" [system-placeholder]="placeholder" class="slds-input slds-lookup__search-input">
+        <button *ngIf="searchTermErrors" (click)="toggleShowError(errorContainer)" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" style="right: 36px">
+            <system-button-icon icon="warning"></system-button-icon>
+        </button>
+        <button [disabled]="!searchTerm" (click)="clearSearchTerm()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+            <system-button-icon icon="clear"></system-button-icon>
+        </button>
+        <div #errorContainer [class.slds-hide]="!showError" class="slds-popover slds-popover_tooltip slds-nubbin--top-right slds-rise-from-ground slds-is-absolute" role="tooltip" style="top: 36px; right: 20px; width: 320px; height: auto;">
+            <div *ngIf="searchTermErrors" class="slds-popover__body slds-scrollable_y">
+                <div *ngFor="let error of searchTermErrors">
+                    <system-label [label]="error.label" [nestedValues]="error.nestedValues"></system-label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

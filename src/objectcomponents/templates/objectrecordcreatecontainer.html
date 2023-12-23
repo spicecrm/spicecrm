@@ -9,8 +9,9 @@
                     </p>
                     <div class="slds-grid slds-grid--vertical-align-center">
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
-                            <span *ngIf="model.data.summary_text">{{model.data.summary_text}}</span>
-                            <span *ngIf="!model.data.summary_text"><system-label label="LBL_NEW"/></span>
+                            <object-record-fieldset-horizontal-list [fieldset]="componentconfig.fieldset" [system-view-provider]="{displayLabels: false}"></object-record-fieldset-horizontal-list>
+                            <span *ngIf="!componentconfig.fieldset &&  model.data.summary_text">{{model.data.summary_text}}</span>
+                            <span *ngIf="!componentconfig.fieldset &&  !model.data.summary_text"><system-label label="LBL_NEW"/></span>
                         </h1>
                     </div>
                 </div>

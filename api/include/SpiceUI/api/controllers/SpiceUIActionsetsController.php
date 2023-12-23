@@ -4,7 +4,7 @@ namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
@@ -26,7 +26,7 @@ class SpiceUIActionsetsController
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
-        $actionsets = $db->query("SELECT sysuiactionsets.id acid, sysuiactionsetitems.*, sysuiactionsets.module, sysuiactionsets.name, sysuiactionsets.grouped  FROM sysuiactionsets LEFT JOIN sysuiactionsetitems ON sysuiactionsets.id = sysuiactionsetitems.actionset_id ORDER BY actionset_id, sequence");
+        $actionsets = $db->query("SELECT sysuiactionsets.id acid, sysuiactionsetitems.*, sysuiactionsets.module, sysuiactionsets.name, sysuiactionsets.grouped, sysuiactionsets.version as set_version  FROM sysuiactionsets LEFT JOIN sysuiactionsetitems ON sysuiactionsets.id = sysuiactionsetitems.actionset_id ORDER BY actionset_id, sequence");
         while ($actionset = $db->fetchByAssoc($actionsets)) {
 
             if (!isset($retArray[$actionset['acid']])) {
@@ -36,7 +36,7 @@ class SpiceUIActionsetsController
                     'grouped' => $actionset['grouped'],
                     'module' => $actionset['module'],
                     'package' => $actionset['package'],
-                    'version' => $actionset['version'],
+                    'version' => $actionset['set_version'],
                     'type' => 'global',
                     'actions' => []
                 ];
@@ -56,7 +56,7 @@ class SpiceUIActionsetsController
             }
         }
 
-        $actionsets = $db->query("SELECT sysuicustomactionsets.id acid, sysuicustomactionsetitems.*, sysuicustomactionsets.module, sysuicustomactionsets.name, sysuicustomactionsets.grouped  FROM sysuicustomactionsets LEFT JOIN sysuicustomactionsetitems ON sysuicustomactionsets.id = sysuicustomactionsetitems.actionset_id ORDER BY actionset_id, sequence");
+        $actionsets = $db->query("SELECT sysuicustomactionsets.id acid, sysuicustomactionsetitems.*, sysuicustomactionsets.module, sysuicustomactionsets.name, sysuicustomactionsets.grouped, sysuicustomactionsets.version as set_version FROM sysuicustomactionsets LEFT JOIN sysuicustomactionsetitems ON sysuicustomactionsets.id = sysuicustomactionsetitems.actionset_id ORDER BY actionset_id, sequence");
         while ($actionset = $db->fetchByAssoc($actionsets)) {
 
             if (!isset($retArray[$actionset['acid']])) {
@@ -66,7 +66,7 @@ class SpiceUIActionsetsController
                     'grouped' => $actionset['grouped'],
                     'module' => $actionset['module'],
                     'package' => $actionset['package'],
-                    'version' => $actionset['version'],
+                    'version' => $actionset['set_version'],
                     'type' => 'custom',
                     'actions' => []
                 ];
@@ -132,8 +132,9 @@ class SpiceUIActionsetsController
 
                 $dbData = [
                     'name' => $actionsetData['name'],
+                    'grouped' => $actionsetData['grouped'],
                     'package' => $actionsetData['package'],
-                    'version' => $_SESSION['confversion']
+                    'version' => $actionsetData['version'] ?: $_SESSION['confversion']
                 ];
 
                 $name = $actionsetData['module'] . "/" . $actionsetData['name'];
@@ -209,7 +210,7 @@ class SpiceUIActionsetsController
                     'actionconfig' => json_encode($actionsetItem['actionconfig']),
                     'requiredmodelstate' => $actionsetItem['requiredmodelstate'],
                     'package' => $actionsetItem['package'],
-                    'version' => $_SESSION['confversion'],
+                    'version' => $actionsetItem['version'] ?: $_SESSION['confversion'],
                 ];
 
                 $name = $name . $actionsetItem['action'];
@@ -252,7 +253,7 @@ class SpiceUIActionsetsController
             'requiredmodelstate' => $actionsetItem['requiredmodelstate'],
             'singlebutton' => $actionsetItem['singlebutton'] ? '1' : '0',
             'package' => $actionsetItem['package'],
-            'version' => $_SESSION['confversion']
+            'version' => $actionsetItem['version'] ?: $_SESSION['confversion']
         ];
 
         $name = $actionsetData['module'] . "/" . $actionsetData['name'] . '/' . $actionsetItem['action'];
@@ -277,7 +278,7 @@ class SpiceUIActionsetsController
             'name' => $actionsetData['name'],
             'grouped' => $actionsetData['grouped'],
             'package' => $actionsetData['package'],
-            'version' => $_SESSION['confversion'],
+            'version' => $actionsetData['version'] ?: $_SESSION['confversion'],
         ];
 
         $name = $actionsetData['module'] . "/" . $actionsetData['name'];

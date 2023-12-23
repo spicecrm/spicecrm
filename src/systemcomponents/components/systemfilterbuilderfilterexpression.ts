@@ -212,6 +212,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             }, {
                 operator: 'fromtomorrow',
                 name: 'LBL_OP_FROMTOMORROW'
+            }, {
+                operator: 'nyearsago',
+                name: 'LBL_N_YEARS_AGO',
+                value1: 'integer'
             }
         ],
         bool: [
@@ -239,6 +243,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_ONEOF',
                 value1: 'multienum'
             }, {
+                operator: 'notoneof',
+                name: 'LBL_NOTONEOF',
+                value1: 'multienum'
+            }, {
                 operator: 'empty',
                 name: 'LBL_OP_ISEMPTY'
             }, {
@@ -252,11 +260,21 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_OP_EQUALS',
                 value1: 'relate'
             }, {
+                operator: 'notequalr',
+                name: 'LBL_OP_NOTEQUAL',
+                value1: 'relate'
+            }, {
                 operator: 'emptyr',
                 name: 'LBL_OP_ISEMPTY'
             }, {
                 operator: 'notemptyr',
                 name: 'LBL_OP_NOTEMPTY'
+            }, {
+                operator: 'equalrcu',
+                name: 'LBL_CURRENT_USER',
+            }, {
+                operator: 'notequalrcu',
+                name: 'LBL_NOT_CURRENT_USER',
             }
         ]
     };

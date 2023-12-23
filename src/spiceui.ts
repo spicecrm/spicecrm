@@ -9,7 +9,7 @@ import {
     NgModule,
     Component,
     Renderer2,
-    enableProdMode, ViewChild, ApplicationRef, ComponentFactoryResolver, ViewContainerRef, ComponentRef
+    enableProdMode, ViewChild, ApplicationRef
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
@@ -22,41 +22,11 @@ import {GlobalComponents} from "./globalcomponents/globalcomponents";
 import {ObjectComponents} from "./objectcomponents/objectcomponents";
 
 // various services we need on global app level
-import {loggerService} from './services/logger.service';
-import {configurationService} from "./services/configuration.service";
-import {helper} from "./services/helper.service";
-import {loginService, loginCheck} from "./services/login.service";
-import {subscription} from "./services/subscription.service";
-import {notification} from "./services/notification.service";
-import {session} from "./services/session.service";
-import {metadata, aclCheck, noBack} from "./services/metadata.service";
-import {MathExpressionCompilerService} from "./services/mathexpressioncompiler";
-import {language} from "./services/language.service";
-import {recent} from "./services/recent.service";
-import {userpreferences} from "./services/userpreferences.service";
-import {fts} from "./services/fts.service";
-import {loader} from "./services/loader.service";
-import {broadcast} from "./services/broadcast.service";
-import {dockedComposer} from "./services/dockedcomposer.service";
-import {backend} from "./services/backend.service";
-import {navigation, canNavigateAway} from "./services/navigation.service";
-import {modelutilities} from "./services/modelutilities.service";
-import {toast} from "./services/toast.service";
-import {favorite} from "./services/favorite.service";
-import {reminder} from "./services/reminder.service";
-import {territories} from "./services/territories.service";
-import {currency} from "./services/currency.service";
-import {footer} from "./services/footer.service";
-import {assistant} from "./services/assistant.service";
-import {modal} from "./services/modal.service";
-import {layout} from "./services/layout.service";
-import {libloader} from "./services/libloader.service";
-import {telephony} from "./services/telephony.service";
-import {socket} from "./services/socket.service";
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
 import {SpiceInstallerModule} from "./include/spiceinstaller/spiceinstallermodule";
+import {loginCheck} from "./services/login.service";
 
 // declarations for TS
 /**
@@ -102,8 +72,10 @@ export class SpiceUI {
      * sets the top margin the headers that is set static requires
      */
     get outletstyle() {
+        const headerHeight = (this.globalHeader ? this.globalHeader.headerHeight : 0);
         return {
-            'margin-top': (this.globalHeader ? this.globalHeader.headerHeight : 0) + 'px'
+            'margin-top': headerHeight + 'px',
+            'height': `calc(100vh - ${headerHeight}px)`
         };
     }
 }
@@ -131,60 +103,17 @@ export class SpiceUI {
     ],
     declarations: [SpiceUI],
     providers: [
-        aclCheck,
-        assistant,
-        backend,
-        broadcast,
-        canNavigateAway,
-        configurationService,
-        currency,
-        dockedComposer,
-        favorite,
-        footer,
-        fts,
-        helper,
-        language,
-        layout,
-        libloader,
-        loader,
+
         {provide: LocationStrategy, useClass: HashLocationStrategy},
-        loggerService,
-        loginCheck,
-        loginService,
-        MathExpressionCompilerService,
-        metadata,
-        modal,
-        modelutilities,
-        noBack,
-        navigation,
-        recent,
-        reminder,
-        session,
-        socket,
-        telephony,
-        territories,
         Title,
-        loggerService,
-        libloader,
-        toast,
-        userpreferences,
-        notification,
-        subscription
     ]
 })
 export class SpiceUIModule {
-    constructor(
-        public socket: socket,
-        public assistant: assistant,
-        public reminder: reminder
-    ) {
-
-    }
 
     public ngDoBootstrap(appRef: ApplicationRef) {
 
         let bootstrapComponent: unknown = SpiceUI;
-        
+
         appRef.bootstrap(bootstrapComponent as any);
     }
 }

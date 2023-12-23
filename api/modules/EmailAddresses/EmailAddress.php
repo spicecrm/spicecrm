@@ -287,11 +287,11 @@ class EmailAddress extends SpiceBean
 
     /**
      * mark email address as invalid and remove from primary
-     * @param $emailAddress
-     * @param bool $invalid
+     * @param string $emailAddress
+     * @param bool $invalid the new invalid value to be set
      * @throws \Exception
      */
-    public static function setEmailAddressInvalid($emailAddress, bool $invalid): void
+    public static function setEmailAddressInvalid(string $emailAddress, bool $invalid): void
     {
         $emailAddressBean = BeanFactory::getBean('EmailAddresses');
         $emailAddressBean->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddress)]);
@@ -299,14 +299,35 @@ class EmailAddress extends SpiceBean
 
         if (empty($emailAddressBean->id) || $emailAddressBean->invalid_email == $invalid) return;
 
-        $emailAddressBean->invalid_email = $invalid;
+        # when limit exceeded set to invalid. default value is zero
+        $bounceLimit = SpiceConfig::getInstance()->config['email_address']['is_invalid_after_bounce_limit'] ?? 0;
+
+        if ($invalid) {
+
+            # increment the bounce count
+            $emailAddressBean->bounced_count = (int) ($emailAddressBean->bounced_count ?? 0) + 1;
+
+            # if limit exceeded set to invalid
+            if ($emailAddressBean->bounced_count > $bounceLimit) {
+                $emailAddressBean->invalid_email = 1;
+                $emailAddressBean->bounced_count = 0;
+
+                # reset the primary flag
+                $db = DBManagerFactory::getInstance();
+                $relationQuery = $db->query("SELECT id FROM email_addr_bean_rel WHERE email_address_id = '$emailAddressBean->id' AND primary_address = 1 AND deleted != 1");
+
+                while ($primaryRelationEntry = $db->fetchByAssoc($relationQuery)) {
+                    $db->updateQuery('email_addr_bean_rel', ['id' => $primaryRelationEntry['id']], ['primary_address' => 0]);
+                    self::writeRelationshipAudit($primaryRelationEntry['id'], 'primary_address', 1, 0);
+                }
+            }
+
+        } else {
+            $emailAddressBean->bounced_count = 0;
+            $emailAddressBean->invalid_email = 0;
+        }
+
         $emailAddressBean->save();
-
-        # reset primary address flag if invalid true
-        if ($invalid != 1) return;
-
-        $db = DBManagerFactory::getInstance();
-        $db->updateQuery('email_addr_bean_rel', ['email_address_id' => $emailAddressBean->id], ['primary_address' => 0]);
     }
 
     /**
@@ -368,29 +389,31 @@ class EmailAddress extends SpiceBean
 
     /**
      * write relationship audit entries for the field changes
-     * @param array $dataBefore
-     * @param array $dataAfter
-     * @throws Exception
+     * @param string $id
+     * @param string $field
+     * @param $valueBefore
+     * @param $valueAfter
+     * @throws \Exception
      */
-    public static function writeRelationshipAudit(array $dataBefore, array $dataAfter)
+    public static function writeRelationshipAudit(string $id, string $field, $valueBefore, $valueAfter): void
     {
         $db = DBManagerFactory::getInstance();
         $transactionId = LoggerManager::getLogger()->getTransactionId();
         $currentUser = AuthenticationController::getInstance()->getCurrentUser();
 
-        if ($dataBefore['opt_in_status'] == $dataAfter['opt_in_status']) return;
+        if ($valueBefore == $valueAfter) return;
 
-        $fieldType = SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel']['fields']['opt_in_status']['type'];
+        $fieldType = SpiceDictionaryHandler::getInstance()->dictionary['email_addr_bean_rel']['fields'][$field]['type'];
         $insertData = [
             'id' => SpiceUtils::createGuid(),
-            'parent_id' => $dataAfter['id'],
+            'parent_id' => $id,
             'transaction_id' => $transactionId,
             'date_created' => TimeDate::getInstance()->nowDb(),
             'created_by' => $currentUser->id,
-            'field_name' => 'opt_in_status',
+            'field_name' => $field,
             'data_type' => $fieldType,
-            'before_value' => $dataBefore['opt_in_status'],
-            'after_value' => $dataAfter['opt_in_status'],
+            'before_value' => $valueBefore,
+            'after_value' => $valueAfter,
         ];
 
         $db->insertQuery('email_addr_bean_rel_audit', $insertData);

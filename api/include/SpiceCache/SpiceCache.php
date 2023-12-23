@@ -138,7 +138,7 @@ class SpiceCache
      */
     public static function get($key)
     {
-        return SpiceConfig::getInstance()->get('cache.external_cache_disabled') || SpiceConfig::getInstance()->config['developerMode'] === true ? false : SpiceCache::instance()->$key;
+        return SpiceConfig::getInstance()->get('cache.external_cache_disabled') ? false : SpiceCache::instance()->$key;
     }
 
     /**

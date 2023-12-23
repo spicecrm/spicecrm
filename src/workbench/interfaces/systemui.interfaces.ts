@@ -54,5 +54,5 @@ export interface WebHookI {
     fieldset_id: string;
     ssl_verifypeer: boolean;
     ssl_verifyhost:boolean;
-    // custom_headers: object
+    custom_headers: string
 }

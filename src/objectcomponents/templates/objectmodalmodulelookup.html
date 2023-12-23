@@ -1,18 +1,25 @@
 <system-modal size="large">
-    <system-modal-header (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
+    <system-modal-header
+            (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
     <system-modal-content margin="none" [grow]="true">
         <div class="slds-height_full">
             <object-modal-module-lookup-header></object-modal-module-lookup-header>
             <div class="slds-is-relative" [ngStyle]="contentStyle()">
-                <div class="slds-scrollable--y slds-height_full" #tablecontent (scroll)="onScroll($event)" >
-                    <table class="slds-table slds-table--fixed-layout slds-table--bordered slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect, 'slds-table--header-fixed': !smallView}" role="listbox">
+                <div class="slds-scrollable--y slds-height_full" #tablecontent (scroll)="onScroll($event)">
+                    <table class="slds-table slds-table--fixed-layout slds-table--bordered slds-max-medium-table--stacked-horizontal"
+                           [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect, 'slds-table--header-fixed': !smallView}"
+                           role="listbox">
                         <thead *ngIf="!smallView">
-                            <tr object-list-header [showSelectColumn]="multiselect" [showRowActionMenu]="false"></tr>
+                        <tr object-list-header [showSelectColumn]="multiselect" [showRowActionMenu]="false"></tr>
                         </thead>
                         <tbody>
-                            <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listItem]="listItem" [showActionMenu]="false" [rowselect]="multiselect" [displaylinks]="false" class="slds-hint-parent slds-p-horizontal--x-small" (click)="clickRow($event, listItem)"></tr>
+                        <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listItem]="listItem"
+                            [showActionMenu]="false" [rowselect]="multiselect" [displaylinks]="false"
+                            class="slds-hint-parent slds-p-horizontal--x-small"
+                            (click)="clickRow($event, listItem)"></tr>
                         </tbody>
-                        <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect" [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>
+                        <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect"
+                               [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>
                     </table>
                 </div>
                 <object-modal-module-lookup-aggregates></object-modal-module-lookup-aggregates>
@@ -23,7 +30,11 @@
         <button class="slds-button slds-button--neutral" (click)="closePopup()">
             <system-label label="LBL_CANCEL"></system-label>
         </button>
-        <button *ngIf="multiselect" class="slds-button slds-button--brand" [disabled]="selectedCount == 0" (click)="selectItems()">
+        <button *ngIf="canAdd" class="slds-button slds-button--brand" (click)="createNew()">
+            <system-label label="LBL_NEW"></system-label>
+        </button>
+        <button *ngIf="multiselect" class="slds-button slds-button--brand" [disabled]="selectedCount == 0"
+                (click)="selectItems()">
             <system-label label="LBL_SELECT"></system-label>
         </button>
     </system-modal-footer>

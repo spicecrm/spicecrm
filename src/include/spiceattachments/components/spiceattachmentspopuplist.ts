@@ -20,6 +20,7 @@ declare var moment: any;
  * displays a quicknote that is read in teh stream
  */
 @Component({
+    selector: 'spice-attachments-popup-list',
     templateUrl: '../templates/spiceattachmentspopuplist.html',
     providers: [modelattachments],
 })

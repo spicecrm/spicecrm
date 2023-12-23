@@ -101,6 +101,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Note'] = [
             'default' => 0,
             'comment' => 'Embed flag indicator determines if note embedded in email'
         ],
+        'external_id' => [
+            'name'    => 'external_id',
+            'vname'   => 'LBL_EXTERNALID',
+            'type'    => 'varchar',
+            'len'     => 160,
+            'comment' => 'Call ID for external app API',
+        ],
         'parent_name' => [
             'name' => 'parent_name',
             'parent_type' => 'record_type_display',

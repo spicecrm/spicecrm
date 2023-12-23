@@ -1,16 +1,5 @@
 <?php
-/*********************************************************************************
- * This file is part of KReporter. KReporter is an enhancement developed
- * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- *
- * This Version of the KReporter is licensed software and may only be used in
- * alignment with the License Agreement received with this Software.
- * This Software is copyrighted and may not be further distributed without
- * witten consent of aac services k.s.
- *
- * You can contact us at info@kreporter.org
- ********************************************************************************/
-
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 global $kreporterWhereOperatorCount;
 
@@ -43,6 +32,8 @@ $kreporterWhereOperatorCount = [
     'lastmonth' => 0,
     'last3month' => 0,
     'lastnfquarter' => 1,
+    'ndaysago' => 1,
+    'lessthanndays' => 1,
     'lastndays' => 1,
     'lastnfdays' => 1,
     'lastnddays' => 1,
@@ -139,6 +130,17 @@ $kreporterWhereOperatorTypes = [
         'isnull',
         'isnotempty'
     ],
+    'category' => [
+        'equals',
+        'notequal',
+        'oneof',
+        'oneofnot',
+        'oneofnotornull',
+        'isempty',
+        'isemptyornull',
+        'isnull',
+        'isnotempty'
+    ],
     'id' => [
         'equals',
         'autocomplete',
@@ -171,6 +173,8 @@ $kreporterWhereOperatorTypes = [
         'future',
         'between',
         'today',
+        'ndaysago',
+        'lessthanndays',
         'lastndays',
         'lastnfdays',
         'lastnddays',
@@ -252,7 +256,8 @@ $kreporterWhereOperatorAssignments = [
     'datetime' => 'date',
     'datetimecombo' => 'date', 
     //2013-08-07 added fixed field
-    'fixed' => 'varchar'
+    'fixed' => 'varchar',
+    'category' => 'category',
 ];
 
 if (file_exists('custom/modules/KReports/config/KReportWhereOperators.php'))

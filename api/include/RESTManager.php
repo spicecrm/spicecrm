@@ -338,7 +338,7 @@ class RESTManager
      * @return string
      */
     public function outputError($exception) {
-        $inDevMode = SpiceUtils::inDeveloperMode();
+        $stackTraceLevel = SpiceUtils::getStackTrace();
 
         if (is_object($exception)) {
             if (is_a( $exception, Exception::class)) {
@@ -354,13 +354,15 @@ class RESTManager
                 }
                 $httpCode = $exception->getHttpCode();
             } else {
-                if ($inDevMode) {
+                if ($stackTraceLevel > 0) {
                     $responseData = [
                         'message' => $exception->getMessage(),
                         'line'    => $exception->getLine(),
                         'file'    => $exception->getFile(),
-                        'trace'   => $exception->getTrace(),
                     ];
+                    if($stackTraceLevel > 1) {
+                        $responseData['trace'] = $exception->getTrace();
+                    }
                 } else {
                     $responseData['error'] = ['message' => 'Application Error.'];
                 }
@@ -368,7 +370,7 @@ class RESTManager
             }
         } else {
             LoggerManager::getLogger()->fatal($exception);
-            $responseData['error'] = ['message' => $inDevMode ? 'Application Error.' : $exception];
+            $responseData['error'] = ['message' => $stackTraceLevel ? 'Application Error.' : $exception];
             $httpCode = 500;
         }
 

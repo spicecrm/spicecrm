@@ -1,0 +1,27 @@
+<div #calendarContainer [ngClass]="mainContainerClass" [class.slds-text-body--small]="calendar.isMobileView" [attr.role]="!calendar.asPicker ? 'none' : 'dialog'" [system-to-bottom-noscroll]="!calendar.asPicker" style="height: 100%">
+    <div [class.slds-modal__container]="calendar.asPicker" style="height: inherit">
+        <div class="slds-grid slds-grid--vertical" style="height: inherit">
+            <calendar-header [modules]="calendar.modules" (datePicked)="setDateChanged($event)" style="display: block"></calendar-header>
+            <div class="slds-grid slds-theme_default slds-border--right slds-grow" style="min-height: 100px">
+                <div *ngIf="!calendar.isMobileView" [style.width.px]="calendar.sidebarWidth" class="slds-border--right slds-p-around--xx-small slds-scrollable--y slds-size--1-of-1 slds-theme--default" style="height: 100%; z-index: 1">
+                    <system-input-date-picker [setDate]="calendar.calendarDate" [dual]="componentconfig.pickerDualMode" [showTodayButton]="false" [weekStartDay]="calendar.weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
+                    <calendar-other-calendars-monitor *ngIf="calendar.userPreferencesLoaded" [usersCalendars]="calendar.usersCalendars" (groupwareVisible$)="handleGoogleIsVisible($event)"></calendar-other-calendars-monitor>
+                </div>
+                <div [ngSwitch]="calendar.sheetType" [system-overlay-loading-spinner]="calendar.isLoading || !calendar.userPreferencesLoaded" [ngStyle]="sheetStyle">
+                    <ng-container *ngIf="calendar.userPreferencesLoaded">
+                        <calendar-sheet-day *ngSwitchCase="'Day'" [groupwareVisible]="groupwareVisible" [setdate]="calendar.calendarDate" style="display: block; height: inherit"></calendar-sheet-day>
+                        <calendar-sheet-three-days *ngSwitchCase="'Three_Days'" [groupwareVisible]="groupwareVisible" [setdate]="calendar.calendarDate" style="display: block; height: inherit"></calendar-sheet-three-days>
+                        <calendar-sheet-week *ngSwitchCase="'Week'" [groupwareVisible]="groupwareVisible" [setdate]="calendar.calendarDate" style="display: block; height: inherit"></calendar-sheet-week>
+                        <calendar-sheet-month *ngSwitchCase="'Month'" [groupwareVisible]="groupwareVisible" [setdate]="calendar.calendarDate" style="display: block; height: inherit"></calendar-sheet-month>
+                        <calendar-sheet-schedule *ngSwitchCase="'Schedule'" [groupwareVisible]="groupwareVisible" [setdate]="calendar.calendarDate" (untildate$)="handleUntilDate($event)" style="display: block; height: inherit"></calendar-sheet-schedule>
+                    </ng-container>
+                </div>
+            </div>
+            <div>
+                <footer *ngIf="calendar.asPicker" class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CLOSE"></system-label></button>
+                </footer>
+            </div>
+        </div>
+    </div>
+</div>

@@ -41,6 +41,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 
@@ -173,6 +174,30 @@ class Opportunity extends SpiceBean
         return parent::save($check_notify, $fts_index_bean);
 
     }
+
+    /**
+     * collect potentials when details are displayed
+     * As from release 2023.03.001 this function replaces the after_retrieve hook we had in PotentialsOpportunityHooks
+     * @return void
+     */
+    function retrieveViewDetails()
+    {
+        if(SpiceModules::getInstance()->moduleExists('Potentials')){
+            $this->opportunitypotentials = [];
+            $linkedPotentials = $this->get_linked_beans('potentials');
+            foreach ($linkedPotentials as $linkedPotential) {
+                $this->opportunitypotentials[] = [
+                    'id' => $linkedPotential->id,
+                    'opportunity_amount' => $linkedPotential->opportunity_amount,
+                    'opportunity_amount_usdollar' => $linkedPotential->opportunity_amount_usdollar
+                ];
+            }
+
+            $this->opportunitypotentials = json_encode($this->opportunitypotentials);
+        }
+
+    }
+
 
 //    function save_relationship_changes($is_update, $exclude = [])
 //    {

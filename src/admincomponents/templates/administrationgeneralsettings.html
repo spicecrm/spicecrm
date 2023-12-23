@@ -56,22 +56,16 @@
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
                 <div class="slds-p-around--x-small slds-size--1-of-2">
                     <div class="slds-form-element">
-                        <label class="slds-form-element__label"><system-label label="LBL_DEVELOPER_MODE"></system-label></label>
+                        <label class="slds-form-element__label"><system-label label="LBL_STACKTRACE"></system-label></label>
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
-                                <select class="slds-select" [(ngModel)]="settings.advanced.developerMode">
+                                <select class="slds-select" [(ngModel)]="settings.advanced.stack_trace_errors">
                                     <option value="0">off</option>
-                                    <option value="1">on</option>
-                                    <option value="2">on Request</option>
+                                    <option value="1">on main error information</option>
+                                    <option value="2">on full stack trace</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="slds-form-element__control slds-size--1-of-2 slds-truncate slds-p-around--x-small">
-                    <system-label label="LBL_STACKTRACE"></system-label>
-                    <div class="slds-p-vertical--xx-small">
-                        <system-checkbox [(ngModel)]="settings.advanced.stack_trace_errors"></system-checkbox>
                     </div>
                 </div>
                 <!--div class="slds-form-element__control slds-size--1-of-6 slds-truncate slds-p-around--x-small">

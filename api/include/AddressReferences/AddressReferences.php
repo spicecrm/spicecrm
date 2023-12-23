@@ -6,6 +6,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class AddressReferences
 {
@@ -70,7 +71,7 @@ class AddressReferences
     {
         $list = [];
         $db = DBManagerFactory::getInstance();
-        if($db->tableExists('spice_address_references')){
+        if(SpiceConfig::getInstance()->config['system']['no_table_exists_check'] === true || $db->tableExists('spice_address_references')){
             $query = $db->query("SELECT * FROM spice_address_references ORDER BY parent_module");
             if (!$query) return;
             while ($row = $db->fetchByAssoc($query)) {
@@ -94,17 +95,16 @@ class AddressReferences
     /**
      * update beans address that are referencing their address to the passed parent bean
      * @param SpiceBean $parentBean
-     * @return void
+     * @param string|null $deletedParentId used for merge beans to move the reference parent id from the deleted parent to the master parent
      * @throws Exception
      */
-    public function updateReferencedBeansAddress(SpiceBean $parentBean)
+    public function updateReferencedBeansAddress(SpiceBean $parentBean, ?string $deletedParentId = null): void
     {
         if (!$this->hasAddressFields($parentBean)) return;
 
         $parentMetadata = $this->getParentReferenceMetadata($parentBean);
 
-        if (empty($parentMetadata) || !$this->addressHasChanged($parentBean, $parentMetadata[0])) return;
-
+        if (empty($parentMetadata) || (!$this->addressHasChanged($parentBean, $parentMetadata[0]) && empty($deletedParentId))) return;
 
         # update address for all referenced modules
         foreach ($parentMetadata as $metadata) {
@@ -118,7 +118,11 @@ class AddressReferences
             $linkedBeans = $parentBean->get_linked_beans($metadata['parent_link_name']);
 
             foreach ($linkedBeans as $childBean) {
-                if ($childBean->$childFieldName != $parentBean->id) continue;
+
+                if (empty($childBean->$childFieldName)) continue;
+                if ($childBean->$childFieldName != ($deletedParentId ?? $parentBean->id)) continue;
+
+                $childBean->$childFieldName = $parentBean->id;
                 $this->updateChildAddress($parentBean, $childBean, $metadata);
                 $childBean->save();
             }

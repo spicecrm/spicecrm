@@ -38,6 +38,7 @@ namespace SpiceCRM\modules\CampaignLog;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\modules\EmailAddresses\EmailAddress;
 
 
 class CampaignLog extends SpiceBean {
@@ -48,11 +49,32 @@ class CampaignLog extends SpiceBean {
 
         // fill in target_name
         $target = BeanFactory::getBean($this->target_type, $this->target_id);
-        $this->target_name = $target->get_summary_text();
+        if($target) $this->target_name = $target->get_summary_text();
     }
 
 	static function setStatus($id,$status){
         $db = DBManagerFactory::getInstance();
         $db->query("UPDATE campaign_log SET activity_type = '$status', activity_date = {$db->now()} WHERE id = '$id'");
+    }
+
+    /**
+     * opt out email the parent email address
+     */
+    public function optOutParentEmailAddress()
+    {
+        if (empty($this->target_id) || empty($this->target_type)) return null;
+
+        $parent = BeanFactory::getBean($this->target_type, $this->target_id);
+
+        $emailAddresses = $parent->get_linked_beans('email_addresses');
+
+        foreach ($emailAddresses as $address) {
+
+            if ($address->primary_address != 1 || $address->opt_in_status == 'opted_out') continue;
+
+            EmailAddress::setOptInStatus($parent, $address, 'opted_out');
+
+            break;
+        }
     }
 }

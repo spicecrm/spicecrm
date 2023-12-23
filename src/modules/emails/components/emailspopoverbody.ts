@@ -12,7 +12,7 @@ import {
     OnInit,
     OnDestroy
 } from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 
@@ -23,44 +23,27 @@ import {language} from '../../../services/language.service';
 export class EmailsPopoverBody {
 
     /**
-     *
+     * blob url for the iframe
      */
-    public _sanitizedValue;
-
+    public iframeUrl: SafeResourceUrl;
     /**
-     * the cached full html code to prevent "flickering" of the iframe (change detection)
+     * is loading content flag
      */
-    public fullValue_cached: string;
-    public fullValue: string = '';
+    public isLoading: boolean = false;
 
     constructor(public model: model, public language: language, public sanitized: DomSanitizer) {
     }
 
-
     /**
-     * get the html representation of the corresponding value
-     * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should be rebuild on change
-     * @returns {any}
+     * generate field html content blob url from the backend
      */
-    get emailbody() {
-        return this.model.getFieldValue('body');
-    }
+    public ngOnInit() {
 
-    get sanitizedValue() {
-        if (this.emailbody) {
-            if (this.emailbody.includes('</html>')) {
-                this.fullValue = this.emailbody;
-            } else {
-                // added <base target="_blank"> so all links open in new window
-                this.fullValue = `<html><body class="spice">${this.emailbody}</body></html>`;
-            }
-        }
+        this.isLoading = true;
 
-        // if value changed, generate sanitized html value
-        if (this.fullValue != this.fullValue_cached) {
-            this._sanitizedValue = this.sanitized.bypassSecurityTrustResourceUrl(this.fullValue ? 'data:text/html;charset=UTF-8,' + encodeURIComponent(this.fullValue) : '');
-            this.fullValue_cached = this.fullValue;
-        }
-        return this._sanitizedValue;
+        this.model.generateFieldHtmlContentBlobUrl('body').subscribe((blob: SafeResourceUrl) => {
+            this.isLoading = false;
+            this.iframeUrl = blob;
+        });
     }
 }

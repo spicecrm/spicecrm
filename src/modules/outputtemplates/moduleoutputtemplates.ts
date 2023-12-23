@@ -11,8 +11,6 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import {outputModalService} from "./services/outputmodal.service";
-
 import {OutputTemplatesEditor} from "./components/outputtemplateseditor";
 import {OutputTemplatesPreview} from "./components/outputtemplatespreview";
 import {OutputTemplatesPreviewSelector} from "./components/outputtemplatespreviewselector";
@@ -23,6 +21,9 @@ import {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmo
 import {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
 import {OutputTemplatesVariableHelper} from './components/outputtemplatesvariablehelper';
 import {ObjectActionMarkSentBeanButton} from "./components/objectactionmarksentbeanbutton";
+import {OutputRevisionsPDFTabContainer} from "./components/outputrevisionspdftabcontainer";
+import {OutputRevisionsPDFTabContainerEmail} from "./components/outputrevisionspdftabcontaineremail";
+import {OutputRevisionsPDFTabContainerPreview} from "./components/outputrevisionspdftabcontainerpreview";
 
 @NgModule({
     imports: [
@@ -44,7 +45,10 @@ import {ObjectActionMarkSentBeanButton} from "./components/objectactionmarksentb
         fieldOutputTemplates,
         OutputTemplatesVariableHelper,
         ObjectActionLiveCompileBeanButton,
-        ObjectActionMarkSentBeanButton
+        ObjectActionMarkSentBeanButton,
+        OutputRevisionsPDFTabContainer,
+        OutputRevisionsPDFTabContainerEmail,
+        OutputRevisionsPDFTabContainerPreview
     ],
     exports: [
         ObjectActionOutputBeanModalEmailContent

@@ -54,8 +54,8 @@
                         <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                     </div>
                     <div class="slds-dropdown slds-dropdown_fluid" role="listbox" [ngStyle]="dropdownStyle">
-                        <field-lookup-recent *ngIf="parentSearchTerm === ''" [module]="parentType" (selectedObject)="setParent($event)"></field-lookup-recent>
-                        <field-lookup-search *ngIf="parentSearchTerm !== ''" [module]="parentType" (selectedObject)="setParent($event)" (searchWithModal)="searchWithModal()" [searchterm]="parentSearchTerm"></field-lookup-search>
+                        <field-lookup-recent *ngIf="parentSearchTerm === ''" [module]="parentType"  [inputElement]="focus" (selectedObject)="setParent($event)"></field-lookup-recent>
+                        <field-lookup-search *ngIf="parentSearchTerm !== ''" [module]="parentType" (selectedObject)="setParent($event)" [inputElement]="focus" (searchWithModal)="searchWithModal()" [searchterm]="parentSearchTerm"></field-lookup-search>
                     </div>
                 </div>
             </div>

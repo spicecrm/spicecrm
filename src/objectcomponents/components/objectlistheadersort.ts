@@ -49,11 +49,11 @@ export class ObjectListHeaderSort {
      */
     get sortIcon(): string {
         let sortdata = this.modellist.getSortField(this.field.field);
-        if(sortdata) {
+        if (sortdata) {
             if (sortdata.sortdirection == 'ASC') {
-                return 'arrowdown';
-            } else {
                 return 'arrowup';
+            } else {
+                return 'arrowdown';
             }
         }
         return '';
@@ -61,7 +61,7 @@ export class ObjectListHeaderSort {
 
     get sortindex() {
         let sortdata = this.modellist.getSortField(this.field.field);
-        if(sortdata && sortdata.sortitems > 1) {
+        if (sortdata && sortdata.sortitems > 1) {
             return sortdata.sortindex + 1;
         }
         return '';
