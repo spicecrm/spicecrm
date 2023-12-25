@@ -16,6 +16,8 @@ import {configurationService} from "../../services/configuration.service";
  */
 export class administrationconfigurator {
 
+    public loading: boolean = false;
+
     public dictionary: string = '';
     public entries: any = [];
     public sorting: any = {
@@ -37,20 +39,28 @@ export class administrationconfigurator {
      * @param fielddefs Array
      */
     public loadEntries(fielddefs = []) {
-        this.backend.getRequest('configuration/configurator/entries/' + this.dictionary).subscribe(data => {
+        this.loading = true;
+        this.backend.getRequest('configuration/configurator/entries/' + this.dictionary).subscribe({
+            next: (data) => {
 
-            // traverse the fielddefs
-            this.fielddefobj = {};
-            for (let fielddef of fielddefs) {
-                this.fielddefobj[fielddef.name] = fielddef.type ? fielddef.type : '';
-            }
+                // traverse the fielddefs
+                this.fielddefobj = {};
+                for (let fielddef of fielddefs) {
+                    this.fielddefobj[fielddef.name] = fielddef.type ? fielddef.type : '';
+                }
 
-            for (let entry of data) {
-                this.entries.push({
-                    id: entry.id,
-                    mode: '',
-                    data: this.mapData(entry)
-                });
+                this.entries = data.map(entry=> {
+                    return {
+                        id: entry.id,
+                        mode: '',
+                        data: this.mapData(entry)
+                    }
+                })
+
+                this.loading = false;
+            },
+            error: () => {
+                this.loading = false;
             }
         });
     }

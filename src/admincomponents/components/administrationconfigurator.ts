@@ -56,6 +56,13 @@ export class AdministrationConfigurator implements OnInit {
         }
     }
 
+    /**
+     * a getter for the item fields that excludes fields that have a detail only flag set
+     */
+    get itemFields(){
+        return this.getFields().filter(f => f.detailonly !== true);
+    }
+
     get count(){
         return this.administrationconfigurator.entries.length;
     }
