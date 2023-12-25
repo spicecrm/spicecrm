@@ -2,31 +2,27 @@
  * @module AdminComponentsModule
  */
 import {
-    Component, Injector,
+    Component,
     Input
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {helper} from '../../services/helper.service';
 import {administrationconfigurator} from '../services/administrationconfigurator.service';
-import {modal} from "../../services/modal.service";
+
+declare var moment: any;
 
 @Component({
-    selector: '[administration-configurator-item]',
-    templateUrl: '../../admincomponents/templates/administrationconfiguratoritem.html'
+    selector: 'administration-configurator-item-modal',
+    templateUrl: '../../admincomponents/templates/administrationconfiguratoritemmodal.html'
 })
-export class AdministrationConfiguratorItem {
+export class AdministrationConfiguratorItemModal {
+
+    public self: any;
 
     @Input() public fields: any[] = [];
     @Input() public entry: any = {};
 
-    constructor(public administrationconfigurator: administrationconfigurator, public language: language, public helper: helper, public modal: modal, public injector: Injector) {
-    }
-
-    /**
-     * a getter for the item fields that excludes fields that have a detail only flag set
-     */
-    get itemFields(){
-        return this.fields.filter(f => f.detailonly !== true);
+    constructor(public administrationconfigurator: administrationconfigurator, public language: language, public helper: helper) {
     }
 
     public setEditMode() {
@@ -71,12 +67,7 @@ export class AdministrationConfiguratorItem {
         }
     }
 
-    public goDetail(){
-        this.modal.openModal('AdministrationConfiguratorItemModal', true, this.injector).subscribe({
-            next: (modalRef) => {
-                modalRef.instance.fields = this.fields;
-                modalRef.instance.entry = this.entry;
-            }
-        })
+    public close(){
+        this.self.destroy();
     }
 }
