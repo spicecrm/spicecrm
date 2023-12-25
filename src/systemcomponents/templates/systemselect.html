@@ -34,11 +34,11 @@
     </div>
 </div>
 <div *ngIf="!inputIsVisible && (emitInputValueOnEnterPress ? !!value : !!focusedItemId)" (click)="setInputVisible(inputElement, $event)" class="slds-pill_container">
-    <span class="slds-pill slds-pill_link slds-size--1-of-1">
+    <span class="slds-pill slds-pill_link slds-size--1-of-1" [ngClass]="{'slds-theme--shade': disabled}">
         <a class="slds-pill__action" [system-title]="value">
             <span class="slds-pill__label">{{value}}</span>
         </a>
-        <button (click)="clearValue($event)" tabindex="-1" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" system-title="LBL_CLEAR">
+        <button *ngIf="!disabled" (click)="clearValue($event)" tabindex="-1" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" system-title="LBL_CLEAR">
             <system-button-icon icon="close"/>
         </button>
     </span>
