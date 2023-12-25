@@ -22,10 +22,18 @@ import {metadata} from "../../services/metadata.service";
 })
 export class SystemInputComponentset implements ControlValueAccessor {
 
+
     /**
-     * input to disable the input
+     * to disable the checkbox
      */
-    @Input() public disabled = false;
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
 
     // for the value accessor
     public onChange: (value: string) => void;
