@@ -58,11 +58,14 @@ export class KanbanManagerService {
 
     set selectedBeanGuide(val:SpiceBeanGuidesI) {
         this._selectedBeanGuide = val;
-        this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id);
-        this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this.selectedBeanGuide.id);
 
-        // filters spice texts for selected spice bean guide
-        this.currentBeanGuideSpiceTexts = this.spiceTexts.filter(spiceTexts => spiceTexts.spiceBeanGuideId == this.selectedBeanGuide.id);
+        if(val) {
+            this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id);
+            this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this.selectedBeanGuide.id);
+
+            // filters spice texts for selected spice bean guide
+            this.currentBeanGuideSpiceTexts = this.spiceTexts.filter(spiceTexts => spiceTexts.spiceBeanGuideId == this.selectedBeanGuide.id);
+        }
 
         this.selectedBeanGuide$.next(val);
     }
