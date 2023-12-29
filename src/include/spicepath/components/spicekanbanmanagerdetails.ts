@@ -18,7 +18,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
     /**
      * selected stage
      */
-    @Input() public selectedStage: any;
+    private _selectedStage: any;
 
     /**
      * system languages array
@@ -42,12 +42,20 @@ export class SpiceKanbanManagerDetails implements OnInit {
         public kanban: KanbanManagerService,
     ) { }
 
+    @Input()
+    set selectedStage(stage) {
+        this._selectedStage = stage;
+        this.selectSpiceText();
+    }
+
+    get selectedStage() {
+        return this._selectedStage;
+    }
+
     public ngOnInit() {
         // get languages
         this.systemLanguages = this.language.getAvialableLanguages();
         this.activeTab = this.language.currentlanguage;
-
-        this.selectSpiceText();
     }
 
     /**
@@ -67,7 +75,6 @@ export class SpiceKanbanManagerDetails implements OnInit {
         this.selectedSpiceText = {id: '', name: '', parent_id: '', parent_type: '', text_id: '', text_language: '', label: '', deleted: 0};
 
         // get spice text by language
-        // @ToDo: set selectedStage in service or inside ngOnInit because it's not set on first load
         const selectedSpiceText = this.kanban.currentBeanGuideSpiceTexts.find((text) => text.text_language == this.activeTab && text.parent_id == this.selectedStage.id);
 
         if(!selectedSpiceText) return this.selectedSpiceText;
