@@ -10,6 +10,7 @@ import {broadcast} from './broadcast.service';
 import {Subject, of, Observable} from 'rxjs';
 import {map} from "rxjs/operators";
 import {modelutilities} from "./modelutilities.service";
+import moment from "moment";
 
 @Injectable({
     providedIn: 'root'
@@ -126,6 +127,7 @@ export class recent {
                 item_id,
                 module_name,
                 item_summary: item_data.summary_text,
+                date_modified: moment().format('YYYY-MM-DD HH:mm:ss'),
                 data: this.modelutils.spiceModel2backend(module_name, item_data)
             };
 
@@ -138,7 +140,7 @@ export class recent {
         }
 
         // cache recent module items in browser
-        this.configuration.setData('moduleRecentItems', cachedModuleItems, false);
+        this.configuration.setData('moduleRecentItems', JSON.parse(JSON.stringify(cachedModuleItems)), false);
     }
 
     /**
@@ -173,6 +175,7 @@ export class recent {
             item_id,
             module_name,
             item_summary: item_data.summary_text,
+            date_modified: moment().format('YYYY-MM-DD HH:mm:ss'),
             data: this.backend.modelutilities.spiceModel2backend(module_name, item_data)
         };
 
@@ -184,7 +187,7 @@ export class recent {
         }
 
         // cache recent items in browser
-        this.configuration.setData('recentItems', recentCache, false);
+        this.configuration.setData('recentItems', JSON.parse(JSON.stringify(recentCache)), false);
     }
 
     /**
@@ -219,7 +222,7 @@ export class recent {
                     responseSubject.complete();
 
                     // cache in browser & manipulate backend response due to date format issues
-                    this.configuration.setData('moduleRecentItems', JSON.parse(JSON.stringify(this.moduleItems)));
+                    this.configuration.setData('moduleRecentItems', JSON.parse(JSON.stringify(this.moduleItems)), false);
                 });
 
                 return responseSubject.asObservable();
