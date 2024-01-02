@@ -3,12 +3,37 @@ import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {clone} from "underscore";
-import moment, {Duration, isDate} from "moment";
-import Diff = moment.unitOfTime.Diff;
-import DurationConstructor = moment.unitOfTime.DurationConstructor;
+import moment, {isDate} from "moment";
 
 /* @ignore */
 declare var _: any;
+
+const zoomLevels = {
+    'YEAR': {
+        unitOfTime: 'months',
+        labels: moment.monthsShort(),
+        unit: (containerWidth: number) => containerWidth / 12,
+        factor: 31
+    },
+    'QUARTER': {
+        unitOfTime: 'quarter',
+        labels: moment.monthsShort(),
+        unit: (containerWidth: number) => containerWidth / 3,
+        factor: 31
+    },
+    'MONTH': {
+        unitOfTime: 'days',
+        labels: Array.from(new Array(31), (x, i) => i + 1),
+        unit: (containerWidth: number) => containerWidth / 31,
+        factor: 1
+    },
+    'WEEK': {
+        unitOfTime: 'days',
+        labels: moment.weekdaysShort(),
+        unit: (containerWidth: number) => containerWidth / 7,
+        factor: 1
+    }
+}
 
 @Injectable()
 
@@ -19,14 +44,15 @@ export class SpiceGanttService {
     constructor() {
         this._containerId = (Math.random() * new Date().getUTCMilliseconds()).toString()
 
-        // this._items = [...Array(30).keys()].map(i => {
-        //     const id = Math.random() * 10000000
-        //     const name = `name-${i}`
-        //     const start = moment(new Date(new Date().valueOf() - Math.random() * (1000 * 60 * 60 * 24 * 31)))
-        //     const end = start.clone().add(Math.random() * 10000, 'hours')
-        //
-        //     return {id, name, start, end}
-        // })
+        for (let i = 0; i < 30; i++) {
+            const id = Math.random() * 10000000
+            const name = `name-${i}`
+            const start = moment(new Date(new Date().valueOf() - Math.random() * (1000 * 60 * 60 * 24 * 31)))
+            const end = start.clone().add(Math.random() * 10000, 'hours')
+
+            this._items.push({id, name, start, end})
+        }
+
     }
 
     /*
@@ -48,7 +74,7 @@ export class SpiceGanttService {
         return this.buildTree(this._items);
     }
 
-    get items() {
+    get flat() {
         return this._items
     }
 
@@ -63,7 +89,7 @@ export class SpiceGanttService {
             })
     }
 
-    setNode(id: string, obj: Object, recursive = false) {
+    setNode(id, obj, recursive = false) {
         let nestedIDs = []
 
         if (recursive) {
@@ -79,7 +105,7 @@ export class SpiceGanttService {
         })
     }
 
-    private getNestedChildrenIds(id: string) {
+    private getNestedChildrenIds(id) {
         return this.getChildren(id).map(item => {
             return [
                 item.id,
@@ -88,7 +114,7 @@ export class SpiceGanttService {
         }).flat()
     }
 
-    public getParent(id: string) {
+    public getParent(id) {
         const node = this._items.find(item => item.id === id)
         if (!!node) {
             const parent = this._items.find(item => item.id === node.parent)
@@ -116,8 +142,6 @@ export class SpiceGanttService {
     private _zoomLevel: string = 'MONTH'
 
     private _showMilestones: boolean = true
-
-    private _headerLabels = []
 
     get containerId(): string {
         return this._containerId
@@ -150,19 +174,7 @@ export class SpiceGanttService {
     }
 
     get itemHeight(): number {
-        return 40
-    }
-
-    get zoomLevels() {
-        return [
-            {id: 'null', label: 'Automatisch', order: 0},
-            // {id: 'hours', label: 'Stunden', order: 1},
-            // {id: 'days', label: 'Tage', order: 2},
-            {id: 'weeks', label: 'Wochen', order: 3},
-            {id: 'months', label: 'Monate', order: 4},
-            {id: 'quarters', label: 'Quartale', order: 5},
-            {id: 'years', label: 'Jahre', order: 6},
-        ]
+        return 37
     }
 
     get zoomLevel(): string {
@@ -171,108 +183,73 @@ export class SpiceGanttService {
 
     set zoomLevel(type: string) {
         this._zoomLevel = type
-        this._headerLabels = this.getHeaderLabels()
     }
 
     get sizeOfUnit(): number {
-        return this.containerWidth / this.headerLabels[0].size
+        return zoomLevels[this._zoomLevel].unit(this._containerWidth)
     }
 
-    get headerLabels() {
-        return this._headerLabels
+    get sizeFactor(): number {
+        return zoomLevels[this._zoomLevel].factor
     }
 
-    public getHeaderLabels() {
-        let items = []
+    get headerLabels(): string[] {
+        let labels = zoomLevels[this._zoomLevel].labels
 
-        // get lower and max bounds
-        let min: moment.Moment = moment()
-        let max: moment.Moment = moment()
-        let range: DurationConstructor = '' as DurationConstructor
-        let sizes: number[] = []
+        const start = this.bounds.min
+        const end = this.bounds.max
 
-        // get duration
-        let i = 0
-        let duration = 0
-        // const ranges = ['years', 'quarters', 'months', 'weeks', 'days', 'hours']
-        const ranges: DurationConstructor[] = this.zoomLevels.filter(l => l.id !== null && l.id !== 'null')
-            .sort((a, b) => {
-                return b.order > a.order ? 1 : (b.order < a.order ? -1 : 0)
-            }).map(l => l.id as DurationConstructor)
+        let labelsToShow = []
+        let nextAera = null
+        let nextLabelIndex = null
+        let diff = 0
 
-        if (this._zoomLevel === null) {
-            while (true) {
-                duration = this.maxDate.diff(this.minDate, ranges[i] as Diff, true)
-                const bounds = this.getBounds(ranges[i] as DurationConstructor)
-                min = bounds.min
+        switch (this._zoomLevel) {
+            case 'YEAR':
+                diff = end.diff(start, 'days', true)
+                break
+            case 'QUARTER':
+                diff = end.diff(start, 'months', true)
+                break
+            case 'MONTH':
+                labels = Array.from(new Array(start.daysInMonth()), (x, i) => i + 1)
+                diff = end.diff(start, 'days', true)
+                break
+            case 'WEEK':
+                diff = end.diff(start, 'days', true)
+                break
+        }
 
-                if (duration > 1.0) break
-                i++
+        for (let i: number = 0; i <= (diff < labels.length - 1 ? labels.length - 1 : diff); i++) {
+            switch (this._zoomLevel) {
+                case 'YEAR':
+                    // moment.add is mutable!!! so cloning is necessary
+                    nextAera = start.clone().add(i, 'month')
+                    nextLabelIndex = this.cycleLabels(labels.length, nextAera.month())
+                    break
+                case 'QUARTER':
+                    nextAera = start.clone().add(i, 'month')
+                    nextLabelIndex = this.cycleLabels(labels.length, nextAera.month())
+                    break
+                case 'MONTH':
+                    nextAera = start.clone().add(i, 'day')
+                    // moment.date() return 1-based index!!!
+                    nextLabelIndex = this.cycleLabels(labels.length, nextAera.date() - 1)
+                    break
+                case 'WEEK':
+                    nextAera = start.clone().add(i, 'day')
+                    nextLabelIndex = this.cycleLabels(labels.length, nextAera.weekday())
+                    break
             }
 
-            range = ranges[i] as DurationConstructor
-        } else {
-            range = this._zoomLevel as DurationConstructor
-
-            const bounds = this.getBounds(range as DurationConstructor)
-            duration = bounds.max.diff(bounds.min, range as Diff, true)
-
-            min = bounds.min
+            labelsToShow = [...labelsToShow, labels[nextLabelIndex]]
         }
 
-        const span = Math.ceil(duration + 1)
-
-        console.log(this._zoomLevel, ranges, range)
-
-        switch (range) {
-            case 'years':
-                return this.buildLabels(min, 'years', 'months', span, 12)
-            case 'quarters':
-                return this.buildLabels(min, 'quarters', 'months', span, 3)
-            case 'months':
-                return this.buildLabels(min, 'months', 'days', span, 31)
-            case 'weeks':
-                return this.buildLabels(min, 'weeks', 'days', span, 7)
-            case 'days':
-                return this.buildLabels(min, 'days', 'hours', span, 24)
-            case 'hours':
-                return this.buildLabels(min, 'hours', 'minutes', span, 60)
-        }
+        return labelsToShow
     }
 
-    public buildLabels(date: moment.Moment, topType: DurationConstructor, bottomType: DurationConstructor, span: number, unitSize: number) {
-        let sizes: number[] = []
-
-        if (topType === 'months') {
-            sizes = [...Array(span).keys()].map(i => date.clone().add(i, topType).daysInMonth())
-        } else {
-            sizes = [...Array(span).keys()].map(i => unitSize)
-        }
-
-        const items = [...Array(span).keys()].map(i => {
-            const sizesArray = clone(sizes).slice(0, i)
-            const size = sizesArray.length ? sizesArray.reduce((acc, s) => acc + s) : 0
-
-            return {
-                start: date.clone().add(i, topType),
-                end: date.clone().add(i + 1, topType),
-                type: topType,
-                size: sizes[i],
-                items: [...Array(sizes[i]).keys()].map(m => {
-                    return {
-                        // start: date.clone().add(m + (i * size), bottomType).hours(0).minutes(1),
-                        // end: date.clone().add((m + (i * size)) + 1, bottomType).hours(23).minutes(59),
-                        start: date.clone().add(m + size, bottomType),
-                        end: date.clone().add(m + size + 1, bottomType),
-                        type: bottomType,
-                    }
-                })
-            }
-        })
-
-        console.log(this.getBounds(topType).min, this.getBounds(topType).max, topType, bottomType, span, sizes, items)
-
-        return items
+    private cycleLabels(length: number, index: number): number {
+        return (index >= length) ? index - length : ((index < 0) ? length - 1 : index)
     }
 
     get sizeOfLabelUnit(): number {
@@ -291,43 +268,29 @@ export class SpiceGanttService {
         return moment(new Date()).add(1, 'year')
     }
 
-    // get minDate(): moment.Moment {
-    //     return moment(new Date('2023-12-01 12:00:00'))
-    // }
-    //
-    // get maxDate(): moment.Moment {
-    //     return moment(new Date('2024-04-08 15:00:00'))
-    // }
-
-    public getBounds(zoomLevel: DurationConstructor): { min: moment.Moment, max: moment.Moment } {
+    get bounds(): { min: moment.Moment, max: moment.Moment } {
         // return min and max Date from list of tasks for now
         // might later be used for general scaling
-        let lowerBound = this.minDate.clone()
-        const upperBound = this.maxDate.clone()
+        let lowerBound = this.minDate
+        const upperBound = this.maxDate
 
         // deal with zoomlevels
         // quarters want to start at the beginning of specific months
-        switch (zoomLevel) {
-            case 'hours':
-                lowerBound = lowerBound.minute(0)
-                break
-            case 'days':
-                lowerBound = lowerBound.hour(0)
-                break
-            case 'weeks':
+        switch (this._zoomLevel) {
+            case 'WEEK':
                 lowerBound = lowerBound.day(0)
                 break
-            case 'months':
+            case 'MONTH':
                 lowerBound = lowerBound.date(1)
                 break
-            case 'quarters':
+            case 'QUARTER':
                 // get current minDate month, and move lower bounds to current possible quarter
                 const startMonthForQuarter = [0, 3, 6, 9].reduce((acc: number, month: number): number => {
-                    return ((lowerBound.month() - month) < acc) ? month : acc
+                    return ((this.minDate.month() - month) < acc) ? month : acc
                 }, 3)
                 lowerBound = lowerBound.month(startMonthForQuarter)
                 break
-            case 'years':
+            case 'YEAR':
                 lowerBound = lowerBound.month(0).date(1)
                 break
         }
@@ -339,23 +302,37 @@ export class SpiceGanttService {
     }
 
     public getItemPosition(start: moment.Moment): number {
-        const headerLabels = this.headerLabels
-        const min = headerLabels[0].start
-        const items = headerLabels[0].items
-        const diff = start.diff(min, items[0].type, true)
-        return this.sizeOfUnit * diff
+        const days = start.diff(this.bounds.min, 'hours', true) / 24
+        return this.sizeOfUnit * days / this.sizeFactor
     }
 
     public getItemLength(start: moment.Moment, end: moment.Moment): number {
-        const headerLabels = this.headerLabels
-        const items = headerLabels[0].items
-        const diff = end.diff(start, items[0].type, true)
-        return this.sizeOfUnit * diff
+        const diff = end.diff(start, 'hours', true)
+        return this.sizeOfUnit * (diff / 24 / this.sizeFactor)
     }
 
     private sortDates =
         (items: any[], key: string) => items.sort((a, b) => (a[key] > b[key]) ? 1 : ((a[key] < b[key]) ? -1 : 0))
 
+    private _changeZoomLevel(direction = -1) {
+        const zlLength = Object.values(zoomLevels).length
+        let currentIndex = Object.keys(zoomLevels).findIndex(zl => zl === this._zoomLevel)
+        if (currentIndex !== -1) {
+            currentIndex = currentIndex + direction
+            if (currentIndex >= zlLength) currentIndex = 0
+            if (currentIndex < 0) currentIndex = zlLength - 1
+
+            this.zoomLevel = Object.keys(zoomLevels)[currentIndex]
+        }
+    }
+
+    public zoomIn() {
+        this._changeZoomLevel(+1)
+    }
+
+    public zoomOut() {
+        this._changeZoomLevel(-1)
+    }
 
     get showMilestones() {
         return this._showMilestones
@@ -363,5 +340,11 @@ export class SpiceGanttService {
 
     public toggleMilestones() {
         this._showMilestones = !this._showMilestones
+    }
+
+    public goTo() {
+        const diff = moment(new Date()).diff(this.bounds.min, 'hours', true)
+        const left = this.sizeOfUnit * diff / this.sizeFactor / 24
+        document.getElementById(this.containerId).scrollTo({left})
     }
 }

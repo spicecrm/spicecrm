@@ -1,40 +1,4 @@
-<div #timelinecontainer class="slds-scrollable">
-    <div class="slds-grid slds-m-bottom--x-small slds-border--bottom slds-theme--warning">
-        <div *ngFor="let item of spiceGanttService.headerLabels; let i = index" class="slds-border--right">
-            <div style="height: 20px" class="slds-size--1-of-1 slds-theme--info">
-                <div class="slds-grid">
-                    <div class="slds-col">
-                        <spice-gantt-moment-label [type]="item.type" [date]="item.start"></spice-gantt-moment-label>
-                    </div>
-                </div>
-            </div>
-            <div class="slds-grid slds-theme--shade" style="height: 20px">
-                <div *ngFor="let subitem of item.items; let i = index" class="slds-border--right">
-                    <div [ngStyle]="{ 'width': spiceGanttService.sizeOfUnit + 'px', 'border-left': '1px solid black' }"
-                         class="slds-col">
-                        <spice-gantt-moment-label [type]="subitem.type"
-                                                  [date]="subitem.start"></spice-gantt-moment-label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div [id]="spiceGanttService.containerId" class="slds-height_full"
-         style="height: 100%">
-        <div *ngFor="let item of spiceGanttService.items; let i = index">
-            <div [ngStyle]="{'height': '40px'}" class="slds-col slds-size--1-of-1"
-                 *ngIf="spiceGanttService.getParent(item.id).expanded"
-            >
-                <spice-gantt-task-item
-                        [index]="i"
-                        [id]="item.id"
-                        [name]="item.name"
-                        [start]="item.start"
-                        [end]="item.end"
-                        [progress]="item.progress"
-                        [type]="item.type"
-                ></spice-gantt-task-item>
-            </div>
-        </div>
-    </div>
+<div>
+    <spice-gantt-right-header></spice-gantt-right-header>
+    <spice-gantt-right-body></spice-gantt-right-body>
 </div>

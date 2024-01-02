@@ -1,13 +1,12 @@
-<div *ngFor="let item of spiceGanttService.items" class="slds-scrollable--none slds-border--right">
-    <div spice-gantt-tree-task-item class="slds-hint-parent"
-         tabindex="0" role="row"
-         *ngIf="spiceGanttService.getParent(item.id).expanded"
-         [level]="item.level"
-         [id]="item.id"
-         [name]="item.name"
-         [start]="item.start"
-         [end]="item.end"
-         [type]="item.type"
-         [expanded]="item.expanded"
-    ></div>
+<div *ngFor="let item of spiceGanttService.flat" class="slds-scrollable--none">
+    <div class="slds-grid slds-wrap" style="height: 40px">
+        <div class="slds-col slds-size--1-of-4">&nbsp;</div>
+        <div class="slds-col slds-size--1-of-4">{{ item.name }}</div>
+        <div class="slds-col slds-size--1-of-4">
+            <system-display-datetime [date]="item.start"></system-display-datetime>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <system-display-datetime [date]="item.end"></system-display-datetime>
+        </div>
+    </div>
 </div>

@@ -1,18 +1,5 @@
-<div #timelinecontainer [id]="spiceGanttService.containerId" class="slds-height_full slds-scrollable"
-     style="height: 100%">
-    <div *ngFor="let item of spiceGanttService.items; let i = index">
-        <div [ngStyle]="{'height': '40px'}" class="slds-col slds-size--1-of-1"
-             *ngIf="spiceGanttService.getParent(item.id).expanded"
-        >
-            <spice-gantt-task-item
-                    [index]="i"
-                    [id]="item.id"
-                    [name]="item.name"
-                    [start]="item.start"
-                    [end]="item.end"
-                    [progress]="item.progress"
-                    [type]="item.type"
-            ></spice-gantt-task-item>
-        </div>
+<div #timelinecontainer class="slds-height_full slds-scrollable">
+    <div *ngFor="let item of spiceGanttService.flat">
+        <div style="height: 40px" class="slds-col slds-size--1-of-1">{{ item.name }}</div>
     </div>
 </div>

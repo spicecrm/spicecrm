@@ -46,7 +46,7 @@
         <div class="slds-grid">
             <div class="slds-col slds-size--1-of-4">
                 <select [(ngModel)]="zoomLevel" class="slds-select slds-m-left--xx-small">
-                    <option *ngFor="let item of spiceGanttService.zoomLevels" [value]="item.id">
+                    <option *ngFor="let item of zoomLevels" [value]="item.id">
                         <system-label [label]="item.label"></system-label>
                     </option>
                 </select>
