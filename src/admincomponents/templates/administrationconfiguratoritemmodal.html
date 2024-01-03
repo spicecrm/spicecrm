@@ -34,6 +34,9 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--icon-border" (click)="close()">
+            <system-button-icon [icon]="'close'" [size]="'small'"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button--icon-border" [disabled]="!canSave" (click)="save()">
             <system-button-icon [icon]="'check'" [size]="'small'"></system-button-icon>
         </button>
     </system-modal-footer>
