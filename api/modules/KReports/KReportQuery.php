@@ -1947,7 +1947,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
             if (!empty($customSql)) {
                 $customSql = base64_decode($customSql);
-                return '(' . preg_replace(array('/\$/', '/{t}/'), $thisAlias, $customSql) . ')';
+                return '(' . preg_replace(array('/{t}/'), $thisAlias, $customSql) . ')';
             }
 
             // check for custom function
@@ -1966,9 +1966,9 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     //return '(' . str_replace('§', $this->joinSegments[$path]['customjoin'], preg_replace(array('/\$/', '/{t}/'), $thisAlias, $thisEval)) . ')';
                     // 2013-02-20 change to set proper alias if field is a cstm field
                     //return '(' . preg_replace(array('/§/', '/{tc}/'), $this->joinSegments[$path]['customjoin'], preg_replace(array('/\$/', '/{t}/'), $thisAlias, $thisEval)) . ')';
-                    return '(' . preg_replace(array('/\$/', '/{t}/', '/§/', '/{tc}/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $this->joinSegments[$path]['customjoin']), $thisEval) . ')';
+                    return '(' . preg_replace(array('/{t}/', '/§/', '/{tc}/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $this->joinSegments[$path]['customjoin']), $thisEval) . ')';
                 else
-                    return '(' . preg_replace(array('/\$/', '/{t}/'), $thisAlias, $thisEval) . ')';
+                    return '(' . preg_replace(array('/{t}/'), $thisAlias, $thisEval) . ')';
             } elseif (isset($thisFieldIdEntry['customsqlfunction']) && $thisFieldIdEntry['customsqlfunction'] != '') {
                 {
                     //2012-11-28 srip unicode characters with the pregreplace [^(\x20-\x7F)]* from the string ..
@@ -1985,7 +1985,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     //$functionRaw = trim(preg_replace(array('/{t}/', '/{f}/', '/\$/'), array($thisAlias, $field, $thisAlias), $functionRaw));
                     //2013-02-20 change to set proper alias if field is a cstm field
                     //$functionRaw = trim(preg_replace(array('/{t}/', '/{tc}/', '/{f}/', '/\$/'), array($thisAlias, $this->joinSegments[$path]['customjoin'], $field, $thisAlias), $functionRaw));
-                    $functionRaw = trim(preg_replace(array('/{t}/', '/{tc}/', '/{f}/', '/\$/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $field, $this->joinSegments[$path]['alias']), $functionRaw));
+                    $functionRaw = trim(preg_replace(array('/{t}/', '/{tc}/', '/{f}/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $field, $this->joinSegments[$path]['alias']), $functionRaw));
                     return '(' . $functionRaw . ')';
                 }
             } else {
