@@ -17,7 +17,7 @@ import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
-import {SocketEventI} from "./interfaces.service";
+import {FieldsAlertI} from "./interfaces.service";
 import {filter, map} from "rxjs/operators";
 import {userpreferences} from "./userpreferences.service";
 import {DomSanitizer} from "@angular/platform-browser";
@@ -270,6 +270,21 @@ export class model implements OnDestroy {
      * A simple event emitter that emits whenever the model has been validated.
      */
     public validated$: EventEmitter<void> = new EventEmitter<void>();
+
+    /**
+     * holds the data of the alerted field
+     */
+    public fields_alert: FieldsAlertI[] = [];
+
+    /**
+     * holds all alerts collected during validation or propagation
+     */
+    public alerts: any[] = [];
+
+    /**
+     * CSS styles of the alert
+     */
+    public alert: string = '';
 
     constructor(
         public backend: backend,
@@ -852,10 +867,67 @@ export class model implements OnDestroy {
                     this._model_stati_tmp.push(params);
                 }
                 return true;
+            case "set_model_alert":
+                if(typeof params != "string") {
+                    params = JSON.parse(params);
+                }
+                return this.setAlertStyle(action.fieldname, params);
             default:
                 console.warn("action: " + action.action + " is not defined!");
                 return false;
         }
+    }
+
+    /**
+     * sets & caches alert style for a field
+     * @param fieldName string
+     * @param type as string
+     * @param source string
+     */
+    public setAlertStyle(fieldName: string = null, type: FieldsAlertI['alertType'], source: string = "validation"): boolean {
+        try {
+            let alertCSS: string = 'slds-text-align_left slds-notify slds-notify_alert';
+
+            // set specific color alert defined in validation rules
+            if(type) alertCSS = alertCSS + ' slds-alert_' + type;
+
+            this.alerts.push({
+                type: type,
+                fieldName: fieldName,
+                alert: alertCSS,
+                source: source
+            });
+
+            return true;
+
+        } catch (e) {
+            this.toast.sendToast(this.language.getLabel("LBL_ERROR") + ': ' + e + '. ' + 'LBL_CONTACT_ADMIN', 'error');
+            return false;
+        }
+    }
+
+    /**
+     * sets alert styles for a specific field
+     * @param listItem
+     * */
+    public initializeFieldsAlertStyles(listItem: object): string {
+        let fieldName: string = '';
+        let alertCSS: string = '';
+
+        if(this.alerts.length > 0) {
+            this.alerts.forEach((alert: { fieldName: string; alert: string }) => {
+                fieldName = alert.fieldName;
+                alertCSS = alert.alert
+            });
+
+            if(_.has(listItem, fieldName)) {
+                this.alert = alertCSS;
+            } else {
+                this.alert = '';
+            }
+        }
+
+        return this.alert;
     }
 
     public evaluateValidationParams(params) {
@@ -876,6 +948,9 @@ export class model implements OnDestroy {
 
                     params = params.replace(match, replace);
                 }
+            }
+            if(params == 'now()') {
+                params = moment().format("YYYY-MM-DD HH:mm:ss");
             }
             // date manipulations...
             if (/\d+[\.\-]\d+[\.\-]\d+/.test(params) && /[\+\-]/.test(params)) {
