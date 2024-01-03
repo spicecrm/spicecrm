@@ -224,22 +224,16 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
                         modalRef.instance.save$.subscribe({
                             next:(save) => {
                                 if(save){
-                                    this.modal.prompt('input_text', 'MSG_CREATE_NEW_OUTPUT', 'MSG_CREATE_NEW_OUTPUT').subscribe({
-                                        next: (text) => {
-                                            this.loading = true;
-                                            this.backend.postRequest(`module/OutputRevisions/${this.model.module}/${this.model.id}/output/${template}`, {}, {
-                                                description: text
-                                            }).subscribe({
-                                                next: (res) => {
-                                                    this.loading = false;
-                                                    this.getOutputs(true);
-                                                },
-                                                error: () => {
-                                                    this.loading = false;
-                                                }
-                                            })
-                                        }
-                                    })
+                                    // if we have other than the initial printout prompt a text
+                                    if(this.outputRevisions.length > 0) {
+                                        this.modal.prompt('input_text', 'MSG_CREATE_NEW_OUTPUT', 'MSG_CREATE_NEW_OUTPUT').subscribe({
+                                            next: (text) => {
+                                                this.postOutput(template, text)
+                                            }
+                                        })
+                                    } else {
+                                        this.postOutput(template)
+                                    }
                                 }
                             }
                         })
@@ -248,6 +242,27 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
             },
             error: () => {
                 generatorModal.emit(true);
+            }
+        })
+    }
+
+    /**
+     * post the output
+     * @param template
+     * @param text
+     * @private
+     */
+    private postOutput(template, text = undefined) {
+        this.loading = true;
+        this.backend.postRequest(`module/OutputRevisions/${this.model.module}/${this.model.id}/output/${template}`, {}, {
+            description: text
+        }).subscribe({
+            next: (res) => {
+                this.loading = false;
+                this.getOutputs(true);
+            },
+            error: () => {
+                this.loading = false;
             }
         })
     }
