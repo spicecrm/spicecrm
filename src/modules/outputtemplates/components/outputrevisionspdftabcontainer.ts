@@ -271,7 +271,7 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
      * send the current file to the print spooler
      */
     public printCurrent() {
-        this.backend.putRequest(`module/OutPutRevisions/${this.outputRevision}/print`).subscribe({
+        this.backend.putRequest(`module/OutputRevisions/${this.outputRevision}/print`).subscribe({
             next: (res) => {
                 if (res.printed) {
                     this.toast.sendToast('LBL_PRINTED', 'success');
