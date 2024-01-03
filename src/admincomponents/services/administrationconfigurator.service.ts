@@ -7,6 +7,8 @@ import {Subject, Observable} from 'rxjs';
 import {backend} from '../../services/backend.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {configurationService} from "../../services/configuration.service";
+import {modal} from "../../services/modal.service";
+import {toast} from "../../services/toast.service";
 
 @Injectable()
 /**
@@ -30,7 +32,9 @@ export class administrationconfigurator {
 
     constructor(public backend: backend,
                 public modelutilities: modelutilities,
-                private configurationService: configurationService) {
+                private configurationService: configurationService,
+                private toast: toast,
+                public modal: modal) {
     }
 
 
@@ -122,19 +126,37 @@ export class administrationconfigurator {
     }
 
     /**
+     * checks if a record can be saved
+     *
+     * @param id
+     */
+    public canSave(id){
+        let entry = this.entries.find(e => e.id == id);
+        return JSON.stringify(entry.data) != JSON.stringify(entry.backup);
+    }
+
+    /**
      * @param id
      */
     public saveEntry(id) {
-        this.entries.some(entry => {
-            if (entry.id === id) {
-                delete(entry.backup);
-                this.backend.postRequest('configuration/configurator/' + this.dictionary + '/' + id, {}, { config: this.remapData(entry.data)}).subscribe(status => {
-                    entry.mode = '';
-                    this.reloadCache();
-                });
-                return true;
+        let retSubject = new Subject();
+        let entry = this.entries.find(e => e.id == id);
+        let saveModal = this.modal.await('LBL_SAVING');
+        delete (entry.backup);
+        this.backend.postRequest('configuration/configurator/' + this.dictionary + '/' + id, {}, {config: this.remapData(entry.data)}).subscribe({
+            next: (status) => {
+                entry.mode = '';
+                this.reloadCache();
+                saveModal.emit(true);
+                retSubject.next(true);
+            }, error: (e) => {
+                this.toast.sendToast('MSG_ERROR_SAVING_RECORD', 'error')
+                saveModal.emit(true);
+                retSubject.error(e);
             }
         });
+
+        return retSubject.asObservable();
     }
 
     /**
