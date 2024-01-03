@@ -41,8 +41,16 @@ export class AdministrationConfiguratorItemModal {
         this.administrationconfigurator.cancelEditMode(this.entry.id);
     }
 
+    get canSave(){
+        return this.administrationconfigurator.canSave(this.entry.id);
+    }
+
     public save() {
-        this.administrationconfigurator.saveEntry(this.entry.id);
+        this.administrationconfigurator.saveEntry(this.entry.id).subscribe({
+            next: () => {
+                this.self.destroy();
+            }
+        });
     }
 
     public delete() {
@@ -68,6 +76,8 @@ export class AdministrationConfiguratorItemModal {
     }
 
     public close(){
+        this.administrationconfigurator.cancelEditMode(this.entry.id);
         this.self.destroy();
     }
+
 }

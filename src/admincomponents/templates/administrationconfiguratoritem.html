@@ -22,8 +22,8 @@
                 <system-input-fieldset *ngSwitchCase="'fieldset'" [(ngModel)]="entry.data[field.name]"></system-input-fieldset>
                 <system-input-componentset *ngSwitchCase="'componentset'" [(ngModel)]="entry.data[field.name]"></system-input-componentset>
                 <system-input-companycodes *ngSwitchCase="'companycode'" [(ngModel)]="entry.data[field.name]"></system-input-companycodes>
-                <system-checkbox *ngSwitchCase="'bool'" class="slds-m-horizontal--small" style="display: block" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
-                <system-checkbox *ngSwitchCase="'boolean'" class="slds-m-horizontal--small" style="display: block" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                <system-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
                 <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
                 <input *ngSwitchDefault type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
             </div>
@@ -49,7 +49,7 @@
         <button class="slds-button slds-button--icon-border" (click)="setViewMode()">
             <system-button-icon [icon]="'close'" [size]="'small'" ></system-button-icon>
         </button>
-        <button class="slds-button slds-button--icon-border" (click)="save()">
+        <button class="slds-button slds-button--icon-border" [disabled]="!canSave" (click)="save()">
             <system-button-icon [icon]="'check'" [size]="'small'"></system-button-icon>
         </button>
     </div>

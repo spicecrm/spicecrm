@@ -45,6 +45,10 @@ export class AdministrationConfiguratorItem {
         this.administrationconfigurator.cancelEditMode(this.entry.id);
     }
 
+    get canSave(){
+        return this.administrationconfigurator.canSave(this.entry.id);
+    }
+
     public save() {
         this.administrationconfigurator.saveEntry(this.entry.id);
     }
