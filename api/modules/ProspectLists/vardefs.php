@@ -343,11 +343,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'relationship_type' => 'one-to-many'
         ],
         'prospectlists_prospectlistunsubscribes' => [
-            'lhs_module' => 'ProspectLists',
-            'lhs_table' => 'prospectlists',
+            'lhs_module' => 'ProspectListUnsubscribes',
+            'lhs_table' => 'prospectlistunsubscribes',
             'lhs_key' => 'id',
-            'rhs_module' => 'ProspectListUnsubscribes',
-            'rhs_table' => 'prospectlistunsubscribes',
+            'rhs_module' => 'ProspectLists',
+            'rhs_table' => 'prospectlists',
             'rhs_key' => 'prospectlistunsubscribe_id',
             'relationship_type' => 'one-to-many'
         ],
