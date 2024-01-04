@@ -29,7 +29,7 @@
                 <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="togglePreview()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--brand': preview}" >
                     <system-button-icon icon="preview"></system-button-icon>
                 </button>
-                <button class="slds-button slds-button--neutral slds-button--icon-border">
+                <button (click)="kanbanManagerService.save()" [disabled]="!kanbanManagerService.selectedBeanGuide || !kanbanManagerService.hasChanges" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="save"></system-button-icon>
                 </button>
             </div>

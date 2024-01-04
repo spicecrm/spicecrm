@@ -40,6 +40,10 @@ export class KanbanManagerService {
 
     public minimized: boolean = false;
 
+    public changed = {stages: [], checks: [], spiceTexts: []};
+
+
+
     public constructor(
         public backend: backend,
         public toast: toast
@@ -48,6 +52,34 @@ export class KanbanManagerService {
         this.loadChecks();
         this.loadValidations();
         this.loadSpiceTexts();
+    }
+
+    /**
+     * @return boolean true if the current bean guide has changes
+     */
+    get hasChanges(): boolean {
+        return this.changed.checks.length > 0 || this.changed.stages.length > 0 || this.changed.spiceTexts.length > 0;
+    }
+
+    /**
+     * compare
+     */
+    public detectChanges(item: SpiceBeanGuideStagesI | SpiceTextsI | SpiceBeanGuideChecksI, type: 'stages' | 'checks' | 'spiceTexts') {
+
+        this[type].some(s => {
+            if (s.id != item.id) return false;
+
+            if (JSON.stringify(item) == JSON.stringify(s)) {
+                this.changed[type] = this.changed[type].filter(c => c.id != item.id);
+            } else {
+                const idx = this.changed[type].findIndex(c => c.id == item.id);
+                if (idx > -1) {
+                    this.changed[type][idx] = item;
+                } else {
+                    this.changed[type].push({...item});
+                }
+            }
+        });
     }
 
 
@@ -60,11 +92,11 @@ export class KanbanManagerService {
         this._selectedBeanGuide = val;
 
         if(val) {
-            this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id);
-            this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this.selectedBeanGuide.id);
+            this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id).map(e => ({...e}));
+            this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this.selectedBeanGuide.id).map(e => ({...e}));
 
             // filters spice texts for selected spice bean guide
-            this.currentBeanGuideSpiceTexts = this.spiceTexts.filter(spiceTexts => spiceTexts.spiceBeanGuideId == this.selectedBeanGuide.id);
+            this.currentBeanGuideSpiceTexts = this.spiceTexts.filter(spiceTexts => spiceTexts.spiceBeanGuideId == this.selectedBeanGuide.id).map(e => ({...e}));
         }
 
         this.selectedBeanGuide$.next(val);
@@ -111,7 +143,10 @@ export class KanbanManagerService {
      */
     public loadItems(selected = null) {
         this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages => {
-            this.stages = stages.sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
+            this.stages = stages.map(s => {
+                s.not_in_kanban = s.not_in_kanban  == 1 ? 1 : 0;
+                return s;
+            }).sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
             this.selectedBeanGuide = selected;
         })
     }
@@ -138,6 +173,43 @@ export class KanbanManagerService {
         this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages_checks`).subscribe(checks => {
             this.checks = checks;
         })
+    }
+
+    /**
+     *
+     */
+    public save() {
+
+        const resArray = [];
+
+        if (this.changed.stages.length > 0) {
+            resArray.push(
+                this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: this.changed.stages})
+            );
+        }
+
+        if (this.changed.checks.length > 0) {
+            resArray.push(
+                this.backend.postRequest(`configuration/configurator/spicebeanguidestages_checks`, null, {config: this.changed.checks})
+            );
+        }
+
+        if (this.changed.spiceTexts.length > 0) {
+            resArray.push(
+                this.backend.postRequest(`configuration/configurator/spicetexts`, null, {config: this.changed.spiceTexts})
+            );
+        }
+
+        forkJoin(resArray).subscribe(() => {
+            Object.keys(this.changed).forEach(type => {
+                this.changed[type].forEach((e, i) => {
+                    const idx = this[type].findIndex(item => item.id == e.id);
+                    this[type][idx] = {...e};
+                    this.changed[type].splice(i, 1);
+                });
+            });
+            this.toast.sendToast('LBL_DATA_SAVED', 'success');
+        });
     }
 
     /**
