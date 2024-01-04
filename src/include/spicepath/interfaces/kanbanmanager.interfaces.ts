@@ -45,13 +45,12 @@ export interface SpiceBeanGuideChecksI {
 
 export interface SpiceTextsI {
     id: string;
-    name: string | '';
+    name: string;
     parent_id: string;
     parent_type: string;
     text_id: string;
     text_language: string;
-    label: string | undefined;
     spiceBeanGuideId: string;
-    deleted: 0 | 1 | undefined;
+    deleted: 0 | 1;
     scope: 'global' | 'custom';
 }

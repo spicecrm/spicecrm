@@ -30,7 +30,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
     /**
      * holds spice text
      */
-    public selectedSpiceText: any = {id: '', name: '', parent_id: '', parent_type: '', text_id: '', text_language: '', label: '', deleted: 0 | 1};
+    public selectedSpiceText: SpiceTextsI;
 
     /**
      * holds active tab instance
@@ -94,16 +94,14 @@ export class SpiceKanbanManagerDetails implements OnInit {
     /**
      * determines spice text for current tab
      */
-    public selectSpiceText(): {} {
-        // reset cached spice text
-        this.selectedSpiceText = {id: '', name: '', parent_id: '', parent_type: '', text_id: '', text_language: '', label: '', deleted: 0};
+    public selectSpiceText() {
 
         // get spice text by language
         const selectedSpiceText: SpiceTextsI = this.kanban.currentBeanGuideSpiceTexts.find((text) => text.text_language == this.activeTab && text.parent_id == this.selectedStage.id);
 
-        if (!selectedSpiceText) return this.selectedSpiceText;
+        if (!selectedSpiceText) return this.fillSpiceTextData(undefined);
 
-        return this.selectedSpiceText = selectedSpiceText;
+        this.selectedSpiceText = selectedSpiceText;
     }
 
     /**
@@ -115,6 +113,8 @@ export class SpiceKanbanManagerDetails implements OnInit {
 
         this.selectedSpiceText =
             {
+                scope: undefined,
+                spiceBeanGuideId: "",
                 id: this.utils.generateGuid(),
                 name: val,
                 parent_id: this._selectedStage.id,
@@ -122,6 +122,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
                 text_id: this.kanban.selectedBeanGuide.systextid,
                 text_language: this.activeTab,
                 deleted: 0
+
             };
 
         // update service
