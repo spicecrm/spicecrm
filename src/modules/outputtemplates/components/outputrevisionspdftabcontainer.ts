@@ -189,7 +189,16 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
             next: (templates) => {
                 loadTemplatesModal.emit(true);
                 if(templates.length > 0){
-                    this.generateOutput(templates[0].id);
+                    if(templates.length > 1){
+                        let defaultTemplate = templates.find(t => t.default == 1);
+                        this.modal.prompt('input', null, 'LBL_SELECT_TEMPLATE', 'shade', defaultTemplate ? defaultTemplate.id : null, templates.map(t => { return {value: t.id, display: t.name}}), 'radio').subscribe({
+                            next: (templateId) => {
+                                if(templateId) this.generateOutput(templateId);
+                            }
+                        })
+                    } else {
+                        this.generateOutput(templates[0].id);
+                    }
                 }
             },
             error: (e) => {
