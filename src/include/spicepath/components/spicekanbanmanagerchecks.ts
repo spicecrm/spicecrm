@@ -98,6 +98,8 @@ export class SpiceKanbanManagerChecks {
      * @private
      */
     private loadChecks(){
+        if (!this.selectedStage) return;
+
         this.checks = this.kanbanManagerService.currentChecks.filter(check=>check.stage_id == this.selectedStage.id);
     }
 
