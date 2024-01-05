@@ -116,6 +116,9 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
             this.subscribeToSave();
         }
 
+        this.model.evaluateValidationRules(null, "initialize");
+        this.model.initializeFieldsAlertStyles(this.item);
+
         this.subscriptions.add(this.model.data$.subscribe(data => {
             this.changeDetectorRef.detectChanges();
         }));

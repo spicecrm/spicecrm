@@ -582,3 +582,8 @@ input[type="submit"] {
 .slds-table:not(.slds-no-row-hover) tbody tr:hover>th {
     color: black;
 }
+
+.slds-notify_alert,
+.slds-notify--alert{
+    padding-right: 0.5rem;
+}
