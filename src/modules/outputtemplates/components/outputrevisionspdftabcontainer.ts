@@ -271,8 +271,10 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
      * send the current file to the print spooler
      */
     public printCurrent() {
+        let printModal = this.modal.await('LBL_PRINTING');
         this.backend.putRequest(`module/OutputRevisions/${this.outputRevision}/print`).subscribe({
             next: (res) => {
+                printModal.emit(true);
                 if (res.printed) {
                     this.toast.sendToast('LBL_PRINTED', 'success');
                 } else {
@@ -280,6 +282,7 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
                 }
             },
             error: (e) => {
+                printModal.emit(true);
                 this.toast.sendToast('LBL_PRINT_ERROR', 'error', e.error.error);
             }
         })
