@@ -1,6 +1,8 @@
 const CACHE_NAME = `spicecrm-app-v1`;
 
-// Use the install event to pre-cache all initial resources.
+/**
+ * Use the installation event to pre-cache all initial resources
+ */
 self.addEventListener('install', event => {
     event.waitUntil((async () => {
         const cache = await caches.open(CACHE_NAME);
@@ -10,28 +12,51 @@ self.addEventListener('install', event => {
     })());
 });
 
+/**
+ * handles the network requests for caching
+ * using the stale while revalidate cache strategy
+ * https://web.dev/learn/pwa/serving#stale_while_revalidate
+ */
 self.addEventListener('fetch', event => {
     event.respondWith((async () => {
-        const cache = await caches.open(CACHE_NAME);
 
-        // Get the resource from the cache.
-        const cachedResponse = await cache.match(event.request);
+        const canBeCached = event.request.url.startsWith('http') && !!event.request.destination;
+        let cachedResponse, cache;
+
+        if (canBeCached) {
+            cache = await caches.open(CACHE_NAME);
+            // Get the resource from the cache.
+            cachedResponse = await cache.match(event.request);
+        }
+
         if (cachedResponse) {
+            fetchAndCache(event.request, cache);
             return cachedResponse;
         } else {
             try {
-                // If the resource was not in the cache, try the network.
-                const fetchResponse = await fetch(event.request);
-
-                if(event.request.url.startsWith('http')) {
-                    // Save the resource in the cache and return it.
-                    cache.put(event.request, fetchResponse.clone());
-                }
-
-                return fetchResponse;
+                return fetchAndCache(event.request, cache);
             } catch (e) {
                 // The network failed.
             }
         }
     })());
 });
+
+/**
+ *
+ * @param request Request
+ * @param cache CacheStorage
+ * @returns {Promise<Response>}
+ */
+function fetchAndCache(request, cache) {
+    // If the resource was not in the cache, try the network.
+    return fetch(request).then(fetchResponse => {
+
+        if(cache) {
+            // Save the resource in the cache and return it.
+            cache.put(request, fetchResponse.clone());
+        }
+
+        return fetchResponse;
+    });
+}
