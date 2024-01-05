@@ -8,7 +8,7 @@ export interface priceConditionElement {
     element_domain?: string;
     element_module?: string;
     element_module_field?: string;
-    elemewnt_transformation?: string;
+    element_transformation?: string;
     deleted?: boolean;
 }
 

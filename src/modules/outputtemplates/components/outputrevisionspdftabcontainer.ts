@@ -189,7 +189,16 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
             next: (templates) => {
                 loadTemplatesModal.emit(true);
                 if(templates.length > 0){
-                    this.generateOutput(templates[0].id);
+                    if(templates.length > 1){
+                        let defaultTemplate = templates.find(t => t.default == 1);
+                        this.modal.prompt('input', null, 'LBL_SELECT_TEMPLATE', 'shade', defaultTemplate ? defaultTemplate.id : null, templates.map(t => { return {value: t.id, display: t.name}}), 'radio').subscribe({
+                            next: (templateId) => {
+                                if(templateId) this.generateOutput(templateId);
+                            }
+                        })
+                    } else {
+                        this.generateOutput(templates[0].id);
+                    }
                 }
             },
             error: (e) => {
@@ -215,22 +224,16 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
                         modalRef.instance.save$.subscribe({
                             next:(save) => {
                                 if(save){
-                                    this.modal.prompt('input_text', 'MSG_CREATE_NEW_OUTPUT', 'MSG_CREATE_NEW_OUTPUT').subscribe({
-                                        next: (text) => {
-                                            this.loading = true;
-                                            this.backend.postRequest(`module/OutputRevisions/${this.model.module}/${this.model.id}/output/${template}`, {}, {
-                                                description: text
-                                            }).subscribe({
-                                                next: (res) => {
-                                                    this.loading = false;
-                                                    this.getOutputs(true);
-                                                },
-                                                error: () => {
-                                                    this.loading = false;
-                                                }
-                                            })
-                                        }
-                                    })
+                                    // if we have other than the initial printout prompt a text
+                                    if(this.outputRevisions.length > 0) {
+                                        this.modal.prompt('input_text', 'MSG_CREATE_NEW_OUTPUT', 'MSG_CREATE_NEW_OUTPUT').subscribe({
+                                            next: (text) => {
+                                                this.postOutput(template, text)
+                                            }
+                                        })
+                                    } else {
+                                        this.postOutput(template)
+                                    }
                                 }
                             }
                         })
@@ -244,10 +247,31 @@ export class OutputRevisionsPDFTabContainer implements OnInit, OnDestroy {
     }
 
     /**
+     * post the output
+     * @param template
+     * @param text
+     * @private
+     */
+    private postOutput(template, text = undefined) {
+        this.loading = true;
+        this.backend.postRequest(`module/OutputRevisions/${this.model.module}/${this.model.id}/output/${template}`, {}, {
+            description: text
+        }).subscribe({
+            next: (res) => {
+                this.loading = false;
+                this.getOutputs(true);
+            },
+            error: () => {
+                this.loading = false;
+            }
+        })
+    }
+
+    /**
      * send the current file to the print spooler
      */
     public printCurrent() {
-        this.backend.putRequest(`module/OutPutRevisions/${this.outputRevision}/print`).subscribe({
+        this.backend.putRequest(`module/OutputRevisions/${this.outputRevision}/print`).subscribe({
             next: (res) => {
                 if (res.printed) {
                     this.toast.sendToast('LBL_PRINTED', 'success');
