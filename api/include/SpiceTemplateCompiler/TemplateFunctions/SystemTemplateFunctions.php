@@ -188,7 +188,7 @@ class SystemTemplateFunctions {
         if(!$c) return $inputString;
 
         // get the label
-        $label = $db->fetchOne("SELECT st.* FROM syslanguagetranslations st, syslanguagelabels sl WHERE st.syslanguagelabel_id = sl.id AND sl.name = 'LBL_COUNTRY_AT' AND st.syslanguage = '{$language}'");
+        $label = $db->fetchOne("SELECT st.* FROM syslanguagetranslations st, syslanguagelabels sl WHERE st.syslanguagelabel_id = sl.id AND sl.name = '{$c['label']}' AND st.syslanguage = '{$language}'");
 
         return $label['translation_default'] ?: $inputString;
     }
