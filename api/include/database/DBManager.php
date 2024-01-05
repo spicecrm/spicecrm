@@ -586,6 +586,8 @@ abstract class DBManager
     public function updateQuery($table, array $pks, array $data, $execute = true)
     {
         foreach ($data as $key => $val) {
+            // do not set the PKs
+            if(isset($pks[$key])) continue;
             $sets[] = "`$key` = '{$this->quote($val)}'";
         }
 

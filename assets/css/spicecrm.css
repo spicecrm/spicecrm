@@ -50,6 +50,11 @@
     --sds-c-toast-text-color: #ffffff;
     --sds-c-icon-color-foreground: #ffffff;
     --slds-c-slider-track-color-background: #CA1B21;
+    --spice-alert-color-error: #ea001e;
+    --spice-alert-color-info: #0176d3;
+    --spice-alert-color-warning: #fe9339;
+    --spice-alert-color-success: #2e844a;
+    --spice-alert-color-custom: #86367A;
 }
 
 html {
@@ -542,4 +547,43 @@ input[type="submit"] {
     border: 0 !important;
     width: 12px !important;
     margin: 0 !important;
+}
+
+/* custom alert styles */
+.slds-alert_error {
+    /* default: #ea001e; */
+    --slds-c-alert-color-background:var(--spice-alert-color-error);
+}
+
+.slds-alert_info {
+    /* default: #0176d3; */
+    --slds-c-alert-color-background:var(--spice-alert-color-info);
+}
+
+.slds-alert_warning {
+    /* default: #514f4d; */
+    --slds-c-alert-color-background:var(--spice-alert-color-warning);
+}
+
+
+.slds-alert_success {
+/* default: #2e844a; */
+    --slds-c-alert-color-background:var(--spice-alert-color-success);
+}
+
+.slds-alert_custom {
+    /* default: #86367A; */
+    --slds-c-alert-color-background:var(--spice-alert-color-custom);
+}
+
+.slds-table:not(.slds-no-row-hover) tbody tr:focus>td,
+.slds-table:not(.slds-no-row-hover) tbody tr:focus>th,
+.slds-table:not(.slds-no-row-hover) tbody tr:hover>td,
+.slds-table:not(.slds-no-row-hover) tbody tr:hover>th {
+    color: black;
+}
+
+.slds-notify_alert,
+.slds-notify--alert{
+    padding-right: 0.5rem;
 }
