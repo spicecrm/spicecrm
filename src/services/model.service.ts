@@ -274,12 +274,7 @@ export class model implements OnDestroy {
     /**
      * holds the data of the alerted field
      */
-    public fields_alert: FieldsAlertI[] = [];
-
-    /**
-     * holds all alerts collected during validation or propagation
-     */
-    public alerts: any[] = [];
+    public alerts: FieldsAlertI[] = [];
 
     /**
      * CSS styles of the alert
@@ -868,9 +863,6 @@ export class model implements OnDestroy {
                 }
                 return true;
             case "set_model_alert":
-                if(typeof params != "string") {
-                    params = JSON.parse(params);
-                }
                 return this.setAlertStyle(action.fieldname, params);
             default:
                 console.warn("action: " + action.action + " is not defined!");
@@ -882,7 +874,7 @@ export class model implements OnDestroy {
      * sets & caches alert style for a field
      * @param fieldName string
      * @param type as string
-     * @param source string
+     * @param source
      */
     public setAlertStyle(fieldName: string = null, type: FieldsAlertI['alertType'], source: string = "validation"): boolean {
         try {
@@ -892,7 +884,7 @@ export class model implements OnDestroy {
             if(type) alertCSS = alertCSS + ' slds-alert_' + type;
 
             this.alerts.push({
-                type: type,
+                alertType: type,
                 fieldName: fieldName,
                 alert: alertCSS,
                 source: source
