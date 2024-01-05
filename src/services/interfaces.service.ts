@@ -150,7 +150,7 @@ export interface SubscriptionI {
  * holds alerts for a field
  */
 export interface FieldsAlertI {
-    alertType: 'error' | 'info' | 'warning' | 'offline', // optional 'hexCode' in the future
+    alertType: 'error' | 'warning' | 'offline' | 'info' | 'success' | 'custom',
     fieldName: string,
     alert: string,
     source: string
