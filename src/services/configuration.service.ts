@@ -371,7 +371,13 @@ export class configurationService {
             'sds-c-textarea-shadow-focus',
             'sds-c-select-shadow-focus',
             'sds-c-button-text-color-hover',
-            'sds-c-icon-color-foreground'
+            'sds-c-icon-color-foreground',
+            'slds-c-slider-track-color-background',
+            'spice-alert-color-error',
+            'spice-alert-color-info',
+            'spice-alert-color-warning',
+            'spice-alert-color-success',
+            'spice-alert-color-custom'
         ];
 
         let theme = this.getCapabilityConfig('theme');
