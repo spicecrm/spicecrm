@@ -1,5 +1,5 @@
 <td *ngFor="let field of itemFields">
-    <div *ngIf="!isEditMode(field);else editfield" class="slds-truncate" style="max-width: 200px;" [ngSwitch]="field.type">
+    <div *ngIf="!isEditMode(field);else editfield" class="slds-truncate" [ngStyle]="divStyle" [ngSwitch]="field.type">
         <span *ngSwitchCase="'json'"><pre class="slds-m-vertical--none">{{getJSON(entry.data[field.name])}}</pre></span>
         <span *ngSwitchCase="'text'" class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
         <system-input-label *ngSwitchCase="'label'" [ngModel]="entry.data[field.name]" disabled></system-input-label>
@@ -9,12 +9,13 @@
         <system-input-companycodes *ngSwitchCase="'companycode'" disabled [ngModel]="entry.data[field.name]"></system-input-companycodes>
         <system-checkbox *ngSwitchCase="'bool'" [disabled]="true" [ngModel]="entry.data[field.name]"> </system-checkbox>
         <system-checkbox *ngSwitchCase="'boolean'" [disabled]="true" [ngModel]="entry.data[field.name]"> </system-checkbox>
+        <system-input-text *ngSwitchCase="'foreign'" disabled [ngModel]="getForeignName(field.name)"> </system-input-text>
         <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="false" [fieldvalue]="entry.data[field.name]"></administration-configurator-item-role>
         <input *ngSwitchDefault type="text" class="slds-input" [ngModel]="entry.data[field.name]" disabled/>
     </div>
     <ng-template #editfield>
         <div class="slds-form-element">
-            <div class="slds-form-element__control" [ngSwitch]="field.type" style="max-width: 200px;">
+            <div class="slds-form-element__control" [ngSwitch]="field.type" [ngStyle]="divStyle">
                 <textarea *ngSwitchCase="'json'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
                 <textarea *ngSwitchCase="'text'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
                 <system-input-label *ngSwitchCase="'label'" [(ngModel)]="entry.data[field.name]" ></system-input-label>
@@ -24,6 +25,9 @@
                 <system-input-companycodes *ngSwitchCase="'companycode'" [(ngModel)]="entry.data[field.name]"></system-input-companycodes>
                 <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
                 <system-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                <system-select *ngSwitchCase="'foreign'" [ngModel]="{id: entry.data[field.name], name: getForeignName(field.name)}" (ngModelChange)="entry.data[field.name] = $event.id">
+                    <system-select-option *ngFor="let foreignKey of getForeignKeys(field.name)" [value]="foreignKey.value" [display]="foreignKey.display"/>
+                </system-select>
                 <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
                 <input *ngSwitchDefault type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
             </div>

@@ -2,7 +2,7 @@
  * @module AdminComponentsModule
  */
 import {
-    Component,
+    Component, ElementRef,
     OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
@@ -43,7 +43,8 @@ export class AdministrationConfigurator implements OnInit {
     constructor(
         public metadata: metadata,
         public administrationconfigurator: administrationconfigurator,
-        public language: language
+        public language: language,
+        public elementRef: ElementRef
     ) {
 
     }
@@ -65,6 +66,10 @@ export class AdministrationConfigurator implements OnInit {
 
     get count(){
         return this.administrationconfigurator.entries.length;
+    }
+
+    get width(){
+        return this.elementRef.nativeElement.width;
     }
 
     public trackByFn(index, item) {

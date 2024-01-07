@@ -9,6 +9,7 @@ import {modelutilities} from '../../services/modelutilities.service';
 import {configurationService} from "../../services/configuration.service";
 import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
+import {administration} from "./administration.service";
 
 @Injectable()
 /**
@@ -30,11 +31,15 @@ export class administrationconfigurator {
 
     public reloadTaskItems: string[] = [];
 
+    public foreignkeys: any = {};
+
     constructor(public backend: backend,
                 public modelutilities: modelutilities,
                 private configurationService: configurationService,
                 private toast: toast,
-                public modal: modal) {
+                public modal: modal,
+                public administration: administration
+    ) {
     }
 
 
@@ -44,8 +49,11 @@ export class administrationconfigurator {
      */
     public loadEntries(fielddefs = []) {
         this.loading = true;
-        this.backend.getRequest('configuration/configurator/entries/' + this.dictionary).subscribe({
+        this.backend.getRequest('configuration/configurator/byid/' + this.administration.opened_itemid).subscribe({
             next: (data) => {
+
+                // set the foreign keys
+                this.foreignkeys = data.foreignkeys;
 
                 // traverse the fielddefs
                 this.fielddefobj = {};
@@ -53,13 +61,14 @@ export class administrationconfigurator {
                     this.fielddefobj[fielddef.name] = fielddef.type ? fielddef.type : '';
                 }
 
-                this.entries = data.map(entry=> {
+                this.entries = data.entries.map(entry=> {
                     return {
                         id: entry.id,
                         mode: '',
                         data: this.mapData(entry)
                     }
                 })
+
 
                 this.loading = false;
             },
