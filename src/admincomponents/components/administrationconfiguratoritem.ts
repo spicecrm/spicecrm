@@ -9,6 +9,7 @@ import {language} from '../../services/language.service';
 import {helper} from '../../services/helper.service';
 import {administrationconfigurator} from '../services/administrationconfigurator.service';
 import {modal} from "../../services/modal.service";
+import {values} from "underscore";
 
 @Component({
     selector: '[administration-configurator-item]',
@@ -18,8 +19,17 @@ export class AdministrationConfiguratorItem {
 
     @Input() public fields: any[] = [];
     @Input() public entry: any = {};
+    @Input() public parentWidth: any;
 
     constructor(public administrationconfigurator: administrationconfigurator, public language: language, public helper: helper, public modal: modal, public injector: Injector) {
+    }
+
+
+    get divStyle(){
+        let itemwidth = parseInt(this.parentWidth, 10) / this.fields.length;
+        return {
+            'max-width': itemwidth < 200 ? '200px' : itemwidth + 'px'
+        }
     }
 
     /**
@@ -73,6 +83,17 @@ export class AdministrationConfiguratorItem {
         } catch (e) {
             return value;
         }
+    }
+
+    public getForeignName(fieldname){
+        if(!this.entry.data[fieldname]) return this.entry.data[fieldname];
+        let options = this.getForeignKeys(fieldname);
+        let option = options.find(o => o.value == this.entry.data[fieldname]);
+        return option ? option.display : this.entry.data[fieldname];
+    }
+
+    public getForeignKeys(fieldname){
+        return this.administrationconfigurator.foreignkeys[fieldname].sort((a, b) => a.display.localeCompare(b.display));
     }
 
     public goDetail(){

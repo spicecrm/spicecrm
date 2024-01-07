@@ -75,6 +75,17 @@ export class AdministrationConfiguratorItemModal {
         }
     }
 
+    public getForeignName(fieldname){
+        if(!this.entry.data[fieldname]) return this.entry.data[fieldname];
+        let options = this.getForeignKeys(fieldname);
+        let option = options.find(o => o.value == this.entry.data[fieldname]);
+        return option ? option.display : this.entry.data[fieldname];
+    }
+
+    public getForeignKeys(fieldname){
+        return this.administrationconfigurator.foreignkeys[fieldname].sort((a, b) => a.display.localeCompare(b.display));
+    }
+
     public close(){
         this.administrationconfigurator.cancelEditMode(this.entry.id);
         this.self.destroy();
