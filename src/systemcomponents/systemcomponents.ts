@@ -70,6 +70,7 @@ import {SystemInputDatePicker} from "./components/systeminputdatepicker";
 import {SystemInputDate} from "./components/systeminputdate";
 import {SystemInputDelayed} from "./components/systeminputdelayed";
 import {SystemInputFieldset} from "./components/systeminputfieldset";
+import {SystemInputFlter} from "./components/systeminputfilter";
 import {SystemInputLabel} from "./components/systeminputlabel";
 import {SystemInputModule} from "./components/systeminputmodule";
 import {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
@@ -262,6 +263,7 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
         SystemInputDatePicker,
         SystemInputDelayed,
         SystemInputFieldset,
+        SystemInputFlter,
         SystemInputLabel,
         SystemInputModule,
         SystemInputModuleFilter,
@@ -526,7 +528,10 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
-        SystemSelectOption
+        SystemSelectOption,
+        SystemChartOneDimensionalValue,
+        SystemSelectOption,
+        SystemInputFlter
     ]
 })
 export class SystemComponents {}
