@@ -19,6 +19,7 @@
                                 <system-input-label *ngSwitchCase="'label'" [(ngModel)]="entry.data[field.name]" ></system-input-label>
                                 <system-input-date *ngSwitchCase="'date'" [(ngModel)]="entry.data[field.name]" system-input-date-formatted [showCalendarButton]="false" ></system-input-date>
                                 <system-input-fieldset *ngSwitchCase="'fieldset'" [(ngModel)]="entry.data[field.name]"></system-input-fieldset>
+                                <system-input-filter *ngSwitchCase="'filter'" [(ngModel)]="entry.data[field.name]"></system-input-filter>
                                 <system-input-componentset *ngSwitchCase="'componentset'" [(ngModel)]="entry.data[field.name]"></system-input-componentset>
                                 <system-input-companycodes *ngSwitchCase="'companycode'" [(ngModel)]="entry.data[field.name]"></system-input-companycodes>
                                 <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
