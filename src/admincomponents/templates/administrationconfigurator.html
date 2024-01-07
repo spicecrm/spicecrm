@@ -45,7 +45,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="slds-align-top slds-theme--default" administration-configurator-item *ngFor="let entry of getEntries(); trackBy: trackByFn" [entry]="entry" [fields]="getFields()">
+            <tr class="slds-align-top slds-theme--default" administration-configurator-item *ngFor="let entry of getEntries(); trackBy: trackByFn" [parentWidth]="width" [entry]="entry" [fields]="getFields()">
             </tr>
             </tbody>
         </table>
