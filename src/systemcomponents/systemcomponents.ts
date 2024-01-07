@@ -529,7 +529,6 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
         SystemChartDataColumn,
         SystemChartMultiDimensional,
         SystemSelectOption,
-        SystemChartOneDimensionalValue,
         SystemSelectOption,
         SystemInputFlter
     ]
