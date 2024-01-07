@@ -50,7 +50,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
      */
     @Input() set filterModules(value:string[]){
         this._filterModules = value;
-        this._modules = this._modules.filter(m => !value.some(v => v == m.id));
+        // this._modules = this._modules.filter(m => !value.find(v => v == m.id));
     }
     // for the value accessor
     public onChange: (value: string) => void;
@@ -87,7 +87,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
         this._modules = this.metadata.getModules().map(m => ({id: m, name: this.technicalNameOnly ? m : `${this.language.getModuleName(m)} (${m})`}));
 
         if (this._filterModules.length > 0) {
-            this._modules = this._modules.filter(m => !this._filterModules.some(v => v == m.id));
+            this._modules = this._modules.filter(m => this._filterModules.find(v => v == m.id));
         }
 
         if (this.displayAsterisk) {

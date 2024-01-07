@@ -1,3 +1,4 @@
-<system-select [(ngModel)]="module" [disabled]="disabled">
+<system-select *ngIf="_modules.length > 0" [(ngModel)]="module" [disabled]="disabled">
     <system-select-option *ngFor="let option of _modules" [value]="option.id" [display]="option.name"/>
 </system-select>
+<system-input-text *ngIf="_modules.length == 0"  disabled/>
