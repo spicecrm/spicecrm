@@ -29,6 +29,9 @@ class SystemTemplateFunctions {
             $date = DateTime::createFromFormat(TimeDate::getInstance()->get_date_time_format(), $inputString);
         }
         if(!$date){
+            $date = DateTime::createFromFormat(TimeDate::DB_DATE_FORMAT, $inputString);
+        }
+        if(!$date){
             $date = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
         }
 
