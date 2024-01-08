@@ -35,7 +35,7 @@ class SystemTemplateFunctions {
             $date = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
         }
 
-        return $date->format( $format );
+        return $date ? $date->format( $format ) : $inputString;
 
     }
 
