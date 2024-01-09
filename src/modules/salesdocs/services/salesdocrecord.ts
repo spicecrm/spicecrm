@@ -501,8 +501,8 @@ export class salesdocrecord implements OnDestroy {
     private calculateItem(pricecalculationschema_id, itemData) {
         let retSubject = new Subject();
         let postData = {
-            salesdoc: this.modelutilities.spiceModel2backend('SalesDocs', this.salesdoc.data),
-            items: [this.modelutilities.spiceModel2backend('SalesDocItems', itemData)]
+            salesdoc: this.modelutilities.spiceModel2backend('SalesDocs', JSON.parse(JSON.stringify(this.salesdoc.data))),
+            items: [this.modelutilities.spiceModel2backend('SalesDocItems', JSON.parse(JSON.stringify(itemData)))]
         }
         let calcAwait = this.modal.await('LBL_CALCULATING');
         this.backend.postRequest(`module/SalesDocs/${this.salesdoc.id}/calculateitems`, {}, postData).subscribe({
