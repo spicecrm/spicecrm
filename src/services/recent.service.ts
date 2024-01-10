@@ -80,6 +80,12 @@ export class recent {
                 }
 
                 break;
+            case 'logout':
+                // reset the service if we logout
+                this.recentItems = [];
+                this.moduleItems = {};
+                this.isInitialized = false;
+                break;
         }
     }
 
@@ -128,7 +134,8 @@ export class recent {
                 module_name,
                 item_summary: item_data.summary_text,
                 date_modified: moment().format('YYYY-MM-DD HH:mm:ss'),
-                data: this.modelutils.spiceModel2backend(module_name, item_data)
+                // deep clone the item data
+                data: this.modelutils.spiceModel2backend(module_name, JSON.parse(JSON.stringify(item_data)))
             };
 
             this.moduleItems[module_name].unshift(item);
@@ -176,7 +183,8 @@ export class recent {
             module_name,
             item_summary: item_data.summary_text,
             date_modified: moment().format('YYYY-MM-DD HH:mm:ss'),
-            data: this.backend.modelutilities.spiceModel2backend(module_name, item_data)
+            // deep clone the item data
+            data: this.backend.modelutilities.spiceModel2backend(module_name, JSON.parse(JSON.stringify(item_data)))
         };
 
         this.recentItems.unshift(item);
