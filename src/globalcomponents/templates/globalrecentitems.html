@@ -52,7 +52,7 @@
                     <div class="slds-truncate"><system-label-modulename [module]="recentItem.module_name" [singular]="true"></system-label-modulename></div>
                 </td>
                 <td>
-                    <div class="slds-truncate">{{recentItem.date_modified}}</div>
+                    <div class="slds-truncate"><system-display-datetime [date]="recentItem.date_modified"></system-display-datetime></div>
                 </td>
             </tr>
         </tbody>
