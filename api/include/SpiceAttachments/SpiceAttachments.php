@@ -82,7 +82,7 @@ class SpiceAttachments
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-
+        if(!is_array($selectedFiles)) $selectedFiles = [];
         if(count($selectedFiles) > 0) {
             // get selected attachments
             $attachments = $selectedFiles;
