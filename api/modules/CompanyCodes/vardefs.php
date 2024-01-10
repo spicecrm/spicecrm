@@ -219,6 +219,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['CompanyCode'] = [
             'source' => 'non-db',
             'vname' => 'LBL_ACCOUNTBANKACCOUNTS',
         ],
+        'companycodeobjectives' => [
+            'name' => 'companycodeobjectives',
+            'vname' => 'LBL_COMPANYCODEOBJECTIVES',
+            'type' => 'link',
+            'relationship' => 'companycodes_companycodeobjectives',
+            'source' => 'non-db',
+            'module' => 'CompanyCodeObjectives',
+            'comment' => 'Company Code Objective link'
+        ],
     ],
     'indices' => [
         ['name' => 'idx_companycodes_id_del', 'type' => 'index', 'fields' => ['id', 'deleted'],],
