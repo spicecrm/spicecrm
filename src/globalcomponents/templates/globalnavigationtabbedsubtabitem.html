@@ -1,5 +1,5 @@
-<li class="slds-tabs_default__item slds-sub-tabs__item slds-grid slds-grid_vertical-align-center" [ngClass]="{'slds-active': isActive, 'slds-border--left': !ismain}" role="presentation">
-    <a class="slds-tabs_default__link slds-p-horizontal_xx-small" href="javascript:void(0);" role="tab" (click)="setActive()" >
+<li class="slds-tabs_default__item slds-sub-tabs__item slds-grid slds-grid_vertical-align-center" [ngClass]="{'slds-active': isActive, 'slds-border--left': !ismain}" role="presentation" >
+    <a class="slds-tabs_default__link slds-p-horizontal_xx-small" href="javascript:void(0);" role="tab" (click)="setActive()" (contextmenu)="openContextMenu($event, contextMenu);">
         <div class="slds-truncate slds-grid slds-grid--vertical-align-center">
             <ng-container *ngIf="tabname; else tabloading">
                 <system-utility-icon *ngIf="tabicon" [icon]="tabicon" size="x-small" class="slds-p-right--x-small"></system-utility-icon>
@@ -19,5 +19,10 @@
         <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small" tabindex="0" (click)="closeSubTab()" system-title="LBL_CLOSE_TAB">
             <system-button-icon icon="close"></system-button-icon>
         </button>
+    </div>
+    <div #contextMenu [class.slds-hide]="!showContextMenu" class="slds-popover slds-text-color--default slds-box_small slds-theme_shade slds-popover_tooltip slds-nubbin--top-left slds-rise-from-ground slds-is-absolute" role="tooltip" style="top: 36px; left: 10px; width: 200px; height: auto;">
+        <button (click)="closeSubTab()" class="slds-p-left--small slds-button" system-title="LBL_CLOSE_TAB"><system-label label="LBL_CLOSE_TAB"/></button><br>
+        <button [disabled]="buttonCloseOtherTabsDisabled"(click)="closeOtherSubTabs()" class="slds-p-top_xx-small slds-p-left--small slds-button" system-title="LBL_CLOSE_OTHER_TABS"><system-label label="LBL_CLOSE_OTHER_TABS"/></button><br>
+        <button [disabled]="buttonCloseTabsToRightDisabled" (click)="closeSubTabsRight()" class="slds-p-top_xx-small slds-p-left--small slds-button" system-title="LBL_CLOSE_TABS_TO_THE_RIGHT"><system-label label="LBL_CLOSE_TABS_TO_THE_RIGHT"/></button>
     </div>
 </li>
