@@ -222,6 +222,13 @@ export class GlobaUserPanel {
     }
 
     /**
+     * navigates to the admin section
+     */
+    public goAdmin(){
+        this.router.navigate(['/admin']);
+    }
+
+    /**
      * closes the popup
      */
    public close() {
