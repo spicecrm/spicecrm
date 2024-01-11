@@ -35,7 +35,7 @@ export class ConfigTransfer {
     public exportErrorMessage: string;
     @ViewChild( 'downloadlink', {read: ViewContainerRef, static: true } ) public downloadlink: ViewContainerRef;
     public loadUrl: any = undefined;
-    public fileName: string = 'export.gz';
+    public fileName: string = 'spicecrm-cfg-' + moment().format('YYYYMMDD-HHmm') + '.gz';
     public changeExportSettings = false;
 
     // IMPORT:
@@ -55,6 +55,10 @@ export class ConfigTransfer {
     public keepEnteredModifiedInfo = false;
     @ViewChild('fileupload', {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
     public isDragOver = false;
+    /**
+     * comma separated package names to be exported
+     */
+    public selectedPackages: string;
 
     constructor( public backend: backend, public metadata: metadata, public lang: language, public prefs: userpreferences, public modalservice: modal, public toast: toast ) { }
 
@@ -90,8 +94,12 @@ export class ConfigTransfer {
         this.selectableTables.forEach( ( table => {
             if ( table.include ) selectedTables.push(table.name);
         }));
-        this.fileName = 'spicecrm-cfg-' + moment().format('YYYYMMDD-HHmm') + '.gz';
-        this.backend.getDownloadPostRequestFile('configuration/transfer/export', {}, { selectedTables: selectedTables, additionalTables: this.additionalTables } ).subscribe(
+
+        if (!this.fileName) {
+            this.fileName = 'spicecrm-cfg-' + moment().format('YYYYMMDD-HHmm') + '.gz';
+        }
+
+        this.backend.getDownloadPostRequestFile('configuration/transfer/export', {}, { selectedTables: selectedTables, additionalTables: this.additionalTables, packages: this.selectedPackages } ).subscribe(
             url => {
                 this.downloadlink.element.nativeElement.href = url;
                 this.downloadlink.element.nativeElement.click();

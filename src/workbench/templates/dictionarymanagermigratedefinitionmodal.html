@@ -13,8 +13,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let table of _tables">
-                        <td><system-input-radio name="migratedid" [value]="table.sysdictionarytablename" [(ngModel)]="selectedtable"></system-input-radio></td>
+                    <tr *ngFor="let table of _tables" (click)="selectedtable = table.sysdictionarytablename">
+                        <td><system-input-radio name="migratedid" [value]="table.sysdictionarytablename" [ngModel]="selectedtable"></system-input-radio></td>
                         <td><div class="slds-truncate">{{table.sysdictionaryname}}</div></td>
                         <td><div class="slds-truncate">{{table.sysdictionarytablename}}</div></td>
                         <td><system-checkbox disabled [ngModel]="table.sysdictionarytableaudited == '1'"></system-checkbox></td>
@@ -95,8 +95,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <ng-container *ngFor="let field of _fields">
-                        <tr>
+                    <ng-container *ngFor="let field of fields">
+                        <tr *ngIf="!this.filterundefined || !field.sysdomainfield_id">
                             <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.selected"></system-checkbox></td>
                             <td><div class="slds-truncate">{{field.fieldname}}</div></td>
                             <td><system-checkbox disabled [ngModel]="!!field.sysdomainfield_id"></system-checkbox></td>
