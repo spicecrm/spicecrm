@@ -2,8 +2,10 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SpiceDictionary
 {
@@ -58,6 +60,11 @@ class SpiceDictionary
     public function __construct()
     {
 
+        # skip loading the dictionary data while installing. The installer will manually call loadSystemCache
+        if (SpiceConfig::getInstance()->installing) {
+            return;
+        }
+
         $cached = SpiceCache::get(self::cachename);
         if ($cached) {
             $this->dictionary = $cached;
@@ -67,6 +74,9 @@ class SpiceDictionary
         $this->loadDictionary();
     }
 
+    /**
+     * @throws Exception
+     */
     public function loadDictionary(){
         $this->dictionary = [];
         $db = DBManagerFactory::getInstance();
@@ -81,6 +91,7 @@ class SpiceDictionary
                 $this->dictionary[$dictionary['sysdictionaryname']]['audited'] = $dictionary['sysdictionarytableaudited'];
                 $this->dictionary[$dictionary['sysdictionaryname']]['contenttype'] = $dictionary['sysdictionarytablecontenttype'];
                 $this->dictionary[$dictionary['sysdictionaryname']]['fields'][$dictionary['fieldname']] = json_decode(html_entity_decode($dictionary['fielddefinition'], ENT_QUOTES), true);
+                $this->dictionary[$dictionary['sysdictionaryname']]['indices'] = self::getDictionaryIndexCacheFromDb($dictionary['sysdictionaryname']);
 
                 // writes the cache
                 $this->writeCache();
@@ -89,8 +100,29 @@ class SpiceDictionary
             // load from file
             $this->loadSystemCache();
         }
+    }
 
 
+    /**
+     * get cached indices for specified dictionary name
+     * @param string $dictionaryName
+     * @return array
+     * @throws Exception
+     */
+    public static function getDictionaryIndexCacheFromDb(string $dictionaryName): array
+    {
+        $db = DBManagerFactory::getInstance();
+        $indices = [];
+
+        $q = "SELECT sysindices.* FROM sysdictionaryindices sysindices WHERE sysindices.sysdictionaryname = '$dictionaryName'";
+
+        if(!($res = $db->query($q))) return $indices;
+
+        while($row = $db->fetchByAssoc($res)){
+            $indices[] = json_decode(html_entity_decode($row['indexdefinition'], ENT_QUOTES), true);
+        }
+
+        return $indices;
     }
 
     /**
@@ -103,7 +135,7 @@ class SpiceDictionary
         return $this->dictionary[$dictionaryname];
     }
 
-    private function writeCache(){
+    public function writeCache(){
         SpiceCache::set(self::cachename, $this->dictionary);
     }
 
