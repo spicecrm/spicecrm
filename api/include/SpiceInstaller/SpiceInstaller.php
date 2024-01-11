@@ -6,6 +6,7 @@ namespace SpiceCRM\includes\SpiceInstaller;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceUI\api\controllers\ConfigTransferController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\utils\SpiceFileUtils;
@@ -475,20 +476,9 @@ class SpiceInstaller
     public function createSystem($db){
         $dictionary = SpiceDictionary::getInstance()->dictionary;
         foreach ($dictionary as $dictName => $dictFields){
-            $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], []);
-            $db->query($query);
+            $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], $dictFields['indices']);
+            $db->query($query, true);
         }
-    }
-
-    /**
-     * loads the system data
-     *
-     * @param $db
-     * @return void
-     */
-    public function loadSystemData($db){
-        // ToDo: load from dump or from remote repo
-        SpiceDictionary::getInstance()->loadSystemCache();
     }
 
     /**
@@ -705,11 +695,23 @@ class SpiceInstaller
 
     public function retrieveCoreAndLanguages( $db, $language )
     {
-        $confLoader = new SpiceUIConfLoader();
+    /*    $confLoader = new SpiceUIConfLoader();
         // load some packages to enable a good start
         $loadPackages = ['core', 'aclessentials', 'ftsreference'];
         foreach ($loadPackages as $loadPackage) {
             $confLoader->loadPackage($loadPackage);
+        }*/
+
+        $packageContent = json_decode( gzdecode ( file_get_contents('./include/SpiceInstaller/SystemPackage/system-package.gz')));
+        $dictionaryTables = array_column(SpiceDictionary::getInstance()->dictionary, 'table');
+
+        foreach ( $packageContent->data->tables as $tableName ) {
+
+            if ( !in_array( $tableName, $dictionaryTables )) continue;
+
+            foreach ($packageContent->data->rows->$tableName as $row) {
+                $db->insertQuery($tableName, (array) $row);
+            }
         }
 
         $languageLoader = new SpiceLanguageLoader();
@@ -750,17 +752,18 @@ class SpiceInstaller
 
         $db = $this->createDatabase($postData);
 
-        $repair = new AdminController();
-
         if (!empty($db)) {
+
+            SpiceDictionary::getInstance()->loadSystemCache();
+            SpiceDictionary::getInstance()->writeCache();
+
             // create the system database tables
             $this->createSystem($db);
 
-            // load the system data
-            $this->loadSystemData($db);
+            $this->loadSystemPackage($db);
 
             // run the repair to create tables
-            $this->createTables($db);
+            #$this->createTables($db);
 
             // insert defaults
             $this->insertDefaults( $db, $postData );
@@ -772,7 +775,7 @@ class SpiceInstaller
             $this->retrieveCoreandLanguages( $db, $postData['language'] );
 
             // todo ... check if this then is needed ... I assumee not
-            $repair->repairAndRebuildforInstaller();
+            #$repair->repairAndRebuildforInstaller();
         } else {
             $errors[] = "empty database instance";
         }
@@ -790,9 +793,6 @@ class SpiceInstaller
         $this->writeConfig($spice_config);
         SpiceConfig::getInstance();
 
-        // now move cache to database
-        SpiceDictionaryVardefs::getInstance()->repairDictionaries();
-
         // remove legacy cache/modules folder
         if(file_exists('api/cache/modules')){
             rmdir('api/cache/modules');
@@ -801,6 +801,10 @@ class SpiceInstaller
         return [
             "success" => $outcome,
             "errors" => $errors];
+    }
+
+    private function loadSystemPackage($db)
+    {
     }
 }
 
