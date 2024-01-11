@@ -32,6 +32,12 @@ $routes = [
                 'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'description' => 'List of names of additional tables to export. A comma separated string.'
+            ],
+            'packages' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'A comma separated string of packages to be exported',
+                'required' => false
             ]
         ]
     ],

@@ -197,6 +197,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
         let table = this.tables.find(t => t.sysdictionarytablename == value);
         if (table) {
             this.fields = table.fields;
+            this.autoMapFields();
 
             // if we have an id already set it
             if (table.sysdictionarydefinition_id) {
@@ -220,6 +221,62 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
     }
 
+    /**
+     * automatically map undefined fields
+     * @private
+     */
+    private autoMapFields() {
+        this.fields.forEach(f => {
+
+            // match domain to field type
+            if (!f.sysdomainfield_id) {
+                f.sysdomaindefinition_id = this.mapFieldTypeToDomain(f);
+            }
+
+            // generate label from name if it is undefined
+            if (!!f.fielddefinition.vname) return;
+            f.fielddefinition.vname = `LBL_${f.fielddefinition.name.toUpperCase()}`;
+        });
+    }
+
+    /**
+     * map field type to domain and return the matched domain id
+     * @return string
+     * @param field
+     * @private
+     */
+    private mapFieldTypeToDomain(field): string {
+
+        let fieldType = field.fieldtype;
+
+        switch (field.fieldtype) {
+            case 'varchar':
+                fieldType = 'varchar255';
+
+                if (field.fielddefinition.len == 36 || field.name == 'id') {
+                    fieldType = 'guid';
+                } else if (field.fieldname == 'version') {
+                    fieldType = 'varchar15';
+                } else if (field.fieldname == 'package') {
+                    fieldType = 'varchar50';
+                } else if (!isNaN(field.fielddefinition.len)) {
+                    fieldType = field.fieldtype + field.fielddefinition.len;
+                }
+                break;
+            case 'id':
+                fieldType = 'guid';
+                break;
+            case 'int':
+                if (field.fielddefinition.len == 1) {
+                    fieldType = 'smallint';
+                }
+                break;
+
+        }
+
+        return this.domains.find(d => d.name == fieldType)?.id;
+    }
+
     get allExpanded() {
         return this.fields.length == this.fields.filter(f => f.showdetails === true).length;
     }
@@ -230,11 +287,14 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
     }
 
     get allSelected() {
-        return this.fields.filter(f => !f.sysdomaindefinition_id).length == this.fields.filter(f => f.selected === true && !f.sysdomaindefinition_id).length;
+        return this.fields.filter(f => !f.sysdomainfield_id).length == this.fields.filter(f => f.selected === true && !f.sysdomainfield_id).length;
     }
 
     set allSelected(value) {
-        for (let f of this.fields.filter(f => !f.sysdomaindefinition_id)) f.selected = value;
+        for (let f of this.fields) {
+            if (!!f.sysdomainfield_id) continue;
+            f.selected = value;
+        }
     }
 
     public goDetails() {
@@ -301,7 +361,8 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
     }
 
     get canAdd() {
-        return (this.fields.filter(f => f.selected > 0).length > 0 && this.fields.filter(f => f.selected && !f.sysdomaindefinition_id).length == 0) || this.indices.filter(i => i.selected).length > 0 || this.templates.filter(t => t.selected).length > 0;
+        // at least one field selected and all selected fields has a selected domain
+        return (this.fields.some(f => f.selected && !!f.sysdomaindefinition_id) && !this.fields.some(f => f.selected && !f.sysdomaindefinition_id)) || this.indices.some(i => i.selected) || this.templates.some(t => t.selected);
     }
 
     public add() {
