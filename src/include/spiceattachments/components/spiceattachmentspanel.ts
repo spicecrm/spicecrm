@@ -266,6 +266,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId).subscribe({
             next: () => {
                 this.broadcastUpload();
+                this.loadFiles();
             }
         });
     }

@@ -25,7 +25,7 @@
                 </th>
             </tr>
             <tr *ngIf="displayFilters" class="slds-theme--shade">
-                <td *ngFor="let field of getFields()">
+                <td *ngFor="let field of getFields(true)">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
                             <input type="text" class="slds-input" [(ngModel)]="filters[field.name]"/>

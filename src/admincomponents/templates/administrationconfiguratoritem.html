@@ -20,7 +20,9 @@
                 <textarea *ngSwitchCase="'json'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
                 <textarea *ngSwitchCase="'text'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
                 <system-input-label *ngSwitchCase="'label'" [(ngModel)]="entry.data[field.name]" ></system-input-label>
-                <system-input-date *ngSwitchCase="'date'" [(ngModel)]="entry.data[field.name]" system-input-date-formatted [showCalendarButton]="false" ></system-input-date>
+                <system-input-date *ngSwitchCase="'date'" [ngModel]="entry.data[field.name]" (ngModelChange)="setFormattedDate(field.name, $event)" system-input-date-formatted [showCalendarButton]="false" ></system-input-date>
+                <system-input-module *ngSwitchCase="'module'" [(ngModel)]="entry.data[field.name]"></system-input-module>
+                <system-input-module-field *ngSwitchCase="'fieldname'" [module]="entry.data[field.modulefield]" [(ngModel)]="entry.data[field.name]"></system-input-module-field>
                 <system-input-fieldset *ngSwitchCase="'fieldset'" [(ngModel)]="entry.data[field.name]"></system-input-fieldset>
                 <system-input-filter *ngSwitchCase="'filter'" [(ngModel)]="entry.data[field.name]"></system-input-filter>
                 <system-input-componentset *ngSwitchCase="'componentset'" [(ngModel)]="entry.data[field.name]"></system-input-componentset>
