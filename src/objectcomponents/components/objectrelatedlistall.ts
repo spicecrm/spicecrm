@@ -152,5 +152,33 @@ export class ObjectRelatedlistAll implements OnInit {
             }
         }
     }
+    set searchTerm(value: string) {
+
+        if (value == this.relatedmodels.searchTerm) return;
+
+        this.relatedmodels.searchTerm = value;
+        this.reloadList();
+    }
+
+    get searchTerm(): string {
+        return this.relatedmodels.searchTerm;
+    }
+
+    /**
+     * clears the searchterm
+     * @private
+     */
+    public clearSearchTerm() {
+        this.searchTerm = '';
+    }
+
+    /**
+     * reload the model list on 1 second timeout
+     * @private
+     */
+    public reloadList() {
+        this.relatedmodels.offset = 0;
+        this.relatedmodels.getData();
+    }
 
 }

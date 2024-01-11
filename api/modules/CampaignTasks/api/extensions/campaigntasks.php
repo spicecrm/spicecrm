@@ -280,6 +280,21 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/CampaignTasks/{id}/deactivate',
+        'class'       => CampaignTasksController::class,
+        'function'    => 'deactivateCampaignTask',
+        'description' => 'delete old campaign logs and set activated flag to false',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'id'    => [
+                'in'          => 'path',
+                'description' => 'Campaign Task id',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+            ],
+        ],
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);

@@ -15,6 +15,7 @@
     <!-- additional header eleents go here-->
     <div #ngContent class="slds-m-left--x-small">
         <ng-content></ng-content>
+        <system-input-search-term [(ngModel)]="searchTerm" (onSearchTermClear)="clearSearchTerm()" (onEnterPress)="reloadList()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', relatedmodels.relatedModule)" [class.slds-hide]="disabled"  class="slds-grow"></system-input-search-term>
     </div>
     <object-action-container *ngIf="actionset && isEditable" [actionset]="actionset" class="slds-m-left--x-small"></object-action-container>
     <div *ngIf="!relatedmodels.isloading && relatedmodels.count === 0" class="slds-m-left--x-small">

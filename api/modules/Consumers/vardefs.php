@@ -293,6 +293,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'module' => 'Emails',
             'source' => 'non-db',
         ],
+        'emails_parent' => [
+            'name' => 'emails_parent',
+            'type' => 'link',
+            'relationship' => 'consumer_emails_parent',
+            'source' => 'non-db',
+            'vname' => 'LBL_EMAILS_AS_PARENT',
+        ],
         'salesdocsop' => [
             'name' => 'salesdocsop',
             'type' => 'link',
@@ -374,6 +381,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Consumer'] = [
             'lhs_key' => 'id',
             'rhs_module' => 'Letters',
             'rhs_table' => 'letters',
+            'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Consumers'
+        ],
+        'consumer_emails_parent' => [
+            'lhs_module' => 'Consumers',
+            'lhs_table' => 'consumers',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Emails',
+            'rhs_table' => 'emails',
             'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many',
             'relationship_role_column' => 'parent_type',

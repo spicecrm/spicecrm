@@ -60,6 +60,7 @@ class TimeDate
 	const DB_TIME_FORMAT = 'H:i:s';
     // little optimization
 	const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
+	const DB_DATETIME_MICROSECONDS_FORMAT = 'Y-m-d H:i:s.v';
 	const RFC2616_FORMAT = 'D, d M Y H:i:s \G\M\T';
 
     const SECONDS_IN_A_DAY = 86400;
@@ -698,6 +699,15 @@ class TimeDate
     public function nowDb()
     {
         return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format(self::DB_DATETIME_FORMAT);
+    }
+
+    /**
+     * Return current time in microseconds format
+     * @return string
+     */
+    public function nowDbInMicroseconds(): string
+    {
+        return (new DateTime())->setTimezone(new DateTimeZone('UTC'))->createFromFormat('U.u', microtime(true))->format(self::DB_DATETIME_MICROSECONDS_FORMAT);
     }
 
     /**

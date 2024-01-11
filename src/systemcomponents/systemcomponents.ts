@@ -70,6 +70,7 @@ import {SystemInputDatePicker} from "./components/systeminputdatepicker";
 import {SystemInputDate} from "./components/systeminputdate";
 import {SystemInputDelayed} from "./components/systeminputdelayed";
 import {SystemInputFieldset} from "./components/systeminputfieldset";
+import {SystemInputFlter} from "./components/systeminputfilter";
 import {SystemInputLabel} from "./components/systeminputlabel";
 import {SystemInputModule} from "./components/systeminputmodule";
 import {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
@@ -188,8 +189,10 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 import {SystemObjectPreview} from "./components/systemobjectpreview";
 import {SystemInputCronExpression} from "./components/systeminputcronexpression";
 import {SystemChartOneDimensional} from "./components/systemchartonedimensional";
-import {SystemChartOneDimensionalValue} from "./components/systemchartonedimensionalvalue";
+import {SystemChartDataRow} from "./components/systemchartdatarow";
 import {SystemSelectOption} from "./components/systemselectoption";
+import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
+import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
 
 @NgModule({
     imports: [
@@ -260,6 +263,7 @@ import {SystemSelectOption} from "./components/systemselectoption";
         SystemInputDatePicker,
         SystemInputDelayed,
         SystemInputFieldset,
+        SystemInputFlter,
         SystemInputLabel,
         SystemInputModule,
         SystemInputModuleFilter,
@@ -366,7 +370,9 @@ import {SystemSelectOption} from "./components/systemselectoption";
         SystemInputSearchTerm,
         SystemInputCronExpression,
         SystemChartOneDimensional,
-        SystemChartOneDimensionalValue,
+        SystemChartDataRow,
+        SystemChartDataColumn,
+        SystemChartMultiDimensional,
         SystemSelectOption
     ],
     exports: [
@@ -519,8 +525,12 @@ import {SystemSelectOption} from "./components/systemselectoption";
         SystemImagePreview,
         SystemInputCronExpression,
         SystemChartOneDimensional,
-        SystemChartOneDimensionalValue,
-        SystemSelectOption
+        SystemChartDataRow,
+        SystemChartDataColumn,
+        SystemChartMultiDimensional,
+        SystemSelectOption,
+        SystemSelectOption,
+        SystemInputFlter
     ]
 })
 export class SystemComponents {}

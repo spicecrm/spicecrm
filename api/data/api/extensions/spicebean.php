@@ -46,7 +46,7 @@ $routes = [
                 'required'    => false,
                 'description' => '',
             ],
-            'filtercontextbeanid'     => [
+            'filtercontext'     => [
                 'in'          => 'query',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'required'    => false,
@@ -778,6 +778,12 @@ $routes = [
                 'required'    => false,
                 'description' => 'Forces resolving the links (when default=true in vardefs).',
             ],
+            'searchterm' => [
+                'in'          => 'query',
+                'description' => 'a searchterm to search by',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+            ],
+
         ],
     ],
     [

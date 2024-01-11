@@ -39,6 +39,8 @@ abstract class Relationship
 
     protected static $beansToResave = [];
 
+    protected $count = -1;
+
     public function __debugInfo()
     {
         //return ['name' => $this->name, 'type' => $this->type, 'def' => $this->def];
