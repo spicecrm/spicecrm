@@ -36,7 +36,7 @@ export class GlobalHeaderSearch {
     public searchTermUntrimmed: string = '';
     public clickListener: any;
     public _searchmodule: string = 'all';
-    public searchresults: any[] = [];
+    public searchresults: {hits: any[], total: number} = {hits: [], total: 0};
 
     /**
      * add a control-space listener to open the quick launcher
@@ -105,16 +105,19 @@ export class GlobalHeaderSearch {
         let searchmodules = [];
         if (this.showModuleSelector && this._searchmodule != 'all') searchmodules.push(this._searchmodule);
 
-        this.searchresults = [];
+        this.searchresults = {
+            hits: [],
+            total: 0
+        };
         this.fts.searchByModules({searchterm: this.searchTerm, modules: searchmodules, size: 10}).subscribe(rsults => {
-            let hits = [];
             for (let moduleSearchresult of this.fts.moduleSearchresults) {
-                hits = hits.concat(moduleSearchresult.data.hits);
+                this.searchresults.hits = this.searchresults.hits.concat(moduleSearchresult.data.hits);
+                this.searchresults.total += moduleSearchresult.data.total.value;
             }
-            hits.sort((a, b) => {
+            this.searchresults.hits.sort((a, b) => {
                 return a._score > b._score ? -1 : 1;
             });
-            this.searchresults = hits.splice(0, 10);
+            this.searchresults.hits = this.searchresults.hits.splice(0, 10);
         });
 
         // broadcast so if searc is open also the serach is updated
