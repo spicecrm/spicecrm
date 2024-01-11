@@ -86,6 +86,17 @@ export class AdministrationConfiguratorItemModal {
         return this.administrationconfigurator.foreignkeys[fieldname].sort((a, b) => a.display.localeCompare(b.display));
     }
 
+    /**
+     * formats a date object so it is proper from a moment
+     * @param dateObject
+     */
+    public setFormattedDate(fieldname, dateObject){
+        if(!dateObject || (dateObject && !dateObject.isValid())) {
+            this.entry.data[fieldname] = '';
+        }
+        this.entry.data[fieldname] = dateObject.format('YYYY-MM-DD');
+    }
+
     public close(){
         this.administrationconfigurator.cancelEditMode(this.entry.id);
         this.self.destroy();
