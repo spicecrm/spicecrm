@@ -13,6 +13,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSBeanHandler;
