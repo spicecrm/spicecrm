@@ -82,6 +82,14 @@ export class SalesDocsItemCalculate implements OnInit{
         return conditionelement.tax_category;
     }
 
+    public getElementLabel(element){
+        if(element.label) return element.label;
+        if(element.elementname) return element.elementname;
+        if(element.conditionname) return element.conditionname;
+        if(element.elementtype) return element.elementtype;
+        return '';
+    }
+
     public setElementOverrideValue(elementid, value){
         this.conditionelements.find(c => c.id == elementid).elementoverridevalue = value ? parseFloat(value) : undefined;
 
