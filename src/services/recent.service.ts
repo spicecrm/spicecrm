@@ -80,6 +80,12 @@ export class recent {
                 }
 
                 break;
+            case 'logout':
+                // reset the service if we logout
+                this.recentItems = [];
+                this.moduleItems = {};
+                this.isInitialized = false;
+                break;
         }
     }
 
