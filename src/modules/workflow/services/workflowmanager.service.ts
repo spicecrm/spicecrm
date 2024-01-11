@@ -1,11 +1,14 @@
 /**
  * @module ModuleWorkflow
  */
-import {Injectable, Injector} from '@angular/core';
-import {WorkflowTaskDefI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
+import {ComponentRef, Injectable, Injector} from '@angular/core';
+import {NextTaskI, WorkflowTaskDefI, WorkflowTaskTypeI} from "../interfaces/workflow.interfaces";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {Observable, Subject} from "rxjs";
+import {
+    WorkflowManagerConditionalDecisionTaskConditionsModal
+} from "../components/workflowmanagerconditionaldecisiontaskconditionsmodal";
 
 /**
  * to share workflow manager task data with the components
@@ -241,10 +244,16 @@ export class WorkflowManagerService {
             task.type_config.next_tasks = [];
         }
 
-        task.type_config.next_tasks = [
-            ...task.type_config.next_tasks,
-            {id: nextTask.id, name: nextTask.name, type: nextTask.tasktype}
-        ];
+
+        const nextTaskObject: NextTaskI = {id: nextTask.id, name: nextTask.name, type: nextTask.tasktype};
+
+        const hasSequence = this.getType(task.tasktype).admin_component == 'WorkflowManagerTaskTypesConditionalDecision';
+
+        if (hasSequence) {
+            nextTaskObject.sequence = (task.type_config.next_tasks.length == 0 ? 0 : Math.max(...task.type_config.next_tasks.map(e => +e.sequence))) + 10;
+        }
+
+        task.type_config.next_tasks.push(nextTaskObject);
     }
 
     /**
@@ -273,5 +282,29 @@ export class WorkflowManagerService {
             default:
                 return ['regular', 'gateway_email_event', 'gateway_decision', 'end'];
         }
+    }
+
+    /**
+     * open conditions modal to edit the conditions
+     * @param obj
+     */
+    public openConditionsModal(obj: NextTaskI) {
+
+        this.modal.openModal('WorkflowManagerConditionalDecisionTaskConditionsModal', true, this.injector).subscribe(
+            (modalRef: ComponentRef<WorkflowManagerConditionalDecisionTaskConditionsModal>) => {
+
+                modalRef.instance.module = this.currentModule.name;
+                modalRef.instance.conditions = obj.conditions;
+                modalRef.instance.method = obj.checkMethod;
+                modalRef.instance.methodParams = obj.checkMethodParams;
+
+                modalRef.instance.onSave.subscribe({
+                    next: () => {
+                        obj.conditions = modalRef.instance.conditions;
+                        obj.checkMethod = modalRef.instance.method;
+                        obj.checkMethodParams = modalRef.instance.methodParams;
+                    }
+                });
+            });
     }
 }

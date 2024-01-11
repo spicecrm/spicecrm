@@ -1015,6 +1015,8 @@ class MysqliManager extends DBManager
                 return $string . ' ' . $operation . ' INTERVAL ' . abs($getUserUTCOffset) . ' MINUTE';
             case 'avg':
                 return "avg($string)";
+            case 'date_diff':
+                return "DATEDIFF($string[0],$string[1])";
         }
 
         return $string;

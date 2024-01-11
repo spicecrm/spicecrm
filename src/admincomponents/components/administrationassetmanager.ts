@@ -54,7 +54,13 @@ export class AdministrationAssetManager implements OnInit{
         {value: '', csstype: 'string', name: 'sds-c-textarea-shadow-focus'},
         {value: '', csstype: 'string', name: 'sds-c-select-shadow-focus'},
         {value: '', csstype: 'color', name: 'sds-c-button-text-color-hover'},
-        {value: '', csstype: 'color', name: 'sds-c-icon-color-foreground'}
+        {value: '', csstype: 'color', name: 'sds-c-icon-color-foreground'},
+        {value: '', csstype: 'color', name: 'slds-c-slider-track-color-background'},
+        {value: '', csstype: 'color', name: 'spice-alert-color-error'},
+        {value: '', csstype: 'color', name: 'spice-alert-color-info'},
+        {value: '', csstype: 'color', name: 'spice-alert-color-warning'},
+        {value: '', csstype: 'color', name: 'spice-alert-color-success'},
+        {value: '', csstype: 'color', name: 'spice-alert-color-custom'},
     ]
 
     private assetdimensions: any = {

@@ -1,5 +1,9 @@
 /**
- * @module ModuleCampaigns
+ * create eventregistration records for selected prospect list records
+ * step by step layout
+ * 1. select prospect lists
+ * 2. set common values for the created event registrations
+ * @module ModuleEvents
  */
 import {Component, ComponentRef, SkipSelf} from '@angular/core';
 import {model} from "../../../services/model.service";
@@ -7,6 +11,8 @@ import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
+import {toast} from "../../../services/toast.service";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'event-registration-modal',
@@ -31,11 +37,21 @@ export class EventRegistrationModal {
      */
     public totalSteps: string[] = ['ProspectLists', 'EventRegistrations'];
 
-    constructor(public model: model, public metadata: metadata, public backend: backend, @SkipSelf() public eventModel: model, public modelutilities: modelutilities, public relatedmodels: relatedmodels) {
+    constructor(public model: model, public metadata: metadata, public backend: backend, @SkipSelf() public eventModel: model, public modelutilities: modelutilities, public relatedmodels: relatedmodels, public toast: toast, public language: language) {
         this.model.module = 'EventRegistrations';
         this.model.initialize();
         this.model.startEdit();
     }
+
+    /**
+     *determines the width in % for the style of the progress bar
+     */
+    public getProgressBarWidth() {
+        return {
+            width: (this.currentStep / (this.totalSteps.length - 1) * 100) + '%'
+        };
+    }
+
 
     /**
      * returns the class for the step in the guide
@@ -54,8 +70,24 @@ export class EventRegistrationModal {
 
     public holdListData: any [] = [];
 
+    /**
+     * handle selected item IDs
+     * Add it when not present in the array, remove it when present
+     * toggle behaviour
+     * @param targetlist
+     */
     public fetchListData(targetlist){
-        this.holdListData.push(targetlist[0].id)
+        let idx = this.holdListData.indexOf(targetlist[0].id);
+        // add
+        if(idx < 0){
+            this.holdListData.push(targetlist[0].id);
+        } else{ // remove
+            delete this.holdListData[idx];
+            // remove empty values
+            this.holdListData = this.holdListData.filter(function (el) {
+                return el != null;
+            });
+        }
     };
 
     /**
@@ -101,6 +133,15 @@ export class EventRegistrationModal {
     }
 
     /**
+     * used to diable the buttons
+     * if no items were selected we disable
+     */
+    public disableNext() {
+        if(this.holdListData.length) return false;
+        return true;
+    }
+
+    /**
      * save registrations
      */
     public save() {
@@ -114,6 +155,10 @@ export class EventRegistrationModal {
             // reload subpanel
             this.relatedmodels.relatedModule = 'EventRegistrations';
             this.relatedmodels.getData();
+
+            // send Toat
+            let msg = this.language.getLabel('LBL_CREATED_EVENTREGISTRATIONS');
+            this.toast.sendToast(msg + ': '+ results.added_prospects_count, 'success');
 
             // close window
             this.closeModal();

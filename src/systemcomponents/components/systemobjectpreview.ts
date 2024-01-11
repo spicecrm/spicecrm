@@ -45,6 +45,8 @@ export class SystemObjectPreview {
 
     public subscriptions: Subscription = new Subscription();
 
+    @Input() public objectContainerHeight = '80vh';
+
     constructor(
         public language: language,
         public sanitizer: DomSanitizer,
@@ -133,5 +135,15 @@ export class SystemObjectPreview {
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * returns the style
+     */
+    get objectContainerStyle(){
+        return {
+            height: this.objectContainerHeight,
+            overflow: 'hidden'
+        }
     }
 }

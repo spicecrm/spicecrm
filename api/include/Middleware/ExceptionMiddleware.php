@@ -77,16 +77,17 @@ class ExceptionMiddleware extends FailureMiddleware
      * @return ResponseInterface
      */
     private function handleException(\Exception $exception): ResponseInterface {
-        $inDevMode = SpiceUtils::inDeveloperMode();
-
-        if ($inDevMode || SpiceUtils::stackTrace()) {
+        $stackTraceLevel = SpiceUtils::getStackTrace();
+        if ($stackTraceLevel) {
             $responseData = [
                 'code'    => $exception->getCode(),
                 'message' => $exception->getMessage(),
                 'line'    => $exception->getLine(),
                 'file'    => $exception->getFile(),
-                'trace'   => $exception->getTraceAsString(),
             ];
+            if($stackTraceLevel > 0){
+                $responseData['trace'] = $exception->getTraceAsString();
+            }
         } else {
             $responseData['error'] = ['message' => ($exception->getCode() == 404) ? 'Not found.' : 'Application Error.'];
         }
@@ -94,13 +95,16 @@ class ExceptionMiddleware extends FailureMiddleware
         $httpCode = $exception->getCode() ?: 500;
 
         // try to log this
-        LoggerManager::getLogger()->fatal(print_r([
+        $logContent = [
             'code'    => $exception->getCode(),
             'message' => $exception->getMessage(),
             'line'    => $exception->getLine(),
             'file'    => $exception->getFile(),
-            'trace'   => $exception->getTraceAsString(),
-        ], true));
+        ];
+        if($stackTraceLevel > 0){
+            $logContent['trace'] = $exception->getTraceAsString();
+        }
+        LoggerManager::getLogger()->fatal(print_r($logContent, true));
 
         return $this->generateResponse($responseData, $httpCode);
     }

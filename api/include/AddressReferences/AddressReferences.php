@@ -6,6 +6,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class AddressReferences
 {
@@ -70,7 +71,7 @@ class AddressReferences
     {
         $list = [];
         $db = DBManagerFactory::getInstance();
-        if($db->tableExists('spice_address_references')){
+        if(SpiceConfig::getInstance()->config['system']['no_table_exists_check'] === true || $db->tableExists('spice_address_references')){
             $query = $db->query("SELECT * FROM spice_address_references ORDER BY parent_module");
             if (!$query) return;
             while ($row = $db->fetchByAssoc($query)) {

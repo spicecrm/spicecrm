@@ -82,7 +82,7 @@ class SpiceAttachments
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-
+        if(!is_array($selectedFiles)) $selectedFiles = [];
         if(count($selectedFiles) > 0) {
             // get selected attachments
             $attachments = $selectedFiles;
@@ -201,7 +201,8 @@ class SpiceAttachments
             'file_mime_type' => $file_mime_type,
             'thumbnail' => $thumbnail,
             'filemd5' => $filemd5,
-            'external_id' => $file['external_id']
+            'external_id' => $file['external_id'],
+            'category_ids' => $file['category_ids']
         ];
         return $attachments;
     }

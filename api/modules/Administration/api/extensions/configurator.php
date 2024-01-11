@@ -64,6 +64,22 @@ $routes = [
         ]
     ],
     [
+        'method'      => 'get',
+        'route'       => '/configuration/configurator/byid/{actionid}',
+        'class'       => ConfiguratorController::class,
+        'function'    => 'readConfigById',
+        'description' => 'reads the config from a db table as generic interface',
+        'options'     => ['adminOnly' => true, 'validate' => true ],
+        'parameters'  => [
+            'actionid' => [
+                'in' => 'path',
+                'description' => 'Table',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true
+            ]
+        ]
+    ],
+    [
         'method'      => 'delete',
         'route'       => '/configuration/configurator/{table}/{id}',
         'oldroute'    => '/configurator/{table}/{id}',

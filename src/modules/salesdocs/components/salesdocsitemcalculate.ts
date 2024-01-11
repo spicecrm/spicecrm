@@ -18,6 +18,7 @@ import {salesdocrecord} from "../services/salesdocrecord";
 import {view} from "../../../services/view.service";
 
 @Component({
+    selector: 'salesdocs-items-calculate',
     templateUrl: '../templates/salesdocsitemcalculate.html',
 })
 export class SalesDocsItemCalculate implements OnInit{
@@ -81,16 +82,24 @@ export class SalesDocsItemCalculate implements OnInit{
         return conditionelement.tax_category;
     }
 
+    public getElementLabel(element){
+        if(element.label) return element.label;
+        if(element.elementname) return element.elementname;
+        if(element.conditionname) return element.conditionname;
+        if(element.elementtype) return element.elementtype;
+        return '';
+    }
+
     public setElementOverrideValue(elementid, value){
         this.conditionelements.find(c => c.id == elementid).elementoverridevalue = value ? parseFloat(value) : undefined;
 
         // recalculate
-        this.salesdocrecord.recalculate(this.schemaelements, this.conditionelements);
+        this.salesdocrecord.recalculate(this.schemaelements, this.conditionelements, this.model.getField('quantity'));
     }
 
     public getElementAmount(elementid, total = false){
-        let amount = this.conditionelements.find(c => c.id == elementid)?.elementamount;
-        return total ? amount * this.model.getField('quantity') : amount;
+        let element = this.conditionelements.find(c => c.id == elementid);
+        return element ? (total ? element.elementtotalamount : element.elementamount) : null;
     }
 
     public save(){

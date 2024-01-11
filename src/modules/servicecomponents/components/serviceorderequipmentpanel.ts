@@ -144,9 +144,10 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
         // if we don't have a serviceorder id, we give the servicelocation directly to the filter
         // when we change the servicelocation we need both information in the backend 'serviceorder' for old relations and 'servicelocation' for possible relations
         if(!this.model.isNew)  {
-            this.modellist.filtercontextbeanid = JSON.stringify({ serviceorder_id: this.model.id, servicelocation_id: this.model.getField('servicelocation_id') });
+            this.modellist.filtercontext = {module: 'ServiceEquipments', data: { serviceorder_id: this.model.id, servicelocation_id: this.model.getField('servicelocation_id') }};
+
         } else {
-            this.modellist.filtercontextbeanid = JSON.stringify({ serviceorder_id: '', servicelocation_id: this.servicelocationId });
+            this.modellist.filtercontext = {module: 'ServiceEquipments', data: { serviceorder_id: '', servicelocation_id: this.servicelocationId }};
         }
 
         this.modellist.modulefilter = this.equipmentfilter;

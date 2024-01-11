@@ -5,13 +5,34 @@
     </button>
 </td>
 <td>
-    <field-container fieldname="itemnr" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+    <div *ngIf="!isSubItem" class="slds-grid slds-grid--vertical-align-center">
+        <div>
+            {{itemNr}}
+        </div>
+        <ng-container *ngIf="canAddSubitem">
+        <div class="slds-p-horizontal--xx-small">/</div>
+        <div>
+            <button class="slds-button slds-button--icon" [disabled]="!editing" (click)="addSubItem()" system-title="LBL_ADD_SUBITEM">
+                <system-button-icon icon="new"></system-button-icon>
+            </button>
+        </div>
+        </ng-container>
+    </div>
+    <div *ngIf="isSubItem" class="slds-grid slds-grid--vertical-align-center">
+        <div>
+            {{parentItemNr}}
+        </div>
+        <div class="slds-p-horizontal--xx-small">/</div>
+        <div>
+            {{itemNr}}
+        </div>
+    </div>
 </td>
 <td *ngFor="let fieldsetItem of fieldsetItems">
     <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
 </td>
 <td class="slds-cell-shrink">
-    <button class="slds-button slds-button--icon slds-col_bump-left"  [disabled]="!editModal" (click)="editDetails()">
+    <button class="slds-button slds-button--icon slds-col_bump-left"  [disabled]="!canEdit" (click)="editDetails()">
         <system-button-icon icon="prompt_edit"></system-button-icon>
     </button>
 </td>

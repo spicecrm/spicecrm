@@ -49,7 +49,7 @@ class CampaignLog extends SpiceBean {
 
         // fill in target_name
         $target = BeanFactory::getBean($this->target_type, $this->target_id);
-        $this->target_name = $target->get_summary_text();
+        if($target) $this->target_name = $target->get_summary_text();
     }
 
 	static function setStatus($id,$status){

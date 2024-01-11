@@ -100,20 +100,22 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         this.model.setData(this.item);
 
         // link the two views
-        this.view.isEditable = this.parentview.isEditable;
-        this.parentview.mode$.subscribe(mode => {
-            // check if we are in the same mode already
-            if (this.view.getMode() == mode) return;
+        if(this.parentview) {
+            this.view.isEditable = this.parentview.isEditable;
+            this.parentview.mode$.subscribe(mode => {
+                // check if we are in the same mode already
+                if (this.view.getMode() == mode) return;
 
-            // process the mode change
-            if (mode == 'edit') {
-                this.view.setEditMode();
-                this.view.displayLinks = false;
-            } else {
-                this.view.setViewMode();
-                this.view.displayLinks = true;
-            }
-        });
+                // process the mode change
+                if (mode == 'edit') {
+                    this.view.setEditMode();
+                    this.view.displayLinks = false;
+                } else {
+                    this.view.setViewMode();
+                    this.view.displayLinks = true;
+                }
+            });
+        }
 
         this.view.mode$.subscribe(mode => {
             // check if we are in the same mode already
@@ -124,7 +126,7 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
                 // start editing the Salesdoc
                 this.salesdoc.startEdit();
                 // set the view to edit mode
-                this.parentview.setEditMode();
+                if(this.parentview) this.parentview.setEditMode();
 
                 // do not display links
                 this.view.displayLinks = false;
@@ -167,6 +169,13 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
+    /**
+     * returns if the item can be edited
+     */
+    get canEdit(){
+        return !!this.editModal && this.editing;
+    }
+
     get editing() {
         return this.view.isEditMode();
     }
@@ -201,6 +210,29 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         this.item.deleted = 1;
     }
 
+    get canAddSubitem(){
+        return this.salesdocrecord.canAddSubitems(this.model.id);
+    }
+
+    get isSubItem(){
+        return !!this.model.getField('parentitem_id')
+    }
+
+    get itemNr(){
+        return this.salesdocrecord.getItemNr(this.model.id);
+    }
+
+    get parentItemNr(){
+        return this.salesdocrecord.getItemNr(this.model.getField('parentitem_id'));
+    }
+
+    /**
+     * adds a subitem
+     */
+    public addSubItem(){
+        this.salesdocrecord.addItem(this.model.id);
+    }
+
     /**
      * getter for the icon of the exoanded section
      *
@@ -221,6 +253,9 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
      * opens the edit modal if one is defined in the type
      */
     public editDetails() {
+        // check if we can edit at all
+        if(!this.canEdit) return false
+
         let itemTypes = this.configuration.getData('salesdocitemtypes');
         let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == this.model.getField('itemtype'));
 
@@ -243,6 +278,10 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
 
             if (this.item.salesdocitempricecalculationschema_id) {
+                // get the condition elements
+                this.salesdocrecord.recalculate(this.configuration.getData('pricingschemaelements').filter(e => e.syspricecalculationschema_id == this.item.salesdocitempricecalculationschema_id).sort((a, b) => a.elementindex > b.elementindex ? 1 : -1), this.item.salesdocitempricedetermination, this.item.quantity);
+
+                // write the data to the item
                 this.salesdocrecord.getItemFieldsByElements(this.item.salesdocitempricecalculationschema_id, this.item.quantity, this.item.salesdocitempricedetermination, this.item);
             } else if (this.item.gross_priced) {
                 this.item.amount_gross = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);

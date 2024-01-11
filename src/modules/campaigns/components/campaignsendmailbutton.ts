@@ -7,6 +7,7 @@ import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {modal} from "../../../services/modal.service";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'campaign-send-mail-button',
@@ -16,19 +17,28 @@ export class CampaignSendMailButton {
 
     public sending: boolean = false;
     public disabled: boolean = true;
+    /**
+     * holds the rxjs subscriptions
+     * @private
+     */
+    private subscriptions = new Subscription();
 
     constructor(public language: language,
                 public model: model,
                 public backend: backend,
                 public toast: toast,
                 public modal: modal) {
-        this.model.mode$.subscribe(mode => {
+        this.subscriptions.add(
+            this.model.mode$.subscribe(mode => {
             this.handleDisabled();
-        });
+        })
+        );
 
-        this.model.data$.subscribe(data => {
-            this.handleDisabled();
-        });
+        this.subscriptions.add(
+            this.model.data$.subscribe(data => {
+                this.handleDisabled();
+            })
+        );
     }
 
     /**
@@ -43,8 +53,12 @@ export class CampaignSendMailButton {
             this.backend.postRequest(`module/CampaignTasks/${this.model.id}/queuemail`).subscribe({
                 next: (results: { success: boolean, id: string }) => {
                     this.sending = false;
+
                     loading.emit(true);
                     if (results.success) {
+                        this.model.getData();
+                        this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'CampaignLog'});
+
                         this.toast.sendToast(this.language.getLabel("LBL_MAILS_QUEUED"));
                     } else {
                         this.toast.sendToast(this.language.getLabel('LBL_NO_TARGETS_SELECTED'), 'error');
@@ -58,10 +72,10 @@ export class CampaignSendMailButton {
     }
 
     /**
-     * only show for campaign tasks of type email
+     * only show for campaign tasks of type Email or SMS
      */
     get hidden() {
-        return this.model.getField('campaigntask_type') !== 'Email';
+        return !/^Email|SMS$/.test( this.model.getField('campaigntask_type') );
     }
 
     /**
@@ -77,12 +91,6 @@ export class CampaignSendMailButton {
 
         // not if editing
         if (!this.model.checkAccess('edit')) {
-            this.disabled = true;
-            return;
-        }
-
-        // only for email
-        if (this.model.getField('campaigntask_type') !== 'Email') {
             this.disabled = true;
             return;
         }
@@ -103,5 +111,12 @@ export class CampaignSendMailButton {
 
         // not if editing
         this.disabled = this.model.isEditing ? true : false;
+    }
+
+    /**
+     * unsubscribe from rxjs subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 }

@@ -18,6 +18,10 @@ export class fieldEmailEmailAddress {
     * @input email address data
     */
     @Input() public emailAddress: any = {};
+    /*
+    * @input has focus flag
+    */
+    @Input() public hasFocus: boolean = false;
     /**
      * holds the typing timeout
      * @private

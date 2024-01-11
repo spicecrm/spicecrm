@@ -11,7 +11,7 @@
                               [parentId]="model.id"
                               [size]="'small'"
                               (answersChanged$)="answersChanged()"
-                              (questionnaireParticipation$)="questionnaireParticipation=$event"
+                              (questionnaireParticipation$)="gotParticipation($event)"
         ></questionnaire-render>
         <div *ngIf="!questionnaireId" class="slds-box slds-align--absolute-center">
             <div class="slds-grid slds-grid--vertical">

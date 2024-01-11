@@ -316,6 +316,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
             'source'       => 'non-db',
             'vname'        => 'LBL_CONSUMERS',
         ],
+        #CR1001177
+        'hcmemployeeobjectives' => [
+            'name'         => 'hcmemployeeobjectives',
+            'type'         => 'link',
+            'relationship' => 'hcmemployeeobjectives_calls',
+            'module'       => 'HCMEmployeeObjectives',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
+        ],
+
         'employees' => [
             'name'         => 'employees',
             'type'         => 'link',
@@ -338,10 +348,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
                     'options' => 'dom_meeting_accept_status',
                     'map' => 'activity_accept_status'
                 ],
-                'date_modified' => [
-                    'type' => 'datetime',
-                    'map' => 'activity_status_date_modified'
-                ]
             ]
         ],
         'users' => [
@@ -357,10 +363,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Call'] = [
                     'type' => 'enum',
                     'options' => 'dom_meeting_accept_status',
                     'map' => 'activity_accept_status'
-                ],
-                'date_modified' => [
-                    'type' => 'datetime',
-                    'map' => 'activity_status_date_modified'
                 ],
                 'required' => [
                     'type' => 'bool',
@@ -614,6 +616,15 @@ if (file_exists("extensions/modules/ProcurementDocs")) {
         'relationship' => 'procurementdocs_calls',
         'source'       => 'non-db',
         'vname'        => 'LBL_PROCUREMENTDOCS',
+    ];
+}
+if(file_exists("extensions/modules/HCMEmployeeObjectives")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Call']['fields']['hcmemployeeobjectives'] = [
+        'name'         => 'hcmemployeeobjectives',
+        'type'         => 'link',
+        'relationship' => 'hcmemployeeobjectives_calls',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
     ];
 }
 

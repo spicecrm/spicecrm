@@ -57,6 +57,12 @@ import {WorkflowTaskStatusIcon} from "./components/workflowtaskstatusicon";
 import {WorkflowManagerTaskTypesEmailHandle} from "./components/workflowmanagertasktypesemailhandle";
 import {WorkflowManagerTaskTypesCloseWorkflows} from "./components/workflowmanagertasktypescloseworkflows";
 import {WorkflowManagerTaskTypesGenerateBean} from "./components/workflowmanagertasktypesgeneratebean";
+import {WorkflowMonitor} from "./components/workflowmonitor";
+import {WorkflowChart} from "./components/workflowchart";
+import {WorkflowManagerTaskTypesConditionalDecision} from "./components/workflowmanagertasktypesconditionaldecision";
+import {
+    WorkflowManagerConditionalDecisionTaskConditionsModal
+} from "./components/workflowmanagerconditionaldecisiontaskconditionsmodal";
 
 @NgModule({
     imports: [
@@ -108,6 +114,10 @@ import {WorkflowManagerTaskTypesGenerateBean} from "./components/workflowmanager
         WorkflowTaskStatusIcon,
         WorkflowManagerTaskTypesEmailHandle,
         WorkflowManagerTaskTypesCloseWorkflows,
+        WorkflowMonitor,
+        WorkflowChart,
+        WorkflowManagerTaskTypesConditionalDecision,
+        WorkflowManagerConditionalDecisionTaskConditionsModal
     ]
 })
 export class ModuleWorkflow {
