@@ -9,11 +9,11 @@ use DateTimeZone;
 use DOMDocument;
 use DOMXPath;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
+use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SalesDocsTemplateFunctions;
+use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 // CR1000360
@@ -99,7 +99,7 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null)
+    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
     {
         $this->additionalValues = $additionalValues;
         $this->lang = $lang;
@@ -119,11 +119,15 @@ class Compiler
         $dummy = $dom->getElementsByTagName('html');
         foreach( $this->parseDom( $dummy[0], $beans ) as $newElement ){
             $this->root->appendChild($newElement);
-        };
+        }
 
         $this->addStyleTag($additionalStyleId);
 
-        return $this->doc->saveHTML();
+        if ($bodyContentOnly) {
+            return str_replace(['<body>', '</body>'], '', $this->doc->saveHTML($this->doc->getElementsByTagName('body')->item(0)));
+        } else {
+            return $this->doc->saveHTML();
+        }
     }
 
     /**
@@ -549,27 +553,28 @@ class Compiler
 
         //parse pipe if passed in
 
-        $value = $this->handleSubstitution($conditionparts[0], $beans, true);
+        $value1 = trim($this->handleSubstitution($conditionparts[0], $beans, true), "'");
+        $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
 
-        switch ($conditionparts[1]) {
+        switch (strtolower($conditionparts[1])) {
             case '>':
-                return $value > trim($conditionparts[2], "'");
+                return $value1 > $value2;
             case '>=':
-                return $value >= trim($conditionparts[2], "'");
+                return $value1 >= $value2;
             case '<':
-                return$value < trim($conditionparts[2], "'");
+                return$value1 < $value2;
             case '<=':
-                return $value <= trim($conditionparts[2], "'");
+                return $value1 <= $value2;
             case '===':
-                return $value === trim($conditionparts[2], "'");
+                return $value1 === $value2;
             case '==':
-                return $value == trim($conditionparts[2], "'");
+                return $value1 == $value2;
             case '!=':
-                return $value != trim($conditionparts[2], "'");
+                return $value1 != $value2;
             case 'in':
-                return in_array( $value, explode( ",", trim($conditionparts[2], "'")));
+                return in_array( $value1, explode( ",", $value2));
             case 'notin':
-                return !in_array( $value, explode( ",", trim($conditionparts[2], "'")));
+                return !in_array( $value1, explode( ",", $value2));
         }
         return false;
 
@@ -669,7 +674,7 @@ class Compiler
                 $obj = (object)$this->additionalValues;
                 break;
             case 'func':
-                $obj = new SystemTemplateFunctions( $beans[$object], $this->currentTemplate );
+                $obj = new SalesDocsTemplateFunctions( $beans[$object], $this->currentTemplate );
                 break;
             case 'template':
                 $obj = BeanFactory::getBean($this->currentTemplate->_module, $this->currentTemplate->id);
@@ -739,6 +744,11 @@ class Compiler
         preg_match('#^([^:]+)(:(.*))?$#s', $m, $matches );
 
         $parts = explode('.', $matches[1] );
+
+        // if we have no parts return the value itself
+        if(count($parts) < 2) return $m;
+
+        // get the name
         $objectname = $parts[0];
 
         // get the object
@@ -835,7 +845,7 @@ class Compiler
                         $value = $raw ? $obj->{$part} : SpiceUtils::currencyFormatNumber($obj->{$part}, ['symbol_space' => true] );
                         break;
                     case 'html':
-                        $value = html_entity_decode($obj->{$part});
+                        $value = SpiceUtils::cleanHtmlBody(html_entity_decode($obj->{$part}));
                         break;
                     case 'image':
                         if ( !empty( $obj->{$part} )) {
@@ -844,7 +854,7 @@ class Compiler
                         break;
                     default:
                         // moved nl2br to only be added when non specific fields are parsed
-                        $value = $raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES));
+                        $value = SpiceUtils::cleanHtmlBody($raw ? $obj->{$part} : nl2br(html_entity_decode($obj->{$part}, ENT_QUOTES)));
                         break;
                 }
             }

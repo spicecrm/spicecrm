@@ -4,7 +4,7 @@
                <system-spinner *ngIf="fts.runningmodulesearch" [size]="24" class="slds-p-right--x-small"></system-spinner>
                <system-icon *ngIf="!fts.runningmodulesearch" icon="search" size="small" sprite="utility"></system-icon>
                <div class="slds-media__body">
-                    <div class="slds-lookup__result-text"><system-label label="LBL_SEARCH"></system-label> "{{searchTerm}}" {{searchModuleName}}</div>
+                    <div class="slds-lookup__result-text"><system-label label="LBL_SEARCH"></system-label> "{{searchTerm}}" {{searchModuleName}} <span *ngIf="!fts.runningmodulesearch">({{searchResults.total}} <system-label label="LBL_RECORDS"/>)</span></div>
                </div>
            </span>
     </li>
@@ -13,10 +13,10 @@
         <li style="opacity: 0.6"><system-searchresult-stencil></system-searchresult-stencil></li>
         <li style="opacity: 0.2"><system-searchresult-stencil></system-searchresult-stencil></li>
     </ng-container>
-    <div *ngIf="!fts.runningmodulesearch && searchResults.length == 0" class="slds-align--absolute-center slds-p-around--small">
+    <div *ngIf="!fts.runningmodulesearch && searchResults.total == 0" class="slds-align--absolute-center slds-p-around--small">
         <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
     </div>
     <ng-container *ngIf="!fts.runningmodulesearch">
-        <li global-header-search-results-item *ngFor="let searchResult of searchResults" [hit]="searchResult" (selected)="selected.emit(true)"></li>
+        <li global-header-search-results-item *ngFor="let searchResult of searchResults.hits" [hit]="searchResult" (selected)="selected.emit(true)"></li>
     </ng-container>
 </ul>

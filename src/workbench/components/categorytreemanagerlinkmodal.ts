@@ -3,6 +3,7 @@ import {Component, OnInit} from "@angular/core";
 import { backend } from '../../services/backend.service';
 import { model } from '../../services/model.service';
 import { modal } from '../../services/modal.service';
+import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: 'category-tree-manager-link-modal',
@@ -45,7 +46,8 @@ export class CategoryTreeManagerLinkModal  implements OnInit {
     constructor(
         public backend: backend,
         public model: model,
-        public modal: modal
+        public modal: modal,
+        public metadata: metadata
     ) {
         // load sys module list
         this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
@@ -62,7 +64,6 @@ export class CategoryTreeManagerLinkModal  implements OnInit {
      */
     public getTreeLinks() {
         this.loading = true;
-
         let awaitModal = this.modal.await('loading...');
 
         // send data to backend
@@ -70,6 +71,9 @@ export class CategoryTreeManagerLinkModal  implements OnInit {
             next: (treeLinks) => {
                 this.categoriesInputArray = treeLinks;
                 this.loading = false;
+                
+                this.canSaveOnInit = treeLinks.length !== 0;
+
                 awaitModal.emit(true);
             },
             error: () => {
@@ -102,6 +106,21 @@ export class CategoryTreeManagerLinkModal  implements OnInit {
     get canSave() {
         let item = this.categoriesInputArray.find((item) => item.module_id == '' || item.module_field == '');
         return item?.module_id == '' || item?.module_field == '';
+    }
+
+    /**
+     * returns the fields for a given module
+     * @param module
+     */
+    public getModuleFields(module){
+        let fieldsArrray = [];
+        if(!module) return fieldsArrray;
+        let fields =  this.metadata.getModuleFields(this.sysModules.find(sm => sm.id == module).module);
+        for (let key of Object.keys(fields)) {
+            fieldsArrray.push(fields[key].name)
+        }
+        // sort the array and return it
+        return fieldsArrray.sort((a, b) => a.localeCompare(b));
     }
 
     /**

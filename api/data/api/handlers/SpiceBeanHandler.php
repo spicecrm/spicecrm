@@ -122,11 +122,36 @@ class SpiceBeanHandler
         return $dynamicDomains;
     }
 
+    /**
+     * prepare filter context when the list ist retrieved within a bean context
+     * @param array $searchParams
+     * @return void
+     */
+    private function prepareFilterContext(array &$searchParams)
+    {
+        $searchParams['filtercontext'] = json_decode($searchParams['filtercontext']);
+
+        if (!empty($searchParams['filtercontext']->module)) {
+
+            if (!empty($searchParams['filtercontext']->data)) {
+                $contextBean = BeanFactory::getBean($searchParams['filtercontext']->module);
+                foreach ($searchParams['filtercontext']->data as $field => $value) {
+                    $contextBean->$field = $value;
+                }
+                $searchParams['filtercontext'] = $contextBean;
+
+            } else {
+                $searchParams['filtercontext'] = BeanFactory::getBean($searchParams['filtercontext']->module, $searchParams['filtercontext']->id);
+            }
+        }
+    }
 
     public function get_bean_list($beanModule, $searchParams, $addwhere = "")
     {
         $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
+
+        $this->prepareFilterContext($searchParams);
 
         $retArray = [];
 
@@ -336,7 +361,7 @@ class SpiceBeanHandler
         }
 
         if (!empty($searchParams['modulefilter'])) {
-            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter']);
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter'], null, $searchParams['filtercontext']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
@@ -345,7 +370,7 @@ class SpiceBeanHandler
         // add global filter if fts setings are defined so the filter is also applied here
         $indexSettings = SpiceFTSUtils::getBeanIndexSettings($beanModule);
         if (!empty($indexSettings['globalfilter'])) {
-            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($indexSettings['globalfilter']);
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($indexSettings['globalfilter'], null, $searchParams['filtercontext']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
@@ -1318,6 +1343,9 @@ class SpiceBeanHandler
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
             throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
 
+        // initialize addWhere param
+        $addWhere = '';
+
         // get the bean
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if ($thisBean === false) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
@@ -1383,7 +1411,7 @@ class SpiceBeanHandler
 
         // get related beans and related module
         // get_linked_beans($field_name, $bean_name, $sort_array = [], $begin_index = 0, $end_index = -1, $deleted = 0, $optional_where = "")
-        $relBeans = $thisBean->get_linked_beans($linkName, SpiceModules::getInstance()->getBeanName($beanModule), $sortingDefinition, $dummy = $params['offset'] ?: 0, $dummy + ($params['limit'] ?: 5), 0, $addWhere);
+        $relBeans = $thisBean->get_linked_beans($linkName, SpiceModules::getInstance()->getBeanName($beanModule), $sortingDefinition, $dummy = $params['offset'] ?: 0, $dummy + ($params['limit'] ?: 5), 0, $addWhere, $params['searchterm']) ;
 
         $retArray = [];
         foreach ($relBeans as $relBean) {
@@ -1403,10 +1431,9 @@ class SpiceBeanHandler
 //            }
         }
 
-        // wtf? retrieve all the related data and at the end, ignore all this and count it new? (╯°□°)╯︵ ┻━┻
         if ($params['getcount']) {
             return [
-                'count' => count($relBeans) > 0 ? $thisBean->get_linked_beans_count($linkName, SpiceModules::getInstance()->getBeanName($beanModule), 0, $addWhere) : 0,
+                'count' => count($relBeans) > 0 ? $thisBean->get_linked_beans_count($linkName, SpiceModules::getInstance()->getBeanName($beanModule), 0, $addWhere, $params['searchterm']) : 0,
                 'list' => $retArray
             ];
         } else

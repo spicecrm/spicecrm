@@ -344,10 +344,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                     'options' => 'dom_meeting_accept_status',
                     'map' => 'activity_accept_status'
                 ],
-                'date_modified' => [
-                    'type' => 'datetime',
-                    'map' => 'activity_status_date_modified'
-                ]
             ],
         ],
         'parent_name' => [
@@ -371,10 +367,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                     'type' => 'enum',
                     'options' => 'dom_meeting_accept_status',
                     'map' => 'activity_accept_status'
-                ],
-                'date_modified' => [
-                    'type' => 'datetime',
-                    'map' => 'activity_status_date_modified'
                 ],
                 'required' => [
                     'type' => 'bool',
@@ -403,12 +395,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Meeting'] = [
                     'options' => 'dom_meeting_accept_status',
                     'map' => 'activity_accept_status'
                 ],
-                'date_modified' => [
-                    'type' => 'datetime',
-                    'map' => 'activity_status_date_modified'
-                ]
             ],
         ],
+        #CR1001177
+        'hcmemployeeobjectives' => [
+            'name'         => 'hcmemployeeobjectives',
+            'type'         => 'link',
+            'relationship' => 'hcmemployeeobjectives_meetings',
+            'module'       => 'HCMEmployeeObjectives',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
+        ],
+
         'employees' => [
             'name'         => 'employees',
             'type'         => 'link',
@@ -642,6 +640,15 @@ if (file_exists("extensions/modules/ProcurementDocs")) {
         'relationship' => 'procurementdocs_meetings',
         'source'       => 'non-db',
         'vname'        => 'LBL_PROCUREMENTDOCS',
+    ];
+}
+if (file_exists("extensions/modules/HCMEmployeeObjectives")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Meeting']['fields']['hcmemployeeobjectives'] = [
+        'name'         => 'hcmemployeeobjectives',
+        'type'         => 'link',
+        'relationship' => 'hcmemployeeobjectives_meetings',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
     ];
 }
 

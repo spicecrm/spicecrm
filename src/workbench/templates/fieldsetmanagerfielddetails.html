@@ -1,29 +1,39 @@
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+    <label class="slds-form-element__label">
+        <system-label label="LBL_NAME"></system-label>
+    </label>
     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
         <!--system-icon [icon]="'down'" [size]="'x-small'" [sprite]="'utility'" [addclasses]="'slds-input__icon slds-icon-text-default'" ></system-icon-->
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="name" [(ngModel)]="currentField.field"/>
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="name"
+               [(ngModel)]="currentField.field"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-bottom--x-small">
-    <label class="slds-form-element__label" >ID</label>
+    <label class="slds-form-element__label">ID</label>
     <div class="slds-form-element__control">
         <input type="text" class="slds-input" [ngModel]="currentField.id" disabled/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+    <label class="slds-form-element__label">
+        <system-label label="LBL_PACKAGE"></system-label>
+    </label>
     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package" [(ngModel)]="currentField.package"/>
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package"
+               [(ngModel)]="currentField.package"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xx-small">
-    <label class="slds-form-element__label"><system-label label="LBL_LABEL"></system-label></label>
+    <label class="slds-form-element__label">
+        <system-label label="LBL_LABEL"></system-label>
+    </label>
     <system-input-label *ngIf="view.isEditMode()" [(ngModel)]="configValues.label"></system-input-label>
     <input class="slds-input" disabled *ngIf="!view.isEditMode()" [(ngModel)]="configValues.label"/>
 </div>
 <fieldset class="slds-form-element slds-m-vertical--xxx-small">
-    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_OPTIONS"></system-label></legend>
+    <legend class="slds-form-element__legend slds-form-element__label">
+        <system-label label="LBL_OPTIONS"></system-label>
+    </legend>
     <div class="slds-form-element__control">
         <label class="slds-checkbox" for="link">
             <input [disabled]="!view.isEditMode()" type="checkbox" id="link" [(ngModel)]="configValues.link"/>
@@ -53,13 +63,33 @@
     </div>
 </fieldset>
 <div *ngIf="configValues.sortable" class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label"><system-label label="LBL_SORTFIELD"></system-label></label>
-    <div class="slds-form-element__control">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.sortfield"/>
+    <div class="slds-grid slds-gutters_xx-small">
+        <div class="slds-col slds-form-element__control slds-size--2-of-4">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_SORTFIELD_NAME"></system-label>
+            </label>
+            <system-icon-help-text helpText="HLP_SORTFIELD_NAME" />
+            <input [disabled]="!view.isEditMode()" type="text" class="slds-input"
+                   [(ngModel)]="configValues.sortfield"/>
+        </div>
+        <div class="slds-col slds-form-element__control slds-size--2-of-4">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_SORTORDERSEQUENCE"></system-label>
+            </label>
+            <div class="slds-select_container">
+                <select [disabled]="!view.isEditMode()" class="slds-select"
+                        [(ngModel)]="configValues.sortordersequence">
+                    <option value="0">ASC -> DESC</option>
+                    <option value="1">DESC -> ASC</option>
+                </select>
+            </div>
+        </div>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label"><system-label label="LBL_WIDTH"></system-label> (number of parts, leave blank for 1)</label>
+    <label class="slds-form-element__label">
+        <system-label label="LBL_WIDTH"></system-label>
+        (number of parts, leave blank for 1)</label>
     <div class="slds-grid slds-gutters_xx-small">
         <div class="slds-col slds-form-element__control slds-size--3-of-4">
             <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.width"/>
@@ -77,16 +107,22 @@
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label"><system-label label="LBL_REQUIREDMODELSTATE"></system-label>if this field is conditional to a specific model state</label>
+    <label class="slds-form-element__label">
+        <system-label label="LBL_REQUIREDMODELSTATE"></system-label>
+        if this field is conditional to a specific model state</label>
     <div class="slds-form-element__control">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.requiredmodelstate"/>
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input"
+               [(ngModel)]="configValues.requiredmodelstate"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label"><system-label label="LBL_FIELDTYPE"></system-label></label>
+    <label class="slds-form-element__label">
+        <system-label label="LBL_FIELDTYPE"></system-label>
+    </label>
     <div class="slds-form-element__control">
         <div class="slds-select_container">
-            <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="configValues.fieldtype" (change)="selectFieldType()">
+            <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="configValues.fieldtype"
+                    (change)="selectFieldType()">
                 <option *ngFor="let fieldtype of fieldtypes">{{fieldtype}}</option>
             </select>
         </div>

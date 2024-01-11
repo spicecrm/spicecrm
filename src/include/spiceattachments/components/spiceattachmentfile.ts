@@ -40,6 +40,11 @@ export class SpiceAttachmentFile {
      */
     @Input() public disabled: boolean = false;
 
+    /**
+     * a paramater to be set to force the previe of the attachments ina  modal
+     */
+    @Input() public forceModalPreview: boolean = false;
+
     constructor(
         public userpreferences: userpreferences,
         public modal: modal,
@@ -71,6 +76,14 @@ export class SpiceAttachmentFile {
     public downloadFile() {
         if (!this.uploading) {
             this.modelattachments.downloadAttachment(this.file.id, this.file.filename);
+        }
+    }
+
+    public preview(e){
+        if(this.forceModalPreview){
+            this.previewFile(e);
+        } else {
+            this.openInTab();
         }
     }
 
