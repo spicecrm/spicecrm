@@ -951,22 +951,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db'
         ],
 
-        /* @deprecated in 2023.01.001
-         * Will be removed in 2023.02.001
-         */
-        'qualifications' => [
-            'name' => 'qualifications',
-            'rel_fields' => [
-                'qualification_start_date' => ['map' => 'bean_qualification_start_date'],
-                'qualification_end_date' => ['map' => 'bean_qualification_end_date'],
-            ],
-            'type' => 'link',
-            'relationship' => 'users_qualifications',
-            'source' => 'non-db',
-            'rname' => 'name',
-            'module' => 'Qualifications'
-        ],
-
         'shop_id' => [
             'name' => 'shop_id',
             'vname' => 'LBL_SHOP',
