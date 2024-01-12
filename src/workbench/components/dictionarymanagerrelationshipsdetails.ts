@@ -7,6 +7,7 @@ import {
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {Relationship, RelationshipPolymorph} from "../interfaces/dictionarymanager.interfaces";
+import {backend} from "../../services/backend.service";
 
 @Component({
     selector: 'dictionary-manager-relationships-details',
@@ -32,7 +33,7 @@ export class DictionaryManagerRelationshipsDetails {
      */
     private backup: string;
 
-    constructor(public dictionarymanager: dictionarymanager) {
+    constructor(public dictionarymanager: dictionarymanager, private backend: backend) {
 
     }
 
@@ -58,5 +59,21 @@ export class DictionaryManagerRelationshipsDetails {
         // set back the values from teh backup
         this.dictionaryRelationship = JSON.parse(this.backup);
         this.self.destroy();
+    }
+
+    /**
+     * save the relationship
+     *
+     * @private
+     */
+    public save() {
+        this.backend.postRequest(`dictionary/relationship/${this.dictionaryRelationship.id}`, {}, {relationship: this.dictionaryRelationship}).subscribe({
+            next: (res) => {
+                const idx = this.dictionarymanager.dictionaryrelationships.findIndex(r => r.id == this.dictionaryRelationship.id);
+                this.dictionarymanager.dictionaryrelationships[idx] = {...this.dictionaryRelationship};
+                this.close();
+            }
+        })
+
     }
 }
