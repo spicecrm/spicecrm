@@ -92,10 +92,11 @@ class SpiceDictionary
                 $this->dictionary[$dictionary['sysdictionaryname']]['contenttype'] = $dictionary['sysdictionarytablecontenttype'];
                 $this->dictionary[$dictionary['sysdictionaryname']]['fields'][$dictionary['fieldname']] = json_decode(html_entity_decode($dictionary['fielddefinition'], ENT_QUOTES), true);
                 $this->dictionary[$dictionary['sysdictionaryname']]['indices'] = self::getDictionaryIndexCacheFromDb($dictionary['sysdictionaryname']);
-
-                // writes the cache
-                $this->writeCache();
             }
+
+            // writes the cache
+            $this->writeCache();
+
         } else {
             // load from file
             $this->loadSystemCache();
