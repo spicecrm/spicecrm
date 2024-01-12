@@ -4,8 +4,6 @@
 import {
     Component,
     Input,
-    Output,
-    EventEmitter,
     Injector,
     ViewChild,
     ViewContainerRef,
