@@ -271,20 +271,20 @@ export class salesdocrecord implements OnDestroy {
             } else if(element.elementbase && (element.valuetype == 'P' || element.valuetype == 'T')) {
                 switch(element.elementbasetype) {
                     case 'I':
-                        ce.elementamount =  this.evaluateFormula(element.elementbase, schemaelements, conditionelements) * ( 1 - 100 / (100 + parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0)));
-                        ce.elementtotalamount =  this.evaluateFormula(element.elementbase, schemaelements, conditionelements, true) * ( 1 - 100 / (100 + parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0)));
+                        ce.elementamount =  this.evaluateFormula(element.elementbase, schemaelements, conditionelements) * ( 1 - 100 / (100 + parseFloat(ce.elementoverridevalue || ce.elementoverridevalue == 0 ? ce.elementoverridevalue : ce.elementvalue ?? 0)));
+                        ce.elementtotalamount =  this.evaluateFormula(element.elementbase, schemaelements, conditionelements, true) * ( 1 - 100 / (100 + parseFloat(ce.elementoverridevalue || ce.elementoverridevalue == 0 ? ce.elementoverridevalue : ce.elementvalue ?? 0)));
                         break;
                     default:
-                        ce.elementamount = parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0) * this.evaluateFormula(element.elementbase, schemaelements, conditionelements) / 100;
-                        ce.elementtotalamount = parseFloat(ce.elementoverridevalue ?? ce.elementvalue ?? 0) * this.evaluateFormula(element.elementbase, schemaelements, conditionelements, true) / 100;
+                        ce.elementamount = parseFloat(ce.elementoverridevalue || ce.elementoverridevalue == 0 ? ce.elementoverridevalue : ce.elementvalue ?? 0) * this.evaluateFormula(element.elementbase, schemaelements, conditionelements) / 100;
+                        ce.elementtotalamount = parseFloat(ce.elementoverridevalue || ce.elementoverridevalue == 0 ? ce.elementoverridevalue : ce.elementvalue ?? 0) * this.evaluateFormula(element.elementbase, schemaelements, conditionelements, true) / 100;
                         break;
                 }
             } else if (element.valuetype == 'F') {
-                ce.elementamount = ce.elementoverridevalue ?? ce.elementvalue ?? 0;
+                ce.elementamount = ce.elementoverridevalue || ce.elementoverridevalue == 0 ? ce.elementoverridevalue : ce.elementvalue ?? 0;
                 ce.elementtotalamount = ce.elementamount;
                 ce.elementamount = ce.elementamount / quantity;
             } else {
-                ce.elementamount = ce.elementoverridevalue ?? ce.elementvalue ?? 0;
+                ce.elementamount = ce.elementoverridevalue || ce.elementoverridevalue == 0 ? ce.elementoverridevalue : ce.elementvalue ?? 0;
                 ce.elementtotalamount = ce.elementamount * quantity;
             }
 
