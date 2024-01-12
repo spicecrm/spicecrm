@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "sourceMap": true,
