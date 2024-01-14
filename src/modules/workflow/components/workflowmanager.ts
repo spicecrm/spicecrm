@@ -13,6 +13,8 @@ import {model} from "../../../services/model.service";
 import {configurationService} from "../../../services/configuration.service";
 import {WorkflowDiagramService} from "../services/workflowdiagram.service";
 import {view} from "../../../services/view.service";
+import {take} from "rxjs/operators";
+import {Observable, Subject} from "rxjs";
 
 /**
  * @ignore
@@ -217,7 +219,9 @@ export class WorkflowManager implements OnInit, AfterViewInit {
     /**
      * save the workflow definitions
      */
-    public save() {
+    public save(): Observable<any>
+    {
+        const responseSubject = new Subject<any>();
 
         const data = this.utils.spiceModel2backend('WorkflowDefinitions', this.model.data);
         data.tasks = [
@@ -235,11 +239,57 @@ export class WorkflowManager implements OnInit, AfterViewInit {
                     return true;
                 });
                 this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                responseSubject.next(true);
+                responseSubject.complete();
             },
-            error: () => {
+            error: err => {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                responseSubject.error(err);
             }
         });
+        return responseSubject.asObservable();
+    }
+
+    public duplicate(): void
+    {
+        this.modal.confirm('MSG_CLONE_WORKFLOW_START','MSG_CLONE_WORKFLOW_START')
+            .pipe(take(1))
+            .subscribe({
+                next: value => {
+                    if ( value ) {
+                        this.modal.confirm('MSG_CLONE_WORKFLOW_SAVE','MSG_CLONE_WORKFLOW_SAVE')
+                            .pipe(take(1))
+                            .subscribe({
+                                next: value => {
+                                    if (value) {
+                                        this.modal.prompt('input', 'MSG_CLONE_WORKFLOW_NAME', 'MSG_CLONE_WORKFLOW_NAME', null, this.model.getField('name')).subscribe(nameOfClone => {
+                                            if (nameOfClone !== false) {
+                                                if ( nameOfClone.trim() === this.model.getField('name').trim()) {
+                                                    this.toast.sendToast('ERR_CLONE_WORKFLOW_NAME', 'error');
+                                                } else {
+                                                    this.save()
+                                                        .pipe(take(1))
+                                                        .subscribe({
+                                                            next: () => {
+                                                                this.backend.postRequest('module/WorkflowDefinitions/'+this.model.getField('id')+'/clone/clone',null, {nameOfClone}).subscribe({
+                                                                    next: data => {
+                                                                        this.toast.sendToast('MSG_CLONE_WORKFLOW_SUCCESS', 'success');
+                                                                        this.getWorkflowDefinitions( data.idOfClone );
+                                                                    },
+                                                                    error: err => {
+                                                                        this.toast.sendToast('ERR_CLONE_WORKFLOW', 'error');
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                    }
+                }});
     }
 
     /**
@@ -317,12 +367,13 @@ export class WorkflowManager implements OnInit, AfterViewInit {
      * get workflow definitions for the current module
      * @private
      */
-    public getWorkflowDefinitions() {
+    public getWorkflowDefinitions( idOfWorkflowToDisplay: string = null ) {
         let loadingModal = this.modal.await('LBL_LOADING');
         this.backend.getRequest('module/WorkflowDefinitions/forModule/' + this.currentModule).subscribe({
             next: wfd => {
                 loadingModal.emit(true);
                 this.workflowManagerService.currentModule.workflowDefinitions = wfd;
+                if ( idOfWorkflowToDisplay ) this.currentWorkflowId = idOfWorkflowToDisplay;
             }, error: () => {
                 loadingModal.emit(true);
             }
