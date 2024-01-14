@@ -94,7 +94,7 @@ export class AdministrationConfigurator implements OnInit {
         return entries;
     }
 
-    public getFields() {
+    public getFields(itemonly = false) {
         let fields = [];
 
         for (let field of this.componentconfig.fields) {
@@ -103,7 +103,7 @@ export class AdministrationConfigurator implements OnInit {
             }
         }
 
-        return fields;
+        return itemonly ? fields.filter(f => f.detailonly !== true) :  fields;
     }
 
     public addEntry() {

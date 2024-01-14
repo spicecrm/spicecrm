@@ -35,7 +35,7 @@
               "node_modules/croppie/croppie.css"
             ],
             "scripts": [
-              "node_modules/zone.js/dist/zone.min.js",
+              "node_modules/zone.js/fesm2015/zone.min.js",
               "node_modules/underscore/underscore-min.js",
               "node_modules/moment/min/moment.min.js",
               "node_modules/moment/min/locales.min.js",

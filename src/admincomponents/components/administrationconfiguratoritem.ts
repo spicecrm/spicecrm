@@ -85,6 +85,17 @@ export class AdministrationConfiguratorItem {
         }
     }
 
+    /**
+     * formats a date object so it is proper from a moment
+     * @param dateObject
+     */
+    public setFormattedDate(fieldname, dateObject){
+        if(!dateObject || (dateObject && !dateObject.isValid())) {
+            this.entry.data[fieldname] = '';
+        }
+        this.entry.data[fieldname] = dateObject.format('YYYY-MM-DD');
+    }
+
     public getForeignName(fieldname){
         if(!this.entry.data[fieldname]) return this.entry.data[fieldname];
         let options = this.getForeignKeys(fieldname);
