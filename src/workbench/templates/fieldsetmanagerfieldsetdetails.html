@@ -29,6 +29,12 @@
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--x-small">
+    <label class="slds-form-element__label" ><system-label label="LBL_VERSION"></system-label></label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSet.version"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--x-small">
     <label class="slds-form-element__label"><system-label label="LBL_FORMCLASS"></system-label></label>
     <div class="slds-form-element__control">
         <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSetConfig.formclass"/>
