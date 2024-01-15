@@ -764,31 +764,12 @@ class SpiceFTSHandler
          * changed to build multiple must queries
          */
         if (!empty($searchterm)) {
-            $multimatch = [
-                "query" => "$searchterm",
-                'analyzer' => $indexSettings['search_analyzer'] ?: 'spice_standard',
-                'fields' => $searchFields,
-            ];
 
-            if ($indexSettings['minimum_should_match'])
-                $multimatch['minimum_should_match'] = $indexSettings['minimum_should_match'] . '%';
-
-            if ($indexSettings['fuzziness'])
-                $multimatch['fuzziness'] = $indexSettings['fuzziness'];
-
-
-            if ($indexSettings['operator'])
-                $multimatch['operator'] = $indexSettings['operator'];
-
-            if ($indexSettings['multimatch_type'])
-                $multimatch['type'] = $indexSettings['multimatch_type'];
-
+            $searchTermQuery = (new SpiceFTSSearchtermParser())->parse($searchterm, $indexSettings, $searchFields);
 
             $queryParam['query'] = [
                 'bool' => [
-                    'must' => [
-                        ['multi_match' => $multimatch]
-                    ]
+                    'must' => [$searchTermQuery]
                 ]
             ];
 
@@ -1247,9 +1228,10 @@ class SpiceFTSHandler
             }
 
             //check if we use a wildcard for the search
+
             $useWildcard = false;
-            if (preg_match("/\*/", $searchterm))
-                $useWildcard = true;
+            //if (preg_match("/\*/", $searchterm))
+            //    $useWildcard = true;
 
             $params['buckets'] = json_decode($params['buckets'], true);
             if (is_array($params['buckets']) && count($params['buckets']) > 0) {
@@ -1379,7 +1361,7 @@ class SpiceFTSHandler
      */
     function getModuleSearchResults($module, $searchterm, $searchtags, $params, $aggregates = [], $sort = [], $required = [])
     {
-        $searchterm = mb_strtolower(trim((string)$searchterm), (SpiceConfig::getInstance()->config['fts']['searchterm_encoding'] ? SpiceConfig::getInstance()->config['fts']['searchterm_encoding']: 'UTF-8'));
+        $searchterm = (new SpiceFTSSearchtermParser())->sanitizteSearchTerm($searchterm);
 
         $searchresults = [];
 
@@ -1457,8 +1439,8 @@ class SpiceFTSHandler
 
         //check if we use a wildcard for the search
         $useWildcard = false;
-        if (preg_match("/\*/", $searchterm))
-            $useWildcard = true;
+        //if (preg_match("/\*/", $searchterm))
+        //    $useWildcard = true;
 
         $params['buckets'] = json_decode($params['buckets'], true);
         if (is_array($params['buckets']) && count($params['buckets']) > 0) {
@@ -1591,8 +1573,8 @@ class SpiceFTSHandler
 
         //check if we use a wildcard for the search
         $useWildcard = false;
-        if (preg_match("/\*/", $searchterm))
-            $useWildcard = true;
+        //if (preg_match("/\*/", $searchterm))
+        //    $useWildcard = true;
 
         $searchresultsraw = $this->searchModule($module, $searchterm, [], $aggregatesFilters, $size, $from, $sort, $addFilters, $useWildcard, $required, $source);
 
