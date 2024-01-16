@@ -129,7 +129,7 @@ export class ModuleConfigAddDialog implements OnInit {
 
         if (this.mode == "copy") {
             this.compDisabled = true;
-            this.compSelectedItem = {id: this.currentComponent.id, name: this.currentComponent.component};
+            this.compSelectedItem = {id: this.currentComponent.id, name: this.currentComponent.component, version: this.currentComponent.version, package: this.currentComponent.package};
         }
     }
 
@@ -183,14 +183,18 @@ export class ModuleConfigAddDialog implements OnInit {
             let configString = JSON.stringify(this.currentComponent.componentconfig);
             saveComp = {
                 component: this.currentComponent.component,
-                componentconfig: configString
+                componentconfig: configString,
+                package: this.currentComponent.package,
+                version: this.currentComponent.version
             };
 
         } else {
             // add
             saveComp = {
                 component: this.compSelectedItem.name,
-                componentconfig: "{}"
+                componentconfig: "{}",
+                package: this.currentComponent.package,
+                version: this.currentComponent.version
             };
         }
 
