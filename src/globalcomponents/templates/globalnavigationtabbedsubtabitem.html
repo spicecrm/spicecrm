@@ -4,7 +4,12 @@
             <ng-container *ngIf="tabname; else tabloading">
                 <system-utility-icon *ngIf="tabicon" [icon]="tabicon" size="x-small" class="slds-p-right--x-small"></system-utility-icon>
                 <system-icon *ngIf="tabmodule" [module]="tabmodule" size="x-small" divClass="slds-p-right--x-small"></system-icon>
-                <div class="slds-truncate" style="white-space: nowrap;"><system-label [label]="tabname"></system-label></div>
+                <div class="slds-truncate" style="white-space: nowrap;">
+                    <span class="slds-indicator-container" *ngIf="isDirty">
+                        <abbr class="slds-indicator_unsaved" title="Tab Not Saved" aria-label="Tab Not Saved">*</abbr>
+                    </span>
+                    <system-label [label]="tabname"></system-label>
+                </div>
             </ng-container>
             <ng-template #tabloading>
                 <system-spinner size="10" class="slds-p-right--x-small"></system-spinner>
@@ -21,8 +26,11 @@
         </button>
     </div>
     <div #contextMenu [class.slds-hide]="!showContextMenu" class="slds-popover slds-text-color--default slds-box_small slds-theme_shade slds-popover_tooltip slds-nubbin--top-left slds-rise-from-ground slds-is-absolute" role="tooltip" style="top: 36px; left: 10px; width: 200px; height: auto;">
-        <button (click)="closeSubTab()" class="slds-p-left--small slds-button" system-title="LBL_CLOSE_TAB"><system-label label="LBL_CLOSE_TAB"/></button><br>
+        <button (click)="clonetab(object)" class="slds-p-left--small slds-button" system-title="LBL_CLONE_TAB"><system-label system-title="LBL_CLONE_TAB"/>Clone Tab</button><br>
+
+        <button (click)="closeSubTab()" class="slds-border_top slds-p-left--small slds-button" system-title="LBL_CLOSE_TAB"><system-label label="LBL_CLOSE_TAB"/></button><br>
         <button [disabled]="buttonCloseOtherTabsDisabled"(click)="closeOtherSubTabs()" class="slds-p-top_xx-small slds-p-left--small slds-button" system-title="LBL_CLOSE_OTHER_TABS"><system-label label="LBL_CLOSE_OTHER_TABS"/></button><br>
+        <button [disabled]="buttonCloseTabsToLeftDisabled" (click)="closeSubTabsLeft()" class="slds-p-top_xx-small slds-p-left--small slds-button" system-title="LBL_CLOSE_TABS_TO_THE_LEFT"><system-label label="LBL_CLOSE_TABS_TO_THE_LEFT"/></button><br>
         <button [disabled]="buttonCloseTabsToRightDisabled" (click)="closeSubTabsRight()" class="slds-p-top_xx-small slds-p-left--small slds-button" system-title="LBL_CLOSE_TABS_TO_THE_RIGHT"><system-label label="LBL_CLOSE_TABS_TO_THE_RIGHT"/></button>
     </div>
 </li>
