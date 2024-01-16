@@ -238,7 +238,7 @@ class SpiceFTSSearchtermParser
     private function matchExcludedWords(&$element, &$query, $fields, $indexSettings)
     {
         $matches = [];
-        if (preg_match_all('/-(\w+)/', $element, $matches)) {
+        if (preg_match_all('/ -(\w+)/', $element, $matches)) {
             // the Must not multi matches
             foreach ($matches[1] as $index => $match) {
                 if (empty($match)) continue;
