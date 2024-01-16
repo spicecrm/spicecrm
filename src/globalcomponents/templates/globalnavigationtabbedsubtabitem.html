@@ -25,12 +25,33 @@
             <system-button-icon icon="close"></system-button-icon>
         </button>
     </div>
-    <div #contextMenu [class.slds-hide]="!showContextMenu" class="slds-popover slds-text-color--default slds-box_small slds-theme_shade slds-popover_tooltip slds-nubbin--top-left slds-rise-from-ground slds-is-absolute" role="tooltip" style="top: 36px; left: 10px; width: 200px; height: auto;">
-        <button (click)="clonetab(object)" class="slds-p-left--small slds-button" system-title="LBL_CLONE_TAB"><system-label system-title="LBL_CLONE_TAB"/>Clone Tab</button><br>
-
-        <button (click)="closeSubTab()" class="slds-border_top slds-p-left--small slds-button" system-title="LBL_CLOSE_TAB"><system-label label="LBL_CLOSE_TAB"/></button><br>
-        <button [disabled]="buttonCloseOtherTabsDisabled"(click)="closeOtherSubTabs()" class="slds-p-top_xx-small slds-p-left--small slds-button" system-title="LBL_CLOSE_OTHER_TABS"><system-label label="LBL_CLOSE_OTHER_TABS"/></button><br>
-        <button [disabled]="buttonCloseTabsToLeftDisabled" (click)="closeSubTabsLeft()" class="slds-p-top_xx-small slds-p-left--small slds-button" system-title="LBL_CLOSE_TABS_TO_THE_LEFT"><system-label label="LBL_CLOSE_TABS_TO_THE_LEFT"/></button><br>
-        <button [disabled]="buttonCloseTabsToRightDisabled" (click)="closeSubTabsRight()" class="slds-p-top_xx-small slds-p-left--small slds-button" system-title="LBL_CLOSE_TABS_TO_THE_RIGHT"><system-label label="LBL_CLOSE_TABS_TO_THE_RIGHT"/></button>
+    <div #contextMenu [class.slds-hide]="!showContextMenu" class="slds-popover slds-p-vertical--xx-small slds-nubbin--top-left slds-is-absolute" role="tooltip" style="top: 41px; left: 10px;">
+        <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" (click)="clonetab()">
+                    <span class="slds-truncate" system-title="LBL_CLONE_TAB"><system-label label="LBL_CLONE_TAB"/></span>
+                </a>
+            </li>
+            <li class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" (click)="closeSubTab()">
+                    <span class="slds-truncate" system-title="LBL_CLOSE_TAB"><system-label label="LBL_CLOSE_TAB"/></span>
+                </a>
+            </li>
+            <li *ngIf="!buttonCloseOtherTabsDisabled" class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" (click)="closeOtherSubTabs()">
+                    <span class="slds-truncate" system-title="LBL_CLOSE_OTHER_TABS"><system-label label="LBL_CLOSE_OTHER_TABS"/></span>
+                </a>
+            </li>
+            <li *ngIf="!buttonCloseTabsToLeftDisabled" class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" (click)="closeSubTabsLeft()">
+                    <span class="slds-truncate" system-title="LBL_CLOSE_OTHER_TABS"><system-label label="LBL_CLOSE_TABS_TO_THE_LEFT"/></span>
+                </a>
+            </li>
+            <li *ngIf="!buttonCloseTabsToRightDisabled" class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" (click)="closeSubTabsRight()">
+                    <span class="slds-truncate" system-title="LBL_CLOSE_TABS_TO_THE_RIGHT"><system-label label="LBL_CLOSE_TABS_TO_THE_RIGHT"/></span>
+                </a>
+            </li>
+        </ul>
     </div>
 </li>
