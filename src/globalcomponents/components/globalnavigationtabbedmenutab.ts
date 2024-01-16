@@ -98,8 +98,8 @@ export class GlobalNavigationTabbedMenuTab {
      *
      * @param tab
      */
-    public clonetab(tab: objectTab) {
-        this.navigation.cloneTab(tab.id);
+    public clonetab() {
+        this.navigation.cloneTab(this.object.id);
         this.closeContextMenu();
     }
 
