@@ -26,6 +26,11 @@ export class GlobalNavigationTabbedSubtabItem {
     public buttonCloseTabsToRightDisabled = false;
 
     /**
+     * show option for "close tabs to the left" button
+     */
+    public buttonCloseTabsToLeftDisabled = false;
+
+    /**
      * show option for "close other tabs" button
      */
     public buttonCloseOtherTabsDisabled = false;
@@ -102,10 +107,27 @@ export class GlobalNavigationTabbedSubtabItem {
     }
 
     /**
+     * clones the tab
+     *
+     * @param tab
+     */
+    public clonetab(tab: objectTab) {
+        this.navigation.cloneTab(tab.id);
+        this.closeContextMenu();
+    }
+
+    /**
      * returns subtabs
      */
     get subTabs(): objectTab[] {
         return this.navigation.objectTabs.filter(tab => tab.parentid !== undefined);
+    }
+
+    /**
+     * returns true if unsaved changed are in tab object
+     */
+    get isDirty() {
+        return this.navigation.anyDirtyModel(this.object.id);
     }
 
     /**
@@ -116,26 +138,20 @@ export class GlobalNavigationTabbedSubtabItem {
         event.stopPropagation();
         this.showContextMenu = true;
         this.handleDocumentClick(container);
-        this.setButtonCloseTabsToRightDisabled();
-        this.setButtonCloseOtherTabsDisabled();
+        this.setCloseButtonsDisabled();
     }
 
     /**
      * sets the button to disabled if there are no tabs to the right
      * @private
      */
-    private setButtonCloseTabsToRightDisabled() {
-        let currentTab = this.subTabs.findIndex(tab => tab.id === this.object.id);
-        this.buttonCloseTabsToRightDisabled = currentTab >= this.subTabs.length-1;
-    }
+    private setCloseButtonsDisabled() {
+        const mainTabsWithoutPinned = this.subTabs.filter(tab => !tab.pinned);
+        let currentTab = mainTabsWithoutPinned.findIndex(tab => tab.id === this.object.id);
 
-    /**
-     * sets the button to disabled if there are no tabs to the right
-     * @private
-     */
-    private setButtonCloseOtherTabsDisabled() {
-        //let currentTab = this.subTabs.findIndex(tab => tab.id === this.object.id);
-        this.buttonCloseOtherTabsDisabled = this.subTabs.length <=1;
+        this.buttonCloseTabsToRightDisabled =  currentTab >= mainTabsWithoutPinned.length-1;
+        this.buttonCloseTabsToLeftDisabled =  currentTab <= 0;
+        this.buttonCloseOtherTabsDisabled = mainTabsWithoutPinned.length <=1;
     }
 
     /**
@@ -151,7 +167,7 @@ export class GlobalNavigationTabbedSubtabItem {
     public closeOtherSubTabs(){
         let tabIds = this.subTabs.map(tab => tab.id);
         tabIds.forEach((tabId) => {
-            if(tabId !== this.object.id){
+            if(tabId !== this.object.id && !this.pinned){
                 this.navigation.closeObjectTab(tabId);
             }
         });
@@ -165,9 +181,32 @@ export class GlobalNavigationTabbedSubtabItem {
     public closeSubTabsRight(){
         let currentTab = this.subTabs.findIndex(tab => tab.id === this.object.id);
         if (currentTab !== -1) {
-            let tabsToClose = this.subTabs.slice(currentTab + 1);
+            //let tabsToClose = this.mainTabs.slice(currentTab + 1);
+            let tabsToClose = [];
+            if(!this.object.pinned){
+                tabsToClose = this.subTabs.slice(currentTab + 1).filter(tab => !tab.pinned);
+            } else {
+                tabsToClose = this.subTabs.filter(tab => !tab.pinned);
+            }
             tabsToClose.forEach(tab => {
                 this.navigation.closeObjectTab(tab.id);
+            });
+        }
+
+        this.closeContextMenu();
+    }
+
+    /**
+     * closes all tabs to the left
+     */
+    public closeSubTabsLeft(){
+        let currentTab = this.subTabs.findIndex(tab => tab.id === this.object.id);
+        if (currentTab !== -1) {
+            let tabsToClose = this.subTabs.slice(0, currentTab);
+            tabsToClose.forEach(tab => {
+                if(!tab.pinned){
+                    this.navigation.closeObjectTab(tab.id);
+                }
             });
         }
         this.closeContextMenu();
