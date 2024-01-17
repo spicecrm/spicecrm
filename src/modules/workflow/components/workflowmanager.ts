@@ -250,7 +250,7 @@ export class WorkflowManager implements OnInit, AfterViewInit {
         return responseSubject.asObservable();
     }
 
-    public duplicate(): void
+    public clone(): void
     {
         this.modal.confirm('MSG_CLONE_WORKFLOW_START','MSG_CLONE_WORKFLOW_START')
             .pipe(take(1))
