@@ -6,7 +6,9 @@
                 <div class="slds-media__body">
                     <p class="slds-text-title--caps slds-line-height--reset">
                         <system-label-modulename *ngIf="!canGoToModule" [module]="moduleName"></system-label-modulename>
-                        <a *ngIf="canGoToModule" href="javascript:void(0);" (click)="goToModule()"><system-label-modulename [module]="moduleName"></system-label-modulename></a>
+                        <a *ngIf="canGoToModule" href="javascript:void(0);" (click)="goToModule()"><system-label-modulename [module]="moduleName" [singular]="true"></system-label-modulename></a>
+                        <system-utility-icon *ngIf="isInactiveFieldProperty" [icon]="manageIcon" [size]="'x-small'" (click)="deactivateBean()"
+                                             [colorclass]="filterColorClass" [title]="language.getLabel('LBL_DEACTIVATE')" class="slds-p-left--xx-small"></system-utility-icon>
                     </p>
                     <div class="slds-grid slds-grid--vertical-align-center">
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
