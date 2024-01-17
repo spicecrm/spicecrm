@@ -68,6 +68,7 @@ $vardefs = [
             'type' => 'enum',
             'options' => 'is_inactive_dom',
             'default' => '0',
+            'len' => 1,
             'audited' => true
         ],
         'billing_address' => [
