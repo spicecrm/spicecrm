@@ -38,6 +38,7 @@
     --color-background-alt-inverse: #002D31;
     --color-border-brand: #CA1B21;
     --sds-c-button-brand-color-background: #CA1B21;
+    --slds-c-button-brand-color-border: var(--color-grey-5);
     --sds-c-button-neutral-color-background-hover: #CA1B21;
     --sds-c-button-brand-color-border-hover: #ffffff;
     --sds-c-button-brand-color-background-active: #CA1B21;
@@ -60,6 +61,7 @@
     --slds-c-checkbox-mark-color-foreground: var(--brand-primary);
     --slds-c-checkbox-shadow: var(--brand-primary);
     --slds-c-checkbox-shadow-focus: var(--brand-primary);
+    --sds-c-button-shadow-focus: var(--color-grey-9)
 }
 
 html {
