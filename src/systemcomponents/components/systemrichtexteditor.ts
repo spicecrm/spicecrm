@@ -601,7 +601,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public addVideo() {
 
-        if (!this.isActive) return;
+        //if (!this.isActive) return;
 
         this.modal.input('', 'LBL_ADD_VIDEO')
             .subscribe((url: string) => {
@@ -668,7 +668,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public addCodeSnippet(): void {
 
-        if (!this.isActive) return;
+        //if (!this.isActive) return;
 
         const options = [
             {value: 'plaintext', display: 'Plain text'},
@@ -733,7 +733,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * open the text snippet select modal and insert the parsed snippet html
      */
     public openTextSnippetModal() {
-        if (!this.isActive) return;
+        //if (!this.isActive) return;
 
         const moduleFilter = this.metadata.getComponentConfig('SystemRichTextEditor', 'TextSnippets')?.textSnippetsModuleFilter;
 
