@@ -49,6 +49,15 @@ export class SpiceKanbanManager implements OnInit{
     ) {
     }
 
+    set selectedBeanGuide(val: SpiceBeanGuidesI) {
+        this.kanbanManagerService.selectedBeanGuide = val;
+        this.selectedStage = undefined;
+    }
+
+    get selectedBeanGuide(): SpiceBeanGuidesI {
+        return this.kanbanManagerService.selectedBeanGuide;
+    }
+
     get moduleName() {
         return this._moduleName;
     }
