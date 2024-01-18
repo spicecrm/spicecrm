@@ -58,6 +58,8 @@ export class DictionaryManagerRelationshipsDetails {
     public close(){
         // set back the values from teh backup
         this.dictionaryRelationship = JSON.parse(this.backup);
+        this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
+
         this.self.destroy();
     }
 
@@ -68,12 +70,11 @@ export class DictionaryManagerRelationshipsDetails {
      */
     public save() {
         this.backend.postRequest(`dictionary/relationship/${this.dictionaryRelationship.id}`, {}, {relationship: this.dictionaryRelationship}).subscribe({
-            next: (res) => {
-                const idx = this.dictionarymanager.dictionaryrelationships.findIndex(r => r.id == this.dictionaryRelationship.id);
-                this.dictionarymanager.dictionaryrelationships[idx] = {...this.dictionaryRelationship};
-                this.close();
+            next: () => {
+                this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
+                this.self.destroy();
             }
-        })
+        });
 
     }
 }

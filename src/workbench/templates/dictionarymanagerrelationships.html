@@ -22,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionaryrelationships" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
+                <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionarymanager.dictionaryrelationships | dictionaryFilterRelationship: dictionarymanager.currentDictionaryDefinition" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
                     <td>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryrelationship.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
                         <dictionary-manager-item-status [ngModel]="dictionaryrelationship.status" (ngModelChange)="setStatus(dictionaryrelationship, $event)"></dictionary-manager-item-status>
@@ -53,9 +53,11 @@
                     </td>
                 </tr>
             </tbody>
-            <tbody *ngFor="let dictionaryRelationshipsForTemplate of dictionaryRelationshipsForTemplates">
+            <tbody *ngFor="let dictionaryRelationshipsForTemplate of dictionarymanager.dictionaryrelationships | dictionaryFilterRelationshipTemplate: dictionarymanager.currentDictionaryDefinition: dictionarymanager.dictionaryitems">
                 <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionaryRelationshipsForTemplate.relationships" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
                     <td>
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryrelationship.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        <dictionary-manager-item-status [ngModel]="dictionaryrelationship.status" [disabled]="true"></dictionary-manager-item-status>
                     </td>
                     <td data-label="NAME">
                         <div class="slds-truncate">{{translateRelationshipName(dictionaryrelationship.name)}} / {{translateRelationshipName(dictionaryrelationship.relationship_name)}}</div>
@@ -74,7 +76,14 @@
                     <td data-label="Right">
                         <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryrelationship.rhs_sysdictionarydefinition_id)}}&nbsp;/&nbsp;{{dictionarymanager.getDictionaryItemName(dictionaryrelationship.rhs_sysdictionaryitem_id)}}</div>
                     </td>
-                    <td></td>
+                    <td class="">
+                        <div class="slds-grid slds-grid--align-end">
+                            <button class="slds-button slds-button--icon" (click)="editDictionaryRelationship($event, dictionaryrelationship)">
+                                <system-button-icon size="xx-small" icon="preview"></system-button-icon>
+                            </button>
+                        </div>
+
+                    </td>
                 </tr>
             </tbody>
         </table>

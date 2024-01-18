@@ -14,6 +14,7 @@ import {language} from '../../services/language.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
+import {DictionaryManagerItemStatus} from "./dictionarymanageritemstatus";
 
 
 @Component({
@@ -195,8 +196,9 @@ export class DictionaryManagerItems {
      *
      * @param item
      * @param status
+     * @param statusComponent
      */
-    public setStatus(item, status) {
+    public setStatus(item, status, statusComponent: DictionaryManagerItemStatus) {
         let loadingModal;
         switch (status) {
             case 'a':
@@ -207,6 +209,8 @@ export class DictionaryManagerItems {
                         loadingModal.emit(true);
                     },
                     error: () => {
+                        this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                        statusComponent.status = item.status;
                         loadingModal.emit(true);
                     }
                 })

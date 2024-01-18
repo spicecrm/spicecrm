@@ -160,6 +160,11 @@ import {HooksManagerHooks} from "./components/hooksmanagerhooks";
 import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmodal";
 import {WebHooksManager} from "./components/webhooksmanager";
 import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
+import {DictionaryFilterRelationshipPipe} from "./pipes/dictionarymanagerfilterrelationship.pipe";
+import {
+    DictionaryFilterRelationshipTemplatePipe
+} from "./pipes/dictionarymanagerfilterrelationshiptemplate.pipe";
+import {DictionaryManagerRelationshipEditUser} from "./components/dictionarymanagerrelationshipedituser";
 
 
 
@@ -313,6 +318,9 @@ import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
         HooksManagerHooksEditModal,
         WebHooksManager,
         WebHooksManagerEditModal,
+        DictionaryFilterRelationshipPipe,
+        DictionaryFilterRelationshipTemplatePipe,
+        DictionaryManagerRelationshipEditUser
     ],
     exports: [
         SortPipe,

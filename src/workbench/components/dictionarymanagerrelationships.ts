@@ -110,9 +110,7 @@ export class DictionaryManagerRelationships {
                 this.backend.deleteRequest(`dictionary/relationship/${id}`).subscribe({
                     next: (res) => {
                         // remove the relationship
-                        let di = this.dictionarymanager.dictionaryrelationships.findIndex(f => f.id == id);
-                        this.dictionarymanager.dictionaryrelationships.splice(di, 1);
-
+                        this.dictionarymanager.dictionaryrelationships = this.dictionarymanager.dictionaryrelationships.filter(f => f.id != id);
                         // reset the current selection
                         if (this.dictionarymanager.currentDictionaryRelationship == id) {
                             this.dictionarymanager.currentDictionaryRelationship == null;
@@ -182,5 +180,7 @@ export class DictionaryManagerRelationships {
         }
     }
 
-
+    public trackByFn(e, i) {
+        return i;
+    }
 }

@@ -140,7 +140,7 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
     public add() {
         this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship}).subscribe({
             next: (res) => {
-                this.dictionarymanager.dictionaryrelationships.push({...this.relationship});
+                this.dictionarymanager.pushNewRelationshipToArray(this.relationship);
                 this.close();
             }
         })
