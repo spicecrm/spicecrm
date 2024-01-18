@@ -108,21 +108,29 @@ export class ObjectPageHeader implements OnInit {
      */
     public deactivateBean() {
 
-        // do nothing if the bean is already inactive
-        if(this.model.data.is_inactive == '1') return;
+        // check the edit access
+        if (!this.model.checkAccess('edit')) {
+            this.toast.sendToast('MSG_NO_EDIT_RIGHTS', 'error');
+            return;
+        }
 
-       if(!this.model.checkAccess('edit')) {
-           this.toast.sendToast('MSG_NO_EDIT_RIGHTS', 'error');
-           return;
-       }
-
-        this.modal.confirm('MSG_DEACTIVATE_RECORD', 'MSG_DEACTIVATE_RECORD')
-            .subscribe(answer => {
-                if (answer) {
-                    this.model.setField('is_inactive', '1')
-                    this.model.save(true);
-                }
-            });
+        if (this.model.data.is_inactive != '1') {
+            this.modal.confirm('MSG_DEACTIVATE_RECORD', 'MSG_DEACTIVATE_RECORD', 'error')
+                .subscribe(answer => {
+                    if (answer) {
+                        this.model.setField('is_inactive', '1')
+                        this.model.save(true);
+                    }
+                });
+        } else {
+            this.modal.confirm('MSG_REACTIVATE_RECORD', 'MSG_REACTIVATE_RECORD', 'warning')
+                .subscribe(answer => {
+                    if (answer) {
+                        this.model.setField('is_inactive', '0')
+                        this.model.save(true);
+                    }
+                });
+        }
     }
 
 }
