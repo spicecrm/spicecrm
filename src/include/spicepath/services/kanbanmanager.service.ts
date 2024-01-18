@@ -202,12 +202,14 @@ export class KanbanManagerService {
 
         forkJoin(resArray).subscribe(() => {
             Object.keys(this.changed).forEach(type => {
-                this.changed[type].forEach((e, i) => {
-                    const idx = this[type].findIndex(item => item.id == e.id);
-                    this[type][idx] = {...e};
-                    this.changed[type].splice(i, 1);
+                this.changed[type].forEach((changedItem, i) => {
+                    const idx = this[type].findIndex(item => item.id == changedItem.id);
+                    this[type][idx] = {...changedItem};
                 });
+
+                this.changed[type] = [];
             });
+
             this.toast.sendToast('LBL_DATA_SAVED', 'success');
         });
     }

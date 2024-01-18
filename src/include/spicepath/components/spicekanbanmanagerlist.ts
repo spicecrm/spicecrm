@@ -73,7 +73,7 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
 
         this.activeStages = this.kanbanManagerService.currentStages.filter(dis=>dis.not_in_kanban == 0) as SpiceBeanGuideActiveStageI[];
         this.inactiveStages = this.kanbanManagerService.currentStages.filter(dis=>dis.not_in_kanban == 1) as SpiceBeanGuideInactiveStageI[];
-
+        this.selected = undefined;
         this.emitActiveStages.emit(this.activeStages);
     }
 
