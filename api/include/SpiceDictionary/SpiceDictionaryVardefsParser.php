@@ -36,6 +36,7 @@ class SpiceDictionaryVardefsParser
 
         // build vardef array for this field
         $field = [];
+        $field['sysdictionaryitem_id'] = $row['item_id'];
         $field['name'] = self::parseFieldName($row);
         $field['reportable'] = true;
         $field['duplicate_merge'] = $row['duplicate_merge'];

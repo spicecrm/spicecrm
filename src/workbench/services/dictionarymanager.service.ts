@@ -168,6 +168,26 @@ export class dictionarymanager implements OnDestroy {
     }
 
     /**
+     * update the input relationship in the relationship array
+     * @param relationship
+     */
+    public updateRelationshipInArray(relationship: Relationship) {
+        const idx = this.dictionaryrelationships.findIndex(r => r.id == relationship.id);
+        this.dictionaryrelationships[idx] = {...relationship};
+        // trigger the change detection
+        this.dictionaryrelationships= [...this.dictionaryrelationships];
+
+    }
+
+    /**
+     * push a new relationship to the relationship array
+     * @param relationship
+     */
+    public pushNewRelationshipToArray(relationship: Relationship) {
+        this.dictionaryrelationships = [...this.dictionaryrelationships, {...relationship}];
+    }
+
+    /**
      * called from the navigation service to prompt navigate away modal
      */
     public isDirty() {
