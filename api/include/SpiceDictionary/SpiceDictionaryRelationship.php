@@ -67,14 +67,15 @@ class SpiceDictionaryRelationship
             $this->relationship->name = str_replace('{tablename}', $definition->tablename, $this->relationship->name);
             $this->relationship->relationship_name = str_replace('{tablename}', $definition->tablename, $this->relationship->relationship_name);
             $this->relationship->lhs_linkname = str_replace('{tablename}', $definition->tablename, $this->relationship->lhs_linkname);
-            $this->relationship->rhs_linkname = str_replace('{tablename}', $definition->tablename, $this->relationship->rhs_linkname);
+            $this->relationship->lhs_linkname = str_replace('{tablename}', $definition->tablename, $this->relationship->lhs_linkname);
+            $this->relationship->rhs_relatename = str_replace('{tablename}', $definition->tablename, $this->relationship->rhs_relatename);
 
             // witch the IDs from the template
             if($this->relationship->lhs_sysdictionarydefinition_id == $templateDefinitionId)$this->relationship->lhs_sysdictionarydefinition_id = $referencingDefinitonId;
             if($this->relationship->rhs_sysdictionarydefinition_id == $templateDefinitionId)$this->relationship->rhs_sysdictionarydefinition_id = $referencingDefinitonId;
 
             // build a new ID
-            $this->id = md5("{$templateDefinitionId}{$referencingDefinitonId}");
+            $this->id = md5("{$templateDefinitionId}{$referencingDefinitonId}{$this->relationship->id}");
         }
 
         // get the class for the activation

@@ -34,7 +34,7 @@
                             <td>
                                 <system-utility-icon *ngIf="canShuffle" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
                                 <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryitem.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                                <dictionary-manager-item-status [disabled]="definitionStatus != 'a'" [ngModel]="dictionaryitem.status" (ngModelChange)="setStatus(dictionaryitem, $event)"></dictionary-manager-item-status>
+                                <dictionary-manager-item-status #statusComponent [disabled]="definitionStatus != 'a'" [ngModel]="dictionaryitem.status" (ngModelChange)="setStatus(dictionaryitem, $event, statusComponent)"></dictionary-manager-item-status>
                             </td>
                             <td data-label="Domain">
                                 <div class="slds-truncate">{{dictionaryitem.name}}</div>

@@ -574,7 +574,7 @@ class SpiceDictionaryVardefs  {
         return "SELECT sysd.id dictionaryid, sysd.name dictionaryname, sysd.tablename, sysd.audited tableaudited, sysd.sysdictionary_type dictionarytype, sysd.sysdictionary_contenttype contenttype,
        sysmod.module sysmodule, sysmod.id sysmoduleid,
          sysdo.name domainname, sysdof.name technicalname,
-        sysdi.name itemname, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required itemrequired, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus,
+        sysdi.name itemname, sysdi.id item_id, sysdi.duplicate_merge, sysdi.label itemlabel, sysdi.labelinputhelper itemlabelinputhelper, sysdi.required itemrequired, sysdi.non_db, sysdi.sysdictionary_ref_id, sysdi.status itemstatus,
         sysdof.*, sysdof.id sysdomainfield_id, sysdov.name validationname
         FROM (SELECT * from sysdictionarydefinitions UNION SELECT * from syscustomdictionarydefinitions) sysd
         LEFT JOIN (SELECT * from sysmodules UNION SELECT * from syscustommodules) sysmod ON sysmod.sysdictionarydefinition_id = sysd.id
@@ -687,6 +687,7 @@ class SpiceDictionaryVardefs  {
                 $dict['id'] = $row['dictionaryid'];
                 $dict['name'] = $row['dictionaryname'];
                 $dict['dictionaryname'] = $row['dictionaryname'];
+                $dict['sysdictionaryitem_id'] = $row['item_id'];
                 $dict['dictionarytype'] = $row['dictionarytype'];
                 $dict['type'] = $row['dictionarytype'];
                 $dict['table'] = $row['tablename'];
@@ -1611,7 +1612,8 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
                 'sysdomainfield_id' => "'".$fieldDef['sysdomainfield_id']."'",
                 'fieldname' => "'".$fieldDef['name']."'",
                 'fieldtype' => "'".$fieldDef['type']."'",
-                'fielddefinition' => "'".$db->quote(json_encode($fieldDef))."'"
+                'fielddefinition' => "'".$db->quote(json_encode($fieldDef))."'",
+                'sysdictionaryitem_id' => "'{$fieldDef['sysdictionaryitem_id']}'"
             ];
             // grab insert columns once
             if(!isset($insertColumns)) $insertColumns = array_keys($insertParams);
