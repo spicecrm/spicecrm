@@ -165,7 +165,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      *
      */
     get canAdd() {
-        return this.componentConfig.showaddbutton && this.metadata.checkModuleAcl(this.model.module, 'create');
+        return this.metadata.checkModuleAcl(this.model.module, 'create');
     }
 
     /**
