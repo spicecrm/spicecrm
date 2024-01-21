@@ -74,7 +74,9 @@ import {ObjectActionSaveRelatedButton} from './components/objectactionsaverelate
 import {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
 import {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
 import {ObjectReminderButton} from './components/objectreminderbutton';
+import {ObjectReminderIcon} from './components/objectremindericon';
 import {ObjectSubscriptionButton} from './components/objectsubscriptionbutton';
+import {ObjectSubscriptionIcon} from './components/objectsubscriptionicon';
 import {ObjectActionSelectButton} from './components/objectactionselectbutton';
 import {ObjectActionBeanToMailButton} from './components/objectactionbeantomailbutton';
 import {ObjectActionMailModal} from './components/objectactionmailmodal';
@@ -362,7 +364,9 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectModalModuleLookupAggregates,
         ObjectSelectButton,
         ObjectReminderButton,
+        ObjectReminderIcon,
         ObjectSubscriptionButton,
+        ObjectSubscriptionIcon,
         ObjectActionBeanToMailButton,
         ObjectActionMailModal,
         ObjectMergeButton,
