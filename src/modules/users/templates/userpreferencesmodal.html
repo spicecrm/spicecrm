@@ -1,0 +1,63 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_PREFERENCES"/></system-modal-header>
+    <system-modal-content margin="none">
+        <div [system-overlay-loading-spinner]="isLoading">
+            <system-preferences-panel #systemPreferencesPanel [preferences]="preferences" [isPersonalContext]="true"></system-preferences-panel>
+            <system-collapsable-tab [collapsible]="false" tabtitle="LBL_HOME_PREFERENCES">
+                <div class="slds-grid">
+                    <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
+                        <system-preferences-panel-item-display>
+                            <span *ngIf="homeDashboardData && homeDashboardData.name">{{homeDashboardData.name}}</span>
+                        </system-preferences-panel-item-display>
+                        <system-preferences-panel-item-edit>
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="preferences.home_dashboard" (ngModelChange)="setHomeDashboardData($event)">
+                                    <option *ngFor="let dashboard of dashboards" [value]="dashboard.id">{{dashboard.name}}</option>
+                                </select>
+                            </div>
+                        </system-preferences-panel-item-edit>
+                    </system-preferences-panel-item>
+                    <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARDSET">
+                        <system-preferences-panel-item-display>
+                            <span *ngIf="homeDashboardSetData && homeDashboardSetData.name">{{homeDashboardSetData.name}}</span>
+                        </system-preferences-panel-item-display>
+                        <system-preferences-panel-item-edit>
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="preferences.home_dashboardset" (ngModelChange)="setHomeDashboardSetData($event)">
+                                    <option *ngFor="let dashboardSet of dashboardSets" [value]="dashboardSet.id">{{dashboardSet.name}}</option>
+                                </select>
+                            </div>
+                        </system-preferences-panel-item-edit>
+                    </system-preferences-panel-item>
+                    <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_ASSISTANT">
+                        <system-preferences-panel-item-display [global]="systemPreferencesPanel.prefValueIsGlobalFallback('home_assistant')">
+                            <system-label *ngIf="systemPreferencesPanel.getPrefValue('home_assistant') === 'visible'" label="LBL_VISIBLE"></system-label>
+                            <system-label *ngIf="systemPreferencesPanel.getPrefValue('home_assistant') === 'hidden'" label="LBL_HIDDEN"></system-label>
+                        </system-preferences-panel-item-display>
+                        <system-preferences-panel-item-edit>
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="preferences.home_assistant" (ngModelChange)="systemPreferencesPanel.prefChanged()">
+                                    <option></option>
+                                    <option value="visible">
+                                        <system-label label="LBL_VISIBLE"></system-label>
+                                    </option>
+                                    <option value="hidden">
+                                        <system-label label="LBL_HIDDEN"></system-label>
+                                    </option>
+                                </select>
+                            </div>
+                        </system-preferences-panel-item-edit>
+                    </system-preferences-panel-item>
+                </div>
+            </system-collapsable-tab>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand slds-button-space-left" (click)="save()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>
