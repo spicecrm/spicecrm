@@ -110,10 +110,11 @@ export class ObjectReminderIcon implements OnDestroy{
     public setReminder(event) {
         this.showDialog = false;
         this.processing = true;
-        this.reminder.setReminder(this.model, this.reminderDate).subscribe({
+        let newReminderDate = new moment(event);
+        this.reminder.setReminder(this.model, newReminderDate).subscribe({
             next: () => {
                 this.hasReminder = true;
-                this.reminderDate = new moment(event);
+                this.reminderDate = newReminderDate;
                 this.processing = false;
             },
             error: () => {
