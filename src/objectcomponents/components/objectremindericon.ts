@@ -14,14 +14,11 @@ import {Subscription} from "rxjs";
 */
 declare var moment: any;
 
-/**
- * @deprecated - repülaced by icon
- */
 @Component({
-    selector: 'object-reminder-button',
-    templateUrl: '../templates/objectreminderbutton.html'
+    selector: 'object-reminder-icon',
+    templateUrl: '../templates/objectremindericon.html'
 })
-export class ObjectReminderButton implements OnDestroy{
+export class ObjectReminderIcon implements OnDestroy{
 
     public showDialog: boolean = false;
     public reminderDate: Date = new moment();
@@ -31,6 +28,11 @@ export class ObjectReminderButton implements OnDestroy{
      * a listner that subscribes to document clicks top close the popover
      */
     public clickListener: any;
+
+    /**
+     * indicator if we are posting
+     */
+    public processing: boolean = false;
 
     /**
      * subscriptions for this component
@@ -84,24 +86,39 @@ export class ObjectReminderButton implements OnDestroy{
         }
     }
 
-    get isEditing() {
-        return this.model.isEditing;
-    }
-
+    /**
+     * clears the reminder
+     */
     public clearReminder() {
-        this.reminder.deleteReminder(this.model.module, this.model.id);
-        this.hasReminder = false;
+        this.processing = true;
+        this.reminder.deleteReminder(this.model.module, this.model.id).subscribe({
+            next: () => {
+                this.hasReminder = false;
+                this.reminderDate = new moment();
+                this.processing = false;
+            },
+            error: () => {
+                this.processing = false;
+            }
+        });
     }
 
+    /**
+     * sets a new reminder
+     * @param event
+     */
     public setReminder(event) {
         this.showDialog = false;
-        this.hasReminder = true;
-        this.reminderDate = new moment(event);
-        this.reminder.setReminder(this.model, this.reminderDate);
-    }
-
-    public getReminderDate() {
-        // let date = new moment(this.reminderDate);
-        return this.reminderDate.format(this.userpreferences.getDateFormat());
+        this.processing = true;
+        this.reminder.setReminder(this.model, this.reminderDate).subscribe({
+            next: () => {
+                this.hasReminder = true;
+                this.reminderDate = new moment(event);
+                this.processing = false;
+            },
+            error: () => {
+                this.processing = false;
+            }
+        });
     }
 }
