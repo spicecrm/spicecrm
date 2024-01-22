@@ -241,7 +241,7 @@ class SpiceACLObject extends SpiceBean
             // orgunits from user's parent_type
             if($current_user->parent_id && $current_user->parent_type){
                 $parent = BeanFactory::getBean($current_user->parent_type, $current_user->parent_id, ['relationships' => false]);
-                if($parent->load_relationship('orgunits')){
+                if($parent && $parent->load_relationship('orgunits')){
                     $joinTable = $parent->orgunits->relationship->def['join_table'];
                     $joinParentIdColName = $parent->orgunits->relationship->def['join_key_rhs'];
                     if( $parent->orgunits->relationship->def['join_lhs_module'] == $parent->_module){
