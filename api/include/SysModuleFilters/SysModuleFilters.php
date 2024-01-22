@@ -1090,6 +1090,8 @@ class SysModuleFilters
                     $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                     return ( $bean->{$condition->field} >= $from and $bean->{$condition->field} <= $to );
                 }
+            case 'changed':
+                return ( !$bean->isNew() and $bean->{$condition->field} !== $bean->fetched_row[$condition->field] );
             default:
                 return false;
         }
