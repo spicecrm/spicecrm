@@ -1,0 +1,4 @@
+<system-utility-icon *ngIf="!inProcess" [icon]="manageIcon" size="xx-small"
+                     [colorclass]="filterColorClass"
+                     (click)="manageActiveState()" [title]="language.getLabel('LBL_DEACTIVATE')"/>
+<system-spinner *ngIf="inProcess" size="14"></system-spinner>

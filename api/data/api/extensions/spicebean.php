@@ -1080,6 +1080,56 @@ $routes = [
                 'description' => 'field name to get the html content',
             ]
         ]
+    ],
+    [
+        'method'      => 'put',
+        'route'       => '/module/{beanName}/{beanId}/inactive',
+        'class'       => SpiceBeanController::class,
+        'function'    => 'manageActiveState',
+        'description' => 'manages the is_inactive flag on a Bean',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters'  => [
+            'beanName'   => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'beanId'   => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'The id of the bean',
+            ],
+            'isInactive'   => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'required'    => true,
+                'description' => 'value if the Bean is active or inactive',
+            ]
+        ]
+    ],
+    [
+        'method'      => 'delete',
+        'route'       => '/module/{beanName}/{beanId}/inactive',
+        'class'       => SpiceBeanController::class,
+        'function'    => 'deleteInactiveBean',
+        'description' => 'sets delete flag on a Bean',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters'  => [
+            'beanName'   => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'required'    => true,
+                'description' => 'The name of the module',
+            ],
+            'beanId'   => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'The id of the bean',
+            ]
+        ]
     ]
 ];
 
