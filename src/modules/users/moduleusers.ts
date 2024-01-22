@@ -27,6 +27,8 @@ import {UserDeactivateModal} from "./components/userdeactivatemodal";
 import {UserDeactivateSelectUser} from "./components/userdeactivateselectuser";
 import {UserSignature} from "./components/usersignature";
 import {User2FAConfiguration} from "./components/user2faconfiguration";
+import {UserPreferencesModal} from "./components/userpreferencesmodal";
+import {UserSignatureModal} from "./components/usersignaturemodal";
 
 @NgModule({
     imports: [
@@ -38,12 +40,17 @@ import {User2FAConfiguration} from "./components/user2faconfiguration";
         SystemComponents,
         DirectivesModule,
     ],
+    exports: [
+        UserPreferences
+    ],
     declarations: [
         UserChangePasswordButton,
         UserChangePasswordModal,
         UserResetPasswordModal,
         UserResetPasswordButton,
         UserPreferences,
+        UserPreferencesModal,
+        UserSignatureModal,
         UserRoles,
         UserRolesAddModal,
         UserAddButton,

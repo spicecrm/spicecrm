@@ -157,7 +157,11 @@ $vardefs = [
         'is_inactive' => [
             'name' => 'is_inactive',
             'vname' => 'LBL_IS_INACTIVE',
-            'type' => 'bool'
+            'type' => 'enum',
+            'options' => 'is_inactive_dom',
+            'default' => '0',
+            'len' => 1,
+            'audited' => true
         ],
         'phone_home' => [
             'name' => 'phone_home',

@@ -7,15 +7,14 @@ import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
 
 /**
- * @deprecated - replaced by icon in page header
- *
- * renders an interactive icon in the page header to manage notification subscriptions
+ * renders a button to toggle subscription on a specific bean
+ * requires provided model.service
  */
 @Component({
-    selector: 'object-subscription-button',
-    templateUrl: '../templates/objectsubscriptionbutton.html'
+    selector: 'object-subscription-icon',
+    templateUrl: '../templates/objectsubscriptionicon.html'
 })
-export class ObjectSubscriptionButton {
+export class ObjectSubscriptionIcon {
 
     /**
      * indicator that we are subscribging or uinsubscribing currently
@@ -27,6 +26,13 @@ export class ObjectSubscriptionButton {
     constructor(public subscriptionService: subscription,
                 public metadata: metadata,
                 public model: model) {
+    }
+
+    /**
+     * returns if the model is subscribed
+     */
+    get subscribed() {
+        return this.subscriptionService.hasSubscription(this.model.id)
     }
 
     /**

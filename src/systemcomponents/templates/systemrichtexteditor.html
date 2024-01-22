@@ -284,9 +284,8 @@
             </li>
             <li *ngIf="displayTextSnippet">
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
-                        system-title="LBL_INSERT_TEXT_SNIPPET"
-                        (click)="openTextSnippetModal()"
-                >
+                        [title]="language.getLabel('LBL_INSERT_TEXT_SNIPPET')"
+                        (click)="openTextSnippetModal()">
                     <system-button-icon icon="quick_text"></system-button-icon>
                 </button>
             </li>
