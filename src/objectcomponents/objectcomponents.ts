@@ -220,6 +220,7 @@ import {ObjectWorkflowButton} from "./components/objectworkflowbutton";
 import {ObjectRelatedListUrls} from "./components/objectrelatedlisturl";
 import {ObjectRelatedCardUrl} from "./components/objectrelatedcardurl";
 import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
+import {ObjectSetInactiveIcon} from "./components/objectsetinactiveicon";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -415,6 +416,7 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
         ObjectUrlActionMenu,
+        ObjectSetInactiveIcon
     ],
     exports: [
         ObjectListViewHeader,
