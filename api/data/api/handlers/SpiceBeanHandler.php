@@ -1695,7 +1695,7 @@ class SpiceBeanHandler
 
             switch ($fieldData['type']) {
                 case 'link':
-                    if ($fieldData['module'] && isset($post_params[$fieldData['name']])) {
+                    if ( !empty($fieldData['module']) && isset($post_params[$fieldData['name']])) {
                         $thisBean->load_relationship($fieldId);
 
                         if (!$thisBean->{$fieldId}) {
