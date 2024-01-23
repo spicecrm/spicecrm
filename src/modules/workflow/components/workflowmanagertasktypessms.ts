@@ -8,6 +8,7 @@ import {WorkflowManagerService} from "../services/workflowmanager.service";
 import {configurationService} from "../../../services/configuration.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {backend} from "../../../services/backend.service";
+import { take } from 'rxjs/operators';
 
 /**
  * @ignore
@@ -82,20 +83,16 @@ export class WorkflowManagerTaskTypesSms {
     /**
      * gets the email templates options for the select
      */
-    public loadAvailableEmailTemplates() {
-
-        const options = this.configuration.getData(`TextMessageTemplates`);
-
-        if (_.isEmpty(options)) {
-            this.backend.getList('TextMessageTemplates', [], {start: 0, limit: 500}).subscribe(
-                (data: any) => {
-
-                    // cache the options
-                    this.configuration.setData(`TextMessageTemplates`, this.textMessageTemplates);
-                });
-        } else {
-            this.textMessageTemplates = options.filter(et => et.for_bean == '*' || et.for_bean == this.workflowManagerService.currentModule);
-        }
+    public loadAvailableEmailTemplates()
+    {
+        this.backend.getList('TextMessageTemplates', [], {start: 0, limit: 500})
+            .pipe(take(1))
+            .subscribe({
+                next: (data: any) => {
+                    this.textMessageTemplates = data.list.filter(et => et.parent_type == '*' || et.parent_type == this.workflowManagerService.currentModule.name);
+                    this.configuration.setData(`TextMessageTemplates`, this.textMessageTemplates); // cache the options
+                }
+            });
     }
 
     /**
