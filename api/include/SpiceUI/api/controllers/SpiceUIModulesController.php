@@ -127,6 +127,7 @@ class SpiceUIModulesController
                         'ftsaggregates' => $ftsBeanHandler->getAggregates(),
                         'ftssortable' => $ftsBeanHandler->getSortable(),
                         'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
+                        'ftsmentionsearch' => SpiceFTSHandler::mentionEnabled($module['module']),
                         'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module']),
                         'categorytrees' => SysCategoryTree::getInstance()->getTreeLinksByModule($module['module'])
                     ];

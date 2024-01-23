@@ -782,6 +782,15 @@ export class metadata {
     }
 
     /**
+     * return mention search modules
+     */
+    public getMentionSearchModules() {
+        return Object.keys(this.moduleDefs).filter(m =>
+            this.moduleDefs[m].ftsmentionsearch
+        );
+    }
+
+    /**
      * returns the phone search modules
      */
     public getPhoneSearchModules() {
