@@ -7,8 +7,6 @@ import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
-import {take} from 'rxjs/operators';
-import { model } from '../../../services/model.service';
 import { session } from '../../../services/session.service';
 import {Subject} from "rxjs";
 
@@ -51,7 +49,14 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
 
     public response = new Subject<boolean>();
 
-    constructor(public language: language, public metadata: metadata, public modal: modal, public backend: backend, public toast: toast, public model: model, public session: session ) {
+    constructor(
+        public language: language,
+        public metadata: metadata,
+        public modal: modal,
+        public backend: backend,
+        public toast: toast,
+        public session: session
+    ) {
 
     }
 
@@ -95,6 +100,11 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
                 next: res => {
                     if( res.validated ) {
                         this.response.next(true);
+
+                        if(this.onBehalfUserId == this.session.authData.userId){
+                            this.session.authData.user.user_2fa_method = 'one_time_password';
+                        }
+
                         this.close();
                     } else {
                         this.response.next(false);

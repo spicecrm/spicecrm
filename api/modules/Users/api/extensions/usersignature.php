@@ -29,6 +29,7 @@
 
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Users\api\controllers\UserSignatureController;
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
 /**
  * get a Rest Manager Instance
  */
@@ -56,8 +57,22 @@ $routes = [
         'route'       => '/module/Users/{id}/signature',
         'class'       => UserSignatureController::class,
         'function'    => 'setUserSignature',
-        'description' => '',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'description' => 'sets the users signature',
+        'options'     => ['validate' => true],
+        'parameters' => [
+            'signature' => [
+                'in' => 'body',
+                'description' => 'the signature itself',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+            ],
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true
+            ]
+        ]
     ],
 ];
 
