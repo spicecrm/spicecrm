@@ -113,6 +113,18 @@ class SpiceFTSHandler
     }
 
     /**
+     * returns if the module shoudl be considered in the global search
+     *
+     * @param string $module the name of the module
+     * @return bool
+     */
+    static function mentionEnabled(string $module)
+    {
+        $settings = SpiceFTSUtils::getBeanIndexSettings($module);
+        return (bool) $settings['mentionsearch'];
+    }
+
+    /**
      * returns if the module should be considered in the phone search
      *
      * @param $module the name of the module
