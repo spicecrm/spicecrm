@@ -193,6 +193,7 @@ import {SystemChartDataRow} from "./components/systemchartdatarow";
 import {SystemSelectOption} from "./components/systemselectoption";
 import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
 import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
+import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexteditormentiondropdown";
 
 @NgModule({
     imports: [
@@ -373,7 +374,8 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
-        SystemSelectOption
+        SystemSelectOption,
+        SystemRichTextEditorMentionDropdown
     ],
     exports: [
         PaginationControlsComponent,
