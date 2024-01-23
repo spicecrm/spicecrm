@@ -1,0 +1,2 @@
+<system-utility-icon *ngIf="!inProcess" [icon]="subscribed ? 'alert' : 'notification_off'" size="xx-small" [colorclass]="subscribed ? 'slds-icon-text-success' : 'slds-icon-text-light'" (click)="toggleSubscribe()"/>
+<system-spinner *ngIf="inProcess" size="14"></system-spinner>

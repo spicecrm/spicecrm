@@ -11,7 +11,7 @@ import {configurationService} from "../../../services/configuration.service";
 /**
  * a modal allowing th euser to change the password.
  * this runs outside of the backend service and requests direct http to be in line with the call from the login
- * the request is sent qizthout authentication
+ * the request is sent wizthout authentication
  */
 @Component({
     selector: "user-changepassword-modal",

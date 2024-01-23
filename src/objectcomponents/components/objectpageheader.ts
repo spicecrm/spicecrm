@@ -6,9 +6,6 @@ import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
-import {modal} from "../../services/modal.service";
-import {toast} from "../../services/toast.service";
 
 /**
  * @ignore
@@ -38,12 +35,9 @@ export class ObjectPageHeader implements OnInit {
     public fieldset: string = '';
 
     constructor(
-        public language: language,
         public router: Router,
         public model: model,
-        public metadata: metadata,
-        public modal: modal,
-        public toast: toast
+        public metadata: metadata
     ) {
     }
 
@@ -62,29 +56,10 @@ export class ObjectPageHeader implements OnInit {
 
     /**
      * checks if the field "is_inactive" exists on the Bean
-     * if true the deactivation icon is displayed
+     * if true the ObjectSetInactiveIcon is displayed
      */
-    get isInactiveFieldProperty(): boolean {
-        return this.model.data.hasOwnProperty('is_inactive');
-    }
-
-    /**
-     * changes the icon
-     * inactive: toggle_off
-     * active: toggle_on
-     */
-    get manageIcon(): string {
-        return this.model.data.is_inactive == '1' ? 'toggle_off' : 'toggle_on'
-    }
-
-    /**
-     * changes the color of the deactivate icon
-     *
-     * inactive: error
-     * active: default
-     */
-    get filterColorClass() {
-        return this.model.data.is_inactive == '1' ? 'slds-icon-text-error' : 'slds-icon-text-default'
+    get hasInactiveFieldProperty(): boolean {
+        return this.metadata.hasField(this.model._module, 'is_inactive');
     }
 
     /**
@@ -100,36 +75,6 @@ export class ObjectPageHeader implements OnInit {
     public goToModule() {
         if (this.canGoToModule) {
             this.router.navigate(['/module/' + this.moduleName]);
-        }
-    }
-
-    /**
-     * sets is_inactive flag on a Bean to true
-     */
-    public deactivateBean() {
-
-        // check the edit access
-        if (!this.model.checkAccess('edit')) {
-            this.toast.sendToast('MSG_NO_EDIT_RIGHTS', 'error');
-            return;
-        }
-
-        if (this.model.data.is_inactive != '1') {
-            this.modal.confirm('MSG_DEACTIVATE_RECORD', 'MSG_DEACTIVATE_RECORD', 'error')
-                .subscribe(answer => {
-                    if (answer) {
-                        this.model.setField('is_inactive', '1')
-                        this.model.save(true);
-                    }
-                });
-        } else {
-            this.modal.confirm('MSG_REACTIVATE_RECORD', 'MSG_REACTIVATE_RECORD', 'warning')
-                .subscribe(answer => {
-                    if (answer) {
-                        this.model.setField('is_inactive', '0')
-                        this.model.save(true);
-                    }
-                });
         }
     }
 
