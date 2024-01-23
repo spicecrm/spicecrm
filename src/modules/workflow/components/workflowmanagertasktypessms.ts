@@ -69,7 +69,7 @@ export class WorkflowManagerTaskTypesSms {
                     this.mailboxes = results.sort((a, b) => a.display.localeCompare(b.display));
 
                     if (this.mailboxes.length > 0 && !this.model.data.type_config?.mailbox) {
-                        this.model.data.type_config.mailbox = this.mailboxes[0].value;
+                        this.model.data.type_config.mailbox_id = this.mailboxes[0].value;
                     }
 
                     // cache the options
@@ -100,6 +100,6 @@ export class WorkflowManagerTaskTypesSms {
      * @param value
      */
     public setEmailTemplate(value: { id, name }) {
-        this.model.data.type_config.emailtemplate_id = value.id;
+        this.model.data.type_config.textmessagetemplate_id = value.id;
     }
 }
