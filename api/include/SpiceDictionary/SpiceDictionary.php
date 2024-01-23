@@ -3,6 +3,7 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
+use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -98,11 +99,41 @@ class SpiceDictionary
             $this->writeCache();
 
         } else {
-            // load from file
-            $this->loadSystemCache();
+            $this->loadSafeModeSystemDictionaries();
         }
     }
 
+    /**
+     * write the loaded dictionaries to the cache to temporarily hold the system defined dictionaries.
+     * This keeps the system alive until SpiceDictionaryVardefs::repairDictionaries action is taken
+     * @return void
+     * @throws Exception
+     */
+    private function loadSafeModeSystemDictionaries(): void
+    {
+        $this->loadSystemCache();
+        $this->writeCache();
+        $this->repairDBTableForDictionaries($this->dictionary);
+    }
+
+    /**
+     * used after loading the dictionaries from the system cache
+     * @param array $dictionaries
+     * @throws Exception
+     */
+    private function repairDBTableForDictionaries(array $dictionaries): void
+    {
+        $db = DBManagerFactory::getInstance();
+        $sql = '';
+
+        foreach ($dictionaries as $item) {
+            $sql .= SpiceDictionaryVardefs::repairTable($item);
+        }
+
+        if (!empty($sql)) {
+            $db->query($sql);
+        }
+    }
 
     /**
      * get cached indices for specified dictionary name
@@ -141,7 +172,7 @@ class SpiceDictionary
     }
 
     /**
-     * generates the system cahe file and saves it
+     * generates the system cache file and saves it
      *
      * @return true
      */
@@ -155,11 +186,15 @@ class SpiceDictionary
         $fHandle = fopen(self::systemdump, 'w');
         fwrite($fHandle, serialize($systemDictionary));
         fclose($fHandle);
-        // $res = file_put_contents('./include/SpiceDictionary/system/systemcached.dump', serialize($systemDictionary));
         return true;
     }
 
-    public function loadSystemCache(){
+    /**
+     * load dictionary from system cache file
+     * @throws Exception
+     */
+    public function loadSystemCache(): void
+    {
         $fHandle = fopen(self::systemdump, 'r');
         $this->dictionary = unserialize(fread($fHandle, filesize(self::systemdump)));
         fclose($fHandle);

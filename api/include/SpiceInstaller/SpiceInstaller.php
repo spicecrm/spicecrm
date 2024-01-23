@@ -732,8 +732,9 @@ class SpiceInstaller
      *
      * @param $body
      * @return array
+     * @throws \Exception
      */
-    public function install($body)
+    public function install($body): array
     {
         set_time_limit(30000);
 
@@ -802,8 +803,23 @@ class SpiceInstaller
             "errors" => $errors];
     }
 
-    private function loadSystemPackage($db)
+    /**
+     * load system package 
+     * @param $db
+     */
+    private function loadSystemPackage($db): void
     {
+        $packageContent = json_decode( gzdecode ( file_get_contents('./include/SpiceInstaller/SystemPackage/system-package.gz')));
+        $dictionaryTables = array_column(SpiceDictionary::getInstance()->dictionary, 'table');
+
+        foreach ( $packageContent->data->tables as $tableName ) {
+
+            if ( !in_array( $tableName, $dictionaryTables )) continue;
+
+            foreach ($packageContent->data->rows->$tableName as $row) {
+                $db->insertQuery($tableName, (array) $row);
+            }
+        }
     }
 }
 
