@@ -321,7 +321,11 @@ export class loader {
                 this.broadcast.broadcastMessage('loader.completed', loadElement.name);
 
                 this.loaderHandler.next(loadElement.name);
-            }
+            },
+            error: () => {
+                this.broadcast.broadcastMessage('loader.completed', loadElement.name);
+                this.loaderHandler.next(loadElement.name);
+            },
         });
     }
 
