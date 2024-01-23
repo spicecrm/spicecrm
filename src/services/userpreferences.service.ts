@@ -122,23 +122,6 @@ export class userpreferences {
 
     public loadPreferences(category = 'global'): Observable<any> {
         return of(this.configuration.getData('globaluserpreferences')[category]);
-
-        /*
-        let retSubject: Subject<any> = new Subject<any>();
-        this.backend.getRequest('module/Users/' + this.session.authData.userId + '/preferences/' + category).subscribe((prefs) => {
-            this.preferences[category] = _.extendOwn(this.preferences[category], prefs);
-            if (category === 'global') {
-                this.unchangedPreferences.global = _.clone(prefs);
-                this.completePreferencesWithDefaults();
-                this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone.
-            } else {
-                this.unchangedPreferences[category] = _.clone(prefs);
-            }
-            retSubject.next(prefs);
-        });
-
-        return retSubject.asObservable();
-        */
     }
 
     // Completes the global preferences with default values.
