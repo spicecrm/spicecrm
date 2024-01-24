@@ -376,7 +376,10 @@ import {SystemProgressIndicatorItem} from "./components/systemprogressindicatori
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
-        SystemSelectOption
+        SystemSelectOption,
+        SystemRichTextEditorMentionDropdown,
+        SystemProgressIndicator,
+        SystemProgressIndicatorItem
     ],
     exports: [
         PaginationControlsComponent,
@@ -533,7 +536,9 @@ import {SystemProgressIndicatorItem} from "./components/systemprogressindicatori
         SystemChartMultiDimensional,
         SystemSelectOption,
         SystemSelectOption,
-        SystemInputFlter
+        SystemInputFlter,
+        SystemProgressIndicator,
+        SystemProgressIndicatorItem
     ]
 })
 export class SystemComponents {}
