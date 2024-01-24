@@ -73,12 +73,14 @@ class SpiceUIRepositoryController
         $retArray = [];
         $componentconfigs = $db->query("SELECT * FROM sysuicomponentdefaultconf");
         while ($componentconfig = $db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
+            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])]['version'] = $componentconfig['version'];
+            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])]['package'] = $componentconfig['package'];
         }
 
         $componentconfigs = $db->query("SELECT * FROM sysuicustomcomponentdefaultconf");
         while ($componentconfig = $db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         // set the Cache
@@ -98,12 +100,14 @@ class SpiceUIRepositoryController
         $retArray = [];
         $componentconfigs = $db->query("SELECT * FROM sysuicomponentmoduleconf");
         while ($componentconfig = $db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
+            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])]['version'] = $componentconfig['version'];
+            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])]['package'] = $componentconfig['package'];
         }
 
         $componentconfigs = $db->query("SELECT * FROM sysuicustomcomponentmoduleconf");
         while ($componentconfig = $db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: new stdClass();
+            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         // set the Cache

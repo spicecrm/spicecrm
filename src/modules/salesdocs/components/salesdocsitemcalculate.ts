@@ -91,7 +91,7 @@ export class SalesDocsItemCalculate implements OnInit{
     }
 
     public setElementOverrideValue(elementid, value){
-        this.conditionelements.find(c => c.id == elementid).elementoverridevalue = value ? parseFloat(value) : undefined;
+        this.conditionelements.find(c => c.id == elementid).elementoverridevalue = value || value == 0 ? parseFloat(value) : undefined;
 
         // recalculate
         this.salesdocrecord.recalculate(this.schemaelements, this.conditionelements, this.model.getField('quantity'));

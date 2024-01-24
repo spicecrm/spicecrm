@@ -49,12 +49,12 @@ class SpiceGDPRManagerSchedulerJobTasks
                         if($id['deleted'] == 0){
                             $seed = BeanFactory::getBean($moduleFilter->filtermodule, $id['id']);
 
-                            // delete related modules
-                            $this->deleteRelated($seed, $relatedModules, true);
-
                             // delete the bean itself
                             $seed->mark_deleted($id['id']);
                         }
+
+                        // delete related modules
+                        $this->deleteRelated($seed, $relatedModules, true);
 
                         // physically delete the record
                         $db->query("DELETE FROM {$seed->_tablename} WHERE id = '{$id['id']}'");

@@ -222,7 +222,7 @@
             </li>
             <li *ngIf="useTextSnippet">
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
-                        system-title="LBL_INSERT_TEXT_SNIPPET"
+                        [title]="language.getLabel('LBL_INSERT_TEXT_SNIPPET')"
                         (click)="openTextSnippetModal()">
                     <system-button-icon icon="quick_text"></system-button-icon>
                 </button>
@@ -243,6 +243,13 @@
                     <system-button-icon icon="insert_tag_field"></system-button-icon>
                 </button>
             </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
+                        [title]="language.getLabel('LBL_EXPAND')" (click)="executeCommand('toggleFullscreen')">
+                    <system-button-icon [icon]="expandIcon"></system-button-icon>
+                </button>
+            </li>
+            <!-- ckeditor -->
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
                         [title]="language.getLabel('LBL_EXPAND')" (click)="executeCommand('toggleFullscreen')">
