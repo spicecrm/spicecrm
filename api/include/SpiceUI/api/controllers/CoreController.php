@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -14,6 +15,7 @@ use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -49,7 +51,7 @@ class CoreController
 
         $languages = LanguageManager::getLanguages(true);
         $languages['required_labels'] = LanguageManager::getSpecificLabels( SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
-            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE'
+            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE', 'ERR_RECOVERY_MODE_ENABLED', 'ERR_MAINTENANCE_MODE_ENABLED'
         ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
@@ -61,6 +63,7 @@ class CoreController
         $uiRestHandler = new SpiceUIRESTHandler();
 
         $payload = [
+            'startup_mode' => SystemStartupMode::getMode(),
             'version' => SpiceConfig::getSystemVersion(),
             'systemsettings' => [
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],

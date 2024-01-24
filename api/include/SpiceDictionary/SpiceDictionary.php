@@ -5,7 +5,9 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 
 class SpiceDictionary
 {
@@ -120,6 +122,8 @@ class SpiceDictionary
     {
         $this->loadSystemDumpFile();
         $this->repairDBTableForDictionaries($this->dictionary);
+        SpiceInstaller::loadSystemPackage(DBManagerFactory::getInstance());
+        SystemStartupMode::setRecoveryMode(true);
     }
 
     /**

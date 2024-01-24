@@ -663,6 +663,10 @@ export class backend {
     public handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
         switch (err.status) {
             case 401:
+            case 503:
+
+                this.configurationService.data.startupMode = 'recovery';
+
                 // push the current request to the staged queue
                 this.stageRequest(method, route, data, responseSubject);
                 this.stageRequests = true;

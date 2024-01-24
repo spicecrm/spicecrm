@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -732,7 +733,7 @@ class SpiceInstaller
      *
      * @param $body
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function install($body): array
     {
@@ -803,10 +804,11 @@ class SpiceInstaller
     }
 
     /**
-     * load system package 
+     * load system package
      * @param $db
+     * @throws Exception
      */
-    private function loadSystemPackage($db): void
+    public static function loadSystemPackage($db): void
     {
         $packageContent = json_decode( gzdecode ( file_get_contents('./include/SpiceInstaller/SystemPackage/system-package.gz')));
         $dictionaryTables = array_column(SpiceDictionary::getInstance()->dictionary, 'table');
@@ -816,7 +818,7 @@ class SpiceInstaller
             if ( !in_array( $tableName, $dictionaryTables )) continue;
 
             foreach ($packageContent->data->rows->$tableName as $row) {
-                $db->insertQuery($tableName, (array) $row);
+                $db->upsertQuery($tableName, ['id' => $row->id] ,(array) $row);
             }
         }
     }
