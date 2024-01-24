@@ -74,7 +74,9 @@ import {ObjectActionSaveRelatedButton} from './components/objectactionsaverelate
 import {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
 import {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
 import {ObjectReminderButton} from './components/objectreminderbutton';
+import {ObjectReminderIcon} from './components/objectremindericon';
 import {ObjectSubscriptionButton} from './components/objectsubscriptionbutton';
+import {ObjectSubscriptionIcon} from './components/objectsubscriptionicon';
 import {ObjectActionSelectButton} from './components/objectactionselectbutton';
 import {ObjectActionBeanToMailButton} from './components/objectactionbeantomailbutton';
 import {ObjectActionMailModal} from './components/objectactionmailmodal';
@@ -218,6 +220,7 @@ import {ObjectWorkflowButton} from "./components/objectworkflowbutton";
 import {ObjectRelatedListUrls} from "./components/objectrelatedlisturl";
 import {ObjectRelatedCardUrl} from "./components/objectrelatedcardurl";
 import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
+import {ObjectSetInactiveIcon} from "./components/objectsetinactiveicon";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -362,7 +365,9 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectModalModuleLookupAggregates,
         ObjectSelectButton,
         ObjectReminderButton,
+        ObjectReminderIcon,
         ObjectSubscriptionButton,
+        ObjectSubscriptionIcon,
         ObjectActionBeanToMailButton,
         ObjectActionMailModal,
         ObjectMergeButton,
@@ -411,6 +416,7 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
         ObjectUrlActionMenu,
+        ObjectSetInactiveIcon
     ],
     exports: [
         ObjectListViewHeader,
