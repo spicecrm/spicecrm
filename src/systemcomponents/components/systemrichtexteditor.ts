@@ -4,7 +4,8 @@
 
 // from https://github.com/kolkov/angular-editor
 import {
-    Component, ComponentRef,
+    ApplicationRef,
+    Component, createComponent,
     ElementRef,
     EventEmitter,
     forwardRef,
@@ -34,7 +35,9 @@ import {libloader} from "../../services/libloader.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as less from 'less'
 import {configurationService} from "../../services/configuration.service";
-import {ObjectModalModuleLookup} from "../../objectcomponents/components/objectmodalmodulelookup";
+import {MentionCustomization} from "../../../vendor/ckeditor/spice/MentionCustomizer";
+import {fts} from "../../services/fts.service";
+import {SystemRichTextEditorMentionDropdown} from "./systemrichtexteditormentiondropdown";
 
 declare var ClassicEditor;
 
@@ -147,6 +150,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 public viewContainerRef: ViewContainerRef,
                 public configurationService: configurationService,
                 @Optional() public model: model,
+                private appRef: ApplicationRef,
+                private fts: fts,
                 public helper: helper) {
     }
 
@@ -200,6 +205,17 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
 
                 ClassicEditor.create(this.ckEditor.element.nativeElement, {
                     removePlugins: ['Markdown', 'Title'],
+                    extraPlugins: [MentionCustomization],
+                    mention: {
+                        feeds: [
+                            {
+                                marker: '@',
+                                feed: (term: string) => this.getMentionItems(term),
+                                minimumCharacters: 2,
+                                itemRenderer: item => this.customMentionRenderer(item)
+                            }
+                        ]
+                    },
                     style: {
                         definitions: this.customStyleDefinitions.map(s => ({
                             name: s.id,
@@ -263,6 +279,64 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.handleKeyboardShortcuts();
     }
 
+    /**
+     * search fts modules that enable mention search and get the results
+     * @param queryText
+     * @private
+     */
+    private getMentionItems( queryText ) {
+        return new Promise( (resolve, reject) => {
+            const mentionModules = this.metadata.getMentionSearchModules();
+
+            if (mentionModules.length == 0) {
+                return resolve([]);
+            }
+
+            this.fts.searchByModules({searchterm: queryText, modules: mentionModules}).subscribe({
+                next: () => {
+                    let items = [];
+                    this.fts.moduleSearchresults.forEach(m => {
+                        items = items.concat(m.data.hits.map(e => ({
+                            id: `@${e._source.summary_text}`,
+                            beanId: e._source.id,
+                            name: e._source.summary_text,
+                            module: m.module,
+                            link: 'javascript:void(0)'
+                        })))
+                    });
+
+                    resolve(items);
+                },
+                error: () => reject([])
+            });
+        });
+    }
+
+    /**
+     * custom mention list item renderer function
+     * @param item
+     * @private
+     */
+    private customMentionRenderer( item ) {
+        const itemElement = document.createElement( 'div' );
+
+        // render the mention dropdown component to use its template
+        const mentionDropdown = createComponent(SystemRichTextEditorMentionDropdown, {
+            environmentInjector: this.appRef.injector,
+            hostElement: itemElement
+        });
+
+        mentionDropdown.instance.name = item.name;
+        mentionDropdown.instance.module = item.module;
+
+        // apply the changes to the list component view
+        mentionDropdown.changeDetectorRef.detectChanges();
+
+        // destroy the component immediately to prevent memory leak
+        mentionDropdown.destroy();
+
+        return itemElement;
+    }
     /**
      * load custom style definitions
      * @private
@@ -601,7 +675,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public addVideo() {
 
-        //if (!this.isActive) return;
+        if (!this.isActive) return;
 
         this.modal.input('', 'LBL_ADD_VIDEO')
             .subscribe((url: string) => {
@@ -668,7 +742,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     public addCodeSnippet(): void {
 
-        //if (!this.isActive) return;
+        if (!this.isActive) return;
 
         const options = [
             {value: 'plaintext', display: 'Plain text'},
@@ -733,7 +807,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      * open the text snippet select modal and insert the parsed snippet html
      */
     public openTextSnippetModal() {
-        //if (!this.isActive) return;
+        if (!this.isActive) return;
 
         const moduleFilter = this.metadata.getComponentConfig('SystemRichTextEditor', 'TextSnippets')?.textSnippetsModuleFilter;
 
