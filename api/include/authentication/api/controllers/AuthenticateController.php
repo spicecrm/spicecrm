@@ -238,6 +238,7 @@ class AuthenticateController
         $validated = false;
         if(TOTPAuthentication::checkCode($record['user_secret'], $args['code'])){
             $db->query("UPDATE users_totp SET auth_status='A' WHERE id='{$record['id']}'");
+            $db->query("UPDATE users SET user_2fa_method='one_time_password' WHERE id='{$forUser->id}'");
             $validated = true;
         }
 

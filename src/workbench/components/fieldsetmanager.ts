@@ -70,7 +70,7 @@ export class FieldsetManager {
     }
 
     set currentFieldSetName(newName) {
-        this.metadata.setFieldset(this.currentFieldSet, {name: newName, package: this.currentFieldSetPackage});
+        this.metadata.setFieldset(this.currentFieldSet, {name: newName, package: this.currentFieldSetPackage, version: this.currentFieldSetVersion});
     }
 
     get currentFieldSetPackage() {
@@ -78,7 +78,15 @@ export class FieldsetManager {
     }
 
     set currentFieldSetPackage(newPackage) {
-        this.metadata.setFieldset(this.currentFieldSet, {name: this.currentFieldSetName, package: newPackage});
+        this.metadata.setFieldset(this.currentFieldSet, {name: this.currentFieldSetName, package: newPackage, version: this.currentFieldSetVersion});
+    }
+
+    get currentFieldSetVersion() {
+        return this.metadata.getFieldset(this.currentFieldSet).version;
+    }
+
+    set currentFieldSetVersion(newVersion) {
+        this.metadata.setFieldset(this.currentFieldSet, {name: this.currentFieldSetName, package: this.currentFieldSetPackage, version: newVersion});
     }
 
     get showDetailIcon() {

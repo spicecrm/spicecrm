@@ -4,7 +4,7 @@
         <system-label *ngIf="this.mode == 'add'"  label="LBL_ADD_COMPONENT"></system-label>
     </system-modal-header>
     <system-modal-content [scrollable]="false" style="overflow: visible">
-        <div class="slds-form-element">
+        <div class="slds-form-element slds-p-vertical_x-small">
             <label class="slds-form-element__label" ><system-label label="LBL_SCOPE"></system-label></label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
@@ -14,24 +14,40 @@
                 </div>
             </div>
         </div>
-        <system-select [(ngModel)]="moduleSelectedItem" [label]="'LBL_MODULE'">
-            <system-select-option *ngFor="let option of moduleSelectList" [value]="option.id" [display]="option.name"/>
-        </system-select>
-        <system-select [(ngModel)]="compSelectedItem" [disabled]="compDisabled" [label]="'LBL_COMPONENT'">
-            <system-select-option *ngFor="let option of compSelectList" [value]="option.id" [display]="option.name"/>
-        </system-select>
-        <div *ngIf="showDeprecatedWarning" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
-            <span class="slds-assistive-text">warning</span>
-            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+        <div class="slds-p-vertical_x-small">
+            <system-select [(ngModel)]="moduleSelectedItem" [label]="'LBL_MODULE'" class="slds-p-vertical_x-small">
+                <system-select-option *ngFor="let option of moduleSelectList" [value]="option.id" [display]="option.name"/>
+            </system-select>
+        </div>
+        <div class="slds-p-vertical_x-small">
+            <system-select [(ngModel)]="compSelectedItem" [disabled]="compDisabled" [label]="'LBL_COMPONENT'">
+                <system-select-option *ngFor="let option of compSelectList" [value]="option.id" [display]="option.name"/>
+            </system-select>
+        </div>
+        <div *ngIf="showDeprecatedWarning" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-p-vertical_x-small" role="alert">
+                <span class="slds-assistive-text">warning</span>
+                <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
                 <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
                   <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
                 </svg>
               </span>
-            <h2><system-label label="LBL_DEPRECATED_MSG"></system-label></h2>
+                <h2><system-label label="LBL_DEPRECATED_MSG"></system-label></h2>
         </div>
-        <system-select [(ngModel)]="roleSelectedItem" [label]="'LBL_ROLE'">
-            <system-select-option *ngFor="let option of roleSelectList" [value]="option.id" [display]="option.name" [group]="option.group" />
-        </system-select>
+        <div class="slds-p-vertical_x-small">
+            <system-select [(ngModel)]="roleSelectedItem" [label]="'LBL_ROLE'">
+                <system-select-option *ngFor="let option of roleSelectList" [value]="option.id" [display]="option.name" [group]="option.group" />
+            </system-select>
+        </div>
+        <div *ngIf="this.mode == 'copy'" class="slds-grid slds-grid--vertical-align-center slds-m-vertical--xxx-small">
+            <div class="slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                <input type="text" class="slds-input" [(ngModel)]="compSelectedItem.package"/>
+            </div>
+            <div class="slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                <input type="text" class="slds-input" [(ngModel)]="compSelectedItem.version"/>
+            </div>
+        </div>
         <div *ngIf="this.mode == 'copy'" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">
             <system-label label="LBL_NOTE_COPY_CONFIG_INFO"></system-label>
         </div>
