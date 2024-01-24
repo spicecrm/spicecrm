@@ -99,8 +99,11 @@ class SpiceDictionary
                 $this->dictionary[$dictionary['sysdictionaryname']]['indices'] = self::getDictionaryIndexCacheFromDb($dictionary['sysdictionaryname']);
             }
 
-            // writes the cache
-            $this->writeCache();
+            if (empty($this->dictionary)) {
+                $this->reloadSystemDump();
+            } else {
+                $this->writeCache();
+            }
 
         } else {
             $this->reloadSystemDump();
