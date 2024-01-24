@@ -194,6 +194,8 @@ import {SystemSelectOption} from "./components/systemselectoption";
 import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
 import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
 import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexteditormentiondropdown";
+import {SystemProgressIndicator} from "./components/systemprogressindicator";
+import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
 
 @NgModule({
     imports: [
@@ -374,8 +376,7 @@ import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexted
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
-        SystemSelectOption,
-        SystemRichTextEditorMentionDropdown
+        SystemSelectOption
     ],
     exports: [
         PaginationControlsComponent,

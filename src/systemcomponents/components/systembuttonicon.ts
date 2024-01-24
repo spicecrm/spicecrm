@@ -29,7 +29,15 @@ export class SystemButtonIcon implements OnChanges {
      */
     @Input() public sprite: string = "utility";
 
+    /**
+     * override the size
+     */
     @Input() public size: ''|'large' | 'small' | 'x-small' | 'xx-small' = "";
+
+    /**
+     * an optional color class: can be any of the avialable SLDS icon color classes
+     */
+    @Input() public colorclass: 'slds-icon-text-default'|'slds-icon-text-success'|'slds-icon-text-warning'|'slds-icon-text-error'|'slds-icon-text-light';
 
     /**
      * a module name if the icon shoudl be loaded from teh metadata
@@ -123,6 +131,10 @@ export class SystemButtonIcon implements OnChanges {
 
         if (this.inverse) {
             classList.push("slds-button_icon-inverse");
+        }
+
+        if(this.colorclass){
+            classList.push(this.colorclass);
         }
 
         return this.addclasses ? this.addclasses + ' ' + classList : classList;
