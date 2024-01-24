@@ -40,6 +40,7 @@ use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Relationships\Relationship;
 
@@ -2153,6 +2154,8 @@ WHERE relfields.deleted = 0 AND relfields.status = 'a' AND relfields.sysdictiona
 
         // repair relationships and reset the session variable 'relationships'
         SpiceDictionaryVardefs::build_relationship_cache();
+
+        SystemStartupMode::setRecoveryMode(false);
 
         // save full cached vardefs
 //        $cachedVardefs = SpiceDictionaryHandler::getInstance()->dictionary;

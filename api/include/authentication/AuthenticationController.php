@@ -22,12 +22,14 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
@@ -348,6 +350,10 @@ class AuthenticationController
         }
 
         $this->setCurrentUser($userObj);
+
+        if (!$userObj->isAdmin() && SystemStartupMode::recoveryModeEnabled()) {
+            throw (new ServiceUnavailableException('System is in recovery mode. Only admin can login'))->setFatal( false );
+        }
 
         if ($authType == 'credentials') {
             SpiceCRM2FAUtils::handle2FAFlow($userObj, $authData);
