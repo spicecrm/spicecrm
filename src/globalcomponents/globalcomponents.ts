@@ -107,6 +107,7 @@ import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
 import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
 import {GlobalHeaderDocumentRevisions} from "../modules/documents/components/globalheaderdocumentrevisions";
 import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/components/globalheaderdocumentrevisionsmodal";
+import {GlobalNavigationTabContextMenu} from "./components/globalnavigationtabcontextmenu";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -185,6 +186,7 @@ import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/component
         GlobalObtainGDPRConsentContainer,
         GlobalNavigationTabbed,
         GlobalNavigationTabbedMenu,
+        GlobalNavigationTabContextMenu,
         GlobalNavigationTabbedMenuModules,
         GlobalNavigationTabbedMenuModuleMenu,
         GlobalNavigationTabbedMenuTab,
