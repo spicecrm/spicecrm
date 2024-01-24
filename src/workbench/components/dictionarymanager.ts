@@ -85,6 +85,7 @@ export class DictionaryManager {
                         loadingModal.emit(true);
                         if (result) {
                             this.toast.sendToast('LBL_CACHE_REPAIRED', 'success');
+                            this.configurationService.data.startupMode = 'normal';
                             this.configurationService.reloadTaskData('fielddefs');
                         } else {
                             this.toast.sendToast('LBL_ERROR', 'error');

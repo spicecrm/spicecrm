@@ -13,6 +13,7 @@ import {
 import {loginService} from '../../services/login.service';
 import {session} from '../../services/session.service';
 import {userpreferences} from '../../services/userpreferences.service';
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'global-user',
@@ -24,7 +25,13 @@ export class GlobalUser {
    public hideUserDetails: boolean = true;
 
     // The user preferences service is not needed in this component, but it has to get started (if not already elsewhere done).
-    constructor(public loginService: loginService,public router: Router,public elementRef: ElementRef,public renderer: Renderer2,public session: session,public userpreferences: userpreferences) {
+    constructor(public loginService: loginService,
+                public router: Router,
+                public elementRef: ElementRef,
+                public renderer: Renderer2,
+                public session: session,
+                public configurationService: configurationService,
+                public userpreferences: userpreferences) {
 
     }
 
