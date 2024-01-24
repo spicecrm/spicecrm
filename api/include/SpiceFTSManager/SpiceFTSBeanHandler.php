@@ -597,6 +597,11 @@ class SpiceFTSBeanHandler
 
             // force date format for date fields
             if ($properties[$indexFieldName]['fields']['raw']['type'] == 'date') $properties[$indexFieldName]['fields']['raw']['format'] = "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis";
+        } else {
+            $properties[$indexFieldName]['fields']['raw'] = [
+                'type' => 'keyword',
+                'index' => true
+            ];
         }
 
 

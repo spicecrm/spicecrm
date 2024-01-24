@@ -262,7 +262,7 @@ class SpiceBeanHandler
                 $searchTermFields = $searchParams['searchtermfields'] ? json_decode(html_entity_decode($searchParams['searchtermfields']), true) : [];
 
                 // if no serachterm field has been sent .. use the unified search fields
-                if (count($searchTermFields) == 0) {
+                if (is_array($searchTermFields) && count($searchTermFields) == 0) {
                     foreach ($thisBean->field_defs as $fieldname => $fielddata) {
                         if ($fielddata['unified_search']) {
                             $searchTermFields[] = $fieldname;
@@ -1696,7 +1696,7 @@ class SpiceBeanHandler
 
             switch ($fieldData['type']) {
                 case 'link':
-                    if ($fieldData['module'] && isset($post_params[$fieldData['name']])) {
+                    if ( !empty($fieldData['module']) && isset($post_params[$fieldData['name']])) {
                         $thisBean->load_relationship($fieldId);
 
                         if (!$thisBean->{$fieldId}) {

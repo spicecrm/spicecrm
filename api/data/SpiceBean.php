@@ -2832,6 +2832,8 @@ class SpiceBean
                 return SpiceACL::getInstance()->checkAccess($this->_module, 'export', $is_owner, $this->acltype);
             case 'import':
                 return SpiceACL::getInstance()->checkAccess($this->_module, 'import', true, $this->acltype);
+            case 'manageattachments':
+                return SpiceACL::getInstance()->checkAccess('Application', 'manageattachments');
         }
         //if it is not one of the above views then it should be implemented on the page level
         return true;
