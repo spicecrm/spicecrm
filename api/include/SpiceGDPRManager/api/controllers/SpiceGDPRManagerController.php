@@ -24,7 +24,7 @@ class SpiceGDPRManagerController
 
         $retArray = [];
 
-        $retentions = $db->query("SELECT * FROM sysgdprretentions WHERE deleted = 0");
+        $retentions = $db->query("SELECT * FROM sysgdprretentions WHERE deleted = 0 ORDER BY name");
         while($retention = $db->fetchByAssoc($retentions)){
             $retArray[] = $retention;
         }
