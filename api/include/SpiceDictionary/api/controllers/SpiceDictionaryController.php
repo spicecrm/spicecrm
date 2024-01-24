@@ -72,7 +72,7 @@ class SpiceDictionaryController
      */
     public function generateSystem(Request $req, Response $res, array $args): Response
     {
-        SpiceDictionary::getInstance()->generateSystemCache();
+        SpiceDictionary::getInstance()->generateSystemDumpFile();
 
         return $res->withJson(['success' => true]);
     }
