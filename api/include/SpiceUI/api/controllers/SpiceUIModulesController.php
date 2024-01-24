@@ -131,6 +131,7 @@ class SpiceUIModulesController
                         $retArray[$module['module']]['ftssortable'] = $ftsBeanHandler->getSortable();
                         $retArray[$module['module']]['ftsglobalsearch'] = SpiceFTSHandler::checkGlobal($module['module']);
                         $retArray[$module['module']]['ftsphonesearch'] = SpiceFTSHandler::checkPhone($module['module']);
+                        $retArray[$module['module']]['ftsmentionsearch'] = SpiceFTSHandler::mentionEnabled($module['module']);
                     }
                 }
             }

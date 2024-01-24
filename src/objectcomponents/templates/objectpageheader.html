@@ -17,8 +17,8 @@
                         <li class="slds-item">
                             <object-reminder-icon/>
                         </li>
-                        <li *ngIf="isInactiveFieldProperty" class="slds-item">
-                            <system-utility-icon [icon]="manageIcon" [size]="'x-small'" (click)="deactivateBean()" [colorclass]="filterColorClass" [title]="language.getLabel('LBL_DEACTIVATE')"/>
+                        <li *ngIf="hasInactiveFieldProperty" class="slds-item">
+                            <object-set-inactive-icon/>
                         </li>
                     </ul>
                     <div class="slds-grid slds-grid--vertical-align-center">
