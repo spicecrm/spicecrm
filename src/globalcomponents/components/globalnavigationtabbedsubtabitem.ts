@@ -7,8 +7,6 @@ import {
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {navigation, objectTab} from '../../services/navigation.service';
-import {fromEvent} from "rxjs";
-import {take} from "rxjs/operators";
 
 @Component({
     selector: 'global-navigation-tabbed-subtab-item',
@@ -19,16 +17,6 @@ export class GlobalNavigationTabbedSubtabItem {
      * show contextMenu boolean
      */
     public showContextMenu: boolean = false;
-
-    /**
-     * show option for "close tabs to the right" button
-     */
-    public buttonCloseTabsToRightDisabled = false;
-
-    /**
-     * show option for "close other tabs" button
-     */
-    public buttonCloseOtherTabsDisabled = false;
 
     /**
      * the tab object
@@ -109,79 +97,11 @@ export class GlobalNavigationTabbedSubtabItem {
     }
 
     /**
-     * opens context menu on right click
+     * returns true if unsaved changed are in tab object
      */
-    public openContextMenu(event: MouseEvent, container: HTMLElement){
-        event.preventDefault();
-        event.stopPropagation();
-        this.showContextMenu = true;
-        this.handleDocumentClick(container);
-        this.setButtonCloseTabsToRightDisabled();
-        this.setButtonCloseOtherTabsDisabled();
+    get isDirty() {
+        return this.navigation.anyDirtyModel(this.object.id);
     }
 
-    /**
-     * sets the button to disabled if there are no tabs to the right
-     * @private
-     */
-    private setButtonCloseTabsToRightDisabled() {
-        let currentTab = this.subTabs.findIndex(tab => tab.id === this.object.id);
-        this.buttonCloseTabsToRightDisabled = currentTab >= this.subTabs.length-1;
-    }
-
-    /**
-     * sets the button to disabled if there are no tabs to the right
-     * @private
-     */
-    private setButtonCloseOtherTabsDisabled() {
-        //let currentTab = this.subTabs.findIndex(tab => tab.id === this.object.id);
-        this.buttonCloseOtherTabsDisabled = this.subTabs.length <=1;
-    }
-
-    /**
-     * closes context menu
-     */
-    public closeContextMenu(){
-        this.showContextMenu = false;
-    }
-
-    /**
-     * closes all other tabs, but the one clicked on
-     */
-    public closeOtherSubTabs(){
-        let tabIds = this.subTabs.map(tab => tab.id);
-        tabIds.forEach((tabId) => {
-            if(tabId !== this.object.id){
-                this.navigation.closeObjectTab(tabId);
-            }
-        });
-        this.setActive();
-        this.closeContextMenu();
-    }
-
-    /**
-     * closes all tabs to the right
-     */
-    public closeSubTabsRight(){
-        let currentTab = this.subTabs.findIndex(tab => tab.id === this.object.id);
-        if (currentTab !== -1) {
-            let tabsToClose = this.subTabs.slice(currentTab + 1);
-            tabsToClose.forEach(tab => {
-                this.navigation.closeObjectTab(tab.id);
-            });
-        }
-        this.closeContextMenu();
-    }
-
-    /**
-     * handle document click to close context menu
-     */
-    public handleDocumentClick(container: HTMLElement){
-        fromEvent(window, 'mousedown').pipe(take(1)).subscribe(e => {
-            if (!container.contains(e.target as HTMLElement)) {
-                this.showContextMenu = false;
-            }
-        });
-    }
 
 }
