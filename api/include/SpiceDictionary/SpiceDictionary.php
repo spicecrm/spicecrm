@@ -3,7 +3,6 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
-use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -47,22 +46,27 @@ class SpiceDictionary
     }
 
     /**
+     * @param bool|null $autoLoad
      * @return SpiceDictionary
+     * @throws Exception
      */
-    static function getInstance(): SpiceDictionary
+    static function getInstance(?bool $autoLoad = true): SpiceDictionary
     {
         if (self::$instance === null) {
             //set instance
-            self::$instance = new self;
+            self::$instance = new self($autoLoad);
         }
         return self::$instance;
     }
 
-    public function __construct()
+    /**
+     * @throws Exception
+     */
+    public function __construct(?bool $autoLoad = true)
     {
 
-        # skip loading the dictionary data while installing. The installer will manually call loadSystemCache
-        if (SpiceConfig::getInstance()->installing) {
+        # autoload is disabled in installer or when the system dump will be reloaded
+        if (!$autoLoad) {
             return;
         }
 
@@ -99,20 +103,19 @@ class SpiceDictionary
             $this->writeCache();
 
         } else {
-            $this->loadSafeModeSystemDictionaries();
+            $this->reloadSystemDump();
         }
     }
 
     /**
-     * write the loaded dictionaries to the cache to temporarily hold the system defined dictionaries.
+     * write the loaded system dump dictionaries to the cache to temporarily hold the system defined dictionaries.
      * This keeps the system alive until SpiceDictionaryVardefs::repairDictionaries action is taken
      * @return void
      * @throws Exception
      */
-    private function loadSafeModeSystemDictionaries(): void
+    public function reloadSystemDump(): void
     {
-        $this->loadSystemCache();
-        $this->writeCache();
+        $this->loadSystemDumpFile();
         $this->repairDBTableForDictionaries($this->dictionary);
     }
 
@@ -173,10 +176,10 @@ class SpiceDictionary
 
     /**
      * generates the system cache file and saves it
-     *
-     * @return true
+     * @return bool
      */
-    public function generateSystemCache(){
+    public function generateSystemDumpFile(): bool
+    {
         $systemDictionary = [];
         $definitons = SpiceDictionaryDefinitions::getInstance()->getDefinitions();
         $systemDefinitions = array_map(function($d){return $d['name'];}, array_filter($definitons, function($d){return $d['package'] == 'system' || $d['Name'] == 'User';}));
@@ -184,7 +187,10 @@ class SpiceDictionary
             if(isset($this->dictionary[$systemDefinition])) $systemDictionary[$systemDefinition] = $this->dictionary[$systemDefinition];
         }
         $fHandle = fopen(self::systemdump, 'w');
-        fwrite($fHandle, serialize($systemDictionary));
+        fwrite($fHandle, serialize([
+            'dictionary' => $systemDictionary,
+            'hash' => md5(serialize($systemDictionary))
+        ]));
         fclose($fHandle);
         return true;
     }
@@ -193,10 +199,54 @@ class SpiceDictionary
      * load dictionary from system cache file
      * @throws Exception
      */
-    public function loadSystemCache(): void
+    public function loadSystemDumpFile(): void
+    {
+        $content = $this->getSystemDumpFileContent();
+        $this->dictionary = $content['dictionary'];
+        $this->writeCache();
+        $this->writeSystemDumpFileHashToConfig($content['hash']);
+    }
+
+    /**
+     * get system cache file content
+     * @return array
+     */
+    private static function getSystemDumpFileContent(): array
     {
         $fHandle = fopen(self::systemdump, 'r');
-        $this->dictionary = unserialize(fread($fHandle, filesize(self::systemdump)));
+        $content = unserialize(fread($fHandle, filesize(self::systemdump)));
         fclose($fHandle);
+        return $content;
+    }
+
+    /**
+     * write system cache hash to config
+     * @param string $hash
+     * @return void
+     * @throws Exception
+     */
+    private function writeSystemDumpFileHashToConfig(string $hash): void
+    {
+        $db = DBManagerFactory::getInstance();
+
+        if (!$db->tableExists('config')) return;
+
+        $hashEntry = ['category' => 'dictionary', 'name' => 'system_dump_hash', 'value' => $hash];
+        $db->upsertQuery('config', ['category' => $hashEntry['category'], 'name' => $hashEntry['name']], $hashEntry);
+        SpiceCache::deleteByKey('dbconfig');
+        SpiceConfig::getInstance()->reloadConfig(true);
+    }
+
+    /**
+     * compare system dump hashes to force repair system dump dictionaries if the dump hash
+     * on the database  differs from the hash in the dump file. Meaning that a new version of
+     * the file is generated and a repair is necessary
+     * @return bool
+     * @throws Exception
+     */
+    public static function compareSystemDumpHashes(): bool
+    {
+        $configHash = SpiceConfig::getInstance()->get('dictionary.system_dump_hash');
+        return $configHash === self::getSystemDumpFileContent()['hash'];
     }
 }

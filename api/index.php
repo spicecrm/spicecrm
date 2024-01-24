@@ -10,6 +10,7 @@ use DI\Container;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\DataStreams\StreamFactory;
 use SpiceCRM\includes\Middleware\DeveloperMiddleware;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -43,6 +44,10 @@ try {
     DBManagerFactory::setDBConfig();
 
     SpiceConfig::getInstance()->reloadConfig();
+
+    if (!SpiceDictionary::compareSystemDumpHashes()) {
+        SpiceDictionary::getInstance(false)->reloadSystemDump();
+    }
 
     SpiceLanguageManager::setCurrentLanguage();
 
@@ -89,6 +94,6 @@ try {
     // run the request
     $RESTManager->app->run();
 
-} catch (SpiceCRM\includes\ErrorHandlers\Exception $e) {
+} catch (SpiceCRM\includes\ErrorHandlers\Exception|Exception $e) {
     $RESTManager->outputError($e);
 }

@@ -754,8 +754,7 @@ class SpiceInstaller
 
         if (!empty($db)) {
 
-            SpiceDictionary::getInstance()->loadSystemCache();
-            SpiceDictionary::getInstance()->writeCache();
+            SpiceDictionary::getInstance(false)->loadSystemDumpFile();
 
             // create the system database tables
             $this->createSystem($db);
