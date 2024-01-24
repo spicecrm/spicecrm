@@ -8,6 +8,7 @@ use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
+use function DI\string;
 
 class SpiceDictionary
 {
@@ -239,7 +240,8 @@ class SpiceDictionary
         if (!$db->tableExists('config')) return;
 
         $hashEntry = ['category' => 'dictionary', 'name' => 'system_dump_hash', 'value' => $hash];
-        $db->upsertQuery('config', ['category' => $hashEntry['category'], 'name' => $hashEntry['name']], $hashEntry);
+        $db->deleteQuery('config', ['category' => $hashEntry['category'], 'name' => $hashEntry['name']]);
+        $db->insertQuery('config', $hashEntry);
         SpiceCache::deleteByKey('dbconfig');
         SpiceConfig::getInstance()->reloadConfig(true);
     }
@@ -253,7 +255,8 @@ class SpiceDictionary
      */
     public static function compareSystemDumpHashes(): bool
     {
-        $configHash = SpiceConfig::getInstance()->get('dictionary.system_dump_hash');
+        $db = DBManagerFactory::getInstance();
+        $configHash = (string) $db->getOne("SELECT value FROM config WHERE category = 'dictionary' AND name = 'system_dump_hash'");
         return $configHash === self::getSystemDumpFileContent()['hash'];
     }
 }
