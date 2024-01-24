@@ -21,6 +21,8 @@ import {UserRoles} from "./components/userroles";
 import {UserRolesAddModal} from "./components/userrolesaddmodal";
 import {UserAddButton} from "./components/useraddbutton";
 import {UserAddModal} from "./components/useraddmodal";
+import {UserCreateFromBeanButton} from "./components/usercreatefrombeanbutton";
+import {UserCreateFromBeanModal} from "./components/usercreatefrombeanmodal";
 import {UserPopoverHeader} from "./components/userpopoverheader";
 import {UserDeactivateButton} from "./components/userdeactivatebutton";
 import {UserDeactivateModal} from "./components/userdeactivatemodal";
@@ -29,6 +31,10 @@ import {UserSignature} from "./components/usersignature";
 import {User2FAConfiguration} from "./components/user2faconfiguration";
 import {UserPreferencesModal} from "./components/userpreferencesmodal";
 import {UserSignatureModal} from "./components/usersignaturemodal";
+import {UserCreateRoles} from "./components/usercreateroles";
+import {UserCreateProfiles} from "./components/usercreateprofiles";
+import {UserCreatePassword} from "./components/usercreatepassword";
+
 
 @NgModule({
     imports: [
@@ -55,6 +61,11 @@ import {UserSignatureModal} from "./components/usersignaturemodal";
         UserRolesAddModal,
         UserAddButton,
         UserAddModal,
+        UserCreateFromBeanButton,
+        UserCreateFromBeanModal,
+        UserCreatePassword,
+        UserCreateRoles,
+        UserCreateProfiles,
         UserPopoverHeader,
         UserDeactivateButton,
         UserDeactivateModal,
