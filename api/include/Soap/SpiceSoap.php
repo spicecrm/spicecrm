@@ -35,6 +35,9 @@ class SpiceSoap {
      */
     public function __construct($url)
     {
+        // prevent usage of cookies for the session
+        ini_set('session.use_cookies', '0');
+
         LoggerManager::getLogger()->debug('Begin: NusoapSoap->__construct');
         $this->server = new soap_server();
         $this->soapURL = $url;
