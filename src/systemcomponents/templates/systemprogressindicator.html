@@ -1,0 +1,21 @@
+<div class="slds-is-relative">
+    <div class="slds-progress" [ngClass]="{'slds-progress--shade': _progressIndicatorShade}"  style="max-width: 100%;">
+        <ol class="slds-progress__list">
+            <li class="slds-progress__item" *ngFor="let item of itemList" [ngClass]="{'slds-is-active': item.value == value, 'slds-is-completed': isCompleted(item.value) && !isComplete(item.value)}" (mouseenter)="showToolTip(item.value)" (mouseleave)="hideToolTip()">
+                <button class="slds-button slds-progress__marker" [ngClass]="{'slds-button_icon slds-progress__marker_icon': isCompleted(item.value)}" (click)="value = item.value" [system-title]="item.label">
+                    <span class="slds-assistive-text"><system-label [label]="item.label"/></span>
+                    <system-button-icon *ngIf="item.value != value && isComplete(item.value)" icon="success" colorclass="slds-icon-text-success"/>
+                    <system-button-icon *ngIf="item.value != value && isCompleted(item.value) && hasError(item.value)" icon="error" colorclass="slds-icon-text-error"/>
+                </button>
+            </li>
+        </ol>
+        <div class="slds-progress-bar slds-progress-bar_x-small" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" role="progressbar">
+            <span class="slds-progress-bar__value" [ngStyle]="progressBarStyle">
+            <span class="slds-assistive-text">Progress: 50%</span>
+            </span>
+        </div>
+    </div>
+    <!--div *ngIf="toolTipValue" class="slds-popover slds-popover_tooltip slds-nubbin_bottom" role="tooltip" [ngStyle]="toolTipStyle">
+        <div class="slds-popover__body"><system-label [label]="toolTipLabel"/></div>
+    </div-->
+</div>
