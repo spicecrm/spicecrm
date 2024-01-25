@@ -349,7 +349,9 @@ class SpiceAttachments
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
-        $result = $db->query("UPDATE spiceattachments SET deleted = 1 WHERE id='{$attachmentId}'" . (!$current_user->is_admin ? " AND user_id='" . $current_user->id . "'" : ""));
+        $result = $db->query("UPDATE spiceattachments SET deleted = 1 WHERE id='{$attachmentId}'");
+        // disable user id check, now done in frontend
+//        $result = $db->query("UPDATE spiceattachments SET deleted = 1 WHERE id='{$attachmentId}'" . (!$current_user->is_admin ? " AND user_id='" . $current_user->id . "'" : ""));
 
         if ($db->getAffectedRowCount($result)) return ['success' => true];
         else {
