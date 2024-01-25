@@ -103,7 +103,7 @@ class AuthenticationController
      */
     public function getCanChangePassword(): bool
     {
-        if (LDAPAuthenticate::isLdapEnabled()) {
+        if (LDAPAuthenticate::isLdapEnabled() || isset($_SESSION['OAuth2TokenObject'])) {
             return false;
         }
         if ($this->currentUser && in_array($this->currentUser->external_auth_only, [0, "0"])) {

@@ -19,29 +19,49 @@ import {helper} from '../../../services/helper.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: "../templates/useraddmodal.html",
+    selector: "usercreatefrombeanmodal",
+    templateUrl: "../templates/usercreatefrombeanmodal.html",
     providers: [model, view]
 })
-export class UserAddModal implements OnInit {
+export class UserCreateFromBeanModal implements OnInit {
     @ViewChild("addcontainer", {read: ViewContainerRef, static: true}) public addcontainer: ViewContainerRef;
+
     public self: any;
-    public informationFieldset: string;
-    public profileFieldset: string;
+
+    public fieldset: string;
     public response: Observable<object> = null;
     public responseSubject: Subject<any> = null;
 
-    public password: string;
-    public repeatPassword: string;
-    public pwdCheck: RegExp = new RegExp("//");
+    // regex for the username
     public userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
-    public pwdGuideline: string;
-    public autogenerate: boolean = false;
+
+    // for the password handling
+    public password: string;
     public sendByEmail: boolean = false;
     public forceReset: boolean = true;
+    public systemGenerated: boolean = true;
     public externalAuthOnly: boolean = false;
-    public showPassword: boolean = false;
-    public saveTriggered: boolean = false;
     public canSendByEmail: boolean = true;
+
+    public step: 'user'|'role'|'acl' = 'user';
+    public steps:{value: 'user'|'role'|'acl', label: string}[] = [
+        {
+            value: 'user',
+            label: 'LBL_USER'
+        },
+        {
+            value: 'role',
+            label: 'LBL_ROLE'
+        },
+        {
+            value: 'acl',
+            label: 'LBL_ACL'
+        }
+    ]
+
+    public userRoles: any[] = [];
+
+    public userProfiles: any[] = [];
 
     constructor(
         public language: language,
@@ -63,64 +83,14 @@ export class UserAddModal implements OnInit {
         this.response = this.responseSubject.asObservable();
     }
 
-    get PwdFieldType() {
-        return this.showPassword ? 'text' : 'password';
-    }
 
     get modelOptions() {
         return {updateOn: 'blur'};
     }
 
-    get passwordMsg() {
-        if (this.pwdFieldEmpty) {
-            return [{type: 'error', message: this.language.getLabel('MSG_INPUT_REQUIRED')}];
-        } else if (this.pwdNotMatchGuide) {
-            return [{type: 'error', message: this.language.getLabel('MSG_PWD_NOT_LEGAL')}];
-        }
-        return [];
-    }
-
-    get rePasswordMsg() {
-        if (this.rePwdFieldEmpty) {
-            return [{type: 'error', message: this.language.getLabel('MSG_INPUT_REQUIRED')}];
-        } else if (this.rePwdNotSame) {
-            return [{type: 'error', message: this.language.getLabel('MSG_PWDS_DONT_MATCH')}];
-        }
-        return [];
-    }
-
-    get pwdFieldEmpty() {
-        return this.saveTriggered && !this.password;
-    }
-
-    get rePwdFieldEmpty() {
-        return this.saveTriggered && !this.repeatPassword;
-    }
-
-    get pwdNotMatchGuide() {
-        return !this.autoGenerate && this.password && !this.pwdCheck.test(this.password);
-    }
-
-    get rePwdNotSame() {
-        return !this.autoGenerate && this.repeatPassword && this.password != this.repeatPassword;
-    }
-
-    get pwdFieldStyle() {
-        return (!this.externalAuthOnly && (this.pwdFieldEmpty || this.pwdNotMatchGuide)) ? 'slds-has-error' : '';
-    }
-
-    get rePwdFieldStyle() {
-        return (!this.externalAuthOnly && (this.rePwdFieldEmpty || this.rePwdNotSame)) ? 'slds-has-error' : '';
-    }
 
     get hasError() {
         let isValid = true;
-        if (!this.externalAuthOnly && !this.autoGenerate && this.pwdGuideline && this.pwdNotMatchGuide) {
-            isValid = false;
-        }
-        if (!this.externalAuthOnly && !this.autoGenerate && (!this.password || this.rePwdNotSame)) {
-            isValid = false;
-        }
 
         if (!this.model.validate()) {
             isValid = false;
@@ -135,57 +105,50 @@ export class UserAddModal implements OnInit {
         return !isValid;
     }
 
-    get autoGenerate() {
-        return this.autogenerate;
+
+    public ngOnInit() {
+        this.model.initialize();
+
+        //set default fields
+        let defaultFields: any = {
+            UserType: "RegularUser",
+            status: "Active"
+        }
+
+        if(this.parent){
+            defaultFields.user_name = this.parent.getField('email1');
+            defaultFields.email1 = this.parent.getField('email1');
+            defaultFields.first_name = this.parent.getField('first_name');
+            defaultFields.last_name = this.parent.getField('last_name');
+            defaultFields.salutation = this.parent.getField('salutation');
+        }
+
+        this.model.setFields(defaultFields)
+        this.getFieldSets();
     }
 
-    set autoGenerate(value) {
-        this.autogenerate = value;
-        if ( value ) {
-            this.password = this.helper.generatePassword(this.configuration.getCapabilityConfig('userpassword'));
-            this.repeatPassword = this.password;
+    /**
+     * returns if scope is internal or external
+     */
+    get scopeFilter(){
+       return this.parent.module == 'Employees' ? 'i' : 'e';
+    }
+
+    public getStatus(tab){
+        switch(tab){
+            case 'user':
+                return this.model.validate() ? 'complete' : 'error';
+            case 'role':
+                return this.userRoles.length > 0 ? 'complete' : 'error';
+            default:
+                return '';
         }
     }
 
-    public ngOnInit() {
-        this.model.initialize(this.parent);
-        this.model.setFields({
-            UserType: "RegularUser",
-            status: "Active",
-        })
-        this.getFieldSets();
-        this.getPassInfo();
-    }
 
     public getFieldSets() {
-        let conf = this.metadata.getComponentConfig("UserAddModal", "Users");
-        this.profileFieldset = conf && conf.profile ? conf.profile : this.profileFieldset;
-        this.informationFieldset = conf && conf.information ? conf.information : this.informationFieldset;
-    }
-
-
-    public toggleShowPassword() {
-        this.showPassword = !this.showPassword;
-    }
-
-    public getPassInfo() {
-        let extConf = this.configuration.getCapabilityConfig('userpassword');
-        this.pwdCheck = new RegExp(extConf.regex);
-
-        let requArray = [];
-        if(extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
-        if(extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
-        if(extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
-        if(extConf.onespecial) requArray.push(this.language.getLabel('MSG_PASSWORD_ONESPECIAL'));
-        if(extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
-
-        this.pwdGuideline = requArray.join(', ');
-
-    }
-
-    public copyPassword() {
-        navigator.clipboard.writeText(this.password);
-        this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_COPIED"), "success");
+        let conf = this.metadata.getComponentConfig("UserCreateFromBeanModal", "Users");
+        this.fieldset = conf.fieldset;
     }
 
     public cancel() {
@@ -194,14 +157,20 @@ export class UserAddModal implements OnInit {
         this.self.destroy();
     }
 
+    public next(){
+        let currentStepIndex = this.steps.findIndex(s => s.value == this.step);
+        if(this.steps.length >= currentStepIndex +1){
+            this.step = this.steps[currentStepIndex + 1].value;
+        }
+    }
+
     public save(goDetail: boolean = false) {
-        this.saveTriggered = true;
         if (this.hasError) {
             return;
         }
 
         this.model.setFields({
-            system_generated_password: this.externalAuthOnly ? false : this.autoGenerate,
+            system_generated_password: this.externalAuthOnly ? false : this.systemGenerated,
             pwd_last_changed: new moment(),
             external_auth_only: this.externalAuthOnly
         });
