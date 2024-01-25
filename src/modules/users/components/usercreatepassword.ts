@@ -1,7 +1,16 @@
 /**
  * @module ModuleUsers
  */
-import {ChangeDetectorRef, Component, OnInit, SkipSelf, ViewChild, ViewContainerRef} from "@angular/core";
+import {
+    ChangeDetectorRef,
+    Component, EventEmitter,
+    forwardRef,
+    OnInit,
+    Output,
+    SkipSelf,
+    ViewChild,
+    ViewContainerRef
+} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {view} from "../../../services/view.service";
@@ -12,6 +21,7 @@ import {Observable, Subject} from "rxjs";
 import {metadata} from "../../../services/metadata.service";
 import {configurationService} from "../../../services/configuration.service";
 import {helper} from '../../../services/helper.service';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 /**
  * @ignore
@@ -19,18 +29,19 @@ import {helper} from '../../../services/helper.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: "../templates/useraddmodal.html",
-    providers: [model, view]
+    selector: "user-create-password",
+    templateUrl: "../templates/usercreatepassword.html",
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => UserCreatePassword),
+            multi: true
+        }
+    ]
 })
-export class UserAddModal implements OnInit {
-    @ViewChild("addcontainer", {read: ViewContainerRef, static: true}) public addcontainer: ViewContainerRef;
-    public self: any;
-    public informationFieldset: string;
-    public profileFieldset: string;
-    public response: Observable<object> = null;
-    public responseSubject: Subject<any> = null;
+export class UserCreatePassword implements OnInit, ControlValueAccessor{
 
-    public password: string;
+    public _password: string;
     public repeatPassword: string;
     public pwdCheck: RegExp = new RegExp("//");
     public userNameCheck: RegExp = new RegExp("^(?![_.])(?!.*[_.]{2})[@a-zA-Z0-9._-]{1,60}$");
@@ -38,10 +49,21 @@ export class UserAddModal implements OnInit {
     public autogenerate: boolean = false;
     public sendByEmail: boolean = false;
     public forceReset: boolean = true;
-    public externalAuthOnly: boolean = false;
+    public externalauthonly: boolean = false;
     public showPassword: boolean = false;
     public saveTriggered: boolean = false;
     public canSendByEmail: boolean = true;
+
+    @Output() sendbyemail: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() forcereset: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() extauthonly: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() systemgenerated: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * for the control accessor
+     */
+    public onChange: (value: string) => void;
+    public onTouched: () => void;
 
     constructor(
         public language: language,
@@ -56,20 +78,59 @@ export class UserAddModal implements OnInit {
         public configuration: configurationService,
         public helper: helper
     ) {
-        this.model.module = "Users";
-        this.view.isEditable = true;
-        this.view.setEditMode();
-        this.responseSubject = new Subject<object>();
-        this.response = this.responseSubject.asObservable();
+
+
     }
 
-    get PwdFieldType() {
-        return this.showPassword ? 'text' : 'password';
+    public ngOnInit() {
+        this.getPassInfo();
+    }
+
+
+    // ControlValueAccessor Interface: >>
+    public registerOnChange(fn: any): void {
+        this.onChange = (val) => {
+            fn(val);
+        };
+    }
+
+    public registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    public writeValue(value: any): void {
+        if ( value === undefined ) return;
+        this._password = value;
+    }
+
+    /**
+     * emit all changes
+     */
+    public emitChanges(){
+        this.sendbyemail.emit(this.sendByEmail);
+        this.extauthonly.emit(this.externalAuthOnly);
+        this.forcereset.emit(this.forceReset);
+        this.systemgenerated.emit(this.autogenerate);
+    }
+
+    get password(){
+        return this._password
+    }
+
+    set password(value){
+        this._password = value;
+        this.onChange(value);
     }
 
     get modelOptions() {
         return {updateOn: 'blur'};
     }
+
+
+    get PwdFieldType() {
+        return this.showPassword ? 'text' : 'password';
+    }
+
 
     get passwordMsg() {
         if (this.pwdFieldEmpty) {
@@ -147,22 +208,30 @@ export class UserAddModal implements OnInit {
         }
     }
 
-    public ngOnInit() {
-        this.model.initialize(this.parent);
-        this.model.setFields({
-            UserType: "RegularUser",
-            status: "Active",
-        })
-        this.getFieldSets();
-        this.getPassInfo();
+    /**
+     * getter for external auth only
+     */
+    get externalAuthOnly(){
+        return this.externalauthonly
     }
 
-    public getFieldSets() {
-        let conf = this.metadata.getComponentConfig("UserAddModal", "Users");
-        this.profileFieldset = conf && conf.profile ? conf.profile : this.profileFieldset;
-        this.informationFieldset = conf && conf.information ? conf.information : this.informationFieldset;
+    /**
+     * setter for extenral auth only
+     * resets other flags and password
+     *
+     * @param value
+     */
+    set externalAuthOnly(value){
+        this.externalauthonly = value;
+        if(value){
+            this.autogenerate = false;
+            this.sendByEmail = false;
+            this.forceReset = false;
+            this.password = '';
+            this.showPassword = false;
+            this.repeatPassword = '';
+        }
     }
-
 
     public toggleShowPassword() {
         this.showPassword = !this.showPassword;
@@ -186,80 +255,5 @@ export class UserAddModal implements OnInit {
     public copyPassword() {
         navigator.clipboard.writeText(this.password);
         this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_COPIED"), "success");
-    }
-
-    public cancel() {
-        this.responseSubject.next(false);
-        this.responseSubject.complete();
-        this.self.destroy();
-    }
-
-    public save(goDetail: boolean = false) {
-        this.saveTriggered = true;
-        if (this.hasError) {
-            return;
-        }
-
-        this.model.setFields({
-            system_generated_password: this.externalAuthOnly ? false : this.autoGenerate,
-            pwd_last_changed: new moment(),
-            external_auth_only: this.externalAuthOnly
-        });
-        let saveData = this.modelutilities.spiceModel2backend("Users", this.model.data);
-
-        this.backend.postRequest("module/Users/" + this.model.id, {}, JSON.stringify(saveData))
-            .subscribe({
-                next: (response) => {
-                    for (let fieldName in response) {
-                        if (response.hasOwnProperty(fieldName)) {
-                            response[fieldName] = this.modelutilities.backend2spice("Users", fieldName, response[fieldName]);
-                        }
-                    }
-                    this.model.setData(response);
-                    this.model.endEdit();
-
-                    // in case of external auth close direct - otherwise save password
-                    if(!this.externalAuthOnly) {
-                        this.savePassword(goDetail);
-                    } else {
-                        if(goDetail) this.model.goDetail();
-                        this.self.destroy();
-                    }
-                },
-                error: (resErr) => {
-                    if (resErr.error.error.message) {
-                        this.addcontainer.element.nativeElement.scrollTop = 0;
-                        if (resErr.error.error.errorCode == 'duplicateUsername') {
-                            this.model.setFieldMessage("error", resErr.error.error.message, "user_name", "validation");
-                        }
-                        if (resErr.error.error.errorCode == 'duplicateEmail1') {
-                            this.model.setFieldMessage("error", resErr.error.error.message, "email1", "validation");
-                        }
-                    }
-                }
-                });
-    }
-
-    public savePassword(goDetail) {
-        let body = {
-            newPassword: this.password,
-            forceReset: this.forceReset,
-            sendEmail: this.canSendByEmail ? this.sendByEmail : false
-        };
-        this.backend.postRequest("module/Users/"+this.model.id+"/password/reset", {}, body).subscribe(res => {
-                if (this.sendByEmail) {
-                    this.toast.sendToast(this.language.getLabel("MSG_NEW_PASSWORD_EMAIL_SENT"), "success", "", 10);
-                } else {
-                    this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED"), "success");
-                }
-                if (goDetail) {
-                    this.model.goDetail();
-                }
-                this.self.destroy();
-        }, error => {
-            this.sendByEmail = false;
-            this.canSendByEmail = false;
-            this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_RESET_FAILED"), "error");
-        });
     }
 }
