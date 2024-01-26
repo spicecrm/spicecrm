@@ -207,12 +207,13 @@ class SpiceDictionary
      * load dictionary from system cache file
      * @throws Exception
      */
-    public function loadSystemDumpFile(): void
+    public function loadSystemDumpFile(): ?string
     {
         $content = $this->getSystemDumpFileContent();
         $this->dictionary = $content['dictionary'];
         $this->writeCache();
         $this->writeSystemDumpFileHashToConfig($content['hash']);
+        return $content['hash'];
     }
 
     /**
@@ -233,7 +234,7 @@ class SpiceDictionary
      * @return void
      * @throws Exception
      */
-    private function writeSystemDumpFileHashToConfig(string $hash): void
+    public static function writeSystemDumpFileHashToConfig(string $hash): void
     {
         $db = DBManagerFactory::getInstance();
 
