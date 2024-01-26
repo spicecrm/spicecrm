@@ -755,10 +755,11 @@ class SpiceInstaller
 
         if (!empty($db)) {
 
-            SpiceDictionary::getInstance(false)->loadSystemDumpFile();
-
+            $hash = SpiceDictionary::getInstance(false)->loadSystemDumpFile();
             // create the system database tables
             $this->createSystem($db);
+
+            SpiceDictionary::writeSystemDumpFileHashToConfig($hash);
 
             $this->loadSystemPackage($db);
 
@@ -811,16 +812,34 @@ class SpiceInstaller
     public static function loadSystemPackage($db): void
     {
         $packageContent = json_decode( gzdecode ( file_get_contents('./include/SpiceInstaller/SystemPackage/system-package.gz')));
-        $dictionaryTables = array_column(SpiceDictionary::getInstance()->dictionary, 'table');
+        $tablesFields = [];
+        foreach (SpiceDictionary::getInstance()->dictionary as $dic) {
+            $tablesFields[$dic['table']] = array_map(function ($f) {return $f['name'];}, $dic['fields']);
+        }
 
         foreach ( $packageContent->data->tables as $tableName ) {
 
-            if ( !in_array( $tableName, $dictionaryTables )) continue;
+            if ( !$tablesFields[$tableName]) continue;
 
             foreach ($packageContent->data->rows->$tableName as $row) {
-                $db->upsertQuery($tableName, ['id' => $row->id] ,(array) $row);
+                $row = self::prepareSystemPackageRow($row, $tablesFields, $tableName);
+                $db->upsertQuery($tableName, ['id' => $row['id']] , $row);
             }
         }
+    }
+
+    /**
+     * prepare system package row data and keep only the defined dictionary fields
+     * @param object $row
+     * @param array $tablesFields
+     * @param string $tableName
+     * @return array
+     */
+    private static function prepareSystemPackageRow(object $row, array $tablesFields, string $tableName): array
+    {
+        return array_filter((array) $row, function ($field) use ($tablesFields, $tableName) {
+            return $tablesFields[$tableName][$field];
+        }, ARRAY_FILTER_USE_KEY);
     }
 }
 
