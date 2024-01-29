@@ -10,17 +10,17 @@
                 <span class="slds-truncate" system-title="LBL_CLOSE_TAB"><system-label label="LBL_CLOSE_TAB"/></span>
             </a>
         </li>
-        <li [class.slds-hide]="!buttonCloseOtherTabsDisabled" class="slds-dropdown__item" role="presentation">
+        <li *ngIf="!buttonCloseOtherTabsDisabled" class="slds-dropdown__item" role="presentation">
             <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('other')">
                 <span class="slds-truncate" system-title="LBL_CLOSE_OTHER_TABS"><system-label label="LBL_CLOSE_OTHER_TABS"/></span>
             </a>
         </li>
-        <li [class.slds-hide]="!buttonCloseTabsToLeftDisabled" class="slds-dropdown__item" role="presentation">
+        <li *ngIf="!buttonCloseTabsToLeftDisabled" class="slds-dropdown__item" role="presentation">
             <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('left')">
                 <span class="slds-truncate" system-title="LBL_CLOSE_TABS_TO_THE_LEFT"><system-label label="LBL_CLOSE_TABS_TO_THE_LEFT"/></span>
             </a>
         </li>
-        <li [class.slds-hide]="!buttonCloseTabsToRightDisabled" class="slds-dropdown__item" role="presentation">
+        <li *ngIf="!buttonCloseTabsToRightDisabled" class="slds-dropdown__item" role="presentation">
             <a href="javascript:void(0);" role="menuitem" (click)="closeTabs('right')">
                 <span class="slds-truncate" system-title="LBL_CLOSE_TABS_TO_THE_RIGHT"><system-label label="LBL_CLOSE_TABS_TO_THE_RIGHT"/></span>
             </a>
