@@ -20,4 +20,8 @@
         <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
         <button *ngIf="!componentconfig.disableupload" [disabled]="_modelattachments.module =='Tasks'" class="slds-col slds-button slds-button--neutral" (click)="addFromRecord()"><system-label label="LBL_ADD_FROM_RECORD"></system-label></button>
     </div>
+    <div *ngIf="model.module == 'Emails'" class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded slds-grid--align-spread slds-m-top--small">
+        <div class="slds-m-left--small"><system-label label="LBL_TOTAL_ATTACHMENTS_SIZE"></system-label>&nbsp;{{totalFileSize}} / {{maxUpload}}</div>
+    </div>
+
 </div>
