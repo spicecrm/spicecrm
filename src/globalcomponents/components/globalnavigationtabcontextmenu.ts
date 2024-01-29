@@ -30,14 +30,9 @@ export class GlobalNavigationTabContextMenu {
     public tabType: string;
 
     /**
-     * show contextMenu in Subtabs boolean
+     * show option for "close other tabs" button
      */
-    public showContextMenuSubTabs: boolean = false;
-
-    /**
-     * show option for "close tabs to the right" button
-     */
-    public buttonCloseTabsToRightDisabled = false;
+    public buttonCloseOtherTabsDisabled = false;
 
     /**
      * show option for "close tabs to the left" button
@@ -45,11 +40,19 @@ export class GlobalNavigationTabContextMenu {
     public buttonCloseTabsToLeftDisabled = false;
 
     /**
-     * show option for "close other tabs" button
+     * show option for "close tabs to the right" button
      */
-    public buttonCloseOtherTabsDisabled = false;
+    public buttonCloseTabsToRightDisabled = false;
 
     constructor(public navigation: navigation, private elementRef: ElementRef, ) {
+    }
+
+    get currentTabIndex(){
+        return this.tabsArray.findIndex(tab => tab.id === this.object.id);
+    }
+
+    get currentTabId(){
+        return this.object.id
     }
 
     /**
@@ -146,7 +149,7 @@ export class GlobalNavigationTabContextMenu {
         event.preventDefault();
         event.stopPropagation();
         this.checkTabType();
-        this.setCloseButtonsDisabled();
+        this.setButtonsToClose();
         this.showContextMenu = true;
         this.handleDocumentClick();
     }
@@ -156,78 +159,53 @@ export class GlobalNavigationTabContextMenu {
      */
     public closeContextMenu(){
         this.showContextMenu = false;
-        this.showContextMenuSubTabs = false;
-    }
-
-    /**
-     * sets the button to disabled if there are no tabs to the right, left or others on maintabs
-     * @private
-     */
-    private setCloseButtonsDisabled(){
-        const tabsWithoutPinned = this.tabsArray.filter(tab => !tab.pinned);
-        let currentTab = tabsWithoutPinned.findIndex(tab => tab.id === this.object.id);
-        this.buttonCloseTabsToRightDisabled =  currentTab >= tabsWithoutPinned.length-1;
-        this.buttonCloseTabsToLeftDisabled =  currentTab <= 0;
-        this.buttonCloseOtherTabsDisabled = tabsWithoutPinned.length <=1;
     }
 
     /**
      * move subtab into maintabs
      */
     public moveSubTabToMainTabs() {
-        let currentTab = this.subTabs.find(tab => tab.id === this.object.id);
-        currentTab.parentid = undefined;
+        let currentSubTab = this.subTabs.find(tab => tab.id === this.object.id);
+        currentSubTab.parentid = undefined;
         this.setActive();
         this.closeContextMenu();
     }
 
-    /**
-     * closes all other tabs, but the one clicked on
-     */
-    public closeOtherTabs(){
-        let tabIds = this.tabsArray.map(tab => tab.id);
-        tabIds.forEach((tabId) => {
-            if(tabId !== this.object.id && !this.navigation.getTabById(tabId)?.pinned){
-                this.navigation.closeObjectTab(tabId);
-            }
-        });
-        this.setActive();
-        this.closeContextMenu();
+    public findsTabsToClose(){
+        const tabsWithoutPinned = this.tabsArray.filter(tab => !tab.pinned);
+        let otherTabs = tabsWithoutPinned.filter(tab => tab.id !== this.currentTabId);
+        let tabsLeft = tabsWithoutPinned.slice(0, this.currentTabIndex);
+        let tabsRight = tabsWithoutPinned.slice(this.currentTabIndex + 1);
+        return [otherTabs, tabsRight, tabsLeft]
     }
 
-    /**
-     * closes all tabs to the right
-     */
-    public closeTabsRight(){
-        let currentTab = this.tabsArray.findIndex(tab => tab.id === this.object.id);
-        if (currentTab !== -1) {
-            let tabsToClose = [];
-            if(!this.object.pinned){
-                tabsToClose = this.tabsArray.slice(currentTab + 1).filter(tab => !tab.pinned);
-            } else {
-                tabsToClose = this.tabsArray.filter(tab => !tab.pinned);
-            }
-            tabsToClose.forEach(tab => {
-                this.navigation.closeObjectTab(tab.id);
-            });
-        }
-        this.closeContextMenu();
+    public setButtonsToClose(){
+        this.buttonCloseOtherTabsDisabled = this.tabsArray.length <=1;
+        this.buttonCloseTabsToLeftDisabled =  this.currentTabIndex <= 0;
+        this.buttonCloseTabsToRightDisabled =  this.currentTabIndex >= this.tabsArray.length-1;
     }
 
-    /**
-     * closes all tabs to the left
-     */
-    public closeTabsLeft(){
-       let currentTab = this.tabsArray.findIndex(tab => tab.id === this.object.id);
-        if (currentTab !== -1) {
-            let tabsToClose = this.tabsArray.slice(0, currentTab);
-            tabsToClose.forEach(tab => {
-                if(!tab.pinned){
+    public closeTabs(option : string){
+        const [otherTabs, tabsRight, tabsLeft] = this.findsTabsToClose();
+        switch(option){
+            case "other":
+                otherTabs.forEach((tab) => {
                     this.navigation.closeObjectTab(tab.id);
-                }
-            });
+                })
+                this.setActive();
+                break;
+            case "left":
+                tabsLeft.forEach((tab) => {
+                    this.navigation.closeObjectTab(tab.id);
+                })
+                this.setActive()
+                break;
+            case "right":
+                tabsRight.forEach((tab) => {
+                    this.navigation.closeObjectTab(tab.id);
+                })
+                break;
         }
-        this.setActive()
         this.closeContextMenu();
     }
 
@@ -239,9 +217,7 @@ export class GlobalNavigationTabContextMenu {
         fromEvent(window, 'mousedown').pipe(take(1)).subscribe(e => {
             if (!container.contains(e.target as HTMLElement)) {
                 this.showContextMenu = false;
-                this.showContextMenuSubTabs = false;
             }
         });
     }
-
 }
