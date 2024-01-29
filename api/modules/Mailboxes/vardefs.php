@@ -155,6 +155,18 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'type' => 'id',
             'len' => '36',
         ],
+        'max_upload' => [
+            'name' => 'max_upload',
+            'vname' => 'LBL_MAX_UPLOAD',
+            'type' => 'varchar',
+            'len' => '36',
+        ],
+        'zip_compress' => [
+            'name' => 'zip_compress',
+            'vname' => 'LBL_ZIP_COMPRESS',
+            'type' => 'bool',
+            'default' => 0,
+        ],
         //link to the campaigns
         'campaigns' => [
             'name' => 'campaigns',
