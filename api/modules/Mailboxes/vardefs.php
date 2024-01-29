@@ -160,12 +160,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'vname' => 'LBL_MAX_UPLOAD',
             'type' => 'varchar',
             'len' => '36',
+            'popupHelp' => 'LBL_HELP_MAX_UPLOAD'
         ],
         'zip_compress' => [
             'name' => 'zip_compress',
             'vname' => 'LBL_ZIP_COMPRESS',
             'type' => 'bool',
             'default' => 0,
+            'popupHelp' => 'LBL_HELP_ZIP_COMPRESS'
         ],
         //link to the campaigns
         'campaigns' => [

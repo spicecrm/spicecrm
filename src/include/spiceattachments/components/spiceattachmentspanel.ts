@@ -306,6 +306,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             modalRef.instance.responseSubject.subscribe({
                 next: () => {
                     this.broadcastUpload();
+                    this.loadFiles();
                 }
             })
         });
