@@ -569,7 +569,7 @@ class Email extends SpiceBean
     {
         if (!empty($this->mailbox_id)) {
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
-            $mailbox->deleteEmail($this);
+            if($mailbox) $mailbox->deleteEmail($this);
         }
         return parent::mark_deleted($id);
     }
