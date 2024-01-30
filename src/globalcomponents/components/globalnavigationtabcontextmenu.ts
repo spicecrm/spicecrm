@@ -20,6 +20,11 @@ export class GlobalNavigationTabContextMenu {
     @Input() public object: objectTab;
 
     /**
+     * the tab object
+     */
+    @Input({required: true}) public scope: 'main' | 'sub';
+
+    /**
      * show contextMenu boolean
      */
     public showContextMenu: boolean = false;
@@ -39,6 +44,16 @@ export class GlobalNavigationTabContextMenu {
      */
     public buttonCloseTabsToRightDisabled = false;
 
+    /**
+     * show option for "move to tab to main tabs" button
+     */
+    public buttonMoveTabToMainTabsHidden = false;
+
+    /**
+     * show option for "clone tab" button, on maintabs
+     */
+    public buttonCloneDisabled = false;
+
     constructor(public navigation: navigation, private elementRef: ElementRef, ) {
     }
 
@@ -47,6 +62,13 @@ export class GlobalNavigationTabContextMenu {
      */
     get isDirty() {
         return this.navigation.anyDirtyModel(this.object.id);
+    }
+
+    /**
+     * returns true if tab's parent id is undefined/ false
+     */
+    get isMainTab() {
+        return !this.object.parentid;
     }
 
     /**
@@ -119,9 +141,11 @@ export class GlobalNavigationTabContextMenu {
      * sets button to disabled if there are no tabs to the right, left, or around
      */
     public setButtonsToClose(){
-        this.buttonCloseOtherTabsDisabled = this.tabsArray.length <=1;
-        this.buttonCloseTabsToLeftDisabled =  this.currentTabIndex <= 0;
-        this.buttonCloseTabsToRightDisabled =  this.currentTabIndex >= this.tabsArray.length-1;
+        this.buttonCloseOtherTabsDisabled = this.navigation.hasCloseableTabs(this.object.id, 'other', this.scope);
+        this.buttonCloseTabsToLeftDisabled =  this.navigation.hasCloseableTabs(this.object.id, 'left', this.scope);
+        this.buttonCloseTabsToRightDisabled =  this.navigation.hasCloseableTabs(this.object.id, 'right', this.scope);
+        this.buttonMoveTabToMainTabsHidden = this.scope == 'main' || this.isMainTab;
+        this.buttonCloneDisabled = !this.isMainTab;
     }
 
     /**
