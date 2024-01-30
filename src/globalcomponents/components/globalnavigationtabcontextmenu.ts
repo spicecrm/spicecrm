@@ -25,11 +25,6 @@ export class GlobalNavigationTabContextMenu {
     public showContextMenu: boolean = false;
 
     /**
-     * show tabType string
-     */
-    public tabType: string;
-
-    /**
      * show option for "close other tabs" button
      */
     public buttonCloseOtherTabsDisabled = false;
@@ -45,28 +40,6 @@ export class GlobalNavigationTabContextMenu {
     public buttonCloseTabsToRightDisabled = false;
 
     constructor(public navigation: navigation, private elementRef: ElementRef, ) {
-    }
-
-    get currentTabIndex(){
-        return this.tabsArray.findIndex(tab => tab.id === this.object.id);
-    }
-
-    get currentTabId(){
-        return this.object.id
-    }
-
-    /**
-     * gets maintabs
-     */
-    get mainTabs() {
-        return this.navigation.objectTabs.filter(tab => tab.parentid == undefined);
-    }
-
-    /**
-     * returns subtabs
-     */
-    get subTabs(): objectTab[] {
-        return this.navigation.objectTabs.filter(tab => tab.parentid !== undefined);
     }
 
     /**
@@ -106,39 +79,12 @@ export class GlobalNavigationTabContextMenu {
     }
 
     /**
-     * returns if the tab is pinned
-     */
-    get pinned() {
-        return this.object.pinned;
-    }
-
-    /**
-     * close the tab
-     */
-    public pintab() {
-        this.object.pinned = !this.object.pinned;
-    }
-
-    /**
      * clones the tab
      //* @param tab
      */
     public clonetab() {
         this.navigation.cloneTab(this.object.id);
         this.closeContextMenu();
-    }
-
-    public checkTabType(){
-        if(this.object.parentid == undefined){
-            return this.tabType = "main"
-        } else if(this.object.parentid !== undefined){
-            return this.tabType = "sub"
-        }
-    }
-
-    get tabsArray(){
-        let tabType = this.checkTabType();
-        return tabType === "main" ? this.mainTabs : this.subTabs;
     }
 
     /**
@@ -148,7 +94,6 @@ export class GlobalNavigationTabContextMenu {
     public openContextMenu(event: MouseEvent){
         event.preventDefault();
         event.stopPropagation();
-        this.checkTabType();
         this.setButtonsToClose();
         this.showContextMenu = true;
         this.handleDocumentClick();
@@ -164,48 +109,26 @@ export class GlobalNavigationTabContextMenu {
     /**
      * move subtab into maintabs
      */
-    public moveSubTabToMainTabs() {
-        let currentSubTab = this.subTabs.find(tab => tab.id === this.object.id);
-        currentSubTab.parentid = undefined;
+    public moveSubTabToMainTabs(){
+        this.navigation.moveSubTabToMainTabs(this.object.id);
         this.setActive();
         this.closeContextMenu();
     }
 
-    public findsTabsToClose(){
-        const tabsWithoutPinned = this.tabsArray.filter(tab => !tab.pinned);
-        let otherTabs = tabsWithoutPinned.filter(tab => tab.id !== this.currentTabId);
-        let tabsLeft = tabsWithoutPinned.slice(0, this.currentTabIndex);
-        let tabsRight = tabsWithoutPinned.slice(this.currentTabIndex + 1);
-        return [otherTabs, tabsRight, tabsLeft]
-    }
-
+    /**
+     * sets button to disabled if there are no tabs to the right, left, or around
+     */
     public setButtonsToClose(){
         this.buttonCloseOtherTabsDisabled = this.tabsArray.length <=1;
         this.buttonCloseTabsToLeftDisabled =  this.currentTabIndex <= 0;
         this.buttonCloseTabsToRightDisabled =  this.currentTabIndex >= this.tabsArray.length-1;
     }
 
-    public closeTabs(option : string){
-        const [otherTabs, tabsRight, tabsLeft] = this.findsTabsToClose();
-        switch(option){
-            case "other":
-                otherTabs.forEach((tab) => {
-                    this.navigation.closeObjectTab(tab.id);
-                })
-                this.setActive();
-                break;
-            case "left":
-                tabsLeft.forEach((tab) => {
-                    this.navigation.closeObjectTab(tab.id);
-                })
-                this.setActive()
-                break;
-            case "right":
-                tabsRight.forEach((tab) => {
-                    this.navigation.closeObjectTab(tab.id);
-                })
-                break;
-        }
+    /**
+     * closes the tabs, depending on which option has been chosen
+     */
+    public closeTabs(option : 'other' | 'right' | 'left', tabId: string){
+        this.navigation.closeTabs(option, tabId, this.scope);
         this.closeContextMenu();
     }
 
