@@ -45,7 +45,13 @@ export class EmailSendButton {
     get disabled() {
         let recipientAddresses = this.model.getFieldValue('recipient_addresses');
         let mailbox = this.model.getFieldValue('mailbox_id');
-        const mailboxData = this.configuration.getData('mailboxesoutbound');
+        let key = ['outbound', 'outboundsingle', 'outboundmass'];
+        let mailboxData =[];
+        key.forEach((k) => {
+            if(this.configuration.getData('mailboxes'+k) != false){
+                mailboxData = (this.configuration.getData('mailboxes'+k));
+            }
+        });
         const selectedMailboxData = mailboxData.find(id => id.value == mailbox);
         let sizeTooBig = !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
         let name = this.model.getFieldValue('name');
