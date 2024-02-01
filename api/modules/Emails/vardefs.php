@@ -74,6 +74,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'source' => 'non-db',
             'comment'    => 'the number of attachments'
         ],
+        'attachments_size' => [
+            'name' => 'attachments_size',
+            'vname' => 'LBL_ATTACHMENTS_SIZE',
+            'type' => 'int',
+            'source' => 'non-db',
+            'comment'    => 'the total size of attachments'
+        ],
+        'zip_compress' => [
+            'name' => 'zip_compress',
+            'vname' => 'LBL_ZIP_COMPRESS',
+            'type' => 'bool',
+            'source' => 'non-db',
+            'comment'    => 'flag to compress attachments'
+        ],
         'from_addr_name' => [
             'name' => 'from_addr_name',
             'type' => 'varchar',
