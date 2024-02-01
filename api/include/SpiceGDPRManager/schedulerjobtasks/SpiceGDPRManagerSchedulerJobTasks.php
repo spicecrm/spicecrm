@@ -46,8 +46,9 @@ class SpiceGDPRManagerSchedulerJobTasks
                         $seed->mark_deleted($id['id']);
                         break;
                     case 'P':
+                        $seed = BeanFactory::getBean($moduleFilter->filtermodule, $id['id'], [], false);
+
                         if($id['deleted'] == 0){
-                            $seed = BeanFactory::getBean($moduleFilter->filtermodule, $id['id']);
 
                             // delete the bean itself
                             $seed->mark_deleted($id['id']);
