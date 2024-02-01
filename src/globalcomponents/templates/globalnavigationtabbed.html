@@ -1,6 +1,6 @@
 <div class="slds-context-bar slds-context-bar_tabs slds-p-left--xx-small" [ngStyle]="contextbarStyle">
     <global-app-launcher class="slds-context-bar__primary"></global-app-launcher>
-    <global-navigation-tabbed-menu class="slds-context-bar__secondary" role="navigation"></global-navigation-tabbed-menu>
+    <global-navigation-tabbed-menu class="slds-context-bar__secondary globalnavigationtabeddragboundary" role="navigation" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="navigation.objectTabs" (cdkDropListDropped)="drop($event)"></global-navigation-tabbed-menu>
     <button (click)="toggleCollapse()" class="slds-button slds-button--icon slds-m-right--xx-small">
         <system-button-icon [icon]="userPreferences.toUse.globalHeaderCollapsed ? 'chevrondown' : 'chevronup'"></system-button-icon>
     </button>

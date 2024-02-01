@@ -192,9 +192,7 @@ export class ModuleConfigAddDialog implements OnInit {
             // add
             saveComp = {
                 component: this.compSelectedItem.name,
-                componentconfig: "{}",
-                package: this.currentComponent.package,
-                version: this.currentComponent.version
+                componentconfig: "{}"
             };
         }
 
