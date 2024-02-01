@@ -5,13 +5,12 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {userpreferences} from '../../../services/userpreferences.service';
 
 /**
- * display formatted report record value with percentage
+ * display formatted report record value
  */
 @Component({
-    templateUrl: '../templates/reporterfieldpercentage.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: '../templates/reporterfieldnumber.html'
 })
-export class ReporterFieldPercentage {
+export class ReporterFieldNumber {
     /**
      * report full record
      */
@@ -20,5 +19,5 @@ export class ReporterFieldPercentage {
      * report field
      */
     public field: any = {};
-
 }
+
