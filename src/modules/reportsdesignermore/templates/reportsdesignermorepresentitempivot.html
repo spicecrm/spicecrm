@@ -32,7 +32,7 @@
                             <system-label label="LBL_NAME"></system-label>
                         </div>
                     </th>
-                    <th scope="col" class="slds-resizable">
+                    <!--th scope="col" class="slds-resizable">
                         <div class="slds-truncate" [title]="language.getLabel('LBL_FUNCTION')">
                             <system-label label="LBL_FUNCTION"></system-label>
                         </div>
@@ -46,7 +46,7 @@
                         <div class="slds-truncate" [title]="language.getLabel('LBL_OVERRIDE_TYPE')">
                             <system-label label="LBL_OVERRIDE_TYPE"></system-label>
                         </div>
-                    </th>
+                    </th-->
                 </tr>
                 </thead>
                 <tbody class="slds-grow slds-scrollable--y">
@@ -65,7 +65,7 @@
                                     <system-label [label]="listField.name"></system-label>
                                 </div>
                             </td>
-                            <td [title]="listField.sqlfunction">
+                            <!--td [title]="listField.sqlfunction">
                                 <div class="slds-truncate">
                                     {{listField.sqlfunction}}
                                 </div>
@@ -105,11 +105,11 @@
                                         </div>
                                     </div>
                                 </div>
-                            </td>
+                            </td-->
                         </tr>
                     </ng-container>
                     <tr *ngIf="availableListFields?.length == 0">
-                        <td colspan="6" class="slds-text-align_center" style="padding: 1rem;">
+                        <td colspan="2" class="slds-text-align_center" style="padding: 1rem;">
                             <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
                         </td>
                     </tr>
@@ -129,6 +129,11 @@
                                         <system-label label="LBL_NAME"></system-label>
                                     </div>
                                 </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                        <system-label label="LBL_SORT"></system-label>
+                                    </div>
+                                </th>
                                 <th class="slds-cell-shrink"></th>
                             </tr>
                             </thead>
@@ -140,6 +145,19 @@
                                     <td>
                                         <div class="slds-form-element">
                                             {{pivotRowName}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <select class="slds-select" [(ngModel)]="pivotRow.sort">
+                                                        <option></option>
+                                                        <option value="asc"><system-label label="LBL_ASCENDING"></system-label></option>
+                                                        <option value="desc"><system-label label="LBL_DESCENDING"></system-label></option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>
@@ -165,6 +183,11 @@
                                         <system-label label="LBL_NAME"></system-label>
                                     </div>
                                 </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                        <system-label label="LBL_SORT"></system-label>
+                                    </div>
+                                </th>
                                 <th class="slds-cell-shrink"></th>
                             </tr>
                             </thead>
@@ -177,6 +200,20 @@
                                         <td>
                                             <div class="slds-form-element">
                                                 <system-label [label]="pivotColumn.name"></system-label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <select class="slds-select" [(ngModel)]="pivotColumn.sort">
+                                                            <option></option>
+                                                            <option value="asc"><system-label label="LBL_ASCENDING"></system-label></option>
+                                                            <option value="desc"><system-label label="LBL_DESCENDING"></system-label></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td>
