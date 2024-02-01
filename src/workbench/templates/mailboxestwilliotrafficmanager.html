@@ -1,6 +1,6 @@
 <div class="slds-m-vertical--xx-small slds-box--border">
     <div class="slds-p-around--x-small">
-        <h1><system-label label="LBL_TWILIO"></system-label></h1>
+        <!--h1><system-label label="LBL_TWILIO"></system-label></h1-->
         <div class="slds-grid slds-p-vertical--xx-small">
             <div class="slds-form-element slds-size--1-of-4">
                 <label class="slds-truncate slds-form-element__label"><system-label label="LBL_ACCOUNT_SID"></system-label></label>
@@ -19,7 +19,8 @@
                 <system-checkbox [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.no_status_callbacks"><system-label label="LBL_NO_STATUS_CALLBACKS"></system-label> <system-icon-help-text [helpText]="language.getLabel('LBL_NO_STATUS_CALLBACKS', '', 'long')"></system-icon-help-text></system-checkbox>
             </div>
         </div>
-        <div class="slds-grid slds-p-vertical--xx-small">
+        <div class="slds-grid slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <system-label label="LBL_TWILIO_APILOG" length="long"/>
             <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
                 <system-label label="LBL_SEND_TEST_SMS"></system-label>
             </button>
