@@ -1,15 +1,18 @@
 <div class="slds-height_full slds-grid slds-grid--vertical" [cancellable]="true" (onCancel)="handleCancel()" [system-overlay-loading-spinner]="isLoading">
     <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0">
-        <table class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout" style="border-top: 0;">
+        <table class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout slds-table--header-fixed" style="border-top: 0;">
             <thead *ngIf="totalCountArray.length > 0">
-                <tr class="slds-text-title--caps">
+                <!--tr class="slds-text-title--caps">
                     <th scope="col" class="slds-truncate" style="width: 10%" [rowSpan]="presParams.pluginData.columnData.length + 1">
                         <system-label [label]="pivotNameField"></system-label>
                     </th>
-                    <th class="slds-p-around--none" style="width: 10%" *ngFor="let column of totalCountArray">
+                    <th class="slds-p-around--none" style="width: 10%; height: 0px; padding: 0px;" *ngFor="let column of totalCountArray">
                     </th>
-                </tr>
+                </tr-->
                 <tr *ngFor="let row of headerTableSet; let first = first" class="slds-text-title--caps">
+                    <th *ngIf="first" scope="col" class="slds-truncate" style="width: 10%" [rowSpan]="presParams.pluginData.columnData.length">
+                        <system-label class="slds-p-horizontal--x-small slds-p-vertical--xx-small" [label]="pivotNameField"></system-label>
+                    </th>
                     <th style="width: 10%" class="slds-text-align--center slds-border--left slds-truncate" *ngFor="let column of row" [colSpan]="column.span">
                         {{column.value}}
                     </th>

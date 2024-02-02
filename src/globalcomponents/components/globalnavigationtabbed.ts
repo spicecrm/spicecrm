@@ -3,11 +3,12 @@
  */
 import {ChangeDetectorRef, Component, Input, OnDestroy, ViewChild} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
-import {navigation} from '../../services/navigation.service';
+import {navigation, objectTab} from '../../services/navigation.service';
 import {Subscription} from "rxjs";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {GlobalNavigationTabbedMenu} from "./globalnavigationtabbedmenu";
 import {userpreferences} from "../../services/userpreferences.service";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 
 /** @ignore */
 const ANIMATIONS = [
@@ -32,6 +33,10 @@ const ANIMATIONS = [
     animations: ANIMATIONS
 })
 export class GlobalNavigationTabbed implements OnDestroy {
+    /**
+     * tab object
+     */
+    @Input() tab : objectTab
     /**
      * holds the parent tab object
      */
@@ -130,5 +135,25 @@ export class GlobalNavigationTabbed implements OnDestroy {
         this.userPreferences.toUse.globalHeaderCollapsed = !this.userPreferences.toUse.globalHeaderCollapsed;
         this.userPreferences.setPreference('globalHeaderCollapsed', this.userPreferences.toUse.globalHeaderCollapsed);
         setTimeout(() => this.menuContainer.handleResize(), 200);
+    }
+
+    /**
+     * handles the drop event and resets the sequence fields
+     * @param event
+     */
+    public drop(event: CdkDragDrop<objectTab[]>){
+        if(event.previousContainer === event.container){
+            moveItemInArray(this.navigation.objectTabs, event.previousIndex, event.currentIndex);
+        } else {
+            event.item.data.parentid = undefined;
+            this.navigation.objectTabs = this.navigation.objectTabs.slice();
+            transferArrayItem(
+                event.previousContainer.data,
+                event.container.data,
+                event.previousIndex,
+                event.currentIndex
+            )
+        }
+        this.navigation.setSessionData();
     }
 }

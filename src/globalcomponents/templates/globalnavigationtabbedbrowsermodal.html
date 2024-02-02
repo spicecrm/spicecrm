@@ -4,15 +4,19 @@
         <table class="slds-table slds-table--header-fixed slds-table_cell-buffer">
             <thead>
                 <tr class="slds-line-height_reset">
+                    <th scope="col"></th>
                     <th scope="col">
                         <div class="slds-truncate slds-p-vertical--xx-small"><system-label label="LBL_TAB"></system-label></div>
                     </th>
                     <th scope="col" style="width: 5.5rem;"></th>
                 </tr>
             </thead>
-            <tbody>
-                <ng-container *ngFor="let tab of maintabs">
-                    <tr class="slds-hint-parent">
+            <tbody class="globalnavigationtabsmodaldragboundary" cdkDropList [cdkDropListData]="navigation.objectTabs" (cdkDropListDropped)="drop($event)">
+                <ng-container  *ngFor="let tab of maintabs; trackBy: trackByFn">
+                    <tr cdkDrag cdkDragBoundary=".globalnavigationtabsmodaldragboundary" class="spice-drag-placeholder-visible slds-hint-parent">
+                        <td style="width: 30px">
+                            <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                        </td>
                         <td>
                             <global-navigation-tabbed-browser-modal-tab [tab]="tab" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
                         </td>
@@ -20,7 +24,7 @@
                             <global-navigation-tabbed-browser-modal-tab-actions [tab]="tab"></global-navigation-tabbed-browser-modal-tab-actions>
                         </td>
                     </tr>
-                    <ng-container *ngFor="let subtab of subtabs(tab.id)" >
+                    <ng-container *ngFor="let subtab of subtabs(tab.id)">
                         <tr class="slds-hint-parent">
                             <td>
                                 <global-navigation-tabbed-browser-modal-tab [tab]="subtab" [subtab]="true" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
