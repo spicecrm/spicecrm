@@ -2,10 +2,11 @@
  * @module GlobalComponents
  */
 import {
-    AfterViewInit, Component, QueryList, ViewChildren, Input, ElementRef
+    AfterViewInit, Component, QueryList, ViewChildren, Input, ElementRef, Output, EventEmitter
 } from '@angular/core';
 import {navigation, objectTab} from '../../services/navigation.service';
 import {language} from '../../services/language.service';
+import {CdkDragDrop, CdkDrag, CdkDropList, moveItemInArray, DragDropModule} from "@angular/cdk/drag-drop";
 
 /**
  * renders a modal with the list of tabs and allows closing them, navigating to as well as providing some additonal informations
@@ -14,6 +15,10 @@ import {language} from '../../services/language.service';
     templateUrl: '../templates/globalnavigationtabbedbrowsermodal.html'
 })
 export class GlobalNavigationTabbedBrowserModal {
+    /**
+     * the tab object
+     */
+    @Input() public object: objectTab;
 
     /**
      * reference to the modal component
@@ -96,4 +101,16 @@ export class GlobalNavigationTabbedBrowserModal {
         this.self.destroy();
     }
 
+    /**
+     * handles the drop event and resets the sequence fields
+     * @param event
+     */
+    public drop(event: CdkDragDrop<objectTab[]>){
+        moveItemInArray(this.navigation.objectTabs, event.previousIndex, event.currentIndex);
+        this.navigation.setSessionData();
+    }
+
+    public trackByFn(index, item) {
+        return item.id;
+    }
 }

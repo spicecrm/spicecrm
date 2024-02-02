@@ -259,7 +259,7 @@ export class navigation {
             case 'left':
                 return tabIndex > 0;
             case 'other':
-                return tabScopeTabs.length >=1;
+                return tabScopeTabs.length >1;
         }
     }
 
