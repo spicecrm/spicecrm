@@ -108,7 +108,7 @@ import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
 import {GlobalHeaderDocumentRevisions} from "../modules/documents/components/globalheaderdocumentrevisions";
 import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/components/globalheaderdocumentrevisionsmodal";
 import {GlobalNavigationTabContextMenu} from "./components/globalnavigationtabcontextmenu";
-import {CdkDrag, CdkDragHandle, CdkDropList} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -124,6 +124,7 @@ import {CdkDrag, CdkDragHandle, CdkDropList} from "@angular/cdk/drag-drop";
         CdkDragHandle,
         CdkDropList,
         CdkDrag,
+        CdkDropListGroup,
     ],
     declarations: [
         GlobalCopyright,
