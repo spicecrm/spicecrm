@@ -287,6 +287,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     min-width: 75px;
 }
 
+.slds-table--header-fixed thead th {
+    height: 2rem;
+}
+
 .spice-collapsible-tab-grow {
     display: block;
     height: 100%;

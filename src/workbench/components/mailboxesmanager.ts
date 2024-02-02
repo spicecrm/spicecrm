@@ -43,6 +43,8 @@ export class MailboxesManager {
      */
     public headeractionset: string;
 
+    public loading: boolean = true;
+
     constructor(
         public modellist: modellist,
         public backend: backend,
@@ -60,7 +62,11 @@ export class MailboxesManager {
         this.modellist.initialize('Mailboxes');
 
         // force the data load
-        this.modellist.getListData();
+        this.modellist.getListData().subscribe({
+            next: () => {
+                this.loading = false;
+            }
+        });
 
         this.model.module = "Mailboxes";
         this.view.isEditable = true;

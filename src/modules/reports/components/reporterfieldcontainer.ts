@@ -189,6 +189,13 @@ export class ReporterFieldContainer implements OnInit {
                 case 'category':
                     this.fieldType = 'ReporterFieldCategoryTree';
                     break;
+                case 'number':
+                case 'float':
+                    this.fieldType = 'ReporterFieldNumber';
+                    break;
+                case 'int':
+                    this.fieldType = 'ReporterFieldInteger';
+                    break;
                 default:
                     this.fieldType = 'ReporterFieldStandard';
                     break;
