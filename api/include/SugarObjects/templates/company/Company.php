@@ -112,30 +112,6 @@ class Company extends Basic
     }
 
     /**
-     * ensure the is_inactive flag is properly set in the index parameters
-     *
-     * @return array
-     */
-    public function add_fts_metadata()
-    {
-        return [
-            'is_inactive' => [
-                'type' => 'keyword',
-                'search' => false,
-                'enablesort' => true
-            ]
-        ];
-    }
-
-    /**
-     * write is_inactive into the index
-     */
-    public function add_fts_fields()
-    {
-        return ['is_inactive' => $this->is_inactive ? '1' : '0'];
-    }
-
-    /**
      * override sugar function fill in additional fields on retrieve
      */
     public function fill_in_additional_detail_fields()
