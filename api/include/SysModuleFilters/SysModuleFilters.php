@@ -588,6 +588,20 @@ class SysModuleFilters
             }
         }
 
+        if($group->groupstate == 'active' || $group->groupstate == 'inactive' || $group->groupstate == 'activeAndInactive') {
+            switch ($group->groupstate) {
+                case 'active':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['0']]];
+                    break;
+                case 'inactive':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['1']]];
+                    break;
+                case 'activeAndInactive':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['1', '0']]];
+                    break;
+            }
+        }
+
         // handle geo Data
         if ($group->geography && $group->geography->radius) {
             $filterCondition['must'][] = [
