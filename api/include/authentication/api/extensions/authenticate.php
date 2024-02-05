@@ -207,6 +207,47 @@ $routes = [
                 'required' => false
             ]
         ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/authentication/2fa/{method}/send',
+        'class' => AuthenticateController::class,
+        'function' => 'send2FACode',
+        'description' => 'send 2fa code to user.',
+        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'parameters' => [
+            'method' => [
+                'in' => 'path',
+                'description' => 'Method options: sms, email',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+                'example' => 'sms'
+            ]
+        ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/authentication/2fa/{method}/validate/{code}',
+        'class' => AuthenticateController::class,
+        'function' => 'validate2FACode',
+        'description' => 'validate 2fa code.',
+        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'parameters' => [
+            'method' => [
+                'in' => 'path',
+                'description' => 'Method options: sms, email',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+                'example' => 'sms'
+            ],
+            'code' => [
+                'in' => 'path',
+                'description' => 'the 2fa code sent to use by method',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+                'example' => '342234'
+            ]
+        ]
     ]
 ];
 
