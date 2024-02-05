@@ -13,7 +13,6 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import {UserChangePasswordButton} from "./components/userchangepasswordbutton";
-import {UserChangePasswordModal} from "./components/userchangepasswordmodal";
 import {UserResetPasswordModal} from "./components/userresetpasswordmodal";
 import {UserResetPasswordButton} from "./components/userresetpasswordbutton";
 import {UserPreferences} from "./components/userpreferences";
@@ -51,7 +50,6 @@ import {UserCreatePassword} from "./components/usercreatepassword";
     ],
     declarations: [
         UserChangePasswordButton,
-        UserChangePasswordModal,
         UserResetPasswordModal,
         UserResetPasswordButton,
         UserPreferences,
