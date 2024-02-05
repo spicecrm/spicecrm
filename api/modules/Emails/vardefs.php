@@ -86,7 +86,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'vname' => 'LBL_ZIP_COMPRESS',
             'type' => 'bool',
             'source' => 'non-db',
-            'comment'    => 'flag to compress attachments'
+            'comment'    => 'flag to compress attachments as zip'
+        ],
+        'send_read_receipt' => [
+            'name' => 'send_read_receipt',
+            'vname' => 'LBL_SEND_READ_RECEIPT',
+            'type' => 'bool',
+            'source' => 'non-db',
+            'comment'    => 'set flag to require a read receipt from the recipient'
         ],
         'from_addr_name' => [
             'name' => 'from_addr_name',
