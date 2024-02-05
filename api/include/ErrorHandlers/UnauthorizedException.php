@@ -8,6 +8,8 @@ class UnauthorizedException extends Exception {
     protected $userBlocked = false;
     protected $ipBlocked = false;
 
+    const NO_2FA_METHOD_SELECTED = 7;
+
     /**
      * UnauthorizedException constructor.
      * @param null $message
