@@ -65,6 +65,6 @@ export class fieldReadReceipt extends fieldGeneric {
     }
 
     public setReadReceipt(value){
-        this.model.setField('zip_compress', value);
+        this.model.setField('send_read_receipt', value);
     }
 }
