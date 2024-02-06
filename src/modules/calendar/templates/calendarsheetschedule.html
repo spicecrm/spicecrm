@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="!showNoRecordsMsg" class="slds-grid slds-p-around--small">
+    <div class="slds-grid slds-p-around--small">
         <system-label label="MSG_SHOWING_EVENTS_UNTIL"></system-label>
         <span class="slds-m-left--xx-small">{{calendar.monthShort(untilDate.month())}}{{untilDate.format('D, Y')}}</span>
         <a style="cursor: pointer" class="slds-text-link slds-m-left--xx-small" (click)="loadMore()">
