@@ -506,8 +506,8 @@ class ImapHandler extends TransportHandler
             ->setFrom([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username])
             ->setBody($this->trackedBody($email), 'text/html');
 
-        if($email->send_read_receipt){
-            $message->setReadReceiptTo($this->mailbox->imap_pop3_username);
+        if($this->mailbox->send_read_receipt && $email->send_read_receipt){
+            $message->setReadReceiptTo([$this->mailbox->imap_pop3_display_name ?? $this->mailbox->imap_pop3_username]);
         }
 
         if($this->mailbox->unsubscribe_header) {
