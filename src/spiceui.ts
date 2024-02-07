@@ -31,6 +31,7 @@ import {Outlook} from "./include/outlook/outlook";
 import {GSuitePane} from "./include/gsuite/components/gsuitepane";
 import {OutlookPane} from "./include/outlook/components/outlookpane";
 import {loginCheck} from "./services/login.service";
+import {ModuleTOTPAuthentication} from "./include/totpauthentication/moduletotpauthentication";
 
 // declarations for TS
 /**
@@ -96,6 +97,7 @@ export class SpiceUI {
         SystemComponents,
         GlobalComponents,
         ObjectComponents,
+        ModuleTOTPAuthentication,
         ModuleGSuite,
         Outlook,
         SpiceInstallerModule,
