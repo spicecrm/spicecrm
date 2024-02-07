@@ -1055,7 +1055,7 @@ export class calendar implements OnDestroy {
             .subscribe(calendars => {
                 this.ownerCalendarVisible = calendars?.hasOwnProperty('ownerVisible') ? calendars?.ownerVisible: true;
                 if (calendars) {
-                    this._sheetType = calendars.sheetType;
+                    this._sheetType = calendars.sheetType ?? 'Week';
                     this.setUserCalendars(calendars.Users, false);
                     this.setOtherCalendars(calendars.Other, false);
                 }
