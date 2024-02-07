@@ -51,7 +51,12 @@ class CoreController
 
         $languages = LanguageManager::getLanguages(true);
         $languages['required_labels'] = LanguageManager::getSpecificLabels( SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
-            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE', 'ERR_RECOVERY_MODE_ENABLED', 'ERR_MAINTENANCE_MODE_ENABLED'
+            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE', 'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_INVALID_CODE',
+            'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD', 'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE',
+            'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL', 'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY',
+            'LBL_SAVE', 'LBL_SELECT_2FA_METHOD', 'LBL_CODE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'MSG_OLD_PWD_NOT_AS_NEW',
+            'LBL_REMEMBER_DEVICE', 'LBL_CONFIRM', 'LBL_SMS', 'LBL_EMAIL', 'MSG_TOTP_GENERATING_CODE', 'LBL_SENDING', 'LBL_SENT', 'ERR_FAILED_TO_EXECUTE',
+            'ERR_RECOVERY_MODE_ENABLED', 'ERR_MAINTENANCE_MODE_ENABLED'
         ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running

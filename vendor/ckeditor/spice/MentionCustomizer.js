@@ -1,14 +1,20 @@
+/**
+ * this function manipulate the casting of the ck-editor elements and add the spice relevant
+ * data attributes to enable tracking the mention reference
+ * @param editor
+ * @constructor
+ */
 export function MentionCustomization(editor) {
-    // The upcast converter will convert view <a class="mention" href="" data-id="">
+    // The upcast converter will convert view <a class="mention" href="" data-user-id="">
     // elements to the model 'mention' text attribute.
     editor.conversion.for('upcast').elementToAttribute({
         view: {
             name: 'a',
-            key: 'data-id',
+            key: 'data-mention',
             classes: 'mention',
             attributes: {
                 href: true,
-                'data-id': true,
+                'data-bean-id': true,
                 'data-module': true
             }
         },
@@ -18,12 +24,13 @@ export function MentionCustomization(editor) {
                 // The mention feature expects that the mention attribute value
                 // in the model is a plain object with a set of additional attributes.
                 // In order to create a proper object use the toMentionAttribute() helper method:
-                return editor.plugins.get('Mention').toMentionAttribute(viewItem, {
+                const mentionAttribute = editor.plugins.get('Mention').toMentionAttribute(viewItem, {
                     // Add any other properties that you need.
                     link: viewItem.getAttribute('href'),
-                    id: viewItem.getAttribute('data-id'),
+                    beanId: viewItem.getAttribute('data-bean-id'),
                     module: viewItem.getAttribute('data-module')
                 });
+                return mentionAttribute;
             }
         },
         converterPriority: 'high'
@@ -38,7 +45,8 @@ export function MentionCustomization(editor) {
             }
             return writer.createAttributeElement('a', {
                 class: 'mention',
-                'data-id': modelAttributeValue.id,
+                'data-mention': modelAttributeValue.id,
+                'data-bean-id': modelAttributeValue.beanId,
                 'data-module': modelAttributeValue.module,
                 'href': modelAttributeValue.link
             }, {

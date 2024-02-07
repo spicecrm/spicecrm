@@ -94,19 +94,9 @@ export class AdministrationConfigEditor implements OnInit {
      * Copy configuration values to clipboard.
      */
     public copyData(): void {
-        let selBox = document.createElement('textarea');
-        selBox.style.position = 'fixed';
-        selBox.style.left = '0';
-        selBox.style.top = '0';
-        selBox.style.opacity = '0';
         let valsToCopy = {};
         for( let item of this.componentconfig.items ) valsToCopy[item.name] = ( this.configvalues.hasOwnProperty( item.name ) ? this.configvalues[item.name] : null );
-        selBox.value = JSON.stringify(valsToCopy);
-        document.body.appendChild(selBox);
-        selBox.focus();
-        selBox.select();
-        document.execCommand('copy');
-        document.body.removeChild(selBox);
+        navigator.clipboard.writeText(JSON.stringify(valsToCopy));
         this.toast.sendToast( 'Data of all fields copied to clipboard.', 'success');
     }
 
