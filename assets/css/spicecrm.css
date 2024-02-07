@@ -61,7 +61,8 @@
     --slds-c-checkbox-mark-color-foreground: var(--brand-primary);
     --slds-c-checkbox-shadow: var(--brand-primary);
     --slds-c-checkbox-shadow-focus: var(--brand-primary);
-    --sds-c-button-shadow-focus: var(--color-grey-9)
+    --sds-c-button-shadow-focus: var(--color-grey-9);
+    --slds-g-color-brand-base-50: var(--color-border-brand);
 }
 
 html {
@@ -284,6 +285,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     overflow: hidden;
     resize: horizontal;
     min-width: 75px;
+}
+
+.slds-table--header-fixed thead th {
+    height: 2rem;
 }
 
 .spice-collapsible-tab-grow {

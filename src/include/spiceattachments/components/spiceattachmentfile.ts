@@ -9,6 +9,7 @@ import {toast} from "../../../services/toast.service";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {Router} from "@angular/router";
+import {SpiceAttachmentsPanel} from "./spiceattachmentspanel";
 
 /**
  * displays a quicknote that is read in teh stream
@@ -46,6 +47,7 @@ export class SpiceAttachmentFile {
     @Input() public forceModalPreview: boolean = false;
 
     constructor(
+        private attachmentsPanelComponent: SpiceAttachmentsPanel,
         public userpreferences: userpreferences,
         public modal: modal,
         public toast: toast,
@@ -225,6 +227,7 @@ export class SpiceAttachmentFile {
     public deleteFile() {
         if (this.editmode) {
             this.modelattachments.deleteAttachment(this.file.id);
+            this.attachmentsPanelComponent.loadFiles();
         }
     }
 }

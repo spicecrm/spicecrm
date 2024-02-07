@@ -1,7 +1,7 @@
 /**
  * @module ModuleTOTPAuthentication
  */
-import { Component, Input, OnInit } from "@angular/core";
+import {Component, Input, OnInit, Output} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
@@ -47,6 +47,10 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
 
     @Input() public onBehalfUserId: string;
 
+    @Output() public onValidationSuccess = new Subject<void>();
+
+    public credentials: {username: string, password: string};
+
     public response = new Subject<boolean>();
 
     constructor(
@@ -62,7 +66,7 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
 
     public ngOnInit() {
         let loading = this.modal.await(this.language.getLabel('MSG_TOTP_GENERATING_CODE'));
-        this.backend.postRequest(`authentication/totp/generate`, { onBehalfUserId: this.onBehalfUserId })
+        this.backend.postRequest(`authentication/totp/generate`, { onBehalfUserId: this.onBehalfUserId }, this.credentials)
             .subscribe({
             next: res => {
                 loading.emit(true);
@@ -95,16 +99,17 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
     }
 
     public save() {
-        this.backend.putRequest(`authentication/totp/validate/${this.code}`, { onBehalfUserId: this.onBehalfUserId })
+        this.backend.putRequest(`authentication/totp/validate/${this.code}`, { onBehalfUserId: this.onBehalfUserId }, this.credentials)
             .subscribe( {
                 next: res => {
                     if( res.validated ) {
                         this.response.next(true);
 
-                        if(this.onBehalfUserId == this.session.authData.userId){
+                        if(!!this.session.authData?.userId && this.onBehalfUserId == this.session.authData.userId){
                             this.session.authData.user.user_2fa_method = 'one_time_password';
                         }
-
+                        this.onValidationSuccess.next();
+                        this.onValidationSuccess.complete();
                         this.close();
                     } else {
                         this.response.next(false);

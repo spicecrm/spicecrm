@@ -136,6 +136,23 @@ class SpiceFTSUtils
             if ($moduleProperties) {
                 $modulePropertiesarray = json_decode(html_entity_decode($moduleProperties['ftsfields']), true);
                 $seed = BeanFactory::getBean($module);
+
+                // ensure the is_inactive field is properly set in the index parameters
+                if (property_exists($seed, 'is_inactive')) {
+                    $id =  SpiceUtils::createGuid();
+                    $modulePropertiesarray[] = [
+                        'id' => $id,
+                        'fieldid' => $id,
+                        'fieldname' => 'is_inactive',
+                        'indexfieldname' => 'is_inactive',
+                        'indextype' => 'keyword',
+                        'search' => false,
+                        'index' => true,
+                        'enablesort' => true,
+                        'path' => "root:$module::field:is_inactive" // build the path to get metadata
+                    ];
+                }
+
                 foreach ($modulePropertiesarray as $modulePropertyIndex => $moduleProperty) {
                     $modulePropertiesarray[$modulePropertyIndex]['indexfieldname'] = isset($moduleProperty['indexedname']) ? $moduleProperty['indexedname'] : SpiceFTSUtils::getFieldIndexName($seed, $moduleProperty['path']);
                     $modulePropertiesarray[$modulePropertyIndex]['metadata'] = SpiceFTSUtils::getFieldIndexParams($seed, $moduleProperty['path']);
