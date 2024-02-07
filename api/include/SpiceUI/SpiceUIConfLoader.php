@@ -106,7 +106,6 @@ class SpiceUIConfLoader
         'syssalesdoctypesitemtypes',
         'syscategorytrees',
         'syscategorytreelinks',
-        'syststatusnetwork',
         'schedulerjobtasks',
         'schedulerjobs',
         'sysuihtmlstylesheets',
@@ -431,9 +430,9 @@ class SpiceUIConfLoader
 
             $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
 
-            if ($definitions->getDefinitionById($dictionaryDef['id'])) continue;
-
-            $definitions->addDefinition($dictionaryDef);
+            if (!$definitions->getDefinitionById($dictionaryDef['id'])) {
+                $definitions->addDefinition($dictionaryDef);
+            }
 
             $sql = $definitions->repair($dictionaryDef['id']);
 
