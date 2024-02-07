@@ -178,6 +178,20 @@ class SpiceDictionary
         return $this->dictionary[$dictionaryname];
     }
 
+    /**
+     * get dictionary definition by table name
+     * @param string $tableName
+     * @return array|null
+     */
+    public function getDefsByTableName(string $tableName): ?array
+    {
+        foreach ($this->dictionary as $dic) {
+            if ($tableName != $dic['table']) continue;
+            return $dic;
+        }
+        return null;
+    }
+
     public function writeCache(){
         SpiceCache::set(self::cachename, $this->dictionary);
     }
