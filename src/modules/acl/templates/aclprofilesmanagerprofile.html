@@ -151,6 +151,14 @@
                         <textarea class="slds-textarea" [(ngModel)]="profile.description"></textarea>
                     </div>
                 </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_APPLICABLE_SCOPE"></system-label></label>
+                    <div class="slds-grid">
+                        <system-input-radio [name]="'aclprofilescope'+profile.id" value="a" [(ngModel)]="profile.spiceaclprofilescope"><system-label label="LBL_ALL"/></system-input-radio>
+                        <system-input-radio [name]="'aclprofilescope'+profile.id" value="i" [(ngModel)]="profile.spiceaclprofilescope"><system-label label="LBL_INTERNAL_ONLY"/></system-input-radio>
+                        <system-input-radio [name]="'aclprofilescope'+profile.id" value="e" [(ngModel)]="profile.spiceaclprofilescope"><system-label label="LBL_EXTERNAL_ONLY"/></system-input-radio>
+                    </div>
+                </div>
                 <system-checkbox [(ngModel)]="profile.for_portal_users"><system-label label="LBL_FOR_PORTAL_USERS"></system-label></system-checkbox>
                 <div class="slds-p-vertical--x-small slds-align--absolute-center">
                     <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
