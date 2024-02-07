@@ -122,21 +122,24 @@ class SpiceGDPRManagerController
                 break;
         }
 
-        $query = "SELECT count(id) totalcount FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = {$includeDeleted}";
-        $countRes = $db->fetchByAssoc($db->query($query));
+        // do proceed only if we've got filter for the WHERE clause
+        if (!empty($filterWhere)) {
+            $query = "SELECT count(id) totalcount FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = {$includeDeleted}";
+            $countRes = $db->fetchByAssoc($db->query($query));
 
-        $list = [];
-        if($countRes['totalcount'] > 0) {
-            $modHandler = new SpiceBeanHandler();
-            $query = "SELECT id FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = {$includeDeleted}";
-            $ids = $db->limitQuery($query, $getParams['start'] ?: 0, 50);
-            while($id = $db->fetchByAssoc($ids)){
-                $seed = BeanFactory::getBean($moduleFilter->filtermodule, $id['id'], [], false);
-                $list[] = $modHandler->mapBeanToArray($moduleFilter->filtermodule, $seed);
+            $list = [];
+            if ($countRes['totalcount'] > 0) {
+                $modHandler = new SpiceBeanHandler();
+                $query = "SELECT id FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = {$includeDeleted}";
+                $ids = $db->limitQuery($query, $getParams['start'] ?: 0, 50);
+                while ($id = $db->fetchByAssoc($ids)) {
+                    $seed = BeanFactory::getBean($moduleFilter->filtermodule, $id['id'], [], false);
+                    $list[] = $modHandler->mapBeanToArray($moduleFilter->filtermodule, $seed);
+                }
             }
         }
 
-        return $res->withJson(['module' => $moduleFilter->filtermodule, 'list' => $list, 'total' => (int) $countRes['totalcount']]);
+        return $res->withJson(['module' => $moduleFilter->filtermodule, 'list' => $list, 'total' => (int)$countRes['totalcount']]);
     }
 
 }
