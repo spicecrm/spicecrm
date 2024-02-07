@@ -174,9 +174,6 @@ class SpiceDictionaryDefinitions
      */
     public function writeVardefToFieldsTable(string $dicName, array $dicDefinition)
     {
-        $sql = "";
-        $db = DBManagerFactory::getInstance();
-
         foreach ($dicDefinition['fields'] as $definition){
 
             $sysDictionaryField = [
@@ -189,10 +186,8 @@ class SpiceDictionaryDefinitions
             ];
 
             // insert into the cache table
-            $sql .= $db->insertQuery('sysdictionaryfields', $sysDictionaryField, false) . "; ";
+            DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', $sysDictionaryField);
         }
-
-        $db->query($sql);
     }
 
     public function getDefinitions($status = null)
