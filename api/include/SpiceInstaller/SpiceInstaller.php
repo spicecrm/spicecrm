@@ -5,7 +5,10 @@ namespace SpiceCRM\includes\SpiceInstaller;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\database\DBManager;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\api\controllers\ConfigTransferController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -425,9 +428,10 @@ class SpiceInstaller
     /**
      * creates the database with the contents of post request body, creates and additional user if provided, and returns the database instance
      * @param $postData
-     * @return object
+     * @return DBManager
+     * @throws DatabaseException
      */
-    private function createDatabase($postData)
+    private function createDatabase($postData): DBManager
     {
         $dbconfig = ['db_host_name' => $postData['database']['db_host_name'],
             'db_host_instance' => $postData['database']['db_host_instance'],
@@ -469,15 +473,23 @@ class SpiceInstaller
 
     /**
      * creates the system dictionary tables without indexes from teh dump for the system fields
-     *
-     * @param $db
+     * @param DBManager $db
      * @return void
+     * @throws Exception
      */
-    public function createSystem($db){
+    public function createSystem(DBManager $db){
         $dictionary = SpiceDictionary::getInstance()->dictionary;
-        foreach ($dictionary as $dictName => $dictFields){
+
+        foreach ($dictionary as $dictFields){
             $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], $dictFields['indices']);
             $db->query($query, true);
+        }
+
+        # write the definitions to the cache table
+        $defsHandler = SpiceDictionaryDefinitions::getInstance();
+
+        foreach ($dictionary as $dicName => $dicFields) {
+            $defsHandler->writeVardefToFieldsTable($dicName, $dicFields);
         }
     }
 

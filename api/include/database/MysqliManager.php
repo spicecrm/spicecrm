@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\database;
 
 use SpiceCRM\data\SpiceBean;
 use Exception;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidation;
@@ -187,6 +188,7 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * @throws DatabaseException
      * @see MysqlManager::query()
      */
 
@@ -238,7 +240,9 @@ class MysqliManager extends DBManager
 
             LoggerManager::getLogger()->fatal('sql', ['error' => $e->getMessage(), "query" => $this->lastsql]);
 
-            if ($dieOnError) throw $e;
+            if ($dieOnError) {
+                throw (new DatabaseException($e->getMessage()))->setErrorCode($e->getCode());
+            }
         }
 
         return $result;
