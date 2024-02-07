@@ -1,18 +1,19 @@
 /**
  * @module GlobalComponents
  */
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ComponentRef, Input, Optional} from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
-import { take } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import {Subscription} from 'rxjs';
+import {GlobalLogin} from "./globallogin";
+import {backend} from "../../services/backend.service";
 
 /**
- * renders a dialog to change the password or to generate a TOTP authentication when the user logs in and is required to do this
+ * renders a dialog to change the password when the user logs in and is required to do this
  */
 @Component({
     selector: 'global-login-change-password',
@@ -21,28 +22,16 @@ import { Subscription } from 'rxjs';
 export class GlobalLoginChangePassword {
 
     /**
-     * What should this component do? Password renewal or generation of the TOTP authentication?
-     * @public
-     */
-    @Input() public case: 'totp'|'pwd';
-
-    /**
      * the old password to check that the password has been changed
      * @public
      */
-    @Input('password') public password: string;
+    @Input() public password: string;
 
     /**
      * the id ot the user that tried to log in
      * @public
      */
-    @Input('username') public username: string;
-
-    /**
-     * emits if the prompt should be closed again
-     * @public
-     */
-    @Output() public closeDialog = new EventEmitter<string>();
+    @Input() public username: string;
 
     /**
      * the entered password
@@ -69,104 +58,47 @@ export class GlobalLoginChangePassword {
     public pwdGuideline: string;
 
     /**
-     * if we are posting the password or the TOTP code
+     * if we are posting the password
      * @public
      */
     public isPosting = false;
 
     /**
-     * the base 64 encoded QR code for TOTP
-     * @public
-     */
-    public totpQRCode: string;
-
-    /**
-     * the TOTP secret generated
-     * @public
-     */
-    public secret: string;
-
-    /**
-     * TOTP name of the user
-     * @public
-     */
-    public totpName: string;
-
-    /**
-     * the TOTP code entered to validate
-     * @public
-     */
-    public totpCode = '';
-
-    /**
-     * The array with the specific labels needed by the dialog, provided by the exception of the backend
-     */
-    @Input() public labels: any[];
-
-    /**
      * Indicates loading of backend data.
      */
     public isLoading = false;
-
-    /**
-     * ID of the last error toast.
-     * @private
-     */
-    private toastErrorID;
-
     public subscriptions: Subscription = new Subscription();
+    private self: ComponentRef<GlobalLoginChangePassword>;
+    /**
+     * true when user input enabled
+     */
+    @Input() public oldPasswordUserInputEnabled: boolean = true;
+    /**
+     * true when two-factor authentication active
+     */
+    public twoFactorAuthCodeRequired: boolean = false;
+    /**
+     * input for two-factor authentication code
+     */
+    public code2fa: string;
 
     constructor(public loginService: loginService,
-               public http: HttpClient,
-               public configuration: configurationService,
-               public toast: toast,
-               public session: session,
-               public language: language
-    ) {}
-
-    public ngOnInit() {
-
-        if ( this.case === 'totp') {
-
-            this.isLoading = true;
-            let headers = new HttpHeaders();
-            headers = headers.set('Accept', 'application/json');
-            this.subscriptions.add(
-                this.http.post( this.configuration.getBackendUrl() + `/authentication/totp/generate`, {
-                    username: this.username,
-                    password: this.password
-                }, { headers } )
-                    .pipe( take( 1 ) )
-                    .subscribe( {
-                        next: ( res: any ) => {
-                            if ( res.secret ) {
-                                this.totpQRCode = 'data:image/png;base64,' + res.qrcode;
-                                this.secret = res.secret;
-                                this.totpName = res.name;
-                            } else {
-                                this.toast.sendToast( 'Error generating Code', 'error' );
-                                this.close();
-                            }
-                            this.isLoading = false;
-                        },
-                        error: () => {
-                            this.toast.sendToast( 'Error generating Code', 'error' );
-                            this.close();
-                            this.isLoading = false;
-                        }
-                    })
-            );
-
-        } else {
-            this.buildGuidelineText();
-        }
+                public http: HttpClient,
+                public configuration: configurationService,
+                public toast: toast,
+                public session: session,
+                public language: language,
+                private backend: backend,
+                @Optional() private loginComponent: GlobalLogin
+    ) {
+        this.buildGuidelineText();
     }
 
     /**
      * checks that the new passoword is different than the old
      */
     get oldPwError() {
-        return (this.password == this.newPassword) ? this.getLabel('MSG_OLD_PWD_NOT_AS_NEW') : false;
+        return (this.oldPasswordUserInputEnabled && !!this.password && this.password == this.newPassword) ? this.getLabel('MSG_OLD_PWD_NOT_AS_NEW') : false;
         // 'Old password is not allowed to be used as a new password'
     }
 
@@ -185,32 +117,6 @@ export class GlobalLoginChangePassword {
     }
 
     /**
-     * closes the dialog
-     * @param password
-     */
-    public close( password?: string) {
-        this.closeDialog.emit(password);
-    }
-
-    /*
-    * build password guideline text
-    */
-   public buildGuidelineText() {
-        let extConf = this.configuration.getCapabilityConfig('userpassword');
-        this.pwdCheck = new RegExp(extConf.regex);
-
-        let requArray = [];
-
-        if (extConf.onelower) requArray.push( this.getLabel('LBL_ONE_LOWERCASE'));
-        if (extConf.oneupper) requArray.push( this.getLabel('LBL_ONE_UPPERCASE'));
-        if (extConf.onenumber) requArray.push( this.getLabel('LBL_ONE_DIGIT'));
-        if (extConf.onespecial) requArray.push( this.getLabel('LBL_ONE_SPECIALCHAR'));
-        if (extConf.minpwdlength) requArray.push( this.getLabel('LBL_MIN_LENGTH') + ' ' + extConf.minpwdlength);
-
-        this.pwdGuideline = requArray.join(', ');
-    }
-
-    /**
      * checks if the password can be saved
      */
     get canSavePwd() {
@@ -218,69 +124,66 @@ export class GlobalLoginChangePassword {
     }
 
     /**
-     * checks if the TOTP code can be sent
+     * closes the dialog
+     * @param password
      */
-    get canSaveTOTP() {
-        return !this.isPosting && this.totpCode.length === 6;
+    public close(password?: string) {
+        if (!!password && this.loginComponent) {
+            this.loginComponent.password = password;
+            this.loginComponent.login();
+        }
+        this.self.destroy();
+    }
+
+    /*
+    * build password guideline text
+    */
+    public buildGuidelineText() {
+        let extConf = this.configuration.getCapabilityConfig('userpassword');
+        this.pwdCheck = new RegExp(extConf.regex);
+
+        let requArray = [];
+
+        if (extConf.onelower) requArray.push(this.getLabel('LBL_ONE_LOWERCASE'));
+        if (extConf.oneupper) requArray.push(this.getLabel('LBL_ONE_UPPERCASE'));
+        if (extConf.onenumber) requArray.push(this.getLabel('LBL_ONE_DIGIT'));
+        if (extConf.onespecial) requArray.push(this.getLabel('LBL_ONE_SPECIALCHAR'));
+        if (extConf.minpwdlength) requArray.push(this.getLabel('LBL_MIN_LENGTH') + ' ' + extConf.minpwdlength);
+
+        this.pwdGuideline = requArray.join(', ');
     }
 
     /**
      * change the password for the user
      * send an unauthenticated request to the backend
      */
-   public setPassword() {
-        if (this.canSavePwd) {
-            this.isPosting = true;
-            this.subscriptions.add(
-                this.http.post(this.configuration.getBackendUrl() + '/authentication/changepassword', {
-                        username: this.username,
-                        password: this.password,
-                        newPassword: this.newPassword
-                    })
-                    .pipe(take(1))
-                    .subscribe( {
-                        next: ( res ) => {
-                            this.toast.sendToast( this.getLabel( 'MSG_PWD_CHANGED_SUCCESSFULLY' ), 'success', '', 5 );
-                            this.close( this.newPassword );
-                        },
-                        error: ( err: any ) => {
-                            this.isPosting = false;
-                        }
-                    })
-            );
-        }
-    }
+    public setPassword() {
 
-    /**
-     * Post the TOTP code to the backend.
-     */
-    public saveTOTP() {
-        let headers = new HttpHeaders();
-        if ( this.toastErrorID ) {
-            this.toast.clearToast( this.toastErrorID );
-            this.toastErrorID = null;
-        }
+        if (!this.canSavePwd) return;
+
         this.isPosting = true;
         this.subscriptions.add(
-            this.http.put( this.configuration.getBackendUrl() + `/authentication/totp/validate/${this.totpCode}`, {
-                username: this.username,
-                password: this.password
-            },{ headers })
-            .pipe(take(1))
-            .subscribe( {
-                next: ( res: any ) => {
-                    this.isPosting = false;
-                    if( res.validated ) {
-                        this.close();
-                    } else {
-                        this.toastErrorID = this.toast.sendToast('Error validating your code', 'error', 'The code you entered is not valid, please try again. If you entered the code correctly, make sure your computer\'s time is set correctly.', false, 'asdfasdf' );
-                    }
-                    this.totpCode = '';
+            this.backend.postRequest('authentication/changepassword', null, {
+                username: this.username ?? this.session.authData.userName,
+                password: this.password,
+                newPassword: this.newPassword,
+                code2fa: this.code2fa
+            }).subscribe({
+                next: (res) => {
+                    this.toast.sendToast(this.getLabel('MSG_PWD_CHANGED_SUCCESSFULLY'), 'success', '', 5);
+                    this.close(this.newPassword);
                 },
-                error: () => {
-                    this.isPosting = false;
-                    this.toastErrorID = this.toast.sendToast('Error validating your code', 'error', 'There as an internal error validating your request.', false );
-                    this.totpCode = '';
+                error: (err: any) => {
+                    switch (err.error?.error?.errorCode) {
+                        case 'no2FACode':
+                            this.twoFactorAuthCodeRequired = true;
+                            this.toast.sendToast(err.error.error.message, 'success');
+                            break;
+                        case 'invalid2FACode':
+                            this.toast.sendToast('MSG_INVALID_CODE', 'error');
+                            break;
+                    }
+                     this.isPosting = false;
                 }
             })
         );
@@ -291,12 +194,14 @@ export class GlobalLoginChangePassword {
      * @param name Label Name
      * @param type Label Type ('default', 'short' or 'long')
      */
-    public getLabel( name: string, type: 'default'|'short'|'long' = 'default') {
-       return this.labels && this.labels[name] && this.labels[name][type] ? this.labels[name][type] : name;
+    public getLabel(name: string, type: 'default' | 'short' | 'long' = 'default') {
+        return this.language.getLabel(name, undefined, type);
     }
 
+    /**
+     * unsubscribe from rxjs subscriptions
+     */
     public ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
     }
-
 }

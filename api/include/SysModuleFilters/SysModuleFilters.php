@@ -174,8 +174,9 @@ class SysModuleFilters
                 $focus = new $class();
                 if (method_exists($focus, $method)) {
                     $ids = $focus->$method($bean);
-                    if (is_array($ids) && count($ids) > 0) {
-                        $whereClause = (!empty($whereClause) ? "($whereClause) AND " : "") . " ($tablename.id IN ('" . implode("','", $ids) . "'))";
+                    if (is_array($ids)) {
+                        // if ids array empty return false
+                        $whereClause = count($ids) == 0 ? false : (!empty($whereClause) ? "($whereClause) AND " : "") . " ($tablename.id IN ('" . implode("','", $ids) . "'))";
                     } else if($ids){
                         $whereClause = (!empty($whereClause) ? "($whereClause) AND " : "") . " ({$ids})";
                     }
@@ -583,6 +584,20 @@ class SysModuleFilters
                     break;
                 case 'creator':
                     $filterCondition['must'][] = ["terms" => ["created_by" => array_merge([$current_user->id], $absence->getSubstituteIDs())]];
+                    break;
+            }
+        }
+
+        if($group->groupstate == 'active' || $group->groupstate == 'inactive' || $group->groupstate == 'activeAndInactive') {
+            switch ($group->groupstate) {
+                case 'active':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['0']]];
+                    break;
+                case 'inactive':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['1']]];
+                    break;
+                case 'activeAndInactive':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['1', '0']]];
                     break;
             }
         }

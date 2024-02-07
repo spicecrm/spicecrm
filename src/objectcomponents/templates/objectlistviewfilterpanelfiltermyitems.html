@@ -2,41 +2,73 @@
     <li class="slds-item slds-hint-parent" (click)="onClick()">
         <div class="slds-filters__item slds-grid slds-grid--vertical-align-center">
             <a href="javascript:void(0);" class="slds-grow slds-has-blur-focus">
-                <p class="slds-text-body--small"><system-label label="LBL_DISPLAY"></system-label>: {{language.getLabel('LBL_' + filterValue.toUpperCase())}}</p>
+                <p class="slds-text-body--small"><system-label label="LBL_DISPLAY"></system-label>: {{getLabel}}</p>
             </a>
         </div>
     </li>
     <div #popover [ngStyle]="getPopoverStyle()">
         <div *ngIf="showPopover" @animatepopover class="slds-popover slds-nubbin--right" role="dialog">
-            <div class="slds-popover__body">
-                <fieldset class="slds-form-element">
-                    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_DISPLAY"></system-label></legend>
-                    <div class="slds-form-element__control">
-                    <span class="slds-radio">
-                      <input type="radio" id="radioall" name="scope" value="all" [(ngModel)]="filterValue"/>
-                      <label class="slds-radio__label" for="radioall">
-                        <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_ALL"></system-label></span>
-                      </label>
-                    </span>
-                    <span class="slds-radio">
-                      <input type="radio" id="radioown" name="scope" value="own" [(ngModel)]="filterValue"/>
-                      <label class="slds-radio__label" for="radioown">
-                        <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_OWN"></system-label></span>
-                      </label>
-                    </span>
-                    <span class="slds-radio">
-                      <input type="radio" id="radiocre" name="scope" value="creator" [(ngModel)]="filterValue"/>
-                      <label class="slds-radio__label" for="radiocre">
-                        <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label"><system-label label="LBL_CREATOR"></system-label></span>
-                      </label>
-                    </span>
-                    </div>
-                </fieldset>
-                <div class="slds-text-align--right slds-p-top--x-small">
-                    <button type="button" class="slds-button slds-button--brand slds-button-space-left" (click)="closePopover()"><system-label label="LBL_OK"></system-label></button>
+            <div class="slds-popover__body slds-grid slds-wrap">
+                <legend class="slds-form-element__legend slds-form-element__label slds-size_1-of-1">
+                    <system-label label="LBL_DISPLAY"></system-label>
+                </legend>
+                <div class="slds-grid slds-gutters">
+                    <fieldset class="slds-form-element slds-col">
+                        <div class="slds-form-element__control">
+                            <span class="slds-radio">
+                              <input type="radio" id="radioall" name="scope" value="all" [(ngModel)]="filterValue.groupscope"/>
+                              <label class="slds-radio__label" for="radioall">
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label"><system-label label="LBL_ALL"></system-label></span>
+                              </label>
+                            </span>
+                            <span class="slds-radio">
+                              <input type="radio" id="radioown" name="scope" value="own" [(ngModel)]="filterValue.groupscope"/>
+                              <label class="slds-radio__label" for="radioown">
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label"><system-label label="LBL_OWN"></system-label></span>
+                              </label>
+                            </span>
+                            <span class="slds-radio">
+                              <input type="radio" id="radiocre" name="scope" value="creator" [(ngModel)]="filterValue.groupscope"/>
+                              <label class="slds-radio__label" for="radiocre">
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label"><system-label label="LBL_CREATOR"></system-label></span>
+                              </label>
+                            </span>
+                        </div>
+                    </fieldset>
+                    <fieldset class="slds-form-element slds-col" *ngIf="hasInactiveProperty">
+                        <div class="slds-form-element__control">
+                            <span class="slds-radio">
+                              <input type="radio" id="radioactive" name="state" value="active" [(ngModel)]="filterValue.groupstate"/>
+                              <label class="slds-radio__label" for="radioactive">
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label"><system-label label="LBL_ACTIVE"></system-label></span>
+                              </label>
+                            </span>
+                            <span class="slds-radio">
+                              <input type="radio" id="radioinactive" name="state" value="inactive" [(ngModel)]="filterValue.groupstate"/>
+                              <label class="slds-radio__label" for="radioinactive">
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label"><system-label label="LBL_INACTIVE"></system-label></span>
+                              </label>
+                            </span>
+                            <span class="slds-radio">
+                              <input type="radio" id="radioactiveAndInactive" name="state" value="activeAndInactive" [(ngModel)]="filterValue.groupstate"/>
+                              <label class="slds-radio__label" for="radioactiveAndInactive">
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label"><system-label label="LBL_ACTIVE_AND_INACTIVE"></system-label></span>
+                              </label>
+                            </span>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="slds-text-align--right slds-p-top--x-small slds-size_1-of-1">
+                    <button type="button" class="slds-button slds-button--brand slds-button-space-left"
+                            (click)="closePopover()">
+                        <system-label label="LBL_OK"></system-label>
+                    </button>
                 </div>
             </div>
         </div>
