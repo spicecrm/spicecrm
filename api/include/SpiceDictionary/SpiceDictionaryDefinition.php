@@ -62,12 +62,6 @@ class SpiceDictionaryDefinition
             $indexes = array_merge($indexes, $res['indexes']);
         }
 
-        // repair this item
-        $repairDefinitions = [];
-        foreach ($definitions as $definition) {
-            if ($definition->source != 'non-db') $repairDefinitions[] = (array)$definition;
-        }
-
         // load the vardefs
         $vardefDetails = $this->loadVardefs();
 
@@ -75,7 +69,10 @@ class SpiceDictionaryDefinition
         $repairDefinitions = [];
         foreach ($definitions as $definition) {
             if ($definition->source != 'non-db') $repairDefinitions[] = (array)$definition;
-            unset($vardefDetails['fields'][$definition->name]);
+            foreach ($vardefDetails['fields'] as $idx => $field) {
+                if ($field['name'] != $definition->name) continue;
+                unset($vardefDetails['fields'][$idx]);
+            }
         }
 
         // merge the remaining fields
