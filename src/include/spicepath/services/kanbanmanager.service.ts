@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
 
 import {forkJoin, Observable, Subject} from "rxjs";
 import {tap, map} from "rxjs/operators";
@@ -46,7 +46,8 @@ export class KanbanManagerService {
 
     public constructor(
         public backend: backend,
-        public toast: toast
+        public toast: toast,
+        private differs: KeyValueDiffers
     ) {
         this.loadItems();
         this.loadChecks();
@@ -64,7 +65,7 @@ export class KanbanManagerService {
     /**
      * compare
      */
-    public detectChanges(item: SpiceBeanGuideStagesI | SpiceTextsI | SpiceBeanGuideChecksI, type: 'stages' | 'checks' | 'spiceTexts') {
+    public compareRecordBackupWithCurrentValue(item: SpiceBeanGuideStagesI | SpiceTextsI | SpiceBeanGuideChecksI, type: 'stages' | 'checks' | 'spiceTexts') {
 
         this[type].some(s => {
             if (s.id != item.id) return false;
@@ -82,6 +83,48 @@ export class KanbanManagerService {
         });
     }
 
+    /**
+     * holds the registered dirty checkers
+     * @private
+     */
+    private dirtyCheckers = new Map<string, KeyValueDiffer<any, any>>();
+
+    /**
+     * register a new dirty checker for a target object
+     * @param name
+     * @param obj
+     */
+    public registerDirtyChecker(name: string, obj: any) {
+
+        this.dirtyCheckers.delete(name);
+
+        if (!obj) return;
+
+        this.dirtyCheckers.set(name, this.differs.find(obj).create());
+    }
+
+    /**
+     * check on dirty fields in the target object
+     * @param name
+     * @param obj
+     * @param type
+     */
+    public checkForDirtyFields(name: string, obj: any, type: 'stages' | 'checks' | 'spiceTexts'): boolean {
+
+        if (!this.dirtyCheckers.has(name)) return;
+
+        const changes = this.dirtyCheckers.get(name).diff(obj);
+
+        if (!changes) return;
+
+        let hasChanges = false;
+
+        changes.forEachChangedItem(() => hasChanges = true);
+
+        if (hasChanges) {
+            this.compareRecordBackupWithCurrentValue(obj, type);
+        }
+    }
 
     /**
      * holds the selected bean guide
