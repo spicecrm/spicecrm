@@ -128,10 +128,12 @@ class SpiceDictionaryDefinitions
 
     /**
      * does a generic repair or for a specific id if given
-     *
-     * @return void
+     * @param $id
+     * @param $keep
+     * @return string|null
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
      */
-    public function repair($id, $keep = false)
+    public function repair($id, $keep = false): ?string
     {
         $sql = (new SpiceDictionaryDefinition($id))->repair(false);
         if ($keep) {
@@ -142,40 +144,50 @@ class SpiceDictionaryDefinitions
 
     /**
      * does a generic repair or for a specific id if given
-     *
-     * @return void
+     * @param $name
+     * @param bool $keep
+     * @return string|null
+     * @throws \Exception
      */
-    public function repairVardefDefinition($name, $keep = false)
+    public function repairVardefDefinition($name, bool $keep = false): ?string
     {
         // $vardefDefinitions = SpiceDictionaryVardefs::loadVardefs([$name])[$name];
         SpiceDictionaryVardefs::loadLegacyFiles();
-        $vardefDefinitions = SpiceDictionaryHandler::getInstance()->dictionary[$name];
-        foreach ($vardefDefinitions['fields'] as $fieldName => $definition){
-            // write to the cached fields
+        $dic = SpiceDictionaryHandler::getInstance()->dictionary[$name];
+
+        $this->writeVardefToFieldsTable($name, $dic);
+        $repairFields = array_filter($dic['fields'], fn($d) => $d['source'] != 'non-db');
+
+        // do the repair
+        $sql = DBManagerFactory::getInstance()->repairTableParams($dic['table'], $repairFields, $dic['indices'], false);
+        if ($keep) {
+            $_SESSION['sysdictionary']['sqls'][md5($sql)] = $sql;
+        }
+        return $sql;
+    }
+
+    /**
+     * write vardef to fields table
+     * @param string $dicName
+     * @param array $dicDefinition
+     * @throws \Exception
+     */
+    public function writeVardefToFieldsTable(string $dicName, array $dicDefinition)
+    {
+        foreach ($dicDefinition['fields'] as $definition){
+
             $sysDictionaryField = [
                 'id' => SpiceUtils::createGuid(),
-                'sysdictionaryname' => $name,
-                'sysdictionarytablename' => $vardefDefinitions['table'],
+                'sysdictionaryname' => $dicName,
+                'sysdictionarytablename' => $dicDefinition['table'],
                 'fieldname' => $definition['name'],
                 'fieldtype' => $definition['type'],
                 'fielddefinition' => json_encode($definition)
             ];
 
-            // insert into the cached file
+            // insert into the cache table
             DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', $sysDictionaryField);
-
-            // if non db add to the repair definitions
-            if($definition['source'] != 'non-db'){
-                $repairDefinitions[] = $definition;
-            }
         }
-
-        // do the reopair
-        $sql = DBManagerFactory::getInstance()->repairTableParams($vardefDefinitions['table'], $repairDefinitions, $vardefDefinitions['indices'], false);
-        if ($keep) {
-            $_SESSION['sysdictionary']['sqls'][md5($sql)] = $sql;
-        }
-        return $sql;
     }
 
     public function getDefinitions($status = null)

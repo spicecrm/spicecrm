@@ -720,6 +720,7 @@ export class modellist implements OnDestroy {
             return {
                 logicaloperator: 'and',
                 groupscope: 'all',
+                groupstate: 'active',
                 conditions: []
             };
         }

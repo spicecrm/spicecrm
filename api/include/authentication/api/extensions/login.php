@@ -1,5 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
+
+use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRM2FAUtils;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Users\api\controllers\UsersController;
 use SpiceCRM\includes\authentication\api\controllers\LoginController;
@@ -49,7 +51,15 @@ $routes = [
     ]
 ];
 
+$config = SpiceCRM2FAUtils::get2FAConfig();
+$config = [
+    'twoFactorAuthMethod' => $config->method,
+    'trustDeviceDays' => $config->trust_device_days,
+    'smsMailboxId' => $config->sms_mailbox_id,
+    'emailMailboxId' => $config->email_mailbox_id,
+    'requireOn' => $config->require_on,
+];
 /**
  * register the Extension
  */
-$RESTManager->registerExtension('login', '1.0', [], $routes);
+$RESTManager->registerExtension('login', '1.0', $config, $routes);

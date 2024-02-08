@@ -32,3 +32,14 @@ export interface TokenObjectI {
     refresh_token?: string,
     valid_until?: string
 }
+
+/**
+ * two factory authentication config object
+ */
+export interface Config2FAI {
+    twoFactorAuthMethod: 'sms' | 'one_time_password' | 'email' | 'user_defined';
+    trustDeviceDays: string;
+    smsMailboxId: string;
+    emailMailboxId: string;
+    requireOn: 'always' | 'device_change' | '';
+}

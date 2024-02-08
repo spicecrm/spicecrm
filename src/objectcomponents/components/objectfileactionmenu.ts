@@ -22,6 +22,8 @@ export class ObjectFileActionMenu {
 
     @Input() public file: any;
 
+    public currentUser: '';
+
     constructor(public broadcast: broadcast,
                 public modelattachments: modelattachments,
                 public language: language,
@@ -33,12 +35,12 @@ export class ObjectFileActionMenu {
                 public toast: toast,
                 public modal: modal,
                 public metadata: metadata) {
+        this.currentUser = this.metadata.session.authData.user.id;
     }
 
     get uploading() {
         return this.file.hasOwnProperty('uploadprogress');
     }
-
     /**
      * determines where the menu is opened
      */
@@ -50,10 +52,10 @@ export class ObjectFileActionMenu {
     }
 
     /**
-     * check ACL for delete and hide the button if false
+     * check ACL and ownership for delete and hide the button if false
      */
     get hidden(): boolean {
-        return !this.metadata.checkModuleAcl('Application', "manageattachments");
+        return !this.metadata.checkModuleAcl('Application', "manageattachments") && this.currentUser != this.file.user_id;
     }
 
     /**

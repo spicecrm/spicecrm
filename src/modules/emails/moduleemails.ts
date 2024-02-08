@@ -43,6 +43,8 @@ import {EmailToLeadButton} from "./components/emailtoleadbutton";
 import {EmailCloneAttachmentsButton} from "./components/emailcloneattachmentsbutton";
 import {EmailCloneAttachmentsModal} from "./components/emailcloneattachmentsmodal";
 import {ModuleSpiceAttachments} from "../../include/spiceattachments/spiceattachments";
+import {fieldZipCompress} from "./fields/fieldzipcompress";
+import {fieldReadReceipt} from "./fields/fieldreadreceipt";
 
 @NgModule({
     imports: [
@@ -85,7 +87,9 @@ import {ModuleSpiceAttachments} from "../../include/spiceattachments/spiceattach
         EmailToLeadEmailText,
         EmailToLeadButton,
         EmailCloneAttachmentsButton,
-        EmailCloneAttachmentsModal
+        EmailCloneAttachmentsModal,
+        fieldZipCompress,
+        fieldReadReceipt
     ]
 })
 export class ModuleEmails {}
