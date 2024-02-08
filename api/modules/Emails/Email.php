@@ -32,6 +32,7 @@ use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\EmailTrackingLinks\EmailTrackingLink;
 use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
+use ZipArchive;
 
 class Email extends SpiceBean
 {
@@ -237,6 +238,44 @@ class Email extends SpiceBean
         if ($this->to_be_sent) {
             try {
                 $this->loadAttachments();
+
+//                START ZIP ARCHIVE
+                if (!!$this->zip_compress) {
+
+                // create a zip file in the temporaty directory
+                $tempDir = sys_get_temp_dir();
+                $filename = $this->attachments[0]->filename . '_' . SpiceUtils::createGuid() . '.zip';
+                $path = $tempDir . DIRECTORY_SEPARATOR . $filename;
+
+                //create ZIP folder and add attachments to it
+                $zip = new ZipArchive();
+
+                if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE === TRUE)) {
+                    foreach ($this->attachments as $attachment) {
+                        $zip->addFile("upload/" . $attachment->filemd5, $attachment->filename);
+                    }
+                }
+
+                $zip->close();
+
+                //hash the zip file as md5 and save it to upload folder
+                $filemd5 = md5_file($path);
+                $file = file_get_contents($path);
+                file_put_contents("upload/$filemd5", $file);
+
+                //create a new attachment object
+                $newZipAttachment = new \stdClass();
+                $newZipAttachment->filemd5 = $filemd5;
+                $newZipAttachment->filename = $filename;
+
+                //empty the attachments array and push the created zip attachment to it
+                $this->attachments = [];
+                $this->attachments[0] = $newZipAttachment;
+
+                //delete the zip folder from temporary location
+                unlink($path);
+//                END ZIP ARCHIVE
+            }
                 $result = $this->sendEmail();
                 $this->to_be_sent = false;
             }
@@ -574,7 +613,7 @@ class Email extends SpiceBean
     {
         if (!empty($this->mailbox_id)) {
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
-            $mailbox->deleteEmail($this);
+            if($mailbox) $mailbox->deleteEmail($this);
         }
         return parent::mark_deleted($id);
     }
@@ -971,6 +1010,7 @@ class Email extends SpiceBean
         }
 
         $mailbox->initTransportHandler();
+//        $mailbox->transport_handler->zip_attachments = true;
         $result = $mailbox->transport_handler->sendMail($this);
 
         if (!empty($result['message_id'])) {

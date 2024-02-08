@@ -852,7 +852,7 @@ class SpiceBean
      * @param string $rel_name relationship/attribute name.
      * @return nothing.
      */
-    function load_relationship($rel_name)
+    function load_relationship($rel_name, $forceReload = false )
     {
         LoggerManager::getLogger()->debug("SpiceBean[{$this->_objectname}].load_relationships, Loading relationship (" . $rel_name . ").");
 
@@ -867,6 +867,7 @@ class SpiceBean
             //initialize a variable of type Link
             $class = '\SpiceCRM\data\Link2';
             if (isset($this->$rel_name) && $this->$rel_name instanceof $class) {
+                if ( $forceReload ) $this->$rel_name->load();
                 return true;
             }
             //if rel_name is provided, search the fieldef array keys by name.

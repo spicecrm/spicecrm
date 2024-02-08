@@ -43,6 +43,6 @@
     "start-nolive": "ng serve -o --no-live-reload",
     "build": "ng build --configuration production",
     "heap": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve",
-    "s-dev": "node --max_old_space_size=2056 ./node_modules/@angular/cli/bin/ng serve -o --no-live-reload"
+    "s-dev": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve -o --no-live-reload"
   }
 }

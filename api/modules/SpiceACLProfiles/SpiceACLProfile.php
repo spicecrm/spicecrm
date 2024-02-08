@@ -27,6 +27,26 @@ class SpiceACLProfile extends SpiceBean {
         return $spiceAclRoles;
     }
 
+
+    /**
+     * override to determine if this is global (assigned to all) or not
+     *
+     * @param $id
+     * @param $encode
+     * @param $deleted
+     * @param $relationships
+     * @return SpiceACLProfile|null
+     */
+    public function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
+    {
+        $bean = parent::retrieve($id, $encode, $deleted, $relationships);
+
+        // check if this is a global profile
+        $bean->is_global = $this->db->fetchOne("SELECT id FROM spiceaclprofiles_users WHERE deleted = 0 AND user_id = '*' AND spiceaclprofile_id='{$this->id}'") ? true : false;
+
+        return $bean;
+    }
+
     /**
      * returns an array of acl profiles allocated to specified user
      * @param $userId
