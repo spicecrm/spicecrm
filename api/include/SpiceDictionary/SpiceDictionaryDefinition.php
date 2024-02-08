@@ -39,13 +39,12 @@ class SpiceDictionaryDefinition
 
     /**
      * repairs the dictionary Definition
-     *
-     * @return void
-     * @throws \Exception
+     * @param bool $relationships
+     * @return string|null
+     * @throws Exception
      */
-    public function repair(bool $relationships = true)
+    public function repair(bool $relationships = true): ?string
     {
-
         // reset the cached items
         SpiceDictionaryField::clearForDefiniton($this->id);
 

@@ -1,0 +1,14 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_SELECT_2FA_METHOD"/>
+    </system-modal-header>
+    <system-modal-content>
+        <system-input-radio *ngFor="let method of methods" [(ngModel)]="selectedMethod" [value]="method.value" name="select_2fa_method" class="spice-display-block">
+            <system-label [label]="method.label"/> <span *ngIf="!!method.address" class="slds-m-left--xx-small">({{method.address}})</span>
+        </system-input-radio>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button class="slds-button slds-button--brand" (click)="confirm()" [disabled]="!selectedMethod"><system-label label="LBL_CONFIRM"/></button>
+    </system-modal-footer>
+</system-modal>

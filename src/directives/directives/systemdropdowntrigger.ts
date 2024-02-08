@@ -101,10 +101,6 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             this.setDropdownElement();
         }
 
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
 
         if (this.dropdowntriggerdisabled || !this.dropdownElement) return false;
 
