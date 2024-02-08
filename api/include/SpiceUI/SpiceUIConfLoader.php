@@ -41,6 +41,7 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -281,7 +282,7 @@ class SpiceUIConfLoader
         $this->resetCounters();
 
         $this->loadPackageModules($response, $params['packages']);
-        $this->processNewDictionaries($response);
+        $this->processNewDictionaries($response, $params['packages']);
 
         foreach ($response as $tableName => $records) {
             $this->loadTableRecords($tableName, $records, $params['packages']);
@@ -309,11 +310,11 @@ class SpiceUIConfLoader
     /**
      * load package table records
      * @param string $tableName
-     * @param array $records
+     * @param array|null $records
      * @param array $packages
      * @throws Exception | \Exception
      */
-    private function loadTableRecords(string $tableName, array $records, array $packages)
+    private function loadTableRecords(string $tableName, ?array $records, array $packages)
     {
         $db = DBManagerFactory::getInstance();
 
@@ -323,6 +324,9 @@ class SpiceUIConfLoader
         if ($hasPackageField) {
             $this->cleanupPackageBeforeLoad($tableName, $packages);
         }
+
+        # if no records do nothing
+        if (!$records) return;
 
         if (!isset($this->loadedTablesEntries[$tableName])) {
             $this->loadedTablesEntries[$tableName] = 0;
@@ -400,7 +404,7 @@ class SpiceUIConfLoader
     /**
      * insert package system modules
      * @param array|null $response
-     * @throws Exception
+     * @throws Exception | \Exception
      */
     private function loadPackageModules(array &$response, array $packages)
     {
@@ -414,16 +418,24 @@ class SpiceUIConfLoader
     /**
      * check the package dictionaries if loaded and repair the dictionaries
      * @param array $response
+     * @param array $packages
      * @return void
-     * @throws Exception | \Exception
+     * @throws Exception
+     * @throws DatabaseException | \Exception
      */
-    private function processNewDictionaries(array &$response)
+    private function processNewDictionaries(array &$response, array $packages)
     {
+        $dictionaryTables = [
+            'sysdictionaryindexitems', 'sysdictionaryindexes' , 'sysdictionaryitems', 'sysdictionaryrelationshipfields', 'sysdictionaryrelationshippolymorphs', 'sysdictionaryrelationshiprelatefields', 'sysdictionaryrelationships'
+        ];
+
         $definitions = SpiceDictionaryDefinitions::getInstance();
         $db = DBManagerFactory::getInstance();
 
-        if (!isset($this->loadedTablesEntries['sysdictionarydefinitions'])) {
-            $this->loadedTablesEntries['sysdictionarydefinitions'] = 0;
+        $this->loadedTablesEntries['sysdictionarydefinitions'] = 0;
+
+        foreach ($dictionaryTables as $table) {
+            $this->loadTableRecords($table, $response[$table], $packages);
         }
 
         foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
@@ -434,9 +446,11 @@ class SpiceUIConfLoader
                 $definitions->addDefinition($dictionaryDef);
             }
 
-            $sql = $definitions->repair($dictionaryDef['id']);
-
-            if (!empty($sql)) $db->query($sql);
+            # repair only active definitions
+            if ($dictionaryDef['status'] == 'a') {
+                $sql = $definitions->repair($dictionaryDef['id']);
+                if (!empty($sql)) $db->query($sql);
+            }
 
             if (empty($db->lastError())) {
                 $this->loadedTablesEntries['sysdictionarydefinitions']++;
@@ -450,6 +464,10 @@ class SpiceUIConfLoader
         SpiceDictionary::getInstance()->loadDictionary();
 
         unset($response['sysdictionarydefinitions']);
+
+        foreach ($dictionaryTables as $table) {
+            unset($response[$table]);
+        }
     }
 
     /**
