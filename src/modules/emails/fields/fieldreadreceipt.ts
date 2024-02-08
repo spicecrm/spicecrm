@@ -60,7 +60,7 @@ export class fieldReadReceipt extends fieldGeneric {
                 }
             });
             const selectedMailboxData = mailboxData.find(id => id.value == mailboxId);
-            this.mailboxReadReceiptConfig = selectedMailboxData.zip_compress;
+            this.mailboxReadReceiptConfig = selectedMailboxData.send_read_receipt;
         }
     }
 
