@@ -1,10 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, KeyValueDiffer, KeyValueDiffers, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {modelutilities} from "../../../services/modelutilities.service";
-import {SpiceTextsI} from "../interfaces/kanbanmanager.interfaces";
+import {SpiceBeanGuideStagesI, SpiceTextsI} from "../interfaces/kanbanmanager.interfaces";
 
 /**
  * manages the details of the kanban
@@ -47,13 +47,23 @@ export class SpiceKanbanManagerDetails implements OnInit {
     }
 
     @Input()
-    set selectedStage(stage) {
+    set selectedStage(stage: SpiceBeanGuideStagesI) {
+
         this._selectedStage = stage;
-        if (stage) this.selectSpiceText();
+
+        if (stage) {
+            this.selectSpiceText();
+        }
+
+        this.kanban.registerDirtyChecker('selectedStage', this._selectedStage);
     }
 
-    get selectedStage() {
+    get selectedStage(): SpiceBeanGuideStagesI {
         return this._selectedStage;
+    }
+
+    public ngDoCheck() {
+        this.kanban.checkForDirtyFields('selectedStage', this._selectedStage, 'stages');
     }
 
     public ngOnInit() {

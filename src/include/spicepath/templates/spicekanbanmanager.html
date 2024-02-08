@@ -1,9 +1,9 @@
 <div class="slds-grid slds-grid--vertical slds-height_full">
     <workbench-header titlelabel="LBL_KANBAN_MANAGER">
-        <workbench-header-controls>
-            <div class="slds-grid">
+        <workbench-header-controls class="slds-size--3-of-4">
+            <div class="slds-grid--align-end slds-grid">
                 <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
-                <system-input-module [disabled]="loading" [(ngModel)]="moduleName">{{moduleName}}</system-input-module>
+                <system-input-module [disabled]="loading" [(ngModel)]="moduleName" class="slds-size--1-of-4">{{moduleName}}</system-input-module>
                 <div class="slds-form-element__control slds-m-left--xx-small" style="min-width:250px;">
                     <div class="slds-select_container">
                         <select class="slds-select" [disabled]="loading" [(ngModel)]="selectedBeanGuide">
