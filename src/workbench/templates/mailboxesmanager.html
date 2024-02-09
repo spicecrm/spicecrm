@@ -1,21 +1,25 @@
-<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
-    <div class="slds-form-element">
-        <label class="slds-form-element__label"><system-label label="LBL_MAILBOX"></system-label></label>
-        <div class="slds-form-element__control" style="min-width:250px;">
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="selected_mailbox">
-                    <option value="">--</option>
-                    <option *ngFor="let mailbox of mailboxes"
-                            [value]="mailbox.id">{{mailbox.name}}
-                    </option>
-                </select>
-            </div>
-        </div>
+<workbench-header titlelabel="LBL_MAILBOX">
+    <workbench-header-controls>
+            <object-action-container [actionset]="headeractionset"></object-action-container>
+    </workbench-header-controls>
+</workbench-header>
+<div  [system-overlay-loading-spinner]="loading" class="slds-grid" system-to-bottom-noscroll>
+    <div class="slds-size--1-of-5 slds-scrollable--y slds-theme--shade slds-tabs_default__content slds-p-around--none slds-border--right">
+        <ul class="slds-has-dividers_around-space slds-p-around--x-small">
+            <li class="slds-theme--default slds-item"  *ngFor="let mailbox of mailboxes" [value]="mailbox.id">
+
+                <div class="slds-truncate slds-grid slds-grid_align-left" [ngClass]="{'slds-theme--inverse': mailbox.id == selected_mailbox}" [title]="mailbox.name">
+                    <system-utility-icon size="x-small" class="slds-p-around--xx-small" icon="email"></system-utility-icon>
+                    <a href="javascript:void(0);" class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small" (click)="showSelectedMailbox(mailbox.id)">{{ mailbox.name }}</a>
+                </div>
+
+                <div class=" slds-grid slds-grid--align-spread">
+                    <object-record-fieldset [fieldset]="listfieldset" [direction]="'horizontal'"></object-record-fieldset>
+                </div>
+            </li>
+        </ul>
     </div>
-    <div class="slds-form-element slds-col--bump-left">
-       <object-action-container [actionset]="headeractionset"></object-action-container>
+    <div class="slds-size--4-of-5 slds-scrollable--y" [system-overlay-loading-spinner]="loading">
+        <div #viewcontainer></div>
     </div>
-</div>
-<div system-to-bottom class="slds-p-horizontal--small" [system-overlay-loading-spinner]="loading">
-    <div #viewcontainer></div>
 </div>

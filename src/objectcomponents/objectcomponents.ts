@@ -464,7 +464,9 @@ import {ObjectSetInactiveIcon} from "./components/objectsetinactiveicon";
         ObjectModelPopoverHeader,
         ObjectChecklists,
         ObjectRelatedListUrls,
-        ObjectRelatedCardUrl
+        ObjectRelatedCardUrl,
+        ObjectActionNewButton,
+        ObjectRecordFieldsetContainer
     ]
 })
 export class ObjectComponents {}
