@@ -25,15 +25,8 @@ export class UserCreateFromBeanButton {
     public disabled: boolean = true;
 
     constructor(public modal: modal, public language: language, public model: model, public session: session, public metadata: metadata, public injector: Injector, public configurationService: configurationService) {
-        // CR1000463: use spiceacl to enable listing and access foreign user records
-        // keep BWC for old modules/ACL/ACLController.php
-        let _aclcontroller = this.configurationService.getSystemParamater('aclcontroller');
-        if( _aclcontroller && _aclcontroller != 'spiceacl') {
-            if (this.session.isAdmin) this.disabled = false;
-        } else {
-            if (this.metadata.checkModuleAcl('Users', 'create')) {
-                this.disabled = false;
-            }
+        if (this.metadata.checkModuleAcl('Users', 'create')) {
+            this.disabled = false;
         }
     }
 

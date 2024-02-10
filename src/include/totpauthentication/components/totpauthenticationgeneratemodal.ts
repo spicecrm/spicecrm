@@ -61,8 +61,10 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
     }
 
     public ngOnInit() {
+        let params: any = {};
+        if(this.onBehalfUserId) params.onBehalfUserId = this.onBehalfUserId;
         let loading = this.modal.await(this.language.getLabel('MSG_TOTP_GENERATING_CODE'));
-        this.backend.postRequest(`authentication/totp/generate`, { onBehalfUserId: this.onBehalfUserId })
+        this.backend.postRequest(`authentication/totp/generate`, params)
             .subscribe({
             next: res => {
                 loading.emit(true);
@@ -95,13 +97,16 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
     }
 
     public save() {
-        this.backend.putRequest(`authentication/totp/validate/${this.code}`, { onBehalfUserId: this.onBehalfUserId })
+        let params: any = {};
+        if(this.onBehalfUserId) params.onBehalfUserId = this.onBehalfUserId;
+
+        this.backend.putRequest(`authentication/totp/validate/${this.code}`, params)
             .subscribe( {
                 next: res => {
                     if( res.validated ) {
                         this.response.next(true);
 
-                        if(this.onBehalfUserId == this.session.authData.userId){
+                        if(!this.onBehalfUserId || this.onBehalfUserId == this.session.authData.userId){
                             this.session.authData.user.user_2fa_method = 'one_time_password';
                         }
 
