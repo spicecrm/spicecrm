@@ -11,7 +11,7 @@ import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from "rxjs";
 import {metadata} from "../../../services/metadata.service";
 import {configurationService} from "../../../services/configuration.service";
-import {helper} from '../../../services/helper.service';
+import {modal} from '../../../services/modal.service';
 
 /**
  * @ignore
@@ -74,7 +74,7 @@ export class UserCreateFromBeanModal implements OnInit {
         public cdr: ChangeDetectorRef,
         public metadata: metadata,
         public configuration: configurationService,
-        public helper: helper
+        public modal: modal
     ) {
         this.model.module = "Users";
         this.view.isEditable = true;
@@ -164,11 +164,46 @@ export class UserCreateFromBeanModal implements OnInit {
         }
     }
 
-    public save(goDetail: boolean = false) {
-        if (this.hasError) {
-            return;
-        }
+    /**
+     * check that we can save
+     */
+    get canSave() {
+        return this.model.validate() && this.userRoles.length > 0;
+    }
 
+    public save() {
+        this.model.setFields({
+            parent_type: this.parent.module,
+            parent_id: this.parent.id,
+            system_generated_password: this.externalAuthOnly ? false : this.systemGenerated,
+            pwd_last_changed: new moment(),
+            external_auth_only: this.externalAuthOnly
+        });
+
+        let userData  = {
+            data: this.modelutilities.spiceModel2backend("Users", this.model.data),
+            roles: this.userRoles,
+            profiles: this.userProfiles,
+            credentials: {
+                newPassword: this.password,
+                forceReset: this.forceReset,
+                sendEmail: this.canSendByEmail ? this.sendByEmail : false
+            }
+        };
+
+        this.backend.postRequest(`module/Users/${this.model.id}/create`, {}, userData).subscribe({
+            next: (res) => {
+                this.self.destroy();
+            },
+            error: (e) => {
+                this.toast.sendToast('MSG_ERROR_CREATING_USER', 'error', e.error?.error?.message);
+            }
+        })
+    }
+
+    public saveUser() {
+
+        let awaitModal = this.modal.await('LBL_SAVING_USER');
         this.model.setFields({
             system_generated_password: this.externalAuthOnly ? false : this.systemGenerated,
             pwd_last_changed: new moment(),
@@ -188,14 +223,11 @@ export class UserCreateFromBeanModal implements OnInit {
                     this.model.endEdit();
 
                     // in case of external auth close direct - otherwise save password
-                    if(!this.externalAuthOnly) {
-                        this.savePassword(goDetail);
-                    } else {
-                        if(goDetail) this.model.goDetail();
-                        this.self.destroy();
-                    }
+                    this.saveRoles()
+                    awaitModal.emit(true);
                 },
                 error: (resErr) => {
+                    /*
                     if (resErr.error.error.message) {
                         this.addcontainer.element.nativeElement.scrollTop = 0;
                         if (resErr.error.error.errorCode == 'duplicateUsername') {
@@ -205,11 +237,52 @@ export class UserCreateFromBeanModal implements OnInit {
                             this.model.setFieldMessage("error", resErr.error.error.message, "email1", "validation");
                         }
                     }
+                    */
+                    awaitModal.emit(true);
                 }
-                });
+            });
     }
 
-    public savePassword(goDetail) {
+    public saveRoles() {
+        let awaitModal = this.modal.await('LBL_SAVING_ROLES');
+        this.backend.postRequest(`module/Users/${this.model.id}/roles`, {}, this.userRoles).subscribe({
+            next: () => {
+                if(this.userProfiles.length > 0){
+                    this.saveACLProfiles();
+                } else {
+                    if (!this.externalAuthOnly) {
+                        this.savePassword();
+                    } else {
+                        this.self.destroy();
+                    }
+                }
+                awaitModal.emit(true);
+            },
+            error: () => {
+                awaitModal.emit(true);
+            }
+        })
+    }
+
+    public saveACLProfiles(){
+        let awaitModal = this.modal.await('LBL_SAVING_PROFILES');
+        this.backend.postRequest(`module/Users/${this.model.id}/related/spiceaclprofiles`, {}, this.userProfiles).subscribe({
+            next: () => {
+                if (!this.externalAuthOnly) {
+                    this.savePassword();
+                } else {
+                    this.self.destroy();
+                }
+                awaitModal.emit(true);
+            },
+            error: () => {
+                awaitModal.emit(true);
+            }
+        });
+    }
+
+    public savePassword() {
+        let awaitModal = this.modal.await('LBL_SAVING_PASSWORD');
         let body = {
             newPassword: this.password,
             forceReset: this.forceReset,
@@ -221,14 +294,13 @@ export class UserCreateFromBeanModal implements OnInit {
                 } else {
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED"), "success");
                 }
-                if (goDetail) {
-                    this.model.goDetail();
-                }
+            awaitModal.emit(true);
                 this.self.destroy();
         }, error => {
             this.sendByEmail = false;
             this.canSendByEmail = false;
             this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_RESET_FAILED"), "error");
+            awaitModal.emit(true);
         });
     }
 }

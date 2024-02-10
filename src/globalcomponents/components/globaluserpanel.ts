@@ -19,6 +19,7 @@ import {
     TOTPAuthenticationGenerateModal
 } from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
 import {model} from "../../services/model.service";
+import {UserSet2FAModal} from "../../modules/users/components/userset2famodal";
 
 declare var _: any;
 
@@ -186,6 +187,13 @@ export class GlobaUserPanel {
             }
         );
     }
+
+
+
+    public set2FA() {
+        this.modal.openModal('UserSet2FAModal');
+    }
+
 
     public generateTOTP() {
         this.modal.openModal('TOTPAuthenticationGenerateModal').subscribe(

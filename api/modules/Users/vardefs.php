@@ -64,6 +64,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'importable' => 'false',
             'sensitive' => true,
         ],
+        'user_email' => [
+            'name' => 'user_email',
+            'vname' => 'LBL_EMAIL',
+            'type' => 'varchar',
+            'len' => '255',
+            'required' => false,
+        ],
         'user_2fa_method' => [
             'name' => 'user_2fa_method',
             'vname' => 'LBL_2FA_METHOD',
@@ -82,7 +89,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'required' => false,
             'reportable' => false,
         ],
-
         'pwd_last_changed' => [
             'name' => 'pwd_last_changed',
             'vname' => 'LBL_PSW_MODIFIED',
