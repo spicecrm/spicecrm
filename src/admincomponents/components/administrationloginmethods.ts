@@ -19,7 +19,7 @@ export class AdministrationLoginMethods implements OnInit {
     /**
      * holds the available mailboxes
      */
-    public mailboxes: {id: string, name: string}[] = [];
+    public mailboxes: {id: string, name: string, outbound_comm: string}[] = [];
 
     public config: {
         twoFactorAuthMethod: 'sms' | 'one_time_password' | 'email',
@@ -109,11 +109,19 @@ export class AdministrationLoginMethods implements OnInit {
      */
     public loadMailboxes() {
         this.isLoading = true;
-        this.backend.getRequest("module/Mailboxes").subscribe(
-            (results: {list: {id: string, name: string}[]}) => {
+        this.backend.getRequest("module/Mailboxes", {limit: -99}).subscribe(
+            (results: {list: {id: string, name: string, outbound_comm: string}[]}) => {
                 this.mailboxes = results.list.sort((a, b) => a.name.localeCompare(b.name));
                 this.isLoading = false;
             });
+    }
+
+    get smsmailboxes(){
+        return this.mailboxes.filter(m => m.outbound_comm == 'single_sms');
+    }
+
+    get emailmailboxes(){
+        return this.mailboxes.filter(m => m.outbound_comm == 'single');
     }
 
     /**
