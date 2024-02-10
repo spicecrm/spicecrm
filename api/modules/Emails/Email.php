@@ -1708,9 +1708,14 @@ class Email extends SpiceBean
 
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
+            $attachmentData = $attachment->getData();
+            if(!$attachmentData){
+                LoggerManager::getLogger()->fatal('emailattachment', 'Could not getData() of attachment '.$attachment->getFilename().' for email '.$this->id.'. Getting attachment skipped.');
+                continue;
+            }
             $fileArray = [
                 'filename' => $attachment->getFilename(),
-                'file' => base64_encode($attachment->getData()),
+                'file' => base64_encode($attachmentData),
                 'filemimetype' => $attachment->getMimeType(),
                 'external_id' => $attachment->getContentId(),
             ];
