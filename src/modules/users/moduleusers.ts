@@ -33,6 +33,8 @@ import {UserSignatureModal} from "./components/usersignaturemodal";
 import {UserCreateRoles} from "./components/usercreateroles";
 import {UserCreateProfiles} from "./components/usercreateprofiles";
 import {UserCreatePassword} from "./components/usercreatepassword";
+import {UserSet2FAModal} from "./components/userset2famodal";
+
 
 
 @NgModule({
@@ -69,7 +71,8 @@ import {UserCreatePassword} from "./components/usercreatepassword";
         UserDeactivateModal,
         UserDeactivateSelectUser,
         UserSignature,
-        User2FAConfiguration
+        User2FAConfiguration,
+        UserSet2FAModal
     ]
 })
 export class ModuleUsers {
