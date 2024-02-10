@@ -43,6 +43,11 @@ export class MailboxesManager {
      */
     public headeractionset: string;
 
+    /**
+     * the fieldset to be rendered on the left-hand side, where the list of mailboxes is
+     */
+    public listfieldset: string;
+
     public loading: boolean = true;
 
     constructor(
@@ -81,6 +86,7 @@ export class MailboxesManager {
 
         let componentconfig = this.metadata.getComponentConfig('MailboxesManager', 'Mailboxes');
         this.headeractionset = componentconfig.actionset;
+        this.listfieldset = componentconfig.listfieldset;
     }
 
     /**
@@ -125,6 +131,13 @@ export class MailboxesManager {
             this.model.id = "";
             this.model.initialize();
         }
+    }
+
+    /**
+     * show selected mailbox
+     */
+    public showSelectedMailbox(mailboxId){
+        this.selected_mailbox = this.mailboxes.find(m => m.id == mailboxId).id;
     }
 
     /**
