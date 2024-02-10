@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SugarObjects\templates\person;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
 use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
 use SpiceCRM\includes\Localization\Localization;
@@ -89,7 +90,7 @@ class Person extends Basic
      */
     public function save($check_notify = false, $fts_index_bean = true)
     {
-        $id = parent::save($check_notify, $fts_index_bean);
+        $id = parent::save($check_notify, false);
 
         if (empty(trim($this->email1))){
             return $this->id;
@@ -108,6 +109,11 @@ class Person extends Basic
             $this->setPrimaryEmailAddress($primaryEmailAddressId, ['opt_in_status' => $this->opt_in_status]);
         } else {
             $this->setPrimaryEmailAddress($primaryEmailAddressId);
+        }
+
+        if ($fts_index_bean) {
+            # index the person after adding the primary email address to ensure indexing it
+            SpiceFTSHandler::getInstance()->indexBean($this);
         }
 
         return $id;
@@ -242,31 +248,6 @@ class Person extends Basic
             }
         }
         return false;
-    }
-
-
-    /**
-     * ensure the is_inactive flag is properly set in the index parameters
-     *
-     * @return array
-     */
-    public function add_fts_metadata()
-    {
-        return [
-            'is_inactive' => [
-                'type' => 'keyword',
-                'search' => false,
-                'enablesort' => true
-            ]
-        ];
-    }
-
-    /**
-     * write is_inactive into the index
-     */
-    public function add_fts_fields()
-    {
-        return ['is_inactive' => $this->is_inactive ? '1' : '0'];
     }
 
     /**

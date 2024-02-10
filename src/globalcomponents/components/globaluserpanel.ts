@@ -20,6 +20,7 @@ import {
 } from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
 import {model} from "../../services/model.service";
 import {UserSet2FAModal} from "../../modules/users/components/userset2famodal";
+import {GlobalLoginChangePassword} from "./globalloginchangepassword";
 
 declare var _: any;
 
@@ -148,7 +149,7 @@ export class GlobaUserPanel {
      */
    public changePassword() {
         if(this.canChangePassword) {
-            this.modal.openModal("UserChangePasswordModal");
+            this.modal.openStaticModal(GlobalLoginChangePassword);
         }
     }
 
