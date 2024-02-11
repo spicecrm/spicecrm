@@ -643,3 +643,7 @@ input[type="submit"] {
 .slds-app-launcher__tile:hover{
     border-color: var(--brand-primary)
 }
+
+.slds-button.slds-button_icon:hover {
+    color: var(--brand-primary);
+}
