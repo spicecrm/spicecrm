@@ -57,12 +57,13 @@ $routes = [
  */
 $config = SpiceConfig::getInstance()->config['user_login_2fa'];
 $auth2faConfig = [
-    '2fa' => [
+    'twofactor' => [
         'sms' => !empty($config['sms_mailbox_id']),
         'email' => !empty($config['email_mailbox_id']),
         'onlogin' => [
-            'enforced' => $config['require_on'] ?: false,
-            'method' => $config['method']
+            'enforced' => $config['require_on'] ?: '',
+            'method' => $config['method'],
+            'trustenabled' => $config->trust_device_days > 0
         ]
     ]
 ];

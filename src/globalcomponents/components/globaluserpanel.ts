@@ -116,6 +116,11 @@ export class GlobaUserPanel {
         return this.session.authData.canchangepassword;
     }
 
+    get canChange2fa(){
+        let config = this.config.getCapabilityConfig('login');
+        return this.canChangePassword && (!config.twofactor.onlogin.enforced || config.twofactor.onlogin.method == '' || config.twofactor.onlogin.method == 'user_defined');
+    }
+
     /**
      * navigates to the users detail page
      *
