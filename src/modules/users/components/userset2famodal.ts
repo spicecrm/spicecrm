@@ -44,14 +44,14 @@ export class UserSet2FAModal  {
     }
 
     get smsEnabled(){
-        return this.capabilityConfig['2fa'].sms;
+        return this.capabilityConfig.twofactor.sms;
     }
     get emailEnabled(){
-        return this.capabilityConfig['2fa'].email;
+        return this.capabilityConfig.twofactor.email;
     }
 
     get candelete(){
-        return !this.capabilityConfig['2fa'].onlogin.enforced;
+        return !this.capabilityConfig.twofactor.onlogin.enforced;
     }
 
     get currentMethod(){
