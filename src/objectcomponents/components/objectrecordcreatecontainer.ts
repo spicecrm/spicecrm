@@ -66,8 +66,7 @@ export class ObjectRecordCreateContainer implements OnInit {
         // set the edit mode
         this.view.setEditMode();
 
-        // start editing
-        this.model.startEdit();
+
 
     }
 
@@ -78,6 +77,9 @@ export class ObjectRecordCreateContainer implements OnInit {
         this.model.module = params.module;
         this.model.id = params.id;
         this.model.initialize();
+
+        // start editing
+        this.model.startEdit();
 
         // set the data we giot passed in
         if(this.navigationtab.tabdata?.data) {
@@ -100,8 +102,8 @@ export class ObjectRecordCreateContainer implements OnInit {
     public setHeader() {
         this.navigationtab.setTabInfo({
             displaymodule: this.model.module,
-            displayname: this.model.module != '' ? this.language.getModuleName(this.model.module, true) : '',
-            displayicon: 'new'
+            displayname: this.model.module != '' ? this.language.getModuleName(this.model.module, true) : ''
+            // displayicon: 'new'
         })
     }
 
