@@ -47,6 +47,19 @@ export class SystemInputNumber implements ControlValueAccessor {
     public precision: number = 0;
 
     /**
+     * a setter to set that a calculator icon should be displayed in the field
+     * @param displayCalculator
+     */
+    @Input('system-input-number-with-calculator') set setCalculator(displayCalculator: boolean){
+        if (displayCalculator === false) {
+            this.withCalculator = false;
+        } else {
+            this.withCalculator = true;
+        }
+    }
+    public withCalculator: boolean = false;
+
+    /**
      * Display only the html input field, not the surrounding html
      */
     @Input() public onlyField = false;
