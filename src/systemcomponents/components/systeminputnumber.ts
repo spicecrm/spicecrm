@@ -1,9 +1,10 @@
 /**
  * @module SystemComponents
  */
-import {Component, ElementRef, forwardRef, Input, Renderer2, ViewChild} from '@angular/core';
+import {Component, ElementRef, forwardRef, Injector, Input, Renderer2, ViewChild} from '@angular/core';
 import {userpreferences} from '../../services/userpreferences.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'system-input-number',
@@ -128,7 +129,7 @@ export class SystemInputNumber implements ControlValueAccessor {
     public counterAfterdecimalKeyStroke: number = 0;
 
 
-    constructor(public userpreferences: userpreferences, public renderer: Renderer2) {
+    constructor(public userpreferences: userpreferences, public renderer: Renderer2, public injector: Injector) {
     }
 
     // ControlValueAccessor Interface: >>
@@ -475,6 +476,19 @@ export class SystemInputNumber implements ControlValueAccessor {
             return true;
         }
         return false;
+    }
+
+    /**
+     * for the calculator
+     */
+    public openCalculator() {
+        this.injector.get<modal>(modal).openModal('SpiceCalculatorModal').subscribe(modalRef => {
+            modalRef.instance.value = this.textValue;
+            modalRef.instance.trigger = true;
+            modalRef.instance.value$.subscribe(val => {
+                this.textValue = this.userpreferences.formatMoney(val, 2);
+            });
+        });
     }
 
 }
