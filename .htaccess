@@ -2,6 +2,7 @@
 <IfModule mod_headers.c>
   Header unset X-Powered-By
   Header always unset X-Powered-By
+  Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
 </IfModule>
 
 # no directory listing access
