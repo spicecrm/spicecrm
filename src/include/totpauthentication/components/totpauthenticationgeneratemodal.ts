@@ -101,7 +101,7 @@ export class TOTPAuthenticationGenerateModal implements OnInit {
     }
 
     public save() {
-        this.backend.putRequest(`authentication/totp/validate/${this.code}`, { onBehalfUserId: this.onBehalfUserId }, this.credentials)
+        this.backend.putRequest(`authentication/totp/validate/${this.code}`, { onBehalfUserId: this.onBehalfUserId })
             .subscribe( {
                 next: res => {
                     if( res.validated ) {
