@@ -707,25 +707,6 @@ class SpiceInstaller
 
     public function retrieveCoreAndLanguages( $db, $language )
     {
-    /*    $confLoader = new SpiceUIConfLoader();
-        // load some packages to enable a good start
-        $loadPackages = ['core', 'aclessentials', 'ftsreference'];
-        foreach ($loadPackages as $loadPackage) {
-            $confLoader->loadPackage($loadPackage);
-        }*/
-
-        $packageContent = json_decode( gzdecode ( file_get_contents('./include/SpiceInstaller/SystemPackage/system-package.gz')));
-        $dictionaryTables = array_column(SpiceDictionary::getInstance()->dictionary, 'table');
-
-        foreach ( $packageContent->data->tables as $tableName ) {
-
-            if ( !in_array( $tableName, $dictionaryTables )) continue;
-
-            foreach ($packageContent->data->rows->$tableName as $row) {
-                $db->insertQuery($tableName, (array) $row);
-            }
-        }
-
         $languageLoader = new SpiceLanguageLoader();
         $languageLoader->loadLanguage( $language );
         if ( $language != 'en_us') {
