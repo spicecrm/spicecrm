@@ -462,7 +462,7 @@ export class salesdocrecord implements OnDestroy {
      */
     public canAddSubitems(itemId){
         let typesData = this.configuration.getData('salesdoctypes').find(typeRecord => typeRecord.name == this.salesdoc.getField('salesdoctype'));
-        return typesData.itemsubtypes[this.salesdoc.data.salesdocitems.beans[itemId].itemtype] && typesData.itemsubtypes[this.salesdoc.data.salesdocitems.beans[itemId].itemtype].length > 0;
+        return typesData && typesData.itemsubtypes[this.salesdoc.data.salesdocitems.beans[itemId].itemtype] && typesData.itemsubtypes[this.salesdoc.data.salesdocitems.beans[itemId].itemtype].length > 0;
     }
 
     /**
