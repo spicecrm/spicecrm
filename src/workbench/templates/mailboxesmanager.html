@@ -3,23 +3,13 @@
             <object-action-container [actionset]="headeractionset"></object-action-container>
     </workbench-header-controls>
 </workbench-header>
-<div  [system-overlay-loading-spinner]="loading" class="slds-grid" system-to-bottom-noscroll>
-    <div class="slds-size--1-of-5 slds-scrollable--y slds-theme--shade slds-tabs_default__content slds-p-around--none slds-border--right">
+<div  [system-overlay-loading-spinner]="listComponent.modellist.isLoading" class="slds-grid" system-to-bottom-noscroll>
+    <div class="slds-size--1-of-5 slds-scrollable--y slds-theme--default slds-tabs_default__content slds-p-around--none slds-border--right">
         <ul class="slds-has-dividers_around-space slds-p-around--x-small">
-            <li class="slds-theme--default slds-item"  *ngFor="let mailbox of mailboxes" [value]="mailbox.id">
-
-                <div class="slds-truncate slds-grid slds-grid_align-left" [ngClass]="{'slds-theme--inverse': mailbox.id == selected_mailbox}" [title]="mailbox.name">
-                    <system-utility-icon size="x-small" class="slds-p-around--xx-small" icon="email"></system-utility-icon>
-                    <a href="javascript:void(0);" class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small" (click)="showSelectedMailbox(mailbox.id)">{{ mailbox.name }}</a>
-                </div>
-
-                <div class=" slds-grid slds-grid--align-spread">
-                    <object-record-fieldset [fieldset]="listfieldset" [direction]="'horizontal'"></object-record-fieldset>
-                </div>
-            </li>
+            <mailboxes-manager-list #listComponent (selectedMailboxChange)="handleSelectionChange($event)"></mailboxes-manager-list>
         </ul>
     </div>
-    <div class="slds-size--4-of-5 slds-scrollable--y" [system-overlay-loading-spinner]="loading">
+    <div class="slds-size--4-of-5 slds-scrollable--y">
         <div #viewcontainer></div>
     </div>
 </div>
