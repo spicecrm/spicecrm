@@ -1,4 +1,4 @@
-import {Injectable, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
+import {Injectable} from '@angular/core';
 
 import {forkJoin, Observable, Subject} from "rxjs";
 import {tap, map} from "rxjs/operators";
@@ -11,6 +11,7 @@ import {
 } from "../interfaces/kanbanmanager.interfaces";
 import {toast} from "../../../services/toast.service";
 import _ from "underscore";
+import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
 
 
 @Injectable()
@@ -18,8 +19,6 @@ export class KanbanManagerService {
     public currentStages: SpiceBeanGuideStagesI[] = [];
 
     public currentChecks:SpiceBeanGuideChecksI[] = [];
-
-    public currentStagesChecks: [] = [];
 
     public stages: SpiceBeanGuideStagesI[] = [];
 
@@ -40,14 +39,10 @@ export class KanbanManagerService {
 
     public minimized: boolean = false;
 
-    public changed = {stages: [], checks: [], spiceTexts: []};
-
-
-
     public constructor(
         public backend: backend,
         public toast: toast,
-        private differs: KeyValueDiffers
+        private changeService: ChangeHistoryService
     ) {
         this.loadItems();
         this.loadChecks();
@@ -59,71 +54,7 @@ export class KanbanManagerService {
      * @return boolean true if the current bean guide has changes
      */
     get hasChanges(): boolean {
-        return this.changed.checks.length > 0 || this.changed.stages.length > 0 || this.changed.spiceTexts.length > 0;
-    }
-
-    /**
-     * compare
-     */
-    public compareRecordBackupWithCurrentValue(item: SpiceBeanGuideStagesI | SpiceTextsI | SpiceBeanGuideChecksI, type: 'stages' | 'checks' | 'spiceTexts') {
-
-        this[type].some(s => {
-            if (s.id != item.id) return false;
-
-            if (JSON.stringify(item) == JSON.stringify(s)) {
-                this.changed[type] = this.changed[type].filter(c => c.id != item.id);
-            } else {
-                const idx = this.changed[type].findIndex(c => c.id == item.id);
-                if (idx > -1) {
-                    this.changed[type][idx] = item;
-                } else {
-                    this.changed[type].push({...item});
-                }
-            }
-        });
-    }
-
-    /**
-     * holds the registered dirty checkers
-     * @private
-     */
-    private dirtyCheckers = new Map<string, KeyValueDiffer<any, any>>();
-
-    /**
-     * register a new dirty checker for a target object
-     * @param name
-     * @param obj
-     */
-    public registerDirtyChecker(name: string, obj: any) {
-
-        this.dirtyCheckers.delete(name);
-
-        if (!obj) return;
-
-        this.dirtyCheckers.set(name, this.differs.find(obj).create());
-    }
-
-    /**
-     * check on dirty fields in the target object
-     * @param name
-     * @param obj
-     * @param type
-     */
-    public checkForDirtyFields(name: string, obj: any, type: 'stages' | 'checks' | 'spiceTexts'): boolean {
-
-        if (!this.dirtyCheckers.has(name)) return;
-
-        const changes = this.dirtyCheckers.get(name).diff(obj);
-
-        if (!changes) return;
-
-        let hasChanges = false;
-
-        changes.forEachChangedItem(() => hasChanges = true);
-
-        if (hasChanges) {
-            this.compareRecordBackupWithCurrentValue(obj, type);
-        }
+        return this.changeService.hasChanges('checks') || this.changeService.hasChanges('stages') || this.changeService.hasChanges('spiceTexts');
     }
 
     /**
@@ -225,33 +156,33 @@ export class KanbanManagerService {
 
         const resArray = [];
 
-        if (this.changed.stages.length > 0) {
+        if (this.changeService.hasChanges('stages')) {
             resArray.push(
-                this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: this.changed.stages})
+                this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: this.changeService.getLatestChanges('stages')})
             );
         }
 
-        if (this.changed.checks.length > 0) {
+        if (this.changeService.hasChanges('checks')) {
             resArray.push(
-                this.backend.postRequest(`configuration/configurator/spicebeanguidestages_checks`, null, {config: this.changed.checks})
+                this.backend.postRequest(`configuration/configurator/spicebeanguidestages_checks`, null, {config: this.changeService.getLatestChanges('checks')})
             );
         }
 
-        if (this.changed.spiceTexts.length > 0) {
+        if (this.changeService.hasChanges('spiceTexts')) {
             resArray.push(
-                this.backend.postRequest(`configuration/configurator/spicetexts`, null, {config: this.changed.spiceTexts})
+                this.backend.postRequest(`configuration/configurator/spicetexts`, null, {config: this.changeService.getLatestChanges('spiceTexts')})
             );
         }
 
         forkJoin(resArray).subscribe(() => {
-            Object.keys(this.changed).forEach(type => {
-                this.changed[type].forEach((changedItem, i) => {
-                    const idx = this[type].findIndex(item => item.id == changedItem.id);
-                    this[type][idx] = {...changedItem};
+            ['stages', 'checks', 'spiceTexts'].forEach(name => {
+                this.changeService.getLatestChanges(name).forEach((changedItem, i) => {
+                    const idx = this[name].findIndex(item => item.id == changedItem.id);
+                    this[name][idx] = {...changedItem};
+                    this.changeService.resetObjectChanges(name, changedItem);
                 });
-
-                this.changed[type] = [];
             });
+
 
             this.toast.sendToast('LBL_DATA_SAVED', 'success');
         });
