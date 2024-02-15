@@ -5,6 +5,7 @@ import {toast} from "../../../services/toast.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {SpiceBeanGuideStagesI, SpiceTextsI} from "../interfaces/kanbanmanager.interfaces";
+import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
 
 /**
  * manages the details of the kanban
@@ -42,6 +43,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
         public language: language,
         public modal: modal,
         public toast: toast,
+        private changeService: ChangeHistoryService,
         public utils: modelutilities,
     ) {
     }
@@ -55,7 +57,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
             this.selectSpiceText();
         }
 
-        this.kanban.registerDirtyChecker('selectedStage', this._selectedStage);
+        this.changeService.registerObject(this._selectedStage, 'stages');
     }
 
     get selectedStage(): SpiceBeanGuideStagesI {
@@ -63,7 +65,11 @@ export class SpiceKanbanManagerDetails implements OnInit {
     }
 
     public ngDoCheck() {
-        this.kanban.checkForDirtyFields('selectedStage', this._selectedStage, 'stages');
+
+        if (!this._selectedStage) return;
+
+        this.changeService.checkForObjectChanges(this._selectedStage, 'stages');
+
     }
 
     public ngOnInit() {

@@ -8,12 +8,13 @@ import {SpiceBeanGuidesI} from "../interfaces/kanbanmanager.interfaces";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {SpiceKanbanManagerAddModal} from "./spicekanbanmanageraddmodal";
 import {modelutilities} from "../../../services/modelutilities.service";
+import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
 
 
 @Component({
     selector: 'spice-kanban-manager',
     templateUrl: '../templates/spicekanbanmanager.html',
-    providers: [KanbanManagerService]
+    providers: [KanbanManagerService, ChangeHistoryService]
 })
 
 
@@ -45,7 +46,7 @@ export class SpiceKanbanManager implements OnInit{
         public injector: Injector,
         public metadata: metadata,
         public modelUtilities: modelutilities,
-        public kanbanManagerService: KanbanManagerService
+        public kanbanManagerService: KanbanManagerService,
     ) {
     }
 
