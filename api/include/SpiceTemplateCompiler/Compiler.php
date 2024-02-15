@@ -13,6 +13,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SalesDocsTemplateFunctions;
+use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -674,7 +675,7 @@ class Compiler
                 $obj = (object)$this->additionalValues;
                 break;
             case 'func':
-                $obj = new SalesDocsTemplateFunctions( $beans[$object], $this->currentTemplate );
+                $obj = new SystemTemplateFunctions();
                 break;
             case 'template':
                 $obj = BeanFactory::getBean($this->currentTemplate->_module, $this->currentTemplate->id);
