@@ -74,6 +74,7 @@ export class GlobalNavigationTabbedMenuTab {
      */
    public pintab() {
         this.object.pinned = !this.object.pinned;
+        this.navigation.objectTabs.sort((a, b) => !a.pinned ? 1 : -1);
     }
 
     /**
