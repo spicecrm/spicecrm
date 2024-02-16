@@ -316,6 +316,20 @@ SpiceDictionaryHandler::getInstance()->dictionary['Product'] = [
             'bean_name' => 'Opportunity',
             'source' => 'non-db',
             'vname' => 'LBL_OPPORTUNITIES',
+
+        ],
+        'opportunity_date_requested' => [
+            'name' => 'opportunity_date_requested',
+            'type' => 'date',
+            'vname' => 'LBL_DATE_REQUESTED',
+            'source' => 'non-db'
+        ],
+        'opportunity_quantity' => [
+            'name' => 'opportunity_quantity',
+            'vname' => 'LBL_QUANTITY',
+            'type' => 'quantity',
+            'dbtype' => 'double',
+            'source' => 'non-db'
         ],
     ],
     'relationships' => [
