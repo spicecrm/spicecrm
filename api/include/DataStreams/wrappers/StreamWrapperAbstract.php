@@ -115,7 +115,7 @@ abstract class StreamWrapperAbstract
      * @param mixed $value
      * @return bool
      */
-    public function stream_metadata(string $path, int $option, mixed $value): bool
+    public function stream_metadata(string $path, int $option, $value): bool
     {
         return false;
     }
