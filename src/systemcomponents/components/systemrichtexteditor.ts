@@ -814,12 +814,12 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.isLoading = true;
 
         this.helper.addTextSnippet('HTML', moduleFilter, this.modal, this.model, this.viewContainerRef.injector).subscribe({
-            next: res => {
+            next: snippet => {
 
                 // res is undefined, if the modal was closed without something selected (and no snippet rendering was triggered)
-                if (res) {
+                if (snippet) {
                     this.editor.model.change(writer => {
-                        const viewFragment = this.editor.data.htmlProcessor.toView(res.html);
+                        const viewFragment = this.editor.data.htmlProcessor.toView(snippet);
                         const modelFragment = this.editor.data.toModel(viewFragment);
                         this.editor.model.insertContent(modelFragment);
                     });
