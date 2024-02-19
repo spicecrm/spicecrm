@@ -77,6 +77,7 @@ export class ObjectRecordCreateContainer implements OnInit {
         this.model.module = params.module;
         this.model.id = params.id;
         this.model.initialize();
+        this.model.isNew = true;
 
         // start editing
         this.model.startEdit();
