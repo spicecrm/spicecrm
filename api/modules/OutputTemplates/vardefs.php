@@ -144,6 +144,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['OutputTemplate'] = [
             'len' => '255',
             'comment' => 'Name of the document, in case it published as file (to foreign persons).'
         ],
+        'is_inactive' => [
+            'name' => 'is_inactive',
+            'vname' => 'LBL_IS_INACTIVE',
+            'type' => 'enum',
+            'options' => 'is_inactive_dom',
+            'default' => '0',
+            'len' => 1,
+            'audited' => true
+        ],
         'campaigntasks' => [
             'name' => 'campaigntasks',
             'type' => 'link',
