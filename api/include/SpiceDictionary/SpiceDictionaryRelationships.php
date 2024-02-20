@@ -228,7 +228,8 @@ class SpiceDictionaryRelationships
 
         // get the relationship data
         SpiceDictionaryVardefs::loadLegacyFiles();
-        $relationshipDefinition = SpiceDictionary::getInstance()->getDefs($dictionaryName)['relationships'][$relationshipName];
+        // $relationshipDefinition = SpiceDictionary::getInstance()->getDefs($dictionaryName)['relationships'][$relationshipName];
+        $relationshipDefinition = SpiceDictionaryHandler::getInstance()->dictionary[$dictionaryName]['relationships'][$relationshipName];
 
         if(!$relationshipDefinition){
             throw new NotFoundException("Relationshipdefinition for {$relationshipName} not found");

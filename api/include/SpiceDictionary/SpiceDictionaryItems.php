@@ -161,7 +161,7 @@ class SpiceDictionaryItems
         $def = $this->dictionaryItems[$id];
 
         // write the stazus update
-        SystemDeploymentCR::writeDBEntry($this->getItemTable($id), $id, ['status' => $status], $def['name']);
+        SystemDeploymentCR::writeDBEntry($this->getItemTable($id), $id, ['id' => $id, 'status' => $status], $def['name']);
 
         // sets the status
         $this->dictionaryItems[$id]['status'] = $status;
