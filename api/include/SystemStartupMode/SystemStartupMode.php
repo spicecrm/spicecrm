@@ -42,8 +42,7 @@ class SystemStartupMode extends SpiceSingleton
      */
     public static function setRecoveryMode(bool $value): void
     {
-        $hashEntry = ['category' => 'system', 'name' => 'startup_mode', 'value' => $value ? 'recovery' : 'normal'];
-        self::saveModeValue($hashEntry);
+        SpiceConfig::getInstance()->set('system', 'startup_mode', $value ? 'recovery' : 'normal');
     }
 
     /**
@@ -52,20 +51,6 @@ class SystemStartupMode extends SpiceSingleton
      */
     public static function setMaintenanceMode(bool $value): void
     {
-        $hashEntry = ['category' => 'system', 'name' => 'startup_mode', 'value' => $value ? 'maintenance' : 'normal'];
-        self::saveModeValue($hashEntry);
-    }
-
-    /**
-     * save the mode value to the config table and reload the config
-     * @throws Exception
-     */
-    private static function saveModeValue(array $entry): void
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->upsertQuery('config', ['category' => $entry['category'], 'name' => $entry['name']], $entry);
-        SpiceCache::deleteByKey('dbconfig');
-        SpiceConfig::getInstance()->reloadConfig(true);
+        SpiceConfig::getInstance()->set('system', 'startup_mode', $value ? 'maintenance' : 'normal');
     }
 }
