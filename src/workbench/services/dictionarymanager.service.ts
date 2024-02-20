@@ -194,6 +194,8 @@ export class dictionarymanager implements OnDestroy {
 
         let changed = false;
 
+        if(!this.loaded) return changed;
+
         const loaded = JSON.parse(this.loaded);
 
         const keys = [
