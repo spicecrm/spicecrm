@@ -448,8 +448,12 @@ class SpiceUIConfLoader
 
             # repair only active definitions
             if ($dictionaryDef['status'] == 'a') {
-                $sql = $definitions->repair($dictionaryDef['id']);
-                if (!empty($sql)) $db->query($sql);
+                try {
+                    $sql = $definitions->repair($dictionaryDef['id']);
+                    if (!empty($sql)) $db->query($sql);
+                } catch (Exception $exception) {
+                    $this->loadErrors[] = $exception->getMessage();
+                }
             }
 
             if (empty($db->lastError())) {
