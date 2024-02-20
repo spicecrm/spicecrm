@@ -51,6 +51,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SpiceUI\Loaders\SpiceUIWordsLoader;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
@@ -435,6 +436,7 @@ class SpiceDictionaryController
      * @param Response $res
      * @param array $args
      * @return Response
+     * @throws \Exception
      */
     public function repair(Request $req, Response $res, array $args): Response {
         $params = $req->getQueryParams();
@@ -447,6 +449,10 @@ class SpiceDictionaryController
             } catch (\Exception $exception){
                 $error = DBManagerFactory::getInstance()->lastDbError();
             }
+        }
+
+        if (!isset($error)) {
+            SystemStartupMode::setRecoveryMode(false);
         }
 
         return $res->withJson(['sql' => $sql, 'sqlerror' => $error]);

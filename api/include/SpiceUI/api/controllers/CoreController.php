@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
+use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -42,10 +43,11 @@ class CoreController
     /**
      * returns general system information
      *
-     * @param $req
-     * @param $res
-     * @param $args
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
      * @return mixed
+     * @throws Exception
      */
     public function getSysinfo(Request $req, Response $res, array $args): Response {
 
@@ -66,6 +68,7 @@ class CoreController
         }
 
         $uiRestHandler = new SpiceUIRESTHandler();
+        SystemStartupMode::checkDictionary();
 
         $payload = [
             'startup_mode' => SystemStartupMode::getMode(),
@@ -176,7 +179,7 @@ class CoreController
      * @param $res
      * @param $args
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     function getLanguage($req, $res, $args)
     {

@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SystemStartupMode;
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -18,6 +19,26 @@ class SystemStartupMode extends SpiceSingleton
     {
         return SpiceConfig::getInstance()->get('system.startup_mode');
     }
+
+    /**
+     * check if the system has dictionary and set recovery mode
+     * @throws Exception
+     */
+    public static function checkDictionary()
+    {
+        if (SpiceCache::get(SpiceDictionary::cachename)) {
+            return;
+        }
+
+        $db = DBManagerFactory::getInstance();
+
+        $hasDBCache = $db->tableExists(SpiceDictionary::table) && $db->getOne("SELECT id FROM " . SpiceDictionary::table);
+
+        if (!$hasDBCache) {
+            SystemStartupMode::setRecoveryMode(true);
+        }
+    }
+
     /**
      * if the system is in recovery mode
      * @return bool
