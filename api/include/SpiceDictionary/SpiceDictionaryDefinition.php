@@ -120,27 +120,29 @@ class SpiceDictionaryDefinition
     }
 
     /**
-     * load the vardefs additonally
-     *
-     * @return void
+     * load the vardefs additionally
+     * @return array
+     * @throws Exception
      */
-    public function loadVardefs()
+    public function loadVardefs(): array
     {
         switch ($this->type) {
             case 'module':
                 $module = SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($this->id);
+                $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
 
-                SpiceModules::getInstance()->getModuleDetails('Accounts');
-                $moduleDetaile = SpiceModules::getInstance()->getModuleDetails($module);
-                SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']] = [];
+                if (!$moduleDetails) {
+                   throw new Exception("Could not load vardefs for module dictionary ($this->name). sysmodules entry missing.");
+                }
+
+                SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']] = [];
 
                 SpiceDictionaryHandler::loadModuleFiles($module);
 
                 // get the module Details and return the data
-                return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['fields'],
-                    'indices' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['indices'],
-                    'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetaile['bean']]['relationships']];
-                break;
+                return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'],
+                    'indices' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'],
+                    'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships']];
             default:
                 SpiceDictionaryHandler::getInstance()->dictionary[$this->name] = [];
 
@@ -150,7 +152,6 @@ class SpiceDictionaryDefinition
                 return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$this->name]['fields'],
                     'indices' => SpiceDictionaryHandler::getInstance()->dictionary[$this->name]['indices'],
                     'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$this->name]['relationships']];
-                break;
 
         }
     }
