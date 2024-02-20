@@ -452,6 +452,7 @@ class SpiceUIConfLoader
                     $sql = $definitions->repair($dictionaryDef['id']);
                     if (!empty($sql)) $db->query($sql);
                 } catch (Exception $exception) {
+                    unset($response[$dictionaryDef['tablename']]);
                     $this->loadErrors[] = $exception->getMessage();
                 }
             }
