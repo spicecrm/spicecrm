@@ -4,7 +4,7 @@
 import { Component, OnInit } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';
-import {Config2FAI} from "../../globalcomponents/interfaces/globalcomponents.interfaces";
+import {AdminConfig2FAI} from "../interfaces/admincomponents.interfaces";
 @Component({
     selector: 'administration-login-methods',
     templateUrl: '../templates/administrationloginmethods.html'
@@ -21,7 +21,7 @@ export class AdministrationLoginMethods implements OnInit {
      */
     public mailboxes: {id: string, name: string, outbound_comm: string}[] = [];
 
-    public config: Config2FAI = {
+    public config: AdminConfig2FAI = {
         twoFactorAuthMethod: 'one_time_password',
         smsMailboxId: undefined,
         emailMailboxId: undefined,
