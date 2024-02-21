@@ -969,6 +969,48 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * reshuffles the fields
+     *
+     * @param $fields
+     * @return false
+     */
+    public function reshuffleFields($tablename, $fields)
+    {
+        $columns = [];
+        $columnsObj = $this->query("SHOW FULL COLUMNS FROM {$tablename}");
+        while($column = $this->fetchByAssoc($columnsObj)){
+            $columns[$column['Field']] = $column;
+        }
+
+        $changeStatements = [];
+        $lastColumn = '';
+        foreach ($fields as $field){
+            if(isset($columns[$field])){
+                // build the Chanage statement
+                $changeString = "{$field} {$field} {$columns[$field]['Type']}";
+                $changeString .= $columns[$field]['Null'] == 'YES' ? " NULL" : " NOT NULL";
+                $changeString .= $columns[$field]['Default'] != null ? " DEFAULT \"{$columns[$field]['Default']}\"" : "";
+                $changeString .= $columns[$field]['Comment'] ? " COMMENT \"{$columns[$field]['Comment']}\"" : "";
+                $changeString .= $lastColumn ? " AFTER {$lastColumn}" : " FIRST";
+
+                // add the change statement
+                $changeStatements[] = "CHANGE {$changeString}";
+
+                // set the last column
+                $lastColumn = $field;
+            }
+        }
+
+        if(count($changeStatements) > 0){
+            $alterStatement = "ALTER TABLE {$tablename} " . implode(', ', $changeStatements);
+            $this->query($alterStatement);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @see DBManager::convert()
      */
     public function convert($string, $type, array $additional_parameters = [])

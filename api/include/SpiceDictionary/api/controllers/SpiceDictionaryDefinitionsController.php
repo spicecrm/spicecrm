@@ -116,4 +116,17 @@ class SpiceDictionaryDefinitionsController
         return $res->withJson(['success' => true, 'sql' => (new SpiceDictionaryDefinition($args['id']))->repair()]);
     }
 
+    /**
+     * reshuffles a Dictionary Definition
+     *
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     */
+    public function reshuffleDictionaryDefinition(Request $req, Response $res, array $args): Response
+    {
+        return $res->withJson(['success' => (new SpiceDictionaryDefinition($args['id']))->reshuffle($req->getParsedBody())]);
+    }
+
 }
