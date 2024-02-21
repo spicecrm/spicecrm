@@ -1092,10 +1092,6 @@ abstract class DBManager
             if (isset($correctedIndexs[$name]))
                 continue;
 
-            //don't bother checking primary nothing we can do about them
-            if (isset($value['type']) && $value['type'] == 'primary')
-                continue;
-
             //database helpers do not know how to handle full text indices
             if ($value['type'] == 'fulltext')
                 continue;
@@ -1104,6 +1100,11 @@ abstract class DBManager
                 $value['type'] = 'index';
 
             if (!in_array($name, array_keys($compareIndices))) {
+
+                # if a primary key with different name is already defined, do nothing
+                if (isset($value['type']) && $value['type'] == 'primary' && array_filter($compareIndices, fn($i) => $i['type'] == 'primary'))
+                    continue;
+
                 if($commented) $sql .= "/*MISSING INDEX IN DATABASE - $name -{$value['type']}  ROW */\n";
                 $sql .= $this->addIndexes($tablename, [$value], $execute) . "\n";
 
@@ -1111,6 +1112,11 @@ abstract class DBManager
                 $correctedIndexs[$name] = true;
 
             } elseif (!$this->compareVarDefs($compareIndices[$name], $value)) {
+
+                //don't bother checking primary nothing we can do about them
+                if (isset($value['type']) && $value['type'] == 'primary')
+                    continue;
+
                 // fields are different lets alter it
                 if($commented) {
                     $sql .= "/*INDEX MISMATCH WITH DATABASE - $name -  ROW ";
