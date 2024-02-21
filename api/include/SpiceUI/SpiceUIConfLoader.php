@@ -441,9 +441,9 @@ class SpiceUIConfLoader
             $this->loadTableRecords($table, $response[$table], $packages);
         }
 
-        SpiceDictionaryItems::getInstance()->resetCache();
-        SpiceDictionaryIndexes::getInstance()->writeCache();
-        SpiceDictionaryRelationships::getInstance()->resetCache();
+        SpiceDictionaryItems::getInstance()->reloadItems();
+        SpiceDictionaryIndexes::getInstance()->reloadItems();
+        SpiceDictionaryRelationships::getInstance()->reloadItems();
 
         foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
 
