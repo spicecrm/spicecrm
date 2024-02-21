@@ -29,7 +29,7 @@
                             <span class="slds-truncate"><system-label label="LBL_REPAIR_DBCOLUMNS"></system-label></span>
                         </a>
                     </li>
-                    <li class="slds-dropdown__item" role="presentation" (click)="generateSystem()">
+                    <li *ngIf="dictionarymanager.settings?.create_system_file_enabled" class="slds-dropdown__item" role="presentation" (click)="generateSystem()">
                         <a href="javascript:void(null)" role="menuitem">
                             <span class="slds-truncate"><system-label label="LBL_GENERATE_SYSTEM"></system-label></span>
                         </a>
