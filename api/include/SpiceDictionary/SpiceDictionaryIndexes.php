@@ -117,6 +117,18 @@ class SpiceDictionaryIndexes
     }
 
     /**
+     * reload the items from the database and reset the cache
+     * then reset the items from the cache
+     * @return void
+     */
+    public function reloadItems()
+    {
+        $this->dictionaryIndexes = $this->getDictionaryIndexes(null, []);
+        $this->dictionaryIndexItems = $this->getDictionaryIndexItems();
+        $this->writeCache();
+    }
+
+    /**
      * fetches an index by the ID
      *
      * @param $id
