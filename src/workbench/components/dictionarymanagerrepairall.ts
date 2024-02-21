@@ -383,7 +383,7 @@ export class DictionaryManagerRepairAll {
         }
 
         // determine what type we are doing
-        let route = relationship.type == 'dictionaryrelationship' ? `dictionary/repair/relationship/${relId}` : `/dictionary/repair/relationship/${relationship.dictionaryname}/${relationship.name}`;
+        let route = relationship.type == 'dictionaryrelationship' ? `dictionary/repair/relationship/${relId}` : `dictionary/repair/relationship/${relationship.dictionaryname}/${relationship.name}`;
 
 
 
