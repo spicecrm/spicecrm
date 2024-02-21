@@ -157,13 +157,14 @@ class SpiceUIConfLoader
     /**
      * retrieve table column names
      * @param string $tableName
-     * @return array
-     * @throws Exception
+     * @return array|null
+     * @throws \Exception
      */
-    public function getTableColumns(string $tableName): array
+    public function getTableColumns(string $tableName): ?array
     {
         $dic = SpiceDictionary::getInstance()->getDefsByTableName($tableName);
-        return array_column(
+
+        return !$dic ? null : array_column(
             array_filter($dic['fields'], fn($f) => $f['source'] != 'non-db'),
             'name'
         );
@@ -322,6 +323,12 @@ class SpiceUIConfLoader
         $db = DBManagerFactory::getInstance();
 
         $tableCols = $this->getTableColumns($tableName);
+
+        if (!$tableCols) {
+            $this->loadErrors[] = "No Dictionary found for table $tableName";
+            return;
+        }
+
         $hasPackageField = in_array('package', $tableCols);
 
         if ($hasPackageField) {
@@ -429,18 +436,17 @@ class SpiceUIConfLoader
     private function processNewDictionaries(array &$response, array $packages)
     {
         $dictionaryTables = [
-            'sysdictionaryindexitems', 'sysdictionaryindexes' , 'sysdictionaryitems', 'sysdictionaryrelationshipfields', 'sysdictionaryrelationshippolymorphs', 'sysdictionaryrelationshiprelatefields', 'sysdictionaryrelationships'
+            'sysdictionarydefinitions', 'sysdictionaryindexitems', 'sysdictionaryindexes' , 'sysdictionaryitems', 'sysdictionaryrelationshipfields', 'sysdictionaryrelationshippolymorphs', 'sysdictionaryrelationshiprelatefields', 'sysdictionaryrelationships'
         ];
 
         $definitions = SpiceDictionaryDefinitions::getInstance();
         $db = DBManagerFactory::getInstance();
 
-        $this->loadedTablesEntries['sysdictionarydefinitions'] = 0;
-
         foreach ($dictionaryTables as $table) {
             $this->loadTableRecords($table, $response[$table], $packages);
         }
 
+        SpiceDictionaryDefinitions::getInstance()->reloadItems();
         SpiceDictionaryItems::getInstance()->reloadItems();
         SpiceDictionaryIndexes::getInstance()->reloadItems();
         SpiceDictionaryRelationships::getInstance()->reloadItems();
@@ -448,10 +454,6 @@ class SpiceUIConfLoader
         foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
 
             $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
-
-            if (!$definitions->getDefinitionById($dictionaryDef['id'])) {
-                $definitions->addDefinition($dictionaryDef);
-            }
 
             # repair only active definitions
             if ($dictionaryDef['status'] == 'a') {
@@ -464,18 +466,12 @@ class SpiceUIConfLoader
                 }
             }
 
-            if (empty($db->lastError())) {
-                $this->loadedTablesEntries['sysdictionarydefinitions']++;
-            } else {
+            if (!empty($db->lastError())) {
                 $this->loadErrors[] = $db->lastError();
             }
         }
 
-        $this->loadedEntriesCount += $this->loadedTablesEntries['sysdictionarydefinitions'];
-
         SpiceDictionary::getInstance()->loadDictionary();
-
-        unset($response['sysdictionarydefinitions']);
 
         foreach ($dictionaryTables as $table) {
             unset($response[$table]);

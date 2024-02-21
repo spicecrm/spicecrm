@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -53,6 +54,9 @@ class SpiceDictionaryDefinitions
         return self::$instance;
     }
 
+    /**
+     * @throws DatabaseException
+     */
     public function __construct()
     {
         $cached = SpiceCache::get(self::cachename);
@@ -61,11 +65,25 @@ class SpiceDictionaryDefinitions
             return;
         }
 
+        $this->dictionaryDefinitions = $this->loadDefinitionsFromDB();
+
+        // writes the cache
+        $this->writeCache();
+    }
+
+    /**
+     * load definitions from the database
+     * @return array
+     * @throws DatabaseException
+     */
+    private function loadDefinitionsFromDB(): array
+    {
         $defArray = [];
         $defTables = [
             ['name' => self::table, 'scope' => 'g'],
             ['name' => self::customtable, 'scope' => 'c']
         ];
+
         $db = DBManagerFactory::getInstance();
 
         foreach ($defTables as $defTable) {
@@ -76,13 +94,22 @@ class SpiceDictionaryDefinitions
             }
         }
 
-        $this->dictionaryDefinitions = $defArray;
-
-        // writes the cache
-        $this->writeCache();
+        return $defArray;
     }
 
     private function writeCache(){
+        SpiceCache::set(self::cachename, $this->dictionaryDefinitions);
+    }
+
+    /**
+     * reload the items from the database and reset the cache
+     * then reset the items from the cache
+     * @return void
+     * @throws DatabaseException
+     */
+    public function reloadItems()
+    {
+        $this->dictionaryDefinitions = $this->loadDefinitionsFromDB();
         SpiceCache::set(self::cachename, $this->dictionaryDefinitions);
     }
 
