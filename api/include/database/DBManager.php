@@ -1951,6 +1951,21 @@ abstract class DBManager
     }
 
     /**
+     * reshuffles the fields in a table according to the sequence provided in the array of fields
+     * all fields that are not in the array are ignopred and appended in the current sequence at the end of the table
+     * fields that are in the array but not in the table are ignored
+     *
+     *
+     * @param $tablename the name of the database table
+     * @param $fields an array of strings with field names
+     * @return true or false
+     */
+    public function reshuffleFields($tablename, $fields)
+    {
+        return false;
+    }
+
+    /**
      * Generates SQL for insert statement.
      *
      * @param SpiceBean $bean SpiceBean instance

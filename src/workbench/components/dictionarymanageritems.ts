@@ -141,8 +141,10 @@ export class DictionaryManagerItems {
     public drop(event) {
         // get the values and reshuffle
         let values = this.dictionaryitems;
-        let previousItem = values.splice(event.previousIndex, 1);
-        values.splice(event.currentIndex, 0, previousItem[0]);
+        let prevIndex = this.getSanitizedItemIndex(event.previousIndex);
+        let curIndex = this.getSanitizedItemIndex(event.currentIndex);
+        let previousItem = values.splice(prevIndex, 1);
+        values.splice(curIndex, 0, previousItem[0]);
 
         let savingModal = this.modal.await('LBL_SAVING');
         this.backend.postRequest('dictionary/items/sequence', {}, {items: values.map(v => v.id)}).subscribe({
@@ -159,6 +161,24 @@ export class DictionaryManagerItems {
                 savingModal.emit(true);
             }
         })
+    }
+
+    /**
+     * determine a sanitzioed index when draging and dropping items. This resolves subitems if theera re as discplayed based on the
+     * ref and returns the proper index of the element id for the complete group
+     *
+     * @param itemIndex
+     * @private
+     */
+    private getSanitizedItemIndex(itemIndex){
+        let finalItems = [];
+        for(let item of this.dictionaryitems){
+            finalItems.push(item.id);
+            for(let refItem of this.getTemplateItems(item.sysdictionary_ref_id)){
+                finalItems.push(item.id);
+            }
+        }
+        return this.dictionaryitems.findIndex(i => i.id == finalItems[itemIndex]);
     }
 
     /**
