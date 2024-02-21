@@ -1092,10 +1092,6 @@ abstract class DBManager
             if (isset($correctedIndexs[$name]))
                 continue;
 
-            //don't bother checking primary nothing we can do about them
-            if (isset($value['type']) && $value['type'] == 'primary')
-                continue;
-
             //database helpers do not know how to handle full text indices
             if ($value['type'] == 'fulltext')
                 continue;
@@ -1111,6 +1107,11 @@ abstract class DBManager
                 $correctedIndexs[$name] = true;
 
             } elseif (!$this->compareVarDefs($compareIndices[$name], $value)) {
+
+                //don't bother checking primary nothing we can do about them
+                if (isset($value['type']) && $value['type'] == 'primary')
+                    continue;
+
                 // fields are different lets alter it
                 if($commented) {
                     $sql .= "/*INDEX MISMATCH WITH DATABASE - $name -  ROW ";
