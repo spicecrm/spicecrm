@@ -123,7 +123,19 @@ class SpiceDictionaryItems
         while($dictionaryitem = $db->fetchByAssoc($dictionaryitems)){
             $itemArray[$dictionaryitem['id']] = $this->mapDatabaseToCachedItem($dictionaryitem);
         }
-        return $itemArray;
+
+        // sort the items
+        usort($itemArray, function ($a, $b){
+            return $a['sequence'] > $b['sequence'] ? 1 : -1;
+        });
+
+        // remap the array
+        $retArray = [];
+        foreach($itemArray as $item){
+            $retArray[$item['id']] = $item;
+        }
+
+        return $retArray;
     }
 
     /**
@@ -134,8 +146,9 @@ class SpiceDictionaryItems
      */
     private function mapDatabaseToCachedItem($dictionaryitem){
         $dictionaryitem['sequence'] = intval($dictionaryitem['sequence']);
-        $dictionaryitem['deleted'] = intval($dictionaryitem['deleted']);
+        // $dictionaryitem['deleted'] = intval($dictionaryitem['deleted']);
         $dictionaryitem['non_db'] = $dictionaryitem['non_db'] ? intval($dictionaryitem['non_db']) : 0;
+        $dictionaryitem['exclude_from_audited'] = $dictionaryitem['exclude_from_audited'] ? intval($dictionaryitem['exclude_from_audited']) : 0;
         return $dictionaryitem;
     }
 
