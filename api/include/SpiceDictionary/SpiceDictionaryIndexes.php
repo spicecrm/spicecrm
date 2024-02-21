@@ -111,7 +111,7 @@ class SpiceDictionaryIndexes
      *
      * @return void
      */
-    private function writeCache(){
+    public function writeCache(){
         SpiceCache::set(self::cachename,  $this->dictionaryIndexes);
         SpiceCache::set(self::itemcachename,  $this->dictionaryIndexItems);
     }
