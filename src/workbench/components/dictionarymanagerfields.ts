@@ -174,6 +174,15 @@ export class DictionaryManagerFields {
         this.dictionarymanager.repairDictionary(this.dictionarymanager.currentDictionaryDefinition)
     }
 
+
+    /**
+     * trigger the reshuffle of the dictionary
+     * @param definition
+     */
+    public reshuffleDictionaryDefinition() {
+        this.dictionarymanager.reshuffleDictionary(this.dictionarymanager.currentDictionaryDefinition, this.dictionaryitems.map(i => i.name));
+    }
+
     /**
      * reloads database fields and also the cached fields
      */

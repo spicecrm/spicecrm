@@ -119,6 +119,20 @@ class SpiceDictionaryDefinition
         return $sql;
     }
 
+
+    /**
+     * repairs the dictionary Definition
+     * @param bool $relationships
+     * @return string|null
+     * @throws Exception
+     */
+    public function reshuffle($fields)
+    {
+        DBManagerFactory::getInstance()->reshuffleFields($this->tablename, $fields);
+        // return the sql
+        return true;
+    }
+
     /**
      * load the vardefs additionally
      * @return array

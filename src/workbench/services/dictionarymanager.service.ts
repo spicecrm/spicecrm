@@ -476,7 +476,7 @@ export class dictionarymanager implements OnDestroy {
      * @param definition
      */
     public repairDictionary(definitionid) {
-        // let awaitModal =  this.modal.await('LBL_REPAIRING');
+        let awaitModal =  this.modal.await('LBL_EXECUTING');
         let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
         this.backend.putRequest(`dictionary/definition/${definitionid}/repair`).subscribe({
             next: (result) => {
@@ -485,11 +485,34 @@ export class dictionarymanager implements OnDestroy {
                 } else {
                     this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
                 }
-                // awaitModal.emit(true);
+                awaitModal.emit(true);
             },
             error: () => {
                 this.toast.sendToast(this.language.getLabel('ERROR repairing dictonaray'), 'error');
-                // awaitModal.emit(true);
+                awaitModal.emit(true);
+            }
+        });
+    }
+
+    /**
+     *
+     * @param definition
+     */
+    public reshuffleDictionary(definitionid, fields) {
+        let awaitModal =  this.modal.await('LBL_EXECUTING');
+        let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
+        this.backend.putRequest(`dictionary/definition/${definitionid}/reshuffle`, {}, fields).subscribe({
+            next: (result) => {
+                if (result.success) {
+                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_reshuffled'), 'success', result.sql, !result.sql);
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
+                }
+                awaitModal.emit(true);
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERROR reshuffling dictonaray'), 'error');
+                awaitModal.emit(true);
             }
         });
     }
