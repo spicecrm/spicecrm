@@ -523,6 +523,13 @@ $routes = [
         'function' => 'repairDictionaryDefinition',
         'description' => 'repairs a dictionary Definition',
         'options' => ['adminOnly' => true]
+    ], [
+        'method' => 'put',
+        'route' => '/dictionary/definition/{id}/reshuffle',
+        'class' => SpiceDictionaryDefinitionsController::class,
+        'function' => 'reshuffleDictionaryDefinition',
+        'description' => 'reshuffles a dictionary Definition',
+        'options' => ['adminOnly' => true]
     ],
     // for the items
     [
