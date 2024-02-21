@@ -1100,6 +1100,11 @@ abstract class DBManager
                 $value['type'] = 'index';
 
             if (!in_array($name, array_keys($compareIndices))) {
+
+                # if a primary key with different name is already defined, do nothing
+                if (isset($value['type']) && $value['type'] == 'primary' && array_filter($compareIndices, fn($i) => $i['type'] == 'primary'))
+                    continue;
+
                 if($commented) $sql .= "/*MISSING INDEX IN DATABASE - $name -{$value['type']}  ROW */\n";
                 $sql .= $this->addIndexes($tablename, [$value], $execute) . "\n";
 
