@@ -48,6 +48,9 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -437,6 +440,10 @@ class SpiceUIConfLoader
         foreach ($dictionaryTables as $table) {
             $this->loadTableRecords($table, $response[$table], $packages);
         }
+
+        SpiceDictionaryItems::getInstance()->resetCache();
+        SpiceDictionaryIndexes::getInstance()->writeCache();
+        SpiceDictionaryRelationships::getInstance()->resetCache();
 
         foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
 
