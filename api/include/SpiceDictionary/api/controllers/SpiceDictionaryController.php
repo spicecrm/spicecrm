@@ -112,7 +112,10 @@ class SpiceDictionaryController
             'dictionaryrelationshipfields' => $handler->getDictionaryRelationshipFields(),
             'dictionaryindexes' => SpiceDictionaryIndexes::getInstance()->getIndexes(),
             'dictionaryindexitems' => SpiceDictionaryIndexes::getInstance()->getIndexItems(),
-            'settings' => ['migration_enabled' => SpiceConfig::getInstance()->get('systemvardefs.migration_enabled') == 1, ]
+            'settings' => [
+                'migration_enabled' => SpiceConfig::getInstance()->get('systemvardefs.migration_enabled') == 1,
+                'create_system_file_enabled' => SpiceConfig::getInstance()->get('systemvardefs.create_system_file_enabled') == 1,
+                ]
         ];
         return $res->withJson($results);
     }
