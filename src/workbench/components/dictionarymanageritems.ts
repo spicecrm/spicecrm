@@ -163,6 +163,13 @@ export class DictionaryManagerItems {
         })
     }
 
+    /**
+     * determine a sanitzioed index when draging and dropping items. This resolves subitems if theera re as discplayed based on the
+     * ref and returns the proper index of the element id for the complete group
+     *
+     * @param itemIndex
+     * @private
+     */
     private getSanitizedItemIndex(itemIndex){
         let finalItems = [];
         for(let item of this.dictionaryitems){
