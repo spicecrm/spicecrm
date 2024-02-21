@@ -26,6 +26,11 @@ class SpiceDictionaryRelationships
      */
     public $relationshiptypes;
 
+    /**
+     * the cache object name
+     */
+    const cachename = 'dictionaryrelationships';
+
     private function __clone()
     {
     }
@@ -61,9 +66,18 @@ class SpiceDictionaryRelationships
         }
     }
 
+    /**
+     * reset cache
+     */
+    public function resetCache($rebuild = true){
+        SpiceCache::clear(self::cachename);
+
+        if($rebuild) SpiceCache::set(self::cachename, $this->getRelationships());
+    }
+
     private function loadRelationships(){
         // check if we have a cached value
-        $cached = SpiceCache::get('dictionaryrelationships');
+        $cached = SpiceCache::get(self::cachename);
         if($cached) {
             $this->relationships = $cached;
             return;
@@ -71,7 +85,7 @@ class SpiceDictionaryRelationships
 
         // read the items
         $itemArray = $this->getRelationships();
-        SpiceCache::set('dictionaryrelationships', $itemArray);
+        SpiceCache::set(self::cachename, $itemArray);
 
         $this->relationships = $itemArray;
     }
