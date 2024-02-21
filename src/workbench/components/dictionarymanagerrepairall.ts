@@ -103,7 +103,7 @@ export class DictionaryManagerRepairAll {
                 });
 
                 // merge the arrays
-                this.definitions = this.definitions.concat(vardefdefinitions).sort((a, b) => a.name.localeCompare(b.name));
+                this.definitions = this.definitions.concat(vardefdefinitions).sort((a, b) => a.name?.localeCompare(b.name));
 
                 // build relationships
                 let relationships = res.SpiceDictionaryRelationships.map(d => {
@@ -133,7 +133,7 @@ export class DictionaryManagerRepairAll {
                 }));
 
                 // merge the arrays
-                this.definitions = this.definitions.concat(relationships.sort((a, b) => a.name.localeCompare(b.name)));
+                    this.definitions = this.definitions.concat(relationships.sort((a, b) => a.name?.localeCompare(b.name)));
                 // set that we are no longer loading
                 this.loading = false;
                 // emit to close the loading modal
@@ -190,7 +190,7 @@ export class DictionaryManagerRepairAll {
      * gets all relationships that are active and belong to the item
      */
     private dictionaryrelationships(definitioId) {
-        return this.dictionarymanager.dictionaryrelationships.filter(r => r.status == 'a' && (r.lhs_sysdictionarydefinition_id == definitioId || r.rhs_sysdictionarydefinition_id == definitioId || r.join_sysdictionarydefinition_id == definitioId)).sort((a, b) => a.name.localeCompare(b.name));
+        return this.dictionarymanager.dictionaryrelationships.filter(r => r.status == 'a' && (r.lhs_sysdictionarydefinition_id == definitioId || r.rhs_sysdictionarydefinition_id == definitioId || r.join_sysdictionarydefinition_id == definitioId)).sort((a, b) => a.name?.localeCompare(b.name));
     }
 
     /**
