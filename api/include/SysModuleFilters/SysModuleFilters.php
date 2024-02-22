@@ -221,7 +221,8 @@ class SysModuleFilters
         if(!empty($filteredListCondition)) $filterCondition .= " $filteredListCondition ";
 
         if (!empty($filterConditionArray)) {
-            $filterCondition .= " {$group->logicaloperator} ";
+
+           if(!empty($filterCondition)) $filterCondition .= " {$group->logicaloperator} ";
 
             $filterCondition .= ' (' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
