@@ -103,28 +103,6 @@ class Email extends SpiceBean
             $this->runtime_tracking_parent_id ?: $this->id
         ];
     }
-
-    /**
-     * opt out email the parent email address
-     */
-    public function optOutParentEmailAddress()
-    {
-        if (empty($this->parent_id) || empty($this->parent_type)) return null;
-
-        $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
-
-        $emailAddresses = $parent->get_linked_beans('email_addresses');
-
-        foreach ($emailAddresses as $address) {
-
-            if ($address->primary_address != 1 || $address->opt_in_status == 'opted_out') continue;
-
-            EmailAddress::setOptInStatus($parent, $address, 'opted_out');
-
-            break;
-        }
-    }
-
     /**
      * sets the proper date either date_entered, date_start or date_
      */
