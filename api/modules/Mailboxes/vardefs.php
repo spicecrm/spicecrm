@@ -170,6 +170,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'default' => 0,
             'popupHelp' => 'LBL_HELP_ZIP_COMPRESS'
         ],
+        'send_read_receipt' => [
+            'name' => 'send_read_receipt',
+            'vname' => 'LBL_SEND_READ_RECEIPT',
+            'type' => 'bool',
+            'default' => 0,
+            'comment'    => 'set flag to require a read receipt from the recipient'
+        ],
         //link to the campaigns
         'campaigns' => [
             'name' => 'campaigns',

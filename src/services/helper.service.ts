@@ -427,7 +427,15 @@ export class helper {
 
                     // this.isLoading = true;
                     model.backend.postRequest(`module/TextSnippets/${items[0].id}/${routeMethod}`, null, body).subscribe(res => {
-                        responseSubject.next(res);
+                        // try to find hex codes from teh JSON encode and teplace with the proper ASCII Char
+                        let snippet = res.html;
+                        let matches = [...res.html.matchAll(/&#x([A-F0-9]{4});/g)];
+                        for(let match of matches){
+                            snippet = snippet.replaceAll(match[0], String.fromCharCode(parseInt(`0x${match[1]}`, 16)))
+                        }
+
+                        // resolve the Subject / Observable
+                        responseSubject.next(decodeURI(snippet));
                         responseSubject.complete();
                     })
                 });

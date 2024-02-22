@@ -19,6 +19,8 @@ import {
     TOTPAuthenticationGenerateModal
 } from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
 import {model} from "../../services/model.service";
+import {UserSet2FAModal} from "../../modules/users/components/userset2famodal";
+import {GlobalLoginChangePassword} from "./globalloginchangepassword";
 
 declare var _: any;
 
@@ -114,6 +116,11 @@ export class GlobaUserPanel {
         return this.session.authData.canchangepassword;
     }
 
+    get canChange2fa(){
+        let config = this.config.getCapabilityConfig('login');
+        return this.canChangePassword && (!config.twofactor.onlogin.enforced || config.twofactor.onlogin.method == '' || config.twofactor.onlogin.method == 'user_defined');
+    }
+
     /**
      * navigates to the users detail page
      *
@@ -147,7 +154,7 @@ export class GlobaUserPanel {
      */
    public changePassword() {
         if(this.canChangePassword) {
-            this.modal.openModal("UserChangePasswordModal");
+            this.modal.openStaticModal(GlobalLoginChangePassword);
         }
     }
 
@@ -186,6 +193,13 @@ export class GlobaUserPanel {
             }
         );
     }
+
+
+
+    public set2FA() {
+        this.modal.openModal('UserSet2FAModal');
+    }
+
 
     public generateTOTP() {
         this.modal.openModal('TOTPAuthenticationGenerateModal').subscribe(
