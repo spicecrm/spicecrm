@@ -213,10 +213,18 @@ class SysModuleFilters
         $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
         $userIds = "'" . join("','", $userIds) . "'";
 
-
         $filterCondition = "";
+
+        // build where clause for groupscope and/or groupstate
+        if(!empty($module)) $filteredListCondition = $this->buildSQLWhereClauseForLists($group, $tablename, $module, $current_user->id);
+
+        if(!empty($filteredListCondition)) $filterCondition .= " $filteredListCondition ";
+
         if (!empty($filterConditionArray)) {
-            $filterCondition = '(' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
+
+           if(!empty($filterCondition)) $filterCondition .= " {$group->logicaloperator} ";
+
+            $filterCondition .= ' (' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
                 $userIds = "'" . join("','", $userIds) . "'";
@@ -246,6 +254,62 @@ class SysModuleFilters
         }
 
         return $filterCondition;
+    }
+
+    /**
+     * special handling for filtered lists by groupscope & groupstate
+     * filter list by
+     * groupscope: all/own/creator
+     * groupstate: active/inactive/activeAndInactive
+     *
+     * @param $group
+     * @param string $tablename
+     * @param string $module
+     * @param $currentUserId
+     * @return string
+     */
+    private function buildSQLWhereClauseForLists($group, string $tablename, string $module, $currentUserId): string {
+
+        $filteredListCondition = "";
+
+        // special handling for filtered lists by groupscope
+        if(property_exists($group, 'groupscope')) {
+            if($group->groupscope == 'all' || $group->groupscope == 'own' || $group->groupscope == 'creator') {
+                switch ($group->groupscope) {
+                    case 'all':
+                        // build query also for 'all' to avoid errors
+                        break;
+                    case 'own':
+                        $filteredListCondition .= " ({$tablename}.assigned_user_id = {$currentUserId}) ";
+                        break;
+                    case 'creator':
+                        $filteredListCondition .= " ({$tablename}.created_by = {$currentUserId}) ";
+                        break;
+                }
+            }
+        }
+
+        // special handling for filtered lists by groupstate
+        if(property_exists($group, 'groupstate')) {
+            $bean = BeanFactory::getBean($module);
+            if(property_exists($bean, 'is_inactive') && ($group->groupstate == 'active' || $group->groupstate == 'inactive' || $group->groupstate == 'activeAndInactive')) {
+                if(!empty($filteredListCondition)) $filteredListCondition .= " {$group->logicaloperator} ";
+
+                switch ($group->groupstate) {
+                    case 'active':
+                        $filteredListCondition .= " ({$tablename}.is_inactive = '0') ";
+                        break;
+                    case 'inactive':
+                        $filteredListCondition .= " ({$tablename}.is_inactive = 1) ";
+                        break;
+                    case 'activeAndInactive':
+                        $filteredListCondition .= " ({$tablename}.is_inactive = 0 OR {$tablename}.is_inactive = 1) ";
+                        break;
+                }
+            }
+        }
+
+        return $filteredListCondition;
     }
 
     /**
@@ -584,6 +648,20 @@ class SysModuleFilters
                     break;
                 case 'creator':
                     $filterCondition['must'][] = ["terms" => ["created_by" => array_merge([$current_user->id], $absence->getSubstituteIDs())]];
+                    break;
+            }
+        }
+
+        if($group->groupstate == 'active' || $group->groupstate == 'inactive' || $group->groupstate == 'activeAndInactive') {
+            switch ($group->groupstate) {
+                case 'active':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['0']]];
+                    break;
+                case 'inactive':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['1']]];
+                    break;
+                case 'activeAndInactive':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['1', '0']]];
                     break;
             }
         }

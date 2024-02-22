@@ -64,7 +64,7 @@ export class ServiceTicketCloseModal {
      * cheks if the deviation reason for the sla is set
      */
     get canSave() {
-        return this.model.getField('sladeviation_reason').length > 0;
+        return !this.model.getFieldStati('sladeviation_reason').invalid;
     }
 
     /**
@@ -72,15 +72,17 @@ export class ServiceTicketCloseModal {
      */
     public setStatus() {
         if(!this.canSave) return;
-
+        this.model.startEdit(true);
         this.model.setField('serviceticket_status', 'Closed');
         if (this.model.validate()) {
             this.model.save();
+            this.close();
         } else {
             this.toast.sendToast(this.language.getLabel("MSG_INPUT_REQUIRED"), 'error');
-            this.model.edit(false);
+            this.model.edit().subscribe(()=>{
+                this.close();
+            });
         }
-        this.close();
     }
 
 }

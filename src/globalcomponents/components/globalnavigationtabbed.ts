@@ -8,7 +8,7 @@ import {Subscription} from "rxjs";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {GlobalNavigationTabbedMenu} from "./globalnavigationtabbedmenu";
 import {userpreferences} from "../../services/userpreferences.service";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 
 /** @ignore */
 const ANIMATIONS = [
@@ -33,6 +33,10 @@ const ANIMATIONS = [
     animations: ANIMATIONS
 })
 export class GlobalNavigationTabbed implements OnDestroy {
+    /**
+     * tab object
+     */
+    @Input() tab : objectTab
     /**
      * holds the parent tab object
      */
@@ -138,7 +142,18 @@ export class GlobalNavigationTabbed implements OnDestroy {
      * @param event
      */
     public drop(event: CdkDragDrop<objectTab[]>){
-        moveItemInArray(this.navigation.objectTabs, event.previousIndex, event.currentIndex);
+        if(event.previousContainer === event.container){
+            moveItemInArray(this.navigation.objectTabs, event.previousIndex, event.currentIndex);
+        } else {
+            event.item.data.parentid = undefined;
+            this.navigation.objectTabs = this.navigation.objectTabs.slice();
+            transferArrayItem(
+                event.previousContainer.data,
+                event.container.data,
+                event.previousIndex,
+                event.currentIndex
+            )
+        }
         this.navigation.setSessionData();
     }
 }

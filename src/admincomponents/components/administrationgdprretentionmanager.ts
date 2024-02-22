@@ -56,6 +56,11 @@ export class AdministrationGDPRRetentionManager implements OnInit {
     public hasChanges: boolean = false;
 
     /**
+     * set true if we have a new GDPR policy
+     */
+    public isNew: boolean = false;
+
+    /**
      * cached selected policy
      */
     public cachedPolicy: any = {};
@@ -155,6 +160,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
                 if (!this.selectedPolicy.id) this.selectedPolicy.id = newPolicy;
                 this.cachedPolicy = {...this.selectedPolicy};
                 this.hasChanges = false;
+                this.isNew = false;
                 loading.emit(true);
             },
             error: () => {
@@ -279,6 +285,8 @@ export class AdministrationGDPRRetentionManager implements OnInit {
                     this.policies.push(newPolicy);
                     this.cachedPolicy = newPolicy;
                     this.selectedPolicyIndex = this.policies.length - 1;
+                    this.hasChanges = true;
+                    this.isNew = true;
                 }
             }
         );
@@ -288,7 +296,7 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      * check if we have changes
      */
     public registerPolicyChanges(item: any) {
-        if(this.cachedPolicy.id == item.id) {
+        if(this.cachedPolicy.id == item.id && !this.isNew) {
             this.hasChanges = JSON.stringify(item) != JSON.stringify(this.cachedPolicy);
         }
     }

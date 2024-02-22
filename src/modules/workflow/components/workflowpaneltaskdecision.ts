@@ -69,6 +69,13 @@ export class WorkflowPanelTaskDecision {
                 data: {}
             });
 
+            // broadcast that the parent has saved and updated data
+            this.broadcast.broadcastMessage('model.save', {
+                id: this.workflowservice.id,
+                module: this.workflowservice.module,
+                data: parent
+            });
+
             this.posting = false;
             this.toast.sendToast('Workflow updated');
         });

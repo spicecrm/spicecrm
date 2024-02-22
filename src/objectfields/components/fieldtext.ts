@@ -223,9 +223,9 @@ export class fieldText extends fieldGeneric implements OnInit {
         const moduleFilter = this.metadata.getComponentConfig('SystemRichTextEditor', 'TextSnippets')?.textSnippetsModuleFilter;
 
         this.helper.addTextSnippet('PLAIN', moduleFilter, this.modal, this.model, this.viewContainerRef.injector).subscribe({
-            next: res => {
+            next: snippet => {
                 const oldString = this.value ?? '';
-                this.value = oldString.substring(0, this.currentPosition) + res.html + oldString.substring(this.currentPosition)
+                this.value = oldString.substring(0, this.currentPosition) + snippet + oldString.substring(this.currentPosition)
             },
             error: () => {
                 this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');

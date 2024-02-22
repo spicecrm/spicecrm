@@ -41,7 +41,7 @@ class SpiceSoap {
         LoggerManager::getLogger()->debug('Begin: NusoapSoap->__construct');
         $this->server = new soap_server();
         $this->soapURL = $url;
-        $this->server->configureWSDL('spicesoap', $this->getNameSpace(), $url);
+        $this->server->configureWSDL('spicesoap', $this->getNameSpace(), $url, $_REQUEST['style'] ?: 'rpc' );
         if (!isset($GLOBALS['HTTP_RAW_POST_DATA'])) $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents('php://input');
         $this->setObservers();
         // set a global transaction id

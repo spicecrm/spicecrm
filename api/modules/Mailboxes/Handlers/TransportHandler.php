@@ -70,7 +70,7 @@ abstract class TransportHandler
      */
     abstract public function testConnection($testEmail);
 
-    public function sendMail(Email $email, $noSecurityCheck = false )
+    public function sendMail(Email|TextMessage $email, $noSecurityCheck = false )
     {
         $timedate = TimeDate::getInstance();
 

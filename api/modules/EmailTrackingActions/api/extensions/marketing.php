@@ -50,6 +50,23 @@ $routes = [
     ],
     [
         'method'      => 'get',
+        'route'       => '/email/doi/{key}',
+        'class'       => EmailTrackingActionsController::class,
+        'function'    => 'handleDoubleOptin',
+        'description' => '',
+        'options'     => ['noAuth' => true],
+        'parameters' => [
+            'key' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => '',
+                'example' => '',
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'get',
         'route'       => '/email/t/{key}',
         'class'       => EmailTrackingActionsController::class,
         'function'    => 'handleTrackingLink',
