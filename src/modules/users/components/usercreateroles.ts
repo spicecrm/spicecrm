@@ -1,7 +1,16 @@
 /**
  * @module ModuleUsers
  */
-import {ChangeDetectorRef, Component, forwardRef, OnInit, SkipSelf, ViewChild, ViewContainerRef} from "@angular/core";
+import {
+    ChangeDetectorRef,
+    Component,
+    forwardRef,
+    Input,
+    OnInit,
+    SkipSelf,
+    ViewChild,
+    ViewContainerRef
+} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {view} from "../../../services/view.service";
@@ -44,6 +53,7 @@ export class UserCreateRoles implements OnInit, ControlValueAccessor {
     public onChange: (value: string[]) => void;
     public onTouched: () => void;
 
+    @Input() scopefilter: 'i'|'e';
 
     constructor(
         public model: model,
@@ -76,7 +86,7 @@ export class UserCreateRoles implements OnInit, ControlValueAccessor {
 
     public getRoles(){
         this.backend.getRequest('configuration/spiceui/core/roles/' + this.model.id).subscribe(res => {
-            this.availableRoles = res.allRoles;
+            this.availableRoles = res.allRoles.filter(r => r.rolescope == 'a' || (this.scopefilter && r.rolescope == this.scopefilter));
         });
     }
 

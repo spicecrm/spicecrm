@@ -546,7 +546,9 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
         if (isNaN(result) || result === (Infinity || -Infinity)) {
             result = isNaN(result)? 'Undefined Result' : 'Infinity';
             this.value = result;
-        } else result = this.setSeparators(this.checkZeros(result.toString()).split('.').join(this.decimalSeparator));
+        }  else {
+            result = this.setSeparators(this.checkZeros(result.toString()).split('.').join(this.decimalSeparator));
+        }
 
 
         // defines output if calculation was started because of an operator
@@ -807,7 +809,7 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
         // blocks separation if number is 'Infinity' or 'Undefined Result'
         if (number.search(/Infinity/) !== -1 || number === 'Undefined Result') return number;
 
-        let seperated: string[] = number.split(this.decimalSeparator);
+       let seperated: string[] = number.split(this.decimalSeparator);
 
         if (number[0] === '-') {
             seperated = number.substring(1).split(this.decimalSeparator);
@@ -822,6 +824,7 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
 
         if (leftCount > 3) {
 
+            /*
             let leftList: string[] = [];
 
             for (let i = 1; i <= left.length; i++) {
@@ -834,6 +837,9 @@ export class SpiceCalculator implements ControlValueAccessor, AfterViewInit {
                 left.substring(0, left.length - leftList.length * 3) + this.separator + leftList.join(this.separator);
 
             seperated.splice(0, 1, left);
+            */
+
+            seperated[0] = this.userPreferences.formatMoney(parseFloat(seperated[0].replace(this.separator, '')),0);
 
             return ((number[0] === '-') ? '-' : '') + seperated.join(this.decimalSeparator);
         }

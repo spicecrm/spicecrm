@@ -6,7 +6,7 @@
                 <system-icon *ngIf="tabmodule" [module]="tabmodule" size="x-small" divClass="slds-p-right--x-small"></system-icon>
                 <div class="slds-truncate" style="white-space: nowrap; max-width: 200px;">
                     <span class="slds-indicator-container" *ngIf="isDirty">
-                        <abbr class="slds-indicator_unsaved" title="Tab Not Saved" aria-label="Tab Not Saved">*</abbr>
+                        <abbr class="slds-indicator_unsaved" system-title="LBL_TAB_NOT_SAVED" >*</abbr>
                     </span>
                     <system-label [label]="tabname"></system-label>
                 </div>

@@ -195,7 +195,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit, OnDestroy, OnChang
 
         // categories
         if (this.configurationService.getData('spiceattachments_categories')) {
-            return this.categories = this.configurationService.getData('spiceattachments_categories');
+            this.categories = this.configurationService.getData('spiceattachments_categories');
         }
         this.backend.getRequest('common/spiceattachments/categories/' + this.model.module).subscribe(res => {
             if (!res || !Array.isArray(res)) return;

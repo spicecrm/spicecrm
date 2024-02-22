@@ -3,6 +3,7 @@ import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
 import {toast} from "../../../services/toast.service";
 import {language} from "../../../services/language.service";
+import {modellist} from "../../../services/modellist.service";
 
 
 @Component({
@@ -15,6 +16,7 @@ export class MailboxSetDefaultButton {
         public language: language,
         public backend: backend,
         public toast: toast,
+        public modellist: modellist,
         public model: model
     ) {}
 
@@ -30,14 +32,16 @@ export class MailboxSetDefaultButton {
      */
     public execute() {
         this.backend.postRequest('module/Mailboxes/default', null, {mailbox_id: this.model.data.id})
-            .subscribe(
-                (res) => {
+            .subscribe({
+                next: (res) => {
                     this.toast.sendToast('success', 'success');
                     this.model.setField('is_default', true);
+                    this.modellist.reLoadList(true);
                 },
-                (err) => {
+                error: (err) => {
                     this.toast.sendToast(err.message, 'error');
                 },
-            );
+
+            });
     }
 }

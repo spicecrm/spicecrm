@@ -13,7 +13,6 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import {UserChangePasswordButton} from "./components/userchangepasswordbutton";
-import {UserChangePasswordModal} from "./components/userchangepasswordmodal";
 import {UserResetPasswordModal} from "./components/userresetpasswordmodal";
 import {UserResetPasswordButton} from "./components/userresetpasswordbutton";
 import {UserPreferences} from "./components/userpreferences";
@@ -34,6 +33,8 @@ import {UserSignatureModal} from "./components/usersignaturemodal";
 import {UserCreateRoles} from "./components/usercreateroles";
 import {UserCreateProfiles} from "./components/usercreateprofiles";
 import {UserCreatePassword} from "./components/usercreatepassword";
+import {UserSet2FAModal} from "./components/userset2famodal";
+
 
 
 @NgModule({
@@ -51,7 +52,6 @@ import {UserCreatePassword} from "./components/usercreatepassword";
     ],
     declarations: [
         UserChangePasswordButton,
-        UserChangePasswordModal,
         UserResetPasswordModal,
         UserResetPasswordButton,
         UserPreferences,
@@ -71,7 +71,8 @@ import {UserCreatePassword} from "./components/usercreatepassword";
         UserDeactivateModal,
         UserDeactivateSelectUser,
         UserSignature,
-        User2FAConfiguration
+        User2FAConfiguration,
+        UserSet2FAModal
     ]
 })
 export class ModuleUsers {
