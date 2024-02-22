@@ -508,12 +508,20 @@ class CampaignTask extends SpiceBean
         return $email;
     }
 
+    /**
+     * @deprecated because of typo. Use generateServiceFeedbacks from now on
+     * @return void
+     * @throws Exception
+     */
+    public function genereateServiceFeedbacks(){
+        $this->generateServiceFeedbacks();
+    }
 
     /**
      * send queued emails for email campaign tasks thewre the log entry is set to queued
      * @return bool
      */
-    function genereateServiceFeedbacks(){
+    public function generateServiceFeedbacks(){
         $queuedFeedbacks = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Feedback' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC");
         while($queuedFeedback = $this->db->fetchByAssoc($queuedFeedbacks)){
             /// load the campaign task if we have a new one
