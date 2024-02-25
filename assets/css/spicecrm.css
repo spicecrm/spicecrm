@@ -639,3 +639,10 @@ input[type="submit"] {
 .slds-notify--alert{
     padding-right: 0.5rem;
 }
+
+.slds-page-header{
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-radius: 0px;
+}
