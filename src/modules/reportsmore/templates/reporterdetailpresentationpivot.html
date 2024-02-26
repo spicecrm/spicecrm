@@ -2,34 +2,50 @@
     <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0">
         <table class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout slds-table--header-fixed" style="border-top: 0;">
             <thead *ngIf="totalCountArray.length > 0">
-                <!--tr class="slds-text-title--caps">
-                    <th scope="col" class="slds-truncate" style="width: 10%" [rowSpan]="presParams.pluginData.columnData.length + 1">
-                        <system-label [label]="pivotNameField"></system-label>
-                    </th>
-                    <th class="slds-p-around--none" style="width: 10%; height: 0px; padding: 0px;" *ngFor="let column of totalCountArray">
-                    </th>
-                </tr-->
-                <tr *ngFor="let row of headerTableSet; let first = first" class="slds-text-title--caps">
+                <tr *ngFor="let row of headerTableSet; index as i; first as first" class="slds-text-title--caps">
                     <th *ngIf="first" scope="col" class="slds-truncate" style="width: 10%" [rowSpan]="presParams.pluginData.columnData.length">
                         <system-label class="slds-p-horizontal--x-small slds-p-vertical--xx-small" [label]="pivotNameField"></system-label>
                     </th>
-                    <th style="width: 10%" class="slds-text-align--center slds-border--left slds-truncate" *ngFor="let column of row" [colSpan]="column.span">
+                    <th style="width: 10%;" [ngStyle]="getMultiHeaderStyle(i)" class="slds-text-align--center slds-border--left slds-truncate" *ngFor="let column of row" [colSpan]="column.span">
                         {{column.value}}
                     </th>
+                    <th *ngIf="first && presParams.pluginData.advancedOptions.showTotal" scope="col" class="slds-truncate slds-text-align--center" style="width: 2%" [rowSpan]="presParams.pluginData.columnData.length">Σ</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let rowValue of rowValues; trackBy: trackByFn">
-                    <td class=" slds-truncate" scope="row" style="width: 10%">
+                    <td class=" slds-truncate" style="width: 10%">
                         {{rowValue}}
                     </td>
-                    <td scope="row" *ngFor="let values of rowValueColumns[rowValue]" style="width: 10%">
+                    <td *ngFor="let values of rowValueColumns[rowValue]" style="width: 10%">
                         <div class="slds-grid slds-grid--align-center slds-truncate">
                             <reporter-field-container *ngFor="let value of values" [field]="value.field" [value]="value.value"></reporter-field-container>
                         </div>
                     </td>
+                    <td *ngIf="presParams.pluginData.advancedOptions.showTotal" class="slds-theme--shade">
+                        <div class="slds-grid slds-grid--align-center slds-truncate">
+                            <reporter-field-container *ngFor="let field of presParams.pluginData.valueData" [field]="{fieldid: field.fieldid, type: field.pivotrenderer}" [value]="getRowSum(rowValue, field.fieldid)"></reporter-field-container>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
+            <tfoot *ngIf="presParams.pluginData.advancedOptions.showTotal">
+                <ng-container  *ngFor="let row of headerTableSet; index as i; first as first; last as last">
+                    <tr class="slds-text-title--caps slds-theme--shade" *ngIf="last">
+                        <th scope="col" class="slds-truncate slds-text-align--right" style="width: 10%" [rowSpan]="presParams.pluginData.columnData.length">Σ</th>
+                        <th style="width: 10%;" class="slds-text-align--center slds-border--left slds-truncate" *ngFor="let column of row; index as ci">
+                            <div class="slds-grid slds-grid--align-center slds-truncate">
+                                <reporter-field-container *ngFor="let field of presParams.pluginData.valueData" [field]="{fieldid: field.fieldid, type: field.pivotrenderer}" [value]="getColumnSum(ci, field.fieldid)"></reporter-field-container>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="slds-grid slds-grid--align-center slds-truncate">
+                                <reporter-field-container *ngFor="let field of presParams.pluginData.valueData" [field]="{fieldid: field.fieldid, type: field.pivotrenderer}" [value]="getTotalSum(field.fieldid)"></reporter-field-container>
+                            </div>
+                        </th>
+                    </tr>
+                </ng-container>
+            </tfoot>
         </table>
         <div *ngIf="!isLoading && totalCountArray.length == 0" class="slds-p-around--medium slds-align--absolute-center slds-grow" style="min-height: 0">
             <h2 class="slds-text-heading--small"><system-label label="LBL_NO_ENTRIES"></system-label></h2>
