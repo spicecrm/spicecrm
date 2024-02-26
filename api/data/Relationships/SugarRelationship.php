@@ -355,9 +355,12 @@ abstract class SugarRelationship
      * @param string $link_name name of link being triggerd
      * @return void
      */
-    protected function callAfterAdd($focus, $related, $link_name = "")
+    protected function callAfterAdd($focus, $related, $link_name = "", $relationship_data = [])
     {
         $custom_logic_arguments = $this->getCustomLogicArguments($focus, $related, $link_name);
+        if($relationship_data){
+            $custom_logic_arguments['relationship_data'] = $relationship_data;
+        }
         $focus->call_custom_logic('after_relationship_add', $custom_logic_arguments);
     }
 
