@@ -22,7 +22,7 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * alternative value passed in direct
      */
-    @Input() public value: string = '';
+    @Input() public value: any = '';
     /**
      * report field
      */
