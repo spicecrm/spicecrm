@@ -287,7 +287,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     min-width: 75px;
 }
 
-.slds-table--header-fixed thead th {
+.slds-table--header-fixed thead th, .slds-table--header-fixed tfoot th {
     height: 2rem;
 }
 
