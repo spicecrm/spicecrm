@@ -2,14 +2,11 @@
 
 namespace SpiceCRM\includes\SpiceGDPRManager\schedulerjobtasks;
 
-use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
-use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
-use SpiceCRM\includes\TimeDate;
 
 class SpiceGDPRManagerSchedulerJobTasks
 {
@@ -23,9 +20,12 @@ class SpiceGDPRManagerSchedulerJobTasks
 
             $seed = BeanFactory::getBean($moduleFilter->filtermodule);
 
-            $query = "SELECT id, deleted FROM {$seed->_tablename} WHERE {$filterWhere}";
-            if ($retention['retention_type'] != 'P') {
-                $query .= " AND {$seed->_tablename}.deleted = 0";
+            if ($filterWhere) {
+                $query = "SELECT id, deleted FROM {$seed->_tablename} WHERE {$filterWhere}";
+
+                if ($retention['retention_type'] != 'P') {
+                    $query .= " AND {$seed->_tablename}.deleted = 0";
+                }
             }
 
             $relatedModules = explode(',', $retention['delete_related']);
@@ -114,7 +114,7 @@ class SpiceGDPRManagerSchedulerJobTasks
      * @param string $relationshipDef
      * @return void
      */
-    private function deleteRelatedBeans(SpiceBean $beanToBeDeleted, SpiceBean $relatedBean, string $relationshipDef)
+    private function deleteRelatedBeans(SpiceBean $beanToBeDeleted, SpiceBean $relatedBean, object $relationshipDef)
     {
 
         switch ($relationshipDef->type) {
@@ -145,11 +145,27 @@ class SpiceGDPRManagerSchedulerJobTasks
 
                 if (count($linkNames) > 0) {
                     // collection of all the beans related to the related Bean
-                    $beansRelatedToRelatedBean = $relatedBean->get_multiple_linked_beans($linkNames);
+                    $beansRelatedToRelatedBeanList = $relatedBean->get_multiple_linked_beans($linkNames);
 
-                    if (empty($beansRelatedToRelatedBean)) {
-                        // delete related bean if we've not got any m-2-m relationships
+                    // delete related bean if we've not got any m-2-m relationships
+                    if (empty($beansRelatedToRelatedBeanList)) {
                         $relatedBean->mark_deleted($relatedBean->id);
+                    } else {
+                        $deleteRelatedBean = false;
+
+                        // loop through the list of related beans to determine if the $relatedBean should be deleted
+                        // i.e. a $relatedBean is linked on parent_id and in m-2-m table with other Beans
+                        foreach($beansRelatedToRelatedBeanList as $listItemBean) {
+                            if($listItemBean->id == $beanToBeDeleted->id) {
+                                $deleteRelatedBean = true;
+                            }  else {
+                                $deleteRelatedBean = false;
+                                break;
+                            }
+                        }
+
+                        // make sure we delete the related bean if we've
+                        if($deleteRelatedBean) $relatedBean->mark_deleted($relatedBean->id);
                     }
                 }
                 break;
