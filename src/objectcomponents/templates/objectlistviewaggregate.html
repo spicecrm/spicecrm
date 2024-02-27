@@ -10,7 +10,7 @@
     </div>
     <ng-container *ngIf="!collapsed">
         <div class="slds-form-element" *ngFor="let bucketItem of aggregateBuckets">
-            <object-listview-aggregate-item  [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
+            <object-listview-aggregate-item [metric]="metric" [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
         </div>
         <div *ngIf="aggregateBucketCount > aggregateDefaultItems || otherDocCount > 0" class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-p-top--xx-small">
             <div>
