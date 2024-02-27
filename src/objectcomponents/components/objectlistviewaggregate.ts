@@ -33,6 +33,11 @@ export class ObjectListViewAggregate {
      */
     public showall: boolean = false;
 
+    /**
+     * the metric to be displayed
+     */
+    public metric: string = 'doc_count';
+
     constructor(public language: language, public modellist: modellist, public model: model) {
     }
 

@@ -31,6 +31,11 @@ export class ObjectListViewAggregateItem {
     @Input() public aggregate: any = {};
 
     /**
+     * the metric to be displayed
+     */
+    @Input() public metric: string = 'doc_count';
+
+    /**
      * internal flag if the claue is checked
      */
     public isChecked: boolean = false;
@@ -74,5 +79,14 @@ export class ObjectListViewAggregateItem {
      */
     get checked() {
         return this.modellist.checkAggregate(this.aggregatename, this.bucketitem.aggdata);
+    }
+
+    get metricValue(){
+        switch (this.metric){
+            case 'doc_count':
+                return this.bucketitem.doc_count;
+            default:
+                return this.bucketitem[this.metric].value;
+        }
     }
 }
