@@ -111,7 +111,7 @@ class SpiceGDPRManagerSchedulerJobTasks
      *
      * @param SpiceBean $beanToBeDeleted
      * @param SpiceBean $relatedBean
-     * @param string $relationshipDef
+     * @param object $relationshipDef
      * @return void
      */
     private function deleteRelatedBeans(SpiceBean $beanToBeDeleted, SpiceBean $relatedBean, object $relationshipDef)
@@ -151,21 +151,32 @@ class SpiceGDPRManagerSchedulerJobTasks
                     if (empty($beansRelatedToRelatedBeanList)) {
                         $relatedBean->mark_deleted($relatedBean->id);
                     } else {
-                        $deleteRelatedBean = false;
 
-                        // loop through the list of related beans to determine if the $relatedBean should be deleted
-                        // i.e. a $relatedBean is linked on parent_id and in m-2-m table with other Beans
-                        foreach($beansRelatedToRelatedBeanList as $listItemBean) {
-                            if($listItemBean->id == $beanToBeDeleted->id) {
-                                $deleteRelatedBean = true;
-                            }  else {
-                                $deleteRelatedBean = false;
-                                break;
+                        // arrays for activities and specially treated related-related modules
+                        $activities = ['Calls', 'Emails', 'Letters', 'Notes', 'Meetings', 'Tasks'];
+                        $speciallyTreatedModules = ['EmailTemplates'];
+
+                        // delete related true per default
+                        $deleteRelatedBean = true;
+
+                        // check if $relatedBean is an Activity & check if any beanListItem is not the $beanToBeDeleted
+                        if (in_array($relatedBean->_module, $activities)) {
+                            foreach ($beansRelatedToRelatedBeanList as $beanListItem) {
+
+                                // special treatment for beanListItem of a related-Email
+                                if (in_array($beanListItem->_module, $speciallyTreatedModules)) {
+                                    continue;
+                                }
+
+                                if ($beanListItem->id != $beanToBeDeleted->id) {
+                                    $deleteRelatedBean = false;
+                                    break;
+                                }
                             }
                         }
 
-                        // make sure we delete the related bean if we've
-                        if($deleteRelatedBean) $relatedBean->mark_deleted($relatedBean->id);
+                        // make sure we delete the related bean if can
+                        if ($deleteRelatedBean) $relatedBean->mark_deleted($relatedBean->id);
                     }
                 }
                 break;
