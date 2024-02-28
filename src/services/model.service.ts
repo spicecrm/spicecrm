@@ -836,6 +836,9 @@ export class model implements OnDestroy {
             case "require":
                 params = (typeof params == "string" ? modelutilities.strtobool(params) : params);
                 return this.setFieldStatus(action.fieldname, "required", params);
+            case "readonly":
+                params = (typeof params == "string" ? modelutilities.strtobool(params) : params);
+                return this.setFieldStatus(action.fieldname, "readonly", params);
             case "set_stati":
                 /*
                 * params has to be an json string like this:
