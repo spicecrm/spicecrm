@@ -281,9 +281,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
             'relationship' => 'campaignlog_contact',
             'source'=>'non-db',
         ],
-        'consumer'=> [
-            'name' => 'consumer',
-            'vname' => 'LBL_CONSUMER',
+        'created_consumer'=> [
+            'name' => 'created_consumer',
+            'vname' => 'LBL_CREATED_CONSUMER',
             'type' => 'link',
             'relationship' => 'campaignlog_consumer',
             'source'=>'non-db',
@@ -475,3 +475,25 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 ];
 
 VardefManager::createVardef('CampaignLog', 'CampaignLog', ['assignable']);
+
+if (file_exists('extensions/modules/ServiceFeedbacks')) {
+    SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog']['fields']['servicefeedbacks'] = [
+        'vname' => 'LBL_SERVICEFEEDBACKS',
+        'name' => 'servicefeedbacks',
+        'type' => 'link',
+        'module' => 'ServiceFeedbacks',
+        'relationship' => 'campaignlog_created_servicefeedbacks',
+        'link_type' => 'one',
+        'source' => 'non-db'
+    ];
+    SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog']['relationships']['campaignlog_created_servicefeedbacks'] = [
+        'lhs_module'=> 'CampaignLog',
+        'lhs_table'=> 'campaign_log',
+        'lhs_key' => 'related_id',
+        'rhs_module'=> 'ServiceFeedbacks',
+        'rhs_table'=> 'servicefeedbacks',
+        'rhs_key' => 'id',
+        'relationship_type'=>'one-to-many'
+    ];
+}
+
