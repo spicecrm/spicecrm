@@ -1432,7 +1432,7 @@ class Email extends SpiceBean
 
     public function setParent(SpiceBean $bean)
     {
-        $this->parent_type = $bean->module_name;
+        $this->parent_type = $bean->_module;
         $this->parent_id = $bean->id;
         return true;
     }
