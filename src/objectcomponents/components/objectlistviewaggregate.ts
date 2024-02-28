@@ -2,8 +2,7 @@
  * @module ObjectComponents
  */
 import {
-    Component,
-    Input, OnInit
+    Component, Input, OnInit
 } from '@angular/core';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
@@ -11,13 +10,17 @@ import {modellist} from '../../services/modellist.service';
 import {metadata} from "../../services/metadata.service";
 
 /**
- * a componentn that displays one set of aggregtaes returned from the Elastic Search
+ * a component that displays one set of aggregates returned from the Elastic Search
  */
 @Component({
     selector: 'object-listview-aggregate',
     templateUrl: '../templates/objectlistviewaggregate.html'
 })
 export class ObjectListViewAggregate {
+    /**
+     * toggles visibility for chart
+     */
+    public showChart: boolean = false;
 
     /**
      * an input for teh aggregate itself
@@ -128,5 +131,19 @@ export class ObjectListViewAggregate {
      */
     public toggleCollapsed() {
         this.aggregate.collapsed = !this.aggregate.collapsed;
+        if(this.collapsed){
+            this.showChart = false;
+        }
+    }
+
+    /**
+     * toggles the chart when container is not collapsed
+     */
+    public toggleChart() {
+        if(!this.collapsed){
+            this.showChart = !this.showChart;
+        } else {
+            this.showChart = false;
+        }
     }
 }
