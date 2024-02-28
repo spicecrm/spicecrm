@@ -1498,7 +1498,7 @@ class SpiceFTSHandler
                 // update the bucket items
                 $bucketitem['values'] = $aggsArray;
                 $bucketitem['total'] = $this->elasticHandler->getHitsTotalValue($searchresultsraw);
-                $bucketitem['items'] = $bucketitem['items'] + count($searchresultsraw['hits']['hits']);
+                $bucketitem['items'] = $bucketitem['items'] + (!is_array($searchresultsraw['hits']['hits']) ? 0 : count($searchresultsraw['hits']['hits']));
 
             }
 
