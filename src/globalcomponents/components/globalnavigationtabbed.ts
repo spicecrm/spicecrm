@@ -34,10 +34,6 @@ const ANIMATIONS = [
 })
 export class GlobalNavigationTabbed implements OnDestroy {
     /**
-     * tab object
-     */
-    @Input() tab : objectTab
-    /**
      * holds the parent tab object
      */
     public parentTab: any;
@@ -138,21 +134,35 @@ export class GlobalNavigationTabbed implements OnDestroy {
     }
 
     /**
-     * handles the drop event and resets the sequence fields
+     * handles the drop event
      * @param event
      */
     public drop(event: CdkDragDrop<objectTab[]>){
-        if(event.previousContainer === event.container){
-            moveItemInArray(this.navigation.objectTabs, event.previousIndex, event.currentIndex);
+
+        if(event.previousContainer == event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
+            transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+        }
+
+        //find the index of our item in objectTabs array & splice the item it out from where it was
+        const previousIndex = this.navigation.objectTabs.findIndex(t => t.id == event.item.data.id);
+        const item = this.navigation.objectTabs.splice(previousIndex, 1)[0];
+        const itemId = this.navigation.getTabById(item.id);
+
+        //find the index of the item to the left of the currentIndex & then the objectTab itself
+        const itemToLeftIndex = event.currentIndex - 1;
+        const itemToLeft = event.container.data[itemToLeftIndex];
+
+        //we figure out the index/position of our dropped item
+        const dropIndex = itemToLeft ?  this.navigation.objectTabs.findIndex(t => t.id == itemToLeft.id) + 1 : 0 //event.container.data.findIndex(t => t.id == event.item.data.id);
+
+        //we splice in our item BEFORE the drop index.
+        this.navigation.objectTabs.splice(dropIndex, 0, item);
+
+        if (event.previousContainer !== event.container) {
             event.item.data.parentid = undefined;
-            this.navigation.objectTabs = this.navigation.objectTabs.slice();
-            transferArrayItem(
-                event.previousContainer.data,
-                event.container.data,
-                event.previousIndex,
-                event.currentIndex
-            )
+            this.setDisplaySubTabs(itemId)
         }
         this.navigation.setSessionData();
     }
