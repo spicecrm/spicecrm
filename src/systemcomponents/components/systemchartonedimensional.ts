@@ -1,11 +1,12 @@
 import {
+    AfterContentChecked,
     Component,
     ContentChildren,
     EventEmitter,
-    Input,
+    Input, OnChanges,
     OnDestroy,
     Output,
-    QueryList,
+    QueryList, SimpleChanges,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
@@ -26,7 +27,7 @@ import {SystemChartDataRow} from "./systemchartdatarow";
     templateUrl: '../templates/systemchartonedimensional.html',
     providers: [SystemChartService]
 })
-export class SystemChartOneDimensional implements OnDestroy, GoogleChartOptionsI {
+export class SystemChartOneDimensional implements OnChanges, OnDestroy, GoogleChartOptionsI {
     /**
      * save if the chart series has data or not
      */
@@ -38,7 +39,7 @@ export class SystemChartOneDimensional implements OnDestroy, GoogleChartOptionsI
     /**
      * values components
      */
-    @ContentChildren(SystemChartDataRow) public rowChildren: QueryList<SystemChartDataRow>;
+    @ContentChildren(SystemChartDataRow, {emitDistinctChangesOnly: true}) public rowChildren: QueryList<SystemChartDataRow>;
     /**
      * google chart type
      */
@@ -59,6 +60,10 @@ export class SystemChartOneDimensional implements OnDestroy, GoogleChartOptionsI
      * google chart is 3D boolean
      */
     @Input() public is3D: boolean = false;
+    /**
+     * a state for the data so we can trigger a reload
+     */
+    @Input() public dataState: string = '';
     /**
      * emit the index value of the selected SystemChartOneDimensionalValue row
      */
@@ -99,6 +104,16 @@ export class SystemChartOneDimensional implements OnDestroy, GoogleChartOptionsI
      */
     public ngAfterContentInit() {
         this.loadDataFromContentChildren();
+        this.rowChildren.changes.subscribe(changes => {
+            this.setData();
+        })
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+        if(changes.chartType && !changes.chartType.firstChange){
+            this.loadDataFromContentChildren();
+            this.setChartType(changes.chartType.currentValue);
+        }
     }
 
     /**
@@ -112,6 +127,8 @@ export class SystemChartOneDimensional implements OnDestroy, GoogleChartOptionsI
      * load rows and columns from content children
      */
     public loadDataFromContentChildren() {
+
+        if(!this.rowChildren) return;
 
         if (this.rowChildren.length == 0) {
             return this.hasData = false;
@@ -155,5 +172,18 @@ export class SystemChartOneDimensional implements OnDestroy, GoogleChartOptionsI
                 this.onValueClick.emit(res)
             )
         }));
+    }
+
+    /**
+     * reset the data
+     */
+    public setData(){
+        this.loadDataFromContentChildren();
+        this.chartService.setData(this.data);
+    }
+
+    public setChartType(chartType?){
+        this.loadDataFromContentChildren();
+        this.chartService.setChartType(chartType ?? this.chartType);
     }
 }
