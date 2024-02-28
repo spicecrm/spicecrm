@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
+                <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>
                     <system-label label="LBL_MODULE"></system-label>
                 </label>
                 <system-input-module [(ngModel)]="newLogicHook.module"></system-input-module>
@@ -25,7 +25,6 @@
                     <system-label label="LBL_EVENT"></system-label>
                 </label>
                 <select id="eventselect" class="slds-select" [(ngModel)]="newLogicHook.event">
-                    <option value="select">select</option>
                     <option  *ngFor="let thisevent of events" [value]="thisevent">{{thisevent}}</option>
                 </select>
             </div>
