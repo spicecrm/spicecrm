@@ -989,6 +989,15 @@ export class metadata {
     }
 
     /**
+     * returns the ggregate settings for a module
+     *
+     * @param module
+     */
+    public getModuleAggregateMetrics(module: string) {
+        return this.moduleDefs[module].ftsmetrics;
+    }
+
+    /**
      * returns the field defs for a given module
      * @param module
      * @param field
