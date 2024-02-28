@@ -8,6 +8,7 @@ import {
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
+import {metadata} from "../../services/metadata.service";
 
 /**
  * a componentn that displays one set of aggregtaes returned from the Elastic Search
@@ -33,7 +34,12 @@ export class ObjectListViewAggregate {
      */
     public showall: boolean = false;
 
-    constructor(public language: language, public modellist: modellist, public model: model) {
+    /**
+     * the metric to be displayed
+     */
+    public metric: string = 'doc_count';
+
+    constructor(public language: language, public modellist: modellist, public model: model, public metadata: metadata) {
     }
 
     /**
@@ -60,6 +66,13 @@ export class ObjectListViewAggregate {
      */
     get aggregatename() {
         return this.aggregate.indexfieldname?.replace(/>/g, '');
+    }
+
+    /**
+     * a getter to see if the current module has aggergate metrics
+     */
+    get hasMetrics(){
+        return this.metadata.getModuleAggregateMetrics(this.modellist.module).length > 0;
     }
 
     /**

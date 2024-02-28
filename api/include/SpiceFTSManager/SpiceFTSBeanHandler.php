@@ -104,6 +104,45 @@ class SpiceFTSBeanHandler
         }
         return $sortfields;
     }
+    /**
+     * returns the aggregate metrics defined for the bean
+     */
+    function getMetrics()
+    {
+        $metricfields = [];
+        foreach ($this->indexProperties as $indexProperty) {
+            $details = SpiceFTSUtils::getDetailsForField($indexProperty['path']);
+            if (isset($indexProperty['aggregatemetricavg']) && (!empty($details['field']) || !empty($details['module']))) {
+                $metricfields[] = [
+                    'function' => 'avg',
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+            if (isset($indexProperty['aggregatemetricsum']) && (!empty($details['field']) || !empty($details['module']))) {
+                $metricfields[] = [
+                    'function' => 'sum',
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+            if (isset($indexProperty['aggregatemetricmax']) && (!empty($details['field']) || !empty($details['module']))) {
+                $metricfields[] = [
+                    'function' => 'max',
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+            if (isset($indexProperty['aggregatemetricmin']) && (!empty($details['field']) || !empty($details['module']))) {
+                $metricfields[] = [
+                    'function' => 'min',
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+        }
+        return $metricfields;
+    }
 
     /**
      * called to normalize the bean

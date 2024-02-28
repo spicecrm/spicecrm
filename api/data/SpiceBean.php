@@ -993,7 +993,7 @@ class SpiceBean
      * @param array $field_names linkname => [params]
      * @return array
      */
-    private function get_multiple_linked_beans($field_names)
+    public function get_multiple_linked_beans($field_names)
     {
         // check how field_names is formed. Make an array if it's not.
         foreach ($field_names as $field_name){
