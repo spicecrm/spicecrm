@@ -1,14 +1,15 @@
 <div class="slds-filters__item slds-p-horizontal--small slds-p-vertical--xx-small">
-    <div class="slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread" (click)="toggleCollapsed()">
-        <div class="slds-grid">
+    <div class="slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-grid slds-col slds-size--10-of-12" (click)="toggleCollapsed()">
             <ul class="slds-list_horizontal slds-has-dividers_right">
                 <li class="slds-item" *ngFor="let aggregateNameItem of aggregateNameItems">{{aggregateNameItem}}</li>
             </ul>
             <div class="slds-p-left--xx-small" *ngIf="collapsed && checkdCount>0">({{checkdCount}} <system-label label="LBL_SELECTED"></system-label>)</div>
         </div>
-        <system-utility-icon [icon]="collapsed? 'down' : 'up'" size="x-small"></system-utility-icon>
+        <system-utility-icon icon="chart" [colorclass]="showChart? 'slds-icon-text-warning' : 'slds-icon-text-default'" size="x-small" (click)="toggleChart()"></system-utility-icon>
+        <system-utility-icon [icon]="collapsed? 'down' : 'up'" size="x-small" (click)="toggleCollapsed()"></system-utility-icon>
     </div>
-    <ng-container *ngIf="!collapsed">
+    <ng-container *ngIf="!collapsed && !showChart">
         <div class="slds-form-element" *ngFor="let bucketItem of aggregateBuckets">
             <object-listview-aggregate-item [metric]="metric" [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
         </div>
@@ -24,4 +25,9 @@
             </div>
         </div>
     </ng-container>
+
+    <ng-container *ngIf="!collapsed && showChart">
+        <object-listview-aggregate-chart [aggregate]="aggregate"></object-listview-aggregate-chart>
+    </ng-container>
+
 </div>

@@ -97,6 +97,7 @@ import {ObjectListViewAggregateItem} from './components/objectlistviewaggregatei
 import {ObjectListViewAggregateItemTerm} from './components/objectlistviewaggregateitemterm';
 import {ObjectListViewAggregateItemRange} from './components/objectlistviewaggregateitemrange';
 import {ObjectListViewTagsAggregate} from './components/objectlistviewtagsaggregate';
+import {ObjectListViewAggregateChart} from "./components/objectlistviewaggregatechart";
 
 import {ObjectListViewFilterButton} from './components/objectlistviewfilterbutton';
 import {ObjectListViewFilterPanel} from './components/objectlistviewfilterpanel';
@@ -272,6 +273,7 @@ import {ObjectSetInactiveIcon} from "./components/objectsetinactiveicon";
         ObjectListViewAggregatesButton,
         ObjectListViewAggregatesPanel,
         ObjectListViewAggregate,
+        ObjectListViewAggregateChart,
         ObjectListViewAggregateItem,
         ObjectListViewAggregateItemTerm,
         ObjectListViewAggregateItemRange,
