@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, ComponentRef, EventEmitter, Input, OnDestroy, OnInit, Output, SkipSelf,
+    Component, ComponentRef, Injector
 } from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
@@ -12,10 +12,7 @@ import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {HooksManager} from "./hooksmanager";
 import {WebHookI} from "../interfaces/systemui.interfaces";
-
 import {WebHooksManagerEditModal} from "./webhooksmanagereditmodal";
-import {model} from "../../services/model.service";
-import {relatedmodels} from "../../services/relatedmodels.service";
 import {Subscription} from "rxjs";
 
 
@@ -37,6 +34,7 @@ export class WebHooksManager {
         public toast: toast,
         public modal: modal,
         public hooksManager: HooksManager,
+        public injector: Injector
     ) {
     }
 
@@ -100,7 +98,8 @@ export class WebHooksManager {
      * @private
      */
     private openEditWebHookModal(webHook?: WebHookI) {
-        this.modal.openModal('WebHooksManagerEditModal').subscribe((modalRef: ComponentRef<WebHooksManagerEditModal>) => {
+        this.modal.openModal('WebHooksManagerEditModal', true, this.injector).subscribe((modalRef: ComponentRef<WebHooksManagerEditModal>) => {
+            modalRef.instance.newWebHook.module = this.hooksManager.module;
             const index = this.webHooks.indexOf(webHook);
             if (webHook) {
                 modalRef.instance.newWebHook = {...webHook};
