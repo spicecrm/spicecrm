@@ -30,6 +30,7 @@ export class ValidationRulesActions implements OnInit {
         'hide',
         'show',
         'require',
+        'readonly'
     ];
     fieldname_options: any[] = [];
 
