@@ -122,7 +122,9 @@ export class SpiceKanbanManagerAddModal implements OnInit{
                 }
             });
 
-            this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: fieldValidationValue}).subscribe({
+            let table = this.scope == 'global' ? 'spicebeanguidestages' : 'spicebeancustomguidestages';
+
+            this.backend.postRequest(`configuration/configurator/${table}`, null, {config: fieldValidationValue}).subscribe({
                 next: () => {
                     spinner.emit(true);
                     this.toast.sendToast('LBL_SPICEBEANGUIDESTAGES_SAVED', "success");
@@ -143,8 +145,10 @@ export class SpiceKanbanManagerAddModal implements OnInit{
                 name : this.sysTextIDName,
             }
 
+            table = this.scope == 'global' ? 'systextids' : 'syscustomtextids';
+
             // Save systextid in table systextids
-            this.backend.postRequest(`configuration/configurator/systextids`, null, {config: [sysTextId]}).subscribe({
+            this.backend.postRequest(`configuration/configurator/${table}`, null, {config: [sysTextId]}).subscribe({
                 next: () => {
                     spinner.emit(true);
                     this.close();
