@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
@@ -67,6 +68,18 @@ class SpiceDictionaryRelationships
     }
 
     /**
+     * reload the items from the database and reset the cache
+     * then reset the items from the cache
+     * @return void
+     * @throws Exception
+     */
+    public function reloadItems()
+    {
+        $this->relationships = $this->getRelationships();
+        SpiceCache::set(self::cachename, $this->relationships);
+    }
+
+    /**
      * reset cache
      */
     public function resetCache($rebuild = true){
@@ -120,7 +133,7 @@ class SpiceDictionaryRelationships
      * loads the relationships from the Database
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getRelationships(string $sysdictionaryDefinitonId = null, array $statusFilter = ['a'], $includeTemplates = false){
         $db = DBManagerFactory::getInstance();
@@ -214,7 +227,7 @@ class SpiceDictionaryRelationships
      * @param array $relationship
      * @param $relationshipPolymorphs
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function add(array $relationship, $relationshipPolymorphs = []){
         $db = DBManagerFactory::getInstance();

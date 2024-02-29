@@ -647,3 +647,10 @@ input[type="submit"] {
 .slds-button.slds-button_icon:hover {
     color: var(--brand-primary);
 }
+
+.slds-page-header{
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-radius: 0px;
+}
