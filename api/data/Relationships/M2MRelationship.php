@@ -248,8 +248,8 @@ class M2MRelationship extends Relationship
             $lhs->$lhsLinkName->addBean($rhs);
             $rhs->$rhsLinkName->addBean($lhs);
 
-            $this->callAfterAdd($lhs, $rhs, $lhsLinkName);
-            $this->callAfterAdd($rhs, $lhs, $rhsLinkName);
+            $this->callAfterAdd($lhs, $rhs, $lhsLinkName, $dataToInsert);
+            $this->callAfterAdd($rhs, $lhs, $rhsLinkName, $dataToInsert);
 
         $this->reindexBeans($lhs, $rhs);
 

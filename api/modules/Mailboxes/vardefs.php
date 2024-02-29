@@ -125,6 +125,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'type' => 'varchar',
             'comment' => 'redirect url for the unsubscribe link',
         ],
+        'double_optin_redirect_url' => [
+            'name' => 'double_optin_redirect_url',
+            'vname' => 'LBL_DOUBLE_OPTIN_REDIRECT_URL',
+            'type' => 'varchar',
+            'comment' => 'redirect url for the double optin link',
+        ],
         'emails' => [
             'name' => 'emails',
             'vname' => 'LBL_EMAILS_LINK',

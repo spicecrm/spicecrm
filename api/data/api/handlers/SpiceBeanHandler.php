@@ -251,6 +251,8 @@ class SpiceBeanHandler
         // BWC: reduce number of fields and related tables to search on
         $create_new_list_query_filter = [];
 
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
         // initialize the where Clauses
         $whereClauses = [];
 
@@ -342,10 +344,19 @@ class SpiceBeanHandler
         if (!empty($searchParams['listid'])) {
             switch ($searchParams['listid']) {
                 case 'all':
-                    // do nothing
+                    // show only active items
+                    if(property_exists($thisBean, 'is_inactive')) {
+                        $whereClauses[] = '( is_inactive = 0)';
+                    }
                     break;
                 case 'owner':
                     $searchParams['owner'] = true;
+                    $whereClauses[] = '( assigned_user_id = ' . $current_user->id .')';
+
+                    // show only active items
+                    if(property_exists($thisBean, 'is_inactive')) {
+                        $whereClauses[] = '( is_inactive = 0)';
+                    }
                     break;
                 default:
                     $filterdefs = json_decode(html_entity_decode($listDef['filterdefs']));
