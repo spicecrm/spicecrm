@@ -771,7 +771,7 @@ class Compiler
 //            global $app_list_strings;
             $part = $parts[$level];
             if (is_callable([$obj, $part])) {
-                $value = $obj->{$part}(30);
+                $value = $obj->{$part}();
             } else {
                 $field = $obj->field_defs[$part];
                 switch ($field['type']) {
