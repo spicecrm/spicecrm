@@ -1,4 +1,5 @@
 <div class="slds-scrollable--y slds-height_full" #tablecontent (scroll)="onScroll($event)">
+    <system-input-search-term [(ngModel)]="searchTerm" (onSearchTermClear)="clearSearchTerm()" (onEnterPress)="reloadList()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)" class="slds-grow"></system-input-search-term>
     <table class="slds-table slds-table--fixed-layout slds-table--bordered slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}" role="listbox">
         <thead>
         <tr object-list-header [showSelectColumn]="multiselect" [showRowActionMenu]="false"></tr>

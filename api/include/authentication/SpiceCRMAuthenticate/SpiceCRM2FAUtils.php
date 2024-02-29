@@ -252,7 +252,7 @@ class SpiceCRM2FAUtils
         $sms->mailbox_id = $mailboxId;
         $sms->description = "Your CRM login code is $code";
         $sms->msisdn = $phoneNumber;
-        $sms->save();
+        $sms->send();
     }
 
     /**
@@ -285,7 +285,7 @@ class SpiceCRM2FAUtils
         $email->body = "Your CRM login code is $code";
         $email->addEmailAddress('to', $emailAddress);
 
-        $email->save();
+        $email->sendEmail();
     }
 
     /**

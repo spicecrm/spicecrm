@@ -7,6 +7,12 @@ import {model} from '../../../services/model.service';
 import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/reportsdesigner.service";
+import {configurationService} from "../../../services/configuration.service";
+
+/**
+ * @ignore
+ */
+declare var _;
 
 @Component({
     selector: 'reports-designer-more-integrate-item-schedule',
@@ -17,10 +23,16 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     public dLists: any[] = [];
     public expandedId: string = '';
 
+    /**
+     * holds a list of the available mailboxes
+     */
+    public mailboxes: { value: string, display: string }[] = [];
+
     constructor(public language: language,
                 public model: model,
                 public modal: modal,
                 public backend: backend,
+                public configuration: configurationService,
                 public reportsDesignerService: ReportsDesignerService) {
     }
 
@@ -48,6 +60,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     public ngOnInit() {
         this.initializeProperties();
         this.loadDLists();
+        this.loadAvailableMailboxes();
     }
 
     /**
@@ -71,6 +84,26 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
     }
 
     /**
+     * load outbound mailboxes
+     */
+    public loadAvailableMailboxes() {
+
+        const options = this.configuration.getData(`mailboxesoutbound`);
+
+        if (_.isEmpty(options)) {
+            this.backend.getRequest("module/Mailboxes/scope", {scope: 'outbound'}).subscribe(
+                (results: any) => {
+
+                    this.mailboxes = results.sort((a, b) => a.display.localeCompare(b.display));
+
+                    // cache the options
+                    this.configuration.setData(`mailboxesoutbound`, this.mailboxes);
+                });
+        } else {
+            this.mailboxes = options;
+        }
+    }
+    /**
      * @return newSchedule: object
      */
     public generateSchedule() {
@@ -87,7 +120,8 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
             schedulersavetoaction: '',
             schedulersendlist: '',
             schedulersendto: '',
-            schedulersaveto: ''
+            schedulersaveto: '',
+            schedulermailboxid: ''
         };
     }
 

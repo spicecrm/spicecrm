@@ -6,5 +6,5 @@
         <object-listview-aggregate-item-term *ngSwitchCase="'term'" [aggregate]="aggregate" [item]="bucketitem"></object-listview-aggregate-item-term>
         <div *ngSwitchDefault>{{bucketitem.displayName}}</div>
     </div>
-    <div class="slds-p-left--xx-small slds-text-align--right" style="min-width: 45px">(<system-display-number [number]="bucketitem.doc_count" [noDigits]="true"></system-display-number>)</div>
+    <div class="slds-p-left--xx-small slds-text-align--right" style="min-width: 45px">(<system-display-number [number]="metricValue" [noDigits]="true"></system-display-number>)</div>
 </div>

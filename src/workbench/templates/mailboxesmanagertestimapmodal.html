@@ -26,8 +26,8 @@
                 <system-utility-icon [icon]="validConnection ? 'check' : 'error'" size="x-small" [colorclass]="validConnection ? 'slds-icon-text-success' : 'slds-icon-text-error'"></system-utility-icon>
                 <span *ngIf="!!errorMessage" class="slds-p-horizontal--xx-small slds-text-color--error">{{errorMessage}}</span>
             </div>
-            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()"><system-label label="LBL_TEST"></system-label></button>
-            <button class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="testConnection()"><system-label label="LBL_TEST"></system-label></button>
         </div>
     </system-modal-footer>
 </system-modal>

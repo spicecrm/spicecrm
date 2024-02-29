@@ -89,7 +89,7 @@ export class loginService {
         let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
 
         const params: any = {};
-        const impersonating = this.authData.userName.indexOf('#as#') > 0;
+        const impersonating = this.authData.userName && this.authData.userName.indexOf('#as#') > 0;
 
         // prepare impersonation users
         if (impersonating && this.authData.userName && this.authData.password) {
