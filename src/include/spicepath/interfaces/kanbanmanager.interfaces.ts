@@ -50,7 +50,5 @@ export interface SpiceTextsI {
     parent_type: string;
     text_id: string;
     text_language: string;
-    spiceBeanGuideId: string;
     deleted: 0 | 1;
-    scope: 'global' | 'custom';
 }

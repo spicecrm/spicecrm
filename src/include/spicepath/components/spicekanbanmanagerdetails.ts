@@ -5,7 +5,6 @@ import {toast} from "../../../services/toast.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {SpiceBeanGuideStagesI, SpiceTextsI} from "../interfaces/kanbanmanager.interfaces";
-import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
 
 /**
  * manages the details of the kanban
@@ -31,19 +30,18 @@ export class SpiceKanbanManagerDetails implements OnInit {
     /**
      * holds spice text
      */
-    public selectedSpiceText: SpiceTextsI;
+    public selectedStageText: SpiceTextsI;
 
     /**
      * holds active tab instance
      */
-    public activeTab: string = '';
+    public selectedLanguage: string = '';
 
     constructor(
         public kanban: KanbanManagerService,
         public language: language,
         public modal: modal,
         public toast: toast,
-        private changeService: ChangeHistoryService,
         public utils: modelutilities,
     ) {
     }
@@ -54,48 +52,19 @@ export class SpiceKanbanManagerDetails implements OnInit {
         this._selectedStage = stage;
 
         if (stage) {
+            this._selectedStage = this.kanban.generateTrackableObject(stage, 'stages');
             this.selectSpiceText();
         }
-
-        this.changeService.registerObject(this._selectedStage, 'stages');
     }
 
     get selectedStage(): SpiceBeanGuideStagesI {
         return this._selectedStage;
     }
 
-    public ngDoCheck() {
-
-        if (!this._selectedStage) return;
-
-        this.changeService.checkForObjectChanges(this._selectedStage, 'stages');
-
-    }
-
     public ngOnInit() {
         // get languages
         this.systemLanguages = this.language.getAvialableLanguages();
-        this.activeTab = this.language.currentlanguage;
-    }
-
-    /**
-     * handles changes in spice text name
-     * @param val
-     */
-    public onChange(val: string): void {
-        if (val) {
-            // update current spice bean text only if index found
-            let indexToUpdate: number = this.kanban.currentBeanGuideSpiceTexts.findIndex(item => item.id === this.selectedSpiceText.id);
-
-            if (indexToUpdate < 0) {
-                this.fillSpiceTextData(val);
-            }
-
-            if (indexToUpdate >= 0) {
-                this.selectedSpiceText.name = val;
-                this.kanban.currentBeanGuideSpiceTexts[indexToUpdate] = this.selectedSpiceText;
-            }
-        }
+        this.selectedLanguage = this.language.currentlanguage;
     }
 
     /**
@@ -103,7 +72,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
      * @param langTab string
      */
     public switchTab(langTab: string) {
-        this.activeTab = langTab;
+        this.selectedLanguage = langTab;
         this.selectSpiceText();
     }
 
@@ -113,36 +82,31 @@ export class SpiceKanbanManagerDetails implements OnInit {
     public selectSpiceText() {
 
         // get spice text by language
-        const selectedSpiceText: SpiceTextsI = this.kanban.currentBeanGuideSpiceTexts.find((text) => text.text_language == this.activeTab && text.parent_id == this.selectedStage.id);
+        const selectedSpiceText: SpiceTextsI = this.kanban.currentStageTexts.find((text) => text.text_language == this.selectedLanguage && text.parent_id == this._selectedStage.id);
 
-        if (!selectedSpiceText) return this.fillSpiceTextData(undefined);
-
-        this.selectedSpiceText = selectedSpiceText;
+        if (!!selectedSpiceText) {
+            this.selectedStageText = this.kanban.generateTrackableObject(selectedSpiceText, 'spiceTexts');
+        } else {
+            const validator = obj => !!obj.name;
+            this.selectedStageText = this.kanban.generateTrackableNewObject(this.generateSpiceTextObject(), 'spiceTexts', validator);
+        }
     }
 
     /**
-     * write data details for a new SpiceText
-     * @param val
+     * generate data details for a new SpiceText
      * @private
      */
-    private fillSpiceTextData(val) {
+    private generateSpiceTextObject(): SpiceTextsI {
 
-        this.selectedSpiceText =
-            {
-                scope: undefined,
-                spiceBeanGuideId: "",
-                id: this.utils.generateGuid(),
-                name: val,
-                parent_id: this._selectedStage.id,
-                parent_type: 'SpiceBeanGuideStages',
-                text_id: this.kanban.selectedBeanGuide.systextid,
-                text_language: this.activeTab,
-                deleted: 0
-
-            };
-
-        // update service
-        this.kanban.currentBeanGuideSpiceTexts.push(this.selectedSpiceText);
+        return {
+            id: this.utils.generateGuid(),
+            name: '',
+            parent_id: this._selectedStage.id,
+            parent_type: 'SpiceBeanGuideStages',
+            text_id: this.kanban.selectedBeanGuide.systextid,
+            text_language: this.selectedLanguage,
+            deleted: 0
+        };
     }
 }
 
