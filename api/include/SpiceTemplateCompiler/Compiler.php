@@ -46,7 +46,12 @@ use SpiceCRM\includes\utils\SpiceUtils;
  *
  */
 
-
+class SpiceFor {
+    public function __construct( $dataArray )
+    {
+        foreach ( $dataArray as $k => $v ) $this->{$k} = $v;
+    }
+}
 
 class Compiler
 {
@@ -208,7 +213,14 @@ class Compiler
                         if ($this->processCondition($spiceif, $beans)) {
                             $elements[] = $this->createNewElement($node, $beans);
                         }
-                    } else if($node->getAttribute('data-spicefor')){
+                    }
+                    elseif($node->getAttribute('data-spicenot')){
+                        $spicenot = $node->getAttribute('data-spicenot');
+                        if (!$this->processCondition($spicenot, $beans)) {
+                            $elements[] = $this->createNewElement($node, $beans);
+                        }
+                    }
+                    else if($node->getAttribute('data-spicefor')){
                         $spicefor = $node->getAttribute('data-spicefor');
 
                         // CR1000360
@@ -239,10 +251,27 @@ class Compiler
                         foreach ($linkedBeans as $index => $linkedBean) {
                             // set the params for teh first or last entry
                             $params = [];
-                            if($index == 0) $params[] = 'data-spicefor-first';
-                            if($index == count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
+                            if( $index === 0 ) $params[] = 'data-spicefor-first';
+                            if ( $index === count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
+                            if ( $index > 0 and $index < count($linkedBeans) - 1 ) $params[] = 'data-spicefor-inner';
+                            if ( $index % 2 === 0 ) $params[] = 'data-spicefor-even';
+                            if ( $index % 2 === 1 ) $params[] = 'data-spicefor-odd';
 
-                            $elements[] = $this->createNewElement($node, array_merge($beans, [$forArray[1] => $linkedBean]), $params);
+                            $spiceforParent = ( isset( $beans['spicefor'] ) ? $beans['spicefor'] : null );
+                            $elements[] = $this->createNewElement(
+                                $node,
+                                array_merge( $beans, [
+                                    $forArray[1] => $linkedBean,
+                                    'spicefor' => new SpiceFor([
+                                        'index' => $index,
+                                        'first' => ( $index === 0 ),
+                                        'last' => ( $index === count( $linkedBeans ) - 1 ),
+                                        'inner' => ( $index > 0 and $index < count( $linkedBeans ) - 1 ),
+                                        'even' => ( $index % 2 === 0 ),
+                                        'odd' => ( $index % 2 === 1 ),
+                                        'parent' => $spiceforParent
+                                    ])
+                                ]), $params);
                             // $response .= $this->processBlocks($this->getBlocks($contentString), array_merge($beans, [$forArray[1] => $linkedBean]), $lang);
                         }
                         break;
@@ -442,10 +471,14 @@ class Compiler
                 switch($attribute->nodeName){
                     case 'data-spicefor':
                     case 'data-spiceif':
+                    case 'data-spicenot':
                         break;
                     case 'data-spicefor-first':
                     case 'data-spicefor-last':
-                        if(array_search($attribute->nodeName, $params) >= 0){
+                    case 'data-spicefor-inner':
+                    case 'data-spicefor-even':
+                    case 'data-spicefor-odd':
+                        if(in_array($attribute->nodeName, $params)){
                             $newAttribute = $this->doc->createAttribute($attribute->nodeName);
                             $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
                             $newElement->appendChild($newAttribute);
@@ -555,6 +588,8 @@ class Compiler
 
         $value1 = trim($this->handleSubstitution($conditionparts[0], $beans, true), "'");
         $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
+
+        if ( $value1 === true ) return true;
 
         switch (strtolower($conditionparts[1])) {
             case '>':
@@ -770,6 +805,7 @@ class Compiler
         $loopThroughParts = function ($obj, $level = 0, $raw = false, &$bean) use (&$parts, &$loopThroughParts) {
 //            global $app_list_strings;
             $part = $parts[$level];
+
             if (is_callable([$obj, $part])) {
                 $value = $obj->{$part}();
             } else {
