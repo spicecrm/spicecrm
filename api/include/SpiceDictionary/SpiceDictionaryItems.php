@@ -2,6 +2,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary;
 
+use Exception;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
@@ -90,7 +91,7 @@ class SpiceDictionaryItems
      * loads the items fromt eh database
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getItems($sysdictionaryDefinitionId = null, $statusFilter = ['a'], $templatesOnly = false){
         $db = DBManagerFactory::getInstance();
@@ -191,6 +192,18 @@ class SpiceDictionaryItems
         if($rebuild) SpiceCache::set(self::cachename, $this->getItems(null, []));
     }
 
+    /**
+     * reload the items from the database and reset the cache
+     * then reset the items from the cache
+     * @return void
+     * @throws Exception
+     */
+    public function reloadItems()
+    {
+        $this->dictionaryItems = $this->getItems(null, []);
+        SpiceCache::set(self::cachename, $this->dictionaryItems);
+    }
+
     public function getDictionaryItems(){
         return array_values($this->dictionaryItems);
     }
@@ -201,7 +214,7 @@ class SpiceDictionaryItems
      *
      * @param $item
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function addItem($item){
         $table = $item['scope'] == 'c' ? self::customtable : self::table;
@@ -221,7 +234,7 @@ class SpiceDictionaryItems
      *
      * @param $id
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteItem($id)
     {
@@ -241,7 +254,7 @@ class SpiceDictionaryItems
      *
      * @param $item
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function setItem($item){
         $table = $item['scope'] == 'c' ? self::customtable : self::table;
