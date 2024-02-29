@@ -37,12 +37,12 @@
             <div class="slds-tabs_scoped">
                 <div class="slds-col">
                     <ul class="slds-tabs_scoped__nav" role="tablist">
-                        <li *ngFor="let lang of systemLanguages" class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': lang.language == activeTab}" (click)="switchTab(lang.language)" role="presentation">
-                            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" [attr.aria-selected]="lang.language == activeTab" >{{lang.display_label}}</a>
+                        <li *ngFor="let lang of systemLanguages" class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': lang.language == selectedLanguage}" (click)="switchTab(lang.language)" role="presentation">
+                            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" [attr.aria-selected]="lang.language == selectedLanguage" >{{lang.display_label}}</a>
                         </li>
                     </ul>
-                    <div *ngFor="let lang of systemLanguages" [ngClass]="{'slds-show': lang.language == activeTab,'slds-hide': lang.language != activeTab}" class="slds-tabs_scoped__content" role="tabpanel">
-                        <system-richtext-editor [(ngModel)]="selectedSpiceText.name" (ngModelChange)="onChange($event)"></system-richtext-editor>
+                    <div *ngFor="let lang of systemLanguages" [ngClass]="{'slds-show': lang.language == selectedLanguage,'slds-hide': lang.language != selectedLanguage}" class="slds-tabs_scoped__content" role="tabpanel">
+                        <system-richtext-editor [(ngModel)]="selectedStageText.name"></system-richtext-editor>
                     </div>
                 </div>
             </div>

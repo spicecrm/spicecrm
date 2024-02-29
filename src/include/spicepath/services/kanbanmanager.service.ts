@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 import {forkJoin, Observable, Subject} from "rxjs";
-import {tap, map} from "rxjs/operators";
+import {map} from "rxjs/operators";
 
 import {backend} from "../../../services/backend.service";
 import {
@@ -32,7 +32,7 @@ export class KanbanManagerService {
     /**
      * holds current SpiceText for selected SpiceBeanGuide
      */
-    public currentBeanGuideSpiceTexts: SpiceTextsI[] = [];
+    public currentStageTexts: SpiceTextsI[] = [];
 
     public domainFieldValidations: any = [];
     public domainFieldValidationsValues: any = [];
@@ -67,39 +67,70 @@ export class KanbanManagerService {
 
         if(val) {
             this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id).map(e => ({...e}));
-            this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this.selectedBeanGuide.id).map(e => ({...e}));
-
-            // filters spice texts for selected spice bean guide
-            this.currentBeanGuideSpiceTexts = this.spiceTexts.filter(spiceTexts => spiceTexts.spiceBeanGuideId == this.selectedBeanGuide.id).map(e => ({...e}));
+            this.setCurrentChecks();
+            this.setCurrentStageTexts();
         }
 
         this.selectedBeanGuide$.next(val);
+    }
+
+    /**
+     * set current spice texts
+     * @private
+     */
+    private setCurrentStageTexts() {
+
+        this.currentStageTexts = [];
+
+        this.currentStages.forEach(stage => {
+            this.currentStageTexts = this.currentStageTexts.concat(this.spiceTexts.filter(t => t.parent_id == stage.id).map(e => ({...e})));
+        })
     }
 
     get selectedBeanGuide() {
         return this._selectedBeanGuide;
     }
 
+    /**
+     * filters spice checks for selected spice bean guide
+     * @private
+     */
+    private setCurrentChecks() {
+        this.currentChecks = this.checks.filter(check=>check.spicebeanguide_id == this._selectedBeanGuide.id).map(e => ({...e}));
+    }
+
+    /**
+     * generate a trackable object by the change service which can be used instead of the original
+     * object to track changes on the given object and register them on change service
+     * @param obj
+     * @param key
+     */
+    public generateTrackableObject(obj: any, key: 'checks' | 'stages' | 'spiceTexts'): any {
+        const dbObject = (this[key] as any[]).find(s => s.id == obj.id);
+        return this.changeService.generateTrackableObject(obj, dbObject, key);
+    }
+
+    /**
+     * generate a trackable object by the change service which can be used instead of the original
+     * object to track changes on the given object and register them on change service
+     * @param obj
+     * @param key
+     * @param validator
+     */
+    public generateTrackableNewObject(obj: any, key: 'checks' | 'stages' | 'spiceTexts', validator?: (obj: any) => boolean): any {
+
+        if ((this[key] as any[]).some(s => s.id == obj.id)) return;
+
+        return this.changeService.generateTrackableNewObject(obj, key, validator);
+    }
+
     public selectedBeanGuide$: Subject<any> = new Subject<any>();
 
-
     public getBeanGuides(): Observable<SpiceBeanGuidesI[]> {
-        const data1: Observable<SpiceBeanGuidesI> = this.backend.getRequest(`configuration/configurator/entries/spicebeanguides`).pipe(
-            tap((res) => {
-                res.map(data => data.scope = 'global');
-            })
-        );
-        const data2: Observable<SpiceBeanGuidesI> = this.backend.getRequest(`configuration/configurator/entries/spicebeancustomguides`).pipe(
-            tap((res) => {
-                res.map(data => data.scope = 'custom');
-            })
-        );
+        const custom: Observable<SpiceBeanGuidesI[]> = this.backend.getRequest(`configuration/configurator/entries/spicebeancustomguides`);
+        const global: Observable<SpiceBeanGuidesI[]> = this.backend.getRequest(`configuration/configurator/entries/spicebeanguides`);
 
-        return forkJoin([data1, data2]).pipe(
-                    map(responses => {
-                        return [].concat(...responses);
-                    })
-                );
+        return forkJoin([custom, global]).pipe(map(([c, g]) => [...c.map(i => ({...i, scope: 'custom'})), ...g.map(i => ({...i, scope: 'global'}))]));
     }
 
     public loadValidations() {
@@ -116,13 +147,20 @@ export class KanbanManagerService {
      * load spice bean guide items from backend
      */
     public loadItems(selected = null) {
-        this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`).subscribe(stages => {
-            this.stages = stages.map(s => {
-                s.not_in_kanban = s.not_in_kanban  == 1 ? 1 : 0;
-                return s;
-            }).sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
-            this.selectedBeanGuide = selected;
-        })
+        const stagesCustom = this.backend.getRequest(`configuration/configurator/entries/spicebeancustomguidestages`);
+        const stagesGlobal = this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages`)
+
+        forkJoin([stagesCustom, stagesGlobal])
+            .pipe(map(([c, g]) => [...c.map(i => ({...i, scope: 'custom'})), ...g.map(i => ({...i, scope: 'global'}))]))
+            .subscribe(stages => {
+
+                this.stages = stages.map(s => {
+                    s.not_in_kanban = s.not_in_kanban == 1 ? 1 : 0;
+                    return s;
+                }).sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
+
+                this.selectedBeanGuide = selected;
+            })
     }
 
     /**
@@ -144,9 +182,13 @@ export class KanbanManagerService {
      * load checks from backend
      */
     public loadChecks() {
-        this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages_checks`).subscribe(checks => {
-            this.checks = checks;
-        })
+        const custom = this.backend.getRequest(`configuration/configurator/entries/spicebeancustomguidestages_checks`);
+        const global = this.backend.getRequest(`configuration/configurator/entries/spicebeanguidestages_checks`);
+        forkJoin([custom, global])
+            .pipe(map(([c, g]) => [...c.map(i => ({...i, scope: 'custom'})), ...g.map(i => ({...i, scope: 'global'}))]))
+            .subscribe(checks => {
+                this.checks = checks;
+            });
     }
 
     /**
@@ -154,38 +196,61 @@ export class KanbanManagerService {
      */
     public save() {
 
-        const resArray = [];
+        const requests: Observable<any>[] = [];
 
         if (this.changeService.hasChanges('stages')) {
-            resArray.push(
-                this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: this.changeService.getLatestChanges('stages')})
-            );
+            const changes = this.prepareSaveRequest('stages');
+            if (changes.custom.length > 0 ) {
+                requests.push(this.backend.postRequest(`configuration/configurator/spicebeancustomguidestages`, null, {config: changes.custom}));
+            }
+            if (changes.global.length > 0 ) {
+                requests.push(this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null, {config: changes.global}));
+            }
         }
 
         if (this.changeService.hasChanges('checks')) {
-            resArray.push(
-                this.backend.postRequest(`configuration/configurator/spicebeanguidestages_checks`, null, {config: this.changeService.getLatestChanges('checks')})
-            );
+            const changes = this.prepareSaveRequest('checks');
+            if (changes.custom.length > 0) {
+                requests.push(this.backend.postRequest(`configuration/configurator/spicebeancustomguidestages_checks`, null, {config: changes.custom}));
+            }
+
+            if (changes.global.length > 0) {
+                requests.push(this.backend.postRequest(`configuration/configurator/spicebeanguidestages_checks`, null, {config: changes.global}));
+            }
         }
 
         if (this.changeService.hasChanges('spiceTexts')) {
-            resArray.push(
-                this.backend.postRequest(`configuration/configurator/spicetexts`, null, {config: this.changeService.getLatestChanges('spiceTexts')})
-            );
+            const changes = this.changeService.getAllChanges('spiceTexts');
+            requests.push(this.backend.postRequest(`configuration/configurator/spicetexts`, null, {config: changes}));
         }
 
-        forkJoin(resArray).subscribe(() => {
-            ['stages', 'checks', 'spiceTexts'].forEach(name => {
-                this.changeService.getLatestChanges(name).forEach((changedItem, i) => {
-                    const idx = this[name].findIndex(item => item.id == changedItem.id);
-                    this[name][idx] = {...changedItem};
-                    this.changeService.resetObjectChanges(name, changedItem);
-                });
-            });
-
-
+        forkJoin(requests).subscribe(() => {
             this.toast.sendToast('LBL_DATA_SAVED', 'success');
+            if (this.changeService.hasChanges('stages')) {
+                this.changeService.applyChanges(this.stages, 'stages');
+            }
+            if (this.changeService.hasChanges('checks')) {
+                this.changeService.applyChanges(this.checks, 'checks');
+                this.setCurrentChecks();
+            }
+            if (this.changeService.hasChanges('spiceTexts')) {
+                this.changeService.applyChanges(this.spiceTexts, 'spiceTexts');
+            }
         });
+    }
+
+    /**
+     * prepare save request
+     * @private
+     * @param key
+     */
+    private prepareSaveRequest(key: 'checks' | 'stages' | 'spiceTexts') {
+        const changes = this.changeService.getAllChanges(key);
+
+        return {
+            custom: changes.filter(c => c.scope == 'custom').map(c => window._.omit(c, ['scope'])),
+            global: changes.filter(c => c.scope == 'global').map(c => window._.omit(c, ['scope']))
+        };
     }
 
     /**
