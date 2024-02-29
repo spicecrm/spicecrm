@@ -128,6 +128,7 @@ class SpiceUIModulesController
                         $retArray[$module['module']]['ftsactivities'] = SpiceFTSActivityHandler::checkActivities($module['module']);
                         $retArray[$module['module']]['ftsgeo'] = SpiceFTSHandler::checkGeo($module['module']);
                         $retArray[$module['module']]['ftsaggregates'] = $ftsBeanHandler->getAggregates();
+                        $retArray[$module['module']]['ftsmetrics'] = $ftsBeanHandler->getMetrics();
                         $retArray[$module['module']]['ftssortable'] = $ftsBeanHandler->getSortable();
                         $retArray[$module['module']]['ftsglobalsearch'] = SpiceFTSHandler::checkGlobal($module['module']);
                         $retArray[$module['module']]['ftsphonesearch'] = SpiceFTSHandler::checkPhone($module['module']);

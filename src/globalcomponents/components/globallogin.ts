@@ -161,12 +161,12 @@ export class GlobalLogin implements OnDestroy {
      */
     private load2FAConfig() {
 
-        const config: Config2FAI = this.configuration.getCapabilityConfig('login');
+        const config: Config2FAI = this.configuration.getCapabilityConfig('login')?.twofactor;
 
         if (window._.isEmpty(config)) return;
 
-        this.rememberDevice = config.requireOn == 'device_change';
-        this.rememberDeviceVisible = config.requireOn != 'always';
+        this.rememberDevice = config.onlogin.enforced == 'device_change';
+        this.rememberDeviceVisible = config.onlogin.trustenabled && config.onlogin.enforced != 'always';
     }
 
     /**

@@ -15,25 +15,25 @@
                         </div>
                     </div>
                 </div>
-                <button class="slds-button slds-button--neutral slds-show--medium" disabled>App Store</button>
+                <button class="slds-button slds-button--neutral slds-show--medium slds-hidden" disabled>App Store</button>
             </div>
         </header>
         <system-modal-content margin="small" [grow]="true">
             <div *ngIf="showRoles">
-                <ul class="slds-grid slds-grid--pull-padded slds-wrap">
+                <ul class="slds-grid slds-grid--pull-padded-xx-small slds-wrap">
                     <li *ngFor="let role of getRoles()" class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3" (click)="setRole(role.id)">
                         <global-app-launcher-dialog-role-tile [role]="role"></global-app-launcher-dialog-role-tile>
                     </li>
                 </ul>
             </div>
             <div>
-                <ul class="slds-grid slds-grid--pull-padded slds-wrap">
-                    <li *ngFor="let module of getModules()" class="slds-p-around--small slds-size--xx-small" (click)="gotoModule(module)" [title]="language.getModuleName(module, false, 'long')">
+                <ul class="slds-grid slds-grid--pull-padded-xx-small slds-wrap slds-align--absolute-center">
+                    <li *ngFor="let module of getModules()" class="slds-p-horizontal--small slds-p-vertical--xx-small slds-size--xx-small slds-align-top" (click)="gotoModule(module)" [title]="language.getModuleName(module, false, 'long')">
                         <div class="slds-app-launcher__tile-figure slds-app-launcher__tile-figure--small slds-text-link_reset">
                             <system-icon [module]="module" [size]="'large'"></system-icon>
                         </div>
                         <div class="slds-align_absolute-center slds-p-top--xx-small">
-                            <p class="slds-truncate slds-text-link_reset"><system-label-modulename [module]="module"></system-label-modulename></p>
+                            <div class="slds-text-align--center slds-text-link_reset slds-size--1-of-1 slds-hyphenate slds-text-body--small slds-line-clamp_x-small"><system-label-modulename [module]="module"></system-label-modulename></div>
                         </div>
                     </li>
                 </ul>

@@ -82,6 +82,7 @@ import {LanguageTranslationsManager} from "./components/languagetranslationsmana
 import {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import {LanguageLabelModal} from "./components/languagelabelmodal";
 import {MailboxesManager} from "./components/mailboxesmanager";
+import {MailboxesManagerList} from "./components/mailboxesmanagerlist"
 import {MailboxesTransportsEnum} from "./components/mailboxestransportsenum";
 import {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
 import {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
@@ -261,6 +262,7 @@ import {DictionaryManagerRelationshipEditUser} from "./components/dictionarymana
         LanguageLabelManagerComponent,
         LanguageLabelModal,
         MailboxesManager,
+        MailboxesManagerList,
         MailboxesTransportsEnum,
         LanguageLabelModal,
         MailboxManagerAddDialog,

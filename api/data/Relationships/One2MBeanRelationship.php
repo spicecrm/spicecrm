@@ -256,6 +256,10 @@ class One2MBeanRelationship extends One2MRelationship
         if ($save && !$rhs->deleted)
         {
             $rhs->in_relationship_update = TRUE;
+
+            // make sure parent_type field exists & parent_id is empty
+            if(property_exists($rhs, 'parent_type') && $rhsID == 'parent_id' && empty($rhs->parent_id)) $rhs->parent_type = "";
+
             $rhs->save();
         }
 

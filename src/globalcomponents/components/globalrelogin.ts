@@ -91,8 +91,8 @@ export class GlobalReLogin {
 
         if (window._.isEmpty(config)) return;
 
-        this.rememberDevice = config.requireOn == 'device_change';
-        this.rememberDeviceVisible = config.requireOn != 'always';
+        this.rememberDevice = config.onlogin.enforced == 'device_change';
+        this.rememberDeviceVisible = config.onlogin.enforced != 'always';
     }
 
     public tokenLogin(token: {issuer: string, tokenObject: TokenObjectI}) {

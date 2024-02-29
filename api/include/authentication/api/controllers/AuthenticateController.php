@@ -235,11 +235,15 @@ class AuthenticateController
 
         $validated = false;
         if(TOTPAuthentication::checkCode($record['user_secret'], $args['code'])){
+            $db->query("UPDATE users_totp SET deleted=1 WHERE user_id='{$forUser->id}' AND auth_status='A'");
             $db->query("UPDATE users_totp SET auth_status='A' WHERE id='{$record['id']}'");
-            $db->query("UPDATE users SET user_2fa_method='one_time_password' WHERE id='{$forUser->id}'");
+
+            // update the user
+            $forUser->user_2fa_method = 'one_time_password';
+            $forUser->save();
+
             $validated = true;
         }
-
 
         return $res->withJson(['validated' => $validated]);
     }
@@ -368,5 +372,90 @@ class AuthenticateController
         }
 
         return $forUser;
+    }
+
+    /**
+     * generates a 2FA Tooen and sends it out
+     *
+     * @param $req
+     * @param $res
+     * @param array $args
+     * @return mixed
+     * @throws NotFoundException
+     */
+    public function generate2FAToken( Request $req, Response $res, array $args)
+    {
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+
+        $response = false;
+        switch ($args['method']){
+            case 'sms':
+                $response = SpiceCRM2FAUtils::send2FACodeBySMS($currentUser->id);
+                break;
+            case 'email':
+                $response = SpiceCRM2FAUtils::send2FACodeByEmail($currentUser->id);
+                break;
+        }
+
+        return $res->withJson(['success' => $response]);
+    }
+
+    /**
+     * sets a 2FA method
+     *
+     * @param $req
+     * @param $res
+     * @param array $args
+     * @return mixed
+     * @throws NotFoundException
+     */
+    public function set2FAMethod( Request $req, Response $res, array $args)
+    {
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+
+        $response = false;
+        try {
+            if (SpiceCRM2FAUtils::check2FACode($currentUser, $args['method'], $args['code'])) {
+                $currentUser->user_2fa_method = $args['method'];
+                $currentUser->save();
+                $response = true;
+            }
+        } catch (UnauthorizedException $e){
+            $response = false;
+        }
+
+        return $res->withJson(['success' => $response]);
+    }
+
+    /**
+     * sets a 2FA method
+     *
+     * @param $req
+     * @param $res
+     * @param array $args
+     * @return mixed
+     * @throws NotFoundException
+     */
+    public function delete2FASettings( Request $req, Response $res, array $args)
+    {
+        $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+
+        $response = false;
+        try {
+            if (SpiceCRM2FAUtils::check2FACode($currentUser, $currentUser->user_2fa_method, $args['code'])) {
+
+                if($currentUser->user_2fa_method == 'one_time_password'){
+                    TOTPAuthentication::deleteTOTP($currentUser->id);
+                }
+
+                $currentUser->user_2fa_method = '';
+                $currentUser->save();
+                $response = true;
+            }
+        } catch (UnauthorizedException $e){
+            $response = false;
+        }
+
+        return $res->withJson(['success' => $response]);
     }
 }
