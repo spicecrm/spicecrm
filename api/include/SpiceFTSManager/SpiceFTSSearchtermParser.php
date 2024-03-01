@@ -31,7 +31,7 @@ class SpiceFTSSearchtermParser
      * @param $fields
      * @return array[]
      */
-    public function parse($searchTerm, $indexSettings, $fields)
+    public function parse($searchTerm, $indexSettings, $indexProperties)
     {
         // split the string by OR
         $termParts = explode("OR", $searchTerm);
@@ -43,11 +43,11 @@ class SpiceFTSSearchtermParser
                 ]
             ];
             */
-            return $this->parseElement($searchTerm, $indexSettings, $fields);
+            return $this->parseElement($searchTerm, $indexSettings, $indexProperties);
         } else {
             $queries = [];
             foreach ($termParts as $termPart) {
-                $queries[] = $this->parseElement($termPart, $indexSettings, $fields);
+                $queries[] = $this->parseElement($termPart, $indexSettings, $indexProperties);
             }
             return [
                 'bool' => [
@@ -68,7 +68,7 @@ class SpiceFTSSearchtermParser
      * @return array[]
      * @throws BadRequestException
      */
-    private function parseElement($element, $indexSettings, $fields)
+    private function parseElement($element, $indexSettings, $indexProperties)
     {
         $query = [
             'must' => [],
@@ -76,16 +76,20 @@ class SpiceFTSSearchtermParser
         ];
 
         // do the various matchings
-        $this->matchFieldTerms($element, $query, $fields, $indexSettings);
-        $this->matchFields($element, $query, $fields, $indexSettings);
-        $this->matchTerms($element, $query, $fields, $indexSettings);
-        $this->matchExcludedWords($element, $query, $fields, $indexSettings);
+        $this->matchFieldTerms($element, $query, $indexSettings, $indexProperties);
+        $this->matchFields($element, $query, $indexSettings, $indexProperties);
+        $this->matchTerms($element, $query, $indexSettings, $indexProperties);
+        $this->matchExcludedWords($element, $query, $indexSettings, $indexProperties);
 
         // trim the elements
         $element = trim($element);
 
         if($element) {
-            $query['must'][] = ['multi_match' => $this->buildMultiMatchQuery($element, $indexSettings, $fields)];
+            $matchedFields = [];
+            foreach ($indexProperties as $indexProperty){
+                if($indexProperty['search']) $matchedFields[] = $indexProperty;
+            }
+            $query['must'][] = ['multi_match' => $this->buildMultiMatchQuery($element, $indexSettings, $matchedFields)];
         }
 
         return ['bool' => $query];
@@ -108,7 +112,7 @@ class SpiceFTSSearchtermParser
      * @return void
      * @throws BadRequestException
      */
-    private function matchFieldTerms(&$element, &$query, $fields, $indexSettings){
+    private function matchFieldTerms(&$element, &$query, $indexSettings, $indexProperties){
         $matches = [];
         if (preg_match_all('/-?[a-zA-Z0-9_]+:"(.*?)"/', $element, $matches)) {
             // the Field Matches
@@ -122,8 +126,8 @@ class SpiceFTSSearchtermParser
 
                 // build the matched fields
                 $matchedFields = [];
-                foreach ($fields as $field){
-                    if(strpos($field, $fieldname) !== false) $matchedFields[] = $field;
+                foreach ($indexProperties as $indexProperty){
+                    if(strpos($indexProperty['fieldname'], $fieldname) !== false) $matchedFields[] = $indexProperty;
                 }
 
                 if(count($matchedFields) > 0) {
@@ -159,7 +163,7 @@ class SpiceFTSSearchtermParser
      * @return void
      * @throws BadRequestException
      */
-    private function matchFields(&$element, &$query, $fields, $indexSettings){
+    private function matchFields(&$element, &$query, $indexSettings, $indexProperties){
         $matches = [];
         if (preg_match_all('/-?[a-zA-Z0-9_]+:(\w+)/', $element, $matches)) {
             // the Field Matches
@@ -173,8 +177,8 @@ class SpiceFTSSearchtermParser
 
                 // build the matched fields
                 $matchedFields = [];
-                foreach ($fields as $field){
-                    if(strpos($field, $fieldname) !== false) $matchedFields[] = $field;
+                foreach ($indexProperties as $indexProperty){
+                    if(strpos($indexProperty['fieldname'], $fieldname) !== false) $matchedFields[] = $indexProperty;
                 }
 
                 if(count($matchedFields) > 0) {
@@ -205,17 +209,23 @@ class SpiceFTSSearchtermParser
      * @param $indexSettings
      * @return void
      */
-    private function matchTerms(&$element, &$query, $fields, $indexSettings){
+    private function matchTerms(&$element, &$query, $indexSettings, $indexProperties){
         $matches = [];
+
+        $matchedFields = [];
+        foreach ($indexProperties as $indexProperty){
+            if($indexProperty['search']) $matchedFields[] = $indexProperty;
+        }
+
         if (preg_match_all('/-?"(.*?)"/', $element, $matches)) {
             foreach ($matches[1] as $index => $match) {
                 if (empty($match)) continue;
 
                 if(strpos($matches[0][$index], '-') === 0){
-                    $this->buildExcludeTermsWildcardQuery(trim($matches[1][$index], '"'), $fields, $query);
+                    $this->buildExcludeTermsWildcardQuery(trim($matches[1][$index], '"'), $matchedFields, $query);
                 } else {
                     $query['must'][] = [
-                        'bool' => $this->buildTermsWildcardQuery(trim($matches[1][$index], '"'), $fields)
+                        'bool' => $this->buildTermsWildcardQuery(trim($matches[1][$index], '"'), $matchedFields)
                     ];
                 }
 
@@ -235,14 +245,18 @@ class SpiceFTSSearchtermParser
      * @param $indexSettings
      * @return void
      */
-    private function matchExcludedWords(&$element, &$query, $fields, $indexSettings)
+    private function matchExcludedWords(&$element, &$query, $indexSettings, $indexProperties)
     {
         $matches = [];
+        $matchedFields = [];
+        foreach ($indexProperties as $indexProperty){
+            if($indexProperty['search']) $matchedFields[] = $indexProperty;
+        }
         if (preg_match_all('/ -(\w+)/', $element, $matches)) {
             // the Must not multi matches
             foreach ($matches[1] as $index => $match) {
                 if (empty($match)) continue;
-                $query['must_not'][] = ['multi_match' => $this->buildMultiMatchQuery(trim($matches[1][$index], '"'), $indexSettings, $fields)];
+                $query['must_not'][] = ['multi_match' => $this->buildMultiMatchQuery(trim($matches[1][$index], '"'), $indexProperties)];
                 $element = str_replace($matches[0][$index], '', $element);
             }
         }
@@ -256,7 +270,13 @@ class SpiceFTSSearchtermParser
      * @param $fields
      * @return array
      */
-    private function buildMultiMatchQuery($term, $indexSettings, $fields){
+    private function buildMultiMatchQuery($term, $indexSettings, $indexProperties){
+
+        $fields = [];
+        foreach ($indexProperties as $indexProperty){
+            $fields[] = $indexProperty['fieldname'];
+        }
+
         $subquery = [
             "query" => "$term",
             //'analyzer' => 'spice_standard_all',
@@ -293,9 +313,10 @@ class SpiceFTSSearchtermParser
         $queryType =  preg_match("/\*/", $term) ? 'wildcard' : 'term';
 
         foreach ($fields as $field) {
-            $fv = explode('^', $field);
+            $fv = explode('^', $field['fieldname'])[0];
+            if($field['indextype'] != 'keyword') $fv .= '.raw';
             $subQuery['should'][] = [$queryType => [
-                "{$fv[0]}.raw" => [
+                $fv => [
                     'value' => $term,
                     "case_insensitive" => true
                 ]
@@ -307,10 +328,11 @@ class SpiceFTSSearchtermParser
 
     private function buildExcludeTermsWildcardQuery($term, $fields, &$query){
         foreach ($fields as $field) {
-            $fv = explode('^', $field);
+            $fv = explode('^', $field['fieldname'])[0];
+            if($field['indextype'] == 'keyword') $fv .= '.raw';
             $queryType =  preg_match("/\*/", $term) ? 'wildcard' : 'term';
             $query['must_not'][] = [$queryType => [
-                "{$fv[0]}.raw" => [
+                $fv => [
                     'value' => $term,
                     "case_insensitive" => true
                 ]
