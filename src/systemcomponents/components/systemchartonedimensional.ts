@@ -65,6 +65,10 @@ export class SystemChartOneDimensional implements OnChanges, OnDestroy, GoogleCh
      */
     @Input() public dataState: string = '';
     /**
+     * an optional padding parameter
+     */
+    @Input() public padding: 'none'|'small'|'medium' = 'small';
+    /**
      * emit the index value of the selected SystemChartOneDimensionalValue row
      */
     @Output() public onValueClick = new EventEmitter<GoogleChartSelectedObject>();
@@ -90,6 +94,13 @@ export class SystemChartOneDimensional implements OnChanges, OnDestroy, GoogleCh
             fontSize: this.fontSize,
             is3D: this.is3D,
         };
+    }
+
+    /**
+     * input param for padding
+     */
+    get paddingClass(){
+        return 'slds-p-around--' + this.padding;
     }
 
     /**
