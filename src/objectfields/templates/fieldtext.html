@@ -3,7 +3,7 @@
         <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
     </div>
     <div class="slds-grid slds-gutters_xxx-small">
-        <div class="slds-col" *ngIf="value" (click)="toSpeech()">
+        <div class="slds-col" *ngIf="value && !hideVolumeIcon" (click)="toSpeech()">
             <system-utility-icon icon="volume_high" size="xx-small"></system-utility-icon>
         </div>
         <ng-container *ngIf="isEditMode() && isEditable()">
