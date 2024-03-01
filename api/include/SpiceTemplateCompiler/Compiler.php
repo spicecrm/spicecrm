@@ -264,7 +264,7 @@ class Compiler
                                         'even' => ( $index % 2 === 0 ),
                                         'odd' => ( $index % 2 === 1 ),
                                         'parent' => $spiceforParent,
-                                        'parent' => $spiceforParent
+                                        'total' => count( $linkedBeans )
                                     ])
                                 ]), $params);
                             // $response .= $this->processBlocks($this->getBlocks($contentString), array_merge($beans, [$forArray[1] => $linkedBean]), $lang);
