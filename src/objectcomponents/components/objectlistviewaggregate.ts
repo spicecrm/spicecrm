@@ -23,6 +23,11 @@ export class ObjectListViewAggregate {
     public showChart: boolean = false;
 
     /**
+     * toggles visibility for metrics
+     */
+    public showMetrics: boolean = false;
+
+    /**
      * an input for teh aggregate itself
      */
     @Input() public aggregate: any = {};
@@ -76,6 +81,10 @@ export class ObjectListViewAggregate {
      */
     get hasMetrics(){
         return this.metadata.getModuleAggregateMetrics(this.modellist.module).length > 0;
+    }
+
+    public getMetrics(){
+        return this.metadata.getModuleAggregateMetrics(this.modellist.module);
     }
 
     /**
@@ -144,6 +153,17 @@ export class ObjectListViewAggregate {
             this.showChart = !this.showChart;
         } else {
             this.showChart = false;
+        }
+    }
+
+    /**
+     * toggles the chart when container is not collapsed
+     */
+    public toggleMetrics() {
+        if(!this.collapsed){
+            this.showMetrics = !this.showMetrics;
+        } else {
+            this.showMetrics = false;
         }
     }
 }
