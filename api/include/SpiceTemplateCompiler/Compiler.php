@@ -214,12 +214,6 @@ class Compiler
                             $elements[] = $this->createNewElement($node, $beans);
                         }
                     }
-                    elseif($node->getAttribute('data-spicenot')){
-                        $spicenot = $node->getAttribute('data-spicenot');
-                        if (!$this->processCondition($spicenot, $beans)) {
-                            $elements[] = $this->createNewElement($node, $beans);
-                        }
-                    }
                     else if($node->getAttribute('data-spicefor')){
                         $spicefor = $node->getAttribute('data-spicefor');
 
@@ -269,6 +263,7 @@ class Compiler
                                         'inner' => ( $index > 0 and $index < count( $linkedBeans ) - 1 ),
                                         'even' => ( $index % 2 === 0 ),
                                         'odd' => ( $index % 2 === 1 ),
+                                        'parent' => $spiceforParent,
                                         'parent' => $spiceforParent
                                     ])
                                 ]), $params);
@@ -471,7 +466,6 @@ class Compiler
                 switch($attribute->nodeName){
                     case 'data-spicefor':
                     case 'data-spiceif':
-                    case 'data-spicenot':
                         break;
                     case 'data-spicefor-first':
                     case 'data-spicefor-last':
@@ -587,9 +581,11 @@ class Compiler
         //parse pipe if passed in
 
         $value1 = trim($this->handleSubstitution($conditionparts[0], $beans, true), "'");
-        $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
+        if ( count( $conditionparts ) > 1) {
+            $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
+        }
 
-        if ( $value1 === true ) return true;
+        if ( count( $conditionparts ) === 1 and is_bool( $value1 )) return $value1;
 
         switch (strtolower($conditionparts[1])) {
             case '>':
@@ -641,7 +637,15 @@ class Compiler
         $loopThroughParts = function ($obj, $level = 0, $keepFetchedRowValue) use (&$parts, &$loopThroughParts) {
 
             $part = $parts[$level];
-            if (is_callable([$obj, $part])) {
+            if ( is_object($obj) and get_class( $obj ) === 'SpiceCRM\includes\SpiceTemplateCompiler\SpiceFor' ) {
+                if ( $part === 'parent' ) {
+                    $level++;
+                    return $loopThroughParts($obj->parent, $level, false );
+                } else {
+                    $value = $obj->{$part};
+                }
+            }
+            elseif (is_callable([$obj, $part])) {
                 $value = $obj->{$part}();
             } else {
                 $field = $obj->field_defs[$part];
