@@ -125,22 +125,6 @@ export class ChangeHistoryService {
         );
 
         this.initializeScope(scope);
-
-        this.reverseFirstUpdate();
-    }
-
-    /**
-     * reverse first update after applying changes to mark the object first change as the last applied one
-     * @param id
-     * @private
-     */
-    private reverseFirstUpdate() {
-
-        if (this.history[this.historyCurrentIndex].action == 'update') {
-            const firstUpdateIdx = this.history.findIndex(c => c.id == this.history[this.historyCurrentIndex].id && c.action == 'firstUpdate');
-            this.history[firstUpdateIdx].action = 'update';
-            this.history[this.historyCurrentIndex].action = 'firstUpdate';
-        }
     }
 
     /**
@@ -227,21 +211,11 @@ export class ChangeHistoryService {
                 break;
             case 'update':
 
-                if (!this.changes[lastChange.scope].changedObjects.has(lastChange.id)) {
-                    this.changes[lastChange.scope].changedObjects.set(lastChange.id, lastChange.obj);
-                }
-
                 this.changes[lastChange.scope].changedObjects.get(lastChange.id)[lastChange.key] = lastChange.previousValue;
-
                 break;
             case 'firstUpdate':
 
-                if (!this.changes[lastChange.scope].changedObjects.has(lastChange.id)) {
-                    this.changes[lastChange.scope].changedObjects.set(lastChange.id, lastChange.obj);
-                } else {
-                    this.changes[lastChange.scope].changedObjects.delete(lastChange.id);
-                }
-
+                this.changes[lastChange.scope].changedObjects.delete(lastChange.id);
                 break;
             case 'updateNew':
                 this.changes[lastChange.scope].newObjects.get(lastChange.id)[lastChange.key] = lastChange.previousValue;
@@ -272,25 +246,14 @@ export class ChangeHistoryService {
                 this.changes[nextChange.scope].newObjects.set(nextChange.id, nextChange.obj);
                 break;
             case 'firstUpdate':
-                if (this.changes[nextChange.scope].changedObjects.has(nextChange.id)) {
-                    this.changes[nextChange.scope].changedObjects.get(nextChange.id)[nextChange.key] = nextChange.newValue;
-                    this.changes[nextChange.scope].changedObjects.delete(nextChange.id)
-                } else {
-                    nextChange.obj[nextChange.key] = nextChange.newValue;
-                    this.changes[nextChange.scope].changedObjects.set(nextChange.id, nextChange.obj);
-                }
+                nextChange.obj[nextChange.key] = nextChange.newValue;
+                this.changes[nextChange.scope].changedObjects.set(nextChange.id, nextChange.obj);
                 break;
             case 'updateNew':
             case 'update':
                 const key = nextChange.action == 'updateNew' ? 'newObjects' : 'changedObjects';
 
-                if (this.changes[nextChange.scope][key].has(nextChange.id)) {
-                    this.changes[nextChange.scope][key].get(nextChange.id)[nextChange.key] = nextChange.newValue;
-                } else {
-                    this.changes[nextChange.scope][key].set(nextChange.id, nextChange.obj);
-                }
-
-                nextChange.obj[nextChange.key] = nextChange.newValue;
+                this.changes[nextChange.scope][key].get(nextChange.id)[nextChange.key] = nextChange.newValue;
                 break;
 
         }
