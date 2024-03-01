@@ -216,6 +216,11 @@ $routes = [
                 'in' => 'query',
                 'description' => 'End date and hour of the requested REST log entries.',
                 'type' => ValidationMiddleware::TYPE_DATETIME
+            ],
+            'start' => [
+                'in' => 'query',
+                'description' => 'Start date and hour of the requested REST log entries.',
+                'type' => ValidationMiddleware::TYPE_DATETIME
             ]
         ]
     ],
