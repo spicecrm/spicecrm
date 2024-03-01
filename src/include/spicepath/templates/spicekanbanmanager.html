@@ -29,6 +29,12 @@
                 <button [disabled]="!kanbanManagerService.selectedBeanGuide" (click)="togglePreview()" class="slds-button slds-button--icon-border" [ngClass]="{'slds-button--brand': preview}" >
                     <system-button-icon icon="preview"></system-button-icon>
                 </button>
+                <button (click)="kanbanManagerService.changeService.undo()" [disabled]="!kanbanManagerService.changeService.canUndo" class="slds-button slds-button--neutral slds-button--icon-border">
+                    <system-button-icon icon="undo"></system-button-icon>
+                </button>
+                <button (click)="kanbanManagerService.changeService.redo()" [disabled]="!kanbanManagerService.changeService.canRedo" class="slds-button slds-button--neutral slds-button--icon-border">
+                    <system-button-icon icon="redo"></system-button-icon>
+                </button>
                 <button (click)="kanbanManagerService.save()" [disabled]="!kanbanManagerService.selectedBeanGuide || !kanbanManagerService.hasChanges" class="slds-button slds-button--neutral slds-button--icon-border">
                     <system-button-icon icon="save"></system-button-icon>
                 </button>

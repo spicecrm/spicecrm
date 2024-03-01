@@ -6,13 +6,21 @@ export class ChangeHistoryService {
      * holds the changes in object keys array values
      */
     private changes: {[key: string]: {changedObjects: Map<string, any>, newObjects: Map<string, any>}} = {};
-
-    private history: {id: string, action: 'new' | 'update' | 'updateNew', scope: string, key?: string, previousValue?: any, newValue?: any}[] = [];
+    /**
+     * array of references to trackable arrays
+     * @private
+     */
+    private trackableObjects = new Map<string, any>();
+    /**
+     * holds the history records
+     * @private
+     */
+    private history: {id: string, obj: any, action: 'new' | 'update' | 'firstUpdate' | 'updateNew', scope: string, key?: string | symbol, previousValue?: any, newValue?: any}[] = [];
     /**
      * holds the history current index
      * @private
      */
-    private _historyCurrentIndex: number;
+    private historyCurrentIndex: number = -1;
 
     constructor(private cdRef: ChangeDetectorRef) {
     }
@@ -25,25 +33,12 @@ export class ChangeHistoryService {
      */
     public generateTrackableObject(obj: any, dbObject: any, scope: string): any {
 
-        const check = (obj: any, scope: string) => this.checkForObjectChanges(obj, dbObject, scope);
-        return this.generateProxyObject(obj, scope, check);
-    }
+        if (this.trackableObjects.has(obj.id)) {
+            return this.trackableObjects.get(obj.id);
+        }
 
-    /**
-     * generate a proxy object of the target object
-     * @param obj
-     * @param scope
-     * @param check
-     * @private
-     */
-    private generateProxyObject(obj: any, scope: string, check: (obj: any, scope: string) => void) {
-        return new Proxy(obj, {
-            set(target: any, prop: string | symbol, value: any) {
-                Reflect.set(target, prop, value);
-                check(obj, scope);
-                return true;
-            }
-        });
+        const check = (obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) => this.checkForObjectChanges(obj, dbObject, scope, prop, previousValue, newValue);
+        return this.generateProxyObject(obj, scope, check);
     }
 
     /**
@@ -54,15 +49,48 @@ export class ChangeHistoryService {
      */
     public generateTrackableNewObject(obj: any, scope: string, validator?: (obj: any) => boolean) {
 
-        const check = (obj: any, scope: string) => {
+        if (this.trackableObjects.has(obj.id)) {
+            return this.trackableObjects.get(obj.id);
+        }
+
+        const check = (obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) => {
+
             if (!validator || validator(obj)) {
-                this.registerOrUpdateNewObject(obj, scope);
+                this.registerOrUpdateNewObject(obj, scope, prop, previousValue, newValue);
             } else {
                 this.rollbackNewObject(obj, scope);
             }
         };
 
         return this.generateProxyObject(obj, scope, check);
+    }
+
+    /**
+     * generate a proxy object of the target object
+     * @param obj
+     * @param scope
+     * @param check
+     * @private
+     */
+    private generateProxyObject(obj: any, scope: string, check: (obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) => void) {
+
+        const trackable = new Proxy(obj, {
+
+            set(target: any, prop: string | symbol, newValue: any) {
+
+                const previousValue = target[prop];
+
+                if (window._.isEqual(previousValue, newValue)) return true;
+
+                Reflect.set(target, prop, newValue);
+                check(obj, scope, prop, previousValue, newValue);
+                return true;
+            }
+        });
+
+        this.trackableObjects.set(obj.id, trackable);
+
+        return trackable;
     }
 
     /**
@@ -84,19 +112,35 @@ export class ChangeHistoryService {
 
         if (!this.changes[scope]) return;
 
-        this.changes[scope].changedObjects.forEach(changedObj =>
+        this.changes[scope].changedObjects.forEach(changedObj => {
             dbArray.some((dbObj, index: number) => {
                 if (dbObj.id != changedObj.id) return false;
                 dbArray[index] = changedObj;
                 return true;
-            })
-        );
+            });
+        });
 
         this.changes[scope].newObjects.forEach(newObj =>
             dbArray.push(newObj)
         );
 
-        delete this.changes[scope];
+        this.initializeScope(scope);
+
+        this.reverseFirstUpdate();
+    }
+
+    /**
+     * reverse first update after applying changes to mark the object first change as the last applied one
+     * @param id
+     * @private
+     */
+    private reverseFirstUpdate() {
+
+        if (this.history[this.historyCurrentIndex].action == 'update') {
+            const firstUpdateIdx = this.history.findIndex(c => c.id == this.history[this.historyCurrentIndex].id && c.action == 'firstUpdate');
+            this.history[firstUpdateIdx].action = 'update';
+            this.history[this.historyCurrentIndex].action = 'firstUpdate';
+        }
     }
 
     /**
@@ -112,74 +156,147 @@ export class ChangeHistoryService {
      * register a new object in the new objects array
      * @param scope
      * @param obj
+     * @param prop
+     * @param previousValue
+     * @param newValue
      * @private
      */
-    public registerOrUpdateNewObject(obj: any, scope: string) {
+    public registerOrUpdateNewObject(obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) {
 
         if (!this.changes[scope]) this.initializeScope(scope);
 
         if (!this.changes[scope].newObjects.has(obj.id)) {
             this.changes[scope].newObjects.set(obj.id, {...obj});
-            this.history.push({id: obj.id, action: "new", scope: scope});
-            this.addNewHistoryRecord(obj.id, 'new', scope);
+            this.history.push({id: obj.id, obj, action: "new", scope});
+            this.addNewHistoryRecord(obj, 'new', scope, prop, previousValue, newValue);
             this.cdRef.detectChanges();
         } else {
+            this.addNewHistoryRecord(obj, 'updateNew', scope, prop, previousValue, newValue);
             this.changes[scope].newObjects.set(obj.id, {...obj});
-            this.addNewHistoryRecord(obj.id, 'update', scope);
         }
     }
 
     /**
-     * set history current index
-     * @param val
+     * add a new history record
+     * @param obj
+     * @param action
+     * @param scope
+     * @param key
+     * @param previousValue
+     * @param newValue
+     * @private
      */
-    set historyCurrentIndex(val) {
-        this._historyCurrentIndex = val;
-    }
+    private addNewHistoryRecord(obj: {id: string}, action: 'new' | 'update' | 'firstUpdate' | 'updateNew', scope: string, key?: string | symbol, previousValue?: any, newValue?: any) {
 
-    /**
-     * get history current index
-     */
-    get historyCurrentIndex() {
-        return isNaN(this._historyCurrentIndex) ? this.history.length - 1 : this._historyCurrentIndex;
-    }
+        // trim the history array if the current index is not the last on in the history to override the later history records
+        if (this.historyCurrentIndex +1 < this.history.length) {
+            this.history.length = this.historyCurrentIndex +1;
+        }
 
-    private addNewHistoryRecord(id: string, action: 'new' | 'update' | 'updateNew', scope: string, key?: string, previousValue?: any, newValue?: any) {
-        this.history.length = this.historyCurrentIndex +1;
-        this.history.push({id, action, scope, key, previousValue, newValue});
+        this.history.push({id: obj.id, obj, action, scope, key, previousValue, newValue});
+
+        this.historyCurrentIndex++;
     }
 
     /**
      * can undo
      */
     get canUndo() {
-        return this.history.length == 0;
+        return this.history.length > 0 && this.historyCurrentIndex >= 0;
     }
 
     /**
      * can redo
      */
     get canRedo() {
-        return this.historyCurrentIndex < this.history.length;
+        return this.historyCurrentIndex +1 < this.history.length;
     }
 
     /**
-     * undo a change
+     * undo last change
      */
     public undo() {
-
-        this.historyCurrentIndex--;
 
         if (this.historyCurrentIndex < 0) return;
 
         const lastChange = this.history[this.historyCurrentIndex];
 
-        if (lastChange.action == 'new') {
-            this.changes[lastChange.scope].newObjects.delete(lastChange.id);
-        } else {
-            const key = lastChange.action == 'updateNew' ? 'newObjects' : 'changedObjects';
-            const changedObj = this.changes[lastChange.scope][key].get(lastChange.id);
-            changedObj[lastChange.key] = lastChange.previousValue;
+        switch (lastChange.action) {
+            case 'new':
+                this.changes[lastChange.scope].newObjects.delete(lastChange.id);
+                break;
+            case 'update':
+
+                if (!this.changes[lastChange.scope].changedObjects.has(lastChange.id)) {
+                    this.changes[lastChange.scope].changedObjects.set(lastChange.id, lastChange.obj);
+                }
+
+                this.changes[lastChange.scope].changedObjects.get(lastChange.id)[lastChange.key] = lastChange.previousValue;
+
+                break;
+            case 'firstUpdate':
+
+                if (!this.changes[lastChange.scope].changedObjects.has(lastChange.id)) {
+                    this.changes[lastChange.scope].changedObjects.set(lastChange.id, lastChange.obj);
+                } else {
+                    this.changes[lastChange.scope].changedObjects.delete(lastChange.id);
+                }
+
+                break;
+            case 'updateNew':
+                this.changes[lastChange.scope].newObjects.get(lastChange.id)[lastChange.key] = lastChange.previousValue;
+                break;
+
+        }
+
+        lastChange.obj[lastChange.key] = lastChange.previousValue;
+
+        if (this.historyCurrentIndex > -1) {
+            this.historyCurrentIndex--;
+        }
+    }
+
+    /**
+     * redo next change
+     */
+    public redo() {
+
+        if (this.historyCurrentIndex +1 > this.history.length) return;
+
+        const nextChange = this.history[this.historyCurrentIndex +1];
+
+        switch (nextChange.action) {
+            case 'new':
+
+                nextChange.obj[nextChange.key] = nextChange.newValue;
+                this.changes[nextChange.scope].newObjects.set(nextChange.id, nextChange.obj);
+                break;
+            case 'firstUpdate':
+                if (this.changes[nextChange.scope].changedObjects.has(nextChange.id)) {
+                    this.changes[nextChange.scope].changedObjects.get(nextChange.id)[nextChange.key] = nextChange.newValue;
+                    this.changes[nextChange.scope].changedObjects.delete(nextChange.id)
+                } else {
+                    nextChange.obj[nextChange.key] = nextChange.newValue;
+                    this.changes[nextChange.scope].changedObjects.set(nextChange.id, nextChange.obj);
+                }
+                break;
+            case 'updateNew':
+            case 'update':
+                const key = nextChange.action == 'updateNew' ? 'newObjects' : 'changedObjects';
+
+                if (this.changes[nextChange.scope][key].has(nextChange.id)) {
+                    this.changes[nextChange.scope][key].get(nextChange.id)[nextChange.key] = nextChange.newValue;
+                } else {
+                    this.changes[nextChange.scope][key].set(nextChange.id, nextChange.obj);
+                }
+
+                nextChange.obj[nextChange.key] = nextChange.newValue;
+                break;
+
+        }
+
+        if (this.historyCurrentIndex +1 < this.history.length) {
+            this.historyCurrentIndex++;
         }
     }
 
@@ -199,21 +316,26 @@ export class ChangeHistoryService {
     /**
      * check for object changes and write the changes
      */
-    public checkForObjectChanges(currentValue: any, dbValue: any, scope: string) {
+    public checkForObjectChanges(currentObject: any, dbObject: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) {
 
         if (!this.changes[scope]) this.initializeScope(scope);
 
-        if (JSON.stringify(currentValue) == JSON.stringify(dbValue)) {
-            this.changes[scope].changedObjects.delete(currentValue.id);
+        if (JSON.stringify(currentObject) == JSON.stringify(dbObject)) {
+            this.changes[scope].changedObjects.delete(currentObject.id);
             return;
         }
 
-        if (this.changes[scope].changedObjects.has(currentValue.id)) {
-            this.changes[scope].changedObjects.set(currentValue.id, {...currentValue})
+        let action: 'update' | 'firstUpdate' = 'update';
+
+        if (this.changes[scope].changedObjects.has(currentObject.id)) {
+            this.changes[scope].changedObjects.set(currentObject.id, {...currentObject});
         } else {
-            this.changes[scope].changedObjects.set(currentValue.id, {...currentValue})
+            this.changes[scope].changedObjects.set(currentObject.id, {...currentObject});
+            action = 'firstUpdate';
             this.cdRef.detectChanges();
         }
+
+        this.addNewHistoryRecord(currentObject, action, scope, prop, previousValue, newValue);
     }
 
     /**
