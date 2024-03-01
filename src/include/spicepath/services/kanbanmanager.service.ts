@@ -42,7 +42,7 @@ export class KanbanManagerService {
     public constructor(
         public backend: backend,
         public toast: toast,
-        private changeService: ChangeHistoryService
+        public changeService: ChangeHistoryService
     ) {
         this.loadItems();
         this.loadChecks();
@@ -118,9 +118,6 @@ export class KanbanManagerService {
      * @param validator
      */
     public generateTrackableNewObject(obj: any, key: 'checks' | 'stages' | 'spiceTexts', validator?: (obj: any) => boolean): any {
-
-        if ((this[key] as any[]).some(s => s.id == obj.id)) return;
-
         return this.changeService.generateTrackableNewObject(obj, key, validator);
     }
 
