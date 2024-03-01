@@ -1629,8 +1629,11 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . date('Y-m-d') . '\'';
                 break;
             case 'lyytd':
-                $year = date('Y') - 1;
-                $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $year . '-' . date('m-d') . '\'';
+                $calcDate = new DateTime(gmdate('Y-m-d'));
+                $year = $calcDate->format('Y');
+                $calcDate->sub(new DateInterval('P1Y'));
+                $toDate = $calcDate->format('Y-m-d');
+                $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $toDate . '\'';
                 break;
         }
 
