@@ -6,28 +6,41 @@
             </ul>
             <div class="slds-p-left--xx-small" *ngIf="collapsed && checkdCount>0">({{checkdCount}} <system-label label="LBL_SELECTED"></system-label>)</div>
         </div>
-        <system-utility-icon icon="chart" [colorclass]="showChart? 'slds-icon-text-warning' : 'slds-icon-text-default'" size="x-small" (click)="toggleChart()"></system-utility-icon>
+        <!--system-utility-icon class="slds-m-horizontal--xxx-small" *ngIf="hasMetrics && !collapsed" icon="metrics" [colorclass]="showMetrics? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small" (click)="toggleMetrics()"></system-utility-icon-->
+        <!--system-utility-icon class="slds-m-horizontal--xxx-small" *ngIf="!collapsed" icon="chart" [colorclass]="showChart? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small" (click)="toggleChart()"></system-utility-icon-->
         <system-utility-icon [icon]="collapsed? 'down' : 'up'" size="x-small" (click)="toggleCollapsed()"></system-utility-icon>
     </div>
-    <ng-container *ngIf="!collapsed && !showChart">
-        <div class="slds-form-element" *ngFor="let bucketItem of aggregateBuckets">
-            <object-listview-aggregate-item [metric]="metric" [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
-        </div>
-        <div *ngIf="aggregateBucketCount > aggregateDefaultItems || otherDocCount > 0" class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-p-top--xx-small">
-            <div>
-                <a *ngIf="aggregateBucketCount > aggregateDefaultItems" class="slds-text-body--small" href="javascript:void(0);" (click)="showall = !showall">
-                    <system-label [label]="showall ? 'LBL_LESS': 'LBL_MORE'"></system-label>
-                    <span *ngIf="!showall"> (+{{aggregateBucketCount - 5}})</span>
-                </a>
+    @if (!collapsed) {
+        @if(showMetrics){
+            <div class="slds-grid slds-grid--vertical slds-border--bottom slds-m-bottom--xx-small">
+                <system-input-radio name="aggregatemetric" value="doc_count" [(ngModel)]="metric"><system-label label="LBL_COUNT"/></system-input-radio>
+                <system-input-radio *ngFor="let m of getMetrics()" name="aggregatemetric" [value]="'metric_'+m.function+'_'+m.field" [(ngModel)]="metric">{{m.function}} {{m.field}}</system-input-radio>
             </div>
-            <div>
-                <p *ngIf="otherDocCount > 0" class="slds-text-body--small slds-text-color--weak">{{otherDocCount}} <system-label label="LBL_ARE_NOT_INCLUDED"></system-label>...</p>
+        }
+        @if(showChart){
+            <object-listview-aggregate-chart [aggregate]="aggregate" [metric]="metric"></object-listview-aggregate-chart>
+        } @else {
+            <div class="slds-form-element" *ngFor="let bucketItem of aggregateBuckets">
+                <object-listview-aggregate-item [metric]="metric" [bucketitem]="bucketItem" [aggregate]="aggregate"
+                                                class="slds-form-element__control"></object-listview-aggregate-item>
             </div>
-        </div>
-    </ng-container>
+            <div *ngIf="aggregateBucketCount > aggregateDefaultItems || otherDocCount > 0"
+                 class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-p-top--xx-small">
+                <div>
+                    <a *ngIf="aggregateBucketCount > aggregateDefaultItems" class="slds-text-body--small"
+                       href="javascript:void(0);" (click)="showall = !showall">
+                        <system-label [label]="showall ? 'LBL_LESS': 'LBL_MORE'"></system-label>
+                        <span *ngIf="!showall"> (+{{ aggregateBucketCount - 5 }})</span>
+                    </a>
+                </div>
+                <div>
+                    <p *ngIf="otherDocCount > 0" class="slds-text-body--small slds-text-color--weak">{{ otherDocCount }}
+                        <system-label label="LBL_ARE_NOT_INCLUDED"></system-label>
+                        ...
+                    </p>
+                </div>
+            </div>
+        }
 
-    <ng-container *ngIf="!collapsed && showChart">
-        <object-listview-aggregate-chart [aggregate]="aggregate"></object-listview-aggregate-chart>
-    </ng-container>
-
+    }
 </div>
