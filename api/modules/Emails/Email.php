@@ -1056,6 +1056,10 @@ class Email extends SpiceBean
         $testEmail->name = "Connection Test Email from SpiceCRM";
         $testEmail->body = "<p>This is a machine generated Test Email</p>";
 
+        if (!empty($mailbox->mailbox_footer)) {
+            $testEmail->body .=  $mailbox->mailbox_footer;
+        }
+
         return $testEmail;
     }
 
