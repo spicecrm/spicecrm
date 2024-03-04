@@ -1369,10 +1369,12 @@ class MysqliManager extends DBManager
                     $sql = "ALTER TABLE {$table} ADD CONSTRAINT PRIMARY KEY ({$fields})";
                 break;
             case 'foreign':
-                if ($drop)
-                    $sql = "ALTER TABLE {$table} DROP FOREIGN KEY ({$fields})";
-                else
-                    $sql = "ALTER TABLE {$table} ADD CONSTRAINT FOREIGN KEY {$name} ({$fields}) REFERENCES {$definition['foreignTable']}({$definition['foreignField']})";
+                if ($drop) {
+                    // drop the constraint and the index
+                    $sql = "ALTER TABLE {$table} DROP FOREIGN KEY {$name}, DROP INDEX {$name}";
+                }else {
+                    $sql = "ALTER TABLE {$table} ADD CONSTRAINT {$name} FOREIGN KEY {$name} ({$fields}) REFERENCES {$definition['foreignTable']}({$definition['foreignField']})";
+                }
                 break;
         }
         return $sql;

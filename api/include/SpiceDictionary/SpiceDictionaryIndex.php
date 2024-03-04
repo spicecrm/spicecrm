@@ -149,7 +149,7 @@ class SpiceDictionaryIndex
             $db = DBManagerFactory::getInstance();
             $tableIndexes = $db->get_indices($tablename);
             if (!$tableIndexes[$this->getIndexName($tablename)]) {
-                $db->query($db->add_drop_constraint($tablename, $indexDefinition));
+                $db->query($db->add_drop_constraint($tablename, $indexDefinition), true);
             }
         }
 
