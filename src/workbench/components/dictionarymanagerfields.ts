@@ -50,7 +50,7 @@ export class DictionaryManagerFields {
         definitions.forEach(s => {
             // get the domainfield and set non_db
             let domainField = this.getDomainFields(s.sysdomaindefinition_id, true);
-            if(domainField[0].dbtype == 'non-db') s.non_db = 1;
+            if(domainField[0]?.dbtype == 'non-db') s.non_db = 1;
 
             s.defined = true;
             s.cached = false;

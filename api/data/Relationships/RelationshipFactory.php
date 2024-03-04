@@ -3,6 +3,7 @@
 
 namespace SpiceCRM\data\Relationships;
 
+use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
@@ -15,10 +16,12 @@ class RelationshipFactory {
     static $rfInstance;
 
     protected $relationships;
+    protected $relationshiptypes;
 
     protected function __construct(){
         //Load the relationship definitions from the cache.
         $this->loadRelationships();
+        $this->loadRelationshipTypes();
     }
 
     /**
@@ -47,6 +50,10 @@ class RelationshipFactory {
         $def = $this->relationships[$relationshipName];
 
         $type = isset($def['true_relationship_type']) ? $def['true_relationship_type'] : $def['relationship_type'];
+        if(isset($this->relationshiptypes[$type])){
+            return new $this->relationshiptypes[$type]($def);
+        }
+        /*
         switch($type)
         {
             case "many-to-many-bean":
@@ -73,6 +80,7 @@ class RelationshipFactory {
                     return new One2OneRelationship($def);
                 }
         }
+        */
 
         LoggerManager::getLogger()->fatal ("$relationshipName had an unknown type $type ");
 
@@ -91,6 +99,24 @@ class RelationshipFactory {
             SpiceCache::set('relationships', $this->relationships);
         } else {
             $this->relationships = $cached;
+        }
+    }
+
+
+    /**
+     * @param false $forceLoadFromDb
+     */
+    public function loadRelationshipTypes($forceLoadFromDb = false)
+    {
+        $this->relationshiptypes = [];
+        $cached = SpiceCache::get('relationshiptypes');
+        if(!$cached || $forceLoadFromDb) {
+            $relTypes = DBManagerFactory::getInstance()->fetchAll('SELECT name, class FROM sysdictionaryrelationshiptypes');
+            foreach ($relTypes as $relType) $this->relationshiptypes[$relType['name']] = $relType['class'];
+
+            SpiceCache::set('relationshiptypes', $this->relationshiptypes);
+        } else {
+            $this->relationshiptypes = $cached;
         }
     }
 

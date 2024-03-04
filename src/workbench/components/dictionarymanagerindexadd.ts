@@ -75,9 +75,12 @@ export class DictionaryManagerIndexAdd implements OnInit{
             name: `idx_` + (tablename ? tablename : '{tablename}') + '_',
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
             status: 'd',
-            scope:  this.dictionarymanager.defaultScope,
+            scope:  this.dictionarymanager.currentDictionaryScope,
             indextype: 'index'
         };
+
+        // if scope is not all reset to custom in any case
+
 
         this.availableDictionaryItems = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.name.localeCompare(b.name));
     }
