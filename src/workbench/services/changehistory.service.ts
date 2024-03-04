@@ -1,4 +1,5 @@
 import {ChangeDetectorRef, Injectable} from '@angular/core';
+import {ChangeHistoryActionI, ChangeHistoryRecordI} from "../interfaces/workbench.interfaces";
 
 @Injectable()
 export class ChangeHistoryService {
@@ -15,7 +16,7 @@ export class ChangeHistoryService {
      * holds the history records
      * @private
      */
-    private history: {id: string, obj: any, action: 'new' | 'update' | 'firstUpdate' | 'updateNew', scope: string, key?: string | symbol, previousValue?: any, newValue?: any}[] = [];
+    private history: ChangeHistoryRecordI[] = [];
     /**
      * holds the history current index
      * @private
@@ -113,6 +114,7 @@ export class ChangeHistoryService {
         if (!this.changes[scope]) return;
 
         this.changes[scope].changedObjects.forEach(changedObj => {
+            this.setChangedObjectFirstUpdate(changedObj);
             dbArray.some((dbObj, index: number) => {
                 if (dbObj.id != changedObj.id) return false;
                 dbArray[index] = changedObj;
@@ -125,6 +127,33 @@ export class ChangeHistoryService {
         );
 
         this.initializeScope(scope);
+    }
+
+    /**
+     * set changed object first update
+     * @param obj
+     * @private
+     */
+    private setChangedObjectFirstUpdate(obj: {id: string}) {
+
+        if (this.historyCurrentIndex +1 < this.history.length) {
+            this.history.length = this.historyCurrentIndex +1;
+        }
+
+        let lastChangeIdx: number;
+        const firstChangeIdx = this.history.findIndex(r => r.id == obj.id);
+
+        if (firstChangeIdx < 0) return;
+
+        for (let i = this.history.length - 1; i >= 0; i--) {
+            if (this.history[i].id != obj.id) continue;
+            lastChangeIdx = i;
+            break;
+        }
+
+
+        this.history[firstChangeIdx].action = 'update';
+        this.history[lastChangeIdx].action = 'afterSaveFirstUpdate';
     }
 
     /**
@@ -170,7 +199,7 @@ export class ChangeHistoryService {
      * @param newValue
      * @private
      */
-    private addNewHistoryRecord(obj: {id: string}, action: 'new' | 'update' | 'firstUpdate' | 'updateNew', scope: string, key?: string | symbol, previousValue?: any, newValue?: any) {
+    private addNewHistoryRecord(obj: {id: string}, action: ChangeHistoryActionI, scope: string, key?: string | symbol, previousValue?: any, newValue?: any) {
 
         // trim the history array if the current index is not the last on in the history to override the later history records
         if (this.historyCurrentIndex +1 < this.history.length) {
@@ -210,12 +239,13 @@ export class ChangeHistoryService {
                 this.changes[lastChange.scope].newObjects.delete(lastChange.id);
                 break;
             case 'update':
-
                 this.changes[lastChange.scope].changedObjects.get(lastChange.id)[lastChange.key] = lastChange.previousValue;
                 break;
             case 'firstUpdate':
-
                 this.changes[lastChange.scope].changedObjects.delete(lastChange.id);
+                break;
+            case 'afterSaveFirstUpdate':
+                this.changes[lastChange.scope].changedObjects.set(lastChange.id, lastChange.obj);
                 break;
             case 'updateNew':
                 this.changes[lastChange.scope].newObjects.get(lastChange.id)[lastChange.key] = lastChange.previousValue;
@@ -248,6 +278,10 @@ export class ChangeHistoryService {
             case 'firstUpdate':
                 nextChange.obj[nextChange.key] = nextChange.newValue;
                 this.changes[nextChange.scope].changedObjects.set(nextChange.id, nextChange.obj);
+                break;
+            case 'afterSaveFirstUpdate':
+                nextChange.obj[nextChange.key] = nextChange.newValue;
+                this.changes[nextChange.scope].changedObjects.delete(nextChange.id);
                 break;
             case 'updateNew':
             case 'update':
