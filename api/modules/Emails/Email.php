@@ -810,6 +810,9 @@ class Email extends SpiceBean
 
         // BWC for imported emails before recipient_addresses functionality
         if(is_array($beanDataArray) && $bwcFrom && !empty($this->from_addr)){
+            if(!is_array($beanDataArray['recipient_addresses'])){
+                $beanDataArray['recipient_addresses'] = [];
+            }
             $beanDataArray['recipient_addresses'][] = [
                 'id' => SpiceUtils::createGuid(),
                 'email_address_id' => $this->id,
