@@ -369,7 +369,14 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
         // if this is a new definiton
         if (!this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarydefinition.id)) {
             // push it
-            this.dictionarymanager.dictionarydefinitions.push(this.dictionarydefinition);
+            this.backend.postRequest(`dictionary/definition/${this.dictionarydefinition.id}`, {}, this.dictionarydefinition).subscribe({
+                next: (res) => {
+                    this.dictionarymanager.dictionarydefinitions.push(this.dictionarydefinition);
+                },
+                error: () => {
+
+                }
+            })
         }
 
         /**
@@ -466,6 +473,14 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 });
                 sequence++;
             }
+
+            this.backend.postRequest(`dictionary/index/${indexId}`, {}, {index: dictionaryindex, items: this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == indexId)}).subscribe({
+                next: (res) => {
+
+                },
+                error: () => {
+                }
+            })
         }
 
         this.close();
