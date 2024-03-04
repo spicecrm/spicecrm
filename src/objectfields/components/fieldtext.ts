@@ -25,6 +25,11 @@ export class fieldText extends fieldGeneric implements OnInit {
     public speechRecognition = false;
 
     /**
+     * displays/hides volume icon
+     */
+    public hideVolumeIcon: boolean = false;
+
+    /**
      * if the user resizes manually
      */
     public fixedHeight: number;
@@ -82,6 +87,8 @@ export class fieldText extends fieldGeneric implements OnInit {
         if (window.SpeechRecognition || window.webkitSpeechRecognition) {
             this.speechRecognition = this.fieldconfig.speechRecognition; // boolean
         }
+
+        this.hideVolumeIcon = this.fieldconfig.hideVolumeIcon; // boolean
 
         this.getFieldLength();
         this.setStripHtml();
