@@ -113,11 +113,14 @@
                             <td><system-input-label [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.vname"></system-input-label></td>
                             <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.required"></system-checkbox></td>
                             <td>
-                                <div class="slds-select_container">
+                                <!--div class="slds-select_container">
                                     <select class="slds-select" [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.sysdomaindefinition_id">
                                         <option *ngFor="let domain of domains" [value]="domain.id">{{domain.name}}</option>
                                     </select>
-                                </div>
+                                </div-->
+                                <system-select [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.sysdomaindefinition_id">
+                                    <system-select-option *ngFor="let domain of domains" [value]="domain.id" [display]="domain.name"/>
+                                </system-select>
                             </td>
                             <td><button class="slds-button slds-button--icon" (click)="field.showdetails = !field.showdetails"><system-button-icon [icon]="field.showdetails ? 'chevronup' :'chevrondown'"></system-button-icon></button></td>
                         </tr>
