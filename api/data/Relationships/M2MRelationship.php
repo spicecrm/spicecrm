@@ -65,6 +65,10 @@ class M2MRelationship extends Relationship
         $joinLhsField = SpiceDictionaryField::getField($joinLhsDictionaryitem, $joinDictionaryDefinition);
         $joinRhsField = SpiceDictionaryField::getField($joinRhsDictionaryitem, $joinDictionaryDefinition);
 
+        // clear current definitions
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
         // build the Defs
         $defs = [
             'id' => $relationship->id,
