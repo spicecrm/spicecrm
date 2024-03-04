@@ -60,7 +60,11 @@ class EmailAddressRelationship extends M2MRelationship
         ];
 
         // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
-        $db->query("DELETE FROM relationships WHERE relationship_name like '{$relationshipName}%'");
+        // $db->query("DELETE FROM relationships WHERE relationship_name like '{$relationshipName}%'");
+        // clear current definitions
+        $db = DBManagerFactory::getInstance();
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}' OR relationship_name like '{$relationshipName}%'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
 
         // add to the relationships
         $db->insertQuery('relationships', [

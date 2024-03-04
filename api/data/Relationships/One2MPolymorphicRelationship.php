@@ -32,7 +32,8 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
      * @param SpiceDictionaryRelationship $relationship
      * @return void
      */
-    public function activate(SpiceDictionaryRelationship $relationship){
+    public function activate(SpiceDictionaryRelationship $relationship)
+    {
         $db = DBManagerFactory::getInstance();
 
         $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
@@ -41,9 +42,12 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
         $roleColumnDictionaryitem = new SpiceDictionaryItem($relationship->relationship->relationship_role_column);
         $roleColumnField = SpiceDictionaryField::getField($roleColumnDictionaryitem, $rhsDictionaryDefinition);
 
+        // clear current definitions
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
 
         // add the parent link field on the LHS Module
-       $db->insertQuery('sysdictionaryfields', [
+        $db->insertQuery('sysdictionaryfields', [
             'id' => SpiceUtils::createGuid(),
             'sysdictionaryname' => $rhsDictionaryDefinition->name,
             'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
@@ -53,7 +57,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 'name' => $relationship->relationship->rhs_linkname,
                 'type' => 'parent',
                 'type_name' => $roleColumnField->fieldname,
-                'id_name'     => $rhsField->fieldname,
+                'id_name' => $rhsField->fieldname,
                 'source' => 'non-db',
                 'vname' => $relationship->relationship->rhs_linklabel
             ]),
@@ -63,15 +67,15 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
 
         // load all morphs and create relationships and links
         $morphs = SpiceDictionaryRelationships::getInstance()->getPolymorphs($relationship->relationship->id);
-        foreach ($morphs as $morph){
+        foreach ($morphs as $morph) {
             // convert to object
-            $morph = (object) $morph;
+            $morph = (object)$morph;
 
             $lhsDictionaryDefinition = new SpiceDictionaryDefinition($morph->lhs_sysdictionarydefinition_id);
             $lhsDictionaryitem = new SpiceDictionaryItem($morph->lhs_sysdictionaryitem_id);
             $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
 
-            $relationship_name = str_replace('{tablename}', $rhsDictionaryDefinition->tablename,  $morph->relationship_name);
+            $relationship_name = str_replace('{tablename}', $rhsDictionaryDefinition->tablename, $morph->relationship_name);
 
             // insert the relationship
             $db->insertQuery('relationships', [
@@ -110,10 +114,10 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $rhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
-                'fieldname' => $relationship->relationship->name .'_' . $lhsDictionaryDefinition->tablename,
+                'fieldname' => $relationship->relationship->name . '_' . $lhsDictionaryDefinition->tablename,
                 'fieldtype' => 'link',
                 'fielddefinition' => json_encode([
-                    'name' => $relationship->relationship->name .'_' . $lhsDictionaryDefinition->tablename,
+                    'name' => $relationship->relationship->name . '_' . $lhsDictionaryDefinition->tablename,
                     'type' => 'link',
                     'relationship' => $relationship_name,
                     'source' => 'non-db'
@@ -131,15 +135,16 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
      * @return void
      * @throws \Exception
      */
-    public  function deactivate(SpiceDictionaryRelationship $relationship){
+    public function deactivate(SpiceDictionaryRelationship $relationship)
+    {
         $relationshipIds = [$relationship->id];
         $morphs = SpiceDictionaryRelationships::getInstance()->getPolymorphs($relationship->relationship->id);
-        foreach ($morphs as $morph){
+        foreach ($morphs as $morph) {
             $relationshipIds[] = $morph['id'];
         }
 
         // delete the records
-        DBManagerFactory::getInstance()->query("DELETE FROM relationships WHERE id IN ('".implode("','", $relationshipIds)."')");
-        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id IN ('".implode("','", $relationshipIds)."')");
+        DBManagerFactory::getInstance()->query("DELETE FROM relationships WHERE id IN ('" . implode("','", $relationshipIds) . "')");
+        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id IN ('" . implode("','", $relationshipIds) . "')");
     }
 }
