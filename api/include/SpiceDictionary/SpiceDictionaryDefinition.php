@@ -248,6 +248,11 @@ class SpiceDictionaryDefinition
             (new SpiceDictionaryIndex($index['id']))->activate(true, $this);
         }
 
+        $relationships = SpiceDictionaryRelationships::getInstance()->getRelationships($this->id, ['i', 'd']);
+        foreach ($relationships as $relationship){
+            (new SpiceDictionaryRelationship($relationship['id']))->activate();
+        }
+
         $this->setStatus('a');
     }
 
@@ -266,11 +271,18 @@ class SpiceDictionaryDefinition
             (new SpiceDictionaryIndex($index['id']))->deactivate(false);
         }
 
+        $relationships = SpiceDictionaryRelationships::getInstance()->getRelationships($this->id);
+        foreach ($relationships as $relationship){
+            (new SpiceDictionaryRelationship($relationship['id']))->deactivate();
+        }
+
         // get all active items and deactivate them
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
         foreach ($items as $item) {
             (new SpiceDictionaryItem($item['id']))->deactivate();
         }
+
+
 
         $this->setStatus('i');
     }

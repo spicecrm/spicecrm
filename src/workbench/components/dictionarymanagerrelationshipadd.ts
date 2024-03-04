@@ -59,7 +59,7 @@ export class DictionaryManagerRelationshipAdd implements OnInit{
 
     public ngOnInit() {
         this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
-        this.scope = this.dictionarymanager.defaultScope;
+        this.scope = this.dictionarymanager.currentDictionaryScope;
     }
 
     /**

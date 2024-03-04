@@ -26,6 +26,11 @@ class UserRelationship extends One2MRelationship
         $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
         $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
 
+        // clear current definitions
+        $db = DBManagerFactory::getInstance();
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
         // build the Defs
         $defs = [
             'id' => $relationship->id,
@@ -40,11 +45,11 @@ class UserRelationship extends One2MRelationship
             'deleted' => 0
         ];
 
-        DBManagerFactory::getInstance()->insertQuery('relationships', $defs);
+        $db->insertQuery('relationships', $defs);
 
         // write the rhs link
         if($relationship->relationship->rhs_linkname){
-            DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', [
+            $db->insertQuery('sysdictionaryfields', [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $rhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
@@ -64,7 +69,7 @@ class UserRelationship extends One2MRelationship
 
             // write the rhs linked field
             if($relationship->relationship->rhs_relatename){
-                DBManagerFactory::getInstance()->insertQuery('sysdictionaryfields', [
+                $db->insertQuery('sysdictionaryfields', [
                     'id' => SpiceUtils::createGuid(),
                     'sysdictionaryname' => $rhsDictionaryDefinition->name,
                     'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
@@ -73,7 +78,6 @@ class UserRelationship extends One2MRelationship
                     'fielddefinition' => json_encode([
                         'name' => $relationship->relationship->rhs_relatename,
                         'type' => 'linked',
-                        'rname' => 'user_name',
                         'id_name' => $rhsField->fieldname,
                         'link' => $relationship->relationship->rhs_linkname,
                         'source' => 'non-db',

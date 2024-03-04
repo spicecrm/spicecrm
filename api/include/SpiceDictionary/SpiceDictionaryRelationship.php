@@ -83,7 +83,7 @@ class SpiceDictionaryRelationship
 
         // check if left or right is a template ... if it is do not activate
         if((!$this->relationship->lhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->lhs_sysdictionarydefinition_id))->type != 'template') && (!$this->relationship->rhs_sysdictionarydefinition_id || (new SpiceDictionaryDefinition($this->relationship->rhs_sysdictionarydefinition_id))->type != 'template')) {
-            (new $relType['class'](null))->activate($this);
+            (new $relType['class']((array) $this->relationship))->activate($this);
         }
 
         // set the status
