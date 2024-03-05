@@ -371,7 +371,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'data-spiceif': true,
                     'data-spicefor-first': true,
                     'data-spicefor-last': true,
-                    'data-spiceforss-inner': true,
+                    'data-spicefor-inner': true,
                     'data-spicefor-even': true,
                     'data-spicefor-odd': true,
                     'data-spicetemplate': true,
