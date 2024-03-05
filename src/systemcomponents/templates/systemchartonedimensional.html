@@ -1,4 +1,4 @@
-<div class="slds-p-vertical--small slds-p-horizontal--small slds-height_full">
+<div class="slds-height_full" [ngClass]="paddingClass">
     <div [class.slds-hide]="!hasData" class="slds-size--1-of-1 slds-height_full" #chartContainer></div>
     <div *ngIf="!hasData" class="slds-size--1-of-1 slds-height_full slds-align_absolute-center slds-theme--default">
         <system-illustration-no-data><system-label label="LBL_NO_DATA"></system-label></system-illustration-no-data>
