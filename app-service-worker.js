@@ -23,6 +23,10 @@ self.addEventListener('fetch', event => {
         const canBeCached = event.request.url.startsWith('http') && !!event.request.destination;
         let cachedResponse, cache;
 
+        if (event.request.url.includes('sysinfo')) {
+            checkBuildVersion();
+        }
+
         if (canBeCached) {
             cache = await caches.open(CACHE_NAME);
             // Get the resource from the cache.
@@ -59,4 +63,31 @@ function fetchAndCache(request, cache) {
 
         return fetchResponse;
     });
+}
+
+/**
+ * check if the build version differs from the cache. If yes then invalidate the cache
+ */
+async function checkBuildVersion() {
+
+    const req = new Request("environments/environment.prod.ts");
+    let cache = await caches.open(CACHE_NAME);
+    const cachedResponse = await cache.match(req);
+
+    const fetchRes = await fetch(req);
+    const currentEnv = await fetchRes.clone().text();
+
+    // Get the resource from the cache.
+    let cachedEnv;
+
+    if (cachedResponse) {
+        cachedEnv = await cachedResponse.text();
+    }
+
+    if (cachedEnv != currentEnv) {
+        await caches.delete(CACHE_NAME);
+        console.log('cache invalidated');
+        cache = await caches.open(CACHE_NAME);
+        cache.put(req, fetchRes.clone());
+    }
 }
