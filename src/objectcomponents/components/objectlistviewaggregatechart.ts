@@ -1,7 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit, SimpleChanges
+} from "@angular/core";
 import {modellist} from "../../services/modellist.service";
 import {Subscription} from "rxjs";
 import {GoogleChartTypeOneDimensional} from "../../systemcomponents/interfaces/systemcomponents.interfaces";
@@ -15,11 +23,16 @@ import {GoogleChartTypeOneDimensional} from "../../systemcomponents/interfaces/s
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class ObjectListViewAggregateChart implements OnInit, OnDestroy{
+export class ObjectListViewAggregateChart implements OnInit, OnDestroy, OnChanges{
     /**
      * the aggregate
      */
     @Input() public aggregate: any;
+
+    /**
+     * the metric to be displayed
+     */
+    @Input() public metric: string = 'doc_count';
 
     /**
      * google chart types
@@ -54,6 +67,10 @@ export class ObjectListViewAggregateChart implements OnInit, OnDestroy{
         );
     }
 
+    public ngOnChanges(changes: SimpleChanges) {
+        if(changes.metric) this.buildBuckets();
+    }
+
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
@@ -66,7 +83,7 @@ export class ObjectListViewAggregateChart implements OnInit, OnDestroy{
         if(this.aggregate) {
             this.buckets = this.modellist.searchAggregates?.[this.aggregate.fielddetails.field].buckets.map(i => ({
                 label: i.displayName,
-                value: i.doc_count
+                value: this.metric == 'doc_count' ? i.doc_count : i[this.metric].value
             }));
             this.cdref.detectChanges();
         }

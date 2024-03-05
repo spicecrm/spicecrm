@@ -213,7 +213,14 @@ class SpiceFTSAggregates
             }
 
             foreach ($aggs as &$agg){
-                $agg['aggs'] = $addAggs;
+                if(isset($agg['aggs'])){
+                    foreach ($agg['aggs'] as $aggName => $aggData){
+                        $agg['aggs'][$aggName]['aggs'] = $addAggs;
+                    }
+                } else {
+                    $agg['aggs'] = $addAggs;
+                }
+
             }
         }
 
