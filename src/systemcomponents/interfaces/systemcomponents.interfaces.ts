@@ -96,3 +96,5 @@ export interface GoogleChartSelectedObject {
     column: number;
     row: number;
 }
+
+export type ChartJSTypeOneDimensional = 'Bar' | 'Column' | 'Line' | 'Pie' | 'Doughnut';
