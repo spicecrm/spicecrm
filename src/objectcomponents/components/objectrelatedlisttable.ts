@@ -132,7 +132,7 @@ export class ObjectRelatedlistTable implements OnInit {
 
     public getSortIcon(field): string {
         if (this.relatedmodels.sortfield == (field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field)) {
-            return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowdown' : 'arrowup';
+            return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowup' : 'arrowdown';
         }
         return 'sort';
     }
