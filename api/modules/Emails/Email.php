@@ -745,7 +745,7 @@ class Email extends SpiceBean
 
         if($found){
             // is it utf-8?
-            if (strpos($matches[0], 'utf-8') === false){
+            if (stripos($matches[0], 'utf-8') === false){
                 $replacement = 'meta charset="utf-8"';
                 $emailBody = preg_replace($matches[0], $replacement, $emailBody);
             }
@@ -810,6 +810,9 @@ class Email extends SpiceBean
 
         // BWC for imported emails before recipient_addresses functionality
         if(is_array($beanDataArray) && $bwcFrom && !empty($this->from_addr)){
+            if(!is_array($beanDataArray['recipient_addresses'])){
+                $beanDataArray['recipient_addresses'] = [];
+            }
             $beanDataArray['recipient_addresses'][] = [
                 'id' => SpiceUtils::createGuid(),
                 'email_address_id' => $this->id,
@@ -1744,7 +1747,7 @@ class Email extends SpiceBean
      * @param string $fieldName
      * @return string
      */
-    public function getFieldHtmlContent(string $fieldName): string
+    public function getFieldHtmlContent(string $fieldName): ?string
     {
         switch ($fieldName) {
             case 'body':
@@ -1758,7 +1761,7 @@ class Email extends SpiceBean
      * get the body field content with the images as base64
      * @return string
      */
-    private function getBodyFieldAsHtml(): string
+    private function getBodyFieldAsHtml(): ?string
     {
         $content = $this->body;
 
