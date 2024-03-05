@@ -8,6 +8,9 @@ import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 import {metadata} from "../../services/metadata.service";
+import {ChartJSTypeOneDimensional} from "../../systemcomponents/interfaces/systemcomponents.interfaces";
+
+declare var _: any;
 
 /**
  * a component that displays one set of aggregates returned from the Elastic Search
@@ -18,14 +21,33 @@ import {metadata} from "../../services/metadata.service";
 })
 export class ObjectListViewAggregate {
     /**
+     * a unique id
+     */
+    public aggregateID: string = _.uniqueId();
+    /**
      * toggles visibility for chart
      */
     public showChart: boolean = false;
 
     /**
+     * google chart types
+     */
+    public chartTypes: ChartJSTypeOneDimensional[] = ['Bar', 'Column', 'Pie', 'Doughnut', 'Line'];
+
+    /**
+     * the selected chart type, default = 'Pie'
+     */
+    public chartType : ChartJSTypeOneDimensional = this.chartTypes[0];
+
+    /**
      * toggles visibility for metrics
      */
     public showMetrics: boolean = false;
+
+    /**
+     * toggles visibility for metrics
+     */
+    public showChartTypes: boolean = false;
 
     /**
      * an input for teh aggregate itself
@@ -141,7 +163,8 @@ export class ObjectListViewAggregate {
     public toggleCollapsed() {
         this.aggregate.collapsed = !this.aggregate.collapsed;
         if(this.collapsed){
-            this.showChart = false;
+            this.showChartTypes = false;
+            this.showMetrics = false;
         }
     }
 
@@ -150,14 +173,19 @@ export class ObjectListViewAggregate {
      */
     public toggleChart() {
         if(!this.collapsed){
-            this.showChart = !this.showChart;
+            // if we show the charttypes first hide that panel
+            if(this.showChartTypes) {
+                this.showChartTypes = false;
+            } else {
+                this.showChart = !this.showChart;
+            }
         } else {
             this.showChart = false;
         }
     }
 
     /**
-     * toggles the chart when container is not collapsed
+     * toggles the metriocs when container is not collapsed
      */
     public toggleMetrics() {
         if(!this.collapsed){
@@ -165,5 +193,27 @@ export class ObjectListViewAggregate {
         } else {
             this.showMetrics = false;
         }
+
+        // close chart types
+        if(this.showMetrics) this.showChartTypes = false;
+    }
+
+    /**
+     * toggles the charttypes when container is not collapsed
+     */
+    public toggleChartTypes(e: MouseEvent) {
+        if(!this.showChart) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        if(!this.collapsed){
+            this.showChartTypes = !this.showChartTypes;
+        } else {
+            this.showChartTypes = false;
+        }
+
+        // close metrocs
+        if(this.showChartTypes) this.showMetrics = false;
     }
 }

@@ -12,7 +12,11 @@ import {
 } from "@angular/core";
 import {modellist} from "../../services/modellist.service";
 import {Subscription} from "rxjs";
-import {GoogleChartTypeOneDimensional} from "../../systemcomponents/interfaces/systemcomponents.interfaces";
+import {
+    ChartJSTypeOneDimensional,
+    GoogleChartTypeOneDimensional
+} from "../../systemcomponents/interfaces/systemcomponents.interfaces";
+import {ChartType} from "chart.js/auto";
 
 /**
  * a component that displays a chart based on one set of aggregates returned from the Elastic Search
@@ -35,14 +39,9 @@ export class ObjectListViewAggregateChart implements OnInit, OnDestroy, OnChange
     @Input() public metric: string = 'doc_count';
 
     /**
-     * google chart types
-     */
-    public chartType: GoogleChartTypeOneDimensional[] = ['Area', 'SteppedArea', 'Bar', 'Column', 'Line', 'Pie', 'Donut'];
-
-    /**
      * the selected chart type, default = 'Pie'
      */
-    public selectedChartType : GoogleChartTypeOneDimensional = this.chartType[5];
+    @Input() public chartType: ChartJSTypeOneDimensional;
 
     /**
      * buckets in which the aggregate info arrives
