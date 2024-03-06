@@ -43,7 +43,6 @@ export class SystemChartJSService {
     private chart: any;
 
     constructor(public zone: NgZone) {
-        Chart.defaults.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--brand-primary');
         this.options = {
             aspectRatio: 1,
             plugins: {
