@@ -78,7 +78,7 @@ class ConfigTransferController
      * getRowsFromTable()
      * Get an array with all rows with all fields of a table.
      */
-    static function getRowsFromTable( $tablename, ?string $packages )
+    static function getRowsFromTable( $tablename, ?string $packages = null )
     {
         $db = DBManagerFactory::getInstance();
         $rows = [];
