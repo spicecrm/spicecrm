@@ -257,7 +257,7 @@ class SpiceDictionaryDefinitions
         //get teh table
         $table = $definition['scope'] == 'c' ? self::customtable : self::table;
         unset($definition['scope']);
-        DBManagerFactory::getInstance()->insertQuery($table, $definition);
+        DBManagerFactory::getInstance()->upsertQuery($table, $definition);
 
         // adds teh definition
         $this->dictionaryDefinitions[$definition['id']] = $definition;
