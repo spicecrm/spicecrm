@@ -43,6 +43,7 @@ export class SystemChartJSService {
     private chart: any;
 
     constructor(public zone: NgZone) {
+        Chart.defaults.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--brand-primary');
         this.options = {
             aspectRatio: 1,
             plugins: {
@@ -68,7 +69,7 @@ export class SystemChartJSService {
     public setData(data: ChartData) {
         if(JSON.stringify(this.data) != JSON.stringify(data)) {
             this.data = data;
-            this.chart.data = JSON.parse(JSON.stringify(data));
+            this.chart.data = this.transformChartData(this.chartType, this.data),
             this.chart.update('active');
         }
     }
@@ -103,6 +104,24 @@ export class SystemChartJSService {
         }
     }
 
+    private transformChartData(type,data){
+        let chartData = JSON.parse(JSON.stringify(data));
+        let backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--brand-primary')
+        switch(type){
+            case 'bar':
+            case 'line':
+                for(let dataset of chartData.datasets){
+                    dataset.backgroundColor = backgroundColor;
+                }
+                break;
+            case 'pie':
+            case 'doughnut':
+                break;
+        }
+        return chartData
+
+    }
+
     public setChartType(type: ChartJSTypeOneDimensional) {
         this.transFormChartType(type);
         this.chart.destroy();
@@ -116,7 +135,7 @@ export class SystemChartJSService {
     private renderChart() {
         this.chart = new Chart(this.chartContainer, {
             type: this.chartType,
-            data: JSON.parse(JSON.stringify(this.data)),
+            data: this.transformChartData(this.chartType, this.data),
             options: JSON.parse(JSON.stringify(this.options))
         });
     }
