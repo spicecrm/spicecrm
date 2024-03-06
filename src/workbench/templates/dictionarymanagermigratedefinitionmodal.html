@@ -118,7 +118,7 @@
                                         <option *ngFor="let domain of domains" [value]="domain.id">{{domain.name}}</option>
                                     </select>
                                 </div-->
-                                <system-select [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.sysdomaindefinition_id">
+                                <system-select [disabled]="!!field.sysdomainfield_id" [idOnly]="true" [(ngModel)]="field.sysdomaindefinition_id">
                                     <system-select-option *ngFor="let domain of domains" [value]="domain.id" [display]="domain.name"/>
                                 </system-select>
                             </td>
