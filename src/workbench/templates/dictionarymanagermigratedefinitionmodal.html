@@ -13,7 +13,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let table of _tables" (click)="selectedtable = table.sysdictionarytablename">
+                    <tr *ngFor="let table of _tables" (dblclick)="goDetails()" (click)="selectedtable = table.sysdictionarytablename">
                         <td><system-input-radio name="migratedid" [value]="table.sysdictionarytablename" [ngModel]="selectedtable"></system-input-radio></td>
                         <td><div class="slds-truncate">{{table.sysdictionaryname}}</div></td>
                         <td><div class="slds-truncate">{{table.sysdictionarytablename}}</div></td>
@@ -272,7 +272,7 @@
                 <system-input-text class="slds-m-horizontal--xx-small" [showClear]="true" *ngIf="view=='tables'" [(ngModel)]="filterterm"></system-input-text>
                 <system-checkbox class="slds-m-horizontal--xx-small" *ngIf="view=='fields' || view=='tables'" [(ngModel)]="filterundefined">undefined onyl</system-checkbox>
             </div>
-            <button *ngIf="view=='tables'" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goDetails()">
+            <button *ngIf="view=='tables'" [disabled]="!selectedtable" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goDetails()">
                 <system-label label="LBL_NEXT"></system-label>
             </button>
             <button *ngIf="view=='details'" [disabled]="!detailsComplete" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goFields(true)">
