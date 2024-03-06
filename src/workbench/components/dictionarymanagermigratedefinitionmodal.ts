@@ -20,6 +20,9 @@ import {
 })
 export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
+    private currentVersion = '2024.01.001';
+    private currentPackage = 'system';
+
     public loading: boolean = true;
 
     /**
@@ -209,8 +212,8 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             } else {
                 this.dictionarydefinition.id = this.modelutilities.generateGuid();
                 this.dictionarydefinition.scope = undefined;
-                this.dictionarydefinition.package = undefined;
-                this.dictionarydefinition.version = undefined;
+                this.dictionarydefinition.package = this.currentPackage;
+                this.dictionarydefinition.version = this.currentVersion;
             }
 
             this.dictionarydefinition.name = table.sysdictionaryname;
@@ -234,8 +237,15 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             }
 
             // generate label from name if it is undefined
-            if (!!f.fielddefinition.vname) return;
-            f.fielddefinition.vname = `LBL_${f.fielddefinition.name.toUpperCase()}`;
+            if (!f.fielddefinition.vname) {
+                f.fielddefinition.vname = `LBL_${f.fielddefinition.name.toUpperCase()}`;
+            }
+
+            if (!f.version) f.version = this.currentVersion;
+
+            if (!f.package) f.package = this.currentPackage;
+
+            if (!f.scope) f.scope = 'g';
         });
     }
 
