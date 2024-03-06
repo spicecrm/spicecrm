@@ -17,6 +17,7 @@ import {
     GoogleChartTypeOneDimensional
 } from "../../systemcomponents/interfaces/systemcomponents.interfaces";
 import {ChartType} from "chart.js/auto";
+import {language} from "../../services/language.service";
 
 /**
  * a component that displays a chart based on one set of aggregates returned from the Elastic Search
@@ -54,7 +55,12 @@ export class ObjectListViewAggregateChart implements OnInit, OnDestroy, OnChange
      */
     private subscriptions: Subscription = new Subscription();
 
-    constructor(public modellist: modellist, public cdref: ChangeDetectorRef) {
+    constructor(public modellist: modellist, public language: language, public cdref: ChangeDetectorRef) {
+        this.subscriptions.add(
+            this.language.currentlanguage$.subscribe(() => {
+                this.buildBuckets();
+            })
+        );
     }
 
     public ngOnInit() {
@@ -81,7 +87,7 @@ export class ObjectListViewAggregateChart implements OnInit, OnDestroy, OnChange
     private buildBuckets(){
         if(this.aggregate) {
             this.buckets = this.modellist.searchAggregates?.[this.aggregate.fielddetails.field].buckets.map(i => ({
-                label: i.displayName,
+                label: this.language.getFieldDisplayOptionValue(this.modellist.module, this.aggregate.fieldname, i.displayName),
                 value: this.metric == 'doc_count' ? i.doc_count : i[this.metric].value
             }));
             this.cdref.detectChanges();

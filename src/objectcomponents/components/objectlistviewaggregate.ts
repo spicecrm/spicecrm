@@ -24,20 +24,12 @@ export class ObjectListViewAggregate {
      * a unique id
      */
     public aggregateID: string = _.uniqueId();
-    /**
-     * toggles visibility for chart
-     */
-    public showChart: boolean = false;
+
 
     /**
      * google chart types
      */
     public chartTypes: ChartJSTypeOneDimensional[] = ['Bar', 'Column', 'Pie', 'Doughnut', 'Line'];
-
-    /**
-     * the selected chart type, default = 'Pie'
-     */
-    public chartType : ChartJSTypeOneDimensional = this.chartTypes[0];
 
     /**
      * toggles visibility for metrics
@@ -59,17 +51,70 @@ export class ObjectListViewAggregate {
      */
     public aggregateDefaultItems = 5;
 
-    /**
-     * inidcates that all shoudl be shopwn
-     */
-    public showall: boolean = false;
-
-    /**
-     * the metric to be displayed
-     */
-    public metric: string = 'doc_count';
 
     constructor(public language: language, public modellist: modellist, public model: model, public metadata: metadata) {
+    }
+
+    /**
+     * getter for indicator that all shoudl be shopwn
+     */
+    get showall(){
+        return this.aggregate.showall ?? false;
+    }
+
+    /**
+     * setter for indicator that all shoudl be shopwn
+     */
+    set showall(v){
+        this.aggregate.showall = v;
+        this.modellist.setModuleAggregatePreferences();
+    }
+
+    /**
+     * get the metric to be displayed
+     */
+    get metric(){
+        return this.aggregate.metric ?? 'doc_count';
+    }
+
+    /**
+     * set the metric to be displayed
+     */
+    set metric(m){
+        this.aggregate.metric = m;
+        this.modellist.setModuleAggregatePreferences();
+    }
+
+    /**
+     * getter for the charttype
+     */
+    get chartType(): ChartJSTypeOneDimensional{
+        return this.aggregate.chartType ?? this.chartTypes[0];
+    }
+
+    /**
+     * setter for the charttype
+     *
+     * @param chartType
+     */
+    set chartType(chartType:ChartJSTypeOneDimensional){
+        this.aggregate.chartType = chartType;
+        this.modellist.setModuleAggregatePreferences();
+    }
+
+    /**
+     * getter that toggles visibility for chart
+     */
+    get showChart(): boolean{
+        return this.aggregate.showChart ?? false;
+    }
+
+    /**
+     * setter toggles visibility for chart
+     */
+    set showChart(v: boolean){
+        this.aggregate.showChart = v;
+        this.modellist.setModuleAggregatePreferences();
     }
 
     /**
@@ -166,6 +211,7 @@ export class ObjectListViewAggregate {
             this.showChartTypes = false;
             this.showMetrics = false;
         }
+        this.modellist.setModuleAggregatePreferences();
     }
 
     /**
