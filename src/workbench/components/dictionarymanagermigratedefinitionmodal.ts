@@ -13,6 +13,7 @@ import {
     DictionaryItem,
     DictionaryManagerMessage
 } from "../interfaces/dictionarymanager.interfaces";
+import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'dictionary-manager-migratedefinition-modal',
@@ -71,11 +72,15 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
     private systemdefinitions = ['audited', 'name', 'vname', 'comment', 'required', 'type', 'len', 'reportable', 'duplicate_merge', 'sysdomainfield_id', 'source'];
 
-    constructor(public backend: backend, public modal: modal, public modelutilities: modelutilities, public dictionarymanager: dictionarymanager) {
+    constructor(public backend: backend,
+                public modal: modal,
+                public modelutilities: modelutilities,
+                public toast: toast,
+                public dictionarymanager: dictionarymanager) {
     }
 
     public ngOnInit() {
-        let awaitModal = this.modal.await('LBL_LOADING')
+        let awaitModal = this.modal.await('LBL_LOADING');
 
         this.dictionarydefinition = {
             id: this.modelutilities.generateGuid(),
@@ -149,7 +154,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                     }
                 }
             }
-        })
+        });
     }
 
     get _tables() {
@@ -176,7 +181,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
     public getFieldDefinitions(defs) {
         if (!defs) return [];
 
-        let keys = Object.keys(defs)
+        let keys = Object.keys(defs);
         let ret = [];
 
         for (let key of keys) {
@@ -185,13 +190,13 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             ret.push({
                 key,
                 value: defs[key]
-            })
+            });
         }
-        return ret
+        return ret;
     }
 
     get selectedtable() {
-        return this._selectedtable
+        return this._selectedtable;
     }
 
     set selectedtable(value) {
@@ -308,6 +313,9 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
     }
 
     public goDetails() {
+
+        if (!this.selectedtable) return;
+
         // if we have the definition skip the view
         if(this.tables.find(t => t.sysdictionarydefinition_id == this.dictionarydefinition.id)) {
             this.goFields(true);
@@ -381,12 +389,13 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
             // push it
             this.backend.postRequest(`dictionary/definition/${this.dictionarydefinition.id}`, {}, this.dictionarydefinition).subscribe({
                 next: (res) => {
+                    this.toast.sendToast('added definitions', 'success');
                     this.dictionarymanager.dictionarydefinitions.push(this.dictionarydefinition);
                 },
                 error: () => {
-
+                    this.toast.sendToast('error adding definitions', 'error');
                 }
-            })
+            });
         }
 
         /**
@@ -406,11 +415,11 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 scope: t.scope ? t.scope : this.dictionarydefinition.scope,
                 status: 'd',
                 sequence: s
-            }
+            };
             s++;
 
             // collect the newItems
-            newItems.push(dictionaryitem)
+            newItems.push(dictionaryitem);
         }
 
         /**
@@ -434,28 +443,38 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 sequence: s,
                 label: f.fielddefinition.vname,
                 description: f.fielddefinition.comment
-            }
+            };
             s++;
 
             newitems[f.fieldname] = itemId;
 
             // collect the newItems
-            newItems.push(dictionaryitem)
+            newItems.push(dictionaryitem);
         }
 
         // add all new items in bulk
         if(newItems.length > 0){
             this.backend.postRequest('dictionary/items', {}, {items: newItems}).subscribe({
                 next: () => {
+                    this.toast.sendToast('added items', 'success');
                     this.dictionarymanager.dictionaryitems = this.dictionarymanager.dictionaryitems.concat(newItems);
-                }
-            })
-        }
+                    this.addIndices(newitems);
+                },
+                error: () => {
+                    this.toast.sendToast('error adding items', 'error');
 
+                }
+            });
+        }
+        this.close();
+    }
+
+    private addIndices(newitems) {
         /**
          * add the indices
          */
         let dictdefitems = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarydefinition.id);
+
         for (let i of this.indices.filter(f => f.selected)) {
             let indexId = this.modelutilities.generateGuid();
             let dictionaryindex: DictionaryIndex = {
@@ -469,7 +488,7 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 status: 'd'
             };
 
-            this.dictionarymanager.dictionaryindexes.push(dictionaryindex)
+            this.dictionarymanager.dictionaryindexes.push(dictionaryindex);
 
             let sequence = 0;
             for (let field of i.fields) {
@@ -486,14 +505,12 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
             this.backend.postRequest(`dictionary/index/${indexId}`, {}, {index: dictionaryindex, items: this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == indexId)}).subscribe({
                 next: (res) => {
-
+                    this.toast.sendToast('added indices', 'success');
                 },
                 error: () => {
+                    this.toast.sendToast('error adding indices', 'error');
                 }
-            })
+            });
         }
-
-        this.close();
     }
-
 }
