@@ -1,7 +1,7 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {backend} from "../../../services/backend.service";
-import {SpiceBeanGuideChecksI} from "../interfaces/kanbanmanager.interfaces";
+import {SpiceBeanGuideCheckI} from "../interfaces/kanbanmanager.interfaces";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {Subscription} from "rxjs";
 import {modelutilities} from "../../../services/modelutilities.service";
@@ -13,41 +13,13 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 export class SpiceKanbanManagerChecks {
 
-    public checks:SpiceBeanGuideChecksI[]=[];
+    public checks:SpiceBeanGuideCheckI[]=[];
 
-    public selectedCheck:SpiceBeanGuideChecksI;
-
-    public selected: string;
-
-    public classMethod: string = '';
-    // /**
-    //  * holds all check labels defined for the Bean
-    //  */
-    // public checkLabels: any[] = Array.from({length: 5}, (_,i) => 'Check Label ' + i);
-    //
-    // /**
-    //  * holds the sequence of the label
-    //  */
-    // public labelSequence: any;
-    //
-    // /**
-    //  * check label from the spicebeanguidestages_checks table
-    //  * i.e. CHECK_QUALIFICATION_ACTIVITY
-    //  */
-    // public checkLabel: string = 'CHECK_LABEL_...';
-    // //
-    // // /**
-    // //  * holds the backend method
-    // //  */
-    // public checkMethod: string = 'standardOpportunityGuideChecks';
-
+    public selectedCheck:SpiceBeanGuideCheckI;
 
     private subscription: Subscription = new Subscription();
 
-
-
     @Input() public selectedStage: any;
-
 
     constructor(
         public backend: backend,
@@ -56,19 +28,11 @@ export class SpiceKanbanManagerChecks {
     ) {
     }
 
-    public ngAfterViewInit() {
-        setTimeout(() => {
-            this.loadChecks();
-            this.subscribeToSelectionChange();
-        }, 0);
-    }
-
     /**
      * check for changes in selected stage
      * @param changes
      */
     public ngOnChanges(changes: SimpleChanges): void {
-        if (changes.selectedStage.previousValue === changes.selectedStage.currentValue || !(!!changes.selectedStage.currentValue)) return;
         this.loadChecks();
         this.selectedCheck = null;
     }
@@ -85,47 +49,36 @@ export class SpiceKanbanManagerChecks {
         this.subscription.unsubscribe();
     }
 
-    private subscribeToSelectionChange() {
-        this.subscription = this.kanbanManagerService.selectedBeanGuide$.subscribe({
-            next: () => {
-                this.loadChecks();
-            }
-        });
-    }
-
     /**
      * load checks according to the stage and bean guide chosen
      * @private
      */
     private loadChecks(){
+
         if (!this.selectedStage) return;
 
         this.checks = this.kanbanManagerService.currentChecks.filter(check=>check.stage_id == this.selectedStage.id);
     }
 
-    public openCheckDetails(check){
-        this.selectedCheck = check;
-        this.selected = check.id;
-    }
+    public setSelectedCheck(check: SpiceBeanGuideCheckI){
 
-    // /**
-    //  * saves sequence of the check label
-    //  */
-    // public saveSequence() {
-    //     this.checkLabels.forEach((entry, index) => {
-    //         // entry.stage_sequence = index;
-    //     });
-    //
-    //     this.backend.postRequest(`configuration/configurator/spicebeanguidestages`, null);
-    // }
+        const existing: SpiceBeanGuideCheckI = this.kanbanManagerService.currentChecks.find((check) => check.stage_id == this.selectedStage.id);
+
+        if (existing) {
+            this.selectedCheck = this.kanbanManagerService.generateTrackableObject(check, 'checks');
+        } else {
+            const validator = obj => !!obj.check_method && !!obj.check_label;
+            this.selectedCheck = this.kanbanManagerService.generateTrackableNewObject(check, 'checks', validator);
+        }
+    }
 
     /**
      * add new check stage label
      * @param e
      */
-    public addCheckLabel(e) {
+    public addCheck(e) {
         e.stopPropagation();
-        const newCheck: SpiceBeanGuideChecksI = {
+        const newCheck: SpiceBeanGuideCheckI = {
             id: this.modelutilities.generateGuid(),
             spicebeanguide_id: this.kanbanManagerService.selectedBeanGuide.id,
             stage_id: this.selectedStage.id,
@@ -134,9 +87,9 @@ export class SpiceKanbanManagerChecks {
             check_class: '',
             check_method: '',
             check_label: '',
+            scope: this.kanbanManagerService.selectedBeanGuide.scope
         };
         this.checks.push(newCheck);
-        this.openCheckDetails(newCheck);
+        this.setSelectedCheck(newCheck);
     }
-
 }

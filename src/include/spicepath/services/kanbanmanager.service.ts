@@ -5,9 +5,9 @@ import {map} from "rxjs/operators";
 
 import {backend} from "../../../services/backend.service";
 import {
-    SpiceBeanGuideChecksI,
+    SpiceBeanGuideCheckI,
     SpiceBeanGuidesI,
-    SpiceBeanGuideStagesI, SpiceTextsI
+    SpiceBeanGuideStageI, SpiceTextsI
 } from "../interfaces/kanbanmanager.interfaces";
 import {toast} from "../../../services/toast.service";
 import _ from "underscore";
@@ -16,13 +16,13 @@ import {ChangeHistoryService} from "../../../workbench/services/changehistory.se
 
 @Injectable()
 export class KanbanManagerService {
-    public currentStages: SpiceBeanGuideStagesI[] = [];
+    public currentStages: SpiceBeanGuideStageI[] = [];
 
-    public currentChecks:SpiceBeanGuideChecksI[] = [];
+    public currentChecks:SpiceBeanGuideCheckI[] = [];
 
-    public stages: SpiceBeanGuideStagesI[] = [];
+    public stages: SpiceBeanGuideStageI[] = [];
 
-    public checks: SpiceBeanGuideChecksI[] = [];
+    public checks: SpiceBeanGuideCheckI[] = [];
 
     /**
      * holds all SpiceTexts from backend for all SpiceBeanGuides
