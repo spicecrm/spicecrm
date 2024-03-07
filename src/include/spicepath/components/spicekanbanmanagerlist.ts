@@ -6,7 +6,7 @@ import {Subscription} from "rxjs";
 import {
     SpiceBeanGuideActiveStageI,
     SpiceBeanGuideInactiveStageI,
-    SpiceBeanGuideStagesI
+    SpiceBeanGuideStageI
 } from "../interfaces/kanbanmanager.interfaces";
 
 @Component({
@@ -23,7 +23,7 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
     public selected: string;
     private subscription: Subscription = new Subscription();
 
-    @Output() public selectedStage: EventEmitter<SpiceBeanGuideStagesI> = new EventEmitter<SpiceBeanGuideStagesI>();
+    @Output() public selectedStage: EventEmitter<SpiceBeanGuideStageI> = new EventEmitter<SpiceBeanGuideStageI>();
     @Output() public emitActiveStages: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public backend: backend,
