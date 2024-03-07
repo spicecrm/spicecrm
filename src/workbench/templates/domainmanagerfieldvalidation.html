@@ -60,7 +60,7 @@
                             <system-utility-icon (click)="customizeValidationValue($event, validationvalue)" class="slds-p-right--xx-small" size="xx-small" [icon]="validationvalue.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
                             <dictionary-manager-item-status [(ngModel)]="validationvalue.status"></dictionary-manager-item-status>
                         </td>
-                        <td *ngIf="validation.validation_type == 'enum'" >
+                        <td *ngIf="validation.validation_type == 'enum' || validation.validation_type == 'options'" >
                             <!-- only allow change in Draft mode. Once activated and deactivated the value can no longer be changed to avoid data inconsitencies -->
                             <input type="text" [disabled]="validationvalue.status != 'd'" [(ngModel)]="validationvalue.enumvalue" class="slds-input" [ngClass]="{'slds-has-error': hasDuplicate(validationvalue)}"/>
                         </td>
