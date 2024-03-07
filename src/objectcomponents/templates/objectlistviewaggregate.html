@@ -1,4 +1,4 @@
-<div class="slds-filters__item slds-p-horizontal--small slds-p-vertical--xx-small">
+<div class="slds-filters__item slds-p-horizontal--small slds-p-vertical--xx-small" [system-overlay-loading-spinner]="modellist.isLoading && !collapsed && showChart">
     <div class="slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
         <div class="slds-grid slds-col slds-size--10-of-12" (click)="toggleCollapsed()">
             <ul class="slds-list_horizontal slds-has-dividers_right">
@@ -6,19 +6,24 @@
             </ul>
             <div class="slds-p-left--xx-small" *ngIf="collapsed && checkdCount>0">({{checkdCount}} <system-label label="LBL_SELECTED"></system-label>)</div>
         </div>
-        <!--system-utility-icon class="slds-m-horizontal--xxx-small" *ngIf="hasMetrics && !collapsed" icon="metrics" [colorclass]="showMetrics? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small" (click)="toggleMetrics()"></system-utility-icon-->
-        <!--system-utility-icon class="slds-m-horizontal--xxx-small" *ngIf="!collapsed" icon="chart" [colorclass]="showChart? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small" (click)="toggleChart()"></system-utility-icon-->
+        <system-utility-icon class="slds-m-horizontal--xxx-small" *ngIf="hasMetrics && !collapsed" icon="metrics" [colorclass]="showMetrics? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small" (click)="toggleMetrics()"></system-utility-icon>
+        <system-utility-icon class="slds-m-horizontal--xxx-small" *ngIf="!collapsed" icon="chart" [colorclass]="showChart? 'slds-icon-text-success' : 'slds-icon-text-light'" size="x-small" (click)="toggleChart()" (contextmenu)="toggleChartTypes($event)"></system-utility-icon>
         <system-utility-icon [icon]="collapsed? 'down' : 'up'" size="x-small" (click)="toggleCollapsed()"></system-utility-icon>
     </div>
     @if (!collapsed) {
         @if(showMetrics){
             <div class="slds-grid slds-grid--vertical slds-border--bottom slds-m-bottom--xx-small">
-                <system-input-radio name="aggregatemetric" value="doc_count" [(ngModel)]="metric"><system-label label="LBL_COUNT"/></system-input-radio>
-                <system-input-radio *ngFor="let m of getMetrics()" name="aggregatemetric" [value]="'metric_'+m.function+'_'+m.field" [(ngModel)]="metric">{{m.function}} {{m.field}}</system-input-radio>
+                <system-input-radio [name]="aggregateID+'metric'" value="doc_count" [(ngModel)]="metric"><system-label label="LBL_COUNT"/></system-input-radio>
+                <system-input-radio *ngFor="let m of getMetrics()" [name]="aggregateID+'metric'" [value]="'metric_'+m.function+'_'+m.field" [(ngModel)]="metric"><system-label [label]="'LBL_METRIC_'+m.function.toUpperCase()"/>&nbsp;<system-label-fieldname [module]="m.module" [field]="m.field"/> </system-input-radio>
+            </div>
+        }
+        @if(showChartTypes){
+            <div class="slds-grid slds-grid--vertical slds-border--bottom slds-m-bottom--xx-small">
+                <system-input-radio *ngFor="let ct of chartTypes" [name]="aggregateID+'charttype'" [value]="ct" [(ngModel)]="chartType">{{ct}}</system-input-radio>
             </div>
         }
         @if(showChart){
-            <object-listview-aggregate-chart [aggregate]="aggregate" [metric]="metric"></object-listview-aggregate-chart>
+            <object-listview-aggregate-chart  [aggregate]="aggregate" [metric]="metric" [chartType]="chartType"></object-listview-aggregate-chart>
         } @else {
             <div class="slds-form-element" *ngFor="let bucketItem of aggregateBuckets">
                 <object-listview-aggregate-item [metric]="metric" [bucketitem]="bucketItem" [aggregate]="aggregate"
@@ -41,6 +46,5 @@
                 </div>
             </div>
         }
-
     }
 </div>
