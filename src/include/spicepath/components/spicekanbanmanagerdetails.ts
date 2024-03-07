@@ -4,7 +4,7 @@ import {modal} from "../../../services/modal.service";
 import {toast} from "../../../services/toast.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {modelutilities} from "../../../services/modelutilities.service";
-import {SpiceBeanGuideStagesI, SpiceTextsI} from "../interfaces/kanbanmanager.interfaces";
+import {SpiceBeanGuideStageI, SpiceTextsI} from "../interfaces/kanbanmanager.interfaces";
 
 /**
  * manages the details of the kanban
@@ -47,7 +47,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
     }
 
     @Input()
-    set selectedStage(stage: SpiceBeanGuideStagesI) {
+    set selectedStage(stage: SpiceBeanGuideStageI) {
 
         this._selectedStage = stage;
 
@@ -57,7 +57,7 @@ export class SpiceKanbanManagerDetails implements OnInit {
         }
     }
 
-    get selectedStage(): SpiceBeanGuideStagesI {
+    get selectedStage(): SpiceBeanGuideStageI {
         return this._selectedStage;
     }
 

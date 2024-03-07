@@ -1,5 +1,5 @@
 
-export interface SpiceBeanGuideStagesI {
+export interface SpiceBeanGuideStageI {
     id: string;
     spicebeanguide_id: string;
     stage: string;
@@ -12,13 +12,14 @@ export interface SpiceBeanGuideStagesI {
     stage_componentset: string;
     not_in_kanban: number;
     spicebeanguide_status: string;
+    scope?: string;
 }
 
-export interface SpiceBeanGuideActiveStageI extends SpiceBeanGuideStagesI {
+export interface SpiceBeanGuideActiveStageI extends SpiceBeanGuideStageI {
     not_in_kanban: 0 | undefined;
 }
 
-export interface SpiceBeanGuideInactiveStageI extends SpiceBeanGuideStagesI {
+export interface SpiceBeanGuideInactiveStageI extends SpiceBeanGuideStageI {
     not_in_kanban: 1;
 }
 
@@ -32,7 +33,7 @@ export interface SpiceBeanGuidesI {
     systextid: string;
 }
 
-export interface SpiceBeanGuideChecksI {
+export interface SpiceBeanGuideCheckI {
     id: string;
     spicebeanguide_id: string;
     stage_id: string;
@@ -41,6 +42,7 @@ export interface SpiceBeanGuideChecksI {
     check_class: string;
     check_method: string;
     check_label: string;
+    scope?: string;
 }
 
 export interface SpiceTextsI {
