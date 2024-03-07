@@ -225,7 +225,7 @@ class SpiceImport extends SpiceBean
          */
         $fileHeader = $this->getFileHeader($delimiter,$enclosure);
         //set limit for rows amount to process in one batch
-        $limit = 2;
+        $limit = $maxRows;
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r")) !== FALSE) {
 
                 // find if the pointer has been set otherwise set it to 0
