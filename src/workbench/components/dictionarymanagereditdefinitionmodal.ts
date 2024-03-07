@@ -8,6 +8,7 @@ import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
+import {backend} from "../../services/backend.service";
 
 @Component({
     templateUrl: '../templates/dictionarymanagereditdefinitionmodal.html',
@@ -24,7 +25,7 @@ export class DictionaryManagerEditDefinitionModal {
      */
     public dictionarydefinition: DictionaryDefinition;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modelutilities: modelutilities, public backend: backend) {
 
     }
 
@@ -44,9 +45,17 @@ export class DictionaryManagerEditDefinitionModal {
            d.package = this.dictionarydefinition.package;
            d.version = this.dictionarydefinition.version;
            d.sysdictionary_contenttype = this.dictionarydefinition.sysdictionary_contenttype;
+            this.backend.postRequest(`dictionary/definition/${this.dictionarydefinition.id}`, {}, this.dictionarydefinition).subscribe({
+                next: (res) => {
+                    this.close();
+                },
+                error: () => {
+                    this.close();
+                }
+            })
            return true;
         });
 
-        this.close();
+
     }
 }
