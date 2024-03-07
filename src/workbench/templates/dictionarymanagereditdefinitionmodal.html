@@ -41,17 +41,6 @@
                 <system-input-text [(ngModel)]="dictionarydefinition.version"></system-input-text>
             </div>
         </div>
-        <div *ngIf="dictionarydefinition.sysdictionary_type == 'metadata'" class="slds-grid">
-            <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_CONTENT_TYPE"/></label>
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_contenttype">
-                        <option value="config">config</option>
-                        <option value="custom_config">custom config</option>
-                    </select>
-                </div>
-            </div>
-        </div>
         <div class="slds-p-vertical--xx-small">
             <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_CONTENT_TYPE"/></label>
             <div class="slds-select_container">
