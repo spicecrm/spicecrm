@@ -611,24 +611,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             });
     }
 
-    public openSourceEditor() {
-        this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector)
-            .pipe(take(1))
-            .subscribe(componentRef => {
-                componentRef.instance._html = this.editor.getData();
-                componentRef.instance.html.subscribe(newHtml => {
-                    // update our internal value
-                    this._html = newHtml;
-                    this.editor.setData(newHtml);
-
-                    // set the model value
-                    if (typeof this.onChange === 'function') {
-                        this.onChange(newHtml);
-                    }
-                });
-            });
-    }
-
     /*
      * for the toolbar
      */
