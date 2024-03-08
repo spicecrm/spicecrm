@@ -255,8 +255,10 @@ class SpiceDictionary
         if (!$db->tableExists('config')) return;
 
         $hashEntry = ['category' => 'dictionary', 'name' => 'system_dump_hash', 'value' => $hash];
-        $db->deleteQuery('config', ['category' => $hashEntry['category'], 'name' => $hashEntry['name']]);
-        $db->insertQuery('config', $hashEntry);
+        // $db->deleteQuery('config', ['category' => $hashEntry['category'], 'name' => $hashEntry['name']]);
+        // $db->insertQuery('config', $hashEntry);
+        $db->query("DELETE FROM config WHERE category='dictionary' AND name='system_dump_hash'");
+        $db->query("INSERT INTO config (category, name, value) VALUES('dictionary', 'system_dump_hash', '{$hash}')");
         SpiceCache::deleteByKey('dbconfig');
         SpiceConfig::getInstance()->reloadConfig(true);
     }
