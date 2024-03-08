@@ -113,7 +113,7 @@ class SpiceConfig
         if(isset($this->config[$category][$name])){
             DBManagerFactory::getInstance()->query("UPDATE config SET value = '{$value}' WHERE category = '{$category}' AND name = '{$name}'");
         } else {
-            DBManagerFactory::getInstance()->query("INSERT INTO config (category, name, value) VALUES ('{$name}','{$category}','{$value}')");
+            DBManagerFactory::getInstance()->query("INSERT INTO config (category, name, value) VALUES ('{$category}','{$name}','{$value}')");
         }
 
         // reload and force rebuild
