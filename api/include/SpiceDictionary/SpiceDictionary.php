@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -199,11 +200,17 @@ class SpiceDictionary
     /**
      * generates the system cache file and saves it
      * @return bool
+     * @throws DatabaseException
      */
     public function generateSystemDumpFile(): bool
     {
         $systemDictionary = [];
+        SpiceDictionaryDefinitions::getInstance()->reloadItems();
         $definitons = SpiceDictionaryDefinitions::getInstance()->getDefinitions();
+
+        # reload the dictionary array from the cache table
+        $this->loadDictionary();
+
         $systemDefinitions = array_map(function($d){return $d['name'];}, array_filter($definitons, function($d){return $d['package'] == 'system' || $d['Name'] == 'User';}));
         foreach ($systemDefinitions as $systemDefinition){
             if(isset($this->dictionary[$systemDefinition])) $systemDictionary[$systemDefinition] = $this->dictionary[$systemDefinition];
