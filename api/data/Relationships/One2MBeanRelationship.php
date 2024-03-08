@@ -63,6 +63,9 @@ class One2MBeanRelationship extends One2MRelationship
             'deleted' => 0
         ];
 
+        // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
+        $db->query("DELETE FROM relationships WHERE relationship_name='{$defs['relationship_name']}'");
+
         $db->insertQuery('relationships', $defs);
 
 
