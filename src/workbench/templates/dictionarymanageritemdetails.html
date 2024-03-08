@@ -42,20 +42,24 @@
                 <system-input-label [(ngModel)]="dictionaryitem.labelinputhelper"></system-input-label>
             </div>
             <div class="slds-grid slds-p-vertical--xx-small">
-                <div class="slds-size--1-of-3 slds-form-element__control">
+                <div class="slds-size--1-of-4 slds-form-element__control">
                     <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true"><system-label label="LBL_REQUIRED"></system-label></system-checkbox>
                 </div>
-                <div class="slds-size--1-of-3 slds-form-element__control">
+                <div class="slds-size--1-of-4 slds-form-element__control">
                     <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true"><system-label label="LBL_NON_DB"></system-label></system-checkbox>
                 </div>
-                <div class="slds-size--1-of-3 slds-form-element__control">
+                <div class="slds-size--1-of-4 slds-form-element__control">
                     <system-checkbox [(ngModel)]="dictionaryitem.duplicate_merge" [asinteger]="true"><system-label label="LBL_DUPLICATE_MERGE"></system-label></system-checkbox>
                 </div>
-                <div class="slds-size--1-of-3 slds-form-element__control">
+                <div class="slds-size--1-of-4 slds-form-element__control">
+                    <system-checkbox [(ngModel)]="dictionaryitem.exclude_from_audited" [asinteger]="true"><system-label label="LBL_EXCLUDE_FROM_AUDITED"></system-label></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-vertical--xxx-small">
+                <div class="slds-size--1-of-5 slds-form-element__control">
                     <label class="slds-form-element__label"><system-label label="LBL_DEFAULT_VALUE"></system-label></label>
                     <system-input-text [(ngModel)]="dictionaryitem.default_value"></system-input-text>
                 </div>
-
             </div>
             <div class="slds-form-element slds-m-vertical--xxx-small">
                 <label class="slds-form-element__label">
