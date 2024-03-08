@@ -283,14 +283,55 @@ export class modellist implements OnDestroy {
      */
     public loadModuleAggregates() {
         this.moduleAggregates = [];
+
+        // get the preferences to enrich the view
+        let modulepreferences = this.userpreferences.getPreference(this.module);
+        let aggregateSettings = modulepreferences?.aggregateSettings ?? [];
+
         for (let moduleAggregate of this.metadata.getModuleAggregates(this.module)) {
-            this.moduleAggregates.push({...moduleAggregate});
+            let a = {...moduleAggregate}
+            let as = aggregateSettings.find(asi => asi.fieldname == a.fieldname);
+            if(as){
+                a.showall = as.showall;
+                a.metric = as.metric;
+                a.showChart = as.showChart;
+                a.chartType = as.chartType;
+                a.collapsed = as.collapsed ?? a.collapsed;
+            }
+            this.moduleAggregates.push(a);
         }
         this.moduleAggregates.forEach(item => this.moduleAggregatesByFieldname[item.fieldname] = item);
         this.moduleAggregates.sort((a, b) => {
             if (!a.priority && !b.priority) return 0;
             return (!a.priority || a.priority > b.priority) ? 1 : -1;
         });
+    }
+
+    /**
+     * sets the aggregate prefgerences
+     */
+    public setModuleAggregatePreferences(){
+        let modulepreferences = this.userpreferences.getPreference(this.module);
+        if (!modulepreferences) {
+            modulepreferences = {};
+        }
+
+        modulepreferences.aggregateSettings = [];
+
+        for( let a of this.moduleAggregates){
+            if(a.showall || (a.metric && a.metric != 'doc_count') || a.showChart || a.collapsed){
+                modulepreferences.aggregateSettings.push({
+                    fieldname: a.indexfieldname,
+                    showall: a.showall,
+                    metric: a.metric,
+                    showChart: a.showChart,
+                    chartType: a.chartType,
+                    collapsed: a.collapsed
+                })
+            }
+        }
+
+        this.userpreferences.setPreference(this.module, modulepreferences);
     }
 
 
