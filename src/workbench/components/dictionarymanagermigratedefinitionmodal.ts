@@ -441,6 +441,8 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                 scope: f.scope ? f.scope : this.dictionarydefinition.scope,
                 status: 'd',
                 sequence: s,
+                package: f.package,
+                version: f.version,
                 label: f.fielddefinition.vname,
                 description: f.fielddefinition.comment
             };
@@ -496,6 +498,8 @@ export class DictionaryManagerMigrateDefinitionModal implements OnInit {
                     id: this.modelutilities.generateGuid(),
                     scope: i.scope,
                     status: 'd',
+                    package: i.package,
+                    version: i.version,
                     sysdictionaryindex_id: indexId,
                     sysdictionaryitem_id: newitems[field] ? newitems[field] : dictdefitems.find(d => d.name == field).id,
                     sequence: sequence,
