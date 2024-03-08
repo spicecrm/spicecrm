@@ -204,31 +204,33 @@ class SpiceUrls
         $curlResp = self::fileGetContentsCurl($url);
 
         //parsing html file data
-        $doc = new DOMDocument();
-        $doc->loadHTML($curlResp['rawHtml']);
+        if($curlResp['rawHtml']){
+            $doc = new DOMDocument();
+            $doc->loadHTML($curlResp['rawHtml']);
 
-        //get url title
-        $nodes = $doc->getElementsByTagName('title');
-        $title = $nodes->item(0)->nodeValue;
+            //get url title
+            $nodes = $doc->getElementsByTagName('title');
+            $title = $nodes->item(0)->nodeValue;
 
-        $metas = $doc->getElementsByTagName('meta');
+            $metas = $doc->getElementsByTagName('meta');
 
-        for ($i = 0; $i < $metas->length; $i++) {
-            $meta = $metas->item($i);
+            for ($i = 0; $i < $metas->length; $i++) {
+                $meta = $metas->item($i);
 
-            // make sure we've got url title if nodes empty
-            if(!$title && $meta->getAttribute('property') == 'og:title') {
-                $title = $meta->getAttribute('content');
-            }
+                // make sure we've got url title if nodes empty
+                if(!$title && $meta->getAttribute('property') == 'og:title') {
+                    $title = $meta->getAttribute('content');
+                }
 
-            // if curl returns an error, don't set url_name
-            if($curlResp['httpCode'] != 200) {
-                $title = '';
-            }
+                // if curl returns an error, don't set url_name
+                if($curlResp['httpCode'] != 200) {
+                    $title = '';
+                }
 
-            // get website description
-            if ($meta->getAttribute('name') == 'description') {
-                $description = $meta->getAttribute('content');
+                // get website description
+                if ($meta->getAttribute('name') == 'description') {
+                    $description = $meta->getAttribute('content');
+                }
             }
         }
         return ['title' => $title, 'description' => $description];

@@ -12,7 +12,12 @@ import {
 } from "@angular/core";
 import {modellist} from "../../services/modellist.service";
 import {Subscription} from "rxjs";
-import {GoogleChartTypeOneDimensional} from "../../systemcomponents/interfaces/systemcomponents.interfaces";
+import {
+    ChartJSTypeOneDimensional,
+    GoogleChartTypeOneDimensional
+} from "../../systemcomponents/interfaces/systemcomponents.interfaces";
+import {ChartType} from "chart.js/auto";
+import {language} from "../../services/language.service";
 
 /**
  * a component that displays a chart based on one set of aggregates returned from the Elastic Search
@@ -35,14 +40,9 @@ export class ObjectListViewAggregateChart implements OnInit, OnDestroy, OnChange
     @Input() public metric: string = 'doc_count';
 
     /**
-     * google chart types
-     */
-    public chartType: GoogleChartTypeOneDimensional[] = ['Area', 'SteppedArea', 'Bar', 'Column', 'Line', 'Pie', 'Donut'];
-
-    /**
      * the selected chart type, default = 'Pie'
      */
-    public selectedChartType : GoogleChartTypeOneDimensional = this.chartType[5];
+    @Input() public chartType: ChartJSTypeOneDimensional;
 
     /**
      * buckets in which the aggregate info arrives
@@ -55,7 +55,12 @@ export class ObjectListViewAggregateChart implements OnInit, OnDestroy, OnChange
      */
     private subscriptions: Subscription = new Subscription();
 
-    constructor(public modellist: modellist, public cdref: ChangeDetectorRef) {
+    constructor(public modellist: modellist, public language: language, public cdref: ChangeDetectorRef) {
+        this.subscriptions.add(
+            this.language.currentlanguage$.subscribe(() => {
+                this.buildBuckets();
+            })
+        );
     }
 
     public ngOnInit() {
@@ -82,7 +87,7 @@ export class ObjectListViewAggregateChart implements OnInit, OnDestroy, OnChange
     private buildBuckets(){
         if(this.aggregate) {
             this.buckets = this.modellist.searchAggregates?.[this.aggregate.fielddetails.field].buckets.map(i => ({
-                label: i.displayName,
+                label: this.language.getFieldDisplayOptionValue(this.modellist.module, this.aggregate.fieldname, i.displayName),
                 value: this.metric == 'doc_count' ? i.doc_count : i[this.metric].value
             }));
             this.cdref.detectChanges();
