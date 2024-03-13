@@ -100,7 +100,6 @@ class SpiceDictionary
                 $this->dictionary[$dictionary['sysdictionaryname']]['audited'] = $dictionary['sysdictionarytableaudited'];
                 $this->dictionary[$dictionary['sysdictionaryname']]['contenttype'] = $dictionary['sysdictionarytablecontenttype'];
                 $this->dictionary[$dictionary['sysdictionaryname']]['fields'][$dictionary['fieldname']] = json_decode(html_entity_decode($dictionary['fielddefinition'], ENT_QUOTES), true);
-                $this->dictionary[$dictionary['sysdictionaryname']]['indices'] = self::getDictionaryIndexCacheFromDb($dictionary['sysdictionaryname']);
             }
 
             if (empty($this->dictionary)) {
@@ -145,28 +144,6 @@ class SpiceDictionary
         if (!empty($sql)) {
             $db->query($sql);
         }
-    }
-
-    /**
-     * get cached indices for specified dictionary name
-     * @param string $dictionaryName
-     * @return array
-     * @throws Exception
-     */
-    public static function getDictionaryIndexCacheFromDb(string $dictionaryName): array
-    {
-        $db = DBManagerFactory::getInstance();
-        $indices = [];
-
-        $q = "SELECT sysindices.* FROM sysdictionaryindices sysindices WHERE sysindices.sysdictionaryname = '$dictionaryName'";
-
-        if(!($res = $db->query($q))) return $indices;
-
-        while($row = $db->fetchByAssoc($res)){
-            $indices[] = json_decode(html_entity_decode($row['indexdefinition'], ENT_QUOTES), true);
-        }
-
-        return $indices;
     }
 
     /**
