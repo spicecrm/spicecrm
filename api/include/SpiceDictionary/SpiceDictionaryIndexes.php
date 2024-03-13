@@ -170,7 +170,7 @@ class SpiceDictionaryIndexes
      *
      * @return array
      */
-    public function getDictionaryIndexes($sysdictionaryDefinitionId = null, $statusFilter = ['a'])
+    public static function getDictionaryIndexes($sysdictionaryDefinitionId = null, $statusFilter = ['a'])
     {
         $db = DBManagerFactory::getInstance();
 

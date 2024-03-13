@@ -10,6 +10,8 @@ use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceUI\api\controllers\ConfigTransferController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -472,25 +474,25 @@ class SpiceInstaller
     }
 
     /**
+     * load the dictionary dump file
      * creates the system dictionary tables without indexes from teh dump for the system fields
+     * save the dump file hash in the config for later comparison
      * @param DBManager $db
      * @return void
      * @throws Exception
      */
-    public function createSystem(DBManager $db){
+    public function createSystemTablesFromDump(DBManager $db){
+
+        $hash = SpiceDictionary::getInstance(false)->loadSystemDumpFile();
+
         $dictionary = SpiceDictionary::getInstance()->dictionary;
 
         foreach ($dictionary as $dictFields){
-            $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], $dictFields['indices']);
+            $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], []);
             $db->query($query, true);
         }
 
-        # write the definitions to the cache table
-        $defsHandler = SpiceDictionaryDefinitions::getInstance();
-
-        foreach ($dictionary as $dicName => $dicFields) {
-            $defsHandler->writeVardefToFieldsTable($dicName, $dicFields);
-        }
+        SpiceDictionary::writeSystemDumpFileHashToConfig($hash);
     }
 
     /**
@@ -626,7 +628,7 @@ class SpiceInstaller
      * inserts defaults into the config table
      * @param $db
      */
-    public function insertDefaults($db, $postData = null )
+    public function insertDefaultConfigs($db, $postData = null )
     {
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromaddress', 'do_not_reply@example.com')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromname', 'SpiceCRM')");
@@ -676,7 +678,7 @@ class SpiceInstaller
      * @param $db
      * @param $postData
      */
-    public function createCurrentUser($db, $postData)
+    public function createAdminUser($db, $postData)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $user_instance = BeanFactory::getBean('Users');
@@ -748,28 +750,20 @@ class SpiceInstaller
 
         if (!empty($db)) {
 
-            $hash = SpiceDictionary::getInstance(false)->loadSystemDumpFile();
-            // create the system database tables
-            $this->createSystem($db);
-
-            SpiceDictionary::writeSystemDumpFileHashToConfig($hash);
+            $this->createSystemTablesFromDump($db);
 
             $this->loadSystemPackage($db);
 
-            // run the repair to create tables
-            #$this->createTables($db);
+            $this->writeDictionaryToCacheTable();
 
-            // insert defaults
-            $this->insertDefaults( $db, $postData );
+            $this->createDatabaseIndexes();
 
-            // create the admin user
-            $this->createCurrentUser($db, $postData);
+            $this->insertDefaultConfigs( $db, $postData );
 
-            // retrive the language
+            $this->createAdminUser($db, $postData);
+
             $this->retrieveCoreandLanguages( $db, $postData['language'] );
 
-            // todo ... check if this then is needed ... I assumee not
-            #$repair->repairAndRebuildforInstaller();
         } else {
             $errors[] = "empty database instance";
         }
@@ -795,6 +789,36 @@ class SpiceInstaller
         return [
             "success" => $outcome,
             "errors" => $errors];
+    }
+
+    /**
+     * write dictionary array to the cache table
+     * @return void
+     * @throws Exception
+     */
+    private function writeDictionaryToCacheTable()
+    {
+        # write the definitions to the cache table
+        $defsHandler = SpiceDictionaryDefinitions::getInstance();
+
+        foreach (SpiceDictionary::getInstance()->dictionary as $dicName => $dicFields) {
+            $defsHandler->writeVardefToFieldsTable($dicName, $dicFields);
+        }
+    }
+
+    /**
+     * create database indexes
+     * @return void
+     * @throws Exception
+     */
+    private function createDatabaseIndexes()
+    {
+        $indexHandler = SpiceDictionaryIndexes::getInstance();
+
+        foreach ($indexHandler->dictionaryIndexes as $index) {
+            $index = new SpiceDictionaryIndex($index['id']);
+            $index->activate();
+        }
     }
 
     /**
