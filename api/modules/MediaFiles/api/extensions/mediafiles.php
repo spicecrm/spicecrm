@@ -38,6 +38,22 @@ $routes = [
     ],
     [
         'method'      => 'get',
+        'route'       => '/module/MediaFiles/intern/{id}',
+        'class'       => MediaFilesController::class,
+        'function'    => 'getMediaFile',
+        'description' => 'get mediafile for internal use, use as public_url',
+        'options'     => ['noAuth' => true, 'adminOnly' => false, 'validate' => true ],
+        'parameters'  => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'The ID of the media file.',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true
+            ]
+        ]
+    ],
+    [
+        'method'      => 'get',
         'route'       => '/module/MediaFiles/{id}/base64',
         'oldroute'    => '/module/MediaFiles/{mediaId}/base64',
         'class'       => MediaFilesController::class,
