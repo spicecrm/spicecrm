@@ -90,7 +90,7 @@ class SystemTenant extends SpiceBean
 
         // insert default configs
         $installer = new SpiceInstaller();
-        $installer->insertDefaults($db);
+        $installer->insertDefaultConfigs($db);
 
         // create local and in tenant
         if (!$config['tenant']['disable_copy_config']) {
