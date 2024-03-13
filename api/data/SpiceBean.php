@@ -2944,12 +2944,12 @@ class SpiceBean
      *
      * @return array
      */
-    public function checkForDuplicates()
+    public function checkForDuplicates(array $acceptedDuplicatesIds = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $module = array_search($this->_objectname, SpiceModules::getInstance()->getBeanList());
 
-        $duplicates = SpiceFTSHandler::getInstance()->checkDuplicates($this);
+        $duplicates = SpiceFTSHandler::getInstance()->checkDuplicates($this, $acceptedDuplicatesIds);
 
         $dupRet = [];
         foreach ($duplicates['records'] as $duplicate) {

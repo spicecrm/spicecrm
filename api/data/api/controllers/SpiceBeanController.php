@@ -409,4 +409,19 @@ class SpiceBeanController
         return $res->withJson(['success' => true, 'beanName' => $bean->name, 'beanId' => $bean->id, 'deleted' => $bean->deleted]);
     }
 
+    /**
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function acceptAsDuplicate(Request $req, Response $res, array $args): Response
+    {
+        $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
+        $params = $req->getQueryParams();
+        return $res->withJson($moduleHandler->acceptBeanAsDuplicate($args['beanName'], $args['beanIdLeft'], $args['beanIdRight'], $params['deleted']));
+    }
+
 }
