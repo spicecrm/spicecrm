@@ -1130,7 +1130,41 @@ $routes = [
                 'description' => 'The id of the bean',
             ]
         ]
-    ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/module/{beanName}/{beanIdLeft}/{beanIdRight}/acceptasduplicate',
+        'class' => SpiceBeanController::class,
+        'function' => 'acceptAsDuplicate',
+        'description' => 'Sets accepted status on two duplicate Beans',
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'moduleRoute' => true, 'validate' => true],
+        'parameters' => [
+            'beanName' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_MODULE,
+                'required' => true,
+                'description' => 'The name of the module',
+            ],
+            'beanIdLeft' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'description' => 'GUID of the duplicate Parent bean',
+            ],
+            'beanIdRight' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+                'description' => 'GUID of the duplicate Child bean',
+            ],
+            'deleted' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'required' => false,
+                'description' => 'bool if the deleted flag should be set on the record',
+            ]
+        ],
+    ],
 ];
 
 /**
