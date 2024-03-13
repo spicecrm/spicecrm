@@ -87,7 +87,7 @@ export class GlobalReLogin {
      */
     private load2FAConfig() {
 
-        const config: Config2FAI = this.configuration.getCapabilityConfig('login');
+        const config: Config2FAI = this.configuration.getCapabilityConfig('login')?.twofactor;
 
         if (window._.isEmpty(config)) return;
 
