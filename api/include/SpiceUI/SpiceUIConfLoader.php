@@ -436,7 +436,7 @@ class SpiceUIConfLoader
     private function processNewDictionaries(array &$response, array $packages)
     {
         $dictionaryTables = [
-            'sysdictionarydefinitions', 'sysdictionaryindexitems', 'sysdictionaryindexes' , 'sysdictionaryitems', 'sysdictionaryrelationshipfields', 'sysdictionaryrelationshippolymorphs', 'sysdictionaryrelationshiprelatefields', 'sysdictionaryrelationships'
+            'sysdictionarydefinitions', 'sysdictionaryindexitems', 'sysdictionaryindexes' , 'sysdictionaryitems', 'sysdictionaryrelationshipfields', 'sysdictionaryrelationshippolymorphs', 'sysdictionaryrelationships'
         ];
 
         $definitions = SpiceDictionaryDefinitions::getInstance();
