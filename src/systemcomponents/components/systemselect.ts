@@ -43,6 +43,13 @@ export class SystemSelect implements ControlValueAccessor, AfterContentInit {
     /**
      * when true emit and receive the id as ngModel value
      */
+    @Input('system-select-id-only') set setIdOnly(value) {
+        if (value === false) {
+            this.idOnly = false;
+        } else {
+            this.idOnly = true;
+        }
+    }
     @Input() public idOnly: boolean = false;
     /**
      * label of the form element
