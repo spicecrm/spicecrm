@@ -1,11 +1,11 @@
-<system-collapsable-tab [collapsible]="true" [expanded]="false" tabtitle="LBL_KANBAN_CHECKS"> <!-- [expanded]="true" -->
+<system-collapsable-tab [collapsible]="true" tabtitle="LBL_KANBAN_CHECKS"> <!-- [expanded]="true" -->
     <div class="slds-grid slds-wrap slds-p-around--medium">
-        <div *ngIf="checks.length > 0; else noChecks" class="slds-col slds-size_1-of-3 slds-p-around--x-small">
+        <div *ngIf="stageChecks.length > 0; else noChecks" class="slds-col slds-size_1-of-3 slds-p-around--x-small">
             <div class="slds-form-element">
                 <div class="slds-form-element__control">
-                    <ul class="slds-has-dividers_around-space dragboundary" cdkDropList [cdkDropListData]="checks"
+                    <ul class="slds-has-dividers_around-space dragboundary" cdkDropList [cdkDropListData]="stageChecks"
                         (cdkDropListDropped)="dropCheckLabels($event)">
-                        <li *ngFor="let check of checks; let index = index" class="slds-item slds-text-link_reset"
+                        <li *ngFor="let check of stageChecks; let index = index" class="slds-item slds-text-link_reset"
                             (click)="setSelectedCheck(check)" [ngClass]="{'slds-is-selected slds-color__background_gray-5': selectedCheck?.id == check.id}" cdkDrag
                             cdkDragBoundary=".dragboundary">
                             <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'"
@@ -52,7 +52,7 @@
                         <label class="slds-form-element__label">
                             <system-label label="LBL_CHECK_METHOD"></system-label>
                         </label>
-                        <system-input-backend-method [(ngModel)]="selectedCheck.check_method"></system-input-backend-method>
+                        <system-input-backend-method [ngModel]="!selectedCheck.check_class ? undefined : selectedCheck.check_class + '->' + selectedCheck.check_method" (ngModelChange)="setSelectedCheckClassMethod($event)"></system-input-backend-method>
                     </div>
                 </div>
             </div>

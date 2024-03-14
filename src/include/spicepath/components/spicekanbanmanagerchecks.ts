@@ -13,7 +13,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 export class SpiceKanbanManagerChecks {
 
-    public checks:SpiceBeanGuideCheckI[]=[];
+    public stageChecks:SpiceBeanGuideCheckI[]=[];
 
     public selectedCheck:SpiceBeanGuideCheckI;
 
@@ -57,12 +57,12 @@ export class SpiceKanbanManagerChecks {
 
         if (!this.selectedStage) return;
 
-        this.checks = this.kanbanManagerService.currentChecks.filter(check=>check.stage_id == this.selectedStage.id);
+        this.stageChecks = this.kanbanManagerService.currentChecks.filter(check=>check.stage_id == this.selectedStage.id);
     }
 
     public setSelectedCheck(check: SpiceBeanGuideCheckI){
 
-        const existing: SpiceBeanGuideCheckI = this.kanbanManagerService.currentChecks.find((check) => check.stage_id == this.selectedStage.id);
+        const existing: SpiceBeanGuideCheckI = this.kanbanManagerService.currentChecks.find((currentCheck) => currentCheck.id == check.id);
 
         if (existing) {
             this.selectedCheck = this.kanbanManagerService.generateTrackableObject(check, 'checks');
@@ -82,14 +82,25 @@ export class SpiceKanbanManagerChecks {
             id: this.modelutilities.generateGuid(),
             spicebeanguide_id: this.kanbanManagerService.selectedBeanGuide.id,
             stage_id: this.selectedStage.id,
-            check_sequence: this.checks.length,
+            check_sequence: this.stageChecks.length,
             check_include: '',
             check_class: '',
             check_method: '',
             check_label: '',
             scope: this.kanbanManagerService.selectedBeanGuide.scope
         };
-        this.checks.push(newCheck);
+        this.stageChecks.push(newCheck);
         this.setSelectedCheck(newCheck);
+        this.kanbanManagerService.currentChecks.push(newCheck);
+    }
+
+    /**
+     * set selected check class method
+     * @param val
+     */
+    public setSelectedCheckClassMethod(val: string) {
+        const classMethod = val.split('->');
+        this.selectedCheck.check_class = classMethod[0];
+        this.selectedCheck.check_method = classMethod[1];
     }
 }
