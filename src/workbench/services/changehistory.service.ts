@@ -11,6 +11,11 @@ export class ChangeHistoryService {
      * array of references to trackable arrays
      * @private
      */
+    private dbObjects = new Map<string, any>();
+    /**
+     * array of references to trackable arrays
+     * @private
+     */
     private trackableObjects = new Map<string, any>();
     /**
      * holds the history records
@@ -38,7 +43,9 @@ export class ChangeHistoryService {
             return this.trackableObjects.get(obj.id);
         }
 
-        const check = (obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) => this.checkForObjectChanges(obj, dbObject, scope, prop, previousValue, newValue);
+        this.dbObjects.set(dbObject.id, dbObject);
+
+        const check = (obj: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) => this.checkForObjectChanges(obj, scope, prop, previousValue, newValue);
         return this.generateProxyObject(obj, scope, check);
     }
 
@@ -118,6 +125,8 @@ export class ChangeHistoryService {
             dbArray.some((dbObj, index: number) => {
                 if (dbObj.id != changedObj.id) return false;
                 dbArray[index] = changedObj;
+                this.dbObjects.set(changedObj.id, changedObj);
+                
                 return true;
             });
         });
@@ -313,11 +322,11 @@ export class ChangeHistoryService {
     /**
      * check for object changes and write the changes
      */
-    public checkForObjectChanges(currentObject: any, dbObject: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) {
+    public checkForObjectChanges(currentObject: any, scope: string, prop: symbol | string, previousValue: any, newValue: any) {
 
         if (!this.changes[scope]) this.initializeScope(scope);
 
-        if (JSON.stringify(currentObject) == JSON.stringify(dbObject)) {
+        if (JSON.stringify(currentObject) == JSON.stringify(this.dbObjects.get(currentObject.id))) {
             this.changes[scope].changedObjects.delete(currentObject.id);
             return;
         }
