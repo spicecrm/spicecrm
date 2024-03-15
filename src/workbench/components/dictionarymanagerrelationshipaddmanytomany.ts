@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector, OnInit
+    Component, Injector, Input, OnInit
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {modal} from '../../services/modal.service';
@@ -11,7 +11,12 @@ import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
-import {DictionaryDefinition, Relationship, RelationshipType} from "../interfaces/dictionarymanager.interfaces";
+import {
+    DictionaryDefinition,
+    Relationship,
+    RelationshipField,
+    RelationshipType
+} from "../interfaces/dictionarymanager.interfaces";
 
 /**
  * renders a modal to add a one to many relationship
@@ -37,6 +42,10 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      * @private
      */
     public relationship: Relationship;
+    /**
+     * relationship join table role fields
+     */
+    @Input() public relationshipFields: RelationshipField[] = [];
 
 
     public rhsRelatedId: string;
@@ -138,12 +147,58 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      * @private
      */
     public add() {
-        this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship}).subscribe({
+
+        this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship, relationshipFields: this.generateRelationshipFields()}).subscribe({
             next: (res) => {
                 this.dictionarymanager.pushNewRelationshipToArray(this.relationship);
+                this.dictionarymanager.dictionaryrelationshipfields.push(...this.relationshipFields);
                 this.close();
             }
         })
+    }
 
+    /**
+     * generate relationship fields
+     * @private
+     */
+    private generateRelationshipFields() {
+
+        const relationshipFields = [];
+
+        this.relationshipFields.forEach(f => {
+
+            if (!!f.mapToFieldNameLeft) {
+                relationshipFields.push(
+                    this.generateRelationshipField(f, f.mapToFieldNameLeft, this.relationship.lhs_sysdictionarydefinition_id)
+                );
+            }
+
+            if (!!f.mapToFieldNameRight) {
+                relationshipFields.push(
+                    this.generateRelationshipField(f, f.mapToFieldNameRight, this.relationship.rhs_sysdictionarydefinition_id)
+                );
+            }
+        });
+
+        return relationshipFields;
+    }
+
+    /**
+     * generate relationship field
+     * @param field
+     * @param mapToFieldName
+     * @param definitionId
+     * @private
+     */
+    private generateRelationshipField(field: RelationshipField, mapToFieldName: string, definitionId: string) {
+        field = {...field};
+
+        field.sysdictionarydefinition_id = definitionId;
+        field.map_to_fieldname = mapToFieldName;
+        field.id = this.modelutilities.generateGuid();
+        delete field.mapToFieldNameRight;
+        delete field.mapToFieldNameLeft;
+
+        return field;
     }
 }
