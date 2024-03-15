@@ -573,6 +573,13 @@ class SpiceDictionaryController
         if($params['fullreset']){
             DBManagerFactory::getInstance()->query("TRUNCATE TABLE relationships");
             DBManagerFactory::getInstance()->query("TRUNCATE TABLE sysdictionaryfields");
+
+            // write cache for all system package definitions so we have a safe state
+            $defsHandler = SpiceDictionaryDefinitions::getInstance();
+            foreach ($defsHandler->getDefinitions() as $definition) {
+                if($definition['package'] != 'system' || !SpiceDictionary::getInstance()->dictionary[$definition['name']]) continue;
+                $defsHandler->writeVardefToFieldsTable($definition['name'], SpiceDictionary::getInstance()->dictionary[$definition['name']]);
+            }
         }
 
         unset($_SESSION['sysdictionary']['sqls']);
