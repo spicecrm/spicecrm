@@ -21,7 +21,11 @@
                 <th scope="col">
                     <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_VALIDATION"></system-label></div>
                 </th>
-                <th style="width:4rem" scope="col"></th>
+                <th style="width:4rem" class="slds-text-align--right" scope="col">
+                    <button (click)="repairRelatedDictionaryItems()" system-title="MSG_REPAIR_DOMAIN_DEFINITION_DICTIONARY_RELATED" class="slds-button slds-button--icon slds-m-right--x-small">
+                        <system-button-icon icon="custom_apps"></system-button-icon>
+                    </button>
+                </th>
             </tr>
         </thead>
         <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
