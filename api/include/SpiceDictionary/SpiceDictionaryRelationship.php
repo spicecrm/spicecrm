@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 
 class SpiceDictionaryRelationship
@@ -125,6 +126,40 @@ class SpiceDictionaryRelationship
     {
         // determine from which tabel to delete the item
         $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
+        $this->deleteJoinTableFields();
         return SystemDeploymentCR::deleteDBEntry($table, $this->id, $this->name);
+    }
+
+    /**
+     * delete join table fields
+     * @return void
+     * @throws \Exception
+     */
+    private function deleteJoinTableFields(): void
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationshipfields' : 'sysdictionaryrelationshipfields';
+        $query = $db->query("SELECT id, map_to_fieldname FROM $table WHERE sysdictionaryrelationship_id = '$this->id'");
+
+        while ($field = $db->fetchByAssoc($query)) {
+            SystemDeploymentCR::deleteDBEntry($table, $field['id'], $this->name . "/{$field['map_to_fieldname']}");
+        }
+    }
+
+    /**
+     * get join table fields
+     * @param string $definitionId
+     * @return array | boolean
+     * @throws DatabaseException|\Exception
+     */
+    public function getJoinTableFields(string $definitionId): bool|array
+    {
+        $db = DBManagerFactory::getInstance();
+        $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationshipfields' : 'sysdictionaryrelationshipfields';
+
+        $query = "SELECT * FROM $table WHERE sysdictionarydefinition_id = '$definitionId' AND sysdictionaryrelationship_id = '$this->id'";
+
+        return $db->fetchAll($query);
     }
 }

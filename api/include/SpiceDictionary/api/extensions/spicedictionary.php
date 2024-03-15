@@ -366,6 +366,21 @@ $routes = [
             ]
         ]
     ],
+    [
+        'method' => 'post',
+        'route' => '/dictionary/domaindefinition/{id}/repairrelated',
+        'class' => SpiceDictionaryDomainDefinitionsController::class,
+        'function' => 'repairDomainDefinitionRelatedDictionaryItems',
+        'description' => 'repair domain definition related dictionary items',
+        'options' => ['adminOnly' => true, 'validate' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ]
+        ]
+    ],
     // for the domainfieldss
     [
         'method' => 'post',
