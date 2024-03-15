@@ -158,7 +158,7 @@ class SpiceDictionaryRelationship
         $db = DBManagerFactory::getInstance();
         $table = $this->relationship->scope == 'c' ? 'syscustomdictionaryrelationshipfields' : 'sysdictionaryrelationshipfields';
 
-        $fieldNameOppositeSideQuery = "(select map_to_fieldname from syscustomdictionaryrelationshipfields side2 where side2.sysdictionaryitem_id = sysdictionaryitem_id and side2.sysdictionarydefinition_id != '$definitionId' and side2.sysdictionaryrelationship_id = '$this->id') as rel_field_name";
+        $fieldNameOppositeSideQuery = "(select map_to_fieldname from $table side2 where side2.sysdictionaryitem_id = sysdictionaryitem_id and side2.sysdictionarydefinition_id != '$definitionId' and side2.sysdictionaryrelationship_id = '$this->id') as rel_field_name";
 
         $query = "SELECT *, $fieldNameOppositeSideQuery FROM $table WHERE sysdictionarydefinition_id = '$definitionId' AND sysdictionaryrelationship_id = '$this->id'";
 
