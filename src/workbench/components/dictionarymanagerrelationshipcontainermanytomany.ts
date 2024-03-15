@@ -13,8 +13,7 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 import {
     DictionaryDefinition,
     DictionaryItem,
-    Relationship,
-    RelationshipRelateField
+    Relationship, RelationshipField,
 } from "../interfaces/dictionarymanager.interfaces";
 
 /**
@@ -50,6 +49,11 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit 
      * @private
      */
     @Input() public relationship: Relationship;
+
+    /**
+     * relationship join table role fields
+     */
+    @Input() public relationshipFields: RelationshipField[] = [];
 
     /**
      * to set to readonly
@@ -124,4 +128,18 @@ export class DictionaryManagerRelationshipContainerManyToMany implements OnInit 
         this.rhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id);
     }
 
+    /**
+     * add new join table role filed mapping
+     */
+    public addNewJoinTableFieldMapping() {
+        this.relationshipFields.push({
+            id: this.modelutilities.generateGuid(),
+            scope: this.relationship.scope,
+            status: 'd',
+            sysdictionaryrelationship_id: this.relationship.id,
+            map_to_fieldname: '',
+            sysdictionaryitem_id: undefined,
+            deleted: 0
+        });
+    }
 }
