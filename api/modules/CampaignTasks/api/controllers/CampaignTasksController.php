@@ -229,7 +229,7 @@ class CampaignTasksController
 
         /** @var CampaignTask load the campaign task **/
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-
+        $additionalParams = [];
         $status = 'targeted';
         switch ($campaignTask->campaigntask_type) {
             case 'Mail':
@@ -238,9 +238,15 @@ class CampaignTasksController
             case 'Feedback':
                 $status = 'queued';
                 break;
+            case 'Event':
+                $campaign = BeanFactory::getBean('Campaigns', $campaignTask->campaign_id);
+                if($campaign && $campaign->campaign_type == 'Event' && $campaign->event_id){
+                    $additionalParams = ['source_id' => $campaign->event_id, 'source_type' => 'Events'];
+                }
+                break;
         }
 
-        return $res->withJson($campaignTask->activate($status));
+        return $res->withJson($campaignTask->activate($status, $additionalParams));
     }
     /**
      * activates the campaign tasks and writes the campaign log entries
