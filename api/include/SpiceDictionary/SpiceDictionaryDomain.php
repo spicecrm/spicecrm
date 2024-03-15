@@ -87,6 +87,12 @@ class SpiceDictionaryDomain
             if($dictionaryitem->itemDefinition->descriptions) $definition->descriptions = $dictionaryitem->itemDefinition->descriptions;
             if($dictionaryitem->itemDefinition->label) $definition->vname = $dictionaryitem->itemDefinition->label;
 
+            // backward compatibility to push options as well
+            if($definition->sysdomainfieldvalidation_id) {
+                $validation = new SpiceDictionaryDomainValidation($definition->sysdomainfieldvalidation_id);
+                if($validation->domainvalidation->validation_type == 'options') $definition->options = $validation->domainvalidation->name;
+            }
+
             // write to the cached fields
             $sysDictionaryField = [
                 'id' => SpiceUtils::createGuid(),
