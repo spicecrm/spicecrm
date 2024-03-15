@@ -172,6 +172,8 @@ class AdminController
                 'name' => SpiceConfig::getInstance()->config['system']['name'],
                 'site_url' => SpiceConfig::getInstance()->config['site_url'],
                 'unique_key' => SpiceConfig::getInstance()->config['unique_key'],
+                'startup_mode' => SpiceConfig::getInstance()->config['system']['startup_mode'],
+                'edit_mode' => SpiceConfig::getInstance()->config['system']['edit_mode'],
             ],
             'advanced' => [
                 'stack_trace_errors' => SpiceUtils::getStackTrace(),
@@ -222,8 +224,14 @@ class AdminController
                         break;
                         // name goes to database
                     case 'name':
-                        SpiceConfig::getInstance()->config['system']['name'] = $itemvalue;
-                        $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
+                    case 'startup_mode':
+                    case 'edit_mode':
+                        SpiceConfig::getInstance()->config['system'][$itemname] = $itemvalue;
+                        if($db->fetchOne("SELECT * FROM config WHERE category = 'system' AND name = '$itemname'")) {
+                            $query = "UPDATE config SET value = '$itemvalue' WHERE category = 'system' AND name = '$itemname'";
+                        } else {
+                            $query = "INSERT INTO config (category, name, value) VALUES ('system', '$itemname', '$itemvalue')";
+                        }
                         $db->query($query);
                         break;
                     default:
