@@ -175,21 +175,22 @@ class M2MRelationship extends Relationship
             );
 
             $linkFieldDefs['rel_fields'][$joinTableRoleField->fieldname] = [
-                'map' => $field['map_to_fieldname']
+                'map' => $field['rel_field_name']
             ];
+
+            $joinTableRoleFieldDef = json_decode($joinTableRoleField->fielddefinition);
+            unset($joinTableRoleFieldDef->sysdictionaryitem_id, $joinTableRoleFieldDef->dbtype);
+            $joinTableRoleFieldDef->name = $field['map_to_fieldname'];
+            $joinTableRoleFieldDef->source = 'non-db';
 
             $leftSideNonDbRoleField = [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $sideDictionaryDefinition->name,
                 'sysdictionarytablename' => $sideDictionaryDefinition->tablename,
+                'sysdomainfield_id' => $joinTableRoleField->sysdomainfield_id,
                 'fieldname' => $field['map_to_fieldname'],
                 'fieldtype' => $joinTableRoleField->fieldtype,
-                'fielddefinition' => json_encode([
-                    'name' => $field['map_to_fieldname'],
-                    'type' => $joinTableRoleField->fieldtype,
-                    'source' => 'non-db',
-                    'vname' => json_decode($joinTableRoleField->fielddefinition)->vname
-                ]),
+                'fielddefinition' => json_encode($joinTableRoleFieldDef),
                 'sysdictionaryrelationship_id' => $relationship->id,
                 'sysdictionarydefinition_id' => $sideDictionaryDefinition->id
             ];
