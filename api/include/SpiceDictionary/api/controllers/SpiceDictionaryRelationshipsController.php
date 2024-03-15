@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -14,12 +15,13 @@ use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 class SpiceDictionaryRelationshipsController
 {
     /**
-     * posts a Dictionary Relötionship
+     * posts a Dictionary relationship
      *
-     * @param $req
-     * @param $res
-     * @param $args
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
      * @return mixed
+     * @throws \Exception
      */
     public function postDictionaryRelationship(Request $req, Response $res, array $args): Response
     {
@@ -27,6 +29,7 @@ class SpiceDictionaryRelationshipsController
         $body = $req->getParsedBody();
 
         SpiceDictionaryRelationships::getInstance()->add($body['relationship'], $body['relationshippolymorphs']);
+        SpiceDictionaryHandler::getInstance()->setDictionaryRelationshipFields($body['relationshipFields']);
 
         return $res->withJson(['success' => true]);
     }

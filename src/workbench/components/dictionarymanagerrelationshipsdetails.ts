@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
-import {Relationship, RelationshipPolymorph} from "../interfaces/dictionarymanager.interfaces";
+import {Relationship, RelationshipField, RelationshipPolymorph} from "../interfaces/dictionarymanager.interfaces";
 import {backend} from "../../services/backend.service";
 
 @Component({
@@ -21,6 +21,8 @@ export class DictionaryManagerRelationshipsDetails {
     public self: any;
 
     @Input() public dictionaryRelationship: Relationship;
+
+    @Input() public dictionaryRelationshipFields: RelationshipField[];
 
     /**
      * any polymorphs we might have
@@ -46,10 +48,15 @@ export class DictionaryManagerRelationshipsDetails {
 
         // try to get the polymorphs
         this.dictionaryRelationshipPolymorphs = this.dictionarymanager.dictionaryrelationshippolymorphs.filter(p => p.relationship_id == this.dictionaryRelationship.id);
+        this.dictionaryRelationshipFields = this.dictionarymanager.dictionaryrelationshipfields.filter(f => f.sysdictionaryrelationship_id == this.dictionaryRelationship.id);
     }
 
     get readonly(){
-        return this.dictionaryRelationship.status == 'a' || (this.dictionaryRelationship.rhs_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition && this.dictionaryRelationship.lhs_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition);
+        return this.dictionaryRelationship.status == 'a' || (
+            this.dictionaryRelationship.rhs_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition
+            && this.dictionaryRelationship.lhs_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition
+            && this.dictionaryRelationship.join_sysdictionarydefinition_id != this.dictionarymanager.currentDictionaryDefinition
+        );
     }
 
     /**
