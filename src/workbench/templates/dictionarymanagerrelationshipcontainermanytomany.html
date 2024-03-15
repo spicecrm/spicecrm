@@ -119,3 +119,33 @@
         </div>
     </div>
 </div>
+<system-collapsable-tab [expanded]="false" tabtitle="LBL_JOIN_TABLE_ROLE_FIELDS_MAPPING">
+    <div *ngFor="let field of relationshipFields" class="slds-grid">
+        <div class="slds-size--1-of-3 slds-p-left--xx-small slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_MAP_TO_FIELD_NAME_LEFT"></system-label></label>
+            <div class="slds-form-element__control">
+                <input [disabled]="readonly" class="slds-input" [(ngModel)]="field.mapToFieldNameLeft"/>
+            </div>
+        </div>
+        <div class="slds-size--1-of-3 slds-p-horizontal--xx-small slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_RELATIONSHIP_ROLE_COLUMN"></system-label></label>
+            <div class="slds-select_container">
+                <select [disabled]="readonly" [(ngModel)]="field.sysdictionaryitem_id" class="slds-select">
+                    <option [value]=""></option>
+                    <option *ngFor="let item of join_items" [value]="item.id">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-size--1-of-3 slds-p-left--xx-small slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_MAP_TO_FIELD_NAME_RIGHT"></system-label></label>
+            <div class="slds-form-element__control">
+                <input [disabled]="readonly" class="slds-input" [(ngModel)]="field.mapToFieldNameRight"/>
+            </div>
+        </div>
+    </div>
+    <div class="slds-align--absolute-center slds-p-around--small">
+        <button *ngIf="!readonly" (click)="addNewJoinTableFieldMapping()" [disabled]="!join_sysdictionarydefinition_id" class="slds-button slds-button--icon">
+            <system-button-icon icon="add"></system-button-icon>
+        </button>
+    </div>
+</system-collapsable-tab>

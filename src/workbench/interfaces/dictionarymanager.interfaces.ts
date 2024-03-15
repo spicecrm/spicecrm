@@ -124,11 +124,22 @@ export interface RelationshipField {
     id: string;
     scope: 'c'|'g';
     status: 'd'|'a'|'i';
-    relationship_id: string;
-    relationship_fieldname: string;
+    sysdictionaryrelationship_id: string;
+    map_to_fieldname: string;
     sysdictionaryitem_id: string;
-    side: 'left'|'right'|'both';
+    sysdictionarydefinition_id?: string;
+    description?: string;
+    version?: string;
+    package?: string;
     deleted: number;
+    /**
+     * temporary only to prepare the field entry
+     */
+    mapToFieldNameLeft?: string;
+    /**
+     * temporary only to prepare the field entry
+     */
+    mapToFieldNameRight?: string;
 }
 
 /**
