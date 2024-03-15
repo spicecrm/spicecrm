@@ -229,4 +229,20 @@ export class DomainManagerFields {
         return item.id;
     }
 
+    /**
+     * repair domain field related dictionary items
+     */
+    public repairRelatedDictionaryItems() {
+        this.modal.confirm('MSG_REPAIR_DOMAIN_DEFINITION_DICTIONARY_RELATED', 'MSG_REPAIR_DOMAIN_DEFINITION_DICTIONARY_RELATED').subscribe(answer => {
+
+            if (!answer) return;
+
+            this.backend.postRequest(`dictionary/domaindefinition/${this.domainmanager.currentDomainDefinition}/repairrelated`).subscribe({
+                next: () => {
+                    this.toast.sendToast('LBL_DICTIONARY_REPAIRED', 'success');
+                }
+            });
+
+        });
+    }
 }

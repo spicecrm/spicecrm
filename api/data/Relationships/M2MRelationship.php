@@ -4,8 +4,11 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
@@ -94,20 +97,25 @@ class M2MRelationship extends Relationship
 
         // write the lhs link
         if($relationship->relationship->lhs_linkname){
+
+            $leftFieldDefs = [
+                'name' => $relationship->relationship->lhs_linkname,
+                'type' => 'link',
+                'relationship' => $relationship->relationship->relationship_name,
+                'source' => 'non-db',
+                'module' => $rhsDictionaryDefinition->getModuleName(),
+                'vname' => $relationship->relationship->lhs_linklabel
+            ];
+
+            $this->processJoinTableRoleFields($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition, $leftFieldDefs);
+
             $db->insertQuery('sysdictionaryfields', [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $lhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
                 'fieldname' => $relationship->relationship->lhs_linkname,
                 'fieldtype' => 'link',
-                'fielddefinition' => json_encode([
-                    'name' => $relationship->relationship->lhs_linkname,
-                    'type' => 'link',
-                    'relationship' => $relationship->relationship->relationship_name,
-                    'source' => 'non-db',
-                    'module' => $rhsDictionaryDefinition->getModuleName(),
-                    'vname' => $relationship->relationship->lhs_linklabel
-                ]),
+                'fielddefinition' => json_encode($leftFieldDefs),
                 'sysdictionaryrelationship_id' => $relationship->id,
                 'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
             ]);
@@ -115,23 +123,78 @@ class M2MRelationship extends Relationship
 
         // write the rhs link
         if($relationship->relationship->rhs_linkname){
+
+            $rightFieldDefs = [
+                'name' => $relationship->relationship->rhs_linkname,
+                'type' => 'link',
+                'relationship' => $relationship->relationship->relationship_name,
+                'source' => 'non-db',
+                'module' => $lhsDictionaryDefinition->getModuleName(),
+                'vname' => $relationship->relationship->rhs_linklabel
+            ];
+
+            $this->processJoinTableRoleFields($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition, $rightFieldDefs);
+
             $db->insertQuery('sysdictionaryfields', [
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $rhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
                 'fieldname' => $relationship->relationship->rhs_linkname,
                 'fieldtype' => 'link',
-                'fielddefinition' => json_encode([
-                    'name' => $relationship->relationship->rhs_linkname,
-                    'type' => 'link',
-                    'relationship' => $relationship->relationship->relationship_name,
-                    'source' => 'non-db',
-                    'module' => $lhsDictionaryDefinition->getModuleName(),
-                    'vname' => $relationship->relationship->rhs_linklabel
-                ]),
+                'fielddefinition' => json_encode($rightFieldDefs),
                 'sysdictionaryrelationship_id' => $relationship->id,
                 'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
             ]);
+        }
+    }
+
+    /**
+     * insert join table necessary role fields
+     * update link field definition with rel_fields array
+     * @param SpiceDictionaryRelationship $relationship
+     * @param $joinDictionaryDefinition
+     * @param $sideDictionaryDefinition
+     * @param $linkFieldDefs
+     * @return void
+     * @throws DatabaseException | Exception
+     */
+    private function processJoinTableRoleFields(SpiceDictionaryRelationship $relationship, $joinDictionaryDefinition, $sideDictionaryDefinition, &$linkFieldDefs): void
+    {
+        $joinTableRoleFields = $relationship->getJoinTableFields($sideDictionaryDefinition->id);
+
+        $db = DBManagerFactory::getInstance();
+
+        if (empty($joinTableRoleFields)) return;
+
+        $linkFieldDefs['rel_fields'] = [];
+
+        foreach ($joinTableRoleFields as $field) {
+
+            $joinTableRoleField = SpiceDictionaryField::getField(
+                new SpiceDictionaryItem($field['sysdictionaryitem_id']), $joinDictionaryDefinition
+            );
+
+            $linkFieldDefs['rel_fields'][$joinTableRoleField->fieldname] = [
+                'map' => $field['map_to_fieldname']
+            ];
+
+            $leftSideNonDbRoleField = [
+                'id' => SpiceUtils::createGuid(),
+                'sysdictionaryname' => $sideDictionaryDefinition->name,
+                'sysdictionarytablename' => $sideDictionaryDefinition->tablename,
+                'fieldname' => $field['map_to_fieldname'],
+                'fieldtype' => $joinTableRoleField->fieldtype,
+                'fielddefinition' => json_encode([
+                    'name' => $field['map_to_fieldname'],
+                    'type' => $joinTableRoleField->fieldtype,
+                    'source' => 'non-db',
+                    'vname' => json_decode($joinTableRoleField->fielddefinition)->vname
+                ]),
+                'sysdictionaryrelationship_id' => $relationship->id,
+                'sysdictionarydefinition_id' => $sideDictionaryDefinition->id
+            ];
+
+            $db->insertQuery('sysdictionaryfields', $leftSideNonDbRoleField);
         }
     }
 

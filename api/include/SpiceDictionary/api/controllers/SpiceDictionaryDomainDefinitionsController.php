@@ -30,6 +30,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
@@ -116,4 +117,18 @@ class SpiceDictionaryDomainDefinitionsController
         return $res->withJson(['success' => true, 'sql' => (new SpiceDictionaryDefinition($args['id']))->repair()]);
     }
 
+    /**
+     * repair domain definition related dictionary items
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function repairDomainDefinitionRelatedDictionaryItems(Request $req, Response $res, array $args): Response
+    {
+        (new SpiceDictionaryDomain($args['id']))->repairRelatedDictionaryItems();
+
+        return $res->withJson(['success' => true]);
+    }
 }
