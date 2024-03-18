@@ -11,7 +11,6 @@ import {session} from "../../../services/session.service";
 
 import {telephonyCallI} from "../../../services/interfaces.service";
 import {Subscription} from "rxjs";
-import {Router} from "@angular/router";
 
 declare var _: any;
 declare var libphonenumber: any;
@@ -68,7 +67,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
         public broadcast: broadcast,
         public session: session,
         public model: model,
-        public router: Router) {
+        public relatedmodel:model) {
 
     }
 
@@ -218,9 +217,10 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
      * open details of the caller automatically if config set
      */
     public openDetails() {
-            let objectlink = "/module/" + this.calldata.relatedmodule + "/" + this.calldata.relatedid;
-            this.router.navigate([objectlink])
-        }
+            this.relatedmodel._module = this.calldata.relatedmodule;
+            this.relatedmodel.id = this.calldata.relatedid;
+            this.relatedmodel.goDetail();
+    }
 
     /**
      * no match found in the listed items
