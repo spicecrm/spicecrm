@@ -30,6 +30,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
         connectedCallComponent?: string,
         objectmodule?: string,
         objectfieldset?: string,
+        opendetails?: boolean,
     } = {};
 
     /**
@@ -65,7 +66,8 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
         public language: language,
         public broadcast: broadcast,
         public session: session,
-        public model: model) {
+        public model: model,
+        public relatedmodel:model) {
 
     }
 
@@ -82,6 +84,10 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
 
     public ngOnInit(): void {
         this.initalizeModel();
+
+        if (this.compenentconfig.opendetails && this.matchedbeans.length == 1) {
+            this.openDetails();
+        }
 
         // subscribe to the briadcast
         this.subscriptions.add(
@@ -201,6 +207,19 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
         this.calldata.relateddata = record.data;
 
         this.initalizeModel();
+
+        if (this.compenentconfig.opendetails) {
+            this.openDetails()
+        }
+    }
+
+    /**
+     * open details of the caller automatically if config set
+     */
+    public openDetails() {
+            this.relatedmodel._module = this.calldata.relatedmodule;
+            this.relatedmodel.id = this.calldata.relatedid;
+            this.relatedmodel.goDetail();
     }
 
     /**
