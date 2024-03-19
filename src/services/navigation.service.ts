@@ -975,7 +975,12 @@ export class navigation {
                 } else if(index != 0) {
                     // tab to the left of the closed tab is set active
                     const leftIndex = index - 1;
-                    this.setActiveTab(this.objectTabs[leftIndex].id);
+                    if(this.objectTabs[leftIndex].parentid==undefined){
+                        this.setActiveTab(this.objectTabs[leftIndex].id);
+                    }
+                    else {
+                        this.setActiveTab('main');
+                    }
                 } else {
                     this.setActiveTab('main');
                 }
