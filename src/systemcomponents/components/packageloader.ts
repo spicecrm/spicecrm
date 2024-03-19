@@ -141,7 +141,7 @@ export class PackageLoader {
             if (!answer) return;
 
             this.modal.openStaticModal(PackageLoaderReloadLoadedModal).subscribe(ref => {
-                ref.instance.packages = this.packages.filter(p => p.installed).map(p => ({...p})).sort((a, b) => a.package == 'core' ? 1 : a.package.localeCompare(b.package));
+                ref.instance.packages = this.packages.filter(p => p.installed).map(p => ({...p})).sort((a, b) => a.package == 'core' ? -1 : a.package.localeCompare(b.package));
                 ref.instance.repositoryAddUrl = this.repositoryaddurl;
             })
         })
