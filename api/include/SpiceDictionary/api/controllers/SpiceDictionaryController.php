@@ -376,7 +376,7 @@ class SpiceDictionaryController
                 if($isDuplicate) break;
 
             }
-            if($isDuplicate) continue;
+            if($isDuplicate || !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rel['lhs_sysdictionarydefinition_id']) || !SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($rel['rhs_sysdictionarydefinition_id'])) continue;
 
             // if this is considered unique ... go for it
             $spiceDictionaryRelationships[] = $rel;
@@ -411,7 +411,7 @@ class SpiceDictionaryController
                     }
 
                     // if we are here add it
-                    if (!$isDuplicate) {
+                    if (!$isDuplicate && SpiceModules::getInstance()->moduleExists($vardefRelationship['lhs_module']) && SpiceModules::getInstance()->moduleExists($vardefRelationship['rhs_module'])) {
                         $vardefRelationship['dictionaryname'] = $vardefName;
                         $vardefRelationship['relationship_name'] = $vardefRelationshipName;
                         $vardefDictionaryRelationships[] = $vardefRelationship;
