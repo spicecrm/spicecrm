@@ -196,6 +196,7 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
 import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexteditormentiondropdown";
 import {SystemProgressIndicator} from "./components/systemprogressindicator";
 import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
+import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadloadedmodal";
 
 @NgModule({
     imports: [
@@ -379,7 +380,8 @@ import {SystemProgressIndicatorItem} from "./components/systemprogressindicatori
         SystemSelectOption,
         SystemRichTextEditorMentionDropdown,
         SystemProgressIndicator,
-        SystemProgressIndicatorItem
+        SystemProgressIndicatorItem,
+        PackageLoaderReloadLoadedModal
     ],
     exports: [
         PaginationControlsComponent,
@@ -538,7 +540,8 @@ import {SystemProgressIndicatorItem} from "./components/systemprogressindicatori
         SystemSelectOption,
         SystemInputFlter,
         SystemProgressIndicator,
-        SystemProgressIndicatorItem
+        SystemProgressIndicatorItem,
+        PackageLoaderReloadLoadedModal
     ]
 })
 export class SystemComponents {}

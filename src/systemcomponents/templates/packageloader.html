@@ -24,8 +24,13 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="repositories.length > 0" class="slds-page-header__col-actions">
-            <div class="slds-form-element">
+        <div  class="slds-page-header__col-actions">
+            <div>
+                <button (click)="reloadLoadedPackages()" [disabled]="this.errorpackages.length == 0" class="slds-button slds-button--icon">
+                    <system-button-icon icon="refresh"/>
+                </button>
+            </div>
+            <div *ngIf="repositories.length > 0" class="slds-form-element">
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container">
                         <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [system-dropdown-trigger]="repositories.length <= 1" role="combobox">
