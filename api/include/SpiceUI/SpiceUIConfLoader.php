@@ -526,7 +526,7 @@ class SpiceUIConfLoader
         $qArray = [];
         $excludePackageCheck = ['systemdeploymentrpdbentrys'];
         foreach($this->conftables as $conftable) {
-            if(!in_array($conftable, $excludePackageCheck)){
+            if(!in_array($conftable, $excludePackageCheck) && $db->tableExists($conftable)){
                 $qArray[] = "(SELECT package, version FROM $conftable WHERE version is not null AND version <> '')";
             }
         }
