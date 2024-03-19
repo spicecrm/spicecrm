@@ -8,6 +8,8 @@ import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
+import {modal} from "../../services/modal.service";
+import {PackageLoaderReloadLoadedModal} from "./packageloaderreloadloadedmodal";
 
 /**
  * @ignore
@@ -36,7 +38,8 @@ export class PackageLoader {
         public language: language,
         public backend: backend,
         public toast: toast,
-        public metadata: metadata
+        public metadata: metadata,
+        private modal: modal
     ) {
 
         this.backend.getRequest('configuration/packages/repositories').subscribe(
@@ -128,5 +131,19 @@ export class PackageLoader {
         this.loadpackages();
     }
 
+    /**
+     * reload loaded packages
+     */
+    public reloadLoadedPackages() {
 
+        this.modal.confirm('MSG_RELOAD_ALL_LOADED_PACKAGES', 'MSG_RELOAD_ALL_LOADED_PACKAGES').subscribe(answer => {
+
+            if (!answer) return;
+
+            this.modal.openStaticModal(PackageLoaderReloadLoadedModal).subscribe(ref => {
+                ref.instance.packages = this.packages.filter(p => p.installed).map(p => ({...p})).sort((a, b) => a.package == 'core' ? 1 : a.package.localeCompare(b.package));
+                ref.instance.repositoryAddUrl = this.repositoryaddurl;
+            })
+        })
+    }
 }
