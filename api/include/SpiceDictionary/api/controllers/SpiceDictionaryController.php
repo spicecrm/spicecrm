@@ -339,7 +339,25 @@ class SpiceDictionaryController
      */
     public function getRepairDefintions(Request $req, Response $res, array $args): Response {
         // get all active that are not templates
-        $spiceDictionaryDefinitions = array_filter(SpiceDictionaryDefinitions::getInstance()->getDefinitions('a'), function($d){ return $d['sysdictionary_type'] != 'template';});
+        $spiceDictionaryDefinitions = [];
+        $allSpiceDictionaryDefinitions = array_filter(SpiceDictionaryDefinitions::getInstance()->getDefinitions('a'), function($d){ return $d['sysdictionary_type'] != 'template';});
+
+        // add all but the module definitions
+        foreach ($allSpiceDictionaryDefinitions as $spiceDictionaryDefinition){
+            if($spiceDictionaryDefinition['sysdictionary_type'] != 'module') $spiceDictionaryDefinitions[] = $spiceDictionaryDefinition;
+        }
+
+        // add only those where we do have an entry in sysmodules
+        $modules = SpiceModules::getInstance()->getModuleList();
+        foreach ($modules as $module){
+            $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
+            foreach ($allSpiceDictionaryDefinitions as $piceDictionaryDefinition){
+                if($spiceDictionaryDefinitions['id'] == $moduleDetails['sysdictionrydefinition_id'] ){
+                    $allSpiceDictionaryDefinitions[] = $spiceDictionaryDefinition;
+                    break;
+                }
+            }
+        }
 
         // get all relationships
         $relArray = [];

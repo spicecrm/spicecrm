@@ -1081,6 +1081,8 @@ abstract class DBManager
             if (isset($value['source']) && $value['source'] != 'db')
                 continue;
 
+            // ensure the index has fields
+            if(count($value['fields']) == 0) continue;
 
             $validDBName = $this->getValidDBName($value['name'], false, 'index', true);
             if (isset($compareIndices[$validDBName])) {
