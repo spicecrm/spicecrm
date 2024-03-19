@@ -1,7 +1,7 @@
 <system-modal size="large" *ngIf="!loading">
     <system-modal-header (close)="close()"><system-label label="LBL_REPAIR_ALL"/></system-modal-header>
     <system-modal-content margin="none">
-        <div style="height: 80vh" class="slds-scrollable--y">
+        <div #scrollContainer style="height: 80vh" class="slds-scrollable--y">
             <table class="slds-table slds-table--header-fixed slds-no-row-hover slds-table--fixed-layout slds-table_bordered">
                 <thead>
                     <tr class="slds-line-height_reset">
@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="slds-hint-parent" *ngFor="let definition of filtereddefinitions; trackBy: trackByFn" [ngClass]="{'slds-theme--info': definition.status == 'p', 'slds-theme--error': definition.status == 'e'}">
+                    <tr class="slds-hint-parent" *ngFor="let definition of filtereddefinitions; trackBy: trackByFn" #repairRow [ngClass]="{'slds-theme--info': definition.status == 'p', 'slds-theme--error': definition.status == 'e'}">
                         <td>
                             <system-utility-icon size="xx-small" [icon]="getIcon(definition.status)" [colorclass]="iconThemeClass(definition)"></system-utility-icon>
                         </td>
