@@ -134,15 +134,8 @@ class SpiceDictionary
      */
     private function repairDBTableForDictionaries(array $dictionaries): void
     {
-        $db = DBManagerFactory::getInstance();
-        $sql = '';
-
         foreach ($dictionaries as $item) {
-            $sql .= SpiceDictionaryVardefs::repairTable($item);
-        }
-
-        if (!empty($sql)) {
-            $db->query($sql);
+            SpiceDictionaryVardefs::repairTable($item, true);
         }
     }
 
