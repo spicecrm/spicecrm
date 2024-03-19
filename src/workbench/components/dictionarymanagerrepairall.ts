@@ -286,7 +286,7 @@ export class DictionaryManagerRepairAll {
      */
     public start() {
         this.currentRowIndex = 0;
-        this.trackScroll();
+        this.scrollContainer.nativeElement.scrollTo(0, 0);
 
         // close the settings in case they are open
         this.displayDetailSetting = false;
