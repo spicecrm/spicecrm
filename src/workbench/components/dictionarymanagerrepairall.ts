@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, EventEmitter, Injector, Output
+    Component, ElementRef, EventEmitter, Injector, Output, QueryList, ViewChild, ViewChildren
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modal} from '../../services/modal.service';
@@ -17,6 +17,11 @@ import {Md5} from "ts-md5";
     templateUrl: '../templates/dictionarymanagerrepairall.html',
 })
 export class DictionaryManagerRepairAll {
+
+    @ViewChild('scrollContainer', {read: ElementRef}) private scrollContainer: ElementRef;
+    @ViewChildren('repairRow') private repairRow: QueryList<ElementRef>;
+
+    public currentRowIndex = 0;
 
     /**
      * reference to the modal self
@@ -280,6 +285,9 @@ export class DictionaryManagerRepairAll {
      * starts the process
      */
     public start() {
+        this.currentRowIndex = 0;
+        this.scrollContainer.nativeElement.scrollTo(0, 0);
+
         // close the settings in case they are open
         this.displayDetailSetting = false;
         // reset the stored SQLs on the backend
@@ -315,6 +323,11 @@ export class DictionaryManagerRepairAll {
     }
 
     public handleNext() {
+
+        this.trackScroll();
+
+        this.currentRowIndex++;
+
         // check if we have a stoppeed flag
         if (this.stopped) {
             this.stopped = false;
@@ -342,6 +355,23 @@ export class DictionaryManagerRepairAll {
                 this.repairing = false;
             }
         }
+    }
+
+    /**
+     * keep tracking of the current row scroll position
+     * @private
+     */
+    private trackScroll() {
+
+        if (!this.repairRow.get(this.currentRowIndex)) return;
+
+        const margin = this.repairRow.get(this.currentRowIndex).nativeElement.getBoundingClientRect().height * 3;
+        const currentOffset = this.repairRow.get(this.currentRowIndex).nativeElement.offsetTop + margin;
+        const containerHeight = this.scrollContainer.nativeElement.getBoundingClientRect().height;
+
+        if (currentOffset < containerHeight) return;
+
+        this.scrollContainer.nativeElement.scrollTo(0, (currentOffset - containerHeight))
     }
 
     private repairDefinition(definiton, handleNext = true) {

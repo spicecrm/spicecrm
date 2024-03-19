@@ -249,6 +249,11 @@ class SpiceDictionary
      */
     public static function compareSystemDumpHashes(): bool
     {
+        # skip the comparison for the SpiceCRM public-config reference system
+        if (SpiceConfig::getInstance()->get('systemvardefs.create_system_file_enabled') == 1) {
+            return true;
+        }
+
         $db = DBManagerFactory::getInstance();
         $configHash = (string) $db->getOne("SELECT value FROM config WHERE category = 'dictionary' AND name = 'system_dump_hash'");
         return $configHash === self::getSystemDumpFileContent()['hash'];
