@@ -651,9 +651,7 @@ class OCI8Manager extends DBManager
                     }
                 }
 
-                if ($row['nullable'] == 'N') {
-                    $columns[$name]['required'] = 'true';
-                }
+                $columns[$name]['required'] = json_encode($row['nullable'] == 'N');
             }
         }
 

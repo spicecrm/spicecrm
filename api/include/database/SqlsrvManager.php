@@ -778,8 +778,7 @@ class SqlsrvManager extends DBManager
                     $columns[$column_name]['type'] = str_replace(' identity', '', strtolower($row['TYPE_NAME']));
                 }
 
-                if (!empty($row['IS_NULLABLE']) && $row['IS_NULLABLE'] == 'NO' && (empty($row['KEY']) || !stristr($row['KEY'], 'PRI')))
-                    $columns[strtolower($row['COLUMN_NAME'])]['required'] = 'true';
+                $columns[strtolower($row['COLUMN_NAME'])]['required'] = json_encode(!empty($row['IS_NULLABLE']) && $row['IS_NULLABLE'] == 'NO' && (empty($row['KEY']) || !stristr($row['KEY'], 'PRI')));
 
                 $column_def = 1;
                 if (strtolower($tablename) == 'relationships') {

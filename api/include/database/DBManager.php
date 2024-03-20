@@ -1007,7 +1007,7 @@ abstract class DBManager
             //Do not track requiredness in the DB, auto_increment, ID,
             // and deleted fields are always required in the DB, so don't force those
             if ($this->isNullable($value)) {
-                $value['required'] = false;
+                $value['required'] = 'false';
             }
             //Should match the conditions in DBManager::oneColumnSQLRep for DB required fields, type='id' fields will sometimes
 

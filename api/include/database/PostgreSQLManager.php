@@ -309,8 +309,8 @@ class PostgreSQLManager extends DBManager
                 $sequence_name = $this->getSequenceName($tablename, $row['column_name'], true);
                 if ($this->findSequence($sequence_name))
                     $columns[$name]['auto_increment'] = '1';
-                elseif ($row['nullable'] == 'NO')
-                    $columns[$name]['required'] = 'true';
+
+                $columns[$name]['required'] = json_encode($row['nullable'] == 'NO');
             }
         }
         return $columns;

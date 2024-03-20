@@ -804,8 +804,9 @@ class MysqliManager extends DBManager
                     $columns[$name]['len'] = strtolower($matches[2][0]);
                 if (stristr($row['Extra'], 'auto_increment'))
                     $columns[$name]['auto_increment'] = '1';
-                if ($row['Null'] == 'NO' && !stristr($row['Key'], 'PRI'))
-                    $columns[$name]['required'] = 'true';
+
+                $columns[$name]['required'] = json_encode($row['Null'] == 'NO' && !stristr($row['Key'], 'PRI'));
+
                 if (!empty($row['Default']))
                     $columns[$name]['default'] = $row['Default'];
                 if (!empty($row['Comment']))
