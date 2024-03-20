@@ -933,7 +933,7 @@ abstract class DBManager
     {
 
         if (isset($vardef['isnull']) && (strtolower($vardef['isnull']) == 'false' || $vardef['isnull'] === false)
-            && !empty($vardef['required'])) {
+            || $vardef['required'] === 'true') {
             /* required + is_null=false => not null */
             return false;
         }
@@ -1161,11 +1161,14 @@ abstract class DBManager
      */
     public function compareVarDefs($fielddef1, $fielddef2, $ignoreName = false)
     {
+        # todo refactor
         foreach ($fielddef1 as $key => $value) {
             if ($key == 'comment') continue;
 
             if ($key == 'name' && $ignoreName)
                 continue;
+
+            # if columns property is identical continue to the next property
             if (isset($fielddef2[$key])) {
                 if (!is_array($fielddef1[$key]) && !is_array($fielddef2[$key])) {
                     if (strtolower($fielddef1[$key]) == strtolower($fielddef2[$key])) {
@@ -1177,6 +1180,11 @@ abstract class DBManager
                     }
                 }
             }
+
+            # column property is not identical continue checking
+
+            if ($key == 'required') return false;
+
             //Ignore len if its not set in the vardef
             if ($key == 'len' && empty($fielddef2[$key]))
                 continue;
@@ -3814,6 +3822,7 @@ abstract class DBManager
      *
      * @param string $tablename
      * @return array
+     * todo refactor
      */
     abstract public function get_columns($tablename);
 
