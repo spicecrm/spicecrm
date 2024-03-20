@@ -1184,7 +1184,7 @@ abstract class DBManager
 
             # column property is not identical continue checking
 
-            if ($key == 'required') return false;
+            if ($key == 'required') return !isset($fielddef2['required']);
 
             //Ignore len if its not set in the vardef
             if ($key == 'len' && empty($fielddef2[$key]))
