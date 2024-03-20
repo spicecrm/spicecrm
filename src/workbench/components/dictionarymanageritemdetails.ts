@@ -8,6 +8,8 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
+import {modal} from "../../services/modal.service";
+import {backend} from "../../services/backend.service";
 
 /**
  * renders the details form for the dircitonary item
@@ -34,7 +36,11 @@ export class DictionaryManagerItemDetails implements OnInit{
      */
     private backup: string;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language) {
+    constructor(public dictionarymanager: dictionarymanager,
+                private modal: modal,
+                private backend: backend,
+                public metadata: metadata,
+                public language: language) {
 
     }
 
@@ -50,6 +56,23 @@ export class DictionaryManagerItemDetails implements OnInit{
      * save the values
      */
     public save(){
+
+        if (!this.canSave) return;
+
+
+        let saveModal = this.modal.await('LBL_SAVING');
+        this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, this.dictionaryitem).subscribe({
+            next: () => {
+                saveModal.emit(true);
+                saveModal.complete();
+                this.close();
+            },
+            error: () => {
+                saveModal.emit(true);
+                saveModal.complete();
+            }
+        });
+
         this.self.destroy();
     }
 
