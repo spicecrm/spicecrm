@@ -552,7 +552,7 @@ class SpiceDictionaryController
 
         if($params['execute'] && $sql){
             try {
-                DBManagerFactory::getInstance()->query($sql);
+                DBManagerFactory::getInstance()->query($sql, true);
             } catch (\Exception $exception){
                 $error = DBManagerFactory::getInstance()->lastDbError();
             }
