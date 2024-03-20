@@ -218,11 +218,12 @@ class SpiceDictionaryItems
      */
     public function addItem($item){
         $table = $item['scope'] == 'c' ? self::customtable : self::table;
+        $cacheItem = $item;
         unset($item['scope']);
         SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $item['name'], SystemDeploymentCR::ACTION_INSERT);
 
         // add the item
-        $this->dictionaryItems[$item['id']] = $item;
+        $this->dictionaryItems[$item['id']] = $cacheItem;
 
         // write the cache
         $this->writeCache();
@@ -258,11 +259,12 @@ class SpiceDictionaryItems
      */
     public function setItem($item){
         $table = $item['scope'] == 'c' ? self::customtable : self::table;
+        $cacheItem = $item;
         unset($item['scope']);
         SystemDeploymentCR::writeDBEntry($table, $item['id'], $item, $item['name'], SystemDeploymentCR::ACTION_UPDATE);
 
         // add the item
-        $this->dictionaryItems[$item['id']] = $item;
+        $this->dictionaryItems[$item['id']] = $cacheItem;
 
         // write the cache
         $this->writeCache();
