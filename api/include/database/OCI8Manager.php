@@ -979,6 +979,11 @@ class OCI8Manager extends DBManager
         if (isset($fieldDef['isnull']) && (strtolower($fieldDef['isnull']) == 'false' || $fieldDef['isnull'] === false) && !empty($fieldDef['required'])) {
             $required = "NOT NULL";
         }
+
+        if ($fieldDef['required'] === 'true') {
+            $required = "NOT NULL";
+        }
+
         if ($ignoreRequired)
             $required = "";
 

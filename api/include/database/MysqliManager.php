@@ -668,6 +668,11 @@ class MysqliManager extends DBManager
             && !empty($fieldDef['required'])) {
             $required = "NOT NULL";
         }
+
+        if ($fieldDef['required'] === 'true') {
+            $required = "NOT NULL";
+        }
+
         if ($ignoreRequired)
             $required = "";
 
