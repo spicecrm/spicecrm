@@ -2244,8 +2244,8 @@ abstract class DBManager
             $fieldDef['len'] = $matches[2][0];
         if (!empty($fieldDef['precision']) && is_numeric($fieldDef['precision']) && !strstr($fieldDef['len'], ','))
             $fieldDef['len'] .= ",{$fieldDef['precision']}";
-        if (!empty($fieldDef['required']) || ($fieldDef['name'] == 'id' && !isset($fieldDef['required']))) {
-            $fieldDef['required'] = 'true';
+        if (isset($fieldDef['required']) || ($fieldDef['name'] == 'id' && !isset($fieldDef['required']))) {
+            $fieldDef['required'] = $fieldDef['name'] == 'id' || $fieldDef['required'] ? 'true' : 'false';
         }
     }
 
