@@ -3,6 +3,7 @@
 namespace SpiceCRM\includes\SpiceDictionary;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 
@@ -10,18 +11,20 @@ class SpiceDictionaryField
 {
 
     /**
-     * CLears all entries for the given definiton
+     * clear all entries for the given definition
      *
-     * @param $dictionaryDefinitionID
+     * @param string $dictionaryDefinitionID
+     * @param string $dictionaryDefinitionName
+     * @param bool $relationshipFields
      * @return void
-     * @throws \Exception
+     * @throws DatabaseException
      */
-    static function clearForDefiniton($dictionaryDefinitionID, bool $relationshipFields = false){
+    static function clearForDefiniton(string $dictionaryDefinitionID, string $dictionaryDefinitionName, bool $relationshipFields = false){
 
         // add if we should or shoudl not exclude items from relationships
         $addWhere = $relationshipFields ? '' : " AND sysdictionaryrelationship_id IS NULL";
 
-        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionarydefinition_id='{$dictionaryDefinitionID}' $addWhere");
+        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE (sysdictionaryname = '$dictionaryDefinitionName' OR sysdictionarydefinition_id='$dictionaryDefinitionID') $addWhere");
     }
 
     /**
