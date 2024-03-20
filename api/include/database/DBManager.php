@@ -1046,11 +1046,6 @@ abstract class DBManager
                     $ignorerequired = true;
                 }
 
-                //dwheeler: Once a column has been defined as null, we cannot try to force it back to !null
-                if ((isset($value['required']) && ($value['required'] === true || $value['required'] == 'true' || $value['required'] === 1))
-                    && (empty($compareFieldDefs[$name]['required']) || $compareFieldDefs[$name]['required'] != 'true')) {
-                    $ignorerequired = true;
-                }
                 $altersql = $this->alterColumnSQL($tablename, $value, $ignorerequired);
                 if (is_array($altersql)) {
                     $altersql = join("\n", $altersql);
@@ -2575,6 +2570,11 @@ abstract class DBManager
             && !empty($fieldDef['required'])) {
             $required = "NOT NULL";
         }
+
+        if ($fieldDef['required'] === 'true') {
+            $required = "NOT NULL";
+        }
+
         if ($ignoreRequired)
             $required = "";
 
