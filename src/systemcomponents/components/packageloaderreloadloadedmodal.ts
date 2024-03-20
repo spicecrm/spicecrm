@@ -108,7 +108,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
             },
             error: err => {
                 pkg.status = 'error';
-                pkg.message = {text: err.error.error.message, details: err.error.error.details.join("\n")};
+                pkg.message = {text: err.error.error.message, details: err.error.error.details?.join("\n")};
                 this.isReloadingPackage = false;
                 this.updateProgressValue();
                 this.reloadNext();
