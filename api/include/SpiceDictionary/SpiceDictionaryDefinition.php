@@ -46,7 +46,7 @@ class SpiceDictionaryDefinition
     public function repair(bool $relationships = true): ?string
     {
         // reset the cached items
-        SpiceDictionaryField::clearForDefiniton($this->id);
+        SpiceDictionaryField::clearForDefiniton($this->id, $this->name);
 
         // get all items and activate them without repair
         $definitions = [];
