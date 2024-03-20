@@ -22,7 +22,11 @@ class SpiceDictionaryItemsController
         // get the body
         $body = $req->getParsedBody();
 
-        SpiceDictionaryItems::getInstance()->addItem($body);
+        if (SpiceDictionaryItems::getInstance()->getItem($body['id'])) {
+            SpiceDictionaryItems::getInstance()->setItem($body);
+        } else {
+            SpiceDictionaryItems::getInstance()->addItem($body);
+        }
 
         return $res->withJson(['success' => true]);
     }
