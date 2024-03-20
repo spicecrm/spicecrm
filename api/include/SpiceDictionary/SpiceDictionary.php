@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use Exception;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -135,7 +136,11 @@ class SpiceDictionary
     private function repairDBTableForDictionaries(array $dictionaries): void
     {
         foreach ($dictionaries as $item) {
-            SpiceDictionaryVardefs::repairTable($item, true);
+            try {
+                SpiceDictionaryVardefs::repairTable($item, true);
+            } catch (\Throwable $e) {
+                LoggerManager::getLogger()->error("failed to repair dictionary {$item['name']} {$item['id']}" . $e->getMessage());
+            }
         }
     }
 
