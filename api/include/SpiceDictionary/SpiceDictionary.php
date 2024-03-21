@@ -125,6 +125,7 @@ class SpiceDictionary
         $this->loadSystemDumpFile();
         $this->repairDBTableForDictionaries($this->dictionary);
         SpiceInstaller::loadSystemPackage(DBManagerFactory::getInstance());
+        SpiceCache::instance()->resetFull();
         SystemStartupMode::setRecoveryMode(true);
     }
 
