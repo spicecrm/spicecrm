@@ -11,83 +11,129 @@
 
                     <div class="slds-grid slds-grid--vertical slds-grow" style="height:0">
 
-                        <div class="slds-border--bottom slds-grid slds-grid--vertical" style="height:50%">
+                        <div class="slds-border--bottom slds-grid slds-grid--vertical" [ngStyle]="{height: ( sourceType === 'bean' ) ? '50%':'auto' }">
 
                             <div class="slds-form-element slds-m-around--small" style="margin-top:0">
-                                <label class="slds-form-element__label">Variable Source</label>
+                                <label class="slds-form-element__label" for="templateVarHelperSource">Variable Source</label>
                                 <div class="slds-form-element__control">
                                     <div class="slds-select_container">
-                                        <select class="slds-select" id="templateVarHelperSource" [(ngModel)]="activeModule">
-                                            <option hidden selected><system-label label="LBL_SELECT"></system-label></option>
+                                        <select class="slds-select" id="templateVarHelperSource" [(ngModel)]="source" (ngModelChange)="sourceSelected()" [ngStyle]="{'font-style':source?'normal':'italic'}">
+                                            <option disabled hidden selected value=""><system-label label="LBL_SELECT"></system-label> &hellip;</option>
                                             <ng-container *ngFor="let module of offeredModules; trackBy: trackByFn">
-                                                <option *ngIf="module.templateObjectName !== 'current_user' && module.templateObjectName !== 'template'" [value]="module.templateObjectName">{{module.displayName}}</option>
+                                                <option *ngIf="module.templateObjectName !== 'current_user' && module.templateObjectName !== 'template'" [value]="module.templateObjectName" style="font-style:normal">{{module.displayName}}</option>
                                             </ng-container>
-                                            <option *ngIf="offeredModules.length" style="font-size:1px;background-color:#ccc" disabled>&nbsp;</option>
-                                            <option [value]="'current_user'"><system-label label="LBL_CURRENT_USER"></system-label></option>
+                                            <hr *ngIf="offeredModules.length"/>
+                                            <option value="current_user" style="font-style:normal"><system-label label="LBL_CURRENT_USER"></system-label></option>
                                             <ng-container *ngIf="hasTemplate">
-                                                <option style="font-size:1px;background-color:#ccc" disabled>&nbsp;</option>
-                                                <option [value]="'template'" style="border-top:1px solid #333333"><system-label label="LBL_TEMPLATE"></system-label></option>
+                                                <hr>
+                                                <option value="template" style="font-style:normal"><system-label label="LBL_TEMPLATE"></system-label></option>
                                             </ng-container>
+                                            <hr>
+                                            <option value="label" style="font-style:normal"><system-label label="LBL_LABEL"></system-label></option>
+                                            <hr>
+                                            <option value="function" style="font-style:normal"><system-label label="LBL_STANDALONE_FUNCTION"></system-label></option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="slds-grid slds-grid--vertical slds-grow" style="x-height:100">
-                                <div class="slds-grow" style="height:0" *ngIf="!!activeModule">
-                                    <div *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="activeModule != module.templateObjectName" class="slds-scrollable--y" style="height: 100%">
+                            <div *ngIf="!!sourceType && sourceType !== 'label'" class="slds-grid slds-grid--vertical slds-grow">
+                                <div class="slds-grow" style="height:0">
+                                    <div *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="source != module.templateObjectName" class="slds-scrollable--y" style="height: 100%">
                                         <system-module-tree [module]="module.name" (itemSelected)="treeItemSelected( $event, module.name )"></system-module-tree>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="slds-grid slds-grid--vertical" style="height:50%">
-                            <div class=" slds-input-has-icon slds-input-has-icon_left slds-m-around--x-small" role="none">
-                                <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
-                                <input class="slds-input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="fieldFilter"/>
-                            </div>
-                            <div class="slds-grow slds-scrollable--y slds-m-bottom--x-small">
-                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed" style="border-top:none">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" style="min-width:20rem">
-                                                <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
-                                            </th>
-                                            <th scope="col" class="slds-p-horizontal--x-small" style="width:100%">
-                                                <div class="slds-truncate slds-p-left--x-small"><system-label label="LBL_NAME"></system-label></div>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="isLoadingModuleFields || activeModule != module.templateObjectName">
-                                        <tr  *ngFor="let field of getFilteredFields( moduleFields[module.name] ); trackBy: trackByFn">
-                                            <td>
-                                                <div class="slds-truncate"><a href="javascript:void(0)" (click)="fieldSelected(field.name)">{{field.name}}</a></div>
-                                            </td>
-                                            <td>
-                                                <div class="slds-truncate"><system-label [label]="field.label"></system-label></div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody system-table-stencils *ngIf="isLoadingModuleFields" [columns]="2" [rows]="5"></tbody>
-                                </table>
-                            </div>
-                        </div>
+                        @if ( sourceType && sourceType !== 'function' ) {
+                        <div class="slds-grid slds-grid--vertical" style="overflow:hidden" [ngStyle]="{height: sourceType === 'label' ? 'auto' : '50%'}">
 
+                                <div class="slds-input-has-icon slds-input-has-icon_left slds-m-vertical--x-small slds-m-horizontal--small" role="none">
+                                    <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                                    <input class="slds-input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="fieldFilter" (ngModelChange)="searchInput()"/>
+                                </div>
+                                <div class="slds-grow slds-scrollable--y slds-m-bottom--x-small">
+                                    @if ( sourceType !== 'label' ) {
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed" style="border-top:none">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" style="min-width:7rem">
+                                                        <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
+                                                    </th>
+                                                    <th scope="col" class="slds-p-horizontal--x-small" style="width:100%">
+                                                        <div class="slds-truncate slds-p-left--x-small"><system-label label="LBL_NAME"></system-label></div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngFor="let module of offeredModules; trackBy: trackByFn" [class.slds-hide]="isLoadingModuleFields || source != module.templateObjectName">
+                                                <tr  *ngFor="let field of getFilteredFields( moduleFields[module.name] ); trackBy: trackByFn">
+                                                    <td>
+                                                        <div class="slds-truncate"><a href="javascript:void(0)" (click)="fieldSelected(field.name)">{{field.name}}</a></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate"><system-label [label]="field.label"></system-label></div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody system-table-stencils *ngIf="isLoadingModuleFields" [columns]="2" [rows]="5"></tbody>
+                                        </table>
+                                    } @else {
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed" style="border-top:none"
+                                               [ngClass]="{'slds-no-row-hover': !filteredLabels.length }"
+                                               [ngStyle]="{'border-bottom-width': filteredLabels.length ? '1px':0 }">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" style="min-width:7rem">
+                                                        <div class="slds-truncate"><system-label label="LBL_LABEL"></system-label></div>
+                                                    </th>
+                                                    <th scope="col" class="slds-p-horizontal--x-small" style="width:100%">
+                                                        <div class="slds-truncate slds-p-left--x-small"><system-label label="LBL_TRANSLATION"></system-label></div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for ( label of filteredLabels; track label )
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <div class="slds-truncate"><a href="javascript:void(0)" class="slds-truncate slds-text-font_monospace" (click)="labelSelected(label.key)">{{label.key}}</a></div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="slds-truncate">{{label.value}}</span>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                @empty {
+                                                    <tr><td colspan="2" class="x-slds-p-top--medium" style="padding-top:1rem">
+                                                        <system-illustration-no-records>
+                                                            <system-label [label]="fieldFilter ? 'LBL_NO_RECORDS_FOUND':'LBL_ENTER_SEARCHTERM'"></system-label>
+                                                        </system-illustration-no-records>
+                                                    </td></tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                </div>
+
+                        </div>
+                        }
                     </div>
 
-                    <div class="slds-p-horizontal--medium slds-p-bottom--medium slds-p-top--xx-small slds-border--top slds-grid slds-grid--vertical-align-end">
-                        <div class="slds-form-element slds-col--bump-right slds-grow slds-m-right--small">
-                            <label class="slds-form-element__label" ><system-label label="LBL_FIELD"></system-label></label>
-                            <div class="slds-form-element__control">
-                                <input type="text" class="slds-input" [(ngModel)]="fieldResult" disabled/>
+                    @if ( sourceType && sourceType !== 'function' ) {
+                        <div class="slds-p-horizontal--medium slds-p-bottom--medium slds-p-top--xx-small slds-border--top slds-grid slds-grid--vertical-align-end">
+                            <div class="slds-form-element slds-col--bump-right slds-grow slds-m-right--small">
+                                <label class="slds-form-element__label" ><system-label label="LBL_VARIABLE"></system-label></label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" class="slds-input" [(ngModel)]="fieldResult" disabled/>
+                                </div>
                             </div>
+                            <button class="slds-button slds-button--icon slds-button_icon-border" (click)="clearFieldResult()" [disabled]="!fieldResult.length">
+                                <system-button-icon icon="clear" size="medium"></system-button-icon>
+                                <span class="slds-assistive-text"><system-label label="LBL_UNDO"></system-label></span>
+                            </button>
                         </div>
-                        <button class="slds-button slds-button--icon slds-button_icon-border" (click)="clearFieldResult()" [disabled]="!fieldResult.length">
-                            <system-button-icon icon="clear" size="medium"></system-button-icon>
-                            <span class="slds-assistive-text"><system-label label="LBL_UNDO"></system-label></span>
-                        </button>
-                    </div>
+                    }
 
                 </div>
 
@@ -114,8 +160,8 @@
 
                     <div class="slds-border--top slds-grid slds-grid--vertical-align-end slds-p-horizontal--medium slds-p-bottom--medium slds-p-top--xx-small">
                         <div class="slds-grow slds-p-right--small">
-                            <div *ngIf="actualFunctionParams.length" class="slds-grid slds-p-top--xx-small">
-                                <ng-container *ngFor="let funcParam of actualFunctionParams; let isFirst = first; let i = index">
+                            <div *ngIf="actualFuncParams.length" class="slds-grid slds-p-top--xx-small">
+                                <ng-container *ngFor="let funcParam of actualFuncParams; let isFirst = first; let i = index">
                                     <div class="slds-form-element slds-grow" [ngClass]="{'slds-p-left--x-small':!isFirst}">
                                         <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center">
                                             <abbr *ngIf="funcParam.required" class="slds-required" title="required">* </abbr>
@@ -135,6 +181,7 @@
                                                 <span *ngIf="funcParam.unit" class="slds-form-element__addon" >{{funcParam.unit}}</span>
                                             </ng-container>
                                         </div>
+                                        <div *ngIf="showFuncParamsError && !funcParamValid( funcParam )" class="slds-form-element__help slds-text-color_error"><system-label [label]="'MSG_INPUT_REQUIRED'"></system-label>!</div>
                                     </div>
                                 </ng-container>
                             </div>
@@ -163,7 +210,7 @@
         <button class="slds-button slds-button--neutral" (click)="cancel()">
             <system-label label="LBL_CANCEL"></system-label>
         </button>
-        <button class="slds-button slds-button--brand" (click)="submit()"><system-label label="LBL_OK"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="submit()" [disabled]="!canSubmit()"><system-label label="LBL_OK"></system-label></button>
     </system-modal-footer>
 
 </system-modal>
