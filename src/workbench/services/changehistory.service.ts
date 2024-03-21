@@ -124,8 +124,8 @@ export class ChangeHistoryService {
             this.setChangedObjectFirstUpdate(changedObj);
             dbArray.some((dbObj, index: number) => {
                 if (dbObj.id != changedObj.id) return false;
-                dbArray[index] = changedObj;
-                this.dbObjects.set(changedObj.id, changedObj);
+                dbArray[index] = {...changedObj};
+                this.dbObjects.set(changedObj.id, dbArray[index]);
                 
                 return true;
             });
