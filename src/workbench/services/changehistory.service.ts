@@ -348,7 +348,25 @@ export class ChangeHistoryService {
      * check if it has changes
      * @param scope
      */
-    public hasChanges(scope: string): boolean {
+    public hasChanges(scope?: string): boolean {
+
+        if (!scope) {
+            return Object.keys(this.changes).some(scope =>
+                this.changes[scope]?.changedObjects.size > 0 || this.changes[scope]?.newObjects.size > 0
+            );
+        }
+
         return this.changes[scope]?.changedObjects.size > 0 || this.changes[scope]?.newObjects.size > 0;
+    }
+
+    /**
+     * reset all service properties
+     */
+    public fullReset() {
+        this.changes = {};
+        this.dbObjects = new Map<string, any>();
+        this.trackableObjects = new Map<string, any>();
+        this.history = [];
+        this.historyCurrentIndex = -1;
     }
 }

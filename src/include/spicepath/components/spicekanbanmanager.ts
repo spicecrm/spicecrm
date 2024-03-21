@@ -3,7 +3,7 @@ import {Component, ComponentRef, Injector, OnInit} from '@angular/core';
 import {modal} from '../../../services/modal.service';
 import {metadata} from '../../../services/metadata.service';
 
-import {SpiceBeanGuidesI} from "../interfaces/kanbanmanager.interfaces";
+import {SpiceBeanGuidesI, SpiceBeanGuideStageI} from "../interfaces/kanbanmanager.interfaces";
 
 import {KanbanManagerService} from "../services/kanbanmanager.service";
 import {SpiceKanbanManagerAddModal} from "./spicekanbanmanageraddmodal";
@@ -37,8 +37,6 @@ export class SpiceKanbanManager implements OnInit{
 
     public preview: boolean = false;
 
-    public selectedStage: any;
-
     public activeStages: any;
 
     constructor(
@@ -50,9 +48,17 @@ export class SpiceKanbanManager implements OnInit{
     ) {
     }
 
+    set selectedStage(val: SpiceBeanGuideStageI) {
+        this.kanbanManagerService.selectedStage = val;
+    }
+
+    get selectedStage() {
+        return this.kanbanManagerService.selectedStage;
+    }
+
     set selectedBeanGuide(val: SpiceBeanGuidesI) {
+        // todo reset the value after rejection
         this.kanbanManagerService.selectedBeanGuide = val;
-        this.selectedStage = undefined;
     }
 
     get selectedBeanGuide(): SpiceBeanGuidesI {

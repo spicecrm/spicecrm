@@ -12,6 +12,7 @@ import {
 import {toast} from "../../../services/toast.service";
 import _ from "underscore";
 import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
+import {modal} from "../../../services/modal.service";
 
 
 @Injectable()
@@ -39,9 +40,12 @@ export class KanbanManagerService {
 
     public minimized: boolean = false;
 
+    public selectedStage: SpiceBeanGuideStageI;
+
     public constructor(
         public backend: backend,
         public toast: toast,
+        public modal: modal,
         public changeService: ChangeHistoryService
     ) {
         this.loadItems();
@@ -62,16 +66,33 @@ export class KanbanManagerService {
      */
     private _selectedBeanGuide: SpiceBeanGuidesI;
 
-    set selectedBeanGuide(val:SpiceBeanGuidesI) {
-        this._selectedBeanGuide = val;
+    set selectedBeanGuide(val: SpiceBeanGuidesI) {
 
-        if(val) {
-            this.currentStages = this.stages.filter(dis=> dis.spicebeanguide_id == this.selectedBeanGuide.id).map(e => ({...e}));
-            this.setCurrentChecks();
-            this.setCurrentStageTexts();
-        }
+        new Promise((res) => {
 
-        this.selectedBeanGuide$.next(val);
+            if (!!this._selectedBeanGuide && this.changeService.hasChanges()) {
+                this.modal.confirm('LBL_ALL_CHANGES_WOULD_BE_DELETED', 'LBL_ARE_YOU_SURE').subscribe(answer => {
+                    if (!answer) return;
+                    this.changeService.fullReset();
+                    res(true);
+                });
+            } else {
+                res(true);
+            }
+
+        }).then(() => {
+
+            this._selectedBeanGuide = val;
+            this.selectedStage = undefined;
+
+            if (val) {
+                this.currentStages = this.stages.filter(dis => dis.spicebeanguide_id == this.selectedBeanGuide.id).map(e => ({...e}));
+                this.setCurrentChecks();
+                this.setCurrentStageTexts();
+            }
+
+            this.selectedBeanGuide$.next(val);
+        });
     }
 
     /**
