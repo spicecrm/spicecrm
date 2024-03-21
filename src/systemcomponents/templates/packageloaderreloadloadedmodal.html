@@ -33,10 +33,15 @@
                         <div class="slds-truncate">{{pkg.message?.text}}</div>
                     </td>
                     <td>
-                        <button (click)="showResponseDetails(pkg)" [disabled]="!pkg.message?.details" class="slds-button slds-button--icon">
-                            <system-button-icon *ngIf="pkg.status == 'error'" icon="info" colorclass="slds-icon-text-inverse"/>
-                            <system-button-icon *ngIf="pkg.status != 'error'" icon="info" [colorclass]="pkg.status != 'success' ? 'slds-icon-text-default' : 'slds-icon-text-success'"/>
-                        </button>
+                        <div class="slds-grid slds-grid--vertical-align-center">
+                            <button (click)="showResponseDetails(pkg)" [disabled]="!pkg.message?.details" class="slds-button slds-button--icon">
+                                <system-button-icon *ngIf="pkg.status == 'error'" icon="info" colorclass="slds-icon-text-inverse"/>
+                                <system-button-icon *ngIf="pkg.status != 'error'" icon="info" [colorclass]="pkg.status != 'success' ? 'slds-icon-text-default' : 'slds-icon-text-success'"/>
+                            </button>
+                            <button *ngIf="!!pkg.status" (click)="reloadPackage(pkg)" [disabled]="isReloadingPackage" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                <system-button-icon icon="play"/>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
