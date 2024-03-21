@@ -61,7 +61,14 @@ export class DictionaryManagerItemDetails implements OnInit{
 
 
         let saveModal = this.modal.await('LBL_SAVING');
-        this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, this.dictionaryitem).subscribe({
+
+        const toSave = {...this.dictionaryitem};
+        delete toSave.addFields;
+        delete toSave.cached;
+        delete toSave.database;
+        delete toSave.defined;
+
+        this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, toSave).subscribe({
             next: () => {
                 saveModal.emit(true);
                 saveModal.complete();
