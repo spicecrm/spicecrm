@@ -92,27 +92,43 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
             return this.handleReloadComplete();
         }
 
-        pkg.status = 'processing';
-        this.isReloadingPackage = true;
+        this.reloadPackage(pkg).then(() => {
+            this.updateProgressValue();
+            this.reloadNext();
+        });
+    }
 
-        this.backend.getRequest(`configuration/packages/package/${pkg.package}${this.repositoryAddUrl}`).subscribe({
-            next: res => {
-                pkg.status = 'reloaded';
-                pkg.message = {
-                    text: res.response.queries + ' rows',
-                    details: Object.keys(res.response.tables).map(k => `${k}: ${res.response.tables[k]}`).join("\n")
-                };
-                this.isReloadingPackage = false;
-                this.updateProgressValue();
-                this.reloadNext();
-            },
-            error: err => {
-                pkg.status = 'error';
-                pkg.message = {text: err.error.error.message, details: err.error.error.details?.join("\n")};
-                this.isReloadingPackage = false;
-                this.updateProgressValue();
-                this.reloadNext();
-            }
+    /**
+     * reload given package and return Promise
+     * @param pkg
+     * @private
+     */
+    public reloadPackage(pkg): Promise<boolean> {
+
+        this.isReloadingPackage = true;
+        pkg.status = 'processing';
+
+        return new Promise(resNext => {
+            this.backend.getRequest(`configuration/packages/package/${pkg.package}${this.repositoryAddUrl}`).subscribe({
+                next: res => {
+                    pkg.status = 'reloaded';
+                    pkg.message = {
+                        text: res.response.queries + ' rows',
+                        details: Object.keys(res.response.tables).map(k => `${k}: ${res.response.tables[k]}`).join("\n")
+                    };
+                    this.isReloadingPackage = false;
+
+                    resNext(true);
+                },
+                error: err => {
+                    pkg.status = 'error';
+                    pkg.message = {text: err.error.error.message, details: err.error.error.details?.join("\n")};
+                    this.isReloadingPackage = false;
+
+                    resNext(true)
+                }
+            });
+
         });
     }
 
