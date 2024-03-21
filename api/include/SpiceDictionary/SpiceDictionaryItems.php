@@ -110,6 +110,7 @@ class SpiceDictionaryItems
 
         if($templatesOnly){
             $whereArray[] = "sysdictionary_ref_id IS NOT NULL";
+            $whereArray[] = "sysdictionary_ref_id != ''";
         }
 
         $whereClause = count($whereArray) > 0 ? " WHERE " . implode(" AND ", $whereArray) : '';
