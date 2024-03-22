@@ -49,18 +49,11 @@ class SpiceDictionaryDefinition
         SpiceDictionaryField::clearForDefiniton($this->id, $this->name);
 
         // get all items and activate them without repair
-        $definitions = [];
-        $indexes = [];
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);
         // sort the array by sequence
         usort($items, function($a, $b){ return (int) $a['sequence'] > (int)$b['sequence'];});
 
-        foreach ($items as $item) {
-            // get the definitions and also potential indexes if coming from a template
-            $res = (new SpiceDictionaryItem($item['id']))->activate(false);
-            $definitions = array_merge($definitions, $res['definitions']);
-            $indexes = array_merge($indexes, $res['indexes']);
-        }
+        [$definitions, $indexes] = $this->getItemsDefinitionsAndIndexes($items);
 
         // load the vardefs
         $vardefDetails = $this->loadVardefs();
@@ -117,6 +110,53 @@ class SpiceDictionaryDefinition
 
         // return the sql
         return $sql;
+    }
+
+    /**
+     * get items definitions and indexes
+     * override global by custom fields and prevent field duplicates
+     * @param array $items
+     * @return array
+     * @throws Exception
+     */
+    private function getItemsDefinitionsAndIndexes(array $items): array
+    {
+        $definitions = [];
+        $indexes = [];
+
+        # load global definitions
+        foreach (array_filter($items, fn($e) => $e['scope'] == 'g') as $item) {
+            # get the definitions and also potential indexes if coming from a template
+            $res = (new SpiceDictionaryItem($item['id']))->activate(false);
+            $definitions = array_merge($definitions, $res['definitions']);
+            $indexes = array_merge($indexes, $res['indexes']);
+        }
+
+        # load custom definitions
+        foreach (array_filter($items, fn($e) => $e['scope'] == 'c') as $item) {
+            # get the definitions and also potential indexes if coming from a template
+            $res = (new SpiceDictionaryItem($item['id']))->activate(false);
+
+            # check if the field exits in global and override
+            foreach ($res['definitions'] as $resDef) {
+
+                $exists = false;
+
+                foreach ($definitions as $i => $definition) {
+                    if ($resDef->name != $definition->name) continue;
+                    $definitions[$i] = $resDef;
+                    $exists = true;
+                }
+
+                if (!$exists) {
+                    $definitions[] = $resDef;
+                }
+            }
+
+            $indexes = array_merge($indexes, $res['indexes']);
+        }
+
+        return [$definitions, $indexes];
     }
 
 
