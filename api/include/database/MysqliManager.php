@@ -241,7 +241,7 @@ class MysqliManager extends DBManager
             LoggerManager::getLogger()->fatal('sql', ['error' => $e->getMessage(), "query" => $this->lastsql]);
 
             if ($dieOnError) {
-                throw (new DatabaseException($e->getMessage()))->setErrorCode($e->getCode());
+                throw (new DatabaseException($e->getMessage() . " last query: \n\r $this->lastsql"))->setErrorCode($e->getCode());
             }
         }
 
