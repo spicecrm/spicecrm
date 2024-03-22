@@ -1186,7 +1186,14 @@ abstract class DBManager
 
             if ($key == 'required') return !isset($fielddef2['required']);
 
-            if ($key == 'len') return empty($fielddef2['len']);
+            if ($key == 'len') {
+
+                if (empty($fielddef2['len'])) continue;
+
+                if (!str_contains($fielddef2['type'], 'int')) {
+                    return false;
+                }
+            }
 
             // check if vardef definition might be a little different but correct
             // example: dbType = 'text' and len=4294967295 which is a longtext in mysql
