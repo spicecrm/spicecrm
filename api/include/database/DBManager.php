@@ -1186,13 +1186,7 @@ abstract class DBManager
 
             if ($key == 'required') return !isset($fielddef2['required']);
 
-            //Ignore len if its not set in the vardef
-            if ($key == 'len' && empty($fielddef2[$key]))
-                continue;
-            // if the length in db is greather than the vardef, ignore it
-            if ($key == 'len' && ($fielddef1[$key] >= $fielddef2[$key])) {
-                continue;
-            }
+            if ($key == 'len') return empty($fielddef2['len']);
 
             // check if vardef definition might be a little different but correct
             // example: dbType = 'text' and len=4294967295 which is a longtext in mysql
