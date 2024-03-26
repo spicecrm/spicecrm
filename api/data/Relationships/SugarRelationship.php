@@ -185,7 +185,7 @@ abstract class SugarRelationship
      * @param array $row values to be inserted into the relationship
      * @return bool|void null if new row was inserted and true if an existing row was updated
      */
-    protected function addRow($row)
+    protected function addRow(&$row)
     {
         $existing = $this->checkExisting($row);
         if (!empty($existing)) {//Update the existing row, overriding the values with those passed in
@@ -194,6 +194,9 @@ abstract class SugarRelationship
             if ($queryResult) {
                 $this->updatedRow = array_merge($existing, $row);
                 $this->updatedRow['id'] = $existing['id'];
+
+                // update id for callAfterAdd with relationship_data
+                $row['id'] = $existing['id'];
             }
             return $queryResult;
         }
