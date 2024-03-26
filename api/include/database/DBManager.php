@@ -2039,9 +2039,7 @@ abstract class DBManager
             $where .= " AND deleted=0";
         }
 
-        return "UPDATE " . $bean->getTableName() . "
-					SET " . implode(",", $columns) . "
-					$where";
+        return "UPDATE " . $bean->getTableName() . " SET " . implode(",", $columns) . "	$where";
     }
 
     /**
