@@ -31,6 +31,7 @@ $vardefs = [
             'name' => 'account_type',
             'vname' => 'LBL_TYPE',
             'type' => 'enum',
+            'dbType' => 'varchar',
             'options' => 'account_type_dom',
             'len' => 50,
             'comment' => 'The Company is of this type',
