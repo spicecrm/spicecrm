@@ -245,7 +245,7 @@ class SpiceDictionaryItems
         // write the record
         SystemDeploymentCR::deleteDBEntry($this->getItemTable($id), $id, $def['name']);
         // remove the definition
-        unset($this->dictionaryItems['id']);
+        unset($this->dictionaryItems[$id]);
         // write Cache
         $this->writeCache();
 

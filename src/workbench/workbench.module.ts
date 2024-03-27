@@ -327,6 +327,7 @@ import {DictionaryManagerRelationshipEditUser} from "./components/dictionarymana
     exports: [
         SortPipe,
         WorkbenchConfigLabel,
+        DictionaryManager,
     ]
 })
 export class WorkbenchModule {}
