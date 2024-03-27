@@ -445,6 +445,8 @@ class SpiceUIConfLoader
             'sysdictionaryrelationships',
             'sysdomaindefinitions',
             'sysdomainfields',
+            'sysdomainfieldvalidations',
+            'sysdomainfieldvalidationvalues',
         ];
 
         $definitions = SpiceDictionaryDefinitions::getInstance();
