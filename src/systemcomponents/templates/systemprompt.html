@@ -1,4 +1,4 @@
-<section role="alertdialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_prompt">
+<section role="alertdialog" class="slds-modal slds-fade-in-open slds-modal_prompt">
     <div class="slds-modal__container">
         <header class="slds-modal__header slds-theme_{{theme}}" [style.height]="headertext ? 'auto':'1rem'">
             <h2 *ngIf="headertext" class="slds-text-heading_medium slds-hyphenate"><system-label [label]="headertext"></system-label></h2>
@@ -18,7 +18,7 @@
                                 </div>
                             </div>
                             <ng-container *ngSwitchDefault>
-                                <input #inputField class="slds-input" type="text" [(ngModel)]="value" tabindex="1"/>
+                                <input #inputField class="slds-input" type="text" [(ngModel)]="value"/>
                                 <button class="slds-input__icon slds-input__icon_right slds-button slds-button--icon" [disabled]="!value" (click)="value=''">
                                     <system-button-icon icon="clear"></system-button-icon>
                                 </button>
@@ -27,7 +27,7 @@
                     </div>
                     <ng-container *ngIf="options && optionsAs !== 'button'">
                         <div *ngIf="optionsAs !== 'radio'; else radioGroupContainer" class="slds-select_container">
-                            <select #selectField class="slds-select" [(ngModel)]="value" tabindex="1">
+                            <select #selectField class="slds-select" [(ngModel)]="value">
                                 <option *ngFor="let option of options" [value]="option.value">
                                     {{option.display}}
                                 </option>

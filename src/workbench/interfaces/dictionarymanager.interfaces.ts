@@ -18,7 +18,7 @@ export interface DictionaryDefinition {
     scope: 'c'|'g';
     status: 'd'|'a'|'i';
     tablename: string;
-    sysdictionary_type: string;
+    sysdictionary_type: DictionaryType;
     sysdictionary_contenttype?: string;
     description?: string;
     version?: string;
@@ -184,3 +184,8 @@ export interface DictionaryIndexItem {
     version?: string;
     package?: string;
 }
+
+/**
+ * dictionary definition type
+ */
+export type DictionaryType = 'module' | 'metadata' | 'template' | 'relationship' | 'system';

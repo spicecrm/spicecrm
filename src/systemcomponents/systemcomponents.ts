@@ -197,6 +197,7 @@ import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexted
 import {SystemProgressIndicator} from "./components/systemprogressindicator";
 import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
 import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadloadedmodal";
+import {SystemInputDictionary} from "./components/systeminputdictionary";
 
 @NgModule({
     imports: [
@@ -381,7 +382,8 @@ import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadlo
         SystemRichTextEditorMentionDropdown,
         SystemProgressIndicator,
         SystemProgressIndicatorItem,
-        PackageLoaderReloadLoadedModal
+        PackageLoaderReloadLoadedModal,
+        SystemInputDictionary
     ],
     exports: [
         PaginationControlsComponent,
@@ -541,7 +543,8 @@ import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadlo
         SystemInputFlter,
         SystemProgressIndicator,
         SystemProgressIndicatorItem,
-        PackageLoaderReloadLoadedModal
+        PackageLoaderReloadLoadedModal,
+        SystemInputDictionary
     ]
 })
 export class SystemComponents {}
