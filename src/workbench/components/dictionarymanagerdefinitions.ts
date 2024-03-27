@@ -15,6 +15,7 @@ import {language} from '../../services/language.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition} from "../interfaces/dictionarymanager.interfaces";
 import {fieldBooleanBullet} from "../../modules/servicecomponents/fields/fieldbooleanbullet";
+import {configurationService} from "../../services/configuration.service";
 
 /**
  * list the available dictionary definitions
@@ -58,7 +59,14 @@ export class DictionaryManagerDefinitions {
 
     @Output() public expanded: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language,  public modal: modal, public injector: Injector, public modelutilities: modelutilities, public backend: backend) {
+    constructor(public dictionarymanager: dictionarymanager,
+                public metadata: metadata,
+                public language: language,
+                public modal: modal,
+                public injector: Injector,
+                public modelutilities: modelutilities,
+                private configurationService: configurationService,
+                public backend: backend) {
 
     }
 
@@ -108,6 +116,7 @@ export class DictionaryManagerDefinitions {
                 loadingModal = this.modal.await('LBL_EXECUTING');
                 this.backend.postRequest(`dictionary/definition/${definition.id}/activate`).subscribe({
                     next: () => {
+                        this.configurationService.reloadTaskData('fielddefs');
                         // set the def status
                         definition.status = status;
                         // set status for items and indexes
@@ -125,6 +134,8 @@ export class DictionaryManagerDefinitions {
                 loadingModal = this.modal.await('LBL_EXECUTING');
                 this.backend.deleteRequest(`dictionary/definition/${definition.id}/activate`).subscribe({
                     next: () => {
+                        this.configurationService.reloadTaskData('fielddefs');
+
                         // set the def status
                         definition.status = status;
 

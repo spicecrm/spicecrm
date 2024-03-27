@@ -23,17 +23,20 @@
                     </select>
                 </div>
             </div>
-            <div class="slds-large-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
+            <div class="slds-large-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element" [ngClass]="{'slds-has-error': getMessages('sysdictionary_type').length > 0}">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_type">
-                        <option value="module">module</option>
-                        <option value="metadata">metadata</option>
-                        <option value="template">template</option>
-                        <option value="relationship">relationship</option>
-                        <option value="system">system</option>
-                    </select>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_type" (ngModelChange)="handleTypeChange($event)">
+                            <option value="module">module</option>
+                            <option value="metadata">metadata</option>
+                            <option value="template">template</option>
+                            <option value="relationship">relationship</option>
+                            <option value="system">system</option>
+                        </select>
+                    </div>
                 </div>
+                <div class="slds-form-element__help" *ngFor="let message of getMessages('sysdictionary_type')">{{message.message}}</div>
             </div>
             <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"/></label>

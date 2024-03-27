@@ -12,6 +12,7 @@
         <system-checkbox *ngSwitchCase="'boolean'" [disabled]="true" [ngModel]="entry.data[field.name]"> </system-checkbox>
         <system-input-text *ngSwitchCase="'foreign'" disabled [ngModel]="getForeignName(field.name)"> </system-input-text>
         <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="false" [fieldvalue]="entry.data[field.name]"></administration-configurator-item-role>
+        <system-input-dictionary *ngSwitchCase="'dictionary'" [disabled]="true" [ngModel]="entry.data[field.name]"></system-input-dictionary>
         <input *ngSwitchDefault type="text" class="slds-input" [ngModel]="entry.data[field.name]" disabled/>
     </div>
     <ng-template #editfield>
@@ -33,6 +34,7 @@
                     <system-select-option *ngFor="let foreignKey of getForeignKeys(field.name)" [value]="foreignKey.value" [display]="foreignKey.display"/>
                 </system-select>
                 <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
+                <system-input-dictionary *ngSwitchCase="'dictionary'" [(ngModel)]="entry.data[field.name]"></system-input-dictionary>
                 <input *ngSwitchDefault type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
             </div>
         </div>

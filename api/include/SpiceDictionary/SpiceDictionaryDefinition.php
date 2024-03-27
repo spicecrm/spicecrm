@@ -354,7 +354,30 @@ class SpiceDictionaryDefinition
         // remoces teh records form teh definitions store
         SpiceDictionaryDefinitions::getInstance()->deleteDefinition($this->id);
 
+        $this->unlinkSysModule();
+
         return true;
+    }
+
+    /**
+     * unlink sys module entry
+     * @return void
+     * @throws \Exception
+     */
+    private function unlinkSysModule()
+    {
+        $db = DBManagerFactory::getInstance();
+        $moduleId = $db->getOne("SELECT id FROM sysmodules WHERE sysdictionarydefinition_id = '$this->id'");
+        $table = 'sysmodules';
+
+        if (!$moduleId) {
+            $moduleId = $db->getOne("SELECT id FROM syscustommodules WHERE sysdictionarydefinition_id = '$this->id'");
+            $table = 'syscustommodules';
+        }
+
+        $db->updateQuery($table, ['id' => $moduleId], ['id' => $moduleId, 'sysdictionarydefinition_id' => '']);
+
+        SpiceModules::getInstance()->loadModules(true);
     }
 
 

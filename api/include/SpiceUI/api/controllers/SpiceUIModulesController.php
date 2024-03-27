@@ -69,7 +69,7 @@ class SpiceUIModulesController
             $retArray = [];
 
             // select from sysmodules
-            $dbresult = $db->query("SELECT * FROM sysmodules");
+            $dbresult = $db->query("SELECT *, 'global' as scope FROM sysmodules");
             while ($m = $db->fetchByAssoc($dbresult)) {
                 // check if we have the module or if it has been filtered out
                 if (!$m['acl'] || $current_user->is_admin || $m['module'] == 'Home' || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
@@ -77,7 +77,7 @@ class SpiceUIModulesController
             }
 
             // select from custom modules and also allow override
-            $dbresult = $db->query("SELECT * FROM syscustommodules");
+            $dbresult = $db->query("SELECT *, 'custom' as scope FROM syscustommodules");
             while ($m = $db->fetchByAssoc($dbresult)) {
                 // check if we have the module or if it has been filtered out
                 if (!$m['acl'] || $current_user->is_admin || $m['module'] == 'Home' || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
@@ -101,6 +101,7 @@ class SpiceUIModulesController
                 if($module['module'] == 'Home' || count(array_filter($aclArray, function($access){return $access;})) > 0){
                     $retArray[$module['module']] = [
                         'id' => $module['id'],
+                        'scope' => $module['scope'],
                         'icon' => $module['icon'],
                         'actionset' => $module['actionset'],
                         'module' => $module['module'],
