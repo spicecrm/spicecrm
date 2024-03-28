@@ -24,7 +24,12 @@ class SpiceDictionaryRelationship
     {
         $this->id = $id;
 
-        $relationship = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionaryrelationships WHERE id='{$id}' UNION SELECT *, 'c' scope FROM syscustomdictionaryrelationships WHERE id='{$id}'");
+        $relationship = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'g' scope FROM sysdictionaryrelationships WHERE id='{$id}'");
+
+        if (!$relationship) {
+            $relationship = DBManagerFactory::getInstance()->fetchOne("SELECT *, 'c' scope FROM syscustomdictionaryrelationships WHERE id='{$id}'");
+        }
+
         if(!$relationship){
             throw new Exception("Relationship with id {$id} not found");
         }
