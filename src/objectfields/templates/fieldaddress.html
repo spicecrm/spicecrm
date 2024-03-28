@@ -10,84 +10,82 @@
     </field-generic-display>
 </div>
 <div *ngIf="isEditable() && isEditMode()" [system-overlay-loading-spinner]="isLoading" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <fieldset>
-        <div class="slds-form-element__group">
-            <div class="slds-grid slds-grid--vertical-align-center">
-                <system-googleplaces-autocomplete (address)="addressSelected($event)" [disabled]="isReferenced" class="slds-grow"></system-googleplaces-autocomplete>
-            </div>
-            <div class="slds-grid slds-gutters_direct-xx-small">
-                <div class="slds-form-element slds-col">
-                    <field-label [fieldname]="fieldName('street')" labellength="short"></field-label>
-                    <div class="slds-form-element__control">
-                        <input #focus type="text" class="slds-input" [(ngModel)]="street" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
-                    </div>
-                    <field-messages [fieldname]="fieldName('street')"></field-messages>
-                </div>
-                <div *ngIf="!hidestreetnumber" class="slds-form-element slds-col slds-size--1-of-6 ">
-                    <field-label [fieldname]="fieldName('street_number')" labellength="short"></field-label>
-                    <div class="slds-form-element__control">
-                        <input #focus type="text" class="slds-input" [(ngModel)]="street_number" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
-                    </div>
-                    <field-messages [fieldname]="fieldName('street_number')"></field-messages>
-                </div>
-                <div *ngIf="!hidenumbersuffix" class="slds-form-element slds-col slds-size--1-of-6 ">
-                    <field-label [fieldname]="fieldName('street_number_suffix')" labellength="short"></field-label>
-                    <div class="slds-form-element__control">
-                        <input #focus type="text" class="slds-input" [(ngModel)]="street_number_suffix" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
-                    </div>
-                    <field-messages [fieldname]="fieldName('street_number_suffix')"></field-messages>
-                </div>
-                <div *ngIf="!!referenceMetadata" class="slds-form-element slds-col slds-size--1-of-6 ">
-                    <label system-title="LBL_REFERENCE" class="slds-truncate slds-form-element__label">
-                        <system-label label="LBL_REFERENCE"></system-label>
-                    </label>
-                    <system-checkbox [(ngModel)]="isReferenced" hidelabel [disabled]="model.isNew && !isReferenced" class="slds-m-left--xx-small spice-display-block">
-                    </system-checkbox>
-                </div>
-
-            </div>
-            <div  *ngIf="!hideattn" class="slds-form-element slds-col slds-size--1-of-1">
-                <field-label [fieldname]="fieldName('attn')" labellength="short"></field-label>
+    <div class="slds-form-element__group">
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-googleplaces-autocomplete (address)="addressSelected($event)" [disabled]="isReferenced" class="slds-grow"></system-googleplaces-autocomplete>
+        </div>
+        <div class="slds-grid slds-gutters_direct-xx-small">
+            <div class="slds-form-element slds-col">
+                <field-label [fieldname]="fieldName('street')" labellength="short"></field-label>
                 <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="attn" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
+                    <input #focus type="text" class="slds-input" [(ngModel)]="street" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
                 </div>
-                <field-messages [fieldname]="fieldName('attn')"></field-messages>
+                <field-messages [fieldname]="fieldName('street')"></field-messages>
             </div>
-            <div class="slds-grid">
-                <div class="slds-form-element slds-size--1-of-5 slds-col slds-p-right--xx-small">
-                    <field-label [fieldname]="fieldName('postalcode')" labellength="short"></field-label>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="postalcode" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
-                    </div>
-                    <field-messages [fieldname]="fieldName('postalcode')"></field-messages>
+            <div *ngIf="!hidestreetnumber" class="slds-form-element slds-col slds-size--1-of-6 ">
+                <field-label [fieldname]="fieldName('street_number')" labellength="short"></field-label>
+                <div class="slds-form-element__control">
+                    <input #focus type="text" class="slds-input" [(ngModel)]="street_number" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
                 </div>
-                <div class="slds-form-element slds-p-left--xx-small slds-col">
-                    <field-label [fieldname]="fieldName('city')" labellength="short"></field-label>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="city" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
-                    </div>
-                    <field-messages [fieldname]="fieldName('city')"></field-messages>
-                </div>
-                <div *ngIf="!hidedistrict" class="slds-form-element slds-col slds-size--2-of-5 slds-p-left--xx-small">
-                    <field-label [fieldname]="fieldName('district')" labellength="short"></field-label>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="district" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
-                    </div>
-                    <field-messages [fieldname]="fieldName('district')"></field-messages>
-                </div>
+                <field-messages [fieldname]="fieldName('street_number')"></field-messages>
             </div>
-            <div class="slds-grid">
-                <div *ngIf="!hidestate" class="slds-form-element slds-col slds-size--1-of-2 slds-p-right--xx-small">
-                    <field-label [fieldname]="fieldName('state')" labellength="short"></field-label>
-                    <system-input-state [(ngModel)]="state" [disabled]="isReferenced" [country]="country"></system-input-state>
-                    <field-messages [fieldname]="fieldName('state')"></field-messages>
+            <div *ngIf="!hidenumbersuffix" class="slds-form-element slds-col slds-size--1-of-6 ">
+                <field-label [fieldname]="fieldName('street_number_suffix')" labellength="short"></field-label>
+                <div class="slds-form-element__control">
+                    <input #focus type="text" class="slds-input" [(ngModel)]="street_number_suffix" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
                 </div>
-                <div class="slds-form-element slds-p-left--xx-small slds-col">
-                    <label class="slds-form-element__label"><system-label label="LBL_COUNTRY"></system-label></label>
-                    <system-input-country [(ngModel)]="country" [disabled]="isReferenced"></system-input-country>
-                    <field-messages [fieldname]="fieldName('country')"></field-messages>
+                <field-messages [fieldname]="fieldName('street_number_suffix')"></field-messages>
+            </div>
+            <div *ngIf="!!referenceMetadata" class="slds-form-element slds-col slds-size--1-of-6 ">
+                <label system-title="LBL_REFERENCE" class="slds-truncate slds-form-element__label">
+                    <system-label label="LBL_REFERENCE"></system-label>
+                </label>
+                <system-checkbox [(ngModel)]="isReferenced" hidelabel [disabled]="model.isNew && !isReferenced" class="slds-m-left--xx-small spice-display-block">
+                </system-checkbox>
+            </div>
+
+        </div>
+        <div  *ngIf="!hideattn" class="slds-form-element slds-col slds-size--1-of-1">
+            <field-label [fieldname]="fieldName('attn')" labellength="short"></field-label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="attn" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
+            </div>
+            <field-messages [fieldname]="fieldName('attn')"></field-messages>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--1-of-5 slds-col slds-p-right--xx-small">
+                <field-label [fieldname]="fieldName('postalcode')" labellength="short"></field-label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="postalcode" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
                 </div>
+                <field-messages [fieldname]="fieldName('postalcode')"></field-messages>
+            </div>
+            <div class="slds-form-element slds-p-left--xx-small slds-col">
+                <field-label [fieldname]="fieldName('city')" labellength="short"></field-label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="city" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
+                </div>
+                <field-messages [fieldname]="fieldName('city')"></field-messages>
+            </div>
+            <div *ngIf="!hidedistrict" class="slds-form-element slds-col slds-size--2-of-5 slds-p-left--xx-small">
+                <field-label [fieldname]="fieldName('district')" labellength="short"></field-label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="district" [disabled]="isReferenced" [ngModelOptions]="modelOptions"/>
+                </div>
+                <field-messages [fieldname]="fieldName('district')"></field-messages>
             </div>
         </div>
-    </fieldset>
+        <div class="slds-grid">
+            <div *ngIf="!hidestate" class="slds-form-element slds-col slds-size--1-of-2 slds-p-right--xx-small">
+                <field-label [fieldname]="fieldName('state')" labellength="short"></field-label>
+                <system-input-state [(ngModel)]="state" [disabled]="isReferenced" [country]="country"></system-input-state>
+                <field-messages [fieldname]="fieldName('state')"></field-messages>
+            </div>
+            <div class="slds-form-element slds-p-left--xx-small slds-col">
+                <label class="slds-form-element__label"><system-label label="LBL_COUNTRY"></system-label></label>
+                <system-input-country [(ngModel)]="country" [disabled]="isReferenced"></system-input-country>
+                <field-messages [fieldname]="fieldName('country')"></field-messages>
+            </div>
+        </div>
+    </div>
 </div>

@@ -34,6 +34,29 @@ $routes = [
         ]
     ],
     [
+        'method'      => 'get',
+        'route'       => '/module/OutputTemplates/formodule/{module}/{id}',
+        'class'       => OutputTemplatesController::class,
+        'function'    => 'getModuleTemplates',
+        'description' => 'get all templates of the given module',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'module' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'id' => [
+                'in' => 'path',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'description' => 'id of the bean',
+                'required' => true
+            ]
+        ]
+    ],
+    [
         'method'      => 'post',
         'route'       => '/module/OutputTemplates/previewhtml',
         'oldroute'    => '/OutputTemplates/previewhtml',

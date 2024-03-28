@@ -58,7 +58,7 @@ class CampaignTask extends SpiceBean
      * @return array
      * @throws Exception
      */
-    function activate(string $status = 'targeted'): array
+    function activate(string $status = 'targeted', $additionalParams = []): array
     {
         $delQuery = "DELETE FROM campaign_log WHERE campaign_id='$this->campaign_id' AND campaigntask_id='$this->id' AND activity_type='$status'";
         $this->db->query($delQuery);
@@ -76,15 +76,23 @@ class CampaignTask extends SpiceBean
         $guidSQL = $this->db->getGuidSQL();
         $currentDate = $this->db->now();
 
+        // handle additional params
+        $addQueryCols = '';
+        $addQueryValues = '';
+        if(!empty($additionalParams)){
+            $addQueryCols = ", ".implode(", ", array_keys($additionalParams));
+            $addQueryValues = ", "."'".implode("', '", array_values($additionalParams))."'";
+        }
+
         $chunks = array_chunk($targets, 500);
 
         foreach ($chunks as $chunkTargets) {
 
-            $query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id) VALUES ";
+            $query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id $addQueryCols) VALUES ";
 
             foreach ($chunkTargets as $target) {
 
-                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}', '$status', 0, $currentDate, '$this->assigned_user_id'),";
+                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}', '$status', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
             }
 
             # remove the last comma from the query
@@ -508,12 +516,20 @@ class CampaignTask extends SpiceBean
         return $email;
     }
 
+    /**
+     * @deprecated because of typo. Use generateServiceFeedbacks from now on
+     * @return void
+     * @throws Exception
+     */
+    public function genereateServiceFeedbacks(){
+        $this->generateServiceFeedbacks();
+    }
 
     /**
      * send queued emails for email campaign tasks thewre the log entry is set to queued
      * @return bool
      */
-    function genereateServiceFeedbacks(){
+    public function generateServiceFeedbacks(){
         $queuedFeedbacks = $this->db->query("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Feedback' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC");
         while($queuedFeedback = $this->db->fetchByAssoc($queuedFeedbacks)){
             /// load the campaign task if we have a new one

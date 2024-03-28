@@ -31,8 +31,14 @@ class SystemTemplateFunctions {
         if(!$date){
             $date = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef")." ". AuthenticationController::getInstance()->getCurrentUser()->getPreference("timef"), $inputString);
         }
+        if(!$date){
+            $date = DateTime::createFromFormat(TimeDate::DB_DATE_FORMAT, $inputString);
+        }
+        if(!$date){
+            $date = DateTime::createFromFormat(AuthenticationController::getInstance()->getCurrentUser()->getPreference("datef"), $inputString);
+        }
 
-        return $date->format( $format );
+        return $date ? $date->format( $format ) : $inputString;
 
     }
 
@@ -188,7 +194,7 @@ class SystemTemplateFunctions {
         if(!$c) return $inputString;
 
         // get the label
-        $label = $db->fetchOne("SELECT st.* FROM syslanguagetranslations st, syslanguagelabels sl WHERE st.syslanguagelabel_id = sl.id AND sl.name = 'LBL_COUNTRY_AT' AND st.syslanguage = '{$language}'");
+        $label = $db->fetchOne("SELECT st.* FROM syslanguagetranslations st, syslanguagelabels sl WHERE st.syslanguagelabel_id = sl.id AND sl.name = '{$c['label']}' AND st.syslanguage = '{$language}'");
 
         return $label['translation_default'] ?: $inputString;
     }

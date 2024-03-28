@@ -3,7 +3,7 @@
         <div *ngIf="label" class="slds-form-element__control">
             <div class="slds-pill_container">
               <span class="slds-pill slds-size--1-of-1 slds-p-horizontal--xx-small" [ngClass]="{'slds-theme--shade': _disabled}">
-                <span class="slds-pill__label"><system-label [label]="label"></system-label>&nbsp;({{label}})</span>
+                  <span class="slds-pill__label"><system-label [label]="label"></system-label><span *ngIf="!_hideTechnicalName">&nbsp;({{label}})</span></span>
                 <button *ngIf="!_disabled" class="slds-button slds-button--icon slds-pill__remove" (click)="clearField()">
                   <system-button-icon [icon]="'close'"></system-button-icon>
                 </button>

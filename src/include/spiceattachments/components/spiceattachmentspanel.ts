@@ -12,7 +12,7 @@ import {
     Optional,
     SkipSelf,
     AfterViewInit,
-    ComponentRef
+    ComponentRef, Input
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -26,6 +26,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {SpiceAttachmentAddImageModal} from "./spiceattachmentaddimagemodal";
 import {Subscription} from "rxjs";
+import {backend} from "../../../services/backend.service";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * renders a panel for the attachments. The modelatatchment service can be provided by the component or by the parent
@@ -49,9 +51,25 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     public uploadfiles: any[] = [];
 
     /**
+     * set to true if we know the upload files exist and thus do not need to be extra uploaded
+     */
+    public uploadfilesExist: boolean = false;
+
+    public totalFileSize: string;
+
+    public maxUpload: string;
+
+    public maxUploadBytes: number;
+
+    /**
      * emits when the attachments are loaded
      */
     @Output() public attachmentsLoaded: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * a paramater to be set to force the previe of the attachments ina  modal
+     */
+    @Input() public forceModalPreview: boolean = false;
 
     /**
      * @ignore
@@ -69,23 +87,6 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      */
     public subscriptions: Subscription = new Subscription();
 
-    /**
-     * contructor sets the module and id for the laoder
-     * @param _modelattachments
-     * @param parentmodelattachments
-     * @param language
-     * @param modal
-     * @param model
-     * @param view
-     * @param renderer
-     * @param toast
-     * @param metadata
-     * @param modalservice
-     * @param injector
-     * @param parentModel
-     * @param navigationtab
-     * @param broadcast
-     */
     constructor(
         public _modelattachments: modelattachments,
         @Optional() @SkipSelf() public parentmodelattachments: modelattachments,
@@ -101,9 +102,17 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         @SkipSelf() private parentModel: model,
         public navigationtab: navigationtab,
         public broadcast: broadcast,
+        public backend: backend,
+        private configuration: configurationService
     ) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
+
+        this.setUploadSettings(this.model.getField('mailbox_id'));
+
+        this.model.observeFieldChanges('mailbox_id').subscribe(id =>
+            this.setUploadSettings(id)
+        );
     }
 
     /**
@@ -127,6 +136,21 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         return this.model.isEditing && (!this.view || this.view.isEditable);
     }
 
+    private setUploadSettings(mailboxId: string) {
+        if (!!mailboxId) {
+            let key = ['outbound', 'outboundsingle', 'outboundmass'];
+            let mailboxData =[];
+            key.forEach((k) => {
+                if(this.configuration.getData('mailboxes'+k) != false){
+                    mailboxData = (this.configuration.getData('mailboxes'+k));
+                }
+            });
+            const selectedMailboxData = mailboxData.find(id => id.value == mailboxId);
+            this.maxUploadBytes = selectedMailboxData.max_upload;
+            this.maxUpload = this.modelattachments.humanFileSize(this.maxUploadBytes);
+        }
+    }
+
     /**
      * initializes the model attachments service and loads the attachments
      */
@@ -134,14 +158,34 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         this.modelattachments.getAttachments(this.componentconfig.systemCateogryId).subscribe(loaded => {
             this.attachmentsLoaded.emit(true);
             this.loadInputFiles();
+            this.countSize();
         });
+    }
+
+    public countSize() {
+        let sum = 0;
+        this.modelattachments.files.forEach((f) => {
+            sum += parseInt(f.filesize);
+        });
+        this.totalFileSize = this.modelattachments.humanFileSize(sum);
+        if (sum > this.maxUploadBytes) {
+            let headerText = `LBL_ERROR`;
+            let text = this.language.getLabelFormatted('LBL_EXCEEDS_MAX_ATTACHMENTS', [this.totalFileSize, this.maxUpload]);
+            this.modal.info(text, headerText);
+        }
+        this.model.setField('attachments_size', sum);
+        this.model.setField('attachments_count',  this.modelattachments.files.length);
     }
 
     /**
      * loads files that are to be added dynamically in the call from a compoinent adding a base64 file
      */
     public loadInputFiles() {
-        this.modelattachments.uploadAttachmentsBase64FromArray(this.uploadfiles);
+        if(this.uploadfilesExist){
+            this.modelattachments.addFiles(this.uploadfiles);
+        } else {
+            this.modelattachments.uploadAttachmentsBase64FromArray(this.uploadfiles);
+        }
     }
 
     /**
@@ -252,6 +296,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId).subscribe({
             next: () => {
                 this.broadcastUpload();
+                this.loadFiles();
             }
         });
     }
@@ -267,6 +312,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             modalRef.instance.responseSubject.subscribe({
                 next: () => {
                     this.broadcastUpload();
+                    this.loadFiles();
                 }
             })
         });

@@ -1,0 +1,31 @@
+<system-modal size="large">
+    <system-modal-header (close)="cancel()">{{model.module}}</system-modal-header>
+    <system-modal-content #addcontainer margin="none">
+        <div class="slds-p-around--x-small" [ngClass]="{'slds-hide': step != 'user'}">
+            <system-section titlelabel="LBL_USER_PROFILE" [alwaysExpanded]="true">
+                <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
+            </system-section>
+            <system-section titlelabel="LBL_USER_PASSWORD" [alwaysExpanded]="true">
+                <user-create-password [(ngModel)]="password" (forcereset)="forceReset" (systemgenerated)="systemGenerated" (sendbyemail)="sendByEmail" (extauthonly)="externalAuthOnly"></user-create-password>
+            </system-section>
+        </div>
+        <div [ngClass]="{'slds-hide': step != 'role'}">
+            <user-create-roles [(ngModel)]="userRoles" [scopefilter]="scopeFilter"/>
+        </div>
+        <div [ngClass]="{'slds-hide': step != 'acl'}">
+            <user-create-profiles [(ngModel)]="userProfiles" [scopefilter]="scopeFilter"/>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div class="slds-grow slds-text-align--left slds-p-horizontal--small">
+                <system-progress-indicator system-progress-indicator-shade [(ngModel)]="step">
+                    <system-progress-indicator-item *ngFor="let step of steps" [value]="step.value" [label]="step.label" [status]="getStatus(step.value)"></system-progress-indicator-item>
+                </system-progress-indicator>
+            </div>
+            <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" *ngIf="step != 'acl'" (click)="next()"><system-label label="LBL_NEXT"></system-label></button>
+            <button class="slds-button slds-button--brand" *ngIf="step == 'acl'" [disabled]="!canSave" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

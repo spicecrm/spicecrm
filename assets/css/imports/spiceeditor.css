@@ -37,6 +37,7 @@
     max-height: none;
     resize: vertical;
     overflow: auto;
+    white-space: normal;
 }
 
 .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused){
@@ -78,4 +79,8 @@
 
 .ck-toolbar {
     display: none;
+}
+
+.ck.ck-list__item .ck-button.ck-on:hover:not(.ck-disabled), .ck.ck-list__item .ck-button.ck-on {
+    background: var(--brand-primary) !important;
 }

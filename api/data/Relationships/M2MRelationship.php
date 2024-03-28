@@ -144,8 +144,8 @@ class M2MRelationship extends SugarRelationship
             $lhs->$lhsLinkName->addBean($rhs);
             $rhs->$rhsLinkName->addBean($lhs);
 
-            $this->callAfterAdd($lhs, $rhs, $lhsLinkName);
-            $this->callAfterAdd($rhs, $lhs, $rhsLinkName);
+            $this->callAfterAdd($lhs, $rhs, $lhsLinkName, $dataToInsert);
+            $this->callAfterAdd($rhs, $lhs, $rhsLinkName, $dataToInsert);
 
         $this->reindexBeans($lhs, $rhs);
 
@@ -650,7 +650,7 @@ class M2MRelationship extends SugarRelationship
         ];
 
         // get results from FTS (make sure 'filterArray' is within in an array itself)
-        $filteredResults = SpiceFTSHandler::getInstance()->searchModule($module, $searchterm, [], [], -1, 0, [$filterArray]);
+        $filteredResults = SpiceFTSHandler::getInstance()->searchModule($module, $searchterm, [], [], ($params['limit'] ? $params['limit'] : 25), ($params['offset'] ? $params['offset'] : 0), [$filterArray]);
 
         // collect FTS ids
         if ($hits = $filteredResults['hits']['hits']) {

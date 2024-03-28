@@ -50,10 +50,6 @@ export class SystemUtilityIcon implements OnChanges{
      */
     @Input() public title: string = '';
 
-    /**
-     * emits the click event
-     */
-    @Output() public click: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
 
     constructor(public cdref: ChangeDetectorRef) {
 

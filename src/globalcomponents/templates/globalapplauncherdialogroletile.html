@@ -1,13 +1,12 @@
 <div class="slds-app-launcher__tile slds-text-link_reset slds-is-relative" [style.box-shadow]="metadata.role != role.id ? null : '0 0 2px 2px var(--brand-primary-active)'">
     <div class="slds-app-launcher__tile-figure">
-        <span class="slds-avatar slds-avatar--large slds-align--absolute-center {{role.icon}}">{{identifier}}</span>
+        <span class="slds-avatar slds-avatar--large slds-align--absolute-center {{role.icon}}"><system-label [label]="role.label" length="short"/></span>
     </div>
     <div class="slds-app-launcher__tile-body">
-        <a href="javascript:void(0);">{{name}}</a>
-        <p>
-            {{description}}
-            <button #morebutton class="slds-button slds-button_reset slds-text-link" [ngClass]="{'slds-hide': !descriptionfull}" [title]="descriptionfull"><system-label label="LBL_MORE"></system-label></button>
-        </p>
+        <a href="javascript:void(0);"><system-label [label]="role.label"/></a>
+        <div class="slds-hyphenate slds-line-clamp_x-small">
+            <system-label [label]="role.label" length="long"/>
+        </div>
         <div class="slds-popover slds-popover_tooltip slds-nubbin_top slds-hide" *ngIf="descriptionfull" role="tooltip" style="position:absolute;top:100px;left:165px">
             <div class="slds-popover__body">{{descriptionfull}}</div>
         </div>

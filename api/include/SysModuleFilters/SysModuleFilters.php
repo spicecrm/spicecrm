@@ -174,8 +174,9 @@ class SysModuleFilters
                 $focus = new $class();
                 if (method_exists($focus, $method)) {
                     $ids = $focus->$method($bean);
-                    if (is_array($ids) && count($ids) > 0) {
-                        $whereClause = (!empty($whereClause) ? "($whereClause) AND " : "") . " ($tablename.id IN ('" . implode("','", $ids) . "'))";
+                    if (is_array($ids)) {
+                        // if ids array empty return false
+                        $whereClause = count($ids) == 0 ? false : (!empty($whereClause) ? "($whereClause) AND " : "") . " ($tablename.id IN ('" . implode("','", $ids) . "'))";
                     } else if($ids){
                         $whereClause = (!empty($whereClause) ? "($whereClause) AND " : "") . " ({$ids})";
                     }
@@ -212,10 +213,18 @@ class SysModuleFilters
         $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
         $userIds = "'" . join("','", $userIds) . "'";
 
-
         $filterCondition = "";
+
+        // build where clause for groupscope and/or groupstate
+        if(!empty($module)) $filteredListCondition = $this->buildSQLWhereClauseForLists($group, $tablename, $module, $current_user->id);
+
+        if(!empty($filteredListCondition)) $filterCondition .= " $filteredListCondition ";
+
         if (!empty($filterConditionArray)) {
-            $filterCondition = '(' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
+
+           if(!empty($filterCondition)) $filterCondition .= " {$group->logicaloperator} ";
+
+            $filterCondition .= ' (' . implode(' ' . $group->logicaloperator . ' ', $filterConditionArray) . ')';
             if ($group->groupscope == 'own') {
                 $userIds = array_merge([$current_user->id], $absence->getSubstituteIDs());
                 $userIds = "'" . join("','", $userIds) . "'";
@@ -245,6 +254,62 @@ class SysModuleFilters
         }
 
         return $filterCondition;
+    }
+
+    /**
+     * special handling for filtered lists by groupscope & groupstate
+     * filter list by
+     * groupscope: all/own/creator
+     * groupstate: active/inactive/activeAndInactive
+     *
+     * @param $group
+     * @param string $tablename
+     * @param string $module
+     * @param $currentUserId
+     * @return string
+     */
+    private function buildSQLWhereClauseForLists($group, string $tablename, string $module, $currentUserId): string {
+
+        $filteredListCondition = "";
+
+        // special handling for filtered lists by groupscope
+        if(property_exists($group, 'groupscope')) {
+            if($group->groupscope == 'all' || $group->groupscope == 'own' || $group->groupscope == 'creator') {
+                switch ($group->groupscope) {
+                    case 'all':
+                        // build query also for 'all' to avoid errors
+                        break;
+                    case 'own':
+                        $filteredListCondition .= " ({$tablename}.assigned_user_id = {$currentUserId}) ";
+                        break;
+                    case 'creator':
+                        $filteredListCondition .= " ({$tablename}.created_by = {$currentUserId}) ";
+                        break;
+                }
+            }
+        }
+
+        // special handling for filtered lists by groupstate
+        if(property_exists($group, 'groupstate')) {
+            $bean = BeanFactory::getBean($module);
+            if(property_exists($bean, 'is_inactive') && ($group->groupstate == 'active' || $group->groupstate == 'inactive' || $group->groupstate == 'activeAndInactive')) {
+                if(!empty($filteredListCondition)) $filteredListCondition .= " {$group->logicaloperator} ";
+
+                switch ($group->groupstate) {
+                    case 'active':
+                        $filteredListCondition .= " ({$tablename}.is_inactive = '0') ";
+                        break;
+                    case 'inactive':
+                        $filteredListCondition .= " ({$tablename}.is_inactive = 1) ";
+                        break;
+                    case 'activeAndInactive':
+                        $filteredListCondition .= " ({$tablename}.is_inactive = 0 OR {$tablename}.is_inactive = 1) ";
+                        break;
+                }
+            }
+        }
+
+        return $filteredListCondition;
     }
 
     /**
@@ -480,6 +545,20 @@ class SysModuleFilters
                 $date = new DateTime('now', new DateTimeZone($timeZone));
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return "({$tablename}.{$condition->field} > '$to')";
+            case 'nyearsago':
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $dateToday = new DateTime('now', new DateTimeZone($timeZone));
+                $dateToday->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $seed->field_defs[$condition->field]['type'] === 'date') {
+                    $sql = "({$tablename}.{$condition->field} = '{$dateToday->format( TimeDate::DB_DATE_FORMAT )}')";
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $sql = "({$tablename}.{$condition->field} >= '{$from}' AND {$tablename}.{$condition->field} <= '{$to}')";
+                }
+                return $sql;
         }
     }
 
@@ -569,6 +648,20 @@ class SysModuleFilters
                     break;
                 case 'creator':
                     $filterCondition['must'][] = ["terms" => ["created_by" => array_merge([$current_user->id], $absence->getSubstituteIDs())]];
+                    break;
+            }
+        }
+
+        if($group->groupstate == 'active' || $group->groupstate == 'inactive' || $group->groupstate == 'activeAndInactive') {
+            switch ($group->groupstate) {
+                case 'active':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['0']]];
+                    break;
+                case 'inactive':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['1']]];
+                    break;
+                case 'activeAndInactive':
+                    $filterCondition['must'][] = ["terms" => ["is_inactive" => ['1', '0']]];
                     break;
             }
         }
@@ -839,6 +932,19 @@ class SysModuleFilters
                 $date = new DateTime('now', new DateTimeZone($timeZone));
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return ['range' => [$condition->field => ["gt" => $to]]];
+            case 'nyearsago':
+                $seed = BeanFactory::getBean($this->filtermodule);
+                $currentUser = AuthenticationController::getInstance()->getCurrentUser();
+                $timeZone = $currentUser->getPreference('timezone');
+                $dateToday = new DateTime('now', new DateTimeZone($timeZone));
+                $dateToday->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $seed->field_defs[$condition->field]['type'] === 'date') {
+                    return ['term' => [$condition->field . '.raw' => $dateToday->format( TimeDate::DB_DATE_FORMAT )]];
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($dateToday, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    return ['range' => [$condition->field => ['gte' => $from, "lte" => $to, "include_lower" => true, "include_upper" => true]]];
+                }
         }
     }
 
@@ -1054,6 +1160,17 @@ class SysModuleFilters
                 $beanFieldValue = TimeDate::getInstance()->fromDbDate($bean->{$condition->field});
                 $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
                 return $beanFieldValue->format(TimeDate::DB_DATETIME_FORMAT) > $to;
+            case 'nyearsago':
+                $date->sub(new DateInterval("P{$condition->filtervalue}Y"));
+                if ( $bean->field_defs[$condition->field]['type'] === 'date') {
+                    return $bean->{$condition->field} === $date->format( TimeDate::DB_DATE_FORMAT );
+                } else {
+                    $from = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 00:00:00'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    $to = date_create_from_format(TimeDate::DB_DATETIME_FORMAT, date_format($date, TimeDate::DB_DATE_FORMAT . ' 23:59:59'), new DateTimeZone($timeZone))->setTimezone(new DateTimeZone('UTC'))->format(TimeDate::DB_DATETIME_FORMAT);
+                    return ( $bean->{$condition->field} >= $from and $bean->{$condition->field} <= $to );
+                }
+            case 'changed':
+                return ( !$bean->isNew() and $bean->{$condition->field} !== $bean->fetched_row[$condition->field] );
             default:
                 return false;
         }

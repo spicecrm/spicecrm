@@ -9,6 +9,7 @@ import {toast} from "../../../services/toast.service";
 import {modelattachments} from "../../../services/modelattachments.service";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {Router} from "@angular/router";
+import {SpiceAttachmentsPanel} from "./spiceattachmentspanel";
 
 /**
  * displays a quicknote that is read in teh stream
@@ -16,6 +17,7 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'spice-attachment-file',
     templateUrl: '../templates/spiceattachmentfile.html',
+    providers: [SpiceAttachmentsPanel]
 })
 export class SpiceAttachmentFile {
 
@@ -40,7 +42,13 @@ export class SpiceAttachmentFile {
      */
     @Input() public disabled: boolean = false;
 
+    /**
+     * a paramater to be set to force the previe of the attachments ina  modal
+     */
+    @Input() public forceModalPreview: boolean = false;
+
     constructor(
+        private attachmentsPanelComponent: SpiceAttachmentsPanel,
         public userpreferences: userpreferences,
         public modal: modal,
         public toast: toast,
@@ -71,6 +79,14 @@ export class SpiceAttachmentFile {
     public downloadFile() {
         if (!this.uploading) {
             this.modelattachments.downloadAttachment(this.file.id, this.file.filename);
+        }
+    }
+
+    public preview(e){
+        if(this.forceModalPreview){
+            this.previewFile(e);
+        } else {
+            this.openInTab();
         }
     }
 
@@ -212,6 +228,7 @@ export class SpiceAttachmentFile {
     public deleteFile() {
         if (this.editmode) {
             this.modelattachments.deleteAttachment(this.file.id);
+            this.attachmentsPanelComponent.loadFiles();
         }
     }
 }

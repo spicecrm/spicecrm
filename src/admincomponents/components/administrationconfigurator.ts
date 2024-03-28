@@ -2,7 +2,7 @@
  * @module AdminComponentsModule
  */
 import {
-    Component,
+    Component, ElementRef,
     OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
@@ -43,7 +43,8 @@ export class AdministrationConfigurator implements OnInit {
     constructor(
         public metadata: metadata,
         public administrationconfigurator: administrationconfigurator,
-        public language: language
+        public language: language,
+        public elementRef: ElementRef
     ) {
 
     }
@@ -56,8 +57,19 @@ export class AdministrationConfigurator implements OnInit {
         }
     }
 
+    /**
+     * a getter for the item fields that excludes fields that have a detail only flag set
+     */
+    get itemFields(){
+        return this.getFields().filter(f => f.detailonly !== true);
+    }
+
     get count(){
         return this.administrationconfigurator.entries.length;
+    }
+
+    get width(){
+        return this.elementRef.nativeElement.width;
     }
 
     public trackByFn(index, item) {
@@ -82,7 +94,7 @@ export class AdministrationConfigurator implements OnInit {
         return entries;
     }
 
-    public getFields() {
+    public getFields(itemonly = false) {
         let fields = [];
 
         for (let field of this.componentconfig.fields) {
@@ -91,7 +103,7 @@ export class AdministrationConfigurator implements OnInit {
             }
         }
 
-        return fields;
+        return itemonly ? fields.filter(f => f.detailonly !== true) :  fields;
     }
 
     public addEntry() {

@@ -1,15 +1,8 @@
 <div class="slds-grid">
-    <div class="slds-form-element__control slds-p-right--xxx-small slds-size--1-of-3">
-        <div class="slds-select_container">
-            <select [disabled]="disabled"  class="slds-select" [(ngModel)]="_module">
-                <option value="*">*</option>
-                <option *ngFor="let thismodule of _modules" [value]="thismodule">{{thismodule}}</option>
-            </select>
-        </div>
-    </div>
+    <system-input-module [(ngModel)]="_module" [disabled]="_disabled" class="slds-p-right--xxx-small slds-size--1-of-3" [displayAsterisk]="true"></system-input-module>
     <div class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
         <div class="slds-select_container">
-            <select  [disabled]="!_module || disabled" class="slds-select" [(ngModel)]="componentset">
+            <select  [disabled]="!_module || _disabled" class="slds-select" [(ngModel)]="componentset">
                 <option></option>
                 <optgroup [label]="'custom ' + language.getLabel('LBL_COMPONENTSET')" *ngIf="_componentsets|systemmodulecustompipe:_module.length > 0">
                     <option *ngFor="let sysComponentset of _componentsets|systemmodulecustompipe:_module" [value]="sysComponentset.id">{{sysComponentset.name}}</option>

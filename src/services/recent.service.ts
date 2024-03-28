@@ -1,13 +1,16 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable, Output} from '@angular/core';
+import {Injectable} from '@angular/core';
 
 import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {Subject, of, Observable} from 'rxjs';
+import {map} from "rxjs/operators";
+import {modelutilities} from "./modelutilities.service";
+import moment from "moment";
 
 @Injectable({
     providedIn: 'root'
@@ -39,6 +42,7 @@ export class recent {
         public backend: backend,
         public broadcast: broadcast,
         public configuration: configurationService,
+        public modelutils: modelutilities,
         public session: session)
     {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
@@ -76,6 +80,12 @@ export class recent {
                 }
 
                 break;
+            case 'logout':
+                // reset the service if we logout
+                this.recentItems = [];
+                this.moduleItems = {};
+                this.isInitialized = false;
+                break;
         }
     }
 
@@ -86,29 +96,23 @@ export class recent {
      * @param item_data
      */
     public trackItem(module_name: string, item_id: string, item_data: any) {
+        this.pushTrackedItemToRecentItems(module_name, item_id, item_data);
+        this.pushTrackedItemToModuleItems(module_name, item_id, item_data);
+    }
 
-        // load recentItems from array if cache is empty
-        const cachedItems = this.configuration.getData('recentitems');
-        if(!cachedItems) this.getRecentItems();
+    /**
+     * cache recently viewed items per module
+     * i.e. only Account items
+     * @param module_name
+     * @param item_id
+     * @param item_data
+     * @private
+     */
+    private pushTrackedItemToModuleItems(module_name: string, item_id: string, item_data: any) {
 
-        // handle the general tracker
-        this.recentItems.some((item, index) => {
-            if (item.module_name === module_name && item.item_id == item_id) {
-                this.recentItems.splice(index, 1);
-                return true;
-            }
-        });
-
-        this.recentItems.splice(0, 0, {
-            item_id,
-            module_name,
-            item_summary: item_data.summary_text,
-            data: this.backend.modelutilities.spiceModel2backend(module_name, item_data)
-        });
-
-        while (this.recentItems.length > 50) {
-            this.recentItems.pop();
-        }
+        const cachedModuleItems = this.configuration.getData('moduleRecentItems');
+        // do not continue if we don't have cache
+        if (!cachedModuleItems || !cachedModuleItems[module_name]) return;
 
         // handle the module specific tracker
         if (this.moduleItems[module_name]) {
@@ -118,21 +122,80 @@ export class recent {
                     return true;
                 }
             });
+            cachedModuleItems[module_name].some((item, index) => {
+                if (item.item_id == item_id) {
+                    cachedModuleItems[module_name].splice(index, 1);
+                    return true;
+                }
+            });
 
-            this.moduleItems[module_name].splice(0, 0, {
+            const item = {
                 item_id,
                 module_name,
                 item_summary: item_data.summary_text,
-                data: item_data
-            });
+                date_modified: moment().format('YYYY-MM-DD HH:mm:ss'),
+                // deep clone the item data
+                data: this.modelutils.spiceModel2backend(module_name, JSON.parse(JSON.stringify(item_data)))
+            };
+
+            this.moduleItems[module_name].unshift(item);
+            cachedModuleItems[module_name].unshift(item);
 
             while (this.moduleItems[module_name].length > 5) {
                 this.moduleItems[module_name].pop();
             }
         }
 
-        // cache the item in appdata
-        this.configuration.setData('recentitems', this.recentItems, false);
+        // cache recent module items in browser
+        this.configuration.setData('moduleRecentItems', JSON.parse(JSON.stringify(cachedModuleItems)), false);
+    }
+
+    /**
+     * cache all recently viewed items
+     * i.e. items of Accounts, Contacts, Calls...
+     * @param module_name
+     * @param item_id
+     * @param item_data
+     */
+    private pushTrackedItemToRecentItems(module_name: string, item_id: string, item_data: any) {
+
+        const recentCache = this.configuration.getData('recentItems');
+
+        // do not continue if we don't have cache
+        if (!recentCache) return;
+
+        // handle the general tracker
+        this.recentItems.some((item, index) => {
+            if (item.module_name === module_name && item.item_id == item_id) {
+                this.recentItems.splice(index, 1);
+                return true;
+            }
+        });
+        recentCache.some((item, index) => {
+            if (item.module_name === module_name && item.item_id == item_id) {
+                recentCache.splice(index, 1);
+                return true;
+            }
+        });
+
+        const item = {
+            item_id,
+            module_name,
+            item_summary: item_data.summary_text,
+            date_modified: moment().format('YYYY-MM-DD HH:mm:ss'),
+            // deep clone the item data
+            data: this.backend.modelutilities.spiceModel2backend(module_name, JSON.parse(JSON.stringify(item_data)))
+        };
+
+        this.recentItems.unshift(item);
+        recentCache.unshift(item);
+
+        while (this.recentItems.length > 50) {
+            this.recentItems.pop();
+        }
+
+        // cache recent items in browser
+        this.configuration.setData('recentItems', JSON.parse(JSON.stringify(recentCache)), false);
     }
 
     /**
@@ -143,25 +206,33 @@ export class recent {
         // special handling for Home
         if (module == 'Home') {
             // return 5 items
-            return of(this.recentItems.slice(0, 5));
+            return this.getRecentItems().pipe(map(v => v.slice(0,5)));
         } else {
-            if (this.moduleItems[module]) {
+            const cachedModuleItems = this.configuration.getData('moduleRecentItems');
+
+            if (cachedModuleItems && cachedModuleItems[module]) {
+                // manipulate referenced object due to date format issues
+                this.moduleItems[module] = JSON.parse(JSON.stringify(cachedModuleItems[module]));
+
                 return of(this.moduleItems[module]);
             } else {
                 let responseSubject = new Subject<any[]>();
-                if (!this.moduleItems[module]) {
-                    this.backend.getRequest('module/Trackers/recent', {
-                        module: module,
-                        limit: 5
-                    }).subscribe(response => {
-                        this.moduleItems[module] = [];
-                        for (let item of response) {
-                            this.moduleItems[module].push(item);
-                        }
-                        responseSubject.next(this.moduleItems[module]);
-                        responseSubject.complete();
-                    });
-                }
+
+                this.backend.getRequest('module/Trackers/recent', {
+                    module: module,
+                    limit: 5
+                }).subscribe(response => {
+                    this.moduleItems[module] = [];
+                    for (let item of response) {
+                        this.moduleItems[module].push(item);
+                    }
+                    responseSubject.next(this.moduleItems[module]);
+                    responseSubject.complete();
+
+                    // cache in browser & manipulate backend response due to date format issues
+                    this.configuration.setData('moduleRecentItems', JSON.parse(JSON.stringify(this.moduleItems)), false);
+                });
+
                 return responseSubject.asObservable();
             }
         }
@@ -174,15 +245,22 @@ export class recent {
 
         let responseSubject: Subject<any[]> = new Subject<any[]>();
 
-        const cachedItems = this.configuration.getData('recentitems');
+        const cachedItems = this.configuration.getData('recentItems');
 
         if (cachedItems) {
-            this.recentItems = cachedItems;
+            // manipulate referenced object due to date format issues
+            this.recentItems = JSON.parse(JSON.stringify(cachedItems));
+
             this.isInitialized = true;
+
+            responseSubject.next(this.recentItems);
+            responseSubject.complete();
         } else {
             this.backend.getRequest('module/Trackers/recentitems', {}, this.httpRequestsRefID).subscribe(res => {
                 this.recentItems = res;
-                this.configuration.setData('recentitems', this.recentItems, false);
+
+                // cache in browser & manipulate backend response due to date format issues
+                this.configuration.setData('recentItems', JSON.parse(JSON.stringify(res)), false);
                 this.isInitialized = true;
 
                 responseSubject.next(this.recentItems);

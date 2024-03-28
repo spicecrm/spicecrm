@@ -1,5 +1,5 @@
-<ul role="listbox">
-    <li role="presentation" (click)="goRecent()">
+<ul role="listbox" *ngIf="recent.isInitialized; else loading">
+    <li *ngIf="recent.recentItems.length > 0" role="presentation" (click)="goRecent()">
            <span class="slds-lookup__item-action slds-media slds-media--center" role="option">
                <system-icon icon="breadcrumbs" size="small" sprite="utility"></system-icon>
                <div class="slds-media__body">
@@ -7,8 +7,19 @@
                </div>
            </span>
     </li>
-    <li class="slds-p-bottom--small" *ngIf="!recent.isInitialized">
-        <system-spinner size="16" ></system-spinner>
-    </li>
     <li global-header-search-recent-item *ngFor="let item of recent.recentItems.slice(0, 10)" [item]="item" (selected)="selected.emit(true)"></li>
+    <li *ngIf="recent.recentItems.length == 0" >
+        <div class="slds-p-around--medium slds-align--absolute-center">
+            <system-illustration-no-records>
+                <system-label label="LBL_NO_RECENT_ITEMS"></system-label>
+            </system-illustration-no-records>
+        </div>
+    </li>
 </ul>
+<ng-template #loading>
+    <ul role="listbox">
+        <li style="opacity: 1"><system-searchresult-stencil></system-searchresult-stencil></li>
+        <li style="opacity: 0.6"><system-searchresult-stencil></system-searchresult-stencil></li>
+        <li style="opacity: 0.2"><system-searchresult-stencil></system-searchresult-stencil></li>
+    </ul>
+</ng-template>

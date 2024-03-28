@@ -50,7 +50,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
      */
     @Input() set filterModules(value:string[]){
         this._filterModules = value;
-        this._modules = this._modules.filter(m => !value.some(v => v == m.id));
+        // this._modules = this._modules.filter(m => !value.find(v => v == m.id));
     }
     // for the value accessor
     public onChange: (value: string) => void;
@@ -87,7 +87,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
         this._modules = this.metadata.getModules().map(m => ({id: m, name: this.technicalNameOnly ? m : `${this.language.getModuleName(m)} (${m})`}));
 
         if (this._filterModules.length > 0) {
-            this._modules = this._modules.filter(m => !this._filterModules.some(v => v == m.id));
+            this._modules = this._modules.filter(m => this._filterModules.find(v => v == m.id));
         }
 
         if (this.displayAsterisk) {
@@ -105,7 +105,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
         if(this.technicalNameOnly){
             this._modules.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
         } else {
-            this._modules.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+            this._modules.sort((a, b) => this.language.getModuleName(a.id).toLowerCase() > this.language.getModuleName(b.id).toLowerCase() ? 1 : -1);
         }
     }
 
@@ -154,6 +154,9 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy, OnIni
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
+
+        if (!value) return;
+
         this._module = {id: value, name: this.technicalNameOnly ? value : `${this.language.getModuleName(value)} (${value})`};
     }
 

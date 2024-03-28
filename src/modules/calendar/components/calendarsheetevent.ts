@@ -281,6 +281,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                     case "model.save":
                         if (id == this.model.id) {
                             this.model.setData(data, true);
+                            this.updateEventData(data);
                             this.setEventColor();
                             this.eventChange.emit();
                         }
@@ -288,6 +289,14 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 }
             }
         }));
+    }
+
+    /**
+     * will update the stored event data on model update
+     * @param data
+     */
+    public updateEventData(data){
+        this.event.data = data;
     }
 
     /**

@@ -115,6 +115,7 @@ export class SpiceImporter implements OnInit {
     public getModuleFields() {
         if (this.model.module !== '') {
             this.modelFields = [];
+            this.spiceImporter.nonDBFields = [];
             let fields = this.metadata.getModuleFields(this.model.module);
             for (let field in fields) {
                 if (fields.hasOwnProperty(field)) {
@@ -125,6 +126,11 @@ export class SpiceImporter implements OnInit {
                         thisField.displayname = thisField.name;
 
                         this.modelFields.push(thisField);
+                    }
+
+                    // push non-db fields into a separate array
+                    if(thisField.source == 'non-db' || thisField.type == 'link' || thisField.type == 'relate'){
+                        this.spiceImporter.nonDBFields.push(thisField);
                     }
                 }
             }

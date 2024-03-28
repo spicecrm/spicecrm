@@ -70,6 +70,7 @@ import {SystemInputDatePicker} from "./components/systeminputdatepicker";
 import {SystemInputDate} from "./components/systeminputdate";
 import {SystemInputDelayed} from "./components/systeminputdelayed";
 import {SystemInputFieldset} from "./components/systeminputfieldset";
+import {SystemInputFlter} from "./components/systeminputfilter";
 import {SystemInputLabel} from "./components/systeminputlabel";
 import {SystemInputModule} from "./components/systeminputmodule";
 import {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
@@ -188,10 +189,14 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 import {SystemObjectPreview} from "./components/systemobjectpreview";
 import {SystemInputCronExpression} from "./components/systeminputcronexpression";
 import {SystemChartOneDimensional} from "./components/systemchartonedimensional";
+import {SystemChartJSOneDimensional} from "./components/systemchartjsonedimensional";
 import {SystemChartDataRow} from "./components/systemchartdatarow";
 import {SystemSelectOption} from "./components/systemselectoption";
 import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
 import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
+import {SystemRichTextEditorMentionDropdown} from "./components/systemrichtexteditormentiondropdown";
+import {SystemProgressIndicator} from "./components/systemprogressindicator";
+import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
 
 @NgModule({
     imports: [
@@ -262,6 +267,7 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
         SystemInputDatePicker,
         SystemInputDelayed,
         SystemInputFieldset,
+        SystemInputFlter,
         SystemInputLabel,
         SystemInputModule,
         SystemInputModuleFilter,
@@ -368,10 +374,14 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
         SystemInputSearchTerm,
         SystemInputCronExpression,
         SystemChartOneDimensional,
+        SystemChartJSOneDimensional,
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
-        SystemSelectOption
+        SystemSelectOption,
+        SystemRichTextEditorMentionDropdown,
+        SystemProgressIndicator,
+        SystemProgressIndicatorItem
     ],
     exports: [
         PaginationControlsComponent,
@@ -523,12 +533,17 @@ import {SystemChartDataColumn} from "./components/systemchartdatacolumn";
         SystemImagePreview,
         SystemInputCronExpression,
         SystemChartOneDimensional,
+        SystemChartJSOneDimensional,
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
-        SystemSelectOption,
         SystemModuleCustomPipe,
         SystemModuleGlobalPipe,
+        SystemSelectOption,
+        SystemSelectOption,
+        SystemInputFlter,
+        SystemProgressIndicator,
+        SystemProgressIndicatorItem
     ]
 })
 export class SystemComponents {}

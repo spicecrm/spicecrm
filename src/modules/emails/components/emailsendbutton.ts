@@ -8,6 +8,7 @@ import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
 import { toast } from '../../../services/toast.service';
 import { language } from '../../../services/language.service';
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * this renders a button as part of an actionset to send an email
@@ -32,7 +33,8 @@ export class EmailSendButton {
         public metadata: metadata,
         public modal: modal,
         public toast: toast,
-        public language: language
+        public language: language,
+        public configuration: configurationService
     ) {
 
     }
@@ -43,11 +45,20 @@ export class EmailSendButton {
     get disabled() {
         let recipientAddresses = this.model.getFieldValue('recipient_addresses');
         let mailbox = this.model.getFieldValue('mailbox_id');
+        let key = ['outbound', 'outboundsingle', 'outboundmass'];
+        let mailboxData =[];
+        key.forEach((k) => {
+            if(this.configuration.getData('mailboxes'+k) != false){
+                mailboxData = (this.configuration.getData('mailboxes'+k));
+            }
+        });
+        const selectedMailboxData = mailboxData.find(id => id.value == mailbox);
+        let sizeTooBig = !!this.model.getFieldValue('attachments_size') ? this.model.getFieldValue('attachments_size') > selectedMailboxData.max_upload : false;
         let name = this.model.getFieldValue('name');
         let body = this.model.getFieldValue('body');
         let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
 
-        return (!name || !body || !mailbox || !recipientAddresses || !recipientTo) ? true : this.sending;
+        return (!name || !body || !mailbox || !recipientAddresses || !recipientTo || sizeTooBig) ? true : this.sending;
     }
 
 
