@@ -18,7 +18,12 @@ class SpiceDictionaryDomainValidation
     public function __construct($id){
         $this->id = $id;
 
-        $res = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdomainfieldvalidations WHERE id='{$id}' AND status='a' AND deleted = 0 UNION SELECT * FROM syscustomdomainfieldvalidations WHERE id='{$id}' AND  status='a' AND deleted = 0");
+        $res = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdomainfieldvalidations WHERE id='{$id}' AND status='a' AND deleted = 0");
+
+        if (!$res) {
+            $res = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM syscustomdomainfieldvalidations WHERE id='{$id}' AND  status='a' AND deleted = 0");
+        }
+
         if(!$res){
             throw new Exception("Domainfieldvalidation with ID {$id} is not defined");
         }
