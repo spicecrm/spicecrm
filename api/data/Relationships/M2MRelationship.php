@@ -107,7 +107,8 @@ class M2MRelationship extends Relationship
                 'vname' => $relationship->relationship->lhs_linklabel
             ];
 
-            $this->processJoinTableRoleFields($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition, $leftFieldDefs);
+            $this->addJoinTableNonDBRoleField($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition);
+            $this->appendJoinTableRoleFieldsMappingToLink($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition, $leftFieldDefs);
 
             $db->insertQuery('sysdictionaryfields', [
                 'id' => SpiceUtils::createGuid(),
@@ -133,7 +134,8 @@ class M2MRelationship extends Relationship
                 'vname' => $relationship->relationship->rhs_linklabel
             ];
 
-            $this->processJoinTableRoleFields($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition, $rightFieldDefs);
+            $this->addJoinTableNonDBRoleField($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition);
+            $this->appendJoinTableRoleFieldsMappingToLink($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition, $rightFieldDefs);
 
             $db->insertQuery('sysdictionaryfields', [
                 'id' => SpiceUtils::createGuid(),
@@ -150,15 +152,13 @@ class M2MRelationship extends Relationship
 
     /**
      * insert join table necessary role fields
-     * update link field definition with rel_fields array
      * @param SpiceDictionaryRelationship $relationship
-     * @param $joinDictionaryDefinition
-     * @param $sideDictionaryDefinition
-     * @param $linkFieldDefs
+     * @param SpiceDictionaryDefinition $joinDictionaryDefinition
+     * @param SpiceDictionaryDefinition $sideDictionaryDefinition
      * @return void
-     * @throws DatabaseException | Exception
+     * @throws DatabaseException | \Exception | Exception
      */
-    private function processJoinTableRoleFields(SpiceDictionaryRelationship $relationship, $joinDictionaryDefinition, $sideDictionaryDefinition, &$linkFieldDefs): void
+    private function addJoinTableNonDBRoleField(SpiceDictionaryRelationship $relationship, SpiceDictionaryDefinition $joinDictionaryDefinition, SpiceDictionaryDefinition $sideDictionaryDefinition): void
     {
         $joinTableRoleFields = $relationship->getJoinTableFields($sideDictionaryDefinition->id);
 
@@ -166,17 +166,11 @@ class M2MRelationship extends Relationship
 
         if (empty($joinTableRoleFields)) return;
 
-        $linkFieldDefs['rel_fields'] = [];
-
         foreach ($joinTableRoleFields as $field) {
 
             $joinTableRoleField = SpiceDictionaryField::getField(
                 new SpiceDictionaryItem($field['sysdictionaryitem_id']), $joinDictionaryDefinition
             );
-
-            $linkFieldDefs['rel_fields'][$joinTableRoleField->fieldname] = [
-                'map' => $field['rel_field_name']
-            ];
 
             $joinTableRoleFieldDef = json_decode($joinTableRoleField->fielddefinition);
             unset($joinTableRoleFieldDef->sysdictionaryitem_id, $joinTableRoleFieldDef->dbtype);
@@ -196,6 +190,33 @@ class M2MRelationship extends Relationship
             ];
 
             $db->insertQuery('sysdictionaryfields', $leftSideNonDbRoleField);
+        }
+    }
+
+    /**
+     * update link field definition with rel_fields array
+     * @param SpiceDictionaryRelationship $relationship
+     * @param SpiceDictionaryDefinition $joinDictionaryDefinition
+     * @param SpiceDictionaryDefinition $sideDictionaryDefinition
+     * @param array $linkFieldDefs
+     * @return void
+     * @throws DatabaseException | Exception
+     */
+    private function appendJoinTableRoleFieldsMappingToLink(SpiceDictionaryRelationship $relationship, SpiceDictionaryDefinition $joinDictionaryDefinition, SpiceDictionaryDefinition $sideDictionaryDefinition, array &$linkFieldDefs): void
+    {
+        $joinTableRoleFields = $relationship->getJoinTableFields($sideDictionaryDefinition->id);
+
+        $linkFieldDefs['rel_fields'] = [];
+
+        foreach ($joinTableRoleFields as $field) {
+
+            $joinTableRoleField = SpiceDictionaryField::getField(
+                new SpiceDictionaryItem($field['sysdictionaryitem_id']), $joinDictionaryDefinition
+            );
+
+            $linkFieldDefs['rel_fields'][$joinTableRoleField->fieldname] = [
+                'map' => $field['map_to_fieldname']
+            ];
         }
     }
 
