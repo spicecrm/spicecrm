@@ -30,6 +30,7 @@
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -85,7 +86,10 @@ class SpiceDictionaryDefinitionsController
      */
     public function activateDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
-        return $res->withJson((new SpiceDictionaryDefinition($args['id']))->activate());
+        $success = (new SpiceDictionaryDefinition($args['id']))->activate();
+        SpiceDictionary::getInstance()->loadDictionary();
+
+        return $res->withJson($success);
     }
 
     /**
@@ -99,7 +103,11 @@ class SpiceDictionaryDefinitionsController
     public function deactivateDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
         $params = $req->getQueryParams();
-        return $res->withJson((new SpiceDictionaryDefinition($args['id']))->deactivate($params['drop'] == '1' ? true : false));
+
+        $success = (new SpiceDictionaryDefinition($args['id']))->deactivate($params['drop'] == '1' ? true : false);
+        SpiceDictionary::getInstance()->loadDictionary();
+
+        return $res->withJson($success);
     }
 
     /**
@@ -113,7 +121,11 @@ class SpiceDictionaryDefinitionsController
     public function repairDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
         $params = $req->getQueryParams();
-        return $res->withJson(['success' => true, 'sql' => (new SpiceDictionaryDefinition($args['id']))->repair()]);
+        $sql = (new SpiceDictionaryDefinition($args['id']))->repair();
+
+        SpiceDictionary::getInstance()->loadDictionary();
+
+        return $res->withJson(['success' => true, 'sql' => $sql]);
     }
 
     /**
