@@ -155,6 +155,7 @@ export class DictionaryManagerRelationships {
                 loadingModal = this.modal.await('LBL_EXECUTING');
                 this.backend.postRequest(`dictionary/relationship/${relationship.id}/activate`).subscribe({
                     next: () => {
+                        this.dictionarymanager.handleAfterActivate();
                         relationship.status = status;
                         loadingModal.emit(true);
                     },
@@ -167,6 +168,7 @@ export class DictionaryManagerRelationships {
                 loadingModal = this.modal.await('LBL_EXECUTING');
                 this.backend.deleteRequest(`dictionary/relationship/${relationship.id}/activate`).subscribe({
                     next: () => {
+                        this.dictionarymanager.handleAfterActivate();
                         relationship.status = status;
                         loadingModal.emit(true);
                     },

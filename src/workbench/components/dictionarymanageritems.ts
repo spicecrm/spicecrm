@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
-import {broadcast} from '../../services/broadcast.service';
 import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -15,7 +14,6 @@ import {language} from '../../services/language.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 import {DictionaryManagerItemStatus} from "./dictionarymanageritemstatus";
-import {configurationService} from "../../services/configuration.service";
 
 
 @Component({
@@ -46,7 +44,6 @@ export class DictionaryManagerItems {
                 public language: language,
                 public modal: modal,
                 public injector: Injector,
-                private configurationService: configurationService,
                 public modelutilities: modelutilities) {
 
     }
@@ -233,7 +230,7 @@ export class DictionaryManagerItems {
                 loadingModal = this.modal.await('LBL_EXECUTING');
                 this.backend.postRequest(`dictionary/item/${item.id}/activate`).subscribe({
                     next: () => {
-                        this.configurationService.reloadTaskData('fielddefs');
+                        this.dictionarymanager.handleAfterActivate();
                         item.status = status;
                         loadingModal.emit(true);
                     },
@@ -248,7 +245,7 @@ export class DictionaryManagerItems {
                 loadingModal = this.modal.await('LBL_EXECUTING');
                 this.backend.deleteRequest(`dictionary/item/${item.id}/activate`).subscribe({
                     next: () => {
-                        this.configurationService.reloadTaskData('fielddefs');
+                        this.dictionarymanager.handleAfterActivate();
                         item.status = status;
                         loadingModal.emit(true);
                     },

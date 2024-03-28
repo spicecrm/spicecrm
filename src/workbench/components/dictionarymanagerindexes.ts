@@ -81,6 +81,7 @@ export class DictionaryManagerIndexes {
                 loadingModal = this.modal.await('LBL_EXECUTING');
                 this.backend.postRequest(`dictionary/index/${index.id}/activate`).subscribe({
                     next: () => {
+                        this.dictionarymanager.handleAfterActivate();
                         index.status = status;
                         loadingModal.emit(true);
                     },
@@ -93,6 +94,7 @@ export class DictionaryManagerIndexes {
                 loadingModal = this.modal.await('LBL_EXECUTING');
                 this.backend.deleteRequest(`dictionary/index/${index.id}/activate`).subscribe({
                     next: () => {
+                        this.dictionarymanager.handleAfterActivate();
                         index.status = status;
                         loadingModal.emit(true);
                     },
