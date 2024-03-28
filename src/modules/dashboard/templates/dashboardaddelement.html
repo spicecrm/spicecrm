@@ -58,11 +58,11 @@
                                 <system-icon [icon]="getIcon(dashlet.icon)" [sprite]="getSprite(dashlet.icon)"
                                              [module]="!dashlet.module ? 'Dashboards': dashlet.module" size="large" class="slds-align_absolute-center"></system-icon>
                                 <div class="slds-media__body slds-border_left slds-p-around_small">
-                                    <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="dashlet.label">
-                                        <system-label [label]="dashlet.label"></system-label>
+                                    <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="!!dashlet.label ? dashlet.label : dashlet.name">
+                                        <system-label [label]="!!dashlet.label ? dashlet.label : dashlet.name"></system-label>
                                     </h2>
                                     <p class="slds-m-top_small slds-truncate">
-                                        <system-label [label]="dashlet.label" length="long"></system-label>
+                                        <system-label [label]="!!dashlet.label ? dashlet.label : dashlet.description" length="long"></system-label>
                                     </p>
                                 </div>
                             </a>

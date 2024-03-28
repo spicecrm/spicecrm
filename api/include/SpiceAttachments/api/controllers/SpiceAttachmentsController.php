@@ -113,7 +113,7 @@ class SpiceAttachmentsController
         // It might happen that seed does not yet exists when attachments are managed on new beans
         // so no explicit check if the bean exists
         $seed = BeanFactory::getBean($args['beanName'], $args['beanId']); //set encode to false to avoid things like ' being translated to &#039;
-        if ($seed && !$seed->ACLAccess('edit')) {
+        if ($seed && !$seed->ACLAccess('edit') && !$seed->ACLAccess('manageattachments')) {
             throw (new ForbiddenException("not allowed to edit this record"))->setErrorCode('noModuleView');
         }
 
@@ -179,7 +179,7 @@ class SpiceAttachmentsController
         }
         $attachment = [
             'filename' => $seed->{$args['fieldprefix'] . '_name'} ?: $seed->filename,
-            'filesize' => $seed->{$args['fieldprefix'] . '_size'},
+            'filesize' => filesize($prefix . $seed->{$args['fieldprefix'] . '_md5'}),
             'file_mime_type' => $seed->{$args['fieldprefix'] . '_mime_type'},
             'file' => $file,
             'filemd5' => $seed->{$args['fieldprefix'] . '_md5'}

@@ -61,6 +61,7 @@ class TOTPAuthentication
         }
 
         $db->query("UPDATE users_totp SET deleted = 1 WHERE user_id='$userid' AND auth_status='A' AND deleted = 0");
+        $db->query("UPDATE users SET user_2fa_method = null WHERE id='$userid'");
         return true;
     }
 

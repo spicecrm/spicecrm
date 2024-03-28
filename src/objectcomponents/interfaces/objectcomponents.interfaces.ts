@@ -79,3 +79,14 @@ export interface ComponentSetItemI {
      */
     self?: ComponentRef<unknown>;
 }
+
+export interface ObjectListFilterI {
+    logicaloperator: string,
+    groupscope: 'all' | 'own' | 'creator',
+    groupstate: 'active' | 'inactive' | 'activeAndInactive',
+    conditions: Array<any>,
+    geography?: Object,
+    field?: string,
+    operator?: string,
+    filtervalue?: string
+}

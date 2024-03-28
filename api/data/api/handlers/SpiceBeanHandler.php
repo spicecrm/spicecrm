@@ -121,11 +121,36 @@ class SpiceBeanHandler
         return $dynamicDomains;
     }
 
+    /**
+     * prepare filter context when the list ist retrieved within a bean context
+     * @param array $searchParams
+     * @return void
+     */
+    private function prepareFilterContext(array &$searchParams)
+    {
+        $searchParams['filtercontext'] = json_decode($searchParams['filtercontext']);
+
+        if (!empty($searchParams['filtercontext']->module)) {
+
+            if (!empty($searchParams['filtercontext']->data)) {
+                $contextBean = BeanFactory::getBean($searchParams['filtercontext']->module);
+                foreach ($searchParams['filtercontext']->data as $field => $value) {
+                    $contextBean->$field = $value;
+                }
+                $searchParams['filtercontext'] = $contextBean;
+
+            } else {
+                $searchParams['filtercontext'] = BeanFactory::getBean($searchParams['filtercontext']->module, $searchParams['filtercontext']->id);
+            }
+        }
+    }
 
     public function get_bean_list($beanModule, $searchParams, $addwhere = "")
     {
         $timedate = TimeDate::getInstance();
         $db = DBManagerFactory::getInstance();
+
+        $this->prepareFilterContext($searchParams);
 
         $retArray = [];
 
@@ -225,6 +250,8 @@ class SpiceBeanHandler
         // BWC: reduce number of fields and related tables to search on
         $create_new_list_query_filter = [];
 
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
         // initialize the where Clauses
         $whereClauses = [];
 
@@ -236,7 +263,7 @@ class SpiceBeanHandler
                 $searchTermFields = $searchParams['searchtermfields'] ? json_decode(html_entity_decode($searchParams['searchtermfields']), true) : [];
 
                 // if no serachterm field has been sent .. use the unified search fields
-                if (count($searchTermFields) == 0) {
+                if (is_array($searchTermFields) && count($searchTermFields) == 0) {
                     foreach ($thisBean->field_defs as $fieldname => $fielddata) {
                         if ($fielddata['unified_search']) {
                             $searchTermFields[] = $fieldname;
@@ -316,10 +343,19 @@ class SpiceBeanHandler
         if (!empty($searchParams['listid'])) {
             switch ($searchParams['listid']) {
                 case 'all':
-                    // do nothing
+                    // show only active items
+                    if(property_exists($thisBean, 'is_inactive')) {
+                        $whereClauses[] = '( is_inactive = 0)';
+                    }
                     break;
                 case 'owner':
                     $searchParams['owner'] = true;
+                    $whereClauses[] = '( assigned_user_id = ' . $current_user->id .')';
+
+                    // show only active items
+                    if(property_exists($thisBean, 'is_inactive')) {
+                        $whereClauses[] = '( is_inactive = 0)';
+                    }
                     break;
                 default:
                     $filterdefs = json_decode(html_entity_decode($listDef['filterdefs']));
@@ -335,7 +371,7 @@ class SpiceBeanHandler
         }
 
         if (!empty($searchParams['modulefilter'])) {
-            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter']);
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter'], null, $searchParams['filtercontext']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
@@ -344,7 +380,7 @@ class SpiceBeanHandler
         // add global filter if fts setings are defined so the filter is also applied here
         $indexSettings = SpiceFTSUtils::getBeanIndexSettings($beanModule);
         if (!empty($indexSettings['globalfilter'])) {
-            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($indexSettings['globalfilter']);
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($indexSettings['globalfilter'], null, $searchParams['filtercontext']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
@@ -1303,13 +1339,51 @@ class SpiceBeanHandler
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if (!isset($thisBean->id)) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
 
-        $duplicates = $thisBean->checkForDuplicates();
+        $checkedDuplicates = [];
+
+        // get ids of accepted duplicates
+        $acceptedDuplicatesIds = $this->getAcceptedDuplicates($beanModule, $thisBean);
+
+        $duplicates = $thisBean->checkForDuplicates($acceptedDuplicatesIds);
 
         $retArray = [];
         foreach ($duplicates['records'] as $duplicate) {
             $retArray[] = $this->mapBeanToArray($beanModule, $duplicate);
         }
-        return ['count' => $duplicates['count'], 'records' => $retArray];
+
+        // map accepted duplicate Beans
+        foreach ($acceptedDuplicatesIds as $checkedDuplicate) {
+            $checkDuplBean = BeanFactory::getBean($beanModule, $checkedDuplicate);
+            $checkedDuplicates[] = $this->mapBeanToArray($beanModule, $checkDuplBean);
+        }
+
+        return ['count' => $duplicates['count'], 'records' => $retArray, 'checkedDuplicates'=> $checkedDuplicates];
+    }
+
+    /**
+     * selects accepted duplicates IDs and returns them for further processing
+     *
+     * @param string $beanModule
+     * @param $thisBean
+     * @return array
+     * @throws \Exception
+     */
+    private function getAcceptedDuplicates(string $beanModule, $thisBean): array {
+        $acceptedDuplicatesIds = [];
+
+        $db = DBManagerFactory::getInstance();
+        $sql = "SELECT * FROM sysduplicatesbeans WHERE (bean_id_left = '$thisBean->id' OR bean_id_right = '$thisBean->id') AND bean_type = '$beanModule' AND duplicate_status = 'accepted' AND deleted = '0'";
+        $acceptedDuplicates = $db->query($sql);
+
+        while ($acceptedDuplicate = $db->fetchByAssoc($acceptedDuplicates)) {
+            if($acceptedDuplicate['bean_id_left'] == $thisBean->id) {
+                $acceptedDuplicatesIds[] = $acceptedDuplicate['bean_id_right'];
+            } else if($acceptedDuplicate['bean_id_right'] == $thisBean->id) {
+                $acceptedDuplicatesIds[] = $acceptedDuplicate['bean_id_left'];
+            }
+        }
+
+        return $acceptedDuplicatesIds;
     }
 
     public function get_related(string $beanModule, string $beanId, string $linkName, array $params): array {
@@ -1670,7 +1744,7 @@ class SpiceBeanHandler
 
             switch ($fieldData['type']) {
                 case 'link':
-                    if ($fieldData['module'] && isset($post_params[$fieldData['name']])) {
+                    if ( !empty($fieldData['module']) && isset($post_params[$fieldData['name']])) {
                         $thisBean->load_relationship($fieldId);
 
                         if (!$thisBean->{$fieldId}) {
@@ -2295,5 +2369,49 @@ class SpiceBeanHandler
 
         return $responseArray;
 
+    }
+
+    /**
+     * manages the status of the duplicate Bean
+     *
+     * @param string $beanModule
+     * @param string $beanIdLeft - duplicate parent Bean
+     * @param string $beanIdRight
+     * @param bool $deleted
+     * @return array
+     * @throws ForbiddenException
+     */
+    public function acceptBeanAsDuplicate(string $beanModule, string $beanIdLeft, string $beanIdRight, $deleted = false)
+    {
+        // acl check if user can get the detail
+        if (!SpiceACL::getInstance()->checkAccess($beanModule, 'edit'))
+            throw (new ForbiddenException("Forbidden to accept as duplicate module $beanModule with ids $beanIdRight & $beanIdLeft."))->setErrorCode('noModuleEdit');
+
+        $db = DBManagerFactory::getInstance();
+
+        // check if we've already got an entry
+        $acceptedDuplId = $db->getOne("SELECT * FROM sysduplicatesbeans WHERE bean_id_left = '{$beanIdLeft}'  AND bean_id_right = '{$beanIdRight}' AND duplicate_status = 'accepted' AND deleted = '0'");
+
+        // if we don't find an entry, try another side
+        if (!$acceptedDuplId) $acceptedDuplId = $db->getOne("SELECT * FROM sysduplicatesbeans WHERE bean_id_left = '{$beanIdRight}' AND bean_id_right = '{$beanIdLeft}' AND  duplicate_status = 'accepted' AND deleted = '0'");
+
+        $dateCreated = TimeDate::getInstance()->nowDb();
+        $currentUserId = AuthenticationController::getInstance()->getCurrentUser()->id;
+
+        if ($acceptedDuplId && $deleted) {
+            $updateQuery = "UPDATE sysduplicatesbeans SET deleted = '1', date_modified = '$dateCreated', modified_by = '$currentUserId' WHERE id = '$acceptedDuplId' AND deleted = '0'";
+            $db->query($updateQuery);
+        } else if (!$acceptedDuplId) {
+            $guid = SpiceUtils::createGuid();
+            $insertQuery = "INSERT INTO sysduplicatesbeans (id, bean_type, bean_id_left, bean_id_right, duplicate_status, date_created, date_modified, created_by, modified_by, deleted)
+                            VALUES ('$guid', '$beanModule', '$beanIdLeft', '$beanIdRight', 'accepted', '$dateCreated', '$dateCreated', '$currentUserId', '$currentUserId', '0')";
+            $db->query($insertQuery);
+        }
+
+        $duplicateRightBeanData = $this->mapBeanToArray($beanModule, BeanFactory::getBean($beanModule, $beanIdRight));
+
+        $acceptedDuplicate = ['beanModule' => $beanModule, 'beanIdLeft' => $beanIdLeft, 'rightBean' => $duplicateRightBeanData, 'deleted' => $deleted];
+
+        return ['success' => true, 'acceptedDuplicate' => $acceptedDuplicate];
     }
 }

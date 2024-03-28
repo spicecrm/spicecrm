@@ -35,7 +35,9 @@
                         </div>
                         <div style="height: 50%">
                             <svg #subDisParent id="subDis1" class="slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
-                                <text #subDis2 id="subDis2" x="100%" y="50%" text-anchor="end" dominant-baseline="central" font-size="300%">{{value}}</text>
+                                <text #subDis2 id="subDis2" x="100%" y="50%" text-anchor="end" dominant-baseline="central" font-size="300%">
+                                    {{value}}
+                                </text>
                             </svg>
                         </div>
                     </div>
@@ -43,14 +45,7 @@
             </div>
             <div class="slds-grid slds-grid--vertical slds-gutters_direct-xxx-small" style="height: 70%">
                 <div class="slds-grid slds-gutters_direct-xxx-small slds-height_full" style="height: 20%">
-                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
-                        <button class="slds-button slds-button--icon slds-button--icon-border slds-size--1-of-1 slds-height_full" (click)="percent()">
-                            <svg class="slds-button__icon slds-size_1-of-1" style="height: 45%; color: var(--color-grey-13)">
-                                <use xlink:href="./vendor/sldassets/icons/utility-sprite/svg/symbols.svg#percent"></use>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                    <div class="slds-col slds-size_1-of-6 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
                         <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none"
                                 (click)="setSettings('value')">
                             <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
@@ -58,7 +53,7 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                    <div class="slds-col slds-size_1-of-6 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
                         <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none" style="font-size: 100%"
                                 (click)="setSettings('default')">
                             <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
@@ -66,14 +61,21 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
-                        <button class="slds-button slds-button--icon slds-button--icon-border slds-size--1-of-1 slds-height_full" style="font-size: 100%" (click)="delete()">
-                            <svg class="slds-button__icon slds-size--1-of-1" style="height: 45%; color: var(--color-grey-13)">
-                                <use xlink:href="./vendor/sldassets/icons/utility-sprite/svg/symbols.svg#back"></use>
+                    <div class="slds-col slds-size_1-of-6 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button--icon slds-button--icon-border slds-size--1-of-1 slds-height_full" (click)="percent()">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">%</text>
                             </svg>
                         </button>
                     </div>
-                    <div class="slds-col slds-size_1-of-5 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
+                        <button class="slds-button slds-button--icon slds-button--icon-border slds-size--1-of-1 slds-height_full" style="font-size: 100%" (click)="delete()">
+                            <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">
+                                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-size="4%">←</text>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4 slds-p-top--xxx-small slds-p-bottom--xxx-small slds-height_full">
                         <button class="slds-button slds-button_neutral slds-size--1-of-1 slds-height_full slds-p-around--none" style="font-size: 100%"
                                 (click)="onKeyPress('/')">
                             <svg class="ng-tns-c1-1 slds-p-around--none slds-m-around--none" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="0 0 1 1">

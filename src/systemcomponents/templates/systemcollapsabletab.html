@@ -6,7 +6,7 @@
                 <div class="slds-grid slds-grid--vertical-align-center">
                     <system-icon *ngIf="moduleicon" [module]="moduleicon" size="x-small"></system-icon>
                     <span class="slds-truncate"><system-label [label]="_title"></system-label></span>
-                    <system-icon-help-text *ngIf="_helpText" [helpText]="_helpText"></system-icon-help-text>
+                    <system-icon-help-text *ngIf="_helpText" [helpText]="_helpText" [verticalPositionBottom]="tabHelpTextVerticalPositionBottom"></system-icon-help-text>
                 </div>
             </button>
         </ng-container>
@@ -14,7 +14,7 @@
             <div class="slds-grid slds-grid--vertical-align-center slds-section__title-action" style="cursor: default">
                 <system-icon *ngIf="moduleicon" [module]="moduleicon" size="x-small"></system-icon>
                 <span class="slds-truncate"><system-label [label]="_title"></system-label></span>
-                <system-icon-help-text *ngIf="_helpText" [helpText]="_helpText"></system-icon-help-text>
+                <system-icon-help-text *ngIf="_helpText" [helpText]="_helpText" [verticalPositionBottom]="tabHelpTextVerticalPositionBottom"></system-icon-help-text>
             </div>
         </ng-template>
     </h3>

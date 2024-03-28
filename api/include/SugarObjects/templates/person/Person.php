@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SugarObjects\templates\person;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SugarObjects\templates\basic\Basic;
 use SpiceCRM\includes\SugarObjects\traits\letterSalutationTrait;
 use SpiceCRM\includes\Localization\Localization;
@@ -89,7 +90,7 @@ class Person extends Basic
      */
     public function save($check_notify = false, $fts_index_bean = true)
     {
-        $id = parent::save($check_notify, $fts_index_bean);
+        $id = parent::save($check_notify, false);
 
         if (empty(trim($this->email1))){
             return $this->id;
@@ -108,6 +109,11 @@ class Person extends Basic
             $this->setPrimaryEmailAddress($primaryEmailAddressId, ['opt_in_status' => $this->opt_in_status]);
         } else {
             $this->setPrimaryEmailAddress($primaryEmailAddressId);
+        }
+
+        if ($fts_index_bean) {
+            # index the person after adding the primary email address to ensure indexing it
+            SpiceFTSHandler::getInstance()->indexBean($this);
         }
 
         return $id;
@@ -244,31 +250,6 @@ class Person extends Basic
         return false;
     }
 
-
-    /**
-     * ensure the is_inactive flag is properly set in the index parameters
-     *
-     * @return array
-     */
-    public function add_fts_metadata()
-    {
-        return [
-            'is_inactive' => [
-                'type' => 'keyword',
-                'search' => false,
-                'enablesort' => true
-            ]
-        ];
-    }
-
-    /**
-     * write is_inactive into the index
-     */
-    public function add_fts_fields()
-    {
-        return ['is_inactive' => $this->is_inactive ? '1' : '0'];
-    }
-
     /**
      * Generate VCARD content
      * @return $content
@@ -308,11 +289,11 @@ class Person extends Basic
     /**
      * fill in the email1 field called by fill_in_additional_detail_fields
      */
-    private function fillInEmail1Field() {
+    public function fillInEmail1Field() {
         $emailAddress = $this->db->fetchOne("SELECT email_address FROM email_addresses ea, email_addr_bean_rel ear WHERE ear.bean_id='{$this->id}' AND ear.bean_module='{$this->_module}'  AND ear.primary_address=1 AND ear.deleted != 1 AND ear.email_address_id = ea.id AND ea.deleted != 1");
         if($emailAddress){
             $this->email1 = $emailAddress['email_address'];
-        }
+        } else $this->email1 = '';
         /* performance increase
         $emailAddresses = $this->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $emailAddress) {

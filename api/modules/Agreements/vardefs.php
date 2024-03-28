@@ -5,6 +5,7 @@ use SpiceCRM\includes\SugarObjects\VardefManager;
 
 SpiceDictionaryHandler::getInstance()->dictionary['Agreement'] = [
     'table' => 'agreements',
+    'audited' => true,
     'fields' => [
         'valid_from' => [
             'name' => 'valid_from',

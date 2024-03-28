@@ -64,7 +64,6 @@ export class CategoryTreeManagerLinkModal  implements OnInit {
      */
     public getTreeLinks() {
         this.loading = true;
-
         let awaitModal = this.modal.await('loading...');
 
         // send data to backend
@@ -72,6 +71,9 @@ export class CategoryTreeManagerLinkModal  implements OnInit {
             next: (treeLinks) => {
                 this.categoriesInputArray = treeLinks;
                 this.loading = false;
+                
+                this.canSaveOnInit = treeLinks.length !== 0;
+
                 awaitModal.emit(true);
             },
             error: () => {

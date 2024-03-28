@@ -111,6 +111,11 @@ export class ObjectActionOutputBeanModal {
     public filelist: any[] = [];
 
     /**
+     * a filename returned from the backend call
+     */
+    public filename: string;
+
+    /**
      * flag to show the email-content
      */
     public showsendemail: boolean = false;
@@ -172,6 +177,13 @@ export class ObjectActionOutputBeanModal {
     }
 
     /**
+     * a getter for the title
+     */
+    get title(){
+        return this.filename ?? this.modalTitle;
+    }
+
+    /**
      * see if we have a relate to an output template
      */
     public setSelectedTemplate() {
@@ -217,6 +229,7 @@ export class ObjectActionOutputBeanModal {
     public rendertemplate() {
         this.loading_output = true;
 
+        this.filename = null;
         this.blobUrl = null;
         this.compiled_selected_template = null;
 
@@ -231,6 +244,7 @@ export class ObjectActionOutputBeanModal {
                         let blob = this.datatoBlob(atob(pdf.content), 'application/pdf');
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                         this.contentForHandBack = pdf.content;
+                        this.filename = pdf.filename;
                         this.setEmailAttachmentData();
                         this.loading_output = false;
                     }, error: () => {
@@ -285,7 +299,7 @@ export class ObjectActionOutputBeanModal {
             a.type = this.selected_format == 'pdf' ? 'application/pdf' : 'text/html';
 
             // genereate a filename
-            a.download = this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format;
+            a.download = this.filename ?? this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format;
 
             // start download and then remove the element from the document again
             a.click();
@@ -349,7 +363,7 @@ export class ObjectActionOutputBeanModal {
         if(this.emailInitialized) {
             this.filelist = [{
                 size: this.contentForHandBack.length,
-                name: this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format,
+                name: this.filename ?? this.model.module + '_' + this.model.getField('summary_text') + '.' + this.selected_format,
                 type: "application/" + this.selected_format,
                 filecontent: this.contentForHandBack
             }];

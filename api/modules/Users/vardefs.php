@@ -64,6 +64,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'importable' => 'false',
             'sensitive' => true,
         ],
+        'user_email' => [
+            'name' => 'user_email',
+            'vname' => 'LBL_EMAIL',
+            'type' => 'varchar',
+            'len' => '255',
+            'required' => false,
+        ],
         'user_2fa_method' => [
             'name' => 'user_2fa_method',
             'vname' => 'LBL_2FA_METHOD',
@@ -82,7 +89,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'required' => false,
             'reportable' => false,
         ],
-
         'pwd_last_changed' => [
             'name' => 'pwd_last_changed',
             'vname' => 'LBL_PSW_MODIFIED',
@@ -491,13 +497,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db',
             'vname' => 'LBL_ACTIVITY_ACCEPT_STATUS',
             'options' => 'dom_meeting_accept_status',
-            'comment' => 'non db field retrieved from the relationship to the meeting call etc'
-        ],
-        'activity_status_date_modified' => [
-            'name' => 'activity_status_date_modified',
-            'type' => 'datetime',
-            'source' => 'non-db',
-            'vname' => 'LBL_ACTIVITY_STATUS_DATE_MODIFIED',
             'comment' => 'non db field retrieved from the relationship to the meeting call etc'
         ],
         'activity_required' => [
@@ -958,22 +957,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'source' => 'non-db'
         ],
 
-        /* @deprecated in 2023.01.001
-         * Will be removed in 2023.02.001
-         */
-        'qualifications' => [
-            'name' => 'qualifications',
-            'rel_fields' => [
-                'qualification_start_date' => ['map' => 'bean_qualification_start_date'],
-                'qualification_end_date' => ['map' => 'bean_qualification_end_date'],
-            ],
-            'type' => 'link',
-            'relationship' => 'users_qualifications',
-            'source' => 'non-db',
-            'rname' => 'name',
-            'module' => 'Qualifications'
-        ],
-
         'shop_id' => [
             'name' => 'shop_id',
             'vname' => 'LBL_SHOP',
@@ -1183,7 +1166,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'rhs_module' => 'Users',
             'rhs_table' => 'users',
             'rhs_key' => 'parent_id',
-            'relationship_type' => 'one-to-many'
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column'       => 'parent_type',
+            'relationship_role_column_value' => 'Employees',
         ]
     ]
 ];

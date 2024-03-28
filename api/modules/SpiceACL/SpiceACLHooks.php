@@ -30,11 +30,11 @@ class SpiceACLHooks
 
             if($bean->spiceacl_additional_users){
 
-                $additonalUsers = json_decode($bean->spiceacl_additional_users);
+                $additionalUsers = json_decode($bean->spiceacl_additional_users);
 
                 $users = [];
-                foreach($additonalUsers as $additonalUser){
-                    $users[]= $additonalUser->id;
+                foreach($additionalUsers as $additionalUser){
+                    $users[]= $additionalUser->id;
                 }
 
                 $userManager = new SpiceACLUsers();

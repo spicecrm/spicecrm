@@ -83,8 +83,8 @@ class LDAPAuthenticate implements AuthenticatorI
                         "givenname" => 'first_name',
                         "sn" => 'last_name',
                         "mail" => 'email1',
-                        "telephoneNumber" => 'phone_work',
-                        "facsimileTelephoneNumber" => 'phone_fax',
+                        "telephonenumber" => 'phone_work',
+                        "facsimiletelephonenumber" => 'phone_fax',
                         "mobile" => 'phone_mobile',
                         "street" => 'address_street',
                         "l" => 'address_city',
@@ -258,15 +258,14 @@ class LDAPAuthenticate implements AuthenticatorI
             return false;
         }
 
-        // lunch the search in Active Directory
-        try {
-            $loginFilter = new LDAPLoginFilter();
-            $filter = $loginFilter->buildLdapSearchFilter($this->loginAttr, $name, $this->loginFilter);
+        // launch the search in Active Directory
+        $loginFilter = new LDAPLoginFilter();
+        $filter = $loginFilter->buildLdapSearchFilter($this->loginAttr, $name, $this->loginFilter);
 //            $result = ldap_search($this->ldapConn, $this->baseDn, "(" . $this->loginAttr . "={$name})", array_merge(['dn'], [$this->bindAttr]));
-            $result = ldap_search($this->ldapConn, $this->baseDn, $filter, array_merge(['dn'], [$this->bindAttr]));
-        } catch (Exception $e) {
+        $result = ldap_search($this->ldapConn, $this->baseDn, $filter, array_merge(['dn'], [$this->bindAttr]));
+        if($result === false){
             $error = $this->logLdapError();
-            // throw new Exception("unable to query ldap: " . $error);
+            LoggerManager::getLogger()->error($error);
             return false;
         }
 

@@ -2,14 +2,43 @@
     <system-modal-header (close)="closeModal()"><system-label label="LBL_EXPORT_TO_TARGETLIST_BUTTON_LABEL"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-form-element slds-p-around--small">
-            <label class="slds-form-element__label"><system-label label="LBL_EXPORT_TO_TARGETLIST_BUTTON_LABEL"></system-label></label>
+            <system-input-radio [name]="'exportAction'" value="new" [(ngModel)]="targetlist_action" (ngModelChange)="resetParameters()"><system-label label="LBL_NEW"/></system-input-radio>
+            <system-input-radio [name]="'exportAction'" value="update" [(ngModel)]="targetlist_action" (ngModelChange)="resetParameters()"><system-label label="LBL_UPDATE"/></system-input-radio>
+        </div>
+        <div *ngIf="targetlist_action == 'new'" class="slds-form-element slds-p-around--small">
+            <label class="slds-form-element__label"><system-label label="LBL_TARGETLIST_NAME"></system-label></label>
             <div class="slds-form-element__control">
                 <input type="text" class="slds-input" [(ngModel)]="targetlistname">
+            </div>
+        </div>
+        <div *ngIf="targetlist_action == 'update'">
+            <label class="slds-form-element__label"><system-label label="LBL_ACTION"></system-label></label>
+            <div class="slds-grid slds-grid--vertical">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <tbody>
+                        <tr>
+                            <td><system-input-radio class="slds-p-vertical--xx-small" [name]="'targetlist_update_action'" value="rep" [(ngModel)]="targetlist_update_action"> <system-label label="LBL_UPDATE_TARGET_LIST_WITH_REPORT"/></system-input-radio> </td>
+                            <td><system-label label="LBL_UPDATE_TARGET_LIST_WITH_REPORT" length="long"/></td>
+                        </tr>
+                        <tr>
+                            <td><system-input-radio class="slds-p-vertical--xx-small" [name]="'targetlist_update_action'" value="add" [(ngModel)]="targetlist_update_action"> <system-label label="LBL_ADD_TARGET_LIST_WITH_REPORT"/></system-input-radio></td>
+                            <td><system-label label="LBL_ADD_TARGET_LIST_WITH_REPORT" length="long"/></td>
+                        </tr>
+                        <tr>
+                            <td><system-input-radio class="slds-p-vertical--xx-small" [name]="'targetlist_update_action'" value="sub" [(ngModel)]="targetlist_update_action"> <system-label label="LBL_SUB_TARGET_LIST_WITH_REPORT"/></system-input-radio></td>
+                            <td><system-label label="LBL_SUB_TARGET_LIST_WITH_REPORT" length="long"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <label class="slds-form-element__label"><system-label label="LBL_PROSPECTLIST"></system-label></label>
+            <div class="slds-form-element__control">
+                <system-input-relate module="ProspectLists" [(ngModel)]="targetlist_update_id" class="slds-grow" style="display: block; margin: 0 -5px;"></system-input-relate>
             </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button class="slds-button slds-button--brand" (click)="exportTargetList()"><system-label label="LBL_OK"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="canExport()" (click)="exportTargetList()"><system-label label="LBL_EXPORT"></system-label></button>
     </system-modal-footer>
 </system-modal>

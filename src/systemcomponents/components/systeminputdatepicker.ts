@@ -389,7 +389,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         let j = 0;
         while (j < 6) {
             let i = 0;
-            let week = {days: [], number: fdom.format('W')};
+            let week = {days: [], number: fdom.format('w')};
             while (i < 7) {
                 // push the day only if we are in currentGrid and the date is the same or before the current date
                 // or if we are not i dual mode and the date is after the current date
@@ -398,6 +398,10 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
                     (this.dual && date.isSame(this.secondDate, 'month') && fdom.isSameOrAfter(this.secondDate, 'month'))) {
                     week.days[i] = moment(fdom.format());
                 }
+
+                // get the week number based on the thursday in that week
+                if(fdom.format('d') == 5) week.number = fdom.format('w');
+
                 fdom.add(1, 'd');
                 i++;
             }

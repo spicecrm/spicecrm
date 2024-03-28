@@ -897,7 +897,7 @@ class SpiceBean
      * @param string $rel_name relationship/attribute name.
      * @return nothing.
      */
-    function load_relationship($rel_name)
+    function load_relationship($rel_name, $forceReload = false )
     {
         LoggerManager::getLogger()->debug("SpiceBean[{$this->_objectname}].load_relationships, Loading relationship (" . $rel_name . ").");
 
@@ -912,6 +912,7 @@ class SpiceBean
             //initialize a variable of type Link
             $class = '\SpiceCRM\data\Link2';
             if (isset($this->$rel_name) && $this->$rel_name instanceof $class) {
+                if ( $forceReload ) $this->$rel_name->load();
                 return true;
             }
             //if rel_name is provided, search the fieldef array keys by name.
@@ -992,7 +993,7 @@ class SpiceBean
      * @param array $field_names linkname => [params]
      * @return array
      */
-    private function get_multiple_linked_beans($field_names)
+    public function get_multiple_linked_beans($field_names)
     {
         // check how field_names is formed. Make an array if it's not.
         foreach ($field_names as $field_name){
@@ -2904,6 +2905,8 @@ class SpiceBean
                 return SpiceACL::getInstance()->checkAccess($this->_module, 'export', $is_owner, $this->acltype);
             case 'import':
                 return SpiceACL::getInstance()->checkAccess($this->_module, 'import', true, $this->acltype);
+            case 'manageattachments':
+                return SpiceACL::getInstance()->checkAccess('Application', 'manageattachments');
         }
         //if it is not one of the above views then it should be implemented on the page level
         return true;
@@ -2941,12 +2944,12 @@ class SpiceBean
      *
      * @return array
      */
-    public function checkForDuplicates()
+    public function checkForDuplicates(array $acceptedDuplicatesIds = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $module = array_search($this->_objectname, SpiceModules::getInstance()->getBeanList());
 
-        $duplicates = SpiceFTSHandler::getInstance()->checkDuplicates($this);
+        $duplicates = SpiceFTSHandler::getInstance()->checkDuplicates($this, $acceptedDuplicatesIds);
 
         $dupRet = [];
         foreach ($duplicates['records'] as $duplicate) {
@@ -3092,5 +3095,28 @@ class SpiceBean
      */
     public function onClone()
     {
+    }
+
+    /**
+     * returns output templates that can be rendered for this module
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     */
+    public function getOutputTemplates()
+    {
+        $templates = [];
+        $bean = BeanFactory::getBean('OutputTemplates');
+        $beans = $bean->get_full_list('name', "module_name='{$this->_module}'");
+        foreach ($beans as $bean) {
+            $templates[] = [
+                'id' => $bean->id,
+                'name' => $bean->name,
+                'language' => $bean->language
+            ];
+        };
+        return $templates;
     }
 }

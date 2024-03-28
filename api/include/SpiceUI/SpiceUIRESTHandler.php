@@ -35,7 +35,7 @@ class SpiceUIRESTHandler
         if (!AuthenticationController::getInstance()->getCurrentUser()->is_admin)
             // set for cors
             // header("Access-Control-Allow-Origin: *");
-            throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
+            throw (new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
     }
 
     /**
@@ -94,13 +94,13 @@ class SpiceUIRESTHandler
         $retArray = [];
 
         $dbresult = $this->db->query("SELECT * FROM sysmodules UNION SELECT * FROM syscustommodules");
-        while ( $m = $this->db->fetchByAssoc( $dbresult )){
+        while ($m = $this->db->fetchByAssoc($dbresult)) {
             // check if we have the module or if it has been filtered out
-            if(!$m['acl'] || $current_user->is_admin || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
+            if (!$m['acl'] || $current_user->is_admin || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
                 $modules[$m['module']] = $m;
         }
 
-        foreach ( $modules as $module ) {
+        foreach ($modules as $module) {
 
             // load custom lists for the module
             $listArray = [];
@@ -157,7 +157,7 @@ class SpiceUIRESTHandler
     function getComponentSets()
     {
         $retArray = [];
-        $componentsets = $this->db->query("SELECT sysuicomponentsetscomponents.*, sysuicomponentsets.id cid, sysuicomponentsets.name, sysuicomponentsets.module, sysuicomponentsets.package componentsetpackage FROM sysuicomponentsets LEFT JOIN sysuicomponentsetscomponents ON sysuicomponentsetscomponents.componentset_id = sysuicomponentsets.id ORDER BY componentset_id, sequence");
+        $componentsets = $this->db->query("SELECT sysuicomponentsetscomponents.*, sysuicomponentsets.id cid, sysuicomponentsets.name, sysuicomponentsets.module, sysuicomponentsets.package componentsetpackage, sysuicomponentsets.version componentsetversion FROM sysuicomponentsets LEFT JOIN sysuicomponentsetscomponents ON sysuicomponentsetscomponents.componentset_id = sysuicomponentsets.id ORDER BY componentset_id, sequence");
 
         while ($componentset = $this->db->fetchByAssoc($componentsets)) {
 
@@ -166,6 +166,7 @@ class SpiceUIRESTHandler
                     'id' => $componentset['cid'],
                     'name' => $componentset['name'],
                     'package' => $componentset['componentsetpackage'],
+                    'version' => $componentset['componentsetversion'],
                     'module' => $componentset['module'] ?: '*',
                     'type' => 'global',
                     'items' => []
@@ -220,7 +221,7 @@ class SpiceUIRESTHandler
 
         foreach ($data['add'] as $componentsetId => $componentsetData) {
 
-            $componentsetItemTable = "sysui".($componentsetData['type'] == 'custom' ? 'custom' : '')."componentsetscomponents";
+            $componentsetItemTable = "sysui" . ($componentsetData['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents";
 
             self::insertComponentset($componentsetId, $componentsetData);
 
@@ -239,12 +240,12 @@ class SpiceUIRESTHandler
             $existingSet = $db->fetchByAssoc($db->query("SELECT * FROM $componentsetTable WHERE id='$componentsetId'"));
 
             // update the componentset
-            if ($existingSet && SystemDeploymentCR::hasChanged($existingSet, $componentsetData, ['name', 'package'])) {
+            if ($existingSet && SystemDeploymentCR::hasChanged($existingSet, $componentsetData, ['name', 'package', 'version'])) {
 
                 $data = [
                     'name' => $componentsetData['name'],
                     'package' => $componentsetData['package'],
-                    'version' => $_SESSION['confversion']
+                    'version' => $componentsetData['version'],
                 ];
 
                 SystemDeploymentCR::writeDBEntry($componentsetTable, $componentsetId, $data, $name, SystemDeploymentCR::ACTION_UPDATE);
@@ -258,6 +259,8 @@ class SpiceUIRESTHandler
             self::setComponentsetItems($componentsetId, $componentsetData);
         }
 
+        SpiceCache::clear('spiceComponentSets');
+
         return true;
     }
 
@@ -269,7 +272,7 @@ class SpiceUIRESTHandler
     {
         $db = DBManagerFactory::getInstance();
 
-        $componentsetItemTable = "sysui".($componentsetData['type'] == 'custom' ? 'custom' : '')."componentsetscomponents";
+        $componentsetItemTable = "sysui" . ($componentsetData['type'] == 'custom' ? 'custom' : '') . "componentsetscomponents";
         $name = $componentsetData['module'] . "/" . $componentsetData['name'];
 
         // get all componentset components
@@ -303,7 +306,7 @@ class SpiceUIRESTHandler
                     'sequence' => $componentsetItem['sequence'],
                     'componentconfig' => json_encode($componentsetItem['componentconfig']),
                     'package' => $componentsetItem['package'],
-                    'version' => $_SESSION['confversion']
+                    'version' => $componentsetItem['version']
                 ];
 
                 $name = $name . '/' . $componentsetItem['component'];
@@ -341,8 +344,8 @@ class SpiceUIRESTHandler
             'component' => $componentsetItem['component'],
             'sequence' => $componentsetItem['sequence'],
             'componentconfig' => json_encode($componentsetItem['componentconfig']),
-            'package' => $componentsetItem['pakage'],
-            'version' => $_SESSION['confversion']
+            'package' => $componentsetItem['package'],
+            'version' => $componentsetItem['version']
         ];
 
         $name = $componentsetData['module'] . "/" . $componentsetData['name'] . '/' . $componentsetItem['component'];
@@ -358,14 +361,14 @@ class SpiceUIRESTHandler
      */
     private static function insertComponentset(string $componentsetId, array $componentsetData)
     {
-        $tableName = "sysui".($componentsetData['type'] == 'custom' ? 'custom' : '')."componentsets";
+        $tableName = "sysui" . ($componentsetData['type'] == 'custom' ? 'custom' : '') . "componentsets";
 
         $dbData = [
             'id' => $componentsetId,
             'module' => $componentsetData['module'],
             'name' => $componentsetData['name'],
             'package' => $componentsetData['package'],
-            'version' => $_SESSION['confversion']
+            'version' => $componentsetData['version']
         ];
 
         $name = $componentsetData['module'] . "/" . $componentsetData['name'];
@@ -401,7 +404,7 @@ class SpiceUIRESTHandler
                 'action' => $actionset['action'],
                 'component' => $actionset['component'],
                 'singlebutton' => $actionset['singlebutton'],
-                'actionconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($actionset['actionconfig'])), true) ?: []
+                'actionconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($actionset['actionconfig'])), true) ?: []
             ];
         }
 
@@ -424,7 +427,7 @@ class SpiceUIRESTHandler
                 'action' => $actionset['action'],
                 'component' => $actionset['component'],
                 'singlebutton' => $actionset['singlebutton'],
-                'actionconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($actionset['actionconfig'])), true) ?: []
+                'actionconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($actionset['actionconfig'])), true) ?: []
             ];
         }
 
@@ -501,7 +504,7 @@ class SpiceUIRESTHandler
 
         while ($sysuirole = $this->db->fetchByAssoc($sysuiroles)) {
             if (array_search($sysuirole['id'], $roleids) === false) {
-                $allRoles[] = array_merge( $sysuirole, [ 'custom' => true ]);
+                $allRoles[] = array_merge($sysuirole, ['custom' => true]);
                 $roleids[] = $sysuirole['id'];
             }
         }
@@ -549,7 +552,7 @@ class SpiceUIRESTHandler
         if (!$entry)
             return ['status' => 'error', 'message' => 'Role not found'];
         $delPks = ['user_id' => $user_id, 'sysuirole_id' => $sysuirole_id];
-        $this->db->deleteQuery('sysuiuserroles',  $delPks);
+        $this->db->deleteQuery('sysuiuserroles', $delPks);
         return ['status' => 'success'];
 
     }
@@ -600,9 +603,9 @@ class SpiceUIRESTHandler
 
 
     /**
+     * @return array
      * @deprecated moved to controller
      *
-     * @return array
      */
     function getSysCopyRules()
     {
@@ -642,12 +645,12 @@ class SpiceUIRESTHandler
         $retArray = [];
         $componentconfigs = $this->db->query("SELECT * FROM sysuicomponentdefaultconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
+            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         $componentconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentdefaultconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
+            $retArray[$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         return $retArray;
@@ -663,22 +666,23 @@ class SpiceUIRESTHandler
         $retArray = [];
         $componentconfigs = $this->db->query("SELECT * FROM sysuicomponentmoduleconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
+            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         $componentconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentmoduleconf");
         while ($componentconfig = $this->db->fetchByAssoc($componentconfigs)) {
-            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"','"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
+            $retArray[$componentconfig['module']][$componentconfig['component']][trim($componentconfig['role_id'])] = json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($componentconfig['componentconfig'])), true) ?: [];
         }
 
         return $retArray;
     }
 
-    function checkComponentModuleAlreadyExists($params){
+    function checkComponentModuleAlreadyExists($params)
+    {
 
         if ($params['type'] == "custom") {
             $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentmoduleconf WHERE component = '" . $params['component'] . "' AND role_id = '" . $params['role_id'] . "' AND module = '" . $params['module'] . "'");
-        }else {
+        } else {
             $sysuiconfigs = $this->db->query("SELECT * FROM sysuicomponentmoduleconf WHERE component = '" . $params['component'] . "' AND role_id = '" . $params['role_id'] . "' AND module = '" . $params['module'] . "'");
         }
         $result = $this->db->fetchByAssoc($sysuiconfigs);
@@ -686,10 +690,11 @@ class SpiceUIRESTHandler
         return $result;
     }
 
-    function checkComponentDefaultAlreadyExists($params){
+    function checkComponentDefaultAlreadyExists($params)
+    {
         if ($params['type'] == "custom") {
             $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentdefaultconf WHERE component = '" . $params['component'] . "' AND role_id = '" . $params['role_id'] . "'");
-        }else {
+        } else {
             $sysuiconfigs = $this->db->query("SELECT * FROM sysuicomponentdefaultconf WHERE component = '" . $params['component'] . "' AND role_id = '" . $params['role_id'] . "'");
         }
         $result = $this->db->fetchByAssoc($sysuiconfigs);
@@ -698,25 +703,26 @@ class SpiceUIRESTHandler
     }
 
 
+    function checkFieldSetAlreadyExists($params)
+    {
 
-    function checkFieldSetAlreadyExists($params){
-
-        if($params['module'] == 'global'){
+        if ($params['module'] == 'global') {
             $params['module'] = "*";
         }
 
         if ($params['type'] == "custom") {
             $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomfieldsets WHERE module = '" . $params['module'] . "' AND name = '" . $params['name'] . "'");
-        }else {
+        } else {
             $sysuiconfigs = $this->db->query("SELECT * FROM sysuifieldsets WHERE module = '" . $params['module'] . "' AND name = '" . $params['name'] . "'");
         }
         $result = $this->db->fetchByAssoc($sysuiconfigs);
         return $result;
     }
+
     /**
+     * @return mixed
      * @deprecated moved to controller
      *
-     * @return mixed
      */
     function getFieldDefs($modules)
     {
@@ -729,7 +735,7 @@ class SpiceUIRESTHandler
             $seed = BeanFactory::getBean($module);
             $retArray['fielddefs'][$module] = $seed->field_defs;
             $indexProperties = SpiceFTSUtils::getBeanIndexProperties($module);
-            if($indexProperties) {
+            if ($indexProperties) {
                 foreach ($indexProperties as $indexProperty) {
                     if ($indexProperty['index'] == 'analyzed' && $indexProperty['duplicatecheck'] && isset($retArray['fielddefs'][$module][$indexProperty['indexfieldname']])) {
                         $retArray['fielddefs'][$module][$indexProperty['indexfieldname']]['duplicatecheck'] = true;
@@ -742,16 +748,17 @@ class SpiceUIRESTHandler
     }
 
     /**
+     * @return array
      * @deprecated moved to controller
      *
-     * @return array
      */
-    private function getStatusNetworks(){
+    private function getStatusNetworks()
+    {
         $db = DBManagerFactory::getInstance();
         $retArray = [];
 
         // check custom first
-        if($db->tableExists('systcustomstatusnetworks')) { // for BWC
+        if ($db->tableExists('systcustomstatusnetworks')) { // for BWC
             $statuscustomnetworks = $db->query("SELECT * FROM systcustomstatusnetworks ORDER BY domain, status_priority");
             while ($statusnetwork = $db->fetchByAssoc($statuscustomnetworks)) {
                 $retArray[$statusnetwork['domain']][] = $statusnetwork;
@@ -762,8 +769,8 @@ class SpiceUIRESTHandler
         $customizedDomains = array_keys($retArray);
 
         $statusnetworks = $db->query("SELECT * FROM syststatusnetworks ORDER BY domain, status_priority");
-        while($statusnetwork = $db->fetchByAssoc($statusnetworks)){
-            if(!in_array($statusnetwork['domain'], $customizedDomains)){
+        while ($statusnetwork = $db->fetchByAssoc($statusnetworks)) {
+            if (!in_array($statusnetwork['domain'], $customizedDomains)) {
                 $retArray[$statusnetwork['domain']][] = $statusnetwork;
             }
         }
@@ -782,61 +789,63 @@ class SpiceUIRESTHandler
                   id = '{$data['id']}',
                   name = '{$data['name']}',
                   module = '{$data['module']}',
-                  onevents = '".$this->db->quote($data['onevents'])."',
-                  active = ".(int)$data['active'].",
+                  onevents = '" . $this->db->quote($data['onevents']) . "',
+                  active = " . (int)$data['active'] . ",
                   logicoperator = '{$data['logicoperator']}',
-                  priority = ".(int)$data['priority'].",
-                  deleted = ".(int)$data['deleted']."
+                  priority = " . (int)$data['priority'] . ",
+                  deleted = " . (int)$data['deleted'] . "
                 ON DUPLICATE KEY UPDATE
                   name = '{$data['name']}',
                   module = '{$data['module']}',
-                  onevents = '".$this->db->quote($data['onevents'])."',
-                  active = ".(int)$data['active'].",
+                  onevents = '" . $this->db->quote($data['onevents']) . "',
+                  active = " . (int)$data['active'] . ",
                   logicoperator = '{$data['logicoperator']}',
-                  priority = ".(int)$data['priority'].",
-                  deleted = ".(int)$data['deleted'];
-        if( !$this->db->query($sql) ){  $failed = true; $error = 'INSERT INTO sysuimodelvalidations failed!';   }
+                  priority = " . (int)$data['priority'] . ",
+                  deleted = " . (int)$data['deleted'];
+        if (!$this->db->query($sql)) {
+            $failed = true;
+            $error = 'INSERT INTO sysuimodelvalidations failed!';
+        }
 
-        if( !$failed ) {
+        if (!$failed) {
             foreach ($data['conditions'] as $con) {
                 $sql = "INSERT IGNORE INTO sysuimodelvalidationconditions SET
                       id = '{$con['id']}',
                       sysuimodelvalidation_id = '{$con['sysuimodelvalidation_id']}',
                       fieldname = '{$con['fieldname']}',
                       comparator = '{$con['comparator']}',
-                      valuations = '".$this->db->quote($con['valuations'])."',
+                      valuations = '" . $this->db->quote($con['valuations']) . "',
                       onchange = '{$con['onchange']}',
-                      deleted = ".(int)$con['deleted']."
+                      deleted = " . (int)$con['deleted'] . "
                     ON DUPLICATE KEY UPDATE
                       sysuimodelvalidation_id = '{$con['sysuimodelvalidation_id']}',
                       fieldname = '{$con['fieldname']}',
                       comparator = '{$con['comparator']}',
-                      valuations = '".$this->db->quote($con['valuations'])."',
+                      valuations = '" . $this->db->quote($con['valuations']) . "',
                       onchange = '{$con['onchange']}',
-                      deleted = ".(int)$con['deleted'];
+                      deleted = " . (int)$con['deleted'];
                 if (!$this->db->query($sql)) {
                     $failed = true;
                     $error = 'INSERT INTO sysuimodelvalidationconditions failed!';
                 }
             }
 
-            foreach ($data['actions'] as $act)
-            {
+            foreach ($data['actions'] as $act) {
                 $sql = "INSERT IGNORE INTO sysuimodelvalidationactions SET
                       id = '{$act['id']}',
                       sysuimodelvalidation_id = '{$act['sysuimodelvalidation_id']}',
                       fieldname = '{$act['fieldname']}',
                       action = '{$act['action']}',
-                      params = '".$this->db->quote(is_array($act['params']) ? json_encode($act['params']) : $act['params'])."',
-                      priority = ".(int)$act['priority'].",
-                      deleted = ".(int)$act['deleted']."
+                      params = '" . $this->db->quote(is_array($act['params']) ? json_encode($act['params']) : $act['params']) . "',
+                      priority = " . (int)$act['priority'] . ",
+                      deleted = " . (int)$act['deleted'] . "
                     ON DUPLICATE KEY UPDATE
                       sysuimodelvalidation_id = '{$act['sysuimodelvalidation_id']}',
                       fieldname = '{$act['fieldname']}',
                       action = '{$act['action']}',
-                      params = '".$this->db->quote(is_array($act['params']) ? json_encode($act['params']) : $act['params'])."',
-                      priority = ".(int)$act['priority'].",
-                      deleted = ".(int)$act['deleted'];
+                      params = '" . $this->db->quote(is_array($act['params']) ? json_encode($act['params']) : $act['params']) . "',
+                      priority = " . (int)$act['priority'] . ",
+                      deleted = " . (int)$act['deleted'];
                 if (!$this->db->query($sql)) {
                     $failed = true;
                     $error = 'INSERT INTO sysuimodelvalidationactions failed!';
@@ -844,9 +853,9 @@ class SpiceUIRESTHandler
             }
         }
 
-        if( $failed ) {
+        if ($failed) {
             var_dump($error);
-            throw ( new Exception($error))->setFatal(true);
+            throw (new Exception($error))->setFatal(true);
         }
 
         // handle caching
@@ -855,9 +864,9 @@ class SpiceUIRESTHandler
     }
 
     /**
+     * @return mixed
      * @deprecated can be deleted with next cleanup
      *
-     * @return mixed
      */
     public function getAllModelValidations()
     {
@@ -866,8 +875,7 @@ class SpiceUIRESTHandler
                 WHERE deleted = 0 AND active = 1
                 ORDER BY priority ASC";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res))
-        {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $return[$row['module']]['validations'][] = $this->getModelValidations($row['id']);
         }
         return $return;
@@ -879,8 +887,7 @@ class SpiceUIRESTHandler
                 WHERE `module` = '{$module}' AND deleted = 0 AND active = 1
                 ORDER BY priority ASC";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res))
-        {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $return['validations'] = $this->getModelValidations($row['id']);
         }
         return $return;
@@ -891,17 +898,22 @@ class SpiceUIRESTHandler
         $sql = "SELECT * FROM sysuimodelvalidations WHERE id = '{$id}'";
         $res = $this->db->query($sql);
         $return = $this->db->fetchByAssoc($res);
-        if( !$return['logicoperator'] ){    $return['logicoperator'] = 'and';   }
-        if( json_decode($return['onevents']) ){$return['onevents'] = json_decode($return['onevents']);}
+        if (!$return['logicoperator']) {
+            $return['logicoperator'] = 'and';
+        }
+        if (json_decode($return['onevents'])) {
+            $return['onevents'] = json_decode($return['onevents']);
+        }
 
         $return['conditions'] = $return['actions'] = [];
 
         $sql = "SELECT * FROM sysuimodelvalidationconditions 
                 WHERE sysuimodelvalidation_id = '{$return['id']}' AND deleted = 0";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res))
-        {
-            if( json_decode($row['valuations']) ){$row['valuations'] = json_decode($row['valuations']);}
+        while ($row = $this->db->fetchByAssoc($res)) {
+            if (json_decode($row['valuations'])) {
+                $row['valuations'] = json_decode($row['valuations']);
+            }
             $return['conditions'][] = $row;
         }
 
@@ -909,9 +921,11 @@ class SpiceUIRESTHandler
                 WHERE sysuimodelvalidation_id = '{$return['id']}' AND deleted = 0
                 ORDER BY priority ASC";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res))  // <--- fucking dont encode html entities...!!!
+        while ($row = $this->db->fetchByAssoc($res))  // <--- fucking dont encode html entities...!!!
         {
-            if( json_decode($row['params']) ){$row['params'] = json_decode($row['params']);}
+            if (json_decode($row['params'])) {
+                $row['params'] = json_decode($row['params']);
+            }
             $return['actions'][] = $row;
         }
 
@@ -988,8 +1002,7 @@ class SpiceUIRESTHandler
                 WHERE parent_id = '" . $cat['id'] . "' 
                 ORDER BY keyname ASC, cat.name ASC";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res))
-        {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $row['level'] = $cat['level'] + 1;
             $cat['categories'][] = $this->getServiceCategoryChilds($row);
         }
@@ -1128,6 +1141,7 @@ class SpiceUIRESTHandler
         }
         return $cats;
     }
+
     private function flattenOutSelectTreeChildren($childs, &$cats)
     {
         foreach ($childs as $cat) {
@@ -1143,7 +1157,7 @@ class SpiceUIRESTHandler
         $this->checkAdmin();
         $insertData = [
             'id' => $tree['id'],
-            'name' => $tree['name'] ,
+            'name' => $tree['name'],
         ];
         $this->db->insertQuery('sysselecttree_tree', $insertData);
         return true;
@@ -1256,7 +1270,7 @@ class SpiceUIRESTHandler
                     $groupComponents[] = $groupComponent;
                 }
                 // only add if we have any component
-                if(count($groupComponents) > 0){
+                if (count($groupComponents) > 0) {
                     $navElements[] = array_merge($group, ['groupcomponents' => $groupComponents]);
                 }
             }
@@ -1289,7 +1303,7 @@ class SpiceUIRESTHandler
         };
 
         // CR1000442 make $modulestmp to numeric array
-        foreach($modulestmp as $module => $moduledata){
+        foreach ($modulestmp as $module => $moduledata) {
             $modules[] = $moduledata;
         }
 
@@ -1328,12 +1342,13 @@ class SpiceUIRESTHandler
      *
      * @return void
      */
-    public function getAssets(){
+    public function getAssets()
+    {
         $db = DBManagerFactory::getInstance();
 
         $assets = [];
         $assetsObj = $db->query("SELECT assetkey, assetvalue FROM sysuiassets");
-        while($asset = $db->fetchByAssoc($assetsObj)){
+        while ($asset = $db->fetchByAssoc($assetsObj)) {
             $assets[] = $asset;
         }
         return $assets;
@@ -1344,10 +1359,11 @@ class SpiceUIRESTHandler
      *
      * @return void
      */
-    public function setAssets($assets){
+    public function setAssets($assets)
+    {
         $db = DBManagerFactory::getInstance();
 
-        foreach($assets as $asset){
+        foreach ($assets as $asset) {
             // check if we have the asset
             $asssetRecord = $db->fetchOne("SELECT id FROM sysuiassets WHERE assetkey='{$asset['assetkey']}'");
             $asset['id'] = $asssetRecord['id'] ?: SpiceUtils::createGuid();

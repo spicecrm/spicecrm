@@ -1,16 +1,13 @@
 /**
  * @module ObjectComponents
  */
-import {
-    Component,
-    ElementRef, OnDestroy, OnInit, Renderer2
-} from '@angular/core';
+import {Component,ElementRef, OnDestroy, Renderer2} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
-import {animate, style, transition, trigger} from "@angular/animations";
 import {Subscription} from "rxjs";
+import {ObjectListFilterI} from "../interfaces/objectcomponents.interfaces";
 
 declare var _: any;
 
@@ -29,9 +26,10 @@ export class ObjectListViewFilterPanel implements OnDestroy {
     /**
      * the default filter object
      */
-    public filter = {
+    public filter: ObjectListFilterI = {
         logicaloperator: 'and',
         groupscope: 'all',
+        groupstate: 'active',
         geography: {},
         conditions: []
     };
@@ -63,6 +61,7 @@ export class ObjectListViewFilterPanel implements OnDestroy {
             this.filter = {
                 logicaloperator: 'and',
                 groupscope: 'all',
+                groupstate: 'active',
                 geography: {},
                 conditions: []
             };

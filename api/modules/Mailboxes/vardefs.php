@@ -125,6 +125,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'type' => 'varchar',
             'comment' => 'redirect url for the unsubscribe link',
         ],
+        'double_optin_redirect_url' => [
+            'name' => 'double_optin_redirect_url',
+            'vname' => 'LBL_DOUBLE_OPTIN_REDIRECT_URL',
+            'type' => 'varchar',
+            'comment' => 'redirect url for the double optin link',
+        ],
         'emails' => [
             'name' => 'emails',
             'vname' => 'LBL_EMAILS_LINK',
@@ -154,6 +160,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'vname' => 'LBL_STYLESHEET',
             'type' => 'id',
             'len' => '36',
+        ],
+        'max_upload' => [
+            'name' => 'max_upload',
+            'vname' => 'LBL_MAX_UPLOAD',
+            'type' => 'varchar',
+            'len' => '36',
+            'default' => '26214400',
+            'popupHelp' => 'LBL_HELP_MAX_UPLOAD'
+        ],
+        'zip_compress' => [
+            'name' => 'zip_compress',
+            'vname' => 'LBL_ZIP_COMPRESS',
+            'type' => 'bool',
+            'default' => 0,
+            'popupHelp' => 'LBL_HELP_ZIP_COMPRESS'
+        ],
+        'send_read_receipt' => [
+            'name' => 'send_read_receipt',
+            'vname' => 'LBL_SEND_READ_RECEIPT',
+            'type' => 'bool',
+            'default' => 0,
+            'comment'    => 'set flag to require a read receipt from the recipient'
         ],
         //link to the campaigns
         'campaigns' => [

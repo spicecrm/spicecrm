@@ -55,26 +55,7 @@ class SpiceACLObject extends SpiceBean
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
         if (SpiceUtils::isAdmin($current_user)) {
-            foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
-                $seed = BeanFactory::getBean($module);
-                if ($seed && method_exists($seed, 'bean_implements') && $seed->bean_implements('ACL')) {
-                    $typeRecord = $this->db->fetchByAssoc($this->db->query("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE module = '$module' AND acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE module = '$module' AND acl = 1"));
-                    if (!$typeRecord) {
-                        /*
-                        $newId = SpiceUtils::createGuid();
-                        $this->db->query("INSERT INTO spiceacltypes (id, module, status) VALUES('$newId', '$module', 'd')");
-                        $typeRecords[] = [
-                            'id' => $newId,
-                            'module' => $module,
-                            'status' => 'd',
-                            'usagecount' => 0
-                        ];
-                        */
-                    } else {
-                        $typeRecords[] = $typeRecord;
-                    }
-                }
-            }
+            $typeRecords = $this->db->fetchAll("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE acl = 1");
         }
         return $typeRecords;
     }
@@ -182,6 +163,28 @@ class SpiceACLObject extends SpiceBean
         return $thisObj['korgobjecttype_id'];
     }
 
+    /**
+     * get all orgunits IDs allocated to the employee record of the user
+     * @return array
+     * @throws \Exception
+     */
+    public function getUserParentOrgUnitIds($parentId = null, $parentType = null){
+        if(empty($parentId)){
+            $current_user = AuthenticationController::getInstance()->getCurrentUser();
+            $parentId = $current_user->parent_id;
+            $parentType = $current_user->parent_type;
+        }
+        $parentOrgUnitIds = [];
+        if($current_user->parent_type == '{$beanType}' && !empty($current_user->parent_id)){
+            $parentBean = BeanFactory::getBean($parentType, $parentId);
+            $orgunits = $parentBean->get_linked_beans('orgunits');
+            foreach($orgunits as $orgunit ){
+                $parentOrgUnitIds[] = $orgunit->id;
+            }
+        }
+        return $parentOrgUnitIds;
+    }
+
     /*
     * get all auth objects for the current user
     * checked and needed
@@ -190,6 +193,7 @@ class SpiceACLObject extends SpiceBean
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
+        $aclUnionQueries = [];
 
         if (SpiceConfig::getInstance()->config['acl']['disable_cache'] || empty($_SESSION['spiceaclaccess']['aclobjects'])) {
             $this->aclobjects = [];
@@ -199,40 +203,69 @@ class SpiceACLObject extends SpiceBean
             $substituteIds = $absences->getSubstituteIDs();
             $userIDs = array_merge([$current_user->id], $substituteIds);
             $userIDs = "'" . join("','", $userIDs) . "'";
-            $coreModuleUserQuery = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+
+            // legacy coreModuleUserQuery
+            // caution: before removing legacy, consider that the query goes on spiceaclprofiles_users.user_id='*'
+            $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_users spu ON sp.id = spu.spiceaclprofile_id AND spu.deleted = 0
 				INNER JOIN sysmodules st ON st.id = so.sysmodule_id
 				WHERE so.status='r' AND sp.status='r' and (spu.user_id in ($userIDs) or spu.user_id='*')";
-            $customModuleUserQuery = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+            $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_users spu ON sp.id = spu.spiceaclprofile_id AND spu.deleted = 0
 				INNER JOIN syscustommodules st ON st.id = so.sysmodule_id
 				WHERE so.status='r' AND sp.status='r' and (spu.user_id in ($userIDs) or spu.user_id='*')";
 
+            // orgunits from user's parent_type
+            if($current_user->parent_id && $current_user->parent_type){
+                $parent = BeanFactory::getBean($current_user->parent_type, $current_user->parent_id, ['relationships' => false]);
+                if($parent && $parent->load_relationship('orgunits')){
+                    $joinTable = $parent->orgunits->relationship->def['join_table'];
+                    $joinParentIdColName = $parent->orgunits->relationship->def['join_key_rhs'];
+                    if( $parent->orgunits->relationship->def['join_lhs_module'] == $parent->_module){
+                        $joinParentIdColName = $parent->orgunits->relationship->def['join_key_lhs'];
+                    }
+
+                    $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+                    INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
+                    INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
+                    INNER JOIN spiceaclprofiles_orgunits spo ON spo.spiceaclprofile_id = sp.id AND spo.deleted=0
+                    INNER JOIN {$joinTable} orgunitsparent ON orgunitsparent.orgunit_id = spo.orgunit_id AND orgunitsparent.deleted = 0
+                    INNER JOIN users u ON u.parent_id = orgunitsparent.{$joinParentIdColName} AND u.deleted = 0
+                    INNER JOIN (select id, module from sysmodules UNION select id, module from syscustommodules) st ON st.id = so.sysmodule_id
+                    WHERE so.status='r' AND sp.status='r' and (u.id in ($userIDs))";
+                }
+            }
+
+
             // get subsitute IDs and see if the current user has an orgunit id
-            $subsctituteOrgunitIds = $absences->getSubstituteOrgUnitIDs();
-            if($current_user->orgunit_id || count($subsctituteOrgunitIds) > 0) {
-                $orgunitIds = $current_user->orgunit_id ? array_merge([$current_user->orgunit_id], $subsctituteOrgunitIds) : $subsctituteOrgunitIds;
+            $substituteOrgunitIds = $absences->getSubstituteEmployeeOrgUnitIDs();
+            // get substitute employee record
+            if($current_user->orgunit_id || count($substituteOrgunitIds) > 0) {
+                $orgunitIds = $current_user->orgunit_id ? array_merge([$current_user->orgunit_id], $substituteOrgunitIds) : $substituteOrgunitIds;
+                $orgunitIds = array_unique($orgunitIds);
                 $orgunitIds = "'" . join("','", $orgunitIds) . "'";
-                $coreModuleOrgunitQuery = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+
+                $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_orgunits spo ON sp.id = spo.spiceaclprofile_id AND spo.deleted = 0
 				INNER JOIN sysmodules st ON st.id = so.sysmodule_id
 				WHERE so.status='r' AND sp.status='r' and spo.orgunit_id in ($orgunitIds)";
-                $customModuleOrgunitQuery = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
+
+                $aclUnionQueries[] = "SELECT so.id, so.activity, so.spiceaclorgassignment, so.spiceaclobjecttype, st.module, so.spiceaclowner, so.spiceaclcreator, so.spiceaclorgunit, so.allorgobjects FROM spiceaclobjects so
 				INNER JOIN spiceaclprofiles_spiceaclobjects spso ON spso.spiceaclobject_id = so.id AND spso.deleted = 0
 				INNER JOIN spiceaclprofiles sp ON sp.id = spso.spiceaclprofile_id
 				INNER JOIN spiceaclprofiles_orgunits spo ON sp.id = spo.spiceaclprofile_id AND spo.deleted = 0
 				INNER JOIN syscustommodules st ON st.id = so.sysmodule_id
 				WHERE so.status='r' AND sp.status='r' and spo.orgunit_id in ($orgunitIds)";
-                $aclobjects = $db->query("$coreModuleUserQuery UNION $customModuleUserQuery UNION $coreModuleOrgunitQuery UNION $customModuleOrgunitQuery");
-            } else {
-                $aclobjects = $db->query("$coreModuleUserQuery UNION $customModuleUserQuery");
             }
+//            file_put_contents('acl.log',  implode(' UNION ', $aclUnionQueries)."\n");
+
+            $aclobjects = $db->query(implode(' UNION ', $aclUnionQueries));
 
             // get a territory object if it exists
             $territory = BeanFactory::getBean('SpiceACLTerritories');
@@ -280,6 +313,14 @@ class SpiceACLObject extends SpiceBean
         } else {
             return $_SESSION['spiceaclaccess']['aclobjects'];
         }
+    }
+
+    public function getUserParentACLObjectQueries($parent, &$aclUnionQueries){
+        switch($parent->_module){
+            case 'Employees':
+
+        }
+
     }
 
     /*

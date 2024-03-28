@@ -68,6 +68,10 @@ export class ActionsetManagerActionDetails implements OnChanges {
         }
     }
 
+    get configContainerComponentName() {
+        return this.action.component ?? this.standardActions.find(a => a.value == this.action.action).component;
+    }
+
     // get all system-components for the selected system-module
     get components() {
         return this.metadata.getSystemComponents(this.systemmodule);
@@ -89,7 +93,6 @@ export class ActionsetManagerActionDetails implements OnChanges {
     public setActionComponent() {
         if(this.action.action) {
             this.localcomponent = this.standardActions.find( action => action.value === this.action.action ).component;
-            this.setComponent();
         } else {
             this.localcomponent = this.component_backup;
         }

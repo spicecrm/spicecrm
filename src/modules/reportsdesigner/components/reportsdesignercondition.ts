@@ -66,6 +66,8 @@ export class ReportsDesignerCondition {
                     case 'before':
                     case 'after':
                     case 'between':
+                    case 'equals':
+                    case 'notequal':
                         type = 'date';
                         break;
                 }

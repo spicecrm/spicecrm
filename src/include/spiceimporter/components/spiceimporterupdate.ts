@@ -24,6 +24,15 @@ export class SpiceImporterUpdate {
         return this.spiceImport.fileMapping;
     }
 
+    /**
+     * disable checkbox
+     * if the mapped field is a non-db field
+     * @param mappedFieldName
+     */
+    public disableCheckbox(mappedFieldName): boolean {
+        return this.spiceImport.nonDBFields.some(field => field.name == mappedFieldName);
+    }
+
     public setCheckedField(mappedField, moduleField, isChecked) {
 
         if (isChecked.target.checked) {

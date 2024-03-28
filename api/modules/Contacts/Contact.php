@@ -94,4 +94,29 @@ class Contact extends Person
         }
         parent::save_relationship_changes($is_update);
     }
+
+    /**
+     * retrieve further data used in the frontend display mode
+     * @return void
+     */
+    public function retrieveViewDetails()
+    {
+        $this->setSyncContactFlag();
+    }
+
+
+    /**
+     * set  the flag for sync_contact
+     * used in display like +outlook button to show if the contact is already synchronized
+     * with the address book of the current user
+     * @return void
+     */
+    public function setSyncContactFlag(){
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $users = $this->get_linked_beans('user_sync', null, [], 0, 1, 0, "user_id='{$current_user->id}'");
+
+        if($users && !empty($users[0]->contact_external_id)){
+            $this->sync_contact = true;
+        }
+    }
 }
