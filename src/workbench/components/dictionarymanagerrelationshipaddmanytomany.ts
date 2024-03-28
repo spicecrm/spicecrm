@@ -148,57 +148,24 @@ export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
      */
     public add() {
 
-        this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship, relationshipFields: this.generateRelationshipFields()}).subscribe({
+        const relationshipFields = this.relationshipFields.filter(f => !!f.map_to_fieldname || !f.isNew)
+            .map(field => {
+
+                // mark empty entries as deleted if they are not new
+                if (!field.isNew && !field.map_to_fieldname) {
+                    field.deleted = 1;
+                }
+
+                delete field.isNew;
+                return field;
+            });
+
+        this.backend.postRequest(`dictionary/relationship/${this.relationship.id}`, {}, {relationship: this.relationship, relationshipFields}).subscribe({
             next: (res) => {
                 this.dictionarymanager.pushNewRelationshipToArray(this.relationship);
                 this.dictionarymanager.dictionaryrelationshipfields.push(...this.relationshipFields);
                 this.close();
             }
         })
-    }
-
-    /**
-     * generate relationship fields
-     * @private
-     */
-    private generateRelationshipFields() {
-
-        const relationshipFields = [];
-
-        this.relationshipFields.forEach(f => {
-
-            if (!!f.mapToFieldNameLeft) {
-                relationshipFields.push(
-                    this.generateRelationshipField(f, f.mapToFieldNameLeft, this.relationship.lhs_sysdictionarydefinition_id)
-                );
-            }
-
-            if (!!f.mapToFieldNameRight) {
-                relationshipFields.push(
-                    this.generateRelationshipField(f, f.mapToFieldNameRight, this.relationship.rhs_sysdictionarydefinition_id)
-                );
-            }
-        });
-
-        return relationshipFields;
-    }
-
-    /**
-     * generate relationship field
-     * @param field
-     * @param mapToFieldName
-     * @param definitionId
-     * @private
-     */
-    private generateRelationshipField(field: RelationshipField, mapToFieldName: string, definitionId: string) {
-        field = {...field};
-
-        field.sysdictionarydefinition_id = definitionId;
-        field.map_to_fieldname = mapToFieldName;
-        field.id = this.modelutilities.generateGuid();
-        delete field.mapToFieldNameRight;
-        delete field.mapToFieldNameLeft;
-
-        return field;
     }
 }
