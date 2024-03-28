@@ -540,4 +540,11 @@ export class dictionarymanager implements OnDestroy {
             }
         });
     }
+
+    /**
+     * reload fielddefs frontend cache
+     */
+    public handleAfterActivate() {
+        this.configurationService.reloadTaskData('fielddefs');
+    }
 }
