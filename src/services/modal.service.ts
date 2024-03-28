@@ -1,12 +1,15 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable, Injector} from "@angular/core";
+import {ComponentRef, EventEmitter, Injectable, Injector, Type} from "@angular/core";
 import {metadata} from "./metadata.service";
 import {Observable, Subject, of} from "rxjs";
 import {footer} from "./footer.service";
 import {toast} from "./toast.service";
 import {language} from "./language.service";
+import {SystemModalWrapper} from "../systemcomponents/components/systemmodalwrapper";
+import {SystemLoadingModal} from "../systemcomponents/components/systemloadingmodal";
+import {SystemPrompt} from "../systemcomponents/components/systemprompt";
 
 /**
  * handles the modals in the system
@@ -26,7 +29,11 @@ export class modal {
      */
     public modalsObject = {};
 
-    constructor(public metadata: metadata, public footer: footer, public toast: toast, public language: language) {
+    constructor(public metadata: metadata,
+                public footer: footer,
+                public toast: toast,
+                private injector: Injector,
+                public language: language) {
         window.addEventListener("keyup", (event) => {
             if (event.keyCode === 27 && this.modalsArray.length) {
                 event.stopImmediatePropagation();
@@ -38,6 +45,40 @@ export class modal {
         });
     }
 
+    /**
+     * !!! only use it for static angular modules imported in SpiceUI Module (SystemComponents, GlobalComponents, ObjectComponents) !!!
+     * !!! never use it for lazy loaded modules !!!
+     * open a static modal by passing the modal component class directly
+     * @param componentType
+     * @param escKey
+     * @param injector
+     * @param blurBackdrop
+     */
+    public openStaticModal<GenericType>(componentType: Type<GenericType>, escKey = true, injector?: Injector, blurBackdrop?: boolean): Observable<ComponentRef<GenericType>> {
+
+        const retSubjectXY = new Subject<any>();
+
+        this.createModalWrapper().then(wrapperComponent => {
+            let newModal: any = {};
+            newModal.wrapper = wrapperComponent;
+            newModal.blurBackdrop = blurBackdrop;
+            wrapperComponent.instance.escKey = escKey;
+            this.modalsArray.push(newModal);
+            wrapperComponent.instance.zIndex = this.modalsArray.length * 2 + 1;
+            wrapperComponent.changeDetectorRef.detectChanges();
+            this.modalsObject[newModal.modalId] = newModal;
+
+            const modalComponent = wrapperComponent.instance.target.createComponent(componentType, {injector});
+            (modalComponent.instance as any).self = wrapperComponent;
+            newModal.component = modalComponent;
+            wrapperComponent.instance.childComponent = modalComponent;
+            retSubjectXY.next(modalComponent);
+            retSubjectXY.complete();
+        });
+
+        return retSubjectXY.asObservable();
+    }
+
     /*
     * tries to open a modal and if the component is not found or no componentfactory is found returns an error as the subject and prompts a toast.
     */
@@ -45,30 +86,36 @@ export class modal {
         // SPICEUI-35
         if (this.metadata.checkComponent(componentName)) {
             let retSubjectXY = new Subject<any>();
-            this.metadata.addComponentDirect("SystemModalWrapper", this.footer.modalcontainer).subscribe(wrapperComponent => {
+
+            this.createModalWrapper().then(wrapperComponent => {
                 let newModal: any = {};
                 newModal.wrapper = wrapperComponent;
                 newModal.blurBackdrop = blurBackdrop;
                 wrapperComponent.instance.escKey = escKey;
                 this.modalsArray.push(newModal);
+                wrapperComponent.instance.zIndex = this.modalsArray.length * 2 + 1;
+                wrapperComponent.changeDetectorRef.detectChanges();
+
                 this.modalsObject[newModal.modalId] = newModal;
-                this.metadata.addComponentDirect(componentName, wrapperComponent.instance.target, injector).subscribe(
-                    component => {
+                this.metadata.addComponentDirect(componentName, wrapperComponent.instance.target, injector).subscribe({
+                    next: component => {
                         component.instance.self = wrapperComponent;
                         newModal.component = component;
                         wrapperComponent.instance.childComponent = component;
                         retSubjectXY.next(component);
                         retSubjectXY.complete();
                     },
-                    e => {
+                    error: e => {
                         // remove the wrapper
                         this.removeModal(wrapperComponent);
                         // send a toast
                         this.sendError(componentName);
                         retSubjectXY.error(e);
                         retSubjectXY.complete();
-                    });
-                wrapperComponent.instance.zIndex = this.modalsArray.length * 2 + 1;
+                    }
+            });
+
+
             });
             return retSubjectXY.asObservable();
         } else {
@@ -77,7 +124,16 @@ export class modal {
         }
     }
 
+    /**
+     * create the modal wrapper component statically
+     */
+    public createModalWrapper(): Promise<ComponentRef<SystemModalWrapper>> {
 
+        const componentRef = this.footer.modalcontainer.createComponent(SystemModalWrapper);
+        componentRef.instance.self = componentRef;
+        componentRef.changeDetectorRef.markForCheck();
+        return Promise.resolve(componentRef);
+    }
 
     /**
      * sends an error toast if the modal compopnent that shoudk be rendered is not defined int he repository
@@ -96,6 +152,7 @@ export class modal {
     public removeModal(modalToClose) { // modalToClose is a reference to angular component
         for (let i = 0; i < this.modalsArray.length; i++) {
             if (this.modalsArray[i].wrapper === modalToClose) {
+                modalToClose.changeDetectorRef.detectChanges();
                 this.modalsArray.splice(i, 1);
                 break;
             }
@@ -169,7 +226,7 @@ export class modal {
      */
     public prompt(type: 'info'|'input'|'input_text'|'input_date'|'confirm', text: string, headertext: string = null, theme: string = 'shade', defaultvalue: string | number = null, options: { value: string|boolean, display: string}[] = null, optionsAs: true|'radio'|'button'|'select' = 'select', regex?: string ): Observable<any> {
         let responseSubject = new Subject();
-        this.openModal("SystemPrompt").subscribe(component => {
+        this.openStaticModal(SystemPrompt, true, this.injector).subscribe(component => {
             component.instance.type = type;
             component.instance.text = text;
             component.instance.headertext = headertext;
@@ -238,7 +295,7 @@ export class modal {
      */
     public await(messagelabel: string = null): EventEmitter<boolean> {
         let stopper = new EventEmitter<boolean>();
-        this.openModal('SystemLoadingModal', false).subscribe(component => {
+        this.openStaticModal(SystemLoadingModal, false, this.injector).subscribe(component => {
             component.instance.messagelabel = messagelabel;
             stopper.subscribe(() => {
                 component.instance.self.destroy();

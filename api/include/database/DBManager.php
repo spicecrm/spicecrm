@@ -275,6 +275,38 @@ abstract class DBManager
     public $dbConfig = [];
 
     /**
+     * holds the latest sql error
+     * @var
+     */
+    public $lastsql;
+
+    /**
+     * holds the count of references
+     * @var int
+     */
+    public $references = 0;
+
+    /**
+     * holds the index of the instance
+     * @var 
+     */
+    public $count_id;
+
+    /**
+     * holds the connectOptions of the database connection
+     * @var
+     */
+    public $connectOptions = [];
+
+    /**
+     * holds a DBManager instance of itself
+     * Not sure waht it is vor. Might a relic from the past
+     * @var
+     */
+    public $helper;
+
+
+    /**
      * Create DB Driver
      */
     public function __construct(array $config)
@@ -554,6 +586,8 @@ abstract class DBManager
     public function updateQuery($table, array $pks, array $data, $execute = true)
     {
         foreach ($data as $key => $val) {
+            // do not set the PKs
+            if(isset($pks[$key])) continue;
             $sets[] = "`$key` = '{$this->quote($val)}'";
         }
 
@@ -1656,6 +1690,33 @@ abstract class DBManager
     }
 
     /**
+     * Runs a query and returns all Rows
+     *
+     * @param string $sql SQL Statement to execute
+     * @param bool $dieOnError True if we want to call die if the query returns errors
+     * @param string $msg Message to log if error occurs
+     * @param bool $suppress Message to log if error occurs
+     * @return array    single row from the query
+     */
+    public function fetchAll($sql, $dieOnError = false, $msg = '', $suppress = false)
+    {
+        $this->checkConnection();
+        $queryresult = $this->query($sql, $dieOnError, $msg);
+        $this->checkError($msg . ' Fetch One Failed:' . $sql, $dieOnError);
+
+        if (!$queryresult) return false;
+
+        // get the rows
+        while($row = $this->fetchByAssoc($queryresult)){
+            $rows[] = $row;
+        }
+        if (!$rows) return false;
+
+        $this->freeResult($queryresult);
+        return $rows;
+    }
+
+    /**
      * Returns the number of rows affected by the last query
      * @abstract
      * See also affected_rows capability, will return 0 unless the DB supports it
@@ -1978,9 +2039,7 @@ abstract class DBManager
             $where .= " AND deleted=0";
         }
 
-        return "UPDATE " . $bean->getTableName() . "
-					SET " . implode(",", $columns) . "
-					$where";
+        return "UPDATE " . $bean->getTableName() . " SET " . implode(",", $columns) . "	$where";
     }
 
     /**

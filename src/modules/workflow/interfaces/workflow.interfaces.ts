@@ -34,7 +34,10 @@ export interface NextTaskI {
     id: string;
     name: string;
     type: string;
-
+    conditions?: any[];
+    checkMethod?: string;
+    checkMethodParams?: string;
+    sequence?: number;
 }
 
 /**

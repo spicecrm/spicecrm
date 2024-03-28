@@ -21,7 +21,12 @@
             </div>
         </div>
         <div class="slds-form-element slds-grow">
-            <system-input-number [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
+            @if(displayCalculator) {
+                <system-input-number system-input-number-with-calculator [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
+            } @else {
+                <system-input-number [(ngModel)]="value" [asNumber]="true" [precision]="precision"></system-input-number>
+            }
+
         </div>
     </div>
     <field-messages [fieldname]="fieldname"></field-messages>

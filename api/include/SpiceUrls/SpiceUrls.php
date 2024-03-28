@@ -201,43 +201,48 @@ class SpiceUrls
         $description = '';
 
         // curl call to retrieve html details
-        $html = self::fileGetContentsCurl($url);
+        $curlResp = self::fileGetContentsCurl($url);
 
         //parsing html file data
-        $doc = new DOMDocument();
-        $doc->loadHTML($html);
+        if($curlResp['rawHtml']){
+            $doc = new DOMDocument();
+            $doc->loadHTML($curlResp['rawHtml']);
 
-        //get url title
-        $nodes = $doc->getElementsByTagName('title');
-        $title = $nodes->item(0)->nodeValue;
+            //get url title
+            $nodes = $doc->getElementsByTagName('title');
+            $title = $nodes->item(0)->nodeValue;
 
-        $metas = $doc->getElementsByTagName('meta');
+            $metas = $doc->getElementsByTagName('meta');
 
-        for ($i = 0; $i < $metas->length; $i++) {
-            $meta = $metas->item($i);
+            for ($i = 0; $i < $metas->length; $i++) {
+                $meta = $metas->item($i);
 
-            // make sure we've got url title if nodes empty
-            if(!$title && $meta->getAttribute('property') == 'og:title') {
-                $title = $meta->getAttribute('content');
-            }
-            // get website description
-            if ($meta->getAttribute('name') == 'description') {
-                $description = $meta->getAttribute('content');
+                // make sure we've got url title if nodes empty
+                if(!$title && $meta->getAttribute('property') == 'og:title') {
+                    $title = $meta->getAttribute('content');
+                }
+
+                // if curl returns an error, don't set url_name
+                if($curlResp['httpCode'] != 200) {
+                    $title = '';
+                }
+
+                // get website description
+                if ($meta->getAttribute('name') == 'description') {
+                    $description = $meta->getAttribute('content');
+                }
             }
         }
-        $urlHead = ['title' => $title, 'description' => $description];
-
-        return $urlHead;
+        return ['title' => $title, 'description' => $description];
     }
 
     /**
      * curl call for retrieving html doc
      * @param string $url
-     * @return string
+     * @return array
      */
-    private static function fileGetContentsCurl(string $url): string
+    private static function fileGetContentsCurl(string $url): array
     {
-        $data = '';
         $ch = curl_init($url);
 
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -245,10 +250,14 @@ class SpiceUrls
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
-        $data = curl_exec($ch);
+        $curlData = curl_exec($ch);
+
+        // get status http code & push it
+        $info = curl_getinfo($ch);
+
         curl_close($ch);
 
-        return $data;
+        return ['rawHtml' => $curlData, 'httpCode' => $info['http_code']];
     }
 
 }

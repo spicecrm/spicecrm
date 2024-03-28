@@ -18,7 +18,6 @@ export class SendgridUnsubscribeDeleteButton {
         public backend: backend,
         public toast: toast,
         public modal: modal,
-        public metadata:metadata
     ) {}
 
     /**
@@ -26,7 +25,7 @@ export class SendgridUnsubscribeDeleteButton {
      */
 
     get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'sendgrid_delete');
+        return !this.model.checkAccess('sendgrid_delete');
     }
 
 

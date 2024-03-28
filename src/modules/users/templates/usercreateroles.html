@@ -1,0 +1,34 @@
+<table class="slds-table slds-table_bordered">
+    <thead class="slds-table--bordered slds-text-align_center">
+        <tr class="slds-text-title--caps">
+            <th style="width: 2rem"></th>
+            <th><system-label label="LBL_NAME"></system-label></th>
+            <th style="width: 1rem"></th>
+            <th style="width: 1rem"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(role of availableRoles; track role.id){
+            <tr class="slds-hint-parent">
+                <td>
+                    <div class="slds-avatar slds-avatar--small slds-align--absolute-center {{role.icon}}">
+                        {{ role.identifier }}
+                    </div>
+                </td>
+                <td>
+                    <system-custom-icon *ngIf="role.custom" icon="custom" size="x-small"
+                                        system-title="LBL_CUSTOM_ROLE"></system-custom-icon>
+                    <system-label [label]="role.label ?? role.name"></system-label>
+                </td>
+                <td>
+                    <system-checkbox [value]="role.id" [ngModel]="roleChecked(role.id)"
+                                     (ngModelChange)="checkRole(role.id)"/>
+                </td>
+                <td>
+                    <system-input-radio [disabled]="!roleChecked(role.id)" name="defaultrole" [value]="role.id"
+                                        [(ngModel)]="defaultRole"/>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

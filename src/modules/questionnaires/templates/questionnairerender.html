@@ -5,7 +5,7 @@
     <div *ngIf="showQuestionnaireTextBefore && qp.questionnaire.textbefore" [innerHTML]="qp.questionnaire.textbefore" class="slds-m-bottom--medium questionnaire-some-words"></div>
     <div *ngIf="qp.questionsetsArray.length; else noQuestionsetsTemplate">
         <div *ngFor="let questionset of qp.questionsetsArray; last as isLast">
-            <div *ngIf="qp.editMode === 'preview' || qp.editMode == 'postview'" class="slds-box" [ngClass]="{'slds-m-bottom_medium': !isLast}" [ngStyle]="{'border-width':this.qp.sizeSmall?'1px':'3px'}">
+            <div *ngIf="qp.editMode === 'questionnaire' || qp.editMode === 'off' || qp.editMode === 'preview' || qp.editMode == 'postview'" class="slds-box" [ngClass]="{'slds-m-bottom_medium': !isLast}" [ngStyle]="{'border-width':this.qp.sizeSmall?'1px':'3px'}">
                 <questionset-render [questionsetId]="questionset.id" [showProgress]="showProgress" [hideFinishedQuestions]="hideFinishedQuestions" [imageWidthOption]="imageWidthOption" [imageWidthQuestion]="imageWidthQuestion"></questionset-render>
             </div>
         </div>

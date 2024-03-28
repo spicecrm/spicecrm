@@ -68,7 +68,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
     public ngOnInit() {
 
         let emailTemplates = this.configuration.getData('EmailTemplates');
-        if (emailTemplates) {
+        if ( emailTemplates && !this.fieldconfig?.ignoreCache ) {
             this.availableTemplates = emailTemplates.filter(et => et.type == 'email' && (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
             this.availableTemplates.sort((a, b) =>  a.name.localeCompare(b.name));
             this.isLoaded = true;

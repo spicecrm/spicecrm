@@ -105,7 +105,7 @@
         </tbody>
       </table>
       <div class="slds-p-around--small slds-align--absolute-center">
-        <button class="slds-button slds-button--icon" (click)="addCondition()"><system-button-icon icon="add"/></button>
+        <button class="slds-button slds-button--icon" [disabled]="!determinationType" (click)="addCondition()"><system-button-icon icon="add"/></button>
       </div>
     </div>
   </system-modal-content>

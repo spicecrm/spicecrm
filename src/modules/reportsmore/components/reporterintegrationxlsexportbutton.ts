@@ -29,9 +29,9 @@ export class ReporterIntegrationXLSexportButton {
     /**
      * a reference to a download link button as helper for the ajax loader
      */
-    @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) public downloadlink: ViewContainerRef;
+    // @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) public downloadlink: ViewContainerRef;
 
-    public fileName: string = 'file.xls';
+    public fileName: string = 'file.xlsx';
 
     constructor(public language: language, public metadata: metadata, public backend: backend, public model: model, public modal: modal, public footer: footer, public reporterconfig: reporterconfig, public toast: toast) {
     }
@@ -70,8 +70,8 @@ export class ReporterIntegrationXLSexportButton {
         this.backend.getDownloadPostRequestFile('module/KReports/plugins/action/kexcelexport/export', {
             record: this.model.id,
             dynamicoptions: JSON.stringify(whereConditions)
-        }).subscribe(
-            url => {
+        }).subscribe({
+            next: (url: string) => {
                 let a = document.createElement("a");
                 document.body.appendChild(a);
                 a.href = url;
@@ -79,13 +79,12 @@ export class ReporterIntegrationXLSexportButton {
                 a.type = 'application/x-xls';
                 a.click();
                 a.remove();
-
                 awaitpromise.emit(true);
-            },
-            error => {
+            }, error: (error) => {
                 awaitpromise.emit(true);
-                this.toast.sendToast('Error Loading File', "error");
-            });
+                this.toast.sendToast(this.language.getLabel('MSG_ERROR_LOADING_FILE'), 'error');
+            }
+        });
 
     }
 }

@@ -150,6 +150,43 @@ SpiceDictionaryHandler::getInstance()->dictionary['OrgUnit'] = [
             'module' => 'Documents',
             'vname' => 'LBL_DOCUMENTS',
         ],
+        'employees' => [
+            'name' => 'employees',
+            'vname' => 'LBL_EMPLOYEES',
+            'type' => 'link',
+            'relationship' => 'orgunits_employees',
+            'module' => 'Employees',
+            'source' => 'non-db',
+            'rel_fields' => [
+                'is_primary_orgunit' => ['map' => 'is_primary_orgunit'],
+                'employee_role' => ['map' => 'employee_role']
+            ],
+            'comment' => 'all the employees n this orgunit'
+        ],
+        'employeesasprimary' => [
+            'name' => 'employeesasprimary',
+            'type' => 'link',
+            'relationship' => 'orgunits_employees_primary',
+            'source' => 'non-db',
+            'module' => 'Employees',
+            'vname' => 'LBL_EMPLOYEES_PRIMARY',
+            'comment' => 'employee having this orgunit as primary'
+        ],
+        'is_primary_orgunit' => [
+            'name' => 'is_primary_orgunit',
+            'vname' => 'LBL_PRIMARY',
+            'type' => 'bool',
+            'source' => 'non-db',
+            'comment' => 'represents the value in orgunits_employees.is_primary_orgunit'
+        ],
+        'employee_role' => [
+            'name' => 'employee_role',
+            'vname' => 'LBL_ROLE',
+            'type' => 'varchar',
+            'source' => 'non-db',
+            'comment' => 'represents the value in orgunits_employees.employee_role'
+        ],
+
     ],
     'relationships' => [
         'member_orgunits' => [

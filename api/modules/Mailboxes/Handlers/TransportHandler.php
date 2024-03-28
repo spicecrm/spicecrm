@@ -70,7 +70,7 @@ abstract class TransportHandler
      */
     abstract public function testConnection($testEmail);
 
-    public function sendMail(Email $email, $noSecurityCheck = false )
+    public function sendMail(Email|TextMessage $email, $noSecurityCheck = false )
     {
         $timedate = TimeDate::getInstance();
 
@@ -104,7 +104,7 @@ abstract class TransportHandler
             if (strpos($email->body, '</body>')) {
                 $email->body = str_replace('</body>', "<footer>{$parsedHtml}</footer></body>", $email->body);
             } else {
-                $email->body = "<footer>{$parsedHtml}</footer>" . $email->body;
+                $email->body = $email->body."<footer>{$parsedHtml}</footer>";
             }
         }
 
@@ -131,13 +131,18 @@ abstract class TransportHandler
         $emailTemplate->body_html = $content;
         $parsedContent = $emailTemplate->parse($email)['body_html'];
         $doc = new DOMDocument();
-        $doc->loadHTML($parsedContent);
+        $doc->loadHTML('<?xml encoding="UTF-8">' . $parsedContent);
 
         # remove <!DOCTYPE
         $doc->removeChild($doc->doctype);
 
         # remove <html><body></body></html>
-        $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
+//        $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
+        # if there are still html tags get content
+        $doc->getElementsByTagName('body');
+        if($doc->textContent == ''){
+            $doc->getElementsByTagName('html');
+        }
 
         return $doc->saveHTML();
     }

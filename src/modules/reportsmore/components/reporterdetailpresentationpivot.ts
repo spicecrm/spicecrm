@@ -116,6 +116,12 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
         return item.id;
     }
 
+    public getMultiHeaderStyle(index){
+        return {
+            top: `calc(${index} * 32px)`
+        }
+    }
+
     /**
      * generates an array that can be rendered as header for the pivot table in the view
      */
@@ -218,7 +224,8 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
                         fieldid: colum.fieldid,
                         value: record[colum.fieldid],
                         columns: [],
-                        endnode: false
+                        endnode: false,
+                        total: 0
                     };
                     headArray.push(headObject);
                 }
@@ -256,6 +263,10 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
 
             // check if we have the colValue
             if (this.rowValues.indexOf(record[this.presParams.pluginData.rowData]) == -1 && !!record[this.presParams.pluginData.rowData]) this.rowValues.push(record[this.presParams.pluginData.rowData]);
+        }
+
+        if(this.presParams.pluginData.advancedOptions.sortValues){
+            this.rowValues.sort((a, b) => a.localeCompare(b));
         }
 
         for (let rowValue of this.rowValues) {
@@ -341,6 +352,54 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
             }
         }
         return valueArray;
+    }
+
+    /**
+     * gets the total per field and column
+     * @param index
+     * @param fieldid
+     */
+    public getColumnSum(index, fieldid){
+        let sum = 0;
+        for(let cv in this.rowValueColumns){
+            let fv = this.rowValueColumns[cv][index].find(fx => fx.field.fieldid == fieldid);
+            if(!fv.value) continue;
+            sum += parseFloat(fv.value);
+        }
+        return sum;
+    }
+
+    /**
+     * gets the total per row
+     *
+     * @param fieldvalue
+     * @param fieldid
+     */
+    public getRowSum(fieldvalue, fieldid){
+        let sum = 0;
+
+        for(let cv of this.rowValueColumns[fieldvalue]){
+            let fv = cv.find(fx => fx.field.fieldid == fieldid);
+            if(!fv.value) continue;
+            sum += parseFloat(fv.value);
+        }
+
+        return sum;
+    }
+
+    /**
+     * gets the total per field for the complete grid
+     *
+     * @param fieldid
+     */
+    public getTotalSum(fieldid){
+        let sum = 0;
+
+        for(let cv in this.rowValueColumns){
+            sum += this.getRowSum(cv, fieldid)
+        }
+
+        return sum;
     }
 
     /**

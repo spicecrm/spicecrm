@@ -38,13 +38,13 @@
         </div>
         <div *ngIf="data.fromField == 'fixed'">
             <label class="slds-form-element__label"><system-label label="LBL_VALUE"></system-label></label>
-            <system-input-number [(ngModel)]="data.value"></system-input-number>
+            <system-input-number [(ngModel)]="data.value" precision="2"></system-input-number>
             <system-checkbox [(ngModel)]="data.evenly" class="slds-m-top--x-small" style="display: block"><system-label label="LBL_SPREAD_EVENLY"></system-label></system-checkbox>
         </div>
         <div *ngIf="!!data.fromField && data.fromField != 'fixed'">
             <label class="slds-form-element__label"><system-label label="LBL_WITH_VALUE_MODIFICATION"></system-label></label>
             <div class="slds-grid slds-grid--vertical-align-center">
-                <system-input-number [(ngModel)]="data.percentValue"></system-input-number>
+                <system-input-number [(ngModel)]="data.percentValue" precision="2" min="0" max="0"></system-input-number>
                 <span class="slds-m-left--xx-small slds-text-heading--small">%</span>
             </div>
         </div>

@@ -109,6 +109,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div>
+                            <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xxx-small">
+                                <label class="slds-form-element__label">
+                                    <system-label label="LBL_MAILBOX"></system-label>
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <select class="slds-select" [disabled]="mailboxes.length == 0" [(ngModel)]="schedule.schedulermailboxid">
+                                        <ng-container *ngFor="let o of mailboxes">
+                                            <option [value]="o.value" >{{o.display}}</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </ng-container>

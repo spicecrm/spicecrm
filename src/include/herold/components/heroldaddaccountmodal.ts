@@ -7,6 +7,7 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {configurationService} from "../../../services/configuration.service";
 
+declare var moment: any;
 
 @Component({
     selector: 'herold-add-account-modal',
@@ -86,13 +87,15 @@ export class HeroldAddAccountModal implements OnInit{
         this.items = [];
         this.backend.postRequest('common/herold', {}, {searchterm: this.searchterm, searchpostalcode: this.searchpostalcode, page: this.page}).subscribe({
             next: (res) => {
-                console.log(res);
-                this.items = res.items;
-                this.total = res.count;
-                this.pages = res.pageCount;
+                if(res) {
+                    this.items = res.items;
+                    this.total = res.count;
+                    this.pages = res.pageCount;
+                }
                 runningSearchModal.emit(true);
             },
-            error: () => {
+            error: (e) => {
+                this.toast.sendToast(e.error.error.message, 'warning', null, 5);
                 runningSearchModal.emit(true);
             }
         })
@@ -136,7 +139,10 @@ export class HeroldAddAccountModal implements OnInit{
             billing_address_longitude: company.geoLong,
             website: company.mainWebsite,
             vat_nr: company.vatNumber,
-            employees: company.employeeCount
+            employees: company.employeeCount,
+            herold_id: company.sid,
+            herold_date: moment(),
+            herold_data: JSON.stringify(company)
         }
 
         // add an email if we have one

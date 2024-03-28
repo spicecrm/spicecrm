@@ -18,7 +18,6 @@ export class SendgridTransferButton {
         public backend: backend,
         public toast: toast,
         public modal: modal,
-        public metadata: metadata
     ) {}
 
     /**
@@ -26,9 +25,15 @@ export class SendgridTransferButton {
      */
 
     get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'sendgrid_sync');
+        return !this.model.checkAccess('sendgrid_sync');
     }
 
+    /**
+     * hides button if the list is not connected to sendgrid
+     */
+    get hidden(){
+        return (this.model.getField('sendgrid_source') == '')
+    }
     /**
      * fires rest call from backend to Sendgrid
      */

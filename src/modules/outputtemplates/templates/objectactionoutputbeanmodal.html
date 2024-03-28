@@ -1,5 +1,5 @@
 <system-modal size="large">
-    <system-modal-header (close)="close()">{{modalTitle}}</system-modal-header>
+    <system-modal-header (close)="close()">{{title}}</system-modal-header>
     <system-modal-content margin="none">
         <div class="slds-modal__content" >
             <div class="slds-grid slds-p-horizontal--x-small slds-p-top--x-small">
@@ -7,7 +7,7 @@
                     <label class="slds-form-element__label"><system-label label="LBL_TEMPLATE"></system-label></label>
                     <div class="slds-form-element__control slds-grow">
                         <div class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="selected_template" [disabled]="templates.length == 0">
+                            <select class="slds-select" [(ngModel)]="selected_template" [disabled]="templates.length <= 1">
                                 <option *ngFor="let templ of templates" [ngValue]="templ">{{templ.name}} ({{templ.language}})</option>
                             </select>
                         </div>

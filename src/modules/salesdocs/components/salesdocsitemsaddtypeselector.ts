@@ -11,6 +11,7 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {configurationService} from '../../../services/configuration.service';
 import {model} from '../../../services/model.service';
+import {toast} from "../../../services/toast.service";
 
 @Component({
     templateUrl: '../templates/salesdocsitemsaddtypeselector.html'
@@ -41,7 +42,12 @@ export class SalesDocsItemsAddTypeSelector implements OnInit {
      */
     public itemType: string = '';
 
-    constructor(public metadata: metadata, public language: language, public model: model, public configuration: configurationService) {
+    /**
+     * a property for the parent item type
+     */
+    public parentItemType: string;
+
+    constructor(public metadata: metadata, public language: language, public model: model, public configuration: configurationService, public toast: toast) {
 
     }
 
@@ -49,24 +55,42 @@ export class SalesDocsItemsAddTypeSelector implements OnInit {
         let typesData = this.configuration.getData('salesdoctypes').find(typeRecord => typeRecord.name == this.model.getField('salesdoctype'));
         let itemTypesData = this.configuration.getData('salesdocitemtypes');
         if (typesData) {
-            // set the available types
-            for (let availableItemType of typesData.itemtypes) {
-                let itemTypeDetails = itemTypesData.find(a => a.name == availableItemType);
-                if (itemTypeDetails) {
-                    this.availableItemTypes.push(itemTypeDetails);
-                    if (!this.itemType) {
-                        this.itemType = itemTypeDetails.name;
+            // set the available types or subitemtypes
+            if(!this.parentItemType) {
+                for (let availableItemType of typesData.itemtypes) {
+                    let itemTypeDetails = itemTypesData.find(a => a.name == availableItemType);
+                    if (itemTypeDetails) {
+                        this.availableItemTypes.push(itemTypeDetails);
+                    }
+                }
+            } else if(typesData.itemsubtypes[this.parentItemType]){
+                for (let availableItemType of typesData.itemsubtypes[this.parentItemType]) {
+                    let itemTypeDetails = itemTypesData.find(a => a.name == availableItemType);
+                    if (itemTypeDetails) {
+                        this.availableItemTypes.push(itemTypeDetails);
                     }
                 }
             }
         } else {
+            // if we have no itemtypes emit an error and close the dialog
             this.availableItemTypes = [];
+            this.toast.sendToast('MSG_NO_ITEMTYPES_CONFIGURED', 'error');
+            this.close();
+        }
+
+        // sort the array
+        this.availableItemTypes.sort((a, b) => this.language.getLabel(a.vname).localeCompare(this.language.getLabel(b.vname)));
+
+        if (!this.itemType) {
+            this.itemType = this.availableItemTypes[0].name;
         }
 
         // if we only have one item .. emit this right away and do not prompt the user
-        if (this.availableItemTypes.length == 1) {
+        if (this.availableItemTypes.length == 1 ) {
             this.add();
+            return;
         }
+
     }
 
     /**

@@ -63,6 +63,7 @@ class ServiceTicket extends SpiceBean
         if (!empty($this->parent_id)) {
             if($parent = BeanFactory::getBean($this->parent_type, $this->parent_id)){
                 $this->email1 = $parent->email1;
+                $this->parent_name = $parent->name;
             }
         }
 

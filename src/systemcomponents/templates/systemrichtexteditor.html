@@ -1,15 +1,21 @@
-<div (click)="onEditorClick($event)" class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap slds-grid slds-grid--vertical slds-theme--default" style="  top: 0; right: 0; left: 0; bottom: 0; z-index: 9999;" [ngStyle]="richTextStyle">
+<div (click)="onEditorClick($event)"
+     class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap slds-grid slds-grid--vertical slds-theme--default"
+     style="  top: 0; right: 0; left: 0; bottom: 0; z-index: 9999;" [ngStyle]="richTextStyle"
+     [system-overlay-loading-spinner]="isLoading">
     <!--system-richtext-toolbar [isActive]="isActive" #editorToolbar (execute)="executeCommand($event)"></system-richtext-toolbar-->
-    <div *ngIf="!readOnly" role="toolbar" style="top: 0; z-index: 2; position: sticky" class="slds-rich-text-editor__toolbar slds-shrink-none">
+    <div *ngIf="!readOnly" role="toolbar" style="top: 0; z-index: 2; position: sticky"
+         class="slds-rich-text-editor__toolbar slds-shrink-none">
         <ul *ngIf="extendedmode" class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" aria-pressed=true [title]="language.getLabel('LBL_UNDO')" (click)="executeCommand('undo')">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
+                        aria-pressed=true [title]="language.getLabel('LBL_UNDO')" (click)="executeCommand('undo')">
                     <system-button-icon icon="undo"></system-button-icon>
                     <span class="slds-assistive-text">undo</span>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_REDO')" (click)="executeCommand('redo')"  >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_REDO')" (click)="executeCommand('redo')">
                     <system-button-icon icon="redo"></system-button-icon>
                     <span class="slds-assistive-text">redo</span>
                 </button>
@@ -49,12 +55,12 @@
                 </div>
             </div>
         </div-->
-        <div *ngIf="extendedmode"  class="slds-grid slds-rich-text-editor__spacing-wrapper" role="group">
+        <div *ngIf="extendedmode" class="slds-grid slds-rich-text-editor__spacing-wrapper" role="group">
             <div class="slds-rich-text-editor__select">
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" [(ngModel)]="block" (change)="heading(block)" >
+                            <select class="slds-select" [(ngModel)]="block" (change)="heading(block)">
                                 <option value="heading2">Heading 2</option>
                                 <option value="heading3">Heading 3</option>
                                 <option value="heading4">Heading 4</option>
@@ -70,9 +76,10 @@
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" (change)="customStyle($event.target.value)" >
+                            <select class="slds-select" (change)="customStyle($event.target.value)">
                                 <option value="">&mdash;</option>
-                                <option *ngFor="let customStyle of customStyleDefinitions" value="{{customStyle.id}}">{{customStyle.display}}</option>
+                                <option *ngFor="let customStyle of customStyleDefinitions"
+                                        value="{{customStyle.id}}">{{customStyle.display}}</option>
                             </select>
                         </div>
                     </div>
@@ -81,171 +88,227 @@
         </div>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_BOLD')" (click)="executeCommand('bold')" [ngClass]="{'slds-active': commandIsActive('bold')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_BOLD')" (click)="executeCommand('bold')"
+                        [ngClass]="{'slds-active': commandIsActive('bold')}">
                     <system-button-icon icon="bold"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_ITALIC')" (click)="executeCommand('italic')" [ngClass]="{'slds-active': commandIsActive('italic')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_ITALIC')" (click)="executeCommand('italic')"
+                        [ngClass]="{'slds-active': commandIsActive('italic')}">
                     <system-button-icon icon="italic"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_UNDERLINE')" (click)="executeCommand('underline')" [ngClass]="{'slds-active': commandIsActive('underline')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_UNDERLINE')" (click)="executeCommand('underline')"
+                        [ngClass]="{'slds-active': commandIsActive('underline')}">
                     <system-button-icon icon="underline"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_STRIKETHROUGH')" (click)="executeCommand('strikethrough')" [ngClass]="{'slds-active': commandIsActive('strikethrough')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_STRIKETHROUGH')"
+                        (click)="executeCommand('strikethrough')"
+                        [ngClass]="{'slds-active': commandIsActive('strikethrough')}">
                     <system-button-icon icon="strikethrough"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_BULLETED_LIST')" (click)="executeCommand('bulletedList')" [ngClass]="{'slds-active': commandIsActive('bulletedList')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_BULLETED_LIST')"
+                        (click)="executeCommand('bulletedList')"
+                        [ngClass]="{'slds-active': commandIsActive('bulletedList')}">
                     <system-button-icon icon="richtextbulletedlist"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_NUMBERED_LIST')" (click)="executeCommand('numberedList')" [ngClass]="{'slds-active': commandIsActive('numberedList')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_NUMBERED_LIST')"
+                        (click)="executeCommand('numberedList')"
+                        [ngClass]="{'slds-active': commandIsActive('numberedList')}">
                     <system-button-icon icon="richtextnumberedlist"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_TABLE')" (click)="openTable()" [ngClass]="{'slds-active': commandIsActive('insertTable')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_TABLE')" (click)="openTable()"
+                        [ngClass]="{'slds-active': commandIsActive('insertTable')}">
                     <system-button-icon icon="table"></system-button-icon>
                 </button>
                 <div *ngIf="isShow">
-                <section aria-describedby="dialog-body-id-35" aria-label="Choose a color" class="slds-popover slds-color-picker__selector slds-show" role="dialog" style="position:absolute;">
-                    <div class="slds-popover__body" id="dialog-body-id-35">
-                        <div class="slds-media">
-                            <div class="slds-media__body">
-                                   <div class="slds-text-align--center" >{{selectedRow}} &#215; {{selectedColumn}}</div>
-                                    <div id="color-picker-default" class="slds-tabs_default__content slds-show" role="tabpanel" aria-labelledby="color-picker-default__item">
-                                    <ul>
-                                        <li *ngFor="let row of [1,2,3,4,5,6,7,8,9,10]">
-                                            <ul class="slds-color-picker__swatches" role="listbox" aria-label="Preset colors">
-                                                <li *ngFor="let column of [1,2,3,4,5,6,7,8,9,10]" class="slds-color-picker__swatch" role="presentation">
-                                                    <span [ngClass]="{'selected' : row <= this.selectedRow && column <= this.selectedColumn}" (click)="selectTable(row,column)" class="slds-color-picker__swatch-trigger" href="#" role="option" tabindex="0">
+                    <section aria-describedby="dialog-body-id-35" aria-label="Choose a color"
+                             class="slds-popover slds-color-picker__selector slds-show" role="dialog"
+                             style="position:absolute;">
+                        <div class="slds-popover__body" id="dialog-body-id-35">
+                            <div class="slds-media">
+                                <div class="slds-media__body">
+                                    <div class="slds-text-align--center">{{selectedRow}} &#215; {{selectedColumn}}</div>
+                                    <div id="color-picker-default" class="slds-tabs_default__content slds-show"
+                                         role="tabpanel" aria-labelledby="color-picker-default__item">
+                                        <ul>
+                                            <li *ngFor="let row of [1,2,3,4,5,6,7,8,9,10]">
+                                                <ul class="slds-color-picker__swatches" role="listbox"
+                                                    aria-label="Preset colors">
+                                                    <li *ngFor="let column of [1,2,3,4,5,6,7,8,9,10]"
+                                                        class="slds-color-picker__swatch" role="presentation">
+                                                    <span [ngClass]="{'selected' : row <= this.selectedRow && column <= this.selectedColumn}"
+                                                          (click)="selectTable(row,column)"
+                                                          class="slds-color-picker__swatch-trigger" href="#"
+                                                          role="option" tabindex="0">
                     <span class="slds-swatch" style=" height: 9px; width: 9px; border: solid 1px black;"></span>
                                                     </span>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <div id="color-picker-custom" class="slds-tabs_default__content slds-hide" role="tabpanel" aria-labelledby="color-picker-custom__item">
+                                    <div id="color-picker-custom" class="slds-tabs_default__content slds-hide"
+                                         role="tabpanel" aria-labelledby="color-picker-custom__item">
                                     </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <footer class="slds-popover__footer">
-                        <div class="slds-color-picker__selector-footer slds-p-bottom--x-small slds-float--right">
-                            <button class="slds-button-small slds-m-right--small slds-button_neutral" (click)="cancelTable()">Cancel</button>
-                            <button class="slds-button-small slds-button_destructive" (click)="insertTable()">Done</button>
-                        </div>
-                    </footer>
-                </section>
+                        <footer class="slds-popover__footer">
+                            <div class="slds-color-picker__selector-footer slds-p-bottom--x-small slds-float--right">
+                                <button class="slds-button-small slds-m-right--small slds-button_neutral"
+                                        (click)="cancelTable()">Cancel
+                                </button>
+                                <button class="slds-button-small slds-button_destructive" (click)="insertTable()">Done
+                                </button>
+                            </div>
+                        </footer>
+                    </section>
 
                 </div>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_TEXT_INDENT')" (click)="executeCommand('indent')" [ngClass]="{'slds-active': commandIsActive('indentBlock')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_TEXT_INDENT')" (click)="executeCommand('indent')"
+                        [ngClass]="{'slds-active': commandIsActive('indentBlock')}">
                     <system-button-icon icon="richtextindent"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_TEXT_OUTDENT')" (click)="executeCommand('outdent')" [ngClass]="{'slds-active': commandIsActive('outdentBlock')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_TEXT_OUTDENT')"
+                        (click)="executeCommand('outdent')"
+                        [ngClass]="{'slds-active': commandIsActive('outdentBlock')}">
                     <system-button-icon icon="richtextoutdent"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_LEFT_ALIGN')" (click)="alignment('left')" [ngClass]="{'slds-active': commandIsActive('justifyLeft')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_LEFT_ALIGN')" (click)="alignment('left')"
+                        [ngClass]="{'slds-active': commandIsActive('justifyLeft')}">
                     <system-button-icon icon="left_align_text"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_CENTER_ALIGN')" (click)="alignment('center')" [ngClass]="{'slds-active': commandIsActive('justifyCenter')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_CENTER_ALIGN')" (click)="alignment('center')"
+                        [ngClass]="{'slds-active': commandIsActive('justifyCenter')}">
                     <system-button-icon icon="center_align_text"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_RIGHT_ALIGN')" (click)="alignment('right')" [ngClass]="{'slds-active': commandIsActive('justifyRight')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_RIGHT_ALIGN')" (click)="alignment('right')"
+                        [ngClass]="{'slds-active': commandIsActive('justifyRight')}">
                     <system-button-icon icon="right_align_text"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_ALIGN_TEXT')" (click)="alignment('justify')" [ngClass]="{'slds-active': commandIsActive('justifyFull')}" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_ALIGN_TEXT')" (click)="alignment('justify')"
+                        [ngClass]="{'slds-active': commandIsActive('justifyFull')}">
                     <system-button-icon icon="justify_text"></system-button-icon>
                 </button>
             </li>
         </ul>
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_LINK')" (click)="insertLink()" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_LINK')" (click)="insertLink()">
                     <system-button-icon icon="link"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_REMOVE_LINK')" (click)="executeCommand('unlink')" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_REMOVE_LINK')" (click)="executeCommand('unlink')">
                     <system-button-icon icon="remove_link"></system-button-icon>
                 </button>
             </li>
         </ul>
-        <ul *ngIf="extendedmode"  class="slds-button-group-list">
+        <ul *ngIf="extendedmode" class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="insertImage()">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="insertImage()">
                     <system-button-icon icon="image"></system-button-icon>
                 </button>
             </li>
             <li *ngIf="useMedialFile">
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="openMediaFilePicker()">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="openMediaFilePicker()">
                     <system-button-icon icon="ad_set"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ADD_VIDEO')" (click)="addVideo()">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
+                        [title]="language.getLabel('LBL_ADD_VIDEO')" (click)="addVideo()">
                     <system-button-icon icon="video"></system-button-icon>
                 </button>
             </li>
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_ADD_CODE_SNIPPET')" (click)="addCodeSnippet()">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_ADD_CODE_SNIPPET')" (click)="addCodeSnippet()">
                     <system-button-icon icon="snippet"></system-button-icon>
                 </button>
             </li>
         </ul>
-        <ul *ngIf="useTemplateVariableHelper" class="slds-button-group-list">
-            <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_TEMPLATE_VARIABLE_HELPER')" (click)="openTemplateVariableHelper()">
+        <ul *ngIf="displayTemplateVariableHelper || displayTextSnippet" class="slds-button-group-list">
+            <li *ngIf="displayTemplateVariableHelper">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
+                        [title]="language.getLabel('LBL_TEMPLATE_VARIABLE_HELPER')"
+                        (click)="openTemplateVariableHelper()">
                     <system-button-icon icon="variable"></system-button-icon>
                 </button>
             </li>
+            <li *ngIf="displayTextSnippet">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1"
+                        [title]="language.getLabel('LBL_INSERT_TEXT_SNIPPET')"
+                        (click)="openTextSnippetModal()">
+                    <system-button-icon icon="quick_text"></system-button-icon>
+                </button>
+            </li>
         </ul>
+
         <ul class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_REMOVE_FORMATTING')" (click)="executeCommand('removeFormat')" >
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_REMOVE_FORMATTING')"
+                        (click)="executeCommand('removeFormat')">
                     <system-button-icon icon="remove_formatting"></system-button-icon>
                 </button>
             </li>
         </ul>
-        <ul *ngIf="extendedmode"  class="slds-button-group-list">
+        <ul *ngIf="extendedmode" class="slds-button-group-list">
             <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" system-title="LBL_SOURCE_EDITOR" (click)="openSourceEditor()" >
-                    <system-button-icon icon="insert_tag_field"></system-button-icon>
-                </button>
-            </li>
-            <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true tabindex="-1" [title]="language.getLabel('LBL_EXPAND')" (click)="toggleFullscreen()">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
+                        tabindex="-1" [title]="language.getLabel('LBL_EXPAND')" (click)="toggleFullscreen()">
                     <system-button-icon [icon]="expandIcon"></system-button-icon>
                 </button>
             </li>
         </ul>
-        <ul  class="slds-button-group-list slds-grow">
+        <ul class="slds-button-group-list slds-grow">
             <ng-content></ng-content>
         </ul>
     </div>

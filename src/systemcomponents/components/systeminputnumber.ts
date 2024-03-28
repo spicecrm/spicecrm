@@ -1,9 +1,10 @@
 /**
  * @module SystemComponents
  */
-import {Component, ElementRef, forwardRef, Input, Renderer2, ViewChild} from '@angular/core';
+import {Component, ElementRef, forwardRef, Injector, Input, Renderer2, ViewChild} from '@angular/core';
 import {userpreferences} from '../../services/userpreferences.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'system-input-number',
@@ -45,6 +46,19 @@ export class SystemInputNumber implements ControlValueAccessor {
         this.textValue = typeof (this.textValue) != 'number' ? this.getValSanitized(this.textValue) : this.textValue;
     }
     public precision: number = 0;
+
+    /**
+     * a setter to set that a calculator icon should be displayed in the field
+     * @param displayCalculator
+     */
+    @Input('system-input-number-with-calculator') set setCalculator(displayCalculator: boolean){
+        if (displayCalculator === false) {
+            this.withCalculator = false;
+        } else {
+            this.withCalculator = true;
+        }
+    }
+    public withCalculator: boolean = false;
 
     /**
      * Display only the html input field, not the surrounding html
@@ -115,7 +129,7 @@ export class SystemInputNumber implements ControlValueAccessor {
     public counterAfterdecimalKeyStroke: number = 0;
 
 
-    constructor(public userpreferences: userpreferences, public renderer: Renderer2) {
+    constructor(public userpreferences: userpreferences, public renderer: Renderer2, public injector: Injector) {
     }
 
     // ControlValueAccessor Interface: >>
@@ -462,6 +476,19 @@ export class SystemInputNumber implements ControlValueAccessor {
             return true;
         }
         return false;
+    }
+
+    /**
+     * for the calculator
+     */
+    public openCalculator() {
+        this.injector.get<modal>(modal).openModal('SpiceCalculatorModal').subscribe(modalRef => {
+            modalRef.instance.value = this.textValue;
+            modalRef.instance.trigger = true;
+            modalRef.instance.value$.subscribe(val => {
+                this.textValue = this.userpreferences.formatMoney(val, 2);
+            });
+        });
     }
 
 }

@@ -1,13 +1,14 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Injector, Renderer2, SkipSelf} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, Injector, Renderer2, SkipSelf} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
+import {broadcast} from '../../../services/broadcast.service';
 import {fieldCategories} from "../../../objectfields/components/fieldcategories";
 import {configurationService} from "../../../services/configuration.service";
 
@@ -28,9 +29,12 @@ export class fieldServiceEnhancedCategories extends fieldCategories {
         public config: configurationService,
         public elementRef: ElementRef,
         public renderer: Renderer2,
-        private queue: model
+        private queue: model,
+        public changeDetectorRef: ChangeDetectorRef,
+        public broadcast: broadcast
+
     ) {
-        super(model, view, language, metadata, router, backend, config, elementRef, renderer);
+        super(model, view, language, metadata, router, backend, config, elementRef, renderer, changeDetectorRef, broadcast);
     }
 
     public chooseCategories(selected) {

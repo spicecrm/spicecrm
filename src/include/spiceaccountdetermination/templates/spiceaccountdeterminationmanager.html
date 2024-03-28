@@ -1,0 +1,71 @@
+<div class="slds-grid slds-grid_vertical-align-center slds-p-around--small slds-border--bottom">
+  <system-icon icon="investment_account"></system-icon>
+  <h2 class="slds-text-heading_medium"><system-label label="LBL_ACCOUNT_DETERMINATION"></system-label></h2>
+  <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!hasChanges()" (click)="saveDeterminations()">
+    <system-label label="LBL_SAVE"></system-label>
+  </button>
+</div>
+<div>
+    <div class="slds-p-around--xx-small">
+      <div class="slds-box slds-box--border">
+        <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center">
+          <label class="slds-form-element__label slds-size--1-of-4"><system-label label="LBL_CONDITION"/></label>
+          <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xx-small">
+            <div class="slds-form-element__control">
+              <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="determinationType">
+                  <option value=""><system-label label="LBL_SELECT"/></option>
+                  <option *ngFor="let dt of determinationTypes" [ngValue]="dt.id"><system-label [label]="dt.name"/></option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <label class="slds-form-element__label slds-size--1-of-4"><system-label label="LBL_DETERMINATION_TYPE"/></label>
+          <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xx-small">
+            <div class="slds-form-element__control">
+              <div class="slds-select_container">
+                <select [disabled]="!determinationType || typeDeterminations.length == 0" class="slds-select" [(ngModel)]="determination">
+                  <option value=""><system-label label="LBL_SELECT"/></option>
+                  <option *ngFor="let d of typeDeterminations" [ngValue]="d.id"><system-label [label]="d.name"/></option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- conditions table -->
+    <div>
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+          <tr class="slds-line-height_reset">
+            <th class="" scope="col" *ngFor="let ce of determinationElements">
+              <div class="slds-truncate"><system-label [label]="ce.name"/></div>
+            </th>
+            <th class="" scope="col">
+              <div class="slds-truncate"><system-label label="LBL_VALUE"/></div>
+            </th>
+            <th style="width: 3rem"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="slds-hint-parent" *ngFor="let d of determinationrecords|excludedeletedpipe">
+            <td  *ngFor="let de of determinationElements">
+                <input [ngModel]="getElementValue(d.id, de.name)" (ngModelChange)="setElementValue(d.id, de.name, $event)" type="text" class="slds-input">
+            </td>
+            <td>
+              <system-input-text [(ngModel)]="d.accountnr"></system-input-text>
+            </td>
+            <td>
+              <button class="slds-button slds-button--icon" (click)="deleteRecord(d)">
+                <system-button-icon icon="delete"></system-button-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="slds-p-around--small slds-align--absolute-center">
+        <button class="slds-button slds-button--icon" [disabled]="!determinationType" (click)="addDetermination()"><system-button-icon icon="add"/></button>
+      </div>
+    </div>
+</div>

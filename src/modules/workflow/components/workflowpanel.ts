@@ -114,4 +114,11 @@ export class WorkflowPanel implements OnInit, OnDestroy {
             this.workflow.processManualWorkflow(definitionId);
         });
     }
+
+    /**
+     * reloads all open workflows
+     */
+    public reloadWorkflows(e) {
+        this.broadcast.broadcastMessage('workflows.reload');
+    }
 }

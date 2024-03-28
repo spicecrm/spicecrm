@@ -21,7 +21,11 @@ export class SystemChartService {
     /**
      * google wrapper chart instance
      */
-    private wrapper: { draw: (config: any) => void; };
+    private wrapper: {
+        draw: (config: any) => void;
+        setDataTable:(data: any) => void;
+        setChartType:(type:string)=> void;
+        setOption:(key , value) => void};
     /**
      * holds the chart container
      * @private
@@ -58,6 +62,7 @@ export class SystemChartService {
             fontSize: options.fontSize ?? 11,
             isStacked: options.isStacked,
             is3D: options.is3D,
+            animation: {startup: true, duration: 1000}
         };
         this.chartType = chartType;
         this.data = data;
@@ -71,6 +76,25 @@ export class SystemChartService {
                 });
             });
     }
+
+    public setData(data: GoogleChartDataI){
+        this.data = data;
+        this.wrapper.setDataTable(data);
+        this.drawChart();
+    }
+    
+    public setChartType(type: GoogleChartTypeOneDimensional){
+        this.chartType = type;
+        if(type == "Donut"){
+            this.wrapper.setChartType("PieChart");
+            this.wrapper.setOption('pieHole', 0.4);
+            this.drawChart();
+        } else {
+            this.wrapper.setChartType(type + 'Chart');
+            this.drawChart();
+        }
+
+    } 
 
     /**
      * render chart from data

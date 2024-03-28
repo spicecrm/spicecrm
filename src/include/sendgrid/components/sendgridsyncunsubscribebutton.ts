@@ -18,7 +18,6 @@ export class SendgridSyncUnsubscribeButton {
         public backend: backend,
         public toast: toast,
         public modal: modal,
-        public metadata: metadata
     ) {}
 
     /**
@@ -26,7 +25,7 @@ export class SendgridSyncUnsubscribeButton {
      */
 
     get disabled(): boolean {
-        return !this.metadata.checkModuleAcl(this.model.module, 'sendgrid_sync');
+        return !this.model.checkAccess('sendgrid_sync');
     }
 
     /**

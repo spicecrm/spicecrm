@@ -1,10 +1,12 @@
 /**
  * @module ModuleSalesDocs
  */
-import {Component, Input, OnInit, SkipSelf} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SkipSelf} from "@angular/core";
 import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
+import {Router} from "@angular/router";
+import {Subscription} from "rxjs";
 
 /**
  * a modal in the context of a salesdoc to dsiplay the full docuiment flow on header and items level
@@ -13,7 +15,7 @@ import {metadata} from "../../../services/metadata.service";
     selector: 'salesdocs-flow-modal',
     templateUrl: "../templates/salesdocsflowmodal.html",
 })
-export class SalesDocsFlowModal implements OnInit {
+export class SalesDocsFlowModal implements OnInit, OnDestroy {
 
     /**
      * referenec to self added from teh modal service
@@ -83,7 +85,12 @@ export class SalesDocsFlowModal implements OnInit {
 
     public _itemid: string;
 
-    constructor(public metadata: metadata, public model: model, public backend: backend) {
+    /**
+     * holds the subscriptions
+     */
+    public subscriptions: Subscription = new Subscription();
+
+    constructor(public metadata: metadata, public model: model, public backend: backend, public router: Router) {
         let componentConfig = this.metadata.getComponentConfig('SalesDocsFlowModal', 'SalesDocs');
         this.fields = this.metadata.getFieldSetFields(componentConfig.fieldset);
         this.itemfields = this.metadata.getFieldSetFields(componentConfig.itemfieldset);
@@ -94,6 +101,21 @@ export class SalesDocsFlowModal implements OnInit {
      */
     public ngOnInit() {
         this.loadDocumentFlow();
+
+        this.subscriptions.add(
+            this.router.events.subscribe({
+                next: (e) => {
+                    this.close();
+                }
+            })
+        )
+    }
+
+    /**
+     * kill the subscrioptions on Destroy
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     /**

@@ -17,7 +17,7 @@ import {configurationService} from "../../services/configuration.service";
  * part of the workbench to manage the mailboxes
  */
 @Component({
-    providers: [modellist, model, view],
+    providers: [model, view, modellist],
     selector: "mailboxes-manager",
     templateUrl: "../templates/mailboxesmanager.html",
 })
@@ -29,11 +29,6 @@ export class MailboxesManager {
     @ViewChild("viewcontainer", {read: ViewContainerRef, static: true}) public viewcontainer: ViewContainerRef;
 
     /**
-     * the currently selected mailbox id
-     */
-    public _selected_mailbox;
-
-    /**
      * any component reference that is rendered
      */
     public renderedview: any[] = [];
@@ -42,6 +37,11 @@ export class MailboxesManager {
      * the actionset to be rendered in the header
      */
     public headeractionset: string;
+
+    /**
+     * the fieldset to be rendered on the left-hand side, where the list of mailboxes is
+     */
+    public listfieldset: string;
 
     constructor(
         public modellist: modellist,
@@ -75,20 +75,7 @@ export class MailboxesManager {
 
         let componentconfig = this.metadata.getComponentConfig('MailboxesManager', 'Mailboxes');
         this.headeractionset = componentconfig.actionset;
-    }
-
-    /**
-     * getter for the mailboxes returning them sorted
-     */
-    get mailboxes() {
-        return this.modellist.listData.list.sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    /**
-     * getter for the current mailbox
-     */
-    get selected_mailbox() {
-        return this.model.id;
+        this.listfieldset = componentconfig.listfieldset;
     }
 
     /**
@@ -96,13 +83,12 @@ export class MailboxesManager {
      *
      * @param mailbox
      */
-    set selected_mailbox(mailbox) {
-        let thismailbox = this.modellist.listData.list.find(mb => mb.id == mailbox);
-        if (thismailbox) {
+    public handleSelectionChange(mailbox: any) {
+
+        if (mailbox) {
             // set the current mailbox and go load the model
-            this._selected_mailbox = mailbox;
-            this.model.id = mailbox;
-            this.model.getData();
+            this.model.id = mailbox.id;
+            this.model.setData(mailbox, false);
 
             // render new
             this.cleanView();
@@ -115,7 +101,6 @@ export class MailboxesManager {
             });
         } else {
             this.cleanView();
-            this._selected_mailbox = null;
             this.model.id = "";
             this.model.initialize();
         }
@@ -129,7 +114,6 @@ export class MailboxesManager {
         for (let thisview of this.renderedview) {
             thisview.destroy();
         }
-
     }
 
     /**
@@ -140,6 +124,5 @@ export class MailboxesManager {
         this.model.reset();
         this.model.module = "Mailboxes";
     }
-
 
 }

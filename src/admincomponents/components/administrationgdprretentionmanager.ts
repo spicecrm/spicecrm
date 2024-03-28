@@ -50,6 +50,21 @@ export class AdministrationGDPRRetentionManager implements OnInit {
      */
     public initialized: boolean = false;
 
+    /**
+     * controls the buttons
+     */
+    public hasChanges: boolean = false;
+
+    /**
+     * set true if we have a new GDPR policy
+     */
+    public isNew: boolean = false;
+
+    /**
+     * cached selected policy
+     */
+    public cachedPolicy: any = {};
+
     constructor(
         public toast: toast,
         public modal: modal,
@@ -68,11 +83,17 @@ export class AdministrationGDPRRetentionManager implements OnInit {
     /**
      * select the policy by index - needed since we do not have an ID before the recod is saved
      * @param index
+     * @param policy
      * @private
      */
-    public selectPolicyByIndex(index) {
+    public selectPolicyByIndex(index: number, policy: any) {
+        if(this.hasChanges == true) {
+            return this.toast.sendToast('MSG_HAS_UNSAVED', 'error');
+        }
+
         if (!this.isloading && this.selectedPolicyIndex != index) {
             this.selectedPolicyIndex = index;
+            this.cachedPolicy = {...policy};
             this.initializeResults();
         }
     }
@@ -134,15 +155,26 @@ export class AdministrationGDPRRetentionManager implements OnInit {
         let newPolicy = this.modelutilities.generateGuid();
         // post the record
         let loading = this.modal.await('LBL_SAVING');
-        this.backend.postRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id ? this.selectedPolicy.id : newPolicy}`, {}, this.selectedPolicy).subscribe(
-            () => {
+        this.backend.postRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id ? this.selectedPolicy.id : newPolicy}`, {}, this.selectedPolicy).subscribe({
+            next: () => {
                 if (!this.selectedPolicy.id) this.selectedPolicy.id = newPolicy;
+                this.cachedPolicy = {...this.selectedPolicy};
+                this.hasChanges = false;
+                this.isNew = false;
                 loading.emit(true);
             },
-            () => {
+            error: () => {
                 loading.emit(true);
             }
-        )
+        })
+    }
+
+    /**
+     * revert all changes
+     */
+    public cancel() {
+        this.hasChanges = false;
+        this.policies[this.selectedPolicyIndex] = this.cachedPolicy;
     }
 
     /**
@@ -153,15 +185,15 @@ export class AdministrationGDPRRetentionManager implements OnInit {
     public getResults() {
         this.isloading = true;
         this.results.list = [];
-        this.backend.getRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id}/results`).subscribe(
-            res => {
+        this.backend.getRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id}/results`).subscribe({
+            next: (res) => {
                 this.results = res;
                 this.isloading = false;
             },
-            () => {
+            error: () => {
                 this.isloading = false;
             }
-        );
+        });
     }
 
     /**
@@ -209,22 +241,23 @@ export class AdministrationGDPRRetentionManager implements OnInit {
                 if (res) {
                     if (this.selectedPolicy.id) {
                         let loading = this.modal.await('LBL_DELETING');
-                        this.backend.deleteRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id}`).subscribe(
-                            res => {
+                        this.backend.deleteRequest(`admin/gdprmanager/retentionpolicies/${this.selectedPolicy.id}`).subscribe({
+                            next: () => {
                                 this.deletePolicy(index);
+                                this.hasChanges = false;
                                 loading.emit(true);
                             },
-                            () => {
+                            error: () => {
                                 loading.emit(true);
                             }
-                        )
+                        })
                     } else {
                         this.deletePolicy(index);
+                        this.hasChanges = false;
                     }
 
                 }
-            }
-        );
+            });
     }
 
     public deletePolicy(index) {
@@ -250,10 +283,22 @@ export class AdministrationGDPRRetentionManager implements OnInit {
                         description: ''
                     };
                     this.policies.push(newPolicy);
+                    this.cachedPolicy = newPolicy;
                     this.selectedPolicyIndex = this.policies.length - 1;
+                    this.hasChanges = true;
+                    this.isNew = true;
                 }
             }
         );
+    }
+
+    /**
+     * check if we have changes
+     */
+    public registerPolicyChanges(item: any) {
+        if(this.cachedPolicy.id == item.id && !this.isNew) {
+            this.hasChanges = JSON.stringify(item) != JSON.stringify(this.cachedPolicy);
+        }
     }
 
 }

@@ -8,7 +8,7 @@ import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 
 @Component({
-    selector: 'reports-designer-more-integrate-item-target-list',
+    selector: 'reports-designer-more-integrate-item-publish',
     templateUrl: '../templates/reportsdesignermoreintegrateitempublish.html',
 })
 export class ReportsDesignerMoreIntegrateItemPublish {

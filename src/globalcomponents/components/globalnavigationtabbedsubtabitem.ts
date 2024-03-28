@@ -13,6 +13,10 @@ import {navigation, objectTab} from '../../services/navigation.service';
     templateUrl: '../templates/globalnavigationtabbedsubtabitem.html'
 })
 export class GlobalNavigationTabbedSubtabItem {
+    /**
+     * show contextMenu boolean
+     */
+    public showContextMenu: boolean = false;
 
     /**
      * the tab object
@@ -84,5 +88,20 @@ export class GlobalNavigationTabbedSubtabItem {
    public pintab() {
         this.object.pinned = !this.object.pinned;
     }
+
+    /**
+     * returns subtabs
+     */
+    get subTabs(): objectTab[] {
+        return this.navigation.objectTabs.filter(tab => tab.parentid !== undefined);
+    }
+
+    /**
+     * returns true if unsaved changed are in tab object
+     */
+    get isDirty() {
+        return this.navigation.anyDirtyModel(this.object.id);
+    }
+
 
 }

@@ -11,6 +11,7 @@ import {session} from "../../../services/session.service";
 
 import {telephonyCallI} from "../../../services/interfaces.service";
 import {Subscription} from "rxjs";
+import {Router} from "@angular/router";
 
 declare var _: any;
 declare var libphonenumber: any;
@@ -30,6 +31,7 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
         connectedCallComponent?: string,
         objectmodule?: string,
         objectfieldset?: string,
+        opendetails?: boolean,
     } = {};
 
     /**
@@ -65,7 +67,8 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
         public language: language,
         public broadcast: broadcast,
         public session: session,
-        public model: model) {
+        public model: model,
+        public router:Router) {
 
     }
 
@@ -82,6 +85,10 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
 
     public ngOnInit(): void {
         this.initalizeModel();
+
+        if (this.compenentconfig.opendetails && this.matchedbeans.length == 1) {
+            this.openDetails();
+        }
 
         // subscribe to the briadcast
         this.subscriptions.add(
@@ -201,6 +208,18 @@ export class TelephonyCallPanel implements OnInit, OnDestroy {
         this.calldata.relateddata = record.data;
 
         this.initalizeModel();
+
+        if (this.compenentconfig.opendetails) {
+            this.openDetails()
+        }
+    }
+
+    /**
+     * open details of the caller automatically if config set
+     */
+    public openDetails() {
+            let objectlink = "/module/" + this.calldata.relatedmodule + "/" + this.calldata.relatedid;
+            this.router.navigate([objectlink])
     }
 
     /**

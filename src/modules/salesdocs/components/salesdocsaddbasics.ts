@@ -2,7 +2,7 @@
  * @module ModuleSalesDocs
  */
 import {
-    Component, Injector
+    Component, Injector, Optional
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
@@ -11,6 +11,7 @@ import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {configurationService} from '../../../services/configuration.service';
 import {navigation} from "../../../services/navigation.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 /**
  * renders a modal that allws picking the basic paramaters for the salesdoc when adding a new sales document
@@ -32,7 +33,7 @@ export class SalesDocsAddBasics {
      */
     public fieldset: string = '';
 
-    constructor(public metadata: metadata, public language: language, public view: view, public modal: modal, public injector: Injector, public model: model, public configuration: configurationService, public navigation: navigation ) {
+    constructor(public metadata: metadata, public language: language, public view: view, public modal: modal, public injector: Injector, public model: model, public configuration: configurationService, public navigation: navigation, @Optional() public navigationtab: navigationtab ) {
         // set the basics for the view
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -60,6 +61,7 @@ export class SalesDocsAddBasics {
         // open a new tab
         this.navigation.addObjectTab({
             path: 'module/:module/create/:id',
+            parentid: this.navigationtab ? this.navigationtab.tabid : null,
             params: {module: this.model.module, id: this.model.id},
             id: this.model.utils.generateGuid(),
             active: true,

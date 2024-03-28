@@ -10,6 +10,7 @@ import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {configurationService} from "../../../services/configuration.service";
 import {Subscription} from "rxjs";
+import {userpreferences} from "../../../services/userpreferences.service";
 
 /**
  * renders a button that toggles the exchange sync state
@@ -30,12 +31,17 @@ export class ContactExchangeSyncButton implements OnDestroy {
     public hidden: boolean = true;
 
     /**
+     * the route definition depending on the sync t<pe msgraph | exchange
+     */
+    public route: string = '';
+
+    /**
      * the subscrtiptions
      */
     public subscriptions: Subscription = new Subscription();
 
     // public disabled: boolean = true;
-    constructor(public metadata: metadata, public toast: toast, public language: language, public model: model, public modal: modal, public backend: backend, public configuration: configurationService) {
+    constructor(public metadata: metadata, public toast: toast, public language: language, public model: model, public modal: modal, public backend: backend, public configuration: configurationService, public userpreferences: userpreferences) {
 
         // set the hidden flag
         this.setHidden();
@@ -45,6 +51,8 @@ export class ContactExchangeSyncButton implements OnDestroy {
             if (key == 'microsoftserviceuserconfig') this.setHidden();
         });
 
+        // check if the user uses ews or msgraph
+        this.setRoute();
     }
 
     /**
@@ -58,7 +66,30 @@ export class ContactExchangeSyncButton implements OnDestroy {
         let config = this.configuration.getData('microsoftserviceuserconfig');
         let moduleData = this.metadata.getModuleDefs('Contacts');
 
-        this.hidden = !config || (config && config?.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1);
+        if(typeof config === 'object'){
+            Object.keys(config).forEach(item => {
+                if(config[item].sysmodule_id == moduleData.id){
+                    this.hidden = false;
+                }
+            });
+        }
+        else{ // old logic
+            this.hidden = !config || (config && config?.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1);
+        }
+    }
+
+    /**
+     * sets the route depending on the selected sync msgraph | ews
+     */
+    public setRoute(){
+        this.route = 'module/Contacts/' + this.model.id;
+        switch(this.userpreferences.getPreference('microsoftActiveService')){
+            case 'msgraph':
+                this.route+= '/msgraphsync';
+                break;
+            default:
+                this.route+= '/exchangesync';
+        }
     }
 
     /**
@@ -67,7 +98,7 @@ export class ContactExchangeSyncButton implements OnDestroy {
     public execute() {
         this.isLoading = true;
         if (this.model.getField('sync_contact')) {
-            this.backend.deleteRequest(`module/Contacts/${this.model.id}/exchangesync`).subscribe(
+            this.backend.deleteRequest(this.route).subscribe(
                 success => {
                     this.model.setField('sync_contact', !this.model.getField('sync_contact'));
                     this.isLoading = false;
@@ -76,7 +107,7 @@ export class ContactExchangeSyncButton implements OnDestroy {
                     this.isLoading = false;
                 });
         } else {
-            this.backend.putRequest(`module/Contacts/${this.model.id}/exchangesync`).subscribe(
+            this.backend.putRequest(this.route).subscribe(
                 success => {
                     if (success.message) {
                         this.toast.sendToast(success.message, 'error');

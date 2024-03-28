@@ -253,6 +253,7 @@ class SpiceLogger implements LoggerTemplate
         $logparams = []
     )
     {
+        return false;
         //do not log on install
         if (!SpiceConfig::getInstance()->configExists() || SpiceConfig::getInstance()->installing) return true;
 

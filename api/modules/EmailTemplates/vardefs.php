@@ -295,6 +295,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'] = [
             'vname' => 'LBL_OUTPUT_TEMPLATES',
             'module' => 'OutputTemplates'
         ],
+        'is_inactive' => [
+            'name' => 'is_inactive',
+            'vname' => 'LBL_IS_INACTIVE',
+            'type' => 'enum',
+            'options' => 'is_inactive_dom',
+            'default' => '0',
+            'len' => 1,
+            'audited' => true
+        ],
     ],
     'indices' => [
         [

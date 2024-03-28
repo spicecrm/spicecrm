@@ -1,0 +1,82 @@
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_DECISION_OPTIONS" tabhelptext="LBL_HELP_WORKFLOWTASK_CONDITIONAL_DECISION_OPTIONS" [tabHelpTextVerticalPositionBottom]="true" class="slds-m-top--large spice-display-block">
+    <div class="slds-p-vertical--x-small">
+        <div class="slds-grid slds-m-bottom--small">
+            <system-checkbox-toggle [(ngModel)]="model.data.type_config.execute_all" label="LBL_EXECUTE_ALL"/>
+            <system-icon-help-text [verticalPositionBottom]="true" helpText="LBL_HELP_WORKFLOWTASK_CONDITIONAL_DECISION_OPTIONS_EXECUTE_ALL"/>
+        </div>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th class="slds-cell-shrink"></th>
+                <th>
+                    <div class="slds-truncate">
+                        <system-label label="LBL_NAME"/>
+                    </div>
+                </th>
+                <th>
+                    <div class="slds-truncate">
+                        <system-label label="LBL_TASK"/>
+                    </div>
+                </th>
+                <th>
+                    <div class="slds-truncate">
+                        <system-label label="LBL_SEQUENCE"/>
+                    </div>
+                </th>
+                <th class="slds-cell-shrink"></th>
+                <th class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody  cdkDropList [cdkDropListData]="model.data.type_config.next_tasks" (cdkDropListDropped)="onDrop($event)">
+            <tr>
+                <td *ngIf="model.data.type_config.next_tasks.length == 0" colspan="3">
+                    <system-label label="MSG_NO_RECORDS_FOUND"/>
+                </td>
+            </tr>
+            <tr *ngFor="let decision of model.data.type_config.next_tasks; trackBy: trackByFn" cdkDrag [cdkDragData]="decision" cdkDragLockAxis="y" cdkDragBoundary=".slds-table" class="slds-drag--preview">
+                <td class="slds-p-around--none">
+                    <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"/>
+                </td>
+                <td>
+                    <input type="text" [(ngModel)]="decision.name" class="slds-input">
+                </td>
+                <ng-container *ngFor="let task of workflowManagerService.tasks; trackBy: trackByFn">
+                    <ng-container *ngIf="decision.id == task.id">
+                        <td>
+                            <div class="slds-truncate">
+                                {{task.name}}
+                            </div>
+                        </td>
+                    </ng-container>
+                </ng-container>
+                <td>
+                    <div class="slds-truncate">
+                        {{decision.sequence}}
+                    </div>
+                </td>
+                <td role="gridcell" class="slds-cell-shrink">
+                    <button class="slds-button slds-button_icon" (click)="openConditionsModal(decision.id)">
+                        <system-button-icon icon="button_choice"/>
+                    </button>
+                </td>
+                <td role="gridcell" class="slds-cell-shrink">
+                    <button class="slds-button slds-button_icon" (click)="deleteDecision(decision.id)">
+                        <system-button-icon icon="delete"/>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot class="slds-border--top slds-theme--shade">
+            <tr>
+                <td colspan="6">
+                    <div class="slds-align--absolute-center slds-p-around--xx-small">
+                        <button class="slds-button slds-button_icon" (click)="addDecision()">
+                            <system-button-icon icon="add"/>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</system-collapsable-tab>

@@ -106,7 +106,7 @@ export class SalesDocsEquipmentPanel implements OnInit {
         if ( accountId ) {
             this.modellist.initialize( 'ServiceEquipments' );
             if( this.sortField ) this.modellist.setSortField( this.sortField, 'DESC' );
-            this.modellist.filtercontextbeanid = accountId;
+            this.modellist.filtercontext = {id: accountId, module: 'Accounts'};
             this.modellist.modulefilter = this.equipmentfilter;
             this.modellist.getListData().subscribe( data => {
                 if ( data ) {
