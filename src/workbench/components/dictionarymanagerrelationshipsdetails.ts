@@ -76,9 +76,23 @@ export class DictionaryManagerRelationshipsDetails {
      * @private
      */
     public save() {
-        this.backend.postRequest(`dictionary/relationship/${this.dictionaryRelationship.id}`, {}, {relationship: this.dictionaryRelationship}).subscribe({
+
+        const relationshipFields = this.dictionaryRelationshipFields.filter(f => !!f.map_to_fieldname || !f.isNew)
+            .map(field => {
+
+                // mark empty entries as deleted if they are not new
+                if (!field.isNew && !field.map_to_fieldname) {
+                    field.deleted = 1;
+                }
+
+                delete field.isNew;
+                return field;
+            });
+
+        this.backend.postRequest(`dictionary/relationship/${this.dictionaryRelationship.id}`, {}, {relationship: this.dictionaryRelationship, relationshipFields}).subscribe({
             next: () => {
                 this.dictionarymanager.updateRelationshipInArray(this.dictionaryRelationship);
+                this.dictionarymanager.dictionaryrelationshipfields = relationshipFields;
                 this.self.destroy();
             }
         });

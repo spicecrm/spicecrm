@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <dictionary-manager-relationship-container-manytomany *ngIf="hasRelated" [relationshipFields]="relationshipFields" [relationship]="relationship"></dictionary-manager-relationship-container-manytomany>
+        <dictionary-manager-relationship-container-manytomany *ngIf="hasRelated" isNew [relationshipFields]="relationshipFields" [relationship]="relationship"></dictionary-manager-relationship-container-manytomany>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>

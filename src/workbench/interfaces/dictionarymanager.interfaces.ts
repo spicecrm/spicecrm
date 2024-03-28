@@ -132,14 +132,8 @@ export interface RelationshipField {
     version?: string;
     package?: string;
     deleted: number;
-    /**
-     * temporary only to prepare the field entry
-     */
-    mapToFieldNameLeft?: string;
-    /**
-     * temporary only to prepare the field entry
-     */
-    mapToFieldNameRight?: string;
+    /** non-db field for frontend */
+    isNew: boolean;
 }
 
 /**
