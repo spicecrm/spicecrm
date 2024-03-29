@@ -233,7 +233,12 @@ class SpiceDictionaryRelationships
         $db = DBManagerFactory::getInstance();
         //get the table and do an upsert
         $table = $relationship['scope'] == 'c' ? 'syscustomdictionaryrelationships' : 'sysdictionaryrelationships';
+
+        $this->relationships[] = $relationship;
+        $this->resetCache();
+
         unset($relationship['scope']);
+
         $db->upsertQuery($table, $relationship, $relationship, true);
 
         // handle the polymorph entries

@@ -80,12 +80,14 @@ class EmailAddressRelationship extends M2MRelationship
             'join_table' => 'email_addr_bean_rel',
             'join_key_lhs' => 'bean_id',
             'join_key_rhs' => 'email_address_id',
+            'relationship_role_column' => 'bean_module',
+            'relationship_role_column_value' => $lhsDictionaryDefinition->getModuleName(),
             'deleted' => 0
         ]);
 
         // add to the relationships for the primary address
         $db->insertQuery('relationships', [
-            'id' => $relationship->id,
+            'id' => SpiceUtils::createGuid(),
             'relationship_name' => $relationshipName . '_primary',
             'relationship_type' => $this->type,
             'lhs_table' => $lhsDictionaryDefinition->tablename,
