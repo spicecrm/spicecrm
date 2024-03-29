@@ -29,6 +29,15 @@ export class ObjectListViewTagsAggregate extends ObjectListViewAggregate {
     }
 
     /**
+     * getter for indicator that all should be shown
+     * This specific aggregate is a tag cloud
+     */
+    get showall(){
+        return true;
+    }
+
+
+    /**
      * a simple getter to check if there are any buckets on teh aggegarete. If not a message is renderesd that no records are tagged
      */
     get hasItems() {
