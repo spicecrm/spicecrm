@@ -482,6 +482,7 @@ export class dictionarymanager implements OnDestroy {
         this.backend.putRequest(`dictionary/definition/${definitionid}/repair`).subscribe({
             next: (result) => {
                 if (result.success) {
+                    this.handleAfterActivate();
                     this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success', result.sql, !result.sql);
                 } else {
                     this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
