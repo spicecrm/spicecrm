@@ -9,7 +9,7 @@
                             <system-label label="LBL_NAME"></system-label>
                         </label>
                         <div class="slds-form-element__control">
-                            <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.name"/>
+                            <input class="slds-input" [(ngModel)]="relationship.name"/>
                         </div>
                     </div>
                     <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
@@ -18,7 +18,7 @@
                         </label>
                         <div class="slds-form-element__control slds-input-has-fixed-addon">
                             <span class="slds-form-element__addon">&#123;tablename&#125;_</span>
-                            <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationshipName"/>
+                            <input class="slds-input" [(ngModel)]="relationshipName"/>
                             <span class="slds-form-element__addon">_user</span>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                             <system-label label="LBL_RHS_SYSDICTIONARYITEM"></system-label>
                         </label>
                         <div class="slds-select_container">
-                            <select [disabled]="readonly" [(ngModel)]="relationship.rhs_sysdictionaryitem_id" class="slds-select">
+                            <select [(ngModel)]="relationship.rhs_sysdictionaryitem_id" class="slds-select">
                                 <option *ngFor="let item of rhsItems" [value]="item.id">{{item.name}}</option>
                             </select>
                         </div>
@@ -49,7 +49,7 @@
                             <system-label label="LBL_RHS_LINKNAME"></system-label>
                         </label>
                         <div class="slds-form-element__control">
-                            <input [disabled]="readonly" class="slds-input" [ngModel]="relationship.rhs_linkname"/>
+                            <input class="slds-input" [ngModel]="relationship.rhs_linkname"/>
                         </div>
                     </div>
                     <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
@@ -57,7 +57,7 @@
                             <system-label label="LBL_RHS_LINKLABEL"></system-label>
                         </label>
                         <div class="slds-form-element__control">
-                            <system-input-label [disabled]="readonly" [(ngModel)]="relationship.rhs_linklabel"></system-input-label>
+                            <system-input-label [(ngModel)]="relationship.rhs_linklabel"></system-input-label>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                             <system-label label="LBL_RHS_RELATENAME"></system-label>
                         </label>
                         <div class="slds-form-element__control">
-                            <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.rhs_relatename"/>
+                            <input class="slds-input" [(ngModel)]="relationship.rhs_relatename"/>
                         </div>
                     </div>
                     <div class="slds-p-left--xx-small slds-size--1-of-2">
@@ -75,7 +75,7 @@
                             <system-label label="LBL_RHS_RELATELABEL"></system-label>
                         </label>
                         <div class="slds-form-element__control">
-                            <system-input-label [disabled]="readonly" [(ngModel)]="relationship.rhs_relatelabel"></system-input-label>
+                            <system-input-label [(ngModel)]="relationship.rhs_relatelabel"></system-input-label>
                         </div>
                     </div>
                 </div>
