@@ -29,6 +29,7 @@
 
 namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
+use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
@@ -120,7 +121,6 @@ class SpiceDictionaryDefinitionsController
      */
     public function repairDictionaryDefinition(Request $req, Response $res, array $args): Response
     {
-        $params = $req->getQueryParams();
         $sql = (new SpiceDictionaryDefinition($args['id']))->repair();
 
         SpiceDictionary::getInstance()->loadDictionary();
@@ -141,4 +141,21 @@ class SpiceDictionaryDefinitionsController
         return $res->withJson(['success' => (new SpiceDictionaryDefinition($args['id']))->reshuffle($req->getParsedBody())]);
     }
 
+    /**
+     * repair template related dictionaries
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws
+     */
+    public function repairTemplateRelatedDictionaries(Request $req, Response $res, array $args): Response
+    {
+        $sql = (new SpiceDictionaryDefinition($args['id']))->repairRelatedDictionaries();
+
+        SpiceDictionary::getInstance()->loadDictionary();
+
+        return $res->withJson(['success' => true, 'sql' => $sql]);
+    }
 }

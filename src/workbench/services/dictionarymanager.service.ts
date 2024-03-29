@@ -548,4 +548,30 @@ export class dictionarymanager implements OnDestroy {
     public handleAfterActivate() {
         this.configurationService.reloadTaskData('fielddefs');
     }
+
+    /**
+     * repair template related dictionaries
+     */
+    public repairTemplateRelatedDictionaries() {
+        this.modal.confirm('MSG_REPAIR_DICTIONARY_TEMPLATE_RELATED_DICTIONARIES', 'MSG_REPAIR_DICTIONARY_TEMPLATE_RELATED_DICTIONARIES').subscribe(answer => {
+
+            if (!answer) return;
+
+            const reparing = this.modal.await('LBL_REPAIRING');
+            this.backend.putRequest(`dictionary/template/${this.currentDictionaryDefinition}/repairrelated`).subscribe({
+                next: () => {
+                    reparing.next(true);
+                    reparing.complete();
+                    this.toast.sendToast('LBL_DICTIONARY_REPAIRED', 'success');
+                },
+                error: err => {
+                    reparing.next(true);
+                    reparing.complete();
+                    this.toast.sendToast(`${this.language.getLabel('ERROR repairing dictionary')}: ${err.error.error.message}`, 'error');
+                }
+            });
+
+        });
+    }
+
 }
