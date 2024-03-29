@@ -2,6 +2,7 @@
     <system-modal-header (close)="close()"><system-label label="LBL_RELATIONSHIP"/></system-modal-header>
     <system-modal-content margin="none">
         <ng-container [ngSwitch]="dictionaryRelationship.relationship_type">
+            <dictionary-manager-relationship-container-emailaddress [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'email-address'"></dictionary-manager-relationship-container-emailaddress>
             <dictionary-manager-relationship-container-onetomany [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'one-to-many'"></dictionary-manager-relationship-container-onetomany>
             <dictionary-manager-relationship-container-onetomanypolymorph [readonly]="readonly" [relationship]="dictionaryRelationship" [relationshipPolymorphs]="dictionaryRelationshipPolymorphs" *ngSwitchCase="'one-to-many-polymorph'"></dictionary-manager-relationship-container-onetomanypolymorph>
             <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship" *ngSwitchCase="'many-to-many'"></dictionary-manager-relationship-container-manytomany>

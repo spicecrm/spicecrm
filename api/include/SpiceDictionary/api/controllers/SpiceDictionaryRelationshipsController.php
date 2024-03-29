@@ -4,6 +4,7 @@ namespace SpiceCRM\includes\SpiceDictionary\api\controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
@@ -64,6 +65,7 @@ class SpiceDictionaryRelationshipsController
     public function activate(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryRelationship($args['id']))->activate();
+        RelationshipFactory::getInstance()->loadRelationships(true);
         SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson(['success' => $success]);
@@ -79,6 +81,7 @@ class SpiceDictionaryRelationshipsController
     public function deactivate(Request $req, Response $res, array $args): Response
     {
         $success = (new SpiceDictionaryRelationship($args['id']))->deactivate();
+        RelationshipFactory::getInstance()->loadRelationships(true);
         SpiceDictionary::getInstance()->loadDictionary();
 
         return $res->withJson(['success' => $success]);
