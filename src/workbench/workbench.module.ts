@@ -165,7 +165,8 @@ import {DictionaryFilterRelationshipPipe} from "./pipes/dictionarymanagerfilterr
 import {
     DictionaryFilterRelationshipTemplatePipe
 } from "./pipes/dictionarymanagerfilterrelationshiptemplate.pipe";
-import {DictionaryManagerRelationshipEditUser} from "./components/dictionarymanagerrelationshipedituser";
+import {DictionaryManagerRelationshipAddUser} from "./components/dictionarymanagerrelationshipadduser";
+import {DictionaryManagerRelationshipContainerUser} from "./components/dictionarymanagerrelationshipcontaineruser";
 
 
 
@@ -322,7 +323,8 @@ import {DictionaryManagerRelationshipEditUser} from "./components/dictionarymana
         WebHooksManagerEditModal,
         DictionaryFilterRelationshipPipe,
         DictionaryFilterRelationshipTemplatePipe,
-        DictionaryManagerRelationshipEditUser
+        DictionaryManagerRelationshipAddUser,
+        DictionaryManagerRelationshipContainerUser
     ],
     exports: [
         SortPipe,

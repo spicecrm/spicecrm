@@ -6,6 +6,7 @@
             <dictionary-manager-relationship-container-onetomanypolymorph [readonly]="readonly" [relationship]="dictionaryRelationship" [relationshipPolymorphs]="dictionaryRelationshipPolymorphs" *ngSwitchCase="'one-to-many-polymorph'"></dictionary-manager-relationship-container-onetomanypolymorph>
             <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship" *ngSwitchCase="'many-to-many'"></dictionary-manager-relationship-container-manytomany>
             <dictionary-manager-relationship-container-parent [relationship]="dictionaryRelationship" *ngSwitchCase="'parent'"></dictionary-manager-relationship-container-parent>
+            <dictionary-manager-relationship-container-user [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'user'"></dictionary-manager-relationship-container-user>
         </ng-container>
     </system-modal-content>
     <system-modal-footer>
