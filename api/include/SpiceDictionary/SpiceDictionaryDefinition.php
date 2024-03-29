@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -380,5 +381,33 @@ class SpiceDictionaryDefinition
         SpiceModules::getInstance()->loadModules(true);
     }
 
+    /**
+     * repair related dictionaries for a template dictionary
+     * @return string
+     * @throws DatabaseException|Exception
+     */
+    public function repairRelatedDictionaries(): string
+    {
+        if ($this->type != 'template') {
+            throw new Exception('Dictionary is not from type template');
+        }
 
+        $table = SpiceDictionaryItems::table;
+        $customTable = SpiceDictionaryItems::customtable;
+
+        $db = DBManagerFactory::getInstance();
+        $query = $db->query("SELECT sysdictionarydefinition_id as id FROM $table UNION SELECT sysdictionarydefinition_id from $customTable WHERE sysdictionary_ref_id = '$this->id' AND status ='a'");
+        $sql = '';
+
+        while ($dic = $db->fetchByAssoc($query)) {
+
+            $dic = new SpiceDictionaryDefinition($dic['id']);
+
+            if ($dic->definition->status != 'a') continue;
+
+            $sql .= $dic->repair();
+        }
+
+        return $sql;
+    }
 }

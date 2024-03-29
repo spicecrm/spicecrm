@@ -12,6 +12,11 @@
         <li class="slds-tabs_default__item" *ngIf="!isTemplate" [ngClass]="{'slds-is-active': scope == 'fields'}" role="presentation" (click)="scope = 'fields'">
             <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab"><system-label label="LBL_FIELDS"></system-label></a>
         </li>
+        <li class="slds-align-middle slds-grid slds-grid--align-end slds-grow" *ngIf="isTemplate" role="presentation">
+            <button (click)="dictionarymanager.repairTemplateRelatedDictionaries()" system-title="MSG_REPAIR_DICTIONARY_TEMPLATE_RELATED_DICTIONARIES" class="slds-button slds-button--icon slds-m-right--x-small">
+                <system-button-icon icon="custom_apps"/>
+            </button>
+        </li>
     </ul>
     <div class="slds-tabs_default__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'items'}" role="tabpanel">
         <div class="slds-height_full">
