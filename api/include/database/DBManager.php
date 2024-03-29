@@ -1184,6 +1184,9 @@ abstract class DBManager
 
             # column property is not identical continue checking
 
+            # ignore comparing index types since it is not allowed to change index type, and it's complicated to compare foreign key with index
+            if ($key == 'type' && $fielddef1['type'] == 'index') return true;
+
             if ($key == 'required') return !isset($fielddef2['required']);
 
             if ($key == 'len') {
