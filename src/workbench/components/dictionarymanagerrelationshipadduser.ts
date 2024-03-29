@@ -4,15 +4,11 @@ import {dictionarymanager} from "../services/dictionarymanager.service";
 import {DictionaryItem, Relationship, RelationshipType} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
-    selector: 'dictionary-manager-relationship-edit-user',
-    templateUrl: '../templates/dictionarymanagerrelationshipedituser.html'
+    selector: 'dictionary-manager-relationship-add-user',
+    templateUrl: '../templates/dictionarymanagerrelationshipadduser.html'
 })
 
-export class DictionaryManagerRelationshipEditUser {
-    /**
-     * true when the component is used in view mode
-     */
-    public readonly: boolean = false;
+export class DictionaryManagerRelationshipAddUser {
     /**
      * relationship type passed from the parent
      */
@@ -21,10 +17,6 @@ export class DictionaryManagerRelationshipEditUser {
      * definition items for the right side
      */
     public rhsItems: DictionaryItem[] = [];
-    /**
-     * definition items for the left side User
-     */
-    public lhsUserItems: DictionaryItem[] = [];
     /**
      * relationship object
      */
@@ -52,7 +44,7 @@ export class DictionaryManagerRelationshipEditUser {
     /**
      * reference to this component to enable destroy
      */
-    public self: ComponentRef<DictionaryManagerRelationshipEditUser>;
+    public self: ComponentRef<DictionaryManagerRelationshipAddUser>;
 
     constructor(private backend: backend, public dictionarymanager: dictionarymanager) {
         this.setDefaultFields();
@@ -114,7 +106,6 @@ export class DictionaryManagerRelationshipEditUser {
         this.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
 
         this.rhsItems = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id);
-        this.lhsUserItems = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id);
 
         this.relationship.relationship_type = 'user';
 
