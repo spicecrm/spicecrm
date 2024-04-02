@@ -5,13 +5,13 @@
             <div class="slds-grid slds-grid--vertical-align-center slds-media__body slds-truncate">
                 <h2>
                     <a href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small"><system-label label="LBL_DUPLICATES"></system-label><span *ngIf="!this.relatedmodels.isloading"> ({{relatedmodels.count}})</span></span>
+                        <span class="slds-text-heading--small"><system-label label="LBL_DUPLICATES"></system-label><span *ngIf="!this.relatedmodels.isloading"> ({{relatedmodels.count}}/{{relatedmodels.acceptedDuplicates.length}})</span></span>
                     </a>
                 </h2>
                 <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="relatedmodels.count > 0" icon="up" [ngStyle]="arrowIconStyle" style="transition: .5s;" size="x-small" (click)="showDuplicates($event)"></system-utility-icon>
             </div>
         </header>
-        <system-checkbox-toggle class="slds-m-right--x-small" [(ngModel)]='toggleValue' [disabled]="relatedmodels.duplicatesChecked.length == 0" (ngModelChange)="showAcceptedDuplicates(toggleValue)" ></system-checkbox-toggle>
+        <system-checkbox-toggle class="slds-m-right--x-small" [(ngModel)]='toggleValue' [disabled]="relatedmodels.acceptedDuplicates.length == 0" (ngModelChange)="showAcceptedDuplicates(toggleValue)" ></system-checkbox-toggle>
         <object-merge-button [mergemodels]="duplicates"></object-merge-button>
     </div>
     <div class="slds-card__body" [hidden]="hideDuplicates">

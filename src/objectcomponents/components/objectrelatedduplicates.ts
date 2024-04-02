@@ -41,7 +41,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     /**
      * the toggle to open or close the panel
      */
-    public hideDuplicates: boolean = true;
+    public hideDuplicates: boolean = false;
 
     /**
      * holds component subscriptions
@@ -119,7 +119,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
         this.model.duplicateCheck().subscribe({
             next: (data) => {
                 // save duplicate checked ids in a separate array
-                this.relatedmodels.duplicatesChecked = data.checkedDuplicates;
+                this.relatedmodels.acceptedDuplicates = data.acceptedDuplicates;
                 this.duplicates = data.records;
                 this.relatedmodels.count = data.count;
 
@@ -151,7 +151,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     public showAcceptedDuplicates(value: boolean) {
         if (value) {
             let itemsArr: any[] = [];
-            this.relatedmodels.items = itemsArr.concat(this.duplicates, this.relatedmodels.duplicatesChecked);
+            this.relatedmodels.items = itemsArr.concat(this.duplicates, this.relatedmodels.acceptedDuplicates);
         } else {
             this.relatedmodels.items = this.duplicates;
         }
@@ -177,7 +177,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
                 if (message.messagedata.deletedAcceptedDuplicate) {
                     this.duplicates.push(message.messagedata.deletedAcceptedDuplicate);
 
-                    if (this.relatedmodels.duplicatesChecked.length == 0) {
+                    if (this.relatedmodels.acceptedDuplicates.length == 0) {
                         this.toggleValue = false;
                     }
                     this.showAcceptedDuplicates(this.toggleValue);
