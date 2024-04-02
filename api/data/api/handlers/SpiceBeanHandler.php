@@ -1339,7 +1339,7 @@ class SpiceBeanHandler
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if (!isset($thisBean->id)) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
 
-        $checkedDuplicates = [];
+        $acceptedDuplicates = [];
 
         // get ids of accepted duplicates
         $acceptedDuplicatesIds = $this->getAcceptedDuplicates($beanModule, $thisBean);
@@ -1352,12 +1352,12 @@ class SpiceBeanHandler
         }
 
         // map accepted duplicate Beans
-        foreach ($acceptedDuplicatesIds as $checkedDuplicate) {
-            $checkDuplBean = BeanFactory::getBean($beanModule, $checkedDuplicate);
-            $checkedDuplicates[] = $this->mapBeanToArray($beanModule, $checkDuplBean);
+        foreach ($acceptedDuplicatesIds as $acceptedDuplicateId) {
+            $acceptedDuplBean = BeanFactory::getBean($beanModule, $acceptedDuplicateId);
+            $acceptedDuplicates[] = $this->mapBeanToArray($beanModule, $acceptedDuplBean);
         }
 
-        return ['count' => $duplicates['count'], 'records' => $retArray, 'checkedDuplicates'=> $checkedDuplicates];
+        return ['count' => $duplicates['count'], 'records' => $retArray, 'acceptedDuplicates'=> $acceptedDuplicates];
     }
 
     /**
