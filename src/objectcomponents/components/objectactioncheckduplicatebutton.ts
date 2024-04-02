@@ -1,4 +1,4 @@
-import {Component, OnInit, Self, SkipSelf} from '@angular/core';
+import {Component, OnInit, SkipSelf} from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
@@ -18,14 +18,22 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
     /**
      * if set to true display the button as icon
      */
-    public displayAsIcon: boolean = false;
+    public displayasicon: boolean = false;
 
     /**
      * indicator that we are processing currently
      */
     public inProcess: boolean = false;
 
+    /**
+     * whether 
+     */
     public _deleteCheck: boolean = false;
+
+    /**
+     * holds config of the action btn
+     */
+    public actionconfig: any = {};
 
     constructor(
         public backend: backend,
@@ -35,7 +43,7 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
         public toast: toast,
         public relatedmodels: relatedmodels,
         private language: language,
-        public broadcast: broadcast
+        public broadcast: broadcast,
     ) {
     }
 
@@ -48,14 +56,20 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
      * changes the label of the listitemactionset
      */
     get manageLabel(): string {
-        return this.relatedmodels.duplicatesChecked.find(item => item.id == this.model.id) ? this.deleteCheck : 'LBL_CHECK_AS_DUPLICATE';
+        return this.deleteCheck ? 'LBL_DELETE_DUPLICATE_CHECK' : 'LBL_CHECK_AS_DUPLICATE';
     }
 
-    get deleteCheck() {
-        this._deleteCheck = true;
-        return 'LBL_DELETE_DUPLICATE_CHECK';
+    /**
+     * 
+     */
+    get deleteCheck(): boolean {
+        const acceptedItemFound =  this.relatedmodels.acceptedDuplicates.find(item => item.id == this.model.id);
+        if(acceptedItemFound) {
+            return this._deleteCheck = true;
+        } else {
+            return this._deleteCheck = false;
+        }
     }
-
     /**
      * sets the Bean as checked duplicate in the sysacceptedduplicates table
      */
@@ -68,7 +82,7 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
 
                 if(!this._deleteCheck) {
 
-                    this.relatedmodels.duplicatesChecked.push(resp.acceptedDuplicate.rightBean);
+                    this.relatedmodels.acceptedDuplicates.push(resp.acceptedDuplicate.rightBean);
 
                     this.relatedmodels.count--;
 
@@ -81,8 +95,8 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
                     loadingModal.emit(true);
                     this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECKED'), 'success');
                 } else {
-                    // remove the checked duplicate Bean from duplicatesChecked
-                    this.relatedmodels.duplicatesChecked = this.relatedmodels.duplicatesChecked.filter(item => item.id != resp.acceptedDuplicate.rightBean.id);
+                    // remove the checked duplicate Bean from acceptedDuplicates
+                    this.relatedmodels.acceptedDuplicates = this.relatedmodels.acceptedDuplicates.filter(item => item.id != resp.acceptedDuplicate.rightBean.id);
 
                     this.relatedmodels.count++;
 
