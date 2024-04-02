@@ -41,6 +41,7 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
+use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\database\DBManager;
@@ -482,6 +483,7 @@ class SpiceUIConfLoader
         }
 
         SpiceDictionary::getInstance()->loadDictionary();
+        RelationshipFactory::getInstance()->loadRelationships(true);
 
         foreach ($dictionaryTables as $table) {
             unset($response[$table]);
