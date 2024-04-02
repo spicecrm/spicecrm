@@ -39,7 +39,7 @@ class SpiceDictionaryField
         $field = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdictionaryfields WHERE sysdictionarydefinition_id='{$dictionaryDefinition->id}' AND sysdictionaryitem_id='{$dictionaryItem->id}'");
 
         if(!$field){
-            throw new Exception("dictionary field not found for item id $dictionaryItem->id");
+            throw new Exception("dictionary field not found for item id $dictionaryItem->id. Dictionary id: $dictionaryDefinition->id");
         }
 
         return (object) $field;
