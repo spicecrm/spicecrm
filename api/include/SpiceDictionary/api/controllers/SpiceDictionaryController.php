@@ -342,20 +342,15 @@ class SpiceDictionaryController
         $spiceDictionaryDefinitions = [];
         $allSpiceDictionaryDefinitions = array_filter(SpiceDictionaryDefinitions::getInstance()->getDefinitions('a'), function($d){ return $d['sysdictionary_type'] != 'template';});
 
-        // add all but the module definitions
         foreach ($allSpiceDictionaryDefinitions as $spiceDictionaryDefinition){
-            if($spiceDictionaryDefinition['sysdictionary_type'] != 'module') $spiceDictionaryDefinitions[] = $spiceDictionaryDefinition;
-        }
 
-        // add only those where we do have an entry in sysmodules
-        $modules = SpiceModules::getInstance()->getModuleList();
-        foreach ($modules as $module){
-            $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
-            foreach ($allSpiceDictionaryDefinitions as $piceDictionaryDefinition){
-                if($spiceDictionaryDefinitions['id'] == $moduleDetails['sysdictionrydefinition_id'] ){
-                    $allSpiceDictionaryDefinitions[] = $spiceDictionaryDefinition;
-                    break;
-                }
+            # add all but the module definitions
+            if($spiceDictionaryDefinition['sysdictionary_type'] != 'module') {
+                $spiceDictionaryDefinitions[] = $spiceDictionaryDefinition;
+
+            # add only modules that have an entry in sysmodules
+            } else if (SpiceModules::getInstance()->getModuleByDictionaryDefinitionId($spiceDictionaryDefinition['id'])) {
+                $spiceDictionaryDefinitions[] = $spiceDictionaryDefinition;
             }
         }
 
