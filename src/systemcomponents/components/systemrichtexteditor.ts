@@ -371,7 +371,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     'data-spiceif': true,
                     'data-spicefor-first': true,
                     'data-spicefor-last': true,
-                    'data-spiceforss-inner': true,
+                    'data-spicefor-inner': true,
                     'data-spicefor-even': true,
                     'data-spicefor-odd': true,
                     'data-spicetemplate': true,
@@ -606,24 +606,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                             this.editor.execute('imageInsert', {source: [{src: mediaFileConfig.public_url + image.id}]});
                         }
                         this.modalOpen = false;
-                    }
-                });
-            });
-    }
-
-    public openSourceEditor() {
-        this.modal.openModal('SystemRichTextSourceModal', true, this.viewContainerRef.injector)
-            .pipe(take(1))
-            .subscribe(componentRef => {
-                componentRef.instance._html = this.editor.getData();
-                componentRef.instance.html.subscribe(newHtml => {
-                    // update our internal value
-                    this._html = newHtml;
-                    this.editor.setData(newHtml);
-
-                    // set the model value
-                    if (typeof this.onChange === 'function') {
-                        this.onChange(newHtml);
                     }
                 });
             });

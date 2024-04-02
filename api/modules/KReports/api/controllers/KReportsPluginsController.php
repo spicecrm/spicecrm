@@ -19,7 +19,7 @@ class KReportsPluginsController
         $getParams = $req->getQueryParams();
         $postBody = $req->getParsedBody();
 
-        if(!$postBody) $postBody = [];
+        //if(!$postBody) $postBody = [];
 
         //Only return if not null! In case of empty we get a null line in exports (csv, xlsx) and excel can't open file properly
         //echo json_encode($pluginManager->processPluginAction($args['plugin'], 'action_' . $args['action'], array_merge($getParams,$postBody)));
@@ -31,6 +31,7 @@ class KReportsPluginsController
             $res->getBody()->write($resultsPluginAction);
             return $res->withStatus(200);
         }
+        return $res->withStatus(500);
     }
 
 

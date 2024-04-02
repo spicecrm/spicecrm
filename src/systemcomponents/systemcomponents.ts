@@ -189,6 +189,7 @@ import {SystemInputSearchTerm} from "./components/systeminputsearchterm";
 import {SystemObjectPreview} from "./components/systemobjectpreview";
 import {SystemInputCronExpression} from "./components/systeminputcronexpression";
 import {SystemChartOneDimensional} from "./components/systemchartonedimensional";
+import {SystemChartJSOneDimensional} from "./components/systemchartjsonedimensional";
 import {SystemChartDataRow} from "./components/systemchartdatarow";
 import {SystemSelectOption} from "./components/systemselectoption";
 import {SystemChartMultiDimensional} from "./components/systemchartmultidimensional";
@@ -375,6 +376,7 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemInputSearchTerm,
         SystemInputCronExpression,
         SystemChartOneDimensional,
+        SystemChartJSOneDimensional,
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
@@ -535,6 +537,7 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemImagePreview,
         SystemInputCronExpression,
         SystemChartOneDimensional,
+        SystemChartJSOneDimensional,
         SystemChartDataRow,
         SystemChartDataColumn,
         SystemChartMultiDimensional,
