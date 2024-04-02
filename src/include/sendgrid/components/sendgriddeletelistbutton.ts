@@ -29,6 +29,12 @@ export class SendgridDeleteListButton {
         return !this.model.checkAccess('sendgrid_delete');
     }
 
+    /**
+     * hides button if the list is not connected to sendgrid
+     */
+    get hidden(){
+        return (this.model.getField('sendgrid_source') == '')
+    }
 
     /**
      * fires rest call from backend to Sendgrid

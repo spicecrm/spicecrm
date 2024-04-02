@@ -96,7 +96,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * inidcates if the servic eis currently retrieving data from teh backend
      */
-    public isloading = false;
+    public isloading: boolean = false;
 
     /**
      * inidcates if the servic eis currently retrieving data from teh backend
@@ -132,6 +132,11 @@ export class relatedmodels implements OnDestroy {
      * a handler to the broadcast subscrition. Making sure the susbcription is cancelled whent he component is destroyed
      */
     public serviceSubscriptions: any[] = [];
+
+    /**
+     * which were checked as duplicates
+     */
+    public duplicatesChecked: any[] = [];
 
     constructor(
         public metadata: metadata,

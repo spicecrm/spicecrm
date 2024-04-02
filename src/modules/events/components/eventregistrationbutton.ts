@@ -19,6 +19,8 @@ export class EventRegistrationButton implements ActionSetItemI {
 
     }
 
+    public actionconfig: any = {};
+
     public selectedItem: any;
 
     public subscriptions: Subscription = new Subscription();
@@ -34,6 +36,10 @@ export class EventRegistrationButton implements ActionSetItemI {
     get placeholder() {
         // return default placeholder
         return this.module ? this.language.getModuleCombinedLabel('LBL_SEARCH', this.module) : this.language.getLabel('LBL_SEARCH');
+    }
+
+    get disabled(): boolean {
+        return !this.model.checkAccess('create');
     }
 
     public execute() {

@@ -29,6 +29,12 @@ export class SendgridTransferButton {
     }
 
     /**
+     * hides button if the list is not connected to sendgrid
+     */
+    get hidden(){
+        return (this.model.getField('sendgrid_source') == '')
+    }
+    /**
      * fires rest call from backend to Sendgrid
      */
     public execute() {

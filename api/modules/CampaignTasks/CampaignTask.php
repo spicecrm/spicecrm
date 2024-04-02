@@ -58,7 +58,7 @@ class CampaignTask extends SpiceBean
      * @return array
      * @throws Exception
      */
-    function activate(string $status = 'targeted'): array
+    function activate(string $status = 'targeted', $additionalParams = []): array
     {
         $delQuery = "DELETE FROM campaign_log WHERE campaign_id='$this->campaign_id' AND campaigntask_id='$this->id' AND activity_type='$status'";
         $this->db->query($delQuery);
@@ -76,15 +76,23 @@ class CampaignTask extends SpiceBean
         $guidSQL = $this->db->getGuidSQL();
         $currentDate = $this->db->now();
 
+        // handle additional params
+        $addQueryCols = '';
+        $addQueryValues = '';
+        if(!empty($additionalParams)){
+            $addQueryCols = ", ".implode(", ", array_keys($additionalParams));
+            $addQueryValues = ", "."'".implode("', '", array_values($additionalParams))."'";
+        }
+
         $chunks = array_chunk($targets, 500);
 
         foreach ($chunks as $chunkTargets) {
 
-            $query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id) VALUES ";
+            $query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted, date_modified, assigned_user_id $addQueryCols) VALUES ";
 
             foreach ($chunkTargets as $target) {
 
-                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}', '$status', 0, $currentDate, '$this->assigned_user_id'),";
+                $query .= "($guidSQL, $currentDate, '$this->campaign_id', '$this->id', $guidSQL, '{$target['prospect_list_id']}', '{$target['related_id']}', '{$target['related_type']}', '$status', 0, $currentDate, '$this->assigned_user_id' $addQueryValues),";
             }
 
             # remove the last comma from the query

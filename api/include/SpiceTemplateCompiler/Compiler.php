@@ -13,6 +13,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -104,10 +105,11 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
+    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
     {
         $this->additionalValues = $additionalValues;
-        $this->lang = $lang;
+        $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()->getPreference('language') : $lang;
+        if ( empty( $this->lang )) $this->lang = 'de_DE';
         $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
         $dom = new DOMDocument();
@@ -789,6 +791,10 @@ class Compiler
 
         // get the name
         $objectname = $parts[0];
+
+        if ( $objectname === 'label' ) {
+            return LanguageManager::getLabelTranslation( $parts[1], $this->lang )['default'];
+        }
 
         // get the object
         $obj = $this->getObject( $objectname, $beans );
