@@ -206,6 +206,15 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
             'bean_name' => 'Campaign',
             'source' => 'non-db',
             'vname' => 'LBL_CAMPAIGNS',
+        ],
+        'campaignlog' => [
+            'name' => 'campaignlog',
+            'type' => 'link',
+            'relationship' => 'event_campaign_log',
+            'module' => 'CampaignLog',
+            'bean_name' => 'CampaignLog',
+            'source' => 'non-db',
+            'vname' => 'LBL_CAMPAIGNLOG',
         ]
     ],
     'relationships' => [
@@ -218,6 +227,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
             'rhs_key' => 'event_id',
             'relationship_type' => 'one-to-many',
         ],
+        'event_campaign_log' => [
+            'lhs_module' => 'Events',
+            'lhs_table' => 'events',
+            'lhs_key' => 'id',
+            'rhs_module' => 'CampaignLog',
+            'rhs_table' => 'campaign_log',
+            'rhs_key' => 'source_id',
+            'relationship_type' => 'one-to-many',
+            'relationship_role_column' => 'source_type',
+            'relationship_role_column_value' => 'Events'
+        ]
     ],
     'indices' => [
         [

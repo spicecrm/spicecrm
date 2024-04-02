@@ -17,6 +17,7 @@ import {SpiceAttachmentsPanel} from "./spiceattachmentspanel";
 @Component({
     selector: 'spice-attachment-file',
     templateUrl: '../templates/spiceattachmentfile.html',
+    providers: [SpiceAttachmentsPanel]
 })
 export class SpiceAttachmentFile {
 

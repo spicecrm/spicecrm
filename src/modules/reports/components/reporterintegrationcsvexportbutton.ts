@@ -78,7 +78,7 @@ export class ReporterIntegrationCSVexportButton {
                 document.body.appendChild(a);
                 a.href = url;
                 a.download = this.fileName;
-                a.type = 'text/css';
+                a.type = 'text/csv';
                 a.click();
                 a.remove();
 

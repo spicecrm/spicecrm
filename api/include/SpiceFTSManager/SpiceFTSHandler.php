@@ -1010,7 +1010,7 @@ class SpiceFTSHandler
      *
      * @return array
      */
-    function checkDuplicates($bean)
+    function checkDuplicates($bean, array $acceptedDuplicatesIds = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
@@ -1078,11 +1078,20 @@ class SpiceFTSHandler
         ];
 
         if ($bean->id) {
-            $queryParam['query']['bool']['must_not'] = [
-                'term' => [
-                    'id' => $bean->id
-                ]
-            ];
+            if(empty($acceptedDuplicatesIds)) {
+                $queryParam['query']['bool']['must_not'] = [
+                    'term' => [
+                        'id' => $bean->id
+                    ]
+                ];
+            } else {
+                $acceptedDuplicatesIds[] = $bean->id;
+                $queryParam['query']['bool']['must_not'] = [
+                    'terms' => [
+                        'id' => $acceptedDuplicatesIds
+                    ]
+                ];
+            }
         }
 
         // add ACL Check filters
