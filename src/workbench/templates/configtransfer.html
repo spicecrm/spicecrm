@@ -13,6 +13,11 @@
             <li [ngClass]="{'slds-is-active':tabToShow==='e'}" class="slds-tabs_default__item" title="Item Two" role="presentation">
                 <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="showExport()">{{lang.getLabel('LBL_EXPORT')}}</a><!--tabindex="-1"-->
             </li>
+            <li class="slds-align-middle slds-grid slds-grid--align-end slds-grow" *ngIf="configurationService.getCapabilityConfig('configtransfer').export_system_package_enabled" role="presentation">
+                <button (click)="exportSystemPackage()" system-title="MSG_EXPORT_SYSTEM_PACKAGE" class="slds-button slds-button--icon slds-m-right--x-small">
+                    <system-button-icon icon="custom_apps"/>
+                </button>
+            </li>
         </ul>
 
         <div [ngClass]="{'slds-hide':tabToShow!=='i'}" class="slds-tabs_default__content">
