@@ -212,6 +212,11 @@ export class modellist implements OnDestroy {
      */
     public disableAutoloadListAll: boolean = false;
 
+    /**
+     * whether the list item is currently in view or edit mode
+     */
+    public listItemMode: string = 'view';
+
     constructor(
         public broadcast: broadcast,
         public backend: backend,
