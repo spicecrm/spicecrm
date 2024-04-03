@@ -54,10 +54,10 @@ export class OAuth2Service {
 
         const messageListener = this.renderer.listen('window', 'message', (e: MessageEvent) => {
 
+            if (e.source != popupWindowRef || e.origin != window.origin || e.data?.source != 'SpiceCRMOAuthWindow') return;
 
-            if (!e.data || !_.isString(e.data)) return;
             cleanup();
-            const queryStringObject = this.parseRedirectQueryString(e.data);
+            const queryStringObject = this.parseRedirectQueryString(e.data.hash);
 
             if (!!queryStringObject.error) {
                 resSubject.error(queryStringObject.error);
