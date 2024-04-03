@@ -52,6 +52,11 @@ export class ObjectRelatedlistTable implements OnInit {
     @Input() public listitemactionset: string;
 
     /**
+     * set to true if list is displayed in ObjectRelatedDuplicate panel
+     */
+    @Input() public duplicateTable: boolean = false;
+
+    /**
      * set if no access to the related odule is allowed
      */
     public noAccess: boolean = false;
@@ -82,7 +87,7 @@ export class ObjectRelatedlistTable implements OnInit {
             return;
         }
 
-        if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] && ! this.relatedmodels.linkEndPoint) {
+        if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] && ! this.relatedmodels.linkEndPoint && !this.duplicateTable) {
             this.logger.error('Missing link or wrong link name ("' + this.relatedmodels._linkName + '")!');
         } else {
             if (!this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName]?.sequence_field) {
