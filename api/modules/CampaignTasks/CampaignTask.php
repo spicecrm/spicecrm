@@ -41,13 +41,18 @@ class CampaignTask extends SpiceBean
 
     /**
      * return exclusion list id
-     * @return array|false
+     * @param string $campaignTaskId
+     * @param string $type
+     * @return array
      * @throws Exception
      */
-    public static function getListIdByType(string $campaignTaskId, string $type)
+    public static function getListIdsByType(string $campaignTaskId, string $type): array
     {
         $db = DBManagerFactory::getInstance();
-        return $db->getOne("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = '$type' and pl.deleted != 1  and plc.deleted != 1 ");
+        return array_column(
+            $db->fetchAll("SELECT pl.id FROM prospect_lists pl INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = pl.id WHERE plc.campaigntask_id = '$campaignTaskId' and pl.list_type = '$type' and pl.deleted != 1  and plc.deleted != 1 ") ?: [],
+            'id'
+        );
     }
 
     /**
@@ -627,7 +632,7 @@ class CampaignTask extends SpiceBean
      */
     private function buildTargetsEntriesQuery(bool $countOnly = false): string
     {
-        $exclusionListId = (string) self::getListIdByType($this->id, 'exclude');
+        $exclusionListIds = self::getListIdsByType($this->id, 'exclude');
 
         $query = 'SELECT ' . ($countOnly ? 'COUNT(distinct plp.related_id) ' : "plp.related_id, plp.related_type, plp.prospect_list_id ");
         $query .= "FROM prospect_lists pl INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = pl.id ";
@@ -635,8 +640,9 @@ class CampaignTask extends SpiceBean
         $query .= "WHERE plc.campaigntask_id='$this->id' AND pl.deleted=0 AND plc.deleted=0 AND plp.deleted=0 ";
         $query .= "AND pl.list_type != 'test' AND pl.list_type != 'exclude' AND pl.list_type not like 'exempt%'";
 
-        if ($exclusionListId) {
-            $query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id = '$exclusionListId' AND plp.related_id = related_id AND deleted != 1)";
+        if (!empty($exclusionListIds)) {
+            $exclusionListIds = implode("','", $exclusionListIds);
+            $query .= " AND NOT EXISTS(SELECT id FROM prospect_lists_prospects WHERE prospect_list_id in ('$exclusionListIds') AND plp.related_id = related_id AND deleted != 1)";
         }
 
         return $query;
