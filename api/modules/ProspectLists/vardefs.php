@@ -65,6 +65,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'importable' => 'required',
             'required' => true
         ],
+        'is_generated_by_system' => [
+            'name' => 'is_generated_by_system',
+            'type' => 'bool'
+        ],
         'date_entered' => [
             'name' => 'date_entered',
             'vname' => 'LBL_DATE_ENTERED',
