@@ -1,7 +1,16 @@
 /**
  * @module ObjectComponents
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output
+} from '@angular/core';
 import {Router} from '@angular/router';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
@@ -83,6 +92,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
      */
     public subscriptions: any[] = [];
 
+    @Output('object-list-item') public listItemEditing: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public model: model, public modelutilities: modelutilities, public modellist: modellist, public view: view, public router: Router, public language: language, public cdref: ChangeDetectorRef) {
         this.view.displayLabels = false;
@@ -92,6 +102,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
      * getter for the listfields
      */
     get listFields() {
+        this.editing;
         return this._listFields ?? this.modellist.listfields;
     }
 
@@ -130,5 +141,14 @@ export class ObjectListItem implements OnInit, OnDestroy {
 
     public navigateDetail() {
         this.router.navigate(['/module/' + this.model.module + '/' + this.model.id]);
+    }
+
+    get editing() {
+        let viewMode: string = '';
+        this.view.mode$.subscribe(mode => {
+            this.modellist.listItemMode = mode;
+            }
+        )
+        return viewMode;
     }
 }

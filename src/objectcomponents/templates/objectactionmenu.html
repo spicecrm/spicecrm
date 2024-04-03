@@ -1,17 +1,26 @@
-<div *ngIf="!isSmall; else smallformfactor" class="slds-dropdown-trigger slds-dropdown-trigger--click" system-dropdown-trigger>
-    <button class="slds-button slds-button--icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true" [disabled]="hasNoActions">
-        <system-button-icon [icon]="'down'"></system-button-icon>
-    </button>
-    <div class="slds-dropdown">
-        <ul class="slds-dropdown__list" role="menu">
-            <ng-container *ngIf="actionitems.length > 0">
-                <li *ngFor="let actionitem of actionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" class="slds-dropdown__item" role="presentation" (click)="propagateclick(actionitem.id)">
-                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                        <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
-                    </a>
-                </li>
-            </ng-container>
-        </ul>
+<div *ngIf="!isSmall; else smallformfactor" [ngClass]="getGroupButtonClass()" role="group">
+    <div *ngIf="singleitems.length > 0">
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" [ngClass]="addclasses(singleitem, buttonsize, isFirst, i, isLast)" *ngFor="let singleitem of singleitems; let i = index; first as isFirst; last as isLast" [disabled]="isDisabled(singleitem.id)" (click)="propagateclick(singleitem.id)">
+            <object-action-container-item class="slds-truncate" [actionitem]="singleitem" [displayasicon]="true" (actionemitter)="emitaction($event)"></object-action-container-item>
+        </button>
+    </div>
+    <div *ngIf="actionitems.length > 0" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true">
+            <system-button-icon [icon]="'down'"></system-button-icon>
+        </button>
+
+        <!-- standard actions -->
+        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions slds-p-around--none" [class.slds-grid]="'horizontal'" style="max-width: initial;">
+            <ul class="slds-dropdown__list slds-button_stretch" role="menu">
+                <ng-container>
+                    <li *ngFor="let actionitem of actionitems" [ngClass]="{'slds-hide': isHidden(actionitem.id)}" class="slds-dropdown__item" role="presentation" (click)="propagateclick(actionitem.id)">
+                        <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                            <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+                        </a>
+                    </li>
+                </ng-container>
+            </ul>
+        </div>
     </div>
 </div>
 <ng-template #smallformfactor>
@@ -23,4 +32,3 @@
         </div>
     </div>
 </ng-template>
-

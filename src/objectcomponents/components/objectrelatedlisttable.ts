@@ -59,6 +59,11 @@ export class ObjectRelatedlistTable implements OnInit {
     public nowDragging = false;
     public isSequenced = false;
 
+    /**
+     * info whether the listitemactionset has a single button
+     */
+    public singlebutton: boolean = false;
+
     constructor(
         public language: language,
         public metadata: metadata,
@@ -85,6 +90,8 @@ export class ObjectRelatedlistTable implements OnInit {
             }
         }
         if (this.sequencefield) this.isSequenced = true;
+
+        this.getActionsetData();
     }
 
     get isloading() {
@@ -116,6 +123,13 @@ export class ObjectRelatedlistTable implements OnInit {
 
         return {};
 
+    }
+
+    /**
+     * set fix column width if we've got a single/icon button
+     */
+    public getButtonColumnStyle(): string {
+        return this.singlebutton ? 'slds-size_1-of-6' : 'slds-size_1-of-12';
     }
 
     public isSortable(field): boolean {
@@ -164,6 +178,17 @@ export class ObjectRelatedlistTable implements OnInit {
     public dragEnded(e) {
         this.nowDragging = false;
         e.source.element.nativeElement.classList.remove('slds-is-selected');
+    }
+
+    private getActionsetData() {
+
+        let actionitems = this.metadata.getActionSetItems(this.listitemactionset);
+
+        for (let actionitem of actionitems) {
+            if (actionitem.actionconfig.singlebutton || actionitem.actionconfig.displayasicon) {
+                this.singlebutton = true;
+            }
+        }
     }
 
 }
