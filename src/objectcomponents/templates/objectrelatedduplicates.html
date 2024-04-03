@@ -15,12 +15,12 @@
         <object-merge-button [mergemodels]="duplicates"></object-merge-button>
     </div>
     <div class="slds-card__body" [hidden]="hideDuplicates">
-        <object-relatedlist-table [listfields]="listfields" [listitemactionset]="componentconfig.listitemactionset"></object-relatedlist-table>
+        <object-relatedlist-table [duplicateTable]="true" [listfields]="listfields" [listitemactionset]="componentconfig.listitemactionset"></object-relatedlist-table>
         <ng-template #showDuplicateTile>
             <div class="slds-card__body--inner slds-grid slds-wrap slds-gutters_direct-xx-small" *ngIf="fieldset; else showDuplicateTile">
                 <object-related-duplicate-tile class="slds-size--1-of-1 slds-large-size--1-of-3 slds-col" *ngFor="let duplicate of duplicates" [system-model-provider]="{module:model.module, data:duplicate}"></object-related-duplicate-tile>
             </div>
         </ng-template>
     </div>
-    <object-related-card-footer [componentconfig]="componentconfig" (click)="checkDuplicates()"></object-related-card-footer>
+    <object-related-card-footer [componentconfig]="componentconfig" (click)="checkDuplicates()" [disableReload]="true"></object-related-card-footer>
 </div>
