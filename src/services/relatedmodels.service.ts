@@ -136,7 +136,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * which were checked as duplicates
      */
-    public duplicatesChecked: any[] = [];
+    public acceptedDuplicates: any[] = [];
 
     constructor(
         public metadata: metadata,
