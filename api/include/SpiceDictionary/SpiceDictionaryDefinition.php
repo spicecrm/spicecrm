@@ -187,7 +187,7 @@ class SpiceDictionaryDefinition
                 $moduleDetails = SpiceModules::getInstance()->getModuleDetails($module);
 
                 if (!$moduleDetails) {
-                   throw new Exception("Could not load vardefs for module dictionary ($this->name). sysmodules entry missing.");
+                   throw new Exception("Could not load vardefs for module dictionary ($this->name). Check if sysmodules/syscustommodules entry exists and for sysdictionarydefinition_id to match $this->id.");
                 }
 
                 SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']] = [];
