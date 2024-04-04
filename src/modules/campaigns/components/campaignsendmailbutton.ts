@@ -51,21 +51,18 @@ export class CampaignSendMailButton {
         if (!this.sending) {
             this.sending = true;
             this.backend.postRequest(`module/CampaignTasks/${this.model.id}/queuemail`).subscribe({
-                next: (results: { success: boolean, id: string }) => {
+                next: () => {
                     this.sending = false;
-
                     loading.emit(true);
-                    if (results.success) {
-                        this.model.getData();
-                        this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'CampaignLog'});
-
-                        this.toast.sendToast(this.language.getLabel("LBL_MAILS_QUEUED"));
-                    } else {
-                        this.toast.sendToast(this.language.getLabel('LBL_NO_TARGETS_SELECTED'), 'error');
-                    }
-                }, error: () => {
+                    loading.complete();
+                    this.model.getData();
+                    this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'CampaignLog'});
+                    this.toast.sendToast(this.language.getLabel("LBL_MAILS_QUEUED"));
+                }, error: err => {
+                    this.sending = false;
                     loading.emit(true);
-                    this.toast.sendToast(this.language.getLabel("LBL_ERROR"), 'error');
+                    loading.complete();
+                    this.toast.sendToast(err.error.error?.lbl, 'error');
                 }
             });
         }

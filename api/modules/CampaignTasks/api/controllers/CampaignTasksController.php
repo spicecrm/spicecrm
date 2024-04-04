@@ -299,7 +299,7 @@ class CampaignTasksController
     public function sendCampaignTaskTestEmail(Request $req, Response $res, array $args): Response
     {
         $campaignTask = BeanFactory::getBean('CampaignTasks', $args['id']);
-        return $res->withJson($campaignTask->sendTestEmail());
+        return $res->withJson($campaignTask->sendTestEmails());
     }
 
     /**
