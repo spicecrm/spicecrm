@@ -33,9 +33,15 @@
                                 <div class="slds-truncate slds-grow" [title]="definition.sql">{{definition.sql}}</div>
                                 <!-- action btuoons to copy and execute the SQL statement -->
                                 <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="copyToClipBoard(definition.sql)"><system-button-icon icon="copy"/></button>
-                                <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" [disabled]="repairing" (click)="execute(definition)"><system-button-icon icon="play"/></button>
                             </div>
-                            <div *ngIf="definition.status == 'e'" class="slds-truncate">{{definition.error}}</div>
+                            <div *ngIf="definition.status == 'e'" class="slds-grid slds-size--1-of-1">
+                                <div class="slds-truncate slds-grow">
+                                    {{definition.error}}
+                                </div>
+                                <button [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_SET_DB_COLUMNS_WITH_NULL_VALUES" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
+                                    <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
