@@ -11,6 +11,7 @@ import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {Md5} from "ts-md5";
+import {DictionaryManagerFixDBFieldsMismatchModal} from "./dictionarymanagerfixdbfieldsmismatchmodal";
 
 @Component({
     selector: 'dictionary-manager-repair-all',
@@ -551,5 +552,30 @@ export class DictionaryManagerRepairAll {
         this.self.destroy();
     }
 
+    /**
+     * open fix required modal
+     * @param definition
+     */
+    public openFixRequiredModal(definition) {
+        this.modal.openStaticModal(DictionaryManagerFixDBFieldsMismatchModal).subscribe(modalRef => {
+            modalRef.instance.dictionaryId = definition.id;
+            modalRef.instance.response.subscribe({
+                next: success => {
+                    if (!success) return;
 
+                    definition.status = 'p'
+                    switch(definition.type){
+                        case 'dictionarydefinition':
+                        case 'vardefdefinition':
+                            this.repairDefinition(definition, false);
+                            break;
+                        case 'vardefrelationship':
+                        case 'dictionaryrelationship':
+                            this.repairRelationship(definition, false);
+                            break;
+                    }
+                }
+            })
+        });
+    }
 }

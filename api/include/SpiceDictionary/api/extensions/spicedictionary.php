@@ -688,7 +688,72 @@ $routes = [
                 'type' => ValidationMiddleware::TYPE_GUID
             ]
         ]
-    ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/dictionary/columns/requiredwithnullrows/{id}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'getRequiredDBColumnsWithNullRows',
+        'description' => 'get required db columns with null rows',
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'value' => [
+                'in' => 'body',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ]
+        ]
+    ],
+    [
+        'method' => 'put',
+        'route' => '/dictionary/dbcolumn/mismatch/length/{id}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'truncateDBColumn',
+        'description' => 'update null db rows with null values',
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'id of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'column' => [
+                'in' => 'body',
+                'description' => 'column to fix',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ]
+        ]
+    ],
+    [
+        'method' => 'put',
+        'route' => '/dictionary/dbcolumn/mismatch/notnull/{id}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'setDBColumnNullRows',
+        'description' => 'update null db rows with null values',
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'path',
+                'description' => 'id of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_GUID
+            ],
+            'column' => [
+                'in' => 'body',
+                'description' => 'column to fix',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'value' => [
+                'in' => 'body',
+                'description' => 'value to be set for the null rows',
+                'type' => ValidationMiddleware::TYPE_COMPLEX
+            ]
+        ]
+    ],
 ];
 
 /**

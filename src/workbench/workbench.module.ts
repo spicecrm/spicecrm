@@ -167,6 +167,7 @@ import {
 } from "./pipes/dictionarymanagerfilterrelationshiptemplate.pipe";
 import {DictionaryManagerRelationshipAddUser} from "./components/dictionarymanagerrelationshipadduser";
 import {DictionaryManagerRelationshipContainerUser} from "./components/dictionarymanagerrelationshipcontaineruser";
+import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionarymanagerfixdbfieldsmismatchmodal";
 
 
 
@@ -324,7 +325,8 @@ import {DictionaryManagerRelationshipContainerUser} from "./components/dictionar
         DictionaryFilterRelationshipPipe,
         DictionaryFilterRelationshipTemplatePipe,
         DictionaryManagerRelationshipAddUser,
-        DictionaryManagerRelationshipContainerUser
+        DictionaryManagerRelationshipContainerUser,
+        DictionaryManagerFixDBFieldsMismatchModal
     ],
     exports: [
         SortPipe,

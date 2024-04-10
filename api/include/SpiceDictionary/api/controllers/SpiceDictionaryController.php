@@ -33,9 +33,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainFields;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomains;
@@ -623,7 +626,91 @@ class SpiceDictionaryController
         return $res->withJson(['error' => $error]);
     }
 
+    /**
+     * get required db columns with null values
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     */
+    public function getRequiredDBColumnsWithNullRows(Request $req, Response $res, array $args): Response
+    {
+        $definition = new SpiceDictionaryDefinition($args['id']);
+        $fields = SpiceDictionary::getInstance()->getDefs($definition->name)['fields'];
+        $db = DBManagerFactory::getInstance();
+        $dbColumns = $db->get_columns($definition->tablename);
+        $result = ['requiredColumnsWithNullRows' => [], 'columnsWithTruncateRows' => []];
 
+        foreach ($fields as $field) {
 
+            if ($field['source'] == 'non-db') continue;
 
+            if ($field['required'] == 1 && empty($field['default'])) {
+
+                $count = $db->getOne("SELECT COUNT(0) FROM $definition->tablename WHERE {$field['name']} IS NULL");
+                if ($count > 0) {
+                    $result['requiredColumnsWithNullRows'][] = ['name' => $field['name'], 'type' => 'null', 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
+                }
+            }
+
+            if (!empty($field['len']) && $field['len'] < $dbColumns[$field['name']]['len']) {
+                $lengthSql = $db->convert($field['name'], 'length');
+                $count = $db->getOne("SELECT COUNT(0) FROM $definition->tablename WHERE $lengthSql > {$field['len']}");
+                if ($count > 0) {
+                    $result['columnsWithTruncateRows'][] = ['name' => $field['name'], 'length' => $field['len'], 'type' => 'truncate', 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
+                }
+            }
+
+        }
+
+        return $res->withJson($result);
+    }
+
+    /**
+     * truncate db column
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws DatabaseException | \Exception
+     */
+    public function truncateDBColumn(Request $req, Response $res, array $args): Response
+    {
+        $definition = new SpiceDictionaryDefinition($args['id']);
+
+        $db = DBManagerFactory::getInstance();
+        $column = $db->quote($req->getParsedBody()['column']);
+        $fieldDef = SpiceDictionary::getInstance()->getDefs($definition->name)['fields'][$column];
+
+        $substringSql = $db->convert($column, 'substring', ['from' => 1, 'to' => $fieldDef['len']]);
+        $lengthSql = $db->convert($column, 'length');
+        $db->query("UPDATE $definition->tablename SET $column = $substringSql WHERE $lengthSql > {$fieldDef['len']}");
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * set db column null rows
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws DatabaseException | \Exception
+     */
+    public function setDBColumnNullRows(Request $req, Response $res, array $args): Response
+    {
+        $definition = new SpiceDictionaryDefinition($args['id']);
+
+        $body = $req->getParsedBody();
+        $db = DBManagerFactory::getInstance();
+        $column = $db->quote($body['column']);
+        $value = $db->quote($body['value']);
+
+        $db->query("UPDATE $definition->tablename SET $column = '$value' WHERE $column IS NULL", true);
+
+        return $res->withJson(['success' => true]);
+    }
 }
