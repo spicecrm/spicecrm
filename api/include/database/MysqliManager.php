@@ -1069,6 +1069,8 @@ class MysqliManager extends DBManager
                 return "avg($string)";
             case 'date_diff':
                 return "DATEDIFF($string[0],$string[1])";
+            case 'substring':
+                return "SUBSTRING($string, {$additional_parameters['from']}, {$additional_parameters['to']})";
         }
 
         return $string;
