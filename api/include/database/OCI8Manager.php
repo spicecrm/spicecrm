@@ -367,6 +367,8 @@ class OCI8Manager extends DBManager
 
             case 'date_diff':
                 return "TO_DATE($string[0], 'YYYY-MM-DD') - TO_DATE($string[1], 'YYYY-MM-DD')";
+            case 'substring':
+                return "SUBSTR($string, {$additional_parameters['from']}, {$additional_parameters['to']})";
         }
 
         // eliminate quotes if im trying to insert a function
