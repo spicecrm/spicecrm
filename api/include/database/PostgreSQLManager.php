@@ -662,6 +662,8 @@ class PostgreSQLManager extends DBManager
                 }
             case 'add_time':
                 return "(date $string + INTERVAL + time '{$additional_parameters[0]}:{$additional_parameters[1]}')";
+            case 'substring':
+                return "SUBSTRING($string, {$additional_parameters['from']}, {$additional_parameters['to']})";
         }
 
         return $string;
