@@ -677,7 +677,7 @@ class SpiceDictionaryController
      */
     public function truncateDBColumn(Request $req, Response $res, array $args): Response
     {
-        $definition = (object) SpiceDictionary::getInstance()->getDefs($args['dictionaryName']);
+        $definition = (object) SpiceDictionary::getInstance()->getDefsByTableName($args['dictionaryName']);
 
         $db = DBManagerFactory::getInstance();
         $column = $db->quote($req->getParsedBody()['column']);
@@ -701,7 +701,7 @@ class SpiceDictionaryController
      */
     public function setDBColumnNullRows(Request $req, Response $res, array $args): Response
     {
-        $definition = (object) SpiceDictionary::getInstance()->getDefs($args['dictionaryName']);
+        $definition = (object) SpiceDictionary::getInstance()->getDefsByTableName($args['dictionaryName']);
 
         $body = $req->getParsedBody();
         $db = DBManagerFactory::getInstance();
@@ -724,7 +724,7 @@ class SpiceDictionaryController
      */
     public function deleteDBColumnNullRows(Request $req, Response $res, array $args): Response
     {
-        $definition = (object) SpiceDictionary::getInstance()->getDefs($args['dictionaryName']);
+        $definition = (object) SpiceDictionary::getInstance()->getDefsByTableName($args['dictionaryName']);
 
         $db = DBManagerFactory::getInstance();
         $column = $db->quote($args['column']);
