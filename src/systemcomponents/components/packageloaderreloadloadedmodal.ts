@@ -126,7 +126,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
                 error: err => {
                     pkg.status = 'error';
                     pkg.erroneousDictionaries = err.error?.error?.details?.filter(e => e.scope == 'dictionary').map(e => e.name) ?? [];
-                    pkg.message = {text: err.error?.error?.message ?? 'unknown error', details: err.error?.error?.details?.join("\n")};
+                    pkg.message = {text: err.error?.error?.message ?? 'unknown error', details: err.error?.error?.details};
                     this.isReloadingPackage = false;
 
                     resNext(true);
@@ -181,7 +181,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
      * @param pkg
      */
     public showResponseDetails(pkg) {
-        this.modal.info(pkg.message.details.map(d => d.message), pkg.name);
+        this.modal.info(pkg.message.details.map(d => d.message).join("\n"), pkg.name);
     }
 
     /**
