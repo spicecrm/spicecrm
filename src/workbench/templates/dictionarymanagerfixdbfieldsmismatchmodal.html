@@ -58,6 +58,9 @@
                                             <button *ngIf="field.status != 'executed'" (click)="execute(field, 'notnull')" [disabled]="!values[field.name] || field.status == 'processing'" class="slds-button slds-button--icon slds-m-left--xx-small">
                                                 <system-button-icon icon="play"/>
                                             </button>
+                                            <button (click)="deleteNullRows(field)" [disabled]="field.status == 'processing'" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                                <system-button-icon icon="delete"/>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -113,9 +116,6 @@
                                         <div *ngIf="field.status != 'executed'" class="slds-grid slds-grid--vertical-align-center">
                                             <button (click)="execute(field, 'length')" [disabled]="field.status == 'processing'" class="slds-button slds-button--icon slds-m-left--xx-small">
                                                 <system-button-icon icon="play"/>
-                                            </button>
-                                            <button (click)="deleteNullRows(field)" [disabled]="field.status == 'processing'" class="slds-button slds-button--icon slds-m-left--xx-small">
-                                                <system-button-icon icon="delete"/>
                                             </button>
                                         </div>
                                     </td>
