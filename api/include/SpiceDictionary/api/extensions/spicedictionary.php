@@ -691,36 +691,31 @@ $routes = [
     ],
     [
         'method' => 'get',
-        'route' => '/dictionary/columns/requiredwithnullrows/{id}',
+        'route' => '/dictionary/dbcolumns/mismatch/{dictionaryName}',
         'class' => SpiceDictionaryController::class,
-        'function' => 'getRequiredDBColumnsWithNullRows',
-        'description' => 'get required db columns with null rows',
+        'function' => 'getDBColumnsMismatch',
+        'description' => 'get required db columns with null rows and rows with truncate values',
         'options' => ['adminOnly' => true],
         'parameters' => [
-            'id' => [
+            'dictionaryName' => [
                 'in' => 'path',
-                'description' => '',
-                'type' => ValidationMiddleware::TYPE_GUID
-            ],
-            'value' => [
-                'in' => 'body',
-                'description' => '',
-                'type' => ValidationMiddleware::TYPE_COMPLEX
+                'description' => 'name of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_STRING
             ]
         ]
     ],
     [
         'method' => 'put',
-        'route' => '/dictionary/dbcolumn/mismatch/length/{id}',
+        'route' => '/dictionary/dbcolumn/mismatch/length/{dictionaryName}',
         'class' => SpiceDictionaryController::class,
         'function' => 'truncateDBColumn',
         'description' => 'update null db rows with null values',
         'options' => ['adminOnly' => true],
         'parameters' => [
-            'id' => [
+            'dictionaryName' => [
                 'in' => 'path',
-                'description' => 'id of the dictionary definition',
-                'type' => ValidationMiddleware::TYPE_GUID
+                'description' => 'name of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_STRING
             ],
             'column' => [
                 'in' => 'body',
@@ -731,16 +726,16 @@ $routes = [
     ],
     [
         'method' => 'put',
-        'route' => '/dictionary/dbcolumn/mismatch/notnull/{id}',
+        'route' => '/dictionary/dbcolumn/mismatch/notnull/{dictionaryName}',
         'class' => SpiceDictionaryController::class,
         'function' => 'setDBColumnNullRows',
         'description' => 'update null db rows with null values',
         'options' => ['adminOnly' => true],
         'parameters' => [
-            'id' => [
+            'dictionaryName' => [
                 'in' => 'path',
-                'description' => 'id of the dictionary definition',
-                'type' => ValidationMiddleware::TYPE_GUID
+                'description' => 'name of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_STRING
             ],
             'column' => [
                 'in' => 'body',
@@ -751,6 +746,26 @@ $routes = [
                 'in' => 'body',
                 'description' => 'value to be set for the null rows',
                 'type' => ValidationMiddleware::TYPE_COMPLEX
+            ]
+        ]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/dictionary/dbcolumn/{column}/mismatch/notnull/{dictionaryName}',
+        'class' => SpiceDictionaryController::class,
+        'function' => 'deleteDBColumnNullRows',
+        'description' => 'delete null db rows',
+        'options' => ['adminOnly' => true],
+        'parameters' => [
+            'dictionaryName' => [
+                'in' => 'path',
+                'description' => 'name of the dictionary definition',
+                'type' => ValidationMiddleware::TYPE_STRING
+            ],
+            'column' => [
+                'in' => 'path',
+                'description' => 'column to fix',
+                'type' => ValidationMiddleware::TYPE_STRING
             ]
         ]
     ],

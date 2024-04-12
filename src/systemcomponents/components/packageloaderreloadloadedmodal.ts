@@ -4,6 +4,9 @@ import {loader} from "../../services/loader.service";
 import {broadcast} from "../../services/broadcast.service";
 import {ModalComponentI} from "../../objectcomponents/interfaces/objectcomponents.interfaces";
 import {modal} from "../../services/modal.service";
+import {
+    DictionaryManagerFixDBFieldsMismatchModal
+} from "../../workbench/components/dictionarymanagerfixdbfieldsmismatchmodal";
 
 @Component({
     selector: 'package-loader-reload-loaded-modal',
@@ -122,10 +125,11 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
                 },
                 error: err => {
                     pkg.status = 'error';
-                    pkg.message = {text: err.error.error.message, details: err.error.error.details?.join("\n")};
+                    pkg.erroneousDictionaries = err.error?.error?.details?.filter(e => e.scope == 'dictionary').map(e => e.name) ?? [];
+                    pkg.message = {text: err.error?.error?.message ?? 'unknown error', details: err.error?.error?.details?.join("\n")};
                     this.isReloadingPackage = false;
 
-                    resNext(true)
+                    resNext(true);
                 }
             });
 
@@ -179,4 +183,21 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
     public showResponseDetails(pkg) {
         this.modal.info(pkg.message.details, pkg.name);
     }
+
+    /**
+     * open fix required modal
+     * @param pkg
+     */
+    public openFixRequiredModal(pkg) {
+        this.modal.openStaticModal(DictionaryManagerFixDBFieldsMismatchModal).subscribe(modalRef => {
+            modalRef.instance.dictionaries = pkg.erroneousDictionaries;
+            modalRef.instance.response.subscribe({
+                next: success => {
+                    if (!success) return;
+                    this.reloadPackage(pkg);
+                }
+            })
+        });
+    }
+
 }

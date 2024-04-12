@@ -27,20 +27,25 @@
                             <div class="slds-truncate">{{definition.name}}</div>
                         </td>
                         <td>
-                            <div *ngIf="definition.status == 'c' && definition.sql" class="slds-grid slds-grid_vertical-align-center">
-                                <!-- display an error icon if the executioon of the sql failed -->
-                                <system-utility-icon class="slds-m-right--xx-small" *ngIf="definition.sqlerror" [title]="definition.sqlerror" icon="warning" colorclass="slds-icon-text-error"></system-utility-icon>
-                                <div class="slds-truncate slds-grow" [title]="definition.sql">{{definition.sql}}</div>
-                                <!-- action btuoons to copy and execute the SQL statement -->
-                                <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="copyToClipBoard(definition.sql)"><system-button-icon icon="copy"/></button>
-                            </div>
-                            <div *ngIf="definition.status == 'e'" class="slds-grid slds-size--1-of-1">
-                                <div class="slds-truncate slds-grow">
-                                    {{definition.error}}
+                            <div class="slds-grid">
+                                <div *ngIf="definition.status == 'c' && definition.sql" class="slds-grid slds-grid_vertical-align-center slds-grow" style="min-width: 0">
+                                    <!-- display an error icon if the executioon of the sql failed -->
+                                    <system-utility-icon class="slds-m-right--xx-small" *ngIf="definition.sqlerror" [title]="definition.sqlerror" icon="warning" colorclass="slds-icon-text-error"></system-utility-icon>
+                                    <div class="slds-truncate slds-grow" style="min-width: 0" [title]="definition.sql">{{definition.sql}}</div>
+                                    <!-- action btuoons to copy and execute the SQL statement -->
+                                    <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="copyToClipBoard(definition.sql)"><system-button-icon icon="copy"/></button>
+                                    <button *ngIf="!!definition.sqlerror" [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
+                                        <system-button-icon icon="data_transforms" />
+                                    </button>
                                 </div>
-                                <button [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
-                                    <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
-                                </button>
+                                <div *ngIf="definition.status == 'e'" class="slds-grid slds-size--1-of-1">
+                                    <div class="slds-truncate slds-grow" style="min-width: 0">
+                                        {{definition.error}}
+                                    </div>
+                                    <button [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
+                                        <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>
