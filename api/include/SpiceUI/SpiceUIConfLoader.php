@@ -281,7 +281,7 @@ class SpiceUIConfLoader
         $response = $this->loadPackageData($routeParams);
 
         if (!$response || !empty($response['nodata'])) {
-            throw new Exception($response['nodata'] ?: "REST Call error somewhere... Action aborted");
+            throw (new Exception($response['nodata'] ?: "REST Call error somewhere... Action aborted"))->setDetails([['scope' => 'table' ,'name' => 'x', 'message' => "No Dictionary found for table"]]);
         }
 
         $this->resetCounters();
