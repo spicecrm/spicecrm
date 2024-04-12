@@ -558,7 +558,7 @@ export class DictionaryManagerRepairAll {
      */
     public openFixRequiredModal(definition) {
         this.modal.openStaticModal(DictionaryManagerFixDBFieldsMismatchModal).subscribe(modalRef => {
-            modalRef.instance.dictionaryName = definition.type == 'vardefdefinition' ? definition.id : definition.name;
+            modalRef.instance.dictionaryName = definition.name;
             modalRef.instance.response.subscribe({
                 next: success => {
                     if (!success) return;
