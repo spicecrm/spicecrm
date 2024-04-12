@@ -636,7 +636,7 @@ class SpiceDictionaryController
      */
     public function getDBColumnsMismatch(Request $req, Response $res, array $args): Response
     {
-        $definition = (object) SpiceDictionary::getInstance()->getDefs($args['dictionaryName']);
+        $definition = (object) SpiceDictionary::getInstance()->getDefsByTableName($args['dictionaryName']);
         $db = DBManagerFactory::getInstance();
         $dbColumns = $db->get_columns($definition->table);
         $result = ['requiredColumnsWithNullRows' => [], 'columnsWithTruncateRows' => []];
