@@ -326,7 +326,7 @@ class SpiceUIConfLoader
         $tableCols = $this->getTableColumns($tableName);
 
         if (!$tableCols) {
-            $this->loadErrors[] = "No Dictionary found for table $tableName";
+            $this->loadErrors[] = ['scope' => 'table' ,'name' => $tableName, 'message' => "No Dictionary found for table $tableName"];
             return;
         }
 
@@ -349,7 +349,8 @@ class SpiceUIConfLoader
 
             # if the table content data could not be decoded skip the table load
             if (!$record) {
-                $this->loadErrors[] = ("Error decoding data: " . json_last_error_msg() . " Reference table = $tableName Action aborted");
+                $this->loadErrors[] = ['scope' => 'global' ,'name' => $tableName, 'message' => ("Error decoding data: " . json_last_error_msg() . " Reference table = $tableName Action aborted")];
+
                 continue;
             }
 
@@ -365,7 +366,7 @@ class SpiceUIConfLoader
             if(empty($db->lastError())){
                 $this->loadedTablesEntries[$tableName]++;
             } else{
-                $this->loadErrors[] = $db->lastError();
+                $this->loadErrors[] = ['scope' => 'records' ,'name' => $tableName, 'message' => $db->lastError()];
             }
         }
 
@@ -467,20 +468,18 @@ class SpiceUIConfLoader
             $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
 
             # repair only active definitions
-            if ($dictionaryDef['status'] == 'a') {
-                try {
-                    $sql = $definitions->repair($dictionaryDef['id']);
-                    if (!empty($sql)) $db->query($sql);
-                } catch (Exception $exception) {
-                    unset($response[$dictionaryDef['tablename']]);
-                    $this->loadErrors[] = $exception->getMessage();
-                }
-            }
+            if ($dictionaryDef['status'] != 'a') continue;
 
-            if (!empty($db->lastError())) {
-                $this->loadErrors[] = $db->lastError();
+            try {
+                $sql = $definitions->repair($dictionaryDef['id']);
+                if (!empty($sql)) $db->query($sql, true);
+
+            } catch (Exception $exception) {
+                unset($response[$dictionaryDef['tablename']]);
+                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'message' => $exception->getMessage()];
             }
         }
+
 
         SpiceDictionary::getInstance()->loadDictionary();
         RelationshipFactory::getInstance()->loadRelationships(true);

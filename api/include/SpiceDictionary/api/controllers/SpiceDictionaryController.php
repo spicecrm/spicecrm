@@ -634,21 +634,20 @@ class SpiceDictionaryController
      * @return Response
      * @throws Exception
      */
-    public function getRequiredDBColumnsWithNullRows(Request $req, Response $res, array $args): Response
+    public function getDBColumnsMismatch(Request $req, Response $res, array $args): Response
     {
-        $definition = new SpiceDictionaryDefinition($args['id']);
-        $fields = SpiceDictionary::getInstance()->getDefs($definition->name)['fields'];
+        $definition = (object) SpiceDictionary::getInstance()->getDefs($args['dictionaryName']);
         $db = DBManagerFactory::getInstance();
-        $dbColumns = $db->get_columns($definition->tablename);
+        $dbColumns = $db->get_columns($definition->table);
         $result = ['requiredColumnsWithNullRows' => [], 'columnsWithTruncateRows' => []];
 
-        foreach ($fields as $field) {
+        foreach ($definition->fields as $field) {
 
             if ($field['source'] == 'non-db') continue;
 
-            if ($field['required'] == 1 && empty($field['default'])) {
+            if (($field['required'] == 1 || $field['isnull'] === false || $field['isnull'] === 'false') && empty($field['default'])) {
 
-                $count = $db->getOne("SELECT COUNT(0) FROM $definition->tablename WHERE {$field['name']} IS NULL");
+                $count = $db->getOne("SELECT COUNT(0) FROM $definition->table WHERE {$field['name']} IS NULL");
                 if ($count > 0) {
                     $result['requiredColumnsWithNullRows'][] = ['name' => $field['name'], 'type' => 'null', 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
                 }
@@ -656,7 +655,7 @@ class SpiceDictionaryController
 
             if (!empty($field['len']) && $field['len'] < $dbColumns[$field['name']]['len']) {
                 $lengthSql = $db->convert($field['name'], 'length');
-                $count = $db->getOne("SELECT COUNT(0) FROM $definition->tablename WHERE $lengthSql > {$field['len']}");
+                $count = $db->getOne("SELECT COUNT(0) FROM $definition->table WHERE $lengthSql > {$field['len']}");
                 if ($count > 0) {
                     $result['columnsWithTruncateRows'][] = ['name' => $field['name'], 'length' => $field['len'], 'type' => 'truncate', 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
                 }
@@ -678,15 +677,15 @@ class SpiceDictionaryController
      */
     public function truncateDBColumn(Request $req, Response $res, array $args): Response
     {
-        $definition = new SpiceDictionaryDefinition($args['id']);
+        $definition = (object) SpiceDictionary::getInstance()->getDefs($args['dictionaryName']);
 
         $db = DBManagerFactory::getInstance();
         $column = $db->quote($req->getParsedBody()['column']);
-        $fieldDef = SpiceDictionary::getInstance()->getDefs($definition->name)['fields'][$column];
+        $fieldDef = $definition->fields[$column];
 
         $substringSql = $db->convert($column, 'substring', ['from' => 1, 'to' => $fieldDef['len']]);
         $lengthSql = $db->convert($column, 'length');
-        $db->query("UPDATE $definition->tablename SET $column = $substringSql WHERE $lengthSql > {$fieldDef['len']}");
+        $db->query("UPDATE $definition->table SET $column = $substringSql WHERE $lengthSql > {$fieldDef['len']}");
 
         return $res->withJson(['success' => true]);
     }
@@ -702,14 +701,35 @@ class SpiceDictionaryController
      */
     public function setDBColumnNullRows(Request $req, Response $res, array $args): Response
     {
-        $definition = new SpiceDictionaryDefinition($args['id']);
+        $definition = (object) SpiceDictionary::getInstance()->getDefs($args['dictionaryName']);
 
         $body = $req->getParsedBody();
         $db = DBManagerFactory::getInstance();
         $column = $db->quote($body['column']);
         $value = $db->quote($body['value']);
 
-        $db->query("UPDATE $definition->tablename SET $column = '$value' WHERE $column IS NULL", true);
+        $db->query("UPDATE $definition->table SET $column = '$value' WHERE $column IS NULL", true);
+
+        return $res->withJson(['success' => true]);
+    }
+
+    /**
+     * delete db column null rows
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws Exception
+     * @throws DatabaseException | \Exception
+     */
+    public function deleteDBColumnNullRows(Request $req, Response $res, array $args): Response
+    {
+        $definition = (object) SpiceDictionary::getInstance()->getDefs($args['dictionaryName']);
+
+        $db = DBManagerFactory::getInstance();
+        $column = $db->quote($args['column']);
+
+        $db->deleteQuery($definition->tablename, "$column IS NULL");
 
         return $res->withJson(['success' => true]);
     }

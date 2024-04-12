@@ -18,7 +18,11 @@ export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponent
     /**
      * dictionary id
      */
-    public dictionaryId: string;
+    public dictionaryName: string;
+    /**
+     * dictionary definitions
+     */
+    public dictionaries: string[] = [];
     /**
      * dictionary id
      */
@@ -60,7 +64,7 @@ export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponent
 
         const loadingModal = this.modal.await('LBL_LOADING');
 
-        this.backend.getRequest(`dictionary/columns/requiredwithnullrows/${this.dictionaryId}`).subscribe({
+        this.backend.getRequest(`dictionary/dbcolumns/mismatch/${this.dictionaryName}`).subscribe({
             next: res => {
                 loadingModal.next(true);
                 loadingModal.complete();
@@ -104,7 +108,7 @@ export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponent
 
         field.status = 'processing';
 
-        this.backend.putRequest(`dictionary/dbcolumn/mismatch/${type}/${this.dictionaryId}`, null, body).subscribe({
+        this.backend.putRequest(`dictionary/dbcolumn/mismatch/${type}/${this.dictionaryName}`, null, body).subscribe({
             next: () => {
                 field.status = 'executed';
                 this.toast.sendToast('success', 'success');
@@ -114,5 +118,32 @@ export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponent
                 this.toast.sendToast('LBL_ERROR', "error", err.error.error.message);
             }
         });
+    }
+
+    /**
+     * delete null rows for column
+     * @param field
+     */
+    public deleteNullRows(field) {
+
+        this.backend.deleteRequest(`dictionary/dbcolumn/${field.name}/mismatch/notnull/${this.dictionaryName}`).subscribe({
+            next: () => {
+                field.status = 'executed';
+                this.toast.sendToast('success', 'success');
+            },
+            error: err => {
+                field.status = 'error';
+                this.toast.sendToast('LBL_ERROR', "error", err.error.error.message);
+            }
+        });
+    }
+
+    /**
+     * set selected dictionary and get its data
+     * @param dic
+     */
+    public setSelectedDictionary(dic: string) {
+        this.dictionaryName = dic;
+        this.getRequiredDBColumnsWithNullValues();
     }
 }
