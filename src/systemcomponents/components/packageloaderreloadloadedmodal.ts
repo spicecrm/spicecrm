@@ -181,7 +181,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
      * @param pkg
      */
     public showResponseDetails(pkg) {
-        this.modal.info(pkg.message.details, pkg.name);
+        this.modal.info(pkg.message.details.map(d => d.message), pkg.name);
     }
 
     /**
