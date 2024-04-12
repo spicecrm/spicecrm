@@ -645,7 +645,7 @@ class SpiceDictionaryController
 
             if ($field['source'] == 'non-db') continue;
 
-            if (($field['required'] == 1 || $field['isnull'] === false || $field['isnull'] === 'false') && empty($field['default'])) {
+            if (($field['required'] == 1 || $field['required'] === true || $field['required'] === 'true' || $field['isnull'] === false || $field['isnull'] === 'false') && empty($field['default'])) {
 
                 $count = $db->getOne("SELECT COUNT(0) FROM $definition->table WHERE {$field['name']} IS NULL");
                 if ($count > 0) {
