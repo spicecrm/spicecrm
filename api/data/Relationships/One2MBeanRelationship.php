@@ -202,10 +202,17 @@ class One2MBeanRelationship extends One2MRelationship
             }
 
             if (!empty($params['searchterm'])) {
+                if(isset($rangeParams['limit'])) $params['limit'] = $rangeParams['limit'];
+                if(isset($rangeParams['offset'])) $params['offset'] = $rangeParams['offset'];
                 $rows = $this->getResultsFilteredByFTS($link->getRelatedModuleName(), $params, $rows);
 
                 $this->count = count($rows);
-                $rows = array_slice($rows, $params['offset'], $params['limit']);
+                if($params['limit']===0){
+                    $rows = array_slice($rows, $params['offset']);
+                }
+                else{
+                    $rows = array_slice($rows, $params['offset'], $params['limit']);
+                }
             } else {
                 $this->count = count($rows);
             }
