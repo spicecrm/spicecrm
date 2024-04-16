@@ -46,7 +46,7 @@ export class DomainManagerFieldValidation implements OnInit {
         // get the valdiation
         this.validation = this.domainmanager.getValidationById(this.field.sysdomainfieldvalidation_id)
         // get the values
-        this.validationvalues = this.domainmanager.getValidationValuesdById(this.field.sysdomainfieldvalidation_id).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+        this.validationvalues = this.domainmanager.getValidationValuesdById(this.field.sysdomainfieldvalidation_id).sort((a, b) => +a.sequence > +b.sequence ? 1 : -1);
     }
 
 
