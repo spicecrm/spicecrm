@@ -90,3 +90,14 @@ export interface ObjectListFilterI {
     operator?: string,
     filtervalue?: string
 }
+
+export interface ObjectActionMenuItemI {
+    disabled: boolean,
+    id: string,
+    sequence: number,
+    action: string,
+    component: string | undefined,
+    actionconfig: Object,
+    singlebutton:  boolean,
+    displayasicon?: boolean
+}
