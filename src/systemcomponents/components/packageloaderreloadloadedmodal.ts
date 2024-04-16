@@ -22,6 +22,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
         package: string;
         type: 'essentials' | 'config' | 'content';
         status?: 'reloaded' | 'error' | 'processing';
+        erroneousDictionaries?: {name: string; mismatch: any}[];
         message?: {text?: string; details: string};
     }[] = [];
     /**
@@ -125,7 +126,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
                 },
                 error: err => {
                     pkg.status = 'error';
-                    pkg.erroneousDictionaries = err.error?.error?.details?.filter(e => e.scope == 'dictionary').map(e => e.name) ?? [];
+                    pkg.erroneousDictionaries = err.error?.error?.details?.filter(e => e.scope == 'dictionary') ?? [];
                     pkg.message = {text: err.error?.error?.message ?? 'unknown error', details: err.error?.error?.details};
                     this.isReloadingPackage = false;
 
@@ -190,7 +191,11 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
      */
     public openFixRequiredModal(pkg) {
         this.modal.openStaticModal(DictionaryManagerFixDBFieldsMismatchModal).subscribe(modalRef => {
-            modalRef.instance.dictionaries = pkg.erroneousDictionaries;
+            modalRef.instance.dictionaries = pkg.erroneousDictionaries.map(d => d.name);
+            modalRef.instance.dictionaryName = modalRef.instance.dictionaries[0];
+            pkg.erroneousDictionaries.forEach(d => {
+                modalRef.instance.mismatch[d.name] = d.mismatch;
+            });
             modalRef.instance.response.subscribe({
                 next: success => {
                     if (!success) return;

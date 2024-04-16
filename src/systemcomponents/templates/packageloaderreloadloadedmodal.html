@@ -34,7 +34,7 @@
                     </td>
                     <td>
                         <div class="slds-grid slds-grid--vertical-align-center">
-                            <button *ngIf="pkg.status == 'error'" [disabled]="isReloadingPackage" (click)="openFixRequiredModal(pkg)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
+                            <button *ngIf="pkg.status == 'error' && pkg.erroneousDictionaries?.length > 0" [disabled]="isReloadingPackage" (click)="openFixRequiredModal(pkg)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
                                 <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
                             </button>
                             <button (click)="showResponseDetails(pkg)" [disabled]="!pkg.message?.details" class="slds-button slds-button--icon">

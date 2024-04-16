@@ -16,7 +16,7 @@
             </div>
             <div class="slds-scrollable--y slds-height_full slds-grow">
 
-                @if (requiredColumnsWithNullRows.length > 0) {
+                @if (mismatch[dictionaryName].requiredColumnsWithNullRows.length > 0) {
                     <div class="slds-grid slds-p-horizontal--x-small slds-p-vertical--small slds-section-title">
                         <system-label label="LBL_REQUIRED_ROWS_WITH_NULL_VALUES"/>
                     </div>
@@ -33,11 +33,11 @@
                             <th class="" scope="col">
                                 <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_VALUE"/></div>
                             </th>
-                            <th style="width: 3rem" scope="col"></th>
+                            <th style="width: 4rem" scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
-                            @for (field of requiredColumnsWithNullRows; track $index) {
+                            @for (field of mismatch[dictionaryName].requiredColumnsWithNullRows; track $index) {
 
                                 <tr class="slds-hint-parent" [ngClass]="{'slds-theme--info': field.status == 'processing', 'slds-theme--error': field.status == 'error'}">
                                     <td>
@@ -58,7 +58,7 @@
                                             <button *ngIf="field.status != 'executed'" (click)="execute(field, 'notnull')" [disabled]="!values[field.name] || field.status == 'processing'" class="slds-button slds-button--icon slds-m-left--xx-small">
                                                 <system-button-icon icon="play"/>
                                             </button>
-                                            <button (click)="deleteNullRows(field)" [disabled]="field.status == 'processing'" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                            <button (click)="deleteNullRows(field)" [disabled]="field.status == 'processing' || field.status == 'executed'" class="slds-button slds-button--icon slds-m-left--xx-small">
                                                 <system-button-icon icon="delete"/>
                                             </button>
                                         </div>
@@ -69,8 +69,8 @@
                     </table>
                 }
 
-                @if (columnsWithTruncateRows.length > 0) {
-                    <div [class.slds-m-top--medium]="requiredColumnsWithNullRows.length > 0" class="slds-grid slds-p-horizontal--x-small slds-p-vertical--small slds-section-title">
+                @if (mismatch[dictionaryName].columnsWithTruncateRows.length > 0) {
+                    <div [class.slds-m-top--medium]="mismatch[dictionaryName].requiredColumnsWithNullRows.length > 0" class="slds-grid slds-p-horizontal--x-small slds-p-vertical--small slds-section-title">
                         <system-label label="LBL_COLUMNS_WITH_TRUNCATE_ROWS"/>
                     </div>
                     <table class="slds-table slds-table--header-fixed slds-no-row-hover slds-table--fixed-layout slds-table_bordered">
@@ -89,11 +89,11 @@
                             <th class="" scope="col">
                                 <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_TO"/></div>
                             </th>
-                            <th style="width: 3rem" scope="col"></th>
+                            <th style="width: 4rem" scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
-                            @for (field of columnsWithTruncateRows; track $index) {
+                            @for (field of mismatch[dictionaryName].columnsWithTruncateRows; track $index) {
 
                                 <tr class="slds-hint-parent" [ngClass]="{'slds-theme--info': field.status == 'processing', 'slds-theme--error': field.status == 'error'}">
                                     <td>
@@ -125,7 +125,7 @@
                     </table>
                 }
 
-                @if (requiredColumnsWithNullRows.length == 0 && columnsWithTruncateRows.length == 0) {
+                @if (mismatch[dictionaryName].requiredColumnsWithNullRows.length == 0 && mismatch[dictionaryName].columnsWithTruncateRows.length == 0) {
                     <div>
                         <system-illustration-no-data class="slds-align--absolute-center slds-height_full">
                             <system-label label="LBL_NO_DATA"/>
