@@ -121,7 +121,7 @@ class APILogEntryHandler
             $this->logtables[] = $logtable;
         }
 
-        if (!$force && ($spice_config['system']['no_table_exists_check'] === true || DBManagerFactory::getInstance()->tableExists('sysapilogconfig'))) {
+        if (!$force && ($spice_config['system']['no_table_exists_check'] === true || DBManagerFactory::getInstance('spicelogger')->tableExists('sysapilogconfig'))) {
             // build the subroute matches by exploding it, then removing the last part and building the string going forward
             $routeparts = explode('/', $this->logEntry->route);
             // pop the last entry (this is then the full route
@@ -141,8 +141,8 @@ class APILogEntryHandler
 
             // check if this request has to be logged by some rules...
             $sql = "SELECT count(id) cnt, logtable FROM sysapilogconfig WHERE $routeWhere AND (method = '{$this->logEntry->method}' OR method = '*') AND (user_id = '{$this->logEntry->user_id}' OR user_id = '*') AND (ip = '{$this->logEntry->ip}' OR ip = '*') AND is_active = 1 GROUP BY logtable";
-            $res = DBManagerFactory::getInstance()->query($sql);
-            while($row = DBManagerFactory::getInstance()->fetchByAssoc($res)){
+            $res = DBManagerFactory::getInstance('spicelogger')->query($sql);
+            while($row = DBManagerFactory::getInstance('spicelogger')->fetchByAssoc($res)){
                 if(array_search($row['logtable'] ?: 'sysapilog',$this->logtables) === false) $this->logtables[] = $row['logtable'] ?: 'sysapilog';
             }
         }

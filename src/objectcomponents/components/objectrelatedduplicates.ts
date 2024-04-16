@@ -9,11 +9,12 @@ import {Subscription} from "rxjs";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {toast} from "../../services/toast.service";
 import {language} from "../../services/language.service";
+import {duplicatedmodels} from "../../services/duplicatedmodels.service";
 
 @Component({
     selector: 'object-relatedlist-duplicates',
     templateUrl: '../templates/objectrelatedduplicates.html',
-    providers: [relatedmodels]
+    providers: [relatedmodels, duplicatedmodels]
 })
 export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     /**
@@ -41,7 +42,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     /**
      * the toggle to open or close the panel
      */
-    public hideDuplicates: boolean = true;
+    public hideDuplicates: boolean = false;
 
     /**
      * holds component subscriptions
@@ -64,8 +65,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
         public metadata: metadata,
         public broadcast: broadcast,
         public relatedmodels: relatedmodels,
-        private toast: toast,
-        private language: language) {
+        public duplicatedModels: duplicatedmodels) {
     }
 
     /**
@@ -74,8 +74,11 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     public ngOnInit() {
         // check if the module has a dup check at all
         if (this.metadata.getModuleDuplicatecheck(this.model.module)) {
+
+            this.getRelatedData();
+
             // check duplicates
-            this.checkDuplicates();
+            this.duplicatedModels.checkDuplicates();
 
             // add a listener to the broadcast service
             this.subscriptions.add(
@@ -112,49 +115,12 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     }
 
     /**
-     * retrieves duplicate Beans from backend
-     */
-    public checkDuplicates() {
-        this.relatedmodels.isloading = true;
-        this.model.duplicateCheck().subscribe({
-            next: (data) => {
-                // save duplicate checked ids in a separate array
-                this.relatedmodels.duplicatesChecked = data.checkedDuplicates;
-                this.duplicates = data.records;
-                this.relatedmodels.count = data.count;
-
-                this.getRelatedData();
-
-                // if we have duplicates show the panel
-                if (this.relatedmodels.count > 0) this.showPanel = true;
-                this.relatedmodels.isloading = false;
-            }, error: () => {
-                this.relatedmodels.isloading = false;
-                this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
-            }
-        });
-    }
-
-    /**
      * builds the items for the related list
      */
     public getRelatedData() {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
         this.relatedmodels.relatedModule = this.model.module;
-        this.showAcceptedDuplicates(this.toggleValue);
-    }
-
-    /**
-     * manages the visibility of checked accepted duplicates
-     */
-    public showAcceptedDuplicates(value: boolean) {
-        if (value) {
-            let itemsArr: any[] = [];
-            this.relatedmodels.items = itemsArr.concat(this.duplicates, this.relatedmodels.duplicatesChecked);
-        } else {
-            this.relatedmodels.items = this.duplicates;
-        }
     }
 
     /**
@@ -173,25 +139,7 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
                 }
                 break;
             case 'duplicates.reload':
-
-                if (message.messagedata.deletedAcceptedDuplicate) {
-                    this.duplicates.push(message.messagedata.deletedAcceptedDuplicate);
-
-                    if (this.relatedmodels.duplicatesChecked.length == 0) {
-                        this.toggleValue = false;
-                    }
-                    this.showAcceptedDuplicates(this.toggleValue);
-
-                } else {
-                    if(!this.toggleValue) {
-                        // remove the checked duplicate Bean from items
-                        this.relatedmodels.items = this.relatedmodels.items.filter(item => item.id != message.messagedata.newAcceptedDuplicate.id);
-                        this.duplicates = this.relatedmodels.items;
-                    } else {
-                        // remove new accepted duplicate from duplicates array
-                        this.duplicates = this.duplicates.filter(item => item.id != message.messagedata.newAcceptedDuplicate.id);
-                    }
-                }
+                this.duplicatedModels.showDuplicatesByStatus(this.duplicatedModels.selectedStatus);
                 break;
         }
     }

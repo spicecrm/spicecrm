@@ -71,17 +71,18 @@ export class CampaignTaskActivateButton implements OnDestroy {
         this.activating = true;
 
         // execute on backend
-        this.backend.postRequest(`module/CampaignTasks/${this.model.id}/activate`).subscribe(status => {
-            this.activating = false;
+        this.backend.postRequest(`module/CampaignTasks/${this.model.id}/activate`).subscribe({
+            next: () => {
+                this.activating = false;
 
             // send toast and set active
-            if (status.success) {
                 this.model.getData();
                 this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'CampaignLog'});
-
                 this.toast.sendToast(this.language.getLabel("LBL_CAMPAIGNTASK_ACTIVATED"));
-            } else {
-                this.toast.sendToast(this.language.getLabel('LBL_NO_TARGETS_SELECTED'), 'error');
+
+            }, error: err => {
+                this.activating = false;
+                this.toast.sendToast(err.error.error?.lbl, 'error');
             }
         });
     }

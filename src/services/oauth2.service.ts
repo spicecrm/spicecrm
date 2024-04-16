@@ -3,6 +3,8 @@ import {HttpClient,} from '@angular/common/http';
 import {Auth2ServiceConfigI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
 import {Subject} from "rxjs";
 
+declare var _: any;
+
 /**
  * Service for logging in and logging out with
  * OIDC and OAuth2. Supports implicit flow and
@@ -52,11 +54,10 @@ export class OAuth2Service {
 
         const messageListener = this.renderer.listen('window', 'message', (e: MessageEvent) => {
 
+            if (e.source != popupWindowRef || e.origin != window.origin || e.data?.source != 'SpiceCRMOAuthWindow') return;
+
             cleanup();
-
-            if (!e.data) return;
-
-            const queryStringObject = this.parseRedirectQueryString(e.data);
+            const queryStringObject = this.parseRedirectQueryString(e.data.hash);
 
             if (!!queryStringObject.error) {
                 resSubject.error(queryStringObject.error);
