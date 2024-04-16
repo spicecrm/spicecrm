@@ -278,7 +278,7 @@ class CampaignTask extends SpiceBean
     private function getCampaignTargetLists(): array
     {
         $query = $this->db->query("
-            SELECT pl.id, pl.name, pl.list_type FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id 
+            SELECT pl.id, pl.name, pl.list_type, pl.is_generated_by_system FROM prospect_list_campaigntasks plc INNER JOIN prospect_lists pl ON pl.id = plc.prospect_list_id 
             WHERE pl.list_type != 'test' AND campaigntask_id = '$this->id' AND plc.deleted != 1 AND pl.deleted != 1 ORDER BY pl.name"
         );
 
