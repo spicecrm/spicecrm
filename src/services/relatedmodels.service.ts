@@ -133,11 +133,6 @@ export class relatedmodels implements OnDestroy {
      */
     public serviceSubscriptions: any[] = [];
 
-    /**
-     * which were checked as duplicates
-     */
-    public acceptedDuplicates: any[] = [];
-
     constructor(
         public metadata: metadata,
         public backend: backend,
