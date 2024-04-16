@@ -1340,51 +1340,79 @@ class SpiceBeanHandler
         $thisBean = BeanFactory::getBean($beanModule, $beanId);
         if (!isset($thisBean->id)) throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $beanId, 'module' => $beanModule]);
 
-        $checkedDuplicates = [];
+        $acceptedDuplicates = [];
+        $foundDuplicates = [];
 
         // get ids of accepted duplicates
-        $acceptedDuplicatesIds = $this->getAcceptedDuplicates($beanModule, $thisBean);
+        $duplicatesByStatus = $this->getDuplicatesByStatus($thisBean);
 
-        $duplicates = $thisBean->checkForDuplicates($acceptedDuplicatesIds);
+        $duplicates = $thisBean->checkForDuplicates($duplicatesByStatus['acceptedDuplicatesIds']);
 
-        $retArray = [];
         foreach ($duplicates['records'] as $duplicate) {
-            $retArray[] = $this->mapBeanToArray($beanModule, $duplicate);
+            if (in_array($duplicate->id, $duplicatesByStatus['foundDuplicatesIds'])) {
+                $foundDuplicates[] = $this->mapBeanToArray($beanModule, $duplicate);
+            }
         }
 
         // map accepted duplicate Beans
-        foreach ($acceptedDuplicatesIds as $checkedDuplicate) {
-            $checkDuplBean = BeanFactory::getBean($beanModule, $checkedDuplicate);
-            $checkedDuplicates[] = $this->mapBeanToArray($beanModule, $checkDuplBean);
+        foreach ($duplicatesByStatus['acceptedDuplicatesIds'] as $acceptedDuplicateId) {
+            $acceptedDuplBean = BeanFactory::getBean($beanModule, $acceptedDuplicateId);
+            $acceptedDuplicates[] = $this->mapBeanToArray($beanModule, $acceptedDuplBean);
         }
 
-        return ['count' => $duplicates['count'], 'records' => $retArray, 'checkedDuplicates'=> $checkedDuplicates];
+        return ['acceptedDuplicates'=> $acceptedDuplicates, 'foundDuplicates'=> $foundDuplicates];
     }
 
     /**
      * selects accepted duplicates IDs and returns them for further processing
      *
-     * @param string $beanModule
-     * @param $thisBean
+     * @param SpiceBean $thisBean
      * @return array
      * @throws \Exception
      */
-    private function getAcceptedDuplicates(string $beanModule, $thisBean): array {
+    private function getDuplicatesByStatus(SpiceBean $thisBean): array {
         $acceptedDuplicatesIds = [];
 
         $db = DBManagerFactory::getInstance();
-        $sql = "SELECT * FROM sysduplicatesbeans WHERE (bean_id_left = '$thisBean->id' OR bean_id_right = '$thisBean->id') AND bean_type = '$beanModule' AND duplicate_status = 'accepted' AND deleted = '0'";
+        $sql = "SELECT * FROM sysduplicatesbeans WHERE (bean_id_left = '$thisBean->id' OR bean_id_right = '$thisBean->id') AND bean_type = '$thisBean->_module' AND duplicate_status = 'accepted' AND deleted = '0'";
         $acceptedDuplicates = $db->query($sql);
 
-        while ($acceptedDuplicate = $db->fetchByAssoc($acceptedDuplicates)) {
-            if($acceptedDuplicate['bean_id_left'] == $thisBean->id) {
-                $acceptedDuplicatesIds[] = $acceptedDuplicate['bean_id_right'];
-            } else if($acceptedDuplicate['bean_id_right'] == $thisBean->id) {
-                $acceptedDuplicatesIds[] = $acceptedDuplicate['bean_id_left'];
+        while ($duplicate = $db->fetchByAssoc($acceptedDuplicates)) {
+            if ($duplicate['bean_id_left'] == $thisBean->id) {
+                $acceptedDuplicatesIds[] = $duplicate['bean_id_right'];
+            } else if ($duplicate['bean_id_right'] == $thisBean->id) {
+                $acceptedDuplicatesIds[] = $duplicate['bean_id_left'];
             }
         }
 
-        return $acceptedDuplicatesIds;
+        $foundDuplicatesIds = $this->getFoundDuplicates($thisBean);
+
+        return ['acceptedDuplicatesIds' => $acceptedDuplicatesIds, 'foundDuplicatesIds' => $foundDuplicatesIds];
+    }
+
+    /**
+     * selects found duplicates IDs and returns them for further processing
+     *
+     * @param SpiceBean $thisBean
+     * @return array
+     * @throws \Exception
+     */
+    private function getFoundDuplicates(SpiceBean $thisBean): array {
+        $foundDuplicatesIds = [];
+
+        $db = DBManagerFactory::getInstance();
+        $sql = "SELECT * FROM sysduplicatesbeans WHERE (bean_id_left = '$thisBean->id' OR bean_id_right = '$thisBean->id') AND bean_type = '$thisBean->_module' AND duplicate_status = 'found' AND deleted = '0'";
+        $foundDuplicates = $db->query($sql);
+
+        while ($foundDuplicate = $db->fetchByAssoc($foundDuplicates)) {
+            if($foundDuplicate['bean_id_left'] == $thisBean->id) {
+                $foundDuplicatesIds[] = $foundDuplicate['bean_id_right'];
+            } else if($foundDuplicate['bean_id_right'] == $thisBean->id) {
+                $foundDuplicatesIds[] = $foundDuplicate['bean_id_left'];
+            }
+        }
+
+        return $foundDuplicatesIds;
     }
 
     public function get_related(string $beanModule, string $beanId, string $linkName, array $params): array {
@@ -2379,16 +2407,23 @@ class SpiceBeanHandler
         $db = DBManagerFactory::getInstance();
 
         // check if we've already got an entry
-        $acceptedDuplId = $db->getOne("SELECT * FROM sysduplicatesbeans WHERE bean_id_left = '{$beanIdLeft}'  AND bean_id_right = '{$beanIdRight}' AND duplicate_status = 'accepted' AND deleted = '0'");
+        $acceptedDuplId = $db->getOne("SELECT * FROM sysduplicatesbeans WHERE bean_id_left = '{$beanIdLeft}'  AND bean_id_right = '{$beanIdRight}' AND deleted = '0'");
 
         // if we don't find an entry, try another side
-        if (!$acceptedDuplId) $acceptedDuplId = $db->getOne("SELECT * FROM sysduplicatesbeans WHERE bean_id_left = '{$beanIdRight}' AND bean_id_right = '{$beanIdLeft}' AND  duplicate_status = 'accepted' AND deleted = '0'");
+        if (!$acceptedDuplId) $acceptedDuplId = $db->getOne("SELECT * FROM sysduplicatesbeans WHERE bean_id_left = '{$beanIdRight}' AND bean_id_right = '{$beanIdLeft}' AND deleted = '0'");
 
         $dateCreated = TimeDate::getInstance()->nowDb();
         $currentUserId = AuthenticationController::getInstance()->getCurrentUser()->id;
 
-        if ($acceptedDuplId && $deleted) {
-            $updateQuery = "UPDATE sysduplicatesbeans SET deleted = '1', date_modified = '$dateCreated', modified_by = '$currentUserId' WHERE id = '$acceptedDuplId' AND deleted = '0'";
+        $duplicateStatus = '';
+
+        if ($acceptedDuplId) {
+            if($deleted) {
+                $updateQuery = "UPDATE sysduplicatesbeans SET duplicate_status = null, deleted = '1', date_modified = '$dateCreated', modified_by = '$currentUserId' WHERE id = '$acceptedDuplId' AND deleted = '0'";
+            } else {
+                $updateQuery = "UPDATE sysduplicatesbeans SET duplicate_status = 'accepted', date_modified = '$dateCreated', modified_by = '$currentUserId' WHERE id = '$acceptedDuplId' AND deleted = '0'";
+                $duplicateStatus = 'accepted';
+            }
             $db->query($updateQuery);
         } else if (!$acceptedDuplId) {
             $guid = SpiceUtils::createGuid();
@@ -2399,8 +2434,8 @@ class SpiceBeanHandler
 
         $duplicateRightBeanData = $this->mapBeanToArray($beanModule, BeanFactory::getBean($beanModule, $beanIdRight));
 
-        $acceptedDuplicate = ['beanModule' => $beanModule, 'beanIdLeft' => $beanIdLeft, 'rightBean' => $duplicateRightBeanData, 'deleted' => $deleted];
+        $deletededDuplicate = ['beanModule' => $beanModule, 'beanIdLeft' => $beanIdLeft, 'rightBean' => $duplicateRightBeanData, 'status' => $duplicateStatus, 'deleted'=> $deleted];
 
-        return ['success' => true, 'acceptedDuplicate' => $acceptedDuplicate];
+        return ['success' => true, 'checkedDuplicate' => $deletededDuplicate];
     }
 }

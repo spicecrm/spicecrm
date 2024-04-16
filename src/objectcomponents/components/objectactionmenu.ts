@@ -1,17 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {
-    Component,
-    ElementRef,
-    Renderer2,
-    Input,
-    Output,
-    EventEmitter,
-    ChangeDetectorRef,
-    OnInit,
-    AfterViewInit, NgZone
-} from '@angular/core';
+import {Component, ElementRef, Renderer2, Input, ChangeDetectorRef, OnInit, NgZone} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
@@ -38,7 +28,18 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
      */
     public actionitems: any[] = [];
 
+    /**
+     * an array with the single action items
+     * i.e. single button or button as icon
+     */
+    public singleitems: any[] = [];
+
     public componentconfig: any = {};
+
+    /**
+     * counts the number of single/icon buttons
+     */
+    public singleButtonSequence: number = 0;
 
     constructor(public language: language,
                 public broadcast: broadcast,
@@ -72,14 +73,34 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
         let initial = true;
 
         for (let actionitem of actionitems) {
-            this.actionitems.push({
-                disabled: true,
-                id: actionitem.id,
-                sequence: actionitem.sequence,
-                action: actionitem.action,
-                component: actionitem.component,
-                actionconfig: actionitem.actionconfig
-            });
+            if(!actionitem.singlebutton && !actionitem?.actionconfig.displayasicon) {
+                this.actionitems.push({
+                    disabled: true,
+                    id: actionitem.id,
+                    sequence: actionitem.sequence,
+                    action: actionitem.action,
+                    component: actionitem.component,
+                    actionconfig: actionitem.actionconfig
+                });
+            } else {
+
+                if(actionitem.singlebutton || actionitem?.actionconfig.displayasicon) {
+                    ++this.singleButtonSequence
+                };
+
+                this.singleitems.push({
+                    disabled: true,
+                    id: actionitem.id,
+                    sequence: actionitem.sequence,
+                    action: actionitem.action,
+                    component: actionitem.component,
+                    actionconfig: actionitem.actionconfig,
+                    singlebutton: actionitem.singlebutton,
+                    displayasicon: actionitem.actionconfig.displayasicon,
+                    singleButtonSequence: this.singleButtonSequence
+                });
+            }
+
         }
 
         // trigger Change detection to ensure the changes are renderd if cdref is on push mode on the parent component
@@ -87,20 +108,43 @@ export class ObjectActionMenu extends ObjectActionContainer implements OnInit {
         this.cdRef.detectChanges();
     }
 
+    /**
+     * determines screen width: large/small
+     */
     get isSmall() {
         return this.layout.screenwidth == 'small';
-    }
-
-    get hasNoActions() {
-        // because of custom actions can't be checked if they are enabled... return false
-        if (this.actionitems.length > 0) return false;
-
-        return true;
     }
 
     public getButtonSizeClass() {
         if (this.buttonsize !== '') {
             return 'slds-button--icon-' + this.buttonsize;
         }
+    }
+
+    /**
+     * display buttons grouped only if we have a single button
+     */
+    public getGroupButtonClass(): string {
+
+        const hiddenItems = this.singleitems.find(item => this.isHidden(item.id) == true);
+
+        if(this.singleitems.length > 0 && this.actionitems.length > 0 && hiddenItems == undefined && !this.isSmall) {
+            return ' slds-button-group ';
+        }
+    }
+
+    /**
+     * determines based on the action ID if the component embedded in the container item is hidden
+     * @param actionid the action id
+     */
+    public isHidden(actionid) {
+        if (!this.stable) return false;
+
+        let hidden = false;
+        if (this.actionitemlist) {
+            let actionitem = this.actionitemlist.find(actionitem => actionitem.id == actionid);
+            if (actionitem) hidden = actionitem.hidden;
+        }
+        return hidden;
     }
 }

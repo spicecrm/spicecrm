@@ -937,7 +937,7 @@ class SpiceBean
                     'searchterm' => $searchterm
                 ]));
             } else
-                return array_values($this->$field_name->getBeans());
+                return array_values($this->$field_name->getBeans(['sort' => $sort_array]));
         }
         return [];
     }
