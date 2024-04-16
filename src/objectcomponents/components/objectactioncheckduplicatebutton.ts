@@ -6,6 +6,7 @@ import {model} from "../../services/model.service";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {language} from "../../services/language.service";
 import {broadcast} from "../../services/broadcast.service";
+import {duplicatedmodels} from "../../services/duplicatedmodels.service";
 
 @Component({
     selector: 'object-action-check-duplicate-button',
@@ -44,6 +45,7 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
         public relatedmodels: relatedmodels,
         private language: language,
         public broadcast: broadcast,
+        public duplicatedModels: duplicatedmodels,
     ) {
     }
 
@@ -59,15 +61,21 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
         return this.deleteCheck ? 'LBL_DELETE_DUPLICATE_CHECK' : 'LBL_CHECK_AS_DUPLICATE';
     }
 
+    get deleteCheck(): boolean {
+        return this._deleteCheck;
+    }
+
     /**
      * 
      */
-    get deleteCheck(): boolean {
-        const acceptedItemFound =  this.relatedmodels.acceptedDuplicates.find(item => item.id == this.model.id);
+    get manageBtnClass() {
+        const acceptedItemFound =  this.duplicatedModels.acceptedDuplicates.find(item => item.id == this.model.id);
         if(acceptedItemFound) {
-            return this._deleteCheck = true;
+            this._deleteCheck = true;
+            return 'slds-icon-text-success';
         } else {
-            return this._deleteCheck = false;
+            this._deleteCheck = false;
+            if(this.duplicatedModels.foundDuplicates.find(item => item.id == this.model.id)) return 'slds-icon-text-default';
         }
     }
     /**
@@ -82,26 +90,27 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
 
                 if(!this._deleteCheck) {
 
-                    this.relatedmodels.acceptedDuplicates.push(resp.acceptedDuplicate.rightBean);
-
-                    this.relatedmodels.count--;
+                    // remove the checked duplicate Bean from arrays
+                    this.duplicatedModels.acceptedDuplicates.push(resp.checkedDuplicate.rightBean);
+                    this.duplicatedModels.foundDuplicates = this.duplicatedModels.foundDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
 
                     // reload list
                     this.broadcast.broadcastMessage('duplicates.reload', {
-                        newAcceptedDuplicate: resp.acceptedDuplicate.rightBean
+                        newAcceptedDuplicate: resp.checkedDuplicate.rightBean,
+                        status: resp.checkedDuplicate.status
                     });
 
                     this.inProcess = false;
                     loadingModal.emit(true);
                     this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECKED'), 'success');
                 } else {
-                    // remove the checked duplicate Bean from acceptedDuplicates
-                    this.relatedmodels.acceptedDuplicates = this.relatedmodels.acceptedDuplicates.filter(item => item.id != resp.acceptedDuplicate.rightBean.id);
-
-                    this.relatedmodels.count++;
+                    // remove the checked duplicate Bean from arrays
+                    this.duplicatedModels.acceptedDuplicates = this.duplicatedModels.acceptedDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
+                    this.duplicatedModels.foundDuplicates = this.duplicatedModels.foundDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
 
                     this.broadcast.broadcastMessage('duplicates.reload', {
-                        deletedAcceptedDuplicate: resp.acceptedDuplicate.rightBean
+                        deletedAcceptedDuplicate: resp.checkedDuplicate.rightBean,
+                        status: resp.checkedDuplicate.status
                     });
 
                     this.inProcess = false;

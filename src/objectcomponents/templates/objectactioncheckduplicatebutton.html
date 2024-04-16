@@ -1,2 +1,2 @@
-<system-button-icon *ngIf="actionconfig.displayasicon" icon="multi_select_checkbox" [colorclass]="deleteCheck ? 'slds-icon-text-error' : 'slds-icon-text-success'" system-title="{{manageLabel}}"></system-button-icon>
+<system-button-icon *ngIf="actionconfig.displayasicon" icon="success" [colorclass]="manageBtnClass" system-title="{{manageLabel}}"></system-button-icon>
 <span *ngIf="!actionconfig.displayasicon"><system-label [label]="manageLabel"></system-label></span>
