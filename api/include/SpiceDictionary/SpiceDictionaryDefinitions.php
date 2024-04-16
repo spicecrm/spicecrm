@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -174,7 +175,7 @@ class SpiceDictionaryDefinitions
      * @param $name
      * @param bool $keep
      * @return string|null
-     * @throws \Exception
+     * @throws \Exception|\Throwable
      */
     public function repairVardefDefinition($name, bool $keep = false): ?string
     {
@@ -185,11 +186,26 @@ class SpiceDictionaryDefinitions
         $this->writeVardefToFieldsTable($name, $dic);
         $repairFields = array_filter($dic['fields'], fn($d) => $d['source'] != 'non-db');
 
-        // do the repair
-        $sql = DBManagerFactory::getInstance()->repairTableParams($dic['table'], $repairFields, $dic['indices'], false);
+        try {
+            // do the repair
+            $sql = DBManagerFactory::getInstance()->repairTableParams($dic['table'], $repairFields, $dic['indices'], false);
+
+        } catch (\Throwable $exception) {
+
+            $mismatch = SpiceDictionaryDefinition::getDBColumnsMismatch($name);
+
+            if ($mismatch) {
+                $exception = new Exception($exception->getMessage());
+                $exception->setDetails([$name => $mismatch])->setErrorCode("columnsMismatch");
+            }
+
+            throw $exception;
+        }
+
         if ($keep) {
             $_SESSION['sysdictionary']['sqls'][md5($sql)] = $sql;
         }
+
         return $sql;
     }
 
