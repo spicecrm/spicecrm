@@ -369,7 +369,7 @@ export class CampaignTaskTargetsManager implements OnInit, OnDestroy {
 
                 this.inclusionList = res.prospectlists.find(l => l.list_type == 'include' && l.is_generated_by_system == 1);
                 this.exclusionList = res.prospectlists.find(l => l.list_type == 'exclude' && l.is_generated_by_system == 1);
-                this.prospectLists = res.prospectlists.filter(l => ['include', 'exclude'].indexOf(l.list_type) == -1);
+                this.prospectLists = res.prospectlists.filter(l => l.is_generated_by_system != 1);
 
                 this.prospects = res.prospects;
                 this.prospects.forEach(prospect => {
