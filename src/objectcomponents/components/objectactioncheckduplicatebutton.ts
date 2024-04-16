@@ -17,17 +17,12 @@ import {duplicatedmodels} from "../../services/duplicatedmodels.service";
 export class ObjectActionCheckDuplicateButton implements OnInit {
 
     /**
-     * if set to true display the button as icon
-     */
-    public displayasicon: boolean = false;
-
-    /**
      * indicator that we are processing currently
      */
     public inProcess: boolean = false;
 
     /**
-     * whether 
+     * whether
      */
     public _deleteCheck: boolean = false;
 
@@ -61,67 +56,80 @@ export class ObjectActionCheckDuplicateButton implements OnInit {
         return this.deleteCheck ? 'LBL_DELETE_DUPLICATE_CHECK' : 'LBL_CHECK_AS_DUPLICATE';
     }
 
+    /**
+     * holds the click value
+     */
     get deleteCheck(): boolean {
         return this._deleteCheck;
     }
 
     /**
-     * 
+     * manages button color class
      */
     get manageBtnClass() {
-        const acceptedItemFound =  this.duplicatedModels.acceptedDuplicates.find(item => item.id == this.model.id);
-        if(acceptedItemFound) {
+        const acceptedItemFound = this.duplicatedModels.acceptedDuplicates.find(item => item.id == this.model.id);
+        if (acceptedItemFound) {
             this._deleteCheck = true;
             return 'slds-icon-text-success';
         } else {
             this._deleteCheck = false;
-            if(this.duplicatedModels.foundDuplicates.find(item => item.id == this.model.id)) return 'slds-icon-text-default';
+            if (this.duplicatedModels.foundDuplicates.find(item => item.id == this.model.id)) return 'slds-icon-text-default';
         }
     }
+    /**
+     * changes the label of the confirm modal
+     */
+    get confirmModalLabel(): string {
+        return this.deleteCheck ? 'MSG_DELETE_DUPLICATE_CHECK' : 'MSG_ACCEPT_AS_DUPLICATE';
+    }
+
     /**
      * sets the Bean as checked duplicate in the sysacceptedduplicates table
      */
     public execute() {
         this.inProcess = true;
-        let loadingModal = this.modal.await(this.language.getLabel('LBL_SAVING_DATA'));
+        this.modal.confirm(this.confirmModalLabel, this.confirmModalLabel, 'error').subscribe(answer => {
+            if (answer) {
+                let loadingModal = this.modal.await(this.language.getLabel('LBL_SAVING_DATA'));
+                this.backend.postRequest(`module/${this.parentmodel.module}/${this.parentmodel.id}/${this.model.id}/acceptasduplicate`, {deleted: this._deleteCheck}).subscribe({
+                    next: (resp) => {
 
-        this.backend.postRequest(`module/${this.parentmodel.module}/${this.parentmodel.id}/${this.model.id}/acceptasduplicate`, {deleted: this._deleteCheck}).subscribe({
-            next: (resp) => {
+                        if (!this._deleteCheck) {
 
-                if(!this._deleteCheck) {
+                            this.duplicatedModels.acceptedDuplicates.push(resp.checkedDuplicate.rightBean);
+                            this.duplicatedModels.foundDuplicates = this.duplicatedModels.foundDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
 
-                    // remove the checked duplicate Bean from arrays
-                    this.duplicatedModels.acceptedDuplicates.push(resp.checkedDuplicate.rightBean);
-                    this.duplicatedModels.foundDuplicates = this.duplicatedModels.foundDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
+                            // reload list
+                            this.broadcast.broadcastMessage('duplicates.reload', {
+                                newAcceptedDuplicate: resp.checkedDuplicate.rightBean,
+                                status: resp.checkedDuplicate.status
+                            });
 
-                    // reload list
-                    this.broadcast.broadcastMessage('duplicates.reload', {
-                        newAcceptedDuplicate: resp.checkedDuplicate.rightBean,
-                        status: resp.checkedDuplicate.status
-                    });
+                            this.inProcess = false;
+                            loadingModal.emit(true);
+                            this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECKED'), 'success');
+                        } else {
+                            // remove the checked duplicate Bean from arrays
+                            this.duplicatedModels.acceptedDuplicates = this.duplicatedModels.acceptedDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
+                            this.duplicatedModels.foundDuplicates = this.duplicatedModels.foundDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
 
-                    this.inProcess = false;
-                    loadingModal.emit(true);
-                    this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECKED'), 'success');
-                } else {
-                    // remove the checked duplicate Bean from arrays
-                    this.duplicatedModels.acceptedDuplicates = this.duplicatedModels.acceptedDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
-                    this.duplicatedModels.foundDuplicates = this.duplicatedModels.foundDuplicates.filter(item => item.id != resp.checkedDuplicate.rightBean.id);
+                            this.broadcast.broadcastMessage('duplicates.reload', {
+                                deletedAcceptedDuplicate: resp.checkedDuplicate.rightBean,
+                                status: resp.checkedDuplicate.status
+                            });
 
-                    this.broadcast.broadcastMessage('duplicates.reload', {
-                        deletedAcceptedDuplicate: resp.checkedDuplicate.rightBean,
-                        status: resp.checkedDuplicate.status
-                    });
-
-                    this.inProcess = false;
-                    loadingModal.emit(true);
-                    this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECK_DELETED'), 'info');
-                }
-            }, error: () => {
+                            this.inProcess = false;
+                            loadingModal.emit(true);
+                            this.toast.sendToast(this.language.getLabel('LBL_DUPLICATE_CHECK_DELETED'), 'info');
+                        }
+                    }, error: () => {
+                        this.inProcess = false;
+                        loadingModal.emit(true);
+                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                    }
+                });
+            } else {
                 this.inProcess = false;
-                loadingModal.emit(true);
-
-                this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
             }
         });
     }
