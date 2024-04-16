@@ -48,6 +48,7 @@ use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
@@ -435,7 +436,7 @@ class SpiceUIConfLoader
      * @throws Exception
      * @throws DatabaseException | \Exception
      */
-    private function processNewDictionaries(array &$response, array $packages)
+    private function processNewDictionaries(array &$response, array $packages): void
     {
         $dictionaryTables = [
             'sysdictionarydefinitions',
@@ -474,9 +475,11 @@ class SpiceUIConfLoader
                 $sql = $definitions->repair($dictionaryDef['id']);
                 if (!empty($sql)) $db->query($sql, true);
 
-            } catch (Exception $exception) {
+            } catch (\Throwable $exception) {
                 unset($response[$dictionaryDef['tablename']]);
-                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'message' => $exception->getMessage()];
+
+                $mismatch = SpiceDictionaryDefinition::getDBColumnsMismatch($dictionaryDef['name']);
+                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => $mismatch, 'message' => $exception->getMessage()];
             }
         }
 

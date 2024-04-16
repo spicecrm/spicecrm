@@ -43,6 +43,7 @@ class SpiceDictionaryDefinition
      * @param bool $relationships
      * @return string|null
      * @throws Exception
+     * @throws \Throwable
      */
     public function repair(bool $relationships = true): ?string
     {
@@ -101,8 +102,21 @@ class SpiceDictionaryDefinition
         }
         $repairIndexes = SpiceDictionaryIndexes::getInstance()->mergeIndexes($repairIndexes, $vardefDetails['indices'] ?: []);
 
-        // do the reopair
-        $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, $repairIndexes, true);
+        try {
+            // do the reopair
+            $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, $repairIndexes);
+
+        } catch (\Throwable $exception) {
+
+            $mismatch = self::getDBColumnsMismatch($this->name);
+
+            if ($mismatch) {
+                $exception = new Exception($exception->getMessage());
+                $exception->setDetails([$this->name => $mismatch])->setErrorCode("columnsMismatch");
+            }
+
+            throw $exception;
+        }
 
         // repair the relationships
         if ($relationships) {
@@ -112,6 +126,90 @@ class SpiceDictionaryDefinition
         // return the sql
         return $sql;
     }
+
+    /**
+     * get db columns mismatch
+     * @param string $dictionaryName
+     * @return object|null
+     */
+    public static function getDBColumnsMismatch(string $dictionaryName): ?object
+    {
+        try {
+            $definition = (object) SpiceDictionary::getInstance()->getDefs($dictionaryName);
+            $db = DBManagerFactory::getInstance();
+        } catch (\Throwable) {
+            return null;
+        }
+
+        $dbColumns = $db->get_columns($definition->table);
+        $result = (object) ['requiredColumnsWithNullRows' => [], 'columnsWithTruncateRows' => []];
+
+        foreach ($definition->fields as $field) {
+
+            if ($field['source'] == 'non-db') continue;
+
+            self::appendRequiredColumnWithNullValues($db, $definition->table, $field, $dbColumns, $result);
+
+            self::appendColumnWithTruncateRows($db, $definition->table, $field, $dbColumns, $result);
+        }
+
+        return !empty($result->requiredColumnsWithNullRows) || !empty($result->columnsWithTruncateRows) ? $result : null;
+    }
+
+    /**
+     * append db column with truncate rows
+     * @param DBManager $db
+     * @param string $table
+     * @param array $field
+     * @param array $dbColumns
+     * @param object $result
+     * @return void
+     */
+    private static function appendColumnWithTruncateRows(DBManager $db, string $table, array $field, array $dbColumns, object $result): void
+    {
+        if (empty($field['len']) || $field['len'] >= $dbColumns[$field['name']]['len']) {
+            return;
+        }
+
+        $lengthSql = $db->convert($field['name'], 'length');
+
+        try {
+            $count = $db->getOne("SELECT COUNT(0) FROM $table WHERE $lengthSql > {$field['len']}");
+        } catch (\Throwable) {
+            $count = 0;
+        }
+
+        if ($count > 0) {
+            $result->columnsWithTruncateRows[] = ['name' => $field['name'], 'length' => $field['len'], 'type' => 'truncate', 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
+        }
+    }
+
+    /**
+     * append required column with null values
+     * @param DBManager $db
+     * @param string $table
+     * @param array $field
+     * @param array $dbColumns
+     * @param object $result
+     * @return void
+     */
+    private static function appendRequiredColumnWithNullValues(DBManager $db, string $table, array $field, array $dbColumns, object $result): void
+    {
+        if (!empty($field['default']) || ($field['required'] != 1 && $field['required'] !== true && $field['required'] !== 'true' && $field['isnull'] !== false && $field['isnull'] !== 'false')) {
+            return;
+        }
+
+        try {
+            $count = $db->getOne("SELECT COUNT(0) FROM $table WHERE {$field['name']} IS NULL");
+        } catch (\Throwable) {
+            $count = 0;
+        }
+
+        if ($count > 0) {
+            $result->requiredColumnsWithNullRows[] = ['name' => $field['name'], 'type' => 'null', 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
+        }
+    }
+
 
     /**
      * get items definitions and indexes

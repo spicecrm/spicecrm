@@ -399,6 +399,9 @@ export class DictionaryManagerRepairAll {
             error: (e) => {
                 definiton.status = 'e';
                 definiton.error = e.error?.error?.message;
+                definiton.errorDetails = e.error?.error?.details;
+                definiton.errorCode = e.error?.error?.errorCode;
+
                 if (handleNext) this.handleNext();
             }
         })
@@ -431,6 +434,8 @@ export class DictionaryManagerRepairAll {
             error: (e) => {
                 relationship.status = 'e';
                 relationship.error = e.error?.error?.message;
+                relationship.errorDetails = e.error?.error?.details;
+                relationship.errorCode = e.error?.error?.errorCode;
                 if (handleNext) this.handleNext();
             }
         })
@@ -558,7 +563,9 @@ export class DictionaryManagerRepairAll {
      */
     public openFixRequiredModal(definition) {
         this.modal.openStaticModal(DictionaryManagerFixDBFieldsMismatchModal).subscribe(modalRef => {
-            modalRef.instance.dictionaryName = definition.name;
+            modalRef.instance.dictionaryName = Object.keys(definition.errorDetails)[0];
+
+            modalRef.instance.mismatch = definition.errorDetails;
             modalRef.instance.response.subscribe({
                 next: success => {
                     if (!success) return;

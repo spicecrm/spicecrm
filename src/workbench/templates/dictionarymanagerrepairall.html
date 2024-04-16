@@ -34,7 +34,7 @@
                                     <div class="slds-truncate slds-grow" style="min-width: 0" [title]="definition.sql">{{definition.sql}}</div>
                                     <!-- action btuoons to copy and execute the SQL statement -->
                                     <button class="slds-button slds-button--icon slds-m-horizontal--xx-small" (click)="copyToClipBoard(definition.sql)"><system-button-icon icon="copy"/></button>
-                                    <button *ngIf="!!definition.sqlerror" [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
+                                    <button *ngIf="definition.errorCode == 'columnsMismatch'" [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
                                         <system-button-icon icon="data_transforms" />
                                     </button>
                                 </div>
@@ -42,7 +42,7 @@
                                     <div class="slds-truncate slds-grow" style="min-width: 0">
                                         {{definition.error}}
                                     </div>
-                                    <button [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
+                                    <button *ngIf="definition.errorCode == 'columnsMismatch'" [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
                                         <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
                                     </button>
                                 </div>

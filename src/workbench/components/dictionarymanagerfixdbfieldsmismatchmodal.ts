@@ -1,4 +1,4 @@
-import {Component, ComponentRef, OnDestroy, OnInit} from '@angular/core';
+import {Component, ComponentRef, OnDestroy} from '@angular/core';
 import {ModalComponentI} from "../../objectcomponents/interfaces/objectcomponents.interfaces";
 import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
@@ -10,7 +10,7 @@ import {Subject} from "rxjs";
     templateUrl: '../templates/dictionarymanagerfixdbfieldsmismatchmodal.html'
 })
 
-export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponentI, OnInit, OnDestroy {
+export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponentI, OnDestroy {
     /**
      * reference of the component
      */
@@ -27,18 +27,17 @@ export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponent
      * dictionary id
      */
     public response = new Subject<boolean>();
-    /**
-     * mismatch columns
-     */
-    public requiredColumnsWithNullRows: {
-        name: string, count: number, dbDefinition: {len: number}, status: 'processing' | 'error' | 'executed'
-    }[] = [];
-    /**
-     * mismatch columns
-     */
-    public columnsWithTruncateRows: {
-        name: string, length: number, count: number, status: 'processing' | 'error' | 'executed', dbDefinition: {len: number}
-    }[] = [];
+
+    public mismatch: {
+        [dictionaryName: string]: {
+            requiredColumnsWithNullRows: {
+                name: string, count: number, dbDefinition: {len: number}, status: 'processing' | 'error' | 'executed'
+            }[],
+            columnsWithTruncateRows: {
+                name: string, length: number, count: number, status: 'processing' | 'error' | 'executed', dbDefinition: {len: number}
+            }[]
+        }
+    } = {};
     /**
      * mismatch columns
      */
@@ -49,34 +48,8 @@ export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponent
                 private toast: toast) {
     }
 
-    public ngOnInit() {
-        this.getRequiredDBColumnsWithNullValues();
-    }
-
     public ngOnDestroy() {
         this.emitResponse();
-    }
-
-    /**
-     * get mismatch columns
-     */
-    public getRequiredDBColumnsWithNullValues() {
-
-        const loadingModal = this.modal.await('LBL_LOADING');
-
-        this.backend.getRequest(`dictionary/dbcolumns/mismatch/${this.dictionaryName}`).subscribe({
-            next: res => {
-                loadingModal.next(true);
-                loadingModal.complete();
-                this.requiredColumnsWithNullRows = res.requiredColumnsWithNullRows;
-                this.columnsWithTruncateRows = res.columnsWithTruncateRows;
-            },
-            error: err => {
-                loadingModal.next(true);
-                loadingModal.complete();
-                this.toast.sendToast('LBL_ERROR', "error", err.error.error.message);
-            }
-        });
     }
 
     /**
@@ -92,7 +65,9 @@ export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponent
      */
     private emitResponse() {
         this.response.next(
-            ['columnsWithTruncateRows', 'requiredColumnsWithNullRows'].some(arr => this[arr].some(c => c.status == 'executed'))
+            Object.keys(this.mismatch).some(dic =>
+                ['columnsWithTruncateRows', 'requiredColumnsWithNullRows'].some(arr => this.mismatch[dic][arr].some(c => c.status == 'executed'))
+            )
         );
         this.response.complete();
     }
@@ -144,6 +119,5 @@ export class DictionaryManagerFixDBFieldsMismatchModal implements ModalComponent
      */
     public setSelectedDictionary(dic: string) {
         this.dictionaryName = dic;
-        this.getRequiredDBColumnsWithNullValues();
     }
 }
