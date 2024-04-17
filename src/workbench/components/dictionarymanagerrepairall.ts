@@ -391,6 +391,8 @@ export class DictionaryManagerRepairAll {
                     definiton.status = 'c';
                     definiton.sql = res.sql;
                     definiton.sqlerror = res.sqlerror;
+                    definiton.errorDetails = res.errorDetails;
+                    definiton.errorCode = res.errorCode;
                 } else {
                     definiton.status = 'e';
                 }
