@@ -108,7 +108,7 @@ class SpiceDictionaryDefinition
 
         } catch (\Throwable $exception) {
 
-            $mismatch = self::getDBColumnsMismatch($this->name);
+            $mismatch = self::getDBColumnsMismatch($this->name, $repairDefinitions);
 
             if ($mismatch) {
                 $exception = new Exception($exception->getMessage());
@@ -130,9 +130,10 @@ class SpiceDictionaryDefinition
     /**
      * get db columns mismatch
      * @param string $dictionaryName
+     * @param array $fields
      * @return object|null
      */
-    public static function getDBColumnsMismatch(string $dictionaryName): ?object
+    public static function getDBColumnsMismatch(string $dictionaryName, array $fields): ?object
     {
         try {
             $definition = (object) SpiceDictionary::getInstance()->getDefs($dictionaryName);
@@ -144,7 +145,7 @@ class SpiceDictionaryDefinition
         $dbColumns = $db->get_columns($definition->table);
         $result = (object) ['requiredColumnsWithNullRows' => [], 'columnsWithTruncateRows' => []];
 
-        foreach ($definition->fields as $field) {
+        foreach ($fields as $field) {
 
             if ($field['source'] == 'non-db') continue;
 
@@ -180,7 +181,7 @@ class SpiceDictionaryDefinition
         }
 
         if ($count > 0) {
-            $result->columnsWithTruncateRows[] = ['name' => $field['name'], 'length' => $field['len'], 'type' => 'truncate', 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
+            $result->columnsWithTruncateRows[] = ['name' => $field['name'], 'length' => $field['len'], 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
         }
     }
 
@@ -206,7 +207,7 @@ class SpiceDictionaryDefinition
         }
 
         if ($count > 0) {
-            $result->requiredColumnsWithNullRows[] = ['name' => $field['name'], 'type' => 'null', 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
+            $result->requiredColumnsWithNullRows[] = ['name' => $field['name'], 'count' => $count, 'dbDefinition' => $dbColumns[$field['name']]];
         }
     }
 

@@ -551,12 +551,22 @@ class SpiceDictionaryController
         if($params['execute'] && $sql){
             try {
                 DBManagerFactory::getInstance()->query($sql, true);
-            } catch (\Exception $exception){
-                $error = DBManagerFactory::getInstance()->lastDbError();
+            } catch (Exception $exception){
+
+                $result = ['sql' => $sql, 'sqlerror' => $exception->getMessage()];
+                $fields = SpiceDictionaryHandler::getInstance()->dictionary[$args['name']]['fields'];
+                $mismatch = SpiceDictionaryDefinition::getDBColumnsMismatch($args['name'], $fields);
+
+                if ($mismatch) {
+                    $result['errorDetails'] = [$args['name'] => $mismatch];
+                    $result['errorCode'] = "columnsMismatch";
+                }
+
+                return $res->withJson($result);
             }
         }
 
-        return $res->withJson(['sql' => $sql, 'sqlerror' => $error]);
+        return $res->withJson(['sql' => $sql, 'sqlerror' => null]);
     }
 
     /**
