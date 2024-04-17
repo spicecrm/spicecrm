@@ -194,7 +194,7 @@ export class PackageLoaderReloadLoadedModal implements ModalComponentI {
             modalRef.instance.dictionaries = pkg.erroneousDictionaries.map(d => d.name);
             modalRef.instance.dictionaryName = modalRef.instance.dictionaries[0];
             pkg.erroneousDictionaries.forEach(d => {
-                modalRef.instance.mismatch[d.name] = d.mismatch;
+                modalRef.instance.mismatch[d.name] = d.mismatch[d.name];
             });
             modalRef.instance.response.subscribe({
                 next: success => {
