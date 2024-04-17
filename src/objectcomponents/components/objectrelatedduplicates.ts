@@ -54,12 +54,6 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      */
     public listfields: any[];
 
-    /**
-     * manages the toggle
-     * shows/hides accepted duplicate Beans in the panel/list
-     */
-    public toggleValue: boolean = false;
-
     constructor(
         public model: model,
         public metadata: metadata,
