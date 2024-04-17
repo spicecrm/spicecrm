@@ -475,11 +475,10 @@ class SpiceUIConfLoader
                 $sql = $definitions->repair($dictionaryDef['id']);
                 if (!empty($sql)) $db->query($sql, true);
 
-            } catch (\Throwable $exception) {
+            } catch (\Throwable | Exception $exception) {
                 unset($response[$dictionaryDef['tablename']]);
 
-                $mismatch = SpiceDictionaryDefinition::getDBColumnsMismatch($dictionaryDef['name']);
-                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => $mismatch, 'message' => $exception->getMessage()];
+                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => is_callable($exception, 'getDetails') ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
             }
         }
 
