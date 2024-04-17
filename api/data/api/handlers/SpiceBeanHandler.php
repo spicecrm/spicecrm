@@ -1348,7 +1348,7 @@ class SpiceBeanHandler
         $duplicates = $thisBean->checkForDuplicates($duplicatesByStatus['acceptedDuplicatesIds']);
 
         foreach ($duplicates['records'] as $duplicate) {
-            if (in_array($duplicate->id, $duplicatesByStatus['foundDuplicatesIds'])) {
+            if (!in_array($duplicate->id, $duplicatesByStatus['acceptedDuplicatesIds'])) {
                 $foundDuplicates[] = $this->mapBeanToArray($beanModule, $duplicate);
             }
         }
