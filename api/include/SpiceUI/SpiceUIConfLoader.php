@@ -478,7 +478,7 @@ class SpiceUIConfLoader
             } catch (\Throwable | Exception $exception) {
                 unset($response[$dictionaryDef['tablename']]);
 
-                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => is_callable($exception, 'getDetails') ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
+                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
             }
         }
 
