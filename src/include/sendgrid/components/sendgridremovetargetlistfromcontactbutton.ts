@@ -8,12 +8,12 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
 import {metadata} from "../../../services/metadata.service";
 
 @Component({
-    selector: 'sendgrid-remove-contact-from-targetlist-button',
-    templateUrl: '../templates/sendgridremovecontactfromtargetlistbutton.html',
+    selector: 'sendgrid-remove-targetlist-from-contact-button',
+    templateUrl: '../templates/sendgridremovetargetlistfromcontactbutton.html',
 
 })
 
-export class SendgridRemoveContactFromTargetListButton {
+export class SendgridRemoveTargetListFromContactButton {
     constructor(
         public model: model,
         public language: language,
@@ -25,19 +25,19 @@ export class SendgridRemoveContactFromTargetListButton {
     }
 
 
-    /**acl
+    /**
      * gets the disabled state for the import button based on the acl rights for the user
      */
 
     get disabled(): boolean {
-        return !this.relatedmodels.model.checkAccess('sendgrid_remove');
+        return !this.model.checkAccess('sendgrid_remove');
     }
 
     /**
      * hides button if the list is not connected to sendgrid
      */
     get hidden(){
-        return (this.relatedmodels.model.getField('sendgrid_source') == '')
+        return (this.model.getField('sendgrid_source') == '')
     }
     /**
      * fires rest call from backend to Sendgrid
@@ -48,7 +48,7 @@ export class SendgridRemoveContactFromTargetListButton {
                 if (answer) {
                     this.relatedmodels.deleteItem(this.model.id);
                     let awaitModal = this.modal.await(this.language.getLabel('LBL_LOADING'));
-                    this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.relatedmodels.id}/contacts/${this.model.id}`).subscribe(
+                    this.backend.deleteRequest(`channels/emarketing/sendgrid/marketing/lists/${this.model.id}/contacts/${this.relatedmodels.id}`).subscribe(
                         response => {
                             awaitModal.emit(true);
                             if (response) {
