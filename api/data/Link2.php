@@ -397,7 +397,7 @@ class Link2
 
                     //mod for deviating id in relationship
                     $idField = 'id';
-                    if ($this->relationship->def['relationship_type'] == 'many-to-many') {
+                    if (in_array($this->relationship->def['relationship_type'], ['many-to-many', 'email-address'])) {
                         $idField = $this->relationship->def['rhs_module'] == $rel_module ? $this->relationship->def['rhs_key'] : $this->relationship->def['lhs_key'];
                     }
 
