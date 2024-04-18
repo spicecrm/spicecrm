@@ -572,19 +572,27 @@ export class DictionaryManagerRepairAll {
                 next: success => {
                     if (!success) return;
 
-                    definition.status = 'p'
-                    switch(definition.type){
-                        case 'dictionarydefinition':
-                        case 'vardefdefinition':
-                            this.repairDefinition(definition, false);
-                            break;
-                        case 'vardefrelationship':
-                        case 'dictionaryrelationship':
-                            this.repairRelationship(definition, false);
-                            break;
-                    }
+                    this.runSingleRepair(definition);
                 }
             })
         });
+    }
+
+    /**
+     * run single repair
+     * @param definition
+     */
+    public runSingleRepair(definition) {
+        definition.status = 'p'
+        switch(definition.type){
+            case 'dictionarydefinition':
+            case 'vardefdefinition':
+                this.repairDefinition(definition, false);
+                break;
+            case 'vardefrelationship':
+            case 'dictionaryrelationship':
+                this.repairRelationship(definition, false);
+                break;
+        }
     }
 }
