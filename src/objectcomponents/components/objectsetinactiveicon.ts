@@ -7,6 +7,7 @@ import {toast} from "../../services/toast.service";
 import {modal} from "../../services/modal.service";
 import {language} from "../../services/language.service";
 import {backend} from "../../services/backend.service";
+import {configurationService} from "../../services/configuration.service";
 
 /**
  * sets the value of is_inactive field
@@ -30,6 +31,7 @@ export class ObjectSetInactiveIcon {
         private modal: modal,
         public language: language,
         private toast: toast,
+        private configuration: configurationService
     ) {
     }
 
@@ -73,7 +75,11 @@ export class ObjectSetInactiveIcon {
                                 this.toast.sendToast(err.error.error.message, 'error');
                             }
                         })
-                        this.inProcess = false
+                        this.inProcess = false;
+
+                        if(this.model.module == 'EmailTemplates' || this.model.module == 'OutputTemplates') {
+                            this.configuration.setData(this.model.module, undefined);
+                        }
                     } else {
                         this.inProcess = false;
                     }
@@ -89,7 +95,11 @@ export class ObjectSetInactiveIcon {
                                 this.toast.sendToast(err.error.error.message, 'error');
                             }
                         })
-                        this.inProcess = false
+                        this.inProcess = false;
+
+                        if(this.model.module == 'EmailTemplates' || this.model.module == 'OutputTemplates') {
+                            this.configuration.setData(this.model.module, undefined);
+                        }
                     } else {
                         this.inProcess = false;
                     }
