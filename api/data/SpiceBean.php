@@ -3028,16 +3028,13 @@ class SpiceBean
     /**
      * returns output templates that can be rendered for this module
      *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
+     * @return array
      */
-    public function getOutputTemplates()
+    public function getOutputTemplates(): array
     {
         $templates = [];
         $bean = BeanFactory::getBean('OutputTemplates');
-        $beans = $bean->get_full_list('name', "module_name='{$this->_module}'");
+        $beans = $bean->get_full_list('name', "module_name='{$this->_module}' AND is_inactive = '0'");
         foreach ($beans as $bean) {
             $templates[] = [
                 'id' => $bean->id,
