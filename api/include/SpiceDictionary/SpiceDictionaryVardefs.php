@@ -936,7 +936,7 @@ rhs_sysm.module rhs_module, rhs_sysm.bean rhs_bean, rhs_dicts.tablename rhs_tabl
         if($res = $db->query($q)) {
             while ($row = $db->fetchByAssoc($res)) {
                 $relationships[$row['relationship_name']] = $row;
-                if($row['relationship_type'] == 'many-to-many'){
+                if($row['relationship_type'] == 'many-to-many' || in_array($row['relationship_type'], ['many-to-many', 'email-address'])) {
                     if(isset(SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]) && !empty(SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'])){
                         $relationships[$row['relationship_name']]['fields'] = SpiceDictionaryHandler::getInstance()->dictionary[$relationships[$row['relationship_name']]['join_table']]['fields'];
                     }
