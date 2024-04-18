@@ -100,11 +100,11 @@ abstract class TransportHandler
 
         # add the footer to the email content
         if (!empty($this->mailbox->mailbox_footer)) {
+
+            $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_footer);
             if (strpos($parsedHtml, "\n")) {
                 $parsedHtml = str_replace("\n", "", $parsedHtml);
             }
-            $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_footer);
-
             if (strpos($email->body, '</body>')) {
                 $email->body = str_replace('</body>', "<footer>{$parsedHtml}</footer></body>", $email->body);
             } else {
