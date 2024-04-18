@@ -70,7 +70,7 @@
         </div>
         <div class="slds-size--1-of-1 slds-border--top slds-border--bottom slds-form-element slds-m-top--medium slds-p-bottom--medium">
             <div class="slds-text-title_bold slds-m-vertical--small"><system-label label="LBL_CONFIGURATION"></system-label></div>
-            <workbench-config [component]="dashlet.component" [configValues]="configValues"></workbench-config>
+            <workbench-config [component]="dashlet.component" [module]="sysModule" [configValues]="configValues"></workbench-config>
         </div>
         <div class="slds-align--absolute-center slds-p-top--medium">
             <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
