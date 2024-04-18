@@ -6,6 +6,7 @@ import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {configurationService} from "../../../services/configuration.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {metadata} from "../../../services/metadata.service";
 
 declare var _: any;
 
@@ -36,7 +37,10 @@ export class SpicePathTrack implements OnInit{
      */
     @Output() public activeStage$: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(public configuration: configurationService, public model: model, public language: language) {
+    constructor(public configuration: configurationService,
+                public model: model,
+                private metadata: metadata,
+                public language: language) {
 
     }
 
@@ -58,7 +62,19 @@ export class SpicePathTrack implements OnInit{
      */
     public buildstages() {
         let retArray = [];
-        let stages = this.configuration.getData('spicebeanguides') ? this.configuration.getData('spicebeanguides')[this.model.module].stages : [];
+        let stages;
+
+        const config = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
+        const moduleKanbans = this.configuration.getData('spicebeanguides')[this.model.module];
+
+        if (!Array.isArray(moduleKanbans) || moduleKanbans.length == 0) return;
+
+        if (!config?.kanban) {
+            stages = moduleKanbans[0].stages;
+
+        } else {
+            stages = moduleKanbans.find(k => k.id == config.kanban)?.stages ?? [];
+        }
 
         // get teh current stage
         let modelstage = this.model.getField(this.statusfield);
