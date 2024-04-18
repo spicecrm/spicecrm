@@ -24,6 +24,7 @@ export class WorkbenchConfig implements OnChanges {
 
     @Input() public component: string = "";
     @Input() public configValues: any = {};
+    @Input() public module: string;
 
     public configOptions: any[] = [];
     public optionsElements: any[] = [];
@@ -71,6 +72,7 @@ export class WorkbenchConfig implements OnChanges {
                 cmpref => {
                     this.optionsElements.push(cmpref);
                     cmpref.instance.option = fieldconfig;
+                    cmpref.instance.module = this.module;
                     cmpref.instance.configValues = this.configValues;
                 }
             );

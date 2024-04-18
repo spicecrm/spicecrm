@@ -21,6 +21,7 @@ import {view} from '../../services/view.service';
 export class FieldsetManagerFieldDetails implements OnChanges {
 
     @Input() public field: any = {};
+    @Input() public module: string;
     public currentField: any = {};
     public fieldtypes: string[] = [];
 

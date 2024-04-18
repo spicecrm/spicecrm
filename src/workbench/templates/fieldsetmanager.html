@@ -116,7 +116,7 @@
         </div>
         <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
             <fieldsetmanager-fieldset-details *ngIf="selectedItem.type == 'fieldset'" [fieldset]="selectedItem"></fieldsetmanager-fieldset-details>
-            <fieldsetmanager-field-details *ngIf="selectedItem.type == 'field'" [field]="selectedItem"></fieldsetmanager-field-details>
+            <fieldsetmanager-field-details *ngIf="selectedItem.type == 'field'" [module]="currentModule" [field]="selectedItem"></fieldsetmanager-field-details>
         </div>
     </div>
     <div class="slds-text-align--right slds-p-around--small slds-border--top">
