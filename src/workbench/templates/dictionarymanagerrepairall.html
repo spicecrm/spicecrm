@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="slds-hint-parent" *ngFor="let definition of filtereddefinitions; trackBy: trackByFn" #repairRow [ngClass]="{'slds-theme--info': definition.status == 'p', 'slds-theme--error': definition.status == 'e'}">
+                    <tr class="slds-hint-parent spice-hover-display-children" *ngFor="let definition of filtereddefinitions; trackBy: trackByFn" #repairRow [ngClass]="{'slds-theme--info': definition.status == 'p', 'slds-theme--error': definition.status == 'e'}">
                         <td>
                             <system-utility-icon size="xx-small" [icon]="getIcon(definition.status)" [colorclass]="iconThemeClass(definition)"></system-utility-icon>
                         </td>
@@ -27,7 +27,7 @@
                             <div class="slds-truncate">{{definition.name}}</div>
                         </td>
                         <td>
-                            <div class="slds-grid">
+                            <div class="slds-grid slds-grid--align-end">
                                 <div *ngIf="definition.status == 'c' && definition.sql" class="slds-grid slds-grid_vertical-align-center slds-grow" style="min-width: 0">
                                     <!-- display an error icon if the executioon of the sql failed -->
                                     <system-utility-icon class="slds-m-right--xx-small" *ngIf="definition.sqlerror" [title]="definition.sqlerror" icon="warning" colorclass="slds-icon-text-error"></system-utility-icon>
@@ -38,12 +38,17 @@
                                         <system-button-icon icon="data_transforms" />
                                     </button>
                                 </div>
-                                <div *ngIf="definition.status == 'e'" class="slds-grid slds-size--1-of-1">
+                                <div *ngIf="definition.status == 'e'" class="slds-grid slds-grow">
                                     <div class="slds-truncate slds-grow" style="min-width: 0">
                                         {{definition.error}}
                                     </div>
                                     <button *ngIf="definition.errorCode == 'columnsMismatch'" [disabled]="repairing" (click)="openFixRequiredModal(definition)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
                                         <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
+                                    </button>
+                                </div>
+                                <div>
+                                    <button [disabled]="repairing || definition.status == 'p'" (click)="runSingleRepair(definition)" system-title="LBL_RUN_NOW" class="slds-button slds-button--icon slds-m-horizontal--xx-small spice-hover-child">
+                                        <system-button-icon icon="play" [addclasses]="definition.status == 'e' ? 'slds-button--icon-inverse' : ''" />
                                     </button>
                                 </div>
                             </div>
