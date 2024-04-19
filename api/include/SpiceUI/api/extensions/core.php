@@ -129,6 +129,6 @@ $routes = [
 RESTManager::getInstance()->registerExtension(
     'core',
     '2.0',
-    ['edit_mode' => SpiceConfig::getInstance()->config['workbench_edit_mode']['mode'] ?: 'custom'],
+    ['edit_mode' => SpiceConfig::getInstance()->config['system']['edit_mode'] ?: 'custom'],
     $routes
 );

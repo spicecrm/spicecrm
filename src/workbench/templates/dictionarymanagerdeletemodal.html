@@ -1,0 +1,13 @@
+<system-modal size="prompt">
+    <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+    <system-modal-content>
+        <system-label [label]="message"/>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
+            <system-checkbox [(ngModel)]="dropitem" ><system-label label="LBL_DROP_ITEM"/></system-checkbox>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+            <button class="slds-col--bump-left slds-button slds-button--brand" (click)="delete()"><system-label label="LBL_DELETE"/></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

@@ -1,18 +1,15 @@
-<workbench-header titlelabel="LBL_DOMAIN_MANAGER">
+<workbench-header titlelabel="LBL_DOMAIN_MANAGER" icon="dataset">
     <workbench-header-controls>
-        <div class="slds-button-group" role="group">
-            <button class="slds-button slds-button--neutral" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
-            <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="down"></system-button-icon></button>
-                <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
-                    <ul class="slds-dropdown__list" role="menu">
-                        <li class="slds-dropdown__item" role="presentation" (click)="repairCustomENUMs()">
-                            <a href="javascript:void(null)" role="menuitem">
-                                <span class="slds-truncate"><system-label label="LBL_REPAIR_CUSTOM_CACHE"></system-label></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+        <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled"><system-button-icon icon="down"></system-button-icon></button>
+            <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
+                <ul class="slds-dropdown__list" role="menu">
+                    <li class="slds-dropdown__item" role="presentation" (click)="repairCustomENUMs()">
+                        <a href="javascript:void(null)" role="menuitem">
+                            <span class="slds-truncate"><system-label label="LBL_REPAIR_CUSTOM_CACHE"></system-label></span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </workbench-header-controls>
@@ -22,11 +19,11 @@
         <domain-manager-definitions></domain-manager-definitions>
     </div>
     <div class="slds-size--2-of-3 slds-theme--default slds-border--left" system-to-bottom-noscroll>
-        <div style="height: 50%" class="slds-scrollable--y">
+        <div system-to-bottom>
             <domain-manager-fields></domain-manager-fields>
         </div>
-        <div style="height: 50%" class="slds-p-around--xx-small slds-scrollable--y">
-            <domain-manager-field-tabs></domain-manager-field-tabs>
-        </div>
+        <!--div [ngStyle]="detailsHeight" class="slds-scrollable--y">
+            <domain-manager-field-tabs (expanded)="this.expanded = $event"></domain-manager-field-tabs>
+        </div-->
     </div>
 </div>

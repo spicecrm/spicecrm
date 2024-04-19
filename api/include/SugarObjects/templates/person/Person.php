@@ -27,6 +27,11 @@ class Person extends Basic
      */
     public $email_addresses;
 
+    /**
+     * @var false|\SpiceCRM\data\SpiceBean
+     */
+    public $emailAddress;
+
     public function __construct()
     {
         parent::__construct();
@@ -135,6 +140,8 @@ class Person extends Basic
      */
     private function setPrimaryEmailAddress(string $primaryEmailAddressId, $relFieldsValues = [])
     {
+
+        if(!$this->email_addresses) return;
 
         $relationExists = false;
         $linkedEmailAddresses = $this->get_linked_beans('email_addresses');

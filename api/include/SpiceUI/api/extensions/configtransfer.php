@@ -3,6 +3,7 @@
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceUI\api\controllers\ConfigTransferController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 $routes = [
     [
@@ -32,6 +33,12 @@ $routes = [
                 'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'description' => 'List of names of additional tables to export. A comma separated string.'
+            ],
+            'packages' => [
+                'in'          => 'body',
+                'type'        => ValidationMiddleware::TYPE_STRING,
+                'description' => 'A comma separated string of packages to be exported',
+                'required' => false
             ]
         ]
     ],
@@ -70,4 +77,4 @@ $routes = [
 /**
  * register the Extension
  */
-RESTManager::getInstance()->registerExtension('configtransfer', '2.0', [], $routes);
+RESTManager::getInstance()->registerExtension('configtransfer', '2.0', ['export_system_package_enabled' => SpiceConfig::getInstance()->get('systemvardefs.create_system_file_enabled') == 1], $routes);

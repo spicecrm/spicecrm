@@ -4,9 +4,15 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomain;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
-use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\Link2;
 use SpiceCRM\data\SpiceBean;
@@ -17,7 +23,7 @@ use SpiceCRM\includes\utils\SpiceUtils;
  * Represents a many to many relationship that is table based.
  * @api
  */
-class M2MRelationship extends SugarRelationship
+class M2MRelationship extends Relationship
 {
     var $type = "many-to-many";
 
@@ -40,6 +46,193 @@ class M2MRelationship extends SugarRelationship
     }
 
     /**
+     * activates the relationship
+     *
+     * @param SpiceDictionaryRelationship $relationship
+     * @return void
+     */
+    public function activate(SpiceDictionaryRelationship $relationship){
+        $db = DBManagerFactory::getInstance();
+
+        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+        $rhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->rhs_sysdictionarydefinition_id);
+        $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+        $rhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->rhs_sysdictionaryitem_id);
+        $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+        $rhsField = SpiceDictionaryField::getField($rhsDictionaryitem, $rhsDictionaryDefinition);
+
+        // get the join definitions
+        $joinDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->join_sysdictionarydefinition_id);
+        $joinLhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->join_lhs_sysdictionaryitem_id);
+        $joinRhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->join_rhs_sysdictionaryitem_id);
+        $joinLhsField = SpiceDictionaryField::getField($joinLhsDictionaryitem, $joinDictionaryDefinition);
+        $joinRhsField = SpiceDictionaryField::getField($joinRhsDictionaryitem, $joinDictionaryDefinition);
+
+        // clear current definitions
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        // build the Defs
+        $defs = [
+            'id' => $relationship->id,
+            'relationship_name' => $relationship->relationship->relationship_name,
+            'relationship_type' => $this->type,
+            'lhs_table' => $lhsDictionaryDefinition->tablename,
+            'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
+            'lhs_key' => $lhsField->fieldname,
+            'rhs_table' => $rhsDictionaryDefinition->tablename,
+            'rhs_module' => $rhsDictionaryDefinition->getModuleName(),
+            'rhs_key' => $rhsField->fieldname,
+            'join_table' => $joinDictionaryDefinition->tablename,
+            'join_key_lhs' => $joinLhsField->fieldname,
+            'join_key_rhs' => $joinRhsField->fieldname,
+            'deleted' => 0
+        ];
+
+        // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
+        $db->query("DELETE FROM relationships WHERE relationship_name='{$defs['relationship_name']}'");
+
+        // add to the relationships
+        $db->insertQuery('relationships', $defs);
+
+        // write the lhs link
+        if($relationship->relationship->lhs_linkname){
+
+            $leftFieldDefs = [
+                'name' => $relationship->relationship->lhs_linkname,
+                'type' => 'link',
+                'relationship' => $relationship->relationship->relationship_name,
+                'source' => 'non-db',
+                'module' => $rhsDictionaryDefinition->getModuleName(),
+                'vname' => $relationship->relationship->lhs_linklabel
+            ];
+
+            $this->addJoinTableNonDBRoleField($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition);
+            $this->appendJoinTableRoleFieldsMappingToLink($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition, $leftFieldDefs);
+
+            $db->insertQuery('sysdictionaryfields', [
+                'id' => SpiceUtils::createGuid(),
+                'sysdictionaryname' => $lhsDictionaryDefinition->name,
+                'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
+                'fieldname' => $relationship->relationship->lhs_linkname,
+                'fieldtype' => 'link',
+                'fielddefinition' => json_encode($leftFieldDefs),
+                'sysdictionaryrelationship_id' => $relationship->id,
+                'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
+            ]);
+        }
+
+        // write the rhs link
+        if($relationship->relationship->rhs_linkname){
+
+            $rightFieldDefs = [
+                'name' => $relationship->relationship->rhs_linkname,
+                'type' => 'link',
+                'relationship' => $relationship->relationship->relationship_name,
+                'source' => 'non-db',
+                'module' => $lhsDictionaryDefinition->getModuleName(),
+                'vname' => $relationship->relationship->rhs_linklabel
+            ];
+
+            $this->addJoinTableNonDBRoleField($relationship, $joinDictionaryDefinition, $rhsDictionaryDefinition);
+            $this->appendJoinTableRoleFieldsMappingToLink($relationship, $joinDictionaryDefinition, $lhsDictionaryDefinition, $rightFieldDefs);
+
+            $db->insertQuery('sysdictionaryfields', [
+                'id' => SpiceUtils::createGuid(),
+                'sysdictionaryname' => $rhsDictionaryDefinition->name,
+                'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
+                'fieldname' => $relationship->relationship->rhs_linkname,
+                'fieldtype' => 'link',
+                'fielddefinition' => json_encode($rightFieldDefs),
+                'sysdictionaryrelationship_id' => $relationship->id,
+                'sysdictionarydefinition_id' => $rhsDictionaryDefinition->id
+            ]);
+        }
+    }
+
+    /**
+     * insert join table necessary role fields
+     * @param SpiceDictionaryRelationship $relationship
+     * @param SpiceDictionaryDefinition $joinDictionaryDefinition
+     * @param SpiceDictionaryDefinition $sideDictionaryDefinition
+     * @return void
+     * @throws DatabaseException | \Exception | Exception
+     */
+    private function addJoinTableNonDBRoleField(SpiceDictionaryRelationship $relationship, SpiceDictionaryDefinition $joinDictionaryDefinition, SpiceDictionaryDefinition $sideDictionaryDefinition): void
+    {
+        $joinTableRoleFields = $relationship->getJoinTableFields($sideDictionaryDefinition->id);
+
+        $db = DBManagerFactory::getInstance();
+
+        if (empty($joinTableRoleFields)) return;
+
+        foreach ($joinTableRoleFields as $field) {
+
+            $joinTableRoleField = SpiceDictionaryField::getField(
+                new SpiceDictionaryItem($field['sysdictionaryitem_id']), $joinDictionaryDefinition
+            );
+
+            $joinTableRoleFieldDef = json_decode($joinTableRoleField->fielddefinition);
+            unset($joinTableRoleFieldDef->sysdictionaryitem_id, $joinTableRoleFieldDef->dbtype);
+            $joinTableRoleFieldDef->name = $field['map_to_fieldname'];
+            $joinTableRoleFieldDef->source = 'non-db';
+
+            $leftSideNonDbRoleField = [
+                'id' => SpiceUtils::createGuid(),
+                'sysdictionaryname' => $sideDictionaryDefinition->name,
+                'sysdictionarytablename' => $sideDictionaryDefinition->tablename,
+                'sysdomainfield_id' => $joinTableRoleField->sysdomainfield_id,
+                'fieldname' => $field['map_to_fieldname'],
+                'fieldtype' => $joinTableRoleField->fieldtype,
+                'fielddefinition' => json_encode($joinTableRoleFieldDef),
+                'sysdictionaryrelationship_id' => $relationship->id,
+                'sysdictionarydefinition_id' => $sideDictionaryDefinition->id
+            ];
+
+            $db->insertQuery('sysdictionaryfields', $leftSideNonDbRoleField);
+        }
+    }
+
+    /**
+     * update link field definition with rel_fields array
+     * @param SpiceDictionaryRelationship $relationship
+     * @param SpiceDictionaryDefinition $joinDictionaryDefinition
+     * @param SpiceDictionaryDefinition $sideDictionaryDefinition
+     * @param array $linkFieldDefs
+     * @return void
+     * @throws DatabaseException | Exception
+     */
+    private function appendJoinTableRoleFieldsMappingToLink(SpiceDictionaryRelationship $relationship, SpiceDictionaryDefinition $joinDictionaryDefinition, SpiceDictionaryDefinition $sideDictionaryDefinition, array &$linkFieldDefs): void
+    {
+        $joinTableRoleFields = $relationship->getJoinTableFields($sideDictionaryDefinition->id);
+
+        $linkFieldDefs['rel_fields'] = [];
+
+        foreach ($joinTableRoleFields as $field) {
+
+            $joinTableRoleField = SpiceDictionaryField::getField(
+                new SpiceDictionaryItem($field['sysdictionaryitem_id']), $joinDictionaryDefinition
+            );
+
+            $linkFieldDefs['rel_fields'][$joinTableRoleField->fieldname] = [
+                'map' => $field['map_to_fieldname']
+            ];
+        }
+    }
+
+    /**
+     * deactivate and remove the fields
+     *
+     * @param SpiceDictionaryRelationship $relationship
+     * @return void
+     * @throws \Exception
+     */
+    public  function deactivate(SpiceDictionaryRelationship $relationship){
+        DBManagerFactory::getInstance()->query("DELETE FROM relationships WHERE id='{$relationship->id}'");
+        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id='{$relationship->id}'");
+    }
+
+    /**
      * Find the link entry for a particular relationship and module.
      *
      * @param $module
@@ -47,7 +240,7 @@ class M2MRelationship extends SugarRelationship
      */
     public function getLinkedDefForModuleByRelationship($module, $side)
     {
-        $results = VardefManager::getLinkFieldForRelationship( $module, BeanFactory::getObjectName($module), $this->name);
+        $results = $this->getLinkFieldForRelationship($module);
         //Only a single link was found
         if( isset($results['name']) )
         {

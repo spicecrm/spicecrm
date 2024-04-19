@@ -1,6 +1,6 @@
-<div style="height: 30vh">
+<div system-to-bottom>
     <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
-        <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <table  class="slds-table slds-table--fixed-layout slds-table_bordered">
             <thead>
                 <tr class="slds-line-height_reset">
                     <th style="width:2.5rem" scope="col"></th>
@@ -23,7 +23,7 @@
                 <tr class="slds-hint-parent" *ngFor="let dictionaryindex of dictionaryIndexes"  (click)="setActiveId(dictionaryindex.id)"  [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryIndex == dictionaryindex.id}">
                     <td>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryindex.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                        <dictionary-manager-item-status [(ngModel)]="dictionaryindex.status"></dictionary-manager-item-status>
+                        <dictionary-manager-item-status [disabled]="definitionStatus != 'a'" [ngModel]="dictionaryindex.status" (ngModelChange)="setStatus(dictionaryindex, $event)"></dictionary-manager-item-status>
                     </td>
                     <td>
                         <div class="slds-truncate">{{dictionaryindex.name}}</div>
@@ -36,7 +36,8 @@
                         <div class="slds-truncate">{{getIndexFields(dictionaryindex.id)}}</div>
                     </td>
                     <td class="slds-align--absolute-center" style="width: 2rem;">
-                        <system-utility-icon size="xx-small" icon="delete" (click)="deleteIndex($event, dictionaryindex.id)"></system-utility-icon>
+                        <system-utility-icon *ngIf="dictionaryindex.status != 'a'" size="xx-small" icon="delete" (click)="deleteIndex($event, dictionaryindex.id)"></system-utility-icon>
+                        <system-utility-icon *ngIf="dictionaryindex.status == 'a'" size="xx-small" icon="delete" colorclass="slds-icon-text-light"></system-utility-icon>
                     </td>
                 </tr>
             </tbody>
@@ -46,7 +47,7 @@
                         <!-- no action acions for the reference-->
                     </td>
                     <td>
-                        <div class="slds-truncate">{{dictionaryindex.name}}</div>
+                        <div class="slds-truncate">{{translateIndexName(dictionaryindex.name)}}</div>
                     </td>
                     <td>
                         <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryIndexesForTemplate.relatedTemplateId)}}</div>
@@ -73,4 +74,3 @@
         </div>
     </ng-template>
 </div>
-<dictionary-manager-index-details [indexid]="dictionarymanager.currentDictionaryIndex"></dictionary-manager-index-details>
