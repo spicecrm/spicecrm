@@ -123,7 +123,7 @@ class EmailTracking
         return false;
     }
 
-    static function sendDOIEmail($bean, $mailboxId)
+    static function sendDOIEmail($bean, $mailboxId, $additionalValues = null, $additionalBeans = [])
     {
         $emailtemplate_id = SpiceConfig::getInstance()->get('emailtracking.double_optin_emailtemplate_id');
         if (empty($emailtemplate_id)) {
@@ -152,7 +152,8 @@ class EmailTracking
             }
         }
 
-        $email->generateFromTemplate($emailtemplate_id, $email, null, [$bean]);
+        $additionalBeans = array_merge($additionalBeans, [$bean->_objectname => $bean]);
+        $email->generateFromTemplate($emailtemplate_id, $email, $additionalValues, $additionalBeans);
 
         $email->save();
 
