@@ -14,6 +14,7 @@
                             <option value="primary">primary</option>
                             <option value="index">index</option>
                             <option value="unique">unique</option>
+                            <option value="foreign">foreign</option>
                         </select>
                     </div>
                 </div>
@@ -37,7 +38,7 @@
                     <system-input-text [(ngModel)]="index.version"></system-input-text>
                 </div>
             </div>
-            <div class="slds-grid">
+            <div *ngIf="index.indextype != 'foreign'" class="slds-grid">
                 <div class="slds-form-element slds-p-right--x-small slds-size--1-of-2">
                     <span class="slds-form-element__label"><system-label label="LBL_AVAILABLE_ITEMS"></system-label></span>
                     <div class="slds-picklist slds-picklist__options slds-size--1-of-1" cdkDropList #listOne="cdkDropList" [cdkDropListData]="availableDictionaryItems" [cdkDropListConnectedTo]="[listTwo]" (cdkDropListDropped)="onFieldDrop($event)">
@@ -51,6 +52,44 @@
                     <div class="slds-picklist slds-picklist__options slds-size--1-of-1 cdk-drag" cdkDropList #listTwo="cdkDropList" [cdkDropListData]="indexDictionaryItems" [cdkDropListConnectedTo]="[listOne]" (cdkDropListDropped)="onFieldDrop($event)">
                         <div *ngFor="let domain of indexDictionaryItems" cdkDrag [cdkDragData]="domain" class="slds-drag--preview slds-picklist__item">
                             <span class="slds-truncate">{{domain.name}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="index.indextype == 'foreign'" class="slds-grid">
+                <div class="slds-form-element slds-p-right--x-small slds-size--1-of-2">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Item</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="dictionaryItemId">
+                                    <option *ngFor="let item of availableDictionaryItems" [ngValue]="item.id">{{item.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">foreign Definition</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="dictionaryForeignDefinitionId">
+                                    <option *ngFor="let def of foreignDefinitions" [ngValue]="def.id">{{def.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Foreign Item</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select [disabled]="!dictionaryForeignDefinitionId" class="slds-select" [(ngModel)]="dictionaryForeignItemId">
+                                    <option *ngFor="let item of foreignItems" [ngValue]="item.id">{{item.name}}</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>

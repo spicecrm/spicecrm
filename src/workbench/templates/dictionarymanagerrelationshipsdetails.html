@@ -1,13 +1,17 @@
-<div class="slds-text-heading--small slds-p-around--x-small slds-theme--shade"><system-label label="LBL_ITEM_DETAILS"></system-label></div>
-<div *ngIf="dictionarymanager.currentDictionaryRelationship; else SelectItem" class="slds-p-around--x-small" system-to-bottom>
-    <ng-container [ngSwitch]="dictionaryRelationship.relationship_type">
-        <dictionary-manager-relationship-container-onetomany [relationship]="dictionaryRelationship" *ngSwitchCase="'one-to-many'"></dictionary-manager-relationship-container-onetomany>
-        <dictionary-manager-relationship-container-manytomany [relationship]="dictionaryRelationship" *ngSwitchCase="'many-to-many'"></dictionary-manager-relationship-container-manytomany>
-        <dictionary-manager-relationship-container-parent [relationship]="dictionaryRelationship" *ngSwitchCase="'parent'"></dictionary-manager-relationship-container-parent>
-    </ng-container>
-</div>
-<ng-template #SelectItem>
-    <div class="slds-height_full slds-align--absolute-center">
-        <system-label label="LBL_SELECT_ITEM"></system-label>
-    </div>
-</ng-template>
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_RELATIONSHIP"/></system-modal-header>
+    <system-modal-content margin="none">
+        <ng-container [ngSwitch]="dictionaryRelationship.relationship_type">
+            <dictionary-manager-relationship-container-emailaddress [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'email-address'"></dictionary-manager-relationship-container-emailaddress>
+            <dictionary-manager-relationship-container-onetomany [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'one-to-many'"></dictionary-manager-relationship-container-onetomany>
+            <dictionary-manager-relationship-container-onetomanypolymorph [readonly]="readonly" [relationship]="dictionaryRelationship" [relationshipPolymorphs]="dictionaryRelationshipPolymorphs" *ngSwitchCase="'one-to-many-polymorph'"></dictionary-manager-relationship-container-onetomanypolymorph>
+            <dictionary-manager-relationship-container-manytomany [readonly]="readonly" [relationshipFields]="dictionaryRelationshipFields" [relationship]="dictionaryRelationship" *ngSwitchCase="'many-to-many'"></dictionary-manager-relationship-container-manytomany>
+            <dictionary-manager-relationship-container-parent [relationship]="dictionaryRelationship" *ngSwitchCase="'parent'"></dictionary-manager-relationship-container-parent>
+            <dictionary-manager-relationship-container-user [readonly]="readonly" [relationship]="dictionaryRelationship" *ngSwitchCase="'user'"></dictionary-manager-relationship-container-user>
+        </ng-container>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button  class="slds-button slds-button--brand" (click)="save()" [disabled]="readonly"><system-label label="LBL_SAVE"/></button>
+    </system-modal-footer>
+</system-modal>

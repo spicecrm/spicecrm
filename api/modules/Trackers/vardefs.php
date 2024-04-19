@@ -41,10 +41,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['Tracker'] = [
         'id'=> [
             'name' => 'id',
             'vname' => 'LBL_ID',
-            'type' => 'int',
-            'len' => '11',
+            'type' => 'id',
             'isnull' => 'false',
-            'auto_increment' => true,
             'reportable'=>true,
         ],
 	    'monitor_id'=> [

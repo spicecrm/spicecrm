@@ -753,51 +753,66 @@ class SqlsrvManager extends DBManager
      */
     public function get_columns($tablename)
     {
-        //find all unique indexes and primary keys.
-        $result = $this->query("sp_columns_90 $tablename");
-
         $columns = [];
-        while (($row=$this->fetchByAssoc($result)) !=null) {
-            $column_name = strtolower($row['COLUMN_NAME']);
-            $columns[$column_name]['name']=$column_name;
-            $columns[$column_name]['type']=strtolower($row['TYPE_NAME']);
-            if ( $row['TYPE_NAME'] == 'decimal' ) {
-                $columns[$column_name]['len']=strtolower($row['PRECISION']);
-                $columns[$column_name]['len'].=','.strtolower($row['SCALE']);
-            }
-			elseif ( in_array($row['TYPE_NAME'], ['nchar','nvarchar']) ) {
-				$columns[$column_name]['len']=strtolower($row['PRECISION']);
-				if ( $row['TYPE_NAME'] == 'nvarchar' && $row['PRECISION'] == '0' ) {
-				    $columns[$column_name]['len']='max';
-				}
-			}
-            elseif ( !in_array($row['TYPE_NAME'], ['datetime','text']) ) {
-                $columns[$column_name]['len']=strtolower($row['LENGTH']);
-            }
-            if ( stristr($row['TYPE_NAME'],'identity') ) {
-                $columns[$column_name]['auto_increment'] = '1';
-                $columns[$column_name]['type']=str_replace(' identity','',strtolower($row['TYPE_NAME']));
-            }
+        if($this->tableExists($tablename)) {
+            //find all unique indexes and primary keys.
+            $result = $this->query("sp_columns_90 $tablename");
 
-            if (!empty($row['IS_NULLABLE']) && $row['IS_NULLABLE'] == 'NO' && (empty($row['KEY']) || !stristr($row['KEY'],'PRI')))
-                $columns[strtolower($row['COLUMN_NAME'])]['required'] = 'true';
+            while (($row = $this->fetchByAssoc($result)) != null) {
+                $column_name = strtolower($row['COLUMN_NAME']);
+                $columns[$column_name]['name'] = $column_name;
+                $columns[$column_name]['type'] = strtolower($row['TYPE_NAME']);
+                if ($row['TYPE_NAME'] == 'decimal') {
+                    $columns[$column_name]['len'] = strtolower($row['PRECISION']);
+                    $columns[$column_name]['len'] .= ',' . strtolower($row['SCALE']);
+                } elseif (in_array($row['TYPE_NAME'], ['nchar', 'nvarchar'])) {
+                    $columns[$column_name]['len'] = strtolower($row['PRECISION']);
+                    if ($row['TYPE_NAME'] == 'nvarchar' && $row['PRECISION'] == '0') {
+                        $columns[$column_name]['len'] = 'max';
+                    }
+                } elseif (!in_array($row['TYPE_NAME'], ['datetime', 'text'])) {
+                    $columns[$column_name]['len'] = strtolower($row['LENGTH']);
+                }
+                if (stristr($row['TYPE_NAME'], 'identity')) {
+                    $columns[$column_name]['auto_increment'] = '1';
+                    $columns[$column_name]['type'] = str_replace(' identity', '', strtolower($row['TYPE_NAME']));
+                }
 
-            $column_def = 1;
-            if ( strtolower($tablename) == 'relationships' ) {
-                $column_def = $this->getOne("select cdefault from syscolumns where id = object_id('relationships') and name = '$column_name'");
-            }
-            if ( $column_def != 0 && ($row['COLUMN_DEF'] != null)) {	// NOTE Not using !empty as an empty string may be a viable default value.
-                $matches = [];
-                $row['COLUMN_DEF'] = html_entity_decode($row['COLUMN_DEF'],ENT_QUOTES);
-                if ( preg_match('/\([\(|\'](.*)[\)|\']\)/i',$row['COLUMN_DEF'],$matches) )
-                    $columns[$column_name]['default'] = $matches[1];
-                elseif ( preg_match('/\(N\'(.*)\'\)/i',$row['COLUMN_DEF'],$matches) )
-                    $columns[$column_name]['default'] = $matches[1];
-                else
-                    $columns[$column_name]['default'] = $row['COLUMN_DEF'];
+                $columns[strtolower($row['COLUMN_NAME'])]['required'] = json_encode(!empty($row['IS_NULLABLE']) && $row['IS_NULLABLE'] == 'NO' && (empty($row['KEY']) || !stristr($row['KEY'], 'PRI')));
+
+                $column_def = 1;
+                if (strtolower($tablename) == 'relationships') {
+                    $column_def = $this->getOne("select cdefault from syscolumns where id = object_id('relationships') and name = '$column_name'");
+                }
+                if ($column_def != 0 && ($row['COLUMN_DEF'] != null)) {    // NOTE Not using !empty as an empty string may be a viable default value.
+                    $matches = [];
+                    $row['COLUMN_DEF'] = html_entity_decode($row['COLUMN_DEF'], ENT_QUOTES);
+                    if (preg_match('/\([\(|\'](.*)[\)|\']\)/i', $row['COLUMN_DEF'], $matches))
+                        $columns[$column_name]['default'] = $matches[1];
+                    elseif (preg_match('/\(N\'(.*)\'\)/i', $row['COLUMN_DEF'], $matches))
+                        $columns[$column_name]['default'] = $matches[1];
+                    else
+                        $columns[$column_name]['default'] = $row['COLUMN_DEF'];
+                }
             }
         }
         return $columns;
+    }
+
+    /**
+     * remove columns from a table
+     *
+     * @param $tablename
+     * @param array $columns
+     * @return mixed|void
+     */
+    public function delete_columns($tablename, array $columns = [])
+    {
+        $dropColumns = [];
+        foreach ($columns as $column) {
+            $dropColumns[] = "DROP COLUMN $column";
+        }
+        $this->query("ALTER TABLE $tablename " . join(", ", $dropColumns));
     }
 
     /**
