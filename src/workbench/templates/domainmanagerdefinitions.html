@@ -11,17 +11,23 @@
         <system-select-icon-item value="a" icon="light_bulb" colorclass="slds-icon-text-success"></system-select-icon-item>
         <system-select-icon-item value="i" icon="light_bulb" colorclass="slds-icon-text-light"></system-select-icon-item>
     </system-select-icon>
+    <div class="slds-select_container slds-p-left--xx-small">
+        <select class="slds-select" [(ngModel)]="definitionsfiltertype">
+            <option value=""><system-label label="LBL_ALL"></system-label></option>
+            <option *ngFor="let fieldtype of domainmanager.fieldtypes" [value]="fieldtype">{{fieldtype}}</option>
+        </select>
+    </div>
 </div>
-<div system-to-bottom>
-    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed">
+<div system-to-bottom marginBottom="45" #itemscontainer>
+    <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-table--header-fixed">
         <thead>
         <tr class="slds-line-height_reset">
             <th style="width:2.5rem" scope="col"></th>
             <th class="" scope="col">
-                <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_DOMAIN"></system-label></div>
+                <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_DOMAIN"></system-label></div>
             </th>
             <th class="" scope="col">
-                <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TYPE"></system-label></div>
+                <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_TYPE"></system-label></div>
             </th>
             <th style="width:2rem" scope="col"></th>
         </tr>
@@ -30,7 +36,7 @@
         <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':domainmanager.currentDomainDefinition == domaindefinition.id}"  *ngFor="let domaindefinition of domaindefinitions; trackBy: trackByFn" (click)="setCurrentDomainDefintion(domaindefinition.id)">
             <td>
                 <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="domaindefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                <dictionary-manager-item-status [(ngModel)]="domaindefinition.status"></dictionary-manager-item-status>
+                <dictionary-manager-item-status [ngModel]="domaindefinition.status" (ngModelChange)="setStatus(domaindefinition, $event)"></dictionary-manager-item-status>
             </td>
             <td data-label="Domain" >
                 <div class="slds-truncate">{{domaindefinition.name}}</div>
@@ -38,13 +44,15 @@
             <td data-label="Type">
                 <div class="slds-truncate">{{domaindefinition.fieldtype}}</div>
             </td>
-            <td class="slds-align--absolute-center" style="width: 2rem;">
-                <system-utility-icon size="xx-small" icon="delete" (click)="deleteDomainDefinition($event, domaindefinition.id)"></system-utility-icon>
+            <td style="width: 2rem;">
+                <button class="slds-button slds-button--icon" [disabled]="domaindefinition.status == 'a'" (click)="deleteDomainDefinition(domaindefinition.id)">
+                    <system-button-icon icon="delete"/>
+                </button>
             </td>
         </tr>
         </tbody>
     </table>
-    <div class="slds-align--absolute-center slds-border--top slds-p-around--small slds-theme--shade" style="position: sticky; bottom: 0;">
-        <system-utility-icon (click)="addDomainDefinition($event)" icon="new" size="x-small" style="cursor: pointer"></system-utility-icon>
-    </div>
+</div>
+<div class="slds-align--absolute-center slds-border--top slds-p-around--small slds-theme--shade" style="position: sticky; bottom: 0;">
+    <system-utility-icon (click)="addDomainDefinition($event)" icon="new" size="x-small" style="cursor: pointer"></system-utility-icon>
 </div>

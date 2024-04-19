@@ -2,19 +2,22 @@
  * @module WorkbenchModule
  */
 import {
-    Component
+    Component, OnInit
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
+import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
+import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfaces";
 
 /**
  * a modal window to add a fields to a domain definition
  */
 @Component({
+    // selector: 'domain-manager-add-field-modal',
     templateUrl: '../templates/domainmanageraddfieldmodal.html',
 })
-export class DomainManagerAddFieldModal {
+export class DomainManagerAddFieldModal implements OnInit{
 
     /**
      * reference to the modal self
@@ -24,17 +27,31 @@ export class DomainManagerAddFieldModal {
     /**
      * the domain definition
      */
-    public domainfield: any = {
-        name: '{sysdictionaryitems.name}',
-        fieldtype: '',
-        scope: 'c',
-        required: 0,
-        deleted: 0,
-        status: 'd'
-    };
+    public domainfield: DomainField;
 
-    constructor(public domainmanager: domainmanager, public metadata: metadata, public modelutilities: modelutilities) {
+    public domainDefiniton: DomainDefinition;
 
+    constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public modelutilities: modelutilities) {
+
+    }
+
+    public ngOnInit() {
+        // gets the current definition
+        this.domainDefiniton = this.domainmanager.getCurrentDefinition();
+        // initialize the domainfield
+        this.domainfield = {
+            dbtype: undefined,
+            id: this.modelutilities.generateGuid(),
+            sysdomaindefinition_id: this.domainmanager.currentDomainDefinition,
+            sysdomainfieldvalidation_id: "",
+            name: '{sysdictionaryitems.name}',
+            fieldtype: '',
+            scope: this.domainDefiniton.scope,
+            sequence: this.domainmanager.domainfields.filter(d => d.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition).length,
+            required: 0,
+            exclude_from_index: 0,
+            status: 'd'
+        }
     }
 
     /**
@@ -59,17 +76,14 @@ export class DomainManagerAddFieldModal {
      */
     public save() {
         if(this.canSave) {
-
             // add the sequence that represents the number of items
-            // todo ensure we renumber when we do this
-            this.domainfield.sequence =  this.domainmanager.domainfields.filter(d => d.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition).length;
-
-            this.domainfield.id = this.modelutilities.generateGuid();
-            this.domainfield.sysdomaindefinition_id = this.domainmanager.currentDomainDefinition;
-            this.domainmanager.domainfields.push(this.domainfield);
-            this.close();
+            this.backend.postRequest(`dictionary/domainfield/${this.domainfield.id}`, {}, this.domainfield).subscribe({
+                next: (res) => {
+                    this.domainmanager.domainfields.push(this.domainfield);
+                    this.close();
+                }
+            });
         }
     }
-
 
 }

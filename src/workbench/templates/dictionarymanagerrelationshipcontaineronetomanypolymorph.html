@@ -1,0 +1,123 @@
+<div class="slds-p-around--xx-small">
+    <div class="slds-grid">
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_NAME"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.name"/>
+            </div>
+        </div>
+        <div class="slds-size--1-of-2 slds-p-horizontal--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_RHS_DICTIONARYDEFINITION"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationship.rhs_sysdictionarydefinition_id)"/>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_RHS_SYSDICTIONARYITEM_ID"></system-label>
+            </label>
+            <div class="slds-select_container">
+                <select [disabled]="readonly" [(ngModel)]="relationship.rhs_sysdictionaryitem_id" class="slds-select">
+                    <option *ngFor="let item of rhs_items" [value]="item.id">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_LHS_SYSDICTIONARYITEM_TYPE"></system-label>
+            </label>
+            <div class="slds-select_container">
+                <select [disabled]="readonly" [(ngModel)]="relationship.relationship_role_column" class="slds-select">
+                    <option *ngFor="let item of rhs_items" [value]="item.id">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_RHS_LINKNAME"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.rhs_linkname"/>
+            </div>
+        </div>
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_RHS_LINKLABEL"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <system-input-label [disabled]="readonly" [(ngModel)]="relationship.rhs_linklabel"></system-input-label>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_LHS_LINKNAME"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <input [disabled]="readonly" class="slds-input" [(ngModel)]="relationship.lhs_linkname"/>
+            </div>
+        </div>
+        <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_LHS_LINKLABEL"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <system-input-label [disabled]="readonly" [(ngModel)]="relationship.lhs_linklabel"></system-input-label>
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-vertical--x-small">
+        <div class="slds-box--border">
+            <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-no-row-hover">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_MODULE"/></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_DICTIONARYITEM"/></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_RELATIONSHIP_NAME"/></div>
+                        </th>
+                        <th style="width: 2rem" scope="col"></th>
+                        <th style="width: 2rem" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-hint-parent" *ngFor="let relationshipPolymorph of relationshipPolymorphs">
+                        <td>
+                            <div class="slds-truncate"><input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationshipPolymorph.lhs_sysdictionarydefinition_id)"/></div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate"><input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryItemName(relationshipPolymorph.lhs_sysdictionaryitem_id)"/></div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate"><input class="slds-input" [(ngModel)]="relationshipPolymorph.relationship_name"/></div>
+                        </td>
+                        <td>
+                            <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="relationshipPolymorph.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        </td>
+                        <td>
+                            <button class="slds-button slds-button--icon"><system-button-icon icon="delete"/></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="slds-size--1-of-1 slds-p-around--x-small slds-align--absolute-center">
+                <button class="slds-button slds-button--icon" (click)="addRelated()">
+                    <system-button-icon icon="new"/>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

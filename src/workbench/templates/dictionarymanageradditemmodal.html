@@ -12,28 +12,34 @@
             </div>
             <div class="slds-large-size--1-of-2 slds-p-left--xxx-small slds-form-element__control" [ngClass]="{'slds-has-error': getMessages('sysdomaindefinition_id').length > 0}">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DOMAIN"></system-label></label>
-                <div class="slds-select_container">
+                <system-select system-select-id-only [(ngModel)]="dictionaryitem.sysdomaindefinition_id">
+                    <system-select-option  *ngFor="let domain of domains" [value]="domain.id" [display]="domain.name"/>
+                </system-select>
+                <!--div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="dictionaryitem.sysdomaindefinition_id">
                         <option *ngFor="let domain of domains" [value]="domain.id">{{domain.name}}</option>
                     </select>
-                </div>
+                </div-->
                 <div class="slds-form-element__help" *ngFor="let message of getMessages('sysdomaindefinition_id')">{{message.message}}</div>
             </div>
         </div>
         <div *ngIf="itemtype == 't'" class="slds-form-element__control" [ngClass]="{'slds-has-error': getMessages('sysdictionary_ref_id').length > 0}">
-            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DOMAIN"></system-label></label>
-            <div class="slds-select_container">
+            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TEMPLATE"></system-label></label>
+            <system-select system-select-id-only [(ngModel)]="dictionaryitem.sysdictionary_ref_id">
+                <system-select-option  *ngFor="let template of templates" [value]="template.id" [display]="template.name"/>
+            </system-select>
+            <!--div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="dictionaryitem.sysdictionary_ref_id">
                     <option *ngFor="let template of templates" [value]="template.id">{{template.name}}</option>
                 </select>
-            </div>
+            </div-->
             <div class="slds-form-element__help" *ngFor="let message of getMessages('sysdictionary_ref_id')">{{message.message}}</div>
         </div>
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
                 <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="dictionaryitem.scope">
+                    <select [disabled]="dictionarymanager.currentDictionaryScope == 'c'" class="slds-select" [(ngModel)]="dictionaryitem.scope">
                         <option *ngIf="dictionarymanager.changescope == 'all'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
                         <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
                     </select>

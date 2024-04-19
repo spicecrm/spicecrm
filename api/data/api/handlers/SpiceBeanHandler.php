@@ -13,6 +13,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceFTSManager\ElasticHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSBeanHandler;
@@ -398,10 +399,10 @@ class SpiceBeanHandler
                 # It can´t be used in the db request, so "sort_on" (and optional "sort_on2") should have been defined in vardefs.
                 # The field name(s) in "sort_on" (and "sort_on2") are used instead. They are real/existing db fields.
                 # Better would be an array ( "sort_fields"=>array("nameOfField1","nameOfField2",...) ), but "sort_on"/"sort_on2" is already implemented and used elsewhere, so I use it here.
-                if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$thisBean->_objectname]['fields'][$searchParams['sortfield']]['sort_on'][0]))
-                    $sortfield = SpiceDictionaryHandler::getInstance()->dictionary[$thisBean->_objectname]['fields'][$searchParams['sortfield']]['sort_on'];
-                if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$thisBean->_objectname]['fields'][$searchParams['sortfield']]['sort_on2'][0]))
-                    $sortfield .= ', ' . SpiceDictionaryHandler::getInstance()->dictionary[$thisBean->_objectname]['fields'][$searchParams['sortfield']]['sort_on2'];
+                if (isset(SpiceDictionary::getInstance()->getDefs($thisBean->_objectname)['fields'][$searchParams['sortfield']]['sort_on'][0]))
+                    $sortfield = SpiceDictionary::getInstance()->getDefs($thisBean->_objectname)['fields'][$searchParams['sortfield']]['sort_on'];
+                if (isset(SpiceDictionary::getInstance()->getDefs($thisBean->_objectname)['fields'][$searchParams['sortfield']]['sort_on2'][0]))
+                    $sortfield .= ', ' . SpiceDictionary::getInstance()->getDefs($thisBean->_objectname)['fields'][$searchParams['sortfield']]['sort_on2'];
                 if (!isset($sortfield[0])) $sortfield = $searchParams['sortfield'];
 
                 $searchParams['orderby'] = $sortfield . ' ' . ($searchParams['sortdirection'] ? strtoupper($searchParams['sortdirection']) : 'ASC');
@@ -415,10 +416,10 @@ class SpiceBeanHandler
             $sortFields = json_decode(html_entity_decode($searchParams['sortfields']), true);
             foreach ($sortFields as $sortField) {
                 $sf = $sortField['sortfield'];
-                if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$thisBean->_objectname]['fields'][$sortField['sortfield']]['sort_on'][0]))
-                    $sf = SpiceDictionaryHandler::getInstance()->dictionary[$thisBean->_objectname]['fields'][$sortField['sortfield']]['sort_on'];
-                if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$thisBean->_objectname]['fields'][$sortField['sortfield']]['sort_on2'][0]))
-                    $sf .= ', ' . SpiceDictionaryHandler::getInstance()->dictionary[$thisBean->_objectname]['fields'][$sortField['sortfield']]['sort_on2'];
+                if (isset(SpiceDictionary::getInstance()->getDefs($thisBean->_objectname)['fields'][$sortField['sortfield']]['sort_on'][0]))
+                    $sf = SpiceDictionary::getInstance()->getDefs($thisBean->_objectname)['fields'][$sortField['sortfield']]['sort_on'];
+                if (isset(SpiceDictionary::getInstance()->getDefs($thisBean->_objectname)['fields'][$sortField['sortfield']]['sort_on2'][0]))
+                    $sf .= ', ' . SpiceDictionary::getInstance()->getDefs($thisBean->_objectname)['fields'][$sortField['sortfield']]['sort_on2'];
 
                 $orderbys[] = $sf . ' ' . ($sortField['sortdirection'] ? strtoupper($sortField['sortdirection']) : 'ASC');
             }
@@ -2021,7 +2022,7 @@ class SpiceBeanHandler
     private function getSpiceFavoritesClass()
     {
         if ($this->spiceFavoritesClass === null) {
-            if (SpiceDictionaryHandler::getInstance()->dictionary['spicefavorites'] && file_exists('include/SpiceFavorites/SpiceFavorites.php')) {
+            if (SpiceDictionary::getInstance()->getDefs('spicefavorites') && file_exists('include/SpiceFavorites/SpiceFavorites.php')) {
                 // require_once 'include/SpiceFavorites/SpiceFavorites.php';
                 $this->spiceFavoritesClass = '\SpiceCRM\includes\SpiceFavorites\SpiceFavorites';
             }
@@ -2080,10 +2081,8 @@ class SpiceBeanHandler
         $db = DBManagerFactory::getInstance();
 
         // check capability and handle old theme customers
-        if (SpiceDictionaryHandler::getInstance()->dictionary['spicereminders']) {
+        if (SpiceDictionary::getInstance()->getDefs('spicereminders')) {
             $spiceReminderTable = 'spicereminders';
-        } elseif (SpiceDictionaryHandler::getInstance()->dictionary['trreminders']) {
-            $spiceReminderTable = 'trreminders';
         } else {
             return null;
         }
@@ -2105,22 +2104,12 @@ class SpiceBeanHandler
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
 
-        // check capability and handle old theme customers
-        if (SpiceDictionaryHandler::getInstance()->dictionary['spicenotes']) {
-            $spiceNotesTable = 'spicenotes';
-        } elseif (SpiceDictionaryHandler::getInstance()->dictionary['trquicknotes']) {
-            $spiceNotesTable = 'trquicknotes';
-        } else {
-            return null;
-        }
-
-
         $quicknotes = [];
 
         if (DBManagerFactory::getInstance()->dbType == 'mssql') {
-            $quicknotesRes = $db->query("SELECT qn.*,u.user_name FROM $spiceNotesTable AS qn LEFT JOIN users AS u ON u.id=qn.user_id WHERE qn.bean_id='{$bean->id}' AND qn.bean_type='{$bean->_module}' AND (qn.user_id = '" . $current_user->id . "' OR qn.trglobal = '1') AND qn.deleted = 0 ORDER BY qn.trdate DESC");
+            $quicknotesRes = $db->query("SELECT qn.*,u.user_name FROM spicenotes AS qn LEFT JOIN users AS u ON u.id=qn.user_id WHERE qn.bean_id='{$bean->id}' AND qn.bean_type='{$bean->_module}' AND (qn.user_id = '" . $current_user->id . "' OR qn.trglobal = '1') AND qn.deleted = 0 ORDER BY qn.trdate DESC");
         } else {
-            $quicknotesRes = $db->query("SELECT qn.*,u.user_name FROM $spiceNotesTable AS qn LEFT JOIN users AS u ON u.id=qn.user_id WHERE qn.bean_id='{$bean->id}' AND qn.bean_type='{$bean->_module}' AND (qn.user_id = '" . $current_user->id . "' OR qn.trglobal = '1') AND qn.deleted = 0 ORDER BY qn.trdate DESC");
+            $quicknotesRes = $db->query("SELECT qn.*,u.user_name FROM spicenotes AS qn LEFT JOIN users AS u ON u.id=qn.user_id WHERE qn.bean_id='{$bean->id}' AND qn.bean_type='{$bean->_module}' AND (qn.user_id = '" . $current_user->id . "' OR qn.trglobal = '1') AND qn.deleted = 0 ORDER BY qn.trdate DESC");
         }
 
         if (DBManagerFactory::getInstance()->dbType == 'mssql' || $db->getRowCount($quicknotesRes) > 0) {

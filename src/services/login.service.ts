@@ -142,6 +142,7 @@ export class loginService {
                 error: (err: any) => {
                     switch (err.status) {
                         case 401:
+                        case 503:
                             loginSuccess.error(err.error.error);
                             break;
                         default:
@@ -238,6 +239,8 @@ export class loginService {
                 error: (err: any) => {
                     switch (err.status) {
                         case 401:
+                        case 503:
+                            this.toast.sendToast(err.error?.error?.message, "error");
                             loginSuccess.error(err.error.error);
                             break;
                         default:

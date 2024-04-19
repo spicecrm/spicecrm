@@ -72,6 +72,11 @@ class Email extends SpiceBean
      */
     private ?string $runtime_tracking_parent_id = null;
     /**
+     * @var false|\SpiceCRM\data\SpiceBean
+     */
+    public $emailAddress;
+
+    /**
      * sole constructor
      */
     function __construct()
