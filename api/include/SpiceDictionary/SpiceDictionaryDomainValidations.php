@@ -71,7 +71,7 @@ class SpiceDictionaryDomainValidations
 
             $domainvalues = $db->query("SELECT * FROM sysdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$valdata['id']}'");
             while($domainvalue = $db->fetchByAssoc($domainvalues)){
-                $validationsArray[$valname]['validationvalues'][] = [
+                $validationsArray[$valname]['validationvalues'][$domainvalue['enumvalue']] = [
                     'enumvalue' => $domainvalue['enumvalue'],
 //                    'minvalue' => $domainvalue['minvalue'],
 //                    'maxval' => $domainvalue['maxval'],
@@ -80,17 +80,11 @@ class SpiceDictionaryDomainValidations
                 ];
             }
 
-            // Loaded doms from custom will fully replace the existing dom in core
-            $replaceCoreDoms = [];
             $domainvalues = $db->query("SELECT * FROM syscustomdomainfieldvalidationvalues WHERE sysdomainfieldvalidation_id = '{$valdata['id']}'");
             while($domainvalue = $db->fetchByAssoc($domainvalues)){
-                // replace the full dom set in core by the one set in custom
-                if(!in_array($valname, $replaceCoreDoms) && isset($validationsArray[$valname]['validationvalues'])){
-                    $validationsArray[$valname]['validationvalues'] = [];
-                    $replaceCoreDoms[] = $valname;
-                }
+
                 // fill the dom
-                $validationsArray[$valname]['validationvalues'][] = [
+                $validationsArray[$valname]['validationvalues'][$domainvalue['enumvalue']] = [
                     'enumvalue' => $domainvalue['enumvalue'],
 //                'minvalue' => $domainvalue['minvalue'],
 //                'maxvalue' => $domainvalue['maxvalue'],
@@ -99,6 +93,8 @@ class SpiceDictionaryDomainValidations
                 ];
             }
         }
+
+        $validationsArray[$valname]['validationvalues'] = array_values($validationsArray[$valname]['validationvalues']);
 
         SpiceCache::set('domainvalidations', $validationsArray);
 
