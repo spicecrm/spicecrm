@@ -105,7 +105,7 @@ export class fieldFullName extends fieldGeneric {
         const d = this.model.getField(this.fielddegree);
         const a = this.model.getField(this.fieldlasttitle);
         if (this.userpreferences.toUse.locale_name_format === 's f l') {
-            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s + ' ' + this.filterUndefined(f) + ' ' + this.filterUndefined(l));
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s) + ' ' + this.filterUndefined(f) + ' ' + this.filterUndefined(l);
         }
         else if (userPref === 'f l') {
             return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldfirstname, f + ' ' + this.filterUndefined(l));
@@ -120,7 +120,7 @@ export class fieldFullName extends fieldGeneric {
             return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldlastname, l + ', ' + this.filterUndefined(f));
         }
         else if (userPref === 's l, f') {
-            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s + ' ' + this.filterUndefined(l) + ', ' + this.filterUndefined(f));
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s) + ' ' + this.filterUndefined(l) + ', ' + this.filterUndefined(f);
         }
         else if (userPref === 'l s f') {
             return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldlastname, l + ' ' + this.filterUndefined(s) + ' ' + this.filterUndefined(f));
@@ -129,7 +129,7 @@ export class fieldFullName extends fieldGeneric {
             return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldlastname, l + ' ' + this.filterUndefined(f) + ' ' + this.filterUndefined(s));
         }
         else if (userPref === 's d f l a') {
-            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s + ' ' + this.filterUndefined(d) + ' ' + this.filterUndefined(f) + ' ' + this.filterUndefined(l) + ' ' + this.filterUndefined(a));
+            return this.language.getFieldDisplayOptionValue(this.model.module, this.fieldsalutation, s) + ' ' + this.filterUndefined(d) + ' ' + this.filterUndefined(f) + ' ' + this.filterUndefined(l) + ' ' + this.filterUndefined(a);
         }
     }
 
