@@ -123,8 +123,29 @@ class SpiceDictionaryDefinition
             SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($this->id);
         }
 
+        // check for Audit table
+        if($this->definition->audited == 1){
+            $auditsql = DBManagerFactory::getInstance()->repairTableParams($this->tablename . '_audit', [
+                'id'=> ['name' =>'id', 'type' =>'id', 'len'=>'36','required'=>true],
+                'parent_id'=> ['name' =>'parent_id', 'type' =>'id', 'len'=>'36','required'=>true],
+                'transaction_id'=> ['name' =>'transaction_id', 'type' =>'varchar', 'len'=>'36','required'=>false],
+                'date_created'=> ['name' =>'date_created','type' => 'datetime'],
+                'created_by'=> ['name' =>'created_by','type' => 'varchar','len' => 36],
+                'field_name'=> ['name' =>'field_name','type' => 'varchar','len' => 100],
+                'data_type'=> ['name' =>'data_type','type' => 'varchar','len' => 100],
+                'before_value_string'=> ['name' =>'before_value_string','type' => 'varchar'],
+                'after_value_string'=> ['name' =>'after_value_string','type' => 'varchar'],
+                'before_value_text'=> ['name' =>'before_value_text','type' => 'text'],
+                'after_value_text'=> ['name' =>'after_value_text','type' => 'text'],
+            ], [
+                $this->tablename . '_audit_pk' => ['name' => $this->tablename . '_audit_pk', 'type' => 'primary', 'fields' => ['id']],
+                $this->tablename . '_audit_parent_id' => ['name' => $this->tablename . '_audit_parent_id', 'type' => 'index', 'fields' => ['parent_id']],
+                $this->tablename . '_audit_field_name' => ['name' => $this->tablename . '_audit_field_name', 'type' => 'index', 'fields' => ['field_name']],
+            ], true);
+        }
+
         // return the sql
-        return $sql;
+        return $auditsql ? $auditsql . ';' . $sql : $sql;
     }
 
     /**
