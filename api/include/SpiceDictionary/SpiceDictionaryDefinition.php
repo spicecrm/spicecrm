@@ -123,8 +123,39 @@ class SpiceDictionaryDefinition
             SpiceDictionaryRelationships::getInstance()->repairForDctionaryDefinition($this->id);
         }
 
+        // check for Audit table
+        if($this->definition->audited == 1){
+            $sql .= $this->repairAuditTable();
+        }
+
         // return the sql
         return $sql;
+    }
+
+    /**
+     * repair audit table sql
+     * @return string
+     * @throws Exception
+     * @throws \Exception
+     */
+    private function repairAuditTable(): string
+    {
+        $auditDefId = SpiceDictionaryDefinitions::getInstance()->getIdByName('audit');
+        $auditDefinition = new SpiceDictionaryDefinition($auditDefId);
+
+        $items = SpiceDictionaryItems::getInstance()->getItems($auditDefId);
+
+        [$fields, $indexes] = $auditDefinition->getItemsDefinitionsAndIndexes($items);
+
+        $fields = array_map(fn($f) => ((array) $f), $fields);
+
+        $indexDefs = SpiceDictionaryIndexes::getInstance()->getDictionaryIndexes($auditDefId);
+
+        foreach ($indexDefs as $index) {
+            $indexes[] = (new SpiceDictionaryIndex($index['id']))->getIndexDefinition($this->tablename);
+        }
+
+        return DBManagerFactory::getInstance()->repairTableParams("{$this->tablename}_audit", $fields, $indexes);
     }
 
     /**
