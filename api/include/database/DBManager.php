@@ -2915,13 +2915,7 @@ abstract class DBManager
      */
     public function save_audit_records(SpiceBean $bean, $changes)
     {
-        $auditTableName = $bean->get_audit_table_name();
-
-        if (!$bean->db->tableExists($auditTableName)) {
-            return false;
-        } else {
-            return $this->query($this->auditSQL($bean, $changes));
-        }
+        return $this->query($this->auditSQL($bean, $changes));
     }
 
     /**
