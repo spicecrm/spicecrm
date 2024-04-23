@@ -4,6 +4,8 @@ namespace SpiceCRM\includes\SugarObjects;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 
 /**
  * Class SpiceModules
@@ -72,6 +74,15 @@ class SpiceModules
                     // keep the original id from sysmodules (ACL module actions compatibility)
                     $module['id'] = $this->modules[$module['module']]['id'];
                 }
+
+                $module['audited'] = false;
+
+                if (!empty($module['sysdictionarydefinition_id'])) {
+                    try {
+                        $module['audited'] = (new SpiceDictionaryDefinition($module['sysdictionarydefinition_id']))->getDefinition()->audited == 1;
+                    } catch (\Throwable) {}
+                }
+
                 $this->modules[$module['module']] = $module;
 
                 // if we have a bean try to load the beanfile, build it from the name or use the generic sugarbean
