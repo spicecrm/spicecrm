@@ -5,6 +5,7 @@ namespace SpiceCRM\data\api\handlers;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\includes\AddressReferences\AddressReferences;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
@@ -2011,6 +2012,9 @@ class SpiceBeanHandler
             throw (new ForbiddenException('Forbidden to delete record.'))->setErrorCode('noRecordDelete');
 
         $thisBean->mark_deleted($beanId);
+
+        AddressReferences::getInstance()->removeReferencedId($thisBean);
+
         return true;
     }
 
