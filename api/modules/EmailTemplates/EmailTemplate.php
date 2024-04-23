@@ -81,7 +81,7 @@ class EmailTemplate extends SpiceBean {
         ];
 
         $retArray['subject'] = preg_replace('#\s+#', ' ', $retArray['subject'] ); // multiple white spaces -> one
-        return $this->callContentMethod($retArray);
+        return $this->callContentMethod($retArray, $bean);
     }
 
     /**
