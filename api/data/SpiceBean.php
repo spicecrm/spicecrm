@@ -1064,13 +1064,11 @@ class SpiceBean
      *
      * Internal function, do not override.
      */
-    function is_AuditEnabled()
+    function is_AuditEnabled(): bool
     {
-        if (isset(SpiceDictionary::getInstance()->getDefs($this->getObjectName())['audited'])) {
-            return boolval(SpiceDictionary::getInstance()->getDefs($this->getObjectName())['audited']);
-        } else {
-            return false;
-        }
+        if (empty(SpiceModules::getInstance()->modules)) return false;
+
+        return SpiceModules::getInstance()->getModuleDetails($this->_module)['audited'];
     }
 
     /**
