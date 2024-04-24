@@ -65,6 +65,14 @@ $routes = [
         ]
     ],
     [
+        'method'      => 'get',
+        'route'       => '/configuration/package/system',
+        'class'       => PackageController::class,
+        'function'    => 'reloadSystemPackage',
+        'description' => 'reload system package file',
+        'options'     => ['adminOnly' => true]
+    ],
+    [
         'method'      => 'delete',
         'route'       => '/configuration/packages/package/{package}',
         'oldroute'    => '/packages/package/{package}',
