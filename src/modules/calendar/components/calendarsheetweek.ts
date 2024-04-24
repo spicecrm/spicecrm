@@ -19,7 +19,9 @@ import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
 import {CalendarSheetDropTarget} from "./calendarsheetdroptarget";
-import {Subscription} from "rxjs";
+import {asapScheduler, Subscription} from "rxjs";
+import {navigation} from "../../../services/navigation.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 /**
  * @ignore
@@ -103,6 +105,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     constructor(public language: language,
                 public cdRef: ChangeDetectorRef,
                 public renderer: Renderer2,
+                private navigation: navigation,
+                private navigationTab: navigationtab,
                 public calendar: calendar) {
         this.buildHours();
         this.buildSheetDays();
@@ -353,6 +357,21 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                 this.setMultiEventsStyle();
             })
         );
+
+        this.subscription.add(
+            this.navigation.activeTab$.subscribe(tabId => {
+
+                if (this.navigationTab.objecttab.id != tabId) return;
+
+                // wait until the tab is visible and the reset the events styles
+                asapScheduler.schedule(() => {
+                    this.arrangeMultiEvents();
+                    this.setSingleEventsStyle();
+                    this.setMultiEventsStyle();
+                }, 100);
+            })
+        );
+
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
                 if (calendar.id == 'owner') {
                     this.getOwnerEvents();
