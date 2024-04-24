@@ -145,6 +145,8 @@ class SpiceInstaller
             $requirements['imap'] = true;
         }
 
+        $requirements['bcmath'] = extension_loaded('bcmath');
+
         // db check
         $drivers = $this->dbManagerFactory::getDbDrivers();
 
