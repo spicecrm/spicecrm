@@ -10,6 +10,7 @@ import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {modal} from "../../services/modal.service";
 import {PackageLoaderReloadLoadedModal} from "./packageloaderreloadloadedmodal";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 /**
  * @ignore
@@ -145,5 +146,26 @@ export class PackageLoader {
                 ref.instance.repositoryAddUrl = this.repositoryaddurl;
             })
         })
+    }
+
+    /**
+     * reload system package
+     */
+    public reloadSystemPackage() {
+        this.modal.confirm('MSG_RELOAD_SYSTEM_PACKAGE', 'MSG_RELOAD_SYSTEM_PACKAGE').subscribe(answer => {
+            const loading = this.modal.await('LBL_LOADING')
+            this.backend.getRequest('configuration/package/system').subscribe({
+                next: () => {
+                    loading.next(true);
+                    loading.complete();
+                    this.toast.sendToast('LBL_DATA_RELOADED', 'success');
+                },
+                error: () => {
+                    loading.next(true);
+                    loading.complete();
+                    this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                }
+            });
+        });
     }
 }
