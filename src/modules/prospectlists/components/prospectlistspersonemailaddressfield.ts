@@ -13,10 +13,18 @@ export class ProspectListsPersonEmailAddressField extends fieldGeneric {
      */
     set value(emailAddress) {
         if (emailAddress?.invalid_email == '1') return;
-        this.model.setField(this.fieldname, emailAddress?.id ?? '');
+        this.model.setField(this.fieldname, emailAddress?.relid ?? '');
     }
 
     get value() {
         return this.model.getField(this.fieldname);
+    }
+
+    /**
+     * angular ngFor track by function
+     * @param index
+     */
+    public trackByFn(index: number): number {
+        return index;
     }
 }

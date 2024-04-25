@@ -1067,9 +1067,14 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                                     $thisWhereString .= ' NOT IN (\'' . str_replace(',', '\',\'', (is_array($value) ? implode(',', $groupingValuesOther) : $value)) . '\')';
                                 }
                             }
-                            else
-                                //END
+                            # handling date equals
+                            else if (in_array($this->fieldNameMap[$fieldid]['type'], ['date', 'datetime', 'datetimecombo'])) {
+                                $fieldName = $this->get_field_name($path, $fieldname, $fieldid, false, '', $customSql);
+                                $date = TimeDate::getInstance()->to_db_date($value);
+                                $thisWhereString .= " >= '$date 00:00:00' AND $fieldName <= '$date 23:59:59'";
+                            } else {
                                 $thisWhereString .= ' = \'' . $value . '\'';
+                            }
                             break;
                     }
                 } else{
@@ -1108,8 +1113,12 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     if(!empty($groupingValuesOther)){
                         $thisWhereString .= ' IN (\'' . str_replace(',', '\',\'', (is_array($value) ? implode(',', $groupingValuesOther) : $value)) . '\')';
                     }
-                }
-                else
+                    # handling date not equals
+                } else if (in_array($this->fieldNameMap[$fieldid]['type'], ['date', 'datetime', 'datetimecombo'])) {
+                    $fieldName = $this->get_field_name($path, $fieldname, $fieldid, false, '', $customSql);
+                    $date = TimeDate::getInstance()->to_db_date($value);
+                    $thisWhereString .= " < '$date 00:00:00' OR $fieldName > '$date 23:59:59'";
+                } else
                     //END
                     $thisWhereString .= ' <> \'' . $value . '\'';
                 break;
