@@ -130,6 +130,40 @@ class AddressReferences
     }
 
     /**
+     * removes referenced id from child Bean
+     *
+     * @param SpiceBean $parentBean
+     * @return void
+     * @throws Exception
+     */
+    public function removeReferencedId(SpiceBean $parentBean) {
+
+        if (!$this->hasAddressFields($parentBean) && $parentBean->deleted == 0) return;
+
+        $parentMetadata = $this->getParentReferenceMetadata($parentBean);
+
+        if (empty($parentMetadata)) return;
+
+        foreach ($parentMetadata as $metadata) {
+
+            $childBean = BeanFactory::newBean($metadata['child_module']);
+            $childFieldName = $metadata['child_address_key'] . '_address_reference_id';
+
+            # if the child does not have the field in the vardefs do nothing
+            if (!$childBean->field_defs[$childFieldName]) continue;
+
+            $linkedBeans = $parentBean->get_linked_beans($metadata['parent_link_name'], null, [], 0, -1, 1);
+
+            foreach ($linkedBeans as $linkedBean) {
+                $linkedBean->$childFieldName = '';
+
+                $db = DBManagerFactory::getInstance();
+                $db->update($linkedBean, ['id' => $linkedBean->id]);
+            }
+        }
+    }
+
+    /**
      * check if a bean has address fields
      * @param SpiceBean $bean
      * @return bool
@@ -155,7 +189,12 @@ class AddressReferences
         foreach ($this->addressFields as $field) {
             $childField = "{$metadata['child_address_key']}_$field";
             $parentField = "{$metadata['parent_address_key']}_$field";
-            $childBean->$childField = $parentBean->$parentField;
+
+            if($parentBean->deleted == true) {
+                $childBean->$childField = $parentBean->$parentField;
+            } else {
+                $childBean->$childField = $parentBean->$parentField;
+            }
         }
     }
 

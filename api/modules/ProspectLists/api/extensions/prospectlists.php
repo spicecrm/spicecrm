@@ -130,6 +130,14 @@ $routes = [
             ],
         ]
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/ProspectLists/{id}/count',
+        'class'       => ProspectListsController::class,
+        'function'    => 'getEntriesCount',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false]
+    ],
 
 ];
 
