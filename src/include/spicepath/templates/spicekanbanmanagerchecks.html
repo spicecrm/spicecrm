@@ -52,7 +52,7 @@
                         <label class="slds-form-element__label">
                             <system-label label="LBL_CHECK_METHOD"></system-label>
                         </label>
-                        <system-input-backend-method [ngModel]="!selectedCheck.check_class ? undefined : selectedCheck.check_class + '->' + selectedCheck.check_method" (ngModelChange)="setSelectedCheckClassMethod($event)"></system-input-backend-method>
+                        <system-input-backend-method [(ngModel)]="selectedCheck.check_method"></system-input-backend-method>
                     </div>
                 </div>
             </div>

@@ -5,6 +5,7 @@ namespace SpiceCRM\includes\SpiceBeanGuides;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\utils\SpiceUtils;
 use stdClass;
 
 class SpiceBeanGuideRestHandler
@@ -50,7 +51,7 @@ class SpiceBeanGuideRestHandler
      * @return array
      * @throws \Exception
      */
-    private function getBeanGuideStages(array $guide, SpiceBean $bean): array
+    public function getBeanGuideStages(array $guide, SpiceBean $bean): array
     {
         $db = DBManagerFactory::getInstance();
 
@@ -82,7 +83,7 @@ class SpiceBeanGuideRestHandler
     /**
      * get stage texts
      * @param string $stageId
-     * @param string $sysTextId
+     * @param string|null $sysTextId
      * @return array
      * @throws \Exception
      */
@@ -91,10 +92,25 @@ class SpiceBeanGuideRestHandler
         if (empty($sysTextId)) return [];
 
         $db = DBManagerFactory::getInstance();
+        $texts = $db->fetchAll("SELECT text_language, name FROM spicetexts WHERE parent_id = '$stageId' AND parent_type = 'SpiceBeanGuideStages' AND text_id = '$sysTextId'") ?: [];
 
-        return $db->fetchAll("SELECT id FROM spicetexts WHERE parent_id = '$stageId' AND parent_type = 'SpiceBeanGuideStages' AND text_id = '$sysTextId'") ?: [];
+        $textsByLanguage = [];
+
+        foreach ($texts as $text) {
+            $textsByLanguage[$text['text_language']] = $text['name'];
+        }
+
+        return $textsByLanguage;
     }
 
+    /**
+     * get stage checks 
+     * @param string $guidId
+     * @param string $stageId
+     * @param SpiceBean $bean
+     * @return array
+     * @throws \Exception
+     */
     private function getStageChecks(string $guidId, string $stageId, SpiceBean $bean): array
     {
         global $current_language;
@@ -108,8 +124,9 @@ class SpiceBeanGuideRestHandler
 
             $checkResult = null;
 
-            if(!empty($bean->id)){
+            if(!empty($bean->id) && !empty($check['check_method'])){
 
+                # first legacy method
                 if (!empty($check['check_include']) && file_exists($check['check_include'])) {
                     require_once($check['check_include']);
                     if(class_exists($check['check_class'])){
@@ -117,10 +134,9 @@ class SpiceBeanGuideRestHandler
                         $checkMethod = $check['check_method'];
                         $checkResult = $checkClass->$checkMethod($bean);
                     }
-                }
-
-                elseif(!empty($check['check_method'])) {
-                    $checkResult = $this->runCheckResults($check['check_method'], $bean);
+                } else {
+                    $classInstanceAndMethod = SpiceUtils::loadExecutionClassMethod($check['check_method']);
+                    $checkResult = $classInstanceAndMethod?->class->{$classInstanceAndMethod->method}($bean);
                 }
             }
 
@@ -133,118 +149,5 @@ class SpiceBeanGuideRestHandler
         }
 
         return $data;
-    }
-
-
-    public function getStages($module, $beanid = '')
-    {
-        global $current_language;
-        $db = DBManagerFactory::getInstance();
-
-        if (!empty($beanid))
-            $focus = BeanFactory::getBean($module, $beanid);
-        else
-            $focus = BeanFactory::getBean($module);
-
-        // get the object
-        $object = $db->fetchByAssoc($db->query("SELECT * FROM spicebeancustomguides WHERE module='$module'"));
-        if(empty($object)){
-            $object = $db->fetchByAssoc($db->query("SELECT * FROM spicebeanguides WHERE module='$module'"));
-        }
-
-        $statusField = $object['status_field'];
-
-        // get the sales stages
-        $stagesObj = $db->query("SELECT st.*, stt.stage_name, stt.stage_secondaryname, stt.stage_description FROM spicebeanguidestages st LEFT JOIN spicebeanguidestages_texts stt ON st.id = stt.stage_id AND stt.language = '$current_language' WHERE st.spicebeanguide_id = '" . $object['id'] . "' ORDER BY st.stage_sequence");
-
-
-        $stages = [];
-        $stagePassed = false;
-        while ($stage = $db->fetchByAssoc($stagesObj)) {
-            // set the stage - for multi stage take the first or the one that is active if it is not the first
-            if (!isset($stages[$stage['stage']]) || $stage['stage'] . $stage['secondary_stage'] == $focus->$statusField) {
-
-
-                $stages[$stage['stage']] = $stage;
-                $stages[$stage['stage']]['stage_description'] = html_entity_decode($stage['stage_description']);
-                $stages[$stage['stage']]['stage_label'] = html_entity_decode($stage['stage_label']);
-                $stages[$stage['stage']]['pastactive'] = $stagePassed;
-                $stages[$stage['stage']]['statusfield'] = $object['status_field'];
-                $stages[$stage['stage']]['not_in_kanban'] = $stage['not_in_kanban'];
-
-                // perform checks
-                $stages[$stage['stage']]['checks'] = [];
-                $stages[$stage['stage']]['checkcontent'] = '';
-
-
-
-                $checks = $db->query("SELECT sc.*, sct.text FROM spicebeanguidestages_checks sc LEFT JOIN spicebeanguidestages_check_texts sct on sc.id = sct.stage_check_id AND sct.language='$current_language' WHERE sc.spicebeanguide_id = '" . $object['id'] . "' AND sc.stage_id = '" . $stage['id'] . "' ORDER BY sc.check_sequence");
-//                if (!empty($beanid)) {
-                while ($check = $db->fetchByAssoc($checks)) {
-                    // BEGIN CR1000278: implement namespace for class containing stage checks
-                    // keep file include for BWC
-                    if(!empty($beanid)){
-                        if (!empty($check['check_include']) && file_exists($check['check_include'])) {
-                            require_once($check['check_include']);
-                            if(class_exists($check['check_class'])){
-                                $checkClass = new $check['check_class']();
-                                $checkMethod = $check['check_method'];
-                                $checkResult = $checkClass->$checkMethod($focus);
-                            }
-                        }
-                        // CR1000278 new syntax: namespace class method is in check_method column
-                        elseif(!empty($check['check_method'])) {
-                            $checkResult = $this->runCheckResults($check['check_method'], $focus);
-                        }
-                    }
-
-                    // prepare results
-                    $stages[$stage['stage']]['checks'][] = [
-                        'checkid' => $check['id'],
-                        'name' => $check['text'],
-                        'label' => $check['check_label'],
-                        'result' => $checkResult
-                    ];
-                    // END
-                }
-            }
-        }
-
-        $retStages = [];
-        foreach ($stages as $stage => $stageData) {
-            $retStages[] = [
-                'stage' => $stage,
-                'stagedata' => $stageData
-            ];
-        }
-        return $retStages;
-    }
-
-    /**
-     * read namespace class method dynamically from string and call method
-     * return results for stage check;
-     * @param $method
-     * @param $params
-     * @return stdClass
-     */
-    public function runCheckResults($method, $params){
-        $checkResult = false;
-        // check if static call or not
-        if(strpos($method, '::') > 0){
-            try{
-                $checkResult = $method($params);
-            } catch(Exception  $e){
-                $checkResult = false;
-            }
-        } else if(strpos($method, '->') > 0){
-            try{
-                $funcArray = explode('->', $method);
-                $obj = new $funcArray[0]();
-                $checkResult = $obj->{$funcArray[1]}($params);
-            } catch(Exception  $e){
-                $checkResult = false;
-            }
-        }
-        return $checkResult;
     }
 }
