@@ -181,8 +181,8 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'type' => 'bool',
             'source' => 'non-db'
         ],
-        'prospectlists_contacts_email_addr_bean_rel_id' => [
-            'name' => 'prospectlists_contacts_email_addr_bean_rel_id',
+        'prospectlists_person_email_addr_bean_rel_id' => [
+            'name' => 'prospectlists_person_email_addr_bean_rel_id',
             'vname' => 'LBL_EMAIL_ADDRESS',
             'type' => 'varchar',
             'len' => '36',
@@ -208,7 +208,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
                     'map' => 'prospectlists_contacts_unsubscribegroup_status'
                 ],
                 'email_addr_bean_rel_id' => [
-                    'map' => 'prospectlists_contacts_email_addr_bean_rel_id'
+                    'map' => 'prospectlists_person_email_addr_bean_rel_id'
                 ]
             ]
         ],
