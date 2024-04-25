@@ -86,7 +86,15 @@ export class SpicePathWithCoaching {
 
         this.setStages();
 
-        this.backend.getRequest("common/spicebeanguide/" + this.model.module + "/" + this.model.id).subscribe(stages => {
+        const config = this.metadata.getComponentConfig('SpicePathWithCoaching', this.model.module);
+
+        if (!config.kanban) {
+            config.kanban = this.configuration.getData('spicebeanguides')[this.model.module][0]?.id;
+        }
+
+        if (!config.kanban) return;
+
+        this.backend.getRequest(`common/spicebeanguide/${config.kanban}/${this.model.module}/${this.model.id}`).subscribe(stages => {
             this.beanStagesChecksResults = stages;
         });
     }
@@ -173,11 +181,7 @@ export class SpicePathWithCoaching {
 
         if (!stage) return '';
 
-        if (stage.stagedata.stage_label) {
-            return this.language.getLabel(stage.stagedata.stage_label, '', 'long');
-        } else {
-            return stage.stagedata.stage_description;
-        }
+        return stage.stagedata.texts[this.language.currentlanguage];
     }
 
     /**

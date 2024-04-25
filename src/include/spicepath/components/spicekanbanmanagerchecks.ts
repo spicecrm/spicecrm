@@ -93,14 +93,4 @@ export class SpiceKanbanManagerChecks {
         this.setSelectedCheck(newCheck);
         this.kanbanManagerService.currentChecks.push(newCheck);
     }
-
-    /**
-     * set selected check class method
-     * @param val
-     */
-    public setSelectedCheckClassMethod(val: string) {
-        const classMethod = val.split('->');
-        this.selectedCheck.check_class = classMethod[0];
-        this.selectedCheck.check_method = classMethod[1];
-    }
 }
