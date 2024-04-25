@@ -10,6 +10,11 @@ import {model} from "../../../services/model.service";
 })
 export class ProspectListsActionSelectButton extends ObjectActionSelectButton {
     /**
+     * action config
+     */
+    public declare actionconfig: {email_address_field_name: string};
+
+    /**
      * open set targets email address modal before adding the selected items
      * @param event
      */
@@ -20,9 +25,11 @@ export class ProspectListsActionSelectButton extends ObjectActionSelectButton {
 
         this.relatedmodels.addItems(event).subscribe(() => {
 
+            const addrField = this.actionconfig?.email_address_field_name ?? 'prospectlists_person_email_addr_bean_rel_id';
+
             if (itemsWithSingleValidEmailAddress.length > 0) {
                 itemsWithSingleValidEmailAddress.forEach(item => {
-                    item.prospectlists_contacts_email_addr_bean_rel_id = (Object.values(item.email_addresses.beans).find((item: any) => item.invalid_email != 1) as any).id
+                    item[addrField] = (Object.values(item.email_addresses.beans).find((item: any) => item.invalid_email != 1) as any).id
                 });
                 this.relatedmodels.updateItems(itemsWithSingleValidEmailAddress);
             }
@@ -32,6 +39,7 @@ export class ProspectListsActionSelectButton extends ObjectActionSelectButton {
             this.modal.openStaticModal(ProspectListsSetTargetsEmailAddressModal, true, this.model.injector).subscribe(modalRef => {
 
                 modalRef.instance.items = itemsWithMultipleValidEmailAddresses;
+                modalRef.instance.emailAddressFieldName = addrField;
                 modalRef.instance.response.subscribe(relData => {
                     this.relatedmodels.updateItems(relData);
                 });
