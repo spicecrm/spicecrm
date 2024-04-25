@@ -2277,6 +2277,9 @@ class SpiceBeanHandler
         // get the summary text
         $beanDataArray['summary_text'] = $thisBean ? $thisBean->get_summary_text() : '';
 
+        # return relationship join table record id, if the bean was retrieved by a relationship link
+        if (isset($thisBean->relid)) $beanDataArray['relid'] = $thisBean->relid;
+
         // get the ACL Array
         $beanDataArray['acl'] = $thisBean->getACLActions();
 
