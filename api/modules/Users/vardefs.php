@@ -91,7 +91,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
         ],
         'pwd_last_changed' => [
             'name' => 'pwd_last_changed',
-            'vname' => 'LBL_PSW_MODIFIED',
+            'vname' => 'LBL_PWD_MODIFIED',
             'type' => 'datetime',
             'required' => false,
         ],
@@ -352,7 +352,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
         ],
         'phone_fax' => [
             'name' => 'phone_fax',
-            'vname' => 'LBL_FAX_PHONE',
+            'vname' => 'LBL_PHONE_FAX',
             'type' => 'phone',
             'dbType' => 'varchar',
             'len' => '50',
@@ -476,6 +476,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['User'] = [
             'type' => 'enum',
             'options' => 'messenger_type_dom',
             'len' => 100,
+        ],
+        'employee' => [
+            'name' => 'employee',
+            'type' => 'link',
+            'relationship' => 'employees_users',
+            'source' => 'non-db',
+            'vname' => 'LBL_EMPLOYEE'
         ],
         'calls' => [
             'name' => 'calls',
