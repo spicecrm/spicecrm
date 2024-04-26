@@ -1,6 +1,7 @@
 <?php
 /***** SPICE-HEADER-SPACEHOLDER *****/
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Administration\api\controllers\PackageController;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
@@ -146,5 +147,5 @@ $routes = [
 /**
  * register the Extension
  */
-RESTManager::getInstance()->registerExtension('adminpackages', '1.0', [], $routes);
+RESTManager::getInstance()->registerExtension('adminpackages', '1.0', ['system_package_visible' => SpiceConfig::getInstance()->get('systemvardefs.system_package_visible') == 1], $routes);
 

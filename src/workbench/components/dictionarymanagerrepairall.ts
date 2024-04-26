@@ -59,13 +59,12 @@ export class DictionaryManagerRepairAll {
     public itemfilters = {
         definitions: true,
         relationships: true,
-        dictionary: true,
-        vardefs: true
+        erroneousDefinitions: false,
+        alteredDefinitions: false,
     }
 
     public actions = {
-        fullreset: false,
-        vardefrelationshipsbulk: false
+        fullreset: true,
     }
 
     constructor(public dictionarymanager: dictionarymanager, public backend: backend, public metadata: metadata, public toast: toast, public modal: modal, public modelutilities: modelutilities, public injector: Injector) {
@@ -170,15 +169,23 @@ export class DictionaryManagerRepairAll {
      */
     get filtereddefinitions(){
         return this.definitions.filter(d => {
+
+            const alteredFilterMatch = this.itemfilters.alteredDefinitions && (!!d.sql || d.status == 'p');
+            const erroneousFilterMatch = this.itemfilters.erroneousDefinitions && (d.status == 'e' || d.status == 'p');
+
+            if ((this.itemfilters.alteredDefinitions || this.itemfilters.erroneousDefinitions) && !alteredFilterMatch && !erroneousFilterMatch) {
+                return false;
+            }
+
             switch(d.type){
                 case 'dictionarydefinition':
-                    return this.itemfilters.definitions && this.itemfilters.dictionary
+                    return this.itemfilters.definitions;
                 case 'vardefdefinition':
-                    return this.itemfilters.definitions && this.itemfilters.vardefs
+                    return this.itemfilters.definitions;
                 case 'vardefrelationship':
-                    return this.itemfilters.relationships && this.itemfilters.vardefs
+                    return this.itemfilters.relationships;
                 case 'dictionaryrelationship':
-                    return this.itemfilters.relationships && this.itemfilters.dictionary
+                    return this.itemfilters.relationships;
             }
         })
     }
@@ -267,10 +274,10 @@ export class DictionaryManagerRepairAll {
      */
     public iconThemeClass(d) {
         // if we have an error
-        if (d.status == 'e') return 'slds-icon-text-error';
+        if (d.status == 'e') return undefined;
 
         // if in process highlight the row
-        if (d.status == 'p') return 'slds-icon-text-default';
+        if (d.status == 'p' || d.status == 'e') return 'slds-icon-text-default';
 
         // if completed but with an sql
         if (d.status == 'c' && d.sql) return 'slds-icon-text-warning';
@@ -320,7 +327,14 @@ export class DictionaryManagerRepairAll {
      * stops the process
      */
     public stop() {
-        this.stopped = true;
+        if (this.actions.fullreset) {
+            this.modal.confirm('MSG_WARNING_STOP_REPAIR_ALL_DICTIONARIES', 'MSG_WARNING_STOP_REPAIR_ALL_DICTIONARIES', 'warning').subscribe(answer => {
+                if (!answer) return;
+                this.stopped = true;
+            })
+        } else {
+            this.stopped = true;
+        }
     }
 
     public handleNext() {
@@ -336,7 +350,7 @@ export class DictionaryManagerRepairAll {
             return;
         };
 
-        let d = this.filtereddefinitions.find(d => d.status == 'n' && (!this.actions.vardefrelationshipsbulk || (this.actions.vardefrelationshipsbulk && d.type != 'vardefrelationship')));
+        let d = this.filtereddefinitions.find(d => d.status == 'n');
         if (d) {
             d.status = 'p'
             switch(d.type){
@@ -350,11 +364,8 @@ export class DictionaryManagerRepairAll {
                     break;
             }
         } else {
-            if(this.actions.vardefrelationshipsbulk){
-                this.repairRelationshipVardefBulk()
-            } else {
-                this.repairing = false;
-            }
+
+            this.repairing = false;
         }
     }
 
@@ -441,40 +452,6 @@ export class DictionaryManagerRepairAll {
                 if (handleNext) this.handleNext();
             }
         })
-    }
-
-    /**
-     * does a bulk repair for all vardef relationships
-     * @private
-     */
-    private repairRelationshipVardefBulk(){
-        let body = this.filtereddefinitions.filter(d => d.type == 'vardefrelationship').map(r => {
-            return {
-                dictionaryname: r.dictionaryname,
-                relationshipname: r.name
-            }
-        });
-
-        // check that we did find any
-        if(body.length > 0) {
-            // process the bulk
-            let bulkModal = this.modal.await('LBL_BULKPROCESSING');
-            this.backend.putRequest('dictionary/repair/relationships/vardefs', {}, body).subscribe({
-                next: (res) => {
-                    this.definitions.filter(d => d.type == 'vardefrelationship').forEach(r => r.status = 'c');
-                    if (this.repairing) this.repairing = false;
-                    // close the await modal
-                    bulkModal.emit(true);
-                },
-                error: () => {
-                    if (this.repairing) this.repairing = false;
-                    // close the await modal
-                    bulkModal.emit(true);
-                }
-            })
-        } else {
-            if (this.repairing) this.repairing = false;
-        }
     }
 
     public getIcon(status) {
