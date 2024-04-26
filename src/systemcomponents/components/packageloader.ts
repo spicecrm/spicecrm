@@ -62,6 +62,13 @@ export class PackageLoader {
         );
     }
 
+    /**
+     * system package visible flag
+     */
+    get systemPackageVisible() {
+        return this.metadata.configuration.getCapabilityConfig('adminpackages')?.system_package_visible;
+    }
+
 
     get errorpackagesdisplay() {
         return this.errorpackages.join(', ');
@@ -137,15 +144,10 @@ export class PackageLoader {
      */
     public reloadLoadedPackages() {
 
-        this.modal.confirm('MSG_RELOAD_ALL_LOADED_PACKAGES', 'MSG_RELOAD_ALL_LOADED_PACKAGES').subscribe(answer => {
-
-            if (!answer) return;
-
-            this.modal.openStaticModal(PackageLoaderReloadLoadedModal).subscribe(ref => {
-                ref.instance.packages = this.packages.filter(p => p.installed).map(p => ({...p})).sort((a, b) => a.package == 'core' ? -1 : a.package.localeCompare(b.package));
-                ref.instance.repositoryAddUrl = this.repositoryaddurl;
-            })
-        })
+        this.modal.openStaticModal(PackageLoaderReloadLoadedModal).subscribe(ref => {
+            ref.instance.packages = this.packages.filter(p => p.installed && p.type != 'content').map(p => ({...p})).sort((a, b) => a.package == 'core' ? -1 : a.package.localeCompare(b.package));
+            ref.instance.repositoryAddUrl = this.repositoryaddurl;
+        });
     }
 
     /**
@@ -153,6 +155,9 @@ export class PackageLoader {
      */
     public reloadSystemPackage() {
         this.modal.confirm('MSG_RELOAD_SYSTEM_PACKAGE', 'MSG_RELOAD_SYSTEM_PACKAGE').subscribe(answer => {
+
+            if (!answer) return;
+
             const loading = this.modal.await('LBL_LOADING')
             this.backend.getRequest('configuration/package/system').subscribe({
                 next: () => {
