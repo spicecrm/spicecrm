@@ -150,6 +150,7 @@ SpiceDictionaryHandler::getInstance()->dictionary['OutputTemplate'] = [
             'type' => 'enum',
             'options' => 'is_inactive_dom',
             'default' => '0',
+            'required' => true,
             'len' => 1,
             'audited' => true
         ],
