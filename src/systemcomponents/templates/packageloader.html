@@ -26,7 +26,7 @@
         </div>
         <div  class="slds-page-header__col-actions slds-grid slds-grid--vertical-align-center">
             <div class="slds-p-horizontal--small">
-                <button (click)="reloadSystemPackage()" system-title="MSG_RELOAD_SYSTEM_PACKAGE" [disabled]="this.errorpackages.length == 0" class="slds-button slds-button--icon">
+                <button *ngIf="systemPackageVisible" (click)="reloadSystemPackage()" system-title="MSG_RELOAD_SYSTEM_PACKAGE" [disabled]="this.errorpackages.length == 0" class="slds-button slds-button--icon">
                     <system-button-icon icon="custom_apps"/>
                 </button>
                 <button (click)="reloadLoadedPackages()" system-title="MSG_RELOAD_ALL_LOADED_PACKAGES" [disabled]="this.errorpackages.length == 0" class="slds-button slds-button--icon">
