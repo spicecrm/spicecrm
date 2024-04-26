@@ -511,30 +511,7 @@ class SpiceDictionaryController
 
         return $res->withJson(['success' => SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($args['dictionaryname'], $args['relationshipname'])]);
     }
-
-    /**
-     * does a dictionary repair for a given relationship fromt eh vardefs
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function repairVardefRelationships(Request $req, Response $res, array $args): Response {
-        // set the time limit
-        set_time_limit(600);
-
-        // get the body
-        $body = $req->getParsedBody();
-
-        // process the relationshipüs
-        foreach ($body as $rel){
-            SpiceDictionaryRelationships::getInstance()->repairVardefRelationship($rel['dictionaryname'], $rel['relationshipname']);
-        }
-
-        return $res->withJson(['success' => true]);
-    }
-
+    
     /**
      * does a dictionary repair
      *
