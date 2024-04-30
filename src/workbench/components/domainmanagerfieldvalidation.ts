@@ -34,6 +34,10 @@ export class DomainManagerFieldValidation implements OnInit {
     public validation: DomainValidation;
 
     public validationvalues: DomainValidationValue[] = [];
+    /**
+     * keep the deleted ids until save
+     */
+    public deletedValidationIds: string[] = [];
 
     constructor(public domainmanager: domainmanager, public backend: backend, public modelutilities: modelutilities, public modal: modal, public injector: Injector) {
 
@@ -97,7 +101,11 @@ export class DomainManagerFieldValidation implements OnInit {
             if (answer) {
                 let index = this.validationvalues.findIndex(v => v.id == validationValue.id);
                 if (index >= 0) {
+                    // delete the value from the array and if the deleted value was custom restore the customized global value
+                    const globalValue = validationValue.scope != 'c' ? undefined : this.domainmanager.domainfieldvalidationvalues.find(v => v.enumvalue == validationValue.enumvalue && v.scope == 'g');
+                    this.deletedValidationIds.push(validationValue.id);
                     this.validationvalues.splice(index, 1);
+                    if (globalValue) this.validationvalues.splice(index, 0, globalValue);
                 }
             }
         });
@@ -117,8 +125,9 @@ export class DomainManagerFieldValidation implements OnInit {
                     let newValue = {...validationValue};
                     newValue.id = this.modelutilities.generateGuid();
                     newValue.scope = 'c';
-                    this.domainmanager.domainfieldvalidationvalues.push(newValue);
                     this.domainmanager.currentDomainScope = newValue.scope;
+                    const idx = this.validationvalues.findIndex(v => v.id == validationValue.id);
+                    this.validationvalues.splice(idx, 1, newValue);
                 }
             });
         }
@@ -186,7 +195,11 @@ export class DomainManagerFieldValidation implements OnInit {
                     } else {
                         this.domainmanager.domainfieldvalidationvalues.push(v);
                     }
-                })
+                });
+
+                this.domainmanager.domainfieldvalidationvalues = this.domainmanager.domainfieldvalidationvalues.filter(v => !this.deletedValidationIds.some(dId => v.id == dId))
+
+                this.domainmanager.reloadLanguageData();
                 this.close();
             }
         })
