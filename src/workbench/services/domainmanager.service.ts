@@ -81,6 +81,13 @@ export class domainmanager {
     }
 
     /**
+     * reload current language data after changes
+     */
+    public reloadLanguageData() {
+        this.language.loadLanguage();
+    }
+
+    /**
      * load the domains
      */
     public loadDomains() {

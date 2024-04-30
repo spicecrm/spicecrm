@@ -1,7 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import {Injectable, OnDestroy} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {backend} from '../../services/backend.service';
 import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
@@ -24,7 +24,7 @@ import {navigation} from "../../services/navigation.service";
 import {Observable, Subject} from "rxjs";
 
 @Injectable()
-export class dictionarymanager implements OnDestroy {
+export class dictionarymanager {
 
     /**
      * reserved words in PL(SQL
@@ -159,13 +159,8 @@ export class dictionarymanager implements OnDestroy {
 
         // set teh change scope
         this.changescope = this.configurationService.getCapabilityConfig('core').edit_mode;
-
-        this.navigation.addModelEditing('dictmgr', 'Administration', this, 'dictionary manager');
     }
 
-    public ngOnDestroy() {
-        this.navigation.removeModelEditing('dictmgr', 'Administration');
-    }
 
     /**
      * update the input relationship in the relationship array
@@ -572,6 +567,9 @@ export class dictionarymanager implements OnDestroy {
             });
 
         });
+    }
+
+    ngOnDestroy(): void {
     }
 
 }
