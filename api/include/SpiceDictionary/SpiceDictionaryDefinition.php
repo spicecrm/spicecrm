@@ -173,6 +173,8 @@ class SpiceDictionaryDefinition
             return null;
         }
 
+        if (empty($definition?->table)) return null;
+
         $dbColumns = $db->get_columns($definition->table);
         $result = (object) ['requiredColumnsWithNullRows' => [], 'columnsWithTruncateRows' => []];
 
