@@ -369,6 +369,14 @@ class SysModuleFilters
                     return "{$tablename}.{$relatedField} = '{$filtervalues['0']}'";
                 }
                 break;
+            case 'startsr':
+                if ($this->filtermodule) {
+                    $seed = BeanFactory::getBean($this->filtermodule);
+                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    $filtervalues = explode('::', $condition->filtervalue);
+                    return "{$tablename}.{$relatedField} LIKE '{$filtervalues['0']}%'";
+                }
+                break;
             case 'notequalr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
