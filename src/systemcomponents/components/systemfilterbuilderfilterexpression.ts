@@ -274,6 +274,10 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_OP_NOTEQUAL',
                 value1: 'relate'
             }, {
+                operator: 'startsr',
+                name: 'LBL_STARTS',
+                value1: 'text'
+            }, {
                 operator: 'emptyr',
                 name: 'LBL_OP_ISEMPTY'
             }, {
