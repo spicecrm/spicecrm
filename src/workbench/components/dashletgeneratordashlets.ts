@@ -53,11 +53,11 @@ export class DashletGeneratorDashlets {
     }
 
     get moduleDashlets() {
-        return this.dashlets.filter(dashlet => dashlet.module == this.module && dashlet.type == 'global');
+        return this.dashlets.filter(dashlet => dashlet.module == this.module && dashlet.type == 'global').sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));
     }
 
     get customModuleDashlets() {
-        return this.dashlets.filter(dashlet => dashlet.module == this.module && dashlet.type == 'custom');
+        return this.dashlets.filter(dashlet => dashlet.module == this.module && dashlet.type == 'custom').sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));
     }
 
     public goDetail(dashlet) {
