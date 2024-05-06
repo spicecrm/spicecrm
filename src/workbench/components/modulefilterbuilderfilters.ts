@@ -50,11 +50,11 @@ export class ModuleFilterBuilderFilters {
     }
 
     get modulefilters() {
-        return this.filters.filter(filter => filter.scope == 'global');
+        return this.filters.filter(filter => filter.scope == 'global').sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));;
     }
 
     get customModulefilters() {
-        return this.filters.filter(filter => filter.scope == 'custom');
+        return this.filters.filter(filter => filter.scope == 'custom').sort((a, b) => a.name.localeCompare(b.name, undefined, {'sensitivity': 'base'}));;
     }
 
     public goDetail(filter) {
