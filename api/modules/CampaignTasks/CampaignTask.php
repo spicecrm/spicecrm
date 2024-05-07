@@ -534,6 +534,8 @@ class CampaignTask extends SpiceBean
                 if ($this->save_emails == 1) {
                     $campaignLog->related_id = $email->id;
                     $campaignLog->related_type = 'Emails';
+                } else {
+                    $campaignLog->external_id = $email->message_id;
                 }
             }
 
