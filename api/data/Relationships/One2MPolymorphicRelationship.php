@@ -51,6 +51,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
             'id' => SpiceUtils::createGuid(),
             'sysdictionaryname' => $rhsDictionaryDefinition->name,
             'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
+            'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
             'fieldname' => $relationship->relationship->rhs_linkname,
             'fieldtype' => 'parent',
             'fielddefinition' => json_encode([
@@ -96,6 +97,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $lhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
+                'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
                 'fieldname' => $relationship->relationship->lhs_linkname,
                 'fieldtype' => 'link',
                 'fielddefinition' => json_encode([
@@ -114,6 +116,7 @@ class One2MPolymorphicRelationship extends One2MBeanRelationship
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $rhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
+                'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
                 'fieldname' => $relationship->relationship->name . '_' . $lhsDictionaryDefinition->tablename,
                 'fieldtype' => 'link',
                 'fielddefinition' => json_encode([
