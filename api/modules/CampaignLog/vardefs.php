@@ -132,6 +132,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['CampaignLog'] = ['audited'=>f
 			'type' => 'varchar',
 			'len' => 100,
         ],
+		'external_id' => [
+			'name' => 'external_id',
+			'vname' => 'LBL_EXTERNAL_ID',
+			'type' => 'varchar',
+			'len' => 255,
+        ],
 		'archived' => [
 			'name' => 'archived',
 			'vname' => 'LBL_ARCHIVED',
