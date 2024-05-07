@@ -183,6 +183,9 @@ class SpiceDictionaryDefinitions
         SpiceDictionaryVardefs::loadLegacyFiles();
         $dic = SpiceDictionaryHandler::getInstance()->dictionary[$name];
 
+        # clear the cache table for the definition before writing
+        DBManagerFactory::getInstance()->deleteQuery('sysdictionaryfields', "sysdictionaryname = '$name'");
+
         $this->writeVardefToFieldsTable($name, $dic);
         $repairFields = array_filter($dic['fields'], fn($d) => $d['source'] != 'non-db');
 
@@ -208,6 +211,7 @@ class SpiceDictionaryDefinitions
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $dicName,
                 'sysdictionarytablename' => $dicDefinition['table'],
+                'sysdictionarytableaudited' => $dicDefinition['audited'] ? 1 : 0,
                 'fieldname' => $definition['name'],
                 'fieldtype' => $definition['type'],
                 'fielddefinition' => json_encode($definition)

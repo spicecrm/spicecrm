@@ -68,6 +68,7 @@ class SpiceDictionaryField
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $dictionaryDefinition->name,
                 'sysdictionarytablename' => $dictionaryDefinition->tablename,
+                'sysdictionarytableaudited' => $dictionaryDefinition->getDefinition()->audited,
                 'sysdictionarydefinition_id' => $dictionaryItem->sysdictionarydefinition_id,
                 'sysdomainfield_id' => $definition->sysdictionarydomainfield_id,
                 'fieldname' => $definition->name,
