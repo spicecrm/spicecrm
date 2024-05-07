@@ -82,7 +82,7 @@ class SpiceModules
                         $module['audited'] = (new SpiceDictionaryDefinition($module['sysdictionarydefinition_id']))->getDefinition()->audited == 1;
                     } catch (\Throwable) {}
                 } else {
-                    $module['audited'] = SpiceDictionary::getInstance()->getDefs($module['bean'])['audited'];
+                    $module['audited'] = (bool) SpiceDictionary::getInstance()->getDefs($module['bean'])['audited'];
                 }
 
                 $this->modules[$module['module']] = $module;
