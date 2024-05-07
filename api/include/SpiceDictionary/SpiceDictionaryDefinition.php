@@ -77,6 +77,7 @@ class SpiceDictionaryDefinition
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $this->name,
                 'sysdictionarytablename' => $this->tablename,
+                'sysdictionarytableaudited' => $this->definition->audited,
                 'sysdictionarydefinition_id' => $this->id,
                 'fieldname' => $definition['name'],
                 'fieldtype' => $definition['type'],
