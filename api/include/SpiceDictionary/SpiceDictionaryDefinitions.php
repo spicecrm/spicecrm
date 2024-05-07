@@ -208,6 +208,7 @@ class SpiceDictionaryDefinitions
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $dicName,
                 'sysdictionarytablename' => $dicDefinition['table'],
+                'sysdictionarytableaudited' => $dicDefinition['audited'] ? 1 : 0,
                 'fieldname' => $definition['name'],
                 'fieldtype' => $definition['type'],
                 'fielddefinition' => json_encode($definition)
