@@ -109,6 +109,7 @@ class EmailAddressRelationship extends M2MRelationship
             'id' => SpiceUtils::createGuid(),
             'sysdictionaryname' => $lhsDictionaryDefinition->name,
             'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
+            'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
             'fieldname' => 'email_addresses',
             'fieldtype' => 'link',
             'fielddefinition' => json_encode([
@@ -128,6 +129,7 @@ class EmailAddressRelationship extends M2MRelationship
             'id' => SpiceUtils::createGuid(),
             'sysdictionaryname' => $lhsDictionaryDefinition->name,
             'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
+            'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
             'fieldname' => 'email_addresses_primary',
             'fieldtype' => 'link',
             'fielddefinition' => json_encode([
@@ -146,6 +148,7 @@ class EmailAddressRelationship extends M2MRelationship
             'id' => SpiceUtils::createGuid(),
             'sysdictionaryname' => $lhsDictionaryDefinition->name,
             'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
+            'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
             'fieldname' => 'email1',
             'fieldtype' => 'link',
             'fielddefinition' => json_encode([
