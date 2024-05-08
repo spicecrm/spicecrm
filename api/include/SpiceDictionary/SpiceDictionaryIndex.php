@@ -138,7 +138,7 @@ class SpiceDictionaryIndex
         $indexDictionaryDefinition = new SpiceDictionaryDefinition($this->sysdictionarydefinition_id);
 
         // if we are not on a template create the index
-        if ($create && (($dictionaryDefinition && $dictionaryDefinition->type != 'template')  || $indexDictionaryDefinition->type != 'template')) {
+        if ($create && (($dictionaryDefinition && $dictionaryDefinition->type != 'template')  || ($indexDictionaryDefinition->type != 'template' && $indexDictionaryDefinition->tablename != 'audit_template'))) {
             // get the tablenam
             $tablename = $dictionaryDefinition ? $dictionaryDefinition->tablename : $indexDictionaryDefinition->tablename;
 
