@@ -463,11 +463,8 @@ class SpiceInstaller
                 $db->createDatabase($dbconfig['db_name']);
             }
 
-        } else { // todo remove for testing
-            $db->dropDatabase($dbconfig['db_name']);
-            $db->createDatabase($dbconfig['db_name']);
         }
-
+        
         $this->dbManagerFactory::setDBConfigInstaller(['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']]);
 
         $db = $this->dbManagerFactory->getInstance();
@@ -583,22 +580,6 @@ class SpiceInstaller
             }
 
             // creates audit table if object is audited
-            if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['audited']) {
-                require('metadata/audit_templateMetaData.php');
-                $audit   = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] . '_audit';
-                $fields  = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
-                $indices = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
-
-                foreach ($indices as $nr => $properties) {
-                    $indices[$nr]['name'] = 'idx_' . strtolower($audit) . '_' . $properties['name'];
-                }
-
-                if (!$db->tableExists($audit)) {
-                    $query = $db->createTableSQLParams($audit, $fields, $indices);
-                    $db->query($query);
-                }
-
-            }
             /*
             SpiceBean::createRelationshipMeta(
                 $bean,
