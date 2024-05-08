@@ -463,6 +463,9 @@ class SpiceInstaller
                 $db->createDatabase($dbconfig['db_name']);
             }
 
+        } else { // todo remove for testing
+            $db->dropDatabase($dbconfig['db_name']);
+            $db->createDatabase($dbconfig['db_name']);
         }
 
         $this->dbManagerFactory::setDBConfigInstaller(['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']]);
