@@ -218,6 +218,6 @@ export class ObjectRelatedCardFooter implements OnInit {
      * gets the total number of pages
      */
     get pages() {
-        return Math.floor(this.relatedmodels.count / this.relatedmodels.loaditems) + 1;
+        return Math.ceil(this.relatedmodels.count / this.relatedmodels.loaditems);
     }
 }
