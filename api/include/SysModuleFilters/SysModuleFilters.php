@@ -766,10 +766,10 @@ class SysModuleFilters
                 break;
             case 'startsr':
                 if ($this->filtermodule) {
-                    $seed = BeanFactory::getBean($this->filtermodule);
-                    $relatedField = $seed->field_defs[$condition->field]['id_name'];
+                    //$seed = BeanFactory::getBean($this->filtermodule);
+                    //$relatedField = $seed->field_defs[$condition->field]['id_name'];
                     $filtervalues = explode('::', $condition->filtervalue);
-                    return ['wildcard' => [$relatedField . '.raw' => $filtervalues['0'] . '*']];
+                    return ['wildcard' => [$condition->field . '.raw' => $filtervalues['0'] . '*']];
                 }
                 break;
             case 'oneof':
