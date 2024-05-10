@@ -881,7 +881,7 @@ class SpiceFTSHandler
             if(is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
                 $queryParam['query']['bool']['filter']['bool']['must'][]['bool']['must'][]['terms']['is_inactive'] = ['0'];
             } else {
-                $queryParam['query']['bool']['filter']['bool']['must'][]['bool']['must'][]['terms']['is_inactive'] = ['0'];
+                $queryParam['query']['bool']['filter']['bool']['must'][]['terms']['is_inactive'] = ['0'];
             }
         }
 
