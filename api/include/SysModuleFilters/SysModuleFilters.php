@@ -702,7 +702,6 @@ class SysModuleFilters
         switch ($condition->operator) {
             case 'empty':
                 return ['bool' => ['must_not' => [['exists' => ["field" => $condition->field]]]]];
-                break;
             case 'emptyr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
@@ -710,16 +709,15 @@ class SysModuleFilters
                     return ['bool' => ['must_not' => [['exists' => ["field" => $relatedField]]]]];
                 }
                 break;
-            case 'notempty':
+            case 'notemptyr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
                     $relatedField = $seed->field_defs[$condition->field]['id_name'];
                     return ['exists' => ["field" => $relatedField]];
                 }
                 break;
-            case 'notemptyr':
+            case 'notempty':
                 return ['exists' => ["field" => $condition->field]];
-                break;
             case 'equals':
                 $seed = BeanFactory::getBean($this->filtermodule);
                 $isMultiEnum = $seed->field_defs[$condition->field]['type'] == 'multienum';
@@ -728,10 +726,8 @@ class SysModuleFilters
                 } else {
                     return ['term' => [$condition->field . '.raw' => $condition->filtervalue]];
                 }
-                break;
             case 'notequals':
                 return ['bool' => ['must_not' => ['term' => [$condition->field . '.raw' => $condition->filtervalue]]]];
-                break;
             case 'equalr':
                 if ($this->filtermodule) {
                     $seed = BeanFactory::getBean($this->filtermodule);
