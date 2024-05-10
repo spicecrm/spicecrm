@@ -879,10 +879,9 @@ class SpiceFTSHandler
         $listTypes = ['all', 'owner', 'globalSearch'];
         if (property_exists($seed, 'is_inactive') && in_array($listId, $listTypes)) {
             if(is_array($queryParam['query']['bool']['filter']['bool']['must'])) {
-                $index = count($queryParam['query']['bool']['filter']['bool']['must']);
-                $queryParam['query']['bool']['filter']['bool']['must']['0']['bool']['must'][$index]['terms']['is_inactive'] = ['0'];
+                $queryParam['query']['bool']['filter']['bool']['must'][]['bool']['must'][]['terms']['is_inactive'] = ['0'];
             } else {
-                $queryParam['query']['bool']['filter']['bool']['must']['0']['bool']['must']['0']['terms']['is_inactive'] = ['0'];
+                $queryParam['query']['bool']['filter']['bool']['must'][]['bool']['must'][]['terms']['is_inactive'] = ['0'];
             }
         }
 
