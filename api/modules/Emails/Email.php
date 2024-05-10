@@ -374,7 +374,8 @@ class Email extends SpiceBean
 
         foreach ($fields as $type => $field) {
 
-            if (empty($this->$field)) continue;
+            # if no changes detected ignore the fill in
+            if (empty($this->$field) || $this->$field == $this->fetched_row[$field]) continue;
 
             $addresses = [];
 
