@@ -138,7 +138,7 @@ class EmailTemplate extends SpiceBean {
      * @param SpiceBean $bean
      * @return mixed
      */
-    private function callContentMethod(array $retArray, SpiceBean $bean)
+    private function callContentMethod(array $retArray, ?SpiceBean $bean)
     {
         if (empty($this->content_method)) return $retArray;
 
