@@ -77,6 +77,7 @@ class SpiceDictionaryDefinition
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $this->name,
                 'sysdictionarytablename' => $this->tablename,
+                'sysdictionarytableaudited' => $this->definition->audited,
                 'sysdictionarydefinition_id' => $this->id,
                 'fieldname' => $definition['name'],
                 'fieldtype' => $definition['type'],
@@ -172,6 +173,8 @@ class SpiceDictionaryDefinition
         } catch (\Throwable) {
             return null;
         }
+
+        if (empty($definition?->table)) return null;
 
         $dbColumns = $db->get_columns($definition->table);
         $result = (object) ['requiredColumnsWithNullRows' => [], 'columnsWithTruncateRows' => []];
