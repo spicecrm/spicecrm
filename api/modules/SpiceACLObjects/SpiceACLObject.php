@@ -101,7 +101,7 @@ class SpiceACLObject extends SpiceBean
         // check for territory values
         $this->territoryelementvalues = [];
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory) {
+        if ($territory instanceof SpiceACLTerritory) {
             $territoryelementvalues = $this->db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id='$this->id'");
             while ($territoryelementvalue = $this->db->fetchByAssoc($territoryelementvalues)) {
                 $this->territoryelementvalues[] = $territoryelementvalue;
