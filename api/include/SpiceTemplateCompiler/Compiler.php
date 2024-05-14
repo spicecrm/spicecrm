@@ -108,7 +108,7 @@ class Compiler
     public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
     {
         $this->additionalValues = $additionalValues;
-        $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()->getPreference('language') : $lang;
+        $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;
         if ( empty( $this->lang )) $this->lang = 'de_DE';
         $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
