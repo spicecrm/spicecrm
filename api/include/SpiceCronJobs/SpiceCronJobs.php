@@ -8,6 +8,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 
 class SpiceCronJobs
@@ -19,6 +20,8 @@ class SpiceCronJobs
      */
     public function runJobs(string $jobId = null)
     {
+        if (SystemStartupMode::maintenanceModeEnabled() || SystemStartupMode::recoveryModeEnabled()) return;
+
         $pid = getmypid();
         LoggerManager::getLogger()->debug("---> CRON: PROCESS_ID: '$pid': Run Jobs <---");
 
