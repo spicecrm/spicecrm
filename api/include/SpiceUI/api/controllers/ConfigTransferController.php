@@ -36,7 +36,13 @@ class ConfigTransferController
         'sysnumberrangeallocation',
         'syssalesdocnumberranges',
         'sysdatastreams',
-        'sysgdprretentions'
+        'sysgdprretentions',
+        'sysmsgraphusersubscriptions',
+        'sysmsgraphuserconfig',
+        'sysexchangeusersubscriptions',
+        'sysexchangeuserconfig',
+        'sysgsuiteusersubscriptions',
+        'sysgsuiteuserconfig'
     ];
 
     static private $dataFormat = 2;
