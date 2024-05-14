@@ -138,16 +138,12 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
 
     private setUploadSettings(mailboxId: string) {
         if (!!mailboxId) {
-            let key = ['outbound', 'outboundsingle', 'outboundmass'];
-            let mailboxData =[];
-            key.forEach((k) => {
-                if(this.configuration.getData('mailboxes'+k) != false){
-                    mailboxData = (this.configuration.getData('mailboxes'+k));
-                }
-            });
-            const selectedMailboxData = mailboxData.find(id => id.value == mailboxId);
-            this.maxUploadBytes = selectedMailboxData.max_upload;
-            this.maxUpload = this.modelattachments.humanFileSize(this.maxUploadBytes);
+            this.backend.getRequest("module/Mailboxes/scope").subscribe(
+                (results: any) => {
+                    const selectedMailboxData = results.find(m => m.value == mailboxId);
+                    this.maxUploadBytes = selectedMailboxData.max_upload;
+                    this.maxUpload = this.modelattachments.humanFileSize(this.maxUploadBytes);
+                });
         }
     }
 
