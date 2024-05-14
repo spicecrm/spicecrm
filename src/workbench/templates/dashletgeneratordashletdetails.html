@@ -29,7 +29,7 @@
                     <input class="slds-input" type="text" [(ngModel)]="dashlet.name">
                 </div>
             </div>
-            <div class="slds-form-element slds-size--1-of-2">
+            <div class="slds-form-element slds-col slds-size--1-of-2">
                 <label class="slds-form-element__label">Label</label>
                 <system-input-label [(ngModel)]="dashlet.label"></system-input-label>
             </div>
@@ -62,10 +62,18 @@
                 </div>
             </div>
         </div>
-        <div class="slds-form-element slds-size--1-of-1">
-            <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
-            <div class="slds-m-vertical--small slds-text-title_bold">
-                <textarea class="slds-textarea" [(ngModel)]="dashlet.description" style="max-height: 400px; min-height: 30px"></textarea>
+        <div class="slds-grid slds-gutters_direct-xx-small">
+            <div class="slds-form-element slds-col slds-size--1-of-2">
+                <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
+                <div class="slds-text-title_bold">
+                    <textarea class="slds-textarea" [(ngModel)]="dashlet.description" style="max-height: 400px; min-height: 30px"></textarea>
+                </div>
+            </div>
+            <div class="slds-form-element  slds-col slds-size--1-of-2">
+                <label class="slds-form-element__label" ><system-label label="LBL_ID"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input class="slds-input" type="text" disabled value="{{dashlet.id}}">
+                </div>
             </div>
         </div>
         <div class="slds-size--1-of-1 slds-border--top slds-border--bottom slds-form-element slds-m-top--medium slds-p-bottom--medium">
