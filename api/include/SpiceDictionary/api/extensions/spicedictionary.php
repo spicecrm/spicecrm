@@ -143,14 +143,6 @@ $routes = [
     ],
     [
         'method' => 'put',
-        'route' => '/dictionary/repair/relationships/vardefs',
-        'class' => SpiceDictionaryController::class,
-        'function' => 'repairVardefRelationships',
-        'description' => 'does a general repair for all vardef relationship',
-        'options' => ['adminOnly' => true]
-    ],
-    [
-        'method' => 'put',
         'route' => '/dictionary/repair/vardef/{name}',
         'class' => SpiceDictionaryController::class,
         'function' => 'repairVardef',

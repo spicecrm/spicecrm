@@ -53,6 +53,7 @@ class UserRelationship extends One2MRelationship
                 'id' => SpiceUtils::createGuid(),
                 'sysdictionaryname' => $rhsDictionaryDefinition->name,
                 'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
+                'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
                 'fieldname' => $relationship->relationship->rhs_linkname,
                 'fieldtype' => 'link',
                 'fielddefinition' => json_encode([
@@ -73,6 +74,7 @@ class UserRelationship extends One2MRelationship
                     'id' => SpiceUtils::createGuid(),
                     'sysdictionaryname' => $rhsDictionaryDefinition->name,
                     'sysdictionarytablename' => $rhsDictionaryDefinition->tablename,
+                    'sysdictionarytableaudited' => $rhsDictionaryDefinition->getDefinition()->audited,
                     'fieldname' => $relationship->relationship->rhs_relatename,
                     'fieldtype' => 'linked',
                     'fielddefinition' => json_encode([

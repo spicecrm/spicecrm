@@ -5,6 +5,8 @@ namespace SpiceCRM\includes\SpiceDictionary;
 use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 
 class SpiceDictionaryDomainValidation
 {
@@ -55,8 +57,14 @@ class SpiceDictionaryDomainValidation
         // upsert the current values
         foreach ($values as $value){
             $table = $value['scope'] == 'c' ? 'syscustomdomainfieldvalidationvalues' : 'sysdomainfieldvalidationvalues';
+
+            # if a global value is customized, keep the global value
+            if ($value['scope'] == 'c' && $global = array_filter($activeValues, fn($v) => $v['scope'] == 'g' && $v['enumvalue'] == $value['enumvalue'])) {
+                unset($activeValues[array_key_first($global)]);
+            }
+
             unset($value['scope']);
-            SystemDeploymentCR::writeDBEntry($table, $value['id'], $value, $value['enumvalue']);
+            SystemDeploymentCR::writeDBEntry($table, $value['id'], $value, $value['enumvalue'] ?? 'empty');
             unset($activeValues[$value['id']]);
 
         }
@@ -64,7 +72,14 @@ class SpiceDictionaryDomainValidation
         // delete the nonexistent
         foreach ($activeValues as $activeValue){
             $table = $activeValue['scope'] == 'c' ? 'syscustomdomainfieldvalidationvalues' : 'sysdomainfieldvalidationvalues';
-            SystemDeploymentCR::deleteDBEntry($table,$activeValue['id'], $activeValue['enumvalue'] );
+            SystemDeploymentCR::deleteDBEntry($table,$activeValue['id'], $activeValue['enumvalue'] ?? 'empty' );
+        }
+
+        SpiceCache::clear('domainvalidations');
+
+        foreach (LanguageManager::getLanguages()['available'] as $language){
+            SpiceCache::clear("app_list_strings.{$language['language_code']}");
+            SpiceCache::clear("cachedlanguage{$language['language_code']}");
         }
     }
 
