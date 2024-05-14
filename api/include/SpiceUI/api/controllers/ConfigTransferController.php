@@ -38,6 +38,11 @@ class ConfigTransferController
         'sysdatastreams',
         'sysgdprretentions',
         'sysmsgraphusersubscriptions',
+        'sysmsgraphuserconfig',
+        'sysexchangeusersubscriptions',
+        'sysexchangeuserconfig',
+        'sysgsuiteusersubscriptions',
+        'sysgsuiteuserconfig'
     ];
 
     static private $dataFormat = 2;
