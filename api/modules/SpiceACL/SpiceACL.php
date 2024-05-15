@@ -361,7 +361,7 @@ class SpiceACL
 
         foreach($aclActions as $aclAction) {
             // $aclArray[$aclAction] = $seed->ACLAccess($aclAction);
-            $aclArray[$aclAction] = $this->checkAccess($module, $aclAction, true);
+            $aclArray[$aclAction] = $module == 'Home' || $this->checkAccess($module, $aclAction, true);
         }
         return $aclArray;
     }
