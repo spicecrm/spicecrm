@@ -274,7 +274,7 @@ class SpiceFTSSearchtermParser
 
         $fields = [];
         foreach ($indexProperties as $indexProperty){
-            $fields[] = $indexProperty['fieldname'];
+            $fields[] = $indexProperty['indexfieldname'];
         }
 
         $subquery = [

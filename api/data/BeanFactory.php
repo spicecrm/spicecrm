@@ -50,6 +50,10 @@ class BeanFactory
     private static function initSystemModules(): void
     {
         foreach (self::$systemModules as $moduleName => $beanInfo) {
+            if(!SpiceDictionary::getInstance()->getDefs($beanInfo['beanname'])){
+                unset(self::$systemModules[$moduleClass]);
+                continue;
+            }
             $customClass = "\\SpiceCRM\\custom\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
             $extensionClass = "\\SpiceCRM\\extensions\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
             $moduleClass = "\\SpiceCRM\\modules\\{$moduleName}\\{$beanInfo['beanname']}";

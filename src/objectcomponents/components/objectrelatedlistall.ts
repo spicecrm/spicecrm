@@ -105,6 +105,7 @@ export class ObjectRelatedlistAll implements OnInit {
         // load the related data
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
+        this.relatedmodels.model = this.model;
         this.relatedmodels.relatedModule = this.related ;
         this.relatedmodels.linkName = this.link;
         this.relatedmodels.loaditems = 50;

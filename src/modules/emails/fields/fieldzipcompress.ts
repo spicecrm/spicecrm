@@ -52,15 +52,11 @@ export class fieldZipCompress extends fieldGeneric {
     }
     private setUploadSettings(mailboxId: string) {
         if (!!mailboxId) {
-            let key = ['outbound', 'outboundsingle', 'outboundmass'];
-            let mailboxData =[];
-            key.forEach((k) => {
-                if(this.configuration.getData('mailboxes'+k) != false){
-                    mailboxData = (this.configuration.getData('mailboxes'+k));
-                }
-            });
-            const selectedMailboxData = mailboxData.find(id => id.value == mailboxId);
-            this.mailboxZipConfig = selectedMailboxData.zip_compress;
+            this.backend.getRequest("module/Mailboxes/scope").subscribe(
+                (results: any) => {
+                    const selectedMailboxData = results.find(m => m.value == mailboxId);
+                    this.mailboxZipConfig = selectedMailboxData.zip_compress;
+                });
         }
     }
 
