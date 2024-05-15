@@ -5,6 +5,7 @@ namespace SpiceCRM\modules\SpiceACL;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -55,7 +56,7 @@ class SpiceACL
             $this->territory = BeanFactory::getBean('SpiceACLTerritories');
         }
 
-        if ($this->territory) {
+        if ($this->territory && $this->territory instanceof SpiceACLTerritory) {
             $this->territory->createVardefs($module);
         }
     }
@@ -66,7 +67,7 @@ class SpiceACL
 
         if(file_exists('extensions/modules/SpiceACLTerritories')) {
             $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory) {
+            if ($territory && $territory instanceof SpiceACLTerritory) {
                 $territoryData = $territory->addFTSData($bean);
                 $addData = array_merge($addData, $territoryData);
             }
