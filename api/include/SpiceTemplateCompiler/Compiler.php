@@ -782,6 +782,9 @@ class Compiler
 
     function getValueForCompileblock($m, $beans, $raw = false ) {
 
+        # quoted string has nothing to parse. Just return the string as is
+        if (str_starts_with($m, "'") && str_ends_with($m, "'")) return $m;
+
         preg_match('#^([^:]+)(:(.*))?$#s', $m, $matches );
 
         $parts = explode('.', $matches[1] );
