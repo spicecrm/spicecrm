@@ -475,7 +475,7 @@ class CampaignTask extends SpiceBean
      * @return bool
      * @throws MessageInterceptedException
      */
-    function sendQueuedEmails($addBeans = []){
+    function sendQueuedEmails($campaignTaskType='Email'){
         // set the admin user
         /** @var User $admin */
         $admin = BeanFactory::getBean('Users', '1');
@@ -483,7 +483,7 @@ class CampaignTask extends SpiceBean
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // get the queued emails
-        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Email' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
+        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
 
         while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
