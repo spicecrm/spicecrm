@@ -16,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\TimeDate;
 
-class EventController
+class EventsController
 {
     /**
      * create eventregistrations for given records related to a prospectlist
