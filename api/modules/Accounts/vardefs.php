@@ -967,7 +967,7 @@ if (file_exists('extensions/modules/BonusCards')) {
     ];
 }
 
-if (file_exists('extensions/modules/Products')) {
+if (file_exists('modules/Products')) {
     SpiceDictionaryHandler::getInstance()->dictionary['Account']['fields']['manufactured_products'] = [
         'vname' => 'LBL_MANUFACTURED_PRODUCTS',
         'name' => 'manufactured_products',
