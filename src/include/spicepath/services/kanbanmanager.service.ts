@@ -13,6 +13,7 @@ import {toast} from "../../../services/toast.service";
 import _ from "underscore";
 import {ChangeHistoryService} from "../../../workbench/services/changehistory.service";
 import {modal} from "../../../services/modal.service";
+import {configurationService} from "../../../services/configuration.service";
 
 
 @Injectable()
@@ -46,7 +47,8 @@ export class KanbanManagerService {
         public backend: backend,
         public toast: toast,
         public modal: modal,
-        public changeService: ChangeHistoryService
+        public changeService: ChangeHistoryService,
+        private configurationService: configurationService
     ) {
         this.loadItems();
         this.loadChecks();
@@ -254,6 +256,8 @@ export class KanbanManagerService {
             if (this.changeService.hasChanges('spiceTexts')) {
                 this.changeService.applyChanges(this.spiceTexts, 'spiceTexts');
             }
+
+            this.configurationService.reloadTaskData('spicebeanguides');
         });
     }
 
