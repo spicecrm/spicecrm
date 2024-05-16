@@ -51,7 +51,18 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
                 event.previousIndex,
                 event.currentIndex,
             );
+
+            event.previousContainer.data.forEach((stage, index) => {
+                stage.stage_sequence = index +1;
+            });
+
+            event.item.data.not_in_kanban = event.container.id == 'notInKanbanList' ? 1 : 0;
         }
+
+        event.container.data.forEach((stage, index) => {
+            stage.stage_sequence = index +1;
+        });
+
         this.emitActiveStages.emit(this.activeStages);
     }
 
@@ -71,8 +82,11 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
 
         if (!this.kanbanManagerService.selectedBeanGuide) return this.emitActiveStages.emit([]);
 
-        this.activeStages = this.kanbanManagerService.currentStages.filter(dis=>dis.not_in_kanban == 0) as SpiceBeanGuideActiveStageI[];
-        this.inactiveStages = this.kanbanManagerService.currentStages.filter(dis=>dis.not_in_kanban == 1) as SpiceBeanGuideInactiveStageI[];
+        this.activeStages = (this.kanbanManagerService.currentStages.filter(dis=>dis.not_in_kanban == 0) as SpiceBeanGuideActiveStageI[])
+            .map(stage => this.kanbanManagerService.generateTrackableObject(stage, 'stages'));
+        this.inactiveStages = (this.kanbanManagerService.currentStages.filter(dis=>dis.not_in_kanban == 1) as SpiceBeanGuideInactiveStageI[])
+            .map(stage => this.kanbanManagerService.generateTrackableObject(stage, 'stages'));
+
         this.selected = undefined;
         this.emitActiveStages.emit(this.activeStages);
     }
