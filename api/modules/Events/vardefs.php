@@ -215,7 +215,31 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
             'bean_name' => 'CampaignLog',
             'source' => 'non-db',
             'vname' => 'LBL_CAMPAIGNLOG',
-        ]
+        ],
+        'eventcapacities' => [
+            'name' => 'eventcapacities',
+            'type' => 'link',
+            'relationship' => 'event_eventcapacities',
+            'module' => 'EventCapacities',
+            'bean_name' => 'EventCapacity',
+            'source' => 'non-db',
+            'vname' => 'LBL_EVENTCAPACITIES',
+        ],
+        'fav_consumers' => [
+            'name' => 'fav_consumers',
+            'type' => 'link',
+            'relationship' => 'event_consumers',
+            'module' => 'Campaigns',
+            'bean_name' => 'Campaign',
+            'source' => 'non-db',
+            'vname' => 'LBL_CAMPAIGNS',
+        ],
+        'booking_url' => [
+            'name' => 'booking_url',
+            'vname' => 'LBL_BOOKING_URL',
+            'type' => 'varchar',
+            'source' => 'non-db',
+        ],
     ],
     'relationships' => [
         'events_campaigns' => [
@@ -237,7 +261,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Event'] = [
             'relationship_type' => 'one-to-many',
             'relationship_role_column' => 'source_type',
             'relationship_role_column_value' => 'Events'
-        ]
+        ],
+        'event_consumers' => [
+            'lhs_module' => 'Events',
+            'lhs_table' => 'events',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Consumers',
+            'rhs_table' => 'consumers',
+            'rhs_key' => 'event_id',
+            'relationship_type' => 'one-to-many',
+        ],
     ],
     'indices' => [
         [
