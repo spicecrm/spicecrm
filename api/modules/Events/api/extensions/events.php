@@ -3,7 +3,7 @@
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\modules\Events\api\controllers\EventController;
+use SpiceCRM\modules\Events\api\controllers\EventsController;
 
 /**
  * get a Rest Manager Instance
@@ -19,7 +19,7 @@ $routes = [
 [
     'method'      => 'post',
     'route'       => '/module/Events/{id}/registrations',
-    'class'       => EventController::class,
+    'class'       => EventsController::class,
     'function'    => 'createEventRegistrations',
     'description' => 'Will create event registration to corresponding event for each member in selected target lists',
     'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
