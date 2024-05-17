@@ -65,7 +65,7 @@
         <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'packages'}" [title]="language.getLabel('LBL_PACKAGES')" role="presentation">
             <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="scope='packages'"><system-label label="LBL_PACKAGES"></system-label></a>
         </li>
-        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'languages'}" title="language.getLabel('LBL_LANGUAGES')" role="presentation">
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'languages'}" [title]="language.getLabel('LBL_LANGUAGES')" role="presentation">
             <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="scope='languages'"><system-label label="LBL_LANGUAGES"></system-label></a>
         </li>
         <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'content'}" [title]="language.getLabel('LBL_CONTENT')" role="presentation">
