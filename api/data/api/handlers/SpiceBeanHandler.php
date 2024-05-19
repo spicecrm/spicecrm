@@ -1235,7 +1235,7 @@ class SpiceBeanHandler
         }
 
 
-        $query = "SELECT al.*, au.user_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE al.parent_id = '$beanId' $excludedFieldsSQL";
+        $query = "SELECT al.*, au.user_name, au.first_name, au.last_name FROM " . $thisBean->get_audit_table_name() . " al LEFT JOIN users au ON al.created_by = au.id WHERE al.parent_id = '$beanId' $excludedFieldsSQL";
         if ($params['user']) {
             $query .= " AND au.user_name like '%{$params['user']}%'";
         }
@@ -1253,7 +1253,7 @@ class SpiceBeanHandler
                         'transaction_id' => $auditRecord['transaction_id'],
                         'date_created' => $auditRecord['date_created'],
                         'created_by' => $auditRecord['created_by'],
-                        'user_name' => $auditRecord['user_name'],
+                        'user_name' => (!empty($auditRecord['first_name']) ? $auditRecord['first_name'].' ' : '').$auditRecord['last_name'].' ['.$auditRecord['user_name'].']',
                         'audit_log' => []
                     ];
                 }
