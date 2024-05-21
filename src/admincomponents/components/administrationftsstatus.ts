@@ -97,6 +97,7 @@ export class AdministrationFTSStatus {
                         tsize: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
                         stored: response.stats.indexed[index].count,
                         unindexed: response.stats.indexed[index].unindexed,
+                        erroneous: response.stats.indexed[index].erroneous,
                         blocked: (response.settings && response.settings[index] && response.settings[index].settings.index.blocks?.read_only_allow_delete) ? true : false
                     });
                 }
