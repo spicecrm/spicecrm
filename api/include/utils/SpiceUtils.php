@@ -1019,6 +1019,8 @@ class SpiceUtils
         }
 
         if (empty($params['human'])) {
+            // make sure $amount is a float
+            if(!is_float($amount)) $amount = floatval($amount);
             $amount = number_format(round($amount, $round), $decimals, $dec_sep, $num_grp_sep);
             $amount = self::formatPlaceSymbol($amount, $symbol,(empty($params['symbol_space']) ? false : true));
         } else {
