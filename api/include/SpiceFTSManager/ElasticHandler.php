@@ -42,12 +42,17 @@ class ElasticHandler
         ]
     ];
 
+    private string $logTable = 'sysapilog';
+
     function __construct()
     {
-
         $this->server = SpiceConfig::getInstance()->config['fts']['server'];
         $this->port = SpiceConfig::getInstance()->config['fts']['port'];
         $this->indexPrefix = SpiceConfig::getInstance()->config['fts']['prefix'];
+
+        if (!empty(SpiceConfig::getInstance()->get('fts.log_table'))) {
+            $this->logTable = SpiceConfig::getInstance()->get('fts.log_table');
+        }
 
         if (AuthenticationController::getInstance()->systemtenantid) {
             $this->indexPrefix .= AuthenticationController::getInstance()->systemtenantid . '_';
@@ -266,11 +271,14 @@ class ElasticHandler
         foreach($response['indices'] as $index => $data){
             $table = $dbTables[str_replace($response['_prefix'], '', $index)];
             if(!empty($table)) {
+                $erroneousFixedDate = SpiceFTSHandler::ERRONEOUS_FIXED_DATE;
+                $erroneous = $db->getOne("SELECT count(id) totalcount FROM $table WHERE date_indexed = '$erroneousFixedDate'");
                 $count = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE deleted = 0");
-                $unindexed = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE ((date_indexed IS NULL OR date_indexed < date_modified) AND deleted = 0) OR (date_indexed IS NOT NULL AND deleted = 1)");
+                $unindexed = $db->fetchOne("SELECT count(id) totalcount FROM $table WHERE " . SpiceFTSHandler::getSelectQueryWhere());
                 $response['indexed'][$index] = [
                     'count' => $count['totalcount'],
                     'unindexed' => $unindexed['totalcount'],
+                    'erroneous' => $erroneous
                 ];
             }
         }
@@ -555,12 +563,12 @@ class ElasticHandler
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
             case '2':
                 $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                $logEntryHandler->writeOutogingLogEntry();
+                $logEntryHandler->writeOutogingLogEntry(true, $this->logTable);
                 break;
             case '1':
                 if (@$resultdec->status > 0) {
                     $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                    $logEntryHandler->writeOutogingLogEntry();
+                    $logEntryHandler->writeOutogingLogEntry(true, $this->logTable);
                 }
                 break;
         }
@@ -590,12 +598,12 @@ class ElasticHandler
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
             case '2':
                 $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                $logEntryHandler->writeOutogingLogEntry();
+                $logEntryHandler->writeOutogingLogEntry(true, $this->logTable);
                 break;
             case '1':
-                if (@$resultdec->status > 0) {
+                if (@$resultdec->status > 0 || $resultdec->errors) {
                     $logEntryHandler->updateOutgoingLogEntry($ch, $result);
-                    $logEntryHandler->writeOutogingLogEntry();
+                    $logEntryHandler->writeOutogingLogEntry(true, $this->logTable);
                 }
                 break;
         }
