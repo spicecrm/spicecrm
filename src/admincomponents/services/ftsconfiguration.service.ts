@@ -145,32 +145,42 @@ export class ftsconfiguration {
             loadingModalRef.instance.messagelabel = this.language.getLabel('LBL_EXECUTING') + ': ' + this.language.getLabel(label);
             if (action == 'reset') {
                 this.save(false).subscribe(res => {
-                    this.backend.postRequest(url, params).subscribe(
+                    this.backend.postRequest(url, params).subscribe({
+                        next:
+                            result => {
+                                if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
+                                    let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFORMATION');
+                                    this.modal.info(result.message, headerText, result.status);
+                                } else if (result.status != 'error') {
+                                    this.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
+                                }
+                                loadingModalRef.instance.self.destroy();
+                            },
+                        error: () => {
+                            this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                            loadingModalRef.instance.self.destroy();
+                        }
+
+                });
+                }, error => loadingModalRef.instance.self.destroy());
+            } else {
+                this.backend.postRequest(url, params).subscribe({
+                    next:
                         result => {
                             if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
                                 let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFORMATION');
                                 this.modal.info(result.message, headerText, result.status);
                             } else if (result.status != 'error') {
-                                this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                                this.toast.sendToast('MSG_SUCCESSFULLY_EXECUTED', 'success');
                             }
                             loadingModalRef.instance.self.destroy();
                         },
-                        error => loadingModalRef.instance.self.destroy()
-                    );
-                }, error => loadingModalRef.instance.self.destroy());
-            } else {
-                this.backend.postRequest(url, params).subscribe(
-                    result => {
-                        if (result && result.message && typeof result.message == 'string' && result.message.length > 0) {
-                            let headerText = result.type && result.type.length > 0 ? result.type : this.language.getLabel('LBL_INFORMATION');
-                            this.modal.info(result.message, headerText, result.status);
-                        } else if (result.status != 'error') {
-                            this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
-                        }
+                    error: () => {
+                        this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
                         loadingModalRef.instance.self.destroy();
-                    },
-                    error => loadingModalRef.instance.self.destroy()
-                );
+                    }
+
+            });
             }
         });
     }

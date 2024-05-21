@@ -9,6 +9,7 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
+use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
 use SpiceCRM\modules\SchedulerJobTasks\SchedulerJobTask;
 
 class SpiceCronJobs
@@ -34,8 +35,9 @@ class SpiceCronJobs
             $jobs = [BeanFactory::getBean('SchedulerJobs', $jobId)];
         }
 
+        /** @var SchedulerJob $job */
         foreach ($jobs as $job) {
-            $job->runTasks();
+            $job->runTasks(empty($jobId));
         }
     }
 
