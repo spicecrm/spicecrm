@@ -30,6 +30,7 @@ export class AdministrationFTSStats {
                     documents: stats.indices[index].total.docs.count,
                     stored: stats.indexed[index].count,
                     unindexed: stats.indexed[index].unindexed,
+                    erroneous: stats.indexed[index].erroneous,
                 });
             }
 
