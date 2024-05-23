@@ -1827,7 +1827,7 @@ class MysqliManager extends DBManager
     public function getTablesCharsetInfo(): array {
         $result = [];
         $dbName = $this->dbConfig['dbconfig']['db_name'];
-        $sql = "SELECT table_name,CCSA.character_set_name, CCSA.collation_name FROM information_schema.TABLES T,
+        $sql = "SELECT table_name table_name,CCSA.character_set_name character_set_name, CCSA.collation_name collation_name FROM information_schema.TABLES T,
                 information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA
                 WHERE CCSA.collation_name = T.table_collation
                 AND T.table_schema = '{$dbName}'";
