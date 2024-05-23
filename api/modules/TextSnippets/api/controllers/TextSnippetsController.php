@@ -5,7 +5,9 @@ namespace SpiceCRM\modules\TextSnippets\api\controllers;
 use Exception;
 use SpiceCRM\data\BeanFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
+use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\TextSnippets\TextSnippet;
 
 class TextSnippetsController
@@ -22,37 +24,55 @@ class TextSnippetsController
     {
         $params = $req->getParsedBody();
         /** @var TextSnippet $textSnippet */
-        $textSnippet = BeanFactory::getBean("TextSnippets", $args['id']);
+        $textSnippet = BeanFactory::getBean('TextSnippets', $args['id'] );
+        if ( !$textSnippet )
+            throw ( new NotFoundException('TextSnippet not found.'))
+                ->setLookedFor([ 'id' => $args['parentId'], 'module' => 'TextSnippets' ]);
 
-        $bean = null;
-
-        if (!empty($params['bean_data'])) {
-
+        if ( !empty($params['beanData'] ))
+        {
             $bean = BeanFactory::getBean($params['module']);
+            foreach ( $params['beanData'] as $field => $value ) $bean->$field = $value;
 
-            foreach ($params['bean_data'] as $field => $value) {
-                $bean->$field = $value;
+            $links = $bean->get_linked_fields();
+            foreach ( $links as $link ) {
+                $bean->load_relationship( $link['name'] );
+                if ( $bean->$link['name']->relationship->type === 'one-to-many' ) {
+                    $linkedBeanModule = $bean->$link['name']->relationship->def['lhs_module'];
+                    $linkedBeanId = $bean->$link['name']->relationship->def['lhs_key'];
+                    $bean->contact->addBean( BeanFactory::getBean( $linkedBeanModule, $linkedBeanId ));
+                }
             }
+            BeanFactory::registerBean( $params['module'], $bean, $bean->id );
         }
 
-        return $res->withJson(['html' => $textSnippet->parse($bean)]);
+        return $res->withJson([ 'html' => $textSnippet->parse($bean), 'params'=>$params ]);
     }
 
     public function liveCompilePlainText(Request $req, Response $res, array $args): Response
     {
         $params = $req->getParsedBody();
         /** @var TextSnippet $textSnippet */
-        $textSnippet = BeanFactory::getBean("TextSnippets", $args['id']);
+        $textSnippet = BeanFactory::getBean('TextSnippets', $args['id'] );
+        if ( !$textSnippet )
+            throw ( new NotFoundException('TextSnippet not found.'))
+                ->setLookedFor([ 'id' => $args['parentId'], 'module' => 'TextSnippets' ]);
 
-        $bean = null;
-
-        if (!empty($params['bean_data'])) {
-
+        if ( !empty($params['beanData'] ))
+        {
             $bean = BeanFactory::getBean($params['module']);
+            foreach ( $params['beanData'] as $field => $value ) $bean->$field = $value;
 
-            foreach ($params['bean_data'] as $field => $value) {
-                $bean->$field = $value;
+            $links = $bean->get_linked_fields();
+            foreach ( $links as $link ) {
+                $bean->load_relationship( $link['name'] );
+                if ( $bean->$link['name']->relationship->type === 'one-to-many' ) {
+                    $linkedBeanModule = $bean->$link['name']->relationship->def['lhs_module'];
+                    $linkedBeanId = $bean->$link['name']->relationship->def['lhs_key'];
+                    $bean->contact->addBean( BeanFactory::getBean( $linkedBeanModule, $linkedBeanId ));
+                }
             }
+            BeanFactory::registerBean( $params['module'], $bean, $bean->id );
         }
 
         return $res->withJson(['html' => $textSnippet->parsePlainText($bean)]);
