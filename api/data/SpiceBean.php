@@ -1060,11 +1060,11 @@ class SpiceBean
      * Return true if auditing is enabled for this object
      * You would set the audit flag in the implemting module's vardef file.
      *
-     * @return boolean
+     * @return boolean|array|null
      *
      * Internal function, do not override.
      */
-    function is_AuditEnabled(): bool
+    function is_AuditEnabled(): bool|array|null
     {
         if (empty(SpiceModules::getInstance()->modules)) return false;
 
@@ -2091,6 +2091,32 @@ class SpiceBean
         }
 
         return $fieldvalue;
+    }
+
+    /**
+     * Will map all non link fields of a bean to another bean that is created on the fly
+     * @param SpiceBean $origin the original bean
+     * @param string $targetModule the target module name
+     * @param array $mapConvert an optional array with a field mapping origin field name to target field name
+     * @return false|SpiceBean
+     */
+    public function convertBeanToBean(SpiceBean $origin, string $targetModule, array $mapConvert = []){
+        $target = BeanFactory::newBean($targetModule);
+        $target->new_with_id = true;
+        $target->id = SpiceUtils::createGuid();
+
+        foreach($origin->field_defs as $vardef){
+            if(!in_array($vardef['type'], ['link', 'linked']) && isset($target->field_defs[$vardef['name']])){
+                $target->{$vardef['name']} = $origin->{$vardef['name']};
+            }
+        }
+
+        if(!empty($mapConvert)){
+            foreach($mapConvert as $originField => $targetField){
+                $target->{$targetField} = $origin->{$originField};
+            }
+        }
+        return $target;
     }
 
     /**
