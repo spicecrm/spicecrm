@@ -224,6 +224,7 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
 import {ObjectSetInactiveIcon} from "./components/objectsetinactiveicon";
 import {ObjectActionCheckDuplicateButton} from "./components/objectactioncheckduplicatebutton";
 import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelatedduplicatescardfooter";
+import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectactivitytracktimeicon";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -422,7 +423,8 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
         ObjectUrlActionMenu,
         ObjectSetInactiveIcon,
         ObjectActionCheckDuplicateButton,
-        ObjectRelatedDuplicatesCardFooter
+        ObjectRelatedDuplicatesCardFooter,
+        ObjectProjectActivityTrackTimeIcon
     ],
     exports: [
         ObjectListViewHeader,
