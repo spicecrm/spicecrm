@@ -22,11 +22,11 @@ $routes = [
         'class' => TextSnippetsController::class,
         'function' => 'liveCompile',
         'description' => 'live compile text snippet',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true ],
         'parameters' => [
-            'model_data' => [
+            'beanData' => [
                 'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_OBJECT,
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'description' => 'model data to be parsed',
                 'example' => '{first_name: someone}',
                 'required' => true
@@ -41,7 +41,7 @@ $routes = [
             'id' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_GUID,
-                'description' => 'if of parent bean',
+                'description' => 'ID of TextSnippet',
                 'example' => '2816ba5c-97e7-11eb-8c42-00fffe0c4f07',
                 'required' => true
             ]
@@ -53,11 +53,11 @@ $routes = [
         'class' => TextSnippetsController::class,
         'function' => 'liveCompilePlainText',
         'description' => 'live compile text snippet as plain text',
-        'options' => ['noAuth' => false, 'adminOnly' => false],
+        'options' => ['noAuth' => false, 'adminOnly' => false, 'validate' => true ],
         'parameters' => [
-            'model_data' => [
+            'modelData' => [
                 'in' => 'body',
-                'type' => ValidationMiddleware::TYPE_OBJECT,
+                'type' => ValidationMiddleware::TYPE_COMPLEX,
                 'description' => 'model data to be parsed',
                 'example' => '{first_name: someone}',
                 'required' => true
@@ -72,7 +72,7 @@ $routes = [
             'id' => [
                 'in' => 'path',
                 'type' => ValidationMiddleware::TYPE_GUID,
-                'description' => 'if of parent bean',
+                'description' => 'ID of TextSnippet',
                 'example' => '2816ba5c-97e7-11eb-8c42-00fffe0c4f07',
                 'required' => true
             ]
