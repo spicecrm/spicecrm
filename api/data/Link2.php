@@ -397,7 +397,7 @@ class Link2
 
                     //mod for deviating id in relationship
                     $idField = 'id';
-                    if (in_array($this->relationship->def['relationship_type'], ['many-to-many', 'email-address'])) {
+                    if (in_array($this->relationship->def['relationship_type'], ['many-to-many', 'email-address', 'many-to-many-prospectlists'])) {
                         $idField = $this->relationship->def['rhs_module'] == $rel_module ? $this->relationship->def['rhs_key'] : $this->relationship->def['lhs_key'];
                     }
 
@@ -405,10 +405,12 @@ class Link2
                         $tmpBean = BeanFactory::getBean($rel_module);
                         $tmpBean->retrieve_by_string_fields([$idField => $id]);
                     } else {
-                        $tmpBean = BeanFactory::getBean($rel_module, $id);
+                        $tmpBean = BeanFactory::getBean($rel_module, $vals['id']);
                     }
                     if ($tmpBean !== FALSE)
-                        $result[$id] = $tmpBean;
+                        // clone to get independent objects of the same bean (because of relid allocation further below)
+                        // using getBean with forceRetrieve parameter would lower the performance
+                        $result[$id] = clone $tmpBean;
                 } else {
                     $result[$id] = $this->beans[$id];
                 }
