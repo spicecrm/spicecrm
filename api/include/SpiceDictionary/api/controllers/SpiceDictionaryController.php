@@ -461,9 +461,9 @@ class SpiceDictionaryController
     public function repair(Request $req, Response $res, array $args): Response {
         $params = $req->getQueryParams();
 
-        $sql = SpiceDictionaryDefinitions::getInstance()->repair($args['id'] ,true);
+        $sql = SpiceDictionaryDefinitions::getInstance()->repair($args['id'] ,true, $params['execute'] == 1);
 
-        if($params['execute'] && $sql){
+        if($params['execute'] == 1 && $sql){
             try {
                 DBManagerFactory::getInstance()->query($sql);
             } catch (\Exception $exception){
