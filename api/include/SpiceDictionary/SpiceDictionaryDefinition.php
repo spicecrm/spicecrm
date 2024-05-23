@@ -41,12 +41,17 @@ class SpiceDictionaryDefinition
     /**
      * repairs the dictionary Definition
      * @param bool $relationships
+     * @param bool $execute
      * @return string|null
+     * @throws DatabaseException
      * @throws Exception
      * @throws \Throwable
      */
-    public function repair(bool $relationships = true): ?string
+    public function repair(bool $relationships = true, bool $execute = true): ?string
     {
+        # no repair for dictionaries from type template
+        if ($this->type == 'template') return '';
+
         // reset the cached items
         SpiceDictionaryField::clearForDefiniton($this->id, $this->name);
 
@@ -105,7 +110,7 @@ class SpiceDictionaryDefinition
 
         try {
             // do the reopair
-            $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, $repairIndexes);
+            $sql = DBManagerFactory::getInstance()->repairTableParams($this->tablename, $repairDefinitions, $repairIndexes, $execute);
 
         } catch (\Throwable $exception) {
 
