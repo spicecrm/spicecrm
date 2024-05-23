@@ -426,7 +426,7 @@ export class helper {
                     .subscribe((items) => {
                         const body = !model ? null : {
                             module: model.module,
-                            beanData: model.utils.spiceModel2backend(model.module, model.data)
+                            modelData: model.utils.spiceModel2backend(model.module, model.data)
                         };
 
                         model.backend.postRequest( `module/TextSnippets/${items[0].id}/${routeMethod}`, null, body )

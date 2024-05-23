@@ -604,7 +604,7 @@ export class SystemHtmlEditor implements OnInit, OnDestroy, ControlValueAccessor
 
                         const body = !this.model ? null : {
                             module: this.model.module,
-                            beanData: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
+                            modelData: this.model.utils.spiceModel2backend(this.model.module, this.model.data)
                         };
 
                         this.backend.postRequest(`module/TextSnippets/${items[0].id}/liveCompile`, null, body)
