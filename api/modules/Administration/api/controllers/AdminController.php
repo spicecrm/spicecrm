@@ -677,7 +677,7 @@ class AdminController
                 if ($entry != "." && $entry != "..") {
                     $extensions[$entry] = "";
                     $subHandle = opendir("custom/Extension/modules/{$entry}/Ext/Vardefs");
-                    while ($subEntry = readdir(($subHandle))) {
+                    if ( $subHandle ) while ($subEntry = readdir(($subHandle))) {
                         if ($subEntry != "." && $subEntry != "..") {
                             $extensions[$entry] = $subEntry;
                         }
