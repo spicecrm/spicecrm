@@ -105,7 +105,7 @@ abstract class TransportHandler
             if (strpos($parsedHtml, "\n")) {
                 $parsedHtml = str_replace("\n", "", $parsedHtml);
             }
-            if (strpos($email->body, '</body>')) {
+            if (empty($this->mailbox->mailbox_header) && strpos($email->body, '</body>')) {
                 $email->body = str_replace('</body>', "<footer>{$parsedHtml}</footer></body>", $email->body);
             } else {
                 $email->body = $email->body."<footer>{$parsedHtml}</footer>";
