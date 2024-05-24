@@ -275,7 +275,7 @@ class SpiceACLObject extends SpiceBean
                 $this->authObjects[$aclobject['id']] = $aclobject;
 
                 // read the org values - check on method_exists because of SpiceCRM core edition
-                if ($territory && method_exists($territory, 'getAclObjectTerritoryValues')) {
+                if ($territory && $territory instanceof SpiceACLTerritory && method_exists($territory, 'getAclObjectTerritoryValues')) {
                     $this->authObjects[$aclobject['id']]['objectterritoryvalues'] = $territory->getAclObjectTerritoryValues($aclobject['id']);
                 }
 
@@ -362,7 +362,7 @@ class SpiceACLObject extends SpiceBean
         }
 
         // check that the territory matches
-        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
+        if ($territory && $territory instanceof SpiceACLTerritory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
             return false;
         }
 
@@ -400,7 +400,7 @@ class SpiceACLObject extends SpiceBean
 
 
         // check that the territory matches
-        if ($territory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
+        if ($territory && $territory instanceof SpiceACLTerritory && !$objectData['allorgobjects'] && !$territory->checkBeanAccessforACLObject($bean, $objectData['id'])) {
             return false;
         }
 
@@ -613,7 +613,7 @@ class SpiceACLObject extends SpiceBean
         // territories
         if (!$this->allorgobjects) {
             $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory) {
+            if ($territory && $territory instanceof SpiceACLTerritory && $territory instanceof('SpiceACLTerritory')) {
                 $hashes = $territory->getTerritoryHashesForObject($this->id, $this->sysmodule_id);
                 if ($hashes !== false) {
                     if (count($hashes) > 0) {
@@ -732,7 +732,7 @@ class SpiceACLObject extends SpiceBean
 
         // territories
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory && $this->allorgobjects != 1) {
+        if ($territory && $territory instanceof SpiceACLTerritory && $this->allorgobjects != 1) {
             $hashes = $territory->getTerritoryHashesForObject($this->id, $this->sysmodule_id);
             if ($hashes !== false) {
                 if (count($hashes) > 0) {
@@ -881,7 +881,7 @@ class SpiceACLObject extends SpiceBean
 
         if (!$allorgObject) {
             $territory = BeanFactory::getBean('SpiceACLTerritories');
-            if ($territory ) {
+            if ($territory && $territory instanceof SpiceACLTerritory ) {
                 $territory->activateACLObject($this->spiceacltype_module, $this->id, $objectValuesArray);
             }
 
@@ -905,7 +905,7 @@ class SpiceACLObject extends SpiceBean
     public function deactivate()
     {
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory) {
+        if ($territory && $territory instanceof SpiceACLTerritory ) {
             $territory->deactivateACLObject($this->id);
         }
 
