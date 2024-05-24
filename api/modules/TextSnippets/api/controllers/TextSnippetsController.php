@@ -38,9 +38,9 @@ class TextSnippetsController
             foreach ( $links as $link ) {
                 $bean->load_relationship( $link['name'] );
                 if ( $bean->$link['name']->relationship->type === 'one-to-many' ) {
-                    $linkedBeanModule = $bean->$link['name']->relationship->def['lhs_module'];
-                    $linkedBeanId = $bean->$link['name']->relationship->def['lhs_key'];
-                    $bean->contact->addBean( BeanFactory::getBean( $linkedBeanModule, $linkedBeanId ));
+                    $linkedBeanModule = $bean->{$link['name']}->relationship->def['lhs_module'];
+                    $linkedBeanId = $bean->{$link['name']}->relationship->def['lhs_key'];
+                    $bean->{$link['name']}->addBean( BeanFactory::getBean( $linkedBeanModule, $linkedBeanId ));
                 }
             }
             BeanFactory::registerBean( $params['module'], $bean, $bean->id );
