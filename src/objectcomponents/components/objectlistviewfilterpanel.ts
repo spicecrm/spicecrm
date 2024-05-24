@@ -30,7 +30,6 @@ export class ObjectListViewFilterPanel implements OnDestroy {
     public filter: ObjectListFilterI = {
         logicaloperator: 'and',
         groupscope: 'all',
-        groupstate: 'active',
         geography: {},
         conditions: []
     };
@@ -65,13 +64,22 @@ export class ObjectListViewFilterPanel implements OnDestroy {
 
         // if no filter is set ... set it clean and empty
         if (!this.filter || _.isEmpty(this.filter)) {
-            this.filter = {
-                logicaloperator: 'and',
-                groupscope: 'all',
-                groupstate: 'active',
-                geography: {},
-                conditions: []
-            };
+            if(this.modellist.hasInactiveFieldProperty) {
+                this.filter = {
+                    logicaloperator: 'and',
+                    groupscope: 'all',
+                    groupstate: 'active',
+                    geography: {},
+                    conditions: []
+                };
+            } else {
+                this.filter = {
+                    logicaloperator: 'and',
+                    groupscope: 'all',
+                    geography: {},
+                    conditions: []
+                };
+            }
         }
     }
 
