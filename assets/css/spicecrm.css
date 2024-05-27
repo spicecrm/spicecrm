@@ -38,6 +38,7 @@
     --color-background-alt-inverse: #002D31;
     --color-border-brand: #CA1B21;
     --sds-c-button-brand-color-background: #CA1B21;
+    --slds-c-button-brand-color-border: var(--color-grey-5);
     --sds-c-button-neutral-color-background-hover: #CA1B21;
     --sds-c-button-brand-color-border-hover: #ffffff;
     --sds-c-button-brand-color-background-active: #CA1B21;
@@ -50,10 +51,23 @@
     --sds-c-toast-text-color: #ffffff;
     --sds-c-icon-color-foreground: #ffffff;
     --slds-c-slider-track-color-background: #CA1B21;
+    --spice-alert-color-error: #ea001e;
+    --spice-alert-color-info: #0176d3;
+    --spice-alert-color-warning: #fe9339;
+    --spice-alert-color-success: #2e844a;
+    --spice-alert-color-custom: #86367A;
+    --slds-c-textarea-color-border-focus: var(--color-border-brand);
+    --slds-g-color-brand-base-60: var(--color-border-brand);
+    --slds-c-checkbox-mark-color-foreground: var(--brand-primary);
+    --slds-c-checkbox-shadow: var(--brand-primary);
+    --slds-c-checkbox-shadow-focus: var(--brand-primary);
+    --sds-c-button-shadow-focus: var(--color-grey-9);
+    --slds-g-color-brand-base-50: var(--color-border-brand);
 }
 
 html {
     font-family: 'Titillium Web', sans-serif;
+    background-color: var(--color-grey-1);
 }
 
 a {
@@ -273,6 +287,10 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     min-width: 75px;
 }
 
+.slds-table--header-fixed thead th, .slds-table--header-fixed tfoot th {
+    height: 2rem;
+}
+
 .spice-collapsible-tab-grow {
     display: block;
     height: 100%;
@@ -488,6 +506,10 @@ input[type="submit"] {
     background-color: var(--brand-primary,#CA1B21);
 }
 
+.slds-context-bar {
+    border-bottom: 3px solid var(--color-border-brand);
+}
+
 .slds-context-bar-progress-bar {
     height: 3px;
     background: #aaa;
@@ -498,8 +520,43 @@ input[type="submit"] {
 }
 
 .slds-context-bar-progress-bar div {
-    background: var(--brand-primary,#CA1B21);
+    background: var(--brand-primary);
     transition: width .5s linear;
+}
+
+.slds-context-bar__item.slds-is-active:before {
+    background: var(--brand-primary);
+}
+
+.slds-context-bar__item.slds-is-active, .slds-context-bar__item:not(.slds-no-hover):hover {
+    background: var(--color-gray-4);
+}
+
+.slds-context-bar__item.slds-is-active {
+    background: var(--color-gray-4);
+    animation: none;
+}
+
+
+.slds-tabs--default__item.slds-active:after, .slds-tabs--default__item.slds-is-active:after, .slds-tabs_default__item.slds-active:after, .slds-tabs_default__item.slds-is-active:after{
+    background-color: var(--brand-primary);
+}
+
+.slds-tabs--default__item:hover:after, .slds-tabs_default__item:hover:after{
+    background-color: var(--color-grey-9);
+}
+
+.slds-docked-composer__header{
+    border-bottom-color: var(--brand-primary);
+}
+
+.slds-combobox__input.slds-has-focus, .slds-combobox__input:focus{
+    border-color:  var(--brand-primary);
+}
+
+[role=combobox] input[readonly].slds-has-focus, [role=combobox] input[readonly]:focus, input[readonly][role=combobox].slds-has-focus, input[readonly][role=combobox]:focus,
+.slds-combobox__input.slds-has-focus, .slds-combobox__input:focus{
+    box-shadow: 0 0 3px var(--brand-primary);
 }
 
 .spice-overlay-spinner-container {
@@ -542,4 +599,58 @@ input[type="submit"] {
     border: 0 !important;
     width: 12px !important;
     margin: 0 !important;
+}
+
+/* custom alert styles */
+.slds-alert_error {
+    /* default: #ea001e; */
+    --slds-c-alert-color-background:var(--spice-alert-color-error);
+}
+
+.slds-alert_info {
+    /* default: #0176d3; */
+    --slds-c-alert-color-background:var(--spice-alert-color-info);
+}
+
+.slds-alert_warning {
+    /* default: #514f4d; */
+    --slds-c-alert-color-background:var(--spice-alert-color-warning);
+}
+
+
+.slds-alert_success {
+/* default: #2e844a; */
+    --slds-c-alert-color-background:var(--spice-alert-color-success);
+}
+
+.slds-alert_custom {
+    /* default: #86367A; */
+    --slds-c-alert-color-background:var(--spice-alert-color-custom);
+}
+
+.slds-table:not(.slds-no-row-hover) tbody tr:focus>td,
+.slds-table:not(.slds-no-row-hover) tbody tr:focus>th,
+.slds-table:not(.slds-no-row-hover) tbody tr:hover>td,
+.slds-table:not(.slds-no-row-hover) tbody tr:hover>th {
+    color: black;
+}
+
+.slds-notify_alert,
+.slds-notify--alert{
+    padding-right: 0.5rem;
+}
+
+.slds-app-launcher__tile:hover{
+    border-color: var(--brand-primary)
+}
+
+.slds-button.slds-button_icon:hover {
+    color: var(--brand-primary);
+}
+
+.slds-page-header{
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-radius: 0px;
 }
