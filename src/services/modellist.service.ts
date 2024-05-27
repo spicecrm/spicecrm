@@ -669,6 +669,12 @@ export class modellist implements OnDestroy {
         return this._listfields;
     }
 
+    /**
+     * checks if the field "is_inactive" exists on the module
+     */
+    get hasInactiveFieldProperty(): boolean {
+        return this.metadata.hasField(this.module, 'is_inactive');
+    }
 
     /**
      * check if the current lst can be deleted
@@ -763,12 +769,20 @@ export class modellist implements OnDestroy {
         try {
             return JSON.parse(this.currentList.filterdefs);
         } catch (e) {
-            return {
-                logicaloperator: 'and',
-                groupscope: 'all',
-                groupstate: 'active',
-                conditions: []
-            };
+            if(this.hasInactiveFieldProperty) {
+                return {
+                    logicaloperator: 'and',
+                    groupscope: 'all',
+                    groupstate: 'active',
+                    conditions: []
+                };
+            } else {
+                return {
+                    logicaloperator: 'and',
+                    groupscope: 'all',
+                    conditions: []
+                };
+            }
         }
     }
 
