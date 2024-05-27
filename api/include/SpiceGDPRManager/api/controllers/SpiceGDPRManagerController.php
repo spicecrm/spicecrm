@@ -24,8 +24,9 @@ class SpiceGDPRManagerController
 
         $retArray = [];
 
-        $retentions = $db->query("SELECT * FROM sysgdprretentions WHERE deleted = 0");
+        $retentions = $db->query("SELECT * FROM sysgdprretentions WHERE deleted = 0 ORDER BY name");
         while($retention = $db->fetchByAssoc($retentions)){
+            $retention['active'] = boolval($retention['active']);
             $retArray[] = $retention;
         }
 
@@ -65,7 +66,7 @@ class SpiceGDPRManagerController
         $body = $req->getParsedBody();
 
         // update the record
-        $db->upsertQuery('sysgdprretentions', ['id' => $args['id']], ['id' => $args['id'], 'retention_type' => $body['retention_type'], 'delete_related' => $body['delete_related'], 'name' => $body['name'], 'description' => $body['description'], 'sysmodulefilter_id' => $body['sysmodulefilter_id']]);
+        $db->upsertQuery('sysgdprretentions', ['id' => $args['id']], ['id' => $args['id'], 'retention_type' => $body['retention_type'], 'delete_related' => $body['delete_related'], 'name' => $body['name'], 'description' => $body['description'], 'sysmodulefilter_id' => $body['sysmodulefilter_id'], 'include_deleted' => $body['include_deleted']]);
 
         return $res->withJson(['sstatus' => 'success']);
     }
@@ -105,21 +106,41 @@ class SpiceGDPRManagerController
         $filterWhere = $moduleFilter->generateWhereClauseForFilterId($retention['sysmodulefilter_id']);
 
         $seed = BeanFactory::getBean($moduleFilter->filtermodule);
-        $query = "SELECT count(id) totalcount FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = 0";
-        $countRes = $db->fetchByAssoc($db->query($query));
 
-        $list = [];
-        if($countRes['totalcount'] > 0) {
-            $modHandler = new SpiceBeanHandler();
-            $query = "SELECT id FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = 0";
-            $ids = $db->limitQuery($query, $getParams['start'] ?: 0, 50);
-            while($id = $db->fetchByAssoc($ids)){
-                $seed = BeanFactory::getBean($moduleFilter->filtermodule, $id['id']);
-                $list[] = $modHandler->mapBeanToArray($moduleFilter->filtermodule, $seed);
+        $includeDeleted = '';
+
+        // depending on GDPR settings include or exclude deleted records
+        // when null is given then deleted & not-deleted records are selected
+        switch ($retention['include_deleted']) {
+            case '1':
+                $includeDeleted = '1';
+                break;
+            case '0':
+                $includeDeleted = '0';
+                break;
+            case null:
+                $includeDeleted = '0 || ' . $seed->_tablename .'.deleted = 1';
+                break;
+        }
+
+        // do proceed only if we've got filter for the WHERE clause
+        if (!empty($filterWhere)) {
+            $query = "SELECT count(id) totalcount FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = {$includeDeleted}";
+            $countRes = $db->fetchByAssoc($db->query($query));
+
+            $list = [];
+            if ($countRes['totalcount'] > 0) {
+                $modHandler = new SpiceBeanHandler();
+                $query = "SELECT id FROM {$seed->_tablename} WHERE {$filterWhere} AND {$seed->_tablename}.deleted = {$includeDeleted}";
+                $ids = $db->limitQuery($query, $getParams['start'] ?: 0, 50);
+                while ($id = $db->fetchByAssoc($ids)) {
+                    $seed = BeanFactory::getBean($moduleFilter->filtermodule, $id['id'], [], false);
+                    $list[] = $modHandler->mapBeanToArray($moduleFilter->filtermodule, $seed);
+                }
             }
         }
 
-        return $res->withJson(['module' => $moduleFilter->filtermodule, 'list' => $list, 'total' => (int) $countRes['totalcount']]);
+        return $res->withJson(['module' => $moduleFilter->filtermodule, 'list' => $list, 'total' => (int)$countRes['totalcount']]);
     }
 
 }

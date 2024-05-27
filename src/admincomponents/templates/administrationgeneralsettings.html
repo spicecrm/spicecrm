@@ -39,9 +39,37 @@
                 </div>
             </div>
             <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
-                <div class="slds-form-element__control slds-size--1-of-1 slds-p-around--x-small">
+                <div class="slds-form-element__control slds-size--1-of-2 slds-p-around--x-small">
                     <system-label label="LBL_UNIQUE_KEY"></system-label>
                     <system-input-text [disabled]="true" autocomplete="off" [(ngModel)]="settings.system.unique_key"></system-input-text>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-4">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_STARTUP_MODE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="settings.system.startup_mode">
+                                    <option value="normal"><system-label label="LBL_NORMAL"/></option>
+                                    <option value="maintenance"><system-label label="LBL_MAINTENANCE"/></option>
+                                    <option value="recovery"><system-label label="LBL_RECOVERY"/></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-p-around--x-small slds-size--1-of-4">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_EDIT_MODE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="settings.system.edit_mode">
+                                    <option value="none"><system-label label="LBL_NONE"/></option>
+                                    <option value="custom"><system-label label="LBL_CUSTOM"/></option>
+                                    <option value="all"><system-label label="LBL_ALL"/></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

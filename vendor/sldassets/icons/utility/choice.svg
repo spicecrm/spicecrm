@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-	 width="52px" height="52px" viewBox="0 0 52 52" enable-background="new 0 0 52 52" xml:space="preserve">
-<g>
-	<circle fill="#FFFFFF" cx="26" cy="26" r="11.2"/>
-	<path fill="#FFFFFF" d="M26,2C12.8,2,2,12.8,2,26c0,13.2,10.8,24,24,24c13.2,0,24-10.8,24-24C50,12.8,39.2,2,26,2z M26,43.6
-		c-9.7,0-17.6-7.9-17.6-17.6S16.3,8.4,26,8.4S43.6,16.3,43.6,26S35.7,43.6,26,43.6z"/>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" height="52" width="52" viewBox="0 0 520 520" fill="#fff"><path d="M260 20C128 20 20 128 20 260s108 240 240 240 240-108 240-240S392 20 260 20zm0 416a176 176 0 1 1 1-353 176 176 0 0 1-1 353z"/><circle cx="260" cy="260" r="112"/></svg>

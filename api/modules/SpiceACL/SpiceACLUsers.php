@@ -8,7 +8,11 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 class SpiceACLUsers{
-    function manageUsersHash($users){
+    function manageUsersHash(array $users){
+        if(count($users) < 1){
+            return '';
+        }
+
         $db = DBManagerFactory::getInstance();
 
         // sort the users array and build the hash

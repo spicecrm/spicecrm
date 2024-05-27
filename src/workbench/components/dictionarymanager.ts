@@ -22,13 +22,14 @@ import {configurationService} from "../../services/configuration.service";
 })
 export class DictionaryManager {
 
+    public definitionsExpanded: boolean = false;
+
     constructor(public dictionarymanager: dictionarymanager,
                 public modal: modal,
                 public backend: backend,
                 public toast: toast,
                 public injector: Injector,
                 private configurationService: configurationService) {
-
     }
 
     public migrate(){
@@ -53,6 +54,28 @@ export class DictionaryManager {
         });
     }
 
+    /**
+     * calls the backend repair method that delivers the sql string, injects it in the modal
+     */
+    public repairDBnew() {
+        this.modal.openModal('DictionaryManagerRepairAll', true, this.injector);
+    }
+
+    /**
+     * generates the system cached files
+     */
+    public generateSystem(){
+        let genModal = this.modal.await('LBL_GENERATING');
+        this.backend.putRequest('dictionary/generatesystem').subscribe({
+            next: () => {
+                genModal.emit(true);
+            },
+            error: () => {
+                genModal.emit(true);
+            }
+        })
+    }
+
     public repairDBCache() {
         this.modal.confirm('are you sure you want to rebuild the dictionary data cache?', 'rebuild dictionary Cache').subscribe({
             next: (res) => {
@@ -62,6 +85,7 @@ export class DictionaryManager {
                         loadingModal.emit(true);
                         if (result) {
                             this.toast.sendToast('LBL_CACHE_REPAIRED', 'success');
+                            this.configurationService.data.startupMode = 'normal';
                             this.configurationService.reloadTaskData('fielddefs');
                         } else {
                             this.toast.sendToast('LBL_ERROR', 'error');

@@ -107,6 +107,9 @@ import {GlobalLoginOAuth2Button} from "./components/globalloginoauth2button";
 import {GlobalHeaderReloadModal} from "./components/globalheaderreloadmodal";
 import {GlobalHeaderDocumentRevisions} from "../modules/documents/components/globalheaderdocumentrevisions";
 import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/components/globalheaderdocumentrevisionsmodal";
+import {GlobalNavigationTabContextMenu} from "./components/globalnavigationtabcontextmenu";
+import {CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
+import {GlobalLogin2FAMethodSelectModal} from "./components/globallogin2famethodselectmodal";
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -119,6 +122,10 @@ import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/component
         DirectivesModule,
         SystemComponents,
         ObjectComponents,
+        CdkDragHandle,
+        CdkDropList,
+        CdkDrag,
+        CdkDropListGroup,
     ],
     declarations: [
         GlobalCopyright,
@@ -185,6 +192,7 @@ import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/component
         GlobalObtainGDPRConsentContainer,
         GlobalNavigationTabbed,
         GlobalNavigationTabbedMenu,
+        GlobalNavigationTabContextMenu,
         GlobalNavigationTabbedMenuModules,
         GlobalNavigationTabbedMenuModuleMenu,
         GlobalNavigationTabbedMenuTab,
@@ -210,7 +218,8 @@ import {GlobalHeaderDocumentRevisionsModal} from "../modules/documents/component
         GlobalLoginOAuth2,
         GlobalLoginOAuth2Button,
         GlobalHeaderDocumentRevisions,
-        GlobalHeaderDocumentRevisionsModal
+        GlobalHeaderDocumentRevisionsModal,
+        GlobalLogin2FAMethodSelectModal
     ],
     exports: [
         GlobalCopyright,

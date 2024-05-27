@@ -13,7 +13,7 @@ import {language} from '../../services/language.service';
 
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
-import {DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
+import {DictionaryDefinition, DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 
 
 @Component({
@@ -50,6 +50,13 @@ export class DictionaryManagerIndexDetails implements OnChanges {
      */
     public indexDictionaryItems: DictionaryItem[] = [];
 
+    /**
+     * for the foreign key
+     */
+    public dictionaryItemId: string;
+    public dictionaryForeignDefinitionId: string;
+    public dictionaryForeignItemId: string;
+
     constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
 
     }
@@ -59,12 +66,25 @@ export class DictionaryManagerIndexDetails implements OnChanges {
             this.index = this.dictionarymanager.dictionaryindexes.find(i => i.id == this.indexid);
             this.availableDictionaryItems = this.dictionarymanager.getDictionaryDefinitionItems(this.dictionarymanager.currentDictionaryDefinition);
 
-            // build the items array
-            this.indexDictionaryItems = [];
-            let indexitems = this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == this.indexid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-            for (let indexitem of indexitems) {
-                let aitemIndex = this.availableDictionaryItems.findIndex(a => a.id == indexitem.sysdictionaryitem_id);
-                this.indexDictionaryItems.push(this.availableDictionaryItems.splice(aitemIndex, 1)[0]);
+            switch(this.index.indextype){
+                case 'foreign':
+                    let indexitem = this.dictionarymanager.dictionaryindexitems.find(i => i.sysdictionaryindex_id == this.indexid);
+                    this.dictionaryItemId = indexitem.sysdictionaryitem_id;
+                    this.dictionaryForeignItemId = indexitem.sysdictionaryforeignitem_id;
+
+                    let fItem = this.dictionarymanager.dictionaryitems.find(i => i.id == this.dictionaryForeignItemId);
+                    this.dictionaryForeignDefinitionId = fItem.sysdictionarydefinition_id;
+
+                    break;
+                default:
+                    // build the items array
+                    this.indexDictionaryItems = [];
+                    let indexitems = this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == this.indexid).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+                    for (let indexitem of indexitems) {
+                        let aitemIndex = this.availableDictionaryItems.findIndex(a => a.id == indexitem.sysdictionaryitem_id);
+                        this.indexDictionaryItems.push(this.availableDictionaryItems.splice(aitemIndex, 1)[0]);
+                    }
+                    break;
             }
 
         } else {
@@ -72,6 +92,16 @@ export class DictionaryManagerIndexDetails implements OnChanges {
         }
     }
 
+    /**
+     * a getter for the foreign dictioanry items
+     */
+    get foreignItems(): DictionaryItem[]{
+        return this.dictionarymanager.getDictionaryDefinitionItems(this.dictionaryForeignDefinitionId).sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    get foreignDefinitions(): DictionaryDefinition[]{
+        return this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type != 'template').sort((a, b) => a.name.localeCompare(b.name))
+    }
 
     /**
      * for the drop of the field
@@ -83,7 +113,7 @@ export class DictionaryManagerIndexDetails implements OnChanges {
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
 
         // get the current items
-        let indexitems = this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == this.indexid && i.deleted == 0);
+        let indexitems = this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == this.indexid);
 
         // resequence the items
         let sequence = 0;
@@ -102,7 +132,6 @@ export class DictionaryManagerIndexDetails implements OnChanges {
                     sysdictionaryindex_id: this.index.id,
                     sysdictionaryitem_id: indexDictionaryItem.id,
                     sequence: sequence,
-                    deleted: 0,
                 });
                 handledItems.push(newid);
             }
@@ -110,11 +139,13 @@ export class DictionaryManagerIndexDetails implements OnChanges {
         }
 
         // delete all that are no longer found
+        /*
         for (let indexitem of indexitems) {
             if (handledItems.indexOf(indexitem.id) < 0) {
                 indexitem.deleted = 1;
             }
         }
+        */
 
     }
 

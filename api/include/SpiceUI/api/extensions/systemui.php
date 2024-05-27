@@ -388,6 +388,18 @@ $routes = [
                 'description' => 'the type of configuration',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => 'global',
+            ],
+            'package' => [
+                'in' => 'query',
+                'description' => 'the package of configuration',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'core',
+            ],
+            'version' => [
+                'in' => 'query',
+                'description' => 'the version of configuration',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => '2024.01.001',
             ]
         ]
     ],
@@ -429,6 +441,18 @@ $routes = [
                 'description' => 'the type of configuration',
                 'type' => ValidationMiddleware::TYPE_STRING,
                 'example' => 'global',
+            ],
+            'package' => [
+                'in' => 'query',
+                'description' => 'the package of configuration',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => 'core',
+            ],
+            'version' => [
+                'in' => 'query',
+                'description' => 'the version of configuration',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example' => '2024.01.001',
             ]
         ]
     ],

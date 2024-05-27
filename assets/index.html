@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <script>
+            if ('serviceWorker' in navigator && (navigator.standalone || window.matchMedia('(display-mode: standalone)').matches)) {
+                navigator.serviceWorker.register('app-service-worker.js');
+            }
+        </script>
+        <link rel="manifest" href="./config/manifest.json" />
         <title>SpiceCRM</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,7 +36,7 @@
                 </div>
                 <div class="slds-is-absolute" style="bottom: 10px;">
                     <div class="slds-align_absolute-center">SpiceCRM - <a href="https://www.spicecrm.com" target=”_blank”>www.spicecrm.com</a></div>
-                    <div class="slds-align_absolute-center"><%= htmlWebpackPlugin.options.aacServices %></div>
+                    <div class="slds-align_absolute-center"><%= htmlWebpackPlugin.options.SpiceCRM %></div>
                     <div class="slds-align_absolute-center"><%= htmlWebpackPlugin.options.buildNumber %></div>
                 </div>
             </div>

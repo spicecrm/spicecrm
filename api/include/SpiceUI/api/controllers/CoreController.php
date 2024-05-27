@@ -3,10 +3,12 @@
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
+use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -14,6 +16,7 @@ use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -40,16 +43,22 @@ class CoreController
     /**
      * returns general system information
      *
-     * @param $req
-     * @param $res
-     * @param $args
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
      * @return mixed
+     * @throws Exception
      */
     public function getSysinfo(Request $req, Response $res, array $args): Response {
 
         $languages = LanguageManager::getLanguages(true);
         $languages['required_labels'] = LanguageManager::getSpecificLabels( SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
-            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE'
+            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE', 'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_INVALID_CODE',
+            'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD', 'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE',
+            'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL', 'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY',
+            'LBL_SAVE', 'LBL_SELECT_2FA_METHOD', 'LBL_CODE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'MSG_OLD_PWD_NOT_AS_NEW',
+            'LBL_REMEMBER_DEVICE', 'LBL_CONFIRM', 'LBL_SMS', 'LBL_EMAIL', 'MSG_TOTP_GENERATING_CODE', 'LBL_SENDING', 'LBL_SENT', 'ERR_FAILED_TO_EXECUTE',
+            'ERR_RECOVERY_MODE_ENABLED', 'ERR_MAINTENANCE_MODE_ENABLED'
         ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
@@ -59,8 +68,10 @@ class CoreController
         }
 
         $uiRestHandler = new SpiceUIRESTHandler();
+        SystemStartupMode::checkDictionary();
 
         $payload = [
+            'startup_mode' => SystemStartupMode::getMode(),
             'version' => SpiceConfig::getSystemVersion(),
             'systemsettings' => [
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
@@ -168,7 +179,7 @@ class CoreController
      * @param $res
      * @param $args
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     function getLanguage($req, $res, $args)
     {

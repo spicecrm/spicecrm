@@ -230,6 +230,87 @@ export class navigation {
         this.setTabTitle();
     }
 
+    /**
+     * gets main tabs
+     */
+    get mainTabs() {
+        return this.objectTabs.filter(tab => tab.parentid == undefined);
+    }
+
+    /**
+     * returns sub tabs
+     */
+    get subTabs(): objectTab[] {
+        return this.objectTabs.filter(tab => tab.parentid !== undefined);
+    }
+
+    /**
+     * checks for closeable tabs to the right, left, or around in the main or sub scope
+     * @param tabId stands for the current tab id
+     * @param direction stands for the direction in which to look for
+     * @param scope stands for where the click came from: main or sub
+     */
+    public hasCloseableTabs(tabId: string, direction: 'other'|'left'|'right', scope: 'main' | 'sub'){
+        const tabScopeTabs = this.getTabScopeTabs(scope);
+        const tabIndex = tabScopeTabs.findIndex(tab => tab.id === tabId);
+        switch (direction){
+            case 'right':
+                return tabIndex < tabScopeTabs.length-1;
+            case 'left':
+                return tabIndex > 0;
+            case 'other':
+                return tabScopeTabs.length >1;
+        }
+    }
+
+    /**
+     * gets the needed tabs array, depending if menu was opened on a main tab or sub tab
+     */
+    private getTabScopeTabs(scope: 'main' | 'sub'){
+        return scope == 'main' ? this.mainTabs : this.subTabs;
+    }
+
+    /**
+     * move subtab into maintabs
+     */
+    public moveSubTabToMainTabs(tabId) {
+        let currentSubTab = this.subTabs.find(tab => tab.id === tabId);
+        currentSubTab.parentid = undefined;
+    }
+
+    /**
+     * finds tabs to the left, right and around the current tab
+     */
+    public findTabsToClose(tabId, option: 'other' | 'right' | 'left', scope: 'main' | 'sub'){
+        const tabScopeTabs = this.getTabScopeTabs(scope);
+        const tabIndex = tabScopeTabs.findIndex(tab => tab.id === tabId);
+        const tabsWithoutPinned = tabScopeTabs.filter(tab => !tab.pinned);
+        switch(option){
+            case "other":
+                return tabsWithoutPinned.filter(tab => tab.id !== tabId);
+            case "left":
+                return tabsWithoutPinned.slice(0, tabIndex);
+            case "right":
+                return tabsWithoutPinned.slice(tabIndex + 1);
+        }
+    }
+
+    /**
+     * closes the tabs depending on the option
+     */
+    public closeTabs(option: 'other' | 'right' | 'left', tabId: string, scope: 'main' | 'sub'){
+        //get the tabs, depending on which option has been chosen
+        const otherTabs = this.findTabsToClose(tabId, option, scope);
+        //close the tabs
+        otherTabs.forEach((tab) => {
+            this.closeObjectTab(tab.id);
+        });
+        //if the option isn't 'right' then set the tab active
+        if (option != 'right') {
+            this.setActiveTab(tabId);
+        }
+    }
+
     public setSessionData() {
         this.session.setSessionData('navigation', {main: this.maintab, tabs: this.objectTabs});
     }
@@ -894,7 +975,12 @@ export class navigation {
                 } else if(index != 0) {
                     // tab to the left of the closed tab is set active
                     const leftIndex = index - 1;
-                    this.setActiveTab(this.objectTabs[leftIndex].id);
+                    if(this.objectTabs[leftIndex].parentid==undefined){
+                        this.setActiveTab(this.objectTabs[leftIndex].id);
+                    }
+                    else {
+                        this.setActiveTab('main');
+                    }
                 } else {
                     this.setActiveTab('main');
                 }

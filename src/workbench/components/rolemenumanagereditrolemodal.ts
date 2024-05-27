@@ -42,6 +42,7 @@ export class RoleMenuManagerEditRoleModal {
           version: '',
           package: '',
           scope: 'custom',
+          rolescope: 'i',
           scope_icon: '',
           systemTreeDefs: {},
       };
@@ -83,10 +84,12 @@ export class RoleMenuManagerEditRoleModal {
         }
 
         const table = this.newRole.scope == 'custom' ? 'sysuicustomroles' : 'sysuiroles';
-        const data = {...this.newRole};
+        const data: any = {...this.newRole};
         delete data.scope;
         delete data.scope_icon;
         delete data.systemTreeDefs;
+
+        data.systemdefault = data.systemdefault ? 1 : 0;
 
         let loadingModal = this.modal.await('LBL_LOADING');
         this.backend.postRequest(`configuration/configurator/${table}/${this.newRole.id}`, null, {config: data}).subscribe({

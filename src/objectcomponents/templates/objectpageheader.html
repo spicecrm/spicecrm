@@ -4,26 +4,39 @@
             <div class="slds-media slds-no-space slds-grow">
                 <system-icon [module]="moduleName" (click)="goToModule()"></system-icon>
                 <div class="slds-media__body">
-                    <p class="slds-text-title--caps slds-line-height--reset">
-                        <system-label-modulename *ngIf="!canGoToModule" [module]="moduleName"></system-label-modulename>
-                        <a *ngIf="canGoToModule" href="javascript:void(0);" (click)="goToModule()"><system-label-modulename [module]="moduleName"></system-label-modulename></a>
-                    </p>
+                    <ul class="slds-list_horizontal slds-has-dividers_left slds-line-height--reset">
+                        <li class="slds-item">
+                            <p class="slds-text-title--caps">
+                                <system-label-modulename *ngIf="!canGoToModule" [module]="moduleName"/>
+                                <a *ngIf="canGoToModule" href="javascript:void(0);" (click)="goToModule()"><system-label-modulename [module]="moduleName" [singular]="true"></system-label-modulename></a>
+                            </p>
+                        </li>
+                        <li class="slds-item">
+                            <object-subscription-icon/>
+                        </li>
+                        <li class="slds-item">
+                            <object-reminder-icon/>
+                        </li>
+                        <li *ngIf="hasInactiveFieldProperty" class="slds-item">
+                            <object-set-inactive-icon/>
+                        </li>
+                    </ul>
                     <div class="slds-grid slds-grid--vertical-align-center">
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
                             <ng-container *ngIf="!fieldset">{{model.data.summary_text}}</ng-container>
                             <object-record-fieldset-horizontal-list *ngIf="fieldset" [fieldset]="fieldset" [system-view-provider]="{displayLabels: false}"></object-record-fieldset-horizontal-list>
                         </h1>
-                        <object-page-header-tags></object-page-header-tags>
+                        <object-page-header-tags/>
                     </div>
                 </div>
             </div>
         </div>
         <div class="slds-m-horizontal--x-small slds-show--medium slds-align--absolute-center">
-            <object-workflow-button></object-workflow-button>
-            <object-subscription-button></object-subscription-button>
-            <object-reminder-button></object-reminder-button>
-            <object-status-network-button></object-status-network-button>
-            <object-action-container [actionset]="actionSet"></object-action-container>
+            <object-workflow-button/>
+            <!--object-subscription-button></object-subscription-button-->
+            <!--object-reminder-button></object-reminder-button-->
+            <object-status-network-button/>
+            <object-action-container [actionset]="actionSet"/>
         </div>
     </div>
 </div>

@@ -1,10 +1,16 @@
-<li class="slds-tabs_default__item slds-sub-tabs__item slds-grid slds-grid_vertical-align-center" [ngClass]="{'slds-active': isActive, 'slds-border--left': !ismain}" role="presentation">
-    <a class="slds-tabs_default__link slds-p-horizontal_xx-small" href="javascript:void(0);" role="tab" (click)="setActive()" >
+<li class="slds-tabs_default__item slds-sub-tabs__item slds-grid slds-grid_vertical-align-center" [ngClass]="{'slds-active': isActive, 'slds-border--left': !ismain}" role="presentation"
+    (contextmenu)="contextMenuComponent.openContextMenu($event)">
+    <a class="slds-tabs_default__link slds-p-horizontal_xx-small" href="javascript:void(0);" role="tab" (click)="setActive()">
         <div class="slds-truncate slds-grid slds-grid--vertical-align-center">
             <ng-container *ngIf="tabname; else tabloading">
                 <system-utility-icon *ngIf="tabicon" [icon]="tabicon" size="x-small" class="slds-p-right--x-small"></system-utility-icon>
                 <system-icon *ngIf="tabmodule" [module]="tabmodule" size="x-small" divClass="slds-p-right--x-small"></system-icon>
-                <div class="slds-truncate" style="white-space: nowrap;"><system-label [label]="tabname"></system-label></div>
+                <div class="slds-truncate" style="white-space: nowrap; max-width: 200px;">
+                    <span class="slds-indicator-container" *ngIf="isDirty">
+                        <abbr class="slds-indicator_unsaved" title="Tab Not Saved" aria-label="Tab Not Saved">*</abbr>
+                    </span>
+                    <system-label [label]="tabname"></system-label>
+                </div>
             </ng-container>
             <ng-template #tabloading>
                 <system-spinner size="10" class="slds-p-right--x-small"></system-spinner>
@@ -20,4 +26,5 @@
             <system-button-icon icon="close"></system-button-icon>
         </button>
     </div>
+    <global-navigation-tab-context-menu #contextMenuComponent [object]="object" scope="sub"></global-navigation-tab-context-menu>
 </li>

@@ -37,6 +37,11 @@ export class fieldGenericDisplay {
     @Input() public fieldid: string = '';
 
     /**
+     * the name of the field. This needs to be passed in
+     */
+    @Input() public fieldname: string = '';
+
+    /**
      * internal variable for the truncation setting of the field
      * @private
      */

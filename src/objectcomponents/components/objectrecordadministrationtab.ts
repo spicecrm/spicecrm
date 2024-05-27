@@ -10,7 +10,7 @@ import {language} from '../../services/language.service';
 import {territories} from '../../services/territories.service';
 
 @Component({
-    selector: 'object-record-details-tab',
+    selector: 'object-record-administration-tab',
     templateUrl: '../templates/objectrecordadministrationtab.html'
 })
 export class ObjectRecordAdministrationTab implements OnInit {
@@ -36,7 +36,7 @@ export class ObjectRecordAdministrationTab implements OnInit {
         },
         assigned_user: {
             field: 'assigned_user',
-            fieldconfig: {fieldtype:'linked'}
+            fieldconfig: {fieldtype:'linked', modulefilter: ''}
         },
         assigned_orgunit: {
             field: 'assigned_orgunit',
@@ -63,6 +63,10 @@ export class ObjectRecordAdministrationTab implements OnInit {
 
         if (this.componentconfig.unlinkorgunit) {
             this.linkOrgunitToAssignedUser = !this.componentconfig.unlinkorgunit;
+        }
+
+        if (this.componentconfig.moduleFilterAssignedUser) {
+            this.fields.assigned_user.fieldconfig.modulefilter = this.componentconfig.moduleFilterAssignedUser;
         }
 
         // get what we have in terms of assignment

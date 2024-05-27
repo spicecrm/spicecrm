@@ -185,6 +185,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['Task'] = ['table' => 'tasks',
             'source'       => 'non-db',
             'vname'        => 'LBL_CONSUMERS',
         ],
+
+        #CR1001177
+        'hcmemployeeobjectives' => [
+            'name'         => 'hcmemployeeobjectives',
+            'type'         => 'link',
+            'relationship' => 'hcmemployeeobjectives_tasks',
+            'module'       => 'HCMEmployeeObjectives',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
+        ],
+
         'employees' => [
             'name'         => 'employees',
             'type'         => 'link',
@@ -380,6 +391,15 @@ if (file_exists("extensions/modules/ProcurementDocs")) {
         'relationship' => 'procurementdocs_tasks',
         'source'       => 'non-db',
         'vname'        => 'LBL_PROCUREMENTDOCS',
+    ];
+}
+if (file_exists("extensions/modules/HCMEmployeeObjectives")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Task']['fields']['hcmemployeeobjectives'] = [
+        'name'         => 'hcmemployeeobjectives',
+        'type'         => 'link',
+        'relationship' => 'hcmemployeeobjectives_tasks',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
     ];
 }
 

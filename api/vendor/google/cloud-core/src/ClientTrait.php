@@ -46,9 +46,7 @@ trait ClientTrait
     {
         $isGrpcExtensionLoaded = $this->isGrpcLoaded();
         $defaultTransport = $isGrpcExtensionLoaded ? 'grpc' : 'rest';
-        $transport = isset($config['transport'])
-            ? strtolower($config['transport'])
-            : $defaultTransport;
+        $transport = strtolower($config['transport'] ?? $defaultTransport);
 
         if ($transport === 'grpc') {
             if (!$isGrpcExtensionLoaded) {
@@ -235,6 +233,8 @@ trait ClientTrait
                 'and we were unable to detect a default project ID.'
             );
         }
+
+        return '';
     }
 
     /**

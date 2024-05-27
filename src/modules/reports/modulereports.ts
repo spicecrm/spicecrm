@@ -60,6 +60,8 @@ import {ReporterIntegrationToolsButton} from "./components/reporterintegrationto
 import {ReporterNewButton} from "./components/reporternewbutton";
 import {ReporterFieldCategoryTree} from "./components/reporterfieldcategorytree";
 import {ReporterFilterItemCategory} from "./components/reporterfilteritemcategory";
+import {ReporterFieldNumber} from "./components/reporterfieldnumber";
+import {ReporterFieldInteger} from "./components/reporterfieldinteger";
 
 /**
  * @ignore
@@ -116,6 +118,8 @@ declare var moment: any;
         ReporterFieldDateTime,
         ReporterFieldColor,
         ReporterFieldCategoryTree,
+        ReporterFieldNumber,
+        ReporterFieldInteger,
         ReporterIntegrationExportButton,
         ReporterIntegrationExportMask,
         ReporterIntegrationTargetlistexportButton,

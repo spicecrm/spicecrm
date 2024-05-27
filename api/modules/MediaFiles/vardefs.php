@@ -36,17 +36,17 @@ SpiceDictionaryHandler::getInstance()->dictionary['MediaFile'] = [
         'height' => [
             'name' => 'height',
             'vname' => 'LBL_HEIGHT',
-            'type' => 'uint'
+            'type' => 'int'
         ],
         'width' => [
             'name' => 'width',
             'vname' => 'LBL_WIDTH',
-            'type' => 'uint'
+            'type' => 'int'
         ],
         'filesize' => [
             'name' => 'filesize',
             'vname' => 'LBL_FILESIZE',
-            'type' => 'ulong',
+            'type' => 'long',
             'comment' => 'Filesize in KiloBytes'
         ],
         'cdn' => [

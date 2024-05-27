@@ -7,8 +7,9 @@ import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
 
 /**
- * renders a button to toggle subscription on a specific bean
- * requires provided model.service
+ * @deprecated - replaced by icon in page header
+ *
+ * renders an interactive icon in the page header to manage notification subscriptions
  */
 @Component({
     selector: 'object-subscription-button',

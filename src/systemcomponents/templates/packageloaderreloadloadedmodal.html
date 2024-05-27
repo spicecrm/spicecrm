@@ -1,0 +1,73 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">
+        <system-label label="MSG_RELOAD_ALL_LOADED_PACKAGES"/>
+    </system-modal-header>
+    <system-modal-content [grow]="true">
+        <div *ngIf="isReloadingConfig">
+            <system-loader-progress/>
+        </div>
+        <div #scrollContainer style="height: 80vh" class="slds-scrollable--y">
+            <table class="slds-table slds-table--header-fixed slds-table--fixed-layout slds-table_bordered">
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th style="width: 2rem" scope="col"></th>
+                    <th style="width: 15rem" scope="col">
+                        <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_NAME"/></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_MESSAGE"/></div>
+                    </th>
+                    <th style="width: 5rem" scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="slds-hint-parent" *ngFor="let pkg of packages; trackBy: trackByFn" #repairRow [ngClass]="{'slds-theme--info': pkg.status == 'processing', 'slds-theme--error': pkg.status == 'error'}">
+                    <td>
+                        <system-utility-icon *ngIf="pkg.status != 'processing'" size="xx-small" [icon]="!pkg.status ? 'funding_requirement' : pkg.status == 'reloaded' ? 'success' : 'error'" [colorclass]="!pkg.status ? 'slds-icon-text-default' : pkg.status == 'reloaded' ? 'slds-icon-text-success' : 'slds-icon-text-error'"/>
+                        <system-spinner *ngIf="pkg.status == 'processing'" size="14" inverse="true"></system-spinner>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{pkg.name}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{pkg.message?.text}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-grid slds-grid--vertical-align-center">
+                            <button *ngIf="pkg.status == 'error' && pkg.erroneousDictionaries?.length > 0" [disabled]="isReloadingPackage" (click)="openFixRequiredModal(pkg)" system-title="LBL_FIX_DB_FIELDS_MISMATCH" class="slds-button slds-button--icon slds-m-horizontal--xx-small">
+                                <system-button-icon icon="data_transforms" addclasses="slds-button--icon-inverse" />
+                            </button>
+                            <button (click)="showResponseDetails(pkg)" [disabled]="!pkg.message?.details" class="slds-button slds-button--icon">
+                                <system-button-icon *ngIf="pkg.status == 'error'" icon="info" colorclass="slds-icon-text-inverse"/>
+                                <system-button-icon *ngIf="pkg.status != 'error'" icon="info" [colorclass]="pkg.status != 'success' ? 'slds-icon-text-default' : 'slds-icon-text-success'"/>
+                            </button>
+                            <button *ngIf="!!pkg.status && pkg.status != 'reloaded'" (click)="reloadPackage(pkg)" [disabled]="isReloadingPackage" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                <system-button-icon icon="play"/>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid">
+            <div class="slds-grid slds-grow slds-grid--vertical-align-center">
+                <button *ngIf="started" (click)="stop()" class="slds-button slds-button--icon">
+                    <system-button-icon icon="stop"/>
+                </button>
+                <button *ngIf="!started" (click)="reloadAll()" [disabled]="isReloadingPackage" class="slds-button slds-button--icon">
+                    <system-button-icon icon="play"/>
+                </button>
+                <div class="slds-grid slds-grow slds-grid--vertical-align-center">
+                    <system-progress-bar class="slds-size--2-of-4 slds-m-horizontal--x-small" [progress]="progress" [hideText]="true"/>
+                    {{reloadedCount}} / {{packages.length}}
+                </div>
+            </div>
+            <div>
+                <button (click)="close()" class="slds-button slds-button--neutral"><system-label label="LBL_CLOSE"/></button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>
