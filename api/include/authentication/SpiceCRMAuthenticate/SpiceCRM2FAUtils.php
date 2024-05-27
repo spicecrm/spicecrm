@@ -4,20 +4,54 @@ namespace SpiceCRM\includes\authentication\SpiceCRMAuthenticate;
 
 use DateInterval;
 use Exception;
+use libphonenumber\PhoneNumberUtil;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\extensions\modules\TextMessages\TextMessage;
 use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
-use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
+use SpiceCRM\includes\SpicePhoneNumberParser\SpicePhoneNumberParser;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\Users\User;
 
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ * 
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
 
 /**
  * user two-factor authentication utils
@@ -41,13 +75,17 @@ class SpiceCRM2FAUtils
 
         # if the system-wide 2FA is inactive then check for the user 2FA method
         if (!$requireOn && !empty($user->user_2fa_method)) {
-            $requireOn = true;
+            $requireOn = 'device_change';
             $method = $user->user_2fa_method;
         }
 
         if (!$requireOn) return;
 
         $userId = $user->id;
+
+        if ($method == 'user_defined') {
+            $method = $user->user_2fa_method;
+        }
 
         # throw an exception and send the 2FA code if the code was not provided and the device is not trusted or the 2FA check is always on
         if (empty($authData->code2fa) && ($requireOn == 'always' || ($requireOn == 'device_change' && !self::isTrustedDevice($userId, $authData->deviceID)))) {
@@ -58,7 +96,7 @@ class SpiceCRM2FAUtils
             self::check2FACode($user, $method, $authData->code2fa);
         }
 
-        if ($requireOn == 'device_change') {
+        if ($requireOn != 'always' && $authData->rememberDevice) {
             self::saveDeviceID($userId, $authData->deviceID);
         }
     }
@@ -68,11 +106,18 @@ class SpiceCRM2FAUtils
      * @param User $user
      * @param string $method
      * @return mixed
-     * @throws UnauthorizedException
+     * @throws UnauthorizedException | Exception
      */
     private static function handleRequire2FAException(User $user, string $method)
     {
         $message = '';
+
+        # the method is empty when it equals 'user_defined' but the user did not select a method yet
+        if (empty($method)) {
+            throw (new UnauthorizedException('No 2FA method selected', UnauthorizedException::NO_2FA_METHOD_SELECTED))
+                ->setDetails(['methods' => self::getAvailableMethods($user)]);
+
+        }
 
         switch ($method) {
             case 'email':
@@ -106,6 +151,34 @@ class SpiceCRM2FAUtils
             'method' => $userLogin2FAConfig['method'] ?? 'one_time_password',
             'trust_device_days' => $userLogin2FAConfig['trust_device_days'] ?? 90,
         ];
+    }
+
+    /**
+     * get available methods
+     * @return array[]
+     */
+    public static function getAvailableMethods(User $user): array
+    {
+        $config = self::get2FAConfig();
+        $methods = [['value' => 'one_time_password', 'label' => 'LBL_TOTP_AUTHENTICATION']];
+
+        if (!empty($config->sms_mailbox_id) && !empty($user->phone_mobile)) {
+
+            $countryCode = PhoneNumberUtil::getInstance()->getCountryCodeForRegion(
+                SpicePhoneNumberParser::determinePhoneCountry($user)
+            );
+            $address = "+$countryCode*******" . substr($user->phone_mobile, -3);
+            $methods[] = ['value' => 'sms', 'label' => 'LBL_SMS', 'address' => "$address"];
+        }
+
+        if (!empty($config->email_mailbox_id) && !empty($user->email1)) {
+            [$email, $domain] = explode('@', $user->email1);
+            $email = substr($email, 0, 1) . "**********" . substr($email,  -1) . "@***" . substr($domain, -2);
+
+            $methods[] = ['value' => 'email', 'label' => 'LBL_EMAIL', 'address' => $email];
+        }
+
+        return $methods;
     }
 
     /**
@@ -159,12 +232,7 @@ class SpiceCRM2FAUtils
             return;
         }
 
-        $language = $userObj->getPreference('language') ?? SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
-        $necessaryLabels = LanguageManager::getSpecificLabels($language , [
-            'LBL_SAVE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'LBL_CODE', 'LBL_CANCEL', 'LBL_CODE'
-        ]);
-
-        throw (new UnauthorizedException('TOTP.', 12))->setDetails(['labels' => $necessaryLabels]);
+        throw (new UnauthorizedException('TOTP.', 12));
     }
 
     /**
@@ -218,7 +286,7 @@ class SpiceCRM2FAUtils
         $sms->mailbox_id = $mailboxId;
         $sms->description = "Your CRM login code is $code";
         $sms->msisdn = $phoneNumber;
-        $sms->save();
+        $sms->send();
     }
 
     /**
@@ -251,7 +319,7 @@ class SpiceCRM2FAUtils
         $email->body = "Your CRM login code is $code";
         $email->addEmailAddress('to', $emailAddress);
 
-        $email->save();
+        $email->sendEmail();
     }
 
     /**

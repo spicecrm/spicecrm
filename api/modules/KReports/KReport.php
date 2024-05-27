@@ -1,5 +1,16 @@
 <?php
-/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of KReporter. KReporter is an enhancement developed
+ * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ *
+ * This Version of the KReporter is licensed software and may only be used in
+ * alignment with the License Agreement received with this Software.
+ * This Software is copyrighted and may not be further distributed without
+ * witten consent of aac services k.s.
+ *
+ * You can contact us at info@kreporter.org
+ ********************************************************************************/
+
 
 namespace SpiceCRM\modules\KReports;
 
@@ -126,14 +137,10 @@ class KReport extends SpiceBean
         }
 
         //get kreportcategory
-//        if(!empty($this->category_id) && file_exists('modules/KReports/views/view.categories.php')){
-//            $q = "SELECT name FROM kreportcategories WHERE id='".$this->category_id."' AND deleted=0";
-//            if($res = $this->db->query($q)){
-//                while($row = $this->db->fetchByAssoc($res)){
-//                    $this->category_name = $row['name'];
-//                }
-//            }
-//        }
+        if(!empty($this->category_id)){
+            $c = $this->db->fetchOne("SELECT name FROM kreportcategories WHERE id='{$this->category_id}'");
+            $this->category_name = $c['name'];
+        }
 
         return $this;
     }

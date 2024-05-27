@@ -69,7 +69,7 @@ class SpiceUIModulesController
             $retArray = [];
 
             // select from sysmodules
-            $dbresult = $db->query("SELECT * FROM sysmodules");
+            $dbresult = $db->query("SELECT *, 'global' as scope FROM sysmodules");
             while ($m = $db->fetchByAssoc($dbresult)) {
                 // check if we have the module or if it has been filtered out
                 if (!$m['acl'] || $current_user->is_admin || $m['module'] == 'Home' || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
@@ -77,7 +77,7 @@ class SpiceUIModulesController
             }
 
             // select from custom modules and also allow override
-            $dbresult = $db->query("SELECT * FROM syscustommodules");
+            $dbresult = $db->query("SELECT *, 'custom' as scope FROM syscustommodules");
             while ($m = $db->fetchByAssoc($dbresult)) {
                 // check if we have the module or if it has been filtered out
                 if (!$m['acl'] || $current_user->is_admin || $m['module'] == 'Home' || array_search($m['module'], $globalModuleList) !== false || array_search($m['module'], $modInvisList) !== false)
@@ -92,21 +92,20 @@ class SpiceUIModulesController
                 if ($module['module'] == 'LandingPages') {
                     $i = 1;
                 }
-                $seed = BeanFactory::getBean($module['module']);
-                if ($seed) {
-                    $aclArray = SpiceACL::getInstance()->getModuleAccess($module['module']);
-                } else {
-                    $aclArray['list'] = true;
-                }
 
-                $ftsBeanHandler = new SpiceFTSBeanHandler($seed);
+                $seed = BeanFactory::getBean($module['module']);
+                $aclArray = SpiceACL::getInstance()->getModuleAccess($module['module']);
+
                 // check if we have any ACL right
-                if ($module['module'] == 'Home' || $aclArray['list'] || $aclArray['listrelated'] || $aclArray['view'] || $aclArray['edit']) {
+                //if ($module['module'] == 'Home' || $aclArray['list'] || $aclArray['listrelated'] || $aclArray['view'] || $aclArray['edit']) {
+                if($module['module'] == 'Home' || count(array_filter($aclArray, function($access){return $access;})) > 0){
                     $retArray[$module['module']] = [
                         'id' => $module['id'],
+                        'scope' => $module['scope'],
                         'icon' => $module['icon'],
                         'actionset' => $module['actionset'],
                         'module' => $module['module'],
+                        'bean' => $module['bean'],
                         'module_label' => $module['module_label'],
                         'singular' => $module['singular'],
                         'singular_label' => $module['singular_label'],
@@ -118,18 +117,24 @@ class SpiceUIModulesController
                         'workflow' => $module['workflow'] ? true : false,
                         'duplicatecheck' => $module['duplicatecheck'],
                         'favorites' => $module['favorites'],
-                        'listtypes' => SysModuleListManager::getInstance()->getListsForModule($module['module']),
+                        'listtypes' => $seed ? SysModuleListManager::getInstance()->getListsForModule($module['module']) : [],
                         'acl' => $aclArray,
                         'acl_fieldcontrol' => SpiceACL::getInstance()->getFieldAccess($module['module'], 'create'),
                         'acl_multipleusers' => $module['acl_multipleusers'],
-                        'ftsactivities' => SpiceFTSActivityHandler::checkActivities($module['module']),
-                        'ftsgeo' => SpiceFTSHandler::checkGeo($module['module']),
-                        'ftsaggregates' => $ftsBeanHandler->getAggregates(),
-                        'ftssortable' => $ftsBeanHandler->getSortable(),
-                        'ftsglobalsearch' => SpiceFTSHandler::checkGlobal($module['module']),
-                        'ftsphonesearch' => SpiceFTSHandler::checkPhone($module['module']),
                         'categorytrees' => SysCategoryTree::getInstance()->getTreeLinksByModule($module['module'])
                     ];
+
+                    if($seed){
+                        $ftsBeanHandler = new SpiceFTSBeanHandler($seed);
+                        $retArray[$module['module']]['ftsactivities'] = SpiceFTSActivityHandler::checkActivities($module['module']);
+                        $retArray[$module['module']]['ftsgeo'] = SpiceFTSHandler::checkGeo($module['module']);
+                        $retArray[$module['module']]['ftsaggregates'] = $ftsBeanHandler->getAggregates();
+                        $retArray[$module['module']]['ftsmetrics'] = $ftsBeanHandler->getMetrics();
+                        $retArray[$module['module']]['ftssortable'] = $ftsBeanHandler->getSortable();
+                        $retArray[$module['module']]['ftsglobalsearch'] = SpiceFTSHandler::checkGlobal($module['module']);
+                        $retArray[$module['module']]['ftsphonesearch'] = SpiceFTSHandler::checkPhone($module['module']);
+                        $retArray[$module['module']]['ftsmentionsearch'] = SpiceFTSHandler::mentionEnabled($module['module']);
+                    }
                 }
             }
 

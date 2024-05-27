@@ -9,6 +9,7 @@ import { userpreferences } from '../../services/userpreferences.service';
 import { modal } from '../../services/modal.service';
 import { toast } from '../../services/toast.service';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {configurationService} from "../../services/configuration.service";
 
 /**
  * @ignore
@@ -35,7 +36,7 @@ export class ConfigTransfer {
     public exportErrorMessage: string;
     @ViewChild( 'downloadlink', {read: ViewContainerRef, static: true } ) public downloadlink: ViewContainerRef;
     public loadUrl: any = undefined;
-    public fileName: string = 'export.gz';
+    public fileName: string = 'spicecrm-cfg-' + moment().format('YYYYMMDD-HHmm') + '.gz';
     public changeExportSettings = false;
 
     // IMPORT:
@@ -55,12 +56,36 @@ export class ConfigTransfer {
     public keepEnteredModifiedInfo = false;
     @ViewChild('fileupload', {read: ViewContainerRef, static: true}) public fileupload: ViewContainerRef;
     public isDragOver = false;
+    /**
+     * comma separated package names to be exported
+     */
+    public selectedPackages: string;
 
-    constructor( public backend: backend, public metadata: metadata, public lang: language, public prefs: userpreferences, public modalservice: modal, public toast: toast ) { }
+    constructor( public backend: backend,
+                 public metadata: metadata,
+                 public lang: language,
+                 public prefs: userpreferences,
+                 public configurationService: configurationService,
+                 public modalservice: modal,
+                 public toast: toast ) { }
 
     public showExport() {
         if ( this.tabToShow === 'e' ) return;
-        if( !this.tablenamesLoaded && !this.isLoadingTablenames ) {
+        this.loadTableNames();
+        this.tabToShow = 'e';
+    }
+
+    /**
+     * load table names
+     */
+    public loadTableNames(): Promise<true> {
+
+        return new Promise(promiseRes => {
+
+            if( this.tablenamesLoaded || this.isLoadingTablenames ) {
+                return promiseRes(true);
+            }
+
             this.isLoadingTablenames = true;
             this.backend.getRequest( 'configuration/transfer/tablenames' ).subscribe( ( response: any ) => {
                 response.selectableTables.forEach( ( tablename ) => {
@@ -69,15 +94,34 @@ export class ConfigTransfer {
                 response.blacklistedTables.forEach( ( tablename ) => {
                     this.blacklistedTables.push( tablename );
                 } );
+
+                promiseRes(true);
                 this.isLoadingTablenames = false;
                 this.tablenamesLoaded = true;
             } );
-        }
-        this.tabToShow = 'e';
+        });
     }
 
     public showImport() {
         this.tabToShow = 'i';
+    }
+
+    /**
+     * export system package
+     */
+    public exportSystemPackage() {
+
+        this.loadTableNames().then(() => {
+            this.selectableTables.forEach( table => {
+                if (table.name.includes('custom')) return;
+                table.include = true;
+            });
+            this.selectedPackages = 'system';
+            this.additionalTables = 'spiceaclstandardactions';
+            this.fileName = 'system-package.gz';
+
+            this.exportTables();
+        });
     }
 
     public exportTables() {
@@ -90,8 +134,12 @@ export class ConfigTransfer {
         this.selectableTables.forEach( ( table => {
             if ( table.include ) selectedTables.push(table.name);
         }));
-        this.fileName = 'spicecrm-cfg-' + moment().format('YYYYMMDD-HHmm') + '.gz';
-        this.backend.getDownloadPostRequestFile('configuration/transfer/export', {}, { selectedTables: selectedTables, additionalTables: this.additionalTables } ).subscribe(
+
+        if (!this.fileName) {
+            this.fileName = 'spicecrm-cfg-' + moment().format('YYYYMMDD-HHmm') + '.gz';
+        }
+
+        this.backend.getDownloadPostRequestFile('configuration/transfer/export', {}, { selectedTables: selectedTables, additionalTables: this.additionalTables, packages: this.selectedPackages } ).subscribe(
             url => {
                 this.downloadlink.element.nativeElement.href = url;
                 this.downloadlink.element.nativeElement.click();

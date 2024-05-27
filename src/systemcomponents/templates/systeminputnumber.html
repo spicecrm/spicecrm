@@ -6,5 +6,12 @@
 <ng-template *ngIf="onlyField" [ngTemplateOutlet]="field"></ng-template>
 
 <ng-template #field>
-    <input #numberinput class="slds-input slds-text-align--right" type="text" [(ngModel)]="textValue" (keydown)="checkInput($event)" (ngModelChange)="fieldChanged($event)"  [attr.placeholder]="placeholder" [disabled]="disabled" [attr.size]="size" [ngStyle]="{'width':size?'auto':undefined}"/>
+    <div class="slds-input-has-icon slds-input-has-icon_right">
+        <input #numberinput class="slds-input slds-text-align--right" type="text" [(ngModel)]="textValue" (keydown)="checkInput($event)" (ngModelChange)="fieldChanged($event)" [attr.placeholder]="placeholder" [disabled]="disabled" [attr.size]="size" [ngStyle]="{'width':size?'auto':undefined}"/>
+        <div *ngIf="withCalculator" class="slds-input__icon-group slds-input__icon-group_right slds-height_full slds-grid" style="top: 0; margin: 0; height: 100%">
+            <button  class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position: relative;" (click)="openCalculator()">
+                <system-button-icon icon="formula"/>
+            </button>
+        </div>
+    </div>
 </ng-template>

@@ -1,27 +1,30 @@
 /**
  * @module WorkbenchModule
  */
-import {Injectable, OnDestroy} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {backend} from '../../services/backend.service';
 import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
 import {
+    DictionaryDatabaseField,
     DictionaryDefinition,
     DictionaryIndex,
     DictionaryIndexItem,
     DictionaryItem,
-    Relationship,
-    RelationshipRelateField
+    Relationship, RelationshipField, RelationshipPolymorph,
+    RelationshipRelateField,
+    RelationshipType
 } from "../interfaces/dictionarymanager.interfaces";
 import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfaces";
 import {configurationService} from "../../services/configuration.service";
 import {toast} from "../../services/toast.service";
 import {navigation} from "../../services/navigation.service";
+import {Observable, Subject} from "rxjs";
 
 @Injectable()
-export class dictionarymanager implements OnDestroy {
+export class dictionarymanager {
 
     /**
      * reserved words in PL(SQL
@@ -68,14 +71,34 @@ export class dictionarymanager implements OnDestroy {
     public dictionaryitems: DictionaryItem[] = [];
 
     /**
+     * the dictionary items
+     */
+    public dictionaryfields: any[] = [];
+
+    /**
+     * the loaded list of dictionaryDefinitions
+     */
+    public dictionarydatabasefields: DictionaryDatabaseField[] = [];
+
+    /**
+     * the dictionary relationshiptypes
+     */
+    public dictionaryrelationshiptypes: RelationshipType[] = [];
+
+    /**
      * the dictionary relationships
      */
     public dictionaryrelationships: Relationship[] = [];
 
     /**
+     * the dictionary relationships
+     */
+    public dictionaryrelationshippolymorphs: RelationshipPolymorph[] = [];
+
+    /**
      * the additonal relationship fields for the n:m relationships
      */
-    public dictionaryrelationshipfields: any[] = [];
+    public dictionaryrelationshipfields: RelationshipField[] = [];
 
     /**
      * the dictionary relationships
@@ -96,11 +119,6 @@ export class dictionarymanager implements OnDestroy {
      * the currently selected dictionary element
      */
     public currentDictionaryDefinition: string;
-
-    /**
-     * the currently selected dictionary scope  element
-     */
-    public currentDictionaryScope: 'c' | 'g';
 
     /**
      * the currently selected dictionary item
@@ -136,16 +154,32 @@ export class dictionarymanager implements OnDestroy {
                 public modal: modal,
                 public configurationService: configurationService) {
         this.loadDictionaryDefinitions();
+        this.loadDictionaryFields();
         this.loadWords();
 
         // set teh change scope
         this.changescope = this.configurationService.getCapabilityConfig('core').edit_mode;
-
-        this.navigation.addModelEditing('dictmgr', 'Administration', this, 'dictionary manager');
     }
 
-    public ngOnDestroy() {
-        this.navigation.removeModelEditing('dictmgr', 'Administration');
+
+    /**
+     * update the input relationship in the relationship array
+     * @param relationship
+     */
+    public updateRelationshipInArray(relationship: Relationship) {
+        const idx = this.dictionaryrelationships.findIndex(r => r.id == relationship.id);
+        this.dictionaryrelationships[idx] = {...relationship};
+        // trigger the change detection
+        this.dictionaryrelationships= [...this.dictionaryrelationships];
+
+    }
+
+    /**
+     * push a new relationship to the relationship array
+     * @param relationship
+     */
+    public pushNewRelationshipToArray(relationship: Relationship) {
+        this.dictionaryrelationships = [...this.dictionaryrelationships, {...relationship}];
     }
 
     /**
@@ -154,6 +188,8 @@ export class dictionarymanager implements OnDestroy {
     public isDirty() {
 
         let changed = false;
+
+        if(!this.loaded) return changed;
 
         const loaded = JSON.parse(this.loaded);
 
@@ -182,6 +218,45 @@ export class dictionarymanager implements OnDestroy {
     }
 
     /**
+     * the currently selected dictionary definition scope
+     */
+    get currentDictionaryScope(): 'c'|'g'{
+        return this.currentDictionaryDefinition ? this.dictionarydefinitions.find(i => i.id == this.currentDictionaryDefinition).scope : 'g';
+    }
+
+    /**
+     * renders a modal that prompts confimration and enables dropping of the item
+     *
+     * @param messge
+     */
+    public promptDelete(messge:string): Observable<string>{
+        let retSubject = new Subject<string>();
+        this.modal.openModal('DictionaryManagerDeleteModal').subscribe({
+            next: (componentRef) => {
+                componentRef.instance.message = messge;
+                componentRef.instance.responseSubject = retSubject;
+            }
+        })
+        return retSubject.asObservable();
+    }
+
+    /**
+     * returns true if the current definition is a template
+     */
+    public currentIsTemplate(){
+        return  this.currentDictionaryDefinition && this.dictionarydefinitions.find(d => d.id == this.currentDictionaryDefinition)?.sysdictionary_type == 'template';
+    }
+
+    /**
+     * returns the current definition object
+     */
+    public getCurrentDefinition(){
+        if(!this.currentDictionaryDefinition)  return null;
+
+        return this.dictionarydefinitions.find(d => d.id == this.currentDictionaryDefinition);
+    }
+
+    /**
      * load the domains
      */
     public loadDictionaryDefinitions() {
@@ -193,8 +268,11 @@ export class dictionarymanager implements OnDestroy {
                 this.domainfields = res.domainfields;
                 this.dictionarydefinitions = res.dictionarydefinitions;
                 this.dictionaryitems = res.dictionaryitems;
+                this.dictionaryrelationshiptypes = res.dictionaryrelationshiptypes;
                 this.dictionaryrelationships = res.dictionaryrelationships;
+                this.dictionaryrelationshippolymorphs = res.dictionaryrelationshippolymorphs;
                 this.dictionaryrelationshiprelatefields = res.dictionaryrelationshiprelatefields;
+                this.dictionaryrelationshipfields = res.dictionaryrelationshipfields;
                 this.dictionaryindexes = res.dictionaryindexes;
                 this.dictionaryindexitems = res.dictionaryindexitems;
 
@@ -206,6 +284,31 @@ export class dictionarymanager implements OnDestroy {
             },
             error: () =>{
                 awaitModal.emit(true);
+            }
+        });
+    }
+
+    /**
+     * load the fields
+     */
+    public loadDictionaryFields() {
+        this.backend.getRequest('dictionary/fields').subscribe({
+            next: (fields) => {
+                this.dictionaryfields = fields
+            }
+        });
+    }
+
+    /**
+     * load the fields sotred in the database
+     */
+    public loadDatabaseFields(dictionaryname) {
+        this.dictionarydatabasefields = [];
+        // check if we have a template
+        if(this.currentIsTemplate()) return;
+        this.backend.getRequest(`dictionary/columns/${dictionaryname}`).subscribe({
+            next: (fields) => {
+                this.dictionarydatabasefields = fields
             }
         });
     }
@@ -232,13 +335,14 @@ export class dictionarymanager implements OnDestroy {
      * @param scope
      */
     public canChange(scope: string) {
+        return true;
 
         // if we have all ... we can change
         if (this.changescope == 'all') return true;
 
         // if we have custom we can only change custom
         if (this.changescope == 'custom' && scope == 'c') {
-            this.currentDictionaryScope = 'c';
+            // this.currentDictionaryScope = 'c';
             return true;
         }
 
@@ -309,7 +413,7 @@ export class dictionarymanager implements OnDestroy {
     public getDictionaryDefinitionItems(refid) {
         let itemsArray: any[] = [];
 
-        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
             if (item.sysdictionary_ref_id && item.sysdictionary_ref_id != refid) {
                 itemsArray = itemsArray.concat(this.getDictionaryDefinitionItems(item.sysdictionary_ref_id));
             } else if (!item.sysdictionary_ref_id) {
@@ -363,19 +467,109 @@ export class dictionarymanager implements OnDestroy {
 
     }
 
+    /**
+     *
+     * @param definition
+     */
+    public repairDictionary(definitionid) {
+        let awaitModal =  this.modal.await('LBL_EXECUTING');
+        let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
+        this.backend.putRequest(`dictionary/definition/${definitionid}/repair`).subscribe({
+            next: (result) => {
+                if (result.success) {
+                    this.handleAfterActivate();
+                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success', result.sql, !result.sql);
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
+                }
+                awaitModal.emit(true);
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERROR repairing dictonaray'), 'error');
+                awaitModal.emit(true);
+            }
+        });
+    }
 
     /**
      *
      * @param definition
      */
-    public repairDictionary(definition) {
-        let body = {dictionaries: [definition.name]};
-        this.backend.postRequest('admin/repair/dictionary', {}, body).subscribe(result => {
-            if (result.success) {
-                this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success');
-            } else {
-                this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error');
+    public reshuffleDictionary(definitionid, fields) {
+        let awaitModal =  this.modal.await('LBL_EXECUTING');
+        let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
+        this.backend.putRequest(`dictionary/definition/${definitionid}/reshuffle`, {}, fields).subscribe({
+            next: (result) => {
+                if (result.success) {
+                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_reshuffled'), 'success', result.sql, !result.sql);
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
+                }
+                awaitModal.emit(true);
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERROR reshuffling dictonaray'), 'error');
+                awaitModal.emit(true);
             }
         });
     }
+
+    /**
+     *
+     * @param definition
+     */
+    public repairDictionaryOld(definitionid) {
+        let awaitModal =  this.modal.await('LBL_REPAIRING');
+        let definition = this.dictionarydefinitions.find(d => d.id == definitionid)
+        this.backend.postRequest('admin/repair/dictionary', {}, {dictionaries: [definition.name]}).subscribe({
+            next: (result) => {
+                if (result.success) {
+                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_REPAIRED'), 'success', result.sql, !result.sql);
+                } else {
+                    this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
+                }
+                awaitModal.emit(true);
+            },
+            error: () => {
+                this.toast.sendToast(this.language.getLabel('ERROR repairing dictonaray'), 'error');
+                awaitModal.emit(true);
+            }
+        });
+    }
+
+    /**
+     * reload fielddefs frontend cache
+     */
+    public handleAfterActivate() {
+        this.configurationService.reloadTaskData('fielddefs');
+    }
+
+    /**
+     * repair template related dictionaries
+     */
+    public repairTemplateRelatedDictionaries() {
+        this.modal.confirm('MSG_REPAIR_DICTIONARY_TEMPLATE_RELATED_DICTIONARIES', 'MSG_REPAIR_DICTIONARY_TEMPLATE_RELATED_DICTIONARIES').subscribe(answer => {
+
+            if (!answer) return;
+
+            const reparing = this.modal.await('LBL_REPAIRING');
+            this.backend.putRequest(`dictionary/template/${this.currentDictionaryDefinition}/repairrelated`).subscribe({
+                next: () => {
+                    reparing.next(true);
+                    reparing.complete();
+                    this.toast.sendToast('LBL_DICTIONARY_REPAIRED', 'success');
+                },
+                error: err => {
+                    reparing.next(true);
+                    reparing.complete();
+                    this.toast.sendToast(`${this.language.getLabel('ERROR repairing dictionary')}: ${err.error.error.message}`, 'error');
+                }
+            });
+
+        });
+    }
+
+    ngOnDestroy(): void {
+    }
+
 }

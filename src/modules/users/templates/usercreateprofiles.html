@@ -1,0 +1,24 @@
+<table class="slds-table slds-table_bordered">
+    <thead class="slds-table--bordered slds-text-align_center">
+        <tr class="slds-text-title--caps">
+            <th><system-label label="LBL_NAME"></system-label></th>
+            <th style="width: 2rem;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(profile of availableProfiles; track profile.id){
+        <tr  class="slds-hint-parent">
+            <td>
+                {{profile.name}}
+            </td>
+            <td>
+                @if(profile.is_global) {
+                    <system-utility-icon class="slds-p-horizontal--xx-small" icon="world" size="xx-small"/>
+                } @else {
+                    <system-checkbox [value]="profile.id" [ngModel]="profileChecked(profile.id)" (ngModelChange)="checkProfile(profile.id)"/>
+                }
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

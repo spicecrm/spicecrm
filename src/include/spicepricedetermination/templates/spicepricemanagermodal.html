@@ -1,0 +1,116 @@
+<system-modal size="large">
+  <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+  <system-modal-content system-modal-content-grow margin="none">
+    <div class="slds-p-around--xx-small">
+      <div class="slds-box slds-box--border">
+        <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center">
+          <label class="slds-form-element__label slds-size--1-of-4"><system-label label="LBL_CONDITION"/></label>
+          <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xx-small">
+            <div class="slds-form-element__control">
+              <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="conditionType">
+                  <option value=""><system-label label="LBL_SELECT"/></option>
+                  <option *ngFor="let c of conditionTypes" [ngValue]="c.id"><system-label [label]="c.name"/></option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <label class="slds-form-element__label slds-size--1-of-4"><system-label label="LBL_DETERMINATION_TYPE"/></label>
+          <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xx-small">
+            <div class="slds-form-element__control">
+              <div class="slds-select_container">
+                <select [disabled]="!conditionType" class="slds-select" [(ngModel)]="determinationType">
+                  <option value=""><system-label label="LBL_SELECT"/></option>
+                  <option *ngFor="let d of conditionDeterminations" [ngValue]="d.id"><system-label [label]="d.name"/></option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- conditions table -->
+    <div>
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+        <thead>
+          <tr class="slds-line-height_reset">
+            <th class="" scope="col" *ngFor="let ce of conditionTypeElements">
+              <div class="slds-truncate"><system-label [label]="ce.label"/></div>
+            </th>
+            <th class="" scope="col">
+              <div class="slds-truncate"><system-label label="LBL_VALID_FROM"/></div>
+            </th>
+            <th class="" scope="col">
+              <div class="slds-truncate"><system-label label="LBL_VALID_UNTIL"/></div>
+            </th>
+            <th class="" scope="col">
+              <div class="slds-truncate"><system-label label="LBL_VALUE"/></div>
+            </th>
+            <th class="" scope="col">
+            <div class="slds-truncate"><system-label label="LBL_QUANTIYBASE"/></div>
+            </th>
+            <th *ngIf="isTypeTax" scope="col">
+              <div class="slds-truncate"><system-label label="LBL_TAX_CATEGORY"/></div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- the loaded conditions -->
+          <tr class="slds-hint-parent" *ngFor="let c of loadedconditions">
+            <td  *ngFor="let ce of conditionTypeElements">
+                <input disabled [ngModel]="getElementValue(c.id, ce.id, true)" type="text" class="slds-input">
+            </td>
+            <td>
+                <system-input-date disabled [ngModel]="c.valid_from"></system-input-date>
+            </td>
+            <td>
+              <system-input-date disabled [ngModel]="c.valid_to"></system-input-date>
+            </td>
+            <td>
+              <system-input-number disabled [ngModel]="c.condition_value"></system-input-number>
+            </td>
+            <td>
+              <system-input-number disabled [ngModel]="c.quantity_base"></system-input-number>
+            </td>
+            <td *ngIf="isTypeTax">
+              <system-input-taxcode disabled [ngModel]="c.tax_category"></system-input-taxcode>
+            </td>
+          </tr>
+          <!-- any new condition -->
+          <tr class="slds-hint-parent" *ngFor="let c of conditions">
+            <td  *ngFor="let ce of conditionTypeElements">
+              <ng-container *ngIf="ce.element_module_field == 'id' && ce.element_module != model.module; else regularinput">
+                <system-input-relate [module]="ce.element_module" [ngModel]="getRelatedElementValue(c.id, ce.id)" (ngModelChange)="setRelatedIdValue(c.id, ce.id, $event)"></system-input-relate>
+              </ng-container>
+              <ng-template #regularinput>
+                <input [disabled]="ce.element_module == model.module" [ngModel]="getElementValue(c.id, ce.id)" (ngModelChange)="setElementValue(c.id, ce.id, $event)" type="text" class="slds-input">
+              </ng-template>
+            </td>
+            <td>
+                <system-input-date [(ngModel)]="c.valid_from"></system-input-date>
+            </td>
+            <td>
+              <system-input-date [(ngModel)]="c.valid_to"></system-input-date>
+            </td>
+            <td>
+              <system-input-number [(ngModel)]="c.condition_value" [asNumber]="true" precision="2"></system-input-number>
+            </td>
+            <td>
+              <system-input-number [(ngModel)]="c.quantity_base" [asNumber]="true" precision="0"></system-input-number>
+            </td>
+            <td *ngIf="isTypeTax">
+              <system-input-taxcode [(ngModel)]="c.tax_category"></system-input-taxcode>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="slds-p-around--small slds-align--absolute-center">
+        <button class="slds-button slds-button--icon" [disabled]="!determinationType" (click)="addCondition()"><system-button-icon icon="add"/></button>
+      </div>
+    </div>
+  </system-modal-content>
+  <system-modal-footer>
+    <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+    <button class="slds-button slds-button--brand" (click)="saveConditions()"><system-label label="LBL_SAVE"/></button>
+  </system-modal-footer>
+</system-modal>

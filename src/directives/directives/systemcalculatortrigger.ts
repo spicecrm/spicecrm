@@ -13,8 +13,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module DirectivesModule
  */
-import {Directive, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {Directive, ElementRef, HostListener, Input, ViewChild} from '@angular/core';
 import {modal} from "../../services/modal.service";
+import {userpreferences} from "../../services/userpreferences.service";
 
 /**
  * to be called from sibling system-calculator to handle the click event
@@ -27,7 +28,20 @@ import {modal} from "../../services/modal.service";
 })
 export class SystemCalculatorTriggerDirective {
 
-    constructor(public modal: modal, public elementRef: ElementRef) {
+    /**
+     * a setter to set that a calculator icon should be displayed in the field
+     * @param displayCalculator
+     */
+    @Input('system-calculator-trigger-formatted') set setCalculator(formatted: boolean){
+        if (formatted === false) {
+            this.formattedNumber = false;
+        } else {
+            this.formattedNumber = true;
+        }
+    }
+    public formattedNumber: boolean = false;
+
+    constructor(public modal: modal, public userpreferences: userpreferences, public elementRef: ElementRef) {
     }
     /**
      * open the calculator modal and handle emitting the response value
@@ -42,7 +56,8 @@ export class SystemCalculatorTriggerDirective {
             modalRef.instance.trigger = true;
             modalRef.instance.value$.subscribe(val => {
                 if (isNaN(val)) return;
-                this.elementRef.nativeElement.previousSibling.value = val;
+                this.elementRef.nativeElement.previousSibling.value = this.formattedNumber ? this.userpreferences.formatMoney(val, 2) : val;
+                this.elementRef.nativeElement.previousSibling.dispatchEvent(new Event('input'));
             });
         });
     }

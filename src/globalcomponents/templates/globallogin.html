@@ -1,5 +1,5 @@
 <global-login-loading class="slds-size--1-of-1" *ngIf="!configuration.initialized"></global-login-loading>
-<div *ngIf="configuration.initialized"  class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1 slds-theme--default" style="height:100vh; top: 0px;">
+<div *ngIf="configuration.initialized" [ngClass]="{'slds-theme--error': configuration.data.startupMode == 'recovery', 'slds-theme--warning': configuration.data.startupMode == 'maintenance', 'slds-theme--default': configuration.data.startupMode != 'maintenance' && configuration.data.startupMode != 'recovery'}" class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1" style="height:100vh; top: 0px;">
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium" style="max-width: 500px">
             <!--div class="spiceLoginLogo"-->
@@ -9,29 +9,42 @@
             <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser" [system-overlay-loading-spinner]="loggingIn">
                 <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading">
                     <form *ngIf="!showForgotPass" (submit)="login()">
+                        <div *ngIf="configuration.data.startupMode == 'recovery'" class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                            <system-icon icon="error" sprite="utility" addclasses="slds-m-right_x-small slds-icon-text-warning" divClass="slds-icon-utility-error"/>
+                            <h2><system-label label="ERR_RECOVERY_MODE_ENABLED"/> </h2>
+                        </div>
+                        <div *ngIf="configuration.data.startupMode == 'maintenance'" class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                            <system-icon icon="error" sprite="utility" addclasses="slds-m-right_x-small slds-icon-text-warning" divClass="slds-icon-utility-error"/>
+                            <h2><system-label label="ERR_MAINTENANCE_MODE_ENABLED"/> </h2>
+                        </div>
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
                                 <system-utility-icon icon="user" addclasses="slds-input__icon slds-icon-text-default"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-vertical--xx-small" tabindex="1" [placeholder]="loginLabels.LBL_USER_NAME?.default ?? 'Username'" />
+                                <input [disabled]="loggingIn" type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-vertical--xx-small" tabindex="1" system-placeholder="LBL_USER_NAME"/>
                             </div>
                         </div>
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
                                 <system-utility-icon icon="lock" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
-                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small" tabindex="2" [placeholder]="loginLabels.LBL_PASSWORD?.default ?? 'Password'" />
+                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-vertical--xx-small  slds-theme--default" tabindex="2" system-placeholder="LBL_PASSWORD" />
                             </div>
                         </div>
                         <div *ngIf="twoFactorAuthCodeRequired" class="slds-form-element slds-m-vertical--small slds-grid slds-grid--vertical-align-center">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
                                 <system-utility-icon icon="scan" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
-                                <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" [placeholder]="loginLabels.LBL_ENTER_CODE?.default ?? 'Enter code'" />
+                                <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" system-placeholder="LBL_ENTER_CODE" />
                             </div>
+                            <system-checkbox *ngIf="rememberDeviceVisible" [(ngModel)]="rememberDevice" name="remember-device" class="slds-m-left--xx-small">
+                                <system-label label="LBL_REMEMBER_DEVICE"/>
+                            </system-checkbox>
                         </div>
                         <div class="slds-m-bottom--small">
-                            <system-checkbox-toggle [(ngModel)]="rememberMe" name="remember-me" [label]="loginLabels.LBL_KEEP_ME_LOGGED_IN?.default ?? 'Keep me logged in'"></system-checkbox-toggle>
+                            <system-checkbox [(ngModel)]="keepMeLoggedIn" name="keep-me-logged-in" label="LBL_KEEP_ME_LOGGED_IN">
+                                <system-label label="LBL_KEEP_ME_LOGGED_IN"/>
+                            </system-checkbox>
                         </div>
                         <button [disabled]="loggingIn" type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">
-                            {{loginLabels.LBL_LOGIN?.default ?? 'Login'}}
+                            <system-label label="LBL_LOGIN"/>
                         </button>
                         <div class="slds-p-top--small">
                             <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event)"></global-login-oauth2>
@@ -48,9 +61,6 @@
                     <global-login-forgot-password class="slds-col" *ngIf="showForgotPass" (close)="showForgotPass = !$event"></global-login-forgot-password>
                 </div>
             </div>
-            <!-- the dialog to renew the password or to generate totp authentication ...
-                 needs to be added here in this way as we do not have the modal service and repository yet -->
-            <global-login-change-password class="slds-is-absolute" *ngIf="renewPassword || generateTOTP" [case]="generateTOTP ? 'totp':'pwd'" (closeDialog)="handleRenewDialogClose($event)" [username]="username" [password]="password" [labels]="labels"></global-login-change-password>
             <ng-container *ngIf="loginService.session.authData.sessionId">
                 <system-loader-progress></system-loader-progress>
             </ng-container>

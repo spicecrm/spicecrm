@@ -24,8 +24,16 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="repositories.length > 0" class="slds-page-header__col-actions">
-            <div class="slds-form-element">
+        <div  class="slds-page-header__col-actions slds-grid slds-grid--vertical-align-center">
+            <div class="slds-p-horizontal--small">
+                <button *ngIf="systemPackageVisible" (click)="reloadSystemPackage()" system-title="MSG_RELOAD_SYSTEM_PACKAGE" [disabled]="this.errorpackages.length == 0" class="slds-button slds-button--icon">
+                    <system-button-icon icon="custom_apps"/>
+                </button>
+                <button (click)="reloadLoadedPackages()" system-title="MSG_RELOAD_ALL_LOADED_PACKAGES" [disabled]="this.errorpackages.length == 0" class="slds-button slds-button--icon">
+                    <system-button-icon icon="refresh"/>
+                </button>
+            </div>
+            <div *ngIf="repositories.length > 0" class="slds-form-element">
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container">
                         <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [system-dropdown-trigger]="repositories.length <= 1" role="combobox">
@@ -57,7 +65,7 @@
         <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'packages'}" [title]="language.getLabel('LBL_PACKAGES')" role="presentation">
             <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="scope='packages'"><system-label label="LBL_PACKAGES"></system-label></a>
         </li>
-        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'languages'}" title="language.getLabel('LBL_LANGUAGES')" role="presentation">
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'languages'}" [title]="language.getLabel('LBL_LANGUAGES')" role="presentation">
             <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="scope='languages'"><system-label label="LBL_LANGUAGES"></system-label></a>
         </li>
         <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active':scope == 'content'}" [title]="language.getLabel('LBL_CONTENT')" role="presentation">

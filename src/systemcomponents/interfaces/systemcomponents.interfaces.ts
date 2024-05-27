@@ -44,7 +44,7 @@ export interface SystemTreeConfigI {
     collapsible?: boolean;
 }
 
-export type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut';
+export  type GoogleChartTypeOneDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line' | 'Pie' | 'Donut';
 
 export type GoogleChartTypeMultiDimensional = 'Area' | 'SteppedArea' | 'Bar' | 'Column' | 'Line'; // 'Bubble' | 'Sankey' need different structure
 
@@ -68,6 +68,7 @@ export interface GoogleChartOptionsI {
     fontSize?: number;
     is3D?: boolean;
     isStacked?: boolean;
+    animation?: any;
 }
 
 export interface GoogleChartOptionLegendI {
@@ -95,3 +96,5 @@ export interface GoogleChartSelectedObject {
     column: number;
     row: number;
 }
+
+export type ChartJSTypeOneDimensional = 'Bar' | 'Column' | 'Line' | 'Pie' | 'Doughnut';

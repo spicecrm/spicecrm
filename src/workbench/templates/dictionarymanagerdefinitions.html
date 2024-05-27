@@ -1,5 +1,5 @@
-<div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center">
-    <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="definitionfilterterm"></system-input-text>
+<div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center slds-theme--default">
+    <system-input-text placeholder="LBL_SEARCH" class="slds-grow" [(ngModel)]="definitionfilterterm" autocomplete="off" [showClear]="true"></system-input-text>
     <system-select-icon class="slds-p-left--xx-small" [(ngModel)]="definitionfilterscope">
         <system-select-icon-item></system-select-icon-item>
         <system-select-icon-item value="g" icon="world"></system-select-icon-item>
@@ -20,9 +20,14 @@
             <option value="relationship"><system-label label="LBL_RELATIONSHIP"></system-label></option>
         </select>
     </div>
+    <div class="slds-p-horizontal--x-small">
+        <button class="slds-button slds-button--icon" (click)="isExpanded = !isExpanded">
+            <system-button-icon [icon]="_isExpanded ? 'chevronleft' : 'chevronright'"></system-button-icon>
+        </button>
+    </div>
 </div>
-<div class="slds-border--top" system-to-bottom>
-    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed">
+<div class="slds-border--top slds-scrollable" system-to-bottom marginBottom="45" #itemscontainer>
+    <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-table--header-fixed">
         <thead>
             <tr class="slds-line-height_reset">
                 <th style="width:2.5rem" scope="col"></th>
@@ -35,17 +40,14 @@
                 <th class="" scope="col">
                     <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TYPE"></system-label></div>
                 </th>
-                <th style="width:2rem" scope="col"></th>
+                <th style="width:3rem" scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}"  *ngFor="let dictionarydefinition of dictionarydefinitions; trackBy: trackByFn" (click)="setCurrentDictionaryDefinition(dictionarydefinition.id, dictionarydefinition.scope)">
+            <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}"  *ngFor="let dictionarydefinition of dictionarydefinitions; trackBy: trackByFn" (dblclick)="this.isExpanded = false" (click)="setCurrentDictionaryDefinition(dictionarydefinition.id)">
                 <td>
-                    <button class="slds-button slds-button--icon" (click)="repairDictionaryDefinition(dictionarydefinition)">
-                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="'custom_apps'" [system-title]="language.getLabel('LBL_REPAIR_CACHE')"></system-utility-icon>
-                    </button>
                     <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <dictionary-manager-item-status [(ngModel)]="dictionarydefinition.status"></dictionary-manager-item-status>
+                    <dictionary-manager-item-status [ngModel]="dictionarydefinition.status" (ngModelChange)="setStatus(dictionarydefinition, $event)"></dictionary-manager-item-status>
                 </td>
                 <td data-label="Dictionary" >
                     <div class="slds-truncate">{{dictionarydefinition.name}}</div>
@@ -60,15 +62,14 @@
                     <button class="slds-button slds-button--icon" (click)="editDictionaryDefinition(dictionarydefinition)">
                         <system-button-icon size="xx-small" icon="edit"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon" [disabled]="!dictionarymanager.canChange(dictionarydefinition.scope)" (click)="deleteDictionaryDefinition($event, dictionarydefinition.id)">
+                    <button class="slds-button slds-button--icon" [disabled]="dictionarydefinition.status == 'a' || !dictionarymanager.canChange(dictionarydefinition.scope)" (click)="delete(dictionarydefinition.id)">
                         <system-button-icon size="xx-small" icon="delete"></system-button-icon>
                     </button>
                 </td>
             </tr>
         </tbody>
-
     </table>
-    <div *ngIf="dictionarymanager.changescope != 'none'" class="ng-star-inserted slds-align--absolute-center slds-border--top slds-p-around--small slds-theme--default" style="position: sticky;bottom: 0;">
-        <system-utility-icon (click)="addDictionaryDefinition($event)" icon="new" size="x-small"></system-utility-icon>
-    </div>
+</div>
+<div *ngIf="dictionarymanager.changescope != 'none'" class="ng-star-inserted slds-align--absolute-center slds-border--top slds-p-around--small slds-theme--default">
+    <system-utility-icon (click)="addDictionaryDefinition($event)" icon="new" size="x-small"></system-utility-icon>
 </div>

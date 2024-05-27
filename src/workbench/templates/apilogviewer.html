@@ -38,23 +38,22 @@
                 </div>
             </div>
             <div class="slds-col slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_START"></system-label></label>
+                <div class="slds-grid slds-grid--vertical-align-center">
+                    <system-input-date [(ngModel)]="dateStart" class="slds-grow"></system-input-date>
+                    <system-input-time [(ngModel)]="dateStart" class="slds-grow slds-p-horizontal--xx-small"></system-input-time>
+                    <system-utility-icon system-title="LBL_NOW" icon="clock" size="x-small" (click)="setNow('dateStart')"></system-utility-icon>
+                </div>
+            </div>
+            <div class="slds-col slds-size--1-of-4">
                 <label class="slds-form-element__label"><system-label label="LBL_END"></system-label></label>
                 <div class="slds-grid slds-grid--vertical-align-center">
                     <system-input-date [(ngModel)]="dateEnd" class="slds-grow"></system-input-date>
                     <system-input-time [(ngModel)]="dateEnd" class="slds-grow slds-p-horizontal--xx-small"></system-input-time>
-                    <system-utility-icon system-title="LBL_NOW" icon="clock" size="x-small" (click)="setNow()"></system-utility-icon>
+                    <system-utility-icon system-title="LBL_NOW" icon="clock" size="x-small" (click)="setNow('dateEnd')"></system-utility-icon>
                 </div>
             </div>
-            <div class="slds-col slds-size--1-of-4">
-                <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="limit">
-                        <option>250</option>
-                        <option>500</option>
-                        <option>1000</option>
-                    </select>
-                </div>
-            </div>
+
         </div>
         <div class="slds-grid slds-gutters_direct-xxx-small">
             <div class="slds-col slds-size--1-of-8">
@@ -89,7 +88,7 @@
                     </button>
                 </div>
             </div>
-            <div class="slds-col slds-size--1-of-4">
+            <div class="slds-col slds-size--1-of-6">
                 <label class="slds-form-element__label"><system-label label="LBL_IP_ADDRESS"></system-label></label>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter.ip" />
@@ -98,13 +97,23 @@
                     </button>
                 </div>
             </div>
-            <div class="slds-col slds-size--1-of-4">
+            <div class="slds-col slds-size--1-of-6">
                 <label class="slds-form-element__label"><system-label label="LBL_SESSION_ID"></system-label></label>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter.session_id" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.session_id=''">
                         <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
+                </div>
+            </div>
+            <div class="slds-col slds-size--1-of-6">
+                <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="limit">
+                        <option>250</option>
+                        <option>500</option>
+                        <option>1000</option>
+                    </select>
                 </div>
             </div>
         </div>

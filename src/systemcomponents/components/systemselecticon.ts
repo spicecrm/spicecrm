@@ -62,7 +62,17 @@ export class SystemSelectIcon implements ControlValueAccessor, AfterContentInit 
     /**
      * holds the disabled boolean
      */
-    @Input() public disabled: boolean = false;
+    /**
+     * to disable the checkbox
+     */
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
     /**
      * holds the focused dom item data
      */

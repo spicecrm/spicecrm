@@ -1,4 +1,4 @@
-<div class="slds-global-header slds-grid slds-grid--align-spread slds-p-left--medium">
+<div [ngClass]="{'slds-theme--error': configurationService.data.startupMode == 'recovery', 'slds-theme--warning': configurationService.data.startupMode == 'maintenance', 'slds-theme--default': configurationService.data.startupMode != 'maintenance' && configurationService.data.startupMode != 'recovery'}" class="slds-global-header slds-grid slds-grid--align-spread slds-p-left--medium">
     <div class="slds-show--large slds-large-size--1-of-6">
         <div class="slds-global-header__item slds-p-left--none">
             <global-header-image></global-header-image>

@@ -48,6 +48,18 @@ export class SystemInputDate implements OnInit, ControlValueAccessor {
     public onTouched: () => void;
 
     /**
+     * to use a formatted date as input and oputput and not a moment object
+     */
+    public _dateFormatted = false;
+    @Input('system-input-date-formatted') set dateFormatted(value) {
+        if (value === false) {
+            this._dateFormatted = false;
+        } else {
+            this._dateFormatted = true;
+        }
+    }
+
+    /**
      * set to false to not display the calendar button at the bottom
      */
     @Input() public showCalendarButton: boolean = true;
@@ -276,11 +288,20 @@ export class SystemInputDate implements OnInit, ControlValueAccessor {
      */
     public writeValue(value: any): void {
         // this._time = value ? value : '';
-        if (value && value.isValid && value.isValid()) {
-            this._date.moment = new moment(value);
-            this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
+        if(this._dateFormatted){
+            if (value) {
+                this._date.moment = new moment(value);
+                this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
+            } else {
+                this.clear(false);
+            }
         } else {
-            this.clear(false);
+            if (value && value.isValid && value.isValid()) {
+                this._date.moment = new moment(value);
+                this._date.display = this._date.moment.format(this.userpreferences.getDateFormat());
+            } else {
+                this.clear(false);
+            }
         }
 
         this.cdref.detectChanges();
@@ -318,7 +339,7 @@ export class SystemInputDate implements OnInit, ControlValueAccessor {
 
             // emit the value to the ngModel directive
             if (typeof this.onChange === 'function') {
-                this.onChange(this._date.moment);
+                this.onChange(this._dateFormatted ? this._date.moment.format("YYYY-MM-DD") : this._date.moment);
             }
         }
 

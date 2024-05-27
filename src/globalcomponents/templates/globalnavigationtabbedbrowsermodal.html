@@ -1,36 +1,50 @@
 <system-modal>
     <system-modal-header (close)="close()"><system-label label="LBL_TABS"></system-label></system-modal-header>
     <system-modal-content margin="none">
-        <table class="slds-table slds-table--header-fixed slds-table_cell-buffer">
+        <table class="slds-table slds-table--header-fixed">
             <thead>
                 <tr class="slds-line-height_reset">
+                    <th scope="col"></th>
                     <th scope="col">
-                        <div class="slds-truncate slds-p-vertical--xx-small"><system-label label="LBL_TAB"></system-label></div>
+                        <div class="slds-truncate slds-p-vertical--xx-small slds-align_absolute-center"><system-label label="LBL_TAB"></system-label></div>
                     </th>
                     <th scope="col" style="width: 5.5rem;"></th>
                 </tr>
             </thead>
-            <tbody>
-                <ng-container *ngFor="let tab of maintabs">
-                    <tr class="slds-hint-parent">
-                        <td>
-                            <global-navigation-tabbed-browser-modal-tab [tab]="tab" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
-                        </td>
-                        <td class="slds-p-horizontal--none slds-text-align--center">
-                            <global-navigation-tabbed-browser-modal-tab-actions [tab]="tab"></global-navigation-tabbed-browser-modal-tab-actions>
-                        </td>
-                    </tr>
-                    <ng-container *ngFor="let subtab of subtabs(tab.id)" >
-                        <tr class="slds-hint-parent">
-                            <td>
-                                <global-navigation-tabbed-browser-modal-tab [tab]="subtab" [subtab]="true" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
-                            </td>
-                            <td class="slds-p-horizontal--none slds-text-align--center">
-                                <global-navigation-tabbed-browser-modal-tab-actions [tab]="subtab"></global-navigation-tabbed-browser-modal-tab-actions>
-                            </td>
-                        </tr>
-                    </ng-container>
-                </ng-container>
+            <tbody class="globalnavigationtabsmodalMAINTABSdragboundary" cdkDropList [cdkDropListData]="maintabs" (cdkDropListDropped)="drop($event)">
+            <ng-container *ngFor="let tab of maintabs; trackBy: trackByFn">
+                <tr class="spice-drag-placeholder-visible slds-hint-parent slds-p-vertical--xx-small" cdkDrag [cdkDragData]="tab" cdkDragBoundary=".globalnavigationtabsmodalMAINTABSdragboundary">
+                    <td style="width: 30px;" class="slds-align-top">
+                        <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                    </td>
+                    <td>
+                        <global-navigation-tabbed-browser-modal-tab [tab]="tab" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
+                    </td>
+                    <td class="slds-p-horizontal--none slds-text-align--center" style="display: flex">
+                        <global-navigation-tabbed-browser-modal-tab-actions [tab]="tab"></global-navigation-tabbed-browser-modal-tab-actions>
+                    </td>
+                </tr>
+
+                <tr *ngIf="hasSubtabs(tab.id)">
+                    <td colspan="3" class="slds-p-right--none">
+                        <div class="slds-size--1-of-1" style="padding-left: 2.2rem">
+                            <table class="globalnavigationtabsmodalSUBTABSdragboundary slds-table slds-table--header-fixed slds-p-left--medium" cdkDropList [cdkDropListData]="subtabs(tab.id)" (cdkDropListDropped)="drop($event)">
+                                <tr *ngFor="let subtab of subtabs(tab.id); trackBy: trackByFn" cdkDrag [cdkDragData]="subtab" class="slds-hint-parent" cdkDragBoundary=".globalnavigationtabsmodalSUBTABSdragboundary">
+                                    <td style="width: 30px" class="slds-p-left--none">
+                                        <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                                    </td>
+                                    <td>
+                                        <global-navigation-tabbed-browser-modal-tab [tab]="subtab" [subtab]="true" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
+                                    </td>
+                                    <td class="slds-p-horizontal--none" style="width: 5.5rem;">
+                                        <global-navigation-tabbed-browser-modal-tab-actions [tab]="subtab"></global-navigation-tabbed-browser-modal-tab-actions>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
             </tbody>
         </table>
     </system-modal-content>

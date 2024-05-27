@@ -3,14 +3,17 @@
 namespace SpiceCRM\modules\Users\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -49,6 +52,73 @@ class UsersController
 
         $KRESTModuleHandler = new SpiceBeanHandler();
         $beanResponse = $KRESTModuleHandler->add_bean("Users", $args['id'], $params);
+
+        return $res->withJson($beanResponse);
+    }
+
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     * @throws NotFoundException
+     * @throws \SpiceCRM\includes\ErrorHandlers\ConflictException
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     */
+    public function createUser(Request $req, Response $res, array $args): Response {
+        $db = DBManagerFactory::getInstance();
+        $params = $req->getParsedBody();
+
+        if (!SpiceACL::getInstance()->checkAccess('Users', 'create')) {
+            throw (new ForbiddenException("not authorized to create new Users"));
+        }
+
+        // check user id
+        if(BeanFactory::getBean('Users', $args['id'])){
+            throw new BadRequestException('User with the given ID exists already');
+        }
+
+        // check username
+        if(BeanFactory::getBean('Users')->retrieve_by_string_fields(['user_name' => $params['data']['user_name']])){
+            throw new BadRequestException('User with the given username exists already');
+        }
+
+        // check parent
+        if(BeanFactory::getBean('Users')->retrieve_by_string_fields(['parent_type' => $params['data']['parent_type'], 'parent_id' => $params['data']['parent_id']])){
+            throw new BadRequestException('User for the parent exists already');
+        }
+
+        $KRESTModuleHandler = new SpiceBeanHandler();
+        $beanResponse = $KRESTModuleHandler->add_bean("Users", $args['id'], $params['data']);
+
+        $user = BeanFactory::getBean('Users', $args['id']);
+
+        // set the roles
+        foreach ($params['roles'] as $sysuirole){
+            $exists = $db->fetchOne("SELECT id FROM sysuiuserroles WHERE sysuirole_id ='{$sysuirole['id']}' AND user_id='{$user->id}'");
+            if(!$exists){
+                $db->insertQuery('sysuiuserroles', [
+                    'id' => SpiceUtils::createGuid(),
+                    'sysuirole_id' => $sysuirole['id'],
+                    'user_id' => $user->id,
+                    'defaultrole' => $sysuirole['default'] ? 1 : 0
+
+                ]);
+            }
+        }
+
+        // add the profiles
+        $user->load_relationship('spiceaclprofiles');
+        foreach ($params['profiles'] as $profileId){
+            $user->spiceaclprofiles->add($profileId);
+        }
+
+        // set the password
+        if ($user->external_auth_only != "1") {
+            $sugarAuthenticationObj = AuthenticationController::getInstance()->getPasswordUtilsInstance();
+            $sugarAuthenticationObj->setNewPassword($user, $params['credentials']['newPassword'], $params['credentials']['sendEmail'], $params['credentials']['forceReset']);
+        }
 
         return $res->withJson($beanResponse);
     }
@@ -300,6 +370,48 @@ class UsersController
 
         // return
         return $res->withJson(['success' => $this->setUserStatus($args['id'], 'Active')]);
+    }
+
+
+    /**
+     * add endpoint to set roles
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     */
+    public function setUserRoles(Request $req, Response $res, array $args): Response {
+
+        $user = BeanFactory::getBean('Users', $args['id']);
+        if (!$user) {
+            throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $args['id'], 'module' => 'Users']);
+        }
+
+        // check permissions
+        if(!$user->ACLAccess('edit')) {
+            throw (new ForbiddenException("Forbidden to edit in module Users."))->setErrorCode('noModuleEdit');
+        }
+
+        $db = DBManagerFactory::getInstance();
+        $sysuiroles = $req->getParsedBody();
+        foreach ($sysuiroles as $sysuirole){
+            $exists = $db->fetchOne("SELECT id FROM sysuiuserroles WHERE sysuirole_id ='{$sysuirole['id']}' AND user_id='{$user->id}'");
+            if(!$exists){
+                $db->insertQuery('sysuiuserroles', [
+                    'id' => SpiceUtils::createGuid(),
+                    'sysuirole_id' => $sysuirole['id'],
+                    'user_id' => $user->id,
+                    'defaultrole' => $sysuirole['default'] ? 1 : 0
+
+                ]);
+            }
+        }
+
+        // return
+        return $res->withJson(['success' => true]);
     }
 
 

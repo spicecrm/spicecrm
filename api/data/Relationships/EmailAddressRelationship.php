@@ -1,5 +1,39 @@
 <?php
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ * 
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
 
 namespace SpiceCRM\data\Relationships;
 
@@ -9,7 +43,12 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceCache\SpiceCacheMemory;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItem;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationship;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 
 /**
@@ -18,6 +57,158 @@ use SpiceCRM\includes\TimeDate;
  */
 class EmailAddressRelationship extends M2MRelationship
 {
+
+    public $type = 'email-address';
+
+    /**
+     * activates the relationship
+     *
+     * @param SpiceDictionaryRelationship $relationship
+     * @return void
+     */
+    public function activate(SpiceDictionaryRelationship $relationship){
+        $db = DBManagerFactory::getInstance();
+
+        $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
+        $lhsDictionaryitem = new SpiceDictionaryItem($relationship->relationship->lhs_sysdictionaryitem_id);
+        $lhsField = SpiceDictionaryField::getField($lhsDictionaryitem, $lhsDictionaryDefinition);
+
+
+        $relationshipName = strtolower($lhsDictionaryDefinition->getModuleName()) . '_email_addresses';
+
+        // build the Defs
+        $defs = [
+            'id' => $relationship->id,
+            'relationship_name' => $relationshipName,
+            'relationship_type' => $this->type,
+            'lhs_table' => $lhsDictionaryDefinition->tablename,
+            'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
+            'lhs_key' => $lhsField->fieldname,
+            'rhs_table' => 'email_addresses',
+            'rhs_module' => 'EmailAddresses',
+            'rhs_key' => 'id',
+            'join_table' => 'email_addr_bean_rel',
+            'join_key_lhs' => 'bean_id',
+            'join_key_rhs' => 'email_address_id',
+            'deleted' => 0
+        ];
+
+        // make sure we delete any current relationship with the same name (might be the case if we have the same from legacy)
+        // $db->query("DELETE FROM relationships WHERE relationship_name like '{$relationshipName}%'");
+        // clear current definitions
+        $db = DBManagerFactory::getInstance();
+        $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}' OR relationship_name like '{$relationshipName}%'");
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        // add to the relationships
+        $db->insertQuery('relationships', [
+            'id' => $relationship->id,
+            'relationship_name' => $relationshipName,
+            'relationship_type' => $this->type,
+            'lhs_table' => $lhsDictionaryDefinition->tablename,
+            'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
+            'lhs_key' => $lhsField->fieldname,
+            'rhs_table' => 'email_addresses',
+            'rhs_module' => 'EmailAddresses',
+            'rhs_key' => 'id',
+            'join_table' => 'email_addr_bean_rel',
+            'join_key_lhs' => 'bean_id',
+            'join_key_rhs' => 'email_address_id',
+            'relationship_role_column' => 'bean_module',
+            'relationship_role_column_value' => $lhsDictionaryDefinition->getModuleName(),
+            'deleted' => 0
+        ]);
+
+        // add to the relationships for the primary address
+        $db->insertQuery('relationships', [
+            'id' => SpiceUtils::createGuid(),
+            'relationship_name' => $relationshipName . '_primary',
+            'relationship_type' => $this->type,
+            'lhs_table' => $lhsDictionaryDefinition->tablename,
+            'lhs_module' => $lhsDictionaryDefinition->getModuleName(),
+            'lhs_key' => $lhsField->fieldname,
+            'rhs_table' => 'email_addresses',
+            'rhs_module' => 'EmailAddresses',
+            'rhs_key' => 'id',
+            'join_table' => 'email_addr_bean_rel',
+            'join_key_lhs' => 'bean_id',
+            'join_key_rhs' => 'email_address_id',
+            'relationship_role_column' => 'primary_address',
+            'relationship_role_column_value' => '1',
+            'deleted' => 0
+        ]);
+
+        // write the lhs link for the email addresses
+        $db->insertQuery('sysdictionaryfields', [
+            'id' => SpiceUtils::createGuid(),
+            'sysdictionaryname' => $lhsDictionaryDefinition->name,
+            'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
+            'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
+            'fieldname' => 'email_addresses',
+            'fieldtype' => 'link',
+            'fielddefinition' => json_encode([
+                'name' => 'email_addresses',
+                'type' => 'link',
+                'relationship' => $relationshipName,
+                'source' => 'non-db',
+                'module' => 'EmailAddresses',
+                'vname' => 'LBL_EMAIL_ADDRESSES'
+            ]),
+            'sysdictionaryrelationship_id' => $relationship->id,
+            'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
+        ]);
+
+        // add the link for the primary address
+        $db->insertQuery('sysdictionaryfields', [
+            'id' => SpiceUtils::createGuid(),
+            'sysdictionaryname' => $lhsDictionaryDefinition->name,
+            'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
+            'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
+            'fieldname' => 'email_addresses_primary',
+            'fieldtype' => 'link',
+            'fielddefinition' => json_encode([
+                'name' => 'email_addresses',
+                'type' => 'link',
+                'relationship' => $relationshipName . '_primary',
+                'source' => 'non-db',
+                'module' => 'EmailAddresses',
+                'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY'
+            ]),
+            'sysdictionaryrelationship_id' => $relationship->id,
+            'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
+        ]);
+
+        $db->insertQuery('sysdictionaryfields', [
+            'id' => SpiceUtils::createGuid(),
+            'sysdictionaryname' => $lhsDictionaryDefinition->name,
+            'sysdictionarytablename' => $lhsDictionaryDefinition->tablename,
+            'sysdictionarytableaudited' => $lhsDictionaryDefinition->getDefinition()->audited,
+            'fieldname' => 'email1',
+            'fieldtype' => 'link',
+            'fielddefinition' => json_encode([
+                'name' => 'email1',
+                'type' => 'varchar',
+                'source' => 'non-db',
+                'vname' => 'LBL_EMAIL1'
+            ]),
+            'sysdictionaryrelationship_id' => $relationship->id,
+            'sysdictionarydefinition_id' => $lhsDictionaryDefinition->id
+        ]);
+
+
+    }
+
+    /**
+     * deactivate and remove the fields
+     *
+     * @param SpiceDictionaryRelationship $relationship
+     * @return void
+     * @throws \Exception
+     */
+    public  function deactivate(SpiceDictionaryRelationship $relationship){
+        DBManagerFactory::getInstance()->query("DELETE FROM relationships WHERE id='{$relationship->id}'");
+        DBManagerFactory::getInstance()->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id='{$relationship->id}'");
+    }
 
     /**
      * @param  $link Link2 loads the relationship for this link.

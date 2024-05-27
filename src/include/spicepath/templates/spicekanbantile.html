@@ -1,6 +1,6 @@
 <div class="slds-tile slds-box--border slds-theme--default">
     <div class="slds-p-around--x-small" [system-overlay-loading-spinner]="model.isSaving">
-        <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-grid slds-grid--vertical-align-center" [ngClass]="model.alert" style="border-radius: 0.25rem">
             <div *ngIf="hasNotification" class="slds-p-right--xx-small">
                 <system-utility-icon icon="warning" addclasses="slds-icon-text-warning" size="x-small"></system-utility-icon>
             </div>

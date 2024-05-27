@@ -452,7 +452,6 @@ export class metadata {
     /*
      * get the definitiopn for the related links
      */
-
     public getFieldSets(module: string = "", filter: string = "") {
         let retFieldsets: any[] = [];
 
@@ -663,6 +662,48 @@ export class metadata {
         return true && this.fieldDefs[module] && this.fieldDefs[module][field];
     }
 
+
+
+    /*
+     * return defined Filters
+     */
+    public getFilters(module: string = "", filter: string = "") {
+        let retFilters: any[] = [];
+
+        for (let moduleFilter in this.moduleFilters) {
+            if (module !== "" && this.moduleFilters[moduleFilter].module !== module) {
+                continue;
+            }
+
+            retFilters.push({
+                id: moduleFilter,
+                name: this.moduleFilters[moduleFilter].name,
+                module: this.moduleFilters[moduleFilter].module,
+                type: this.moduleFilters[moduleFilter].type
+            });
+        }
+
+        retFilters.sort((a, b) => {
+            return a.name > b.name ? 1 : -1;
+        });
+
+        return retFilters;
+    }
+
+    /**
+     *
+     * @param string filter_id
+     * @returns {any}
+     */
+    public getFilter(filter_id) {
+        try {
+            return this.moduleFilters[filter_id];
+        } catch (e) {
+            return "";
+        }
+    }
+
+
     public getAppModules() {
         // convert object to array...
         let ret = [];
@@ -738,6 +779,15 @@ export class metadata {
         }
 
         return modules;
+    }
+
+    /**
+     * return mention search modules
+     */
+    public getMentionSearchModules() {
+        return Object.keys(this.moduleDefs).filter(m =>
+            this.moduleDefs[m].ftsmentionsearch
+        );
     }
 
     /**
@@ -936,6 +986,15 @@ export class metadata {
      */
     public getModuleAggregates(module: string) {
         return this.moduleDefs[module].ftsaggregates;
+    }
+
+    /**
+     * returns the ggregate settings for a module
+     *
+     * @param module
+     */
+    public getModuleAggregateMetrics(module: string) {
+        return this.moduleDefs[module].ftsmetrics;
     }
 
     /**

@@ -1,0 +1,15 @@
+<system-modal size="small">
+    <system-modal-header (close)="close()"><system-label label="LBL_2FA_METHOD"/></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid slds-grid--vertical">
+            <system-input-radio [disabled]="currentMethod == 'one_time_password'" name="user2famethod" [(ngModel)]="user_2fa_method" value="one_time_password"><system-label label="LBL_TOTP_AUTHENTICATION"></system-label></system-input-radio>
+            <system-input-radio *ngIf="smsEnabled && phoneMobile" [disabled]="currentMethod == 'sms'" name="user2famethod" [(ngModel)]="user_2fa_method" value="sms"><system-label label="LBL_SMS"/>  ({{phoneMobile}})</system-input-radio>
+            <system-input-radio *ngIf="emailEnabled && email" [disabled]="currentMethod == 'email'" name="user2famethod" [(ngModel)]="user_2fa_method" value="email"><system-label label="LBL_EMAIL"/> ({{email}})</system-input-radio>
+            <system-input-radio *ngIf="candelete" [disabled]="currentMethod == 'none'" name="user2famethod" [(ngModel)]="user_2fa_method" value="none"><system-label label="LBL_NONE"/></system-input-radio>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"/></button>
+    </system-modal-footer>
+</system-modal>

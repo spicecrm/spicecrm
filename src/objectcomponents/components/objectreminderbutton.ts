@@ -14,6 +14,9 @@ import {Subscription} from "rxjs";
 */
 declare var moment: any;
 
+/**
+ * @deprecated - repülaced by icon
+ */
 @Component({
     selector: 'object-reminder-button',
     templateUrl: '../templates/objectreminderbutton.html'

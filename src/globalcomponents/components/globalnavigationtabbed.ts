@@ -3,11 +3,13 @@
  */
 import {ChangeDetectorRef, Component, Input, OnDestroy, ViewChild} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
-import {navigation} from '../../services/navigation.service';
+import {navigation, objectTab} from '../../services/navigation.service';
 import {Subscription} from "rxjs";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {GlobalNavigationTabbedMenu} from "./globalnavigationtabbedmenu";
 import {userpreferences} from "../../services/userpreferences.service";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {configurationService} from "../../services/configuration.service";
 
 /** @ignore */
 const ANIMATIONS = [
@@ -57,6 +59,7 @@ export class GlobalNavigationTabbed implements OnDestroy {
     constructor(public metadata: metadata,
                public navigation: navigation,
                public userPreferences: userpreferences,
+                public configurationService: configurationService,
                public cdRef: ChangeDetectorRef) {
     }
 
@@ -130,5 +133,39 @@ export class GlobalNavigationTabbed implements OnDestroy {
         this.userPreferences.toUse.globalHeaderCollapsed = !this.userPreferences.toUse.globalHeaderCollapsed;
         this.userPreferences.setPreference('globalHeaderCollapsed', this.userPreferences.toUse.globalHeaderCollapsed);
         setTimeout(() => this.menuContainer.handleResize(), 200);
+    }
+
+    /**
+     * handles the drop event
+     * @param event
+     */
+    public drop(event: CdkDragDrop<objectTab[]>){
+
+        if(event.previousContainer == event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+        }
+
+        //find the index of our item in objectTabs array & splice the item it out from where it was
+        const previousIndex = this.navigation.objectTabs.findIndex(t => t.id == event.item.data.id);
+        const item = this.navigation.objectTabs.splice(previousIndex, 1)[0];
+        const itemId = this.navigation.getTabById(item.id);
+
+        //find the index of the item to the left of the currentIndex & then the objectTab itself
+        const itemToLeftIndex = event.currentIndex - 1;
+        const itemToLeft = event.container.data[itemToLeftIndex];
+
+        //we figure out the index/position of our dropped item
+        const dropIndex = itemToLeft ?  this.navigation.objectTabs.findIndex(t => t.id == itemToLeft.id) + 1 : 0 //event.container.data.findIndex(t => t.id == event.item.data.id);
+
+        //we splice in our item BEFORE the drop index.
+        this.navigation.objectTabs.splice(dropIndex, 0, item);
+
+        if (event.previousContainer !== event.container) {
+            event.item.data.parentid = undefined;
+            this.setDisplaySubTabs(itemId)
+        }
+        this.navigation.setSessionData();
     }
 }

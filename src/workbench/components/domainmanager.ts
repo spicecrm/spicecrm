@@ -23,6 +23,11 @@ import {domainmanager} from '../services/domainmanager.service';
 })
 export class DomainManager {
 
+    /**
+     * if the details is expanded
+     */
+    public expanded: boolean = false;
+
     constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
     }
@@ -32,6 +37,20 @@ export class DomainManager {
      */
     public save() {
         this.domainmanager.save();
+    }
+
+    get listHeight(){
+        let p = this.expanded ? '25' : '50';
+        return {
+            height: `${p}%`
+        }
+    }
+
+    get detailsHeight(){
+        let p = this.expanded ? '75' : '50';
+        return {
+            height: `${p}%`
+        }
     }
 
     /**

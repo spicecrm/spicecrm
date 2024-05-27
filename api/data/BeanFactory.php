@@ -1,21 +1,45 @@
 <?php
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ * 
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
 namespace SpiceCRM\data;
 
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\modules\Currencies\Currency;
-use SpiceCRM\modules\EmailAddresses\EmailAddress;
-use SpiceCRM\modules\SchedulerJobs\SchedulerJob;
-use SpiceCRM\modules\SpiceACLObjects\SpiceACLObject;
-use SpiceCRM\modules\SystemTenants\SystemTenant;
-use SpiceCRM\modules\Trackers\Tracker;
-use SpiceCRM\modules\UserAbsences\UserAbsence;
-use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
-use SpiceCRM\modules\Users\User;
 
 /**
  * Factory to create SpiceBeans
@@ -60,6 +84,10 @@ class BeanFactory
     private static function initSystemModules(): void
     {
         foreach (self::$systemModules as $moduleName => $beanInfo) {
+            if(!SpiceDictionary::getInstance()->getDefs($beanInfo['beanname'])){
+                unset(self::$systemModules[$moduleClass]);
+                continue;
+            }
             $customClass = "\\SpiceCRM\\custom\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
             $extensionClass = "\\SpiceCRM\\extensions\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
             $moduleClass = "\\SpiceCRM\\modules\\{$moduleName}\\{$beanInfo['beanname']}";
@@ -142,7 +170,7 @@ class BeanFactory
         // set the base params if not et in the implementation of the Bean
         if(!$bean->module_dir) $bean->module_dir = $module;
         if(!$bean->object_name) $bean->object_name = $beanName;
-        if(!$bean->table_name) $bean->table_name = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
+        if(!$bean->table_name) $bean->table_name = SpiceDictionary::getInstance()->getDefs($beanName)['table'] ?: strtolower($module); // SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
 
         // set the bean module
         $bean->_module = $module;
@@ -150,7 +178,7 @@ class BeanFactory
         // initialize the bean. Will load the vardefs
         $bean->initialize_bean();
         // set the table name (vardefs need to be loaded first as done in initialize_bean())
-        $bean->_tablename = SpiceDictionaryHandler::getInstance()->dictionary[$beanName]['table'] ?: strtolower($module);
+        $bean->_tablename = SpiceDictionary::getInstance()->getDefs($beanName)['table'] ?: strtolower($module);
 
         if (!empty($id)) {
             if ($forceRetrieve || empty(self::$loadedBeans[$module][$id])) {

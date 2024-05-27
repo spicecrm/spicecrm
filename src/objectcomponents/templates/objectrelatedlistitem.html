@@ -8,7 +8,7 @@
     <td *ngFor="let item of listfields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
         <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
     </td>
-    <td *ngIf="!hideActions" role="gridcell" class="slds-cell-shrink">
+    <td *ngIf="!hideActions" role="gridcell" class="slds-align--absolute-center">
         <object-action-menu [buttonsize]="'x-small'" [actionset]="actionset" ></object-action-menu>
     </td>
 </ng-container>

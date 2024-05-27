@@ -1,21 +1,41 @@
 <div class="slds-grid slds-grid--vertical-align-center">
-    <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-    <div class="slds-col--bump-left" *ngIf="value" (click)="toSpeech()"><system-utility-icon icon="volume_high"  size="xx-small"></system-utility-icon></div>
+    <div class="slds-col--bump-right">
+        <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+    </div>
+    <div class="slds-grid slds-gutters_xxx-small">
+        <div class="slds-col" *ngIf="value && !hideVolumeIcon" (click)="toSpeech()">
+            <system-utility-icon icon="volume_high" size="xx-small"></system-utility-icon>
+        </div>
+        <ng-container *ngIf="isEditMode() && isEditable()">
+            <div class="slds-col" *ngIf="displayTextSnippet" (click)="openTextSnippetModal()">
+                <system-utility-icon icon="quick_text" size="xx-small"></system-utility-icon>
+            </div>
+            <div class="slds-col" *ngIf="displayTemplateVariableHelper" (click)="openTemplateVariableHelper()">
+                <system-utility-icon icon="variable" size="xx-small"></system-utility-icon>
+            </div>
+        </ng-container>
+    </div>
 </div>
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()"
+                       [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div *ngIf="!truncated; else truncateddisplay" style="white-space: pre-line;">{{value}}</div>
     <ng-template #truncateddisplay>
         <div *ngIf="!striphtml" [title]="value" style="max-width: 200px; text-overflow: ellipsis" class="slds-truncate">
             {{value}}
         </div>
-        <div *ngIf="striphtml" [title]="value|systemstriphtmltagspipe" style="max-width: 200px; text-overflow: ellipsis" class="slds-truncate">
+        <div *ngIf="striphtml" [title]="value|systemstriphtmltagspipe" style="max-width: 200px; text-overflow: ellipsis"
+             class="slds-truncate">
             {{value|systemstriphtmltagspipe}}
         </div>
     </ng-template>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-is-relative" [ngClass]="getFieldClass()" style="position:relative;">
-    <textarea [maxlength]="maxLength" #focus #textField class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="value" [ngStyle]="getTextAreaStyle()" (system-resize)="resize($event)" (change)="change($event)"></textarea>
-    <button *ngIf="speechRecognition" class="slds-button slds-button_small slds-button_icon slds-is-absolute" style="right:8px;" (click)="speechRecognitionStart()">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-is-relative"
+     [ngClass]="getFieldClass()" style="position:relative;">
+    <textarea [maxlength]="maxLength" #focus #textField
+              class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="value"
+              [ngStyle]="getTextAreaStyle()" (system-resize)="resize($event)" (change)="change($event)"></textarea>
+    <button *ngIf="speechRecognition" class="slds-button slds-button_small slds-button_icon slds-is-absolute"
+            style="right:8px;" (click)="speechRecognitionStart()">
         <system-button-icon [size]="'small'" [icon]="'unmuted'"></system-button-icon>
     </button>
     <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">

@@ -1,5 +1,31 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -125,6 +151,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'type' => 'varchar',
             'comment' => 'redirect url for the unsubscribe link',
         ],
+        'double_optin_redirect_url' => [
+            'name' => 'double_optin_redirect_url',
+            'vname' => 'LBL_DOUBLE_OPTIN_REDIRECT_URL',
+            'type' => 'varchar',
+            'comment' => 'redirect url for the double optin link',
+        ],
         'emails' => [
             'name' => 'emails',
             'vname' => 'LBL_EMAILS_LINK',
@@ -154,6 +186,28 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'vname' => 'LBL_STYLESHEET',
             'type' => 'id',
             'len' => '36',
+        ],
+        'max_upload' => [
+            'name' => 'max_upload',
+            'vname' => 'LBL_MAX_UPLOAD',
+            'type' => 'varchar',
+            'len' => '36',
+            'default' => '26214400',
+            'popupHelp' => 'LBL_HELP_MAX_UPLOAD'
+        ],
+        'zip_compress' => [
+            'name' => 'zip_compress',
+            'vname' => 'LBL_ZIP_COMPRESS',
+            'type' => 'bool',
+            'default' => 0,
+            'popupHelp' => 'LBL_HELP_ZIP_COMPRESS'
+        ],
+        'send_read_receipt' => [
+            'name' => 'send_read_receipt',
+            'vname' => 'LBL_SEND_READ_RECEIPT',
+            'type' => 'bool',
+            'default' => 0,
+            'comment'    => 'set flag to require a read receipt from the recipient'
         ],
         //link to the campaigns
         'campaigns' => [
@@ -218,15 +272,6 @@ SpiceDictionaryHandler::getInstance()->dictionary['Mailbox'] = [
             'rhs_table' => 'campaigns',
             'rhs_key' => 'mailbox_id',
             'relationship_type' => 'one-to-many',
-        ],
-        'users' => [
-            'vname' => 'LBL_USERS',
-            'name' => 'users',
-            'type' => 'link',
-            'module' => 'Users',
-            'bean_name' => 'User',
-            'relationship' => 'mailboxes_users',
-            'source' => 'non-db'
         ],
         'mailboxes_mailbox_processors' => [
             'lhs_module' => 'Mailboxes',

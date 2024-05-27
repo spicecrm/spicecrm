@@ -9,6 +9,7 @@ import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 import {ObjectListViewAggregate} from './objectlistviewaggregate';
+import {metadata} from "../../services/metadata.service";
 
 /**
  * renders a container with the tags returned as aggregates from teh elastic qewury. This also allows filtering by clicking on any of the tags
@@ -23,9 +24,18 @@ export class ObjectListViewTagsAggregate extends ObjectListViewAggregate {
         indexfieldname: 'tags'
     }
 
-    constructor(public language: language, public modellist: modellist, public model: model) {
-        super(language, modellist, model);
+    constructor(public language: language, public modellist: modellist, public model: model, public metadata: metadata) {
+        super(language, modellist, model, metadata);
     }
+
+    /**
+     * getter for indicator that all should be shown
+     * This specific aggregate is a tag cloud
+     */
+    get showall(){
+        return true;
+    }
+
 
     /**
      * a simple getter to check if there are any buckets on teh aggegarete. If not a message is renderesd that no records are tagged

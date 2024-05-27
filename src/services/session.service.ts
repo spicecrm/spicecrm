@@ -123,11 +123,11 @@ export class session {
 
     /**
      * handle access token storage
-     * @param rememberMe
+     * @param keepMeLoggedIn
      */
-    public storeToken(rememberMe: boolean) {
+    public storeToken(keepMeLoggedIn: boolean) {
 
-        if (!rememberMe) {
+        if (!keepMeLoggedIn) {
             sessionStorage.setItem('OAuth-Token', this.authData.sessionId);
         } else {
             localStorage.setItem('OAuth-Token', this.authData.sessionId);
@@ -139,6 +139,9 @@ export class session {
      */
     public getSessionHeader(): HttpHeaders {
         let headers = new HttpHeaders();
+
+        if (!this.authData?.sessionId) return headers;
+
         headers = headers.set('OAuth-Token', this.authData.sessionId);
         headers = headers.set('OAuth-Issuer', 'SpiceCRM');
 

@@ -1,0 +1,89 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()"><system-label label="LBL_USER"></system-label></system-modal-header>
+    <system-modal-content>
+        <div>
+            <div class="slds-p-around--xx-small">
+                <div class="slds-grid">
+                    <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_NAME"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <input class="slds-input" [(ngModel)]="relationship.name"/>
+                        </div>
+                    </div>
+                    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_RELATIONSHIP_NAME"></system-label>
+                        </label>
+                        <div class="slds-form-element__control slds-input-has-fixed-addon">
+                            <span class="slds-form-element__addon">&#123;tablename&#125;_</span>
+                            <input class="slds-input" [(ngModel)]="relationshipName"/>
+                            <span class="slds-form-element__addon">_user</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_RHS_DICTIONARYDEFINITION"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <input disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(relationship.rhs_sysdictionarydefinition_id)"/>
+                        </div>
+                    </div>
+                    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_RHS_SYSDICTIONARYITEM"></system-label>
+                        </label>
+                        <div class="slds-select_container">
+                            <select [(ngModel)]="relationship.rhs_sysdictionaryitem_id" class="slds-select">
+                                <option *ngFor="let item of rhsItems" [value]="item.id">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_RHS_LINKNAME"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <input class="slds-input" [ngModel]="relationship.rhs_linkname"/>
+                        </div>
+                    </div>
+                    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_RHS_LINKLABEL"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <system-input-label [(ngModel)]="relationship.rhs_linklabel"></system-input-label>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-size--1-of-2">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_RHS_RELATENAME"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <input class="slds-input" [(ngModel)]="relationship.rhs_relatename"/>
+                        </div>
+                    </div>
+                    <div class="slds-p-left--xx-small slds-size--1-of-2">
+                        <label class="slds-form-element__label">
+                            <system-label label="LBL_RHS_RELATELABEL"></system-label>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <system-input-label [(ngModel)]="relationship.rhs_relatelabel"></system-input-label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+    </system-modal-footer>
+</system-modal>

@@ -13,6 +13,10 @@ import {SystemComponents}      from '../../systemcomponents/systemcomponents';
 
 import {ProspectListsCreateTargetListFromModuleModal} from './components/prospectlistscreatetargetlistfrommodulemodal';
 import {ProspectListsCreateTargetListFromModuleButton} from './components/prospectlistscreatetargetlistfrommodulebutton';
+import {ProspectListsActionSelectButton} from "./components/prospectlistsactionselectbutton";
+import {ProspectListsSetTargetsEmailAddressModal} from "./components/prospectlistssettargetsemailaddressmodal";
+import {ProspectListsPersonEmailAddressField} from "./components/prospectlistspersonemailaddressfield";
+import {ProspectListCountField} from "./fields/prospectlistscountfield";
 
 @NgModule({
     imports: [
@@ -26,7 +30,11 @@ import {ProspectListsCreateTargetListFromModuleButton} from './components/prospe
     ],
     declarations: [
         ProspectListsCreateTargetListFromModuleModal,
-        ProspectListsCreateTargetListFromModuleButton
+        ProspectListsCreateTargetListFromModuleButton,
+        ProspectListsActionSelectButton,
+        ProspectListsSetTargetsEmailAddressModal,
+        ProspectListsPersonEmailAddressField,
+        ProspectListCountField
     ]
 })
 export class ModuleProspectLists {}

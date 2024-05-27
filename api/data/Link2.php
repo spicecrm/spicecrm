@@ -1,10 +1,44 @@
 <?php
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ * 
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
 
 namespace SpiceCRM\data;
 
-use SpiceCRM\data\Relationships\SugarRelationship;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
+use SpiceCRM\data\Relationships\Relationship;
+use SpiceCRM\data\Relationships\RelationshipFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -80,7 +114,7 @@ class Link2
             $this->name = $linkName;
         }
         //Instantiate the relationship for this link.
-        $this->relationship = SugarRelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
+        $this->relationship = RelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
 
         // Fix to restore functionality from Link.php that needs to be rewritten but for now this will do.
         $this->relationship_fields = (!empty($this->def['rel_fields'])) ? $this->def['rel_fields'] : array();
@@ -244,7 +278,7 @@ class Link2
     }
 
     /**
-     * @return SugarRelationship the relationship object this link references
+     * @return Relationship the relationship object this link references
      */
     public function getRelationshipObject()
     {
@@ -397,7 +431,7 @@ class Link2
 
                     //mod for deviating id in relationship
                     $idField = 'id';
-                    if ($this->relationship->def['relationship_type'] == 'many-to-many') {
+                    if (in_array($this->relationship->def['relationship_type'], ['many-to-many', 'email-address'])) {
                         $idField = $this->relationship->def['rhs_module'] == $rel_module ? $this->relationship->def['rhs_key'] : $this->relationship->def['lhs_key'];
                     }
 
@@ -480,8 +514,7 @@ class Link2
      */
     public function beansAreLoaded()
     {
-        if(!is_array($this->rows)) $this->rows=[];
-        return is_array($this->beans) && count($this->beans) == count($this->rows);
+        return is_array($this->beans) && is_array($this->rows) && count($this->beans) == count($this->rows);
     }
 
     /**

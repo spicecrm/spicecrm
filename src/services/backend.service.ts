@@ -662,7 +662,15 @@ export class backend {
      */
     public handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
         switch (err.status) {
+            case 503:
+                this.configurationService.data.startupMode = 'recovery';
+                return true;
             case 401:
+
+                if (!this.session.authData?.sessionId) {
+                    return false;
+                }
+
                 // push the current request to the staged queue
                 this.stageRequest(method, route, data, responseSubject);
                 this.stageRequests = true;
@@ -687,6 +695,11 @@ export class backend {
                 }
                 return true;
             case 0:
+
+                if (!this.session.authData?.sessionId) {
+                    return false;
+                }
+
                 // push the current request to the staged queue
                 this.stageRequest(method, route, data, responseSubject);
                 this.stageRequests = true;

@@ -20,7 +20,8 @@ import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
-import {Subscription} from "rxjs";
+import {asapScheduler, Subscription} from "rxjs";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 /**
  * @ignore
@@ -101,6 +102,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 public elementRef: ElementRef,
                 public backend: backend,
                 public renderer: Renderer2,
+                public navigationTab: navigationtab,
                 public cdRef: ChangeDetectorRef,
                 public calendar: calendar) {
         this.buildSheetDays();
@@ -193,6 +195,19 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             this.setMaxEventsPerDay();
             this.setEventsStyle();
         });
+
+        this.subscription.add(
+            this.navigation.activeTab$.subscribe(tabId => {
+
+                if (this.navigationTab.objecttab.id != tabId) return;
+
+                // wait until the tab is visible and the reset the events styles
+                asapScheduler.schedule(() => {
+                    this.setMaxEventsPerDay();
+                    this.setEventsStyle();
+                }, 100);
+            })
+        );
     }
 
     /**

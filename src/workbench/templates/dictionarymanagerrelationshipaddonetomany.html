@@ -1,10 +1,14 @@
-<system-modal>
+<system-modal [size]="hasRelated ? 'medium' : 'small'">
     <system-modal-header (close)="close()"><system-label label="LBL_ONE_TO_MANY"></system-label></system-modal-header>
     <system-modal-content>
-        <dictionary-manager-relationship-container-onetomany [relationship]="relationship"></dictionary-manager-relationship-container-onetomany>
+        <div *ngIf="!hasRelated" class="slds-grid slds-grid--vertical">
+            <system-input-radio *ngFor="let ri of relatedIds" name="relatedid" [(ngModel)]="relatedId" [value]="ri.id">{{ri.name}}</system-input-radio>
+        </div>
+        <dictionary-manager-relationship-container-onetomany *ngIf="hasRelated" [relationship]="relationship"></dictionary-manager-relationship-container-onetomany>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+        <button *ngIf="!hasRelated" class="slds-button slds-button--brand" (click)="setRelated()"><system-label label="LBL_NEXT"></system-label></button>
+        <button *ngIf="hasRelated" class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
     </system-modal-footer>
 </system-modal>

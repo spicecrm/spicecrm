@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectorRef, Component, ViewChild, ViewContainerRef} from '@angular/core';
+import {ChangeDetectorRef, Component, Injector, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
@@ -9,7 +9,15 @@ import {broadcast} from '../../services/broadcast.service';
 import {toast} from '../../services/toast.service';
 import {HttpClient} from "@angular/common/http";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {TokenObjectI} from "../interfaces/globalcomponents.interfaces";
+import {Config2FAI, TokenObjectI} from "../interfaces/globalcomponents.interfaces";
+import {modal} from "../../services/modal.service";
+import {language} from "../../services/language.service";
+import {Subscription} from "rxjs";
+import {GlobalLoginChangePassword} from "./globalloginchangepassword";
+import {GlobalLogin2FAMethodSelectModal} from "./globallogin2famethodselectmodal";
+import {
+    TOTPAuthenticationGenerateModal
+} from "../../include/totpauthentication/components/totpauthenticationgeneratemodal";
 
 
 /**
@@ -27,7 +35,7 @@ declare var _: any;
         '(window:resize)': 'handleResize()'
     }
 })
-export class GlobalLogin {
+export class GlobalLogin implements OnDestroy {
 
     /**
      * identifies the focus element. If the field is set to edit mode a specific field can be set to be focused
@@ -55,7 +63,15 @@ export class GlobalLogin {
     /**
      * the password
      */
-    public rememberMe: boolean = false;
+    public keepMeLoggedIn: boolean = false;
+    /**
+     * remember device
+     */
+    public rememberDevice: boolean = false;
+    /**
+     * remember device visible
+     */
+    public rememberDeviceVisible: boolean = false;
     /**
      * input the two factory authentication token
      */
@@ -78,21 +94,14 @@ export class GlobalLogin {
      */
     public messageId: string;
     /**
-     * indicators to show the dialog for the new password or the TOTP generation
-     */
-    public renewPassword = false;
-    /**
-     * generate one-time password token boolean
-     */
-    public generateTOTP = false;
-    /**
      * indicates that we are in the login process
      */
     public loggingIn: boolean = false;
     /**
-     * Specific labels got from the backend.
+     * holds the rxjs subscription to unsubscribe on destroy
+     * @private
      */
-    public labels: any;
+    private subscriptions = new Subscription();
 
     constructor(public loginService: loginService,
                 public http: HttpClient,
@@ -101,7 +110,10 @@ export class GlobalLogin {
                 public toast: toast,
                 public broadcast: broadcast,
                 public sanitizer: DomSanitizer,
-                public changeDetectorRef: ChangeDetectorRef
+                public changeDetectorRef: ChangeDetectorRef,
+                private modal: modal,
+                private injector: Injector,
+                private language: language
     ) {
         this.session.loadFromStorage();
 
@@ -127,6 +139,49 @@ export class GlobalLogin {
         } else {
             this.promptUser = true;
         }
+
+        this.initializeNecessaryLanguageData();
+        this.load2FAConfig();
+        this.subscriptions = this.configuration.loaded$.subscribe(() => {
+            this.initializeNecessaryLanguageData();
+            this.load2FAConfig();
+        });
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * load 2FA Config
+     * @private
+     */
+    private load2FAConfig() {
+
+        const config: Config2FAI = this.configuration.getCapabilityConfig('login')?.twofactor;
+
+        if (window._.isEmpty(config)) return;
+
+        this.rememberDevice = config.onlogin.enforced == 'device_change';
+        this.rememberDeviceVisible = config.onlogin.trustenabled && config.onlogin.enforced != 'always';
+    }
+
+    /**
+     * initialize the provided language service on the login component scope with the necessary data initially loaded with the GET sysinfo request
+     * @private
+     */
+    private initializeNecessaryLanguageData() {
+
+        if (!this.configuration.data.languages || !window._.isEmpty(this.language.languagedata?.applang)) return;
+
+        this.language.languagedata.applang = {};
+
+        Object.keys(this.configuration.data.languages.required_labels).forEach(label => {
+            this.language.languagedata.applang[label] = this.configuration.data.languages.required_labels[label];
+        });
     }
 
     /**
@@ -168,10 +223,6 @@ export class GlobalLogin {
         return this.configuration.data.loginProgressBar;
     }
 
-    get loginLabels() {
-        return this.configuration.data.languages?.required_labels ?? {};
-    }
-
     /**
      * register to the resize event that handles if the news feed should be shown or not
      */
@@ -198,10 +249,11 @@ export class GlobalLogin {
                 this.loginService.tokenObject = token.tokenObject;
                 this.loginService.oauthIssuer = token.issuer;
             } else {
+                this.loginService.authData.rememberDevice = this.rememberDevice;
                 this.loginService.authData.code2fa = this.code2fa;
                 this.loginService.authData.userName = this.username;
                 this.loginService.authData.password = this.password;
-                this.loginService.authData.rememberMe = this.rememberMe;
+                this.loginService.authData.keepMeLoggedIn = this.keepMeLoggedIn;
                 this.loginService.tokenObject = null;
                 this.loginService.oauthIssuer = null;
             }
@@ -225,20 +277,12 @@ export class GlobalLogin {
         this.showForgotPass = !this.showForgotPass;
     }
 
-    public handleRenewDialogClose(password?: string) {
-        this.renewPassword = this.generateTOTP = false;
-        if (!!password) {
-            this.password = password;
-            this.login();
-        }
-    }
-
     /**
      * handle error
      * @param error
      * @private
      */
-    private handleError(error: { errorCode: number, details?: { labels }, message: string }) {
+    private handleError(error: { errorCode: number, details?: { userId: string, methods: { value: string, label: string, address: string }[] }, message: string }) {
         switch (error.errorCode) {
             // invalid password/user
             case 1:
@@ -246,9 +290,11 @@ export class GlobalLogin {
                 break;
             // password expired
             case 2:
-                this.labels = error.details?.labels;
-                this.renewPassword = true;
-                this.generateTOTP = false;
+                this.modal.openStaticModal(GlobalLoginChangePassword, true, this.injector).subscribe(ref => {
+                    ref.instance.username = this.username;
+                    ref.instance.password = this.password;
+                    ref.instance.oldPasswordUserInputEnabled = false;
+                });
                 break;
                 // invalid token
             case 3:
@@ -264,11 +310,23 @@ export class GlobalLogin {
                     }
                 });
                 break;
+            // no 2fa method selected
+            case 7:
+                this.modal.openStaticModal(GlobalLogin2FAMethodSelectModal, true, this.injector).subscribe(ref => {
+                    ref.instance.methods = error.details?.methods;
+                    ref.instance.credentials = {username: this.username, password: this.password};
+                });
+                break;
             // TOTP authentication required
             case 12:
-                this.labels = error.details?.labels;
-                this.renewPassword = false;
-                this.generateTOTP = true;
+                this.modal.openStaticModal(TOTPAuthenticationGenerateModal, true, this.injector).subscribe(ref => {
+                    ref.instance.credentials = {username: this.username, password: this.password};
+                    this.code2fa = ref.instance.code;
+                    this.twoFactorAuthCodeRequired = true;
+                    ref.instance.onValidationSuccess.subscribe(() =>
+                        this.login()
+                    );
+                });
                 break;
             default:
                 this.messageId = this.toast.sendToast('error logging on', 'error', error.message);

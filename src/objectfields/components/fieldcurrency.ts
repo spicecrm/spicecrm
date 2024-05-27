@@ -39,6 +39,11 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
      */
     public currencyidfield: string = '';
 
+    /**
+     * set to true from the config to display the calculator button
+     */
+    public displayCalculator: boolean = false;
+
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, public currency: currency, public userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
@@ -64,6 +69,9 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         this.setDefaultCurrencyId();
 
         this.setCurrencyFromPreferences();
+
+        // check if we should display the caluclator
+        if(this.fieldconfig.withcalculator) this.displayCalculator = true;
     }
 
    /**

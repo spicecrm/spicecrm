@@ -1,5 +1,31 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMPasswordUtils;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
@@ -17,7 +43,7 @@ $routes = [
         'class' => AuthenticateController::class,
         'function' => 'authResetPasswordByToken',
         'description' => '',
-        'options' => ['noAuth' => true, 'adminOnly' => false, 'validate' => true ],
+        'options' => ['noAuth' => true, 'adminOnly' => false, 'validate' => true],
         'parameters' => [
             'token' => [
                 'in' => 'path',
@@ -207,9 +233,132 @@ $routes = [
                 'required' => false
             ]
         ]
+    ],
+    [
+        'method' => 'get',
+        'route' => '/authentication/2fa/{method}',
+        'class' => AuthenticateController::class,
+        'function' => 'generate2FAToken',
+        'description' => '',
+        'options' => ['validate' => true],
+        'parameters' => [
+            'method' => [
+                'in' => 'query',
+                'description' => 'the 2FA Method requested',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'options' => ['sms', 'email']
+            ]
+        ]
+    ],
+    [
+        'method' => 'put',
+        'route' => '/authentication/2fa/{method}/{code}',
+        'class' => AuthenticateController::class,
+        'function' => 'set2FAMethod',
+        'description' => '',
+        'options' => ['validate' => true],
+        'parameters' => [
+            'method' => [
+                'in' => 'query',
+                'description' => 'the 2FA Method to b e set',
+                'type' => ValidationMiddleware::TYPE_ENUM,
+                'options' => ['sms', 'email']
+            ],
+            'code' => [
+                'in' => 'query',
+                'description' => 'code that was sent',
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'options' => ['sms', 'email']
+            ]
+        ]
+    ],
+    [
+        'method' => 'delete',
+        'route' => '/authentication/2fa/{code}',
+        'class' => AuthenticateController::class,
+        'function' => 'delete2FASettings',
+        'description' => '',
+        'options' => ['validate' => true],
+        'parameters' => [
+            'code' => [
+                'in' => 'query',
+                'description' => 'code that was sent',
+                'type' => ValidationMiddleware::TYPE_NUMERIC,
+                'options' => ['sms', 'email']
+            ]
+        ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/authentication/2fa/{method}/send',
+        'class' => AuthenticateController::class,
+        'function' => 'send2FACode',
+        'description' => 'send 2fa code to user.',
+        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'parameters' => [
+            'method' => [
+                'in' => 'path',
+                'description' => 'Method options: sms, email',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+                'example' => 'sms'
+            ]
+        ]
+    ],
+    [
+        'method' => 'post',
+        'route' => '/authentication/2fa/{method}/validate/{code}',
+        'class' => AuthenticateController::class,
+        'function' => 'validate2FACode',
+        'description' => 'validate 2fa code.',
+        'options' => ['noAuth' => true, 'adminOnly' => false],
+        'parameters' => [
+            'method' => [
+                'in' => 'path',
+                'description' => 'Method options: sms, email',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+                'example' => 'sms'
+            ],
+            'code' => [
+                'in' => 'path',
+                'description' => 'the 2fa code sent to use by method',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+                'example' => '342234'
+            ]
+        ]
     ]
 ];
 
+/**
+ * Configuration settings for the application.
+ *
+ * @var array $config {
+ *     Array of configuration settings.
+ *
+ * @type string $app_name The name of the application.
+ * @type string $app_version The version of the application.
+ * @type boolean $debug Whether to enable debug mode.
+ * @type array $db_settings {
+ *         Database connection settings.
+ *
+ * @type string $host The database host.
+ * @type string $database The name of the database.
+ * @type string $username The username for database authentication.
+ * @type string $password The password for database authentication.
+ *     }
+ * @type array $email_settings {
+ *         Email configuration settings.
+ *
+ * @type string $sender The email address of the sender.
+ * @type string $smtp_host The SMTP host for sending emails.
+ * @type int $smtp_port The SMTP port to use.
+ * @type string $username The username for email authentication.
+ * @type string $password The password for email authentication.
+ *     }
+ * }
+ */
 $config = SpiceConfig::getInstance()->config;
 
 $RESTManager->registerExtension('userpassword', '2.0', [

@@ -10,6 +10,10 @@
         <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.mapskey"/>
     </div>
     <div class="slds-grid slds-grid--vertical-align-center slds-p-vertical--xx-small">
+        <system-label class="slds-size--1-of-4" label="LBL_GOOGLE_GEOCODING_KEY"></system-label>
+        <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.geocodingkey"/>
+    </div>
+    <div class="slds-grid slds-grid--vertical-align-center slds-p-vertical--xx-small">
         <system-label class="slds-size--1-of-4" label="LBL_GOOGLE_TRANSLATE_KEY"></system-label>
         <input type="text" class="slds-input slds-grow" [disabled]="loading" [(ngModel)]="configvalues.languagekey"/>
     </div>

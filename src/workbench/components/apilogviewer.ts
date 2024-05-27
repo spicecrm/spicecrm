@@ -64,6 +64,12 @@ export class APIlogViewer {
      * the date end set in the filters
      * @private
      */
+    public dateStart: any;
+
+    /**
+     * the date end set in the filters
+     * @private
+     */
     public dateEnd: any;
 
     /**
@@ -151,8 +157,8 @@ export class APIlogViewer {
      *
      * @private
      */
-    public setNow() {
-        this.dateEnd = new moment();
+    public setNow(field: 'dateStart'|'dateEnd') {
+        this[field] = new moment();
     }
 
     /**
@@ -182,6 +188,7 @@ export class APIlogViewer {
             if (this.filter.session_id) queryParams.session_id = this.filter.session_id;
             if (this.filter.direction) queryParams.direction = this.filter.direction;
             if (this.dateEnd) queryParams.end = this.dateEnd?.utc().format('YYYY-MM-DD HH:mm:ss');
+            if (this.dateStart) queryParams.start = this.dateStart?.utc().format('YYYY-MM-DD HH:mm:ss');
 
             // request to the backend
             this.backend.getRequest('admin/apilog', queryParams).subscribe({

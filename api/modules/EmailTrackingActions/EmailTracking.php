@@ -2,6 +2,8 @@
 
 namespace SpiceCRM\modules\EmailTrackingActions;
 
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\modules\Emails\Email;
 
@@ -105,5 +107,56 @@ class EmailTracking
         }
         return false;
     }
+    /**
+     * @param Email $email
+     * @return string
+     */
+    static function getDoubleOptinUrl(Email $email)
+    {
+        $url = SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl');
 
+        [$parentType, $parentId] = $email->getTrackingParentData();
+
+        if ($url) {
+            return str_replace('{refid}', self::encodeTrackingID("ParentType:$parentType:ParentId:$parentId"), $url);
+        }
+        return false;
+    }
+
+    static function sendDOIEmail($bean, $mailboxId, $additionalValues = null, $additionalBeans = [])
+    {
+        $emailtemplate_id = SpiceConfig::getInstance()->get('emailtracking.double_optin_emailtemplate_id');
+        if (empty($emailtemplate_id)) {
+            throw new Exception('DOI Template ID not defined');
+        }
+
+        /** @var Email $email */
+        $email = BeanFactory::newBean('Emails');
+
+        # set the initial fields on the email
+        $email->mailbox_id = $mailboxId;
+
+        $email->parent_type = $bean->_module;
+        $email->parent_id = $bean->id;
+        $email->to_be_sent = true;
+
+        $recipientAddresses = $bean->email1;
+
+
+        // add the recipients to the email
+        if (!is_array($recipientAddresses))
+            $email->addEmailAddress('to', $recipientAddresses);
+        else {
+            foreach ($recipientAddresses as $thisAddress) {
+                $email->addEmailAddress('to', $thisAddress);
+            }
+        }
+
+        $additionalBeans = array_merge($additionalBeans, [$bean->_objectname => $bean]);
+        $email->generateFromTemplate($emailtemplate_id, $email, $additionalValues, $additionalBeans);
+
+        $email->save();
+
+        return $email;
+    }
 }

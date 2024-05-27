@@ -25,7 +25,17 @@ export class SystemInputFieldset implements ControlValueAccessor {
     /**
      * input to disable the input
      */
-    @Input() public disabled = false;
+    /**
+     * to disable the checkbox
+     */
+    public _disabled = false;
+    @Input('disabled') set disabled(value) {
+        if (value === false) {
+            this._disabled = false;
+        } else {
+            this._disabled = true;
+        }
+    }
 
     // for the value accessor
     public onChange: (value: string) => void;

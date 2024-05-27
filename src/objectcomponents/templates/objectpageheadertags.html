@@ -15,7 +15,7 @@
             <div *ngIf="objecttags.length == 0 && !isEditing" class="slds-p-right--xx-small">
                 <div style="font-style:italic"><system-label label="LBL_NO_TAGS_ASSIGNED"></system-label></div>
             </div>
-            <div *ngIf="!isEditing">
+            <div *ngIf="!isEditing && canEdit">
                 <button class="slds-button slds-button_icon" (click)="editTags()">
                     <system-button-icon [icon]="'edit'"></system-button-icon>
                 </button>

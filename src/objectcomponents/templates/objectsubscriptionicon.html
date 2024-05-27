@@ -1,0 +1,2 @@
+<system-utility-icon [system-title]="subscribed ? 'LBL_UNSUBSCRIBE_FROM_OBJECT' : 'LBL_SUBSCRIBE_TO_OBJECT'" *ngIf="!inProcess" [icon]="subscribed ? 'alert' : 'notification_off'" size="xx-small" [colorclass]="subscribed ? 'slds-icon-text-success' : 'slds-icon-text-light'" (click)="toggleSubscribe()"/>
+<system-spinner *ngIf="inProcess" size="14"></system-spinner>

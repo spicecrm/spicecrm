@@ -143,27 +143,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Note'] = [
             'vname' => 'LBL_EMAIL_ADDRESS',
             'source' => 'non-db',
         ],
-        'account_id' => [
-            'name' => 'account_id',
-            'vname' => 'LBL_ACCOUNT_ID',
-            'type' => 'id',
-            'reportable' => false,
-            'source' => 'non-db',
+        #CR1001177
+        'hcmemployeeobjectives' => [
+            'name'         => 'hcmemployeeobjectives',
+            'type'         => 'link',
+            'relationship' => 'hcmemployeeobjectives_notes',
+            'module'       => 'HCMEmployeeObjectives',
+            'source'       => 'non-db',
+            'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
         ],
-        'opportunity_id' => [
-            'name' => 'opportunity_id',
-            'vname' => 'LBL_OPPORTUNITY_ID',
-            'type' => 'id',
-            'reportable' => false,
-            'source' => 'non-db',
-        ],
-        'lead_id' => [
-            'name' => 'lead_id',
-            'vname' => 'LBL_LEAD_ID',
-            'type' => 'id',
-            'reportable' => false,
-            'source' => 'non-db',
-        ],
+
         'employees' => [
             'name'         => 'employees',
             'type'         => 'link',
@@ -302,6 +291,15 @@ if (file_exists("extensions/modules/ProcurementDocs")) {
         'relationship' => 'procurementdocs_notes',
         'source'       => 'non-db',
         'vname'        => 'LBL_PROCUREMENTDOCS',
+    ];
+}
+if (file_exists("extensions/modules/HCMEmployeeObjectives")) {
+    SpiceDictionaryHandler::getInstance()->dictionary['Meeting']['fields']['hcmemployeeobjectives'] = [
+        'name'         => 'hcmemployeeobjectives',
+        'type'         => 'link',
+        'relationship' => 'hcmemployeeobjectives_notes',
+        'source'       => 'non-db',
+        'vname'        => 'LBL_HCMEMPLOYEE_OBJECTIVES',
     ];
 }
 

@@ -22,7 +22,7 @@ export class ReporterFieldContainer implements OnInit {
     /**
      * alternative value passed in direct
      */
-    @Input() public value: string = '';
+    @Input() public value: any = '';
     /**
      * report field
      */
@@ -188,6 +188,13 @@ export class ReporterFieldContainer implements OnInit {
                     break;
                 case 'category':
                     this.fieldType = 'ReporterFieldCategoryTree';
+                    break;
+                case 'number':
+                case 'float':
+                    this.fieldType = 'ReporterFieldNumber';
+                    break;
+                case 'int':
+                    this.fieldType = 'ReporterFieldInteger';
                     break;
                 default:
                     this.fieldType = 'ReporterFieldStandard';

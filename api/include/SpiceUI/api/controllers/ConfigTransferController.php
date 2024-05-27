@@ -36,6 +36,13 @@ class ConfigTransferController
         'sysnumberrangeallocation',
         'syssalesdocnumberranges',
         'sysdatastreams',
+        'sysgdprretentions',
+        'sysmsgraphusersubscriptions',
+        'sysmsgraphuserconfig',
+        'sysexchangeusersubscriptions',
+        'sysexchangeuserconfig',
+        'sysgsuiteusersubscriptions',
+        'sysgsuiteuserconfig'
     ];
 
     static private $dataFormat = 2;
@@ -77,11 +84,14 @@ class ConfigTransferController
      * getRowsFromTable()
      * Get an array with all rows with all fields of a table.
      */
-    static function getRowsFromTable( $tablename )
+    static function getRowsFromTable( $tablename, ?string $packages = null )
     {
         $db = DBManagerFactory::getInstance();
         $rows = [];
-        $result = $db->query( sprintf( 'SELECT * FROM %s', $db->quote( $tablename )), false, '', true );
+
+        $where = empty($packages) ? '' : "where package in ('" . implode("','", explode(',', $packages)) . "')";
+
+        $result = $db->query( sprintf( "SELECT * FROM %s $where", $db->quote( $tablename )), false, '', true );
         while ( $row = $db->fetchByAssoc( $result ) ) $rows[] = $row;
         return $rows;
     }
@@ -137,8 +147,13 @@ class ConfigTransferController
         }
 
         $outputRows = [];
-        foreach ($allTablesToExport as $tablename) {
-            $outputRows[$tablename] = self::getRowsFromTable($tablename);
+        foreach ($allTablesToExport as $idx => $tablename) {
+            $rows = self::getRowsFromTable($tablename, $postBody['packages']);
+            if (empty($rows)) {
+                unset($allTablesToExport[$idx]);
+            } else {
+                $outputRows[$tablename] = self::getRowsFromTable($tablename, $postBody['packages']);
+            }
         }
 
         $content = [

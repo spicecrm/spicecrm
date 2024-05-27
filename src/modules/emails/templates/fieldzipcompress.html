@@ -1,0 +1,4 @@
+<div *ngIf="!zipHidden">
+    <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+    <system-checkbox [(ngModel)]="zipCompress" (ngModelChange)="setZip($event)"></system-checkbox>
+</div>

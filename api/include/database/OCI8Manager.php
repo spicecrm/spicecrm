@@ -31,7 +31,7 @@ namespace SpiceCRM\includes\database;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\DBUtils;
@@ -209,11 +209,6 @@ class OCI8Manager extends DBManager
     //   Extended the functionality of implemented functions in DB Manager
     //--------------------------------------------------------------------------
 
-    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
-    {
-        return parent::repairTableParams($tablename, $fielddefs, $indices, $execute, $engine);
-    }
-
     public function getAffectedRowCount($result)
     {
         return oci_num_rows($result);
@@ -372,6 +367,8 @@ class OCI8Manager extends DBManager
 
             case 'date_diff':
                 return "TO_DATE($string[0], 'YYYY-MM-DD') - TO_DATE($string[1], 'YYYY-MM-DD')";
+            case 'substring':
+                return "SUBSTR($string, {$additional_parameters['from']}, {$additional_parameters['to']})";
         }
 
         // eliminate quotes if im trying to insert a function
@@ -624,43 +621,59 @@ class OCI8Manager extends DBManager
     public function get_columns($tablename)
     {
 
-        // http://ss64.com/orad/USER_TAB_COLUMNS.html
-        $result = $this->query("SELECT * FROM user_tab_columns WHERE TABLE_NAME = '" . strtoupper($tablename) . "'");
-
         $columns = [];
-        while ($row = $this->fetchRow($result)) {
-            $name = strtolower($row['column_name']);
+        // check if the table exists
+        if($this->tableExists($tablename)) {
+            $result = $this->query("SELECT * FROM user_tab_columns WHERE TABLE_NAME = '" . strtoupper($tablename) . "'");
 
-            $columns[$name]['name'] = $name;
-            $columns[$name]['type'] = strtolower($row['data_type']);
+            while ($row = $this->fetchRow($result)) {
+                $name = strtolower($row['column_name']);
 
-            if ($columns[$name]['type'] == 'number') {
-                $columns[$name]['len'] = (!empty($row['data_precision']) ? $row['data_precision'] : '38');
+                $columns[$name]['name'] = $name;
+                $columns[$name]['type'] = strtolower($row['data_type']);
 
-                if (!empty($row['data_scale'])) {
-                    $columns[$name]['len'] .= ',' . $row['data_scale'];
+                if ($columns[$name]['type'] == 'number') {
+                    $columns[$name]['len'] = (!empty($row['data_precision']) ? $row['data_precision'] : '38');
+
+                    if (!empty($row['data_scale'])) {
+                        $columns[$name]['len'] .= ',' . $row['data_scale'];
+                    }
+                } elseif (in_array($columns[$name]['type'], ['date', 'clob', 'blob'])) {
+                    // do nothing
+                } else {
+                    $columns[$name]['len'] = strtolower($row['char_length']);
                 }
-            } elseif (in_array($columns[$name]['type'], ['date', 'clob', 'blob'])) {
-                // do nothing
-            } else {
-                $columns[$name]['len'] = strtolower($row['char_length']);
-            }
 
-            if (!empty($row['data_default'])) {
-                $matches = [];
-                $row['data_default'] = html_entity_decode($row['data_default'], ENT_QUOTES);
+                if (!empty($row['data_default'])) {
+                    $matches = [];
+                    $row['data_default'] = html_entity_decode($row['data_default'], ENT_QUOTES);
 
-                if (preg_match("/^'(.*)'$/i", $row['data_default'], $matches)) {
-                    $columns[$name]['default'] = $matches[1];
+                    if (preg_match("/^'(.*)'$/i", $row['data_default'], $matches)) {
+                        $columns[$name]['default'] = $matches[1];
+                    }
                 }
-            }
 
-            if ($row['nullable'] == 'N') {
-                $columns[$name]['required'] = 'true';
+                $columns[$name]['required'] = json_encode($row['nullable'] == 'N');
             }
         }
 
         return $columns;
+    }
+
+    /**
+     * remove columns from a table
+     *
+     * @param $tablename
+     * @param array $columns
+     * @return mixed|void
+     */
+    public function delete_columns($tablename, array $columns = [])
+    {
+        $dropColumns = [];
+        foreach ($columns as $column) {
+            $dropColumns[] = "DROP COLUMN $column";
+        }
+        $this->query("ALTER TABLE $tablename " . join(", ", $dropColumns));
     }
 
     /**
@@ -968,6 +981,11 @@ class OCI8Manager extends DBManager
         if (isset($fieldDef['isnull']) && (strtolower($fieldDef['isnull']) == 'false' || $fieldDef['isnull'] === false) && !empty($fieldDef['required'])) {
             $required = "NOT NULL";
         }
+
+        if ($fieldDef['required'] === 'true') {
+            $required = "NOT NULL";
+        }
+
         if ($ignoreRequired)
             $required = "";
 
@@ -1499,7 +1517,7 @@ class OCI8Manager extends DBManager
         $lob_fields = [];
         $lob_dataType = [];
         // find the dictionary table
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
                     if ($this->type_map[$vardef['dbtype'] ?:$vardef['type']] == 'clob') {
@@ -1540,7 +1558,7 @@ class OCI8Manager extends DBManager
         $lob_fields = [];
         $lob_dataType = [];
 
-        foreach (SpiceDictionaryHandler::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
+        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
 
 

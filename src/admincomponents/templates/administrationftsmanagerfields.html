@@ -8,256 +8,315 @@
         </div>
     </div>
     <div class="slds-size--1-of-2 slds-border--left slds-p-left--x-small" system-to-bottom>
-        <div *ngIf="currentfield; else selectfield">
-            <h2 class="slds-text-heading--small slds-p-vertical--x-small"><system-label label="LBL_FIELD_DETAILS"></system-label>: {{fieldDetails.displaypath}}->{{fieldDetails.fieldname}}</h2>
-            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_INDEX_PARAMETERS"></system-label></legend>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element">
-                        <label class="slds-form-element__label"><system-label label="LBL_INDEX_FIELD_NAME"></system-label></label>
-                        <div class="slds-form-element__control">
-                            <input type="text" class="slds-input" [(ngModel)]="fieldDetails.indexfieldname"/>
-                        </div>
-                    </div>
-                    <div class="slds-form-element">
-                        <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
-                        <system-input-label [(ngModel)]="fieldDetails.name"></system-input-label>
-                    </div>
-                    <div class="slds-form-element">
-                        <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
-                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DATATYPE')"></system-icon-help-text>
-
-                        <div class="slds-form-element__control">
-                            <div class="slds-select_container">
-                                <select class="slds-select" [(ngModel)]="fieldDetails.indextype">
-                                    <option [ngValue]="null"></option>
-                                    <option value='text'>text</option>
-                                    <option value='keyword'>keyword</option>
-                                    <option value='date'>date</option>
-                                    <option value='double'>double</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small">
-                    <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label"><system-label label="LBL_BOOST"></system-label></label>
-                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_BOOST')"></system-icon-help-text>
-                        <div class="slds-form-element__control">
-                            <input type="text" class="slds-input" [(ngModel)]="fieldDetails.boost"/>
-                        </div>
-                    </div>
-                    <div class="slds-form-element">
-                        <div class="slds-form-element__control">
-                            <system-checkbox [(ngModel)]="fieldDetails.enablesort"><system-label label="LBL_SORTABLE"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SORT')"></system-icon-help-text></system-checkbox>
-                        </div>
-                    </div>
-                    <div class="slds-form-element">
-                        <div class="slds-form-element__control">
-                            <system-checkbox [(ngModel)]="fieldDetails.search"><system-label label="LBL_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SEARCH')"></system-icon-help-text></system-checkbox>
-                        </div>
-                    </div>
-                </div>
-                <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small">
-                    <div class="slds-form-element slds-size--1-of-1">
-                        <label class="slds-form-element__label"><system-label label="LBL_FUNCTION"></system-label></label>
-                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_FIELD_FUNCTION')"></system-icon-help-text>
-                        <div class="slds-form-element__control">
-                            <system-input-backend-method [(ngModel)]="fieldDetails.function"></system-input-backend-method>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-p-right--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_AGGREGATE"></system-label></legend>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element">
-                        <label class="slds-form-element__label"><system-label label="LBL_AGGREGATE"></system-label></label>
-                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE')"></system-icon-help-text>
-                        <div class="slds-form-element__control">
-                            <div class="slds-select_container">
-                                <select class="slds-select" [(ngModel)]="fieldDetails.aggregate">
-                                    <option [ngValue]='null'></option>
-                                    <option value='term'>Term</option>
-                                    <option value='range'>Range</option>
-                                    <option value='datew'>Date Week</option>
-                                    <option value='datem'>Date Month</option>
-                                    <option value='dateq'>Date Quarter</option>
-                                    <option value='datey'>Date Year</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-form-element slds-p-vertical--x-small slds-grid">
-                        <div class="slds-form-element__control slds-size--1-of-3">
-                            <system-checkbox [disabled]="!fieldDetails.aggregate" [(ngModel)]="fieldDetails.aggregatecollapsed"><system-label label="LBL_COLLAPSED"></system-label></system-checkbox>
-                        </div>
-                        <div class="slds-form-element__control slds-size--1-of-3">
-                            <system-checkbox [disabled]="fieldDetails.aggregate != 'term'" [(ngModel)]="fieldDetails.aggregateempty"><system-label label="LBL_AGGREGATEEMPTYVALUES"></system-label></system-checkbox>
-                        </div>
-                        <div class="slds-form-element__control slds-size--1-of-3">
-                            <system-checkbox [disabled]="fieldDetails.aggregate != 'term'" [(ngModel)]="fieldDetails.aggregatesystem"><system-label label="LBL_SYSTEMAGGREGATE"></system-label></system-checkbox>
-                        </div>
-                    </div>
-                    <div class="slds-form-element" *ngIf="fieldDetails.aggregate">
-                        <label class="slds-form-element__label"><system-label label="LBL_PARAMETERS"></system-label></label>
-                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_PARAMS')"></system-icon-help-text>
-                        <div class="slds-form-element__control">
-                            <textarea class="slds-textarea" [(ngModel)]="aggregateaddparams"></textarea>
-                        </div>
-                    </div>
-                    <div class="slds-grid">
-                        <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label"><system-label label="LBL_AGGREGATE_SIZE"></system-label></label>
-                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SIZE')"></system-icon-help-text>
+        @if(currentfield){
+            <div>
+                <h2 class="slds-text-heading--small slds-p-vertical--x-small"><system-label label="LBL_FIELD_DETAILS"></system-label>: {{fieldDetails.displaypath}}->{{fieldDetails.fieldname}}</h2>
+                <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_INDEX_PARAMETERS"></system-label></legend>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label"><system-label label="LBL_INDEX_FIELD_NAME"></system-label></label>
                             <div class="slds-form-element__control">
-                                <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatesize"/>
+                                <input type="text" class="slds-input" [(ngModel)]="fieldDetails.indexfieldname"/>
                             </div>
                         </div>
-                        <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label"><system-label label="LBL_AGGREGATE_PRIORITY"></system-label></label>
-                            <div class="slds-form-element__control">
-                                <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatepriority"/>
-                            </div>
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+                            <system-input-label [(ngModel)]="fieldDetails.name"></system-input-label>
                         </div>
-                    </div>
-                    <div class="slds-grid">
-                        <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label"><system-label label="LBL_AGGREGATE_SORTBY"></system-label></label>
-                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SORTBY')"></system-icon-help-text>
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DATATYPE')"></system-icon-help-text>
+
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
-                                    <select class="slds-select" [(ngModel)]="fieldDetails.aggregatesortby">
+                                    <select class="slds-select" [(ngModel)]="fieldDetails.indextype">
+                                        <option [ngValue]="null"></option>
+                                        <option value='text'>text</option>
+                                        <option value='keyword'>keyword</option>
+                                        <option value='date'>date</option>
+                                        <option value='double'>double</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <label class="slds-form-element__label"><system-label label="LBL_BOOST"></system-label></label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_BOOST')"></system-icon-help-text>
+                            <div class="slds-form-element__control">
+                                <input type="text" class="slds-input" [(ngModel)]="fieldDetails.boost"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <system-checkbox [(ngModel)]="fieldDetails.enablesort"><system-label label="LBL_SORTABLE"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SORT')"></system-icon-help-text></system-checkbox>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <system-checkbox [(ngModel)]="fieldDetails.search"><system-label label="LBL_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_SEARCH')"></system-icon-help-text></system-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small">
+                        <div class="slds-form-element slds-size--1-of-1">
+                            <label class="slds-form-element__label"><system-label label="LBL_FUNCTION"></system-label></label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_FIELD_FUNCTION')"></system-icon-help-text>
+                            <div class="slds-form-element__control">
+                                <system-input-backend-method [(ngModel)]="fieldDetails.function"></system-input-backend-method>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-p-right--x-small">
+                    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_AGGREGATE"></system-label></legend>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label"><system-label label="LBL_AGGREGATE"></system-label></label>
+                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE')"></system-icon-help-text>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="fieldDetails.aggregate">
                                         <option [ngValue]='null'></option>
-                                        <option value='_count'>Count (default)</option>
-                                        <option value='_key'>Key</option>
+                                        <option value='term'>Term</option>
+                                        <option value='range'>Range</option>
+                                        <option value='datew'>Date Week</option>
+                                        <option value='datem'>Date Month</option>
+                                        <option value='dateq'>Date Quarter</option>
+                                        <option value='datey'>Date Year</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label"><system-label label="LBL_AGGREGATE_SORT"></system-label></label>
-                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SORT')"></system-icon-help-text>
-                            <div class="slds-form-element__control">
-                                <select class="slds-select" [(ngModel)]="fieldDetails.aggregatesort">
-                                    <option [ngValue]='null'></option>
-                                    <option value='asc'>asc</option>
-                                    <option value='desc'>desc (default)</option>
-                                </select>
+                        @if(fieldDetails.aggregate) {
+                            <div class="slds-form-element slds-p-vertical--x-small slds-grid">
+                                <div class="slds-form-element__control slds-size--1-of-3">
+                                    <system-checkbox [disabled]="!fieldDetails.aggregate"
+                                                     [(ngModel)]="fieldDetails.aggregatecollapsed">
+                                        <system-label label="LBL_COLLAPSED"></system-label>
+                                    </system-checkbox>
+                                </div>
+                                <div class="slds-form-element__control slds-size--1-of-3">
+                                    <system-checkbox [disabled]="fieldDetails.aggregate != 'term'"
+                                                     [(ngModel)]="fieldDetails.aggregateempty">
+                                        <system-label label="LBL_AGGREGATEEMPTYVALUES"></system-label>
+                                    </system-checkbox>
+                                </div>
+                                <div class="slds-form-element__control slds-size--1-of-3">
+                                    <system-checkbox [disabled]="fieldDetails.aggregate != 'term'"
+                                                     [(ngModel)]="fieldDetails.aggregatesystem">
+                                        <system-label label="LBL_SYSTEMAGGREGATE"></system-label>
+                                    </system-checkbox>
+                                </div>
                             </div>
-                        </div>
+                            <div class="slds-form-element" *ngIf="fieldDetails.aggregate">
+                                <label class="slds-form-element__label">
+                                    <system-label label="LBL_PARAMETERS"></system-label>
+                                </label>
+                                <system-icon-help-text
+                                        [helpText]="language.getLabel('HLP_FTS_AGGREGATE_PARAMS')"></system-icon-help-text>
+                                <div class="slds-form-element__control">
+                                    <textarea class="slds-textarea" [(ngModel)]="aggregateaddparams"></textarea>
+                                </div>
+                            </div>
+                            <div class="slds-grid">
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">
+                                        <system-label label="LBL_AGGREGATE_SIZE"></system-label>
+                                    </label>
+                                    <system-icon-help-text
+                                            [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SIZE')"></system-icon-help-text>
+                                    <div class="slds-form-element__control">
+                                        <input type="text" class="slds-input" [(ngModel)]="fieldDetails.aggregatesize"/>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">
+                                        <system-label label="LBL_AGGREGATE_PRIORITY"></system-label>
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <input type="text" class="slds-input"
+                                               [(ngModel)]="fieldDetails.aggregatepriority"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid">
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">
+                                        <system-label label="LBL_AGGREGATE_SORTBY"></system-label>
+                                    </label>
+                                    <system-icon-help-text
+                                            [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SORTBY')"></system-icon-help-text>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" [(ngModel)]="fieldDetails.aggregatesortby">
+                                                <option [ngValue]='null'></option>
+                                                <option value='_count'>Count (default)</option>
+                                                <option value='_key'>Key</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-size--1-of-2">
+                                    <label class="slds-form-element__label">
+                                        <system-label label="LBL_AGGREGATE_SORT"></system-label>
+                                    </label>
+                                    <system-icon-help-text
+                                            [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SORT')"></system-icon-help-text>
+                                    <div class="slds-form-element__control">
+                                        <select class="slds-select" [(ngModel)]="fieldDetails.aggregatesort">
+                                            <option [ngValue]='null'></option>
+                                            <option value='asc'>asc</option>
+                                            <option value='desc'>desc (default)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
-                </div>
-            </fieldset>
-            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_ANALYZER"></system-label></legend>
-                <div class="slds-form-element__control">
-                    <div class="slds-grid">
-                        <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label"><system-label label="LBL_ANALYZER"></system-label></label>
-                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ANALYZER') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
-                            </system-icon-help-text>
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" [(ngModel)]="fieldDetails.analyzer">
-                                        <option value=''>standard</option>
-                                        <option *ngFor="let analyzer of ftsconfiguration.analyzers" [value]="analyzer.value">{{analyzer.text}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="slds-form-element slds-size--1-of-2">
-                            <label class="slds-form-element__label"><system-label label="LBL_SEARCH_ANALYZER"></system-label></label>
-                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_SEARCHANALYZER') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
-                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
-                            </system-icon-help-text>
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" [(ngModel)]="fieldDetails.search_analyzer">
-                                        <option value=''>standard</option>
-                                        <option *ngFor="let analyzer of ftsconfiguration.analyzers" [value]="analyzer.value">{{analyzer.text}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_DUPLICATECHECK_SETTINGS"></system-label></legend>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element">
+                </fieldset>
+                @if(fieldDetails.indextype == 'double') {
+                    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                        <legend class="slds-form-element__legend slds-form-element__label">
+                            <system-label label="LBL_AGGREGATE_METRICS"></system-label>
+                        </legend>
+                        <system-icon-help-text [helpText]="language.getLabel('LBL_AGGREGATE_METRICS', '', 'long')"></system-icon-help-text>
                         <div class="slds-form-element__control">
-                            <system-checkbox [(ngModel)]="fieldDetails.duplicatecheck"><system-label label="LBL_DUPLICATE_CHECK"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_CHECK')"></system-icon-help-text></system-checkbox>
+                            <div class="slds-form-element slds-p-vertical--x-small slds-grid">
+                                <div class="slds-form-element__control slds-size--1-of-4">
+                                    <system-checkbox [(ngModel)]="fieldDetails.aggregatemetricsum">
+                                        <system-label label="LBL_SUM"></system-label>
+                                    </system-checkbox>
+                                </div>
+                                <div class="slds-form-element__control slds-size--1-of-4">
+                                    <system-checkbox [(ngModel)]="fieldDetails.aggregatemetricavg">
+                                        <system-label label="LBL_AVERAGE"></system-label>
+                                    </system-checkbox>
+                                </div>
+                                <div class="slds-form-element__control slds-size--1-of-4">
+                                    <system-checkbox [(ngModel)]="fieldDetails.aggregatemetricmax">
+                                        <system-label label="LBL_MAX"></system-label>
+                                    </system-checkbox>
+                                </div>
+                                <div class="slds-form-element__control slds-size--1-of-4">
+                                    <system-checkbox [(ngModel)]="fieldDetails.aggregatemetricmin">
+                                        <system-label label="LBL_MIN"></system-label>
+                                    </system-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                }
+                <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_ANALYZER"></system-label></legend>
+                    <div class="slds-form-element__control">
+                        <div class="slds-grid">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label"><system-label label="LBL_ANALYZER"></system-label></label>
+                                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ANALYZER') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
+                                </system-icon-help-text>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="fieldDetails.analyzer">
+                                            <option value=''>standard</option>
+                                            <option *ngFor="let analyzer of ftsconfiguration.analyzers" [value]="analyzer.value">{{analyzer.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label"><system-label label="LBL_SEARCH_ANALYZER"></system-label></label>
+                                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_SEARCHANALYZER') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
+                                '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
+                                </system-icon-help-text>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="fieldDetails.search_analyzer">
+                                            <option value=''>standard</option>
+                                            <option *ngFor="let analyzer of ftsconfiguration.analyzers" [value]="analyzer.value">{{analyzer.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="slds-grid slds-grid_vertical-align-center">
-                        <div class="slds-col slds-size--1-of-2 slds-form-element">
-                            <label class="slds-form-element__label"><system-label label="LBL_QUERY"></system-label></label>
-                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_QUERY')"></system-icon-help-text>
+                </fieldset>
+                <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_DUPLICATECHECK_SETTINGS"></system-label></legend>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <system-checkbox [(ngModel)]="fieldDetails.duplicatecheck"><system-label label="LBL_DUPLICATE_CHECK"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_CHECK')"></system-icon-help-text></system-checkbox>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <div class="slds-col slds-size--1-of-2 slds-form-element">
+                                <label class="slds-form-element__label"><system-label label="LBL_QUERY"></system-label></label>
+                                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_QUERY')"></system-icon-help-text>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select [disabled]="!fieldDetails.duplicatecheck" class="slds-select" [(ngModel)]="fieldDetails.duplicatequery">
+                                            <option value="">match (or)</option>
+                                            <option value='match_and'>match (and)</option>
+                                            <option value='term'>term</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size--1-of-2 slds-form-element">
+                                <label class="slds-form-element__label"><system-label label="LBL_FUZZINESS"></system-label></label>
+                                <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_FUZZINESS')"></system-icon-help-text>
+                                <div class="slds-form-element__control">
+                                    <input type="text" [disabled]="!fieldDetails.duplicatecheck" class="slds-input" [(ngModel)]="fieldDetails.duplicatefuzz"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_EMAIL_PHONE_SETTINGS"></system-label></legend>
+                    <div class="slds-form-element__control slds-size--1-of-2">
+                        <system-checkbox [(ngModel)]="fieldDetails.email"><system-label label="LBL_EMAIL_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_EMAIL')"></system-icon-help-text></system-checkbox>
+                    </div>
+                    <div class="slds-form-element__control slds-size--1-of-2">
+                        <system-checkbox [(ngModel)]="fieldDetails.phonesearch"><system-label label="LBL_PHONE_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_PHONE')"></system-icon-help-text></system-checkbox>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+                    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_FTS_ACTIVITY_PARAMS"></system-label></legend>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
-                                    <select [disabled]="!fieldDetails.duplicatecheck" class="slds-select" [(ngModel)]="fieldDetails.duplicatequery">
-                                        <option value="">match (or)</option>
-                                        <option value='match_and'>match (and)</option>
-                                        <option value='term'>term</option>
+                                    <select class="slds-select" [(ngModel)]="fieldDetails.activitytype">
+                                        <option value=''>---</option>
+                                        <option value='activityparentid'>activityparentid</option>
+                                        <option value='activitydate'>activitydate</option>
+                                        <option value='activityenddate'>activityenddate</option>
+                                        <option value='activityparticipant'>activityparticipant</option>
+                                        <option value='activitystatus'>activitystatus</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="slds-col slds-size--1-of-2 slds-form-element">
-                            <label class="slds-form-element__label"><system-label label="LBL_FUZZINESS"></system-label></label>
-                            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_DUPLICATE_FUZZINESS')"></system-icon-help-text>
-                            <div class="slds-form-element__control">
-                                <input type="text" [disabled]="!fieldDetails.duplicatecheck" class="slds-input" [(ngModel)]="fieldDetails.duplicatefuzz"/>
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </fieldset>
-            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_EMAIL_PHONE_SETTINGS"></system-label></legend>
-                <div class="slds-form-element__control slds-size--1-of-2">
-                    <system-checkbox [(ngModel)]="fieldDetails.email"><system-label label="LBL_EMAIL_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_EMAIL')"></system-icon-help-text></system-checkbox>
-                </div>
-                <div class="slds-form-element__control slds-size--1-of-2">
-                    <system-checkbox [(ngModel)]="fieldDetails.phonesearch"><system-label label="LBL_PHONE_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_PHONE')"></system-icon-help-text></system-checkbox>
-                </div>
-            </fieldset>
-            <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_FTS_ACTIVITY_PARAMS"></system-label></legend>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element">
-                        <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
-                        <div class="slds-form-element__control">
-                            <div class="slds-select_container">
-                                <select class="slds-select" [(ngModel)]="fieldDetails.activitytype">
-                                    <option value=''>---</option>
-                                    <option value='activityparentid'>activityparentid</option>
-                                    <option value='activitydate'>activitydate</option>
-                                    <option value='activityenddate'>activityenddate</option>
-                                    <option value='activityparticipant'>activityparticipant</option>
-                                    <option value='activitystatus'>activitystatus</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <ng-template #selectfield>
+                </fieldset>
+            </div>
+        } @else {
             <div class="slds-p-around--small slds-align--absolute-center slds-height_full">select a field</div>
-        </ng-template>
+        }
     </div>
 </div>

@@ -2,14 +2,13 @@
  * @module ObjectComponents
  */
 
-import {
-    ComponentFactoryResolver, Component, ViewChild, ViewContainerRef, Renderer2, ElementRef, forwardRef
-} from '@angular/core';
+import {Component, ViewChild, ViewContainerRef, Renderer2, ElementRef, forwardRef} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {ObjectListFilterI} from "../interfaces/objectcomponents.interfaces";
 
 @Component({
     selector: 'object-listview-filter-panel-filter-myitems',
@@ -37,7 +36,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAccessor {
 
     // for the value accessor
-    public onChange: (value: string) => void;
+    public onChange: (value: ObjectListFilterI) => void;
     public onTouched: () => void;
 
     /**
@@ -53,19 +52,36 @@ export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAcces
     /**
      * the filter value
      */
-    public _filterValue: string = 'all';
+    public _filterValue: ObjectListFilterI = {
+        logicaloperator: 'and',
+        groupscope: 'all',
+        groupstate: 'active',
+        geography: {},
+        conditions: []
+    };
 
     /**
      * helper listener to close the popup when a click happens outside
      */
     public clickListener: any = null;
 
-    constructor(public renderer: Renderer2, public elementRef: ElementRef, public language: language, public modellist: modellist) {
+    /**
+     * whether the module has is_inactive field
+     */
+    public hasInactiveProperty: boolean = false;
 
+    constructor(
+        public renderer: Renderer2,
+        public elementRef: ElementRef,
+        public language: language,
+        public modellist: modellist,
+        private metadata: metadata
+    ){
+        this.hasInactiveProperty = this.metadata.hasField(this.modellist.module, 'is_inactive');
     }
 
     /**
-     * a function that handöles the click registered by the renderer
+     * a function that handles the click registered by the renderer
      */
     public onClick() {
         if (!this.showPopover) {
@@ -87,9 +103,20 @@ export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAcces
      *
      * @param value the new value
      */
-    set filterValue(value) {
+    set filterValue(value: ObjectListFilterI) {
         this._filterValue = value;
         this.onChange(value);
+    }
+
+    /**
+     * gets the current label
+     */
+    get getLabel(): string {
+        if(this.hasInactiveProperty) {
+            return this.language.getLabel('LBL_' + this.filterValue.groupscope.toUpperCase() + ' & ' + this.filterValue.groupstate.toUpperCase());
+        } else {
+            return this.language.getLabel('LBL_' + this.filterValue.groupscope.toUpperCase());
+        }
     }
 
     /**
@@ -159,7 +186,13 @@ export class ObjectListViewFilterPanelFilterMyItems implements ControlValueAcces
         if (value) {
             this._filterValue = value;
         } else {
-            this._filterValue = '';
+            this._filterValue = {
+                logicaloperator: 'and',
+                groupscope: 'all',
+                groupstate: 'active',
+                geography: {},
+                conditions: []
+            };
         }
     }
 

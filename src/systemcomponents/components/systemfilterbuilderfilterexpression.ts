@@ -84,6 +84,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             }, {
                 operator: 'notempty',
                 name: 'LBL_OP_NOTEMPTY'
+            }, {
+                operator: 'changed',
+                name: 'LBL_CHANGED'
             }
         ],
         numeric: [
@@ -117,6 +120,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_OP_BETWEEN',
                 value1: 'integer',
                 value2: 'integer'
+            }, {
+                operator: 'changed',
+                name: 'LBL_CHANGED'
             }
         ],
         date: [
@@ -156,11 +162,6 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'inlessthanndays',
                 name: 'LBL_IN_LESS_THAN_N_DAYS',
-                value1: 'integer'
-            },
-            {
-                operator: 'inlastndays',
-                name: 'LBL_IN_THE_LAST_N_DAYS',
                 value1: 'integer'
             },
             {
@@ -216,6 +217,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 operator: 'nyearsago',
                 name: 'LBL_N_YEARS_AGO',
                 value1: 'integer'
+            }, {
+                operator: 'changed',
+                name: 'LBL_CHANGED'
             }
         ],
         bool: [
@@ -226,6 +230,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'false',
                 name: 'LBL_FALSE'
+            }, {
+                operator: 'changed',
+                name: 'LBL_CHANGED'
             }
         ],
         enum: [
@@ -252,6 +259,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             }, {
                 operator: 'notempty',
                 name: 'LBL_OP_NOTEMPTY'
+            }, {
+                operator: 'changed',
+                name: 'LBL_CHANGED'
             }
         ],
         relate: [
@@ -275,6 +285,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             }, {
                 operator: 'notequalrcu',
                 name: 'LBL_NOT_CURRENT_USER',
+            }, {
+                operator: 'changed',
+                name: 'LBL_CHANGED'
             }
         ]
     };

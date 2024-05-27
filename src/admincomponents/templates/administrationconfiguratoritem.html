@@ -1,27 +1,46 @@
-<td *ngFor="let field of fields">
-    <div *ngIf="!isEditMode(field);else editfield" class="slds-truncate slds-p-horizontal--small" style="max-width: 200px;" [ngSwitch]="field.type">
+<td *ngFor="let field of itemFields">
+    <div *ngIf="!isEditMode(field);else editfield" class="slds-truncate" [ngStyle]="divStyle" [ngSwitch]="field.type">
         <span *ngSwitchCase="'json'"><pre class="slds-m-vertical--none">{{getJSON(entry.data[field.name])}}</pre></span>
         <span *ngSwitchCase="'text'" class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
-        <system-checkbox *ngSwitchCase="'bool'" [disabled]="true" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
-        <system-checkbox *ngSwitchCase="'boolean'" [disabled]="true" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+        <system-input-label *ngSwitchCase="'label'" [ngModel]="entry.data[field.name]" disabled></system-input-label>
+        <system-display-datetime *ngSwitchCase="'date'" [date]="entry.data[field.name]" [displayTime]="false"></system-display-datetime>
+        <system-input-fieldset *ngSwitchCase="'fieldset'" disabled [ngModel]="entry.data[field.name]"></system-input-fieldset>
+        <system-input-filter *ngSwitchCase="'filter'" disabled [ngModel]="entry.data[field.name]"></system-input-filter>
+        <system-input-componentset *ngSwitchCase="'componentset'" disabled [ngModel]="entry.data[field.name]"></system-input-componentset>
+        <system-input-companycodes *ngSwitchCase="'companycode'" disabled [ngModel]="entry.data[field.name]"></system-input-companycodes>
+        <system-checkbox *ngSwitchCase="'bool'" [disabled]="true" [ngModel]="entry.data[field.name]"> </system-checkbox>
+        <system-checkbox *ngSwitchCase="'boolean'" [disabled]="true" [ngModel]="entry.data[field.name]"> </system-checkbox>
+        <system-input-text *ngSwitchCase="'foreign'" disabled [ngModel]="getForeignName(field.name)"> </system-input-text>
         <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="false" [fieldvalue]="entry.data[field.name]"></administration-configurator-item-role>
-        <span *ngSwitchDefault>{{entry.data[field.name]}}</span>
+        <system-input-dictionary *ngSwitchCase="'dictionary'" [disabled]="true" [ngModel]="entry.data[field.name]"></system-input-dictionary>
+        <input *ngSwitchDefault type="text" class="slds-input" [ngModel]="entry.data[field.name]" disabled/>
     </div>
     <ng-template #editfield>
         <div class="slds-form-element">
-            <div class="slds-form-element__control" [ngSwitch]="field.type">
+            <div class="slds-form-element__control" [ngSwitch]="field.type" [ngStyle]="divStyle">
                 <textarea *ngSwitchCase="'json'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
                 <textarea *ngSwitchCase="'text'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
                 <system-input-label *ngSwitchCase="'label'" [(ngModel)]="entry.data[field.name]" ></system-input-label>
-                <system-checkbox *ngSwitchCase="'bool'" class="slds-m-horizontal--small" style="display: block" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
-                <system-checkbox *ngSwitchCase="'boolean'" class="slds-m-horizontal--small" style="display: block" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                <system-input-date *ngSwitchCase="'date'" [ngModel]="entry.data[field.name]" (ngModelChange)="setFormattedDate(field.name, $event)" system-input-date-formatted [showCalendarButton]="false" ></system-input-date>
+                <system-input-module *ngSwitchCase="'module'" [(ngModel)]="entry.data[field.name]"></system-input-module>
+                <system-input-module-field *ngSwitchCase="'fieldname'" [module]="entry.data[field.modulefield]" [(ngModel)]="entry.data[field.name]"></system-input-module-field>
+                <system-input-fieldset *ngSwitchCase="'fieldset'" [(ngModel)]="entry.data[field.name]"></system-input-fieldset>
+                <system-input-filter *ngSwitchCase="'filter'" [(ngModel)]="entry.data[field.name]"></system-input-filter>
+                <system-input-componentset *ngSwitchCase="'componentset'" [(ngModel)]="entry.data[field.name]"></system-input-componentset>
+                <system-input-companycodes *ngSwitchCase="'companycode'" [(ngModel)]="entry.data[field.name]"></system-input-companycodes>
+                <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                <system-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                <system-select *ngSwitchCase="'foreign'" [ngModel]="{id: entry.data[field.name], name: getForeignName(field.name)}" (ngModelChange)="entry.data[field.name] = $event.id">
+                    <system-select-option *ngFor="let foreignKey of getForeignKeys(field.name)" [value]="foreignKey.value" [display]="foreignKey.display"/>
+                </system-select>
                 <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
+                <system-input-dictionary *ngSwitchCase="'dictionary'" [(ngModel)]="entry.data[field.name]"></system-input-dictionary>
                 <input *ngSwitchDefault type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
             </div>
         </div>
     </ng-template>
 </td>
-<td class="slds-theme--default" style="position: sticky; right: 0; z-index: 1">
+<td class="slds-theme--default" style="position: sticky; right: 0; z-index: 10">
     <div *ngIf="!isEditMode()" class="slds-button-group slds-float--right" role="group">
         <button class="slds-button slds-button--icon-border" (click)="setEditMode()">
             <system-button-icon [icon]="'edit'" [size]="'small'"></system-button-icon>
@@ -34,10 +53,13 @@
         </button>
     </div>
     <div *ngIf="isEditMode()" class="slds-button-group slds-float--right" role="group">
+        <button class="slds-button slds-button--icon-border" (click)="goDetail()">
+            <system-button-icon [icon]="'expand'" [size]="'small'" ></system-button-icon>
+        </button>
         <button class="slds-button slds-button--icon-border" (click)="setViewMode()">
             <system-button-icon [icon]="'close'" [size]="'small'" ></system-button-icon>
         </button>
-        <button class="slds-button slds-button--icon-border" (click)="save()">
+        <button class="slds-button slds-button--icon-border" [disabled]="!canSave" (click)="save()">
             <system-button-icon [icon]="'check'" [size]="'small'"></system-button-icon>
         </button>
     </div>

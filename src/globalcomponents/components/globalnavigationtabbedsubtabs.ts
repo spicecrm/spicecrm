@@ -60,7 +60,7 @@ export class GlobalNavigationTabbedSubtabs implements OnDestroy {
         );
 
         /*
-        * ToDo: check if thsi is needed
+        * ToDo: check if this is needed
         */
         /*
         this.subscriptions.add(
@@ -157,5 +157,4 @@ export class GlobalNavigationTabbedSubtabs implements OnDestroy {
 
         return true;
     }
-
 }

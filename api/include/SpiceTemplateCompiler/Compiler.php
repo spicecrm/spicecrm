@@ -1,5 +1,31 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ * 
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ * 
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\includes\SpiceTemplateCompiler;
 
@@ -12,7 +38,8 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
-use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SalesDocsTemplateFunctions;
+use SpiceCRM\includes\SpiceTemplateCompiler\TemplateFunctions\SystemTemplateFunctions;
+use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -46,7 +73,12 @@ use SpiceCRM\includes\utils\SpiceUtils;
  *
  */
 
-
+class SpiceFor {
+    public function __construct( $dataArray )
+    {
+        foreach ( $dataArray as $k => $v ) $this->{$k} = $v;
+    }
+}
 
 class Compiler
 {
@@ -99,10 +131,11 @@ class Compiler
      */
     public $idsOfParentTemplates = [];
 
-    public function compile($txt, $bean = null, $lang = 'de_DE', array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null)
+    public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
     {
         $this->additionalValues = $additionalValues;
-        $this->lang = $lang;
+        $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;
+        if ( empty( $this->lang )) $this->lang = 'de_DE';
         $this->app_list_strings = SpiceUtils::returnAppListStringsLanguage($lang); // get doms corresponding to template language
 
         $dom = new DOMDocument();
@@ -119,11 +152,15 @@ class Compiler
         $dummy = $dom->getElementsByTagName('html');
         foreach( $this->parseDom( $dummy[0], $beans ) as $newElement ){
             $this->root->appendChild($newElement);
-        };
+        }
 
         $this->addStyleTag($additionalStyleId);
 
-        return $this->doc->saveHTML();
+        if ($bodyContentOnly) {
+            return str_replace(['<body>', '</body>'], '', $this->doc->saveHTML($this->doc->getElementsByTagName('body')->item(0)));
+        } else {
+            return $this->doc->saveHTML();
+        }
     }
 
     /**
@@ -204,7 +241,8 @@ class Compiler
                         if ($this->processCondition($spiceif, $beans)) {
                             $elements[] = $this->createNewElement($node, $beans);
                         }
-                    } else if($node->getAttribute('data-spicefor')){
+                    }
+                    else if($node->getAttribute('data-spicefor')){
                         $spicefor = $node->getAttribute('data-spicefor');
 
                         // CR1000360
@@ -235,10 +273,28 @@ class Compiler
                         foreach ($linkedBeans as $index => $linkedBean) {
                             // set the params for teh first or last entry
                             $params = [];
-                            if($index == 0) $params[] = 'data-spicefor-first';
-                            if($index == count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
+                            if( $index === 0 ) $params[] = 'data-spicefor-first';
+                            if ( $index === count($linkedBeans) - 1) $params[] = 'data-spicefor-last';
+                            if ( $index > 0 and $index < count($linkedBeans) - 1 ) $params[] = 'data-spicefor-inner';
+                            if ( $index % 2 === 0 ) $params[] = 'data-spicefor-even';
+                            if ( $index % 2 === 1 ) $params[] = 'data-spicefor-odd';
 
-                            $elements[] = $this->createNewElement($node, array_merge($beans, [$forArray[1] => $linkedBean]), $params);
+                            $spiceforParent = ( isset( $beans['spicefor'] ) ? $beans['spicefor'] : null );
+                            $elements[] = $this->createNewElement(
+                                $node,
+                                array_merge( $beans, [
+                                    $forArray[1] => $linkedBean,
+                                    'spicefor' => new SpiceFor([
+                                        'index' => $index,
+                                        'first' => ( $index === 0 ),
+                                        'last' => ( $index === count( $linkedBeans ) - 1 ),
+                                        'inner' => ( $index > 0 and $index < count( $linkedBeans ) - 1 ),
+                                        'even' => ( $index % 2 === 0 ),
+                                        'odd' => ( $index % 2 === 1 ),
+                                        'parent' => $spiceforParent,
+                                        'total' => count( $linkedBeans )
+                                    ])
+                                ]), $params);
                             // $response .= $this->processBlocks($this->getBlocks($contentString), array_merge($beans, [$forArray[1] => $linkedBean]), $lang);
                         }
                         break;
@@ -441,7 +497,10 @@ class Compiler
                         break;
                     case 'data-spicefor-first':
                     case 'data-spicefor-last':
-                        if(array_search($attribute->nodeName, $params) >= 0){
+                    case 'data-spicefor-inner':
+                    case 'data-spicefor-even':
+                    case 'data-spicefor-odd':
+                        if(in_array($attribute->nodeName, $params)){
                             $newAttribute = $this->doc->createAttribute($attribute->nodeName);
                             $newAttribute->value = $this->compileblock($attribute->nodeValue, $beans, $this->lang);
                             $newElement->appendChild($newAttribute);
@@ -550,7 +609,11 @@ class Compiler
         //parse pipe if passed in
 
         $value1 = trim($this->handleSubstitution($conditionparts[0], $beans, true), "'");
-        $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
+        if ( count( $conditionparts ) > 1) {
+            $value2 = trim($this->handleSubstitution($conditionparts[2], $beans, true), "'");
+        }
+
+        if ( count( $conditionparts ) === 1 and is_bool( $value1 )) return $value1;
 
         switch (strtolower($conditionparts[1])) {
             case '>':
@@ -602,7 +665,15 @@ class Compiler
         $loopThroughParts = function ($obj, $level = 0, $keepFetchedRowValue) use (&$parts, &$loopThroughParts) {
 
             $part = $parts[$level];
-            if (is_callable([$obj, $part])) {
+            if ( is_object($obj) and get_class( $obj ) === 'SpiceCRM\includes\SpiceTemplateCompiler\SpiceFor' ) {
+                if ( $part === 'parent' ) {
+                    $level++;
+                    return $loopThroughParts($obj->parent, $level, false );
+                } else {
+                    $value = $obj->{$part};
+                }
+            }
+            elseif (is_callable([$obj, $part])) {
                 $value = $obj->{$part}();
             } else {
                 $field = $obj->field_defs[$part];
@@ -670,7 +741,7 @@ class Compiler
                 $obj = (object)$this->additionalValues;
                 break;
             case 'func':
-                $obj = new SalesDocsTemplateFunctions( $beans[$object], $this->currentTemplate );
+                $obj = new SystemTemplateFunctions();
                 break;
             case 'template':
                 $obj = BeanFactory::getBean($this->currentTemplate->_module, $this->currentTemplate->id);
@@ -737,6 +808,9 @@ class Compiler
 
     function getValueForCompileblock($m, $beans, $raw = false ) {
 
+        # quoted string has nothing to parse. Just return the string as is
+        if (str_starts_with($m, "'") && str_ends_with($m, "'")) return $m;
+
         preg_match('#^([^:]+)(:(.*))?$#s', $m, $matches );
 
         $parts = explode('.', $matches[1] );
@@ -746,6 +820,10 @@ class Compiler
 
         // get the name
         $objectname = $parts[0];
+
+        if ( $objectname === 'label' ) {
+            return LanguageManager::getLabelTranslation( $parts[1], $this->lang )['default'];
+        }
 
         // get the object
         $obj = $this->getObject( $objectname, $beans );
@@ -766,8 +844,9 @@ class Compiler
         $loopThroughParts = function ($obj, $level = 0, $raw = false, &$bean) use (&$parts, &$loopThroughParts) {
 //            global $app_list_strings;
             $part = $parts[$level];
+
             if (is_callable([$obj, $part])) {
-                $value = $obj->{$part}(30);
+                $value = $obj->{$part}();
             } else {
                 $field = $obj->field_defs[$part];
                 switch ($field['type']) {

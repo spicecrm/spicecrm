@@ -1,0 +1,51 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <ng-container *ngFor="let addr of model.data.email_addresses.beans | keyvalue; trackBy: trackByFn">
+        <span *ngIf="addr.value.relid == value" [title]="addr.value.email_address">
+            {{addr.value.email_address}}
+        </span>
+    </ng-container>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container">
+                <div [system-dropdown-trigger]="(model.data.email_addresses.beans | keyvalue).length == 0" class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                        <div [class.slds-theme--shade]="(model.data.email_addresses.beans | keyvalue).length == 0" role="combobox" tabindex="0" class="slds-input_faux slds-combobox__input" aria-expanded="false" aria-haspopup="listbox">
+                            <ng-container *ngFor="let addr of model.data.email_addresses.beans | keyvalue; trackBy: trackByFn">
+                                <ng-container *ngIf="addr.value.relid == value">
+                                    <span [system-title]="addr.value.email_address" class="slds-truncate slds-grow">
+                                        {{addr.value.email_address}}
+                                    </span>
+                                </ng-container>
+                            </ng-container>
+                            <button *ngIf="!!value" (click)="value = undefined; $event.stopImmediatePropagation();" class="slds-button slds-button--icon">
+                                <system-button-icon icon="clear"/>
+                            </button>
+                        </div>
+                        <system-utility-icon size="x-small" icon="down" addclasses="slds-input__icon slds-input__icon_right" />
+                    </div>
+                    <div class="slds-dropdown slds-dropdown_length-10 slds-dropdown_fluid" style="max-width: 350px" role="listbox" tabindex="0" aria-busy="false">
+                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                            <li *ngFor="let emailAddress of model.data.email_addresses.beans | keyvalue" (click)="value = emailAddress.value" role="presentation" class="slds-listbox__item">
+                                <div [class.slds-text-color--inverse-weak]="emailAddress.value.invalid_email == '1'" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                                    <span class="slds-media__figure slds-listbox__option-icon">
+                                        <system-utility-icon *ngIf="emailAddress.value.relid == value" icon="check" size="x-small" colorclass="slds-icon-text-success"/>
+                                    </span>
+                                    <span class="slds-media__body slds-grid">
+                                        <span [style.text-decoration]="emailAddress.value.invalid_email == '1' ? 'line-through' : 'initial'" [system-title]="emailAddress.value.email_address" class="slds-truncate slds-grow">
+                                            {{emailAddress.value.email_address}}
+                                        </span>
+                                        <field-email-emailaddress-status [status]="emailAddress.value.opt_in_status" class="slds-m-left--x-small" />
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

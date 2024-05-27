@@ -46,6 +46,9 @@
                         <option value="email">
                             <system-label label="LBL_EMAIL"></system-label>
                         </option>
+                        <option value="user_defined">
+                            <system-label label="LBL_USER_DEFINED"></system-label>
+                        </option>
                     </select>
                 </div>
             </div>
@@ -67,9 +70,9 @@
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select [(ngModel)]="config.smsMailboxId" [disabled]="isLoading" class="slds-select">
+                    <select [(ngModel)]="config.smsMailboxId" [disabled]="isLoading || smsmailboxes.length == 0" class="slds-select">
                         <option value=""></option>
-                        <option *ngFor="let item of mailboxes" [value]="item.id">
+                        <option *ngFor="let item of smsmailboxes" [value]="item.id">
                             {{item.name}}
                         </option>
                     </select>
@@ -83,9 +86,9 @@
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select [(ngModel)]="config.emailMailboxId" [disabled]="isLoading" class="slds-select">
+                    <select [(ngModel)]="config.emailMailboxId" [disabled]="isLoading || emailmailboxes.length == 0" class="slds-select">
                         <option value=""></option>
-                        <option *ngFor="let item of mailboxes" [value]="item.id">
+                        <option *ngFor="let item of emailmailboxes" [value]="item.id">
                             {{item.name}}
                         </option>
                     </select>

@@ -101,10 +101,6 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             this.setDropdownElement();
         }
 
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
 
         if (this.dropdowntriggerdisabled || !this.dropdownElement) return false;
 
@@ -225,7 +221,10 @@ export class SystemDropdownTriggerDirective implements OnInit, OnDestroy {
             this.renderer.setStyle(this.dropdownElement, 'right', (window.innerWidth - triggerRect.right) + 'px');
             this.renderer.setStyle(this.dropdownElement, 'left', 'auto');
 
-            this.renderer.setStyle(this.dropdownElement, 'max-width', triggerRect.width + 'px');
+            // ToDo: check why this was added ... sets regular dropdowns to being too small
+            if(this.triggerElement.nodeName == 'INPUT') {
+                this.renderer.setStyle(this.dropdownElement, 'max-width', triggerRect.width + 'px');
+            }
 
             // from left to right direction
         } else {

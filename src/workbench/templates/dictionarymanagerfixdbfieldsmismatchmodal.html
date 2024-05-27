@@ -1,0 +1,141 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_FIX_DB_FIELDS_MISMATCH"/>
+    </system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <div class="slds-size--1-of-1 slds-grid" style="height: 80vh">
+            <div *ngIf="dictionaries.length > 0" class="slds-height_full slds-size--1-of-5 slds-border--right">
+                <div class="slds-p-around--medium slds-text-heading--label slds-border--bottom slds-m-bottom--xx-small">dictionaries</div>
+                @for (dic of dictionaries; track $index) {
+                    <div class="slds-p-horizontal--xx-small slds-p-vertical--xxx-small">
+                        <button (click)="setSelectedDictionary(dic)" [ngClass]="{'slds-button_neutral': dic != dictionaryName, 'slds-button--brand': dic == dictionaryName}" class="slds-button slds-size--1-of-1">
+                            {{dic}}
+                        </button>
+                    </div>
+                }
+            </div>
+            <div class="slds-scrollable--y slds-height_full slds-grow">
+
+                @if (mismatch[dictionaryName].requiredColumnsWithNullRows.length > 0) {
+                    <div class="slds-grid slds-p-horizontal--x-small slds-p-vertical--small slds-section-title">
+                        <system-label label="LBL_REQUIRED_ROWS_WITH_NULL_VALUES"/>
+                    </div>
+                    <table class="slds-table slds-table--header-fixed slds-no-row-hover slds-table--fixed-layout slds-table_bordered">
+                        <thead>
+                        <tr class="slds-line-height_reset">
+                            <th style="width: 2rem" scope="col"></th>
+                            <th style="width: 15rem" scope="col">
+                                <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_FIELD"/></div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_ROWS"/></div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_VALUE"/></div>
+                            </th>
+                            <th style="width: 4rem" scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @for (field of mismatch[dictionaryName].requiredColumnsWithNullRows; track $index) {
+
+                                <tr class="slds-hint-parent" [ngClass]="{'slds-theme--info': field.status == 'processing', 'slds-theme--error': field.status == 'error'}">
+                                    <td>
+                                        <system-utility-icon *ngIf="field.status != 'processing'" size="xx-small" [icon]="!field.status ? 'funding_requirement' : field.status == 'executed' ? 'success' : 'error'" [colorclass]="!field.status ? 'slds-icon-text-default' : field.status == 'executed' ? 'slds-icon-text-success' : 'slds-icon-text-error'"/>
+                                        <system-spinner *ngIf="field.status == 'processing'" size="14" inverse="true"></system-spinner>
+                                    </td>
+                                    <td>
+                                        <div class="slds-truncate">{{field.name}}</div>
+                                    </td>
+                                    <td>
+                                        <div class="slds-truncate">{{field.count}}</div>
+                                    </td>
+                                    <td>
+                                        <input type="text" [(ngModel)]="values[field.name]" [disabled]="field.status == 'executed'" [maxlength]="field.dbDefinition.len" class="slds-input slds-text-color--default">
+                                    </td>
+                                    <td>
+                                        <div class="slds-grid slds-grid--vertical-align-center">
+                                            <button *ngIf="field.status != 'executed'" (click)="execute(field, 'notnull')" [disabled]="!values[field.name] || field.status == 'processing'" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                                <system-button-icon icon="play"/>
+                                            </button>
+                                            <button (click)="deleteNullRows(field)" [disabled]="field.status == 'processing' || field.status == 'executed'" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                                <system-button-icon icon="delete"/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                @if (mismatch[dictionaryName].columnsWithTruncateRows.length > 0) {
+                    <div [class.slds-m-top--medium]="mismatch[dictionaryName].requiredColumnsWithNullRows.length > 0" class="slds-grid slds-p-horizontal--x-small slds-p-vertical--small slds-section-title">
+                        <system-label label="LBL_COLUMNS_WITH_TRUNCATE_ROWS"/>
+                    </div>
+                    <table class="slds-table slds-table--header-fixed slds-no-row-hover slds-table--fixed-layout slds-table_bordered">
+                        <thead>
+                        <tr class="slds-line-height_reset">
+                            <th style="width: 2rem" scope="col"></th>
+                            <th style="width: 15rem" scope="col">
+                                <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_FIELD"/></div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_ROWS"/></div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_FROM"/></div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate slds-p-around--x-small"><system-label label="LBL_TO"/></div>
+                            </th>
+                            <th style="width: 4rem" scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @for (field of mismatch[dictionaryName].columnsWithTruncateRows; track $index) {
+
+                                <tr class="slds-hint-parent" [ngClass]="{'slds-theme--info': field.status == 'processing', 'slds-theme--error': field.status == 'error'}">
+                                    <td>
+                                        <system-utility-icon *ngIf="field.status != 'processing'" size="xx-small" [icon]="!field.status ? 'funding_requirement' : field.status == 'executed' ? 'success' : 'error'" [colorclass]="!field.status ? 'slds-icon-text-default' : field.status == 'executed' ? 'slds-icon-text-success' : 'slds-icon-text-error'"/>
+                                        <system-spinner *ngIf="field.status == 'processing'" size="14" inverse="true"></system-spinner>
+                                    </td>
+                                    <td>
+                                        <div class="slds-truncate">{{field.name}}</div>
+                                    </td>
+                                    <td>
+                                        <div class="slds-truncate">{{field.count}}</div>
+                                    </td>
+                                    <td>
+                                        <div class="slds-truncate">{{field.dbDefinition.len}}</div>
+                                    </td>
+                                    <td>
+                                        <div class="slds-truncate">{{field.length}}</div>
+                                    </td>
+                                    <td>
+                                        <div *ngIf="field.status != 'executed'" class="slds-grid slds-grid--vertical-align-center">
+                                            <button (click)="execute(field, 'length')" [disabled]="field.status == 'processing'" class="slds-button slds-button--icon slds-m-left--xx-small">
+                                                <system-button-icon icon="play"/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                @if (mismatch[dictionaryName].requiredColumnsWithNullRows.length == 0 && mismatch[dictionaryName].columnsWithTruncateRows.length == 0) {
+                    <div>
+                        <system-illustration-no-data class="slds-align--absolute-center slds-height_full">
+                            <system-label label="LBL_NO_DATA"/>
+                        </system-illustration-no-data>
+                    </div>
+                }
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"/></button>
+    </system-modal-footer>
+</system-modal>

@@ -4,15 +4,17 @@
 import {
     Component, OnInit
 } from '@angular/core';
+import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
+import {backend} from '../../services/backend.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
     templateUrl: '../templates/dictionarymanageradditemmodal.html',
 })
-export class DictionaryManagerAddItemModal{
+export class DictionaryManagerAddItemModal implements OnInit{
 
     /**
      * reference to the modal self
@@ -53,28 +55,31 @@ export class DictionaryManagerAddItemModal{
      */
     public currentType: string;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public modelutilities: modelutilities) {
+    constructor(public dictionarymanager: dictionarymanager, public backend: backend, public modal: modal, public metadata: metadata, public modelutilities: modelutilities) {
 
+    }
+
+    public ngOnInit() {
         this.dictionaryitem = {
             id: this.modelutilities.generateGuid(),
             sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
             name: '',
             non_db: 0,
-            duplicate_merge: 1,
             exclude_from_audited: 0,
             default_value: '',
             required: 0,
             scope: this.dictionarymanager.currentDictionaryScope,
-            deleted: 0,
             status: 'd',
             sequence: this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length
         };
 
         for (let domain of this.dictionarymanager.domaindefinitions) {
-            this.domains.push({
-                id: domain.id,
-                name: domain.name
-            });
+            if(domain.name) {
+                this.domains.push({
+                    id: domain.id,
+                    name: domain.name
+                });
+            }
         }
 
         // sort the domain name alphabetically
@@ -93,11 +98,12 @@ export class DictionaryManagerAddItemModal{
         // sort the domain name alphabetically
         this.templates.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
 
-        // set the scope by default
-        this.dictionaryitem.scope = this.dictionarymanager.changescope == 'all' ? 'g' : 'c';
+        // if scope is not all reset to custom in any case
+        if(this.dictionaryitem.scope == 'g' && this.dictionarymanager.changescope != 'all') this.dictionaryitem.scope = 'c';
 
         // get the current type
         this.currentType = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).sysdictionary_type;
+
     }
 
     /**
@@ -171,8 +177,18 @@ export class DictionaryManagerAddItemModal{
 
             this.dictionaryitem.id = this.modelutilities.generateGuid();
             this.dictionaryitem.sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-            this.dictionarymanager.dictionaryitems.push(this.dictionaryitem);
-            this.close();
+
+            let saveModal = this.modal.await('LBL_SAVING');
+            this.backend.postRequest(`dictionary/item/${this.dictionaryitem.id}`, {}, this.dictionaryitem).subscribe({
+                next: (res) => {
+                    this.dictionarymanager.dictionaryitems.push(this.dictionaryitem);
+                    saveModal.emit(true);
+                    this.close();
+                },
+                error: () => {
+                    saveModal.emit(true);
+                }
+            })
         }
     }
 

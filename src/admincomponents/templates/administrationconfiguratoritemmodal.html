@@ -1,0 +1,50 @@
+<system-modal>
+    <system-modal-header-empty (close)="close()"></system-modal-header-empty>
+    <system-modal-content margin="none">
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+            <thead>
+                <tr>
+                    <th><system-label label="LBL_FIELD"></system-label></th>
+                    <th><system-label label="LBL_VALUE"></system-label></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let field of fields">
+                    <td>{{field.name}}</td>
+                    <td >
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control" [ngSwitch]="field.type">
+                                <textarea *ngSwitchCase="'json'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
+                                <textarea *ngSwitchCase="'text'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
+                                <system-input-label *ngSwitchCase="'label'" [(ngModel)]="entry.data[field.name]" ></system-input-label>
+                                <system-input-date *ngSwitchCase="'date'" [ngModel]="entry.data[field.name]" (ngModelChange)="setFormattedDate(field.name, $event)" system-input-date-formatted [showCalendarButton]="false" ></system-input-date>
+                                <system-input-module *ngSwitchCase="'module'" [(ngModel)]="entry.data[field.name]"></system-input-module>
+                                <system-input-module-field *ngSwitchCase="'fieldname'" [module]="entry.data[field.modulefield]" [(ngModel)]="entry.data[field.name]"></system-input-module-field>
+                                <system-input-fieldset *ngSwitchCase="'fieldset'" [(ngModel)]="entry.data[field.name]"></system-input-fieldset>
+                                <system-input-filter *ngSwitchCase="'filter'" [(ngModel)]="entry.data[field.name]"></system-input-filter>
+                                <system-input-componentset *ngSwitchCase="'componentset'" [(ngModel)]="entry.data[field.name]"></system-input-componentset>
+                                <system-input-companycodes *ngSwitchCase="'companycode'" [(ngModel)]="entry.data[field.name]"></system-input-companycodes>
+                                <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                                <system-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                                <system-select *ngSwitchCase="'foreign'" [ngModel]="{id: entry.data[field.name], name: getForeignName(field.name)}" (ngModelChange)="entry.data[field.name] = $event.id">
+                                    <system-select-option *ngFor="let foreignKey of getForeignKeys(field.name)" [value]="foreignKey.value" [display]="foreignKey.display"/>
+                                </system-select>
+                                <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
+                                <system-input-dictionary *ngSwitchCase="'dictionary'" [(ngModel)]="entry.data[field.name]"></system-input-dictionary>
+                                <input *ngSwitchDefault type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--icon-border" (click)="close()">
+            <system-button-icon [icon]="'close'" [size]="'small'"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button--icon-border" [disabled]="!canSave" (click)="save()">
+            <system-button-icon [icon]="'check'" [size]="'small'"></system-button-icon>
+        </button>
+    </system-modal-footer>
+</system-modal>

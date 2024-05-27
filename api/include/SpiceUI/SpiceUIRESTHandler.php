@@ -3,7 +3,7 @@
 namespace SpiceCRM\includes\SpiceUI;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -157,7 +157,7 @@ class SpiceUIRESTHandler
     function getComponentSets()
     {
         $retArray = [];
-        $componentsets = $this->db->query("SELECT sysuicomponentsetscomponents.*, sysuicomponentsets.id cid, sysuicomponentsets.name, sysuicomponentsets.module, sysuicomponentsets.package componentsetpackage FROM sysuicomponentsets LEFT JOIN sysuicomponentsetscomponents ON sysuicomponentsetscomponents.componentset_id = sysuicomponentsets.id ORDER BY componentset_id, sequence");
+        $componentsets = $this->db->query("SELECT sysuicomponentsetscomponents.*, sysuicomponentsets.id cid, sysuicomponentsets.name, sysuicomponentsets.module, sysuicomponentsets.package componentsetpackage, sysuicomponentsets.version componentsetversion FROM sysuicomponentsets LEFT JOIN sysuicomponentsetscomponents ON sysuicomponentsetscomponents.componentset_id = sysuicomponentsets.id ORDER BY componentset_id, sequence");
 
         while ($componentset = $this->db->fetchByAssoc($componentsets)) {
 
@@ -166,6 +166,7 @@ class SpiceUIRESTHandler
                     'id' => $componentset['cid'],
                     'name' => $componentset['name'],
                     'package' => $componentset['componentsetpackage'],
+                    'version' => $componentset['componentsetversion'],
                     'module' => $componentset['module'] ?: '*',
                     'type' => 'global',
                     'items' => []
@@ -239,12 +240,12 @@ class SpiceUIRESTHandler
             $existingSet = $db->fetchByAssoc($db->query("SELECT * FROM $componentsetTable WHERE id='$componentsetId'"));
 
             // update the componentset
-            if ($existingSet && SystemDeploymentCR::hasChanged($existingSet, $componentsetData, ['name', 'package'])) {
+            if ($existingSet && SystemDeploymentCR::hasChanged($existingSet, $componentsetData, ['name', 'package', 'version'])) {
 
                 $data = [
                     'name' => $componentsetData['name'],
                     'package' => $componentsetData['package'],
-                    'version' => $_SESSION['confversion']
+                    'version' => $componentsetData['version'],
                 ];
 
                 SystemDeploymentCR::writeDBEntry($componentsetTable, $componentsetId, $data, $name, SystemDeploymentCR::ACTION_UPDATE);
@@ -305,7 +306,7 @@ class SpiceUIRESTHandler
                     'sequence' => $componentsetItem['sequence'],
                     'componentconfig' => json_encode($componentsetItem['componentconfig']),
                     'package' => $componentsetItem['package'],
-                    'version' => $_SESSION['confversion']
+                    'version' => $componentsetItem['version']
                 ];
 
                 $name = $name . '/' . $componentsetItem['component'];
@@ -343,8 +344,8 @@ class SpiceUIRESTHandler
             'component' => $componentsetItem['component'],
             'sequence' => $componentsetItem['sequence'],
             'componentconfig' => json_encode($componentsetItem['componentconfig']),
-            'package' => $componentsetItem['pakage'],
-            'version' => $_SESSION['confversion']
+            'package' => $componentsetItem['package'],
+            'version' => $componentsetItem['version']
         ];
 
         $name = $componentsetData['module'] . "/" . $componentsetData['name'] . '/' . $componentsetItem['component'];
@@ -367,7 +368,7 @@ class SpiceUIRESTHandler
             'module' => $componentsetData['module'],
             'name' => $componentsetData['name'],
             'package' => $componentsetData['package'],
-            'version' => $_SESSION['confversion']
+            'version' => $componentsetData['version']
         ];
 
         $name = $componentsetData['module'] . "/" . $componentsetData['name'];

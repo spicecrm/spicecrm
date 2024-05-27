@@ -33,6 +33,7 @@ export class SpiceInstallerFTS {
         public spiceinstaller: spiceinstaller
     ) {
         if(!this.spiceinstaller.prefix) this.spiceinstaller.prefix = this.spiceinstaller.db_name + '_';
+        if(!this.spiceinstaller.server) this.spiceinstaller.server = '127.0.0.1';
         this.spiceinstaller.jumpSubject.subscribe( fromTo => {
             if ( fromTo.from === this.selfStep ) {
                 if ( this.selfStep.completed || fromTo.to?.pos < this.selfStep.pos ) this.spiceinstaller.jump( fromTo.to );

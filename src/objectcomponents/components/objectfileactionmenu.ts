@@ -9,6 +9,7 @@ import {modal} from '../../services/modal.service';
 import {Router} from "@angular/router";
 import {navigationtab} from "../../services/navigationtab.service";
 import {toast} from "../../services/toast.service";
+import {metadata} from "../../services/metadata.service";
 
 /**
  * renders the action menu for the attachment
@@ -21,6 +22,8 @@ export class ObjectFileActionMenu {
 
     @Input() public file: any;
 
+    public currentUser: '';
+
     constructor(public broadcast: broadcast,
                 public modelattachments: modelattachments,
                 public language: language,
@@ -30,13 +33,14 @@ export class ObjectFileActionMenu {
                 public router: Router,
                 public navigationtab: navigationtab,
                 public toast: toast,
-                public modal: modal) {
+                public modal: modal,
+                public metadata: metadata) {
+        this.currentUser = this.metadata.session.authData.user.id;
     }
 
     get uploading() {
         return this.file.hasOwnProperty('uploadprogress');
     }
-
     /**
      * determines where the menu is opened
      */
@@ -48,9 +52,15 @@ export class ObjectFileActionMenu {
     }
 
     /**
+     * check ACL and ownership for delete and hide the button if false
+     */
+    get hidden(): boolean {
+        return !this.metadata.checkModuleAcl('Application', "manageattachments") && this.currentUser != this.file.user_id;
+    }
+
+    /**
      * action to delete the file
      *
-     * ToDo: add ACL Check
      */
     public deleteFile() {
         this.modalservice.confirm(this.language.getLabel('QST_DELETE_FILE'), this.language.getLabel('QST_DELETE_FILE', null, 'short')).subscribe((answer) => {

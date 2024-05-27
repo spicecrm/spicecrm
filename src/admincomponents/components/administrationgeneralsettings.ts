@@ -22,7 +22,9 @@ export class AdministrationGeneralSettings implements OnInit {
         system: {
             name: '',
             site_url: '',
-            unique_key: ''
+            unique_key: '',
+            startup_mode: 'normal',
+            edit_mode: 'none'
         },
         advanced: {
             stack_trace_errors: 0,

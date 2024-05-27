@@ -37,6 +37,18 @@ export class SystemInputLabel implements OnDestroy, ControlValueAccessor {
         }
     }
 
+    /**
+     * set to tru to just display the label and not the technical name
+     */
+    public _hideTechnicalName = false;
+    @Input('hideTechnicalName') set hideTechnicalName(value) {
+        if (value === false) {
+            this._hideTechnicalName = false;
+        } else {
+            this._hideTechnicalName = true;
+        }
+    }
+
     // for the value accessor
     public onChange: (value: string) => void;
     public onTouched: () => void;

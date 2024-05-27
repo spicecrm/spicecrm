@@ -4,7 +4,7 @@ namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
@@ -25,7 +25,8 @@ class SpiceUIFieldsetsController
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
-        $fieldsets = $db->query("SELECT sysuifieldsetsitems.*, sysuifieldsets.id fid, sysuifieldsets.module, sysuifieldsets.name, sysuifieldsets.package fieldsetpackage FROM sysuifieldsets LEFT JOIN sysuifieldsetsitems ON sysuifieldsetsitems.fieldset_id = sysuifieldsets.id ORDER BY fieldset_id, sequence");
+        $fieldsets = $db->query("SELECT sysuifieldsetsitems.*, sysuifieldsets.id fid, sysuifieldsets.module, sysuifieldsets.name,
+                                sysuifieldsets.package fieldsetpackage, sysuifieldsets.version fieldsetversion FROM sysuifieldsets LEFT JOIN sysuifieldsetsitems ON sysuifieldsetsitems.fieldset_id = sysuifieldsets.id ORDER BY fieldset_id, sequence");
         while ($fieldset = $db->fetchByAssoc($fieldsets)) {
 
             if (!isset($retArray[$fieldset['fid']])) {
@@ -33,6 +34,7 @@ class SpiceUIFieldsetsController
                     'id' => $fieldset['fid'],
                     'name' => $fieldset['name'],
                     'package' => $fieldset['fieldsetpackage'],
+                    'version' => $fieldset['fieldsetversion'],
                     'module' => $fieldset['module'] ?: '*',
                     'type' => 'global',
                     'items' => []
@@ -43,6 +45,7 @@ class SpiceUIFieldsetsController
                 $retArray[$fieldset['fid']]['items'][] = [
                     'id' => $fieldset['id'],
                     'package' => $fieldset['package'],
+                    'version' => $fieldset['version'],
                     'field' => $fieldset['field'],
                     'fieldconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
@@ -51,13 +54,16 @@ class SpiceUIFieldsetsController
                 $retArray[$fieldset['fid']]['items'][] = [
                     'id' => $fieldset['id'],
                     'package' => $fieldset['package'],
+                    'version' => $fieldset['version'],
                     'fieldset' => $fieldset['fieldset'],
                     'fieldconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
                 ];
         }
 
-        $fieldsets = $db->query("SELECT sysuicustomfieldsetsitems.*, sysuicustomfieldsets.id fid, sysuicustomfieldsets.module, sysuicustomfieldsets.name, sysuicustomfieldsets.package fieldsetpackage FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfieldsetsitems.fieldset_id = sysuicustomfieldsets.id ORDER BY fieldset_id, sequence");
+
+        $fieldsets = $db->query("SELECT sysuicustomfieldsetsitems.*, sysuicustomfieldsets.id fid, sysuicustomfieldsets.module, sysuicustomfieldsets.name, sysuicustomfieldsets.package fieldsetpackage, sysuicustomfieldsets.version fieldsetversion
+FROM sysuicustomfieldsets LEFT JOIN sysuicustomfieldsetsitems ON sysuicustomfieldsetsitems.fieldset_id = sysuicustomfieldsets.id ORDER BY fieldset_id, sequence");
         while ($fieldset = $db->fetchByAssoc($fieldsets)) {
 
             if (!isset($retArray[$fieldset['fid']])) {
@@ -65,6 +71,7 @@ class SpiceUIFieldsetsController
                     'id' => $fieldset['fid'],
                     'name' => $fieldset['name'],
                     'package' => $fieldset['fieldsetpackage'],
+                    'version' => $fieldset['fieldsetversion'],
                     'module' => $fieldset['module'] ?: '*',
                     'type' => 'custom',
                     'items' => []
@@ -75,6 +82,7 @@ class SpiceUIFieldsetsController
                 $retArray[$fieldset['fid']]['items'][] = [
                     'id' => $fieldset['id'],
                     'package' => $fieldset['package'],
+                    'version' => $fieldset['version'],
                     'field' => $fieldset['field'],
                     'fieldconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
@@ -83,6 +91,7 @@ class SpiceUIFieldsetsController
                 $retArray[$fieldset['fid']]['items'][] = [
                     'id' => $fieldset['id'],
                     'package' => $fieldset['package'],
+                    'version' => $fieldset['version'],
                     'fieldset' => $fieldset['fieldset'],
                     'fieldconfig' => json_decode(str_replace(["\r", "\n", "\t", "&#039;", "'"], ['', '', '', '"', '"'], html_entity_decode($fieldset['fieldconfig'])), true) ?: new stdClass(),
                     'sequence' => $fieldset['sequence']
@@ -134,7 +143,7 @@ class SpiceUIFieldsetsController
                 $dbData = [
                     'name' => $fieldsetData['name'],
                     'package' => $fieldsetData['package'],
-                    'version' => $_SESSION['confversion']
+                    'version' => $fieldsetData['version']
                 ];
 
                 $name = $fieldsetData['module'] . "/" . $fieldsetData['name'];
@@ -190,7 +199,7 @@ class SpiceUIFieldsetsController
             $existingItem['fieldconfig'] = json_decode($existingItem['fieldconfig']);
 
             // if we have the item and it has changed
-            if ($existingItemInPostData && SystemDeploymentCR::hasChanged($existingItem, $fieldsetItem, ['sequence', 'package', 'field', 'fieldset', 'fieldconfig'])) {
+            if ($existingItemInPostData && SystemDeploymentCR::hasChanged($existingItem, $fieldsetItem, ['sequence', 'package', 'version', 'field', 'fieldset', 'fieldconfig'])) {
 
                 $dbData = [
                     'field' => $fieldsetItem['field'],
@@ -198,7 +207,7 @@ class SpiceUIFieldsetsController
                     'sequence' => $fieldsetItem['sequence'],
                     'fieldconfig' => json_encode($fieldsetItem['fieldconfig']),
                     'package' => $fieldsetItem['package'],
-                    'version' => $_SESSION['confversion'],
+                    'version' => $fieldsetItem['version'],
                 ];
 
                 $name = $name . $fieldsetItem['field'];
@@ -240,7 +249,7 @@ class SpiceUIFieldsetsController
             'sequence' => $fieldsetItem['sequence'],
             'fieldconfig' => json_encode($fieldsetItem['fieldconfig']),
             'package' => $fieldsetItem['package'],
-            'version' => $_SESSION['confversion'],
+            'version' => $fieldsetData['version'],
         ];
 
         $itemName = $fieldsetItem['field'];
@@ -271,7 +280,7 @@ class SpiceUIFieldsetsController
             'module' => $fieldsetData['module'],
             'name' => $fieldsetData['name'],
             'package' => $fieldsetData['package'],
-            'version' => $_SESSION['confversion'],
+            'version' => $fieldsetData['version'],
         ];
 
         $name = $fieldsetData['module'] . "/" . $fieldsetData['name'];

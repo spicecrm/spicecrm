@@ -10,7 +10,7 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 @Component({
-    selector: 'language-label-manager',
+    selector: 'config-cleaner',
     templateUrl: '../templates/configcleaner.html',
 })
 export class ConfigCleaner

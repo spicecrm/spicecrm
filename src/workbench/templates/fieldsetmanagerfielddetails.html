@@ -23,6 +23,15 @@
                [(ngModel)]="currentField.package"/>
     </div>
 </div>
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label">
+        <system-label label="LBL_VERSION"></system-label>
+    </label>
+    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="version"
+               [(ngModel)]="currentField.version"/>
+    </div>
+</div>
 <div class="slds-form-element slds-m-vertical--xx-small">
     <label class="slds-form-element__label">
         <system-label label="LBL_LABEL"></system-label>

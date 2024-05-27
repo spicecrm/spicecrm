@@ -33,6 +33,8 @@ export class DashboardGenericDashletRow implements OnInit {
         this.model.setData(this.data);
 
         this.fieldsetfields = this.metadata.getFieldSetFields(this.fieldset);
+        this.model.evaluateValidationRules(null, 'initialize');
+        this.model.initializeFieldsAlertStyles(this.data);
     }
 
     public trackByFn(index, item) {

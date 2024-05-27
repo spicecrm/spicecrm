@@ -3,65 +3,44 @@
     </workbench-header-controls>
 </workbench-header>
 <div [system-overlay-loading-spinner]="isLoading" class="slds-grid" system-to-bottom-noscroll>
-    <div class="slds-size--1-of-5 slds-scrollable--y slds-tabs_default__content slds-p-around--none slds-border--right">
-        <!--        <system-tree [customButtonsContainer]="customButtonsContainer" [sourceList]="roles"-->
-        <!--                     [config]="{collapsible: false}"-->
-        <!--                     [(selectedItem)]="selectedRoleId"-->
-        <!--                     (selectedItemChange)="handleSelectedItemChange($event)"></system-tree>-->
-        <!--        <ng-template #customButtonsContainer let-itemId>-->
-        <!--            <button (click)="editRole(itemId)" class="slds-button slds-button&#45;&#45;icon-border">-->
-        <!--                <system-button-icon icon="edit" size="small"></system-button-icon>-->
-        <!--            </button>-->
-        <!--            <button (click)="deleteRole(itemId)"-->
-        <!--                    class="slds-button slds-button&#45;&#45;icon-border slds-m-right&#45;&#45;xx-small">-->
-        <!--                <system-button-icon icon="delete" size="small"></system-button-icon>-->
-        <!--            </button>-->
-        <!--        </ng-template>-->
+    <div class="slds-size--1-of-5 slds-scrollable--y slds-theme--shade slds-tabs_default__content slds-p-around--none slds-border--right">
         <ul class="slds-has-dividers_around-space slds-p-around--x-small">
-            <li *ngFor="let role of roles" class="slds-grid slds-grid--align-spread slds-item">
-                <system-utility-icon size="x-small" class="slds-p-around--xx-small"
-                                     [icon]="role.scope == 'global' ? 'world' : 'people'"></system-utility-icon>
-                <a href="javascript:void(0);" class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small"
-                   (click)="handleSelectedItemChange(role.id)">{{role.name}}</a>
+            @for(role of roles; track role.id){
+            <li class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-theme--default slds-item" [ngClass]="{'slds-theme--inverse': role.id == selectedRoleId}">
+                <system-utility-icon size="x-small" class="slds-p-around--xx-small" [icon]="role.scope == 'global' ? 'world' : 'people'"></system-utility-icon>
+                <div class="slds-truncate" [title]="role.name">
+                    <a href="javascript:void(0);" class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small" (click)="handleSelectedItemChange(role.id)">{{ role.name }}</a>
+                </div>
                 <div class="slds-button slds-button--icon slds-col_bump-left">
-                <button (click)="editRole(role.id)" class="slds-button slds-button--icon">
-                    <system-button-icon icon="edit" size="small"></system-button-icon>
-                </button>
-                <button (click)="deleteRole(role.id)"
-                        class="slds-button slds-button--icon">
-                    <system-button-icon icon="delete" size="small"></system-button-icon>
-                </button>
+                    <button (click)="editRole(role.id)" class="slds-button slds-button--icon">
+                        <system-button-icon icon="edit" size="small"></system-button-icon>
+                    </button>
+                    <button (click)="deleteRole(role.id)"
+                            class="slds-button slds-button--icon">
+                        <system-button-icon icon="delete" size="small"></system-button-icon>
+                    </button>
                 </div>
             </li>
+            }
         </ul>
-        <div class="slds-align--absolute-center slds-border--top slds-p-around--small"
-             style="position: sticky; bottom: 0;">
-            <button  class="slds-align--absolute-center slds-button slds-button--icon slds-button--icon-border" style="border-radius: 50%;" (click)="addRole()">
-                <system-button-icon icon="add" size="medium"></system-button-icon>
+        <div class="slds-align--absolute-center slds-theme--shade slds-border--top slds-p-around--small" style="position: sticky; bottom: 0;">
+            <button  class="slds-align--absolute-center slds-button slds-button--icon" (click)="addRole()">
+                <system-button-icon icon="new" size="medium"></system-button-icon>
             </button>
         </div>
     </div>
-    <div class="slds-size--4-of-5 slds-scrollable--y ">
+    <div class="slds-size--4-of-5 slds-scrollable--y slds-theme--shade">
         <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout slds-text-align_center">
             <thead>
             <tr class="slds-line-height_reset">
                 <th class="slds-text-align_left" style="width:8rem" scope="col">
                     <div class="slds-truncate"></div>
                 </th>
-                <!--                <th class="" scope="col">-->
-                <!--                    <div class="slds-truncate">id</div>-->
-                <!--                </th>-->
-                <!--                <th class="" scope="col">-->
-                <!--                    <div class="slds-truncate">sysuirole_id</div>-->
-                <!--                </th>-->
                 <th class="slds-text-align_left" scope="col">
                     <div class="slds-truncate">
                         <system-label label="LBL_MODULE"></system-label>
                     </div>
                 </th>
-                <!--                <th class="" scope="col">-->
-                <!--                    <div class="slds-truncate">sequence</div>-->
-                <!--                </th>-->
                 <th class="slds-text-align_left" scope="col">
                     <div class="slds-truncate">
                         <system-label label="LBL_VERSION"></system-label>
@@ -72,93 +51,55 @@
                         <system-label label="LBL_PACKAGE"></system-label>
                     </div>
                 </th>
-                <th class="slds-cell_action-mode" scope="col">
-
-                </th>
+                <th class="slds-cell_action-mode" scope="col"></th>
             </tr>
             </thead>
             <tbody class="dragboundary" cdkDropList [cdkDropListData]="roleModules" (cdkDropListDropped)="drop($event)">
-
-            <tr  #viewProvider="system-view-provider" *ngFor="let roleModule of roleModules; let index = index"
-                [system-view-provider]="{editable: true}" class="slds-hint-parent" cdkDrag
-                cdkDragBoundary=".dragboundary">
-                <td class="slds-text-align_left" style="width:8rem">
-                    <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'"
-                                         style="cursor:move"></system-utility-icon>
-                    <system-utility-icon style="width:4.25rem" *ngIf="viewProvider.view.mode != 'edit' || !!roleModule.id" size="x-small"
-                                         [icon]="roleModule.scope == 'global' ? 'world' : 'people'"></system-utility-icon>
-                    <span class="slds-form-element__control">
-                        <system-input-radio-button-group *ngIf="viewProvider.view.mode == 'edit' && !roleModule.id"
-                                                         [disabled]=" !editableRoleScope" [(ngModel)]="roleModule.scope"
-                                                         [inputOptions]="[{icon: 'people', value: 'custom'}, {icon: 'world', value: 'global'}]"></system-input-radio-button-group>
-                    </span>
-                </td>
-
-                <!--                <td>-->
-                <!--                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.id}}</div>-->
-                <!--                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" type="text"-->
-                <!--                           [ngModel]="roleModule.id" [disabled]="true">-->
-                <!--                </td>-->
-                <!--                <td>-->
-                <!--                    <div *ngIf="viewProvider.view.mode != 'edit'"-->
-                <!--                         class="slds-truncate">{{roleModule.sysuirole_id}}</div>-->
-                <!--                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" type="text"-->
-                <!--                           [ngModel]="roleModule.sysuirole_id" [disabled]="true">-->
-                <!--                </td>-->
-                <td class="slds-text-align_left" >
-                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.module}}</div>
-                    <system-input-module *ngIf="viewProvider.view.mode == 'edit'" [filterModules]="filterModules"
-                                         [(ngModel)]="roleModule.module"></system-input-module>
-
-                </td>
-                <!--                <td>-->
-                <!--                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.sequence}}</div>-->
-                <!--                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'"-->
-                <!--                           [(ngModel)]="roleModule.sequence">-->
-                <!--                </td>-->
-                <td class="slds-text-align_left">
-                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.version}}</div>
-                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.version">
-                </td>
-                <td class="slds-text-align_left">
-                    <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{roleModule.package}}</div>
-                    <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.package">
-                </td>
-                <td class="slds-text-align_center">
-                    <div class="slds-truncate slds-cell_action-mode">
-                        <div *ngIf="viewProvider.view.mode != 'edit'" role="group"
-                             class="slds-button slds-float--right ng-star-inserted">
-                            <!--                            <button (click)="startEditing(viewProvider, roleModule)"-->
-                            <!--                                    class="slds-button slds-button&#45;&#45;icon-border">-->
-                            <!--                                <system-button-icon icon="edit" size="small"></system-button-icon>-->
-                            <!--                                &lt;!&ndash;<system-utility-icon  [icon]="roleModule.scope == 'global' ? 'world' : 'people'" size="xx-small"></system-button-icon>-->
-                            <!--&ndash;&gt;-->
-                            <!--                            </button>-->
-                            <button (click)="deleteRoleModule(roleModule,viewProvider)"
-                                    class="slds-button slds-button--icon slds-p-around--xx-small">
-                                <system-button-icon icon="delete" size="small"></system-button-icon>
-                            </button>
+                @for(roleModule of roleModules; track roleModule.id; let index = $index){
+                <tr #viewProvider="system-view-provider" [system-view-provider]="{editable: true}" class="slds-hint-parent" cdkDrag cdkDragBoundary=".dragboundary">
+                    <td class="slds-text-align_left" style="width:8rem">
+                        <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                        <system-utility-icon style="width:4.25rem" *ngIf="viewProvider.view.mode != 'edit' || !!roleModule.id" size="x-small" [icon]="roleModule.scope == 'global' ? 'world' : 'people'"></system-utility-icon>
+                        <span class="slds-form-element__control">
+                                <system-input-radio-button-group *ngIf="viewProvider.view.mode == 'edit' && !roleModule.id" [disabled]=" !editableRoleScope" [(ngModel)]="roleModule.scope" [inputOptions]="[{icon: 'people', value: 'custom'}, {icon: 'world', value: 'global'}]"></system-input-radio-button-group>
+                        </span>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.module }}</div>
+                        <system-input-module *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.module"></system-input-module>
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.version }}</div>
+                        <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.version">
+                    </td>
+                    <td class="slds-text-align_left">
+                        <div *ngIf="viewProvider.view.mode != 'edit'" class="slds-truncate">{{ roleModule.package }}</div>
+                        <input class="slds-input" *ngIf="viewProvider.view.mode == 'edit'" [(ngModel)]="roleModule.package">
+                    </td>
+                    <td class="slds-text-align_center">
+                        <div class="slds-truncate slds-cell_action-mode">
+                            <div *ngIf="viewProvider.view.mode != 'edit'" role="group" class="slds-button slds-float--right ng-star-inserted">
+                                <button (click)="deleteRoleModule(roleModule,viewProvider)" class="slds-button slds-button--icon slds-p-around--xx-small">
+                                    <system-button-icon icon="delete" size="small"></system-button-icon>
+                                </button>
+                            </div>
+                            <div *ngIf="viewProvider.view.mode == 'edit'" role="group" class="slds-button slds-float--right ng-star-inserted">
+                                <button (click)="cancelEditing(viewProvider, index)" class="slds-button slds-button--icon-border">
+                                    <system-button-icon icon="close" size="small"></system-button-icon>
+                                </button>
+                                <button (click)="saveRoleModule(roleModule, viewProvider)" class="slds-button slds-button--icon-border">
+                                    <system-button-icon icon="check" size="small"></system-button-icon>
+                                </button>
+                            </div>
                         </div>
-                        <div *ngIf="viewProvider.view.mode == 'edit'" role="group"
-                             class="slds-button slds-float--right ng-star-inserted">
-                            <button (click)="cancelEditing(viewProvider, index)"
-                                    class="slds-button slds-button--icon-border">
-                                <system-button-icon icon="close" size="small"></system-button-icon>
-                            </button>
-                            <button (click)="saveRoleModule(roleModule, viewProvider)"
-                                    class="slds-button slds-button--icon-border">
-                                <system-button-icon icon="check" size="small"></system-button-icon>
-                            </button>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+                    </td>
+                </tr>
+                }
             </tbody>
         </table>
-        <div class="slds-align--absolute-center slds-border--top slds-p-around--small"
-             style="position: sticky; bottom: 0;">
-            <button  class="slds-align--absolute-center slds-button slds-button--icon slds-button--icon-border" style="border-radius: 50%;" (click)="addRoleModule()">
-                <system-button-icon icon="add" size="medium"></system-button-icon>
+        <div class="slds-align--absolute-center slds-border--top slds-p-around--small slds-theme--shade" style="position: sticky; bottom: 0;">
+            <button  class="slds-align--absolute-center slds-button slds-button--icon" (click)="addRoleModule()">
+                <system-button-icon icon="new" size="medium"></system-button-icon>
             </button>
         </div>
     </div>

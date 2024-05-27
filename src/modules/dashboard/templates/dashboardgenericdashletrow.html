@@ -1,5 +1,5 @@
 <ng-container *ngFor="let field of fieldsetfields; trackBy: trackByFn">
-    <td style="min-width: 8rem" [attr.data-label]="language.getFieldDisplayName(module, field.field)">
+    <td style="min-width: 8rem; display: table-cell;" [attr.data-label]="language.getFieldDisplayName(module, field.field)" [ngClass]="model.alert" >
         <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
     </td>
 </ng-container>

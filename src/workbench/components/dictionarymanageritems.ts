@@ -2,11 +2,10 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, Injector, ViewChild
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
-import {broadcast} from '../../services/broadcast.service';
 import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -14,6 +13,7 @@ import {language} from '../../services/language.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
+import {DictionaryManagerItemStatus} from "./dictionarymanageritemstatus";
 
 
 @Component({
@@ -22,13 +22,29 @@ import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 })
 export class DictionaryManagerItems {
 
+
     /**
      * the current dictionaryitem
      */
     public dictionaryitem: DictionaryItem;
 
+    /**
+     * boolean if the details panel is expanded
+     */
+    public detailsExpanded: boolean = false;
 
-    constructor(public dictionarymanager: dictionarymanager, public metadata: metadata, public language: language, public modal: modal, public injector: Injector, public modelutilities: modelutilities) {
+    /**
+     * a term to filter by
+     */
+    public filterterm: string;
+
+    constructor(public dictionarymanager: dictionarymanager,
+                public backend: backend,
+                public metadata: metadata,
+                public language: language,
+                public modal: modal,
+                public injector: Injector,
+                public modelutilities: modelutilities) {
 
     }
 
@@ -40,19 +56,61 @@ export class DictionaryManagerItems {
      * gets all non deleted entries sorted by name
      */
     get dictionaryitems() {
-
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        return this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+        return this.dictionarymanager.dictionaryitems.filter(d => (d.id == this.dictionarymanager.currentDictionaryItem || !this.filterterm || d.name.toLowerCase().indexOf(this.filterterm.toLowerCase()) >= 0) && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+    }
+
+    public getTemplateItems(refId){
+        if(!refId) return [];
+        return this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == refId).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+    }
+
+    get itemsliststyle() {
+        let height = this.detailsExpanded ? 458 : 79;
+        return {
+            height: `calc(100% - ${height}px`
+        }
+    }
+
+    /**
+     * returns the status of the current definiton
+     *
+     * we can only activate when the definition is active as well
+     */
+    get definitionStatus(){
+        return this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).status;
     }
 
     /**
      * react to the click to add a new dictionary definition
      */
-    public addDictionaryItem(event: MouseEvent) {
-        event.stopPropagation();
+    public addDictionaryItem() {
         this.modal.openModal('DictionaryManagerAddItemModal', true, this.injector);
+    }
+
+    /**
+     * open the clone modal
+     */
+    public cloneDefinition(){
+        this.modal.openModal('DictionaryManagerCloneDefinitionModal', true, this.injector);
+    }
+
+    /**
+     * edits the dictionary item
+     *
+     * @param event
+     * @param id
+     */
+    public editDictionaryItem(item: DictionaryItem) {
+
+        this.modal.openModal('DictionaryManagerItemDetails', true, this.injector).subscribe({
+            next: (modalRef) => {
+                modalRef.instance.dictionaryitem = item;
+            }
+        })
+
     }
 
     /**
@@ -61,18 +119,25 @@ export class DictionaryManagerItems {
      * @param event
      * @param id
      */
-    public deleteDictionaryItem(event: MouseEvent, id: string) {
-        event.stopPropagation();
-        this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
-            if (answer) {
-                let di = this.dictionarymanager.dictionaryitems.find(f => f.id == id).deleted = 1;
-                if (this.dictionarymanager.currentDictionaryDefinition == id) {
-                    this.dictionarymanager.currentDictionaryDefinition == null;
-                }
+    public deleteDictionaryItem(id: string) {
+        this.dictionarymanager.promptDelete('MSG_DELETE_DICTIONARYITEM').subscribe({
+            next: (value) => {
+                let params: any = {};
+                if(value == 'drop') params.drop = 1;
+                let delteModal = this.modal.await('LBL_DELETING');
+                this.backend.deleteRequest(`dictionary/item/${id}`, params).subscribe({
+                    next: () => {
+                        let di = this.dictionarymanager.dictionaryitems.findIndex(f => f.id == id);
+                        this.dictionarymanager.dictionaryitems.splice(di, 1);
+                        delteModal.emit(true);
+                    },
+                    error: () => {
+                        delteModal.emit(true);
+                    }
+                })
             }
-        });
+        })
     }
-
 
     /**
      * handles the drop event and resets the sequence fiels
@@ -81,15 +146,44 @@ export class DictionaryManagerItems {
     public drop(event) {
         // get the values and reshuffle
         let values = this.dictionaryitems;
-        let previousItem = values.splice(event.previousIndex, 1);
-        values.splice(event.currentIndex, 0, previousItem[0]);
+        let prevIndex = this.getSanitizedItemIndex(event.previousIndex);
+        let curIndex = this.getSanitizedItemIndex(event.currentIndex);
+        let previousItem = values.splice(prevIndex, 1);
+        values.splice(curIndex, 0, previousItem[0]);
 
-        // reindex the array resetting the sequence
-        let i = 0;
-        for (let item of values) {
-            item.sequence = i;
-            i++;
+        let savingModal = this.modal.await('LBL_SAVING');
+        this.backend.postRequest('dictionary/items/sequence', {}, {items: values.map(v => v.id)}).subscribe({
+            next: () => {
+                // reindex the array resetting the sequence
+                let i = 0;
+                for (let item of values) {
+                    item.sequence = i;
+                    i++;
+                }
+                savingModal.emit(true);
+            },
+            error: () => {
+                savingModal.emit(true);
+            }
+        })
+    }
+
+    /**
+     * determine a sanitzioed index when draging and dropping items. This resolves subitems if theera re as discplayed based on the
+     * ref and returns the proper index of the element id for the complete group
+     *
+     * @param itemIndex
+     * @private
+     */
+    private getSanitizedItemIndex(itemIndex){
+        let finalItems = [];
+        for(let item of this.dictionaryitems){
+            finalItems.push(item.id);
+            for(let refItem of this.getTemplateItems(item.sysdictionary_ref_id)){
+                finalItems.push(item.id);
+            }
         }
+        return this.dictionaryitems.findIndex(i => i.id == finalItems[itemIndex]);
     }
 
     /**
@@ -105,21 +199,65 @@ export class DictionaryManagerItems {
     /**
      * returns if there are any items thar are in status 'd'
      */
-    get hasDraftItems(){
+    get hasDraftItems() {
         return this.dictionaryitems.filter(d => d.status == 'd').length > 0;
     }
 
     /**
      * activate All
      */
-    public activateAll(e: MouseEvent){
+    public activateAll(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        this.modal.confirm('MSG_ACTIVATE_ALL','MSG_ACTIVATE_ALL').subscribe({
+        this.modal.confirm('MSG_ACTIVATE_ALL', 'MSG_ACTIVATE_ALL').subscribe({
             next: (res) => {
-                if(res) this.dictionaryitems.filter(d => d.status == 'd').forEach(d => d.status = 'a');
+                if (res) this.dictionaryitems.filter(d => d.status == 'd').forEach(d => d.status = 'a');
             }
         })
     }
+
+    /**
+     * sets the status and write the cahced entries ont eh backend
+     *
+     * @param item
+     * @param status
+     * @param statusComponent
+     */
+    public setStatus(item, status, statusComponent: DictionaryManagerItemStatus) {
+        let loadingModal;
+        switch (status) {
+            case 'a':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.postRequest(`dictionary/item/${item.id}/activate`).subscribe({
+                    next: () => {
+                        this.dictionarymanager.handleAfterActivate();
+                        item.status = status;
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        this.modal.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                        statusComponent.status = item.status;
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            case 'i':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.deleteRequest(`dictionary/item/${item.id}/activate`).subscribe({
+                    next: () => {
+                        this.dictionarymanager.handleAfterActivate();
+                        item.status = status;
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            default:
+                item.status = status;
+        }
+    }
+
 
 }

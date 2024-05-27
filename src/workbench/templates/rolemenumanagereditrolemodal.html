@@ -4,20 +4,23 @@
     </system-modal-header>
     <system-modal-content>
         <div class="slds-height_full">
-            <div class="slds-form-element__control">
-                <label class="slds-form-element__label">
-                    <system-label label="LBL_SCOPE"></system-label>
-                </label>
-                <system-input-radio-button-group [(ngModel)]="newRole.scope" [inputOptions]="radioOptions"
-                                                 [disabled]="!!newRole.id"></system-input-radio-button-group>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <div class="slds-form-element__control">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_SCOPE"></system-label>
+                    </label>
+                    <system-input-radio-button-group [(ngModel)]="newRole.scope" [inputOptions]="radioOptions" [disabled]="!!newRole.id"></system-input-radio-button-group>
+                </div>
+                <div class="slds-form-element__control slds-grid slds-grid--vertical-align-center">
+                    <label class="slds-form-element__label"><system-label label="LBL_APPLICABLE_SCOPE"></system-label></label>
+                    <div class="slds-grid">
+                        <system-input-radio [name]="'aclprofilescope'+newRole.id" value="a" [(ngModel)]="newRole.rolescope"><system-label label="LBL_ALL"/></system-input-radio>
+                        <system-input-radio [name]="'aclprofilescope'+newRole.id" value="i" [(ngModel)]="newRole.rolescope"><system-label label="LBL_INTERNAL_ONLY"/></system-input-radio>
+                        <system-input-radio [name]="'aclprofilescope'+newRole.id" value="e" [(ngModel)]="newRole.rolescope"><system-label label="LBL_EXTERNAL_ONLY"/></system-input-radio>
+                    </div>
+                </div>
             </div>
             <div class="slds-grid">
-                <!--            <div class="slds-form-element__control slds-size&#45;&#45;1-of-4 slds-p-right&#45;&#45;xxx-small">-->
-                <!--                <label class="slds-form-element__label">-->
-                <!--                    <system-label label="LBL_ID"></system-label>-->
-                <!--                </label>-->
-                <!--                <system-input-text [(ngModel)]="newRole.id" [disabled]="true"></system-input-text>-->
-                <!--            </div>-->
                 <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                     <label class="slds-form-element__label"><abbr class="slds-required">* </abbr>
                         <system-label label="LBL_NAME"></system-label>
@@ -96,10 +99,7 @@
                 <label class="slds-form-element__label">
                     <system-label label="LBL_DESCRIPTION"></system-label>
                 </label>
-                <textarea
-                        class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid"
-                        [(ngModel)]="newRole.description"
-                        style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
+                <textarea class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small ng-untouched ng-pristine ng-valid" [(ngModel)]="newRole.description" style="min-height: 80px; max-height: 300px; height: 80px;"></textarea>
             </div>
         </div>
     </system-modal-content>

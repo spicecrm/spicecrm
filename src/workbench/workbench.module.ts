@@ -30,14 +30,19 @@ import {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerre
 import {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
 import {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
 import {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
+import {DictionaryManagerRelationshipAddOneToManyPolymorph} from "./components/dictionarymanagerrelationshipaddonetomanypolymorph";
+import {DictionaryManagerRelationshipContainerOneToManyPolymorph} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorph";
+import {DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated} from "./components/dictionarymanagerrelationshipcontaineronetomanypolymorphaddrelated";
 import {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
 import {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
 import {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
 import {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
 import {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
+import {DictionaryManagerIndexAddType} from "./components/dictionarymanagerindexaddtype";
 import {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
 import {DictionaryManagerFields} from "./components/dictionarymanagerfields";
-
+import {DictionaryManagerDeleteFieldsModal} from "./components/dictionarymanagerdeletefieldsmodal";
+import {DictionaryManagerDeleteModal} from "./components/dictionarymanagerdeletemodal";
 
 import {DomainManager} from "./components/domainmanager";
 import {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
@@ -77,6 +82,7 @@ import {LanguageTranslationsManager} from "./components/languagetranslationsmana
 import {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import {LanguageLabelModal} from "./components/languagelabelmodal";
 import {MailboxesManager} from "./components/mailboxesmanager";
+import {MailboxesManagerList} from "./components/mailboxesmanagerlist"
 import {MailboxesTransportsEnum} from "./components/mailboxestransportsenum";
 import {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
 import {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
@@ -146,11 +152,22 @@ import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
 import {GitPullFromRepository} from "./components/gitpullfromrepository";
 import {GitStatusOfRepository} from "./components/gitstatusofrepository";
+import {DictionaryManagerRepairAll} from "./components/dictionarymanagerrepairall";
+import {DictionaryManagerRelationshipAddEmailAddress} from "./components/dictionarymanagerrelationshipaddemailaddress";
+import {DictionaryManagerRelationshipContainerEmailAddress} from "./components/dictionarymanagerrelationshipcontaineremailaddress";
+import {DictionaryManagerCloneDefinitionModal} from "./components/dictionarymanagerclonedefinitionmodal";
 import {HooksManager} from "./components/hooksmanager";
 import {HooksManagerHooks} from "./components/hooksmanagerhooks";
 import {HooksManagerHooksEditModal} from "./components/hooksmanagerhookseditmodal";
 import {WebHooksManager} from "./components/webhooksmanager";
 import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
+import {DictionaryFilterRelationshipPipe} from "./pipes/dictionarymanagerfilterrelationship.pipe";
+import {
+    DictionaryFilterRelationshipTemplatePipe
+} from "./pipes/dictionarymanagerfilterrelationshiptemplate.pipe";
+import {DictionaryManagerRelationshipAddUser} from "./components/dictionarymanagerrelationshipadduser";
+import {DictionaryManagerRelationshipContainerUser} from "./components/dictionarymanagerrelationshipcontaineruser";
+import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionarymanagerfixdbfieldsmismatchmodal";
 
 
 
@@ -188,6 +205,7 @@ import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
         DictionaryManagerItemDetails,
         DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
+        DictionaryManagerCloneDefinitionModal,
         DictionaryManagerMigrateDefinitionModal,
         DictionaryManagerEditDefinitionModal,
         DictionaryManagerAddItemModal,
@@ -195,15 +213,24 @@ import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
         DictionaryManagerRelationshipsDetails,
         DictionaryManagerRelationshipAdd,
         DictionaryManagerRelationshipAddOneToMany,
+        DictionaryManagerRelationshipAddOneToManyPolymorph,
+        DictionaryManagerRelationshipContainerOneToManyPolymorph,
+        DictionaryManagerRelationshipContainerOneToManyPolymorphAddRelated,
         DictionaryManagerRelationshipContainerOneToMany,
         DictionaryManagerRelationshipAddManyToMany,
+        DictionaryManagerRelationshipAddEmailAddress,
+        DictionaryManagerRelationshipContainerEmailAddress,
         DictionaryManagerRelationshipContainerManyToMany,
         DictionaryManagerRelationshipAddParent,
         DictionaryManagerRelationshipContainerParent,
         DictionaryManagerIndexes,
         DictionaryManagerIndexAdd,
+        DictionaryManagerIndexAddType,
         DictionaryManagerIndexDetails,
         DictionaryManagerFields,
+        DictionaryManagerDeleteFieldsModal,
+        DictionaryManagerDeleteModal,
+        DictionaryManagerRepairAll,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
@@ -237,6 +264,7 @@ import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
         LanguageLabelManagerComponent,
         LanguageLabelModal,
         MailboxesManager,
+        MailboxesManagerList,
         MailboxesTransportsEnum,
         LanguageLabelModal,
         MailboxManagerAddDialog,
@@ -294,10 +322,16 @@ import {WebHooksManagerEditModal} from "./components/webhooksmanagereditmodal";
         HooksManagerHooksEditModal,
         WebHooksManager,
         WebHooksManagerEditModal,
+        DictionaryFilterRelationshipPipe,
+        DictionaryFilterRelationshipTemplatePipe,
+        DictionaryManagerRelationshipAddUser,
+        DictionaryManagerRelationshipContainerUser,
+        DictionaryManagerFixDBFieldsMismatchModal
     ],
     exports: [
         SortPipe,
         WorkbenchConfigLabel,
+        DictionaryManager,
     ]
 })
 export class WorkbenchModule {}

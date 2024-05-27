@@ -8,6 +8,9 @@ import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
+import {modal} from "../../services/modal.service";
+import {PackageLoaderReloadLoadedModal} from "./packageloaderreloadloadedmodal";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 /**
  * @ignore
@@ -36,7 +39,8 @@ export class PackageLoader {
         public language: language,
         public backend: backend,
         public toast: toast,
-        public metadata: metadata
+        public metadata: metadata,
+        private modal: modal
     ) {
 
         this.backend.getRequest('configuration/packages/repositories').subscribe(
@@ -56,6 +60,13 @@ export class PackageLoader {
                 this.loading = false;
             },
         );
+    }
+
+    /**
+     * system package visible flag
+     */
+    get systemPackageVisible() {
+        return this.metadata.configuration.getCapabilityConfig('adminpackages')?.system_package_visible;
     }
 
 
@@ -128,5 +139,38 @@ export class PackageLoader {
         this.loadpackages();
     }
 
+    /**
+     * reload loaded packages
+     */
+    public reloadLoadedPackages() {
 
+        this.modal.openStaticModal(PackageLoaderReloadLoadedModal).subscribe(ref => {
+            ref.instance.packages = this.packages.filter(p => p.installed && p.type != 'content').map(p => ({...p})).sort((a, b) => a.package == 'core' ? -1 : a.package.localeCompare(b.package));
+            ref.instance.repositoryAddUrl = this.repositoryaddurl;
+        });
+    }
+
+    /**
+     * reload system package
+     */
+    public reloadSystemPackage() {
+        this.modal.confirm('MSG_RELOAD_SYSTEM_PACKAGE', 'MSG_RELOAD_SYSTEM_PACKAGE').subscribe(answer => {
+
+            if (!answer) return;
+
+            const loading = this.modal.await('LBL_LOADING')
+            this.backend.getRequest('configuration/package/system').subscribe({
+                next: () => {
+                    loading.next(true);
+                    loading.complete();
+                    this.toast.sendToast('LBL_DATA_RELOADED', 'success');
+                },
+                error: () => {
+                    loading.next(true);
+                    loading.complete();
+                    this.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
+                }
+            });
+        });
+    }
 }

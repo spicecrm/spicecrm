@@ -1,0 +1,4 @@
+<div *ngIf="!hidden">
+    <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+    <system-checkbox [(ngModel)]="sendReadReceipt" (ngModelChange)="setReadReceipt($event)"></system-checkbox>
+</div>

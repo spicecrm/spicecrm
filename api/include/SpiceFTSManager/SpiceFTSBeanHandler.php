@@ -104,6 +104,45 @@ class SpiceFTSBeanHandler
         }
         return $sortfields;
     }
+    /**
+     * returns the aggregate metrics defined for the bean
+     */
+    function getMetrics()
+    {
+        $metricfields = [];
+        foreach ($this->indexProperties as $indexProperty) {
+            $details = SpiceFTSUtils::getDetailsForField($indexProperty['path']);
+            if (isset($indexProperty['aggregatemetricavg']) && (!empty($details['field']) || !empty($details['module']))) {
+                $metricfields[] = [
+                    'function' => 'avg',
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+            if (isset($indexProperty['aggregatemetricsum']) && (!empty($details['field']) || !empty($details['module']))) {
+                $metricfields[] = [
+                    'function' => 'sum',
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+            if (isset($indexProperty['aggregatemetricmax']) && (!empty($details['field']) || !empty($details['module']))) {
+                $metricfields[] = [
+                    'function' => 'max',
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+            if (isset($indexProperty['aggregatemetricmin']) && (!empty($details['field']) || !empty($details['module']))) {
+                $metricfields[] = [
+                    'function' => 'min',
+                    'field' => $details['field'],
+                    'module' => $details['module'],
+                ];
+            }
+        }
+        return $metricfields;
+    }
 
     /**
      * called to normalize the bean
@@ -597,6 +636,13 @@ class SpiceFTSBeanHandler
 
             // force date format for date fields
             if ($properties[$indexFieldName]['fields']['raw']['type'] == 'date') $properties[$indexFieldName]['fields']['raw']['format'] = "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis";
+
+        # workaround to Ignore put mapping the raw value for the html analyzer to prevent illegal utf8 characters in the raw value
+        } else if ($indexProperty['analyzer'] != 'spice_html') {
+            $properties[$indexFieldName]['fields']['raw'] = [
+                'type' => 'keyword',
+                'index' => true
+            ];
         }
 
 

@@ -2,10 +2,12 @@
  * @module WorkbenchModule
  */
 import {
-    Component
+    Component, EventEmitter, Output
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
+import {backend} from '../../services/backend.service';
 import {domainmanager} from '../services/domainmanager.service';
+import {DomainValidation} from "../interfaces/domainmanager.interfaces";
 
 /**
  * a modal window to add a new validation to a domain field
@@ -23,12 +25,21 @@ export class DomainManagerAddValidation {
     /**
      *  an empty validation record
      */
-    public fieldvalidation: any = {
-        scope: 'c'
-    };
+    public fieldvalidation: DomainValidation ;
 
-    constructor(public domainmanager: domainmanager, public modelutilities: modelutilities) {
+    @Output() public validation: EventEmitter<string> = new EventEmitter<string>();
 
+
+    constructor(public domainmanager: domainmanager, public backend: backend, public modelutilities: modelutilities) {
+        this.fieldvalidation = {
+            name: "",
+            order_by: undefined,
+            sort_flag: undefined,
+            status: 'a',
+            validation_type: "enum",
+            scope: 'c',
+            id: this.modelutilities.generateGuid()
+        }
     }
 
     /**
@@ -45,10 +56,13 @@ export class DomainManagerAddValidation {
      * adds the validation, selects it and closes the modal
      */
     public add() {
-        this.fieldvalidation.id = this.modelutilities.generateGuid();
-        this.fieldvalidation.status = 'a';
-        this.domainmanager.domainfieldvalidations.push(this.fieldvalidation);
-        this.selectValidation(this.fieldvalidation.id);
+        this.backend.postRequest(`dictionary/domainvalidation/${this.fieldvalidation.id}`, {}, this.fieldvalidation).subscribe({
+            next: (res) => {
+                this.domainmanager.domainfieldvalidations.push(this.fieldvalidation);
+                this.validation.emit(this.fieldvalidation.id);
+                this.close();
+            }
+        })
     }
 
     /**

@@ -21,6 +21,7 @@ export class ValidationRulesActions implements OnInit {
         'set_value_from_field',
         'set_value_from_user',
         'set_model_state',
+        'set_model_alert',
         'set_stati',
         'set_message',
         'error',
@@ -29,6 +30,7 @@ export class ValidationRulesActions implements OnInit {
         'hide',
         'show',
         'require',
+        'readonly'
     ];
     fieldname_options: any[] = [];
 

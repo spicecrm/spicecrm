@@ -57,6 +57,13 @@ export class ObjectPageHeaderTags {
     }
 
     /**
+     * check if the user can edit (so the mode is not in edit mode and the user has edit rights
+     */
+    get canEdit(){
+        return this.model.checkAccess('edit') && !this.model.isEditing;
+    }
+
+    /**
      * switch to editing mode
      */
     public editTags() {

@@ -13,8 +13,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let table of _tables">
-                        <td><system-input-radio name="migratedid" [value]="table.sysdictionarytablename" [(ngModel)]="selectedtable"></system-input-radio></td>
+                    <tr *ngFor="let table of _tables" (dblclick)="goDetails()" (click)="selectedtable = table.sysdictionarytablename">
+                        <td><system-input-radio name="migratedid" [value]="table.sysdictionarytablename" [ngModel]="selectedtable"></system-input-radio></td>
                         <td><div class="slds-truncate">{{table.sysdictionaryname}}</div></td>
                         <td><div class="slds-truncate">{{table.sysdictionarytablename}}</div></td>
                         <td><system-checkbox disabled [ngModel]="table.sysdictionarytableaudited == '1'"></system-checkbox></td>
@@ -64,13 +64,16 @@
                     <system-input-text [(ngModel)]="dictionarydefinition.version"></system-input-text>
                 </div>
             </div>
-            <div *ngIf="dictionarydefinition.sysdictionary_type == 'metadata'" class="slds-grid">
-                <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+            <div  class="slds-grid">
+                <div class="slds-large-size--1-of-2 slds-p-right--xxx-small slds-form-element__control">
                     <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_CONTENT_TYPE"></system-label></label>
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_contenttype">
-                            <option value="config">config</option>
-                            <option value="custom_config">custom config</option>
+                            <option value="masterdata">Masterdata</option>
+                            <option value="transactionaldata">tramsactional Data</option>
+                            <option value="logs">Logs</option>
+                            <option value="config">Configuration</option>
+                            <option value="custom_config">custom Configuration</option>
                         </select>
                     </div>
                 </div>
@@ -95,8 +98,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <ng-container *ngFor="let field of _fields">
-                        <tr>
+                    <ng-container *ngFor="let field of fields">
+                        <tr *ngIf="!this.filterundefined || !field.sysdomainfield_id">
                             <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.selected"></system-checkbox></td>
                             <td><div class="slds-truncate">{{field.fieldname}}</div></td>
                             <td><system-checkbox disabled [ngModel]="!!field.sysdomainfield_id"></system-checkbox></td>
@@ -113,11 +116,14 @@
                             <td><system-input-label [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.vname"></system-input-label></td>
                             <td><system-checkbox [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.fielddefinition.required"></system-checkbox></td>
                             <td>
-                                <div class="slds-select_container">
+                                <!--div class="slds-select_container">
                                     <select class="slds-select" [disabled]="!!field.sysdomainfield_id" [(ngModel)]="field.sysdomaindefinition_id">
                                         <option *ngFor="let domain of domains" [value]="domain.id">{{domain.name}}</option>
                                     </select>
-                                </div>
+                                </div-->
+                                <system-select [disabled]="!!field.sysdomainfield_id" [idOnly]="true" [(ngModel)]="field.sysdomaindefinition_id">
+                                    <system-select-option *ngFor="let domain of domains" [value]="domain.id" [display]="domain.name"/>
+                                </system-select>
                             </td>
                             <td><button class="slds-button slds-button--icon" (click)="field.showdetails = !field.showdetails"><system-button-icon [icon]="field.showdetails ? 'chevronup' :'chevrondown'"></system-button-icon></button></td>
                         </tr>
@@ -269,7 +275,7 @@
                 <system-input-text class="slds-m-horizontal--xx-small" [showClear]="true" *ngIf="view=='tables'" [(ngModel)]="filterterm"></system-input-text>
                 <system-checkbox class="slds-m-horizontal--xx-small" *ngIf="view=='fields' || view=='tables'" [(ngModel)]="filterundefined">undefined onyl</system-checkbox>
             </div>
-            <button *ngIf="view=='tables'" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goDetails()">
+            <button *ngIf="view=='tables'" [disabled]="!selectedtable" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goDetails()">
                 <system-label label="LBL_NEXT"></system-label>
             </button>
             <button *ngIf="view=='details'" [disabled]="!detailsComplete" class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="goFields(true)">

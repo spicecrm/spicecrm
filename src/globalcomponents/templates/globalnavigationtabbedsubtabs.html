@@ -1,5 +1,5 @@
 <ul class="slds-tabs_default__nav" role="tablist">
     <global-navigation-tabbed-subtab-item [object]="parenttab" [ismain]="true"></global-navigation-tabbed-subtab-item>
-    <global-navigation-tabbed-subtab-item *ngFor="let subtab of subtabs; trackBy: trackByFn" [object]="subtab" ></global-navigation-tabbed-subtab-item>
+    <global-navigation-tabbed-subtab-item *ngFor="let subtab of subtabs; trackBy: trackByFn" [object]="subtab" [cdkDragDisabled]="subtab.pinned" cdkDrag [cdkDragData]="subtab" cdkDragBoundary=".globalnavigationtabbeddsubtabsragboundary"></global-navigation-tabbed-subtab-item>
     <global-navigation-tabbed-sub-tab-more-tab></global-navigation-tabbed-sub-tab-more-tab>
 </ul>

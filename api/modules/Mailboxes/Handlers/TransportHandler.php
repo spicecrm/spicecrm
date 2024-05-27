@@ -1,5 +1,31 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
@@ -70,7 +96,7 @@ abstract class TransportHandler
      */
     abstract public function testConnection($testEmail);
 
-    public function sendMail(Email $email, $noSecurityCheck = false )
+    public function sendMail(Email|TextMessage $email, $noSecurityCheck = false )
     {
         $timedate = TimeDate::getInstance();
 
@@ -88,7 +114,9 @@ abstract class TransportHandler
         if (!empty($this->mailbox->mailbox_header)) {
 
             $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_header);
-
+            if (strpos($parsedHtml, "\n")) {
+                $parsedHtml = str_replace("\n", "", $parsedHtml);
+            }
             if (strpos($email->body, '<body>')) {
                 $email->body = str_replace('<body>', "<body><header>{$parsedHtml}</header>", $email->body);
             } else {
@@ -100,11 +128,13 @@ abstract class TransportHandler
         if (!empty($this->mailbox->mailbox_footer)) {
 
             $parsedHtml = $this->parseTemplateBodyOnly($emailTemplate, $email, $this->mailbox->mailbox_footer);
-
-            if (strpos($email->body, '</body>')) {
+            if (strpos($parsedHtml, "\n")) {
+                $parsedHtml = str_replace("\n", "", $parsedHtml);
+            }
+            if (empty($this->mailbox->mailbox_header) && strpos($email->body, '</body>')) {
                 $email->body = str_replace('</body>', "<footer>{$parsedHtml}</footer></body>", $email->body);
             } else {
-                $email->body = "<footer>{$parsedHtml}</footer>" . $email->body;
+                $email->body = $email->body."<footer>{$parsedHtml}</footer>";
             }
         }
 
@@ -131,13 +161,18 @@ abstract class TransportHandler
         $emailTemplate->body_html = $content;
         $parsedContent = $emailTemplate->parse($email)['body_html'];
         $doc = new DOMDocument();
-        $doc->loadHTML($parsedContent);
+        $doc->loadHTML('<?xml encoding="UTF-8">' . $parsedContent);
 
         # remove <!DOCTYPE
         $doc->removeChild($doc->doctype);
 
         # remove <html><body></body></html>
-        $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
+//        $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
+        # if there are still html tags get content
+        $doc->getElementsByTagName('body');
+        if($doc->textContent == ''){
+            $doc->getElementsByTagName('html');
+        }
 
         return $doc->saveHTML();
     }

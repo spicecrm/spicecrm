@@ -1,5 +1,31 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\modules\Emails;
 
@@ -32,6 +58,7 @@ use SpiceCRM\modules\EmailTrackingActions\EmailTracking;
 use SpiceCRM\modules\Mailboxes\Mailbox;
 use SpiceCRM\modules\EmailTrackingLinks\EmailTrackingLink;
 use SpiceCRM\extensions\modules\WorkflowTasks\WorkflowTask;
+use ZipArchive;
 
 class Email extends SpiceBean
 {
@@ -71,6 +98,11 @@ class Email extends SpiceBean
      */
     private ?string $runtime_tracking_parent_id = null;
     /**
+     * @var false|\SpiceCRM\data\SpiceBean
+     */
+    public $emailAddress;
+
+    /**
      * sole constructor
      */
     function __construct()
@@ -102,28 +134,6 @@ class Email extends SpiceBean
             $this->runtime_tracking_parent_id ?: $this->id
         ];
     }
-
-    /**
-     * opt out email the parent email address
-     */
-    public function optOutParentEmailAddress()
-    {
-        if (empty($this->parent_id) || empty($this->parent_type)) return null;
-
-        $parent = BeanFactory::getBean($this->parent_type, $this->parent_id);
-
-        $emailAddresses = $parent->get_linked_beans('email_addresses');
-
-        foreach ($emailAddresses as $address) {
-
-            if ($address->primary_address != 1 || $address->opt_in_status == 'opted_out') continue;
-
-            EmailAddress::setOptInStatus($parent, $address, 'opted_out');
-
-            break;
-        }
-    }
-
     /**
      * sets the proper date either date_entered, date_start or date_
      */
@@ -232,6 +242,44 @@ class Email extends SpiceBean
         if ($this->to_be_sent) {
             try {
                 $this->loadAttachments();
+
+//                START ZIP ARCHIVE
+                if (!!$this->zip_compress) {
+
+                // create a zip file in the temporaty directory
+                $tempDir = sys_get_temp_dir();
+                $filename = $this->attachments[0]->filename . '_' . SpiceUtils::createGuid() . '.zip';
+                $path = $tempDir . DIRECTORY_SEPARATOR . $filename;
+
+                //create ZIP folder and add attachments to it
+                $zip = new ZipArchive();
+
+                if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE === TRUE)) {
+                    foreach ($this->attachments as $attachment) {
+                        $zip->addFile("upload/" . $attachment->filemd5, $attachment->filename);
+                    }
+                }
+
+                $zip->close();
+
+                //hash the zip file as md5 and save it to upload folder
+                $filemd5 = md5_file($path);
+                $file = file_get_contents($path);
+                file_put_contents("upload/$filemd5", $file);
+
+                //create a new attachment object
+                $newZipAttachment = new \stdClass();
+                $newZipAttachment->filemd5 = $filemd5;
+                $newZipAttachment->filename = $filename;
+
+                //empty the attachments array and push the created zip attachment to it
+                $this->attachments = [];
+                $this->attachments[0] = $newZipAttachment;
+
+                //delete the zip folder from temporary location
+                unlink($path);
+//                END ZIP ARCHIVE
+            }
                 $result = $this->sendEmail();
                 $this->to_be_sent = false;
             }
@@ -352,7 +400,8 @@ class Email extends SpiceBean
 
         foreach ($fields as $type => $field) {
 
-            if (empty($this->$field)) continue;
+            # if no changes detected ignore the fill in
+            if (empty($this->$field) || $this->$field == $this->fetched_row[$field]) continue;
 
             $addresses = [];
 
@@ -569,7 +618,7 @@ class Email extends SpiceBean
     {
         if (!empty($this->mailbox_id)) {
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
-            $mailbox->deleteEmail($this);
+            if($mailbox) $mailbox->deleteEmail($this);
         }
         return parent::mark_deleted($id);
     }
@@ -728,7 +777,7 @@ class Email extends SpiceBean
 
         if($found){
             // is it utf-8?
-            if (strpos($matches[0], 'utf-8') === false){
+            if (stripos($matches[0], 'utf-8') === false){
                 $replacement = 'meta charset="utf-8"';
                 $emailBody = preg_replace($matches[0], $replacement, $emailBody);
             }
@@ -793,6 +842,9 @@ class Email extends SpiceBean
 
         // BWC for imported emails before recipient_addresses functionality
         if(is_array($beanDataArray) && $bwcFrom && !empty($this->from_addr)){
+            if(!is_array($beanDataArray['recipient_addresses'])){
+                $beanDataArray['recipient_addresses'] = [];
+            }
             $beanDataArray['recipient_addresses'][] = [
                 'id' => SpiceUtils::createGuid(),
                 'email_address_id' => $this->id,
@@ -966,6 +1018,7 @@ class Email extends SpiceBean
         }
 
         $mailbox->initTransportHandler();
+//        $mailbox->transport_handler->zip_attachments = true;
         $result = $mailbox->transport_handler->sendMail($this);
 
         if (!empty($result['message_id'])) {
@@ -1414,7 +1467,7 @@ class Email extends SpiceBean
 
     public function setParent(SpiceBean $bean)
     {
-        $this->parent_type = $bean->module_name;
+        $this->parent_type = $bean->_module;
         $this->parent_id = $bean->id;
         return true;
     }
@@ -1668,9 +1721,14 @@ class Email extends SpiceBean
 
         // todo deal with attachments lol
         foreach ($message->getAttachments() as $attachment) {
+            $attachmentData = $attachment->getData();
+            if(!$attachmentData){
+                LoggerManager::getLogger()->fatal('emailattachment', 'Could not getData() of attachment '.$attachment->getFilename().' for email '.$this->id.'. Getting attachment skipped.');
+                continue;
+            }
             $fileArray = [
                 'filename' => $attachment->getFilename(),
-                'file' => base64_encode($attachment->getData()),
+                'file' => base64_encode($attachmentData),
                 'filemimetype' => $attachment->getMimeType(),
                 'external_id' => $attachment->getContentId(),
             ];
@@ -1721,7 +1779,7 @@ class Email extends SpiceBean
      * @param string $fieldName
      * @return string
      */
-    public function getFieldHtmlContent(string $fieldName): string
+    public function getFieldHtmlContent(string $fieldName): ?string
     {
         switch ($fieldName) {
             case 'body':
@@ -1735,7 +1793,7 @@ class Email extends SpiceBean
      * get the body field content with the images as base64
      * @return string
      */
-    private function getBodyFieldAsHtml(): string
+    private function getBodyFieldAsHtml(): ?string
     {
         $content = $this->body;
 

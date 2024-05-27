@@ -2,11 +2,12 @@
 namespace SpiceCRM\includes\SpiceLanguages;
 
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 class SpiceLanguagesRESTHandler
@@ -313,10 +314,11 @@ class SpiceLanguagesRESTHandler
     public function getTranslationLabelDataByName($labelName, $language){
         $translation = $this->retrieveLabelDataByName($labelName, $language);
         if(!empty($translation['custom_translations'])){
-            return $translation['custom_translations'][0]['translation_default'];
+            $translated = $translation['custom_translations'][0]['translation_default'];
+        } else{
+            $translated = $translation['global_translations'][0]['translation_default'] ?: $labelName;
         }
-        return $translation['global_translations'][0]['translation_default'] ?: $labelName;
-
+        return $this->getNestedLabel($translated, $language);
     }
 
 
@@ -345,5 +347,24 @@ class SpiceLanguagesRESTHandler
             return $row['id'];
         }
         return null;
+    }
+
+    /**
+     * will parse nested labels
+     * @param $label
+     * @param $language
+     * @return array|mixed|string|string[]
+     */
+    public function getNestedLabel(&$label, $language)
+    {
+        $catch = preg_match_all('/\{LABEL\:(.*?)\}/', $label, $nestedLabels, PREG_SET_ORDER);
+        if($catch){
+            foreach($nestedLabels as $nestedLabel){
+                $overwrite = $this->getTranslationLabelDataByName($nestedLabel[1], $language);
+                $label = str_replace($nestedLabel[0], $overwrite, $label);
+            }
+        }
+        return $label;
+
     }
 }

@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'OLE' => array($vendorDir . '/pear/ole'),
+    'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
     'Console' => array($vendorDir . '/pear/console_getopt'),
     '' => array($vendorDir . '/pear/pear-core-minimal/src'),
 );

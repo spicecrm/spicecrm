@@ -1,21 +1,15 @@
-<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
-    <div class="slds-form-element">
-        <label class="slds-form-element__label"><system-label label="LBL_MAILBOX"></system-label></label>
-        <div class="slds-form-element__control" style="min-width:250px;">
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="selected_mailbox">
-                    <option value="">--</option>
-                    <option *ngFor="let mailbox of mailboxes"
-                            [value]="mailbox.id">{{mailbox.name}}
-                    </option>
-                </select>
-            </div>
-        </div>
+<workbench-header titlelabel="LBL_MAILBOX">
+    <workbench-header-controls>
+            <object-action-container [actionset]="headeractionset"></object-action-container>
+    </workbench-header-controls>
+</workbench-header>
+<div  [system-overlay-loading-spinner]="listComponent.modellist.isLoading" class="slds-grid" system-to-bottom-noscroll>
+    <div class="slds-size--1-of-5 slds-scrollable--y slds-theme--default slds-tabs_default__content slds-p-around--none slds-border--right">
+        <ul class="slds-has-dividers_around-space slds-p-around--x-small">
+            <mailboxes-manager-list #listComponent (selectedMailboxChange)="handleSelectionChange($event)"></mailboxes-manager-list>
+        </ul>
     </div>
-    <div class="slds-form-element slds-col--bump-left">
-       <object-action-container [actionset]="headeractionset"></object-action-container>
+    <div class="slds-size--4-of-5 slds-scrollable--y">
+        <div #viewcontainer></div>
     </div>
-</div>
-<div system-to-bottom class="slds-p-horizontal--small">
-    <div #viewcontainer></div>
 </div>

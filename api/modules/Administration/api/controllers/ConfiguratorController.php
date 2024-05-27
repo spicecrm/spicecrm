@@ -1,9 +1,12 @@
 <?php
 namespace SpiceCRM\modules\Administration\api\controllers;
 
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use Google\Auth\Cache\Item;
+use SpiceCRM\data\BeanFactory;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
@@ -111,7 +114,7 @@ class ConfiguratorController{
         $retArray = [];
 
         // check that we have a dictionary entry
-        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+        if(!isset(SpiceDictionary::getInstance()->dictionary[$args['table']])){
             throw new NotFoundException('not a known table');
         }
         $entries = $db->query("SELECT * FROM {$args['table']}");
@@ -126,6 +129,66 @@ class ConfiguratorController{
         }
 
         return $res->withJson($retArray);
+
+    }
+
+    /**
+     * converts the arguments to an html decoded value
+     * @param $req
+     * @param $res
+     * @param $args
+     * @return mixed
+     * @throws \Exception
+     */
+    public function readConfigById( Request $req, Response $res, $args ): Response {
+
+        $db = DBManagerFactory::getInstance();
+
+        // get the adminAction
+        $action = $db->fetchOne("SELECT componentconfig FROM sysuiadmincomponents WHERE id='{$args['actionid']}' UNION SELECT componentconfig FROM sysuicustomadmincomponents WHERE id='{$args['actionid']}'");
+        $config = json_decode(html_entity_decode($action['componentconfig']), true);
+
+
+        $retArray = [];
+
+        // check that we have a dictionary entry
+        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$config['dictionary']])){
+            throw new NotFoundException('not a known table');
+        }
+        $entries = $db->query("SELECT * FROM {$config['dictionary']}");
+
+        while ($entry = $db->fetchByAssoc($entries)) {
+            $retArrayEntry = [];
+            foreach ($entry as $key => $value) {
+                $retArrayEntry[$key] = html_entity_decode($value);
+            }
+
+            $retArray[] = $retArrayEntry;
+        }
+
+        // process foregin entries
+        $foreignkeys = [];
+        foreach ($config['fields'] as $field){
+            if(isset($field['foreign'])){
+                // in case of dictionary
+                if($field['foreign']['dictionary']){
+                    $selectFields = $field['foreign']['value'] . ' value';
+                    if($field['foreign']['display']) $selectFields .= ', ' . $field['foreign']['display'] . ' display';
+                    $foreignkeys[$field['name']] = $db->fetchAll(" SELECT {$selectFields} FROM {$field['foreign']['dictionary']}");
+                }
+
+                //in case of module
+                if($field['foreign']['module']){
+                    $seed = BeanFactory::getBean($field['foreign']['module']);
+                    $items = $seed->get_full_list();
+                    foreach ($items as $item){
+                        $foreignkeys[$field['name']][] = ['value' => $item->id, 'display' => $item->get_summary_text()];
+                    }
+                }
+            }
+        }
+
+        return $res->withJson(['entries' => $retArray, 'foreignkeys' => $foreignkeys]);
 
     }
 
@@ -174,7 +237,7 @@ class ConfiguratorController{
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
         # header("Access-Control-Allow-Origin: *");
 
-        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+        if(!isset(SpiceDictionary::getInstance()->dictionary[$args['table']])){
             throw new NotFoundException('not a known table');
         }
 
@@ -232,7 +295,7 @@ class ConfiguratorController{
 
         if (!$current_user->is_admin) throw ( new ForbiddenException('No administration privileges.'))->setErrorCode('notAdmin');
 
-        if(!isset(SpiceDictionaryHandler::getInstance()->dictionary[$args['table']])){
+        if(!isset(SpiceDictionary::getInstance()->dictionary[$args['table']])){
             throw new NotFoundException('not a known table');
         }
 

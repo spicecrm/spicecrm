@@ -16,13 +16,19 @@ use SpiceCRM\data\BeanFactory;
 
 class pluginktargetlistexportcontroller {
 
-    public   function action_export_to_targetlist($requestdata) {
+    /**
+     * can only create a new target list
+     * @param $requestdata
+     * @return bool
+     */
+    public function action_export_to_targetlist($requestdata) {
 
         $thisReport = BeanFactory::getBean('KReports', $requestdata['record']);
 
         // check if we have set dynamic Options
-        if (isset($_REQUEST['whereConditions']))
-            $thisReport->whereOverride = json_decode(html_entity_decode($requestdata['whereConditions']), true);
+        if (isset($requestParams['whereConditions'])) {
+            $thisReport->whereOverride = json_decode(html_entity_decode(base64_decode($requestParams['whereConditions'])), true);
+        }
 
         $thisReport->createTargeList($requestdata['targetlist_name']);
 

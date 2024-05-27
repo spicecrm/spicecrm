@@ -486,6 +486,23 @@ SpiceDictionaryHandler::getInstance()->dictionary['Opportunity'] = [
             'bean_name' => 'OpportunityRevenueLine',
             'vname' => 'LBL_OPPORTUNITYREVENUELINES',
             'default' => true
+        ],
+        'products' => [
+            'name' => 'products',
+            'type' => 'link',
+            'relationship' => 'opportunities_products',
+            'module' => 'Products',
+            'bean_name' => 'Product',
+            'source' => 'non-db',
+            'vname' => 'LBL_PRODUCTS',
+            'rel_fields' => [
+                'date_requested' => [
+                    'map' => 'opportunity_date_requested'
+                ],
+                'quantity' => [
+                    'map' => 'opportunity_quantity'
+                ]
+            ],
         ]
     ],
     'indices' => [

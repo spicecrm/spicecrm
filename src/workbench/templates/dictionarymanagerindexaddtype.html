@@ -1,0 +1,15 @@
+<system-modal size="small">
+  <system-modal-header (close)="close()"><system-label label="LBL_CHOOSE_TYPE"/></system-modal-header>
+  <system-modal-content>
+    <div class="slds-grid slds-grid--vertical">
+      <!--system-input-radio [disabled]="primaryindexdefined" name="indextype" [(ngModel)]="indextype" value="primary">primary</system-input-radio-->
+      <system-input-radio name="indextype" [(ngModel)]="indextype" value="index">index</system-input-radio>
+      <system-input-radio name="indextype" [(ngModel)]="indextype" value="unique">unique</system-input-radio>
+      <system-input-radio name="indextype" [(ngModel)]="indextype" value="foreign">foreign</system-input-radio>
+    </div>
+  </system-modal-content>
+  <system-modal-footer>
+    <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+    <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"/></button>
+  </system-modal-footer>
+</system-modal>

@@ -99,16 +99,8 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      */
     public loadCategories() {
         const categories = this.configuration.getData('reportcategories');
-        if (!categories) {
-            this.backend.getRequest('module/KReports/categoriesmanager/categories').subscribe(categories => {
-                if (!categories) return;
-                this.setBuckets(categories);
-                this.modellist.getListData();
-            });
-        } else {
-            this.setBuckets(categories);
-            this.modellist.getListData();
-        }
+        this.setBuckets(categories);
+        this.modellist.getListData();
     }
 
     /**

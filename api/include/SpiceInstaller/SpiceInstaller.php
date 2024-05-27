@@ -1,16 +1,46 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\includes\SpiceInstaller;
 
+use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\data\Relationships\SugarRelationshipFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\database\DBManager;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndex;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
+use SpiceCRM\includes\SpiceUI\api\controllers\ConfigTransferController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
-use SpiceCRM\includes\SugarObjects\VardefManager;
-use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceFileUtils;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Relationships\Relationship;
@@ -27,7 +57,41 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
 require_once('modules/TableDictionary.php');
 
 
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ * 
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
 class SpiceInstaller
 {
 
@@ -140,6 +204,8 @@ class SpiceInstaller
         } else {
             $requirements['imap'] = true;
         }
+
+        $requirements['bcmath'] = extension_loaded('bcmath');
 
         // db check
         $drivers = $this->dbManagerFactory::getDbDrivers();
@@ -372,15 +438,6 @@ class SpiceInstaller
     }
 
     /**
-     * @deprecated
-     * @param $postData
-     * @return void
-     */
-    private function generateSugarConfig($postData){
-        return $this->generateSpiceConfig($postData);
-    }
-
-    /**
      * @param $postData
      * @return array
      */
@@ -435,9 +492,10 @@ class SpiceInstaller
     /**
      * creates the database with the contents of post request body, creates and additional user if provided, and returns the database instance
      * @param $postData
-     * @return object
+     * @return DBManager
+     * @throws DatabaseException
      */
-    private function createDatabase($postData)
+    private function createDatabase($postData): DBManager
     {
         $dbconfig = ['db_host_name' => $postData['database']['db_host_name'],
             'db_host_instance' => $postData['database']['db_host_instance'],
@@ -466,7 +524,7 @@ class SpiceInstaller
             }
 
         }
-
+        
         $this->dbManagerFactory::setDBConfigInstaller(['dbconfig' => $dbconfig, 'dbconfigoption'  => $postData['dboptions']]);
 
         $db = $this->dbManagerFactory->getInstance();
@@ -475,6 +533,28 @@ class SpiceInstaller
             $db->createDBuser($dbconfig['db_name'], $dbconfig['db_host_name'], $postData['databaseuser']['db_user_name'], $postData['databaseuser']['db_password']);
         }
         return $db;
+    }
+
+    /**
+     * load the dictionary dump file
+     * creates the system dictionary tables without indexes from teh dump for the system fields
+     * save the dump file hash in the config for later comparison
+     * @param DBManager $db
+     * @return void
+     * @throws Exception
+     */
+    public function createSystemTablesFromDump(DBManager $db){
+
+        $hash = SpiceDictionary::getInstance(false)->loadSystemDumpFile();
+
+        $dictionary = SpiceDictionary::getInstance()->dictionary;
+
+        foreach ($dictionary as $dictFields){
+            $query = $db->createTableSQLParams($dictFields['table'], $dictFields['fields'], []);
+            $db->query($query, true);
+        }
+
+        SpiceDictionary::writeSystemDumpFileHashToConfig($hash);
     }
 
     /**
@@ -523,7 +603,7 @@ class SpiceInstaller
         }
 
         // relationship workaround: relationship has to be the first table to be  created before module tables
-        require_once('modules/Relationships/vardefs.php');
+        //require_once('modules/Relationships/vardefs.php');
         $table   = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['table'];
         $fields  = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['fields'];
         $indices = SpiceDictionaryHandler::getInstance()->dictionary['Relationship']['indices'];
@@ -560,22 +640,7 @@ class SpiceInstaller
             }
 
             // creates audit table if object is audited
-            if (SpiceDictionaryHandler::getInstance()->dictionary[$bean]['audited']) {
-                require('metadata/audit_templateMetaData.php');
-                $audit   = SpiceDictionaryHandler::getInstance()->dictionary[$bean]['table'] . '_audit';
-                $fields  = SpiceDictionaryHandler::getInstance()->dictionary['audit']['fields'];
-                $indices = SpiceDictionaryHandler::getInstance()->dictionary['audit']['indices'];
-
-                foreach ($indices as $nr => $properties) {
-                    $indices[$nr]['name'] = 'idx_' . strtolower($audit) . '_' . $properties['name'];
-                }
-
-                if (!$db->tableExists($audit)) {
-                    $query = $db->createTableSQLParams($audit, $fields, $indices);
-                    $db->query($query);
-                }
-
-            }
+            /*
             SpiceBean::createRelationshipMeta(
                 $bean,
                 $db,
@@ -583,6 +648,7 @@ class SpiceInstaller
                 '',
                 $dir
             );
+            */
         }
         SpiceModules::getInstance()->setBeanList($globalBeanList);
 
@@ -595,12 +661,12 @@ class SpiceInstaller
                 $db->query($query);
             }
 
-            SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
+            //SpiceBean::createRelationshipMeta($rel_name, $db, $table, $rel_dictionary, '');
         }
 
 
         // repair relationships
-        Relationship::build_relationship_cache();
+        SpiceDictionaryVardefs::build_relationship_cache();
 
     }
 
@@ -608,7 +674,7 @@ class SpiceInstaller
      * inserts defaults into the config table
      * @param $db
      */
-    public function insertDefaults($db, $postData = null )
+    public function insertDefaultConfigs($db, $postData = null )
     {
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromaddress', 'do_not_reply@example.com')");
         $db->query("INSERT INTO config (category, name, value) VALUES ('notify', 'fromname', 'SpiceCRM')");
@@ -658,7 +724,7 @@ class SpiceInstaller
      * @param $db
      * @param $postData
      */
-    public function createCurrentUser($db, $postData)
+    public function createAdminUser($db, $postData)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $user_instance = BeanFactory::getBean('Users');
@@ -689,13 +755,6 @@ class SpiceInstaller
 
     public function retrieveCoreAndLanguages( $db, $language )
     {
-        $confLoader = new SpiceUIConfLoader();
-        // load some packages to enable a good start
-        $loadPackages = ['core', 'aclessentials', 'ftsreference', 'schedulerjobs'];
-        foreach ($loadPackages as $loadPackage) {
-            $confLoader->loadPackage($loadPackage);
-        }
-
         $languageLoader = new SpiceLanguageLoader();
         $languageLoader->loadLanguage( $language );
         if ( $language != 'en_us') {
@@ -712,10 +771,12 @@ class SpiceInstaller
 
     /**
      * install the backend with the posted settings
+     *
      * @param $body
      * @return array
+     * @throws Exception
      */
-    public function install($body)
+    public function install($body): array
     {
         set_time_limit(30000);
 
@@ -733,14 +794,22 @@ class SpiceInstaller
 
         $db = $this->createDatabase($postData);
 
-        $repair = new AdminController();
-
         if (!empty($db)) {
-            $this->createTables($db);
-            $this->insertDefaults( $db, $postData );
-            $this->createCurrentUser($db, $postData);
+
+            $this->createSystemTablesFromDump($db);
+
+            $this->loadSystemPackage($db);
+
+            $this->writeDictionaryToCacheTable();
+
+            $this->createDatabaseIndexes();
+
+            $this->insertDefaultConfigs( $db, $postData );
+
+            $this->createAdminUser($db, $postData);
+
             $this->retrieveCoreandLanguages( $db, $postData['language'] );
-            $repair->repairAndRebuildforInstaller();
+
         } else {
             $errors[] = "empty database instance";
         }
@@ -758,9 +827,6 @@ class SpiceInstaller
         $this->writeConfig($spice_config);
         SpiceConfig::getInstance();
 
-        // now move cache to database
-        SpiceDictionaryVardefs::getInstance()->repairDictionaries();
-
         // remove legacy cache/modules folder
         if(file_exists('api/cache/modules')){
             rmdir('api/cache/modules');
@@ -769,6 +835,74 @@ class SpiceInstaller
         return [
             "success" => $outcome,
             "errors" => $errors];
+    }
+
+    /**
+     * write dictionary array to the cache table
+     * @return void
+     * @throws Exception
+     */
+    private function writeDictionaryToCacheTable()
+    {
+        # write the definitions to the cache table
+        $defsHandler = SpiceDictionaryDefinitions::getInstance();
+
+        foreach (SpiceDictionary::getInstance()->dictionary as $dicName => $dicFields) {
+            $defsHandler->writeVardefToFieldsTable($dicName, $dicFields);
+        }
+    }
+
+    /**
+     * create database indexes
+     * @return void
+     * @throws Exception
+     */
+    private function createDatabaseIndexes()
+    {
+        $indexHandler = SpiceDictionaryIndexes::getInstance();
+
+        foreach ($indexHandler->dictionaryIndexes as $index) {
+            $index = new SpiceDictionaryIndex($index['id']);
+            $index->activate();
+        }
+    }
+
+    /**
+     * load system package
+     * @param $db
+     * @throws Exception
+     */
+    public static function loadSystemPackage($db): void
+    {
+        $packageContent = json_decode( gzdecode ( file_get_contents('./include/SpiceInstaller/SystemPackage/system-package.gz')));
+        $tablesFields = [];
+        foreach (SpiceDictionary::getInstance()->dictionary as $dic) {
+            $tablesFields[$dic['table']] = array_map(function ($f) {return $f['name'];}, $dic['fields']);
+        }
+
+        foreach ( $packageContent->data->tables as $tableName ) {
+
+            if ( !$tablesFields[$tableName]) continue;
+
+            foreach ($packageContent->data->rows->$tableName as $row) {
+                $row = self::prepareSystemPackageRow($row, $tablesFields, $tableName);
+                $db->upsertQuery($tableName, ['id' => $row['id']] , $row);
+            }
+        }
+    }
+
+    /**
+     * prepare system package row data and keep only the defined dictionary fields
+     * @param object $row
+     * @param array $tablesFields
+     * @param string $tableName
+     * @return array
+     */
+    private static function prepareSystemPackageRow(object $row, array $tablesFields, string $tableName): array
+    {
+        return array_filter((array) $row, function ($field) use ($tablesFields, $tableName) {
+            return $tablesFields[$tableName][$field];
+        }, ARRAY_FILTER_USE_KEY);
     }
 }
 

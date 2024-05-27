@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\Administration\api\controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceInstaller\SpiceInstaller;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -164,4 +165,17 @@ class PackageController {
         return $res->withJson($repositoriesMetadata);
     }
 
+    /**
+     * reload system package
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws \Exception
+     */
+    public function reloadSystemPackage(Request $req, Response $res, array $args): Response
+    {
+        SpiceInstaller::loadSystemPackage(DBManagerFactory::getInstance());
+        return $res->withJson(['success' => true]);
+    }
 }

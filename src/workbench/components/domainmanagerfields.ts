@@ -21,22 +21,19 @@ import {domainmanager} from '../services/domainmanager.service';
     templateUrl: '../templates/domainmanagerfields.html',
 })
 export class DomainManagerFields {
-
-
     constructor(public domainmanager: domainmanager, public backend: backend, public metadata: metadata, public language: language, public modelutilities: modelutilities, public broadcast: broadcast, public toast: toast, public modal: modal, public injector: Injector) {
 
     }
 
     get domainfields() {
-        let domainfields = this.domainmanager.domainfields.filter(f => f.deleted == 0 && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope == 'c');
-        for (let domainfield of this.domainmanager.domainfields.filter(f => f.deleted == 0 && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope != 'c')) {
+        let domainfields = this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope == 'c');
+        for (let domainfield of this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope != 'c')) {
             if (domainfields.findIndex(d => d.name == domainfield.name) == -1) {
                 domainfields.push(domainfield);
             }
         }
         return domainfields.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
-
 
     /**
      * handles the drop event and resets the sequence fiels
@@ -56,13 +53,81 @@ export class DomainManagerFields {
         }
     }
 
-
     /**
      * react to the click to add a new domain field
      */
-    public addDomainField(event: MouseEvent) {
-        event.stopPropagation();
+    public addDomainField() {
         this.modal.openModal('DomainManagerAddFieldModal', true, this.injector);
+    }
+
+    /**
+     * shows the details for the field
+     *
+     * @param event
+     * @param id
+     */
+    public showDetails(domainfield) {
+        this.modal.openModal('DomainManagerFieldDetails', true, this.injector).subscribe({
+            next: (modalRef) => {
+                modalRef.instance.field = domainfield;
+            }
+        })
+    }
+
+    public validationName(validationId) {
+        return validationId ? this.domainmanager.getValidationById(validationId)?.name : ''
+    }
+
+    public unlinkValidation(domainfield) {
+        this.modal.prompt('confirm', 'MSG_UNLINK_VALIDATION', 'MSG_UNLINK_VALIDATION').subscribe({
+            next: (resp) => {
+                if (resp) {
+                    domainfield.sysdomainfieldvalidation_id = '';
+                    this.updateDomainField(domainfield);
+                }
+            }
+        });
+    }
+
+    /**
+     * shows the validation for the field
+     *
+     * @param event
+     * @param id
+     */
+    public showValidation(domainfield) {
+        if (!domainfield.sysdomainfieldvalidation_id) {
+            this.modal.openModal('DomainManagerSelectValidation', true, this.injector).subscribe({
+                next: (modalRef) => {
+                    modalRef.instance.validation.subscribe({
+                        next: (validationId) => {
+                            if (validationId == 'new') {
+                                // add a new Validation
+                                this.modal.openModal('DomainManagerAddValidation', true, this.injector).subscribe({
+                                    next: (modalRef) => {
+                                        modalRef.instance.validation.subscribe({
+                                            next: (validationId) => {
+                                                domainfield.sysdomainfieldvalidation_id = validationId;
+                                                this.updateDomainField(domainfield);
+                                            }
+                                        })
+                                    }
+                                })
+                            } else {
+                                domainfield.sysdomainfieldvalidation_id = validationId;
+                                this.updateDomainField(domainfield);
+                            }
+                        }
+                    })
+                }
+            })
+        } else {
+            this.modal.openModal('DomainManagerFieldValidation', true, this.injector).subscribe({
+                next: (modalRef) => {
+                    modalRef.instance.field = domainfield;
+                }
+            })
+        }
     }
 
     /**
@@ -71,14 +136,18 @@ export class DomainManagerFields {
      * @param event
      * @param id
      */
-    public deleteDomainField(event: MouseEvent, id: string) {
-        event.stopPropagation();
+    public deleteDomainField(id: string) {
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
-                this.domainmanager.domainfields.find(f => f.id == id).deleted = 1;
-                if (this.domainmanager.currentDomainField == id) {
-                    this.domainmanager.currentDomainField == null;
-                }
+                this.backend.deleteRequest(`dictionary/domainfield/${id}`).subscribe({
+                    next: (res) => {
+                        let index = this.domainmanager.domainfields.findIndex(f => f.id == id);
+                        this.domainmanager.domainfields.splice(index, 1);
+                        if (this.domainmanager.currentDomainField == id) {
+                            this.domainmanager.currentDomainField == null;
+                        }
+                    }
+                })
             }
         });
     }
@@ -110,19 +179,70 @@ export class DomainManagerFields {
      * @param e
      * @param validationValue
      */
-    public setStatus(e: MouseEvent, validationValue) {
-        e.stopPropagation();
-        if (validationValue.status == 'd') {
-            validationValue.status = 'a';
-        } else if (validationValue.status == 'a') {
-            validationValue.status = 'i';
-        } else {
-            validationValue.status = 'a';
+    public setStatus(domainfield, status) {
+        let loadingModal;
+        switch (status) {
+            case 'a':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.postRequest(`dictionary/domainfield/${domainfield.id}/activate`).subscribe({
+                    next: () => {
+                        domainfield.status = status;
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            case 'i':
+                loadingModal = this.modal.await('LBL_EXECUTING');
+                this.backend.deleteRequest(`dictionary/domainfield/${domainfield.id}/activate`).subscribe({
+                    next: () => {
+                        domainfield.status = status;
+                        loadingModal.emit(true);
+                    },
+                    error: () => {
+                        loadingModal.emit(true);
+                    }
+                })
+                break;
+            default:
+                domainfield.status = status;
         }
+    }
+
+    /**
+     * updates the domain field
+     *
+     * @param domainfield
+     * @private
+     */
+    private updateDomainField(domainfield) {
+        this.backend.postRequest(`dictionary/domainfield/${domainfield.id}`, {}, domainfield).subscribe({
+            next: (res) => {
+                this.toast.sendToast('LBL_SAVED', 'info');
+            }
+        });
     }
 
     public trackByFn(index, item) {
         return item.id;
     }
 
+    /**
+     * repair domain field related dictionary items
+     */
+    public repairRelatedDictionaryItems() {
+        this.modal.confirm('MSG_REPAIR_DOMAIN_DEFINITION_DICTIONARY_RELATED', 'MSG_REPAIR_DOMAIN_DEFINITION_DICTIONARY_RELATED').subscribe(answer => {
+
+            if (!answer) return;
+
+            this.backend.postRequest(`dictionary/domaindefinition/${this.domainmanager.currentDomainDefinition}/repairrelated`).subscribe({
+                next: () => {
+                    this.toast.sendToast('LBL_DICTIONARY_REPAIRED', 'success');
+                }
+            });
+
+        });
+    }
 }

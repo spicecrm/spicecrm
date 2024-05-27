@@ -21,6 +21,7 @@ import {layout} from '../../services/layout.service';
 import {metadata} from '../../services/metadata.service';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Subscription} from "rxjs";
+import {configurationService} from "../../services/configuration.service";
 
 /**
  * provides a lookup modal with a modellist and the option to select a model
@@ -55,16 +56,48 @@ export class ObjectModalModuleLookupHeader {
     public subscriptions: Subscription = new Subscription();
 
     /**
+     * the original module filter passed through
+     */
+    public moduleFilter: string = '';
+
+    /**
+     * the name of the module filter passed through
+     */
+    public moduleFilterName: string = '';
+
+    /**
      * emits the used search term
      */
     @Output() public usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(public language: language, public modellist: modellist, public modelutilities: modelutilities, public metadata: metadata, public element: ElementRef) {
+    constructor(public language: language, public modellist: modellist, public modelutilities: modelutilities, public metadata: metadata, public element: ElementRef, public configuration: configurationService) {
 
         // set a random id so no autocomplete is triggered on the field
         this.autoCompleteKiller = this.modelutilities.generateGuid();
     }
 
+    get modulefilter() {
+        return this.modellist.modulefilter;
+    }
+
+    get modulefilterActive() {
+        return (this.modellist.modulefilter ? true : false);
+    }
+
+    /**
+     * sets the module filter active flag and triggers a reload
+     *
+     * @param value
+     */
+    set modulefilterActive(value) {
+        if(!value) {
+            this.moduleFilter = this.modellist.modulefilter;
+            this.modellist.modulefilter = '';
+        }
+        else this.modellist.modulefilter = this.moduleFilter;
+
+        this.modellist.reLoadList();
+    }
 
     get relatefilter() {
         return this.modellist.relatefilter;
@@ -95,6 +128,7 @@ export class ObjectModalModuleLookupHeader {
     public ngOnInit() {
         this.searchTerm = this.modellist.searchTerm;
         this.searchTermOld = this.modellist.searchTerm;
+        this.getModuleFilterName();
     }
 
     /**
@@ -135,4 +169,13 @@ export class ObjectModalModuleLookupHeader {
         }
     }
 
+    /**
+     * retrieves the fiter name for display in the header
+     */
+    public getModuleFilterName() {
+        if(this.modellist.modulefilter){
+            let moduleFilters = this.configuration.getData('modulefilters');
+            this.moduleFilterName = moduleFilters[this.modellist.modulefilter].name;
+        }
+    }
 }

@@ -19,7 +19,7 @@ import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import {metadata} from '../../services/metadata.service';
-import {Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {ObjectModalModuleLookupHeader} from "./objectmodalmodulelookupheader";
 import {relateFilter} from "../../services/interfaces.service";
 
@@ -92,6 +92,11 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     @Output() public selectedItems: EventEmitter<any> = new EventEmitter<any>();
 
     /**
+     * emit when modal closed
+     */
+    public onClose = new Subject<void>();
+
+    /**
      * emits the used search term
      */
     @Output() public usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
@@ -132,6 +137,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         // this.model.module = this.module;
         this.modellist.modulefilter = this.modulefilter;
         this.modellist.relatefilter = this.relatefilter;
+        this.modellist.filtercontext = this.filtercontext;
         this.modellist.useCache = false;
         this.modellist.initialize(this.module);
         this.modellist.getListData();
@@ -159,7 +165,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      *
      */
     get canAdd() {
-        return this.componentConfig.showaddbutton && this.metadata.checkModuleAcl(this.model.module, 'create');
+        return this.metadata.checkModuleAcl(this.model.module, 'create');
     }
 
     /**
@@ -196,6 +202,8 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      */
     public closePopup() {
         this.usedSearchTerm.emit(this.modellist.searchTerm);
+        this.onClose.next();
+        this.onClose.complete();
         this.self.destroy();
     }
 

@@ -6,7 +6,7 @@
         <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="isDisabled || secondaryItems.length == 0">
             <system-button-icon icon="down"></system-button-icon>
         </button>
-        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
+        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions" style="min-width: min-content">
             <ul class="slds-dropdown__list" role="menu">
                 <li class="slds-dropdown__item" *ngFor="let secondaryItem of secondaryItems" role="presentation" (click)="propagateclick(secondaryItem.id)">
                     <a class="slds-truncate" href="javascript:void(0);" role="menuitem">

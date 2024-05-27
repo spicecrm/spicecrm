@@ -1,10 +1,37 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\modules\SpiceACLObjects;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SpiceBean;
+use SpiceCRM\extensions\modules\SpiceACLTerritories\SpiceACLTerritory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
@@ -55,26 +82,7 @@ class SpiceACLObject extends SpiceBean
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
         if (SpiceUtils::isAdmin($current_user)) {
-            foreach (SpiceModules::getInstance()->getBeanList() as $module => $class) {
-                $seed = BeanFactory::getBean($module);
-                if ($seed && method_exists($seed, 'bean_implements') && $seed->bean_implements('ACL')) {
-                    $typeRecord = $this->db->fetchByAssoc($this->db->query("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE module = '$module' AND acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE module = '$module' AND acl = 1"));
-                    if (!$typeRecord) {
-                        /*
-                        $newId = SpiceUtils::createGuid();
-                        $this->db->query("INSERT INTO spiceacltypes (id, module, status) VALUES('$newId', '$module', 'd')");
-                        $typeRecords[] = [
-                            'id' => $newId,
-                            'module' => $module,
-                            'status' => 'd',
-                            'usagecount' => 0
-                        ];
-                        */
-                    } else {
-                        $typeRecords[] = $typeRecord;
-                    }
-                }
-            }
+            $typeRecords = $this->db->fetchAll("SELECT sysmodules.id, sysmodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = sysmodules.id AND deleted = 0) usagecount FROM sysmodules WHERE acl = 1 UNION SELECT syscustommodules.id, syscustommodules.module, (SELECT count(id) FROM spiceaclobjects WHERE sysmodule_id = syscustommodules.id AND deleted = 0) usagecount FROM syscustommodules WHERE acl = 1");
         }
         return $typeRecords;
     }
@@ -119,7 +127,7 @@ class SpiceACLObject extends SpiceBean
         // check for territory values
         $this->territoryelementvalues = [];
         $territory = BeanFactory::getBean('SpiceACLTerritories');
-        if ($territory) {
+        if ($territory instanceof SpiceACLTerritory) {
             $territoryelementvalues = $this->db->query("SELECT * FROM spiceaclobjectsterritoryelementvalues WHERE spiceaclobject_id='$this->id'");
             while ($territoryelementvalue = $this->db->fetchByAssoc($territoryelementvalues)) {
                 $this->territoryelementvalues[] = $territoryelementvalue;
@@ -241,7 +249,7 @@ class SpiceACLObject extends SpiceBean
             // orgunits from user's parent_type
             if($current_user->parent_id && $current_user->parent_type){
                 $parent = BeanFactory::getBean($current_user->parent_type, $current_user->parent_id, ['relationships' => false]);
-                if($parent->load_relationship('orgunits')){
+                if($parent && $parent->load_relationship('orgunits')){
                     $joinTable = $parent->orgunits->relationship->def['join_table'];
                     $joinParentIdColName = $parent->orgunits->relationship->def['join_key_rhs'];
                     if( $parent->orgunits->relationship->def['join_lhs_module'] == $parent->_module){

@@ -191,7 +191,6 @@ export class GlobalNavigationTabbedMenuModules {
 
     private handleKeyBoardEvent(e: KeyboardEvent){
         let i = this.menuItems.indexOf(this.activeModule);
-        console.log(e);
         switch(e.key){
             case 'ArrowDown':
                 this.activeModule = this.menuItems[i + 1 >= this.menuItems.length ? 0 : i +1 ];

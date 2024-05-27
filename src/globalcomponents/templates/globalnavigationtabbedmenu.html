@@ -1,4 +1,4 @@
 <global-navigation-tabbed-menu-modules></global-navigation-tabbed-menu-modules>
-<global-navigation-tabbed-menu-tab *ngFor="let objectTab of objectTabs; trackBy: trackByFn" [object]="objectTab"></global-navigation-tabbed-menu-tab>
+<global-navigation-tabbed-menu-tab *ngFor="let maintab of objectTabs; trackBy: trackByFn" [object]="maintab" [cdkDragDisabled]="maintab.pinned" cdkDrag [cdkDragData]="maintab" cdkDragBoundary=".globalnavigationtabbeddragboundary"></global-navigation-tabbed-menu-tab>
 <global-navigation-tabbed-more-tab class="slds-hidden"></global-navigation-tabbed-more-tab>
 <global-navigation-tabbed-browser class="slds-col--bump-left"></global-navigation-tabbed-browser>

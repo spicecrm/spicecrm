@@ -3,7 +3,7 @@ namespace SpiceCRM\includes\SpiceDictionary;
 
 use Exception;
 use SpiceCRM\data\BeanFactory;
-use SpiceCRM\extensions\modules\SystemDeploymentCRs\SystemDeploymentCR;
+use SpiceCRM\modules\SystemDeploymentCRs\SystemDeploymentCR;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceSingleton;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
@@ -97,7 +97,6 @@ class SpiceDictionaryHandler extends SpiceSingleton
         }
     }
 
-
     /**
      * retrieves the dictionary definitions from tables sysdictionarydefinitions, syscustomdictionarydefinitions
      * for the dictionary manager in frontend
@@ -106,35 +105,7 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @throws Exception
      */
     public static function getDictionaryDefinitions(string $status = null){
-
-        $cached = SpiceCache::get('dictionarydefinitions');
-        if($cached) return $cached;
-
-        $defArray = [];
-        $defTables = [
-            ['name' => 'sysdictionarydefinitions', 'scope' => 'g'],
-            ['name' => 'syscustomdictionarydefinitions', 'scope' => 'c']
-        ];
-        $db = DBManagerFactory::getInstance();
-        $whereClause = '';
-
-        //check on where clause
-        if(!empty($status)){
-            $whereClause =" AND status='{$status}'";
-        }
-
-        foreach($defTables as $defTable){
-            $dictionarydefinitions = $db->query("SELECT * FROM {$defTable['name']} WHERE deleted = 0".$whereClause);
-            while($dictionarydefinition = $db->fetchByAssoc($dictionarydefinitions)){
-                $dictionarydefinition['deleted'] = intval($dictionarydefinition['deleted']);
-                $dictionarydefinition['scope'] = $defTable['scope'];
-                $defArray[] = $dictionarydefinition;
-            }
-        }
-
-        SpiceCache::set('dictionarydefinitions', $defArray);
-
-        return $defArray;
+        return SpiceDictionaryDefinitions::getInstance()->getDefinitions();
     }
 
     /**
@@ -169,27 +140,7 @@ class SpiceDictionaryHandler extends SpiceSingleton
      * @return array
      */
     public function getDictionaryItems(){
-        $cached = SpiceCache::get('dictionaryitems');
-        if($cached) return $cached;
-
-        $db = DBManagerFactory::getInstance();
-        $itemArray = [];
-        $dictionaryitems = $db->query("SELECT * FROM sysdictionaryitems WHERE deleted = 0");
-        while($dictionaryitem = $db->fetchByAssoc($dictionaryitems)){
-            $dictionaryitem['sequence'] = intval($dictionaryitem['sequence']);
-            $dictionaryitem['deleted'] = intval($dictionaryitem['deleted']);
-            $itemArray[] = array_merge($dictionaryitem, ['scope' => 'g']);
-        }
-        $dictionaryitems = $db->query("SELECT * FROM syscustomdictionaryitems WHERE deleted = 0");
-        while($dictionaryitem = $db->fetchByAssoc($dictionaryitems)){
-            $dictionaryitem['sequence'] = intval($dictionaryitem['sequence']);
-            $dictionaryitem['deleted'] = intval($dictionaryitem['deleted']);
-            $itemArray[] = array_merge($dictionaryitem, ['scope' => 'c']);;
-        }
-
-        SpiceCache::set('dictionaryitems', $itemArray);
-
-        return $itemArray;
+        return SpiceDictionaryItems::getInstance()->getItems(null, []);
     }
 
     /**
@@ -205,6 +156,11 @@ class SpiceDictionaryHandler extends SpiceSingleton
             // make sure wqe have all values
             if(!$item['non_db']) $item['non_db'] = 0;
             if(!$item['exclude_from_audited']) $item['exclude_from_audited'] = 0;
+
+            // unset non dab fields
+            unset($item['defined']);
+            unset($item['cached']);
+            unset($item['database']);
 
             switch($item['scope']){
                 case 'c':
@@ -433,95 +389,6 @@ LEFT JOIN
         }
     }
 
-    /**
-     * retrieves the dictionary indexes
-     *
-     * @return array
-     */
-    public function getDictionaryIndexes(){
-        $db = DBManagerFactory::getInstance();
-        $indexArray = [];
-        $dictionaryindexes = $db->query("SELECT * FROM sysdictionaryindexes WHERE deleted = 0");
-        while($dictionaryindex = $db->fetchByAssoc($dictionaryindexes)){
-            $dictionaryindex['deleted'] = intval($dictionaryindex['deleted']);
-            $indexArray[] = array_merge($dictionaryindex, ['scope' => 'g']);
-        }
-        $dictionaryindexes = $db->query("SELECT * FROM syscustomdictionaryindexes WHERE deleted = 0");
-        while($dictionaryindex = $db->fetchByAssoc($dictionaryindexes)){
-            $dictionaryindex['deleted'] = intval($dictionaryindex['deleted']);
-            $indexArray[] = array_merge($dictionaryindex, ['scope' => 'c']);;
-        }
-
-        return $indexArray;
-    }
-
-
-    /**
-     * writes the relationship changes to the database
-     *
-     * @param $relationships
-     */
-    public function setDictionaryIndexes($indexes){
-
-        foreach($indexes as $index){
-            switch($index['scope']){
-                case 'c':
-                    unset($index['scope']);
-                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryindexes", $index['id'], $index, $index['name']);
-                    break;
-                default:
-                    unset($index['scope']);
-                    SystemDeploymentCR::writeDBEntry("sysdictionaryindexes", $index['id'], $index, $index['name']);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * retrieves the dictionary indexitems
-     *
-     * @return array
-     */
-    public function getDictionaryIndexItems(){
-        $db = DBManagerFactory::getInstance();
-        $indexItemsArray = [];
-        $dictionaryindexitems = $db->query("SELECT * FROM sysdictionaryindexitems WHERE deleted = 0");
-        while($dictionaryindexitem = $db->fetchByAssoc($dictionaryindexitems)){
-            $dictionaryindexitem['deleted'] = intval($dictionaryindexitem['deleted']);
-            $dictionaryindexitem['sequence'] = intval($dictionaryindexitem['sequence']);
-            $indexItemsArray[] = array_merge($dictionaryindexitem, ['scope' => 'g']);
-        }
-        $dictionaryindexitems = $db->query("SELECT * FROM syscustomdictionaryindexitems WHERE deleted = 0");
-        while($dictionaryindexitem = $db->fetchByAssoc($dictionaryindexitems)){
-            $dictionaryindexitem['sequence'] = intval($dictionaryindexitem['sequence']);
-            $dictionaryindexitem['deleted'] = intval($dictionaryindexitem['deleted']);
-            $indexItemsArray[] = array_merge($dictionaryindexitem, ['scope' => 'c']);;
-        }
-
-        return $indexItemsArray;
-    }
-
-    /**
-     * writes the indexitems to the database
-     *
-     * @param $relationships
-     */
-    public function setDictionaryIndexItems($indexitems){
-
-        foreach($indexitems as $indexitem){
-            switch($indexitem['scope']){
-                case 'c':
-                    unset($indexitem['scope']);
-                    SystemDeploymentCR::writeDBEntry("syscustomdictionaryindexitems", $indexitem['id'], $indexitem, $indexitem['id']);
-                    break;
-                default:
-                    unset($indexitem['scope']);
-                    SystemDeploymentCR::writeDBEntry("sysdictionaryindexitems", $indexitem['id'], $indexitem, $indexitem['id']);
-                    break;
-            }
-        }
-    }
-
     public function postLanguageLabels($labels, $translations){
         $db = DBManagerFactory::getInstance();
         foreach($labels as $label){
@@ -542,26 +409,7 @@ LEFT JOIN
     }
 
     public function getDomainDefinitions(){
-
-        $cached = SpiceCache::get('domaindefinitions');
-        if($cached) return $cached;
-
-        $db = DBManagerFactory::getInstance();
-        $defArray = [];
-        $domaindefinitions = $db->query("SELECT * FROM sysdomaindefinitions WHERE deleted = 0");
-        while($domaindefinition = $db->fetchByAssoc($domaindefinitions)){
-            $domaindefinition['deleted'] = intval($domaindefinition['deleted']);
-            $defArray[] = array_merge($domaindefinition, ['scope' => 'g']);
-        }
-        $domaindefinitions = $db->query("SELECT * FROM syscustomdomaindefinitions WHERE deleted = 0");
-        while($domaindefinition = $db->fetchByAssoc($domaindefinitions)){
-            $domaindefinition['deleted'] = intval($domaindefinition['deleted']);
-            $defArray[] = array_merge($domaindefinition, ['scope' => 'c']);;
-        }
-
-        SpiceCache::set('domaindefinitions', $defArray);
-
-        return $defArray;
+        return SpiceDictionaryDomains::getInstance()->getDomains();
     }
 
     /**
@@ -586,23 +434,25 @@ LEFT JOIN
         SpiceCache::clear('domaindefinitions');
     }
 
-    public function getDomainFields(){
+    public function getDomainFields($useCache = true){
         $cached = SpiceCache::get('domainfields');
-        if($cached) return $cached;
+        if($useCache && $cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
         $fieldsArray = [];
-        $domainfields = $db->query("SELECT * FROM sysdomainfields WHERE deleted = 0");
+        $domainfields = $db->query("SELECT * FROM sysdomainfields");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             $domainfield['deleted'] = intval($domainfield['deleted']);
             $domainfield['sequence'] = intval($domainfield['sequence']);
+            $domainfield['required'] = intval($domainfield['required']);
             $domainfield['exclude_from_index'] = intval($domainfield['exclude_from_index']);
             $fieldsArray[] = array_merge($domainfield, ['scope' => 'g']);
         }
-        $domainfields = $db->query("SELECT * FROM syscustomdomainfields WHERE deleted = 0");
+        $domainfields = $db->query("SELECT * FROM syscustomdomainfields");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             $domainfield['deleted'] = intval($domainfield['deleted']);
             $domainfield['sequence'] = intval($domainfield['sequence']);
+            $domainfield['required'] = intval($domainfield['required']);
             $domainfield['exclude_from_index'] = intval($domainfield['exclude_from_index']);
             $fieldsArray[] = array_merge($domainfield, ['scope' => 'c']);
         }
@@ -632,14 +482,14 @@ LEFT JOIN
         SpiceCache::clear('domainfields');
     }
 
-    public function getDomainFieldValidations(){
+    public function getDomainFieldValidations($useCache = true){
 
         $cached = SpiceCache::get('domainfieldvalidations');
-        if($cached) return $cached;
+        if($useCache && $cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
         $validationsArray = [];
-        $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations WHERE deleted = 0");
+        $domainfields = $db->query("SELECT * FROM sysdomainfieldvalidations");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             // temporary workaround to harmonize validation_type
             if($domainfield['validation_type'] == 'options') {
@@ -647,7 +497,7 @@ LEFT JOIN
             }
             $validationsArray[] = array_merge($domainfield, ['scope' => 'g']);
         }
-        $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations WHERE deleted = 0");
+        $domainfields = $db->query("SELECT * FROM syscustomdomainfieldvalidations");
         while($domainfield = $db->fetchByAssoc($domainfields)){
             // temporary workaround to harmonize validation_type
             if($domainfield['validation_type'] == 'options') {
@@ -681,10 +531,10 @@ LEFT JOIN
         SpiceCache::clear('domainfieldvalidations');
     }
 
-    public function getDomainFieldValidationValues(){
+    public function getDomainFieldValidationValues($useCache = true){
 
         $cached = SpiceCache::get('domainfieldvalidationvalues');
-        if($cached) return $cached;
+        if($useCache &&  $cached) return $cached;
 
         $db = DBManagerFactory::getInstance();
         $validationvaluesArray = [];

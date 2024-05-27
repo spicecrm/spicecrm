@@ -1,5 +1,31 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ *
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ *
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\modules\SpiceImports;
 
@@ -53,7 +79,7 @@ class SpiceImport extends SpiceBean
         $fileData = [];
         $fileHeader = [];
 
-        $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 50);
+        $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 200);
 
 
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $params['file_md5'], "r")) !== FALSE) {
@@ -176,19 +202,6 @@ class SpiceImport extends SpiceBean
     }
 
     /**
-     * get the pointer for the end position
-     * pointer is used to show locations in file for dividing the processing into smaller pieces
-     * @return $end
-     */
-    public function getPointerForEndPosition(){
-        $handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r");
-        fseek($handle,0,SEEK_END);
-        $end = ftell($handle);
-        fclose($handle);
-        return $end;
-    }
-
-    /**
      * gets the first row in the file and processes it as a header
      * @param $delimiter
      * @param $enclosure
@@ -221,7 +234,7 @@ class SpiceImport extends SpiceBean
         $enclosure = chr(8);
         $classMethod = SpiceUtils::loadExecutionClassMethod($this->objectimport->selectedMethod);
 
-        $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 50);
+        $maxRows = (isset(SpiceConfig::getInstance()->config['import_max_records_per_file']) ? SpiceConfig::getInstance()->config['import_max_records_per_file'] : 200);
 
         switch ($this->objectimport->enclosure) {
             case 'single':
@@ -236,25 +249,32 @@ class SpiceImport extends SpiceBean
          * get the file header
          * set the limit for the file
          */
-        $end = $this->getPointerForEndPosition();
         $fileHeader = $this->getFileHeader($delimiter,$enclosure);
         //set limit for rows amount to process in one batch
         $limit = $maxRows;
         if (($handle = fopen(StreamFactory::getPathPrefix('upload') . $this->objectimport->fileId, "r")) !== FALSE) {
 
                 // find if the pointer has been set otherwise set it to 0
-                if(!isset($this->objectimport->pointer)) $this->objectimport->pointer = 0;
-                fseek($handle, $this->objectimport->pointer);
+                if(!isset($this->objectimport->rowPointer)) $this->objectimport->rowPointer = 1;
+
                 //count rows for the limit
-                $r = 0;
+                $processedRowsCount = 0;
+                $bucketRowsCount = 0;
+                $this->status = 'c';
+
                 while (($row = fgetcsv($handle, 1000, $delimiter, $enclosure)) !== FALSE) {
+
+                    $processedRowsCount++;
+
                     //skip the first row (header row) or empty row and set the pointer to the first data row
-                    if ([null] === $row || $this->objectimport->pointer == 0){
-                        $this->objectimport->pointer = ftell($handle);
+                    if ([null] === $row || $processedRowsCount < $this->objectimport->rowPointer +1){
                         continue;
                     }
+
+                    $bucketRowsCount++;
+                    $this->objectimport->rowPointer++;
+
                     // increase row count
-                    $r++;
 
                     $row = array_map(function ($item) {
                         return !mb_detect_encoding($item, 'utf-8', true) ? utf8_encode($item) : $item;
@@ -285,22 +305,16 @@ class SpiceImport extends SpiceBean
                     }
 
                     // reset the pointer after the rowcount reaches its limit
-                    if ($r >= $limit) {
-                        $this->objectimport->pointer = ftell($handle);
+                    if ($bucketRowsCount >= $limit) {
                         $this->data = json_encode($this->objectimport);
+                        $this->status = 'q';
                         break;
                     }
             }
-            // set the pointer to the end of line
-            $this->objectimport->pointer = ftell($handle);
+
             fclose($handle);
 
-            if ($error)
-                $this->status = 'e';
-            if($this->objectimport->pointer == $end)
-               $this->status = 'c';
-            else
-                $this->status = 'q';
+            if ($error && $this->status != 'q') $this->status = 'e';
 
             $this->save();
 

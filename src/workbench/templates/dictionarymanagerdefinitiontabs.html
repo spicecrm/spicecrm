@@ -1,34 +1,39 @@
-<div class="slds-tabs_scoped">
-    <ul class="slds-tabs_scoped__nav" role="tablist">
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': scope == 'items'}" role="presentation" (click)="scope = 'items'">
-            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_ITEMS"></system-label></a>
+<div class="slds-tabs_default">
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': scope == 'items'}" role="presentation" (click)="scope = 'items'">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab"><system-label label="LBL_ITEMS"></system-label></a>
         </li>
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': scope == 'relationships'}" role="presentation" (click)="scope = 'relationships'">
-            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_RELATIONSHIPS"></system-label></a>
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': scope == 'relationships'}" role="presentation" (click)="scope = 'relationships'">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab"><system-label label="LBL_RELATIONSHIPS"></system-label></a>
         </li>
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': scope == 'indexes'}" role="presentation" (click)="scope = 'indexes'">
-            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_INDEXES"></system-label></a>
+        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': scope == 'indexes'}" role="presentation" (click)="scope = 'indexes'">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab"><system-label label="LBL_INDEXES"></system-label></a>
         </li>
-        <li class="slds-tabs_scoped__item"  [ngClass]="{'slds-is-active': scope == 'fields'}" role="presentation" (click)="scope = 'fields'">
-            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_FIELDS"></system-label></a>
+        <li class="slds-tabs_default__item" *ngIf="!isTemplate" [ngClass]="{'slds-is-active': scope == 'fields'}" role="presentation" (click)="scope = 'fields'">
+            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab"><system-label label="LBL_FIELDS"></system-label></a>
+        </li>
+        <li class="slds-align-middle slds-grid slds-grid--align-end slds-grow" *ngIf="isTemplate" role="presentation">
+            <button (click)="dictionarymanager.repairTemplateRelatedDictionaries()" system-title="MSG_REPAIR_DICTIONARY_TEMPLATE_RELATED_DICTIONARIES" class="slds-button slds-button--icon slds-m-right--x-small">
+                <system-button-icon icon="custom_apps"/>
+            </button>
         </li>
     </ul>
-    <div class="slds-tabs_scoped__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'items'}" role="tabpanel">
+    <div class="slds-tabs_default__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'items'}" role="tabpanel">
         <div class="slds-height_full">
             <dictionary-manager-items></dictionary-manager-items>
         </div>
     </div>
-    <div class="slds-tabs_scoped__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'relationships'}" role="tabpanel">
+    <div class="slds-tabs_default__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'relationships'}" role="tabpanel">
         <div class="slds-height_full">
             <dictionary-manager-relationships></dictionary-manager-relationships>
         </div>
     </div>
-    <div class="slds-tabs_scoped__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'indexes'}" role="tabpanel">
+    <div class="slds-tabs_default__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'indexes'}" role="tabpanel">
         <div class="slds-height_full">
             <dictionary-manager-indexes></dictionary-manager-indexes>
         </div>
     </div>
-    <div class="slds-tabs_scoped__content slds-p-around--none"  [ngClass]="{'slds-hide': scope != 'fields'}" role="tabpanel">
+    <div class="slds-tabs_default__content slds-p-around--none" *ngIf="!isTemplate" [ngClass]="{'slds-hide': scope != 'fields'}" role="tabpanel">
         <dictionary-manager-fields></dictionary-manager-fields>
     </div>
 </div>

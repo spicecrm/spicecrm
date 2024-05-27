@@ -4,8 +4,6 @@
 import {
     Component,
     Input,
-    Output,
-    EventEmitter,
     Injector,
     ViewChild,
     ViewContainerRef,
@@ -15,6 +13,7 @@ import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
+import {toast} from "../../services/toast.service";
 
 /**
  * the container for the item in the list. Can be seleted by the angular selector and also handle the click on the element and propagate the click to the actionable function on the item
@@ -45,7 +44,14 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
 
     public initialized: boolean = false;
 
-    constructor(public language: language, public metadata: metadata, public modal: modal, public model: model, public injector: Injector) {
+    constructor(
+        public language: language,
+        public metadata: metadata,
+        public modal: modal,
+        public model: model,
+        public toast: toast,
+        public injector: Injector
+    ) {
 
     }
 
@@ -120,7 +126,16 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
             this.model.startEdit(true, false);
             this.model.setField(statusfield, this.item.status_to);
             if (this.model.validate()) {
-                this.model.save();
+                let saveModal = this.modal.await('LBL_SAVING');
+                this.model.save().subscribe({
+                    next: () => {
+                    saveModal.emit(true);
+                    },
+                    error: () => {
+                        saveModal.emit(true);
+                        this.toast.sendToast('MSG_ERROR_SETTING_STATUS', 'error');
+                    }
+                })
             } else {
                 this.model.edit();
             }

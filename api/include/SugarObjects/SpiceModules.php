@@ -4,6 +4,8 @@ namespace SpiceCRM\includes\SugarObjects;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 
 /**
  * Class SpiceModules
@@ -34,8 +36,6 @@ class SpiceModules
     private $beanList = [];
 
     private $beanClasses = [];
-
-    private $beanFiles = [];
 
     private function __construct() {}
 
@@ -74,23 +74,32 @@ class SpiceModules
                     // keep the original id from sysmodules (ACL module actions compatibility)
                     $module['id'] = $this->modules[$module['module']]['id'];
                 }
+
+                $module['audited'] = false;
+
+                if (!empty($module['sysdictionarydefinition_id'])) {
+                    try {
+                        $module['audited'] = (new SpiceDictionaryDefinition($module['sysdictionarydefinition_id']))->getDefinition()->audited == 1;
+                    } catch (\Throwable) {}
+                } else {
+                    $module['audited'] = (bool) SpiceDictionary::getInstance()->getDefs($module['bean'])['audited'];
+                }
+
                 $this->modules[$module['module']] = $module;
 
                 // if we have a bean try to load the beanfile, build it from the name or use the generic sugarbean
                 if ($module['bean']) {
                     $this->beanList[$module['module']] = $module['bean'];
 
-                    if (file_exists("custom/modules/{$module['module']}/{$module['bean']}.php")) {
-                        $this->beanFiles[$module['bean']] = "custom/modules/{$module['module']}/{$module['bean']}.php";
+
+                    if($module['beanfile']) {
+                        $this->beanClasses[$module['module']] = $module['beanfile'];
+                    } else if (file_exists("custom/modules/{$module['module']}/{$module['bean']}.php")) {
                         $this->beanClasses[$module['module']] = '\\SpiceCRM\\custom\\modules\\' . $module['module'] . '\\' . $module['bean'];
                     } else if (file_exists("extensions/modules/{$module['module']}/{$module['bean']}.php")) {
-                        $this->beanFiles[$module['bean']] = "extensions/modules/{$module['module']}/{$module['bean']}.php";
                         $this->beanClasses[$module['module']] = '\\SpiceCRM\\extensions\\modules\\' . $module['module'] . '\\' . $module['bean'];
                     } else if (file_exists("modules/{$module['module']}/{$module['bean']}.php")) {
-                        $this->beanFiles[$module['bean']] = "modules/{$module['module']}/{$module['bean']}.php";
                         $this->beanClasses[$module['module']] = '\\SpiceCRM\\modules\\' . $module['module'] . '\\' . $module['bean'];
-                    } else {
-                        $this->beanFiles[$module['bean']] = 'data/SpiceBean.php';
                     }
                 }
             }
@@ -148,6 +157,22 @@ class SpiceModules
         $moduleNamesArray = array_flip($this->beanList);
 
         return $moduleNamesArray[$beanName] ?? null;
+    }
+
+    /**
+     * gets the module name by the definition id
+     *
+     * @param $definitionId
+     * @return false|int|string
+     */
+    public function getModuleByDictionaryDefinitionId($definitionId){
+        foreach ($this->modules as $moduleName => $moduleDetails) {
+            if($moduleDetails['sysdictionarydefinition_id'] == $definitionId){
+                return $moduleName;
+            }
+        }
+
+        return false;
     }
 
     /**

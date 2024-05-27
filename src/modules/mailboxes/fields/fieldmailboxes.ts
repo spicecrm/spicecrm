@@ -20,7 +20,8 @@ declare var _: any;
  * list all available mailboxes
  */
 @Component({
-    templateUrl: '../templates/fieldmailboxes.html'
+    templateUrl: '../templates/fieldmailboxes.html',
+    selector: 'field-mailboxes',
 })
 export class fieldMailboxes extends fieldGeneric implements OnInit {
     /**

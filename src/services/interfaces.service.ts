@@ -145,3 +145,13 @@ export interface SubscriptionI {
     bean_module: string;
     data: any;
 }
+
+/**
+ * holds alerts for a field
+ */
+export interface FieldsAlertI {
+    alertType: 'error' | 'warning' | 'offline' | 'info' | 'success' | 'custom',
+    fieldName: string,
+    alert: string,
+    source: string
+}

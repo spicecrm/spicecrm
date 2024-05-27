@@ -42,7 +42,7 @@ SpiceDictionaryHandler::loadMetaDataFiles();
 StreamFactory::initialize();
 SpiceModules::getInstance()->loadModules();
 //SpiceDictionaryHandler::loadMetaDataDefinitions();
-SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
+// SpiceDictionaryHandler::getInstance()->loadCachedVardefs();
 //$system_config = (new Administration())->retrieveSettings();
 
 SpiceLanguageManager::setCurrentLanguage();

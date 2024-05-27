@@ -7,6 +7,9 @@ import {Subject, Observable} from 'rxjs';
 import {backend} from '../../services/backend.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {configurationService} from "../../services/configuration.service";
+import {modal} from "../../services/modal.service";
+import {toast} from "../../services/toast.service";
+import {administration} from "./administration.service";
 
 @Injectable()
 /**
@@ -15,6 +18,8 @@ import {configurationService} from "../../services/configuration.service";
  * Please check sysuiadmincomponents component config for adjustments needed in form layout.
  */
 export class administrationconfigurator {
+
+    public loading: boolean = false;
 
     public dictionary: string = '';
     public entries: any = [];
@@ -26,9 +31,15 @@ export class administrationconfigurator {
 
     public reloadTaskItems: string[] = [];
 
+    public foreignkeys: any = {};
+
     constructor(public backend: backend,
                 public modelutilities: modelutilities,
-                private configurationService: configurationService) {
+                private configurationService: configurationService,
+                private toast: toast,
+                public modal: modal,
+                public administration: administration
+    ) {
     }
 
 
@@ -37,20 +48,32 @@ export class administrationconfigurator {
      * @param fielddefs Array
      */
     public loadEntries(fielddefs = []) {
-        this.backend.getRequest('configuration/configurator/entries/' + this.dictionary).subscribe(data => {
+        this.loading = true;
+        this.backend.getRequest('configuration/configurator/byid/' + this.administration.opened_itemid).subscribe({
+            next: (data) => {
 
-            // traverse the fielddefs
-            this.fielddefobj = {};
-            for (let fielddef of fielddefs) {
-                this.fielddefobj[fielddef.name] = fielddef.type ? fielddef.type : '';
-            }
+                // set the foreign keys
+                this.foreignkeys = data.foreignkeys;
 
-            for (let entry of data) {
-                this.entries.push({
-                    id: entry.id,
-                    mode: '',
-                    data: this.mapData(entry)
-                });
+                // traverse the fielddefs
+                this.fielddefobj = {};
+                for (let fielddef of fielddefs) {
+                    this.fielddefobj[fielddef.name] = fielddef.type ? fielddef.type : '';
+                }
+
+                this.entries = data.entries.map(entry=> {
+                    return {
+                        id: entry.id,
+                        mode: '',
+                        data: this.mapData(entry)
+                    }
+                })
+
+
+                this.loading = false;
+            },
+            error: () => {
+                this.loading = false;
             }
         });
     }
@@ -112,19 +135,37 @@ export class administrationconfigurator {
     }
 
     /**
+     * checks if a record can be saved
+     *
+     * @param id
+     */
+    public canSave(id){
+        let entry = this.entries.find(e => e.id == id);
+        return JSON.stringify(entry.data) != JSON.stringify(entry.backup);
+    }
+
+    /**
      * @param id
      */
     public saveEntry(id) {
-        this.entries.some(entry => {
-            if (entry.id === id) {
-                delete(entry.backup);
-                this.backend.postRequest('configuration/configurator/' + this.dictionary + '/' + id, {}, { config: this.remapData(entry.data)}).subscribe(status => {
-                    entry.mode = '';
-                    this.reloadCache();
-                });
-                return true;
+        let retSubject = new Subject();
+        let entry = this.entries.find(e => e.id == id);
+        let saveModal = this.modal.await('LBL_SAVING');
+        delete (entry.backup);
+        this.backend.postRequest('configuration/configurator/' + this.dictionary + '/' + id, {}, {config: this.remapData(entry.data)}).subscribe({
+            next: (status) => {
+                entry.mode = '';
+                this.reloadCache();
+                saveModal.emit(true);
+                retSubject.next(true);
+            }, error: (e) => {
+                this.toast.sendToast('MSG_ERROR_SAVING_RECORD', 'error')
+                saveModal.emit(true);
+                retSubject.error(e);
             }
         });
+
+        return retSubject.asObservable();
     }
 
     /**

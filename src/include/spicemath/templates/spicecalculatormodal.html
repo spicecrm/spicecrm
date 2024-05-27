@@ -1,11 +1,7 @@
 <system-modal class="slds-small-size_1-of-6 slds-align_absolute-center">
-    <system-modal-header (close)="cancel()">
-        <system-label label="LBL_CALCULATOR"></system-label>
-    </system-modal-header>
-    <system-modal-content class="slds-p-around--none" style="max-height: 420px; padding: 0">
-        <div id="modal" style="height: 420px">
-            <spice-calculator #calculator style="height: 400px" [(ngModel)]="value"></spice-calculator>
-        </div>
+    <system-modal-header-empty (close)="cancel()"/>
+    <system-modal-content margin="none" style="height: 400px;">
+        <spice-calculator #calculator [(ngModel)]="value"></spice-calculator>
     </system-modal-content>
     <system-modal-footer>
         <button *ngIf="trigger" class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>

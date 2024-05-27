@@ -27,7 +27,6 @@ class EmailTrackingActionsController
      * @param array $args
      * @return Response
      * @throws BadRequestException
-
      */
     public function handleTrackingLink(Request $req, Response $res, array $args): Response
     {
@@ -93,7 +92,7 @@ class EmailTrackingActionsController
             new NotFoundException('Email or CampaignLog not found');
         }
 
-        $seed->optOutParentEmailAddress();
+        $seed->setEmailToOptedOut($seed);
 
         $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.unsubscribe_redirect_url');
 
@@ -129,7 +128,7 @@ class EmailTrackingActionsController
         $chunks = array_chunk(preg_split('/(:|:)/', $decrypted), 2);
         $data = array_combine(array_column($chunks, 0), array_column($chunks, 1));
 
-        if(!array_key_exists('MarketingActions', $data) || empty($data['MarketingActions'])) {
+        if (!array_key_exists('MarketingActions', $data) || empty($data['MarketingActions'])) {
             throw new BadRequestException('Missing url params');
         }
 
@@ -141,12 +140,12 @@ class EmailTrackingActionsController
         if (!$email) {
             throw (new NotFoundException('Record not found.'))->setLookedFor(['id' => $data['Emails'], 'module' => 'Emails']);
         }
-        switch($marketingAction->name) {
+        switch ($marketingAction->name) {
             case "optin":
-                $this->handleOptin($email);
+                $this->setEmailToOptedIn($email);
                 break;
             case "optout":
-                $this->handleUnsubscription($email);
+                $this->setEmailToOptedOut($email);
                 break;
             default:
                 $email->handleEvent($marketingAction->name);
@@ -172,7 +171,7 @@ class EmailTrackingActionsController
                 return "$url/#/0/$landingPageId/$emailId";
             case 'url':
             default:
-            return $marketingAction->redirect_url;
+                return $marketingAction->redirect_url;
         }
     }
 
@@ -182,16 +181,21 @@ class EmailTrackingActionsController
      * @return bool
      * @throws BadRequestException
      */
-    private function handleOptin($email): bool
+    private function setEmailToOptedIn($email): bool
+    {
+        return $this->setEmailOptinStatus($email, 'opted_in');
+    }
+
+    private function setEmailOptinStatus($email, string $status): bool
     {
         $recipient = BeanFactory::getBean($email->parent_type, $email->parent_id);
         $emailAddresses = $recipient->get_linked_beans('email_addresses');
         foreach ($emailAddresses as $address) {
             if ($address->primary_address != 1) continue;
-            if(empty($address->opt_in_status)) {
+            if (empty($address->opt_in_status)) {
                 throw new BadRequestException('Erroneous email opt-in status');
             } else {
-                if(EmailAddress::setOptInStatus($recipient, $address, 'opted_in')) {
+                if (EmailAddress::setOptInStatus($recipient, $address, $status)) {
                     return true;
                 } else {
                     throw new BadRequestException('could not set the opt-in status for this address');
@@ -199,7 +203,6 @@ class EmailTrackingActionsController
 
             }
         }
-
         return true;
     }
 
@@ -209,25 +212,9 @@ class EmailTrackingActionsController
      * @return bool
      * @throws BadRequestException
      */
-    private function handleUnsubscription($email): bool
+    private function setEmailToOptedOut($email): bool
     {
-        $recipient = BeanFactory::getBean($email->parent_type, $email->parent_id);
-        $emailAddresses = $recipient->get_linked_beans('email_addresses');
-        foreach ($emailAddresses as $address) {
-            if ($address->primary_address != 1) continue;
-            if(empty($address->opt_in_status)) {
-                throw new BadRequestException('Erroneous email opt-in status');
-            } else {
-                if(EmailAddress::setOptInStatus($recipient, $address, 'opted_out')) {
-                    return true;
-                } else {
-                    throw new BadRequestException('could not set the opt-in status for this address');
-                }
-
-            }
-        }
-
-        return true;
+        return $this->setEmailOptinStatus($email, 'opted_out');
     }
 
     /**
@@ -238,7 +225,8 @@ class EmailTrackingActionsController
      * @return Response
      * @throws \Exception
      */
-    public function handleSubscription(Request $req, Response $res, array $args):Response {
+    public function handleSubscription(Request $req, Response $res, array $args): Response
+    {
         $body = $req->getParsedBody();
         $beanAndAddress = $this->findBeanByPrimaryEmailAddress($body['emailAddress']);
         # what if there is no Bean?
@@ -265,13 +253,13 @@ class EmailTrackingActionsController
             $trackedAction->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $trackedAction->ip_address = SpiceUtils::getClientIP();
             //check if the link is here
-            if(array_key_exists('EmailTrackingLinks', $data) && !empty($data['EmailTrackingLinks'])) {
+            if (array_key_exists('EmailTrackingLinks', $data) && !empty($data['EmailTrackingLinks'])) {
                 $trackedAction->emailtrackinglink_id = $data['EmailTrackingLinks'];
             }
 
             $trackedAction->save();
 
-            switch($action) {
+            switch ($action) {
                 case 'opened':
                     // set the email to opened
                     $seed = BeanFactory::getBean('Emails', $data['Emails']);
@@ -288,17 +276,59 @@ class EmailTrackingActionsController
      * @param $emailAddress string
      * @return array
      */
-    private function findBeanByPrimaryEmailAddress($emailAddress): array {
+    private function findBeanByPrimaryEmailAddress($emailAddress): array
+    {
         $db = DBManagerFactory::getInstance();
         $q = "SELECT * FROM email_addr_bean_rel eabl INNER JOIN email_addresses ea ON ea.id = eabl.email_address_id ";
         $q .= "WHERE ea.email_address = '$emailAddress' and eabl.deleted = 0 and eabl.primary_address = 1";
         $query = $db->query($q);
         while ($row = $db->fetchByAssoc($query)) {
-            $result['bean'] =  BeanFactory::getBean($row['bean_module'], $row['bean_id']);
-            $result['emailAddress'] =  BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
-    }
-    return $result;
+            $result['bean'] = BeanFactory::getBean($row['bean_module'], $row['bean_id']);
+            $result['emailAddress'] = BeanFactory::getBean('EmailAddresses', $row['email_address_id']);
+        }
+        return $result;
     }
 
+    /**
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws BadRequestException
+     * @throws Exception
+     *
+     */
+    public function handleDoubleOptin(Request $req, Response $res, array $args): Response
+    {
+        $data = EmailTracking::decodeTrackingID($args['key']);
+
+        if (!$data) {
+            throw new BadRequestException('Failed to decrypt key');
+        }
+
+        // get the email seed
+        /** @var Email | CampaignLog  $seed */
+        $seed = BeanFactory::getBean($data['ParentType'], $data['ParentId']);
+
+        $this->setEmailToOptedIn($seed);
+
+        $redirectUrl = SpiceConfig::getInstance()->get('emailtracking.double_optin_redirect_url');
+
+        if ($seed->_module == 'Emails') {
+            $redirectUrl = $seed->getMailbox()->double_optin_redirect_url ?: $redirectUrl;
+        }
+
+        if (!empty($redirectUrl)) {
+            return $res->withHeader('Location', $redirectUrl)->withStatus(302);
+        }
+
+        // load the optin landingpage content
+        /** @var LandingPage $landingPage */
+        $landingPage = BeanFactory::getBean('LandingPages', SpiceConfig::getInstance()->get('emailtracking.double_optin_landing_page'));
+        $lpContent = $landingPage->parse($seed);
+
+        $res->getBody()->write($lpContent['content']);
+        return $res->withHeader('Content-Type', 'text/html');
+    }
 
 }

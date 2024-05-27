@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, ComponentRef,
+    Component, ComponentRef, Injector,
 } from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
@@ -22,8 +22,6 @@ export class HooksManagerHooks {
 
 
     public loading: boolean = false;
-    // public _module: string = '*';
-    // public modules: string[];
     public hooks: LogicHookI[] = [];
 
 
@@ -35,10 +33,8 @@ export class HooksManagerHooks {
         public toast: toast,
         public modal: modal,
         public hooksManager: HooksManager,
+        public injector: Injector
     ) {
-        // this.modules = this.metadata.getModules();
-        // this.modules.sort();
-
     }
 
     public ngOnInit() {
@@ -55,23 +51,6 @@ export class HooksManagerHooks {
             this.loading = false;
         });
     }
-
-    // /**
-    //  * get module
-    //  */
-    // get module() {
-    //     return this._module;
-    // }
-    //
-    // /**
-    //  * set module
-    //  * @param module
-    //  */
-    // set module(module) {
-    //     if (module != this._module) {
-    //         this._module = module;
-    //     }
-    // }
 
     /**
      * display hooks depending on the chosen module
@@ -119,7 +98,8 @@ export class HooksManagerHooks {
      * @private
      */
     private openEditHookModal(hook?:LogicHookI){
-        this.modal.openModal('HooksManagerHooksEditModal').subscribe((modalRef: ComponentRef<HooksManagerHooksEditModal>) => {
+        this.modal.openModal('HooksManagerHooksEditModal', true, this.injector).subscribe((modalRef: ComponentRef<HooksManagerHooksEditModal>) => {
+            modalRef.instance.newLogicHook.module = this.hooksManager.module;
             const index = this.hooks.indexOf(hook);
             if (hook) {
                 modalRef.instance.newLogicHook = {...hook};

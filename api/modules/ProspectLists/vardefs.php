@@ -65,6 +65,10 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'importable' => 'required',
             'required' => true
         ],
+        'is_generated_by_system' => [
+            'name' => 'is_generated_by_system',
+            'type' => 'bool'
+        ],
         'date_entered' => [
             'name' => 'date_entered',
             'vname' => 'LBL_DATE_ENTERED',
@@ -177,6 +181,13 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
             'type' => 'bool',
             'source' => 'non-db'
         ],
+        'prospectlists_person_email_addr_bean_rel_id' => [
+            'name' => 'prospectlists_person_email_addr_bean_rel_id',
+            'vname' => 'LBL_EMAIL_ADDRESS',
+            'type' => 'varchar',
+            'len' => '36',
+            'source' => 'non-db'
+        ],
         'prospects' => [
             'name' => 'prospects',
             'type' => 'link',
@@ -195,6 +206,9 @@ SpiceDictionaryHandler::getInstance()->dictionary['ProspectList'] = [
                 ],
                 'unsubscribegroup_status' => [
                     'map' => 'prospectlists_contacts_unsubscribegroup_status'
+                ],
+                'email_addr_bean_rel_id' => [
+                    'map' => 'prospectlists_person_email_addr_bean_rel_id'
                 ]
             ]
         ],

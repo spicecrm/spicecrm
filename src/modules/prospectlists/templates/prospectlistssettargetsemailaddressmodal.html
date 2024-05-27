@@ -1,0 +1,35 @@
+<system-modal size="medium">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_SELECT_EMAIL_PERSONS_EMAIL_ADDRESS"/>
+    </system-modal-header>
+    <system-modal-content>
+        <table class="slds-table slds-table_bordered slds-table--fixed-layout">
+            <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_EMAIL_ADDRESS"></system-label></div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of items" [system-model-provider]="{module: model.module, data: item, id: item.id}" class="slds-hint-parent">
+                <td>
+                    <div class="slds-truncate">{{item.summary_text}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate">
+                        <field-container [field]="emailAddressFieldName" [fieldconfig]="{fieldtype: 'prospectListsPersonEmailAddress'}"/>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"/></button>
+        <button class="slds-button slds-button--brand" (click)="confirm()"><system-label label="LBL_CONFIRM"/></button>
+    </system-modal-footer>
+</system-modal>

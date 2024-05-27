@@ -18,7 +18,7 @@ import {fts} from '../../services/fts.service';
 export class GlobalHeaderSearchResultsItems {
     @Input()public searchTerm: string = '';
     @Input()public searchModule: string = '';
-    @Input()public searchResults: any[] = [];
+    @Input()public searchResults: {hits: any[], total: number} = {hits: [], total: 0};
     @Output()public selected: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public router: Router,public language: language,public fts: fts) {
@@ -30,8 +30,8 @@ export class GlobalHeaderSearchResultsItems {
     }
 
    public goSearch() {
-        // navigate tot he search view
-        if (this.searchTerm.length > 0) {
+        // navigate to the search view
+        if (!this.fts.runningsearch && this.searchTerm.length > 0 && this.searchResults.total > 0) {
             this.selected.emit(true);
             this.router.navigate(['/search/' + encodeURIComponent(btoa(this.searchTerm))]);
         }

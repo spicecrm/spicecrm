@@ -2,10 +2,11 @@
  * @module GlobalComponents
  */
 import {
-    AfterViewInit, Component, QueryList, ViewChildren, Input, ElementRef
+    Component, Input, ElementRef
 } from '@angular/core';
 import {navigation, objectTab} from '../../services/navigation.service';
 import {language} from '../../services/language.service';
+import {GlobalNavigationTabContextMenu} from "./globalnavigationtabcontextmenu";
 
 
 @Component({
@@ -18,6 +19,10 @@ import {language} from '../../services/language.service';
     }
 })
 export class GlobalNavigationTabbedMenuTab {
+    /**
+     * show contextMenu boolean
+     */
+    public showContextMenu: boolean = false;
 
     /**
      * the tab object
@@ -27,7 +32,6 @@ export class GlobalNavigationTabbedMenuTab {
     constructor(public navigation: navigation,public language: language, public elementRef: ElementRef) {
 
     }
-
 
     /**
      * returns if the tab is active
@@ -70,6 +74,7 @@ export class GlobalNavigationTabbedMenuTab {
      */
    public pintab() {
         this.object.pinned = !this.object.pinned;
+        this.navigation.objectTabs.sort((a, b) => !a.pinned ? 1 : -1);
     }
 
     /**
@@ -93,5 +98,18 @@ export class GlobalNavigationTabbedMenuTab {
         return this.object.displayicon ? this.object.displayicon : undefined;
     }
 
+    /**
+     * gets maintabs
+     */
+    get mainTabs() {
+        return this.navigation.objectTabs.filter(tab => tab.parentid == undefined);
+    }
+
+    /**
+     * returns true if unsaved changed are in tab object
+     */
+    get isDirty() {
+        return this.navigation.anyDirtyModel(this.object.id);
+    }
 
 }

@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\includes\Logger;
 
+use SpiceCRM\includes\Logger\SpiceLogger;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -223,9 +224,9 @@ class LoggerManager
             $this->_levelCategories[$level] = ['*'];
         }
 
-        if(DBManagerFactory::getInstance()) {
-            $res = DBManagerFactory::getInstance()->queryOnly("SELECT log_level level, user_id FROM syslogusers WHERE logstatus = 1");
-            while ($row = DBManagerFactory::getInstance()->fetchByAssoc($res)) {
+        if(DBManagerFactory::getInstance('spicelogger')) {
+            $res = DBManagerFactory::getInstance('spicelogger')->queryOnly("SELECT log_level level, user_id FROM syslogusers WHERE logstatus = 1");
+            while ($row = DBManagerFactory::getInstance('spicelogger')->fetchByAssoc($res)) {
                 $this->_levelCategories[$row['level']][$row['user_id']] = true;
             }
         }

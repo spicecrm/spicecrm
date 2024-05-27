@@ -1,21 +1,27 @@
-<div class="slds-tabs_scoped" *ngIf="domainmanager.currentDomainField; else selectfield">
-    <ul class="slds-tabs_scoped__nav" role="tablist">
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': tabScope == 'details'}" title="Item One" role="presentation" (click)="tabScope = 'details'">
-            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="0"><system-label label="LBL_DETAILS"></system-label></a>
-        </li>
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': tabScope == 'validations'}" title="Item Two" role="presentation"  (click)="tabScope = 'validations'">
-            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="-1"><system-label label="LBL_VALIDATION"></system-label></a>
-        </li>
-    </ul>
-    <div class="slds-tabs_scoped__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'details'}" role="tabpanel" system-to-bottom-noscroll>
-        <domainmanager-field-details [field]="currentField"></domainmanager-field-details>
+<div class="slds-border--top" style="height: 100%">
+    <div class="slds-tabs_default slds-is-relative" style="height: 100%" *ngIf="domainmanager.currentDomainField; else selectfield">
+        <ul class="slds-tabs_default__nav slds-grow" role="tablist">
+            <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': tabScope == 'details'}" title="Item One" role="presentation" (click)="tabScope = 'details'">
+                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0"><system-label label="LBL_DETAILS"></system-label></a>
+            </li>
+            <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': tabScope == 'validations'}" title="Item Two" role="presentation"  (click)="tabScope = 'validations'">
+                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1"><system-label label="LBL_VALIDATION"></system-label></a>
+            </li>
+        </ul>
+
+        <div class="slds-tabs_default__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'details'}" role="tabpanel" style="height: calc(100% - 40px)">
+            <domain-manager-field-details></domain-manager-field-details>
+        </div>
+        <div class="slds-tabs_default__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'validations'}" role="tabpanel" style="height: calc(100% - 40px)">
+            <domain-manager-field-validation style="height: 100%"></domain-manager-field-validation>
+        </div>
+        <div class="slds-is-absolute slds-m-around--x-small" style="top: 0px; right: 0px;" (click)="toggleExpanded($event)">
+            <system-utility-icon [icon]="_isexpanded ? 'chevrondown' : 'chevronup'" size="x-small"/>
+        </div>
     </div>
-    <div class="slds-tabs_scoped__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'validations'}" role="tabpanel" system-to-bottom-noscroll>
-        <domainmanager-field-validation [field]="currentField"></domainmanager-field-validation>
-    </div>
+    <ng-template #selectfield>
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center" system-to-bottom-noscroll>
+            <system-label label="LBL_SELECT_A_FIELD"></system-label>
+        </div>
+    </ng-template>
 </div>
-<ng-template #selectfield>
-    <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
-        <system-label label="LBL_SELECT_A_FIELD"></system-label>
-    </div>
-</ng-template>

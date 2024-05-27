@@ -17,6 +17,7 @@ import { AdministrationMenu } from './components/administrationmenu';
 import { AdministrationMenuRouteItem } from './components/administrationmenurouteitem';
 import { AdministrationConfigurator } from './components/administrationconfigurator';
 import { AdministrationConfiguratorItem } from './components/administrationconfiguratoritem';
+import { AdministrationConfiguratorItemModal } from './components/administrationconfiguratoritemmodal';
 import { AdministrationConfiguratorItemRole } from './components/administrationconfiguratoritemrole';
 import { AdministrationQuotaManager } from './components/administrationquotamanager';
 import { AdministrationQuotaManagerField } from './components/administrationquotamanagerfield';
@@ -115,6 +116,7 @@ import {WorkbenchModule} from "../workbench/workbench.module";
         AdministrationMenuRouteItem,
         AdministrationConfigurator,
         AdministrationConfiguratorItem,
+        AdministrationConfiguratorItemModal,
         AdministrationConfiguratorItemRole,
         AdministrationQuotaManager,
         AdministrationQuotaManagerField,

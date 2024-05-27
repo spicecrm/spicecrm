@@ -236,6 +236,9 @@ export class LanguageLabelManagerComponent {
         return this.language.getLangText(language);
     }
 
+    /**
+     * @deprecated since 2024.01.001
+     */
     public filesToDB() {
         this.modalservice.confirm('Transfering custom labels from language files will change your database content and might destroy/overwrite existing language data in your database! Do you really want to do this?', 'Caution!', 'warning' ).subscribe( (answer) => {
             if ( answer ) {

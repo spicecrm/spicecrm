@@ -49,6 +49,11 @@ export class SpiceImporterService {
     public processByMethod = false;
     public availableClasses: {id: string, name: string}[] = [];
 
+    /**
+     * holds all nonDB fields
+     */
+    public nonDBFields: any[] = undefined;
+
     constructor(public language: language, private model: model, private backend: backend) {
     }
 

@@ -314,6 +314,7 @@ class RESTManager
             $authData['password'] = $pass;
             $authData['code2fa'] = $headers['code2fa'];
             $authData['deviceID'] = $headers['device-id'];
+            $authData['rememberDevice'] = $headers['remember-device'];
         }
 
         return (object) ['authData' => (object) $authData, 'authType' => $authType];

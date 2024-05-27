@@ -1,5 +1,16 @@
 <?php
-/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of KReporter. KReporter is an enhancement developed
+ * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ *
+ * This Version of the KReporter is licensed software and may only be used in
+ * alignment with the License Agreement received with this Software.
+ * This Software is copyrighted and may not be further distributed without
+ * witten consent of aac services k.s.
+ *
+ * You can contact us at info@kreporter.org
+ ********************************************************************************/
+
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 
@@ -118,6 +129,22 @@ SpiceDictionaryHandler::getInstance()->dictionary['KReport'] = ['table' => 'krep
             'type' => 'int',
             'len' => 6,
             'vname' => 'LBL_PRIORITY'
+        ],
+        'presentation_export_display' => [
+            'name' => 'presentation_export_display',
+            'type' => 'html',
+            'dbtype' => 'longtext',
+            'vname' => 'LBL_PRESENTATION_EXPORT_DISPLAY',
+            'source' => 'non-db',
+            'comment' => 'to insert in the report output template'
+        ],
+        'visualization_export_display' => [
+            'name' => 'visualization_export_display',
+            'type' => 'html',
+            'dbtype' => 'longtext',
+            'vname' => 'LBL_PRESENTATION_EXPORT_DISPLAY',
+            'source' => 'non-db',
+            'comment' => 'to insert in the report output template'
         ],
     ],
     'indices' => [

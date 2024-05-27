@@ -5,7 +5,7 @@ import {Component} from "@angular/core";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
-import {UserChangePasswordModal} from "./userchangepasswordmodal";
+import {GlobalLoginChangePassword} from "../../../globalcomponents/components/globalloginchangepassword";
 
 @Component({
     selector: "user-change-password-button",
@@ -22,7 +22,7 @@ export class UserChangePasswordButton {
     }
 
     public execute() {
-        this.modal.openModal("UserChangePasswordModal");
+        this.modal.openStaticModal(GlobalLoginChangePassword);
     }
 
 }

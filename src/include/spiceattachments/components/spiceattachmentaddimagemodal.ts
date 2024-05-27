@@ -74,11 +74,12 @@ export class SpiceAttachmentAddImageModal {
         let mediaMetaData = this.inputMedia.mediaMetaData;
 
         // upload the attachment
-        this.modelattachments.uploadFileBase64( this.filecontent, mediaMetaData.filename, mediaMetaData.mimetype, this.systemCategoryId);
-
-        // emit when upload finished
-        this.responseSubject.next(true);
-        this.responseSubject.complete();
+        this.modelattachments.uploadFileBase64( this.filecontent, mediaMetaData.filename, mediaMetaData.mimetype, this.systemCategoryId)
+            .subscribe(() => {
+                // emit when upload finished
+                this.responseSubject.next(true);
+                this.responseSubject.complete();
+            });
 
         this.self.destroy();
     }

@@ -1,0 +1,5 @@
+<div class="slds-grow">
+    <system-chart-js-one-dimensional [chartType]="chartType" padding="none">
+        <system-chart-data-row *ngFor="let bucket of buckets" [label]="bucket.label" [value]="bucket.value"/>
+    </system-chart-js-one-dimensional>
+</div>

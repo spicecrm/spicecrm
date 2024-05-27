@@ -1,5 +1,16 @@
 <?php
-/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of KReporter. KReporter is an enhancement developed
+ * by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ *
+ * This Version of the KReporter is licensed software and may only be used in
+ * alignment with the License Agreement received with this Software.
+ * This Software is copyrighted and may not be further distributed without
+ * witten consent of aac services k.s.
+ *
+ * You can contact us at info@kreporter.org
+ ********************************************************************************/
+
 
 /** @var string $module */
 /** @var string $object_name */
@@ -31,6 +42,7 @@ $vardefs = [
             'name' => 'account_type',
             'vname' => 'LBL_TYPE',
             'type' => 'enum',
+            'dbType' => 'varchar',
             'options' => 'account_type_dom',
             'len' => 50,
             'comment' => 'The Company is of this type',
@@ -65,7 +77,12 @@ $vardefs = [
         'is_inactive' => [
             'name' => 'is_inactive',
             'vname' => 'LBL_IS_INACTIVE',
-            'type' => 'bool'
+            'type' => 'enum',
+            'options' => 'is_inactive_dom',
+            'default' => '0',
+            'required' => true,
+            'len' => 1,
+            'audited' => true
         ],
         'billing_address' => [
             'name' => 'billing_address',
@@ -466,7 +483,7 @@ $vardefs = [
             [
                 'lhs_module' => $module, 'lhs_table' => strtolower($module), 'lhs_key' => 'id',
                 'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
-                'relationship_type' => 'many-to-many',
+                'relationship_type' => 'email-address',
                 'join_table' => 'email_addr_bean_rel', 'join_key_lhs' => 'bean_id', 'join_key_rhs' => 'email_address_id',
                 'relationship_role_column' => 'bean_module',
                 'relationship_role_column_value' => $module
@@ -474,7 +491,7 @@ $vardefs = [
         strtolower($object_name) . '_email_addresses_primary' =>
             ['lhs_module' => $module, 'lhs_table' => strtolower($module), 'lhs_key' => 'id',
                 'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
-                'relationship_type' => 'many-to-many',
+                'relationship_type' => 'email-address',
                 'join_table' => 'email_addr_bean_rel', 'join_key_lhs' => 'bean_id', 'join_key_rhs' => 'email_address_id',
                 'relationship_role_column' => 'primary_address',
                 'relationship_role_column_value' => '1'

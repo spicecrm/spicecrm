@@ -20,8 +20,6 @@ use Composer\Semver\VersionParser;
 
 
 
-
-
 class InstalledVersions
 {
 private static $installed = array (
@@ -32,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '4cffb406b2c9f24983fb7f772d07263606a37145',
+    'reference' => 'e8399a5890237c3e2df3112376091c5f91ee1520',
     'name' => '__root__',
   ),
   'versions' => 
@@ -44,7 +42,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '4cffb406b2c9f24983fb7f772d07263606a37145',
+      'reference' => 'e8399a5890237c3e2df3112376091c5f91ee1520',
     ),
     'brick/math' => 
     array (
@@ -63,6 +61,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '5031045d9640b38cfc14aac9667470df09c9e090',
+    ),
+    'ezyang/htmlpurifier' => 
+    array (
+      'pretty_version' => 'v4.17.0',
+      'version' => '4.17.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'bbc513d79acf6691fa9cf10f192c90dd2957f18c',
     ),
     'fig/http-message-util' => 
     array (
@@ -84,66 +91,66 @@ private static $installed = array (
     ),
     'giggsey/libphonenumber-for-php' => 
     array (
-      'pretty_version' => '8.13.9',
-      'version' => '8.13.9.0',
+      'pretty_version' => '8.13.11',
+      'version' => '8.13.11.0',
       'aliases' => 
       array (
       ),
-      'reference' => '7cb665df423d453a1fd8e3af50cd4df55ed31c94',
+      'reference' => 'e2395dadce92f139fc6ec71bfe8ae46a2e942944',
     ),
     'giggsey/locale' => 
     array (
-      'pretty_version' => '2.3',
-      'version' => '2.3.0.0',
+      'pretty_version' => '2.4',
+      'version' => '2.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5f035523740be40d40ac768a123c9bcc1ae12f56',
+      'reference' => 'a6b33dfc9e8949b7e28133c4628b29cd9f1850bb',
     ),
     'google/auth' => 
     array (
-      'pretty_version' => 'v1.26.0',
-      'version' => '1.26.0.0',
+      'pretty_version' => 'v1.27.0',
+      'version' => '1.27.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f1f0d0319e2e7750ebfaa523c78819792a9ed9f7',
+      'reference' => '81a5d40937fb4afc26e80b6fa25b3f164a5763d2',
     ),
     'google/cloud-core' => 
     array (
-      'pretty_version' => 'v1.49.4',
-      'version' => '1.49.4.0',
+      'pretty_version' => 'v1.51.2',
+      'version' => '1.51.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6723a3fde6cc7a307a21ddbf7fce9cf6fab61833',
+      'reference' => '85dc48d62143f4bbfaa34c24da95003371de7b79',
     ),
     'google/cloud-storage' => 
     array (
-      'pretty_version' => 'v1.30.2',
-      'version' => '1.30.2.0',
+      'pretty_version' => 'v1.31.2',
+      'version' => '1.31.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b7f74ec1b701d56945cbc6c20345e2d21b1b3545',
+      'reference' => '7fe96d56856cda550b21779bb95a066b264852da',
     ),
     'google/crc32' => 
     array (
-      'pretty_version' => 'v0.1.0',
-      'version' => '0.1.0.0',
+      'pretty_version' => 'v0.2.0',
+      'version' => '0.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a8525f0dea6fca1893e1bae2f6e804c5f7d007fb',
+      'reference' => '948f7945d803dcc1a375152c72f63144c2dadf23',
     ),
     'guzzlehttp/guzzle' => 
     array (
-      'pretty_version' => '7.5.0',
-      'version' => '7.5.0.0',
+      'pretty_version' => '7.5.1',
+      'version' => '7.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b50a2a1251152e43f6a37f0fa053e730a67d25ba',
+      'reference' => 'b964ca597e86b752cd994f27293e9fa6b6a95ed9',
     ),
     'guzzlehttp/promises' => 
     array (
@@ -156,12 +163,12 @@ private static $installed = array (
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '2.4.4',
-      'version' => '2.4.4.0',
+      'pretty_version' => '2.5.0',
+      'version' => '2.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3cf1b6d4f0c820a2cf8bcaec39fc698f3443b5cf',
+      'reference' => 'b635f279edd83fc275f822a1188157ffea568ff6',
     ),
     'hfig/mapi' => 
     array (
@@ -190,6 +197,33 @@ private static $installed = array (
       ),
       'reference' => 'f23fe9d4e95255dacee1bf3525e0810d1a1b0f37',
     ),
+    'maennchen/zipstream-php' => 
+    array (
+      'pretty_version' => '2.2.6',
+      'version' => '2.2.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '30ad6f93cf3efe4192bc7a4c9cad11ff8f4f237f',
+    ),
+    'markbaker/complex' => 
+    array (
+      'pretty_version' => '3.0.2',
+      'version' => '3.0.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '95c56caa1cf5c766ad6d65b6344b807c1e8405b9',
+    ),
+    'markbaker/matrix' => 
+    array (
+      'pretty_version' => '3.0.1',
+      'version' => '3.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '728434227fe21be27ff6d86621a1b13107a2562c',
+    ),
     'monolog/monolog' => 
     array (
       'pretty_version' => '2.9.1',
@@ -207,6 +241,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '9be552eebcc1ceec9776378f7dcc085246cacca6',
+    ),
+    'myclabs/php-enum' => 
+    array (
+      'pretty_version' => '1.8.4',
+      'version' => '1.8.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a867478eae49c9f59ece437ae7f9506bfaa27483',
     ),
     'nikic/fast-route' => 
     array (
@@ -237,12 +280,12 @@ private static $installed = array (
     ),
     'pear/pear-core-minimal' => 
     array (
-      'pretty_version' => 'v1.10.11',
-      'version' => '1.10.11.0',
+      'pretty_version' => 'v1.10.13',
+      'version' => '1.10.13.0',
       'aliases' => 
       array (
       ),
-      'reference' => '68d0d32ada737153b7e93b8d3c710ebe70ac867d',
+      'reference' => 'aed862e95fd286c53cc546734868dc38ff4b5b1d',
     ),
     'pear/pear_exception' => 
     array (
@@ -306,6 +349,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '405f03cb679eff59c84f223962c9cadf14b38450',
+    ),
+    'phpoffice/phpspreadsheet' => 
+    array (
+      'pretty_version' => '1.29.0',
+      'version' => '1.29.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'fde2ccf55eaef7e86021ff1acce26479160a0fa0',
     ),
     'psr/cache' => 
     array (
@@ -414,6 +466,15 @@ private static $installed = array (
         0 => '1.0.0 || 2.0.0 || 3.0.0',
       ),
     ),
+    'psr/simple-cache' => 
+    array (
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '408d5eafb83c57f6365a3ca330ff23aa4a5fa39b',
+    ),
     'ralouphie/getallheaders' => 
     array (
       'pretty_version' => '3.0.3',
@@ -461,7 +522,7 @@ private static $installed = array (
     array (
       'replaced' => 
       array (
-        0 => 'v1.10.11',
+        0 => 'v1.10.13',
       ),
     ),
     'sabberworm/php-css-parser' => 
@@ -509,12 +570,12 @@ private static $installed = array (
     ),
     'slim/psr7' => 
     array (
-      'pretty_version' => '1.6',
-      'version' => '1.6.0.0',
+      'pretty_version' => '1.6.1',
+      'version' => '1.6.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3471c22c1a0d26c51c78f6aeb06489d38cf46a4d',
+      'reference' => '72d2b2bac94ab4575d369f605dbfafbe168d3163',
     ),
     'slim/slim' => 
     array (
@@ -590,30 +651,30 @@ private static $installed = array (
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v5.4.21',
-      'version' => '5.4.21.0',
+      'pretty_version' => 'v5.4.23',
+      'version' => '5.4.23.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3713e20d93e46e681e51605d213027e48dab3469',
+      'reference' => '4cd2e3ea301aadd76a4172756296fe552fb45b0b',
     ),
     'tecnickcom/tc-lib-barcode' => 
     array (
-      'pretty_version' => '1.17.19',
-      'version' => '1.17.19.0',
+      'pretty_version' => '1.17.24',
+      'version' => '1.17.24.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8dbed267c44cb95a903d1149b81752ec4401dab1',
+      'reference' => '73e64cad6df33cfd05ca5009773975fcb0d9b960',
     ),
     'tecnickcom/tc-lib-color' => 
     array (
-      'pretty_version' => '1.14.18',
-      'version' => '1.14.18.0',
+      'pretty_version' => '1.14.23',
+      'version' => '1.14.23.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c430e0b8a8847935a72bc5fcc334d1e4d029e23b',
+      'reference' => '44dd214d6ccd6970b87ab54615b59015707fb888',
     ),
   ),
 );
@@ -632,6 +693,7 @@ $packages = array();
 foreach (self::getInstalled() as $installed) {
 $packages[] = array_keys($installed['versions']);
 }
+
 
 if (1 === \count($packages)) {
 return $packages[0];
@@ -828,7 +890,6 @@ self::$installedByVendor = array();
 
 
 
-
 private static function getInstalled()
 {
 if (null === self::$canGetVendors) {
@@ -838,7 +899,8 @@ self::$canGetVendors = method_exists('Composer\Autoload\ClassLoader', 'getRegist
 $installed = array();
 
 if (self::$canGetVendors) {
-foreach (ClassLoader::getRegisteredLoaders() as $vendorDir => $loader) {
+
+ foreach (ClassLoader::getRegisteredLoaders() as $vendorDir => $loader) {
 if (isset(self::$installedByVendor[$vendorDir])) {
 $installed[] = self::$installedByVendor[$vendorDir];
 } elseif (is_file($vendorDir.'/composer/installed.php')) {

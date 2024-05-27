@@ -252,7 +252,9 @@ export class calendar implements OnDestroy {
      */
     set sheetType(value) {
         this._sheetType = value;
-        this.session.setSessionData('sheetType', value);
+        if (!this.isDashlet) {
+            this.userPreferences.setPreference("sheetType", value, true, "Calendar");
+        }
     }
 
     /**
@@ -1053,6 +1055,7 @@ export class calendar implements OnDestroy {
             .subscribe(calendars => {
                 this.ownerCalendarVisible = calendars?.hasOwnProperty('ownerVisible') ? calendars?.ownerVisible: true;
                 if (calendars) {
+                    this._sheetType = calendars.sheetType ?? 'Week';
                     this.setUserCalendars(calendars.Users, false);
                     this.setOtherCalendars(calendars.Other, false);
                 }

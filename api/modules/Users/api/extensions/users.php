@@ -68,6 +68,14 @@ $routes = [
         ]
     ],
     [
+        'method'      => 'post',
+        'route'       => '/module/Users/{id}/create',
+        'class'       => UsersController::class,
+        'function'    => 'createUser',
+        'description' => 'an all-in-one endpoint to create a user from a BEAN',
+        'options'     => []
+    ],
+    [
         'method'      => 'delete',
         'route'       => '/module/Users/{id}',
         'oldroute'    => '/module/Users/{userId}',
@@ -124,6 +132,22 @@ $routes = [
         'oldroute'    => '/module/Users/{id}/activate',
         'class'       => UsersController::class,
         'function'    => 'activateUser',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => true],
+        'parameters' => [
+            'id' => [
+                'in' => 'query',
+                'description' => '',
+                'type' => ValidationMiddleware::TYPE_GUID,
+                'required' => true,
+            ],
+        ]
+    ],
+    [
+        'method'      => 'post',
+        'route'       => '/module/Users/{id}/roles',
+        'class'       => UsersController::class,
+        'function'    => 'setUserRoles',
         'description' => '',
         'options'     => ['noAuth' => false, 'adminOnly' => false],
         'parameters' => [

@@ -87,7 +87,7 @@ export class fts {
         let items = searchTerm.split(' ');
         const errors = [];
 
-        if (items.filter(i => i.length < minNgram).length > 0) {
+        if (items.filter(i => i !== 'OR' && i.length < minNgram).length > 0) {
             errors.push({
                 label: 'MSG_SEARCH_TERM_TOO_SHORT',
                 nestedValues: [String(minNgram)]

@@ -1,19 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {
-    Component,
-    OnInit
-} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 @Component({
@@ -23,16 +19,26 @@ declare var _: any;
 })
 export class ObjectPageHeader implements OnInit {
 
+    /**
+     * holds component configuration
+     */
     public componentconfig: any = {};
+
+    /**
+     * actionset id
+     */
     public actionSet: string = '';
+
+    /**
+     * fieldset id
+     */
     public fieldset: string = '';
 
-    get moduleName() {
-        return this.model.module;
-    }
-
-    constructor(public language: language, public router: Router, public model: model, public metadata: metadata) {
-
+    constructor(
+        public router: Router,
+        public model: model,
+        public metadata: metadata
+    ) {
     }
 
     public ngOnInit() {
@@ -44,10 +50,22 @@ export class ObjectPageHeader implements OnInit {
         this.fieldset = componentconfig.fieldset;
     }
 
+    get moduleName() {
+        return this.model.module;
+    }
+
+    /**
+     * checks if the field "is_inactive" exists on the Bean
+     * if true the ObjectSetInactiveIcon is displayed
+     */
+    get hasInactiveFieldProperty(): boolean {
+        return this.metadata.hasField(this.model._module, 'is_inactive');
+    }
+
     /**
      * checks that the user can navigate to the module
      */
-    get canGoToModule(){
+    get canGoToModule() {
         return this.metadata.getModuleDefs(this.moduleName).visible && this.metadata.checkModuleAcl(this.moduleName, 'list');
     }
 
@@ -55,7 +73,7 @@ export class ObjectPageHeader implements OnInit {
      * opens the regular list view
      */
     public goToModule() {
-        if (this.canGoToModule){
+        if (this.canGoToModule) {
             this.router.navigate(['/module/' + this.moduleName]);
         }
     }

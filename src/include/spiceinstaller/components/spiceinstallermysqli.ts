@@ -22,6 +22,8 @@ export class SpiceinstallerMySQLi {
     constructor( public spiceinstaller: spiceinstaller ) {
         if(!this.spiceinstaller.db_port) this.spiceinstaller.db_port = '3306';
         if(!this.spiceinstaller.collation) this.spiceinstaller.collation = 'utf8mb4_general_ci';
+        if(!this.spiceinstaller.db_user_name) this.spiceinstaller.db_user_name = 'root';
+        if(!this.spiceinstaller.db_host_name) this.spiceinstaller.db_host_name = '127.0.0.1';
         if(!this.spiceinstaller.db_name) this.spiceinstaller.db_name = this.spiceinstaller.systemname.toLowerCase().replace(/\s/g, '');
     }
 

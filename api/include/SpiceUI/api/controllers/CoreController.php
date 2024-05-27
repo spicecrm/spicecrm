@@ -1,12 +1,40 @@
 <?php
-/***** SPICE-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+ * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+ * You can contact us at info@spicecrm.io
+ * 
+ * SpiceCRM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ * 
+ * SpiceCRM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ********************************************************************************/
 
 namespace SpiceCRM\includes\SpiceUI\api\controllers;
 
+use Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\RESTManager;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
@@ -14,6 +42,7 @@ use SpiceCRM\includes\SpiceUI\SpiceUIRESTHandler;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
 use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
 
@@ -40,16 +69,22 @@ class CoreController
     /**
      * returns general system information
      *
-     * @param $req
-     * @param $res
-     * @param $args
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
      * @return mixed
+     * @throws Exception
      */
     public function getSysinfo(Request $req, Response $res, array $args): Response {
 
         $languages = LanguageManager::getLanguages(true);
         $languages['required_labels'] = LanguageManager::getSpecificLabels( SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
-            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE'
+            'LBL_KEEP_ME_LOGGED_IN', 'LBL_USER_NAME', 'LBL_PASSWORD', 'LBL_LOGIN', 'LBL_ENTER_CODE', 'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_INVALID_CODE',
+            'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD', 'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE',
+            'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL', 'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY',
+            'LBL_SAVE', 'LBL_SELECT_2FA_METHOD', 'LBL_CODE', 'LBL_TOTP_AUTHENTICATION', 'MSG_AUTHENTICATOR_INSTRUCTIONS', 'MSG_OLD_PWD_NOT_AS_NEW',
+            'LBL_REMEMBER_DEVICE', 'LBL_CONFIRM', 'LBL_SMS', 'LBL_EMAIL', 'MSG_TOTP_GENERATING_CODE', 'LBL_SENDING', 'LBL_SENT', 'ERR_FAILED_TO_EXECUTE',
+            'ERR_RECOVERY_MODE_ENABLED', 'ERR_MAINTENANCE_MODE_ENABLED'
         ]);
 
         // CR1000463 User Manager cleanup.. we need to know in frontend if spiceacl is running
@@ -59,8 +94,10 @@ class CoreController
         }
 
         $uiRestHandler = new SpiceUIRESTHandler();
+        SystemStartupMode::checkDictionary();
 
         $payload = [
+            'startup_mode' => SystemStartupMode::getMode(),
             'version' => SpiceConfig::getSystemVersion(),
             'systemsettings' => [
                 'upload_maxsize' => SpiceConfig::getInstance()->config['upload_maxsize'],
@@ -168,7 +205,7 @@ class CoreController
      * @param $res
      * @param $args
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     function getLanguage($req, $res, $args)
     {

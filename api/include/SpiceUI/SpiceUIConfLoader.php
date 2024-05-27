@@ -41,19 +41,24 @@
 
 namespace SpiceCRM\includes\SpiceUI;
 
-use Exception;
+use SpiceCRM\data\Relationships\RelationshipFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryVardefs;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryIndexes;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryItems;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryRelationships;
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
 class SpiceUIConfLoader
 {
-    public $sysuitables = [];
-
     public $loader;
     public $routebase = 'config'; // the common part in endpoint after domain url itself
 
@@ -107,12 +112,23 @@ class SpiceUIConfLoader
         'syssalesdoctypesitemtypes',
         'syscategorytrees',
         'syscategorytreelinks',
-        'syststatusnetwork',
         'schedulerjobtasks',
         'schedulerjobs',
         'sysuihtmlstylesheets',
         'sysuihtmlformats'
     ];
+    /**
+     * @var array holds the errors from load package
+     */
+    private array $loadErrors = [];
+    /**
+     * @var array holds the loaded tables entries count
+     */
+    private array $loadedTablesEntries = [];
+    /**
+     * @var int loaded entries count
+     */
+    private int $loadedEntriesCount = 0;
 
     /**
      * SpiceUIConfLoader constructor.
@@ -142,17 +158,18 @@ class SpiceUIConfLoader
 
     /**
      * retrieve table column names
-     * @param $tb
-     * @return array
+     * @param string $tableName
+     * @return array|null
+     * @throws \Exception
      */
-    public function getTableColumns($tb)
+    public function getTableColumns(string $tableName): ?array
     {
-        $columns = DBManagerFactory::getInstance()->get_columns($tb);
-        $cols = [];
-        foreach ($columns as $c => $col) {
-            $cols[] = $col['name'];
-        }
-        return $cols;
+        $dic = SpiceDictionary::getInstance()->getDefsByTableName($tableName);
+
+        return !$dic ? null : array_column(
+            array_filter($dic['fields'], fn($f) => $f['source'] != 'non-db'),
+            'name'
+        );
     }
 
     /**
@@ -249,188 +266,228 @@ class SpiceUIConfLoader
     }
 
     /**
-     * get package name from route params
-     * @param $routeparams
-     * @return bool
+     * load system ui config from reference database
+     * @param $routeParams
+     * @param array $params
+     * @param bool $checkOpenChangeRequest
+     * @return array
+     * @throws Exception
      */
-    public function getLoadingPackageName($routeparams){
-        $loadingCore = false;
-        $routeParts = explode("/", $routeparams);
-        if($routeParts[1] == 'core') $loadingCore = true;
-        return $loadingCore;
+    public function loadDefaultConf($routeParams,array $params, bool $checkOpenChangeRequest = true): array
+    {
+        if ($checkOpenChangeRequest && $this->loader->hasOpenChangeRequest()) {
+            throw new Exception("Open Change Requests found! They would be erased...");
+        }
+
+        $response = $this->loadPackageData($routeParams);
+
+        if (!$response || !empty($response['nodata'])) {
+            throw (new Exception($response['nodata'] ?: "REST Call error somewhere... Action aborted"))->setDetails([['scope' => 'table' ,'name' => 'x', 'message' => "No Dictionary found for table"]]);
+        }
+
+        $this->resetCounters();
+
+        $this->loadPackageModules($response, $params['packages']);
+        $this->processNewDictionaries($response, $params['packages']);
+
+        foreach ($response as $tableName => $records) {
+            $this->loadTableRecords($tableName, $records, $params['packages']);
+        }
+
+        if(count($this->loadErrors) > 0){
+            $packages = implode(', ', $params['packages']);
+            throw (new Exception("Failed to load packages $packages", 'packageLoadFailed'))->setDetails($this->loadErrors);
+        }
+
+        return ["success" => true, "queries" => $this->loadedEntriesCount, "errors" => array_unique($this->loadErrors), "tables" => $this->loadedTablesEntries];
     }
 
     /**
-     * load sysui config from reference database
-     * get column name for each table
-     * make a select passing the column names
-     * create insert queries.
-     * @param $route
-     * @param $params
+     * reset the counters properties
+     * @return void
      */
-    public function loadDefaultConf($routeparams, $params, $checkopen = true)
+    private function resetCounters()
     {
-        // check which package is being loaded and prepare workaround for core
-        $loadingCore = $this->getLoadingPackageName($routeparams);
-        // make sure we have core legacy dictionaries when core package is being loaded
-        if($loadingCore){
-            SpiceDictionaryVardefs::loadLegacyFiles('all');
-        }
-
-        // initialize
-        $db = DBManagerFactory::getInstance();
-        $tables = [];
-        $inserts = [];
-        $errors = [];
-
-        if ($checkopen && $this->loader->hasOpenChangeRequest()) {
-            $errormsg = "Open Change Requests found! They would be erased...";
-            throw new Exception($errormsg);
-        }
-        //get data
-        if (!$response = $this->loadPackageData($routeparams)) {
-            $errormsg = "REST Call error somewhere... Action aborted";
-            throw new Exception($errormsg);
-        }
-
-        $this->sysuitables = array_keys($response);
-
-        // make sure we have the dictionary definitions for system metadata tables
-//        SpiceDictionaryHandler::loadMetaDataFiles(['metadata']);
-//        SpiceDictionaryHandler::loadCachedVardefs(true);
-
-        // workaround for packages in which a config entries refer to table that hasn't been created yet
-        // e.g. uomunits in productmanagement package
-        // check if you already have the tables in the database
-        // create them if not and send a repair notification
-        foreach($this->sysuitables as $tb){
-            if(!$db->tableExists($tb)){
-                // add the sysmodule entry that should be contained in this package
-                if(isset($response['sysmodules']) && !empty($response['sysmodules'])) {
-                    foreach($response['sysmodules'] as $moduleId => $encoded){
-                        if ($decodeData = json_decode(base64_decode($encoded), true)){
-                            //prepare values for DB query
-                            foreach ($decodeData as $key => $value) {
-                                $decodeData[$key] = (is_null($value) || $value === "" ? NULL :  $value);
-                            }
-                            // echo print_r($decodeData, true);
-                            //delete before insert
-                            $delWhere = ['id' => $decodeData['id']];
-                            if(!$db->deleteQuery('sysmodules', $delWhere)){
-                                LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
-                            }
-                            if(!$db->insertQuery('sysmodules', $decodeData, true)){
-                                $errors[] = ('Error inserting record into sysmodules '.$db->lastDbError());
-                            }
-                        }
-                    }
-                    //die('Please log out, relogin, run repair/ rebuild, then reload this package');
-                }
-            }
-        }
-
-        if (!empty($response['nodata'])) {
-            $errors[] = ($response['nodata']);
-        }
-
-        foreach ($response as $tb => $content) {
-            //truncate command
-            $tables[$tb] = 0;
-            $thisCols = $this->getTableColumns($tb);
-            switch ($tb) {
-                case 'syslangs':
-                    $db->truncateTableSQL($tb);
-                    break;
-                case 'sysfts': //don't do anything.
-                    // Since we have no custom fts table, delete the whole thing might delete custom entries.
-                    // therefore no action here
-                    // each reference entry will be deleted before insert. See below 'delete before insert'.
-                    break;
-                default:
-                    if(array_search('package', $thisCols) !== false) {
-                        $deleteWhere = "package IN('" . implode("','", $params['packages']) . "') ";
-                        //if (in_array($params['packages'][0], $params['packages']))
-                        $deleteWhere .= "OR package IS NULL OR package=''";
-                        if(!$db->deleteQuery($tb, $deleteWhere, true)){
-                            LoggerManager::getLogger()->fatal('error deleting packages '.$db->lastError());
-                        }
-                    }
-            }
-
-            $tbColCheck = false;
-            foreach ($content as $id => $encoded) {
-                if (!$decodeData = json_decode(base64_decode($encoded), true))
-                    $errors[] = ("Error decoding data: " . json_last_error_msg() .
-                        " Reference table = $tb" .
-                        " Action aborted");
-
-                //compare table column names
-                if (!$tbColCheck && is_array($decodeData)) {
-                    $referenceCols = array_keys($decodeData);
-                    if (!empty(array_diff($referenceCols, $thisCols))) {
-                        $errors[] = ("Table structure for $tb is not up-to-date or there is new module. In case of a new module, logout, login, repair, then load core package again." .
-                            " Reference table = " . implode(", ", $referenceCols) .
-                            " Client table = " . implode(", ", $thisCols) .
-                            " Action aborted");
-                    }
-                    $tbColCheck = true;
-                }
-
-                //prepare values for DB query
-                if(is_array($decodeData)){
-                    foreach ($decodeData as $key => $value) {
-                        $decodeData[$key] = (is_null($value) || $value === "" ? NULL :  $value);
-                    }
-
-                    // set the flag to check on insert
-                    $skipInsert = false;
-
-                    //delete before insert
-                    if(!in_array($tb, $this->insertOnlyTables)){
-                        $delWhere = ['id' => $decodeData['id']];
-                        if(!$db->deleteQuery($tb, $delWhere)){
-                            LoggerManager::getLogger()->fatal("error deleting $tb entry {$decodeData['id']} ".$db->lastError());
-                        }
-                    } else{
-                        // check if record is present
-                        if($dbResRow = $db->getOne("select id from $tb where id='{$decodeData['id']}'")){
-                            $skipInsert = true;
-                        }
-                    }
-
-                    // skip insert if this is a record we should keep
-                    if($skipInsert) {
-                        continue;
-                    }
-
-                    //run insert
-//                if($tb == 'email_templates'){
-//                    file_put_contents('spicecrm.log', 'dict email_templates '.print_r(SpiceDictionaryHandler::getInstance()->dictionary['EmailTemplate'], true)."\n", FILE_APPEND);
-//                }
-                    if($dbRes = $db->insertQuery($tb, $decodeData, true)){
-                        $tables[$tb]++;
-                        $inserts[] = $dbRes;
-                    } else{
-                        $errors[] = $db->lastError();
-                    }
-                }
-            }
-        }
-
-        //if no inserts where created => abort
-//        if (count($inserts) < 1) {
-//            throw new Exception("No inserts or no inserts run successfully. Action aborted.");
-//        }
-
-        if(count($errors) > 0){
-            $packages = implode(', ', $params['packages']);
-            throw (new \SpiceCRM\includes\ErrorHandlers\Exception("Failed to load packages $packages", 'packageLoadFailed'))->
-            setDetails($errors);
-        }
-
-        return ["success" => true, "queries" => count($inserts), "errors" => array_unique($errors), "tables" => $tables];
+        $this->loadErrors = [];
+        $this->loadedTablesEntries = [];
+        $this->loadedEntriesCount = 0;
     }
 
+    /**
+     * load package table records
+     * @param string $tableName
+     * @param array|null $records
+     * @param array $packages
+     * @throws Exception | \Exception
+     */
+    private function loadTableRecords(string $tableName, ?array $records, array $packages)
+    {
+        $db = DBManagerFactory::getInstance();
+
+        $tableCols = $this->getTableColumns($tableName);
+
+        if (!$tableCols) {
+            $this->loadErrors[] = ['scope' => 'table' ,'name' => $tableName, 'message' => "No Dictionary found for table $tableName"];
+            return;
+        }
+
+        $hasPackageField = in_array('package', $tableCols);
+
+        if ($hasPackageField) {
+            $this->cleanupPackageBeforeLoad($tableName, $packages);
+        }
+
+        # if no records do nothing
+        if (!$records) return;
+
+        if (!isset($this->loadedTablesEntries[$tableName])) {
+            $this->loadedTablesEntries[$tableName] = 0;
+        }
+
+        foreach ($records as $record) {
+
+            $record = json_decode(base64_decode($record), true);
+
+            # if the table content data could not be decoded skip the table load
+            if (!$record) {
+                $this->loadErrors[] = ['scope' => 'global' ,'name' => $tableName, 'message' => ("Error decoding data: " . json_last_error_msg() . " Reference table = $tableName Action aborted")];
+
+                continue;
+            }
+
+            # skip loading existing records from the insert only tables
+            if (in_array($tableName, $this->insertOnlyTables) && $db->getOne("select id from $tableName where id='{$record['id']}'")) {
+                continue;
+            }
+
+            $record = $this->prepareRecordData($record, $tableCols);
+
+            $db->upsertQuery($tableName, ['id' => $record['id']], $record);
+
+            if(empty($db->lastError())){
+                $this->loadedTablesEntries[$tableName]++;
+            } else{
+                $this->loadErrors[] = ['scope' => 'records' ,'name' => $tableName, 'message' => $db->lastError()];
+            }
+        }
+
+        $this->loadedEntriesCount += $this->loadedTablesEntries[$tableName];
+    }
+
+    /**
+     * filter out the unknown columns and return the record
+     * @param array $record
+     * @param $colDefs
+     * @return array
+     */
+    private function prepareRecordData(array $record, $colDefs): array
+    {
+        $res = [];
+
+        foreach ($colDefs as $col) {
+            $res[$col] = is_null($record[$col]) || $record[$col] === "" ? NULL : $record[$col];
+        }
+
+        return $res;
+    }
+
+    /**
+     * cleanup package entries before loading the package data
+     * @param string $table
+     * @param array $cols
+     * @param $packages
+     * @return void
+     * @throws Exception
+     */
+    private function cleanupPackageBeforeLoad(string $table,array $packages)
+    {
+        if (in_array($table, ['sysfts', 'syslangs'])) return;
+
+        /** @var DBManager $db */
+        $db = DBManagerFactory::getInstance();
+
+        $deleteWhere = "package IN('" . implode("','", $packages) . "') OR package IS NULL OR package=''";
+        $deleted = $db->deleteQuery($table, $deleteWhere);
+
+        if (!$deleted) {
+            LoggerManager::getLogger()->fatal('error deleting packages ' . $db->lastError());
+        }
+    }
+
+    /**
+     * insert package system modules
+     * @param array|null $response
+     * @throws Exception | \Exception
+     */
+    private function loadPackageModules(array &$response, array $packages)
+    {
+        $this->loadTableRecords('sysmodules', $response['sysmodules'], $packages);
+
+        unset($response['sysmodules']);
+
+        SpiceModules::getInstance()->loadModules(true);
+    }
+
+    /**
+     * check the package dictionaries if loaded and repair the dictionaries
+     * @param array $response
+     * @param array $packages
+     * @return void
+     * @throws Exception
+     * @throws DatabaseException | \Exception
+     */
+    private function processNewDictionaries(array &$response, array $packages): void
+    {
+        $dictionaryTables = [
+            'sysdictionarydefinitions',
+            'sysdictionaryindexitems',
+            'sysdictionaryindexes' ,
+            'sysdictionaryitems',
+            'sysdictionaryrelationshipfields',
+            'sysdictionaryrelationshippolymorphs',
+            'sysdictionaryrelationships',
+            'sysdomaindefinitions',
+            'sysdomainfields',
+            'sysdomainfieldvalidations',
+            'sysdomainfieldvalidationvalues',
+        ];
+
+        $definitions = SpiceDictionaryDefinitions::getInstance();
+        $db = DBManagerFactory::getInstance();
+
+        foreach ($dictionaryTables as $table) {
+            $this->loadTableRecords($table, $response[$table], $packages);
+        }
+
+        SpiceDictionaryDefinitions::getInstance()->reloadItems();
+        SpiceDictionaryItems::getInstance()->reloadItems();
+        SpiceDictionaryIndexes::getInstance()->reloadItems();
+        SpiceDictionaryRelationships::getInstance()->reloadItems();
+
+        foreach ($response['sysdictionarydefinitions'] as $dictionaryDef) {
+
+            $dictionaryDef = json_decode(base64_decode($dictionaryDef), true);
+
+            # repair only active definitions
+            if ($dictionaryDef['status'] != 'a') continue;
+
+            try {
+                $definitions->repair($dictionaryDef['id']);
+            } catch (\Throwable | Exception $exception) {
+                unset($response[$dictionaryDef['tablename']]);
+
+                $this->loadErrors[] = ['scope' => 'dictionary' ,'name' => $dictionaryDef['name'], 'mismatch' => is_callable([$exception, 'getDetails']) ? $exception->getDetails() : null, 'message' => $exception->getMessage()];
+            }
+        }
+
+
+        SpiceDictionary::getInstance()->loadDictionary();
+        RelationshipFactory::getInstance()->loadRelationships(true);
+
+        foreach ($dictionaryTables as $table) {
+            unset($response[$table]);
+        }
+    }
 
     /**
      * Remove sysmodules entries for modules that are not present in backend files
@@ -472,7 +529,7 @@ class SpiceUIConfLoader
         $qArray = [];
         $excludePackageCheck = ['systemdeploymentrpdbentrys'];
         foreach($this->conftables as $conftable) {
-            if(!in_array($conftable, $excludePackageCheck)){
+            if(!in_array($conftable, $excludePackageCheck) && $db->tableExists($conftable)){
                 $qArray[] = "(SELECT package, version FROM $conftable WHERE version is not null AND version <> '')";
             }
         }

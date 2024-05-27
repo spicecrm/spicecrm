@@ -1,62 +1,68 @@
 <system-modal>
     <system-modal-header (close)="close()">Add Dictionary Definition</system-modal-header>
     <system-modal-content>
-        <div class="slds-grid">
+        <div class="slds-grid slds-grid_vertical-align-center">
             <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small" [ngClass]="{'slds-has-error': getMessages('name').length > 0}">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"/></label>
                 <system-input-text [(ngModel)]="dictionarydefinition.name"></system-input-text>
                 <div class="slds-form-element__help" *ngFor="let message of getMessages('name')">{{message.message}}</div>
             </div>
             <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small" [ngClass]="{'slds-has-error': getMessages('tablename').length > 0}">
-                <label class="slds-form-element__label"><system-label label="LBL_TABLE"></system-label></label>
+                <label class="slds-form-element__label"><system-label label="LBL_TABLE"/></label>
                 <system-input-text [(ngModel)]="dictionarydefinition.tablename"></system-input-text>
                 <div class="slds-form-element__help" *ngFor="let message of getMessages('tablename')">{{message.message}}</div>
             </div>
         </div>
-        <div class="slds-grid">
-            <div class="slds-form-element__control slds-size--1-of-4 slds-p-left--xxx-small">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="dictionarydefinition.scope">
                         <option *ngIf="dictionarymanager.changescope == 'all'" value="g"><system-label label="LBL_GLOBAL"></system-label></option>
-                        <option value="c"><system-label label="LBL_CUSTOM"></system-label></option>
+                        <option value="c"><system-label label="LBL_CUSTOM"/></option>
                     </select>
                 </div>
             </div>
-            <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
+            <div class="slds-large-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element" [ngClass]="{'slds-has-error': getMessages('sysdictionary_type').length > 0}">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TYPE"></system-label></label>
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_type">
-                        <option value="module">module</option>
-                        <option value="metadata">metadata</option>
-                        <option value="template">template</option>
-                        <option value="relationship">relationship</option>
-                        <option value="system">system</option>
-                    </select>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_type" (ngModelChange)="handleTypeChange($event)">
+                            <option value="module">module</option>
+                            <option value="metadata">metadata</option>
+                            <option value="template">template</option>
+                            <option value="relationship">relationship</option>
+                            <option value="system">system</option>
+                        </select>
+                    </div>
                 </div>
+                <div class="slds-form-element__help" *ngFor="let message of getMessages('sysdictionary_type')">{{message.message}}</div>
             </div>
-            <div class="slds-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
-                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+            <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"/></label>
                 <system-input-text [(ngModel)]="dictionarydefinition.package"></system-input-text>
             </div>
-            <div class="slds-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
-                <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+            <div class="slds-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"/></label>
                 <system-input-text [(ngModel)]="dictionarydefinition.version"></system-input-text>
             </div>
         </div>
-        <div *ngIf="dictionarydefinition.sysdictionary_type == 'metadata'" class="slds-grid">
-            <div class="slds-large-size--1-of-4 slds-p-right--xxx-small slds-form-element__control">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_CONTENT_TYPE"></system-label></label>
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_contenttype">
-                        <option value="config">config</option>
-                        <option value="custom_config">custom config</option>
-                    </select>
-                </div>
+        <div class="slds-p-vertical--xx-small">
+            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_CONTENT_TYPE"/></label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="dictionarydefinition.sysdictionary_contenttype">
+                    <option value="masterdata">Masterdata</option>
+                    <option value="transactionaldata">tramsactional Data</option>
+                    <option value="logs">Logs</option>
+                    <option value="config">Configuration</option>
+                    <option value="custom_config">custom Configuration</option>
+                </select>
             </div>
         </div>
-        <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
-        <system-input-text maxlength="150" [ngModel]="dictionarydefinition.description"></system-input-text>
+        <div class="slds-p-vertical--xx-small">
+            <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
+            <textarea class="slds-textarea" [ngModel]="dictionarydefinition.description"></textarea>
+        </div>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label> </button>

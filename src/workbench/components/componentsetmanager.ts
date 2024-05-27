@@ -144,6 +144,15 @@ export class ComponentsetManager {
         componentset.package = newPackage;
     }
 
+    get currentComponentSetVersion() {
+        return this.metadata.getComponentSet(this.currentComponentSet).version;
+    }
+
+    set currentComponentSetVersion(newVersion) {
+        let componentset = this.metadata.getComponentSet(this.currentComponentSet);
+        componentset.version = newVersion;
+    }
+
     get currentComponentSetName() {
         return this.metadata.getComponentSet(this.currentComponentSet).name;
     }
@@ -336,8 +345,12 @@ export class ComponentsetManager {
             };
 
             this.backend.postRequest('configuration/spiceui/core/componentsets', {}, postData).subscribe((res: any) => {
-                this.broadcast.broadcastMessage('metadata.updatecomponentsets', postData);
-                this.configurationService.reloadTaskData('componentsets');
+                //this.broadcast.broadcastMessage('metadata.updatecomponentsets', postData);
+                //this.configurationService.reloadTaskData('componentsets');
+
+                // reset cache
+                this.configurationService.setData('componentsets', rawComponetsets);
+
                 this.toast.sendToast('changes saved');
             });
 

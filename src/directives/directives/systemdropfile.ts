@@ -104,7 +104,7 @@ export class SystemDropFile {
             this.dragDepth++;
 
             // enable upload only for files
-            if (this.dragDepth == 1 && dragenter.dataTransfer.types.indexOf('Files') == 0) {
+            if (this.dragDepth == 1 && dragenter.dataTransfer.types.find(t => t == 'Files')) {
                 this.renderer.appendChild(this.elementRef.nativeElement, this.overlayElement);
             }
         });

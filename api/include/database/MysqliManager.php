@@ -1,12 +1,50 @@
 <?php
-/***** SPICE-SUGAR-HEADER-SPACEHOLDER *****/
+/*********************************************************************************
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ * 
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
 
 namespace SpiceCRM\includes\database;
 
 use SpiceCRM\data\SpiceBean;
 use Exception;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainField;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidation;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -99,7 +137,7 @@ class MysqliManager extends DBManager
         'shorttext'=> 'text',
         'longtext' => 'longtext',
         'date'     => 'date',
-        'enum'     => 'varchar',
+        'enum'     => 'enum',
         'relate'   => 'varchar',
         'multienum'=> 'text',
         'html'     => 'text',
@@ -145,6 +183,19 @@ class MysqliManager extends DBManager
     ];
 
     /**
+     * Create DB Driver
+     */
+    public function __construct(array $config)
+    {
+        parent::__construct($config);
+
+        // map enums back to varchar if we do not write them in the database
+        if (!SpiceConfig::getInstance()->get('systemvardefs.write_enums')) {
+            $this->type_map['enum'] = 'varchar';
+        }
+    }
+
+    /**
      * get the stats
      *
      * @return array
@@ -171,6 +222,7 @@ class MysqliManager extends DBManager
     }
 
     /**
+     * @throws DatabaseException
      * @see MysqlManager::query()
      */
 
@@ -222,7 +274,9 @@ class MysqliManager extends DBManager
 
             LoggerManager::getLogger()->fatal('sql', ['error' => $e->getMessage(), "query" => $this->lastsql]);
 
-            if ($dieOnError) throw $e;
+            if ($dieOnError) {
+                throw (new DatabaseException($e->getMessage() . " last query: \n\r $this->lastsql"))->setErrorCode($e->getCode());
+            }
         }
 
         return $result;
@@ -570,10 +624,54 @@ class MysqliManager extends DBManager
                     }
                 else
                     $colType = $colBaseType . "(" . $fieldDef['len'] . ")";
+            } elseif ($colBaseType == 'enum'){
+                $writeEnums = SpiceConfig::getInstance()->get('systemvardefs.write_enums');
+                if($writeEnums && !empty($fieldDef['sysdomainfield_id'])){
+                    $enumValues = (new SpiceDictionaryDomainField($fieldDef['sysdomainfield_id']))->getValidationEnumValues();
+                    if(count($enumValues) > 0){
+                        $colType = $colBaseType . "('" . implode("','",  $enumValues) . "')";
+                    } else {
+                        $colType ="varchar(" . $fieldDef['len'] . ")";
+                    }
+                } elseif($writeEnums && !empty($fieldDef['options'])){
+                    $validationId = SpiceDictionaryDomainValidations::getInstance()->domainValidations[$fieldDef['options']];
+                    if($validationId){
+                        $enumValues = (new SpiceDictionaryDomainValidation($validationId['id']))->getValidationOptions();
+                    }
+                    if(count($enumValues) > 0){
+                        $colType = $colBaseType . "('" . implode("','",  $enumValues) . "')";
+                    } else {
+                        $colType ="varchar(" . $fieldDef['len'] . ")";
+                    }
+                } else {
+                    $colType ="varchar(" . $fieldDef['len'] . ")";
+                }
             }
         } else {
             if (in_array($colBaseType, ['nvarchar', 'nchar', 'varchar', 'varchar2', 'char'])) {
                 $colType = "$colBaseType($defLen)";
+            } elseif (in_array($colBaseType, ['enum'])) {
+                $writeEnums = SpiceConfig::getInstance()->get('systemvardefs.write_enums');
+                if($writeEnums && !empty($fieldDef['sysdomainfield_id'])){
+                    $enumValues = (new SpiceDictionaryDomainField($fieldDef['sysdomainfield_id']))->getValidationEnumValues();
+                    if(count($enumValues) > 0){
+                        $colType = $colBaseType . "('" . implode("','", $enumValues) . "')";
+                    } else {
+                        $colType ="varchar(" . $fieldDef['len'] . ")";
+                    }
+                } elseif($writeEnums && !empty($fieldDef['options'])){
+                    $validationId = SpiceDictionaryDomainValidations::getInstance()->domainValidations[$fieldDef['options']];
+                    if($validationId){
+                        $enumValues = (new SpiceDictionaryDomainValidation($validationId))->getValidationOptions();
+                    }
+                    if(count($enumValues) > 0){
+                        $colType = $colBaseType . "('" . implode("','", $enumValues) . "')";
+                    } else {
+                        $colType ="varchar(" . $fieldDef['len'] . ")";
+                    }
+                } else {
+                    $colType ="varchar(" . $fieldDef['len'] . ")";
+                }
             }
         }
 
@@ -604,6 +702,11 @@ class MysqliManager extends DBManager
             && !empty($fieldDef['required'])) {
             $required = "NOT NULL";
         }
+
+        if ($fieldDef['required'] === 'true') {
+            $required = "NOT NULL";
+        }
+
         if ($ignoreRequired)
             $required = "";
 
@@ -724,29 +827,48 @@ class MysqliManager extends DBManager
  */
     public function get_columns($tablename)
     {
-        //find all unique indexes and primary keys.
-        // $result = $this->query("DESCRIBE $tablename");
-        $result = $this->query("SHOW FULL COLUMNS FROM $tablename");
-
         $columns = [];
-        while (($row=$this->fetchByAssoc($result)) !=null) {
-            $name = strtolower($row['Field']);
-            $columns[$name]['name']=$name;
-            $matches = [];
-            preg_match_all('/(\w+)(?:\(([0-9]+,?[0-9]*)\)|)( unsigned)?/i', $row['Type'], $matches);
-            $columns[$name]['type']=strtolower($matches[1][0]);
-            if ( isset($matches[2][0]) && in_array(strtolower($matches[1][0]),['varchar','char','varchar2','int','decimal','float']) )
-                $columns[$name]['len']=strtolower($matches[2][0]);
-            if ( stristr($row['Extra'],'auto_increment') )
-                $columns[$name]['auto_increment'] = '1';
-            if ($row['Null'] == 'NO' && !stristr($row['Key'],'PRI'))
-                $columns[$name]['required'] = 'true';
-            if (!empty($row['Default']) )
-                $columns[$name]['default'] = $row['Default'];
-            if (!empty($row['Comment']) )
-                $columns[$name]['comment'] = $row['Comment'];
+        if($this->tableExists($tablename)) {
+            //find all unique indexes and primary keys.
+            // $result = $this->query("DESCRIBE $tablename");
+            $result = $this->query("SHOW FULL COLUMNS FROM $tablename");
+
+            while (($row = $this->fetchByAssoc($result)) != null) {
+                $name = strtolower($row['Field']);
+                $columns[$name]['name'] = $name;
+                $matches = [];
+                preg_match_all('/(\w+)(?:\(([0-9]+,?[0-9]*)\)|)( unsigned)?/i', $row['Type'], $matches);
+                $columns[$name]['type'] = strtolower($matches[1][0]);
+                if (isset($matches[2][0]) && in_array(strtolower($matches[1][0]), ['varchar', 'char', 'varchar2', 'int', 'decimal', 'float']))
+                    $columns[$name]['len'] = strtolower($matches[2][0]);
+                if (stristr($row['Extra'], 'auto_increment'))
+                    $columns[$name]['auto_increment'] = '1';
+
+                $columns[$name]['required'] = json_encode($row['Null'] == 'NO');
+
+                if (!empty($row['Default']))
+                    $columns[$name]['default'] = $row['Default'];
+                if (!empty($row['Comment']))
+                    $columns[$name]['comment'] = $row['Comment'];
+            }
         }
         return $columns;
+    }
+
+    /**
+     * remove columns from a table
+     *
+     * @param $tablename
+     * @param array $columns
+     * @return mixed|void
+     */
+    public function delete_columns($tablename, array $columns = [])
+    {
+        $dropColumns = [];
+        foreach ($columns as $column) {
+            $dropColumns[] = "DROP COLUMN $column";
+        }
+        $this->query("ALTER TABLE $tablename " . join(", ", $dropColumns));
     }
 
     /**
@@ -845,7 +967,7 @@ class MysqliManager extends DBManager
      * up quite a bit. So here, we'll parse the returned SQL into a single ALTER TABLE command.
      */
 
-    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
+    public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null, $commented = false)
     {
         $sql = parent::repairTableParams($tablename,$fielddefs,$indices,false,$engine);
 
@@ -884,6 +1006,48 @@ class MysqliManager extends DBManager
         $sql = implode("\n",$commentBlocks) . "\n". $sql . ";\n";
 
         return $sql;
+    }
+
+    /**
+     * reshuffles the fields
+     *
+     * @param $fields
+     * @return false
+     */
+    public function reshuffleFields($tablename, $fields)
+    {
+        $columns = [];
+        $columnsObj = $this->query("SHOW FULL COLUMNS FROM {$tablename}");
+        while($column = $this->fetchByAssoc($columnsObj)){
+            $columns[$column['Field']] = $column;
+        }
+
+        $changeStatements = [];
+        $lastColumn = '';
+        foreach ($fields as $field){
+            if(isset($columns[$field])){
+                // build the Chanage statement
+                $changeString = "{$field} {$field} {$columns[$field]['Type']}";
+                $changeString .= $columns[$field]['Null'] == 'YES' ? " NULL" : " NOT NULL";
+                $changeString .= $columns[$field]['Default'] != null ? " DEFAULT \"{$columns[$field]['Default']}\"" : "";
+                $changeString .= $columns[$field]['Comment'] ? " COMMENT \"{$columns[$field]['Comment']}\"" : "";
+                $changeString .= $lastColumn ? " AFTER {$lastColumn}" : " FIRST";
+
+                // add the change statement
+                $changeStatements[] = "CHANGE {$changeString}";
+
+                // set the last column
+                $lastColumn = $field;
+            }
+        }
+
+        if(count($changeStatements) > 0){
+            $alterStatement = "ALTER TABLE {$tablename} " . implode(', ', $changeStatements);
+            $this->query($alterStatement);
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -939,6 +1103,8 @@ class MysqliManager extends DBManager
                 return "avg($string)";
             case 'date_diff':
                 return "DATEDIFF($string[0],$string[1])";
+            case 'substring':
+                return "SUBSTRING($string, {$additional_parameters['from']}, {$additional_parameters['to']})";
         }
 
         return $string;
@@ -964,8 +1130,8 @@ class MysqliManager extends DBManager
     protected function getEngine($bean)
     {
         $engine = null;
-        if (isset(SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
-            $engine = SpiceDictionaryHandler::getInstance()->dictionary[$bean->getObjectName()]['engine'];
+        if (isset(SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'])) {
+            $engine = SpiceDictionary::getInstance()->dictionary[$bean->getObjectName()]['engine'];
         }
         return $engine;
     }
@@ -1022,12 +1188,12 @@ class MysqliManager extends DBManager
         // CR1000349 mysql8 compatibility: remove hardcoded charset
         $charset = $this->getOption('charset');
         if(empty($collation)) {
-            $collation = 'utf8_general_ci';
-            // $collation = 'utf8mb4_unicode_ci';
+            //$collation = 'utf8_general_ci';
+            $collation = 'utf8mb4_unicode_ci';
         }
         if(empty($charset)) {
-            $charset = 'utf8';
-            // $charset = 'utf8mb4';
+            //$charset = 'utf8';
+            $charset = 'utf8mb4';
         }
 
         $sql = "CREATE TABLE $tablename ($columns $keys) CHARACTER SET $charset COLLATE $collation";
@@ -1217,7 +1383,7 @@ class MysqliManager extends DBManager
     public function add_drop_constraint($table, $definition, $drop = false)
     {
         $type         = $definition['type'];
-        $fields       = implode(',',$definition['fields']);
+        $fields       = implode(',', is_array($definition['fields'])  ? $definition['fields'] : [$definition['fields']]);
         $name         = $definition['name'];
         $sql          = '';
 
@@ -1245,10 +1411,12 @@ class MysqliManager extends DBManager
                     $sql = "ALTER TABLE {$table} ADD CONSTRAINT PRIMARY KEY ({$fields})";
                 break;
             case 'foreign':
-                if ($drop)
-                    $sql = "ALTER TABLE {$table} DROP FOREIGN KEY ({$fields})";
-                else
-                    $sql = "ALTER TABLE {$table} ADD CONSTRAINT FOREIGN KEY {$name} ({$fields}) REFERENCES {$definition['foreignTable']}({$definition['foreignField']})";
+                if ($drop) {
+                    // drop the constraint and the index
+                    $sql = "ALTER TABLE {$table} DROP FOREIGN KEY {$name}, DROP INDEX {$name}";
+                }else {
+                    $sql = "ALTER TABLE {$table} ADD CONSTRAINT {$name} FOREIGN KEY {$name} ({$fields}) REFERENCES {$definition['foreignTable']}({$definition['foreignField']})";
+                }
                 break;
         }
         return $sql;
@@ -1378,7 +1546,7 @@ class MysqliManager extends DBManager
 
         $this->query($tempTableTestQuery, false, "Preflight Failed for: {$query}");
         $error = $this->lastError(); // empty on no-errors
-        $this->dropTableName("{$table}__uw_temp"); // just in case
+        $this->dropTable("{$table}__uw_temp"); // just in case
         return $error;
     }
 
@@ -1542,7 +1710,6 @@ class MysqliManager extends DBManager
         return $this->query('COMMIT');
     }
 
-
     /**
      * @see DBManager::massageFieldDef()
      */
@@ -1694,7 +1861,7 @@ class MysqliManager extends DBManager
     public function getTablesCharsetInfo(): array {
         $result = [];
         $dbName = $this->dbConfig['dbconfig']['db_name'];
-        $sql = "SELECT table_name,CCSA.character_set_name, CCSA.collation_name FROM information_schema.TABLES T,
+        $sql = "SELECT table_name table_name,CCSA.character_set_name character_set_name, CCSA.collation_name collation_name FROM information_schema.TABLES T,
                 information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA
                 WHERE CCSA.collation_name = T.table_collation
                 AND T.table_schema = '{$dbName}'";

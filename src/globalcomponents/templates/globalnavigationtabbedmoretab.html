@@ -3,7 +3,7 @@
         <span class="slds-truncate" title="More Tabs"><system-label label="LBL_MORE"></system-label> ({{moreObjects.length}})</span>
         <system-button-icon class="slds-p-left--x-small" icon="chevrondown"></system-button-icon>
     </div>
-    <div class="slds-dropdown slds-dropdown_right">
+    <div class="slds-dropdown slds-dropdown_right" style="min-width: min-content">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__item slds-nav-vertical__item" [ngClass]="{'slds-is-active': isActive(moreObject.id)}" *ngFor="let moreObject of moreObjects" role="presentation">
                 <a href="javascript:void(0);" role="menuitem" >

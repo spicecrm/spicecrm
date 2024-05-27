@@ -108,24 +108,35 @@ export class reminder {
      * @param reminderDate
      */
     public setReminder(model: model, reminderDate) {
-        this.backend.postRequest('common/spicereminders/' + model.module + '/' + model.id + '/' + reminderDate.format('YYYY-MM-DD')).subscribe((fav: any) => {
-            let i = this.reminders.findIndex(r => r.item_id == model.id && r.module_name == model.module);
-            if(i >= 0){
-                this.reminders[i].reminder_date = reminderDate;
-                this.reminders[i].data = model.backendData;
-            } else {
-                this.reminders.splice(0, 0, {
-                    item_id: model.id,
-                    module_name: model.module,
-                    item_summary: model.data.summary_text,
-                    reminder_date: reminderDate,
-                    data: model.backendData
-                });
-            }
+        let retSubject = new Subject();
+        this.backend.postRequest('common/spicereminders/' + model.module + '/' + model.id + '/' + reminderDate.format('YYYY-MM-DD')).subscribe({
+            next:(fav: any) => {
+                let i = this.reminders.findIndex(r => r.item_id == model.id && r.module_name == model.module);
+                if (i >= 0) {
+                    this.reminders[i].reminder_date = reminderDate;
+                    this.reminders[i].data = model.backendData;
+                } else {
+                    this.reminders.splice(0, 0, {
+                        item_id: model.id,
+                        module_name: model.module,
+                        item_summary: model.data.summary_text,
+                        reminder_date: reminderDate,
+                        data: model.backendData
+                    });
+                }
 
-            // emit that we have changes
-            this.changed$.emit(true);
+                // resolve the subject
+                retSubject.next(true);
+                retSubject.complete();
+
+                // emit that we have changes
+                this.changed$.emit(true);
+            },
+            error: (e) => {
+                retSubject.error(e);
+            }
         });
+        return retSubject.asObservable();
     }
 
     /**
@@ -136,18 +147,23 @@ export class reminder {
      */
     public deleteReminder(module, id): Observable<any> {
         let retSubject = new Subject<any>();
-        this.backend.deleteRequest('common/spicereminders/' + module + '/' + id).subscribe(fav => {
-            this.reminders.some((rem, remindex) => {
-                if (rem.module_name === module && rem.item_id === id) {
-                    this.reminders.splice(remindex, 1);
-                    return true;
-                }
-            });
-            retSubject.next(true);
-            retSubject.complete();
+        this.backend.deleteRequest('common/spicereminders/' + module + '/' + id).subscribe({
+            next: (fav) => {
+                this.reminders.some((rem, remindex) => {
+                    if (rem.module_name === module && rem.item_id === id) {
+                        this.reminders.splice(remindex, 1);
+                        return true;
+                    }
+                });
+                retSubject.next(true);
+                retSubject.complete();
 
-            // emit that we have changes
-            this.changed$.emit(true);
+                // emit that we have changes
+                this.changed$.emit(true);
+            },
+            error: (e) => {
+                retSubject.error(e);
+            }
         });
         return retSubject.asObservable();
     }

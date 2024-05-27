@@ -24,6 +24,7 @@ export interface RoleI {
     version: string;
     package: string;
     scope: 'custom' | 'global';
+    rolescope: 'a'|'i'|'e';
     scope_icon: string;
     systemTreeDefs: object;
 }

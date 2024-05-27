@@ -5,7 +5,6 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
 import {ObjectPageHeader} from "../../../objectcomponents/components/objectpageheader";
 
 @Component({
@@ -19,11 +18,12 @@ export class ReporterDetailViewHeader extends ObjectPageHeader {
 
     @Output() public showFilters = new EventEmitter<boolean>();
 
-    constructor(public language: language,
-                public metadata: metadata,
-                public model: model,
-                public router: Router) {
-        super(language, router, model, metadata);
+    constructor(
+        public metadata: metadata,
+        public model: model,
+        public router: Router)
+    {
+        super(router, model, metadata);
     }
 
     /*

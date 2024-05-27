@@ -1,0 +1,3 @@
+<system-select [(ngModel)]="dictionary" (ngModelChange)="onChange($event)" [disabled]="disabled" [idOnly]="true">
+    <system-select-option *ngFor="let dictionary of dictionaries" [value]="dictionary.id" [display]="dictionary.name"/>
+</system-select>

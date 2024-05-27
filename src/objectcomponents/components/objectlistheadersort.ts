@@ -59,7 +59,7 @@ export class ObjectListHeaderSort {
         return '';
     }
 
-    get sortindex() {
+    get sortindex(): any {
         let sortdata = this.modellist.getSortField(this.field.field);
         if (sortdata && sortdata.sortitems > 1) {
             return sortdata.sortindex + 1;

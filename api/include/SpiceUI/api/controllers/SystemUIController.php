@@ -131,11 +131,7 @@ class SystemUIController{
     public function getSystemRoles(Request $req, Response $res, $args): Response
     {
         $db = DBManagerFactory::getInstance();
-        $roles = [];
-        $query = $db->query("SELECT *, 'global' scope FROM sysuiroles UNION SELECT *, 'custom' scope FROM sysuicustomroles order by name");
-        while( $row = $db->fetchByAssoc($query) ){
-            $roles[] = $row;
-        }
+        $roles = array_merge($db->fetchAll("SELECT *, 'global' scope FROM sysuiroles") ?: [], $db->fetchAll("SELECT *, 'custom' scope FROM sysuicustomroles order by name") ?: []);
         return $res->withJson($roles);
     }
 
@@ -150,11 +146,7 @@ class SystemUIController{
     public function getRoleModules(Request $req, Response $res, $args): Response
     {
         $db = DBManagerFactory::getInstance();
-        $roleModules = [];
-        $query = $db->query("SELECT *, 'global' scope FROM sysuirolemodules WHERE sysuirole_id = '{$args['role_id']}' UNION SELECT *, 'custom' scope FROM sysuicustomrolemodules WHERE sysuirole_id = '{$args['role_id']}' order by module");
-        while( $row = $db->fetchByAssoc($query) ){
-            $roleModules[] = $row;
-        }
+        $roleModules = array_merge($db->fetchAll("SELECT *, 'global' scope FROM sysuirolemodules WHERE sysuirole_id = '{$args['role_id']}' order by module") ?: [], $db->fetchAll("SELECT *, 'custom' scope FROM sysuicustomrolemodules WHERE sysuirole_id = '{$args['role_id']}' order by module") ?: []);
         return $res->withJson($roleModules);
     }
 
@@ -167,13 +159,7 @@ class SystemUIController{
      */
     public function getDashboardSets(Request $req, Response $res, $args): Response
     {
-        $db = DBManagerFactory::getInstance();
-        $dashboardSets = [];
-        $query = $db->query("SELECT * FROM dashboardsets");
-        while( $row = $db->fetchByAssoc($query) ){
-            $dashboardSets[] = $row;
-        }
-        return $res->withJson($dashboardSets);
+        return $res->withJson(DBManagerFactory::getInstance()->fetchAll("SELECT * FROM dashboardsets") ?: []);
     }
     /**
      * @param Request $req
@@ -184,13 +170,7 @@ class SystemUIController{
      */
     public function getDashboards(Request $req, Response $res, $args): Response
     {
-        $db = DBManagerFactory::getInstance();
-        $dashboards = [];
-        $query = $db->query("SELECT * FROM dashboards");
-        while( $row = $db->fetchByAssoc($query) ){
-            $dashboards[] = $row;
-        }
-        return $res->withJson($dashboards);
+        return $res->withJson(DBManagerFactory::getInstance()->fetchAll("SELECT * FROM dashboards") ?: []);
     }
     /**
      * get system and custom logic hooks
@@ -222,13 +202,7 @@ class SystemUIController{
      */
     public function getAllWebHooks(Request $req, Response $res, $args): Response
     {
-        $db = DBManagerFactory::getInstance();
-        $webhooks = [];
-        $query = $db->query("SELECT * FROM syswebhooks");
-        while( $row = $db->fetchByAssoc($query) ){
-            $webhooks[] = $row;
-        }
-        return $res->withJson($webhooks);
+        return $res->withJson(DBManagerFactory::getInstance()->fetchAll("SELECT * FROM syswebhooks") ?: []);
     }
 
     /**

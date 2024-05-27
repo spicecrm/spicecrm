@@ -1,0 +1,7 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div *ngIf="!isLoading">{{value}}</div>
+        <system-stencil *ngIf="isLoading"></system-stencil>
+    </div>
+</field-generic-display>
