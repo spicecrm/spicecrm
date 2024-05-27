@@ -1,21 +1,31 @@
 /**
  * @module ObjectComponents
  */
-import {Component, AfterViewInit, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 import {Subscription} from "rxjs";
+import {relatedmodels} from "../../services/relatedmodels.service";
+import {toast} from "../../services/toast.service";
+import {language} from "../../services/language.service";
+import {duplicatedmodels} from "../../services/duplicatedmodels.service";
 
 @Component({
     selector: 'object-relatedlist-duplicates',
-    templateUrl: '../templates/objectrelatedduplicates.html'
+    templateUrl: '../templates/objectrelatedduplicates.html',
+    providers: [relatedmodels, duplicatedmodels]
 })
 export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
     /**
      * the component config
      */
     public componentconfig: any = {};
+
+    /**
+     * the fieldset config
+     */
+    public fieldset: string;
 
     /**
      * indicates to show the panel
@@ -26,41 +36,30 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
 
     /**
      * the loaded list of duplicates
-     *
-     * @private
      */
     public duplicates: any[] = [];
 
     /**
-     * the complete duplicate count
-     *
-     * @private
-     */
-    public duplicatecount: number = 0;
-
-    /**
      * the toggle to open or close the panel
-     *
-     * @private
      */
-    public hideDuplicates: boolean = true;
-
-    /**
-     * indicates if we are loading
-     *
-     * @private
-     */
-    public isLoading: boolean = false;
+    public hideDuplicates: boolean = false;
 
     /**
      * holds component subscriptions
-     *
-     * @private
      */
     public subscriptions: Subscription = new Subscription();
 
-    constructor(public model: model, public metadata: metadata, public broadcast: broadcast) {
+    /**
+     * holds listfields of related model
+     */
+    public listfields: any[];
 
+    constructor(
+        public model: model,
+        public metadata: metadata,
+        public broadcast: broadcast,
+        public relatedmodels: relatedmodels,
+        public duplicatedModels: duplicatedmodels) {
     }
 
     /**
@@ -68,81 +67,38 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
      */
     public ngOnInit() {
         // check if the module has a dup check at all
-        if(this.metadata.getModuleDuplicatecheck(this.model.module)) {
+        if (this.metadata.getModuleDuplicatecheck(this.model.module)) {
+
+            this.getRelatedData();
+
             // check duplicates
-            this.checkDuplicates();
+            this.duplicatedModels.checkDuplicates();
 
             // add a listener to the broadcast service
             this.subscriptions.add(
                 this.broadcast.message$.subscribe(message => this.handleMessage(message))
             );
         }
+
+        this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedDuplicates', this.model.module);
+
+        if (this.componentconfig.fieldset) {
+            this.fieldset = this.componentconfig.fieldset;
+            this.listfields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
+        }
     }
 
     /**
-     * handle the unsubscribe whenthe component is destroyed
+     * handle the unsubscribe when the component is destroyed
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
 
     /**
-     * hande the message and delete a duplicate if it has been merged
-     *
-     * @param message
-     * @private
-     */
-    public handleMessage(message) {
-        switch (message.messagetype) {
-            case 'model.delete':
-                if (message.messagedata.module == this.model.module) {
-                    let dupIndex = this.duplicates.findIndex(d => d.id == message.messagedata.id);
-                    if (dupIndex >= 0) {
-                        this.duplicates.splice(dupIndex, 1);
-                        this.duplicatecount--;
-                    }
-                }
-                break;
-        }
-    }
-
-    /**
-     * toggle the panel open or closed
-     *
-     * @param e
-     * @private
-     */
-    public toggleDuplicates(e: MouseEvent) {
-        e.stopPropagation();
-        this.hideDuplicates = !this.hideDuplicates;
-    }
-
-    /**
-     * checks for duplicates
-     *
-     * @private
-     */
-    public checkDuplicates() {
-        this.isLoading = true;
-        this.model.duplicateCheck().subscribe(
-            data => {
-                this.duplicates = data.records;
-                this.duplicatecount = data.count;
-                this.isLoading = false;
-
-                // if we have duplicates show the panel
-                if(this.duplicatecount > 0) this.showPanel = true;
-            },
-            error => {
-                this.isLoading = false;
-            }
-        );
-    }
-
-    /**
      * used for the toggle icon
      */
-    get iconStyle() {
+    get arrowIconStyle() {
         if (this.hideDuplicates) {
             return {
                 transform: 'scale(1, -1)'
@@ -151,4 +107,44 @@ export class ObjectRelatedDuplicates implements OnInit, OnDestroy {
             return {};
         }
     }
+
+    /**
+     * builds the items for the related list
+     */
+    public getRelatedData() {
+        this.relatedmodels.module = this.model.module;
+        this.relatedmodels.id = this.model.id;
+        this.relatedmodels.relatedModule = this.model.module;
+    }
+
+    /**
+     * hande the message and delete a duplicate if it has been merged
+     * @param message
+     */
+    public handleMessage(message) {
+        switch (message.messagetype) {
+            case 'model.delete':
+                if (message.messagedata.module == this.model.module) {
+                    let dupIndex = this.duplicates.findIndex(d => d.id == message.messagedata.id);
+                    if (dupIndex >= 0) {
+                        this.duplicates.splice(dupIndex, 1);
+                        this.relatedmodels.count--;
+                    }
+                }
+                break;
+            case 'duplicates.reload':
+                this.duplicatedModels.showDuplicatesByStatus(this.duplicatedModels.selectedStatus);
+                break;
+        }
+    }
+
+    /**
+     * toggle the panel open or closed
+     * @param e
+     */
+    public showDuplicates(e: MouseEvent) {
+        e.stopPropagation();
+        this.hideDuplicates = !this.hideDuplicates;
+    }
+
 }

@@ -11,6 +11,8 @@ import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {GlobalNavigationMenuItemActionNew} from "../../../globalcomponents/components/globalnavigationmenuitemactionnew";
+import {navigation} from "../../../services/navigation.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 declare var _: any;
 
@@ -22,8 +24,8 @@ export class SalesDocsGlobalNavigationMenuItemActionNew extends GlobalNavigation
 
     public actionconfig: any = {};
 
-    constructor(public language: language, public model: model, public metadata: metadata, public modal: modal, public injector: Injector) {
-        super(language, model, metadata);
+    constructor(public language: language, public model: model, public metadata: metadata, public navigation: navigation, public modal: modal, public injector: Injector) {
+        super(language, model, metadata, navigation);
     }
 
     public execute() {

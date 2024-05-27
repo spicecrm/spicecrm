@@ -1,13 +1,24 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, ElementRef, QueryList, ViewChildren, ChangeDetectorRef, OnDestroy} from '@angular/core';
+import {
+    Component,
+    Input,
+    ElementRef,
+    QueryList,
+    ViewChildren,
+    ChangeDetectorRef,
+    OnDestroy,
+    OnInit, Output
+} from '@angular/core';
 import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {SystemResizeDirective} from "../../directives/directives/systemresize";
 import {layout} from "../../services/layout.service";
 import {Subscription} from "rxjs";
+import {metadata} from "../../services/metadata.service";
+import {ObjectListItem} from "./objectlistitem";
 
 /**
  * renders the header row for a list view table
@@ -153,4 +164,12 @@ export class ObjectListHeader implements OnDestroy {
             listfield.width = Math.round((elementWidths[listfield.id] / totalwidth) * 100);
         }
     }
+
+    /**
+     * set fix column width if the list item is being edited
+     */
+    get getHeaderWidth(): string {
+        return this.modellist.listItemMode == 'edit'  ? 'slds-size_1-of-12' : 'slds-cell-shrink';
+    }
+
 }

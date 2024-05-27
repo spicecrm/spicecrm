@@ -17,6 +17,7 @@ import {metadata} from "../../../services/metadata.service";
 import {Observable, Subject} from "rxjs";
 import {backend} from "../../../services/backend.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {SpiceAttachmentsPanel} from "./spiceattachmentspanel";
 
 /**
  * @ignore
@@ -44,6 +45,7 @@ export class SpiceAttachmentAddFromRecordModal {
 
 
     constructor(
+        private attachmentsPanelComponent: SpiceAttachmentsPanel,
         @SkipSelf() public emailAttachments: modelattachments,
         public modelattachments: modelattachments,
         public language: language,
@@ -75,12 +77,9 @@ export class SpiceAttachmentAddFromRecordModal {
 
             // clone attachments from Email to parent bean
             this.cloneAttachmentsFromBean(this.parent, selected).subscribe(res => {
-                this.emailAttachments.getAttachments().subscribe({
-                    next: () => {
-                        loadingRef.instance.self.destroy();
-                        this.close();
-                    }
-                });
+                this.attachmentsPanelComponent.loadFiles();
+                loadingRef.instance.self.destroy();
+                this.close();
 
                 if (res) {
                     this.toast.sendToast('LBL_SUCCESS', 'success');

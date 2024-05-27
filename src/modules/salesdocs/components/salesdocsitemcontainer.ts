@@ -278,6 +278,10 @@ export class SalesDocsItemContainer implements OnInit, OnDestroy {
         if (this.item.quantity && parseFloat(this.item.quantity) && this.item.amount_net_per_uom && parseFloat(this.item.amount_net_per_uom)) {
 
             if (this.item.salesdocitempricecalculationschema_id) {
+                // get the condition elements
+                this.salesdocrecord.recalculate(this.configuration.getData('pricingschemaelements').filter(e => e.syspricecalculationschema_id == this.item.salesdocitempricecalculationschema_id).sort((a, b) => a.elementindex > b.elementindex ? 1 : -1), this.item.salesdocitempricedetermination, this.item.quantity);
+
+                // write the data to the item
                 this.salesdocrecord.getItemFieldsByElements(this.item.salesdocitempricecalculationschema_id, this.item.quantity, this.item.salesdocitempricedetermination, this.item);
             } else if (this.item.gross_priced) {
                 this.item.amount_gross = parseFloat(this.item.quantity) * parseFloat(this.item.amount_net_per_uom);

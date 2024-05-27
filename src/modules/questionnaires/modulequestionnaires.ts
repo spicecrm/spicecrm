@@ -67,7 +67,7 @@ import {QuestionRenderText} from './components/questionrendertext';
 import {QuestionRenderNPS} from './components/questionrendernps';
 import {QuestionsManagerEditRatingGroup} from './components/questionsmanagereditratinggroup';
 import {fieldQuestionnaire} from './fields/fieldquestionnaire';
-import {QuestionnaireFillOutActionItem} from './components/QuestionnaireFillOutActionItem';
+import {QuestionnaireFillOutActionItem} from './components/questionnairefilloutactionitem';
 import {QuestionRenderSingle} from "./components/questionrendersingle";
 import {QuestionRenderBinary} from "./components/questionrenderbinary";
 import {QuestionRenderMulti} from "./components/questionrendermulti";

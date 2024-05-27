@@ -85,10 +85,61 @@ class SpiceConfig
         return self::$instance;
     }
 
+    /**
+     * gets a single record
+     *
+     * @param $key
+     * @param $default
+     * @return mixed|null
+     */
     public function get($key, $default = null)
     {
         $value = SugarArray::staticGet($this->config, $key, $default);
         return $value ? $value : $default;
+    }
+
+
+    /**
+     * writes an entry to the db config and if exists updates it
+     *
+     * @param $category
+     * @param $name
+     * @param $value
+     * @return true
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
+    public function set($category, $name, $value)
+    {
+        if(isset($this->config[$category][$name])){
+            DBManagerFactory::getInstance()->query("UPDATE config SET value = '{$value}' WHERE category = '{$category}' AND name = '{$name}'");
+        } else {
+            DBManagerFactory::getInstance()->query("INSERT INTO config (category, name, value) VALUES ('{$category}','{$name}','{$value}')");
+        }
+
+        // reload and force rebuild
+        $this->loadConfigFromDB(true);
+
+        return true;
+    }
+
+    /**
+     * deletes an entry from the config if the entry exists
+     *
+     * @param $category
+     * @param $name
+     * @param $value
+     * @return bool
+     * @throws \SpiceCRM\includes\ErrorHandlers\DatabaseException
+     */
+    public function delete($category, $name, $value){
+        if(isset($this->config[$category][$name])){
+            DBManagerFactory::getInstance()->query("DELETE * FROM config WHERE category = '{$category}' AND name = '{$name}'");
+            // reload and force rebuild
+            $this->loadConfigFromDB(true);
+            return true;
+        }
+
+        return false;
     }
 
     public function configExists()

@@ -46,8 +46,9 @@ class ProductGroup extends SpiceBean
         return $parentProductGroups;
     }
 
+
     /**
-     * collect counts when details are displayed
+     * load counts on retrieve view Details only
      *
      * @return void
      */

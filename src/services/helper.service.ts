@@ -1,10 +1,12 @@
 /**
  * @module services
  */
-import {Injectable} from '@angular/core';
-import {Subject, Observable} from 'rxjs';
+import {ComponentRef, Injectable} from '@angular/core';
+import {Subject, Observable, of} from 'rxjs';
 import {modal} from './modal.service';
-import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {ObjectModalModuleLookup} from "../objectcomponents/components/objectmodalmodulelookup";
+import {take} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -265,40 +267,44 @@ export class helper {
      *
      * @private
      */
-    public generatePassword( extConf: any ): string {
+    public generatePassword(extConf: any): string {
         let passwordChars: string[] = [];
 
         let usedCharTypes: string[] = [];
-        ['upper', 'number', 'special', 'lower'].forEach( type => {
-            if ( extConf['one'+type] ) usedCharTypes.push(type);
+        ['upper', 'number', 'special', 'lower'].forEach(type => {
+            if (extConf['one' + type]) usedCharTypes.push(type);
         });
 
         let sizeRemaining = extConf.minpwdlength;
-        usedCharTypes.forEach( ( type, i ) => {
+        usedCharTypes.forEach((type, i) => {
             let dummy;
-            if ( i === usedCharTypes.length-1 ) {
+            if (i === usedCharTypes.length - 1) {
                 dummy = sizeRemaining;
             } else {
-                dummy = Math.floor( Math.random() * ( sizeRemaining - ( usedCharTypes.length - i - 1 ) )) + 1;
+                dummy = Math.floor(Math.random() * (sizeRemaining - (usedCharTypes.length - i - 1))) + 1;
             }
-            for ( let j = 0; j<dummy; j++ ) passwordChars.push( this.pwRandomChar( type ));
+            for (let j = 0; j < dummy; j++) passwordChars.push(this.pwRandomChar(type));
             sizeRemaining = sizeRemaining - dummy;
         });
 
-        return this.shuffle( passwordChars ).join('');
+        return this.shuffle(passwordChars).join('');
     }
 
     /**
      * for passwords: returns a random character of a specific type (lower, upper, digit, special).
      * @private
      */
-    public pwRandomChar( type: string ): string {
+    public pwRandomChar(type: string): string {
         let specialChars = '!"#$%&\'()*+,-./:;<=>?@[\\]^_{|}~';
-        switch( type ) {
-            case 'upper':   return String.fromCharCode( Math.floor( Math.random() * 26 ) + 65 );
-            case 'lower':   return String.fromCharCode( Math.floor( Math.random() * 26 ) + 97 );
-            case 'special': return specialChars.charAt(  Math.floor(Math.random() * specialChars.length ));
-            case 'number':  return String.fromCharCode( Math.floor( Math.random() * 10 ) + 48 );
+        switch (type) {
+            case 'upper':
+                return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+            case 'lower':
+                return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+            case 'special':
+                return specialChars.charAt(Math.floor(Math.random() * specialChars.length));
+            case 'number':
+                return String.fromCharCode(Math.floor(Math.random() * 10) + 48);
         }
     }
 
@@ -366,5 +372,102 @@ export class helper {
     public dataToBlobUrl(blob): SafeResourceUrl {
         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
         return this.blobUrl;
+    }
+
+    /**
+     * opens a modal to choose from textsnippets
+     * @param displayType
+     * @param moduleFilter
+     * @param modalService
+     * @param model
+     * @param viewContainerRefInjector
+     */
+    public addTextSnippet(displayType: 'PLAIN' | 'HTML', moduleFilter, modalService, model, viewContainerRefInjector) {
+        let responseSubject = new Subject<any>();
+
+        let routeMethod = ''
+        switch (displayType.toUpperCase()) {
+            case 'PLAIN':
+                routeMethod = 'liveCompilePlainText';
+                break;
+            case 'HTML':
+                routeMethod = 'liveCompile';
+                break;
+            default:
+                routeMethod = 'liveCompile'
+        }
+
+        modalService.openModal('ObjectModalModuleLookup', true, viewContainerRefInjector)
+            .subscribe((modal: ComponentRef<ObjectModalModuleLookup>) => {
+                modal.instance.module = 'TextSnippets';
+
+                modal.instance.multiselect = false;
+
+                if (model) {
+                    modal.instance.modulefilter = moduleFilter;
+                    modal.instance.filtercontext = {
+                        module: model.module
+                    };
+                }
+
+                // subscribe to onClose and send undefined
+                // this can be checked in the caller function
+                modal.instance.onClose
+                    .pipe(take(1))
+                    .subscribe({
+                        next: () => {
+                            responseSubject.next(undefined);
+                            responseSubject.complete();
+                        }
+                    });
+
+                modal.instance.selectedItems
+                    .pipe(take(1))
+                    .subscribe((items) => {
+                        const body = !model ? null : {
+                            module: model.module,
+                            modelData: model.utils.spiceModel2backend(model.module, model.data)
+                        };
+
+                        model.backend.postRequest( `module/TextSnippets/${items[0].id}/${routeMethod}`, null, body )
+                            .pipe(take(1))
+                            .subscribe(res => {
+                            // try to find hex codes from teh JSON encode and teplace with the proper ASCII Char
+                            let snippet = res.html;
+                            let matches = [...res.html.matchAll(/&#x([A-F0-9]{4});/g)];
+                            for(let match of matches){
+                                snippet = snippet.replaceAll(match[0], String.fromCharCode(parseInt(`0x${match[1]}`, 16)))
+                            }
+
+                            // resolve the Subject / Observable
+                            responseSubject.next(decodeURI(snippet));
+                            responseSubject.complete();
+                        })
+                    });
+            });
+
+        return responseSubject.asObservable()
+    }
+
+    /**
+     * opens a modal to choose from template variables
+     * @param modalService
+     * @param model
+     * @param viewContainerRefInjector
+     */
+    public addTemplateVariables(modalService, model, viewContainerRefInjector) {
+        let responseSubject = new Subject<any>();
+
+        modalService.openModal('OutputTemplatesVariableHelper', true, viewContainerRefInjector)
+            .subscribe(modal => {
+                modal.instance.response
+                    .pipe(take(1))
+                    .subscribe(text => {
+                        responseSubject.next(text);
+                        responseSubject.complete();
+                    });
+            });
+
+        return responseSubject.asObservable();
     }
 }

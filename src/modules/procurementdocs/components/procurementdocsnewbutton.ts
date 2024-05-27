@@ -19,7 +19,7 @@ export class ProcurementDocsNewButton extends ObjectActionNewButton implements O
     public actionconfig: any = {};
 
     constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model, public modal: modal, public injector: Injector) {
-        super(language, metadata, model, parentmodel);
+        super(language, metadata, model, parentmodel, injector);
 
         this.model.module = 'ProcurementDocs';
     }

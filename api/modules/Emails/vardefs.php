@@ -74,6 +74,27 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'source' => 'non-db',
             'comment'    => 'the number of attachments'
         ],
+        'attachments_size' => [
+            'name' => 'attachments_size',
+            'vname' => 'LBL_ATTACHMENTS_SIZE',
+            'type' => 'int',
+            'source' => 'non-db',
+            'comment'    => 'the total size of attachments'
+        ],
+        'zip_compress' => [
+            'name' => 'zip_compress',
+            'vname' => 'LBL_ZIP_COMPRESS',
+            'type' => 'bool',
+            'source' => 'non-db',
+            'comment'    => 'flag to compress attachments as zip'
+        ],
+        'send_read_receipt' => [
+            'name' => 'send_read_receipt',
+            'vname' => 'LBL_SEND_READ_RECEIPT',
+            'type' => 'bool',
+            'source' => 'non-db',
+            'comment'    => 'set flag to require a read receipt from the recipient'
+        ],
         'from_addr_name' => [
             'name' => 'from_addr_name',
             'type' => 'varchar',
@@ -511,6 +532,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Email'] = [
             'module' => 'ContactsOnlineProfiles',
             'type' => 'link',
             'relationship' => 'contactsonlineprofiles_emails',
+            'source' => 'non-db',
+        ],
+        'contact' => [
+            'name' => 'contact',
+            'vname' => 'LBL_CONTACT',
+            'module' => 'Contacts',
+            'type' => 'link',
+            'relationship' => 'contact_emails_parent',
             'source' => 'non-db',
         ],
         /* end relationship collections */

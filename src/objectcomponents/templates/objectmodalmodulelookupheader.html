@@ -12,4 +12,5 @@
 <div class="slds-theme--shade slds-p-around--x-small slds-border--top slds-grid slds-grid--vertical-align-center slds slds-grid--align-spread">
     <object-listview-header-details></object-listview-header-details>
     <system-checkbox *ngIf="relatefilter && relatefilter.id" [disabled]="relatefilter.required" [(ngModel)]="relatefilterActive"><system-label label="LBL_RELATED_TO"></system-label> <system-label-modulename [module]="relatefilter.module" [singular]="true"></system-label-modulename> {{relatefilter.display}}</system-checkbox>
+    <system-checkbox *ngIf="modulefilter || moduleFilter" [disabled]="false" [(ngModel)]="modulefilterActive"><system-label [label]="moduleFilterName"></system-label></system-checkbox>
 </div>

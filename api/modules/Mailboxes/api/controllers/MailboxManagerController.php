@@ -155,6 +155,9 @@ class MailboxManagerController
                         'display' => $mailbox->name,
                         'actionset' => $mailbox->actionset,
                         'type' => $type,
+                        'max_upload' => $mailbox->max_upload,
+                        'zip_compress' => $mailbox->zip_compress,
+                        'send_read_receipt' => $mailbox->send_read_receipt
                     ];
                 }
             } catch (\Exception $exception) {

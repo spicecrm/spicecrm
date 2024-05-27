@@ -40,6 +40,7 @@ export class configurationService {
      * holds general system data retrieved from sysinfo call
      */
     public data: any = {
+        startupMode: 'normal', // normal, recovery, maintenance
         backendUrl: 'api',
         backendextensions: {},
         systemparameters: {},
@@ -162,6 +163,7 @@ export class configurationService {
         sysinfo.subscribe({
             next: (res: any) => {
                 if (res) {
+                    this.data.startupMode = res.startup_mode;
                     this.data.languages = res.languages;
                     this.data.backendextensions = res.extensions;
                     this.data.systemparameters = res.systemsettings;
@@ -371,7 +373,13 @@ export class configurationService {
             'sds-c-textarea-shadow-focus',
             'sds-c-select-shadow-focus',
             'sds-c-button-text-color-hover',
-            'sds-c-icon-color-foreground'
+            'sds-c-icon-color-foreground',
+            'slds-c-slider-track-color-background',
+            'spice-alert-color-error',
+            'spice-alert-color-info',
+            'spice-alert-color-warning',
+            'spice-alert-color-success',
+            'spice-alert-color-custom'
         ];
 
         let theme = this.getCapabilityConfig('theme');

@@ -1,35 +1,39 @@
-<ng-container *ngIf="domainmanager.currentDomainDefinition; else selectdomain">
-    <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+<div *ngIf="domainmanager.currentDomainDefinition; else selectdomain" system-to-bottom>
+    <table class="slds-table slds-table--fixed-layout slds-table_bordered slds-table--header-fixed slds-border--top">
         <thead>
-        <tr class="slds-line-height_reset">
-            <th style="width: 3rem" scope="col"></th>
-            <th class="" scope="col">
-                <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
-            </th>
-            <th class="" scope="col">
-                <div class="slds-truncate"><system-label label="LBL_DBTYPE"></system-label></div>
-            </th>
-            <th class="" scope="col">
-                <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
-            </th>
-            <th class="" scope="col">
-                <div class="slds-truncate"><system-label label="LBL_LENGTH"></system-label></div>
-            </th>
-            <th class="" scope="col">
-                <div class="slds-truncate"><system-label label="LBL_REQUIRED"></system-label></div>
-            </th>
-            <th class="" scope="col">
-                <div class="slds-truncate"><system-label label="LBL_EXCLUDE_FROM_INDEX"></system-label></div>
-            </th>
-            <th style="width:2rem" scope="col"></th>
-        </tr>
+            <tr class="slds-line-height_reset">
+                <th style="width: 4rem" scope="col"></th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_FIELD"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_DBTYPE"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_TYPE"></system-label></div>
+                </th>
+                <th style="width:5rem"  scope="col">
+                    <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_LENGTH"></system-label></div>
+                </th>
+                <th style="width:3rem" scope="col">
+                    <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_REQUIRED"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--xx-small"><system-label label="LBL_VALIDATION"></system-label></div>
+                </th>
+                <th style="width:4rem" class="slds-text-align--right" scope="col">
+                    <button (click)="repairRelatedDictionaryItems()" system-title="MSG_REPAIR_DOMAIN_DEFINITION_DICTIONARY_RELATED" class="slds-button slds-button--icon slds-m-right--x-small">
+                        <system-button-icon icon="custom_apps"></system-button-icon>
+                    </button>
+                </th>
+            </tr>
         </thead>
         <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
             <tr class="slds-hint-parent" *ngFor="let domainfield of domainfields;trackBy: trackByFn" [ngClass]="{'slds-is-selected': domainmanager.currentDomainField == domainfield.id}" cdkDrag cdkDragBoundary=".dragboundary"  (click)="domainmanager.currentDomainField = domainfield.id">
                 <td>
                     <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
                     <system-utility-icon (click)="customizeDomainField($event, domainfield)" class="slds-p-right--xx-small" size="xx-small" [icon]="domainfield.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <system-utility-icon (click)="setStatus($event, domainfield)" [colorclass]="domainmanager.getStatusColor(domainfield.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
+                    <dictionary-manager-item-status [ngModel]="domainfield.status" (ngModelChange)="setStatus(domainfield, $event)"></dictionary-manager-item-status>
                 </td>
                 <td data-label="Domain">
                     <div class="slds-truncate">{{domainfield.name}}</div>
@@ -47,20 +51,34 @@
                     <system-checkbox disabled [ngModel]="domainfield.required == '1'"></system-checkbox>
                 </td>
                 <td data-label="Type" class="slds-p-vertical--none">
-                    <system-checkbox disabled [ngModel]="domainfield.exclude_from_index == '1'"></system-checkbox>
+                    <div *ngIf="domainfield.sysdomainfieldvalidation_id" class="slds-grid slds-grid--vertical-align-center">
+                        <div class="slds-truncate">{{validationName(domainfield.sysdomainfieldvalidation_id)}}</div>
+                        <button class="slds-button slds-button--icon" (click)="unlinkValidation(domainfield)"><system-button-icon icon="unlinked"></system-button-icon></button>
+                    </div>
+
                 </td>
-                <td class="slds-align--absolute-center" style="width: 2rem;">
-                    <system-utility-icon size="xx-small" icon="delete" (click)="deleteDomainField($event, domainfield.id)"></system-utility-icon>
+                <td>
+                    <button class="slds-col--bump-left slds-button slds-button--icon" (click)="showValidation(domainfield)">
+                        <system-button-icon icon="survey"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon" (click)="showDetails(domainfield)">
+                        <system-button-icon icon="edit"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon" [disabled]="domainfield.status == 'a'" (click)="deleteDomainField(domainfield.id)">
+                        <system-button-icon icon="delete"></system-button-icon>
+                    </button>
                 </td>
             </tr>
         </tbody>
     </table>
     <div class="slds-align--absolute-center slds-p-around--small">
-        <system-utility-icon (click)="addDomainField($event)" icon="new" size="x-small"></system-utility-icon>
+        <button class="slds-button slds-button--icon" (click)="addDomainField()">
+            <system-button-icon icon="new"></system-button-icon>
+        </button>
     </div>
-</ng-container>
+</div>
 <ng-template #selectdomain>
-    <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+    <div class="slds-size--1-of-1 slds-align--absolute-center" system-to-bottom-noscroll>
         <system-label label="LBL_SELECT_A_DOMAIN"></system-label>
     </div>
 </ng-template>

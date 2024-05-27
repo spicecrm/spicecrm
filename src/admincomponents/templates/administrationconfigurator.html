@@ -3,11 +3,11 @@
         <h2 class="slds-text-heading--medium "><system-label label="LBL_DICTIONARY_ITEM"></system-label>: {{componentconfig.dictionary}} ({{count}} <system-label label="LBL_RECORDS"></system-label>)</h2>
         <button class="slds-button slds-button--neutral" (click)="addEntry()"><system-label label="LBL_ADD"></system-label></button>
     </div>
-    <div class="slds-scrollable slds-grow" style="min-height: 0">
-        <table class="slds-table slds-table--bordered slds-table--cell-buffer">
-            <thead style="position: sticky; top: 0; z-index: 2" class="slds-theme--shade">
+    <div class="slds-scrollable slds-grow" style="min-height: 0" [system-overlay-loading-spinner]="administrationconfigurator.loading">
+        <table class="slds-table slds-table--bordered">
+            <thead style="position: sticky; top: 0; z-index: 20" class="slds-theme--shade">
             <tr class="slds-text-title--caps">
-                <th *ngFor="let field of getFields()" scope="col" (click)="sort(field.name)">
+                <th *ngFor="let field of itemFields" scope="col" (click)="sort(field.name)">
                     <div class="slds-truncate slds-p-horizontal--small">
                         {{field.name}}
                         <ng-container *ngIf="administrationconfigurator.sorting.field == field.name">
@@ -25,7 +25,7 @@
                 </th>
             </tr>
             <tr *ngIf="displayFilters" class="slds-theme--shade">
-                <td *ngFor="let field of getFields()">
+                <td *ngFor="let field of getFields(true)">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control">
                             <input type="text" class="slds-input" [(ngModel)]="filters[field.name]"/>
@@ -45,7 +45,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="slds-align-top slds-theme--default" administration-configurator-item *ngFor="let entry of getEntries(); trackBy: trackByFn" [entry]="entry" [fields]="getFields()">
+            <tr class="slds-align-top slds-theme--default" administration-configurator-item *ngFor="let entry of getEntries(); trackBy: trackByFn" [parentWidth]="width" [entry]="entry" [fields]="getFields()">
             </tr>
             </tbody>
         </table>

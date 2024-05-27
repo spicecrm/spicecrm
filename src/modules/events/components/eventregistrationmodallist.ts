@@ -33,6 +33,27 @@ export class EventRegistrationModalList {
     }
 
     /**
+     * set input search term to modellist
+     * @param value
+     */
+    set searchTerm(value: string) {
+
+        if (value == this.modellist.searchTerm) return;
+
+        this.modellist.searchTerm = value;
+        this.reloadList();
+    }
+
+    /**
+     * get latest input search term from modellist
+     * @param value
+     */
+    get searchTerm(): string {
+        return this.modellist.searchTerm;
+    }
+
+
+    /**
      * loads the modellist and sets the various paramaters
      */
     public ngOnInit() {
@@ -80,4 +101,20 @@ export class EventRegistrationModalList {
         this.subscriptions.unsubscribe();
     }
 
+
+    /**
+     * clears the searchterm
+     * @private
+     */
+    public clearSearchTerm() {
+        this.searchTerm = '';
+    }
+
+    /**
+     * reload the model list on 1 second timeout
+     * @private
+     */
+    public reloadList() {
+        this.modellist.getListData();
+    }
 }

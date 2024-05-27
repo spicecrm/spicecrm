@@ -22,12 +22,13 @@ use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\BadRequestException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
+use SpiceCRM\includes\ErrorHandlers\ServiceUnavailableException;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SystemStartupMode\SystemStartupMode;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
 use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
@@ -103,7 +104,7 @@ class AuthenticationController
      */
     public function getCanChangePassword(): bool
     {
-        if (LDAPAuthenticate::isLdapEnabled()) {
+        if (LDAPAuthenticate::isLdapEnabled() || isset($_SESSION['OAuth2TokenObject'])) {
             return false;
         }
         if ($this->currentUser && in_array($this->currentUser->external_auth_only, [0, "0"])) {
@@ -349,6 +350,10 @@ class AuthenticationController
 
         $this->setCurrentUser($userObj);
 
+        if (!$userObj->isAdmin() && SystemStartupMode::recoveryModeEnabled()) {
+            throw (new ServiceUnavailableException('System is in recovery mode. Only admin can login'))->setFatal( false );
+        }
+
         if ($authType == 'credentials') {
             SpiceCRM2FAUtils::handle2FAFlow($userObj, $authData);
         }
@@ -398,13 +403,7 @@ class AuthenticationController
     private function checkPasswordExpire(User $userObj)
     {
         if (( $userObj->system_generated_password || $userObj->hasExpiredPassword() ) && !$userObj->is_api_user && !$userObj->external_auth_only) {
-            $userLanguage = $userObj->getPreference('language');
-            $necessaryLabels = LanguageManager::getSpecificLabels( $userLanguage ?: SpiceLanguageManager::getInstance()->getSystemDefaultLanguage(), [
-                'LBL_CANCEL','LBL_CHANGE_PASSWORD', 'LBL_NEW_PWD', 'LBL_NEW_PWD_REPEATED', 'LBL_PWD_GUIDELINE', 'LBL_SET_PASSWORD',
-                'LBL_ONE_LOWERCASE', 'LBL_ONE_UPPERCASE', 'LBL_ONE_SPECIALCHAR', 'LBL_ONE_DIGIT', 'LBL_MIN_LENGTH', 'MSG_PWD_NOT_LEGAL',
-                'MSG_PWDS_DONT_MATCH', 'MSG_PWD_CHANGED_SUCCESSFULLY'
-            ]);
-            throw ( new UnauthorizedException('Password expired.', 2 ))->setDetails(['labels' => $necessaryLabels]);
+            throw ( new UnauthorizedException('Password expired.', 2 ));
         }
     }
 

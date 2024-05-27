@@ -177,12 +177,34 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      * Considers the actonconfig and the hidden attribute
      *
      * @param actionitem the actionitem
+     * @param buttonsize
+     * @param isFirst
+     * @param isLast
      */
-    public addclasses(actionitem) {
+    public addclasses(actionitem, buttonsize?: string, isFirst?: boolean | undefined, isLast?: boolean | undefined) {
         let addclasses = actionitem.actionconfig.addclasses;
         if (this.isHidden(actionitem.id)) {
             addclasses += ' slds-hide';
         }
+
+        // change class for listitems
+        if(actionitem.displayasicon || actionitem.singlebutton) {
+            if(isFirst && isLast) {
+                addclasses += ' ';
+            } else if(isFirst && !isLast) {
+                addclasses += ' slds-button_first ';
+            } else if(!isFirst && isLast) {
+                addclasses += ' slds-button_last ';
+            } else if(!isFirst && !isLast) {
+                addclasses += ' slds-button_middle ';
+            }
+        }
+
+        // set buttonsize
+        if(buttonsize) {
+            addclasses +=  ' slds-button--icon-' + buttonsize;
+        }
+
         return addclasses;
     }
 

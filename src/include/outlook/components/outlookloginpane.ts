@@ -81,6 +81,7 @@ export class OutlookLoginPane {
                 error: (err: any) => {
                     switch (err.status) {
                         case 401:
+                        case 503:
                             this.promptUser = true;
                             break;
                     }

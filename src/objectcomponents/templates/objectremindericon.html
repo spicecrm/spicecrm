@@ -1,0 +1,11 @@
+<div class="slds-form-element slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': showDialog}">
+    <system-utility-icon *ngIf="!hasReminder && !processing" icon="reminder" size="xx-small" system-title="LBL_REMINDER_SET" (click)="toggleDatePicker()"/>
+    <div *ngIf="hasReminder && !processing" class="slds-grid slds-grid--vertical-align-center" system-title="LBL_REMINDER_CLEAR">
+        <system-utility-icon icon="clear" size="xx-small" (click)="clearReminder()"/>
+        <system-display-datetime class="slds-p-left--xx-small slds-text-link--reset" (click)="toggleDatePicker()" [date]="reminderDate" [displayTime]="false"/>
+    </div>
+    <system-spinner *ngIf="processing" size="14"/>
+    <div class="slds-datepicker slds-dropdown slds-dropdown_left" role="dialog">
+        <system-input-date-picker *ngIf="showDialog" [setDate]="reminderDate" (datePicked)="setReminder($event)"/>
+    </div>
+</div>

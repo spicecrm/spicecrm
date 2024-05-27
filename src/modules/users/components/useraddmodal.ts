@@ -184,19 +184,8 @@ export class UserAddModal implements OnInit {
     }
 
     public copyPassword() {
-        let selBox = document.createElement('textarea');
-        selBox.style.position = 'fixed';
-        selBox.style.left = '0';
-        selBox.style.top = '0';
-        selBox.style.opacity = '0';
-        selBox.value = this.password;
-        document.body.appendChild(selBox);
-        selBox.focus();
-        selBox.select();
-        if (document.execCommand('copy')) {
-            this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_COPIED"), "success");
-        }
-        document.body.removeChild(selBox);
+        navigator.clipboard.writeText(this.password);
+        this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_COPIED"), "success");
     }
 
     public cancel() {

@@ -53,7 +53,7 @@
             <tr *ngFor="let field of fileMapping | objectkeyvalues">
                 <td scope="row">
                     <span class="slds-checkbox">
-                          <input type="checkbox" id="{{field.key}}" [checked]="getCheckedField(field.key)"
+                          <input type="checkbox" [disabled]="disableCheckbox(field.value)" id="{{field.key}}" [checked]="getCheckedField(field.key)"
                                  (change)="setCheckedField(field.key, field.value, $event)"/>
                           <label class="slds-checkbox__label" for="{{field.key}}">
                             <span class="slds-checkbox_faux"></span>

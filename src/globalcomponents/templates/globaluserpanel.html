@@ -2,16 +2,43 @@
     <div class="slds-grid slds-p-around--small slds-grid--vertical-align-center">
         <global-user-panel-icon/>
         <div class="slds-m-left--small">
-            <h1 class="slds-text-heading--medium" [title]="userName">{{displayName}}</h1>
+            <h1 class="slds-text-heading--medium" [ngClass]="{'slds-text-link--reset': canOpenUser}" [title]="userName" (click)="goDetails()">{{displayName}}</h1>
         </div>
     </div>
-    <div class="slds-theme--shade slds-p-around--small slds-border--top slds-border--bottom">
-        <ul class="slds-list--horizontal slds-has-dividers--left">
+    <div class="slds-theme--shade slds-p-around--small slds-border--top slds-border--bottom slds-grid slds-grid--vertical-align-center">
+        <ul class="slds-list--horizontal slds-has-dividers--left slds-col--bump-right">
             <li class="slds-item">
-                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="goDetails()"><system-label label="LBL_DETAILS"></system-label></a>
+                <button class="slds-button slds-button--icon" (click)="openPreferences()" system-title="LBL_PREFERENCES">
+                    <system-button-icon icon="user_role"></system-button-icon>
+                </button>
+            </li>
+            <li class="slds-item">
+                <button class="slds-button slds-button--icon" (click)="editSignature()" system-title="LBL_SIGNATURE">
+                    <system-button-icon icon="signature"></system-button-icon>
+                </button>
             </li>
             <li *ngIf="canChangePassword" class="slds-item">
-                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="changePassword()"><system-label label="LBL_CHANGE_PASSWORD"></system-label></a>
+                <button class="slds-button slds-button--icon" (click)="changePassword()" system-title="LBL_CHANGE_PASSWORD">
+                    <system-button-icon icon="password"></system-button-icon>
+                </button>
+            </li>
+            <li *ngIf="canChange2fa" class="slds-item">
+                <button class="slds-button slds-button--icon" (click)="set2FA()" system-title="LBL_2FA">
+                    <!--system-button-icon  icon="key"></system-button-icon-->
+                    <system-utility-icon icon="key" size="xx-small" [colorclass]="!session.authData.user.user_2fa_method ? 'slds-icon-text-light' : 'slds-icon-text-success'"></system-utility-icon>
+                </button>
+            </li>
+        </ul>
+        <ul *ngIf="displayDeveloperMode" class="slds-list--horizontal slds-has-dividers--left">
+            <li class="slds-item">
+                <button class="slds-button slds-button--icon" (click)="clearCache()" system-title="LBL_RESET_AND_RELOAD">
+                    <system-button-icon icon="refresh"></system-button-icon>
+                </button>
+            </li>
+            <li class="slds-item">
+                <button class="slds-button slds-button--icon" (click)="goAdmin()" system-title="LBL_WORKBENCH">
+                    <system-button-icon icon="settings"></system-button-icon>
+                </button>
             </li>
         </ul>
     </div>
@@ -22,15 +49,10 @@
             <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"/></label>
             <system-input-timezone [(ngModel)]="currentTz" denyEmpty="true"/>
         </div>
-        <div *ngIf="displayDeveloperMode" class="slds-p-top--small slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
-<!--            <system-checkbox [disabled]="!canSetDeveloperMode" [(ngModel)]="developermode"><system-label label="LBL_DEVELOPER_MODE"></system-label></system-checkbox>-->
-            <button  class="slds-button slds-button--neutral slds-truncate" (click)="clearCache()"><system-label label="LBL_RESET_AND_RELOAD"/></button>
-        </div>
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">
         <div class="slds-grid slds-grid--vertical-align-center">
-            <system-utility-icon class="slds-p-right--xx-small" *ngIf="socket.connected" size="xx-small" icon="omni_channel"/>
-            <system-label label="LBL_LOGGED_ON_SYSTEM"/>: {{systemName}}
+            <system-utility-icon class="slds-p-right--xx-small" *ngIf="socket.connected" size="xx-small" system-title="LBL_SOCKET_CONNECTED" icon="omni_channel"/>
         </div>
         <div class="slds-col--bump-left">
             <button class="slds-button slds-button--icon" system-title="LBL_LOGOFF" (click)="logoff()">

@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {session} from '../../services/session.service';
-import {TokenObjectI} from "../interfaces/globalcomponents.interfaces";
+import {Config2FAI, TokenObjectI} from "../interfaces/globalcomponents.interfaces";
 import {configurationService} from "../../services/configuration.service";
 import {toast} from "../../services/toast.service";
 
@@ -61,15 +61,38 @@ export class GlobalReLogin {
      * input the two factory authentication token
      */
     public code2fa: string;
+    /**
+     * remember device
+     */
+    public rememberDevice: boolean = false;
+    /**
+     * remember device visible
+     */
+    public rememberDeviceVisible: boolean = false;
 
     constructor(public login: loginService,
                 private toast: toast,
                 public session: session,
-                private configuration: configurationService) {
+                public configuration: configurationService) {
+        this.load2FAConfig();
     }
 
     get loginLabels() {
         return this.configuration.data.languages?.required_labels ?? {};
+    }
+
+    /**
+     * load 2FA Config
+     * @private
+     */
+    private load2FAConfig() {
+
+        const config: Config2FAI = this.configuration.getCapabilityConfig('login')?.twofactor;
+
+        if (window._.isEmpty(config)) return;
+
+        this.rememberDevice = config.onlogin.enforced == 'device_change';
+        this.rememberDeviceVisible = config.onlogin.enforced != 'always';
     }
 
     public tokenLogin(token: {issuer: string, tokenObject: TokenObjectI}) {
@@ -88,6 +111,7 @@ export class GlobalReLogin {
    public relogin() {
         this.loggingIn = true;
        this.login.authData.code2fa = this.code2fa;
+       this.login.authData.rememberDevice = this.rememberDevice;
         this.login.relogin(this.password, null).subscribe({
             next: res => {
                     this.loggedin.emit(true);

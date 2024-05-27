@@ -20,7 +20,7 @@ export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit 
     public actionconfig: any = {};
 
     constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model, public modal: modal, public injector: Injector, public navigation: navigation) {
-        super(language, metadata, model, parentmodel);
+        super(language, metadata, model, parentmodel, injector);
 
         this.model.module = 'SalesDocs';
     }

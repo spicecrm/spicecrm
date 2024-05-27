@@ -28,7 +28,7 @@
                 <ng-container *ngFor="let schemelement of schemaelements" >
                 <tr class="slds-hint-parent" *ngIf="!schemelement.hidden" style="line-height: 32px;" [ngStyle]="schemelement.displaystyles">
                     <td>
-                        <div class="slds-truncate"><system-label [label]="schemelement.elementname ?? schemelement.conditionname"/></div>
+                        <div class="slds-truncate"><system-label [label]="getElementLabel(schemelement)"/></div>
                     </td>
                     <td class="slds-text-align--right" [ngSwitch]="schemelement.valuetype">
                         <ng-container *ngIf="getElementValue(schemelement.id)">

@@ -30,8 +30,28 @@ class OutputRevisionsController
             throw new NotFoundException("Bean {$args['parenttype']} with id {$args['id']} not found");
         }
 
+        // check that the template is allowed
+        $templates = $seed->getOutputTemplates();
+        $templateFound = false;
+        foreach ($templates as $t){
+            if($t['id'] == $args['template']){
+                $templateFound = true;
+                break;
+            }
+        }
+
+        if(!$templateFound){
+            throw new NotFoundException("Template {$args['template']} not allowed");
+        }
+
         /** @var OutputTemplate $template */
         $template = BeanFactory::getBean('OutputTemplates', $args['template']);
+
+        if(!$template){
+            throw new NotFoundException("Template {$args['template']} not found");
+        }
+
+        // set and parse the template
         $template->bean = $seed;
         $file = $template->getPdfContent();
 
@@ -65,8 +85,28 @@ class OutputRevisionsController
 
         $body = $req->getParsedBody();
 
+
+        // check that the template is allowed
+        $templates = $seed->getOutputTemplates();
+        $templateFound = false;
+        foreach ($templates as $t){
+            if($t['id'] == $args['template']){
+                $templateFound = true;
+                break;
+            }
+        }
+
+        if(!$templateFound){
+            throw new NotFoundException("Template {$args['template']} not allowed");
+        }
+
         /** @var OutputTemplate $template */
         $template = BeanFactory::getBean('OutputTemplates', $args['template']);
+
+        if(!$template){
+            throw new NotFoundException("Template {$args['template']} not found");
+        }
+
         $template->bean = $seed;
         $file = $template->getPdfContent();
 

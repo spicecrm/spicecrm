@@ -114,10 +114,10 @@ class ChromeLocalPdfHandler extends PdfHandler
         $handlerSpecificJavascript = '
             <script>
                 window.onload = function () {
-                    document.getElementById("header_cell").style.height = document.getElementById("spice_page_header").offsetHeight+"px";
+                    document.getElementById("header_cell").style.height = (document.getElementById("spice_page_header").offsetHeight + 10)+"px";
                     // document.getElementById("header_cell").style.backgroundColor = "red"; // for testing
                     // document.getElementById("header_cell").style.opacity = "0.5"; // for testing
-                    document.getElementById("footer_cell").style.height = document.getElementById("spice_page_footer").offsetHeight+"px";
+                    document.getElementById("footer_cell").style.height = (document.getElementById("spice_page_footer").offsetHeight + 10)+"px";
                     // document.getElementById("footer_cell").style.backgroundColor = "green"; // for testing
                     // document.getElementById("footer_cell").style.opacity = "0.5"; // for testing
                 }

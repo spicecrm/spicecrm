@@ -1,7 +1,9 @@
-<button class="slds-button" style="min-width: 32px;" aria-haspopup="true" (click)="toggleUserDetails()">
-    <span *ngIf="!userimage" class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
-        <system-utility-icon  icon="user" size="x-small" addclasses="slds-icon" colorclass=""></system-utility-icon>
-    </span>
-    <img style="height: 32px; width: 32px" *ngIf="userimage" [src]="userimage"/>
-</button>
-<global-user-panel class="slds-is-absolute" *ngIf="!hideUserDetails" (closepopup)="closepopup()"></global-user-panel>
+<div (mouseenter)="hideUserDetails = false" (mouseleave)="hideUserDetails = true" class="slds-is-relative">
+    <div style="min-width: 32px; cursor: pointer;" aria-haspopup="true" (click)="toggleUserDetails()">
+        <span *ngIf="!userimage" [class.slds-theme--default]="configurationService.data.startupMode == 'maintenance' || configurationService.data.startupMode == 'recovery'" class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle">
+            <system-utility-icon  icon="user" size="x-small" addclasses="slds-icon" colorclass=""></system-utility-icon>
+        </span>
+        <img style="height: 32px; width: 32px" *ngIf="userimage" [src]="userimage"/>
+    </div>
+    <global-user-panel class="slds-is-absolute" style="top: 0px; right: 15px;" *ngIf="!hideUserDetails" (closepopup)="closepopup()"></global-user-panel>
+</div>
