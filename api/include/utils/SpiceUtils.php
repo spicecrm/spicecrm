@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Localization\Localization;
 use SpiceCRM\includes\LogicHook\LogicHook;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainValidations;
 use SpiceCRM\includes\SpiceLanguages\SpiceLanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
@@ -142,6 +143,17 @@ class SpiceUtils
         } else if ($strlen > $length) {
             $string = substr($string, 0, $length);
         }
+    }
+
+    /**
+     * builds an md5 hash for a string and formats it GUID like
+     *
+     * @param $value
+     * @return string
+     */
+    public static function generateMD5GUID($value){
+        $hash = md5($value);
+        return substr($hash, 0, 8) . '-' . substr($hash, 8, 4) . '-' . substr($hash, 12, 4) . '-' . substr($hash, 16, 4) . '-' . substr($hash, 20);
     }
 
     /**
@@ -1007,6 +1019,8 @@ class SpiceUtils
         }
 
         if (empty($params['human'])) {
+            // make sure $amount is a float
+            if(!is_float($amount)) $amount = floatval($amount);
             $amount = number_format(round($amount, $round), $decimals, $dec_sep, $num_grp_sep);
             $amount = self::formatPlaceSymbol($amount, $symbol,(empty($params['symbol_space']) ? false : true));
         } else {
@@ -1174,7 +1188,7 @@ class SpiceUtils
         // BEGIN CR1000108 vardefs to db
         if (SpiceDictionaryVardefs::isDomainManaged()) {
             //load sys_app_list_strings
-            $sys_app_list_strings = SpiceDictionaryVardefs::createDictionaryValidationDoms($language);
+            $sys_app_list_strings = SpiceDictionaryDomainValidations::getInstance()->createDictionaryValidationDoms($language);
             // add to app_list_strings
             foreach ($sys_app_list_strings as $dom => $lang) {
                 foreach ($lang[$language] as $values => $val) {
@@ -1281,7 +1295,7 @@ class SpiceUtils
         if (SpiceDictionaryVardefs::isDomainManaged()) {
             // reset anything you've done so far
             //load sys_app_list_strings
-            $sys_app_list_strings = SpiceDictionaryVardefs::createDictionaryValidationDoms($language);
+            $sys_app_list_strings = SpiceDictionaryDomainValidations::getInstance()->createDictionaryValidationDoms($language);
 
             // add to app_list_strings
             foreach ($sys_app_list_strings as $dom => $lang) {

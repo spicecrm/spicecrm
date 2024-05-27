@@ -6,6 +6,7 @@ import {modal} from "../../services/modal.service";
 import {ObjectStatusNetworkButtonItem} from "./objectstatusnetworkbuttonitem";
 import {language} from "../../services/language.service";
 import {view} from "../../services/view.service";
+import {toast} from "../../services/toast.service";
 
 @Component({
     selector: 'object-status-network-open-modal-button',
@@ -23,8 +24,9 @@ export class ObjectStatusNetworkOpenModalButton extends ObjectStatusNetworkButto
                 public injector: Injector,
                 public modal: modal,
                 public language: language,
+                public toast: toast,
                 public view: view) {
-        super(language, metadata, modal, model, injector);
+        super(language, metadata, modal, model, toast, injector);
     }
 
     /**

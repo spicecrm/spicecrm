@@ -3,7 +3,7 @@ namespace SpiceCRM\includes\Logger;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\authentication\AuthenticationController;
 
@@ -36,7 +36,7 @@ class APIlogViewer {
      * @return array
      */
     public function getLogTables(){
-        $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+        $dictionary = SpiceDictionary::getInstance()->dictionary;
 
         $tables = [];
         foreach($dictionary as $name => $data){
@@ -96,6 +96,7 @@ class APIlogViewer {
         if ( !empty( $queryParams['status'])) $filter[] = "a.http_status_code = '{$db->quote($queryParams['status'])}'";
         if ( !empty( $queryParams['direction'])) $filter[] = "a.direction = '{$db->quote($queryParams['direction'])}'";
         if ( !empty( $queryParams['end'])) $filter[] = "a.date_entered <= '{$db->quote($queryParams['end'])}'";
+        if ( !empty( $queryParams['start'])) $filter[] = "a.date_entered >= '{$db->quote($queryParams['start'])}'";
 
         if (count( $filter) > 0) {
             $whereClause = 'WHERE ' . implode(' AND ', $filter);

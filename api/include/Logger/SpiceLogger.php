@@ -65,6 +65,11 @@ class SpiceLogger implements LoggerTemplate
     protected $full_log_file;
     protected $dbcon;
     protected $_levelCategories;
+    /**
+     * true while logging to the log table to prevent recursion
+     * @var bool
+     */
+    protected bool $loggingToLogTable = false;
 
     /**
      * used for config screen
@@ -253,7 +258,14 @@ class SpiceLogger implements LoggerTemplate
         $logparams = []
     )
     {
-        return false;
+        # prevent recursion when logging to log table fails
+        if ($this->loggingToLogTable) {
+            $this->loggingToLogTable = false;
+            return true;
+        }
+
+        $this->loggingToLogTable = true;
+
         //do not log on install
         if (!SpiceConfig::getInstance()->configExists() || SpiceConfig::getInstance()->installing) return true;
 
@@ -274,8 +286,10 @@ class SpiceLogger implements LoggerTemplate
         // make sure to set enable log to false
         $instance->enablelog = false;
         // write the query
-        $instance->insertQuery("syslogs", $log, true);
+        $query = $instance->insertQuery("syslogs", $log, false);
+        $instance->query($query);
 
+        $this->loggingToLogTable = false;
     }
 
     /**

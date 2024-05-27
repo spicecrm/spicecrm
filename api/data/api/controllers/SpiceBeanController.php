@@ -358,4 +358,70 @@ class SpiceBeanController
             return $res->withJson(['success' => false]);
         }
     }
+
+    /**
+     * sets is_inactive flag on a Bean
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function manageActiveState(Request $req, Response $res, array $args): Response
+    {
+        $bean = BeanFactory::getBean($args['beanName'], $args['beanId']);
+
+        if(!$bean->ACLAccess('edit')) {
+            throw (new ForbiddenException('MSG_NO_EDIT_RIGHTS'))->setErrorCode('noRecordEdit');
+        }
+
+        $postBody = $req->getParsedBody();
+
+        $bean->is_inactive = $postBody['isInactive'];
+        $bean->save();
+
+        return $res->withJson(['success' => true, 'isInactive' => $bean->is_inactive]);
+    }
+
+    /**
+     * sets deleted flag on a Bean
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function deleteInactiveBean(Request $req, Response $res, array $args): Response
+    {
+        $bean = BeanFactory::getBean($args['beanName'], $args['beanId']);
+
+        if(!$bean->ACLAccess('delete')) {
+            throw (new ForbiddenException('MSG_NO_DELETE_RIGHTS'))->setErrorCode('noRecordDelete');
+        }
+
+        if($bean->is_inactive == '1') {
+            $bean->deleted = 0;
+            $bean->save();
+        }
+
+        return $res->withJson(['success' => true, 'beanName' => $bean->name, 'beanId' => $bean->id, 'deleted' => $bean->deleted]);
+    }
+
+    /**
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws ForbiddenException
+     */
+    public function acceptAsDuplicate(Request $req, Response $res, array $args): Response
+    {
+        $moduleHandler = new SpiceBeanHandler(RESTManager::getInstance()->app);
+        $params = $req->getQueryParams();
+        return $res->withJson($moduleHandler->acceptBeanAsDuplicate($args['beanName'], $args['beanIdLeft'], $args['beanIdRight'], $params['deleted']));
+    }
+
 }

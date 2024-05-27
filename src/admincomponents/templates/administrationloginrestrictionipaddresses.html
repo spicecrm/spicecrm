@@ -52,11 +52,7 @@
             </tbody>
         </table>
     </div>
-    <div *ngIf="!isAdding && !isLoading && ipAddresses.length === 0" class="slds-grow slds-align--absolute-center">
-        <div class="slds-illustration slds-illustration_small">
-            <div class="slds-text-longform">
-                <h3 class="slds-text-heading_medium"><system-label label="MSG_NO_IP_ADDRESSES_LISTED"></system-label></h3>
-            </div>
-        </div>
+    <div *ngIf="!isAdding && !isLoading && ipAddresses.length === 0" class="slds-grow slds-p-around--small slds-align--absolute-center">
+        <system-illustration-no-records><system-label label="MSG_NO_IP_ADDRESSES_LISTED"/></system-illustration-no-records>
     </div>
 </div>

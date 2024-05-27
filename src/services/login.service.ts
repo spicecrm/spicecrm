@@ -20,8 +20,9 @@ import {TokenObjectI} from "../globalcomponents/interfaces/globalcomponents.inte
 interface loginAuthDataIf {
     userName: string;
     password: string;
-    rememberMe: boolean;
+    keepMeLoggedIn: boolean;
     code2fa?: string;
+    rememberDevice?: boolean;
 }
 
 @Injectable({
@@ -41,7 +42,7 @@ export class loginService {
     public authData: loginAuthDataIf = {
         userName: '',
         password: '',
-        rememberMe: false
+        keepMeLoggedIn: false
     };
 
     /**
@@ -83,58 +84,22 @@ export class loginService {
      */
     public login(refresh: boolean = true): Observable<boolean> {
 
-        // the impersonateion name
-        let impersonationUser: string;
-
         let loginSuccess = new Subject<any>();
 
         let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
 
-        /**
-         * the headers to be passed in
-         */
-        let headers = new HttpHeaders();
+        const params: any = {};
+        const impersonating = this.authData.userName && this.authData.userName.indexOf('#as#') > 0;
 
-        if (this.authData.userName && this.authData.password) {
-
-            let asUsernamePos: number = this.authData.userName.indexOf('#as#');
-            if (asUsernamePos > -1) {
-                impersonationUser = this.authData.userName.slice(0, asUsernamePos);
-                this.authData.userName = this.authData.userName.slice(asUsernamePos + 4);
-            }
-
-            headers = headers.set(
-                'Authorization',
-                'Basic ' + this.helper.encodeBase64(this.authData.userName + ':' + this.authData.password)
-            );
-
-            if (!!this.authData.code2fa){
-                headers = headers.set('code2fa', this.authData.code2fa);
-            }
-
-            if (!!this.session.deviceID){
-                headers = headers.set('device-id', this.session.deviceID);
-            }
-
-        } else if (this.tokenObject) {
-            headers = headers.set(
-                'OAuth-Token',
-                this.tokenObject.access_token
-            ).set(
-                'OAuth-Issuer',
-                this.oauthIssuer
-            ).set(
-                'OAuth-Refresh-Token',
-                this.tokenObject.refresh_token ?? ''
-            ).set(
-                'OAuth-Token-Valid-Until',
-                this.tokenObject.valid_until ?? ''
-            );
-        } else {
-            throw new Error('Cannot Log In');
+        // prepare impersonation users
+        if (impersonating && this.authData.userName && this.authData.password) {
+            const [impersonationUser, loginUser] = this.authData.userName.split("#as#");
+            params.impersonationuser = encodeURIComponent( impersonationUser )
+            this.authData.userName = loginUser;
         }
-        let params: any = {};
-        if ( impersonationUser ) params.impersonationuser = encodeURIComponent( impersonationUser );
+
+        const headers = this.generateLoginHeaders(this.authData.password, this.authData.userName, this.tokenObject);
+
         this.http.get(loginUrl, { headers, params })
             .subscribe({
                 next: (res: any) => {
@@ -160,7 +125,7 @@ export class loginService {
                     this.session.authData.canchangepassword = response.canchangepassword;
                     this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
 
-                    this.session.storeToken(this.authData.rememberMe);
+                    this.session.storeToken(this.authData.keepMeLoggedIn);
 
                     sessionStorage[btoa(this.session.authData.sessionId + ':backendurl')] =
                         btoa(this.configurationService.getBackendUrl());
@@ -177,6 +142,7 @@ export class loginService {
                 error: (err: any) => {
                     switch (err.status) {
                         case 401:
+                        case 503:
                             loginSuccess.error(err.error.error);
                             break;
                         default:
@@ -192,30 +158,39 @@ export class loginService {
     }
 
     /**
-     * logs back into the backend
+     * generate login headers
+     * @param password
+     * @param username
+     * @param tokenObject
+     * @private
      */
-    public relogin(password, tokenObject: TokenObjectI): Observable<boolean> {
-        let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
-
-        let loginSuccess = new Subject<boolean>();
+    private generateLoginHeaders(password?: string, username?: string, tokenObject?: TokenObjectI): HttpHeaders {
 
         /**
          * the headers to be passed in
          */
         let headers = new HttpHeaders();
 
-        if(password) {
+        if (username && password) {
+
             headers = headers.set(
                 'Authorization',
-                'Basic ' + this.helper.encodeBase64(this.session.authData.userName + ':' + password)
+                'Basic ' + this.helper.encodeBase64(username + ':' + password)
             );
 
             if (!!this.authData.code2fa){
                 headers = headers.set('code2fa', this.authData.code2fa);
             }
 
-        } else if (tokenObject) {
+            if (!!this.session.deviceID){
+                headers = headers.set('device-id', this.session.deviceID);
+            }
 
+            if (!!this.authData.rememberDevice){
+                headers = headers.set('remember-device', this.session.deviceID);
+            }
+
+        } else if (tokenObject) {
             headers = headers.set(
                 'OAuth-Token',
                 tokenObject.access_token
@@ -224,12 +199,27 @@ export class loginService {
                 this.oauthIssuer
             ).set(
                 'OAuth-Refresh-Token',
-                this.tokenObject.refresh_token ?? ''
+                tokenObject.refresh_token ?? ''
             ).set(
                 'OAuth-Token-Valid-Until',
-                this.tokenObject.valid_until ?? ''
+                tokenObject.valid_until ?? ''
             );
+        } else {
+            throw new Error('Cannot Log In');
         }
+
+        return headers;
+    }
+
+    /**
+     * logs back into the backend
+     */
+    public relogin(password, tokenObject: TokenObjectI): Observable<boolean> {
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
+
+        let loginSuccess = new Subject<boolean>();
+
+        const headers = this.generateLoginHeaders(password, this.session.authData.userName, tokenObject);
 
         this.http.get(loginUrl, {headers})
             .subscribe({
@@ -237,7 +227,7 @@ export class loginService {
                     let response = res;
                     this.session.authData.sessionId = response.id;
 
-                    this.session.storeToken(this.authData.rememberMe);
+                    this.session.storeToken(this.authData.keepMeLoggedIn);
 
                     // resolve the promise
                     loginSuccess.next(true);
@@ -249,6 +239,8 @@ export class loginService {
                 error: (err: any) => {
                     switch (err.status) {
                         case 401:
+                        case 503:
+                            this.toast.sendToast(err.error?.error?.message, "error");
                             loginSuccess.error(err.error.error);
                             break;
                         default:

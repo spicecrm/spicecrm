@@ -57,7 +57,7 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
      *
      * @private
      */
-    @Input() public autocomplete: string;
+    @Input() public autocomplete: string = 'off';
 
     /**
      * Enable the clear button.
@@ -69,7 +69,11 @@ export class SystemInputText implements ControlValueAccessor, OnInit {
     }
     public trimInput: 'blur'|boolean = false;
 
-    @Input() public id: string;
+
+    /**
+     * set to true to display the input with an error class
+     */
+    @Input() public haserror: boolean = false;
 
     /**
      * a string to break the autocomplete

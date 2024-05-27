@@ -10,6 +10,10 @@ import {configurationService} from '../../services/configuration.service';
 import {loader} from '../../services/loader.service';
 import {broadcast} from '../../services/broadcast.service';
 import {modal} from "../../services/modal.service";
+import {
+    DictionaryManagerFixDBFieldsMismatchModal
+} from "../../workbench/components/dictionarymanagerfixdbfieldsmismatchmodal";
+import {toast} from "../../services/toast.service";
 
 /**
  * @ignore
@@ -36,7 +40,8 @@ export class PackageLoaderPackage implements OnInit {
         public configurationService: configurationService,
         public loader: loader,
         public modal: modal,
-        public broadcast: broadcast
+        public broadcast: broadcast,
+        private toast: toast
     ) {
 
     }
@@ -77,47 +82,51 @@ export class PackageLoaderPackage implements OnInit {
         }
     }
 
-    public loadPackage(packagename) {
+    public loadPackage(pkg) {
         this.loading = 'package';
-        this.backend.getRequest('configuration/packages/package/' + packagename + this.repositoryaddurl).subscribe(
-            response => {
+        this.backend.getRequest('configuration/packages/package/' + pkg.package + this.repositoryaddurl).subscribe({
+            next: res => {
                 this.loading = 'configuration';
                 this.loader.load().subscribe(status => {
                     this.package.installed = true;
                     this.broadcast.broadcastMessage('loader.reloaded');
                     this.loading = '';
                 });
+
+                this.toast.sendToast('LBL_DONE', 'success');
+
             },
-            error => {
-                this.executeDB();
-                this.loading = '';
-            });
-    }
+            error: err => {
+                pkg.erroneousDictionaries = err.error?.error?.details?.filter(e => e.scope == 'dictionary' && e.mismatch) ?? [];
+                this.toast.sendToast(err.error?.error?.message ?? 'unknown error', 'error');
 
-    /**
-     * calls the backend repair method that delivers the sql string, injects it in the modal
-     */
-    public executeDB() {
-
-        this.modal.confirm('MSG_PACKAGE_REPAIR_DB', 'LBL_REPAIR_DATABASE', 'error').subscribe(answer => {
-
-            if (!answer) return;
-
-            const loadingModal = this.modal.await(this.language.getLabel('LBL_PROCESSING'));
-
-            this.backend.getRequest('admin/repair/sql').subscribe(result => {
-                loadingModal.next(true);
-                loadingModal.complete();
-                if(result) {
-                    this.modal.openModal('AdministrationDictRepairModal', true).subscribe(modal => {
-                        modal.instance.sql = result.sql;
-                        modal.instance.wholeSQL = result.wholeSQL;
-                    });
+                if (pkg.erroneousDictionaries?.length > 0) {
+                    this.openFixRequiredModal(pkg);
                 }
-            });
+                this.loading = '';
+            }
         });
     }
 
+    /**
+     * open fix required modal
+     * @param pkg
+     */
+    public openFixRequiredModal(pkg) {
+        this.modal.openStaticModal(DictionaryManagerFixDBFieldsMismatchModal).subscribe(modalRef => {
+            modalRef.instance.dictionaries = pkg.erroneousDictionaries.map(d => d.name);
+            modalRef.instance.dictionaryName = modalRef.instance.dictionaries[0];
+            pkg.erroneousDictionaries.forEach(d => {
+                modalRef.instance.mismatch[d.name] = d.mismatch[d.name];
+            });
+            modalRef.instance.response.subscribe({
+                next: success => {
+                    if (!success) return;
+                    this.loadPackage(pkg);
+                }
+            })
+        });
+    }
 
     public deletePackage(packagename) {
         this.loading = 'package';

@@ -4,13 +4,13 @@
 </div>
 <div class="slds-theme--default slds-grid" [system-overlay-loading-spinner]="!initialized">
     <div class="slds-size--1-of-3 slds-border--right" system-to-bottom>
-        <div *ngFor="let policy of policies; let i = index" class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-around--small slds-border--bottom" [ngClass]="{'slds-theme--shade': i == selectedPolicyIndex}" (click)="selectPolicyByIndex(i)">
+        <div *ngFor="let policy of policies; let i = index" class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-around--small slds-border--bottom" [ngClass]="{'slds-theme--shade': i == selectedPolicyIndex}" (click)="selectPolicyByIndex(i, policy)">
             <div [ngSwitch]="policy.active" (dblclick)="toggleStatus(policy)">
-                <system-utility-icon *ngSwitchCase="1" icon="success" colorclass="slds-icon-text-success" size="x-small"></system-utility-icon>
-                <system-utility-icon *ngSwitchCase="0" icon="clear" [colorclass]="policy.id ? 'slds-icon-text-warning' : ''" size="x-small"></system-utility-icon>
+                <system-utility-icon *ngSwitchCase="true" icon="success" colorclass="slds-icon-text-success" size="x-small"></system-utility-icon>
+                <system-utility-icon *ngSwitchCase="false" icon="clear" [colorclass]="policy.id ? 'slds-icon-text-warning' : 'slds-icon-text-default'" size="x-small"></system-utility-icon>
             </div>
             <div class="slds-grow slds-p-left--x-small slds-truncate slds-text-link--reset">{{policy.name}}</div>
-            <button class="slds-button slds-button--icon" [disabled]="isloading" (click)="deleteByIndex(i)">
+            <button class="slds-button slds-button--icon" [disabled]="isloading || hasChanges" (click)="deleteByIndex(i)">
                 <system-button-icon icon="delete"></system-button-icon>
             </button>
         </div>
@@ -25,14 +25,14 @@
                     <div class="slds-size--3-of-4 slds-form-element">
                         <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
                         <div class="slds-form-element__control">
-                            <system-input-text [(ngModel)]="selectedPolicy.name"></system-input-text>
+                            <system-input-text [(ngModel)]="selectedPolicy.name" (ngModelChange)="registerPolicyChanges(selectedPolicy)"></system-input-text>
                         </div>
                     </div>
                     <div class="slds-size--1-of-4 slds-form-element slds-p-left--xx-small">
                         <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
-                                <select class="slds-select" [(ngModel)]="selectedPolicy.retention_type">
+                                <select class="slds-select" [(ngModel)]="selectedPolicy.retention_type" (ngModelChange)="registerPolicyChanges(selectedPolicy)">
                                     <option value="I"><system-label label="LBL_SET_INACTIVE"></system-label></option>
                                     <option value="D"><system-label label="LBL_MARK_DELETED"></system-label></option>
                                     <option value="P"><system-label label="LBL_PURGE"></system-label></option>
@@ -41,28 +41,43 @@
                         </div>
                     </div>
                 </div>
-                <div class="slds-form-element">
-                    <label class="slds-form-element__label"><system-label label="LBL_MODULE_FILTER"></system-label></label>
-                    <div class="slds-form-element__control">
-                        <system-input-module-filter [(ngModel)]="selectedPolicy.sysmodulefilter_id"></system-input-module-filter>
+                <div class="slds-grid slds-grid_vertical-align-center slds-p-right--xx-small">
+                    <div class="slds-size--3-of-4 slds-form-element">
+                        <label class="slds-form-element__label"><system-label label="LBL_MODULE_FILTER"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <system-input-module-filter [(ngModel)]="selectedPolicy.sysmodulefilter_id" (ngModelChange)="registerPolicyChanges(selectedPolicy)"></system-input-module-filter>
+                        </div>
+                    </div>
+                    <div class="slds-size--1-of-4 slds-form-element slds-p-left--xx-small">
+                        <label class="slds-form-element__label"><system-label label="LBL_INCLUDE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="selectedPolicy.include_deleted" (ngModelChange)="registerPolicyChanges(selectedPolicy)">
+                                    <option [value]="0"><system-label label="LBL_NOT_DELETED_ONLY"></system-label></option>
+                                    <option [value]="1"><system-label label="LBL_DELETED_ONLY"></system-label></option>
+                                    <option [value]=null><system-label label="LBL_BOTH"></system-label></option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="slds-form-element">
                     <label class="slds-form-element__label"><system-label label="LBL_DELETE_RELATED"></system-label></label>
                     <div class="slds-form-element__control">
-                        <system-input-text [(ngModel)]="selectedPolicy.delete_related"></system-input-text>
+                        <system-input-text [(ngModel)]="selectedPolicy.delete_related" (ngModelChange)="registerPolicyChanges(selectedPolicy)"></system-input-text>
                     </div>
                 </div>
                 <div class="slds-form-element">
                     <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
                     <div class="slds-form-element__control">
-                        <textarea [(ngModel)]="selectedPolicy.description" class="slds-textarea"></textarea>
+                        <textarea [(ngModel)]="selectedPolicy.description" class="slds-textarea" (ngModelChange)="registerPolicyChanges(selectedPolicy)"></textarea>
                     </div>
                 </div>
                 <div class="slds-grid slds-p-vertical--x-small slds-grid_vertical-align-center">
                     <div><system-label label="LBL_TOTAL"></system-label>&nbsp;{{results.total}}</div>
-                    <button [disabled]="!selectedPolicy.id" class="slds-col--bump-left slds-button slds-button_neutral" (click)="getResults()"><system-label label="LBL_TEST"></system-label></button>
-                    <button [disabled]="isloading" class="slds-button slds-button_brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+                    <button [disabled]="!selectedPolicy.id || hasChanges" class="slds-col--bump-left slds-button slds-button_neutral" (click)="getResults()"><system-label label="LBL_TEST"></system-label></button>
+                    <button [disabled]="isloading || !hasChanges" class="slds-button slds-button_neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+                    <button [disabled]="isloading || !hasChanges" class="slds-button slds-button_brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
                 </div>
             </div>
             <div *ngIf="selectedPolicy.id" (system-to-bottom)="loadmore()">
@@ -75,7 +90,7 @@
                     </thead>
                     <tbody *ngIf="results">
                         <tr *ngFor="let listItem of results.list" class="slds-hint-parent">
-                            <td>
+                            <td class="slds-truncate">
                                 <a href="#" (click)="openRecord(listItem.id, $event)" class="slds-text-link_reset">{{listItem.id}}</a>
                             </td>
                             <td>{{listItem.name}}</td>

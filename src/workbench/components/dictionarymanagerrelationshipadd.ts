@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, Injector
+    Component, Injector, OnInit
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {modal} from '../../services/modal.service';
@@ -18,7 +18,7 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 @Component({
     templateUrl: '../templates/dictionarymanagerrelationshipadd.html',
 })
-export class DictionaryManagerRelationshipAdd {
+export class DictionaryManagerRelationshipAdd implements OnInit{
 
     /**
      * reference to the modal window
@@ -31,7 +31,7 @@ export class DictionaryManagerRelationshipAdd {
      * the type of the relationship
      * @private
      */
-    public relationshipType: 'one-to-many' | 'many-to-one' | 'many-to-many' | 'parent' = 'one-to-many';
+    public selectedType: string;
 
     /**
      * the id of the related dictionaryitem
@@ -54,8 +54,12 @@ export class DictionaryManagerRelationshipAdd {
     public scope: 'c' | 'g';
 
     constructor(public dictionarymanager: dictionarymanager, public modal: modal, public injector: Injector) {
-        this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module' && d.deleted == 0).sort((a, b) => a.name.localeCompare(b.name));
-        this.scope = this.dictionarymanager.defaultScope;
+
+    }
+
+    public ngOnInit() {
+        this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module').sort((a, b) => a.name.localeCompare(b.name));
+        this.scope = this.dictionarymanager.currentDictionaryScope;
     }
 
     /**
@@ -73,36 +77,11 @@ export class DictionaryManagerRelationshipAdd {
      * @private
      */
     public add() {
-        switch (this.relationshipType) {
-            case 'one-to-many':
-                this.modal.openModal('DictionaryManagerRelationshipAddOneToMany', true, this.injector).subscribe(modalRef => {
-                    modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.related_id;
-                    modalRef.instance.relationship.scope = this.scope;
-                    modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-                });
-                break;
-            case 'many-to-one':
-                this.modal.openModal('DictionaryManagerRelationshipAddOneToMany', true, this.injector).subscribe(modalRef => {
-                    modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.related_id;
-                    modalRef.instance.relationship.scope = this.scope;
-                    modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-                });
-                break;
-            case 'many-to-many':
-                this.modal.openModal('DictionaryManagerRelationshipAddManyToMany', true, this.injector).subscribe(modalRef => {
-                    modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.related_id;
-                    modalRef.instance.relationship.scope = this.scope;
-                    modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-                });
-                break;
-            case 'parent':
-                this.modal.openModal('DictionaryManagerRelationshipAddParent', true, this.injector).subscribe(modalRef => {
-                    modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.related_id;
-                    modalRef.instance.relationship.scope = this.scope;
-                    modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
-                });
-                break;
-        }
+        let relType = this.dictionarymanager.dictionaryrelationshiptypes.find(rt => rt.id == this.selectedType);
+        this.modal.openModal(relType.component_add, true, this.injector).subscribe(modalRef => {
+            modalRef.instance.relationship.scope = this.scope;
+            modalRef.instance.type = relType;
+        });
         this.close();
     }
 

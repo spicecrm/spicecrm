@@ -1,4 +1,4 @@
-<div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-right--xx-small" [ngClass]="{'slds-p-right--x-small': notificationService.unreadCount > 0}">
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-right--xx-small" style="cursor: pointer;" [ngClass]="{'slds-p-right--x-small': notificationService.unreadCount > 0}">
     <div (click)="toggleOpenPopover();" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification">
         <system-utility-icon icon="notification" size="x-small"></system-utility-icon>
     </div>

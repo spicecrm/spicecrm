@@ -1,0 +1,17 @@
+<div class="slds-grid">
+    <system-input-module [(ngModel)]="module" [filterModules]="filterModules" [disabled]="_disabled" class="slds-p-right--xxx-small slds-size--1-of-3" [displayAsterisk]="true"></system-input-module>
+    <div *ngIf="_module" class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
+        <div class="slds-select_container">
+            <select  [disabled]="!_module || _disabled" class="slds-select" [(ngModel)]="filter">
+                <option></option>
+                <optgroup [label]="'custom ' + language.getLabel('LBL_FILTER')" *ngIf="_filters|systemmodulecustompipe:_module.length > 0">
+                    <option *ngFor="let sysFilter of _filters|systemmodulecustompipe:_module" [value]="sysFilter.id">{{sysFilter.name}}</option>
+                </optgroup>
+                <optgroup [label]="'global ' + language.getLabel('LBL_FILTER')"  *ngIf="_filters|systemmoduleglobalpipe:_module.length > 0">
+                    <option *ngFor="let sysFilter of _filters|systemmoduleglobalpipe:_module" [value]="sysFilter.id">{{sysFilter.name}}</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+    <system-input-text *ngIf="!_module" disabled class="slds-size--2-of-3"/>
+</div>

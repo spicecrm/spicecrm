@@ -34,9 +34,14 @@ export class OutputTemplatesVariableHelper implements OnInit {
     public offeredModules: any[] = [];
 
     /**
-     * The active (selected) module off the on top offered modules.
+     * The source of the data to insert into the template.
      */
-    public activeModule: string; // 'bean'|'current_user'|'template';
+    public source: string = ''; // 'bean'|'current_user'|'template'|'label'|'function';
+
+    /*
+     * The type of the source.
+     */
+    public sourceType = ''; // 'function'|'label'|'bean'
 
     /**
      * Holds all the fields of the modules.
@@ -57,6 +62,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * Filter value to narrow down the offered fields the user is looking for.
      */
     public fieldFilter = '';
+    public lastFieldFilter = '';
 
     /**
      * Are the fields of the just selected module currently loading?
@@ -96,7 +102,24 @@ export class OutputTemplatesVariableHelper implements OnInit {
     /**
      * The params of the actual (last selected) function.
      */
-    public actualFunctionParams = [];
+    public actualFuncParams = [];
+
+    /*
+     * List of all labels of the CRM, only the default length strings.
+     */
+    public allLabels = [];
+
+    /*
+     * List of the filtered labels, after using the search term.
+     */
+    public filteredLabels = [];
+
+    /*
+     * timeoutID for the search term field.
+     */
+    public searchTimeOut: number;
+
+    public showFuncParamsError = false;
 
     constructor( public language: language, public metadata: metadata, public backend: backend, public cdr: ChangeDetectorRef, @Optional() public model: model ) { }
 
@@ -130,8 +153,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
                     }
                 });
             }
-        }
-        if ( this.model?.module === 'LandingPages' || this.model?.module === 'OutputTemplates' || this.model?.module === 'EmailTemplates' ) {
+        } else {
             this.hasTemplate = true;
             this.templateModel = this.model;
             this.offeredModules.push({
@@ -155,8 +177,19 @@ export class OutputTemplatesVariableHelper implements OnInit {
             }
         }
         this.language.sortObjects( this.offeredModules, 'displayName');
-        // Load the system template functions from the backend.
-        this.loadFunctions();
+        this.loadFunctions(); // Load the system template functions from the backend.
+        this.getAllLabels(); // Get the labels from the language service.
+    }
+
+    /*
+     * Get all labels from the language service and sort them.
+     */
+    public getAllLabels(): void
+    {
+        Object.keys( this.language.languagedata.applang ).forEach( x => {
+            this.allLabels.push({ key: x, value: this.language.languagedata.applang[x].default });
+        });
+        this.language.sortObjects( this.allLabels, 'key' );
     }
 
     /**
@@ -181,8 +214,12 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * depends on whether a field or function has already been selected or nothing.
      */
     public buildOfferedFunctions(): void {
-        if ( this.fieldResult || this.functionResult ) this.offeredFunctions = this.allFunctions.pipe;
-        else this.offeredFunctions = this.allFunctions.noPipe;
+        if ( this.source === 'function' ) {
+            if ( this.functionResult ) this.offeredFunctions = this.allFunctions.pipe
+            else this.offeredFunctions = this.allFunctions.noPipe;
+        }
+        else if ( this.source ) this.offeredFunctions = this.allFunctions.pipe;
+        else this.offeredFunctions = [];
     }
 
     /**
@@ -212,6 +249,10 @@ export class OutputTemplatesVariableHelper implements OnInit {
      * joined by a pipe symbol. At last close the modal.
      */
     public submit(): void {
+        if ( !this.actualFuncParamsValid() ) {
+            this.showFuncParamsError = true;
+            return;
+        }
         let back;
         if ( !this.fieldResult && !this.functionResultWithParams ) back = '';
         if ( !this.fieldResult && this.functionResultWithParams ) back = 'func.'+this.functionResultWithParams;
@@ -257,10 +298,10 @@ export class OutputTemplatesVariableHelper implements OnInit {
     }
 
     /**
-     * One of the 3 module tabs has beed clicked.
+     * One of the 3 module tabs has been clicked.
      */
     public setActiveModuleTab( templateObjectName ): void {
-        this.activeModule = templateObjectName;
+        this.source = templateObjectName;
     }
 
     /**
@@ -278,7 +319,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
         if ( this.functionHistory.length ) {
             let popped = this.functionHistory.pop();
             this.functionResult = popped.result;
-            this.actualFunctionParams = popped.params;
+            this.actualFuncParams = popped.params;
             this.buildOfferedFunctions();
         }
     }
@@ -299,7 +340,7 @@ export class OutputTemplatesVariableHelper implements OnInit {
      */
     public get functionResultWithParams() {
         let result = this.functionResult;
-        this.actualFunctionParams.forEach( item => {
+        this.actualFuncParams.forEach( item => {
             result += ':';
             if (( item.type === 'color' && item.value === '#000000' ) || item.value === undefined || item.value === '' ) return;
             result += ( this.isTypeString( item.type ) ? "'"+item.value+"'" : item.value );
@@ -310,17 +351,23 @@ export class OutputTemplatesVariableHelper implements OnInit {
 
     /**
      * Fills the field with the function result.
-     * And updates the offered functions (because now the pipe functions have to be displayed).
+     * And updates the offered functions (because now the pipe functions have to be offered).
      */
     public functionSelected( func ): void {
+        // don´t accept a further selection in case the function params of a previous selected function are not valid yet!
+        if ( !this.actualFuncParamsValid() ) {
+            this.showFuncParamsError = true;
+            return;
+        }
+        this.showFuncParamsError = false;
         this.functionHistory.push({
             result: this.functionResult,
-            params: this.actualFunctionParams
+            params: this.actualFuncParams
         });
         this.functionResult = this.functionResultWithParams;
         if ( this.functionResult ) this.functionResult += '|';
         this.functionResult += func.name;
-        this.actualFunctionParams = func.paramConfigs ? JSON.parse(JSON.stringify(func.paramConfigs)) : [];
+        this.actualFuncParams = func.paramConfigs ? JSON.parse(JSON.stringify(func.paramConfigs)) : [];
         this.buildOfferedFunctions();
     }
 
@@ -336,10 +383,10 @@ export class OutputTemplatesVariableHelper implements OnInit {
         }
         let joined = simplePath.join('.'); // The path with the syntax the template compiler needs.
         if ( joined ) joined += '.';
-        if ( this.activeModule.indexOf('bean.',0) !== -1 ) {
+        if ( this.source.indexOf('bean.',0) !== -1 ) {
             this.fieldResult = 'bean.'+joined+field;
         } else {
-            switch( this.activeModule ) {
+            switch( this.source ) {
                 case 'current_user':
                     this.fieldResult = 'current_user.' + joined + field;
                     break;
@@ -352,12 +399,102 @@ export class OutputTemplatesVariableHelper implements OnInit {
     }
 
     /**
+     * Fills the field with the field result.
+     * And updates the offered functions (because now the pipe functions have to be displayed).
+     */
+    public labelSelected( label: string ): void {
+        this.fieldResult = 'label.' + label;
+        this.buildOfferedFunctions();
+    }
+
+    /**
+     * A source (module/bean, current user, template, label or standalone non-pipe function) has been selected.
+     */
+    public sourceSelected(): void {
+        switch( this.source )
+        {
+            case 'function':
+                this.sourceType = 'function';
+                this.resetFunctionResult();
+                break;
+            case 'label':
+                if ( this.sourceType === 'function' ) this.resetFunctionResult();
+                this.sourceType = 'label';
+                break;
+            default:
+                if ( this.sourceType === 'function' ) this.resetFunctionResult();
+                this.sourceType = 'bean';
+        }
+        this.buildOfferedFunctions();
+    }
+
+    /*
+     * Resets all data of the function area.
+     */
+    public resetFunctionResult(): void {
+        this.fieldResult = '';
+        this.functionResult = '';
+        this.functionHistory = [];
+        this.actualFuncParams = [];
+    }
+
+    /**
      * Clears the field with the field result.
      * And updates the offered functions (because now the non-pipe functions have to be displayed).
      */
     public clearFieldResult() {
         this.fieldResult = '';
         this.buildOfferedFunctions();
+    }
+
+    /*
+     * Only labels: React to the change of the search term.
+     * Trigger label filtering only after 1 second of inactivity.
+     */
+    public searchInput() {
+        if ( this.source !== 'label' ) return;
+        if ( this.searchTimeOut ) window.clearTimeout(this.searchTimeOut);
+        this.searchTimeOut = window.setTimeout(() => this.filterLabels(), 1000 );
+    }
+
+    /*
+     * Do the label filtering.
+     */
+    public filterLabels() {
+        if ( this.fieldFilter.trim() === this.lastFieldFilter ) return;
+        this.lastFieldFilter = this.fieldFilter;
+        this.filteredLabels = this.allLabels.filter( v => {
+            return this.fieldFilter && (
+                v.value.toLowerCase().includes(this.fieldFilter.toLowerCase()) || v.key.toLowerCase().includes(this.fieldFilter.toLowerCase()));
+        });
+    }
+
+    /**
+     * All data entered correctly? Can the form be submitted?
+     */
+    public canSubmit(): boolean {
+        return ( this.actualFuncParamsValid() || !this.showFuncParamsError )
+            && this.sourceType
+            && (
+                ( this.sourceType === 'function' && !!this.functionResult ) ||
+                (( this.sourceType === 'bean' || this.sourceType === 'label' ) && !!this.fieldResult )
+            );
+    }
+
+    /*
+     * Indicates whether all function parameters are valid.
+     */
+    public actualFuncParamsValid(): boolean
+    {
+        return !this.actualFuncParams || !this.actualFuncParams.some( param => !this.funcParamValid( param ));
+    }
+
+    /*
+     * Indicates whether a specific function parameter is valid.
+     */
+    public funcParamValid( param: any ): boolean
+    {
+        return !param.required || !!param.value;
     }
 
 }

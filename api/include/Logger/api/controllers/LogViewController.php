@@ -7,7 +7,7 @@ use SpiceCRM\includes\Logger\APIlogViewer;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 
 
 class LogViewController{
@@ -82,7 +82,7 @@ class LogViewController{
      * @return mixed
      */
     public function APIlogGetLogTables( Request $req, Response $res, $args ): Response {
-        $dictionary = SpiceDictionaryHandler::getInstance()->dictionary;
+        $dictionary = SpiceDictionary::getInstance()->dictionary;
 
         $tables = [];
         foreach($dictionary as $name => $data){

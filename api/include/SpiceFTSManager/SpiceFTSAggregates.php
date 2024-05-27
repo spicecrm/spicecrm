@@ -17,6 +17,7 @@ class SpiceFTSAggregates
     var $module;
     var $aggregateFields = [];
     var $aggregatesFilters = [];
+    var $aggregatesMetrics = [];
 
     function __construct($module, $indexProperties, $aggregatesFilters, $indexSettings = [])
     {
@@ -58,6 +59,33 @@ class SpiceFTSAggregates
                     $this->aggregateFields[str_replace('->', '-', $indexProperty['indexfieldname'])]['aggParams'] = json_decode($addParamsSting, true);
                 }
             }
+
+            // add the functions
+            if (($indexProperty['aggregatemetricsum'])) {
+                $this->aggregatesMetrics[] = [
+                    'function' => 'sum',
+                    'field' => $indexProperty['indexfieldname']
+                ];
+            }
+
+            if ($indexProperty['aggregatemetricavg']) {
+                $this->aggregatesMetrics[] = [
+                    'function' => 'avg',
+                    'field' => $indexProperty['indexfieldname']
+                ];
+            }
+            if ($indexProperty['aggregatemetricmax']) {
+                $this->aggregatesMetrics[] = [
+                    'function' => 'max',
+                    'field' => $indexProperty['indexfieldname']
+                ];
+            }
+            if ($indexProperty['aggregatemetricmin']) {
+                $this->aggregatesMetrics[] = [
+                    'function' => 'min',
+                    'field' => $indexProperty['indexfieldname']
+                ];
+            }
         }
 
 
@@ -90,6 +118,7 @@ class SpiceFTSAggregates
 
     function buildAggregates()
     {
+
         $aggs = [];
         foreach ($this->aggregateFields as $aggregateField => $aggregateIndexFieldData) {
             // go over all aggregate filters passed in and see if one is applicable to be added
@@ -159,6 +188,7 @@ class SpiceFTSAggregates
                     break;
             }
 
+
             if (count($aggFilters) > 0) {
                 $aggs[$aggregateName] = [
                     'filter' => $aggFilters,
@@ -171,6 +201,28 @@ class SpiceFTSAggregates
             }
         }
 
+        // add aggregate functions to all aggregates
+        if(count($this->aggregatesMetrics) > 0){
+            $addAggs = [];
+            foreach ($this->aggregatesMetrics as $aggregatesMetric){
+                $addAggs['metric_'.$aggregatesMetric['function'].'_'.$aggregatesMetric['field']] = [
+                    $aggregatesMetric['function'] => [
+                        'field' => $aggregatesMetric['field']
+                    ]
+                ];
+            }
+
+            foreach ($aggs as &$agg){
+                if(isset($agg['aggs'])){
+                    foreach ($agg['aggs'] as $aggName => $aggData){
+                        $agg['aggs'][$aggName]['aggs'] = $addAggs;
+                    }
+                } else {
+                    $agg['aggs'] = $addAggs;
+                }
+
+            }
+        }
 
 
         $aggFilters = [];

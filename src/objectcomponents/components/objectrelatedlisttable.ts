@@ -52,12 +52,22 @@ export class ObjectRelatedlistTable implements OnInit {
     @Input() public listitemactionset: string;
 
     /**
+     * set to true if list is displayed in ObjectRelatedDuplicate panel
+     */
+    @Input() public duplicateTable: boolean = false;
+
+    /**
      * set if no access to the related odule is allowed
      */
     public noAccess: boolean = false;
 
     public nowDragging = false;
     public isSequenced = false;
+
+    /**
+     * info whether the listitemactionset has a single button
+     */
+    public singlebutton: boolean = false;
 
     constructor(
         public language: language,
@@ -77,7 +87,7 @@ export class ObjectRelatedlistTable implements OnInit {
             return;
         }
 
-        if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] && ! this.relatedmodels.linkEndPoint) {
+        if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] && ! this.relatedmodels.linkEndPoint && !this.duplicateTable) {
             this.logger.error('Missing link or wrong link name ("' + this.relatedmodels._linkName + '")!');
         } else {
             if (!this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName]?.sequence_field) {
@@ -85,6 +95,8 @@ export class ObjectRelatedlistTable implements OnInit {
             }
         }
         if (this.sequencefield) this.isSequenced = true;
+
+        this.getActionsetData();
     }
 
     get isloading() {
@@ -118,6 +130,13 @@ export class ObjectRelatedlistTable implements OnInit {
 
     }
 
+    /**
+     * set fix column width if we've got a single/icon button
+     */
+    public getButtonColumnStyle(): string {
+        return this.singlebutton ? 'slds-size_1-of-6' : 'slds-size_1-of-12';
+    }
+
     public isSortable(field): boolean {
         if (this.relatedmodels.sortBySequencefield) return false;
         return field.fieldconfig.sortable === true;
@@ -132,7 +151,7 @@ export class ObjectRelatedlistTable implements OnInit {
 
     public getSortIcon(field): string {
         if (this.relatedmodels.sortfield == (field.fieldconfig && field.fieldconfig.sortfield ? field.fieldconfig.sortfield : field.field)) {
-            return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowdown' : 'arrowup';
+            return this.relatedmodels.sort.sortdirection === 'ASC' ? 'arrowup' : 'arrowdown';
         }
         return 'sort';
     }
@@ -164,6 +183,17 @@ export class ObjectRelatedlistTable implements OnInit {
     public dragEnded(e) {
         this.nowDragging = false;
         e.source.element.nativeElement.classList.remove('slds-is-selected');
+    }
+
+    private getActionsetData() {
+
+        let actionitems = this.metadata.getActionSetItems(this.listitemactionset);
+
+        for (let actionitem of actionitems) {
+            if (actionitem.actionconfig.singlebutton || actionitem.actionconfig.displayasicon) {
+                this.singlebutton = true;
+            }
+        }
     }
 
 }

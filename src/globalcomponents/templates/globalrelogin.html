@@ -4,6 +4,14 @@
     </system-modal-header>
     <system-modal-content margin="medium" [system-overlay-loading-spinner]="loggingIn">
         <div class="slds-grid slds-grid--vertical ">
+            <div *ngIf="configuration.data.startupMode == 'recovery'" class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                <system-icon icon="error" sprite="utility" addclasses="slds-m-right_x-small slds-icon-text-warning" divClass="slds-icon-utility-error"/>
+                <h2>{{loginLabels.ERR_RECOVERY_MODE_ENABLED?.default ?? 'The system is currently in recovery mode. Only admin login allowed.'}}</h2>
+            </div>
+            <div *ngIf="configuration.data.startupMode == 'maintenance'" class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                <system-icon icon="error" sprite="utility" addclasses="slds-m-right_x-small slds-icon-text-warning" divClass="slds-icon-utility-error"/>
+                <h2>{{loginLabels.ERR_MAINTENANCE_MODE_ENABLED?.default ?? 'The system is currently in maintenance mode. Only admin login allowed.'}}</h2>
+            </div>
             <div class="slds-p-vertical--small slds-align--absolute-center">
                 <system-label label="MSG_SESSIONEXPIRED" length="long"></system-label>
             </div>
@@ -24,6 +32,9 @@
                             <system-utility-icon icon="scan" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
                             <input #twofactorinput [disabled]="loggingIn" type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" [placeholder]="loginLabels.LBL_ENTER_CODE?.default ?? 'Enter code'" />
                         </div>
+                        <system-checkbox *ngIf="rememberDeviceVisible" [(ngModel)]="rememberDevice" name="remember-device" class="slds-m-left--xx-small">
+                            <system-label label="LBL_REMEMBER_DEVICE"/>
+                        </system-checkbox>
                     </div>
                 </div>
                 <div class="slds-p-vertical--xx-small">

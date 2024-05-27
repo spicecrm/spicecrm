@@ -74,7 +74,9 @@ import {ObjectActionSaveRelatedButton} from './components/objectactionsaverelate
 import {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
 import {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
 import {ObjectReminderButton} from './components/objectreminderbutton';
+import {ObjectReminderIcon} from './components/objectremindericon';
 import {ObjectSubscriptionButton} from './components/objectsubscriptionbutton';
+import {ObjectSubscriptionIcon} from './components/objectsubscriptionicon';
 import {ObjectActionSelectButton} from './components/objectactionselectbutton';
 import {ObjectActionBeanToMailButton} from './components/objectactionbeantomailbutton';
 import {ObjectActionMailModal} from './components/objectactionmailmodal';
@@ -95,6 +97,7 @@ import {ObjectListViewAggregateItem} from './components/objectlistviewaggregatei
 import {ObjectListViewAggregateItemTerm} from './components/objectlistviewaggregateitemterm';
 import {ObjectListViewAggregateItemRange} from './components/objectlistviewaggregateitemrange';
 import {ObjectListViewTagsAggregate} from './components/objectlistviewtagsaggregate';
+import {ObjectListViewAggregateChart} from "./components/objectlistviewaggregatechart";
 
 import {ObjectListViewFilterButton} from './components/objectlistviewfilterbutton';
 import {ObjectListViewFilterPanel} from './components/objectlistviewfilterpanel';
@@ -218,6 +221,9 @@ import {ObjectWorkflowButton} from "./components/objectworkflowbutton";
 import {ObjectRelatedListUrls} from "./components/objectrelatedlisturl";
 import {ObjectRelatedCardUrl} from "./components/objectrelatedcardurl";
 import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
+import {ObjectSetInactiveIcon} from "./components/objectsetinactiveicon";
+import {ObjectActionCheckDuplicateButton} from "./components/objectactioncheckduplicatebutton";
+import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelatedduplicatescardfooter";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -269,6 +275,7 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectListViewAggregatesButton,
         ObjectListViewAggregatesPanel,
         ObjectListViewAggregate,
+        ObjectListViewAggregateChart,
         ObjectListViewAggregateItem,
         ObjectListViewAggregateItemTerm,
         ObjectListViewAggregateItemRange,
@@ -362,7 +369,9 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectModalModuleLookupAggregates,
         ObjectSelectButton,
         ObjectReminderButton,
+        ObjectReminderIcon,
         ObjectSubscriptionButton,
+        ObjectSubscriptionIcon,
         ObjectActionBeanToMailButton,
         ObjectActionMailModal,
         ObjectMergeButton,
@@ -411,6 +420,9 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
         ObjectUrlActionMenu,
+        ObjectSetInactiveIcon,
+        ObjectActionCheckDuplicateButton,
+        ObjectRelatedDuplicatesCardFooter
     ],
     exports: [
         ObjectListViewHeader,
@@ -458,7 +470,9 @@ import {ObjectUrlActionMenu} from "./components/objecturlactionmenu";
         ObjectModelPopoverHeader,
         ObjectChecklists,
         ObjectRelatedListUrls,
-        ObjectRelatedCardUrl
+        ObjectRelatedCardUrl,
+        ObjectActionNewButton,
+        ObjectRecordFieldsetContainer
     ]
 })
 export class ObjectComponents {}

@@ -373,6 +373,7 @@ class EmailAddress extends SpiceBean
      */
     public function splitEmailAddress($addressString): array
     {
+        if (!str_contains($addressString, '<')) return ['name' => null, 'email' => $addressString];
         [$nameOrEmailAddress, $emailAddress] = explode(' <', trim($addressString, '> '));
         return ["name" => $nameOrEmailAddress, "email" => !empty($emailAddress) ? strtolower($emailAddress) : $nameOrEmailAddress];
     }

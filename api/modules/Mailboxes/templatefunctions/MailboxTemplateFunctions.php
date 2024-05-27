@@ -26,4 +26,15 @@ class MailboxTemplateFunctions
         $unsubUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.unsubscribeurl'));
         return "<a href=\"{$unsubUrl}\" class=\"spice-marketing-unsubscribe-link\">$inputString</a>";
     }
+
+    public static function generateDOILink($compiler, $beans, $inputString): string
+    {
+        if (empty($beans['bean'])) return '';
+
+        [$parentType, $parentId] = $beans['bean']->getTrackingParentData();
+
+        $trackData = EmailTracking::encodeTrackingID("ParentType:$parentType:ParentId:$parentId");
+        $doubleOptinUrl = str_replace('{refid}', $trackData, SpiceConfig::getInstance()->get('emailtracking.double_optin_url'));
+        return "<a href=\"{$doubleOptinUrl}\" class=\"spice-marketing-double-optin-link\">$inputString</a>";
+    }
 }

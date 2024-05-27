@@ -1067,9 +1067,14 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                                     $thisWhereString .= ' NOT IN (\'' . str_replace(',', '\',\'', (is_array($value) ? implode(',', $groupingValuesOther) : $value)) . '\')';
                                 }
                             }
-                            else
-                                //END
+                            # handling date equals
+                            else if (in_array($this->fieldNameMap[$fieldid]['type'], ['date', 'datetime', 'datetimecombo'])) {
+                                $fieldName = $this->get_field_name($path, $fieldname, $fieldid, false, '', $customSql);
+                                $date = TimeDate::getInstance()->to_db_date($value);
+                                $thisWhereString .= " >= '$date 00:00:00' AND $fieldName <= '$date 23:59:59'";
+                            } else {
                                 $thisWhereString .= ' = \'' . $value . '\'';
+                            }
                             break;
                     }
                 } else{
@@ -1108,8 +1113,12 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     if(!empty($groupingValuesOther)){
                         $thisWhereString .= ' IN (\'' . str_replace(',', '\',\'', (is_array($value) ? implode(',', $groupingValuesOther) : $value)) . '\')';
                     }
-                }
-                else
+                    # handling date not equals
+                } else if (in_array($this->fieldNameMap[$fieldid]['type'], ['date', 'datetime', 'datetimecombo'])) {
+                    $fieldName = $this->get_field_name($path, $fieldname, $fieldid, false, '', $customSql);
+                    $date = TimeDate::getInstance()->to_db_date($value);
+                    $thisWhereString .= " < '$date 00:00:00' OR $fieldName > '$date 23:59:59'";
+                } else
                     //END
                     $thisWhereString .= ' <> \'' . $value . '\'';
                 break;
@@ -1629,8 +1638,11 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . date('Y-m-d') . '\'';
                 break;
             case 'lyytd':
-                $year = date('Y') - 1;
-                $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $year . '-' . date('m-d') . '\'';
+                $calcDate = new DateTime(gmdate('Y-m-d'));
+                $year = $calcDate->format('Y');
+                $calcDate->sub(new DateInterval('P1Y'));
+                $toDate = $calcDate->format('Y-m-d');
+                $thisWhereString .= ' >= \'' . $year . '-1-1\' AND ' . $this->get_field_name($path, $fieldname, $fieldid, false, '',  $customSql) . '<=\'' . $toDate . '\'';
                 break;
         }
 
@@ -1947,7 +1959,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
 
             if (!empty($customSql)) {
                 $customSql = base64_decode($customSql);
-                return '(' . preg_replace(array('/\$/', '/{t}/'), $thisAlias, $customSql) . ')';
+                return '(' . preg_replace(array('/{t}/'), $thisAlias, $customSql) . ')';
             }
 
             // check for custom function
@@ -1966,9 +1978,9 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     //return '(' . str_replace('§', $this->joinSegments[$path]['customjoin'], preg_replace(array('/\$/', '/{t}/'), $thisAlias, $thisEval)) . ')';
                     // 2013-02-20 change to set proper alias if field is a cstm field
                     //return '(' . preg_replace(array('/§/', '/{tc}/'), $this->joinSegments[$path]['customjoin'], preg_replace(array('/\$/', '/{t}/'), $thisAlias, $thisEval)) . ')';
-                    return '(' . preg_replace(array('/\$/', '/{t}/', '/§/', '/{tc}/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $this->joinSegments[$path]['customjoin']), $thisEval) . ')';
+                    return '(' . preg_replace(array('/{t}/', '/§/', '/{tc}/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $this->joinSegments[$path]['customjoin']), $thisEval) . ')';
                 else
-                    return '(' . preg_replace(array('/\$/', '/{t}/'), $thisAlias, $thisEval) . ')';
+                    return '(' . preg_replace(array('/{t}/'), $thisAlias, $thisEval) . ')';
             } elseif (isset($thisFieldIdEntry['customsqlfunction']) && $thisFieldIdEntry['customsqlfunction'] != '') {
                 {
                     //2012-11-28 srip unicode characters with the pregreplace [^(\x20-\x7F)]* from the string ..
@@ -1985,7 +1997,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     //$functionRaw = trim(preg_replace(array('/{t}/', '/{f}/', '/\$/'), array($thisAlias, $field, $thisAlias), $functionRaw));
                     //2013-02-20 change to set proper alias if field is a cstm field
                     //$functionRaw = trim(preg_replace(array('/{t}/', '/{tc}/', '/{f}/', '/\$/'), array($thisAlias, $this->joinSegments[$path]['customjoin'], $field, $thisAlias), $functionRaw));
-                    $functionRaw = trim(preg_replace(array('/{t}/', '/{tc}/', '/{f}/', '/\$/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $field, $this->joinSegments[$path]['alias']), $functionRaw));
+                    $functionRaw = trim(preg_replace(array('/{t}/', '/{tc}/', '/{f}/'), array($this->joinSegments[$path]['alias'], $this->joinSegments[$path]['customjoin'], $field, $this->joinSegments[$path]['alias']), $functionRaw));
                     return '(' . $functionRaw . ')';
                 }
             } else {

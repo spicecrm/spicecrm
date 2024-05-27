@@ -52,26 +52,32 @@
 <div *ngIf="currentComponentSet" class="slds-theme--default">
     <div class="slds-p-around--small slds-border--bottom slds-theme--default">
         <div class="slds-grid slds-grid--vertical-align-end">
-            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
                     <system-utility-icon addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default" [icon]="componentSetType == 'global' ? 'world' : 'user'"></system-utility-icon>
                     <input type="text" disabled class="slds-input" [ngModel]="componentSetType"/>
                 </div>
             </div>
-            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
                 <div class="slds-form-element__control">
                     <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetName"/>
                 </div>
             </div>
-            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
                 <div class="slds-form-element__control">
                     <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetPackage"/>
                 </div>
             </div>
-            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
+                <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetVersion"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-5">
                 <label class="slds-form-element__label"><system-label label="LBL_ID"></system-label></label>
                 <div class="slds-form-element__control">
                     <input type="text" disabled class="slds-input" [ngModel]="currentComponentSet"/>

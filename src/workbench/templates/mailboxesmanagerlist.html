@@ -1,0 +1,10 @@
+<li *ngFor="let mailbox of mailboxes; let first = first" [system-model-provider]="{module: 'Mailboxes', data: mailbox}" (click)="setSelectedMailbox(mailbox)" [class.slds-theme--shade]="mailbox.id == selectedMailboxId" [style.margin-top]="first ? '0' : '0.5rem'" class="slds-item slds-m-bottom--xxx-small slds-card slds-p-around--xx-small">
+    <div class="slds-truncate slds-grid slds-grid_align-left" [title]="mailbox.name" [style.font-weight]="mailbox.id == selectedMailboxId ? 'bold' : '400'">
+        <system-utility-icon size="x-small" class="slds-p-around--xx-small" icon="archive"></system-utility-icon>
+        <a href="javascript:void(0);" class="slds-text-link_reset slds-text-align_center slds-p-around--xx-small">{{ mailbox.name }}</a>
+    </div>
+
+    <div class=" slds-grid slds-grid--align-spread">
+        <object-record-fieldset [fieldset]="listfieldset" [direction]="'horizontal'"></object-record-fieldset>
+    </div>
+</li>
