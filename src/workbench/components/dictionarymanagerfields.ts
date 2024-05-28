@@ -15,8 +15,6 @@ import {language} from '../../services/language.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryDefinition, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 import {DomainField} from "../interfaces/domainmanager.interfaces";
-import {isTemplateMiddle} from "@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript";
-
 
 @Component({
     selector: 'dictionary-manager-fields',

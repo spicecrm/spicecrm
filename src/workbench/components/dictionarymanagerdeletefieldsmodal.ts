@@ -9,10 +9,7 @@ import {modal} from '../../services/modal.service';
 
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
-import {DictionaryDefinition, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
-import {DomainField} from "../interfaces/domainmanager.interfaces";
-import {isTemplateMiddle} from "@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript";
-
+import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
     selector: 'dictionary-manager-deletefields-modal',

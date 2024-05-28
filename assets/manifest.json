@@ -1,0 +1,27 @@
+{
+  "name": "SpiceCRM",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "config/app-logo",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "screenshots" : [
+    {
+      "src": "https://www.spicecrm.com/wp-content/uploads/2020/12/allformfactors-1.png",
+      "sizes": "900x700",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homescreen of SpiceCRM App"
+    },
+    {
+      "src": "https://www.spicecrm.com/wp-content/uploads/2021/03/rolebased.png",
+      "sizes": "1200x742",
+      "type": "image/png",
+      "label": "App Launcher of SpiceCRM App"
+    }
+  ]
+}
