@@ -8,7 +8,7 @@ const releaseNumber = require('./package.json').version;
 const moment = require("moment");
 const now = Date.now();
 const buildDate = moment().format('YYYY-MM-DD HH:mm:ss');
-const copyright = `© 2015 -  ${moment().format('YYYY')} aac services k.s. All rights reserved.`;
+const copyright = `© 2015 -  ${moment().format('YYYY')} SpiceCRM FlexCo All rights reserved.`;
 
 /**
  * write the environment file
@@ -30,7 +30,7 @@ const generateOptions = (file) => ({
     template: file.template,
     hash: true,
     minify: false,
-    aacServices: copyright,
+    SpiceCRM: copyright,
     buildNumber: `${releaseNumber}.${now}`,
     chunksSortMode: (a) => a === 'scripts' ? -1 : 1
 });
@@ -79,7 +79,7 @@ module.exports = {
             new webpack.BannerPlugin({
                 banner: () => {
                     return `
-                    aacService \n
+                    SpiceCRM \n
                     release: ${releaseNumber} \n
                     date: ${buildDate} \n
                     build: ${releaseNumber}.${now}

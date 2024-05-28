@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "sourceMap": true,
@@ -8,6 +9,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "skipLibCheck": true,
     "emitDecoratorMetadata": false,
     "target": "es2022",
     "module": "esnext",

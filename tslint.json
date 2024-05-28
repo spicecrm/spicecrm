@@ -28,6 +28,7 @@
         "trace"
       ]
     },
+    "semicolon": [true, "always"],
     "no-shadowed-variable": false,
     "no-unused-expression": false,
     "no-unused-variable": false,
