@@ -29,20 +29,13 @@ class TextSnippetsController
             throw ( new NotFoundException('TextSnippet not found.'))
                 ->setLookedFor([ 'id' => $args['parentId'], 'module' => 'TextSnippets' ]);
 
-        if ( !empty($params['beanData'] ))
+        if ( !empty($params['modelData'] ))
         {
             $bean = BeanFactory::getBean($params['module']);
-            foreach ( $params['beanData'] as $field => $value ) $bean->$field = $value;
+            foreach ( $params['modelData'] as $field => $value ) $bean->$field = $value;
 
-            $links = $bean->get_linked_fields();
-            foreach ( $links as $link ) {
-                $bean->load_relationship( $link['name'] );
-                if ( $bean->$link['name']->relationship->type === 'one-to-many' ) {
-                    $linkedBeanModule = $bean->$link['name']->relationship->def['lhs_module'];
-                    $linkedBeanId = $bean->$link['name']->relationship->def['lhs_key'];
-                    $bean->contact->addBean( BeanFactory::getBean( $linkedBeanModule, $linkedBeanId ));
-                }
-            }
+            $this->liveCompileHandleLinkedBeans($bean);
+
             BeanFactory::registerBean( $params['module'], $bean, $bean->id );
         }
 
@@ -58,24 +51,39 @@ class TextSnippetsController
             throw ( new NotFoundException('TextSnippet not found.'))
                 ->setLookedFor([ 'id' => $args['parentId'], 'module' => 'TextSnippets' ]);
 
-        if ( !empty($params['beanData'] ))
+        if ( !empty($params['modelData'] ))
         {
             $bean = BeanFactory::getBean($params['module']);
-            foreach ( $params['beanData'] as $field => $value ) $bean->$field = $value;
+            foreach ( $params['modelData'] as $field => $value ) $bean->$field = $value;
 
-            $links = $bean->get_linked_fields();
-            foreach ( $links as $link ) {
-                $bean->load_relationship( $link['name'] );
-                if ( $bean->$link['name']->relationship->type === 'one-to-many' ) {
-                    $linkedBeanModule = $bean->$link['name']->relationship->def['lhs_module'];
-                    $linkedBeanId = $bean->$link['name']->relationship->def['lhs_key'];
-                    $bean->contact->addBean( BeanFactory::getBean( $linkedBeanModule, $linkedBeanId ));
-                }
-            }
+            $this->liveCompileHandleLinkedBeans($bean);
+
             BeanFactory::registerBean( $params['module'], $bean, $bean->id );
         }
 
         return $res->withJson(['html' => $textSnippet->parsePlainText($bean)]);
     }
+
+    /**
+     * load related beans
+     * only one-to-many for now
+     * @param $bean
+     * @return void
+     */
+    public function liveCompileHandleLinkedBeans($bean){
+        $links = $bean->get_linked_fields();
+        foreach ( $links as $link ) {
+            if($bean->load_relationship( $link['name'] )){
+                if ( $bean->{$link['name']}->relationship->type === 'one-to-many' ) {
+                    $linkedBeanModule = $bean->{$link['name']}->relationship->def['lhs_module'];
+                    $linkedBeanId = $bean->{$link['name']}->relationship->def['rhs_key'];
+                    if($bean->{$linkedBeanId} && $linkedBeanModule){
+                        $bean->{$link['name']}->addBean( BeanFactory::getBean( $linkedBeanModule,  $bean->{$linkedBeanId}, ['relationships' => false] ));
+                    }
+                }
+            }
+        }
+    }
+
 
 }
