@@ -63,6 +63,15 @@ export class ObjectPageHeader implements OnInit {
     }
 
     /**
+     * checks if the Bean has a relationship definition with ProjectActivities module
+     * and if Project Management package is loaded
+     * if true the ObjectProjectActivityTrackTimeIcon is displayed
+     */
+    get showProjectActivityTrackIcon(): boolean {
+        return !!(this.model._fields && this.model._fields.projectactivities_parent && this.metadata.moduleDefs['ProjectActivities']);
+    }
+
+    /**
      * checks that the user can navigate to the module
      */
     get canGoToModule() {

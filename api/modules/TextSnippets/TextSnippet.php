@@ -72,7 +72,7 @@ class TextSnippet extends SpiceBean
 
     function parsePlainText(?SpiceBean $bean, array $additionalValues = null, array $additionalBeans = []): string
     {
-        return strip_tags($this->parse($bean, $additionalValues, $additionalBeans));
+        return html_entity_decode(strip_tags($this->parse($bean, $additionalValues, $additionalBeans)), ENT_SUBSTITUTE);
     }
 
     /**

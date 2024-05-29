@@ -157,13 +157,16 @@ class SpiceDictionaryDefinitions
     /**
      * does a generic repair or for a specific id if given
      * @param $id
-     * @param $keep
+     * @param bool $keep
+     * @param bool $execute
      * @return string|null
-     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws DatabaseException
+     * @throws Exception
+     * @throws \Throwable
      */
-    public function repair($id, $keep = false): ?string
+    public function repair($id, $keep = false, bool $execute = true): ?string
     {
-        $sql = (new SpiceDictionaryDefinition($id))->repair(false);
+        $sql = (new SpiceDictionaryDefinition($id))->repair(false, $execute);
         if ($keep) {
             $_SESSION['sysdictionary']['sqls'][md5($sql)] = $sql;
         }

@@ -412,33 +412,38 @@ export class helper {
 
                 // subscribe to onClose and send undefined
                 // this can be checked in the caller function
-                modal.instance.onClose.subscribe({
-                    next: () => {
-                        responseSubject.next(undefined);
-                        responseSubject.complete();
-                    }
-                })
-
-                modal.instance.selectedItems.subscribe((items) => {
-                    const body = !model ? null : {
-                        module: model.module,
-                        bean_data: model.utils.spiceModel2backend(model.module, model.data)
-                    };
-
-                    // this.isLoading = true;
-                    model.backend.postRequest(`module/TextSnippets/${items[0].id}/${routeMethod}`, null, body).subscribe(res => {
-                        // try to find hex codes from teh JSON encode and teplace with the proper ASCII Char
-                        let snippet = res.html;
-                        let matches = [...res.html.matchAll(/&#x([A-F0-9]{4});/g)];
-                        for(let match of matches){
-                            snippet = snippet.replaceAll(match[0], String.fromCharCode(parseInt(`0x${match[1]}`, 16)))
+                modal.instance.onClose
+                    .pipe(take(1))
+                    .subscribe({
+                        next: () => {
+                            responseSubject.next(undefined);
+                            responseSubject.complete();
                         }
+                    });
 
-                        // resolve the Subject / Observable
-                        responseSubject.next(decodeURI(snippet));
-                        responseSubject.complete();
-                    })
-                });
+                modal.instance.selectedItems
+                    .pipe(take(1))
+                    .subscribe((items) => {
+                        const body = !model ? null : {
+                            module: model.module,
+                            beanData: model.utils.spiceModel2backend(model.module, model.data)
+                        };
+
+                        model.backend.postRequest( `module/TextSnippets/${items[0].id}/${routeMethod}`, null, body )
+                            .pipe(take(1))
+                            .subscribe(res => {
+                            // try to find hex codes from teh JSON encode and teplace with the proper ASCII Char
+                            let snippet = res.html;
+                            let matches = [...res.html.matchAll(/&#x([A-F0-9]{4});/g)];
+                            for(let match of matches){
+                                snippet = snippet.replaceAll(match[0], String.fromCharCode(parseInt(`0x${match[1]}`, 16)))
+                            }
+
+                            // resolve the Subject / Observable
+                            responseSubject.next(decodeURI(snippet));
+                            responseSubject.complete();
+                        })
+                    });
             });
 
         return responseSubject.asObservable()

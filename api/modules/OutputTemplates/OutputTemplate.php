@@ -74,6 +74,13 @@ class OutputTemplate extends SpiceBean
      */
     public $bean;
 
+    /**
+     * the parsed name of the template
+     *
+     * @var
+     */
+    public $parsed_name;
+
     public function translateBody($bean = null, $bodyOnly = false)
     {
         if (!$bean) {
@@ -116,7 +123,7 @@ class OutputTemplate extends SpiceBean
 
         // if we have a public name -> parse it as well
         if ($this->public_name) {
-            $this->public_name = str_replace(["\n", "\n"], "", strip_tags($this->parseHTMLTextField('public_name', $bean, $this->additonalValues)));
+            $this->parsed_name = str_replace(["\n", "\n"], "", strip_tags($this->parseHTMLTextField('public_name', $bean, $this->additonalValues)));
         }
 
 
@@ -139,7 +146,7 @@ class OutputTemplate extends SpiceBean
 
         // if we have a public name -> parse it
         if ($this->public_name) {
-            $this->public_name = $this->parseHTMLTextField('public_name', $bean, $additionalValues, $additionalBeans);
+            $this->parsed_name = $this->parseHTMLTextField('public_name', $bean, $additionalValues, $additionalBeans);
         }
 
         return preg_replace(
@@ -196,7 +203,7 @@ class OutputTemplate extends SpiceBean
     public function getFileName()
     {
         // if a public name is set .. use it
-        if($this->public_name) return "{$this->public_name}.pdf";
+        if($this->parsed_name || $this->public_name) return $this->parsed_name ?  "{$this->parsed_name}.pdf" : "{$this->public_name}.pdf";
 
         // load the bean if it is not laoded
         if (!$this->bean) $this->retrieveBean();

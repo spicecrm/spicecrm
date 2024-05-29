@@ -83,7 +83,7 @@ export interface ComponentSetItemI {
 export interface ObjectListFilterI {
     logicaloperator: string,
     groupscope: 'all' | 'own' | 'creator',
-    groupstate: 'active' | 'inactive' | 'activeAndInactive',
+    groupstate?: 'active' | 'inactive' | 'activeAndInactive',
     conditions: Array<any>,
     geography?: Object,
     field?: string,
