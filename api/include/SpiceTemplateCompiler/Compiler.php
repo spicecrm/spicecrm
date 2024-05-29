@@ -107,10 +107,6 @@ class Compiler
 
     public function compile($txt, $bean = null, $lang = null, array $additionalValues = null, $additionalBeans = [], $additionalStyleId = null, $bodyContentOnly = false)
     {
-        if (empty($txt)) {
-            return '';
-        }
-
         $this->additionalValues = $additionalValues;
         $this->lang = empty( $lang ) ? AuthenticationController::getInstance()->getCurrentUser()?->getPreference('language') : $lang;
         if ( empty( $this->lang )) $this->lang = 'de_DE';
@@ -132,8 +128,6 @@ class Compiler
             $this->root->appendChild($newElement);
         }
 
-        $this->addNecessaryHeadTags();
-
         $this->addStyleTag($additionalStyleId);
 
         if ($bodyContentOnly) {
@@ -141,45 +135,6 @@ class Compiler
         } else {
             return $this->doc->saveHTML();
         }
-    }
-
-    /**
-     * add necessary head tags to the html document
-     * @return void
-     */
-    private function addNecessaryHeadTags(): void
-    {
-        $head = $this->root->getElementsByTagName('head')[0];
-
-        if (!$head) {
-            $head = $this->doc->createElement('head');
-            $html = $this->doc->getElementsByTagName('html')[0];
-            $html->prepend($head);
-        }
-
-        $this->addCharsetMetaTag($head);
-    }
-
-    /**
-     * add charset utf-8 meta tag
-     * @param \DOMElement $head
-     * @return void
-     */
-    private function addCharsetMetaTag(\DOMElement $head)
-    {
-        # check for existing meta tag
-        $finder = new DomXPath($this->doc);
-        $meta = $finder->query("//meta[@charset]", $this->doc);
-
-        if (count($meta) > 0) return;
-
-        $metaElement = $this->doc->createElement('meta');
-        $typeAttr = $this->doc->createAttribute('charset');
-
-        $typeAttr->value = 'UTF-8';
-        $metaElement->appendChild($typeAttr);
-
-        $head->appendChild($metaElement);
     }
 
     /**
@@ -193,6 +148,11 @@ class Compiler
         if (!$additionalStyleId) return;
 
         $head = $this->root->getElementsByTagName('head')[0];
+
+        if (!$head) {
+            $head = $this->doc->createElement('head');
+            $this->doc->appendChild($head);
+        }
 
         $db = DBManagerFactory::getInstance();
 
