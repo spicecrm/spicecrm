@@ -42,6 +42,46 @@ class M2MProspectListRelationship extends M2MRelationship
     public function remove($lhs, $rhs){
         // overwrite?
     }
+    /**
+     * @param  $link Link2 loads the relationship for this link.
+     * @return void
+     */
+    public function load($link, $params = [])
+    {
+        $db = DBManagerFactory::getInstance();
+        // for elasticsearch results have to be returned without paging
+        $rangeParams = $params;
+
+        if (!empty($params['searchterm'])) {
+            $rangeParams['limit'] = 0;
+            $rangeParams['offset'] = 0;
+        }
+
+        $query = $this->getQuery($link, $rangeParams);
+        $result = $db->query($query);
+        $rows = [];
+        $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
+        while ($row = $db->fetchByAssoc($result))
+        {
+            if (empty($row['id']) && empty($row[$idField]))
+                continue;
+            $id = empty($row['id']) ? $row[$idField] : $row['relid'];
+            $rows[$id] = $row;
+        }
+
+        if (!empty($params['searchterm'])) {
+            $rows = $this->getResultsFilteredByFTS($link->getRelatedModuleName(), $params, $rows);
+
+            $this->count = count($rows);
+            $rows = array_slice($rows, $params['offset'], $params['limit']);
+        } else {
+            $this->count = count($rows);
+        }
+
+        return [
+            "rows" => $rows
+        ];
+    }
 
 
     protected function removeRow($where)

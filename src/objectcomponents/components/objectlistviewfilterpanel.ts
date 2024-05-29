@@ -8,6 +8,7 @@ import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {Subscription} from "rxjs";
 import {ObjectListFilterI} from "../interfaces/objectcomponents.interfaces";
+import {modal} from "../../services/modal.service";
 
 declare var _: any;
 
@@ -29,14 +30,19 @@ export class ObjectListViewFilterPanel implements OnDestroy {
     public filter: ObjectListFilterI = {
         logicaloperator: 'and',
         groupscope: 'all',
-        groupstate: 'active',
         geography: {},
         conditions: []
     };
 
     public subcriptions: Subscription = new Subscription();
 
-    constructor(public elementRef: ElementRef, public language: language, public metadata: metadata, public modellist: modellist, public model: model, public renderer: Renderer2) {
+    constructor(public elementRef: ElementRef,
+                public language: language,
+                public metadata: metadata,
+                public modellist: modellist,
+                public model: model,
+                public renderer: Renderer2,
+                private modal: modal) {
         // subscribe to the list type selected to handle the filters set by the listtype
         this.subcriptions.add(
             this.modellist.listType$.subscribe(newList => {
@@ -58,13 +64,22 @@ export class ObjectListViewFilterPanel implements OnDestroy {
 
         // if no filter is set ... set it clean and empty
         if (!this.filter || _.isEmpty(this.filter)) {
-            this.filter = {
-                logicaloperator: 'and',
-                groupscope: 'all',
-                groupstate: 'active',
-                geography: {},
-                conditions: []
-            };
+            if(this.modellist.hasInactiveFieldProperty) {
+                this.filter = {
+                    logicaloperator: 'and',
+                    groupscope: 'all',
+                    groupstate: 'active',
+                    geography: {},
+                    conditions: []
+                };
+            } else {
+                this.filter = {
+                    logicaloperator: 'and',
+                    groupscope: 'all',
+                    geography: {},
+                    conditions: []
+                };
+            }
         }
     }
 
@@ -102,10 +117,15 @@ export class ObjectListViewFilterPanel implements OnDestroy {
      * saves the filter
      */
     public save() {
+        const loadingModal = this.modal.await('LBL_SAVING_FILTER');
+
         if (this.isChanged) {
             this.modellist.updateListType({
                 filterdefs: JSON.stringify(this.filter)
             }).subscribe(() => {
+                loadingModal.emit();
+                loadingModal.complete();
+                this.modellist.cancelPendingRequests = false;
                 this.modellist.reLoadList();
             });
 
