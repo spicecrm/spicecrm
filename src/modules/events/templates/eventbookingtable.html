@@ -1,0 +1,28 @@
+<div class="slds-scrollable--x">
+    <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_col-bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th style="min-width: 200px; background-color: #fafafa" scope="col" *ngFor="let timeslot of tableData.calculated_timeslots" [style]="getColumnStyle(timeslot)">
+                    <div class="slds-truncate" [style.visibility]="hideDate(timeslot.tsFrom)" title="-">{{getDate(timeslot.tsFrom)}}</div>
+                    <div class="slds-truncate" title="-">{{getTime(timeslot.tsFrom)}}</div>
+                </th>
+            </tr>
+        </thead>
+    <tbody>
+    <tr class="slds-hint-parent"  *ngFor="let row of tableRows; let k = index">
+        <td *ngFor="let cell of row" [style]="getColumnStyle(cell.timeslot)" style="height: 80px" >
+            <event-booking-table-item [fieldset]="fieldset" [cell]="cell" (deleteBooking)="deleteItem($event)"></event-booking-table-item>
+        </td>
+    </tr>
+    <tr *ngIf="isEditMode" class="slds-hint-parent">
+        <td style="min-width: 200px" scope="col" *ngFor="let timeslot of tableData.calculated_timeslots" [style]="getColumnStyle(timeslot)">
+            <button *ngIf="showAddButton(timeslot)" class="slds-button slds-button--icon-more slds-align_absolute-center slds-size--1-of-1"
+                    (click)="createEventBooking(timeslot)">
+                <system-button-icon [icon]="'add'"></system-button-icon>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+    </table>
+    <system-spinner *ngIf="!isLoaded" class="slds-m-vertical--large" style="display:block"></system-spinner>
+</div>
