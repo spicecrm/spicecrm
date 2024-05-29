@@ -1518,7 +1518,7 @@ class SpiceBeanHandler
             return $retArray;
     }
 
-    public function add_related($beanModule, $beanId, $linkName, $relatedIds)
+    public function add_related($beanModule, $beanId, $linkName, $idsWithAdditionalValues)
     {
 
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'edit', true))
@@ -1538,12 +1538,19 @@ class SpiceBeanHandler
         if (!SpiceACL::getInstance()->checkAccess($relModule, 'list', true))
             throw (new ForbiddenException('Forbidden to list in module ' . $relModule . '.'))->setErrorCode('noModuleList');
 
+        $relFields = $thisBean->field_defs[$linkName]['rel_fields'];
 
-        foreach ($relatedIds as $relatedId) {
-            $result = $thisBean->{$linkName}->add($relatedId);
+        foreach ($idsWithAdditionalValues as $idWithAdditionalValue) {
+            $additionalValues = [];
+            foreach ($relFields as $relfield => $relmapdata) {
+                if (isset($idWithAdditionalValue[$relmapdata['map']])) {
+                    $additionalValues[$relfield] = $idWithAdditionalValue[$relmapdata['map']];
+                }
+            }
+            $result = $thisBean->{$linkName}->add($idWithAdditionalValue['id'], $additionalValues);
             if ($result !== true)
-                throw new Exception("Something went wrong by adding $relatedId to $linkName");
-            $retArray[$relatedId] = $thisBean->{$linkName}->relationship->relid;
+                throw new Exception("Something went wrong by adding {$idWithAdditionalValue['id']} to $linkName");
+            $retArray[$idWithAdditionalValue['id']] = $thisBean->{$linkName}->relationship->relid;
         }
 
         // reindex the curent bean since the added relationship might add to the indexed data
@@ -1586,13 +1593,18 @@ class SpiceBeanHandler
         $relFields = $thisBean->field_defs[$linkName]['rel_fields'];
         if (is_array($relFields) && count($relFields) > 0) {
             $thisBean->load_relationship($linkName);
-            switch ($thisBean->{$linkName}->getSide()) {
-                case 'RHS':
-                    $relid = $thisBean->{$linkName}->relationship->relationship_exists($relBean, $thisBean);
-                    break;
-                default:
-                    $relid = $thisBean->{$linkName}->relationship->relationship_exists($thisBean, $relBean);
-                    break;
+
+            if (!empty($postparams['relId'])) {
+                $relid = $postparams['relId'];
+            } else {
+                switch ($thisBean->{$linkName}->getSide()) {
+                    case 'RHS':
+                        $relid = $thisBean->{$linkName}->relationship->relationship_exists($relBean, $thisBean);
+                        break;
+                    default:
+                        $relid = $thisBean->{$linkName}->relationship->relationship_exists($thisBean, $relBean);
+                        break;
+                }
             }
 
             if ($relid) {
@@ -1634,11 +1646,11 @@ class SpiceBeanHandler
 
         $relatedArray = json_decode($queryParams['relatedids'], true);
         if ($relatedArray) {
-            foreach ($relatedArray as $relatedId) {
-                $thisBean->$linkName->delete($beanId, $relatedId);
+            foreach ($relatedArray as $relatedData) {
+                $thisBean->$linkName->delete($beanId, $relatedData['beanId'], $relatedData['relId']);
             }
         } else {
-            $thisBean->$linkName->delete($beanId, $queryParams['relatedids']);
+            $thisBean->$linkName->delete($beanId);
         }
 
         // reindex the curent bean since the added relationship might add to the indexed data
