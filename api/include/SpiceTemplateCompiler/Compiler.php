@@ -149,6 +149,10 @@ class Compiler
      */
     private function addNecessaryHeadTags(): void
     {
+        $html = $this->doc->getElementsByTagName('html')[0];
+
+        if (!$html) return;
+
         $head = $this->root->getElementsByTagName('head')[0];
 
         if (!$head) {
