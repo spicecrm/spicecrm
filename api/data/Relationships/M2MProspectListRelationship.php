@@ -1,7 +1,10 @@
 <?php
 namespace SpiceCRM\data\Relationships;
 
+use SpiceCRM\data\Link2;
+use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\TimeDate;
 
 class M2MProspectListRelationship extends M2MRelationship
@@ -9,6 +12,41 @@ class M2MProspectListRelationship extends M2MRelationship
     var $type = "many-to-many-prospectlists";
     var $basetype = 'many-to-many';
 
+    /**
+     * @param array $row values to be inserted into the relationship
+     * @return bool|void null if new row was inserted and true if an existing row was updated
+     */
+    protected function addRow(&$row)
+    {
+        $existing = $this->checkExisting($row);
+        if (!empty($existing)) {//Update the existing row, overriding the values with those passed in
+            $this->fetchedRow = $existing;
+            $queryResult = $this->updateRow($existing['id'], array_merge($existing, $row));
+            if ($queryResult) {
+                $this->updatedRow = array_merge($existing, $row);
+                $this->updatedRow['id'] = $existing['id'];
+
+                // update id for callAfterAdd with relationship_data
+                $row['id'] = $existing['id'];
+            }
+            return $queryResult;
+        }
+        $values = [];
+        foreach (array_keys($row) as $def) {
+            $field = $def;
+//        foreach ($this->getFields() as $def) {
+//            $field = $def['name'];
+            if (isset($row[$field])) {
+                $values[$field] = "'{$row[$field]}'";
+            }
+        }
+        $columns = implode(',', array_keys($values));
+        $values = implode(',', $values);
+        if (!empty($values)) {
+            $query = "INSERT INTO {$this->getRelationshipTable()} ($columns) VALUES ($values)";
+            DBManagerFactory::getInstance()->query($query);
+        }
+    }
     /**
      * Checks for an existing row who's keys match the one passed in.
      * @param  $row
@@ -39,9 +77,7 @@ class M2MProspectListRelationship extends M2MRelationship
         }
     }
 
-    public function remove($lhs, $rhs){
-        // overwrite?
-    }
+
     /**
      * @param  $link Link2 loads the relationship for this link.
      * @return void
@@ -83,24 +119,5 @@ class M2MProspectListRelationship extends M2MRelationship
         ];
     }
 
-
-    protected function removeRow($where)
-    {
-//        if (empty($where))
-//            return false;
-//
-//        $date_modified = TimeDate::getInstance()->getNow()->format(TimeDate::DB_DATETIME_FORMAT);
-//        $stringSets = [];
-//        foreach ($where as $field => $val) {
-//            $stringSets[] = "$field = '$val'";
-//        }
-//        $whereString = "WHERE " . implode(" AND ", $stringSets);
-//
-//        $query = "UPDATE {$this->getRelationshipTable()} set deleted=1 , date_modified = '$date_modified' $whereString";
-//
-//
-//        return DBManagerFactory::getInstance()->query($query);
-
-    }
 
 }

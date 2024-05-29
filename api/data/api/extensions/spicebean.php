@@ -812,10 +812,10 @@ $routes = [
                 'required'    => true,
                 'description' => 'The name of the link',
             ],
-            ValidationMiddleware::ANONYMOUS_ARRAY => [
+            'beansData' => [
                 'in'          => 'body',
                 'type'        => ValidationMiddleware::TYPE_ARRAY,
-                'subtype'     => ValidationMiddleware::TYPE_GUID,
+                'subtype'     => ValidationMiddleware::TYPE_OBJECT,
                 'required'    => true,
                 'description' => 'An array with GUIDs of related beans',
             ],

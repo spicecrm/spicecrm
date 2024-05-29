@@ -542,7 +542,7 @@ class Link2
      * @param string $related_id id or SpiceBean to unrelate. Pass a SpiceBean if you have it.
      * @return boolean          true if delete was successful or false if it was not
      */
-    function delete($id, $related_id = '')
+    function delete($id, $related_id = '', ?string $relId = null)
     {
         if (empty($this->focus->id))
             $this->focus = BeanFactory::getBean($this->focus->_module, $id);
@@ -551,9 +551,9 @@ class Link2
                 $related_id = $this->getRelatedBean($related_id);
             }
             if ($this->getSide() == REL_LHS) {
-                return $this->relationship->remove($this->focus, $related_id);
+                return $this->relationship->remove($this->focus, $related_id, $relId);
             } else {
-                return $this->relationship->remove($related_id, $this->focus);
+                return $this->relationship->remove($related_id, $this->focus, $relId);
             }
         } else {
             return $this->relationship->removeAll($this);
