@@ -146,7 +146,7 @@ export class ProductUOMConversions implements OnInit {
      * loads the uom units from the configuration service
      */
     public getUomUnits() {
-        this.uomUnits = this.configuration.getData('uomunits') || [];
+        this.uomUnits = (this.configuration.getData('uomunits') || []).sort((a, b) => a.label.localeCompare(b.label));
     }
 
     /**

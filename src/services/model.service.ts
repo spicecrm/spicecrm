@@ -272,6 +272,11 @@ export class model implements OnDestroy {
     public validated$: EventEmitter<void> = new EventEmitter<void>();
 
     /**
+     * A simple event emitter that emits whenever the model is before validating.
+     */
+    public beforeValidate$: EventEmitter<void> = new EventEmitter<void>();
+
+    /**
      * holds the data of the alerted field
      */
     public alerts: FieldsAlertI[] = [];
@@ -551,6 +556,7 @@ export class model implements OnDestroy {
      * @param event
      */
     public validate(event?: string) {
+        this.beforeValidate$.next();
         this.resetMessages();
         this.isValid = true;
 
