@@ -48,6 +48,10 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
      */
     public fieldsData: any = {};
     /**
+     * check for changes in the override alignment
+     */
+    private overrideAlignChanged: boolean = false;
+    /**
      * save the report fields data
      */
     public fieldsDisplayClasses: any = {};
@@ -96,6 +100,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                 public reporterconfig: reporterconfig,
                 public cdRef: ChangeDetectorRef,
                 public toast: toast) {
+        this.checkOverrideAlignChanged();
         this.subscriptions.add(
             this.reporterconfig.refresh$.subscribe({
                 next: event => {
@@ -223,6 +228,12 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                     }
                 }
 
+                if(this.overrideAlignChanged) {
+                    for (let field of presData.metaData.gridColumns) {
+                        this.fieldsDisplayClasses[field.dataIndex] = this.generateFieldDisplayClass(field);
+                    }
+                }
+
                 this.presData = presData;
 
                 this.setDisplayFields();
@@ -237,6 +248,19 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                 this.isLoading = false;
                 this.reporterconfig.isLoading.presentation = false;
                 this.cdRef.detectChanges();
+            }
+        });
+    }
+
+    /**
+     * check if the override alignment has changed
+     */
+    public checkOverrideAlignChanged() {
+        this.backend.getRequest(`module/KReports/${this.model.id}`).subscribe({
+            next: (res) => {
+                if(res.reportoptions !== "") {
+                    this.overrideAlignChanged = true;
+                }
             }
         });
     }
@@ -294,16 +318,30 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             }
         }
 
-        switch (field.type) {
-            case 'currency':
-            case 'currencyint':
-                classes.push('slds-grid--align-end');
-                break;
-            case 'enum':
-            case 'multienum':
-            case 'radioenum':
-                classes.push('slds-grid--align-center');
-                break;
+        if(!this.overrideAlignChanged) {
+            switch (field.type) {
+                case 'currency':
+                case 'currencyint':
+                    classes.push('slds-grid--align-end');
+                    break;
+                case 'enum':
+                case 'multienum':
+                case 'radioenum':
+                    classes.push('slds-grid--align-center');
+                    break;
+            }
+        } else {
+            switch (field.align) {
+                case 'right':
+                    classes.push('slds-grid--align-end');
+                    break;
+                case 'center':
+                    classes.push('slds-grid--align-center');
+                    break;
+                case 'left':
+                    classes.push('slds-grid--align-start');
+                    break;
+            }
         }
 
         return classes.join(' ');

@@ -51,7 +51,8 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
     public isOpen: boolean = false;
 
     // public clickListener: any;
-    public readonly minutes_interval = 30;
+    @Input()
+    public minutes_interval = 30;
 
     /**
      * option to hide the error message
@@ -77,6 +78,12 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
         public userpreferences: userpreferences,
         public language: language
     ) {
+    }
+
+    /**
+     * set the dropdown values
+     */
+    public ngOnInit() {
         this.dropdownValues = this.getDropdownValues();
     }
 
@@ -147,6 +154,7 @@ export class SystemInputTime implements OnDestroy, ControlValueAccessor {
 
                 // emit the value to the ngModel directive
                 this.onChange(this._time.moment);
+                console.log('emitting', this._time.display);
             } else {
                 // if only the hours are given... like "1", "22"...
                 if (typeof value == 'string' && value.length <= 2 && value.length > 0) {
