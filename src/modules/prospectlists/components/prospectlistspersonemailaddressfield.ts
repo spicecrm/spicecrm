@@ -1,5 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, SkipSelf} from '@angular/core';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
+import {Router} from "@angular/router";
+import {model} from "../../../services/model.service";
+import {view} from "../../../services/view.service";
+import {language} from "../../../services/language.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'prospect-lists-person-email-address-field',
@@ -19,7 +24,14 @@ export class ProspectListsPersonEmailAddressField extends fieldGeneric {
     get value() {
         return this.model.getField(this.fieldname);
     }
-
+    get emailAddresses(){
+        if (this.model.parentmodel && this.model.module == 'ProspectLists'){
+            return this.model.parentmodel.data.email_addresses.beans;
+        }
+        else {
+            return this.model.data.email_addresses.beans;
+        }
+    }
     /**
      * angular ngFor track by function
      * @param index
