@@ -1,0 +1,23 @@
+<system-modal size="small">
+    <system-modal-header (close)="closeModal()">
+        {{modalHeader}}
+    </system-modal-header>
+    <system-modal-content [grow]="grow" style="min-height: 300px" margin="none" #modalContent [system-overlay-loading-spinner]="model.isSaving">
+        <div class="slds-grid">
+            <div class="slds-grid--vertical slds-grow">
+                <object-edit-modal-dialog-container [componentSet]="componentconfig.componentset"></object-edit-modal-dialog-container>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <div class="slds-col">
+                <object-record-messages-badge></object-record-messages-badge>
+            </div>
+            <div class="slds-col">
+                <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button class="slds-button slds-button--brand" (click)="saveBooking()" [disabled]="disabledSaveButton"><system-label label="LBL_SAVE"></system-label></button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>

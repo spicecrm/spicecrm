@@ -472,9 +472,7 @@ class SpiceUIConfLoader
             if ($dictionaryDef['status'] != 'a') continue;
 
             try {
-                $sql = $definitions->repair($dictionaryDef['id']);
-                if (!empty($sql)) $db->query($sql, true);
-
+                $definitions->repair($dictionaryDef['id']);
             } catch (\Throwable | Exception $exception) {
                 unset($response[$dictionaryDef['tablename']]);
 
