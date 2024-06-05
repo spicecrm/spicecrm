@@ -17,6 +17,11 @@ import {EventRegistrationModalList} from "./components/eventregistrationmodallis
 import {EventRegistrationModalType} from "./components/eventregistrationmodaltype";
 import {EventWithCampaignActivateButton} from "./components/eventwithcampaignactivatebutton";
 
+import {EventBookingManager} from "./components/eventbookingmanager";
+import {EventBookingTable} from "./components/eventbookingtable";
+import {EventBookingTableItem} from "./components/eventbookingtableitem";
+import {EventBookingAddModal} from "./components/eventbookingaddmodal";
+import {EventBookingUrlButton} from './components/eventbookingurlbutton';
 
 @NgModule({
     imports: [
@@ -33,7 +38,15 @@ import {EventWithCampaignActivateButton} from "./components/eventwithcampaignact
         EventRegistrationModal,
         EventRegistrationModalList,
         EventRegistrationModalType,
-        EventWithCampaignActivateButton
+        EventWithCampaignActivateButton,
+        EventBookingManager,
+        EventBookingTable,
+        EventBookingTableItem,
+        EventBookingAddModal,
+        EventBookingUrlButton
+    ],
+    exports: [
+        EventBookingManager
     ]
 })
 export class ModuleEvents {}
