@@ -9,6 +9,7 @@ use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
+use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\includes\utils\SpiceUtils;
 
 class SpiceDictionaryDefinition
@@ -332,6 +333,15 @@ class SpiceDictionaryDefinition
 
                 SpiceDictionaryHandler::loadModuleFiles($module);
 
+                // get the ACL territories for a module
+                $territoryVardefs = self::addACLTerritoryFields($module);
+                if($territoryVardefs) {
+                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'], $territoryVardefs['fields']);
+                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'], $territoryVardefs['indices']);
+                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'], $territoryVardefs['relationships']);
+                }
+
+
                 // get the module Details and return the data
                 return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'],
                     'indices' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'],
@@ -347,6 +357,30 @@ class SpiceDictionaryDefinition
                     'relationships' => SpiceDictionaryHandler::getInstance()->dictionary[$this->name]['relationships']];
 
         }
+    }
+
+    /**
+     * not legacy
+     * special treatment for territories
+     * @param $module
+     * @return array
+     * @throws \Exception
+     */
+    static public function addACLTerritoryFields($module): array
+    {
+        $vardefs = [];
+
+        $db = DBManagerFactory::getInstance();
+        if ($db->tableExists('spiceaclterritories_modules')) {
+            $row = $db->fetchOne("SELECT * FROM spiceaclterritories_modules WHERE module = '$module'");
+
+            if ($row && !empty($row['module'])) {
+                $bean = SpiceModules::getInstance()->getBeanName($row['module']);
+                $vardefs = VardefManager::getTemplateForDictionary($bean->_module, $bean->_objectname, 'spiceaclterritories');
+            }
+        }
+
+        return $vardefs;
     }
 
     /**
