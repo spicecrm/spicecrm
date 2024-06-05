@@ -273,7 +273,7 @@ class EmailAddressRelationship extends M2MRelationship
         return DBManagerFactory::getInstance()->query($query);
     }
 
-    public function remove($lhs, $rhs)
+    public function remove($lhs, $rhs, ?string $relId = null)
     {
         $lhsLinkName = $this->lhsLink;
 

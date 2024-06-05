@@ -412,7 +412,7 @@ class M2MRelationship extends Relationship
         }
     }
 
-    public function remove($lhs, $rhs)
+    public function remove($lhs, $rhs, ?string $relId = null)
     {
         if(!($lhs instanceof SpiceBean) || !($rhs instanceof SpiceBean)) {
             LoggerManager::getLogger()->fatal('relationships', "LHS and RHS must be beans in M2M");
@@ -455,10 +455,16 @@ class M2MRelationship extends Relationship
             }
         }
 
-        $dataToRemove = [
-            $this->def['join_key_lhs'] => $lhs->id,
-            $this->def['join_key_rhs'] => $rhs->id
-        ];
+        if (!empty($relId)) {
+            $dataToRemove = [
+                'id' => $relId
+            ];
+        } else {
+            $dataToRemove = [
+                $this->def['join_key_lhs'] => $lhs->id,
+                $this->def['join_key_rhs'] => $rhs->id
+            ];
+        }
 
         $this->removeRow($dataToRemove);
 

@@ -49,6 +49,7 @@ export class ObjectActionSaveRelatedButton {
             // in any case update date modified and set the id for the PUT
             changedData.date_modified = this.model.getField('date_modified');
             changedData.id = this.model.id;
+            changedData.relId = this.model.data.relid;
 
             // save related model
             this.actionemitter.emit(true);
