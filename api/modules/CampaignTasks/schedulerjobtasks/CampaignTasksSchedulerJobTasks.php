@@ -18,6 +18,6 @@ class CampaignTasksSchedulerJobTasks
 
     public function sendCampaignTaskFeedbacks(): bool {
         $campaignTask = BeanFactory::getBean('CampaignTasks');
-        return $campaignTask->genereateServiceFeedbacks();
+        return $campaignTask->generateServiceFeedbacks();
     }
 }
