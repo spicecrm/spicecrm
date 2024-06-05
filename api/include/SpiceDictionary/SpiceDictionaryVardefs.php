@@ -297,6 +297,8 @@ class SpiceDictionaryVardefs  {
     }
 
     /**
+     * legacy code
+     *
      * add acl territory fields to the loaded dictionary items
      * @return void
      * @throws \Exception
