@@ -55,7 +55,7 @@ abstract class Relationship
      * @param  $rhs SpiceBean
      * @return boolean
      */
-    public abstract function remove($lhs, $rhs);
+    public abstract function remove($lhs, $rhs, ?string $relId = null);
 
     /**
      * needs to be overwritten to handle activation

@@ -3,6 +3,8 @@
 
 namespace SpiceCRM\modules\CampaignTasks;
 
+use SpiceCRM\extensions\modules\TextMessages\TextMessage;
+use SpiceCRM\extensions\modules\TextMessageTemplates\TextMessageTemplate;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
@@ -473,7 +475,7 @@ class CampaignTask extends SpiceBean
      * @return bool
      * @throws MessageInterceptedException
      */
-    function sendQueuedEmails($addBeans = []){
+    function sendQueuedEmails($campaignTaskType='Email'){
         // set the admin user
         /** @var User $admin */
         $admin = BeanFactory::getBean('Users', '1');
@@ -481,7 +483,7 @@ class CampaignTask extends SpiceBean
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // get the queued emails
-        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'Email' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
+        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = '$campaignTaskType' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
 
         while($queuedEmail = $this->db->fetchByAssoc($queuedEmails)){
             /// load the campaign task if we have a new one
@@ -549,6 +551,49 @@ class CampaignTask extends SpiceBean
     }
 
     /**
+     * send queued text messages for text message campaign tasks where the log entry is set to queued
+     * @return bool
+     */
+    function sendQueuedTextMessages($addBeans = []){
+        // set the admin user
+        $admin = BeanFactory::getBean('Users', '1');
+        AuthenticationController::getInstance()->setCurrentUser($admin);
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
+        // get the queued emails
+        $queuedEmails = $this->db->limitQuery("SELECT campaign_log.id, target_type, target_id, campaigntask_id FROM campaign_log, campaigntasks WHERE campaign_log.deleted = 0 AND campaign_log.campaigntask_id = campaigntasks.id AND campaigntasks.campaigntask_type = 'SMS' AND activity_type = 'queued' AND campaigntask_id <> '' ORDER by activity_date DESC", 0, 50);
+        while($queuedTextMessage = $this->db->fetchByAssoc($queuedEmails)){
+            /// load the campaign task if we have a new one
+            if($queuedTextMessage['campaigntask_id'] != $this->id){
+                $this->retrieve($queuedTextMessage['campaigntask_id']);
+            };
+
+            // load the bean and send the email
+            $seed = BeanFactory::getBean($queuedTextMessage['target_type'], $queuedTextMessage['target_id']);
+            $campaignLog = BeanFactory::getBean('CampaignLog', $queuedTextMessage['id']);
+            if($seed && $seed->is_inactive) {
+                $campaignLog->activity_type = 'inactive';
+                $campaignLog->save();
+            } else if($seed) {
+                $textMessage = $this->sendTextMessage($seed, true, false, ['CampaignLog' => $campaignLog]);
+                if($textMessage == false){
+                    $campaignLog->activity_type = 'noemail';
+                    $campaignLog->save();
+                } else {
+                    $campaignLog->activity_type = 'sent';
+                    $campaignLog->related_id = $textMessage->id;
+                    $campaignLog->related_type = 'TextMessages';
+                    $campaignLog->save();
+                }
+            } else {
+                $campaignLog->activity_type = 'error';
+                $campaignLog->save();
+            }
+        }
+        return true;
+    }
+
+    /**
      * send the email to the recipient
      * @param SpiceBean $seed
      * @param bool $saveEmail
@@ -572,13 +617,14 @@ class CampaignTask extends SpiceBean
             $emailTemplate->body_html = $this->email_body;
             $emailTemplate->style = $this->email_stylesheet_id;
         }
-        $parsedHtml = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
+        $parsedContent = $emailTemplate->parse($seed, ['campaignTask' => $this->id], $addBeans);
 
         $email->id = SpiceUtils::createGuid();
         $email->new_with_id = true;
         $email->mailbox_id = $this->mailbox_id;
-        $email->name = $test ? ('[TEST] ' . $this->email_subject) : $this->email_subject;
-        $email->body = $parsedHtml['body_html'];
+        $email->name = $parsedContent['subject'];
+        $email->body = $parsedContent['body_html'];
+        if ( $test ) $email->name = '[TEST] ' . $email->name;
 
         $email->addEmailAddress('to', $seed->email1);
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
@@ -613,6 +659,51 @@ class CampaignTask extends SpiceBean
         }
 
         return $email;
+    }
+
+    /**
+     * sends the text message
+     *
+     * @param $seed
+     * @param false $saveTextMessage
+     * @param false $test
+     * @return false|SpiceBean
+     */
+    function sendTextMessage($seed, $saveTextMessage = false, $test = false, $addBeans = [])
+    {
+        if(!$seed->phone_mobile) {
+            return false;
+        }
+
+        $textMessageTemplate = (function(): TextMessageTemplate {return BeanFactory::getBean('TextMessageTemplates');})();
+        $textMessage = (function(): TextMessage {return BeanFactory::getBean('TextMessages');})();
+
+        if(!empty($this->textmessage_template_id)){
+            $textMessageTemplate->retrieve($this->textmessage_template_id);
+        } else {
+            $textMessageTemplate->body = $this->email_body;
+        }
+
+        $textMessage->description = $textMessageTemplate->parse($seed, ['campaignTask' => $this->id]); # third param would be: $addBeans
+        $textMessage->id = SpiceUtils::createGuid();
+        $textMessage->new_with_id = true;
+        $textMessage->mailbox_id = $this->mailbox_id;
+        $textMessage->name = $test ? ('[TEST] ' . $this->email_subject) : $this->email_subject;
+
+        $textMessage->msisdn = $seed->phone_mobile;
+
+        try {
+            if ($saveTextMessage) {
+                $textMessage->parent_type = $seed->_module;
+                $textMessage->parent_id = $seed->id;
+                $textMessage->to_be_sent = true;
+                $textMessage->save();
+            } else {
+                $textMessage->send();
+            }
+        }
+        catch ( MessageInterceptedException $e ) { }
+        return $textMessage;
     }
 
     /**

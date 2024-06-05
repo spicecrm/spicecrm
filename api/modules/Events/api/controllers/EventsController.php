@@ -88,4 +88,139 @@ class EventsController
         }
         return $res->withJson(['success' => true, 'added_prospects_count' => count($addedProspects)]);
     }
+
+    /**
+     * Load the Event.
+     * @param $id The ID of the Event.
+     */
+    private function loadEvent( $id ): void
+    {
+        $this->event = BeanFactory::getBean('Events', $id );
+        if ( !$this->event ) throw ( new NotFoundException('Event not found.'))->setLookedFor([ 'id' => $id, 'module' => 'Events' ]);
+    }
+
+    /**
+     * get event with calculated timeslots and slots (for landingpage)
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    /* necessary? */
+    /*
+    public function getCapacitiesWithSlots(Request $req, Response $res, array $args): Response
+    {
+        $this->loadEvent( $args['id'] );
+        $result = $this->event->getCapacitiesWithSlots();
+
+        return $res->withJson($result);
+    }
+    */
+
+    /**
+     * get all EventCapacityTypes with the related EventCapacities and all its slots
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function getBookingTable_forEvent( Request $req, Response $res, array $args ): Response
+    {
+        $this->loadEvent( $args['id'] );
+        $result = $this->event->getBookingTable( null );
+        return $res->withJson([ 'status' => 'success', 'data' =>  $result ]);
+    }
+
+    /**
+     * get all events with their capacities and the available timeslots
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function getBookingTable_forCapacity( Request $req, Response $res, array $args ): Response
+    {
+        $eventcapacity = BeanFactory::getBean('EventCapacities', $args['id'] );
+        if ( !$eventcapacity ) throw ( new NotFoundException('EventCapacity not found.'))->setLookedFor([ 'id' => $args['id'], 'module' => 'EventCapacities' ]);
+
+        $event = BeanFactory::getBean('Events', $eventcapacity->event_id );
+        if ( !$event ) throw new Exception('Event of EventCapacity not found.');
+
+        $result = $event->getBookingTable( $eventcapacity->id );
+
+        return $res->withJson([ 'status' => 'success', 'data' =>  $result ]);
+    }
+
+    /**
+     * create new booking without capacity
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    /* necessary? */
+    /*
+    public function saveEventBookingWithoutCapacity(Request $req, Response $res, array $args): Response
+    {
+        $bodyParams = $req->getParsedBody();
+
+        $event = BeanFactory::getBean('Events', $bodyParams['event_id']);
+
+        $eventbooking = BeanFactory::getBean('EventBookings');
+        $eventbooking->id = $args['id'];
+
+        return $res->withJson(['status' => 'success', 'data' =>  $eventbooking->saveFromLandingPage($bodyParams, $event)]);
+    }
+    */
+
+    /**
+     * set event favorite to consumer
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function setFavoriteEvent(Request $req, Response $res, array $args): Response
+    {
+        $event = BeanFactory::getBean('Events', $args['event_id']);
+        $consumer = BeanFactory::getBean('Consumers', $args['id']);
+
+        if ( $event and $consumer ) {
+
+            $consumer->fav_event_id = $event->id;
+            $consumer->save();
+
+            return $res->withJson(['status' => 'success']);
+        } else {
+            return $res->withJson(['status' => 'error', 'message' => 'Event or Consumer does not exist']); // todo: throw exception
+        }
+    }
+
+    /**
+     * delete event favorite from consumer
+     *
+     * @param Request $req
+     * @param Response $res
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function deleteFavoriteEvent(Request $req, Response $res, array $args): Response
+    {
+        $consumer = BeanFactory::getBean('Consumers', $args['id']);
+        $consumer->fav_event_id = '';
+        $consumer->save();
+        return $res->withJson(['status' => 'success']);
+    }
+
 }

@@ -82,7 +82,7 @@ export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
     public execute() {
         this.modalservice.confirm(this.language.getLabel('QST_REMOVE_ENTRY'), this.language.getLabel('QST_REMOVE_ENTRY', null, 'short'))
             .subscribe((answer) => {
-                if (answer) this.relatedmodels.deleteItem(this.model.id);
+                if (answer) this.relatedmodels.deleteItem(this.model.id,this.model.data.relid);
             });
     }
 

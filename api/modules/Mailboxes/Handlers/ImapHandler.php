@@ -541,6 +541,7 @@ class ImapHandler extends TransportHandler
                 $toAddresses[] = $this->mailbox->catch_all_address;
                 // add a message for whom this was intended for
                 $email->name .= ' [to '.$this->mailbox->catch_all_address.' intended for ' . join(', ', $intendedRecipients) . ']';
+                $message->setSubject($email->name);
             } else {
                 throw ( new MessageInterceptedException('Email intercepted.'))->setErrorCode('emailIntercepted')->setLbl('LBL_EMAIL_INTERCEPTED');
             }
