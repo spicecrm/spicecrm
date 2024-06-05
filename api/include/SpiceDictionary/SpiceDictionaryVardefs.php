@@ -280,6 +280,8 @@ class SpiceDictionaryVardefs  {
     }
 
     /**
+     * legacy code
+     *
      * add acl fields to the loaded dictionary items
      * @return void
      */
