@@ -7,6 +7,7 @@ use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -341,6 +342,14 @@ class SpiceDictionaryDefinition
                     SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'], $territoryVardefs['relationships']);
                 }
 
+                // get the ACL vardefs for a module
+                $aclVardefs = self::addACLFields($module);
+                if($aclVardefs) {
+                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'], $aclVardefs['fields']);
+                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['indices'], $aclVardefs['indices']);
+                    SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'] = array_merge(SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['relationships'], $aclVardefs['relationships']);
+                }
+
 
                 // get the module Details and return the data
                 return ['fields' => SpiceDictionaryHandler::getInstance()->dictionary[$moduleDetails['bean']]['fields'],
@@ -378,6 +387,26 @@ class SpiceDictionaryDefinition
                 $bean = SpiceModules::getInstance()->getBeanName($row['module']);
                 $vardefs = VardefManager::getTemplateForDictionary($bean->_module, $bean->_objectname, 'spiceaclterritories');
             }
+        }
+
+        return $vardefs;
+    }
+
+    /**
+     * not legacy
+     *
+     * add acl fields to the loaded dictionary items
+     * @return array
+     */
+    public static function addACLFields($moduleName): array
+    {
+        $vardefs = [];
+
+        $loader = new SpiceUIModulesController();
+        $modules = $loader->geUnfilteredModules();
+
+        if($modules[$moduleName] && $modules[$moduleName]['acl_multipleusers'] == 1) {
+            $vardefs = VardefManager::getTemplateForDictionary($moduleName, $modules[$moduleName]['bean'], 'spiceaclusers');
         }
 
         return $vardefs;
