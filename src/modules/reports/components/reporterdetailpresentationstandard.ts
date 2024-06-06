@@ -100,7 +100,6 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                 public reporterconfig: reporterconfig,
                 public cdRef: ChangeDetectorRef,
                 public toast: toast) {
-        this.checkOverrideAlignChanged();
         this.subscriptions.add(
             this.reporterconfig.refresh$.subscribe({
                 next: event => {
@@ -211,56 +210,50 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
 
         this.backend.cancelPendingRequests([this.httpRequestsRefID]);
 
-        this.backend.postRequest(`module/KReports/${this.model.id}/presentation/dynamicoptions`, {}, body, this.httpRequestsRefID).subscribe({
-            next: (presData: any) => {
-
-                this.presData = [];
-                this.cdRef.detectChanges();
-
-                if (!presData) return;
-
-                // get field width if not previous set
-                if (this.totalWidth == 0) {
-                    for (let field of presData.reportmetadata.fields) {
-                        this.fieldsData[field.fieldid] = field;
-                        this.fieldsDisplayClasses[field.fieldid] = this.generateFieldDisplayClass(field);
-                        this.totalWidth += field.width;
-                    }
-                }
-
-                if(this.overrideAlignChanged) {
-                    for (let field of presData.metaData.gridColumns) {
-                        this.fieldsDisplayClasses[field.dataIndex] = this.generateFieldDisplayClass(field);
-                    }
-                }
-
-                this.presData = presData;
-
-                this.setDisplayFields();
-                this.processPresData();
-
-                this.isLoading = false;
-                this.reporterconfig.isLoading.presentation = false;
-                this.cdRef.detectChanges();
-            },
-            error: () => {
-                this.toast.sendToast('ERR_LOADING_RECORD', 'error');
-                this.isLoading = false;
-                this.reporterconfig.isLoading.presentation = false;
-                this.cdRef.detectChanges();
-            }
-        });
-    }
-
-    /**
-     * check if the override alignment has changed
-     */
-    public checkOverrideAlignChanged() {
+        // checking if override alignement is changed
         this.backend.getRequest(`module/KReports/${this.model.id}`).subscribe({
             next: (res) => {
-                if(res.reportoptions !== "") {
-                    this.overrideAlignChanged = true;
-                }
+                if(res.reportoptions !== "") this.overrideAlignChanged = true;
+
+                this.backend.postRequest(`module/KReports/${this.model.id}/presentation/dynamicoptions`, {}, body, this.httpRequestsRefID).subscribe({
+                    next: (presData: any) => {
+
+                        this.presData = [];
+                        this.cdRef.detectChanges();
+
+                        if (!presData) return;
+
+                        // get field width if not previous set
+                        if (this.totalWidth == 0) {
+                            for (let field of presData.reportmetadata.fields) {
+                                this.fieldsData[field.fieldid] = field;
+                                this.fieldsDisplayClasses[field.fieldid] = this.generateFieldDisplayClass(field);
+                                this.totalWidth += field.width;
+                            }
+                        }
+
+                        if(this.overrideAlignChanged) {
+                            for (let field of presData.metaData.gridColumns) {
+                                this.fieldsDisplayClasses[field.dataIndex] = this.generateFieldDisplayClass(field);
+                            }
+                        }
+
+                        this.presData = presData;
+
+                        this.setDisplayFields();
+                        this.processPresData();
+
+                        this.isLoading = false;
+                        this.reporterconfig.isLoading.presentation = false;
+                        this.cdRef.detectChanges();
+                    },
+                    error: () => {
+                        this.toast.sendToast('ERR_LOADING_RECORD', 'error');
+                        this.isLoading = false;
+                        this.reporterconfig.isLoading.presentation = false;
+                        this.cdRef.detectChanges();
+                    }
+                });
             }
         });
     }
