@@ -1594,8 +1594,8 @@ class SpiceBeanHandler
         if (is_array($relFields) && count($relFields) > 0) {
             $thisBean->load_relationship($linkName);
 
-            if (!empty($postparams['relId'])) {
-                $relid = $postparams['relId'];
+            if (!empty($postparams['relid'])) {
+                $relid = $postparams['relid'];
             } else {
                 switch ($thisBean->{$linkName}->getSide()) {
                     case 'RHS':
