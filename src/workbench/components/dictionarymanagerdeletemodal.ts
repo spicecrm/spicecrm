@@ -39,7 +39,7 @@ export class DictionaryManagerDeleteModal {
      */
     private responseSubject: Subject<string>;
 
-    public dropitem: boolean = true;
+    public dropitem: boolean = false;
 
 
     public delete(){
