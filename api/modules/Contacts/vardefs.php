@@ -546,6 +546,11 @@ SpiceDictionaryHandler::getInstance()->dictionary['Contact'] = [
                 'type' => 'link',
                 'relationship' => 'prospectlistunsubscribes_contacts',
                 'source' => 'non-db',
+                'rel_fields' => [
+                    'email_addr_bean_rel_id' => [
+                        'map' => 'prospectlists_person_email_addr_bean_rel_id'
+                    ]
+                ]
             ],
             'optout_sendgrid' => [
                 'name' => 'optout_sendgrid',
