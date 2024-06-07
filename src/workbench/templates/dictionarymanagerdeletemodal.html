@@ -1,7 +1,11 @@
 <system-modal size="prompt">
     <system-modal-header-empty (close)="close()"></system-modal-header-empty>
-    <system-modal-content>
+    <system-modal-header>
         <system-label [label]="message"/>
+    </system-modal-header>
+    <system-modal-content>
+        <system-utility-icon icon="warning" size="small" colorclass="slds-icon-text-error"></system-utility-icon>
+        <system-label label="LBL_DROP_ITEM" length="long"></system-label>
     </system-modal-content>
     <system-modal-footer>
         <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread">
