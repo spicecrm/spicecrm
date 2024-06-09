@@ -90,6 +90,13 @@ export class fieldSalesdocTypes extends fieldGeneric {
             this.options = this.options.filter( salesdocType => salesdocType.salesdoccategory == this.model.getField('salesdoccategory') );
         }
 
+        // check if we have to check ACL rights
+        this.options.forEach((o, i) => {
+            if(o.aclaction && !this.metadata.checkModuleAcl('SalesDocs', o.aclaction)){
+                this.options.splice(i, 1);
+            }
+        })
+
         this.translateAndSortOptions();
     }
 
