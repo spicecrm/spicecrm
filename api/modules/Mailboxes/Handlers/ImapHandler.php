@@ -269,6 +269,9 @@ class ImapHandler extends TransportHandler
 
         $stream = $this->getImapStream($this->mailbox->imap_trash_dir);
 
+        // don't proceed if we don't have imap connection
+        if(!$stream) return ['deleted_mail_count' => $deleted_mail_count];
+
         $items = imap_search($stream, 'ALL');
 
         if (is_array($items) || is_object($items)) {
@@ -326,9 +329,10 @@ class ImapHandler extends TransportHandler
      * Gets IMAP connection stream
      *
      * @param string $folder
-     * @return resource
+     * @return resource|boolean
      */
-    private function getImapStream($folder = "INBOX") {
+    private function getImapStream($folder = "INBOX")
+    {
         $stream = imap_open(
             $this->mailbox->getRef() . $folder,
             $this->mailbox->imap_pop3_username,
@@ -337,6 +341,12 @@ class ImapHandler extends TransportHandler
             1,
             ['DISABLE_AUTHENTICATOR' => 'GSSAPI']
         );
+
+        $imapErrors = imap_errors();
+
+        if ($imapErrors) {
+            LoggerManager::getLogger()->error("Unable to open an IMAP stream to a mailbox with id: " . $this->mailbox->id . ". Error: " . print_r($imapErrors, true));
+        }
 
         return $stream;
     }
