@@ -87,7 +87,7 @@ export class DictionaryManagerItemDetails implements OnInit{
      * returns if we detect changes
      */
     get canSave(){
-        let changed = false;
+        let changed = true;
         let backup = JSON.parse(this.backup);
         Object.keys(backup).forEach(k => {
             if(backup[k] != this.dictionaryitem[k]) {
