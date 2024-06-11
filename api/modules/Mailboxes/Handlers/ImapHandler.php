@@ -209,7 +209,7 @@ class ImapHandler extends TransportHandler
                 try {
                     $email->save(false, true, false);
                 } catch (Exception $e) {
-                    LoggerManager::getLogger()->error('Could not save email: ' . $email->name);
+                    LoggerManager::getLogger()->error('Could not save email: ' . $email->name . ' ' . $email->message_id .'. Error Message: '.$e->getMessage());
                     continue;
                 }
 
