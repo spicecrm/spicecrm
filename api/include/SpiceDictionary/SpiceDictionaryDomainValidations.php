@@ -76,7 +76,8 @@ class SpiceDictionaryDomainValidations
 //                    'minvalue' => $domainvalue['minvalue'],
 //                    'maxval' => $domainvalue['maxval'],
                     'label' => $domainvalue['label'],
-                    'sequence' => $domainvalue['sequence']
+                    'sequence' => $domainvalue['sequence'],
+                    'status' => $domainvalue['status'],
                 ];
             }
 
@@ -89,7 +90,8 @@ class SpiceDictionaryDomainValidations
 //                'minvalue' => $domainvalue['minvalue'],
 //                'maxvalue' => $domainvalue['maxvalue'],
                     'label' => $domainvalue['label'],
-                    'sequence' => $domainvalue['sequence']
+                    'sequence' => $domainvalue['sequence'],
+                    'status' => $domainvalue['status'],
                 ];
             }
         }
@@ -113,10 +115,12 @@ class SpiceDictionaryDomainValidations
         foreach($this->domainValidations as $dom => $definition){
             // re-organize and add translation
             foreach($definition['validationvalues'] as $def){
-                $translation = (!empty($syslanguagelabels[$language][$def['label']]['default']) ? $syslanguagelabels[$language][$def['label']]['default'] : $def['enumvalue']);
-                $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['enumvalue'] = $def['enumvalue'];
-                $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['translation'] = $translation;
-                $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['sequence'] = $def['sequence'];
+                if($def['status'] == 'a') {
+                    $translation = (!empty($syslanguagelabels[$language][$def['label']]['default']) ? $syslanguagelabels[$language][$def['label']]['default'] : $def['enumvalue']);
+                    $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['enumvalue'] = $def['enumvalue'];
+                    $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['translation'] = $translation;
+                    $sys_app_list_strings[$dom][$language]['values'][$def['enumvalue']]['sequence'] = $def['sequence'];
+                }
             }
 
             // sort by the sequence
