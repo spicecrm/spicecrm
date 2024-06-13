@@ -232,7 +232,8 @@ export class fieldText extends fieldGeneric implements OnInit {
         this.helper.addTextSnippet('PLAIN', moduleFilter, this.modal, this.model, this.viewContainerRef.injector).subscribe({
             next: snippet => {
                 const oldString = this.value ?? '';
-                this.value = oldString.substring(0, this.currentPosition) + snippet + oldString.substring(this.currentPosition)
+                let newValue = oldString.substring(0, this.currentPosition) + snippet + oldString.substring(this.currentPosition)
+                this.value = (newValue === 'undefined' || newValue.includes('undefined')) ? oldString : newValue;
             },
             error: () => {
                 this.model.toast.sendToast('ERR_FAILED_TO_EXECUTE', 'error');
