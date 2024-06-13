@@ -90,7 +90,7 @@ class SpiceAttachments
             $attachments = self::getAttachmentsForBean($fromBeanName, $fromBeanId, 100, false, $categoryId);
         }
 
-        $colQuery = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids, external_id) ";
+        $colQuery = "INSERT INTO spiceattachments (id, bean_type, bean_id, user_id, trdate, filename, filesize, filemd5, text, thumbnail, deleted, file_mime_type, category_ids, external_id, display_name) ";
         $clonedAttachments = [];
 
         foreach ($attachments as $attachment) {
@@ -106,7 +106,7 @@ class SpiceAttachments
             $timeDate = TimeDate::getInstance()->nowDb();
             $q = "$colQuery VALUES ('{$attachment['id']}', '{$attachment['bean_type']}', '{$attachment['bean_id']}', '{$attachment['user_id']}', '$timeDate', ";
             $q .= "'{$attachment['filename']}', '{$attachment['filesize']}', '{$attachment['filemd5']}', '{$_POST['text']}', '{$attachment['thumbnail']}', 0, ";
-            $q .= "'{$attachment['file_mime_type']}', '{$attachment['category_ids']}', '{$attachment['external_id']}')";
+            $q .= "'{$attachment['file_mime_type']}', '{$attachment['category_ids']}', '{$attachment['external_id']}', '{$attachment['display_name']}')";
             $db->query($q);
         }
         return $clonedAttachments;
