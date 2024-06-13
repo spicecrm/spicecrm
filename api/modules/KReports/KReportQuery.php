@@ -1159,6 +1159,11 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 $thisWhereString .= ' NOT LIKE \'%' . $value . '%\'';
                 break;
             case 'between':
+            case 'betweend':
+                if($operator == 'betweend'){
+                    $value = TimeDate::getInstance()->to_db_date($value);
+                    $valueto = TimeDate::getInstance()->to_db_date($valueto);
+                }
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date handling now on client side
                 if ($this->fieldNameMap[$fieldid]['type'] == 'date' || $this->fieldNameMap[$fieldid]['type'] == 'datetime' || $this->fieldNameMap[$fieldid]['type'] == 'datetimecombo')
