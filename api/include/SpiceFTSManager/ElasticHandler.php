@@ -6,6 +6,8 @@ namespace SpiceCRM\includes\SpiceFTSManager;
 use SpiceCRM\includes\database\DBManagerFactory;
 
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\Logger\SpiceLogger;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -280,6 +282,8 @@ class ElasticHandler
                     'unindexed' => $unindexed['totalcount'],
                     'erroneous' => $erroneous
                 ];
+            } else {
+                LoggerManager::getLogger()->error('Trying to get status for index '. $index . ' for which sysmodules/syscustommodules definition does not exist. Please check sysmodules/syscustommodules table and your FTS Setup.');
             }
         }
 

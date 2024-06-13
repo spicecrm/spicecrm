@@ -137,6 +137,8 @@ class VardefManager{
     }
 
     /**
+     * legacy code
+     * 
      * add template directly to dictionary
      * @param $module
      * @param $object
@@ -147,6 +149,18 @@ class VardefManager{
     {
         $vardefs = self::getTemplateVardefs($module, $object, $template);
         self::updateDictionaryVardefs($vardefs, $object);
+    }
+
+    /**
+     * add template directly to dictionary
+     * @param $module
+     * @param $object
+     * @param $template
+     * @return array[]
+     */
+    static public function getTemplateForDictionary($module, $object, $template): array
+    {
+        return self::getTemplateVardefs($module, $object, $template);
     }
 
 
