@@ -25,16 +25,11 @@ export class GroupwareEmailArchivePaneHeader {
      * Archives an email in SpiceCRM.
      */
     public archive() {
-        this.groupware.archiveEmail().subscribe(
-            next => {
-                // update message
-            },
-            error => {
-                // display error
-            },
-            () => {
-                this.cdRef.detectChanges();
-            });
+        this.groupware.archiveEmail().subscribe({
+            next: () => this.cdRef.detectChanges(),
+            error: () => this.cdRef.detectChanges(),
+            complete: () => this.cdRef.detectChanges()
+        });
     }
 
     /**
