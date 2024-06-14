@@ -26,9 +26,9 @@ export class GroupwareEmailArchivePaneHeader {
      */
     public archive() {
         this.groupware.archiveEmail().subscribe({
-            next: () => this.cdRef.detectChanges(),
-            error: () => this.cdRef.detectChanges(),
-            complete: () => this.cdRef.detectChanges()
+            next: () => asapScheduler.schedule(() => this.cdRef.detectChanges(), 50),
+            error: () => asapScheduler.schedule(() => this.cdRef.detectChanges(), 50),
+            complete: () => asapScheduler.schedule(() => this.cdRef.detectChanges(), 50)
         });
     }
 
