@@ -4,15 +4,14 @@ namespace SpiceCRM\modules\Emails\api\controllers;
 
 use SpiceCRM\data\BeanFactory;
 use Exception;
+use SpiceCRM\extensions\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\RESTManager;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
-use SpiceCRM\modules\Mailboxes\Handlers\OutlookAttachmentHandler;
 use SpiceCRM\extensions\modules\Mailboxes\Handlers\GSuiteAttachmentHandler;
 use SpiceCRM\includes\UploadFile;
 use SpiceCRM\includes\authentication\AuthenticationController;
