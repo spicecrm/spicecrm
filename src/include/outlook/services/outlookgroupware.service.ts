@@ -77,7 +77,7 @@ export class OutlookGroupware extends GroupwareService {
     public archiveEmail(): Observable<any> {
         let retSubject = new Subject();
 
-        this.isArchiving = true;
+        const loading = this.model.modal.await('LBL_PROCESSING');
 
         this.assembleEmail().subscribe(
             (email: any) => {
@@ -99,12 +99,14 @@ export class OutlookGroupware extends GroupwareService {
 
                             this.backend.postRequest('channels/groupware/outlook/attachments', {}, attachmentData).subscribe(
                                 success => {
-                                    this.isArchiving = false;
+                                    loading.next(true);
+                                    loading.complete();
                                     retSubject.next(true);
                                     retSubject.complete();
                                 },
                                 error => {
-                                    this.isArchiving = false;
+                                    loading.next(true);
+                                    loading.complete();
                                     retSubject.error('error archiving attachments');
                                     retSubject.complete();
                                 }
@@ -112,13 +114,16 @@ export class OutlookGroupware extends GroupwareService {
 
                             this.emailId = res.email_id;
                         } else {
-                            this.isArchiving = false;
+                            loading.next(true);
+                            loading.complete();
+
                             retSubject.next(true);
                             retSubject.complete();
                         }
                     },
                     error => {
-                        this.isArchiving = false;
+                        loading.next(true);
+                        loading.complete();
                         retSubject.error('error archiving email');
                         retSubject.complete();
                     }
@@ -128,7 +133,8 @@ export class OutlookGroupware extends GroupwareService {
                 // console.log('Cannot assemble email: ' + err);
                 retSubject.error('error assembling email');
                 retSubject.complete();
-                this.isArchiving = false;
+                loading.next(true);
+                loading.complete();
             }
         );
 
