@@ -5,6 +5,7 @@ import {Component, ChangeDetectorRef} from '@angular/core';
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {language} from "../../../services/language.service";
+import {asapScheduler} from "rxjs";
 
 /**
  * Header component for the add-in.
