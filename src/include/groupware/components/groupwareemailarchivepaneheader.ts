@@ -5,7 +5,6 @@ import {Component, ChangeDetectorRef} from '@angular/core';
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {language} from "../../../services/language.service";
-import {asapScheduler} from "rxjs";
 
 /**
  * Header component for the add-in.
@@ -26,18 +25,14 @@ export class GroupwareEmailArchivePaneHeader {
      * Archives an email in SpiceCRM.
      */
     public archive() {
-        this.groupware.archiveEmail().subscribe({
-            next: () => asapScheduler.schedule(() => this.cdRef.detectChanges(), 50),
-            error: () => asapScheduler.schedule(() => this.cdRef.detectChanges(), 50),
-            complete: () => asapScheduler.schedule(() => this.cdRef.detectChanges(), 50)
-        });
+        this.groupware.archiveEmail();
     }
 
     /**
      * Check if there are any beans to be archived.
      */
     get canArchive() {
-        return this.groupware.archiveto.length > 0 && !this.groupware.isArchiving;
+        return this.groupware.archiveto.length > 0;
     }
 
     /**
