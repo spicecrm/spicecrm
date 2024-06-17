@@ -1,21 +1,17 @@
 /**
  * @module ModuleACL
  */
-import {
-    Component,
-    ViewChild,
-    ViewContainerRef,
-    Input,
-    OnChanges, ChangeDetectorRef
-} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges} from '@angular/core';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {ACLUsersFilterPipe } from '../pipes/aclusersfilter.pipe';
+import {view} from "../../../services/view.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'aclprofiles-manager-profile',
-    templateUrl: '../templates/aclprofilesmanagerprofile.html'
+    templateUrl: '../templates/aclprofilesmanagerprofile.html',
+    providers: [view],
 })
 export class ACLProfilesManagerProfile implements OnChanges {
 
@@ -34,13 +30,23 @@ export class ACLProfilesManagerProfile implements OnChanges {
     public page = 1;
     public userNameFilter: string = '';
 
+    public listFields: any[] = [];
+
     constructor(
         public modal: modal,
         public language: language,
         public backend: backend,
-        private cdref: ChangeDetectorRef
+        private cdref: ChangeDetectorRef,
+        public view: view,
+        public metadata: metadata
     ) {
 
+    }
+
+    private loadUsersFieldsetItems() {
+
+        const config = this.metadata.getComponentConfig('ACLProfilesManagerProfile', 'SpiceACLProfiles');
+        this.listFields = this.metadata.getFieldSetItems(config.usersFieldset);
     }
 
     get activetab(){
@@ -175,7 +181,10 @@ export class ACLProfilesManagerProfile implements OnChanges {
                                 if(this.aclusers.findIndex(u => u.id == user.id) == -1) {
                                     this.aclusers.push({
                                         id: user.id,
-                                        user_name: user.user_name
+                                        user_name: user.user_name,
+                                        first_name: user.first_name,
+                                        last_name: user.last_name,
+                                        department: user.department
                                     });
                                 }
                             });
