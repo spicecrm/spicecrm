@@ -40,7 +40,8 @@ export class ACLProfilesManagerProfile implements OnChanges {
         public view: view,
         public metadata: metadata
     ) {
-
+        this.loadUsersFieldsetItems();
+        this.view.displayLabels = false;
     }
 
     private loadUsersFieldsetItems() {
