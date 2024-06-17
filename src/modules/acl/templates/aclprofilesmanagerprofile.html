@@ -71,26 +71,33 @@
                     <pagination-controls [ngClass]="{'slds-hidden': aclallusers}" [(page)]="page" [limit]="20" [total_records]="aclusers.length" variation="short"></pagination-controls>
                 </div>
                 <div *ngIf="!aclallusers">
-                    <table  class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
                         <thead>
-                        <tr class="slds-text-title_caps">
-                            <th scope="col">
-                                <div class="slds-truncate"><system-label label="LBL_USER_NAME"></system-label></div>
-                            </th>
-                            <th scope="col" style="width: 3rem;"></th>
-                        </tr>
+                            <tr class="slds-text-title_caps">
+                                <th *ngFor="let listField of listFields">
+                                    <div style="display: flow-root">
+                                        <label class="slds-truncate slds-float_left">
+                                            <system-label-fieldname [field]="listField.field == 'delete' ? '' : listField.field" [fieldconfig]="listField.fieldconfig" module="Users"></system-label-fieldname>
+                                        </label>
+                                    </div >
+                                </th>
+                                <th *ngIf="listFields.length === 0">
+                                    <system-label label="LBL_NAME"></system-label>
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let acluser of aclusers | filterACLUsers: userNameFilter | paginate: {page: page, limit: 20}">
-                            <td>
-                                <div class="slds-truncate">
-                                    <span system-model-popover [id]="acluser.id" module="Users">{{acluser.user_name ? acluser.user_name : acluser.id}}</span>
+                        <tr *ngFor="let aclUser of aclusers | filterACLUsers: userNameFilter | paginate: {page: page, limit: 20}" [system-model-provider]="{id: aclUser.id, module: 'Users', data: aclUser}" class="slds-hint-parent slds-p-horizontal--x-small">
+                            <td *ngFor="let listField of listFields">
+                                <div *ngIf="listField.field === 'delete'; else notDelete">
+                                    <system-utility-icon icon="delete" size="x-small" (click)="removeUser(aclUser.id, $event)"></system-utility-icon>
                                 </div>
+                                <ng-template #notDelete>
+                                    <field-container [field]="listField.field" [fieldconfig]="listField.fieldconfig" fielddisplayclass="slds-truncate"/>
+                                </ng-template>
                             </td>
-                            <td style="width: 3rem;">
-                                <div *ngIf="acluser.id != '*'" class="slds-grid">
-                                    <system-utility-icon icon="delete" size="x-small" (click)="removeUser(acluser.id, $event)"></system-utility-icon>
-                                </div>
+                            <td *ngIf="listFields.length === 0">
+                                {{aclUser.summary_text}}
                             </td>
                         </tr>
                         </tbody>
@@ -108,7 +115,7 @@
                 <system-spinner message="LBL_LOADING"></system-spinner>
             </div>
             <ng-template #orgunitdisplay>
-                <table  class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                     <thead>
                     <tr class="slds-text-title_caps">
                         <th scope="col">
