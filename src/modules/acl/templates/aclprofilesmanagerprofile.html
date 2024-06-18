@@ -81,7 +81,7 @@
                                         </label>
                                     </div >
                                 </th>
-                                <th>
+                                <th style="width: 3rem">
                                     <system-label label="LBL_ACTIONS"></system-label>
                                 </th>
                                 <th *ngIf="listFields.length === 0">
@@ -94,8 +94,8 @@
                             <td *ngFor="let listField of listFields">
                                 <field-container [field]="listField.field" [fieldconfig]="listField.fieldconfig" fielddisplayclass="slds-truncate"/>
                             </td>
-                            <td>
-                                <system-utility-icon icon="delete" size="x-small" (click)="removeUser(aclUser.id, $event)"></system-utility-icon>
+                            <td class="slds-text-align--center">
+                                <system-utility-icon class="slds-grid--align-center" icon="delete" size="x-small" (click)="removeUser(aclUser.id, $event)"></system-utility-icon>
                             </td>
                             <td *ngIf="listFields.length === 0">
                                 {{aclUser.summary_text}}
