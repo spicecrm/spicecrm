@@ -86,7 +86,8 @@ class SpiceDictionaryItemsController
      */
     public function deleteDictionaryItem(Request $req, Response $res, array $args): Response
     {
-        return $res->withJson(['success' => (new SpiceDictionaryItem($args['id']))->delete()]);
+        $queryParams = $req->getQueryParams();
+        return $res->withJson(['success' => (new SpiceDictionaryItem($args['id']))->delete( $queryParams['drop'] == 1 ?: false )]);
     }
 
     /**

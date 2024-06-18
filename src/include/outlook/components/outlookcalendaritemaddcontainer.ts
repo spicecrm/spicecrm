@@ -171,15 +171,18 @@ export class OutlookCalendarItemAddContainer {
      */
     public loadExchangeConfig() {
         let config = this.configuration.getData('microsoftserviceuserconfig');
-        for (let e of config) {
-            if (['calendar', 'events'].indexOf(e.exchange_object ?? e.service_name) > -1 && e.outlookaddenabled == '1') {
-                let addmodule = this.metadata.getModuleById(e.sysmodule_id);
+
+        if (typeof config != 'object') return;
+
+        Object.keys(config).forEach(key => {
+            if (['calendar', 'events'].indexOf(config[key].exchange_object ?? config[key].service_name) > -1 && config[key].outlookaddenabled == '1') {
+                let addmodule = this.metadata.getModuleById(config[key].sysmodule_id);
                 this.modules.push({
                     value: addmodule,
                     label: this.metadata.getModuleDefs(addmodule).singular_label
                 });
             }
-        }
+        });
     }
 
     public setItemModule() {
