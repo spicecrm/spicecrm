@@ -1160,9 +1160,16 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 break;
             case 'between':
             case 'betweend':
+                // bug date value is not handled above. Do it here.
                 if($operator == 'betweend'){
-                    $value = TimeDate::getInstance()->to_db_date($value);
-                    $valueto = TimeDate::getInstance()->to_db_date($valueto);
+                    if ($this->fieldNameMap[$fieldid]['type'] == 'date'){
+                        $value = TimeDate::getInstance()->to_db_date($value);
+                        $valueto = TimeDate::getInstance()->to_db_date($valueto);
+                    }
+                    if (in_array($this->fieldNameMap[$fieldid]['type'], ['datetime', 'datetimecombo'])){
+                        $value = TimeDate::getInstance()->to_db_date($value).' '.'00:00:00';
+                        $valueto = TimeDate::getInstance()->to_db_date($valueto).' '.'23:59:59';
+                    }
                 }
                 // bug 2011-03-10 .. fixed date handling
                 // bug 2011-03-25 date handling now on client side
