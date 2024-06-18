@@ -77,9 +77,12 @@
                                 <th *ngFor="let listField of listFields">
                                     <div style="display: flow-root">
                                         <label class="slds-truncate slds-float_left">
-                                            <system-label-fieldname [field]="listField.field == 'delete' ? '' : listField.field" [fieldconfig]="listField.fieldconfig" module="Users"></system-label-fieldname>
+                                            <system-label-fieldname [field]="listField.field" [fieldconfig]="listField.fieldconfig" module="Users"></system-label-fieldname>
                                         </label>
                                     </div >
+                                </th>
+                                <th>
+                                    <system-label label="LBL_ACTIONS"></system-label>
                                 </th>
                                 <th *ngIf="listFields.length === 0">
                                     <system-label label="LBL_NAME"></system-label>
@@ -89,12 +92,10 @@
                         <tbody>
                         <tr *ngFor="let aclUser of aclusers | filterACLUsers: userNameFilter | paginate: {page: page, limit: 20}" [system-model-provider]="{id: aclUser.id, module: 'Users', data: aclUser}" class="slds-hint-parent slds-p-horizontal--x-small">
                             <td *ngFor="let listField of listFields">
-                                <div *ngIf="listField.field === 'delete'; else notDelete">
-                                    <system-utility-icon icon="delete" size="x-small" (click)="removeUser(aclUser.id, $event)"></system-utility-icon>
-                                </div>
-                                <ng-template #notDelete>
-                                    <field-container [field]="listField.field" [fieldconfig]="listField.fieldconfig" fielddisplayclass="slds-truncate"/>
-                                </ng-template>
+                                <field-container [field]="listField.field" [fieldconfig]="listField.fieldconfig" fielddisplayclass="slds-truncate"/>
+                            </td>
+                            <td>
+                                <system-utility-icon icon="delete" size="x-small" (click)="removeUser(aclUser.id, $event)"></system-utility-icon>
                             </td>
                             <td *ngIf="listFields.length === 0">
                                 {{aclUser.summary_text}}
