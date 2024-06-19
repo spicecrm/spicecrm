@@ -3,6 +3,7 @@
 namespace SpiceCRM\data\Relationships;
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinition;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryField;
@@ -13,10 +14,11 @@ use SpiceCRM\includes\utils\SpiceUtils;
 class UserRelationship extends One2MRelationship
 {
     /**
-     * activates the relationship
-     *
+     * activate the relationship and add the necessary cache fields
      * @param SpiceDictionaryRelationship $relationship
      * @return void
+     * @throws DatabaseException
+     * @throws Exception
      */
     public function activate(SpiceDictionaryRelationship $relationship){
         $lhsDictionaryDefinition = new SpiceDictionaryDefinition($relationship->relationship->lhs_sysdictionarydefinition_id);
@@ -29,7 +31,8 @@ class UserRelationship extends One2MRelationship
         // clear current definitions
         $db = DBManagerFactory::getInstance();
         $db->query("DELETE FROM relationships WHERE id = '{$relationship->id}'");
-        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}'");
+
+        $db->query("DELETE FROM sysdictionaryfields WHERE sysdictionaryrelationship_id = '{$relationship->id}' OR (sysdictionarydefinition_id = '$rhsDictionaryDefinition->id' and fieldname = '{$relationship->relationship->rhs_relatename}')");
 
         // build the Defs
         $defs = [
@@ -80,6 +83,7 @@ class UserRelationship extends One2MRelationship
                     'fielddefinition' => json_encode([
                         'name' => $relationship->relationship->rhs_relatename,
                         'type' => 'linked',
+                        'rname' => 'user_name',
                         'id_name' => $rhsField->fieldname,
                         'link' => $relationship->relationship->rhs_linkname,
                         'source' => 'non-db',

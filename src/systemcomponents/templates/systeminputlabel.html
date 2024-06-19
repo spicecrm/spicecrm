@@ -11,11 +11,11 @@
             </div>
         </div>
         <div *ngIf="!label" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
-            <input [disabled]="_disabled" type="search" class="slds-input slds-combobox__input" [(ngModel)]="searchterm" (keyup)="keyup($event)" (blur)="onBlur()" system-placeholder="LBL_SEARCH" role="combobox"/>
+            <input id="inputField" [disabled]="_disabled" type="search" class="slds-input slds-combobox__input" [(ngModel)]="searchterm" (keyup)="keyup($event)" (blur)="onBlur()" system-placeholder="LBL_SEARCH" role="combobox"/>
         </div>
-        <div class="slds-dropdown slds-dropdown_fluid slds-dropdown--length-7" role="listbox">
+        <div class="slds-dropdown slds-dropdown_fluid slds-dropdown--length-7" role="listbox" >
             <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                <li *ngFor="let foundlabel of foundlabels" role="presentation" class="slds-listbox__item" (mousedown)="selectLabel(foundlabel.label)">
+                <li *ngFor="let foundlabel of foundlabels; let i = index" role="presentation" [ngClass]="{'slds-theme_shade': activeLabel == i}" (mouseover)="activeLabel = i" (mouseleave)="activeLabel = -1" class="slds-listbox__item" (mousedown)="selectLabel(foundlabel.label)">
                     <div class="slds-media slds-listbox__option slds-listbox__option_plain" role="option">
                           <span class="slds-truncate">{{foundlabel.label}} [{{foundlabel.translation}}]</span>
                     </div>
