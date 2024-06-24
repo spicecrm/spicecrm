@@ -68,6 +68,11 @@ export class SystemInputMedia implements OnDestroy {
     @Input() public componentHeight = 500;
 
     /**
+     * show or hide toolbars
+     */
+    @Input() public showToolBars = true;
+
+    /**
      * Should image modifications (mirroring, resizing, rotating, cropping, ...) be allowed? Default is true.
      * It is important to keep the input variable "allowModifications" at first position, before the other allowXY variables.
      * @param val
