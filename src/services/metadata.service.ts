@@ -143,15 +143,25 @@ export class metadata {
             this.router.config.unshift({
                 path: route.path,
                 component: SystemNavigationCollector,
-                canActivate: [aclCheck]
+                canActivate: [aclCheck],
+                pathMatch: route.pathmatch == 'full' ? 'full' : 'prefix'
             });
+
+            if (!!route.redirectto) {
+                this.router.config[0].redirectTo = route.redirectto;
+            }
 
             // add the same for the tabbed browser
             this.router.config.unshift({
                 path: 'tab/:tabid/' + route.path,
                 component: SystemNavigationCollector,
-                canActivate: [aclCheck]
+                canActivate: [aclCheck],
+                pathMatch: route.pathmatch == 'full' ? 'full' : 'prefix'
             });
+
+            if (!!route.redirectto) {
+                this.router.config[0].redirectTo = 'tab/:tabid/' + route.redirectto;
+            }
         });
     }
 
