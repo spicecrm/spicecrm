@@ -52,8 +52,15 @@ export class SystemInputFieldset implements ControlValueAccessor {
     public _fieldsets: any[] = [];
 
     /**
+     * the parent fieldset id
+     */
+    @Input()
+    public parent: string = '';
+
+    /**
      * the current module
      */
+    @Input()
     public _module: string = '';
 
     constructor(

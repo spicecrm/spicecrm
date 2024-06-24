@@ -1952,8 +1952,8 @@ class SpiceBeanHandler
                         if ($existingEmailAddress->id !== $linkedEmailAddress->id || ($existingEmailAddress->email_address == $emailAddressData['email_address'] && $existingEmailAddress->primary_address == $emailAddressData['primary_address'])){
                             continue;
                         }
-
-                        $bean->$linkName->delete($bean, $existingEmailAddress->id);
+//                        dont delete anymore, update the existing one instead
+//                        $bean->$linkName->delete($bean, $existingEmailAddress->id);
 
                         // check if the new email address also exists
                         $emailAddress->retrieve_by_string_fields(['email_address_caps' => strtoupper($emailAddressData['email_address'])]);
@@ -1984,7 +1984,7 @@ class SpiceBeanHandler
                 // update the email address fields and the additional relationship values
                 foreach (array_keys($emailAddress->field_defs) as $field) {
 
-                    if (empty($emailAddressData[$field]) || $emailAddressData[$field] === $emailAddress->$field) continue;
+                    if (!isset($emailAddressData[$field]) || $emailAddressData[$field] === $emailAddress->$field) continue;
 
                     // update email address field
                     $emailAddress->$field = $emailAddressData[$field];
@@ -1995,7 +1995,7 @@ class SpiceBeanHandler
                     }
                 }
 
-                $emailAddress->save();
+                $emailAddress->save(false, false);
 
                 $bean->$linkName->add($emailAddress, $additional_values);
             }

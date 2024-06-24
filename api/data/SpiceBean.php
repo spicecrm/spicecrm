@@ -1800,10 +1800,7 @@ class SpiceBean
         //FIXME: Bug? we should remove the magic number -99
         //use -99 to return all
         $index = $row_offset;
-        while ($max_per_page == -99 || ($index < $row_offset + $max_per_page)) {
-            $row = $db->fetchByAssoc($result);
-            if (empty($row))
-                break;
+        while ($row = $db->fetchByAssoc($result)) {
 
             //instantiate a new class each time. This is because php5 passes
             //by reference by default so if we continually update $this, we will
