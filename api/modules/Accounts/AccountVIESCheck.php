@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\Accounts;
 
 
 use SpiceCRM\includes\Logger\APILogEntryHandler;
+use Exception;
 use SimpleXMLElement;
 
 /**
@@ -67,7 +68,11 @@ class AccountVIESCheck
             $patterns = array('/(<\/env:.[^>]*>)/', '(<env:.[^>]*>)', '/(<\/SOAP-ENV:.[^>]*>)/', '(<SOAP-ENV:.[^>]*>)', '/ns2:/');
             $replace = array("", "", "", "", "");
             $xmlContent = preg_replace($patterns, $replace, substr($response, $header_size));
-            $result = new SimpleXMLElement($xmlContent);
+            try {
+                $result = new SimpleXMLElement($xmlContent);
+            } catch (Exception $e) {
+                return false;
+            }
             return [
                 'countrycode' => (string)$result->countryCode,
                 'vatnumber' => (string)$result->vatNumber,
