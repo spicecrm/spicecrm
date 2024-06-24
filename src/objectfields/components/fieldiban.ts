@@ -13,6 +13,14 @@ import {Router} from '@angular/router';
 /**
  * a field to display a IBAN input with validation
  * https://www.ibantest.com/en/how-is-the-iban-check-digit-calculated
+ *
+ * in case the link is not working, the validation is done by the following steps:
+ * IBAN example: DE29100100100987654321
+ * 1. Bank code and account number are extracted from the IBAN and concatenated to BBAN (100100100987654321)
+ * 2. The country code is translated to a number according to ISO/IEC 7064 standard. (DE -> 1314)
+ * 3. The BBAN and the country code are concatenated with two zeroes at the end (100100100987654321131400)
+ * 4. Modulo 97 is then calculated. (98 - 100100100987654321131400 % 97 = 29)
+ * 5. The result of the modulo operation is compared to the check digit in the IBAN. If they match, the IBAN is valid.
  * */
 
 @Component({
