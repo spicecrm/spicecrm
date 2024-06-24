@@ -18,16 +18,16 @@ class SpiceUIRoutesController
         $routes = $db->query("SELECT * FROM sysuiroutes");
         while ($route = $db->fetchByAssoc($routes)) {
 
-            $routeArray[] = $route;
+            $routeArray[$route['path']] = $route;
 
         }
         $routes = $db->query("SELECT * FROM sysuicustomroutes");
         while ($route = $db->fetchByAssoc($routes)) {
 
-            $routeArray[] = $route;
+            $routeArray[$route['path']] = $route;
 
         }
-
+        $routeArray = array_values($routeArray);
         // set the Cache
         SpiceCache::set('spiceRoutes', $routeArray);
 
