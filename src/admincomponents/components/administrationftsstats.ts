@@ -28,8 +28,8 @@ export class AdministrationFTSStats {
                     name: index,
                     size: stats.indices[index].total.store.size_in_bytes,
                     documents: stats.indices[index].total.docs.count,
-                    stored: stats.indexed[index].count,
-                    unindexed: stats.indexed[index].unindexed,
+                    stored: stats.indexed[index]?.count ? stats.indexed[index].count : 'error: check spicecrm.log',
+                    unindexed: stats.indexed[index]?.unindexed ? stats.indexed[index].unindexed : 'error: check spicecrm.log',
                     erroneous: stats.indexed[index].erroneous,
                 });
             }
