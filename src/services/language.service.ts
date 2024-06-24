@@ -671,7 +671,7 @@ export class language {
         for (let label in this.languagedata.applang) {
             let found = true;
             for (let searchTerm of searchTermArray) {
-                if (label.toLocaleLowerCase().indexOf(searchTerm) < 0) {
+                if (this.languagedata.applang[label].default.toLocaleLowerCase().indexOf(searchTerm) < 0 && label.toLocaleLowerCase().indexOf(searchTerm) < 0) {
                     found = false;
                     break;
                 }
