@@ -55,7 +55,7 @@ class SpiceDictionaryDefinition
         if ($this->type == 'template') return '';
 
         // reset the cached items
-        SpiceDictionaryField::clearForDefiniton($this->id, $this->name);
+        SpiceDictionaryField::clearForDefiniton($this->id, $this->name, $relationships);
 
         // get all items and activate them without repair
         $items = SpiceDictionaryItems::getInstance()->getItems($this->id, ['a']);

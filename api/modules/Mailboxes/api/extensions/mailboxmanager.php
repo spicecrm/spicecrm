@@ -75,6 +75,12 @@ $routes = [
                     'outboundsingle_sms', 'outboundmass_sms',
                 ],
             ],
+            'getHidden' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => false,
+                'description' => 'tells to get the hidden mailboxes',
+            ],
         ],
     ],
     [
