@@ -108,7 +108,11 @@ class MailboxManagerController
         $result = [];
         $params = $req->getQueryParams();
 
-        $where = 'hidden=0 AND active=1';
+        $whereClauses = ['active=1'];
+        if(!$params['getHidden']){
+            $whereClauses[] = 'hidden=0';
+        }
+        $where = implode(' AND ', $whereClauses);
         switch ($params['scope']) {
             case 'inbound':
                 $where .= ' AND inbound_comm=1';
@@ -155,6 +159,7 @@ class MailboxManagerController
                         'display' => $mailbox->name,
                         'actionset' => $mailbox->actionset,
                         'type' => $type,
+                        'hidden' => $mailbox->hidden,
                         'max_upload' => $mailbox->max_upload,
                         'zip_compress' => $mailbox->zip_compress,
                         'send_read_receipt' => $mailbox->send_read_receipt
