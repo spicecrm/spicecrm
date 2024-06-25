@@ -20,7 +20,7 @@ class SpiceUICountriesLoader
             'states' => []
         ];
 
-        $countries = $db->query("SELECT cc, e164, label, addressformat FROM syscountries");
+        $countries = $db->query("SELECT cc, e164, label, addressformat, iban_length, bankcode_length FROM syscountries");
         while($country = $db->fetchByAssoc($countries)){
             $retArray['countries'][] = $country;
         }
