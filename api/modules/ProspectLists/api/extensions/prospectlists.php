@@ -115,6 +115,28 @@ $routes = [
         ]
     ],
     [
+        'method'      => 'get',
+        'route'       => '/module/ProspectLists/items/checkExisting/emailAddress/{relId}',
+        'class'       => ProspectListsController::class,
+        'function'    => 'checkExistingBeanEmailAddressInItems',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false],
+        'parameters'  => [
+            'relId'        => [
+                'in'          => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'required'    => true,
+                'description' => 'The m2m relationship id of the email_addr_bean_rel table',
+            ],
+            'isPrimary'        => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_BOOL,
+                'required'    => true,
+                'description' => 'Email address is primary flag to build the check query',
+            ],
+        ]
+    ],
+    [
         'method'      => 'post',
         'route'       => '/module/ProspectLists/fromModule',
         'class'       => ProspectListsController::class,
