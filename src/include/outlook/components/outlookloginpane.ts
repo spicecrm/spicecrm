@@ -20,10 +20,6 @@ import {GlobalLogin} from "../../../globalcomponents/components/globallogin";
     providers: [OAuth2Service]
 })
 export class OutlookLoginPane extends GlobalLogin implements OnInit {
-    /**
-     * subscription to unsubscribe
-     */
-    public subscription = new Subscription();
 
     private outlookConfiguration: OutlookConfiguration = inject(OutlookConfiguration);
 
@@ -44,7 +40,6 @@ export class OutlookLoginPane extends GlobalLogin implements OnInit {
             };
             this.login(token);
         } else {
-            this.subscribeToBroadcast();
             this.goToSettings();
         }
     }
@@ -92,26 +87,5 @@ export class OutlookLoginPane extends GlobalLogin implements OnInit {
                     });
                 });
         })
-    }
-
-    /**
-     * subscribe to broadcast to reload the services
-     * @private
-     */
-    private subscribeToBroadcast() {
-        this.subscription.add(
-            this.configuration.loaded$.subscribe((loaded) => {
-                if (!loaded) return;
-                const services: AuthServiceI[] = this.configuration.getCapabilityConfig('oauth2');
-                this.checkForMicrosoftLoginService(services);
-            })
-        )
-    }
-
-    /**
-     * unsubscribe from subscription
-     */
-    public ngOnDestroy() {
-        this.subscription.unsubscribe();
     }
 }
