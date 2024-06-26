@@ -231,7 +231,8 @@ import {GlobalLogin2FAMethodSelectModal} from "./components/globallogin2famethod
         GlobalDockedComposerOverflow,
         GlobalComposeButton,
         GlobalHeaderSearchResultsItem,
-        GlobalHeaderDocumentRevisionsModal
+        GlobalHeaderDocumentRevisionsModal,
+        GlobalLoginOAuth2
     ]
 })
 export class GlobalComponents {
