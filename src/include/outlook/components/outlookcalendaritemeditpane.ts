@@ -2,7 +2,7 @@
  * @module Outlook
  */
 
-import {Component, OnInit} from "@angular/core";
+import {AfterViewInit, Component} from "@angular/core";
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 
@@ -10,7 +10,7 @@ import {GroupwareService} from '../../../include/groupware/services/groupware.se
     selector: 'outlook-calendar-item-edit-pane',
     templateUrl: '../templates/outlookcalendaritemeditpane.html'
 })
-export class OutlookCalendarItemEditPane implements OnInit {
+export class OutlookCalendarItemEditPane implements AfterViewInit {
 
     /**
      * the outlook calendar item id
@@ -37,7 +37,7 @@ export class OutlookCalendarItemEditPane implements OnInit {
     ) {
     }
 
-    public ngOnInit() {
+    public ngAfterViewInit() {
         this.groupware.getCalenderItemId().subscribe(id => {
             this.calendaritemid = id;
         });
