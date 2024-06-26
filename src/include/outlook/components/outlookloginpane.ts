@@ -68,7 +68,6 @@ export class OutlookLoginPane {
         public session: session,
         private oauth2Service: OAuth2Service,
     ) {
-        this.goToSettings();
 
         if (!!this.session.authData.sessionId) {
             let headers = new HttpHeaders();
