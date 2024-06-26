@@ -98,6 +98,7 @@ export class OutlookCalendarItemAddContainer {
 
             this.model.module = module;
             this.model.initialize();
+            this.setCustomProperties([{name: '_id', value: this.model.id}]);
 
             if (module != this.customProperties.get('_module')) {
                 this.setCustomProperties([{name: '_module', value: module}]);
@@ -124,7 +125,7 @@ export class OutlookCalendarItemAddContainer {
         } else {
 
             // clear the custom properties
-            this.clearCustomProperties(['_module'].concat(this.getFields()));
+            this.clearCustomProperties(['_module', '_id'].concat(this.getFields()));
 
             // clear the fieldset
             this.fieldset = undefined;
@@ -183,16 +184,6 @@ export class OutlookCalendarItemAddContainer {
                 });
             }
         });
-    }
-
-    public setItemModule() {
-        let itemModule = this.customProperties.get('_module');
-
-        // if we have a module then do not allow changing it
-        if (itemModule) this.allowModuleChange = false;
-
-        // triugger the set of the module
-        this.module = itemModule ? itemModule : '';
     }
 
     /**
