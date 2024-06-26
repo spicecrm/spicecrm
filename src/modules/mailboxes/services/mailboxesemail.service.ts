@@ -6,6 +6,7 @@ import {backend} from '../../../services/backend.service';
 import {broadcast} from '../../../services/broadcast.service';
 
 import {Subject, Observable, BehaviorSubject, Subscription} from 'rxjs';
+import {userpreferences} from "../../../services/userpreferences.service";
 
 /**
  * @ignore
@@ -95,7 +96,9 @@ export class mailboxesEmails implements OnDestroy {
 
     constructor(
         public backend: backend,
-        public broadcast: broadcast
+        public broadcast: broadcast,
+        public userPreferences: userpreferences
+
     ) {
         this.mailboxesLoaded$ = new BehaviorSubject<boolean>(false);
 
@@ -226,20 +229,41 @@ export class mailboxesEmails implements OnDestroy {
     public fetchEmails() {
         let responseSubject = new Subject<any>();
 
-        this.backend.getRequest("module/Mailboxes/" + this.activeMailBox.id + "/fetchemails").subscribe(
-            // todo a spinner or sth similar while waiting for the response
-            (response: any) => {
-                if (response.new_mail_count > 0) {
-                    this.loadMessages();
+        const fetchDateStartFrom = moment().subtract(this.userPreferences.getPreference('mailboxFetchDateStartFromDays') ?? 1, 'days');
+
+        this.userPreferences.modalservice.prompt('input_date', 'MSG_SELECT_FETCH_DATE_START_FROM', 'MSG_SELECT_FETCH_DATE_START_FROM', 'default', fetchDateStartFrom)
+            .subscribe(date => {
+
+                if (!date) {
+                    responseSubject.next(false)
+                    responseSubject.complete();
+                    return;
                 }
-                responseSubject.next({status: 'success', newmailcount: response.new_mail_count});
-                responseSubject.complete();
-            },
-            error => {
-                responseSubject.error({status: 'error', error});
-                responseSubject.complete();
-            }
-        );
+
+                this.userPreferences.setPreference('mailboxFetchDateStartFromDays', moment().diff(date, 'days'))
+                const params = {fetchStartFromDate: date.format('YYYY-MM-DD')};
+
+                const loading = this.userPreferences.modalservice.await('LBL_LOADING');
+
+                this.backend.getRequest("module/Mailboxes/" + this.activeMailBox.id + "/fetchemails", params).subscribe({
+                    next: (response: any) => {
+                        loading.next(true);
+                        loading.complete();
+                        if (response.new_mail_count > 0) {
+                            this.loadMessages();
+                        }
+                        responseSubject.next({status: 'success', newmailcount: response.new_mail_count});
+                        responseSubject.complete();
+                    },
+                    error: error => {
+                        loading.next(true);
+                        loading.complete();
+                        responseSubject.error({status: 'error', error});
+                        responseSubject.complete();
+                    }
+                });
+            })
+
         return responseSubject.asObservable();
     }
 
