@@ -9,6 +9,8 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {broadcast} from "../../services/broadcast.service";
+import {backend} from "../../services/backend.service";
+import {modal} from "../../services/modal.service";
 
 declare var _;
 
@@ -40,6 +42,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * holds the email addresses locally
      */
     public emailAddresses = [];
+
+    /**
+     * property for loading spinner
+     */
+    public isloading: boolean;
+
     /**
      * holds the new input email address data
      */
@@ -52,9 +60,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
                 public language: language,
                 public metadata: metadata,
                 public broadcast: broadcast,
-                public router: Router) {
+                public router: Router,
+                public backend: backend,
+                public modal: modal) {
         super(model, view, language, metadata, router);
         this.subscribeToDataChange();
+
     }
 
     /**
@@ -66,10 +77,10 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     }
 
     /**
-     * delete the email address from the array triggered by delete button
+     * prepare email addresses to delete
      * @param emailAddress
      */
-    public handleOnDelete(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
+    public processDelete(emailAddress){
 
         this.emailAddresses = this.emailAddresses.filter(e => e.id !== emailAddress.id);
 
@@ -90,6 +101,32 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         // enforce a duplicate check
         this.model.duplicateCheckOnChange([], true);
+
+    }
+
+    /**
+     * delete the email address from the array triggered by delete button
+     * @param emailAddress
+     */
+    public handleOnDelete(emailAddress: { id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?, relid? }) {
+        this.isloading = true;
+        // check if email address is linked to a prospect list
+        this.backend.getRequest(`module/ProspectLists/items/checkExisting/emailAddress/${emailAddress.relid}`, {isPrimary: emailAddress.primary_address == 1}).subscribe(res => {
+
+            if (res.length == 0) {
+                this.processDelete(emailAddress);
+            } else {
+                let text = this.language.getLabelFormatted('LBL_EMAIL_ADDRESS_IN_USE', [res.join(', '), emailAddress.email_address]);
+                this.modal.confirm(text, 'QST_REMOVE_ENTRY').subscribe({
+                    next: (res) => {
+                        if (!res) return;
+                        this.processDelete(emailAddress);
+                    }
+                })
+            }
+            this.isloading = false;
+        });
+
     }
 
     /**
@@ -115,7 +152,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * set the primary email address
      * @param emailAddress
      */
-    public setPrimary(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
+    public setPrimary(emailAddress: { id?, primary_address, invalid_email, email_address, opt_in_status?, isNew? }) {
 
         if (emailAddress.invalid_email == 1) {
             return;
@@ -164,8 +201,8 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
                 // check if we have at least one email address and if we are in is adding but no email has been inputted
                 // this is the case if we have a new record or edit an existing without email address but from other areas an email address is added
                 // then cancel the adding process so only the now one email address remains
-                if(email_addresses.length > 0 && this.isAdding){
-                    if(!this.inputNewEmailAddress.email_address) this.isAdding = false;
+                if (email_addresses.length > 0 && this.isAdding) {
+                    if (!this.inputNewEmailAddress.email_address) this.isAdding = false;
                 }
 
             })
@@ -177,7 +214,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @param emailAddress
      * @private
      */
-    public setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, opt_in_status?, isNew?}) {
+    public setEmail1Field(emailAddress: { id?, primary_address, invalid_email, email_address, opt_in_status?, isNew? }) {
         if (emailAddress?.invalid_email == 1 || emailAddress?.email_address == this.model.getField('email1')) {
             return;
         }
@@ -190,7 +227,10 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     public subscribeToModeChange() {
         this.subscriptions.add(
-            this.view.mode$.subscribe(() => this.initialize())
+            this.view.mode$.subscribe(() => {
+                this.initialize();
+                this.cancelAdding();
+            })
         );
     }
 
@@ -205,6 +245,10 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
 
         if (!this.isEditMode()) return;
+
+        // if(this.fieldconfig.editable != true){
+        //     this.view.isEditable = false;
+        // }
 
         if (!Array.isArray(this.emailAddresses) || this.emailAddresses.length == 0) {
             this.model.initializeField('email_addresses', {beans: {}, beans_relations_to_delete: {}});
@@ -273,7 +317,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @return any[]
      * @private
      */
-    public getUniqueCleanEmailAddresses(): {deletedIds, unique} {
+    public getUniqueCleanEmailAddresses(): { deletedIds, unique } {
 
         const unique = [];
         const deletedIds = this.emailAddresses.filter(emailAddress => !emailAddress.email_address).map(e => e.id);
