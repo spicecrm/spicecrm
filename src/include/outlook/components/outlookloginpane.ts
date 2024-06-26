@@ -2,7 +2,7 @@
  * @module Outlook
  */
 import {
-    Component, OnInit
+    Component, OnInit, ViewChild
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {loginService} from '../../../services/login.service';
@@ -13,8 +13,13 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 import {Md5} from "ts-md5";
+import {AuthServiceI, TokenObjectI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
+import {GlobalLoginOAuth2Button} from "../../../globalcomponents/components/globalloginoauth2button";
+import {OAuth2Service} from "../../../services/oauth2.service";
+import {Subscription} from "rxjs";
 
 declare var _: any;
+declare var Office: any;
 
 /**
  * A component that handles the display of the SpiceCRM login form in the Outlook add-in
@@ -22,9 +27,14 @@ declare var _: any;
  */
 @Component({
     selector: 'outlook-login-pane',
-    templateUrl: '../templates/outlookloginpane.html'
+    templateUrl: '../templates/outlookloginpane.html',
+    providers: [OAuth2Service]
 })
 export class OutlookLoginPane {
+    /**
+     * subscription to unsubscribe
+     */
+    public subscription = new Subscription();
 
     public promptUser: boolean = false;
     /**
@@ -46,6 +56,8 @@ export class OutlookLoginPane {
      */
     public showForgotPass: boolean = false;
 
+    @ViewChild(GlobalLoginOAuth2Button) private oAuth2Button: GlobalLoginOAuth2Button;
+
     constructor(
         public router: Router,
         public outlookConfiguration: OutlookConfiguration,
@@ -53,8 +65,13 @@ export class OutlookLoginPane {
         public loginService: loginService,
         public http: HttpClient,
         public configuration: configurationService,
-        public session: session
+        public session: session,
+        private oauth2Service: OAuth2Service,
     ) {
+        this.goToSettings();
+
+        this.subscribeToBroadcast();
+
         if (!!this.session.authData.sessionId) {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', this.session.authData.sessionId);
@@ -102,21 +119,30 @@ export class OutlookLoginPane {
     /**
      * Triggers the actual login itself.
      */
-    public login() {
-        if (this.username && this.username.length > 0 && this.password && this.password.length > 0) {
+    public login(token?: { issuer: string, tokenObject: TokenObjectI }) {
+
+        if (!token && !this.username && !this.password) return;
+
+        if (token) {
+            this.loginService.authData.userName = null;
+            this.loginService.authData.password = null;
+            this.loginService.tokenObject = token.tokenObject;
+            this.loginService.oauthIssuer = token.issuer;
+        } else {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
-            this.loginService.login(true).subscribe({
-                next: (res) => {
-                    this.outlookConfiguration.username = this.loginService.authData.userName;
-                    this.outlookConfiguration.password = this.loginService.authData.password;
-                    this.outlookConfiguration.saveSettings();
-                },
-                error: (err) => {
-                    this.goToSettings();
-                }
-            });
         }
+
+        this.loginService.login(true).subscribe({
+            next: (res) => {
+                this.outlookConfiguration.username = this.loginService.authData.userName;
+                this.outlookConfiguration.password = this.loginService.authData.password;
+                this.outlookConfiguration.saveSettings();
+            },
+            error: (err) => {
+                this.goToSettings();
+            }
+        });
     }
 
     public goToSettings() {
@@ -126,5 +152,60 @@ export class OutlookLoginPane {
         this.outlookConfiguration.password = '';
         this.outlookConfiguration.saveSettings();
 
+    }
+
+    /**
+     * check for microsoft login service and trigger the login automatically
+     * @param service
+     */
+    public checkForMicrosoftLoginService(service: AuthServiceI[]) {
+
+        const microsoftService: AuthServiceI = service.find(s => s.config.userinfo_endpoint.includes('microsoft'));
+
+        if (!microsoftService) return;
+
+        const url = this.configuration.getBackendUrl() + '/authentication/oauth2/accessToken';
+
+        this.oauth2Service.config = {
+            client_id: microsoftService.config.client_id,
+            scope: microsoftService.config.scope,
+            token_endpoint: microsoftService.config.token_endpoint,
+            userinfo_endpoint: microsoftService.config.userinfo_endpoint,
+            login_url: microsoftService.config.login_url,
+            redirect_uri: microsoftService.config.redirect_uri,
+            client_secret: microsoftService.config.client_secret
+        };
+
+        this.oauth2Service.codeFlowLogin().subscribe(code => {
+
+            this.http.post(url, {issuer: microsoftService.issuer, code: code}).subscribe(
+                (data: {tokenObject: TokenObjectI, profile}) => {
+
+                    this.login({
+                        issuer: microsoftService.issuer, tokenObject: data.tokenObject
+                    });
+                });
+        })
+    }
+
+    /**
+     * subscribe to broadcast to reload the services
+     * @private
+     */
+    private subscribeToBroadcast() {
+        this.subscription.add(
+            this.configuration.loaded$.subscribe((loaded) => {
+                if (!loaded) return;
+                const services: AuthServiceI[] = this.configuration.getCapabilityConfig('oauth2');
+                this.checkForMicrosoftLoginService(services);
+            })
+        )
+    }
+
+    /**
+     * unsubscribe from subscription
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }
