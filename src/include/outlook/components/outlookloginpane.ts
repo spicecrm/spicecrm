@@ -2,24 +2,13 @@
  * @module Outlook
  */
 import {
-    Component, OnInit, ViewChild
-} from '@angular/core';
-import {Router} from '@angular/router';
-import {loginService} from '../../../services/login.service';
-import {configurationService} from '../../../services/configuration.service';
-import {session} from '../../../services/session.service';
-import {modelutilities} from '../../../services/modelutilities.service';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+    Component, inject, OnInit} from '@angular/core';
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
-import {Md5} from "ts-md5";
 import {AuthServiceI, TokenObjectI} from "../../../globalcomponents/interfaces/globalcomponents.interfaces";
-import {GlobalLoginOAuth2Button} from "../../../globalcomponents/components/globalloginoauth2button";
 import {OAuth2Service} from "../../../services/oauth2.service";
 import {Subscription} from "rxjs";
-
-declare var _: any;
-declare var Office: any;
+import {GlobalLogin} from "../../../globalcomponents/components/globallogin";
 
 /**
  * A component that handles the display of the SpiceCRM login form in the Outlook add-in
@@ -30,117 +19,34 @@ declare var Office: any;
     templateUrl: '../templates/outlookloginpane.html',
     providers: [OAuth2Service]
 })
-export class OutlookLoginPane {
+export class OutlookLoginPane extends GlobalLogin implements OnInit {
     /**
      * subscription to unsubscribe
      */
     public subscription = new Subscription();
 
-    public promptUser: boolean = false;
-    /**
-     * Login user name.
-     */
-    public username: string = '';
-    /**
-     * Login password.
-     */
-    public password: string = '';
-    public _selectedlanguage: string = '';
-    public selectedsite: string = '';
-    /**
-     * Previously used UI language.
-     */
-    public lastSelectedLanguage: string = null;
-    /**
-     * Show the form to change forgotten password.
-     */
-    public showForgotPass: boolean = false;
+    private outlookConfiguration: OutlookConfiguration = inject(OutlookConfiguration);
 
-    @ViewChild(GlobalLoginOAuth2Button) private oAuth2Button: GlobalLoginOAuth2Button;
+    private oauth2Service: OAuth2Service = inject(OAuth2Service);
 
-    constructor(
-        public router: Router,
-        public outlookConfiguration: OutlookConfiguration,
-        public modelutilities: modelutilities,
-        public loginService: loginService,
-        public http: HttpClient,
-        public configuration: configurationService,
-        public session: session,
-        private oauth2Service: OAuth2Service,
-    ) {
+    public ngOnInit() {
+        this.initialize();
+    }
 
-        if (!!this.session.authData.sessionId) {
-            let headers = new HttpHeaders();
-            headers = headers.set('OAuth-Token', this.session.authData.sessionId);
+    private initialize() {
 
-            this.http.get(this.configuration.getBackendUrl() + '/authentication/login', {
-                headers
-            }).subscribe({
-                next: (res: any) => {
-                    let response = res;
-                    this.session.authData.sessionId = response.id;
-                    this.session.authData.userId = response.userid;
-                    this.session.authData.userName = response.user_name;
-                    this.session.authData.email = response.email;
-                    this.session.authData.admin = response.admin == 1 ? true : false;
-                    this.session.authData.dev = response.dev == 1 ? true : false;
-                    this.session.authData.user = this.modelutilities.backendModel2spice('Users', response.user);
-                    // this.session.authData.renewPass = repsonse.renewPass === '1' ? true : false;
-
-                    // set the backendurl
-                    // this.configuration.data.backendUrl = backendurl;
-
-                    this.loginService.load();
-                },
-                error: (err: any) => {
-                    switch (err.status) {
-                        case 401:
-                        case 503:
-                            this.promptUser = true;
-                            break;
-                    }
-                }
-            });
-        } else if (this.outlookConfiguration.hasSettings()) {
+        if (this.outlookConfiguration.hasSettings()) {
             this.username = this.outlookConfiguration.username;
             this.password = this.outlookConfiguration.password;
-            this.login();
+            const token = {
+                tokenObject: this.outlookConfiguration.tokenObject,
+                issuer: this.outlookConfiguration.issuer
+            };
+            this.login(token);
         } else {
             this.subscribeToBroadcast();
             this.goToSettings();
         }
-
-        // check the last selected language from the Cookie
-        this.lastSelectedLanguage = localStorage.getItem('spiceuilanguage');
-    }
-
-    /**
-     * Triggers the actual login itself.
-     */
-    public login(token?: { issuer: string, tokenObject: TokenObjectI }) {
-
-        if (!token && !this.username && !this.password) return;
-
-        if (token) {
-            this.loginService.authData.userName = null;
-            this.loginService.authData.password = null;
-            this.loginService.tokenObject = token.tokenObject;
-            this.loginService.oauthIssuer = token.issuer;
-        } else {
-            this.loginService.authData.userName = this.username;
-            this.loginService.authData.password = this.password;
-        }
-
-        this.loginService.login(true).subscribe({
-            next: (res) => {
-                this.outlookConfiguration.username = this.loginService.authData.userName;
-                this.outlookConfiguration.password = this.loginService.authData.password;
-                this.outlookConfiguration.saveSettings();
-            },
-            error: (err) => {
-                this.goToSettings();
-            }
-        });
     }
 
     public goToSettings() {
@@ -148,6 +54,8 @@ export class OutlookLoginPane {
         // empty credentials saved in office container
         this.outlookConfiguration.username = '';
         this.outlookConfiguration.password = '';
+        this.outlookConfiguration.tokenObject = undefined;
+        this.outlookConfiguration.issuer = '';
         this.outlookConfiguration.saveSettings();
 
     }
