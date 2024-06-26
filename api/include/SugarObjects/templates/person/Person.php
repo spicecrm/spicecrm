@@ -343,7 +343,7 @@ class Person extends Basic
                 $timezone = AuthenticationController::getInstance()->getCurrentUser()->getPreference('timezone');
                 if ( empty( $timezone )) $timezone = 'UTC';
             }
-            $comparisonDateAsObject = ( new \DateTime('now', new DateTimeZone( $timezone )));
+            $comparisonDateAsObject = ( new \DateTime('now', new \DateTimeZone( $timezone )));
             $comparisonDateIsLeapYear = ( $comparisonDateAsObject->format('L') === '1' );
             $comparisonDate = $comparisonDateAsObject->format('m-d');
         } else {
