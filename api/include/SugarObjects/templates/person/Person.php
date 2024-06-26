@@ -310,4 +310,51 @@ class Person extends Basic
         }
         */
     }
+
+    /*
+     * Check if the person's birthday is today (or on a specific date).
+     *
+     * @param string $comparisonDateAsString The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
+     * @param string $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
+     * @return bool
+     */
+    public function hasBirthday( string $comparisonDate = null, string $timezone = null ): bool
+    {
+        return ( !empty( $this->birthdate ) and self::isAnniversary( $this->birthdate, $comparisonDate, $timezone ));
+    }
+
+    /*
+     * Check whether there is an anniversary today - or on another specific day.
+     *
+     * @param string $anniversaryDay The date of the anniversary, e.g. a birthday. Format: MM-DD or YYYY-MM-DD
+     * @param string $comparisonDateAsString The date to check for the anniversary. Format: YYYY-MM-DD. Optional. If not specified, the current system date is used.
+     * @param string $timezone Optional. If no comparison date is specified, the current system date has to be used. Then a time zone is required. If not specified, the timezone of the current user is used.
+     * @return bool
+     * Might be to do: Use as timezone the zone of the postal address of the person.
+     *                 Until then, we will use the time zone of the current user.
+     */
+    public static function isAnniversary(string $anniversaryDay, string $comparisonDate = null, string $timezone = null ): bool
+    {
+        # YYYY-MM-DD --> MM-DD
+        if ( strlen( $anniversaryDay ) > 5 ) $anniversaryDay = substr( $anniversaryDay, -5 );
+
+        if ( empty( $comparisonDate )) {
+            if ( empty( $timezone )) {
+                $timezone = AuthenticationController::getInstance()->getCurrentUser()->getPreference('timezone');
+                if ( empty( $timezone )) $timezone = 'UTC';
+            }
+            $comparisonDateAsObject = ( new \DateTime('now', new DateTimeZone( $timezone )));
+            $comparisonDateIsLeapYear = ( $comparisonDateAsObject->format('L') === '1' );
+            $comparisonDate = $comparisonDateAsObject->format('m-d');
+        } else {
+            $comparisonDateIsLeapYear = ( date('L', mktime(0, 0, 0, 1, 1, substr( $comparisonDate, 0, 4 ))) === '1' );
+            $comparisonDate = substr( $comparisonDate, -5 );
+        }
+
+        # In case the birthdate is on 29th february we "correct" it to 28th:
+        if ( !$comparisonDateIsLeapYear and $anniversaryDay === '02-29') $anniversaryDay = '02-28';
+
+        return $anniversaryDay === $comparisonDate;
+    }
+
 }
