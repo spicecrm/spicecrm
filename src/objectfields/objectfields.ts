@@ -131,6 +131,7 @@ import {fieldLinkedParent} from "./components/fieldlinkedparent";
 import {fieldCountries} from "./components/fieldcountries";
 import {fieldToggle} from "./components/fieldtoggle";
 import {fieldNotificationIndicator} from "./components/fieldnotificationindicator";
+import {fieldIban} from "./components/fieldiban";
 
 
 /**
@@ -271,7 +272,8 @@ declare var _: any;
         fieldJson,
         fieldCountries,
         fieldToggle,
-        fieldNotificationIndicator
+        fieldNotificationIndicator,
+        fieldIban
     ],
     exports: [
         fieldSet,
