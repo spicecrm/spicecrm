@@ -1079,10 +1079,19 @@ class MysqliManager extends DBManager
     /**
      * (non-PHPdoc)
      * @see DBManager::fromConvert()
+     * @return string
      */
 
     public function fromConvert($string, $type)
     {
+        switch ($type) {
+            case 'date':
+                $tmp = explode(' ', $string);
+                return $tmp[0];
+            case 'time':
+                $tmp = explode(' ', $string);
+                return $tmp[1];
+        }
         return $string;
     }
 

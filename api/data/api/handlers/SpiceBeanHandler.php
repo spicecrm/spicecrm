@@ -1984,12 +1984,7 @@ class SpiceBeanHandler
                 // update the email address fields and the additional relationship values
                 foreach (array_keys($emailAddress->field_defs) as $field) {
 
-                    // always prepare additional values to update relationship table
-                    if (in_array($field, $additional_rel_fields_mapped)) {
-                        $additional_values[$additional_rel_fields[$field]] = $emailAddressData[$field];
-                    }
-
-                    if (empty($emailAddressData[$field]) || $emailAddressData[$field] === $emailAddress->$field) continue;
+                    if (!isset($emailAddressData[$field]) || $emailAddressData[$field] === $emailAddress->$field) continue;
 
                     // update email address field
                     $emailAddress->$field = $emailAddressData[$field];
@@ -2000,7 +1995,7 @@ class SpiceBeanHandler
                     }
                 }
 
-                $emailAddress->save();
+                $emailAddress->save(false, false);
 
                 $bean->$linkName->add($emailAddress, $additional_values);
             }

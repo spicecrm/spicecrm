@@ -192,33 +192,22 @@ export class administration implements OnDestroy {
         // filter the tree
         let groups = [];
         for (let group of this.adminNavigation) {
-            // check if the group mnatches .. if yes return the complete group
-            if (
-                (group.label && this.language.getLabel(group.label).toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) ||
-                (group.label && this.language.getLabel(group.label, '', 'long').toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0)
-            ) {
-                groups.push(group);
-            } else {
-                // search if we find any component that matches
-                let filteredcompopnents = [];
-                for (let groupcomponent of group.groupcomponents) {
-                    if (
-                        groupcomponent.adminaction.toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0 ||
-                        (groupcomponent.admin_label && this.language.getLabel(groupcomponent.admin_label).toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) ||
-                        (groupcomponent.admin_label && this.language.getLabel(groupcomponent.admin_label, '', 'long').toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0)
-                    ) {
-                        filteredcompopnents.push(groupcomponent);
-                    }
+            // search if we find any component that matches
+            let filteredcompopnents = [];
+            for (let groupcomponent of group.groupcomponents) {
+                let splited = this.itemfilter.split(' ');
+                if (splited.every(filter => this.language.getLabel(groupcomponent.admin_label).toLowerCase().indexOf(filter.toLowerCase()) >= 0)) {
+                    filteredcompopnents.push(groupcomponent);
                 }
-                // if we did find at least one component ... add the group with the filtered components
-                if (filteredcompopnents.length > 0) {
-                    groups.push({
-                        id: group.id,
-                        name: group.name,
-                        label: group.label,
-                        groupcomponents: filteredcompopnents
-                    });
-                }
+            }
+            // if we did find at least one component ... add the group with the filtered components
+            if (filteredcompopnents.length > 0) {
+                groups.push({
+                    id: group.id,
+                    name: group.name,
+                    label: group.label,
+                    groupcomponents: filteredcompopnents
+                });
             }
         }
 
