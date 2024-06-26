@@ -70,8 +70,6 @@ export class OutlookLoginPane {
     ) {
         this.goToSettings();
 
-        this.subscribeToBroadcast();
-
         if (!!this.session.authData.sessionId) {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', this.session.authData.sessionId);
@@ -109,6 +107,7 @@ export class OutlookLoginPane {
             this.password = this.outlookConfiguration.password;
             this.login();
         } else {
+            this.subscribeToBroadcast();
             this.goToSettings();
         }
 
