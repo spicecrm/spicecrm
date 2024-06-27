@@ -127,7 +127,7 @@ class ImapHandler extends TransportHandler
      *
      * @return array
      */
-    public function fetchEmails(): array {
+    public function fetchEmails(?string $startFromDate = null): array {
         $imap_status = $this->checkConfiguration($this->incoming_settings);
         if (!$imap_status['result']) {
             $this->log(Mailbox::LOG_DEBUG,
@@ -151,7 +151,11 @@ class ImapHandler extends TransportHandler
 
         $this->initMessageIDs();
 
-        if ($this->mailbox->last_checked != '') {
+        if ($startFromDate) {
+            $dateSince = date('d-M-Y', strtotime($startFromDate));
+            $criteria = 'SINCE ' . $dateSince;
+
+        } else if ($this->mailbox->last_checked != '') {
             if (isset(SpiceConfig::getInstance()->config['mailboxes']['delta_t'])) {
                 $dateSince = date(
                     'd-M-Y',
@@ -164,10 +168,12 @@ class ImapHandler extends TransportHandler
                 $dateSince = date('d-M-Y', strtotime($this->mailbox->last_checked));
             }
 
-            $items = imap_search($stream, 'SINCE ' . $dateSince);
+            $criteria = 'SINCE ' . $dateSince;
         } else {
-            $items = imap_search($stream, 'ALL');
+            $criteria = 'ALL';
         }
+
+        $items = imap_search($stream, $criteria);
 
         $this->log(Mailbox::LOG_DEBUG, is_array($items) ? count($items) : 0 . ' emails in mailbox since '
             . date('d-M-Y', strtotime($dateSince)));

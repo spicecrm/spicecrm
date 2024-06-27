@@ -294,7 +294,7 @@ class SpiceUIConfLoader
             $this->loadTableRecords($tableName, $records, $params['packages']);
         }
 
-        if(count($this->loadErrors) > 0){
+        if(is_array($this->loadErrors) && count($this->loadErrors) > 0){
             $packages = implode(', ', $params['packages']);
             throw (new Exception("Failed to load packages $packages", 'packageLoadFailed'))->setDetails($this->loadErrors);
         }
