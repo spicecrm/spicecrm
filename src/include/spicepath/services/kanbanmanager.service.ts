@@ -123,6 +123,14 @@ export class KanbanManagerService {
     }
 
     /**
+     * to register a bulk change as one record in the history e.g. change sequence for all objects
+     * call the passed callback function and groups all the changes made inside it as one record in the history
+     */
+    public applyBulkChange(fn: () => void) {
+        this.changeService.applyBulkChange(fn);
+    }
+
+    /**
      * generate a trackable object by the change service which can be used instead of the original
      * object to track changes on the given object and register them on change service
      * @param obj
