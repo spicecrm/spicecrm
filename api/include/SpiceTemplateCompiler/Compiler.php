@@ -168,6 +168,52 @@ class Compiler
         $head->appendChild($styleElement);
     }
 
+    /**
+     * apply inline styles from a stylesheet that are marked with spice-compiler-inline comment
+     * the selector must be either an id selector or an html tag name e.g. #myElementId or body
+     * @param string $html
+     * @param string $cssCode
+     * @return string
+     */
+    public static function applyInlineStyles(string $html, string &$cssCode): string
+    {
+        if (empty($cssCode)) return $html;
+
+        $doc = new DOMDocument();
+        // load html and use utf-8 encoding
+        $doc->loadHTML('<?xml encoding="utf-8"?>' . $html);
+
+        # regex example /* spice-compiler-inline */ #spice { font-family: 'Titillium Web', sans-serif;}
+        $tagsFound = preg_match_all("/\/\*\s*spice-compiler-inline\s*\*\/\s*(#*\w+)\s*{([^{}]+?)}/", $cssCode, $matches);
+
+        if ($tagsFound < 1) return $html;
+
+        # loop though all the found comments for inline styles
+        for ($i = 0; $i < count($matches[0]); $i++) {
+
+            $elements = [];
+
+            # check if the selector is id or tag name and get the elements
+            if (str_starts_with($matches[1][$i], '#')) {
+                $elementWithId = $doc->getElementById(substr($matches[1][$i], 1));
+                if ($elementWithId) $elements[] = $elementWithId;
+
+            } else {
+                $elements = $doc->getElementsByTagName($matches[1][$i]);
+            }
+
+            # apply the style to the elements
+            foreach ($elements as $element) {
+                $style = $element->getAttribute('style');
+                $element->setAttribute('style', $matches[2][$i] . $style);
+            }
+        }
+
+        $cssCode = preg_replace("/\/\*\s*spice-compiler-inline\s*\*\/\s*#*\w+\s*{[^{}]+?}/", '', $cssCode);
+
+        return $doc->saveHTML();
+    }
+
     private function parseDom($thisNode, $beans = []){
         $elements = [];
 
@@ -732,6 +778,8 @@ class Compiler
 
     public function compileblock($txt, $beans = [], $lang = 'de_DE')
     {
+        if (empty($txt)) return '';
+
         $resultText = '';
         $remainingText = $txt;
         while ( strlen( $remainingText )) {
