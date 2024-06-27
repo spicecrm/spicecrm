@@ -1,5 +1,6 @@
-import {ChangeDetectorRef, Injectable} from '@angular/core';
+import {ChangeDetectorRef, Injectable, signal, WritableSignal} from '@angular/core';
 import {ChangeHistoryActionI, ChangeHistoryRecordI} from "../interfaces/workbench.interfaces";
+import {Subject} from "rxjs";
 
 @Injectable()
 export class ChangeHistoryService {
@@ -18,6 +19,11 @@ export class ChangeHistoryService {
      */
     private trackableObjects = new Map<string, any>();
     /**
+     * id of the current change group to mark all the changes happen during the bulk callback function as one record in the history
+     * @private
+     */
+    private currentChangeGroupId: string;
+    /**
      * holds the history records
      * @private
      */
@@ -27,6 +33,10 @@ export class ChangeHistoryService {
      * @private
      */
     private historyCurrentIndex: number = -1;
+    /**
+     * emit on history undo redo
+     */
+    public onHistoryChange: Subject<void> = new Subject<void>();
 
     constructor(private cdRef: ChangeDetectorRef) {
     }
@@ -189,7 +199,6 @@ export class ChangeHistoryService {
 
         if (!this.changes[scope].newObjects.has(obj.id)) {
             this.changes[scope].newObjects.set(obj.id, {...obj});
-            this.history.push({id: obj.id, obj, action: "new", scope});
             this.addNewHistoryRecord(obj, 'new', scope, prop, previousValue, newValue);
             this.cdRef.detectChanges();
         } else {
@@ -215,7 +224,7 @@ export class ChangeHistoryService {
             this.history.length = this.historyCurrentIndex +1;
         }
 
-        this.history.push({id: obj.id, obj, action, scope, key, previousValue, newValue});
+        this.history.push({id: obj.id, obj, action, scope, key, previousValue, newValue, groupId: this.currentChangeGroupId});
 
         this.historyCurrentIndex++;
     }
@@ -267,6 +276,12 @@ export class ChangeHistoryService {
         if (this.historyCurrentIndex > -1) {
             this.historyCurrentIndex--;
         }
+
+        if (this.history[this.historyCurrentIndex]?.groupId && this.history[this.historyCurrentIndex].groupId == lastChange.groupId) {
+            this.undo();
+        } else {
+            this.onHistoryChange.next();
+        }
     }
 
     /**
@@ -303,6 +318,12 @@ export class ChangeHistoryService {
 
         if (this.historyCurrentIndex +1 < this.history.length) {
             this.historyCurrentIndex++;
+        }
+
+        if (this.history[this.historyCurrentIndex +1]?.groupId && this.history[this.historyCurrentIndex +1].groupId == nextChange.groupId) {
+            this.redo();
+        } else {
+            this.onHistoryChange.next();
         }
     }
 
@@ -342,6 +363,16 @@ export class ChangeHistoryService {
         }
 
         this.addNewHistoryRecord(currentObject, action, scope, prop, previousValue, newValue);
+    }
+
+    /**
+     * to register a bulk change as one record in the history e.g. change sequence for all objects
+     * call the passed callback function and groups all the changes made inside it as one record in the history
+     */
+    public applyBulkChange(callbackFn: () => void) {
+        this.currentChangeGroupId = window._.uniqueId('change-history-');
+        callbackFn();
+        this.currentChangeGroupId = undefined;
     }
 
     /**

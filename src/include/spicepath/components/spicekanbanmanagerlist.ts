@@ -1,4 +1,12 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, Output} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    OnDestroy,
+    Output
+} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {backend} from "../../../services/backend.service";
 import {KanbanManagerService} from "../services/kanbanmanager.service";
@@ -27,13 +35,14 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
     @Output() public emitActiveStages: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public backend: backend,
+                private cdRef: ChangeDetectorRef,
                 public kanbanManagerService: KanbanManagerService) {
     }
 
     public ngAfterViewInit() {
         setTimeout(() => {
             this.setItems();
-            this.subscribeToSelectionChange();
+            this.subscribeToServiceChanges();
         }, 0);
     }
 
@@ -52,15 +61,19 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
                 event.currentIndex,
             );
 
-            event.previousContainer.data.forEach((stage, index) => {
-                stage.stage_sequence = index +1;
+            this.kanbanManagerService.applyBulkChange(() => {
+                event.previousContainer.data.forEach((stage, index) => {
+                    stage.stage_sequence = index +1;
+                });
             });
 
             event.item.data.not_in_kanban = event.container.id == 'notInKanbanList' ? 1 : 0;
         }
 
-        event.container.data.forEach((stage, index) => {
-            stage.stage_sequence = index +1;
+        this.kanbanManagerService.applyBulkChange(() => {
+            event.container.data.forEach((stage, index) => {
+                stage.stage_sequence = index +1;
+            });
         });
 
         this.emitActiveStages.emit(this.activeStages);
@@ -70,12 +83,22 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
         this.subscription.unsubscribe();
     }
 
-    private subscribeToSelectionChange() {
-        this.subscription = this.kanbanManagerService.selectedBeanGuide$.subscribe({
+    private subscribeToServiceChanges() {
+        this.subscription.add(this.kanbanManagerService.selectedBeanGuide$.subscribe({
             next: () => {
                 this.setItems();
                }
-        });
+        }));
+
+        this.subscription.add(
+            this.kanbanManagerService.changeService.onHistoryChange.subscribe({
+                next: () => {
+                    this.activeStages = this.activeStages.sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
+                    this.inactiveStages = this.inactiveStages.sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
+                    this.cdRef.detectChanges();
+                }
+            })
+        );
     }
 
     private setItems() {
