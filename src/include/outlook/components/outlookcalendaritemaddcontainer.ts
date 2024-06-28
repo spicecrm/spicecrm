@@ -2,7 +2,7 @@
  * @module Outlook
  */
 
-import {Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnInit} from "@angular/core";
 import {Subscription} from "rxjs";
 
 import {outlookNameValuePairI} from "../interfaces/outlook.interfaces";
@@ -66,6 +66,7 @@ export class OutlookCalendarItemAddContainer {
         public configuration: configurationService,
         public model: model,
         public view: view,
+        private cdRef: ChangeDetectorRef,
         public metadata: metadata
     ) {
         this.view.isEditable = true;
@@ -138,6 +139,8 @@ export class OutlookCalendarItemAddContainer {
                 this.modelsubscription = undefined;
             }
         }
+
+        this.cdRef.detectChanges();
     }
 
     /**
