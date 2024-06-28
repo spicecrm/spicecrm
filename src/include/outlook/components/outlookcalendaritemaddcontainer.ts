@@ -191,7 +191,10 @@ export class OutlookCalendarItemAddContainer implements OnDestroy {
                 values.push({name: field, value: this.model.getField(field)});
             }
 
-            values.push({name: '_module', value: this.module});
+            values.push(
+                {name: '_module', value: this.module},
+                {name: '_id', value: this.model.id},
+            );
 
             this.setCustomProperties(values);
         }, 500);
