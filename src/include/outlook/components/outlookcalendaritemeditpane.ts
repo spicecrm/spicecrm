@@ -2,7 +2,7 @@
  * @module Outlook
  */
 
-import {AfterViewInit, Component} from "@angular/core";
+import {AfterViewInit, ChangeDetectorRef, Component} from "@angular/core";
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 
@@ -34,6 +34,7 @@ export class OutlookCalendarItemEditPane implements AfterViewInit {
 
     constructor(
         public groupware: GroupwareService,
+        private cdRef: ChangeDetectorRef,
     ) {
     }
 
@@ -48,6 +49,7 @@ export class OutlookCalendarItemEditPane implements AfterViewInit {
             this.id = props.get('_id');
 
             this.customProperties = props;
+            this.cdRef.detectChanges();
         });
     }
 
