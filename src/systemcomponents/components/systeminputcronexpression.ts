@@ -373,7 +373,6 @@ export class SystemInputCronExpression implements OnInit, ControlValueAccessor {
             case 'daily':
                 this.expression.hours = `${moment(this.expression.everyAtValue).tz(this.userPreferences.toUse.timezone).utc().hour()}`;
                 this.expression.minutes = `${moment(this.expression.everyAtValue).tz(this.userPreferences.toUse.timezone).utc().minute()}`;
-                console.log(this.expression.hours);
                 break;
             case 'weekly':
                 this.expression.hours = `${moment(this.expression.everyAtValue).tz(this.userPreferences.toUse.timezone).utc().hour()}`;
