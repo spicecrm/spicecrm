@@ -2,7 +2,7 @@
  * @module Outlook
  */
 
-import {ChangeDetectorRef, Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Subscription} from "rxjs";
 
 import {outlookNameValuePairI} from "../interfaces/outlook.interfaces";
@@ -24,7 +24,7 @@ declare var _: any;
     templateUrl: '../templates/outlookcalendaritemaddcontainer.html',
     providers: [model, view]
 })
-export class OutlookCalendarItemAddContainer {
+export class OutlookCalendarItemAddContainer implements OnDestroy {
 
     /**
      * the custom prperties of the mailbox item
@@ -72,6 +72,10 @@ export class OutlookCalendarItemAddContainer {
         this.view.isEditable = true;
         this.view.setEditMode();
         this.loadExchangeConfig();
+        // subscribe to the model changes and set the data
+        this.modelsubscription = this.model.data$.subscribe(changed => {
+            this.saveChanges(changed);
+        });
     }
 
     get canAdd() {
@@ -118,13 +122,9 @@ export class OutlookCalendarItemAddContainer {
                 }
             }
             if (!_.isEmpty(modelValues)) {
-                this.model.setFields(modelValues);
+                this.model.setFields(modelValues, true);
+                this.model.data$.next(this.model.data);
             }
-
-            // subscribe to the model changes and set the data
-            this.modelsubscription = this.model.data$.subscribe(changed => {
-                this.saveChanges(changed);
-            });
 
         } else {
 
@@ -133,14 +133,13 @@ export class OutlookCalendarItemAddContainer {
 
             // clear the fieldset
             this.fieldset = undefined;
-
-            if (this.modelsubscription) {
-                this.modelsubscription.unsubscribe();
-                this.modelsubscription = undefined;
-            }
         }
 
         this.cdRef.detectChanges();
+    }
+
+    public ngOnDestroy() {
+        this.modelsubscription.unsubscribe();
     }
 
     /**
