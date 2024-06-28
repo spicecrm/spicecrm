@@ -90,6 +90,9 @@ export class OutlookCalendarItemAddContainer {
      * @param module
      */
     @Input('module') set module(module) {
+
+        if (!module && !this.customProperties) return;
+
         this._module = module;
 
         if (module && this._module) {
