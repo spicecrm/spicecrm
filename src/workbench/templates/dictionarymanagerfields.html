@@ -27,6 +27,9 @@
                         <div class="slds-truncate slds-th__action"><system-label label="LBL_DOMAIN"/></div>
                     </th>
                     <th class="" scope="col">
+                        <div class="slds-truncate slds-th__action"><system-label label="LBL_TYPE"/></div>
+                    </th>
+                    <th class="" scope="col">
                         <div class="slds-truncate slds-th__action"><system-label label="LBL_FIELD"/></div>
                     </th>
                     <th class="" scope="col">
@@ -44,13 +47,16 @@
                 </tr>
             </thead>
             <tbody>
-                <ng-container *ngFor="let dictionaryitem of dictionaryitems; trackBy: trackByFn">
+                <ng-container *ngFor="let dictionaryitem of filterDictionaryItems(); trackBy: trackByFn">
                     <tr class="slds-hint-parent" [ngClass]="getRowClass(dictionaryitem)">
                         <td data-label="Name">
                             <div class="slds-truncate">{{dictionaryitem.name}}</div>
                         </td>
                         <td data-label="Domain">
                             <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
+                        </td>
+                        <td data-label="Type">
+                            <div class="slds-truncate">{{getDomainType(dictionaryitem.sysdomaindefinition_id)}}</div>
                         </td>
                         <td data-label="Field">
                             <div class="slds-truncate" *ngIf="getDomainFields(dictionaryitem.sysdomaindefinition_id)[0]">{{translateDomainField(getDomainFields(dictionaryitem.sysdomaindefinition_id)[0].name, dictionaryitem)}}</div>

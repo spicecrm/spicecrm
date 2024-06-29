@@ -239,5 +239,19 @@ class ProspectListsController
         $list = BeanFactory::getBean('ProspectLists', $args['id']);
         return $res->withJson($list->get_entry_count());
     }
+
+    public function checkExistingBeanEmailAddressInItems(Request $req, Response $res, $args): Response
+    {
+        $params = $req->getQueryParams();
+        $relIdWhere = $params['isPrimary'] ? "" : "and plp.email_addr_bean_rel_id = '{$args['relId']}'";
+
+        $db = DBManagerFactory::getInstance();
+        $prospects = [];
+        $query = $db->query("SELECT pl.name FROM prospect_lists_prospects plp, prospect_lists pl where pl.id = plp.prospect_list_id $relIdWhere and plp.deleted = 0");
+        while($row = $db->fetchByAssoc($query) ){
+            $prospects[] = $row['name'];
+        }
+        return $res->withJson($prospects);
+    }
 }
 

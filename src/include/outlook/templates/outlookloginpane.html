@@ -1,27 +1,50 @@
-<div class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1" style="height:100vh; top: 0px;">
+<div [ngClass]="{'slds-theme--error': configuration.data.startupMode == 'recovery', 'slds-theme--warning': configuration.data.startupMode == 'maintenance', 'slds-theme--default': configuration.data.startupMode != 'maintenance' && configuration.data.startupMode != 'recovery'}" class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1" style="height:100vh; top: 0px;">
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium">
             <div class="slds-align--absolute-center slds-p-vertical--medium">
                 <img style="max-height: 150px;" src="./config/loginimage"/>
             </div>
             <div class="slds-box--border" *ngIf="!loginService.session.authData.sessionId && promptUser">
-                <div class="slds-p-around--medium">
+                <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading || loggingIn">
                     <form *ngIf="!showForgotPass" (submit)="login()">
+                        <div *ngIf="configuration.data.startupMode == 'recovery'" class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                            <system-icon icon="error" sprite="utility" addclasses="slds-m-right_x-small slds-icon-text-warning" divClass="slds-icon-utility-error"/>
+                            <h2><system-label label="ERR_RECOVERY_MODE_ENABLED"/> </h2>
+                        </div>
+                        <div *ngIf="configuration.data.startupMode == 'maintenance'" class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                            <system-icon icon="error" sprite="utility" addclasses="slds-m-right_x-small slds-icon-text-warning" divClass="slds-icon-utility-error"/>
+                            <h2><system-label label="ERR_MAINTENANCE_MODE_ENABLED"/> </h2>
+                        </div>
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                <input type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1"/>
+                                <input type="text" name="username" autocomplete [disabled]="loggingIn" [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1"/>
                             </div>
                         </div>
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
-                                <input type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2"/>
+                                <input type="password" name="password" autocomplete [disabled]="loggingIn" [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2"/>
                             </div>
+                        </div>
+                        <div *ngIf="twoFactorAuthCodeRequired" class="slds-form-element slds-m-vertical--small slds-grid slds-grid--vertical-align-center">
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left slds-grow">
+                                <system-utility-icon icon="scan" addclasses="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"></system-utility-icon>
+                                <input #twofactorinput type="text" name="code2fa" autocomplete="off" [(ngModel)]="code2fa" class="slds-input slds-p-vertical--xx-small" tabindex="2" system-placeholder="LBL_ENTER_CODE" />
+                            </div>
+                            <system-checkbox *ngIf="rememberDeviceVisible" [(ngModel)]="rememberDevice" name="remember-device" class="slds-m-left--xx-small">
+                                <system-label label="LBL_REMEMBER_DEVICE"/>
+                            </system-checkbox>
+                        </div>
+                        <div class="slds-m-bottom--small">
+                            <system-checkbox [(ngModel)]="keepMeLoggedIn" name="keep-me-logged-in" label="LBL_KEEP_ME_LOGGED_IN">
+                                <system-label label="LBL_KEEP_ME_LOGGED_IN"/>
+                            </system-checkbox>
                         </div>
                         <button type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
                     </form>
                 </div>
+                <global-login-oauth2 class="slds-size--1-of-1" (token)="login($event)" (servicesLoaded)="checkForMicrosoftLoginService($event)"></global-login-oauth2>
             </div>
-            <ng-container *ngIf="loginService.session.authData.sessionId && !loginService.session.authData.renewPass">
+            <ng-container *ngIf="loginService.session.authData.sessionId">
                 <system-loader-progress></system-loader-progress>
             </ng-container>
         </div>

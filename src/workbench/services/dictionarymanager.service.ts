@@ -485,7 +485,7 @@ export class dictionarymanager {
                 awaitModal.emit(true);
             },
             error: () => {
-                this.toast.sendToast(this.language.getLabel('ERROR repairing dictonaray'), 'error');
+                this.toast.sendToast(this.language.getLabel('LBL_ERROR_REPAIRING_DICTIONARY'), 'error');
                 awaitModal.emit(true);
             }
         });

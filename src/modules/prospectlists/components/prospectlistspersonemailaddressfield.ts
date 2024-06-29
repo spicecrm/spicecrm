@@ -28,7 +28,7 @@ export class ProspectListsPersonEmailAddressField extends fieldGeneric {
         if (this.model.parentmodel && this.model.module == 'ProspectLists'){
             return this.model.parentmodel.data.email_addresses.beans;
         }
-        else {
+        else if (this.model.module == 'Contacts') {
             return this.model.data.email_addresses.beans;
         }
     }

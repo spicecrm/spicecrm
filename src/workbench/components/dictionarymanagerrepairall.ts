@@ -530,10 +530,15 @@ export class DictionaryManagerRepairAll {
      * close the modal
      */
     public close() {
-        // set stopped if we are still repairing
-        this.stopped = true;
-        // close the modal
-        this.self.destroy();
+        if(this.repairing) {
+            this.modal.confirm('MSG_WARNING_STOP_REPAIR_ALL_DICTIONARIES', 'MSG_WARNING_STOP_REPAIR_ALL_DICTIONARIES', 'warning').subscribe(answer => {
+                if (!answer) return;
+                this.stopped = true;
+                this.self.destroy();
+            })
+        } else {
+            this.self.destroy();
+        }
     }
 
     /**
