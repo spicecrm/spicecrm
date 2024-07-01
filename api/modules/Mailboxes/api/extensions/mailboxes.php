@@ -25,6 +25,12 @@ $routes = [
                 'description' => 'Mailbox ID',
                 'required'    => true,
             ],
+            'fetchStartFromDate' => [
+                'in'          => 'query',
+                'type'        => ValidationMiddleware::TYPE_DATE,
+                'description' => 'fetch starting from date',
+                'required'    => true,
+            ],
         ],
     ],
     [

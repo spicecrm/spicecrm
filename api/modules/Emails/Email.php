@@ -21,6 +21,7 @@ use SpiceCRM\includes\ErrorHandlers\MessageInterceptedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
+use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarCleaner;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
@@ -1400,6 +1401,9 @@ class Email extends SpiceBean
         $q = $db->query($query);
 
         while ($row = $db->fetchByAssoc($q)) {
+
+            $this->body = Compiler::applyInlineStyles($this->body, $row['csscode']);
+
             $this->body = '<style>' . $row['csscode'] . '</style>' . $this->body;
 
             if (strpos($this->body, '</head>')) {
