@@ -21,7 +21,7 @@ import {toast} from "../../services/toast.service";
 })
 export class DictionaryManagerMigrateDefinitionModal implements OnInit {
 
-    private currentVersion = '2024.01.001';
+    private currentVersion = '2024.02.001';
     private currentPackage = 'system';
 
     public loading: boolean = true;
