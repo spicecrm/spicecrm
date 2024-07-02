@@ -132,6 +132,7 @@ import {fieldCountries} from "./components/fieldcountries";
 import {fieldToggle} from "./components/fieldtoggle";
 import {fieldNotificationIndicator} from "./components/fieldnotificationindicator";
 import {fieldIban} from "./components/fieldiban";
+import {fieldEnumRoles} from "./components/fieldenumroles";
 
 
 /**
@@ -273,7 +274,8 @@ declare var _: any;
         fieldCountries,
         fieldToggle,
         fieldNotificationIndicator,
-        fieldIban
+        fieldIban,
+        fieldEnumRoles
     ],
     exports: [
         fieldSet,
