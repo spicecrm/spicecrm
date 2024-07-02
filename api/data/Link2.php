@@ -405,7 +405,15 @@ class Link2
                         $tmpBean = BeanFactory::getBean($rel_module);
                         $tmpBean->retrieve_by_string_fields([$idField => $id]);
                     } else {
-                        $tmpBean = BeanFactory::getBean($rel_module, $vals['id']);
+
+                        // retrieve linked Bean, if it is deleted
+                        if($params && isset($params['deleted']) && $params['deleted'] == true) {
+                            // set deleted to false in order to retrieve a deleted Bean in SpiceBean Class
+                            $tmpBean = BeanFactory::getBean($rel_module, $id, ['forceRetrieve' => true], false);
+                        } else {
+                            // if deleted is not false, only not-deleted Bean will be retrieved per default
+                            $tmpBean = BeanFactory::getBean($rel_module, $vals['id']);
+                        }
                     }
                     if ($tmpBean !== FALSE)
                         // clone to get independent objects of the same bean (because of relid allocation further below)
