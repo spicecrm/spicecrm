@@ -2,14 +2,15 @@
  * @module Outlook
  */
 
-import {Component} from "@angular/core";
+import {AfterViewInit, ChangeDetectorRef, Component} from "@angular/core";
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 
 @Component({
+    selector: 'outlook-calendar-item-edit-pane',
     templateUrl: '../templates/outlookcalendaritemeditpane.html'
 })
-export class OutlookCalendarItemEditPane {
+export class OutlookCalendarItemEditPane implements AfterViewInit {
 
     /**
      * the outlook calendar item id
@@ -33,16 +34,14 @@ export class OutlookCalendarItemEditPane {
 
     constructor(
         public groupware: GroupwareService,
+        private cdRef: ChangeDetectorRef,
     ) {
+    }
+
+    public ngAfterViewInit() {
         this.groupware.getCalenderItemId().subscribe(id => {
             this.calendaritemid = id;
         });
-
-        /*
-        this.groupware.getAccessToken().subscribe(token => {
-            console.log(token);
-        })
-        */
 
         this.groupware.getCustomProperties().subscribe(props => {
 
@@ -50,9 +49,7 @@ export class OutlookCalendarItemEditPane {
             this.id = props.get('_id');
 
             this.customProperties = props;
-
-            // this.module = 'Meetings';
-            // this.id = '105b119a-81c6-f039-e6c0-57bc0c7540e9';
+            this.cdRef.detectChanges();
         });
     }
 

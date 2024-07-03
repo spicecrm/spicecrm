@@ -92,7 +92,8 @@ export class TravelAddReceiptModal implements AfterViewInit{
 
     public scan() {
         let loader = this.modal.await('LBL_PROCESSING');
-        this.backend.postRequest('common/klippa/scan', {}, {travel_id: this.model.id, filetype: 'image/jpeg', filedata: this.file}).subscribe({
+        this.backend.postRequest('common/mindee/scan/receipt', {}, {travel_id: this.model.id, filetype: 'image/jpeg', filedata: this.file}).subscribe({
+        //this.backend.postRequest('common/klippa/scan', {}, {travel_id: this.model.id, filetype: 'image/jpeg', filedata: this.file}).subscribe({
             next: (res) => {
                 // reload the subtab
                 this.model.broadcast.broadcastMessage('relatedmodels.reload', {module: 'TravelReceipts'});

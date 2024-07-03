@@ -4,9 +4,7 @@
         <div class="slds-truncate"><span *ngIf="value">{{value}}</span></div>
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="{'slds-has-error': !isValid}">
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="css_classes">
     <input class="slds-input" [(ngModel)]="value" (input)="addSpacesAndSetVariables()" (blur)="checkInputLength()" [maxlength]="max()"/>
-    <div *ngIf="!isValid" class="slds-form-element__help">
-        <system-label label="LBL_INPUT_INVALID"></system-label>
-    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
 </div>
