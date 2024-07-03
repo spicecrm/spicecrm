@@ -137,6 +137,7 @@ import {SystemViewContainer} from "./components/systemviewcontainer";
 import {SystemIconHelpText} from "./components/systemiconhelptext";
 import {SystemMultipleSelect} from "./components/systemmultipleselect";
 import {SystemWrappedText} from './components/systemwrappedtext';
+import {SystemInputRoles} from "./components/systeminputroles";
 
 import {PackageLoader} from "./components/packageloader";
 import {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -385,7 +386,8 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemProgressIndicator,
         SystemProgressIndicatorItem,
         PackageLoaderReloadLoadedModal,
-        SystemInputDictionary
+        SystemInputDictionary,
+        SystemInputRoles
     ],
     exports: [
         PaginationControlsComponent,
@@ -547,7 +549,8 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemProgressIndicator,
         SystemProgressIndicatorItem,
         PackageLoaderReloadLoadedModal,
-        SystemInputDictionary
+        SystemInputDictionary,
+        SystemInputRoles
     ]
 })
 export class SystemComponents {}
