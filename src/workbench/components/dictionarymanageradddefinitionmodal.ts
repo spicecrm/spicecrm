@@ -2,7 +2,7 @@
  * @module WorkbenchModule
  */
 import {
-    Component, EventEmitter, Injector, Output
+    Component, EventEmitter, Injector, Input, OnInit, Output
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {modal} from '../../services/modal.service';
@@ -28,6 +28,11 @@ export class DictionaryManagerAddDefinitionModal {
      * reference to the modal self
      */
     public self: any;
+
+    /**
+     * if set to true also the tecnical name will be displayed
+     */
+    @Input() public technicalNameOnly: boolean = true;
 
     /**
      * the domain definition
@@ -171,8 +176,14 @@ export class DictionaryManagerAddDefinitionModal {
 
         if (type != 'module') return;
 
-        const modules = this.metadata.getModules().map(m => ({value: m, display: this.language.getModuleName(m)}));
-        this.modal.prompt('input', 'LBL_SELECT_MODULE', 'LBL_SELECT_MODULE', 'default', undefined, modules)
+        const modules = this.metadata.getModules().map(m => ({value: m, display: this.technicalNameOnly ? m : `${this.language.getModuleName(m)} (${m})`}));
+        // this is used to sort the modules alphabetically
+        if(this.technicalNameOnly){
+            modules.sort((a, b) => a.display.toLowerCase() > b.display.toLowerCase() ? 1 : -1);
+        } else {
+            modules.sort((a, b) => this.language.getModuleName(a.display).toLowerCase() > this.language.getModuleName(b.display).toLowerCase() ? 1 : -1);
+        }
+        this.modal.prompt('input_module',  'LBL_SELECT_MODULE', 'LBL_SELECT_MODULE', 'default', undefined)
             .subscribe(answer => {
                 if (!answer) return;
                 this.sysModule = answer;

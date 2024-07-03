@@ -1941,9 +1941,11 @@ class SpiceBean
 
         $query = "SELECT $this->_tablename.*" . " FROM $this->_tablename ";
         $query .= " WHERE $this->_tablename.id = " . $this->db->quoted($id);
-        if ($deleted)
-            $query .= " AND $this->_tablename.deleted=0";
+
+        // don't retrieve Bean with deleted flag true
+        if ($deleted) $query .= " AND $this->_tablename.deleted=0";
         // LoggerManager::getLogger()->debug("Retrieve $this->_objectname : " . $query);
+
         $result = $this->db->query($query, true, "Retrieving record by id $this->_tablename:$id found ");
         if (empty($result)) {
             return null;
