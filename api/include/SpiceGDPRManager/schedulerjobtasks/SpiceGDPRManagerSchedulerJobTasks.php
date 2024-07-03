@@ -97,6 +97,21 @@ class SpiceGDPRManagerSchedulerJobTasks
                                     $relatedBean->db->query("DELETE FROM {$relatedBean->_tablename} WHERE id = '{$relatedBean->id}'");
                                 }
                             }
+
+                            // check if we've got related Beans with deleted flag
+                            $deletedRelatedBeans = $bean->get_linked_beans($fieldname, null, [], 0, -1, 1);
+
+                            foreach ($deletedRelatedBeans as $deletedRelatedBean) {
+                                $relationshipDef = $bean->{$fieldname}->relationship;
+
+                                // delete related data
+                                $this->deleteRelatedBeans($bean, $deletedRelatedBean, $relationshipDef);
+
+                                // physically delete the record
+                                if ($purge) {
+                                    $deletedRelatedBean->db->query("DELETE FROM {$deletedRelatedBean->_tablename} WHERE id = '{$deletedRelatedBean->id}'");
+                                }
+                            }
                         }
                     }
                 }

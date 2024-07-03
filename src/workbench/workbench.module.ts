@@ -169,7 +169,9 @@ import {DictionaryManagerRelationshipAddUser} from "./components/dictionarymanag
 import {DictionaryManagerRelationshipContainerUser} from "./components/dictionarymanagerrelationshipcontaineruser";
 import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionarymanagerfixdbfieldsmismatchmodal";
 
-
+import {HL7Manager} from './components/hl7manager';
+import {Hl7ManagerType} from './components/hl7managertype';
+import {HL7ManagerRule} from './components/hl7managerrule';
 
 @NgModule({
     imports: [
@@ -326,7 +328,10 @@ import {DictionaryManagerFixDBFieldsMismatchModal} from "./components/dictionary
         DictionaryFilterRelationshipTemplatePipe,
         DictionaryManagerRelationshipAddUser,
         DictionaryManagerRelationshipContainerUser,
-        DictionaryManagerFixDBFieldsMismatchModal
+        DictionaryManagerFixDBFieldsMismatchModal,
+        HL7Manager,
+        Hl7ManagerType,
+        HL7ManagerRule
     ],
     exports: [
         SortPipe,

@@ -20,7 +20,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * the type of prompt
      */
-    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm';
+    @Input() public type: 'info'|'input'|'input_text'|'input_date'|'confirm'|'input_module';
 
     /**
      * the text that is rendered in the popup
