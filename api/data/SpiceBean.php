@@ -2468,10 +2468,10 @@ class SpiceBean
                                     if ($tmpBean->$name->getType == 'many')
                                         $tmpBean->$name->delete($tmpBean->id, $related_id);
                                     //add to primary bean
-                                    $this->$name->add($related_id, $additionalValues);
+                                    $this->$name->add($row['id'], $additionalValues);
 
                                     // re-index the related bean
-                                    $relatedBean = BeanFactory::getBean($relName, $related_id, ['relationships' => false]);
+                                    $relatedBean = BeanFactory::getBean($relName, $row['id'], ['relationships' => false]);
                                     SpiceFTSHandler::getInstance()->indexBean($relatedBean);
                                 }
                             }
