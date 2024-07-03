@@ -15,7 +15,7 @@
                 <field-container class="slds-size--1-of-2 slds-p-right--small " [field]="'export_module'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
                 <div class="slds-size--1-of-2 slds-grid slds-grid--vertical-align-end">
                     <field-container class="slds-grow" [field]="'id'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container>
-                    <system-utility-icon class="slds-m-left--x-small slds-m-bottom--x-small" (click)="clipboard.copy(model.getField('id'))" icon="copy" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-utility-icon>
+                    <button class="slds-button slds-button--icon slds-m-bottom--x-small" (click)="clipboard.copy(model.getField('id'))"><system-button-icon icon="copy" size="xx-small"></system-button-icon></button>
                 </div>
             </div>
             <div class="slds-m-top--x-small">
@@ -27,16 +27,16 @@
     <div><!-- system-to-bottom class="slds-scrollable--y" -->
         <table class="slds-table slds-table--bordered slds-no-row-hover slds-m-top--medium">
             <thead>
-                <tr>
-                    <th></th>
-                    <th>ID</th>
-                    <th>HL7 Segment</th>
-                    <th>Spice Module / Field</th>
-                    <th>HL7 Field</th>
-                    <th>Import Method</th>
-                    <th>Conditional</th>
-                    <th>active</th>
-                </tr>
+            <tr>
+                <th></th>
+                <th><system-label label="LBL_ID"></system-label></th>
+                <th><system-label label="LBL_HL7_SEGMENT"></system-label></th>
+                <th><system-label label="LBL_SPICE_MODULE_FIELD"></system-label></th>
+                <th><system-label label="LBL_HL7_FIELD"></system-label></th>
+                <th><system-label label="LBL_IMPORT_METHOD"></system-label></th>
+                <th><system-label label="LBL_CONDITIONAL"></system-label></th>
+                <th><system-label label="LBL_ACTIVE"></system-label></th>
+            </tr>
             </thead>
             <tbody hl7-manager-rule *ngFor="let rule of messageDef.rules; let i=index" [rule]="rule" (toggleDetails)="toggleDetails(i,$event)" [showDetails]="showDetails[i]"></tbody>
         </table>
