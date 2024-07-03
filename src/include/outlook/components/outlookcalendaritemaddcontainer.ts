@@ -2,9 +2,8 @@
  * @module Outlook
  */
 
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, NgZone, OnDestroy} from "@angular/core";
 import {Subscription} from "rxjs";
-
 import {outlookNameValuePairI} from "../interfaces/outlook.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
@@ -61,20 +60,23 @@ export class OutlookCalendarItemAddContainer implements OnDestroy {
      */
     public modelsubscription: Subscription;
 
+    private timeout: number;
+
     constructor(
         public backend: backend,
         public configuration: configurationService,
         public model: model,
         public view: view,
         private cdRef: ChangeDetectorRef,
+        private zone: NgZone,
         public metadata: metadata
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
         this.loadExchangeConfig();
         // subscribe to the model changes and set the data
-        this.modelsubscription = this.model.data$.subscribe(changed => {
-            this.saveChanges(changed);
+        this.modelsubscription = this.model.data$.subscribe(() => {
+            this.saveChanges();
         });
     }
 
@@ -94,48 +96,30 @@ export class OutlookCalendarItemAddContainer implements OnDestroy {
      *
      * @param module
      */
-    @Input('module') set module(module) {
+    set module(module) {
 
-        if (!module && !this.customProperties) return;
+        this.zone.run(() => {
 
-        this._module = module;
+            // force reload the fieldset view
+            this._module = undefined;
+            this.cdRef.detectChanges();
 
-        if (module && this._module) {
-            let componentconfig = this.metadata.getComponentConfig('OutlookCalendarItemAddContainer', module);
-            this.fieldset = componentconfig.fieldset;
+            this._module = module;
 
-            this.model.module = module;
-            this.model.initialize();
-            this.setCustomProperties([{name: '_id', value: this.model.id}]);
+            if (module && this._module) {
+                let componentconfig = this.metadata.getComponentConfig('OutlookCalendarItemAddContainer', module);
+                this.fieldset = componentconfig.fieldset;
 
-            if (module != this.customProperties.get('_module')) {
-                this.setCustomProperties([{name: '_module', value: module}]);
+                this.model.module = module;
+                this.model.initialize();
+
+            } else {
+                // clear the fieldset
+                this.fieldset = undefined;
+                this.clearCustomProperties(['_module'].concat(this.getFields()));
             }
+        });
 
-            // load the values
-            let fields = this.getFields();
-            let modelValues = {};
-            for (let field of fields) {
-                let cProp = this.customProperties.get(field);
-                if (cProp) {
-                    modelValues[field] = cProp;
-                }
-            }
-            if (!_.isEmpty(modelValues)) {
-                this.model.setFields(modelValues, true);
-                this.model.data$.next(this.model.data);
-            }
-
-        } else {
-
-            // clear the custom properties
-            this.clearCustomProperties(['_module', '_id'].concat(this.getFields()));
-
-            // clear the fieldset
-            this.fieldset = undefined;
-        }
-
-        this.cdRef.detectChanges();
     }
 
     public ngOnDestroy() {
@@ -193,16 +177,28 @@ export class OutlookCalendarItemAddContainer implements OnDestroy {
 
     /**
      * save model changes to the custom properties
-     *
-     * @param changes
      */
-    public saveChanges(changes) {
-        let values: outlookNameValuePairI[] = [];
-        let fields = this.getFields();
-        for (let field of fields) {
-            values.push({name: field, value: this.model.getField(field)});
-        }
-        this.setCustomProperties(values);
+    public saveChanges() {
+
+        clearTimeout(this.timeout);
+
+        this.timeout = window.setTimeout(() => {
+
+            const fields = this.getFields();
+            let values: outlookNameValuePairI[] = [];
+
+            for (let field of fields) {
+                values.push({name: field, value: this.model.getField(field)});
+            }
+
+            values.push(
+                {name: '_module', value: this.module},
+                {name: '_id', value: this.model.id},
+            );
+
+            this.setCustomProperties(values);
+        }, 500);
+
     }
 
     /**
