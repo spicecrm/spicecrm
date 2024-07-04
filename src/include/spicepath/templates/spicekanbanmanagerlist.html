@@ -19,7 +19,7 @@
                 [cdkDropListData]="activeStages" [cdkDropListConnectedTo]="[notInKanbanList]"
                 (cdkDropListDropped)="drop($event)">
                 <li *ngFor="let activeStage of activeStages;  let index = index" class="slds-item slds-text-link_reset"
-                    cdkDrag
+                    cdkDrag [cdkDragData]="activeStage"
                     (click)="openDetails(activeStage)"
                     [ngClass]="{'slds-is-selected slds-color__background_gray-5': selected == activeStage.id}"
                     [cdkDragDisabled]="activeStages.length == 1">
@@ -40,7 +40,7 @@
             <ul class="slds-has-dividers_around-space slds-p-around--x-small" cdkDropList #notInKanbanList="cdkDropList"
                 [cdkDropListData]="inactiveStages" [cdkDropListConnectedTo]="[activeStagesList]" style='min-height: 20px'
                 (cdkDropListDropped)="drop($event)">
-                <li *ngFor="let nik of inactiveStages;  let index = index" class="slds-item slds-text-link_reset" cdkDrag
+                <li *ngFor="let nik of inactiveStages;  let index = index" class="slds-item slds-text-link_reset" cdkDrag [cdkDragData]="nik"
                     (click)="openDetails(nik)"
                     [ngClass]="{'slds-is-selected slds-color__background_gray-5': selected == nik.id}">
 

@@ -50,8 +50,15 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
      * drag and drop for beanguidestages
      */
     public drop(event: CdkDragDrop<any[]>) {
+
         if(event.previousContainer === event.container){
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+            this.kanbanManagerService.applyBulkChange(() => {
+                event.container.data.forEach((stage, index) => {
+                    stage.stage_sequence = index +1;
+                });
+            });
         }
         else {
             transferArrayItem(
@@ -62,19 +69,19 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
             );
 
             this.kanbanManagerService.applyBulkChange(() => {
+
                 event.previousContainer.data.forEach((stage, index) => {
+                    stage.stage_sequence = index +1;
+                });
+
+                event.item.data.not_in_kanban = event.container.id == 'notInKanbanList' ? 1 : 0;
+
+                event.container.data.forEach((stage, index) => {
                     stage.stage_sequence = index +1;
                 });
             });
 
-            event.item.data.not_in_kanban = event.container.id == 'notInKanbanList' ? 1 : 0;
         }
-
-        this.kanbanManagerService.applyBulkChange(() => {
-            event.container.data.forEach((stage, index) => {
-                stage.stage_sequence = index +1;
-            });
-        });
 
         this.emitActiveStages.emit(this.activeStages);
     }
@@ -93,8 +100,18 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
         this.subscription.add(
             this.kanbanManagerService.changeService.onHistoryChange.subscribe({
                 next: () => {
-                    this.activeStages = this.activeStages.sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
-                    this.inactiveStages = this.inactiveStages.sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
+
+                    const active = this.activeStages.filter(dis=>dis.not_in_kanban == 0).concat(
+                        (this.inactiveStages as any).filter(dis=>dis.not_in_kanban == 0)
+                    ).sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
+
+                    const inactive = (this.activeStages as any).filter(dis=>dis.not_in_kanban == 1).concat(
+                        this.inactiveStages.filter(dis=>dis.not_in_kanban == 1)
+                    ).sort((a, b) => +a.stage_sequence > +b.stage_sequence ? 1 : -1);
+
+                    this.activeStages = active;
+                    this.inactiveStages = inactive;
+
                     this.cdRef.detectChanges();
                 }
             })
