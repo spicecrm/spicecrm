@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, SimpleChanges} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {backend} from "../../../services/backend.service";
 import {SpiceBeanGuideCheckI} from "../interfaces/kanbanmanager.interfaces";
@@ -24,7 +24,8 @@ export class SpiceKanbanManagerChecks {
     constructor(
         public backend: backend,
         public kanbanManagerService: KanbanManagerService,
-        public modelutilities:modelutilities
+        public modelutilities:modelutilities,
+        public cdRef: ChangeDetectorRef
     ) {
     }
 
@@ -34,6 +35,7 @@ export class SpiceKanbanManagerChecks {
      */
     public ngOnChanges(changes: SimpleChanges): void {
         this.loadChecks();
+        this.subscribeToServiceChanges();
         this.selectedCheck = null;
     }
 
@@ -42,6 +44,12 @@ export class SpiceKanbanManagerChecks {
      */
     public dropCheckLabels(event: CdkDragDrop<any[]>) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+        this.kanbanManagerService.applyBulkChange(() => {
+            event.container.data.forEach((check, index) => {
+                check.check_sequence = index +1;
+            });
+        });
 
         // this.saveSequence();
     }
@@ -57,7 +65,7 @@ export class SpiceKanbanManagerChecks {
 
         if (!this.selectedStage) return;
 
-        this.stageChecks = this.kanbanManagerService.currentChecks.filter(check=>check.stage_id == this.selectedStage.id);
+        this.stageChecks = this.kanbanManagerService.currentChecks.filter(check=>check.stage_id == this.selectedStage.id).map(check => this.kanbanManagerService.generateTrackableObject(check, 'checks'));
     }
 
     public setSelectedCheck(check: SpiceBeanGuideCheckI){
@@ -72,6 +80,17 @@ export class SpiceKanbanManagerChecks {
         }
     }
 
+    private subscribeToServiceChanges() {
+        this.subscription.add(
+            this.kanbanManagerService.changeService.onHistoryChange.subscribe({
+                next: () => {
+                    this.stageChecks =  this.stageChecks.sort((a, b) => +a.check_sequence > +b.check_sequence ? 1 : -1);
+
+                    this.cdRef.detectChanges();
+                }
+            })
+        );
+    }
     /**
      * add new check stage label
      * @param e
