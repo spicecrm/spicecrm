@@ -24,7 +24,10 @@ export class fieldJson extends fieldGeneric {
      * a getter for the value bound top the model
      */
     get value() {
-        return JSON.stringify(JSON.parse(this.model.getField(this.fieldname)), null, '\t');
+        const fromModel: string = this.model.getField(this.fieldname);
+        if ( fromModel === null ) return '';
+        return JSON.stringify( fromModel, null, '\t' );
+        // return JSON.stringify(JSON.parse(this.model.getField(this.fieldname)), null, '\t');
     }
 
     /**
@@ -33,7 +36,45 @@ export class fieldJson extends fieldGeneric {
      * @param val the new value
      */
     set value(val) {
-        this.model.setField(this.fieldname, val);
+        let error = false;
+        try {
+            const jsonString = JSON.stringify( val );
+        } catch(e)
+        {
+            error = true;
+            this.setValid(false);
+        }
+        if ( !error ) {
+            this.model.setField( this.fieldname, val );
+        }
     }
 
+    /**
+     * sets an error message on the field
+     *
+     * @param msg the message
+     */
+    public setFieldError(msg): boolean {
+        return this.model.setFieldMessage('error', msg, this.fieldname, this.fieldid);
+    }
+
+    /**
+     * clear the field error status
+     */
+    public clearFieldError(): boolean {
+        return this.model.resetFieldMessages(this.fieldname, 'error', this.fieldid);
+    }
+
+    /**
+     * set the field to invalid, tied to the emitter on the system-date
+     *
+     * @param valid
+     */
+    public setValid(valid){
+        if(!valid){
+            this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
+        } else {
+            this.clearFieldError();
+        }
+    }
 }
