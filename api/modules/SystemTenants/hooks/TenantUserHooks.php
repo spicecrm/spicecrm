@@ -21,7 +21,7 @@ class TenantUserHooks
         SystemTenant::switchToMaster();
 
         if (SystemTenant::determineUserTenant($bean->user_name, $_SERVER['HTTP_HOST'])) {
-            throw new Exception('User already exists');
+            throw (new Exception('User already exists in this tenant or other tenant'))->setErrorCode('duplicateUsername');
         }
 
         SystemTenant::switchDB(SystemTenant::$currentTenantID);
