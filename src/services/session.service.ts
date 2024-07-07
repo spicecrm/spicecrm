@@ -135,10 +135,10 @@ export class session {
 
         if (!keepMeLoggedIn) {
             sessionStorage.setItem('OAuth-Token', this.authData.sessionId);
-            sessionStorage.setItem('tenant-id', this.authData.tenant_id);
+            if (!!this.authData.tenant_id) sessionStorage.setItem('tenant-id', this.authData.tenant_id);
         } else {
             localStorage.setItem('OAuth-Token', this.authData.sessionId);
-            localStorage.setItem('tenant-id', this.authData.tenant_id);
+            if (!!this.authData.tenant_id) localStorage.setItem('tenant-id', this.authData.tenant_id);
         }
     }
 
