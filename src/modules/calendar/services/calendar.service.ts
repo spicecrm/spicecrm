@@ -361,50 +361,59 @@ export class calendar implements OnDestroy {
             this.currentStart[calendarId] = start;
 
             this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params)
-                .subscribe(events => {
-                    this.calendarData[calendarId] = [];
+                .subscribe({
+                    next: events => {
+                        this.calendarData[calendarId] = [];
 
-                    for (let event of events) {
+                        for (let event of events) {
 
-                        if ((userId == this.owner && !!event.data.external_id && !!this.calendarData.google && this.calendarData.google.some(e => e.id == event.data.external_id)) ||
-                            (calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
-                            continue;
+                            if ((userId == this.owner && !!event.data.external_id && !!this.calendarData.google && this.calendarData.google.some(e => e.id == event.data.external_id)) ||
+                                (calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
+                                continue;
+                            }
+
+                            event.calendarId = calendarId;
+
+                            event.start = moment.utc(event.start).tz(this.timeZone).second(0);
+                            event.end = moment.utc(event.end).tz(this.timeZone).second(0);
+
+                            switch (event.type) {
+                                case 'event':
+                                    event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
+                                    event.color = this.eventColor;
+                                    break;
+                                case 'Day':
+                                case 'Full':
+                                    event.start = event.start.hour(0);
+                                    event.end = moment(event.end).hour(23).minute(59).second(59);
+                                    event.isAllDay = true;
+                                    event.isMulti = true;
+                                    break;
+                            }
+
+                            if (userCalendar) {
+                                event.otherColor = userCalendar.color;
+                            } else if (calendarId != 'owner') {
+                                event.color = calendar.color;
+                            } else if (event.module == 'UserAbsences') {
+                                event.color = this.absenceColor;
+                            }
+
+                            this.calendarData[calendarId].push(event);
                         }
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
 
-                        event.calendarId = calendarId;
+                        responseSubject.next(this.calendarData[calendarId]);
+                        responseSubject.complete();
+                    },
+                    error: err => {
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
 
-                        event.start = moment.utc(event.start).tz(this.timeZone).second(0);
-                        event.end = moment.utc(event.end).tz(this.timeZone).second(0);
-
-                        switch (event.type) {
-                            case 'event':
-                                event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
-                                event.color = this.eventColor;
-                                break;
-                            case 'Day':
-                            case 'Full':
-                                event.start = event.start.hour(0);
-                                event.end = moment(event.end).hour(23).minute(59).second(59);
-                                event.isAllDay = true;
-                                event.isMulti = true;
-                                break;
-                        }
-
-                        if (userCalendar) {
-                            event.otherColor = userCalendar.color;
-                        } else if (calendarId != 'owner') {
-                            event.color = calendar.color;
-                        } else if (event.module == 'UserAbsences') {
-                            event.color = this.absenceColor;
-                        }
-
-                        this.calendarData[calendarId].push(event);
+                        responseSubject.error(err);
+                        responseSubject.complete();
                     }
-                    this.isLoading = false;
-                    this.cdRef.detectChanges();
-
-                    responseSubject.next(this.calendarData[calendarId]);
-                    responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
@@ -516,25 +525,34 @@ export class calendar implements OnDestroy {
             this.currentStart.microsoft = startDate;
 
             this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params)
-                .subscribe(res => {
-                    if (res.events && res.events.length > 0) {
-                        for (let event of res.events) {
-                            if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
+                .subscribe({
+                    next: res => {
+                        if (res.events && res.events.length > 0) {
+                            for (let event of res.events) {
+                                if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
-                            event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
-                            event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
+                                event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
+                                event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
 
-                            event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
-                            event.color = this.groupwareColor;
-                            event.type = 'microsoft';
+                                event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
+                                event.color = this.groupwareColor;
+                                event.type = 'microsoft';
 
-                            this.calendarData.microsoft.push(event);
+                                this.calendarData.microsoft.push(event);
+                            }
                         }
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
+                        responseSubject.next(this.calendarData.microsoft);
+                        responseSubject.complete();
+                    },
+                    error: err => {
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
+
+                        responseSubject.error(err);
+                        responseSubject.complete();
                     }
-                    this.isLoading = false;
-                    this.cdRef.detectChanges();
-                    responseSubject.next(this.calendarData.microsoft);
-                    responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
