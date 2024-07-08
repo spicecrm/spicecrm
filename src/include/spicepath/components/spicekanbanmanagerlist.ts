@@ -75,7 +75,7 @@ export class SpiceKanbanManagerList implements OnDestroy, AfterViewInit{
                 });
 
                 event.item.data.not_in_kanban = event.container.id == 'notInKanbanList' ? 1 : 0;
-                event.item.data.not_in_kanban = event.previousContainer.id == 'notInKanbanList' ? 0 : 1;
+                event.item.data.not_in_kanban = event.previousContainer.id == 'activeStagesList' ? 0 : 1;
 
                 event.container.data.forEach((stage, index) => {
                     stage.stage_sequence = index +1;
