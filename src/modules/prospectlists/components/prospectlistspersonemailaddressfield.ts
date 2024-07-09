@@ -12,6 +12,18 @@ import {metadata} from "../../../services/metadata.service";
 })
 
 export class ProspectListsPersonEmailAddressField extends fieldGeneric {
+
+    public emailAddresses;
+
+    ngOnInit() {
+        super.ngOnInit();
+        if (this.model.parentmodel && this.model.module == 'ProspectLists') {
+            this.emailAddresses = this.model.parentmodel.data.email_addresses.beans;
+        } else {
+            this.emailAddresses = this.model.data.email_addresses.beans;
+        }
+    }
+
     /**
      * set the id from the emailAddress and ignore invalid
      * @param emailAddress
@@ -24,14 +36,7 @@ export class ProspectListsPersonEmailAddressField extends fieldGeneric {
     get value() {
         return this.model.getField(this.fieldname);
     }
-    get emailAddresses(){
-        if (this.model.parentmodel && this.model.module == 'ProspectLists'){
-            return this.model.parentmodel.data.email_addresses.beans;
-        }
-        else if (this.model.module == 'Contacts') {
-            return this.model.data.email_addresses.beans;
-        }
-    }
+
     /**
      * angular ngFor track by function
      * @param index
