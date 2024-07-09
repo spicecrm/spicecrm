@@ -7,6 +7,7 @@ use Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManager;
 use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\SpiceCache\SpiceCacheFile;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionary;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDefinitions;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
@@ -693,7 +694,7 @@ class SpiceInstaller
      * @param $postData
      */
 
-    public function retrieveCoreAndLanguages( $db, $language )
+    public function retrieveLanguages($db, $language )
     {
         $languageLoader = new SpiceLanguageLoader();
         $languageLoader->loadLanguage( $language );
@@ -736,19 +737,11 @@ class SpiceInstaller
 
         if (!empty($db)) {
 
-            $this->createSystemTablesFromDump($db);
-
-            $this->loadSystemPackage($db);
-
-            $this->writeDictionaryToCacheTable();
-
-            $this->createDatabaseIndexes();
+            $this->initializeSystem($db, $postData['language']);
 
             $this->insertDefaultConfigs( $db, $postData );
 
             $this->createAdminUser($db, $postData);
-
-            $this->retrieveCoreandLanguages( $db, $postData['language'] );
 
         } else {
             $errors[] = "empty database instance";
@@ -778,11 +771,31 @@ class SpiceInstaller
     }
 
     /**
+     * create system tables and load system package and the passed language
+     * @param $db
+     * @param string|null $language
+     * @return void
+     * @throws Exception
+     */
+    public function initializeSystem($db, ?string $language): void
+    {
+        $this->createSystemTablesFromDump($db);
+
+        $this->loadSystemPackage($db);
+
+        $this->writeDictionaryToCacheTable();
+
+        $this->createDatabaseIndexes();
+
+        $this->retrieveLanguages( $db, $language );
+    }
+
+    /**
      * write dictionary array to the cache table
      * @return void
      * @throws Exception
      */
-    private function writeDictionaryToCacheTable()
+    public function writeDictionaryToCacheTable()
     {
         # write the definitions to the cache table
         $defsHandler = SpiceDictionaryDefinitions::getInstance();
@@ -797,7 +810,7 @@ class SpiceInstaller
      * @return void
      * @throws Exception
      */
-    private function createDatabaseIndexes()
+    public function createDatabaseIndexes()
     {
         $indexHandler = SpiceDictionaryIndexes::getInstance();
 
