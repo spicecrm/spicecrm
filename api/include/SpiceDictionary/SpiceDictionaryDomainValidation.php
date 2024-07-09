@@ -17,7 +17,13 @@ class SpiceDictionaryDomainValidation
 
     public $domainvalidation;
 
+    /**
+     * @param array|string $id
+     * @throws Exception
+     */
     public function __construct($id){
+        if(is_array($id)) $id = $id['id'];
+
         $this->id = $id;
 
         $res = DBManagerFactory::getInstance()->fetchOne("SELECT * FROM sysdomainfieldvalidations WHERE id='{$id}' AND status='a' AND deleted = 0");

@@ -46,6 +46,15 @@ export class modelutilities {
         return (this.S4() + this.S4() + "-" + this.S4() + "-" + this.S4() + "-" + this.S4() + "-" + this.S4() + this.S4() + this.S4());
     }
 
+    /**
+     * check if the string is a GUID
+     * @param param
+     */
+    public isGuid(param: string): boolean {
+        const regexExp: RegExp = new RegExp('^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$');
+        return regexExp.test(param) == true;
+    }
+
     /*
      Data transition functions
      */
