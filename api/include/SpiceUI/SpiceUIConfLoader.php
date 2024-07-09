@@ -230,6 +230,7 @@ class SpiceUIConfLoader
         }
 
         // gather tables and all the record IDs
+        $tables = [];
         foreach ($response as $conftable => $conf){
             foreach($conf as $recordId => $recordData){
                 $tables[$conftable][] = $recordId;

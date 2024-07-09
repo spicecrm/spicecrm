@@ -38,6 +38,7 @@ namespace SpiceCRM\includes\SpiceCache;
 
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 class SpiceCacheFile extends SpiceCacheAbstract
 {
@@ -63,15 +64,27 @@ class SpiceCacheFile extends SpiceCacheAbstract
     public function __construct()
     {
         parent::__construct();
-            // get the dirctory to store it
-            switch (SpiceConfig::getInstance()->get('cache.file_location')){
-                case 'systemdir':
-                    $this->_cacheDirectory = sys_get_temp_dir();
-                    break;
-                default:
-                    $this->_cacheDirectory = 'cache';
-                    break;
-            }
+        $this->_cacheDirectory = self::getCacheDirectory();
+    }
+
+    /**
+     * get cache directory
+     * @return string
+     */
+    public static function getCacheDirectory(): string
+    {
+        $dir = 'cache';
+
+        switch (SpiceConfig::getInstance()->get('cache.file_location')){
+            case 'systemdir':
+                $dir = sys_get_temp_dir();
+        }
+
+        if (!empty(SystemTenant::$currentTenantID)) {
+            $dir .= DIRECTORY_SEPARATOR . SystemTenant::$currentTenantID;
+        }
+
+        return $dir;
     }
 
     private function getCachedFileName($key){

@@ -34,7 +34,7 @@ export class calendar implements OnDestroy {
     /**
      * emits when a user calendar is refactored
      */
-    public userCalendarChange$ = new EventEmitter<{id: string, name: string, visible: boolean, color: string} | {id: string}>();
+    public userCalendarChange$ = new Subject<{id: string, name: string, visible: boolean, color: string, type: 'user' | 'other'} | {id: string, type: 'user' | 'other'}>();
     /**
      * holds the search term
      */
@@ -68,13 +68,19 @@ export class calendar implements OnDestroy {
      */
     public usersCalendars: {id: string, name: string, visible: boolean, color: string}[] = [];
     /**
-     * holds the other calendars
+     * holds the other users calendars
      */
-    public otherCalendars: any[] = [];
+    public availableCalendars: {id: string, name: string, visible: boolean, color: string, icon?: string}[] = [
+        {id: 'owner', name: 'LBL_MY_CALENDAR', color: '#039be5', icon: 'avatar', visible: true}
+    ];
+    /**
+     * holds the module calendars
+     */
+    public userModules: any[] = [];
     /**
      * holds the loaded calendar events
      */
-    public calendars: any = {};
+    public calendarData: any = {};
     /**
      * holds the current start date
      */
@@ -326,157 +332,104 @@ export class calendar implements OnDestroy {
      * @return boolean
      */
     public doReload(start, end, calendar) {
-        let noRecords = !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0);
+        let noRecords = !this.calendarData[calendar] || (this.calendarData[calendar] && this.calendarData[calendar].length == 0);
         let dateChanged = !this.currentStart[calendar] || !this.currentEnd[calendar] || !this.currentStart[calendar].isSame(start) || !this.currentEnd[calendar].isSame(end);
         return noRecords || dateChanged;
     }
 
     /**
-     * load other user events from backend and manipulate them before return
-     * @param startDate: moment
-     * @param endDate: moment
-     * @param userId: string
-     * @return observable of events
-     */
-    public loadUserEvents(startDate, endDate, userId) {
-
-        return this.loadEvents(startDate, endDate, this.owner, [userId], true)
-            .pipe(
-                map(events => {
-                    return events.map(event => {
-                        event.id = userId + event.id;
-                        event.otherColor = this.usersCalendars.find(calendar => calendar.id == userId).color;
-                        return event;
-                    });
-                })
-            );
-    }
-
-    /**
-     * load other users events from backend and manipulate them before return
-     * @param startDate: moment
-     * @param endDate: moment
-     * @return observable of events
-     */
-    public loadUsersEvents(startDate, endDate) {
-        const visibleUserCalendars = this.usersCalendars.filter(c => !!c.visible);
-        const visibleUserIds = visibleUserCalendars.map(c => c.id);
-        const calendarsObject = _.object(visibleUserIds, visibleUserCalendars);
-        if (visibleUserCalendars.length == 0) {
-            return of([]);
-        }
-        return this.loadEvents(startDate, endDate, this.owner, visibleUserIds)
-            .pipe(
-                map(events => {
-                    const resEvents = [];
-
-                    events.forEach(event => {
-
-                        // check if user assigned
-                        if (!!calendarsObject[event.data.assigned_user_id]) {
-                            event.otherColor = calendarsObject[event.data.assigned_user_id].color;
-                            resEvents.push(event);
-
-                            // check if user is participant
-                        } else if (!!event.data.meeting_user_status_accept) {
-                            const userId = visibleUserIds.find(userId => !!event.data.meeting_user_status_accept.beans[userId]);
-                            if (!userId) return;
-                            event.id = userId + event.id;
-                            event.otherColor = calendarsObject[userId].color;
-                            resEvents.push(event);
-                        }
-                    });
-                    return resEvents;
-                })
-            );
-    }
-
-    /**
      * load events from backend and manipulate them before saving them to array
-     * @param start: moment
-     * @param end: moment
-     * @param calendar: object
-     * @param users: string[]
-     * @param forceReload: boolean
      * @return events asObservable
+     * @param start
+     * @param end
+     * @param userId
+     * @param calendarId
+     * @param forceReload
      */
-    public loadEvents(start, end, calendar = this.owner, users = [], forceReload?) {
-        let userId = users.length > 0 ? 'users' : calendar;
-        if (forceReload || this.doReload(start, end, userId)) {
+    public loadEvents(start, end, userId: string, calendarId: string, forceReload?: boolean) {
+
+        const calendar = this.availableCalendars.find(c => c.id == calendarId);
+        const userCalendar = this.usersCalendars.find(c => c.id == userId);
+
+        if (forceReload || this.doReload(start, end, calendarId)) {
             this.isLoading = true;
             this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
-            let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users, searchTerm: this.searchTerm};
-            let endPoint = users.length > 0 ? 'module/Calendar/users/' : 'module/Calendar/';
-            this.currentEnd[userId] = end;
-            this.currentStart[userId] = start;
+            let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), searchTerm: this.searchTerm};
+            this.currentEnd[calendarId] = end;
+            this.currentStart[calendarId] = start;
 
-            this.backend.getRequest(endPoint + calendar, params)
-                .subscribe(events => {
-                    this.calendars[userId] = [];
+            this.backend.getRequest(`module/Calendar/${calendarId}/user/${userId}`, params)
+                .subscribe({
+                    next: events => {
+                        this.calendarData[calendarId] = [];
 
-                    for (let event of events) {
+                        for (let event of events) {
 
-                        if ((userId == this.owner && !!event.data.external_id && !!this.calendars.google && this.calendars.google.some(e => e.id == event.data.external_id)) ||
-                            this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) {
-                            continue;
-                        }
-
-                        switch (event.type) {
-                            case 'event':
-                                event.start = moment.utc(event.start).tz(this.timeZone).second(0);
-                                event.end = moment.utc(event.end).tz(this.timeZone).second(0);
-                                event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
-                                event.color = this.eventColor;
-                                break;
-                            case 'absence':
-                                event.start = moment(event.start).second(0);
-                                event.end = moment(event.end).second(0);
-                                event.isMulti = true;
-                                event.isAllDay = true;
-                                event.color = this.absenceColor;
-                                break;
-                            case 'other':
-                                event.start = moment(event.start).year(start.year()).second(0);
-                                event.end = moment(event.end).year(start.year()).second(0);
-                                event.isMulti = true;
-                                break;
-                        }
-
-                        const inRange = event.start.date() != event.end.date() || ((event.start.hour() >= this.startHour && event.start.hour() <= this.endHour) || (event.end.hour() >= this.startHour && event.end.hour() <= this.endHour));
-
-                        if (['Day', 'Three_Days', 'Week'].some(t => t == this.sheetType) && !inRange) {
-                            continue;
-                        }
-
-                        if (event.module == 'UserAbsences') {
-                            if (event.type == 'other') {
-                                event.data.summary_text = event.data.user_name;
-                                event.id = event.id + "-other";
-                                event.data.id = event.data.id + "-other";
-                            }
-                            if (this.absenceExists(event)) {
+                            if ((userId == this.owner && !!event.data.external_id && !!this.calendarData.google && this.calendarData.google.some(e => e.id == event.data.external_id)) ||
+                                (calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible))) {
                                 continue;
                             }
+
+                            event.calendarId = calendarId;
+
+                            event.start = moment.utc(event.start).tz(this.timeZone).second(0);
+                            event.end = moment.utc(event.end).tz(this.timeZone).second(0);
+
+                            switch (event.type) {
+                                case 'event':
+                                    event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
+                                    event.color = this.eventColor;
+                                    break;
+                                case 'Day':
+                                case 'Full':
+                                    event.start = event.start.hour(0);
+                                    event.end = moment(event.end).hour(23).minute(59).second(59);
+                                    event.isAllDay = true;
+                                    event.isMulti = true;
+                                    break;
+                            }
+
+                            if (userCalendar) {
+                                event.otherColor = userCalendar.color;
+                            } else if (calendarId != 'owner') {
+                                event.color = calendar.color;
+                            } else if (event.module == 'UserAbsences') {
+                                event.color = this.absenceColor;
+                            }
+
+                            this.calendarData[calendarId].push(event);
                         }
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
 
-                        this.calendars[userId].push(event);
+                        responseSubject.next(this.calendarData[calendarId]);
+                        responseSubject.complete();
+                    },
+                    error: err => {
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
+
+                        responseSubject.error(err);
+                        responseSubject.complete();
                     }
-                    this.isLoading = false;
-                    this.cdRef.detectChanges();
-
-                    responseSubject.next(this.calendars[userId]);
-                    responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
             let filteredEntries: any[] = [];
-            for (let event of this.calendars[userId]) {
-                if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
+            for (let event of this.calendarData[calendarId]) {
+                if (event.calendarId == 'owner' && this.userModules.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
                 if (event.start < end && event.end > start) {
                     event.start = moment(event.start).tz(this.timeZone).second(0);
                     event.end = moment(event.end).tz(this.timeZone).second(0);
+
+                    if (userCalendar) {
+                        event.otherColor = userCalendar.color;
+                    } else if (calendarId != 'owner') {
+                        event.color = calendar.color;
+                    }
+
                     filteredEntries.push(event);
                 }
             }
@@ -514,7 +467,7 @@ export class calendar implements OnDestroy {
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {startdate: startDate.format(format), enddate: endDate.format(format), searchTerm: this.searchTerm};
-            this.calendars.google = [];
+            this.calendarData.google = [];
             this.currentEnd.google = endDate;
             this.currentStart.google = startDate;
 
@@ -522,7 +475,7 @@ export class calendar implements OnDestroy {
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
-                            if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
+                            if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
                             event.start = moment(moment(event.start.dateTime ?? event.start.date)
                                 .format(!event.start.dateTime && !!event.start.date ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:00'));
@@ -533,18 +486,18 @@ export class calendar implements OnDestroy {
                             event.color = this.groupwareColor;
                             event.type = 'google';
 
-                            this.calendars.google.push(event);
+                            this.calendarData.google.push(event);
                         }
                     }
                     this.isLoading = false;
                     this.cdRef.detectChanges();
-                    responseSubject.next(this.calendars.google);
+                    responseSubject.next(this.calendarData.google);
                     responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
             let filteredEntries = [];
-            for (let event of this.calendars.google) {
+            for (let event of this.calendarData.google) {
                 if (event.start < endDate && event.end > startDate) {
                     filteredEntries.push(event);
                 }
@@ -567,35 +520,44 @@ export class calendar implements OnDestroy {
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {startdate: startDate.format(format), enddate: endDate.format(format), searchTerm: this.searchTerm};
-            this.calendars.microsoft = [];
+            this.calendarData.microsoft = [];
             this.currentEnd.microsoft = endDate;
             this.currentStart.microsoft = startDate;
 
             this.backend.getRequest(`channels/groupware/microsoft/calendar/events/${this.owner}`, params)
-                .subscribe(res => {
-                    if (res.events && res.events.length > 0) {
-                        for (let event of res.events) {
-                            if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
+                .subscribe({
+                    next: res => {
+                        if (res.events && res.events.length > 0) {
+                            for (let event of res.events) {
+                                if (!!this.calendarData['owner'] && this.calendarData['owner'].some(e => e.data.external_id == event.id)) continue;
 
-                            event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
-                            event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
+                                event.start = moment(moment.utc(event.start.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
+                                event.end = moment(moment.utc(event.end.dateTime).tz(this.timeZone).format('YYYY-MM-DD HH:mm:00'));
 
-                            event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
-                            event.color = this.groupwareColor;
-                            event.type = 'microsoft';
+                                event.isMulti = +event.end.diff(event.start, 'days', true) >= 1;
+                                event.color = this.groupwareColor;
+                                event.type = 'microsoft';
 
-                            this.calendars.microsoft.push(event);
+                                this.calendarData.microsoft.push(event);
+                            }
                         }
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
+                        responseSubject.next(this.calendarData.microsoft);
+                        responseSubject.complete();
+                    },
+                    error: err => {
+                        this.isLoading = false;
+                        this.cdRef.detectChanges();
+
+                        responseSubject.error(err);
+                        responseSubject.complete();
                     }
-                    this.isLoading = false;
-                    this.cdRef.detectChanges();
-                    responseSubject.next(this.calendars.microsoft);
-                    responseSubject.complete();
                 });
             return responseSubject.asObservable();
         } else {
             let filteredEntries = [];
-            for (let event of this.calendars.microsoft) {
+            for (let event of this.calendarData.microsoft) {
                 if (event.start < endDate && event.end > startDate) {
                     filteredEntries.push(event);
                 }
@@ -605,28 +567,18 @@ export class calendar implements OnDestroy {
     }
 
     /**
-     * get events for a specific calendar id
-     * @param calendar id
-     * @return events
-     */
-    public getEvents(calendar = this.owner) {
-        return this.calendars[calendar] ? this.calendars[calendar] : [];
-    }
-
-    /**
      * save the other calendar changes to the user preferences and reload to apply the change
-     * @param calendars: object[]
-     * @param save: boolean
-     * @param save: boolean
+     * @param calendars
+     * @param save
      */
-    public setOtherCalendars(calendars, save = true) {
+    public setUserModules(calendars, save = true) {
         if (!calendars) {
             return;
         }
 
-        this.otherCalendars = calendars;
+        this.userModules = calendars;
         if (save) {
-            this.userPreferences.setPreference("Other", this.otherCalendars, true, "Calendar");
+            this.userPreferences.setPreference("modules", this.userModules, true, "Calendar");
             this.triggerSheetReload();
         }
     }
@@ -649,7 +601,7 @@ export class calendar implements OnDestroy {
             color: color
         };
         usersCalendars.push(newCalendar);
-        this.userCalendarChange$.emit(newCalendar);
+        this.userCalendarChange$.next({...newCalendar, type: 'user'});
         this.setUserCalendars(usersCalendars.slice());
     }
 
@@ -664,10 +616,25 @@ export class calendar implements OnDestroy {
         }
         const calendar = this.usersCalendars.find(calendar => calendar.id == id);
         calendar.visible = false;
-        this.userCalendarChange$.emit(calendar);
+        this.userCalendarChange$.next({...calendar, type: 'user'});
 
         let usersCalendars = this.usersCalendars.filter(calendar => calendar.id != id);
         this.setUserCalendars(usersCalendars);
+    }
+
+    /**
+     * find the calendar to be removed and emit the calendar with visible false to reload the calendar events
+     * remove user calendar from usersCalendars and save the changes
+     * @param id
+     */
+    public removeAvailableCalendar(id: string) {
+        const calendar = this.availableCalendars.find(calendar => calendar.id == id);
+        calendar.visible = false;
+        this.userCalendarChange$.next({...calendar, type: 'other'});
+
+        this.setAvailableCalendars(
+            this.availableCalendars.filter(calendar => calendar.id != id)
+        );
     }
 
     /**
@@ -678,20 +645,26 @@ export class calendar implements OnDestroy {
         this.usersCalendars.some(calendar => {
             if (calendar.id == id) {
                 calendar.visible = !calendar.visible;
-                this.userCalendarChange$.emit(calendar);
                 this.setUserCalendars(this.usersCalendars.slice());
+                this.userCalendarChange$.next({...calendar, type: 'user'});
                 return true;
             }
         });
     }
 
     /**
-     * save the owner calendar visibility to the user preferences and emit the changes
+     * toggle user calendar visibility
+     * @param id
      */
-    public toggleOwnerCalendarVisible() {
-        this.ownerCalendarVisible = !this.ownerCalendarVisible;
-        this.userCalendarChange$.emit({id: 'owner'});
-        this.userPreferences.setPreference("ownerVisible", this.ownerCalendarVisible, true, "Calendar");
+    public toggleAvailableCalendarVisibility(id) {
+        this.availableCalendars.some(calendar => {
+            if (calendar.id == id) {
+                calendar.visible = !calendar.visible;
+                this.setAvailableCalendars(this.availableCalendars.slice());
+                this.userCalendarChange$.next({...calendar, type: 'other'});
+                return true;
+            }
+        });
     }
 
     /**
@@ -704,21 +677,51 @@ export class calendar implements OnDestroy {
         this.usersCalendars = calendars;
 
         if (save) {
-            this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
+            this.userPreferences.setPreference("users", this.usersCalendars, true, "Calendar");
+        }
+    }
+
+    /**
+     * save the user calendar changes to the user preferences and emit the changes
+     * @param calendars
+     * @param save boolean
+     */
+    public setAvailableCalendars(calendars, save = true) {
+        if (!calendars) return;
+        this.availableCalendars = calendars;
+
+        if (save) {
+            this.userPreferences.setPreference("availableCalendars", this.availableCalendars, true, "Calendar");
         }
     }
 
     /**
      * set user color and save the changes then emit them
-     * @param id: string
-     * @param color: string<hex>
+     * @param id
+     * @param color
      */
-    public setUserColor(id, color) {
+    public setUserColor(id: string, color: string) {
         this.usersCalendars.some(calendar => {
             if (calendar.id == id) {
                 calendar.color = color;
                 this.setUserCalendars(this.usersCalendars);
-                this.otherCalendarsColor$.emit({id: id, color: color});
+                this.userCalendarChange$.next({...calendar, type: 'user'});
+                return true;
+            }
+        });
+    }
+
+    /**
+     * set user color and save the changes then emit them
+     * @param id
+     * @param color
+     */
+    public setCalendarColor(id, color) {
+        this.availableCalendars.some(calendar => {
+            if (calendar.id == id) {
+                calendar.color = color;
+                this.setAvailableCalendars(this.availableCalendars);
+                this.userCalendarChange$.next({...calendar, type: 'other'});
                 return true;
             }
         });
@@ -830,8 +833,8 @@ export class calendar implements OnDestroy {
 
     /**
      * get the matched dropTarget on the event left top corner and pass the target data to onDrop method in the event component
-     * @param dragEvent: CdkDragEnd
-     * @param dropTargets: CalendarSheetDropTarget
+     * @param dragEvent
+     * @param dropTargets
      */
     public onEventDrop(dragEvent: CdkDragEnd, dropTargets) {
         dropTargets.some(target => {
@@ -864,9 +867,9 @@ export class calendar implements OnDestroy {
      * @param id: string
      */
     public removeGoogleEvent(id: string) {
-        this.calendars.google.some((event, index) => {
+        this.calendarData.google.some((event, index) => {
             if (event.id == id) {
-                this.calendars.google.splice(index, 1);
+                this.calendarData.google.splice(index, 1);
                 this.cdRef.detectChanges();
                 return true;
             }
@@ -878,9 +881,9 @@ export class calendar implements OnDestroy {
      * @param id: string
      */
     public removeMicrosoftEvent(id: string) {
-        this.calendars.microsoft.some((event, index) => {
+        this.calendarData.microsoft.some((event, index) => {
             if (event.id == id) {
-                this.calendars.microsoft.splice(index, 1);
+                this.calendarData.microsoft.splice(index, 1);
                 this.refresh();
                 return true;
             }
@@ -898,15 +901,6 @@ export class calendar implements OnDestroy {
     }
 
     /**
-     * check if the field has a valid value
-     * @param field
-     * @return boolean
-     */
-    public isValid(field): boolean {
-        return field && typeof field === 'object' && field.isValid();
-    }
-
-    /**
      * load the modules which have the flag 'show in calendar' in the fts configs
      */
     public loadCalendarModules() {
@@ -918,64 +912,29 @@ export class calendar implements OnDestroy {
     }
 
     /**
-     * check if an absence event exists
-     * @param event: object
-     * @return boolean
-     */
-    public absenceExists(event): boolean {
-        let found = false;
-        for (let prop in this.calendars) {
-            if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id == event.id && cEvent.type == event.type)) {
-                found = true;
-                break;
-            }
-        }
-        return !!found;
-    }
-
-    /**
      * subscribe to model and timezone changes and apply the changes in the calendar
      */
     public broadcastSubscriber() {
         let subscriber = this.broadcast.message$.subscribe(message => {
-            let id = message.messagedata.id;
-            let module = message.messagedata.module;
-            let data = message.messagedata.data;
+            const module = message.messagedata.module;
             if (message.messagetype == 'timezone.changed') {
                 this.timeZone = message.messagedata;
                 this.triggerSheetReload();
             }
             if (this.modules.some(thisModule => thisModule.name == module)) {
+
+                if (!this.calendarData.owner) return;
+
                 switch (message.messagetype) {
                     case "model.save":
-                        let uid = data.assigned_user_id;
-                        let isOtherUser = this.calendars.users && this.calendars.users.some(user => user.id == uid);
-                        if (!this.calendars[uid] && !isOtherUser) {
-                            return;
-                        }
-
-                        if (isOtherUser) uid = 'users';
-                        const isModified = this.modifyEvent(id, module, data, uid);
-
-                        if (!isModified && this.isValid(data.date_end) && this.isValid(data.date_start)) {
-                            this.calendars[uid].push({
-                                id: id,
-                                module: module,
-                                type: 'event',
-                                start: data.date_start,
-                                end: data.date_end,
-                                isMulti: +data.date_end.diff(data.date_start, 'days', true) >= 1,
-                                data: data
-                            });
-                        }
-                        this.triggerSheetReload();
-                        this.cdRef.markForCheck();
+                        this.refresh();
+                        this.cdRef.detectChanges();
                         break;
                     case "model.delete":
-                        if (!this.calendars[this.owner]) {
+                        if (!this.calendarData.owner) {
                             return;
                         }
-                        this.removeEvent(id, module);
+                        this.removeEvent(message.messagedata.id, module);
                         break;
                 }
             }
@@ -984,43 +943,16 @@ export class calendar implements OnDestroy {
     }
 
     /**
-     * modify event date after drop
+     * remove the event from calendar if it's been deleted
      * @param id
      * @param module
-     * @param data
-     * @param calendarId
-     * @return boolean
-     */
-    public modifyEvent(id: string, module: string, data, calendarId: string) {
-        if (!this.isValid(data.date_start) || !this.isValid(data.date_end)) {
-            return true;
-        }
-        if (data.date_start > this.currentEnd && data.date_end < this.currentStart) {
-            this.removeEvent(id, module);
-            return true;
-        }
-        let event = this.calendars[calendarId].find(thisevent => thisevent.data.id == id);
-        if (event) {
-            event.start = data.date_start;
-            event.end = data.date_end;
-            event.isMulti = +data.date_end.diff(data.date_start, 'days', true) >= 1;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * remove the event from calendar if it's been deleted
-     * @param id: string
-     * @param module: string
      */
     public removeEvent(id: string, module: string) {
-        this.calendars[this.owner].some((event, index) => {
+        this.calendarData.owner.some((event, index) => {
             if (event.data.id == id && module == event.module) {
-                this.calendars[this.owner].splice(index, 1);
+                this.calendarData.owner.splice(index, 1);
                 this.triggerSheetReload();
-                this.cdRef.markForCheck();
+                this.cdRef.detectChanges();
                 return true;
             }
         });
@@ -1053,11 +985,11 @@ export class calendar implements OnDestroy {
         this.userPreferences.loadPreferences("Calendar")
             .pipe(take(1))
             .subscribe(calendars => {
-                this.ownerCalendarVisible = calendars?.hasOwnProperty('ownerVisible') ? calendars?.ownerVisible: true;
                 if (calendars) {
                     this._sheetType = calendars.sheetType ?? 'Week';
                     this.setUserCalendars(calendars.Users, false);
-                    this.setOtherCalendars(calendars.Other, false);
+                    this.setUserModules(calendars.modules, false);
+                    this.setAvailableCalendars(calendars.availableCalendars, false);
                 }
                 this.userPreferencesLoaded = true;
             });

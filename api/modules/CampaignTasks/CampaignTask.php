@@ -712,7 +712,7 @@ class CampaignTask extends SpiceBean
      * @throws Exception
      */
     public function genereateServiceFeedbacks(){
-        $this->generateServiceFeedbacks();
+        return $this->generateServiceFeedbacks();
     }
 
     /**
