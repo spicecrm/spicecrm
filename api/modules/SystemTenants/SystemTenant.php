@@ -263,6 +263,10 @@ class SystemTenant extends SpiceBean
      */
     public static function processTenantSwitch(): void
     {
+        if (!SpiceConfig::getInstance()->get('multitenancy.enabled')) {
+            return;
+        }
+
         $authParams = RESTManager::getInstance()->parseAuthParams();
 
         if (!empty($authParams->tenantID)) {
