@@ -79,8 +79,8 @@ class EmailTemplate extends SpiceBean {
             'body_html' => $this->parseHTMLTextField('body_html', $bean, $additionalValues, $additionalBeans ),
             'attachments' => array_merge($this->getAttachmentsWithFiles(), $pdfFiles)
         ];
+        $retArray['subject'] = preg_replace('#\s+#', ' ', trim( $retArray['subject'] )); // multiple white spaces -> one
 
-        $retArray['subject'] = preg_replace('#\s+#', ' ', $retArray['subject'] ); // multiple white spaces -> one
         return $this->callContentMethod($retArray, $bean);
     }
 
@@ -131,6 +131,7 @@ class EmailTemplate extends SpiceBean {
 
         return $attachments;
     }
+
 
     /**
      * call the content method and return the adjusted html content by the method
