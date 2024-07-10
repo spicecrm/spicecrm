@@ -178,7 +178,7 @@ class SpiceDictionary
      * @return bool
      * @throws DatabaseException
      */
-    public function generateSystemDumpFile(): bool
+    public function generateSystemDumpFile(): string
     {
         $systemDictionary = [];
         SpiceDictionaryDefinitions::getInstance()->reloadItems();
@@ -191,13 +191,11 @@ class SpiceDictionary
         foreach ($systemDefinitions as $systemDefinition){
             if(isset($this->dictionary[$systemDefinition])) $systemDictionary[$systemDefinition] = $this->dictionary[$systemDefinition];
         }
-        $fHandle = fopen(self::systemdump, 'w');
-        fwrite($fHandle, serialize([
+
+        return serialize([
             'dictionary' => $systemDictionary,
             'hash' => md5(serialize($systemDictionary))
-        ]));
-        fclose($fHandle);
-        return true;
+        ]);
     }
 
     /**
