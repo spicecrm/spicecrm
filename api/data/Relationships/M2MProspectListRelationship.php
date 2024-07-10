@@ -6,6 +6,7 @@ use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class M2MProspectListRelationship extends M2MRelationship
 {
@@ -117,6 +118,49 @@ class M2MProspectListRelationship extends M2MRelationship
         return [
             "rows" => $rows
         ];
+    }
+
+    protected function getRowToInsert($lhs, $rhs, $additionalFields = [])
+    {
+        // 20reasons modification for mobile Client to get created relationship ID
+        $this->relid = SpiceUtils::createGuid();
+        $row = [
+            "id" => $this->relid,
+            $this->def['join_key_lhs'] => $lhs->id,
+            $this->def['join_key_rhs'] => $rhs->id,
+            'date_modified' => TimeDate::getInstance()->nowDb(),
+            'deleted' => 0,
+        ];
+
+
+        if (!empty($this->def['relationship_role_column']) && !empty($this->def['relationship_role_column_value']) && !$this->ignore_role_filter )
+        {
+            $row[$this->relationship_role_column] = $this->relationship_role_column_value;
+        }
+
+        if (!empty($this->def['fields']))
+        {
+            foreach($this->def['fields'] as $fieldDef)
+            {
+                if (!empty($fieldDef['name']) && !isset($row[$fieldDef['name']]) && !empty($fieldDef['default']))
+                {
+                    $row[$fieldDef['name']] = $fieldDef['default'];
+                }
+            }
+        }
+        if (!empty($additionalFields))
+        {
+            if(isset($additionalFields['email_addr_bean_rel_id'])){
+                foreach ($rhs->mergeRelatedData['email_addresses']['newEmailMergeData'] as $key){
+                    if(array_key_exists($key['id'], $rhs->mergeRelatedData['email_addresses']['existingEmailMergeData']) && $additionalFields['email_addr_bean_rel_id']=== $rhs->mergeRelatedData['email_addresses']['existingEmailMergeData'][$key['id']]['relid']){
+                        $additionalFields['email_addr_bean_rel_id'] = $key['relid'];
+                    }
+                }
+            }
+            $row = array_merge($row, $additionalFields);
+        }
+
+        return $row;
     }
 
 
