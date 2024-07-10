@@ -32,8 +32,6 @@ import {EmailSchedulesRelatedModal} from "./components/emailschedulesrelatedmoda
 import {EmailSchedulesView} from "./components/emailschedulesview";
 import {EmailSchedulesBeans} from "./components/emailschedulesbeans";
 import {EmailActionSetReadButton} from "./components/emailactionsetreadbutton";
-import {EmailTemplatesEditor} from "./components/emailtemplateseditor";
-import {EmailTemplatesPreview} from "./components/emailtemplatespreview";
 import {fieldEmailSubject} from "./fields/fieldemailsubject";
 import {fieldEmailActivityOpenness} from "./fields/fieldemailactivityopenness";
 import {EmailParentAddressesModal} from "./components/emailparentaddressesmodal";
@@ -78,8 +76,6 @@ import {fieldReadReceipt} from "./fields/fieldreadreceipt";
         EmailSchedulesView,
         EmailSchedulesBeans,
         EmailActionSetReadButton,
-        EmailTemplatesEditor,
-        EmailTemplatesPreview,
         EmailParentAddressesModal,
         fieldEmailSubject,
         fieldEmailActivityOpenness,
