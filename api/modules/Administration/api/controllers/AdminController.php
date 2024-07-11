@@ -12,7 +12,6 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -515,62 +514,6 @@ class AdminController
 
         // rebuild relationship cache
         SpiceDictionaryVardefs::build_relationship_cache();
-    }
-
-    /**
-     * clears language cache and repairs the language extensions
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function repairLanguage(Request $req, Response $res, array $args): Response {
-        $appListStrings = [];
-        $appLang = [];
-        $langs = LanguageManager::getLanguages();
-
-        foreach ($langs['available'] as $lang) {
-            if($lang['system_language']){
-                $language = $lang['language_code'];
-                $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-                $appListStrings[$language][] = SpiceUtils::returnAppListStringsLanguage($language);
-                $appLang[$language][] = $this->loadLanguage($language);
-            }
-        }
-
-        if (!empty($appListStrings) && !empty($appLang)) {
-            $response = 'ok';
-        } else {
-            $response = 'e';
-        }
-
-        return $res->withJson(['response' => $response,
-            'appList' => $appListStrings,
-            'appLang' => $appLang,
-            'languages' => $langs]);
-    }
-
-    /**
-     * loads the applang labels for a language
-     * @param $lang
-     * @return array
-     */
-    private function loadLanguage($lang)
-    {
-        $syslanguagelabels = LanguageManager::loadDatabaseLanguage($lang);
-        $syslanguages = [];
-        if (is_array($syslanguagelabels)) {
-            foreach ($syslanguagelabels as $syslanguagelbl => $syslanguagelblcfg) {
-                $syslanguages[$syslanguagelbl] = [
-                    'default' => $syslanguagelblcfg['default'],
-                    'short' => $syslanguagelblcfg['short'],
-                    'long' => $syslanguagelblcfg['long'],
-                ];
-            }
-        }
-
-        return $syslanguages;
     }
 
     /**

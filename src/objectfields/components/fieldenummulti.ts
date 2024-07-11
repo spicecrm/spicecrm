@@ -4,7 +4,7 @@
 import {Component, ElementRef, OnInit, Renderer2} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
+import {EnumDisplayOptionObject, language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
@@ -14,7 +14,7 @@ import {Router} from '@angular/router';
     templateUrl: '../templates/fieldenummulti.html'
 })
 export class fieldEnumMulti extends fieldGeneric implements OnInit {
-    public options: any[] = [];
+    public options: EnumDisplayOptionObject = {};
     public selectedValues: any[] = [];
 
     constructor(
@@ -82,7 +82,7 @@ export class fieldEnumMulti extends fieldGeneric implements OnInit {
 
     public buildOptions() {
         // reset the options
-        this.options = [];
+        this.options = {};
         this.selectedValues = this.getValueArray();
         this.options = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
     }
