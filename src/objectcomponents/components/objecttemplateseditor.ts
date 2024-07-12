@@ -10,22 +10,22 @@ import {
     OnDestroy,
     OnInit
 } from "@angular/core";
-import {model} from "../../../services/model.service";
+import {model} from "../../services/model.service";
 import {Subscription} from "rxjs";
-import {view} from "../../../services/view.service";
-import {modal} from "../../../services/modal.service";
+import {view} from "../../services/view.service";
+import {modal} from "../../services/modal.service";
 
 
 /**
  * renders a tabbed view for email template body
  */
 @Component({
-    selector: 'email-templates-editor',
-    templateUrl: "../templates/emailtemplateseditor.html",
+    selector: 'object-templates-editor',
+    templateUrl: "../templates/objecttemplateseditor.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [view]
 })
-export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
+export class ObjectTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     /**
      * holds the component config load from parent
      */

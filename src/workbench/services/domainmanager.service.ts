@@ -254,7 +254,6 @@ export class domainmanager {
                             sequence: 0
                         });
 
-                        let options = this.language.languagedata.applist[table[field].options];
                         let i = 0;
                         for (let option in options) {
                             this.domainfieldvalidationvalues.push({

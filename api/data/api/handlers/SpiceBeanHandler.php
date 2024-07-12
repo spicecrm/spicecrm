@@ -97,32 +97,6 @@ class SpiceBeanHandler
         return $modLang;
     }
 
-    public function get_dynamic_domains($modules, $language)
-    {
-        $dynamicDomains = [];
-
-        foreach ($modules as $module) {
-
-            $thisBean = BeanFactory::getBean($module);
-            if ($thisBean) {
-                $fieldDefs = $thisBean->getFieldDefinitions();
-
-                //$domainFunctions = array_map(function($fieldDef) { return isset($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function'] : [];} , SpiceDictionaryHandler::getInstance()->dictionary[$beanList[$module]]['fields']);
-                $fieldDefsWithDomainFunction = array_filter($fieldDefs, function ($fieldDef) {
-                    return isset($fieldDef['spice_domain_function']);
-                });
-
-                foreach ($fieldDefsWithDomainFunction as $fieldDef) {
-                    $functionName = is_array($fieldDef['spice_domain_function']) ? $fieldDef['spice_domain_function']['name'] : $fieldDef['spice_domain_function'];
-                    $domainKey = 'spice_domain_function_' . strtolower($functionName) . '_dom';
-                    $dynamicDomains[$domainKey] = $this->processSpiceDomainFunction($thisBean, $fieldDef, $language);
-                }
-            }
-        }
-
-        return $dynamicDomains;
-    }
-
     /**
      * prepare filter context when the list ist retrieved within a bean context
      * @param array $searchParams
@@ -2337,39 +2311,11 @@ class SpiceBeanHandler
         $db->query("INSERT INTO spiceuitrackers (id, user_id, date_entered, record_module, record_id, record_summary) VALUES('" . SpiceUtils::createGuid() . "', '{$current_user->id}', '" . $timedate->nowDb() . "', '{$module}', '{$bean->id}', '" . $bean->get_summary_text() . "')");
     }
 
-    private function processSpiceDomainFunction($thisBean, $fieldDef, $language)
-    {
-
-        if (isset($fieldDef['spice_domain_function'])) {
-            $function = $fieldDef['spice_domain_function'];
-            if (is_array($function) && isset($function['name'])) {
-                $function = $fieldDef['spice_domain_function']['name'];
-            } else {
-                $function = $fieldDef['spice_domain_function'];
-            }
-
-            if (isset($fieldDef['spice_domain_function']['include']) && file_exists($fieldDef['spice_domain_function']['include'])) {
-                require_once($fieldDef['spice_domain_function']['include']);
-            }
-
-            $domain = call_user_func($function, $thisBean, $fieldDef['name'], $language);
-            return $domain;
-
-        } else {
-            return [];
-        }
-    }
-
-
     public function getLanguage($modules, $language = null)
     {
 
         // see if we have a language passed in .. if not use the default
         if (empty($language)) $language = SpiceLanguageManager::getInstance()->getSystemDefaultLanguage();
-
-        $dynamicDomains = $this->get_dynamic_domains($modules, $language);
-        $appListStrings = SpiceUtils::returnAppListStringsLanguage($language);
-        $appStrings = array_merge($appListStrings, $dynamicDomains);
 
         // grab labels from syslanguagetranslations
         $syslanguagelabels = LanguageManager::loadDatabaseLanguage($language);
@@ -2397,7 +2343,6 @@ class SpiceBeanHandler
         $responseArray = [
             'languages' => LanguageManager::getLanguages(),
             'applang' => $syslanguages,
-            'applist' => $appStrings
         ];
 
 
