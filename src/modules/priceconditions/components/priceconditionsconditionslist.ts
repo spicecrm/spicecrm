@@ -97,10 +97,6 @@ export class PriceConditionsConditionsList implements OnInit {
      */
     public getValueFromKey(key, element) {
         let val = key.substring(element.element_start, element.element_start + element.element_length);
-        if (element.element_domain && this.language.languagedata.applist[element.element_domain]) {
-            let textval = this.language.languagedata.applist[element.element_domain][val];
-            if (textval) val = textval;
-        }
-        return val;
+        return this.language.getTranslatedDisplayOption(element.element_domain, val) ?? '';
     }
 }
