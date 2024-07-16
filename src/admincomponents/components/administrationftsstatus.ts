@@ -96,7 +96,7 @@ export class AdministrationFTSStatus {
                             tsize: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
                             stored: response.stats.indexed[index]?.count ? response.stats.indexed[index].count : 'error: check spicecrm.log',
                             unindexed: response.stats.indexed[index]?.unindexed ? response.stats.indexed[index].unindexed : 'error: check spicecrm.log',
-                            erroneous: response.stats.indexed[index].erroneous,
+                            erroneous: response.stats.indexed[index]?.erroneous ? response.stats.indexed[index].erroneous : 'error: check spicecrm.log',
                             blocked: (response.settings && response.settings[index] && response.settings[index].settings.index.blocks?.read_only_allow_delete) ? true : false
                         });
                     }
