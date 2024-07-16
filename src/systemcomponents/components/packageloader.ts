@@ -93,8 +93,8 @@ export class PackageLoader {
         this.opencrs = false;
         this.errorpackages = [];
 
-        this.backend.getRequest('configuration/packages' + this.repositoryaddurl).subscribe(
-            (res) => {
+        this.backend.getRequest('configuration/packages' + this.repositoryaddurl).subscribe({
+            next: (res) => {
                 this.loading = false;
                 try {
                     let availableLanguages = this.language.getAvialableLanguages(true);
@@ -128,10 +128,10 @@ export class PackageLoader {
                     console.error(e);
                 }
             },
-            (err) => {
+            error: (err) => {
                 this.loading = false;
-            },
-        );
+            }
+        });
     }
 
     public selectRepository(repository) {
