@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import {modal} from "../../../services/modal.service";
-import {ModuleLinkedInProfiles} from "../linkedinprofiles";
+import {model} from "../../../services/model.service";
+
 
 /* @ignore */
 
@@ -12,4 +12,8 @@ import {ModuleLinkedInProfiles} from "../linkedinprofiles";
 export class LinkedInProfilesHeader  {
 
 
+    constructor(
+        public model: model
+    ) {
+    }
 }
