@@ -1,4 +1,6 @@
-<div class="slds-box--border">
-    ich bin der header
+<div class="slds-box--border slds-is-relative slds-p-around--xx-small">
     <img [src]="model.data.profile_background_image_base64">
+    <img [ngStyle]="cssStyles()" [src]="model.data.profile_picture_base64">
+
+    <div [ngStyle]="{'background-image': 'url(' + model.data.profile_background_image_base64 + ')'}"></div>
 </div>
