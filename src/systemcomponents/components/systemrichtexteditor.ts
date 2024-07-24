@@ -175,7 +175,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         return this.isExpanded ? {
             height: '100vh',
             resize: 'none',
-            position: 'fixed'
+            position: 'fixed',
+            'z-index': 9999
         } : {height: (+this.innerHeight + (this.readOnly ? 0 : 50)) + 'px'};
     }
 
