@@ -36,6 +36,7 @@
 
 namespace SpiceCRM\includes\database;
 
+use Exception;
 use SpiceCRM\data\SpiceBean;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\resource\ResourceManager;
@@ -562,18 +563,18 @@ abstract class DBManager
      * @param array $data key/value pairs
      * @param bool $execute boolean execute the query on true, return the query on false
      * @return mixed query result | false
+     * @throws Exception
      */
     public function insertQuery($table, array $data, $execute = true)
     {
-        // find the dictionary table
-        foreach (SpiceDictionary::getInstance()->dictionary as $dictionaryName => $dictionaryDefs) {
-            if ($dictionaryDefs['table'] == $table) {
-                return $this->insertParams($table, $dictionaryDefs['fields'], $data, null, $execute);
-            }
+        $def = SpiceDictionary::getInstance()->getDefsByTableName($table);
+
+        if (!$def) {
+            $this->last_error = "Dictionary was not found for table $table";
+            return false;
         }
 
-        $this->last_error = "Dictionary was not found for table $table";
-        return false;
+        return $this->insertParams($table, $def['fields'], $data, null, $execute);
     }
 
     /**
@@ -583,18 +584,28 @@ abstract class DBManager
      * @param array $pks key/value pairs of primary/unique keys
      * @param array $data key/values of fields to update
      * @return bool query result
+     * @throws Exception
      */
     public function updateQuery($table, array $pks, array $data, $execute = true)
     {
+        $def = SpiceDictionary::getInstance()->getDefsByTableName($table);
+
+        if (!$def) {
+            $this->last_error = "Dictionary was not found for table $table";
+            return false;
+        }
+
+        $data = $this->prepareData($data, $def['fields']);
+
         foreach ($data as $key => $val) {
-            // do not set the PKs
             if(isset($pks[$key])) continue;
-            $sets[] = "`$key` = '{$this->quote($val)}'";
+            $sets[] = "`$key` = $val";
         }
 
         foreach ($pks as $key => $val) {
             $wheres[] = "`$key` = '{$this->quote($val)}'";
         }
+
         $query = "UPDATE $table SET " . implode(',', $sets) . " WHERE " . implode(' AND ', $wheres);
 
         return $execute ? $this->query($query) : $query;
@@ -660,46 +671,47 @@ abstract class DBManager
      */
     public function insertParams($table, $field_defs, $data, $field_map = null, $execute = true)
     {
-        $values = [];
-        foreach ($field_defs as $fieldIdx => $fieldDef) {
-            $field = $fieldDef['name'];
-            if (isset($fieldDef['source']) && $fieldDef['source'] != 'db') continue;
-            //custom fields handle there save seperatley
-            if (!empty($field_map) && !empty($field_map[$field]['custom_type'])) continue;
+        $values = $this->prepareData($data, $field_defs);
 
-			if(isset($data[$field])) {
-				// clean the incoming value..
-				$val = $data[$field];
-			} else {
-				if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
-					$val = $fieldDef['default'];
-				} else {
-					$val = null;
-				}
-			}
-
-            //handle auto increment values here - we may have to do something like nextval for oracle
-            if (!empty($fieldDef['auto_increment'])) {
-                $auto = $this->getAutoIncrementSQL($table, $fieldDef['name']);
-                if (!empty($auto)) {
-                    $values[$field] = $auto;
-                }
-            } elseif ($fieldDef['name'] == 'deleted') {
-                $values['deleted'] = (int)$val;
-            } else {
-                // need to do some thing about types of values
-                if (!is_null($val) || !empty($fieldDef['required'])) {
-                    $values[$field] = $this->massageValue($val, $fieldDef);
-                }
-            }
-        }
-
-        if (empty($values))
-            return $execute ? true : ''; // no columns set
+        if (empty($values)) return $execute ? true : ''; // no columns set
 
         // get the entire sql
         $query = "INSERT INTO $table (" . implode(",", array_keys($values)) . ") VALUES (" . implode(",", $values) . ")";
         return $execute ? $this->query($query, true) : $query;
+    }
+
+    /**
+     * prepare the data array to insert or update query
+     * @param array $data
+     * @param array $field_defs
+     * @return array
+     */
+    private function prepareData(array $data, array $field_defs): array
+    {
+        $values = [];
+
+        foreach ($field_defs as $fieldDef) {
+
+            $field = $fieldDef['name'];
+
+            if (isset($fieldDef['source']) && $fieldDef['source'] != 'db') continue;
+
+            $val = null;
+
+            if (isset($data[$field])) {
+                $val = $data[$field];
+            } else if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
+                $val = $fieldDef['default'];
+            }
+
+            if ($fieldDef['name'] == 'deleted') {
+                $values['deleted'] = (int) $val;
+            } else if (!is_null($val) || !empty($fieldDef['required'])) {
+                $values[$field] = $this->massageValue($val, $fieldDef);
+            }
+        }
+
+        return $values;
     }
 
     /**
