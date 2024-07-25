@@ -64,7 +64,7 @@ export class ServiceTicketCloseModal {
      * cheks if the deviation reason for the sla is set
      */
     get canSave() {
-        return !this.model.getFieldStati('sladeviation_reason').invalid;
+        return this.model.getField('sladeviation_reason').length > 0;
     }
 
     /**
