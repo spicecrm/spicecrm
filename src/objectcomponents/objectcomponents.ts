@@ -132,6 +132,7 @@ import {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
 import {ObjectRelatedCard} from './components/objectrelatedcard';
 import {ObjectRelatedList} from './components/objectrelatedlist';
 import {ObjectRelatedlistList} from './components/objectrelatedlistlist';
+import {ObjectRelatedlistCards} from './components/objectrelatedlistcards';
 import {ObjectRelatedListItem} from './components/objectrelatedlistitem';
 import {ObjectRelatedlistTiles} from './components/objectrelatedlisttiles';
 import {ObjectRelatedCardTile} from './components/objectrelatedcardtile';
@@ -343,6 +344,7 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectRelatedCardFooter,
         ObjectRelatedList,
         ObjectRelatedlistList,
+        ObjectRelatedlistCards,
         ObjectRelatedListItem,
         ObjectRelatedlistTiles,
         ObjectRelatedCardTile,
