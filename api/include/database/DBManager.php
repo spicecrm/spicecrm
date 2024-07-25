@@ -671,7 +671,7 @@ abstract class DBManager
      */
     public function insertParams($table, $field_defs, $data, $field_map = null, $execute = true)
     {
-        $values = $this->prepareData($data, $field_defs);
+        $values = $this->prepareData($data, $field_defs, true);
 
         if (empty($values)) return $execute ? true : ''; // no columns set
 
@@ -684,9 +684,10 @@ abstract class DBManager
      * prepare the data array to insert or update query
      * @param array $data
      * @param array $field_defs
+     * @param bool $withDefaults
      * @return array
      */
-    private function prepareData(array $data, array $field_defs): array
+    private function prepareData(array $data, array $field_defs, bool $withDefaults = false): array
     {
         $values = [];
 
@@ -694,7 +695,7 @@ abstract class DBManager
 
             $field = $fieldDef['name'];
 
-            if (!isset($data[$field]) || (isset($fieldDef['source']) && $fieldDef['source'] != 'db')) continue;
+            if ((!isset($data[$field]) && (!$withDefaults || !isset($fieldDef['default']))) || (isset($fieldDef['source']) && $fieldDef['source'] != 'db')) continue;
 
             $values[$field] = $this->massageValue($data[$field], $fieldDef);
         }
