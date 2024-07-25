@@ -19,8 +19,8 @@
             <div *ngIf="jobPositions; else noInformation" >
                 <div *ngFor="let position of jobPositions; let i = index;">
                     <div [ngClass]="{'slds-border--bottom': i < jobPositions.length - 1}">
-                        <div class="slds-grid slds-p-vertical--x-small slds-grid_vertical-align-center">
-                            <div style="width: 50px; height: 50px;">
+                        <div class="slds-grid slds-p-vertical--x-small slds-grid_vertical-align-center" style="flex: 0 0 auto">
+                            <div class="slds-size--1-of-5">
                                 <img *ngIf="position.company_logo_base64" [src]="position.company_logo_base64" alt="company logo" style="width: 100%; height: auto; max-width: 100%;">
                             </div>
                             <div class="slds-m-left--medium">
