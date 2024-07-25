@@ -25,7 +25,7 @@
                             </div>
                             <div class="slds-m-left--medium">
                                 <div class="slds-text-heading--small">{{position.position_title}}</div>
-                                <div><a [href]="position.company_url">{{ position.company_name }}</a></div>
+                                <div><a target="_blank" [href]="position.company_url">{{ position.company_name }}</a></div>
                                 <div class="slds-text-color_weak">
                                     <span>{{formatYearMonthName(position.date_start)}} - </span>
                                     <span *ngIf="position.date_end">{{formatYearMonthName(position.date_end)}} &middot; </span>

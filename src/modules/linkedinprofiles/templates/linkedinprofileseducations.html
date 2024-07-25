@@ -23,7 +23,7 @@
                             <div>
                                 <div class="slds-text-heading--small">
                                     <div *ngIf="education.institution_url">
-                                        <a [href]="education.institution_url">{{ education.institution_name }}</a>
+                                        <a target="_blank" [href]="education.institution_url">{{ education.institution_name }}</a>
                                     </div>
                                     <div *ngIf="!education.institution_url">
                                         <span>{{ education.institution_name }}</span>
