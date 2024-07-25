@@ -72,7 +72,6 @@ export class ServiceTicketCloseModal {
      */
     public setStatus() {
         if(!this.canSave) return;
-        this.model.startEdit(true);
         this.model.setField('serviceticket_status', 'Closed');
         if (this.model.validate()) {
             this.model.save();
