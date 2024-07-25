@@ -12,6 +12,7 @@ import {DirectivesModule} from "../../directives/directives";
 
 import {LinkedInProfilesHeader} from "./components/linkedinprofileheader";
 import {LinkedInProfilesPositions} from "./components/linkedinprofilepositions";
+import {LinkedInProfilesEducations} from "./components/linkedinprofileseducations";
 
 
 @NgModule( {
@@ -25,7 +26,8 @@ import {LinkedInProfilesPositions} from "./components/linkedinprofilepositions";
     ],
     declarations: [
         LinkedInProfilesHeader,
-        LinkedInProfilesPositions
+        LinkedInProfilesPositions,
+        LinkedInProfilesEducations
     ]
 })
 export class ModuleLinkedInProfiles { }
