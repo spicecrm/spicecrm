@@ -694,21 +694,9 @@ abstract class DBManager
 
             $field = $fieldDef['name'];
 
-            if (isset($fieldDef['source']) && $fieldDef['source'] != 'db') continue;
+            if (!isset($data[$field]) || (isset($fieldDef['source']) && $fieldDef['source'] != 'db')) continue;
 
-            $val = null;
-
-            if (isset($data[$field])) {
-                $val = $data[$field];
-            } else if(isset($fieldDef['default']) && strlen($fieldDef['default']) > 0) {
-                $val = $fieldDef['default'];
-            }
-
-            if ($fieldDef['name'] == 'deleted') {
-                $values['deleted'] = (int) $val;
-            } else if (!is_null($val) || !empty($fieldDef['required'])) {
-                $values[$field] = $this->massageValue($val, $fieldDef);
-            }
+            $values[$field] = $this->massageValue($data[$field], $fieldDef);
         }
 
         return $values;
