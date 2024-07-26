@@ -18,5 +18,12 @@
         </div>
     </div>
 </div>
+<div class="slds-grid slds-m-top--small slds-has-divider--bottom-space">
+    <div class="slds-form-element slds-size_1-of-4">
+        <system-checkbox [(ngModel)]="configValues.hideOnMobile">
+            <system-label label="LBL_HIDE_ON_MOBILE"/>
+        </system-checkbox>
+    </div>
+</div>
 
 <workbench-config [component]="configcomponent" [configValues]="configValues"></workbench-config>
