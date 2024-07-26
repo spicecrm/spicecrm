@@ -33,6 +33,7 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\utils\ArrayUtils;
 use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
@@ -245,23 +246,26 @@ class SpiceFTSActivityHandler
      *
      *loads the activities from elastic
      *
-     * @param $activitiesmodule can be either History or Activities
-     * @param $parentid the id of teh parent module
-     * @param int $start the start for the entries
-     * @param int $limit the number of entries returned
+     * @param $startdate
+     * @param $enddate
+     * @param $userId
      * @param string $searchterm an optional seachterm that is also applied to the fts search
+     * @param array $modules
      * @param array $objects an array with Modules that shodul eb included in thesearch response. Used for filtering the results and teh indexes queried
      *
      * @return array and array with the element totalcount, aggregates and items
      */
-    public static function loadCalendarEvents($startdate, $enddate, $userId, $searchterm = '', $usersIds = [], $objects = [])
+    public static function loadCalendarEvents($startdate, $enddate, $userId, $searchterm = '', array $modules = [], $objects = [])
     {
-        $modules = SpiceFTSUtils::getCalendarModules();
+        if (empty($modules)) {
+            $modules = SpiceFTSUtils::getCalendarModules();
+        }
+
         $moduleQueries = [];
         $queryModules = [];
         $postFilters = [];
 
-        foreach ($modules as $module => $moduleDetails) {
+        foreach ($modules as $module => &$moduleDetails) {
 
             // check acl access for the user as well as if a filter object is set
             //if(!SpiceACL::getInstance()->checkACLAccess($module, 'list') || ($objects && count($objects) > 0 && array_search_insensitive($module, $objects) === false)){
@@ -274,26 +278,34 @@ class SpiceFTSActivityHandler
             $beanHandler = new SpiceFTSBeanHandler($module);
             $moduleQuery = $beanHandler->getModuleSearchQuery($searchterm);
 
-            // check if we have a filter
-
-            if ($beanHandler->indexSettings['calendarfilter']) {
+            # create module filter query
+            if (!empty($moduleDetails['settings']['calendarfilter'])) {
                 $filter = new SysModuleFilters();
-                $filterDef = $filter->generareElasticFilterForFilterId($beanHandler->indexSettings['calendarfilter']);
+                $filterDef = $filter->generareElasticFilterForFilterId($moduleDetails['settings']['calendarfilter']);
                 $moduleQuery['bool']['filter']['bool']['must'][] = $filterDef;
+            }
+
+            $moduleDetails['endDateFieldName'] = self::hasEndDateField($module) ? '_activityenddate' : '_activitydate';
+
+            if (in_array($moduleDetails['type'], ['Day', 'Full'])) {
+                $enddate = TimeDate::getInstance()->asDbDate(TimeDate::getInstance()->fromDb($enddate));
+                $startdate = TimeDate::getInstance()->asDbDate(TimeDate::getInstance()->fromDb($startdate));
             }
 
             // date range filter
             $moduleQuery['bool']['filter']['bool']['must'][] = [
                 'bool' => [
                     'must' => [
-                        ['range' => ['_activitydate' => ['lt' => $enddate]]],
-                        ['range' => ['_activityenddate' => ['gt' => $startdate]]]
+                        ['range' => ['_activitydate' => ['lte' => $enddate]]],
+                        ['range' => [$moduleDetails['endDateFieldName'] => ['gte' => $startdate]]]
                     ]
                 ]
             ];
 
             $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ['_index' => SpiceFTSUtils::getIndexNameForModule($module)]];
-            if (empty($usersIds)) {
+
+            # if the calendar is for all users do not use the owner filter
+            if (!$moduleDetails['allUsers']) {
                 $moduleQuery['bool']['filter']['bool']['must'][] = [
                     'bool' => [
                         'should' => [
@@ -303,18 +315,6 @@ class SpiceFTSActivityHandler
                         'minimum_should_match' => 1
                     ]
                 ];
-                //    ['term' => ["assigned_user_id" => $userId]];
-            } else {
-                $moduleQuery['bool']['filter']['bool']['must'][] =[
-                    'bool' => [
-                        'should' => [
-                            ['terms' => ["assigned_user_id" => $usersIds]],
-                            ['terms' => ["_activityparticipantids" => $usersIds]],
-                        ],
-                        'minimum_should_match' => 1
-                    ]
-                ];
-                //['terms' => ["assigned_user_id" => $usersIds]];
             }
 
             $moduleQueries[] = $moduleQuery;
@@ -370,26 +370,35 @@ class SpiceFTSActivityHandler
                     }
                 }
 
-                //$hit['_source']['emailaddresses'] = $moduleHandler->getEmailAddresses($elastichandler->getHitModule($hit), $hit['_id']);
-
-//                $hit['acl'] = $seed->getACLActions(); // done in mapBeanToArray!
-                // $hit['acl_fieldcontrol'] = $krestHandler->get_acl_fieldaccess($seed);
-
-                // unset hidden fields                  // done in mapBeanToArray!
-//                foreach ($hit['acl_fieldcontrol'] as $field => $control) {
-//                    if ($control == 1 && isset($hit['_source'][$field])) unset($hit['_source'][$field]);
-//                }
                 $items[] = [
                     'id' => $seed->id,
                     'module' => $hitModule,
                     'start' => $hit['_source']['_activitydate'],
-                    'end' => $hit['_source']['_activityenddate'],
-                    'type' => $hitModule == 'UserAbsences' ? 'absence' : 'event',
+                    'end' => $hit['_source'][$modules[$hitModule]['endDateFieldName']],
+                    # type passed from system calendar item or if the dates are same consider it as Day type otherwise a regular event
+                    'type' => $modules[$hitModule]['type'] ?: ($hit['_source']['_activitydate'] == $hit['_source'][$modules[$hitModule]['endDateFieldName']] ? 'Day' : 'event'),
                     'data' => $moduleHandler->mapBeanToArray($hitModule, $seed, false)
                 ];
             }
         }
 
         return $items;
+    }
+
+    /**
+     * check if a activity end date field defined in the index properties
+     * @param string $module
+     * @return bool
+     */
+    private static function hasEndDateField(string $module): bool
+    {
+        $indexProperties = SpiceFTSUtils::getBeanIndexProperties($module);
+
+        foreach ($indexProperties as $indexProperty) {
+            if ($indexProperty['activitytype'] != 'activityenddate') continue;
+            return true;
+        }
+
+        return false;
     }
 }

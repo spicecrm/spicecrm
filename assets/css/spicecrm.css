@@ -654,3 +654,12 @@ input[type="submit"] {
     border-left: none;
     border-radius: 0px;
 }
+
+.slds-radio_button [type=radio]:checked+.slds-radio_button__label:hover,
+.slds-radio_button [type=radio]:checked+.slds-radio_button__label {
+    background-color: var(--brand-primary);
+}
+
+.slds-radio_button__label:hover {
+    background-color: var(--brand-primary);
+}

@@ -207,9 +207,6 @@ class CoreController
         $cached = SpiceCache::get("cachedlanguage{$language}");
         if($cached) return $res->withJson($cached);
 
-        // get the app List Strings
-        $appStrings = SpiceUtils::returnAppListStringsLanguage($language);
-
         $syslanguagelabels = LanguageManager::loadDatabaseLanguage($language);
         $syslanguages = [];
         if (is_array($syslanguagelabels)) {
@@ -225,8 +222,7 @@ class CoreController
         $responseArray = [
             'language' => $language,
             'languages' => $languages,
-            'applang' => $syslanguages,
-            'applist' => $appStrings
+            'applang' => $syslanguages
         ];
 
         // cache the values

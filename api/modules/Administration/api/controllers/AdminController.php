@@ -12,7 +12,6 @@ use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceUI\SpiceUIConfLoader;
 use SpiceCRM\includes\SpiceCache\SpiceCache;
-use SpiceCRM\includes\SugarObjects\LanguageManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SugarObjects\SpiceModules;
 use SpiceCRM\includes\SugarObjects\VardefManager;
@@ -518,62 +517,6 @@ class AdminController
     }
 
     /**
-     * clears language cache and repairs the language extensions
-     *
-     * @param Request $req
-     * @param Response $res
-     * @param array $args
-     * @return Response
-     */
-    public function repairLanguage(Request $req, Response $res, array $args): Response {
-        $appListStrings = [];
-        $appLang = [];
-        $langs = LanguageManager::getLanguages();
-
-        foreach ($langs['available'] as $lang) {
-            if($lang['system_language']){
-                $language = $lang['language_code'];
-                $this->merge_files('Ext/Language/', $language . '.lang.ext.php', $language);
-                $appListStrings[$language][] = SpiceUtils::returnAppListStringsLanguage($language);
-                $appLang[$language][] = $this->loadLanguage($language);
-            }
-        }
-
-        if (!empty($appListStrings) && !empty($appLang)) {
-            $response = 'ok';
-        } else {
-            $response = 'e';
-        }
-
-        return $res->withJson(['response' => $response,
-            'appList' => $appListStrings,
-            'appLang' => $appLang,
-            'languages' => $langs]);
-    }
-
-    /**
-     * loads the applang labels for a language
-     * @param $lang
-     * @return array
-     */
-    private function loadLanguage($lang)
-    {
-        $syslanguagelabels = LanguageManager::loadDatabaseLanguage($lang);
-        $syslanguages = [];
-        if (is_array($syslanguagelabels)) {
-            foreach ($syslanguagelabels as $syslanguagelbl => $syslanguagelblcfg) {
-                $syslanguages[$syslanguagelbl] = [
-                    'default' => $syslanguagelblcfg['default'],
-                    'short' => $syslanguagelblcfg['short'],
-                    'long' => $syslanguagelblcfg['long'],
-                ];
-            }
-        }
-
-        return $syslanguages;
-    }
-
-    /**
      * merges the extension files and generates the contents in the cache folder
      * (sugar code)
      * @param $path
@@ -677,7 +620,7 @@ class AdminController
                 if ($entry != "." && $entry != "..") {
                     $extensions[$entry] = "";
                     $subHandle = opendir("custom/Extension/modules/{$entry}/Ext/Vardefs");
-                    while ($subEntry = readdir(($subHandle))) {
+                    if ( $subHandle ) while ($subEntry = readdir(($subHandle))) {
                         if ($subEntry != "." && $subEntry != "..") {
                             $extensions[$entry] = $subEntry;
                         }

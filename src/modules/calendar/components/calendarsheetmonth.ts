@@ -95,6 +95,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * holds the maximum amount of event to be rendered in the day cell based on the cell height
      */
     public maxEventsPerDay: number = 1;
+    /**
+     * active calendars
+     */
+    @Input() public availableCalendars: {id: string, visible: boolean}[] = [];
 
     constructor(public language: language,
                 public broadcast: broadcast,
@@ -183,11 +187,13 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * subscribe to resize event to reset the events style
      */
     public subscribeToChanges() {
-        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-                if (calendar.id == 'owner') {
-                    this.getOwnerEvents();
-                } else {
-                    this.getUserEvents(calendar);
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe({
+                next: calendar => {
+                    if (calendar.type == 'other') {
+                        this.getOwnerEvents(calendar);
+                    } else {
+                        this.getUserEvents(calendar);
+                    }
                 }
             })
         );
@@ -253,21 +259,28 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * load owner events from service and rearrange the multi events
      */
-    public getOwnerEvents() {
-        this.ownerEvents = [];
-        this.handleEventsChanges();
+    public getOwnerEvents(calendar?) {
 
-        if (!this.calendar.ownerCalendarVisible) {
-            return;
+        if (!calendar) {
+            this.ownerEvents = [];
+        } else {
+            this.ownerEvents = this.ownerEvents.filter(e => e.calendarId != calendar.id);
         }
 
-        this.calendar.loadEvents(this.startDate, this.endDate)
-            .subscribe(events => {
+        this.handleEventsChanges();
+
+        (calendar ? [calendar] : this.availableCalendars).forEach(calendar => {
+
+            if (!calendar.visible) return;
+
+            this.calendar.loadEvents(this.startDate, this.endDate, this.calendar.owner, calendar.id).subscribe(events => {
                 if (events.length > 0) {
-                    this.ownerEvents = events;
+                    this.ownerEvents = this.ownerEvents.concat(events);
                     this.handleEventsChanges();
                 }
             });
+        });
+
     }
 
     /**
@@ -295,11 +308,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
         this.handleEventsChanges();
 
-        if (this.calendar.isMobileView || !calendar.visible) {
-            return;
-        }
+        if (this.calendar.isMobileView || !calendar.visible) return;
 
-        this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
+        this.calendar.loadEvents(this.startDate, this.endDate, calendar.id, calendar.id)
             .subscribe(events => {
                 if (events.length > 0) {
                     this.userEvents = [...this.userEvents, ...events];
@@ -315,17 +326,15 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.userEvents = [];
         this.handleEventsChanges();
 
-        if (this.calendar.isMobileView) {
-            return;
-        }
+        if (this.calendar.isMobileView) return;
 
-        this.calendar.loadUsersEvents(this.startDate, this.endDate)
-            .subscribe(events => {
-                if (events.length > 0) {
-                    this.userEvents = [...this.userEvents, ...events];
-                    this.handleEventsChanges();
-                }
-            });
+        const visibleUserCalendars = this.calendar.usersCalendars.filter(c => !!c.visible);
+
+        if (visibleUserCalendars.length == 0) return;
+
+        visibleUserCalendars.forEach(userCalendar =>
+            this.getUserEvents(userCalendar)
+        );
     }
 
     /**

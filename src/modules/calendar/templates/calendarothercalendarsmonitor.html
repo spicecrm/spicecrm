@@ -1,15 +1,25 @@
 <div class="slds-border--bottom">
-    <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small"><system-label label="LBL_OTHER_CALENDARS"></system-label></label>
+    <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small"><system-label label="LBL_OTHER_CALENDARS"></system-label>
+    <button (click)="addCalendar()" class="slds-button slds-button--icon slds-m-left--xx-small slds-m-bottom--xx-small">
+        <system-button-icon icon="add"/>
+    </button>
+    </label>
     <div class="slds-p-vertical--xx-small">
-        <div class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
-             (mouseenter)="hovered = 'own'" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == 'own'">
-            <div class="slds-grid" (click)="toggleVisible(null, 'Owner')" style="cursor: pointer">
-                <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="calendar.ownerCalendarVisible ? calendar.eventColor : '#dddbda'">
-                    <system-button-icon icon="user" size="small"></system-button-icon>
+        <div *ngFor="let availableCalendar of availableCalendars; trackBy: trackByFn" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+             (mouseenter)="hovered = availableCalendar.id" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == availableCalendar.id">
+            <div class="slds-grid" (click)="toggleVisible(availableCalendar.id, 'Available')" style="cursor: pointer">
+                <div class="slds-m-right--xx-small" [style.color]="availableCalendar.visible ? availableCalendar.color : '#dddbda'">
+                    <system-icon [icon]="availableCalendar.icon" divClass="" size="x-small"></system-icon>
                 </div>
-                <a class="slds-text-body--regular slds-truncate" [style.color]="calendar.ownerCalendarVisible ? calendar.eventColor : '#dddbda'">
-                    <system-label label="LBL_MY_CALENDAR"></system-label>
+                <a class="slds-text-body--regular slds-truncate" [style.color]="availableCalendar.visible ? availableCalendar.color : '#dddbda'">
+                    <system-label [label]="availableCalendar.name"/>
                 </a>
+            </div>
+            <div>
+                <calendar-color-picker *ngIf="hovered == availableCalendar.id" (colorChange)="calendar.setCalendarColor(availableCalendar.id, $event)"></calendar-color-picker>
+                <button *ngIf="availableCalendar.id != 'owner'" class="slds-button slds-button--icon" (click)="calendar.removeAvailableCalendar(availableCalendar.id)">
+                    <system-button-icon icon="clear" size="small"></system-button-icon>
+                </button>
             </div>
         </div>
         <div *ngIf="calendar.activeGroupware == 'google'" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
@@ -64,7 +74,7 @@
         <div *ngIf="searchterm.length == 0" class="slds-theme--shade slds-p-around--xx-small slds-text-body--small slds-text-title--caps slds-border--bottom">
             <system-label label="LBL_RECENTLYVIEWED"></system-label>
         </div>
-        <ul class="slds-lookup__list" style="height: 175px" role="listbox">
+        <ul [system-overlay-loading-spinner]="isLoading && resultsList.length == 0" class="slds-lookup__list" style="height: 175px" role="listbox">
             <ng-container *ngIf="searchterm.length > 0">
                 <li *ngFor="let user of resultsList; trackBy: trackByFn" role="presentation" (mousedown)="addUserCalendar(user.id, user.summary_text)">
                     <div class="slds-lookup__item-action slds-media" role="option">
@@ -82,6 +92,5 @@
                 </li>
             </ng-container>
         </ul>
-        <system-spinner [size]="16" *ngIf="isLoading && resultsList.length == 0"></system-spinner>
     </div>
 </div>

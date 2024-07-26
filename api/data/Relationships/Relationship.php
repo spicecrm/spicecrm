@@ -205,12 +205,15 @@ abstract class Relationship
 
     /**
      * @param array $row values to be inserted into the relationship
-     * @return bool|void null if new row was inserted and true if an existing row was updated
+     * @return void null if new row was inserted and true if an existing row was updated
+     * @throws \Exception
      */
     protected function addRow(&$row)
     {
         $existing = $this->checkExisting($row);
-        if (!empty($existing)) {//Update the existing row, overriding the values with those passed in
+
+        # Update the existing row, overriding the values with those passed in
+        if (!empty($existing)) {
             $this->fetchedRow = $existing;
             $queryResult = $this->updateRow($existing['id'], array_merge($existing, $row));
             if ($queryResult) {
@@ -220,45 +223,23 @@ abstract class Relationship
                 // update id for callAfterAdd with relationship_data
                 $row['id'] = $existing['id'];
             }
-            return $queryResult;
-        }
-        $values = [];
-        foreach ($this->getFields() as $def) {
-            $field = $def['name'];
-            if (isset($row[$field])) {
-                $values[$field] = "'{$row[$field]}'";
-            }
-        }
-        $columns = implode(',', array_keys($values));
-        $values = implode(',', $values);
-        if (!empty($values)) {
-            $query = "INSERT INTO {$this->getRelationshipTable()} ($columns) VALUES ($values)";
-            DBManagerFactory::getInstance()->query($query);
+        } else {
+            DBManagerFactory::getInstance()->insertQuery($this->getRelationshipTable(), $row);
         }
     }
 
     /**
-     * @param $id id of row to update
-     * @param $values values to insert into row
+     * @param $id string of row to update
+     * @param $values array to insert into row
      * @return resource result of update satatement
+     * @throws \Exception
      */
     public function updateRow($id, $values)
     {
-        $newVals = [];
         //Unset the ID since we are using it to update the row
         if (isset($values['id'])) unset($values['id']);
-        foreach ($values as $field => $val) {
-            if(!is_null($val)) {
-                $newVals[] = "$field='$val'";
-            }
 
-        }
-
-        $newVals = implode(",", $newVals);
-
-        $query = "UPDATE {$this->getRelationshipTable()} set $newVals WHERE id='$id'";
-
-        return DBManagerFactory::getInstance()->query($query);
+        return DBManagerFactory::getInstance()->updateQuery($this->getRelationshipTable(), ['id' => $id], $values);
     }
 
     /**

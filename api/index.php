@@ -18,6 +18,7 @@ use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryHandler;
 use SpiceCRM\includes\SpiceSlim\SpiceResponseFactory;
 use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\modules\SystemTenants\SystemTenant;
 
 register_shutdown_function([SpiceUtils::class, 'spiceCleanup']);
 
@@ -42,6 +43,8 @@ try {
     }
 
     DBManagerFactory::setDBConfig();
+
+    SystemTenant::processTenantSwitch();
 
     SpiceConfig::getInstance()->reloadConfig();
 

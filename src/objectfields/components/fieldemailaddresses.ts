@@ -116,7 +116,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             if (res.length == 0) {
                 this.processDelete(emailAddress);
             } else {
-                let text = this.language.getLabelFormatted('LBL_EMAIL_ADDRESS_IN_USE', [res.join(', '), emailAddress.email_address]);
+                let text = emailAddress.primary_address == 1 ? this.language.getLabel('LBL_DELETE_PRIMARY_EMAIL') : this.language.getLabelFormatted('LBL_EMAIL_ADDRESS_IN_USE', [res.join(', '), emailAddress.email_address]);
                 this.modal.confirm(text, 'QST_REMOVE_ENTRY').subscribe({
                     next: (res) => {
                         if (!res) return;
