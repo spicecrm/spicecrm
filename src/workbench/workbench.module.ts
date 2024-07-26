@@ -147,6 +147,7 @@ import {DashletGeneratorDashlets} from "./components/dashletgeneratordashlets";
 import {DashletGeneratorDashletDetails} from "./components/dashletgeneratordashletdetails";
 import {APIlogConfig} from "./components/apilogconfig";
 import {DictionaryManagerEditDefinitionModal} from "./components/dictionarymanagereditdefinitionmodal";
+import {DomainManagerEditDefinitionModal} from "./components/domainmanagereditdefinitionmodal";
 import {CategoryTreeManagerLinkModal} from "./components/categorytreemanagerlinkmodal";
 import {RoleMenuManager} from "./components/rolemenumanager";
 import {RoleMenuManagerEditRoleModal} from "./components/rolemenumanagereditrolemodal";
@@ -200,6 +201,7 @@ import {HL7ManagerRule} from './components/hl7managerrule';
         DomainManagerSelectValidation,
         DomainManagerAddValidation,
         DomainManagerAddValidationValueModal,
+        DomainManagerEditDefinitionModal,
         DictionaryManager,
         DictionaryManagerDefinitions,
         DictionaryManagerDefinitionTabs,
