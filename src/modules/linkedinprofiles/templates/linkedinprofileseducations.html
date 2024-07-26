@@ -34,6 +34,9 @@
                                     <span>{{formatYear(education.date_start)}}</span>
                                     <span *ngIf="education.date_end"> - {{formatYear(education.date_end)}}</span>
                                 </div>
+                                <div *ngIf="education.description">
+                                    <span>{{education.description}}</span>
+                                </div>
                             </div>
                         </div>
                     </div>

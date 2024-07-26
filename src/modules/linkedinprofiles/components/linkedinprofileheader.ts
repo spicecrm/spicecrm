@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import {model} from "../../../services/model.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 
 /* @ignore */
@@ -11,8 +12,11 @@ import {model} from "../../../services/model.service";
 
 export class LinkedInProfilesHeader  {
 
+    public componentconfig: any = {};
+
     constructor(
-        public model: model
+        public model: model,
+        public navigationtab: navigationtab
     ) {
     }
 
@@ -25,6 +29,17 @@ export class LinkedInProfilesHeader  {
             'border-width': '5px',
             'border-color': 'white',
             'border-style': 'solid'
+        }
+    }
+
+
+    public getStyle(){
+        return this.componentconfig.link ? {cursor: 'pointer'} : {};
+    }
+
+    public handleClick(){
+        if(this.componentconfig.link){
+            this.model.goDetail(this.navigationtab.tabid);
         }
     }
 }

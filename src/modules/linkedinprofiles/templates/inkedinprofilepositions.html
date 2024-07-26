@@ -19,9 +19,15 @@
             <div *ngIf="jobPositions; else noInformation" >
                 <div *ngFor="let position of jobPositions; let i = index;">
                     <div [ngClass]="{'slds-border--bottom': i < jobPositions.length - 1}">
-                        <div class="slds-grid slds-p-vertical--x-small slds-grid_vertical-align-center">
-                            <div style="width: 50px; height: 50px;">
-                                <img [src]="position.company_logo_base64" alt="company logo" style="width: 100%; height: auto; max-width: 100%;">
+                        <div class="slds-grid slds-p-vertical--x-small" style="flex: 0 0 auto">
+                            <div class="slds-size--1-of-5">
+                                <img *ngIf="position.company_logo_base64" [src]="position.company_logo_base64" alt="company logo" style="width: 100%; height: auto; max-width: 100%;">
+                                <svg *ngIf="!position.company_logo_base64" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" id="company-accent-4">
+                                    <path fill="#e7e2dc" d="M0 0h128v128H0z"/>
+                                    <path fill="#9db3c8" d="M48 16h64v112H48z"/>
+                                    <path fill="#788fa5" d="M16 80h32v48H16z"/>
+                                    <path fill="#56687a" d="M48 80h32v48H48z"/>
+                                </svg>
                             </div>
                             <div class="slds-m-left--medium">
                                 <div class="slds-text-heading--small">{{position.position_title}}</div>
@@ -31,6 +37,7 @@
                                     <span *ngIf="position.date_end">{{formatYearMonthName(position.date_end)}} &middot; </span>
                                     <span *ngIf="!position.date_end">present &middot; </span>
                                     <span>{{calculateDuration(position.date_start, position.date_end)}}</span>
+                                    <span>{{position.description}}</span>
                                 </div>
                             </div>
                         </div>

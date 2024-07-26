@@ -29,6 +29,11 @@ export class LinkedInProfilesPositions  implements OnInit{
         //this.relatedmodels.linkName = 'linkedinprofilepositions';
         // pass in the model
         this.relatedmodels.model = this.model;
+        this.relatedmodels.loaditems = -99;
+        this.relatedmodels.sort = {
+            sortfield: 'date_start',
+            sortdirection: 'desc'
+        }
 
         // set the related model from the config
         this.relatedmodels.relatedModule = 'LinkedInProfilePositions';
