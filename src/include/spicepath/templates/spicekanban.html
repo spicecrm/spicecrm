@@ -1,4 +1,4 @@
-<div class="slds-m-top--small slds-m-horizontal--small">
+<div class="slds-m-top--small slds-m-horizontal--small slds-scrollable--x">
     <div class="slds-tabs--path" role="application">
         <ul class="slds-tabs--path__nav" role="tablist">
             <ng-container *ngFor="let stage of stages">
@@ -26,7 +26,7 @@
     </div>
     <div (system-to-bottom)="loadmore()" class="slds-scrollable--y kanbancontainer" cdkDropListGroup [ngStyle]="containerStyle">
         <div class="slds-grid">
-            <div *ngFor="let stage of stages" (cdkDropListDropped)="handleDrop($event)" cdkDropList [cdkDropListData]="stage" [cdkDropListEnterPredicate]="dropEnterAllowed(stage)" [ngClass]="sizeClass" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small">
+            <div *ngFor="let stage of stages" (cdkDropListDropped)="handleDrop($event)" cdkDropList [cdkDropListData]="stage" [cdkDropListEnterPredicate]="dropEnterAllowed(stage)" [ngClass]="sizeClass" class="spice-stage-items-container slds-col slds-p-horizontal--xx-small slds-m-top--x-small">
                 <div *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage;trackBy:trackbyfn" cdkDrag [cdkDragDisabled]="!allowDrag(item)" [cdkDragData]="item" class=" slds-m-vertical--xx-small slds-kanban-drag--preview ">
                     <spice-kanban-tile [item]="item"></spice-kanban-tile>
                 </div>
