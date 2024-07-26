@@ -31,7 +31,7 @@ $routes = [
         'options' => ['adminOnly' => true],
     ],
     [
-        'method' => 'put',
+        'method' => 'post',
         'route' => '/dictionary/generatesystem',
         'class' => SpiceDictionaryController::class,
         'function' => 'generateSystem',

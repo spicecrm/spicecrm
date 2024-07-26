@@ -230,6 +230,7 @@ class SpiceUIConfLoader
         }
 
         // gather tables and all the record IDs
+        $tables = [];
         foreach ($response as $conftable => $conf){
             foreach($conf as $recordId => $recordData){
                 $tables[$conftable][] = $recordId;
@@ -539,6 +540,10 @@ class SpiceUIConfLoader
         $versions = [];
 
         while ($row = $db->fetchByAssoc($res)) {
+            // skip system package
+            if($row['package'] == 'system') continue;
+
+            // check if it is loaded
             if (!empty($row['package']) && !in_array($row['package'], $packages)) {
                 $packages[] = $row['package'];
             } elseif (!in_array('core', $packages) && !in_array($row['package'], $packages)) {

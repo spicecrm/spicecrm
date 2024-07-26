@@ -62,6 +62,13 @@ export class PackageLoaderPackage implements OnInit {
         return disabled;
     }
 
+    /* A package can always be deleted unless it is the basis for another installed package. Then the delete button has to be disabled. */
+    get deleteButtonDisabled(): boolean
+    {
+        let regex = new RegExp('(^|,)'+this.package.package+'($|,)');
+        return this.packages.some( packageToTest => ( packageToTest.installed && regex.test( packageToTest.packages )));
+    }
+
     get repositoryaddurl() {
         return this.repository && this.repository.id ? '/' + this.repository.id : '';
     }

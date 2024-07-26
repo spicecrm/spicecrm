@@ -317,7 +317,7 @@ class RESTManager
             $authData['rememberDevice'] = $headers['remember-device'];
         }
 
-        return (object) ['authData' => (object) $authData, 'authType' => $authType];
+        return (object) ['authData' => (object) $authData, 'authType' => $authType, 'tenantID' => $headers['tenant-id']];
     }
 
 

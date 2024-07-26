@@ -77,9 +77,8 @@ class SpiceDictionaryController
      */
     public function generateSystem(Request $req, Response $res, array $args): Response
     {
-        SpiceDictionary::getInstance()->generateSystemDumpFile();
-
-        return $res->withJson(['success' => true]);
+        $res->getBody()->write(SpiceDictionary::getInstance()->generateSystemDumpFile());
+        return $res->withHeader('Content-Type', 'text/plain');
     }
     /**
      * retrieves the domain definitions

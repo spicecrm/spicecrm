@@ -50,9 +50,14 @@ export class DictionaryManagerRepairAll {
     public repairing: boolean = false;
 
     /**
+     * search string for the table names
+     */
+    public searchTerm: string = ''
+
+    /**
      * set to true to execute SQLs when repairing
      */
-    public executerSQLs: boolean = false;
+    public executerSQLs: boolean = true;
 
     public displayDetailSetting: boolean = false;
 
@@ -177,6 +182,12 @@ export class DictionaryManagerRepairAll {
                 return false;
             }
 
+            const searchTermMatch = !this.searchTerm || d.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+
+            if (!searchTermMatch) {
+                return false;
+            }
+
             switch(d.type){
                 case 'dictionarydefinition':
                     return this.itemfilters.definitions;
@@ -242,7 +253,7 @@ export class DictionaryManagerRepairAll {
      * returns the processed count
      */
     get processedCount() {
-        return this.definitions.filter(d => d.status != 'n').length
+        return this.filtereddefinitions.filter(d => d.status != 'n').length
     }
 
     /**
