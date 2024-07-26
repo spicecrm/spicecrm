@@ -1,8 +1,8 @@
 <tr [ngClass]="{'slds-is-selected':showDetails,'slds-is-open':showDetails}" class="slds-section">
     <td class="hl7-first-col">
-        <span (click)="clickDetails()"><system-utility-icon icon="switch" size="x-small" addclasses="slds-section__title-action-icon slds-button__icon slds-button__icon_left"></system-utility-icon></span>
+        <button (click)="clickDetails()" class="slds-button"><system-utility-icon icon="switch" size="x-small" addclasses="slds-section__title-action-icon slds-button__icon_left"></system-utility-icon></button>
     </td>
-    <td><span style="width:70px;display:inline-block" class="slds-truncate slds-text-font_monospace" [title]="rule.id">{{rule.id}}</span> <system-utility-icon style="vertical-align:bottom" (click)="clipboard.copy(rule.id)" icon="copy" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-utility-icon></td>
+    <td><span style="width:70px;display:inline-block;line-height:0.7" class="slds-truncate slds-text-font_monospace" [title]="rule.id">{{rule.id}}</span><button class="slds-button slds-button--icon" style="vertical-align:top" (click)="clipboard.copy(rule.id)"><system-button-icon icon="copy" size="xx-small"></system-button-icon></button></td>
     <td class="slds-text-font_monospace">{{rule.hl7_segment}}</td>
     <td>{{rule.spice_module}} / {{rule.spice_field}}</td>
     <td>{{rule.hl7_field}}</td>
@@ -22,9 +22,9 @@
                 </h3>
             </div>
             <div class="slds-grid slds-m-bottom--medium slds-m-top--small">
-                    <field-container class="slds-size--1-of-3 slds-p-horizontal--x-small" [field]="'datatype'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!-- [fieldconfig]="fieldconfigs['datatype']" -->
-                    <field-container class="slds-size--1-of-3 slds-p-horizontal--small" [field]="'mapping'" [fieldconfig]="{fieldtype:'json'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!--[fieldconfig]="fieldconfigs['mapping']"-->
-                    <field-container class="slds-size--1-of-3 slds-p-horizontal--x-small" [field]="'validation_config'" [fieldconfig]="{fieldtype:'json'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!-- [fieldconfig]="fieldconfigs['validation_config']"-->
+                <field-container class="slds-size--1-of-3 slds-p-horizontal--x-small" [field]="'datatype'" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!-- [fieldconfig]="fieldconfigs['datatype']" -->
+                <field-container class="slds-size--1-of-3 slds-p-horizontal--small" [field]="'mapping'" [fieldconfig]="{fieldtype:'json'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!--[fieldconfig]="fieldconfigs['mapping']"-->
+                <field-container class="slds-size--1-of-3 slds-p-horizontal--x-small" [field]="'validation_config'" [fieldconfig]="{fieldtype:'json'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight"></field-container><!-- [fieldconfig]="fieldconfigs['validation_config']"-->
             </div>
             <div>
                 <h3 class="slds-section__title slds-theme_shade">

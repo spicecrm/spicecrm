@@ -14,7 +14,7 @@
                                             {{addr.email_address}}
                                         </span>
                                         <span class="slds-icon_container slds-pill__remove" style="cursor: pointer">
-                                          <system-button-icon [icon]="'close'" (click)="removeEmailAddress($event, addr.email_address_id)"></system-button-icon>
+                                          <system-button-icon [icon]="'close'" (click)="removeEmailAddress($event, addr.id)"></system-button-icon>
                                         </span>
                                   </span>
                         </li>
@@ -23,7 +23,7 @@
                                 <div class="slds-input__icon-group slds-input__icon-group_right slds-m-right--xx-small">
                                     <ng-content></ng-content>
                                 </div>
-                                <input type="text" [attr.system-autofocus]="addressType == 'to'" [(ngModel)]="inputTextValue" (blur)="onBlur()" (keyup)="onKeyUp($event)" (keydown.,)="$event.preventDefault()"
+                                <input type="text" [attr.system-autofocus]="addressType == 'to'" [(ngModel)]="inputTextValue" (blur)="onBlur()" (keyup)="onKeyUp($event)" (paste)="onPasteExtractEmailAddresses($event)" (keydown.,)="$event.preventDefault()"
                                        autocomplete="new-email-address" system-title="LBL_ADD_EMAILADDRESS" system-placeholder="LBL_ADD_EMAILADDRESS"
                                        class="slds-p-horizontal--x-small slds-size--1-of-1">
                             </div>

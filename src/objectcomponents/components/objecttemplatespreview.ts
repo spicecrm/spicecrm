@@ -3,23 +3,23 @@
  */
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from "@angular/core";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {backend} from "../../../services/backend.service";
-import {model} from "../../../services/model.service";
-import {modal} from "../../../services/modal.service";
-import {metadata} from "../../../services/metadata.service";
-import {language} from "../../../services/language.service";
+import {backend} from "../../services/backend.service";
+import {model} from "../../services/model.service";
+import {modal} from "../../services/modal.service";
+import {metadata} from "../../services/metadata.service";
+import {language} from "../../services/language.service";
 import {Subscription} from "rxjs";
-import {toast} from "../../../services/toast.service";
+import {toast} from "../../services/toast.service";
 
 /**
  * renders a preview for the final parsed body html
  */
 @Component({
-    selector: 'email-templates-preview',
-    templateUrl: "../templates/emailtemplatespreview.html",
+    selector: 'object-templates-preview',
+    templateUrl: "../templates/objecttemplatespreview.html",
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EmailTemplatesPreview implements AfterViewInit {
+export class ObjectTemplatesPreview implements AfterViewInit {
     /**
      * view type radio options
      */

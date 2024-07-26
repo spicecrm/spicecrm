@@ -8,7 +8,7 @@
                         <object-record-fieldset-horizontal-list *ngIf="headerFieldset; else summaryContainer" [ngClass]="textClass" [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>
                         <ng-template #summaryContainer>
                             <span system-model-popover class="slds-text-link--reset" [ngClass]="textClass">{{model.data.summary_text}}</span>
-                            <span *ngIf="event.isMulti && startHour && !isAbsence" [ngClass]="textClass">, {{startHour}}</span>
+                            <span *ngIf="event.isMulti && startHour" [ngClass]="textClass">, {{startHour}}</span>
                         </ng-template>
                         <object-record-fieldset-horizontal-list *ngIf="subFieldset && !event.isMulti" [ngClass]="textClass" [fieldset]="subFieldset"></object-record-fieldset-horizontal-list>
                     </div>

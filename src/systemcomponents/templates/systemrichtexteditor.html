@@ -1,6 +1,6 @@
 <div (click)="onEditorClick($event)"
      class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap slds-grid slds-grid--vertical slds-theme--default"
-     style="  top: 0; right: 0; left: 0; bottom: 0; z-index: 9999;" [ngStyle]="richTextStyle"
+     style="  top: 0; right: 0; left: 0; bottom: 0;" [ngStyle]="richTextStyle"
      [system-overlay-loading-spinner]="isLoading">
     <!--system-richtext-toolbar [isActive]="isActive" #editorToolbar (execute)="executeCommand($event)"></system-richtext-toolbar-->
     <div *ngIf="!readOnly" role="toolbar" style="top: 0; z-index: 2; position: sticky"
@@ -300,7 +300,7 @@
                 </button>
             </li>
         </ul>
-        <ul *ngIf="extendedmode" class="slds-button-group-list">
+        <ul  class="slds-button-group-list">
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-pressed=true
                         tabindex="-1" [title]="language.getLabel('LBL_EXPAND')" (click)="toggleFullscreen()">
