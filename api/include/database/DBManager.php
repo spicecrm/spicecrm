@@ -1170,6 +1170,12 @@ abstract class DBManager
     public function compareVarDefs($fielddef1, $fielddef2, $ignoreName = false)
     {
         # todo refactor
+
+        # if the db field has no default value but the field dictionary definition consider the comparison unequal
+        if (isset($fielddef2['default']) && !isset($fielddef1['default'])) {
+            return false;
+        }
+
         foreach ($fielddef1 as $key => $value) {
             if ($key == 'comment') continue;
 
