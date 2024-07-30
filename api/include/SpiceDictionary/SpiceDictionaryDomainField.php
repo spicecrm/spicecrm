@@ -64,6 +64,9 @@ class SpiceDictionaryDomainField
         if($this->domainField->label) $definiton->vname = $this->domainField->label;
         if($this->domainField->len) $definiton->len = $this->domainField->len;
 
+        $definiton->defaultvalue = $this->domainField->defaultvalue;
+        $definiton->exclude_from_index = $this->domainField->exclude_from_index;
+
         return $definiton;
 
     }
