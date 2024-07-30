@@ -695,6 +695,12 @@ abstract class DBManager
 
             $field = $fieldDef['name'];
 
+            # temporarily make sure to set the deleted flag to 0 if it does not have a default value.
+            if ($withDefaults && $field == 'deleted' && !isset($fieldDef['default'])) {
+                $values['deleted'] = 0;
+                continue;
+            }
+
             if ((!isset($data[$field]) && (!$withDefaults || !isset($fieldDef['default']))) || (isset($fieldDef['source']) && $fieldDef['source'] != 'db')) continue;
 
             $values[$field] = $this->massageValue($data[$field], $fieldDef);
