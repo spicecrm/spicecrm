@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    <div (system-to-bottom)="loadmore()" class="slds-scrollable--y kanbancontainer" style="width: max-content" cdkDropListGroup [ngStyle]="containerStyle">
+    <div (system-to-bottom)="loadmore()" class="slds-scrollable--y kanbancontainer slds-size--1-of-1" style="width: max-content" cdkDropListGroup [ngStyle]="containerStyle">
         <div class="slds-grid">
             <div *ngFor="let stage of stages" (cdkDropListDropped)="handleDrop($event)" cdkDropList [cdkDropListData]="stage" [cdkDropListEnterPredicate]="dropEnterAllowed(stage)" [ngClass]="sizeClass" class="spice-stage-items-container slds-col slds-p-horizontal--xx-small slds-m-top--x-small">
                 <div *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage;trackBy:trackbyfn" cdkDrag [cdkDragDisabled]="!allowDrag(item)" [cdkDragData]="item" class=" slds-m-vertical--xx-small slds-kanban-drag--preview ">
