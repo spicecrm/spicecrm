@@ -695,6 +695,12 @@ abstract class DBManager
 
             $field = $fieldDef['name'];
 
+            # temporarily make sure to set the deleted flag to 0 if it does not have a default value.
+            if ($withDefaults && $field == 'deleted' && !isset($fieldDef['default'])) {
+                $values['deleted'] = 0;
+                continue;
+            }
+
             if ((!isset($data[$field]) && (!$withDefaults || !isset($fieldDef['default']))) || (isset($fieldDef['source']) && $fieldDef['source'] != 'db')) continue;
 
             $values[$field] = $this->massageValue($data[$field], $fieldDef);
@@ -1164,6 +1170,12 @@ abstract class DBManager
     public function compareVarDefs($fielddef1, $fielddef2, $ignoreName = false)
     {
         # todo refactor
+
+        # if the db field has no default value but the field dictionary definition consider the comparison unequal
+        if (isset($fielddef2['default']) && !isset($fielddef1['default'])) {
+            return false;
+        }
+
         foreach ($fielddef1 as $key => $value) {
             if ($key == 'comment') continue;
 
