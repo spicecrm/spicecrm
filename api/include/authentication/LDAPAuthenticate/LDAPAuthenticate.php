@@ -605,9 +605,11 @@ class LDAPAuthenticate implements AuthenticatorI
         $rows = [];
         $db = DBManagerFactory::getInstance();
         try {
-            $query = $db->query("SELECT * from ldap_settings where is_active = 1 AND deleted = 0 order by priority");
-            while ($row = $db->fetchByAssoc($query)) {
-                $rows[] = $row;
+            if($db->tableExists('ldap_settings')){
+                $query = $db->query("SELECT * from ldap_settings where is_active = 1 AND deleted = 0 order by priority");
+                while ($row = $db->fetchByAssoc($query)) {
+                    $rows[] = $row;
+                }
             }
             return $rows;
         } catch (\Exception $e) {
