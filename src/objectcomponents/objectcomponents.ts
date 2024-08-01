@@ -480,7 +480,8 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
         ObjectActionNewButton,
-        ObjectRecordFieldsetContainer
+        ObjectRecordFieldsetContainer,
+        ObjectActionContainerItem
     ]
 })
 export class ObjectComponents {}
