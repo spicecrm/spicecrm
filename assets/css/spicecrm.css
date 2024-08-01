@@ -268,7 +268,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
         padding-left: 0;
     }
 
-    .slds-tabs--path__item, .spice-stage-items-container {
+    .slds-tabs--path__item, .spice-stage-items-container, .spice-stage-sum-container {
         min-width: 17rem;
     }
 }
