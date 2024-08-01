@@ -703,3 +703,24 @@ input[type="submit"] {
     min-width: 0;
     min-height: 0;
 }
+
+.spice-sticky-top, .spice-sticky-bottom , .spice-sticky-left , .spice-sticky-right {
+    position: sticky;
+    z-index: 1;
+}
+
+.spice-sticky-top {
+    top: 0;
+}
+
+.spice-sticky-bottom {
+    bottom: 0;
+}
+
+.spice-sticky-left {
+    left: 0;
+}
+
+.spice-sticky-right {
+    right: 0;
+}
