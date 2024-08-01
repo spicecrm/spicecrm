@@ -1,5 +1,5 @@
-<div class="slds-m-top--small slds-m-horizontal--small slds-scrollable--x">
-    <div class="slds-tabs--path" role="application">
+<div class="slds-m-top--small slds-scrollable--x slds-grid slds-grid--vertical slds-height_full">
+    <div class="slds-tabs--path slds-p-horizontal--small" role="application">
         <ul class="slds-tabs--path__nav" role="tablist">
             <ng-container *ngFor="let stage of stages">
                 <li class="slds-tabs--path__item slds-is-incomplete" role="presentation">
@@ -13,8 +13,8 @@
             </ng-container>
         </ul>
     </div>
-    <div *ngIf="this.componentconfig.sumfield" class="slds-grid slds-border--bottom">
-        <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass">
+    <div *ngIf="this.componentconfig.sumfield" class="slds-grid slds-border--bottom slds-p-horizontal--small" style="width: max-content;">
+        <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small spice-stage-sum-container" [ngClass]="sizeClass">
             <div class="slds-text-heading--medium slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
                 <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
                     <li *ngFor="let sumfield of sumfields" class="slds-item">
@@ -24,25 +24,26 @@
             </div>
         </div>
     </div>
-    <div (system-to-bottom)="loadmore()" class="slds-scrollable--y kanbancontainer" style="width: max-content; min-width: 100%" cdkDropListGroup [ngStyle]="containerStyle">
-        <div class="slds-grid">
+    <div (system-to-bottom)="loadmore()" class="slds-scrollable--y kanbancontainer slds-grow" [system-overlay-loading-spinner]="modellist.isLoading" style="width: max-content; min-width: 100%" cdkDropListGroup>
+        <div class="slds-grid slds-p-horizontal--small">
             <div *ngFor="let stage of stages" (cdkDropListDropped)="handleDrop($event)" cdkDropList [cdkDropListData]="stage" [cdkDropListEnterPredicate]="dropEnterAllowed(stage)" [ngClass]="sizeClass" class="spice-stage-items-container slds-col slds-p-horizontal--xx-small slds-m-top--x-small">
                 <div *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage;trackBy:trackbyfn" cdkDrag [cdkDragDisabled]="!allowDrag(item)" [cdkDragData]="item" class=" slds-m-vertical--xx-small slds-kanban-drag--preview ">
                     <spice-kanban-tile [item]="item"></spice-kanban-tile>
                 </div>
             </div>
         </div>
-        <div class="slds-p-around--small">
-            <system-spinner *ngIf="modellist.isLoading"></system-spinner>
-        </div>
         <div *ngIf="!modellist.isLoading && !hasVisibleItems" class="slds-height_full slds-align--absolute-center">
             <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
         </div>
-        <div *ngIf="hiddenstages.length > 0" class="slds-utility-bar_container" aria-label="Utility Bar">
-            <div #kanbanUtilityBar class="slds-utility-bar" style="height: 3rem;">
-                <div class="slds-grid slds-size--1-of-1 slds-grid--align-spread">
-                    <div class="slds-grid slds-grid_vertical-align-center slds-p-left--x-small">
-                        <div class="slds-form-element__control slds-col">
+    </div>
+    <div class="slds-utility-bar_container spice-sticky-bottom spice-sticky-left slds-size--1-of-1">
+        <div #kanbanUtilityBar class="slds-utility-bar" style="height: fit-content; position: static">
+            <div class="slds-grid slds-size--1-of-1 slds-grid--align-spread slds-wrap">
+                <div class="slds-grid slds-grid_vertical-align-center slds-p-horizontal--x-small slds-size--1-of-1 slds-p-vertical--xx-small slds-medium-size--1-of-4">
+                    <button *ngIf="hiddenstages.length > 0" (click)="footerExpanded = !footerExpanded" class="slds-m-right--x-small slds-button slds-button_icon slds-button_icon-border-filled slds-hide--medium" aria-haspopup="true" title="Show More">
+                        <system-button-icon [icon]="footerExpanded ? 'arrow_bottom' : 'arrow_top'"></system-button-icon>
+                    </button>
+                    <div class="slds-form-element__control slds-col">
                         <div class="slds-select_container">
                             <select class="slds-select" [(ngModel)]="sortField" (ngModelChange)= "modellist.reLoadList()">
                                 <option value="select" [selected]="isDisabled" [hidden]="sortField != ''">
@@ -52,25 +53,24 @@
                             </select>
                         </div>
                     </div>
-                            <div class="slds-form-element__control slds-col slds-p-left--x-small">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" [disabled]="isDisabled" [(ngModel)]="sortDirection" (ngModelChange)= "modellist.reLoadList()">
-                                        <option value="ASC"><system-label label="LBL_ASCENDING"></system-label></option>
-                                        <option value="DESC"><system-label label="LBL_DESCENDING"></system-label></option>
-                                    </select>
-                                </div>
-                            </div>
+                    <div class="slds-form-element__control slds-col slds-p-left--x-small">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [disabled]="isDisabled" [(ngModel)]="sortDirection" (ngModelChange)= "modellist.reLoadList()">
+                                <option value="ASC"><system-label label="LBL_ASCENDING"></system-label></option>
+                                <option value="DESC"><system-label label="LBL_DESCENDING"></system-label></option>
+                            </select>
                         </div>
-                    <div class="slds-utility-bar__item slds-p-horizontal--x-small ">
-                        <div *ngFor="let stage of hiddenstages" (cdkDropListDropped)="handleHiddenDrop($event)" cdkDropList [cdkDropListData]="stage" [cdkDropListEnterPredicate]="dropEnterAllowed(stage)" class="slds-box--border slds-m-around--xxx-small slds-align--absolute-center slds-theme--info">
-                            <div class="slds-p-horizontal--medium slds-p-vertical--small slds-grid">
-                                <div class="slds-p-right--xx-small" [ngClass]="{'slds-has-divider--right': sumfields.length > 0}"><system-label [label]="getStageLabel(stage.stagedata)"></system-label> ({{getStageCount(stage.stagedata)}})</div>
-                                <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
-                                    <li *ngFor="let sumfield of sumfields" class="slds-item">
-                                        <spice-kanban-sumfield [symbol]="getCurrencySymbol(sumfield)" [title]="getTitle(sumfield)" [value]="getStageSum(stage.stagedata, sumfield)"></spice-kanban-sumfield>
-                                    </li>
-                                </ul>
-                            </div>
+                    </div>
+                </div>
+                <div *ngIf="hiddenstages.length > 0 && (footerExpanded || layout.screenwidth != 'small')" class="slds-utility-bar__item slds-wrap slds-p-horizontal--x-small ">
+                    <div *ngFor="let stage of hiddenstages" (cdkDropListDropped)="handleHiddenDrop($event)" cdkDropList [cdkDropListData]="stage" [cdkDropListEnterPredicate]="dropEnterAllowed(stage)" class="slds-box--border slds-m-around--xxx-small slds-align--absolute-center slds-theme--info">
+                        <div class="slds-p-horizontal--medium slds-p-vertical--small slds-grid">
+                            <div class="slds-p-right--xx-small" [ngClass]="{'slds-has-divider--right': sumfields.length > 0}"><system-label [label]="getStageLabel(stage.stagedata)"></system-label> ({{getStageCount(stage.stagedata)}})</div>
+                            <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
+                                <li *ngFor="let sumfield of sumfields" class="slds-item">
+                                    <spice-kanban-sumfield [symbol]="getCurrencySymbol(sumfield)" [title]="getTitle(sumfield)" [value]="getStageSum(stage.stagedata, sumfield)"></spice-kanban-sumfield>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -78,4 +78,5 @@
         </div>
     </div>
 </div>
+
 
