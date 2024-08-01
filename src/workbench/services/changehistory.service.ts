@@ -131,7 +131,12 @@ export class ChangeHistoryService {
         if (!this.changes[scope]) return;
 
         this.changes[scope].changedObjects.forEach(changedObj => {
-            this.setChangedObjectFirstUpdate(changedObj);
+
+            // truncate the history array so that any new change after save will be pushed immediately after the current history index
+            if (this.historyCurrentIndex +1 < this.history.length) {
+                this.history.length = this.historyCurrentIndex +1;
+            }
+
             dbArray.some((dbObj, index: number) => {
                 if (dbObj.id != changedObj.id) return false;
                 dbArray[index] = {...changedObj};
@@ -146,33 +151,6 @@ export class ChangeHistoryService {
         );
 
         this.initializeScope(scope);
-    }
-
-    /**
-     * set changed object first update
-     * @param obj
-     * @private
-     */
-    private setChangedObjectFirstUpdate(obj: {id: string}) {
-
-        if (this.historyCurrentIndex +1 < this.history.length) {
-            this.history.length = this.historyCurrentIndex +1;
-        }
-
-        let lastChangeIdx: number;
-        const firstChangeIdx = this.history.findIndex(r => r.id == obj.id);
-
-        if (firstChangeIdx < 0) return;
-
-        for (let i = this.history.length - 1; i >= 0; i--) {
-            if (this.history[i].id != obj.id) continue;
-            lastChangeIdx = i;
-            break;
-        }
-
-
-        this.history[firstChangeIdx].action = 'update';
-        this.history[lastChangeIdx].action = 'afterSaveFirstUpdate';
     }
 
     /**
@@ -202,7 +180,7 @@ export class ChangeHistoryService {
             this.addNewHistoryRecord(obj, 'new', scope, prop, previousValue, newValue);
             this.cdRef.detectChanges();
         } else {
-            this.addNewHistoryRecord(obj, 'updateNew', scope, prop, previousValue, newValue);
+            this.addNewHistoryRecord(obj, 'update', scope, prop, previousValue, newValue);
             this.changes[scope].newObjects.set(obj.id, {...obj});
         }
     }
@@ -257,18 +235,23 @@ export class ChangeHistoryService {
                 this.changes[lastChange.scope].newObjects.delete(lastChange.id);
                 break;
             case 'update':
-                this.changes[lastChange.scope].changedObjects.get(lastChange.id)[lastChange.key] = lastChange.previousValue;
-                break;
-            case 'firstUpdate':
-                this.changes[lastChange.scope].changedObjects.delete(lastChange.id);
-                break;
-            case 'afterSaveFirstUpdate':
-                this.changes[lastChange.scope].changedObjects.set(lastChange.id, lastChange.obj);
-                break;
-            case 'updateNew':
-                this.changes[lastChange.scope].newObjects.get(lastChange.id)[lastChange.key] = lastChange.previousValue;
-                break;
 
+                const changeType = this.changes[lastChange.scope].newObjects.has(lastChange.id) ? 'newObjects' : 'changedObjects';
+
+                // in case of after save first update
+                if (!this.changes[lastChange.scope][changeType].has(lastChange.id)) {
+                    this.changes[lastChange.scope][changeType].set(lastChange.id, lastChange.obj);
+                }
+
+                // in case of update
+                this.changes[lastChange.scope][changeType].get(lastChange.id)[lastChange.key] = lastChange.previousValue;
+
+                // in case of first update, if current object same as db object delete it from changed objects
+                if (JSON.stringify(this.changes[lastChange.scope][changeType].get(lastChange.id)) == JSON.stringify(this.dbObjects.get(lastChange.id))) {
+                    this.changes[lastChange.scope][changeType].delete(lastChange.id);
+                }
+
+                break;
         }
 
         lastChange.obj[lastChange.key] = lastChange.previousValue;
@@ -293,27 +276,28 @@ export class ChangeHistoryService {
 
         const nextChange = this.history[this.historyCurrentIndex +1];
 
+        nextChange.obj[nextChange.key] = nextChange.newValue;
+
         switch (nextChange.action) {
             case 'new':
-
-                nextChange.obj[nextChange.key] = nextChange.newValue;
                 this.changes[nextChange.scope].newObjects.set(nextChange.id, nextChange.obj);
                 break;
-            case 'firstUpdate':
-                nextChange.obj[nextChange.key] = nextChange.newValue;
-                this.changes[nextChange.scope].changedObjects.set(nextChange.id, nextChange.obj);
-                break;
-            case 'afterSaveFirstUpdate':
-                nextChange.obj[nextChange.key] = nextChange.newValue;
-                this.changes[nextChange.scope].changedObjects.delete(nextChange.id);
-                break;
-            case 'updateNew':
             case 'update':
-                const key = nextChange.action == 'updateNew' ? 'newObjects' : 'changedObjects';
+                const changeType = this.changes[nextChange.scope].newObjects.has(nextChange.id) ? 'newObjects' : 'changedObjects';
 
-                this.changes[nextChange.scope][key].get(nextChange.id)[nextChange.key] = nextChange.newValue;
+                // in case of first update
+                if (!this.changes[nextChange.scope][changeType].has(nextChange.id)) {
+                    this.changes[nextChange.scope][changeType].set(nextChange.id, nextChange.obj);
+                }
+
+                this.changes[nextChange.scope][changeType].get(nextChange.id)[nextChange.key] = nextChange.newValue;
+
+                // in case of after save first update, if current object same as db object delete it from changed objects
+                if (JSON.stringify(this.changes[nextChange.scope][changeType].get(nextChange.id)) == JSON.stringify(this.dbObjects.get(nextChange.id))) {
+                    this.changes[nextChange.scope][changeType].delete(nextChange.id);
+                }
+
                 break;
-
         }
 
         if (this.historyCurrentIndex +1 < this.history.length) {
@@ -352,17 +336,14 @@ export class ChangeHistoryService {
             return;
         }
 
-        let action: 'update' | 'firstUpdate' = 'update';
-
         if (this.changes[scope].changedObjects.has(currentObject.id)) {
             this.changes[scope].changedObjects.set(currentObject.id, {...currentObject});
         } else {
             this.changes[scope].changedObjects.set(currentObject.id, {...currentObject});
-            action = 'firstUpdate';
             this.cdRef.detectChanges();
         }
 
-        this.addNewHistoryRecord(currentObject, action, scope, prop, previousValue, newValue);
+        this.addNewHistoryRecord(currentObject, 'update', scope, prop, previousValue, newValue);
     }
 
     /**
