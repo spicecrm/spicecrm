@@ -13,7 +13,7 @@
             </ng-container>
         </ul>
     </div>
-    <div *ngIf="this.componentconfig.sumfield" class="slds-grid slds-border--bottom slds-p-horizontal--small" style="width: max-content;">
+    <div *ngIf="this.componentconfig.sumfield" class="slds-grid slds-border--bottom slds-p-horizontal--small" style="width: max-content; min-width: 100%;">
         <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small spice-stage-sum-container" [ngClass]="sizeClass">
             <div class="slds-text-heading--medium slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
                 <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
