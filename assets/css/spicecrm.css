@@ -64,6 +64,7 @@
     --sds-c-button-shadow-focus: var(--color-grey-9);
     --slds-g-color-brand-base-50: var(--color-border-brand);
     --slds-c-input-text-color: #000000;
+    --sds-c-input-text-color-focus: #000000;
 }
 
 html {
