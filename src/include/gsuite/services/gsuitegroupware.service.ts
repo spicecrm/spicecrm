@@ -173,7 +173,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
     /**
      * Returns an array of email adresses used in the selected email.
      */
-    public getAddressArray(): Observable<any> {
+    public getAddressArray(): Observable<string[]> {
 
         const response = new Subject<any>();
 
