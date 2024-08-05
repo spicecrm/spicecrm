@@ -214,13 +214,14 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
             'source' => 'non-db',
             'vname' => 'LBL_EMAILS_AS_PARENT',
         ],
-        'documents' => [
-            'name' => 'documents',
-            'type' => 'link',
-            'relationship' => 'documents_accounts',
-            'source' => 'non-db',
-            'vname' => 'LBL_DOCUMENTS',
-        ],
+#migrated
+//        'documents' => [
+//            'name' => 'documents',
+//            'type' => 'link',
+//            'relationship' => 'documents_accounts',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_DOCUMENTS',
+//        ],
 // CR1000426 cleanup backend, module Bugs removed
 //        'bugs' => array(
 //            'name' => 'bugs',
