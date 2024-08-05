@@ -63,6 +63,8 @@
     --slds-c-checkbox-shadow-focus: var(--brand-primary);
     --sds-c-button-shadow-focus: var(--color-grey-9);
     --slds-g-color-brand-base-50: var(--color-border-brand);
+    --slds-c-input-text-color: #000000;
+    --sds-c-input-text-color-focus: #000000;
 }
 
 html {
@@ -268,7 +270,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
         padding-left: 0;
     }
 
-    .slds-tabs--path__item, .spice-stage-items-container {
+    .slds-tabs--path__item, .spice-stage-items-container, .spice-stage-sum-container {
         min-width: 17rem;
     }
 }
@@ -702,4 +704,25 @@ input[type="submit"] {
 .slds-grow {
     min-width: 0;
     min-height: 0;
+}
+
+.spice-sticky-top, .spice-sticky-bottom , .spice-sticky-left , .spice-sticky-right {
+    position: sticky;
+    z-index: 1;
+}
+
+.spice-sticky-top {
+    top: 0;
+}
+
+.spice-sticky-bottom {
+    bottom: 0;
+}
+
+.spice-sticky-left {
+    left: 0;
+}
+
+.spice-sticky-right {
+    right: 0;
 }

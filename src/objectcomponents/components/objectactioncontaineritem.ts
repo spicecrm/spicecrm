@@ -71,7 +71,8 @@ export class ObjectActionContainerItem implements AfterViewInit {
         OPEN: "ObjectActionOpenButton",
         CANCEL: "ObjectActionCancelButton",
         SAVE: "ObjectActionSaveButton",
-        SAVERELATED: "ObjectActionSaveRelatedButton"
+        SAVERELATED: "ObjectActionSaveRelatedButton",
+        ROUTE: "GlobalNavigationMenuItemActionRoute",
     };
     /**
      * @ignore
