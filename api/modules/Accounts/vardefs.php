@@ -231,15 +231,16 @@ SpiceDictionaryHandler::getInstance()->dictionary['Account'] = [
 //            'source' => 'non-db',
 //            'vname' => 'LBL_BUGS',
 //        ),
-        'contacts' => [
-            'name' => 'contacts',
-            'type' => 'link',
-            'relationship' => 'accounts_contacts',
-            'module' => 'Contacts',
-            'bean_name' => 'Contact',
-            'source' => 'non-db',
-            'vname' => 'LBL_CONTACTS',
-        ],
+#migrated
+//        'contacts' => [
+//            'name' => 'contacts',
+//            'type' => 'link',
+//            'relationship' => 'accounts_contacts',
+//            'module' => 'Contacts',
+//            'bean_name' => 'Contact',
+//            'source' => 'non-db',
+//            'vname' => 'LBL_CONTACTS',
+//        ],
         'users' => [
             'name' => 'users',
             'type' => 'link',
