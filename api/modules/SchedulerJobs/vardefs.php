@@ -83,6 +83,12 @@ SpiceDictionaryHandler::getInstance()->dictionary['SchedulerJob'] = [
             'type' => 'bool',
             'default' => 0
         ],
+        'max_execution_minutes' => [
+            'name' => 'max_execution_minutes',
+            'vname' => 'LBL_MAX_EXECUTION_MINUTES',
+            'type' => 'int',
+            'len' => 3
+        ],
 		'jobtask_sequence' => [
 			'name' => 'jobtask_sequence',
 			'vname' => 'LBL_SEQUENCE',
