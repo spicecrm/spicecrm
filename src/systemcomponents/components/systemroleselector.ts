@@ -16,6 +16,12 @@ declare var _: any;
 export class SystemRoleSelector implements OnInit {
 
     /**
+     * avatar size
+     * @private
+     */
+    @Input() public avatarSize: 'x-small' | 'small' | 'medium' | 'large' = 'small';
+
+    /**
      * the available languages
      */
     public roles: any[] = [];

@@ -1,4 +1,7 @@
-<article class="slds-tile slds-media slds-p-vertical--xx-small">
+<article class="slds-grid slds-grid--vertical-align-center slds-p-vertical--xx-small">
+    <system-checkbox (ngModelChange)="onClick($event)" [ngModel]="groupware.checkBeanArchive(bean)" [hidelabel]="true" class="slds-m-right--x-small">
+        {{bean.name}}
+    </system-checkbox>
     <div class="slds-p-vertical--xx-small">
         <system-icon [module]="model.module" size="small"></system-icon>
     </div>
@@ -12,13 +15,6 @@
                     </li>
                 </ng-container>
             </ul>
-            <div class="slds-col--bump-left slds-checkbox">
-                <input type="checkbox" name="beans" [id]="'bean-'+bean.id" (click)="onClick($event)" [checked]="groupware.checkBeanArchive(bean)"/>
-                <label class="slds-checkbox__label" [attr.for]="'bean-'+bean.id">
-                    <span class="slds-checkbox_faux"></span>
-                    <span class="slds-form-element__label slds-assistive-text">{{bean.name}}</span>
-                </label>
-            </div>
         </div>
         <div class="slds-truncate slds-text-body_small" title="Bean Module">
             <ul class="slds-list_horizontal slds-has-dividers_right slds-truncate">

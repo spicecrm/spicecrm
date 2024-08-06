@@ -200,6 +200,7 @@ import {SystemProgressIndicator} from "./components/systemprogressindicator";
 import {SystemProgressIndicatorItem} from "./components/systemprogressindicatoritem";
 import {PackageLoaderReloadLoadedModal} from "./components/packageloaderreloadloadedmodal";
 import {SystemInputDictionary} from "./components/systeminputdictionary";
+import {SystemSelectModuleModal} from "./components/systemselectmodulemodal";
 
 @NgModule({
     imports: [
@@ -387,7 +388,8 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemProgressIndicatorItem,
         PackageLoaderReloadLoadedModal,
         SystemInputDictionary,
-        SystemInputRoles
+        SystemInputRoles,
+        SystemSelectModuleModal
     ],
     exports: [
         PaginationControlsComponent,
@@ -550,7 +552,8 @@ import {SystemInputDictionary} from "./components/systeminputdictionary";
         SystemProgressIndicatorItem,
         PackageLoaderReloadLoadedModal,
         SystemInputDictionary,
-        SystemInputRoles
+        SystemInputRoles,
+        SystemSelectModuleModal
     ]
 })
 export class SystemComponents {}

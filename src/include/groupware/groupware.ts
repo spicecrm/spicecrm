@@ -33,6 +33,7 @@ import {GroupwareDetailPanefooter} from './components/groupwaredetailpanefooter'
 import {GroupwareDetailPaneHeader} from './components/groupwaredetailpaneheader';
 import {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
 import {GroupwareDetailPane} from './components/groupwaredetailpane';
+import {GroupwareCreateBean} from "./components/groupwarecreatebean";
 
 @NgModule({
     imports: [
@@ -59,7 +60,8 @@ import {GroupwareDetailPane} from './components/groupwaredetailpane';
         GroupwareEmailArchivePaneItem,
         GroupwareDetailPanefooter,
         GroupwareDetailPaneHeader,
-        GroupwareDetailPaneBean
+        GroupwareDetailPaneBean,
+        GroupwareCreateBean
     ],
     exports: [
         GroupwareDetailPaneHeader

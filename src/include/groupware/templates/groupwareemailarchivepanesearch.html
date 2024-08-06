@@ -1,5 +1,5 @@
-<div class="slds-p-around--x-small slds-height_full" [system-overlay-loading-spinner]="searching">
-    <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+<div class="slds-height_full" [system-overlay-loading-spinner]="searching">
+    <div class="slds-form-element slds-page-header slds-p-around--x-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
         <div system-dropdown-trigger-simple class="slds-dropdown-trigger slds-dropdown-trigger_click">
             <button class="slds-button slds-button--icon-border slds-m-right--xx-small" [title]="moduleTitle">
                 <system-icon size="small" divClass="" *ngIf="_searchmodule != 'all'" [module]="_searchmodule"></system-icon>
@@ -35,12 +35,12 @@
             <input type="text" id="search-term" autoComplete="off" [placeholder]="language.getLabel('LBL_SEARCH_SPICE')" class="slds-input" [(ngModel)]="this.searchTerm" (keyup)="search($event)"/>
         </div>
     </div>
-    <div class="slds-border--bottom slds-p-horizontal--x-small slds-p-top--xx-small">
+    <div class="slds-border--bottom slds-p-horizontal--x-small slds-p-vertical--xx-small">
         <system-checkbox [(ngModel)]="selectAll" [indeterminate]="groupware.archiveto?.length > 0 && beans?.length != groupware.archiveto?.length">
             <system-label label="LBL_SELECT_ALL"></system-label>
         </system-checkbox>
     </div>
-    <div class="slds-p-vertical--small" system-to-bottom>
+    <div class="slds-p-vertical--xx-small slds-p-horizontal--x-small" system-to-bottom>
         <groupware-pane-bean *ngFor="let bean of beans" [bean]="bean" [system-model-provider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
     </div>
 </div>
