@@ -524,6 +524,29 @@ $routes = [
             ],
         ],
     ],
+    [
+        'method'      => 'get',
+        'route'       => '/module/attachment/{beanName}/{beanId}',
+        'class'       => EmailsController::class,
+        'function'    => 'getEmailAsAttachment',
+        'description' => '',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'beanName' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_MODULE,
+                'description' => 'name of a module',
+                'example' => 'Accounts',
+                'required' => true
+            ],
+            'beanId' => [
+                'in' => 'path',
+                'type'        => ValidationMiddleware::TYPE_GUID,
+                'description' => 'GUID of bean',
+                'required' => true
+            ],
+        ],
+    ],
 ];
 
 $RESTManager->registerRoutes($routes);
