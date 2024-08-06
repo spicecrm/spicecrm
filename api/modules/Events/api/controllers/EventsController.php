@@ -181,7 +181,9 @@ class EventsController
     }
     */
 
-    /**
+    /* necessary? */
+    /*
+    / **
      * set event favorite to consumer
      *
      * @param Request $req
@@ -189,7 +191,7 @@ class EventsController
      * @param array $args
      * @return Response
      * @throws NotFoundException
-     */
+     * /
     public function setFavoriteEvent(Request $req, Response $res, array $args): Response
     {
         $event = BeanFactory::getBean('Events', $args['event_id']);
@@ -206,7 +208,7 @@ class EventsController
         }
     }
 
-    /**
+    / **
      * delete event favorite from consumer
      *
      * @param Request $req
@@ -214,7 +216,7 @@ class EventsController
      * @param array $args
      * @return Response
      * @throws NotFoundException
-     */
+     * /
     public function deleteFavoriteEvent(Request $req, Response $res, array $args): Response
     {
         $consumer = BeanFactory::getBean('Consumers', $args['id']);
@@ -222,5 +224,6 @@ class EventsController
         $consumer->save();
         return $res->withJson(['status' => 'success']);
     }
+    */
 
 }
