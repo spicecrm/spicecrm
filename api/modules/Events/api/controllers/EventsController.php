@@ -3,18 +3,12 @@
 
 namespace SpiceCRM\modules\Events\api\controllers;
 
-use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
-use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
-use SpiceCRM\includes\utils\DBUtils;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\ErrorHandlers\NotFoundException;
-use SpiceCRM\data\api\handlers\SpiceBeanHandler;
 use SpiceCRM\includes\authentication\AuthenticationController;
-use SpiceCRM\modules\SpiceACL\SpiceACL;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
-use SpiceCRM\includes\TimeDate;
 
 class EventsController
 {
@@ -181,7 +175,9 @@ class EventsController
     }
     */
 
-    /**
+    /* necessary? */
+    /*
+    / **
      * set event favorite to consumer
      *
      * @param Request $req
@@ -189,7 +185,7 @@ class EventsController
      * @param array $args
      * @return Response
      * @throws NotFoundException
-     */
+     * /
     public function setFavoriteEvent(Request $req, Response $res, array $args): Response
     {
         $event = BeanFactory::getBean('Events', $args['event_id']);
@@ -206,7 +202,7 @@ class EventsController
         }
     }
 
-    /**
+    / **
      * delete event favorite from consumer
      *
      * @param Request $req
@@ -214,7 +210,7 @@ class EventsController
      * @param array $args
      * @return Response
      * @throws NotFoundException
-     */
+     * /
     public function deleteFavoriteEvent(Request $req, Response $res, array $args): Response
     {
         $consumer = BeanFactory::getBean('Consumers', $args['id']);
@@ -222,5 +218,6 @@ class EventsController
         $consumer->save();
         return $res->withJson(['status' => 'success']);
     }
+    */
 
 }

@@ -228,6 +228,7 @@ import {ObjectRelatedDuplicatesCardFooter} from "./components/objectrelateddupli
 import {ObjectProjectActivityTrackTimeIcon} from "./components/objectprojectactivitytracktimeicon";
 import {ObjectTemplatesEditor} from "./components/objecttemplateseditor";
 import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
+import {ObjectActionDownloadEmailButton} from "./components/objectactiondownloademailbutton";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -430,7 +431,8 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectRelatedDuplicatesCardFooter,
         ObjectProjectActivityTrackTimeIcon,
         ObjectTemplatesEditor,
-        ObjectTemplatesPreview
+        ObjectTemplatesPreview,
+        ObjectActionDownloadEmailButton
     ],
     exports: [
         ObjectListViewHeader,
@@ -480,7 +482,9 @@ import {ObjectTemplatesPreview} from "./components/objecttemplatespreview";
         ObjectRelatedListUrls,
         ObjectRelatedCardUrl,
         ObjectActionNewButton,
-        ObjectRecordFieldsetContainer
+        ObjectRecordFieldsetContainer,
+        ObjectActionContainerItem,
+        ObjectActionDownloadEmailButton
     ]
 })
 export class ObjectComponents {}

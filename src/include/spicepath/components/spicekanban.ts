@@ -22,6 +22,7 @@ import {userpreferences} from '../../../services/userpreferences.service';
 import {CdkDrag, CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
 import {ListTypeI} from "../../../services/interfaces.service";
 import {skip} from "rxjs/operators";
+import {layout} from "../../../services/layout.service";
 
 declare var _: any;
 
@@ -87,8 +88,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * holds the status network managed boolean
      */
     public statusNetworkManaged: boolean = false;
+    /**
+     * expanded flag for the footer
+     */
+    public footerExpanded: boolean;
 
-    constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency) {
+    constructor(public backend: backend, public broadcast: broadcast, public model: model, public modellist: modellist, public configuration: configurationService, public metadata: metadata, public userpreferences: userpreferences, public language: language, public currency: currency, public layout: layout) {
 
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
         this.currencies = this.currency.getCurrencies();
@@ -477,18 +482,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public allowDrag(item) {
         return this.draganddropenabled && item.acl.edit && (!this.statusNetworkManaged || this.statusNetworkItems.some(e => item[this.statusField] == e.status_from));
-    }
-
-    /**
-     * adds a bottom margin if the utility bar is shown
-     */
-    get containerStyle() {
-        if (this.kanbanUtilityBar) {
-            let rect = this.kanbanUtilityBar.element.nativeElement.getBoundingClientRect();
-            return {'margin-bottom': rect.height + 'px'};
-        } else {
-            return {};
-        }
     }
 
     /**
