@@ -501,14 +501,14 @@ export class dictionarymanager {
         this.backend.putRequest(`dictionary/definition/${definitionid}/reshuffle`, {}, fields).subscribe({
             next: (result) => {
                 if (result.success) {
-                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_reshuffled'), 'success', result.sql, !result.sql);
+                    this.toast.sendToast(this.language.getLabel('LBL_DICTIONARY_RESHUFFLED'), 'success', result.sql, !result.sql);
                 } else {
                     this.toast.sendToast(this.language.getLabel('LBL_NO_DATA'), 'error', result.msg);
                 }
                 awaitModal.emit(true);
             },
             error: () => {
-                this.toast.sendToast(this.language.getLabel('ERROR reshuffling dictonaray'), 'error');
+                this.toast.sendToast(this.language.getLabel('ERR_RESHUFFLING_DICTIONARY'), 'error');
                 awaitModal.emit(true);
             }
         });
@@ -531,7 +531,7 @@ export class dictionarymanager {
                 awaitModal.emit(true);
             },
             error: () => {
-                this.toast.sendToast(this.language.getLabel('ERROR repairing dictonaray'), 'error');
+                this.toast.sendToast(this.language.getLabel('ERR_REPAIRING_DICTIONARY'), 'error');
                 awaitModal.emit(true);
             }
         });
