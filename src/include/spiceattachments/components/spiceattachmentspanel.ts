@@ -283,7 +283,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     public doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId).subscribe({
             next: () => {
-                this.loadFiles();
+                this.countSize();
+                this.broadcastUpload();
             }
         });
     }
@@ -298,7 +299,8 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             // wait for modal to finish upload
             modalRef.instance.responseSubject.subscribe({
                 next: () => {
-                    this.loadFiles();
+                    this.countSize();
+                    this.broadcastUpload();
                 }
             })
         });
@@ -312,5 +314,17 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
             modalRef.instance.parent = this.parentModel;
         });
     }
-
+    /**
+     * broadcasts uploaded data to _modelattachments service
+     * @private
+     */
+    private broadcastUpload() {
+        this._modelattachments.broadcast.broadcastMessage('attachments.uploaded', {
+            module: this._modelattachments.module,
+            id: this._modelattachments.id,
+            uploadedFiles: this._modelattachments.files,
+            uniqueID: this._modelattachments.httpRequestsRefID,
+            reload: true
+        })
+    }
 }
